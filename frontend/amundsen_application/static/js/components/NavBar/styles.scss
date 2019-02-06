@@ -1,0 +1,52 @@
+@import 'variables';
+
+.nav-bar {
+  height: 72px;
+  border-bottom: 1px solid $gray-lighter;
+  padding: 10px 32px 10px 32px;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  color: $gray-light;
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.nav-bar sup {
+  font-size: 12px;
+}
+
+.nav-bar a {
+  text-decoration: none;
+  color: $gray-light;
+}
+
+.nav-bar a:hover {
+  color: $gradient-4;
+}
+
+.nav-bar a.active {
+  color: $gradient-4;
+}
+
+.nav-bar .nav-bar-right {
+  margin-left: auto;
+  display: flex;
+}
+.nav-bar-right > * {
+  margin: auto 10px;
+}
+.nav-bar-right > *:last-child {
+  margin-right: 0px;
+}
+
+.nav-bar .sb-avatar {
+  -webkit-box-shadow: 0px 0px 10px -1px rgba(0, 0, 0, .76);
+  -moz-box-shadow: 0px 0px 10px -1px rgba(0, 0, 0, .76);
+  box-shadow: 0px 0px 10px -1px rgba(0, 0, 0, .76);
+}
+
+.sb-avatar > div {
+  border: 1px solid white;
+}

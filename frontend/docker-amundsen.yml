@@ -1,0 +1,48 @@
+version: '3'
+services:
+  neo4j:
+      image: neo4j:3.3.0
+      container_name: neo4j_amundsen
+      environment:
+        - CREDENTIALS_NEO4J_USER=neo4j
+        - CREDENTIALS_NEO4J_PASSWORD=neo4j
+      ulimits:
+        nofile:
+          soft: 40000
+          hard: 40000
+      ports:
+          - 7474:7474
+          - 7687:7687
+      volumes:
+          - ./example/docker/neo4j/conf:/conf
+      networks:
+        - amundsennet
+  amundsensearch:
+      image: amundsen-search:latest
+      container_name: amundsensearch
+      ports:
+        - 5001:5000
+      networks:
+        - amundsennet
+  amundsenmetadata:
+      image: amundsen-metadata:latest
+      container_name: amundsenmetadata
+      depends_on:
+        - neo4j
+      ports:
+        - 5002:5000
+      networks:
+        - amundsennet
+  amundsenfrontend:
+      image: amundsen-frontend:latest
+      container_name: amundsenfrontend
+      depends_on:
+        - amundsenmetadata
+        - amundsensearch
+      ports:
+        - 5000:5000
+      networks:
+        - amundsennet
+
+networks:
+  amundsennet:

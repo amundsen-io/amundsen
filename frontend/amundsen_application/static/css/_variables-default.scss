@@ -1,0 +1,53 @@
+/**
+ The following are used in Amundsen but are not part of Bootstrap.
+ These must be defined here:
+
+  $gradient-1, $gradient-2, $gradient-3, $gradient-4,
+  $font-family-sans-serif-bold,
+  $font-weight-sans-serif-bold
+  */
+
+
+// Colors
+$gradient-1: #f2f5fe;
+$gradient-2: #cad6ff;
+$gradient-3: #5679ff;
+$gradient-4: #3250c8;
+
+$gray-base:    #000;
+$gray-darker:  lighten($gray-base, 10%); // #1a1a1a
+$gray-dark:    lighten($gray-base, 20%); // #333
+$gray:         lighten($gray-base, 35%); // ##595959
+$gray-light:   lighten($gray-base, 55%); // #8c8c8c
+$gray-lighter: lighten($gray-base, 85%); // #d9d9d9
+
+
+// Scaffolding
+$body-bg:    #fff;
+$text-color: $gray-dark;
+
+
+// Typography
+$font-family-sans-serif:      "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+$font-family-sans-serif-bold: $font-family-sans-serif;
+$font-weight-sans-serif-bold: 600;
+$font-family-serif:           Georgia, "Times New Roman", Times, serif;
+$font-family-monospace:       Menlo, Monaco, Consolas, "Courier New", monospace;
+
+$font-family-base:            $font-family-sans-serif;
+$headings-font-family:        $font-family-sans-serif-bold;
+
+$font-size-small:             12px;
+$line-height-small:           18px;
+$font-size-large:             16px;
+$line-height-large:           24px;
+
+
+// Buttons
+$btn-default-border: $gray-lighter;
+$btn-default-bg:     white;
+$btn-default-color:  $text-color;
+
+$btn-primary-border: $gray-lighter;
+$btn-primary-bg:     white;
+$btn-primary-color:  $text-color;

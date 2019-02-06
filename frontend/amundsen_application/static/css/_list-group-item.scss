@@ -1,0 +1,23 @@
+// TODO - Try to implement this with bootstrap variables
+@import 'variables';
+
+.list-group-item {
+  cursor: pointer;
+  border-top-color: $gray-lighter;
+  border-bottom-color: $gray-lighter;
+  border-left: none;
+  border-right: none;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.list-group-item:hover {
+  border-top-color: $gradient-2;
+  border-bottom-color: $gradient-2;
+  background-color: $gradient-1;
+}
+.list-group-item:hover + li {
+  border-top-color: $gradient-2;
+}
+.list-group-item:hover + li:not(:last-child) {
+  border-bottom-color: $gradient-2;
+}

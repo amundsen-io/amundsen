@@ -1,0 +1,2748 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchPage renders no results message 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <SearchPage
+    executeSearch={[MockFunction]}
+    getPopularTables={
+      [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    pageIndex={0}
+    popularTables={Array []}
+    searchResults={Array []}
+    searchTerm="thisisnotarealsearch"
+    totalResults={0}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": <div
+        className="container search-page"
+      >
+        <div
+          className="row"
+        >
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm="thisisnotarealsearch"
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                  Your search - 
+                  <i>
+                    thisisnotarealsearch
+                  </i>
+                   - did not match any tables.
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>,
+      "title": "thisisnotarealsearch - Amundsen Search",
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": <div
+          className="row"
+        >
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm="thisisnotarealsearch"
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                  Your search - 
+                  <i>
+                    thisisnotarealsearch
+                  </i>
+                   - did not match any tables.
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>,
+        "className": "container search-page",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm="thisisnotarealsearch"
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />,
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Your search - 
+                    <i>
+                      thisisnotarealsearch
+                    </i>
+                     - did not match any tables.
+                  </label>
+                </div>
+              </div>
+            </div>,
+          ],
+          "className": "row",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "handleValueSubmit": [Function],
+              "placeholder": "Search for data resources...",
+              "searchTerm": "thisisnotarealsearch",
+              "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Your search - 
+                    <i>
+                      thisisnotarealsearch
+                    </i>
+                     - did not match any tables.
+                  </label>
+                </div>
+              </div>,
+              "className": "col-xs-12",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Your search - 
+                    <i>
+                      thisisnotarealsearch
+                    </i>
+                     - did not match any tables.
+                  </label>
+                </div>,
+                "className": "search-list-container",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <label>
+                    Your search - 
+                    <i>
+                      thisisnotarealsearch
+                    </i>
+                     - did not match any tables.
+                  </label>,
+                  "className": "search-list-header",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": Array [
+                      "Your search - ",
+                      <i>
+                        thisisnotarealsearch
+                      </i>,
+                      " - did not match any tables.",
+                    ],
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    "Your search - ",
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": "thisisnotarealsearch",
+                      },
+                      "ref": null,
+                      "rendered": "thisisnotarealsearch",
+                      "type": "i",
+                    },
+                    " - did not match any tables.",
+                  ],
+                  "type": "label",
+                },
+                "type": "div",
+              },
+              "type": "div",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      "type": "div",
+    },
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": <div
+          className="container search-page"
+        >
+          <div
+            className="row"
+          >
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm="thisisnotarealsearch"
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Your search - 
+                    <i>
+                      thisisnotarealsearch
+                    </i>
+                     - did not match any tables.
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        "title": "thisisnotarealsearch - Amundsen Search",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": <div
+            className="row"
+          >
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm="thisisnotarealsearch"
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Your search - 
+                    <i>
+                      thisisnotarealsearch
+                    </i>
+                     - did not match any tables.
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>,
+          "className": "container search-page",
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <SearchBar
+                handleValueSubmit={[Function]}
+                placeholder="Search for data resources..."
+                searchTerm="thisisnotarealsearch"
+                subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+              />,
+              <div
+                className="col-xs-12"
+              >
+                <div
+                  className="search-list-container"
+                >
+                  <div
+                    className="search-list-header"
+                  >
+                    <label>
+                      Your search - 
+                      <i>
+                        thisisnotarealsearch
+                      </i>
+                       - did not match any tables.
+                    </label>
+                  </div>
+                </div>
+              </div>,
+            ],
+            "className": "row",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "handleValueSubmit": [Function],
+                "placeholder": "Search for data resources...",
+                "searchTerm": "thisisnotarealsearch",
+                "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <div
+                  className="search-list-container"
+                >
+                  <div
+                    className="search-list-header"
+                  >
+                    <label>
+                      Your search - 
+                      <i>
+                        thisisnotarealsearch
+                      </i>
+                       - did not match any tables.
+                    </label>
+                  </div>
+                </div>,
+                "className": "col-xs-12",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <div
+                    className="search-list-header"
+                  >
+                    <label>
+                      Your search - 
+                      <i>
+                        thisisnotarealsearch
+                      </i>
+                       - did not match any tables.
+                    </label>
+                  </div>,
+                  "className": "search-list-container",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <label>
+                      Your search - 
+                      <i>
+                        thisisnotarealsearch
+                      </i>
+                       - did not match any tables.
+                    </label>,
+                    "className": "search-list-header",
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": Array [
+                        "Your search - ",
+                        <i>
+                          thisisnotarealsearch
+                        </i>,
+                        " - did not match any tables.",
+                      ],
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      "Your search - ",
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": "thisisnotarealsearch",
+                        },
+                        "ref": null,
+                        "rendered": "thisisnotarealsearch",
+                        "type": "i",
+                      },
+                      " - did not match any tables.",
+                    ],
+                    "type": "label",
+                  },
+                  "type": "div",
+                },
+                "type": "div",
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        "type": "div",
+      },
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SearchPage renders pageindex out of bounds message 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <SearchPage
+    executeSearch={[MockFunction]}
+    getPopularTables={
+      [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    pageIndex={50}
+    popularTables={Array []}
+    searchResults={
+      Array [
+        Object {
+          "database": "test_db",
+          "description": "This is the description.",
+          "key": "test_key",
+          "last_updated": 1527283287,
+          "name": "test_table",
+          "schema_name": "test_schema",
+        },
+        Object {
+          "database": "test_db2",
+          "description": "This is the description.",
+          "key": "test_key2",
+          "last_updated": 1527283287,
+          "name": "test_table2",
+          "schema_name": "test_schema2",
+        },
+      ]
+    }
+    searchTerm=""
+    totalResults={2}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": <div
+        className="row"
+      >
+        <SearchBar
+          handleValueSubmit={[Function]}
+          placeholder="Search for data resources..."
+          searchTerm=""
+          subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+        />
+        <div
+          className="col-xs-12"
+        >
+          <div
+            className="search-list-container"
+          >
+            <div
+              className="search-list-header"
+            >
+              <label>
+                Page index out of bounds for available matches.
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>,
+      "className": "container search-page",
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm=""
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />,
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                  Page index out of bounds for available matches.
+                </label>
+              </div>
+            </div>
+          </div>,
+        ],
+        "className": "row",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "handleValueSubmit": [Function],
+            "placeholder": "Search for data resources...",
+            "searchTerm": "",
+            "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                  Page index out of bounds for available matches.
+                </label>
+              </div>
+            </div>,
+            "className": "col-xs-12",
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <div
+                className="search-list-header"
+              >
+                <label>
+                  Page index out of bounds for available matches.
+                </label>
+              </div>,
+              "className": "search-list-container",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <label>
+                  Page index out of bounds for available matches.
+                </label>,
+                "className": "search-list-header",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": "Page index out of bounds for available matches.",
+                },
+                "ref": null,
+                "rendered": "Page index out of bounds for available matches.",
+                "type": "label",
+              },
+              "type": "div",
+            },
+            "type": "div",
+          },
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": <div
+          className="row"
+        >
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm=""
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                  Page index out of bounds for available matches.
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>,
+        "className": "container search-page",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm=""
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />,
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Page index out of bounds for available matches.
+                  </label>
+                </div>
+              </div>
+            </div>,
+          ],
+          "className": "row",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "handleValueSubmit": [Function],
+              "placeholder": "Search for data resources...",
+              "searchTerm": "",
+              "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Page index out of bounds for available matches.
+                  </label>
+                </div>
+              </div>,
+              "className": "col-xs-12",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <div
+                  className="search-list-header"
+                >
+                  <label>
+                    Page index out of bounds for available matches.
+                  </label>
+                </div>,
+                "className": "search-list-container",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <label>
+                    Page index out of bounds for available matches.
+                  </label>,
+                  "className": "search-list-header",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "Page index out of bounds for available matches.",
+                  },
+                  "ref": null,
+                  "rendered": "Page index out of bounds for available matches.",
+                  "type": "label",
+                },
+                "type": "div",
+              },
+              "type": "div",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SearchPage renders popular tables correctly 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <SearchPage
+    executeSearch={[MockFunction]}
+    getPopularTables={
+      [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    pageIndex={0}
+    popularTables={
+      Array [
+        Object {
+          "database": "test_db",
+          "description": "This is the description.",
+          "key": "test_key",
+          "last_updated": 1527283287,
+          "name": "test_table",
+          "schema_name": "test_schema",
+        },
+        Object {
+          "database": "test_db2",
+          "description": "This is the description.",
+          "key": "test_key2",
+          "last_updated": 1527283287,
+          "name": "test_table2",
+          "schema_name": "test_schema2",
+        },
+      ]
+    }
+    searchResults={Array []}
+    searchTerm=""
+    totalResults={0}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": <div
+        className="row"
+      >
+        <SearchBar
+          handleValueSubmit={[Function]}
+          placeholder="Search for data resources..."
+          searchTerm=""
+          subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+        />
+        <div
+          className="col-xs-12"
+        >
+          <div
+            className="search-list-container"
+          >
+            <div
+              className="search-list-header"
+            >
+              <label>
+                 
+                Popular Tables
+                 
+              </label>
+              <InfoButton
+                infoText="These are some of the most commonly accessed tables within your organization."
+                placement="right"
+                size=""
+                title=""
+              />
+            </div>
+            <SearchList
+              params={
+                Object {
+                  "paginationStartIndex": 0,
+                  "source": "popular_tables",
+                }
+              }
+              results={
+                Array [
+                  Object {
+                    "database": "test_db",
+                    "description": "This is the description.",
+                    "key": "test_key",
+                    "last_updated": 1527283287,
+                    "name": "test_table",
+                    "schema_name": "test_schema",
+                  },
+                  Object {
+                    "database": "test_db2",
+                    "description": "This is the description.",
+                    "key": "test_key2",
+                    "last_updated": 1527283287,
+                    "name": "test_table2",
+                    "schema_name": "test_schema2",
+                  },
+                ]
+              }
+            />
+          </div>
+          <div
+            className="search-pagination-component"
+          />
+        </div>
+      </div>,
+      "className": "container search-page",
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm=""
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />,
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                   
+                  Popular Tables
+                   
+                </label>
+                <InfoButton
+                  infoText="These are some of the most commonly accessed tables within your organization."
+                  placement="right"
+                  size=""
+                  title=""
+                />
+              </div>
+              <SearchList
+                params={
+                  Object {
+                    "paginationStartIndex": 0,
+                    "source": "popular_tables",
+                  }
+                }
+                results={
+                  Array [
+                    Object {
+                      "database": "test_db",
+                      "description": "This is the description.",
+                      "key": "test_key",
+                      "last_updated": 1527283287,
+                      "name": "test_table",
+                      "schema_name": "test_schema",
+                    },
+                    Object {
+                      "database": "test_db2",
+                      "description": "This is the description.",
+                      "key": "test_key2",
+                      "last_updated": 1527283287,
+                      "name": "test_table2",
+                      "schema_name": "test_schema2",
+                    },
+                  ]
+                }
+              />
+            </div>
+            <div
+              className="search-pagination-component"
+            />
+          </div>,
+        ],
+        "className": "row",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "handleValueSubmit": [Function],
+            "placeholder": "Search for data resources...",
+            "searchTerm": "",
+            "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                     
+                    Popular Tables
+                     
+                  </label>
+                  <InfoButton
+                    infoText="These are some of the most commonly accessed tables within your organization."
+                    placement="right"
+                    size=""
+                    title=""
+                  />
+                </div>
+                <SearchList
+                  params={
+                    Object {
+                      "paginationStartIndex": 0,
+                      "source": "popular_tables",
+                    }
+                  }
+                  results={
+                    Array [
+                      Object {
+                        "database": "test_db",
+                        "description": "This is the description.",
+                        "key": "test_key",
+                        "last_updated": 1527283287,
+                        "name": "test_table",
+                        "schema_name": "test_schema",
+                      },
+                      Object {
+                        "database": "test_db2",
+                        "description": "This is the description.",
+                        "key": "test_key2",
+                        "last_updated": 1527283287,
+                        "name": "test_table2",
+                        "schema_name": "test_schema2",
+                      },
+                    ]
+                  }
+                />
+              </div>,
+              <div
+                className="search-pagination-component"
+              />,
+            ],
+            "className": "col-xs-12",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <div
+                    className="search-list-header"
+                  >
+                    <label>
+                       
+                      Popular Tables
+                       
+                    </label>
+                    <InfoButton
+                      infoText="These are some of the most commonly accessed tables within your organization."
+                      placement="right"
+                      size=""
+                      title=""
+                    />
+                  </div>,
+                  <SearchList
+                    params={
+                      Object {
+                        "paginationStartIndex": 0,
+                        "source": "popular_tables",
+                      }
+                    }
+                    results={
+                      Array [
+                        Object {
+                          "database": "test_db",
+                          "description": "This is the description.",
+                          "key": "test_key",
+                          "last_updated": 1527283287,
+                          "name": "test_table",
+                          "schema_name": "test_schema",
+                        },
+                        Object {
+                          "database": "test_db2",
+                          "description": "This is the description.",
+                          "key": "test_key2",
+                          "last_updated": 1527283287,
+                          "name": "test_table2",
+                          "schema_name": "test_schema2",
+                        },
+                      ]
+                    }
+                  />,
+                ],
+                "className": "search-list-container",
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": Array [
+                      <label>
+                         
+                        Popular Tables
+                         
+                      </label>,
+                      <InfoButton
+                        infoText="These are some of the most commonly accessed tables within your organization."
+                        placement="right"
+                        size=""
+                        title=""
+                      />,
+                    ],
+                    "className": "search-list-header",
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": Array [
+                          " ",
+                          "Popular Tables",
+                          " ",
+                        ],
+                      },
+                      "ref": null,
+                      "rendered": Array [
+                        " ",
+                        "Popular Tables",
+                        " ",
+                      ],
+                      "type": "label",
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "function",
+                      "props": Object {
+                        "infoText": "These are some of the most commonly accessed tables within your organization.",
+                        "placement": "right",
+                        "size": "",
+                        "title": "",
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": [Function],
+                    },
+                  ],
+                  "type": "div",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {
+                    "params": Object {
+                      "paginationStartIndex": 0,
+                      "source": "popular_tables",
+                    },
+                    "results": Array [
+                      Object {
+                        "database": "test_db",
+                        "description": "This is the description.",
+                        "key": "test_key",
+                        "last_updated": 1527283287,
+                        "name": "test_table",
+                        "schema_name": "test_schema",
+                      },
+                      Object {
+                        "database": "test_db2",
+                        "description": "This is the description.",
+                        "key": "test_key2",
+                        "last_updated": 1527283287,
+                        "name": "test_table2",
+                        "schema_name": "test_schema2",
+                      },
+                    ],
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+              ],
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": false,
+                "className": "search-pagination-component",
+              },
+              "ref": null,
+              "rendered": false,
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": <div
+          className="row"
+        >
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm=""
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                   
+                  Popular Tables
+                   
+                </label>
+                <InfoButton
+                  infoText="These are some of the most commonly accessed tables within your organization."
+                  placement="right"
+                  size=""
+                  title=""
+                />
+              </div>
+              <SearchList
+                params={
+                  Object {
+                    "paginationStartIndex": 0,
+                    "source": "popular_tables",
+                  }
+                }
+                results={
+                  Array [
+                    Object {
+                      "database": "test_db",
+                      "description": "This is the description.",
+                      "key": "test_key",
+                      "last_updated": 1527283287,
+                      "name": "test_table",
+                      "schema_name": "test_schema",
+                    },
+                    Object {
+                      "database": "test_db2",
+                      "description": "This is the description.",
+                      "key": "test_key2",
+                      "last_updated": 1527283287,
+                      "name": "test_table2",
+                      "schema_name": "test_schema2",
+                    },
+                  ]
+                }
+              />
+            </div>
+            <div
+              className="search-pagination-component"
+            />
+          </div>
+        </div>,
+        "className": "container search-page",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm=""
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />,
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                     
+                    Popular Tables
+                     
+                  </label>
+                  <InfoButton
+                    infoText="These are some of the most commonly accessed tables within your organization."
+                    placement="right"
+                    size=""
+                    title=""
+                  />
+                </div>
+                <SearchList
+                  params={
+                    Object {
+                      "paginationStartIndex": 0,
+                      "source": "popular_tables",
+                    }
+                  }
+                  results={
+                    Array [
+                      Object {
+                        "database": "test_db",
+                        "description": "This is the description.",
+                        "key": "test_key",
+                        "last_updated": 1527283287,
+                        "name": "test_table",
+                        "schema_name": "test_schema",
+                      },
+                      Object {
+                        "database": "test_db2",
+                        "description": "This is the description.",
+                        "key": "test_key2",
+                        "last_updated": 1527283287,
+                        "name": "test_table2",
+                        "schema_name": "test_schema2",
+                      },
+                    ]
+                  }
+                />
+              </div>
+              <div
+                className="search-pagination-component"
+              />
+            </div>,
+          ],
+          "className": "row",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "handleValueSubmit": [Function],
+              "placeholder": "Search for data resources...",
+              "searchTerm": "",
+              "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <div
+                  className="search-list-container"
+                >
+                  <div
+                    className="search-list-header"
+                  >
+                    <label>
+                       
+                      Popular Tables
+                       
+                    </label>
+                    <InfoButton
+                      infoText="These are some of the most commonly accessed tables within your organization."
+                      placement="right"
+                      size=""
+                      title=""
+                    />
+                  </div>
+                  <SearchList
+                    params={
+                      Object {
+                        "paginationStartIndex": 0,
+                        "source": "popular_tables",
+                      }
+                    }
+                    results={
+                      Array [
+                        Object {
+                          "database": "test_db",
+                          "description": "This is the description.",
+                          "key": "test_key",
+                          "last_updated": 1527283287,
+                          "name": "test_table",
+                          "schema_name": "test_schema",
+                        },
+                        Object {
+                          "database": "test_db2",
+                          "description": "This is the description.",
+                          "key": "test_key2",
+                          "last_updated": 1527283287,
+                          "name": "test_table2",
+                          "schema_name": "test_schema2",
+                        },
+                      ]
+                    }
+                  />
+                </div>,
+                <div
+                  className="search-pagination-component"
+                />,
+              ],
+              "className": "col-xs-12",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <div
+                      className="search-list-header"
+                    >
+                      <label>
+                         
+                        Popular Tables
+                         
+                      </label>
+                      <InfoButton
+                        infoText="These are some of the most commonly accessed tables within your organization."
+                        placement="right"
+                        size=""
+                        title=""
+                      />
+                    </div>,
+                    <SearchList
+                      params={
+                        Object {
+                          "paginationStartIndex": 0,
+                          "source": "popular_tables",
+                        }
+                      }
+                      results={
+                        Array [
+                          Object {
+                            "database": "test_db",
+                            "description": "This is the description.",
+                            "key": "test_key",
+                            "last_updated": 1527283287,
+                            "name": "test_table",
+                            "schema_name": "test_schema",
+                          },
+                          Object {
+                            "database": "test_db2",
+                            "description": "This is the description.",
+                            "key": "test_key2",
+                            "last_updated": 1527283287,
+                            "name": "test_table2",
+                            "schema_name": "test_schema2",
+                          },
+                        ]
+                      }
+                    />,
+                  ],
+                  "className": "search-list-container",
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": Array [
+                        <label>
+                           
+                          Popular Tables
+                           
+                        </label>,
+                        <InfoButton
+                          infoText="These are some of the most commonly accessed tables within your organization."
+                          placement="right"
+                          size=""
+                          title=""
+                        />,
+                      ],
+                      "className": "search-list-header",
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": Array [
+                            " ",
+                            "Popular Tables",
+                            " ",
+                          ],
+                        },
+                        "ref": null,
+                        "rendered": Array [
+                          " ",
+                          "Popular Tables",
+                          " ",
+                        ],
+                        "type": "label",
+                      },
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "function",
+                        "props": Object {
+                          "infoText": "These are some of the most commonly accessed tables within your organization.",
+                          "placement": "right",
+                          "size": "",
+                          "title": "",
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": [Function],
+                      },
+                    ],
+                    "type": "div",
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "function",
+                    "props": Object {
+                      "params": Object {
+                        "paginationStartIndex": 0,
+                        "source": "popular_tables",
+                      },
+                      "results": Array [
+                        Object {
+                          "database": "test_db",
+                          "description": "This is the description.",
+                          "key": "test_key",
+                          "last_updated": 1527283287,
+                          "name": "test_table",
+                          "schema_name": "test_schema",
+                        },
+                        Object {
+                          "database": "test_db2",
+                          "description": "This is the description.",
+                          "key": "test_key2",
+                          "last_updated": 1527283287,
+                          "name": "test_table2",
+                          "schema_name": "test_schema2",
+                        },
+                      ],
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                ],
+                "type": "div",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": false,
+                  "className": "search-pagination-component",
+                },
+                "ref": null,
+                "rendered": false,
+                "type": "div",
+              },
+            ],
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SearchPage renders search results correctly 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <SearchPage
+    executeSearch={[MockFunction]}
+    getPopularTables={
+      [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    pageIndex={0}
+    popularTables={Array []}
+    searchResults={
+      Array [
+        Object {
+          "database": "test_db",
+          "description": "This is the description.",
+          "key": "test_key",
+          "last_updated": 1527283287,
+          "name": "test_table",
+          "schema_name": "test_schema",
+        },
+        Object {
+          "database": "test_db2",
+          "description": "This is the description.",
+          "key": "test_key2",
+          "last_updated": 1527283287,
+          "name": "test_table2",
+          "schema_name": "test_schema2",
+        },
+      ]
+    }
+    searchTerm="test"
+    totalResults={2}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": <div
+        className="container search-page"
+      >
+        <div
+          className="row"
+        >
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm="test"
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                   
+                  1-2 of 2 results
+                   
+                </label>
+                <InfoButton
+                  infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                  placement="right"
+                  size=""
+                  title=""
+                />
+              </div>
+              <SearchList
+                params={
+                  Object {
+                    "paginationStartIndex": 0,
+                    "source": "search_results",
+                  }
+                }
+                results={
+                  Array [
+                    Object {
+                      "database": "test_db",
+                      "description": "This is the description.",
+                      "key": "test_key",
+                      "last_updated": 1527283287,
+                      "name": "test_table",
+                      "schema_name": "test_schema",
+                    },
+                    Object {
+                      "database": "test_db2",
+                      "description": "This is the description.",
+                      "key": "test_key2",
+                      "last_updated": 1527283287,
+                      "name": "test_table2",
+                      "schema_name": "test_schema2",
+                    },
+                  ]
+                }
+              />
+            </div>
+            <div
+              className="search-pagination-component"
+            />
+          </div>
+        </div>
+      </div>,
+      "title": "test - Amundsen Search",
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": <div
+          className="row"
+        >
+          <SearchBar
+            handleValueSubmit={[Function]}
+            placeholder="Search for data resources..."
+            searchTerm="test"
+            subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+          />
+          <div
+            className="col-xs-12"
+          >
+            <div
+              className="search-list-container"
+            >
+              <div
+                className="search-list-header"
+              >
+                <label>
+                   
+                  1-2 of 2 results
+                   
+                </label>
+                <InfoButton
+                  infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                  placement="right"
+                  size=""
+                  title=""
+                />
+              </div>
+              <SearchList
+                params={
+                  Object {
+                    "paginationStartIndex": 0,
+                    "source": "search_results",
+                  }
+                }
+                results={
+                  Array [
+                    Object {
+                      "database": "test_db",
+                      "description": "This is the description.",
+                      "key": "test_key",
+                      "last_updated": 1527283287,
+                      "name": "test_table",
+                      "schema_name": "test_schema",
+                    },
+                    Object {
+                      "database": "test_db2",
+                      "description": "This is the description.",
+                      "key": "test_key2",
+                      "last_updated": 1527283287,
+                      "name": "test_table2",
+                      "schema_name": "test_schema2",
+                    },
+                  ]
+                }
+              />
+            </div>
+            <div
+              className="search-pagination-component"
+            />
+          </div>
+        </div>,
+        "className": "container search-page",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm="test"
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />,
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                     
+                    1-2 of 2 results
+                     
+                  </label>
+                  <InfoButton
+                    infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                    placement="right"
+                    size=""
+                    title=""
+                  />
+                </div>
+                <SearchList
+                  params={
+                    Object {
+                      "paginationStartIndex": 0,
+                      "source": "search_results",
+                    }
+                  }
+                  results={
+                    Array [
+                      Object {
+                        "database": "test_db",
+                        "description": "This is the description.",
+                        "key": "test_key",
+                        "last_updated": 1527283287,
+                        "name": "test_table",
+                        "schema_name": "test_schema",
+                      },
+                      Object {
+                        "database": "test_db2",
+                        "description": "This is the description.",
+                        "key": "test_key2",
+                        "last_updated": 1527283287,
+                        "name": "test_table2",
+                        "schema_name": "test_schema2",
+                      },
+                    ]
+                  }
+                />
+              </div>
+              <div
+                className="search-pagination-component"
+              />
+            </div>,
+          ],
+          "className": "row",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "handleValueSubmit": [Function],
+              "placeholder": "Search for data resources...",
+              "searchTerm": "test",
+              "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <div
+                  className="search-list-container"
+                >
+                  <div
+                    className="search-list-header"
+                  >
+                    <label>
+                       
+                      1-2 of 2 results
+                       
+                    </label>
+                    <InfoButton
+                      infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                      placement="right"
+                      size=""
+                      title=""
+                    />
+                  </div>
+                  <SearchList
+                    params={
+                      Object {
+                        "paginationStartIndex": 0,
+                        "source": "search_results",
+                      }
+                    }
+                    results={
+                      Array [
+                        Object {
+                          "database": "test_db",
+                          "description": "This is the description.",
+                          "key": "test_key",
+                          "last_updated": 1527283287,
+                          "name": "test_table",
+                          "schema_name": "test_schema",
+                        },
+                        Object {
+                          "database": "test_db2",
+                          "description": "This is the description.",
+                          "key": "test_key2",
+                          "last_updated": 1527283287,
+                          "name": "test_table2",
+                          "schema_name": "test_schema2",
+                        },
+                      ]
+                    }
+                  />
+                </div>,
+                <div
+                  className="search-pagination-component"
+                />,
+              ],
+              "className": "col-xs-12",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <div
+                      className="search-list-header"
+                    >
+                      <label>
+                         
+                        1-2 of 2 results
+                         
+                      </label>
+                      <InfoButton
+                        infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                        placement="right"
+                        size=""
+                        title=""
+                      />
+                    </div>,
+                    <SearchList
+                      params={
+                        Object {
+                          "paginationStartIndex": 0,
+                          "source": "search_results",
+                        }
+                      }
+                      results={
+                        Array [
+                          Object {
+                            "database": "test_db",
+                            "description": "This is the description.",
+                            "key": "test_key",
+                            "last_updated": 1527283287,
+                            "name": "test_table",
+                            "schema_name": "test_schema",
+                          },
+                          Object {
+                            "database": "test_db2",
+                            "description": "This is the description.",
+                            "key": "test_key2",
+                            "last_updated": 1527283287,
+                            "name": "test_table2",
+                            "schema_name": "test_schema2",
+                          },
+                        ]
+                      }
+                    />,
+                  ],
+                  "className": "search-list-container",
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": Array [
+                        <label>
+                           
+                          1-2 of 2 results
+                           
+                        </label>,
+                        <InfoButton
+                          infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                          placement="right"
+                          size=""
+                          title=""
+                        />,
+                      ],
+                      "className": "search-list-header",
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": Array [
+                            " ",
+                            "1-2 of 2 results",
+                            " ",
+                          ],
+                        },
+                        "ref": null,
+                        "rendered": Array [
+                          " ",
+                          "1-2 of 2 results",
+                          " ",
+                        ],
+                        "type": "label",
+                      },
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "function",
+                        "props": Object {
+                          "infoText": "Ordered by the relevance of matches within a resource's metadata, as well as overall usage.",
+                          "placement": "right",
+                          "size": "",
+                          "title": "",
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": [Function],
+                      },
+                    ],
+                    "type": "div",
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "function",
+                    "props": Object {
+                      "params": Object {
+                        "paginationStartIndex": 0,
+                        "source": "search_results",
+                      },
+                      "results": Array [
+                        Object {
+                          "database": "test_db",
+                          "description": "This is the description.",
+                          "key": "test_key",
+                          "last_updated": 1527283287,
+                          "name": "test_table",
+                          "schema_name": "test_schema",
+                        },
+                        Object {
+                          "database": "test_db2",
+                          "description": "This is the description.",
+                          "key": "test_key2",
+                          "last_updated": 1527283287,
+                          "name": "test_table2",
+                          "schema_name": "test_schema2",
+                        },
+                      ],
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                ],
+                "type": "div",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": false,
+                  "className": "search-pagination-component",
+                },
+                "ref": null,
+                "rendered": false,
+                "type": "div",
+              },
+            ],
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      "type": "div",
+    },
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": <div
+          className="container search-page"
+        >
+          <div
+            className="row"
+          >
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm="test"
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                     
+                    1-2 of 2 results
+                     
+                  </label>
+                  <InfoButton
+                    infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                    placement="right"
+                    size=""
+                    title=""
+                  />
+                </div>
+                <SearchList
+                  params={
+                    Object {
+                      "paginationStartIndex": 0,
+                      "source": "search_results",
+                    }
+                  }
+                  results={
+                    Array [
+                      Object {
+                        "database": "test_db",
+                        "description": "This is the description.",
+                        "key": "test_key",
+                        "last_updated": 1527283287,
+                        "name": "test_table",
+                        "schema_name": "test_schema",
+                      },
+                      Object {
+                        "database": "test_db2",
+                        "description": "This is the description.",
+                        "key": "test_key2",
+                        "last_updated": 1527283287,
+                        "name": "test_table2",
+                        "schema_name": "test_schema2",
+                      },
+                    ]
+                  }
+                />
+              </div>
+              <div
+                className="search-pagination-component"
+              />
+            </div>
+          </div>
+        </div>,
+        "title": "test - Amundsen Search",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": <div
+            className="row"
+          >
+            <SearchBar
+              handleValueSubmit={[Function]}
+              placeholder="Search for data resources..."
+              searchTerm="test"
+              subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+            />
+            <div
+              className="col-xs-12"
+            >
+              <div
+                className="search-list-container"
+              >
+                <div
+                  className="search-list-header"
+                >
+                  <label>
+                     
+                    1-2 of 2 results
+                     
+                  </label>
+                  <InfoButton
+                    infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                    placement="right"
+                    size=""
+                    title=""
+                  />
+                </div>
+                <SearchList
+                  params={
+                    Object {
+                      "paginationStartIndex": 0,
+                      "source": "search_results",
+                    }
+                  }
+                  results={
+                    Array [
+                      Object {
+                        "database": "test_db",
+                        "description": "This is the description.",
+                        "key": "test_key",
+                        "last_updated": 1527283287,
+                        "name": "test_table",
+                        "schema_name": "test_schema",
+                      },
+                      Object {
+                        "database": "test_db2",
+                        "description": "This is the description.",
+                        "key": "test_key2",
+                        "last_updated": 1527283287,
+                        "name": "test_table2",
+                        "schema_name": "test_schema2",
+                      },
+                    ]
+                  }
+                />
+              </div>
+              <div
+                className="search-pagination-component"
+              />
+            </div>
+          </div>,
+          "className": "container search-page",
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <SearchBar
+                handleValueSubmit={[Function]}
+                placeholder="Search for data resources..."
+                searchTerm="test"
+                subText="Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'."
+              />,
+              <div
+                className="col-xs-12"
+              >
+                <div
+                  className="search-list-container"
+                >
+                  <div
+                    className="search-list-header"
+                  >
+                    <label>
+                       
+                      1-2 of 2 results
+                       
+                    </label>
+                    <InfoButton
+                      infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                      placement="right"
+                      size=""
+                      title=""
+                    />
+                  </div>
+                  <SearchList
+                    params={
+                      Object {
+                        "paginationStartIndex": 0,
+                        "source": "search_results",
+                      }
+                    }
+                    results={
+                      Array [
+                        Object {
+                          "database": "test_db",
+                          "description": "This is the description.",
+                          "key": "test_key",
+                          "last_updated": 1527283287,
+                          "name": "test_table",
+                          "schema_name": "test_schema",
+                        },
+                        Object {
+                          "database": "test_db2",
+                          "description": "This is the description.",
+                          "key": "test_key2",
+                          "last_updated": 1527283287,
+                          "name": "test_table2",
+                          "schema_name": "test_schema2",
+                        },
+                      ]
+                    }
+                  />
+                </div>
+                <div
+                  className="search-pagination-component"
+                />
+              </div>,
+            ],
+            "className": "row",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "handleValueSubmit": [Function],
+                "placeholder": "Search for data resources...",
+                "searchTerm": "test",
+                "subText": "Search within a category using the pattern 'category:searchTerm', e.g. 'schema:core'.
+  Current categories are 'column', 'schema', 'table', and 'tag'.",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <div
+                    className="search-list-container"
+                  >
+                    <div
+                      className="search-list-header"
+                    >
+                      <label>
+                         
+                        1-2 of 2 results
+                         
+                      </label>
+                      <InfoButton
+                        infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                        placement="right"
+                        size=""
+                        title=""
+                      />
+                    </div>
+                    <SearchList
+                      params={
+                        Object {
+                          "paginationStartIndex": 0,
+                          "source": "search_results",
+                        }
+                      }
+                      results={
+                        Array [
+                          Object {
+                            "database": "test_db",
+                            "description": "This is the description.",
+                            "key": "test_key",
+                            "last_updated": 1527283287,
+                            "name": "test_table",
+                            "schema_name": "test_schema",
+                          },
+                          Object {
+                            "database": "test_db2",
+                            "description": "This is the description.",
+                            "key": "test_key2",
+                            "last_updated": 1527283287,
+                            "name": "test_table2",
+                            "schema_name": "test_schema2",
+                          },
+                        ]
+                      }
+                    />
+                  </div>,
+                  <div
+                    className="search-pagination-component"
+                  />,
+                ],
+                "className": "col-xs-12",
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": Array [
+                      <div
+                        className="search-list-header"
+                      >
+                        <label>
+                           
+                          1-2 of 2 results
+                           
+                        </label>
+                        <InfoButton
+                          infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                          placement="right"
+                          size=""
+                          title=""
+                        />
+                      </div>,
+                      <SearchList
+                        params={
+                          Object {
+                            "paginationStartIndex": 0,
+                            "source": "search_results",
+                          }
+                        }
+                        results={
+                          Array [
+                            Object {
+                              "database": "test_db",
+                              "description": "This is the description.",
+                              "key": "test_key",
+                              "last_updated": 1527283287,
+                              "name": "test_table",
+                              "schema_name": "test_schema",
+                            },
+                            Object {
+                              "database": "test_db2",
+                              "description": "This is the description.",
+                              "key": "test_key2",
+                              "last_updated": 1527283287,
+                              "name": "test_table2",
+                              "schema_name": "test_schema2",
+                            },
+                          ]
+                        }
+                      />,
+                    ],
+                    "className": "search-list-container",
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": Array [
+                          <label>
+                             
+                            1-2 of 2 results
+                             
+                          </label>,
+                          <InfoButton
+                            infoText="Ordered by the relevance of matches within a resource's metadata, as well as overall usage."
+                            placement="right"
+                            size=""
+                            title=""
+                          />,
+                        ],
+                        "className": "search-list-header",
+                      },
+                      "ref": null,
+                      "rendered": Array [
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": Array [
+                              " ",
+                              "1-2 of 2 results",
+                              " ",
+                            ],
+                          },
+                          "ref": null,
+                          "rendered": Array [
+                            " ",
+                            "1-2 of 2 results",
+                            " ",
+                          ],
+                          "type": "label",
+                        },
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "function",
+                          "props": Object {
+                            "infoText": "Ordered by the relevance of matches within a resource's metadata, as well as overall usage.",
+                            "placement": "right",
+                            "size": "",
+                            "title": "",
+                          },
+                          "ref": null,
+                          "rendered": null,
+                          "type": [Function],
+                        },
+                      ],
+                      "type": "div",
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "function",
+                      "props": Object {
+                        "params": Object {
+                          "paginationStartIndex": 0,
+                          "source": "search_results",
+                        },
+                        "results": Array [
+                          Object {
+                            "database": "test_db",
+                            "description": "This is the description.",
+                            "key": "test_key",
+                            "last_updated": 1527283287,
+                            "name": "test_table",
+                            "schema_name": "test_schema",
+                          },
+                          Object {
+                            "database": "test_db2",
+                            "description": "This is the description.",
+                            "key": "test_key2",
+                            "last_updated": 1527283287,
+                            "name": "test_table2",
+                            "schema_name": "test_schema2",
+                          },
+                        ],
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": [Function],
+                    },
+                  ],
+                  "type": "div",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": false,
+                    "className": "search-pagination-component",
+                  },
+                  "ref": null,
+                  "rendered": false,
+                  "type": "div",
+                },
+              ],
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        "type": "div",
+      },
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;

@@ -1,0 +1,39 @@
+@import 'variables';
+
+.announcement-container {
+  margin: 64px auto 48px;
+}
+.announcement-container hr {
+  border: 2px solid $gradient-4;
+}
+.announcement-header {
+  font-size: 20px;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+}
+
+.post-container {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 32px;
+}
+.post-header {
+  padding-right: 16px;
+  border-right: 1px solid $gray-lighter
+}
+.post-title {
+  font-size: 16px;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  width: 150px;
+}
+.post-date {
+  font-size: 14px;
+  color: $gray-light;
+}
+.post-content {
+  padding-left: 16px;
+}
+.post-content > p:not(:last-child) {
+  margin: 0 0 20px;
+}

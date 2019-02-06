@@ -1,0 +1,32 @@
+// TODO - Override Bootstrap variables and delete this.
+@import 'variables';
+
+.popover {
+  background-color: $gray-darker;
+  border: 1px solid $gray-darker;
+  color: $gray-lighter;
+  font-size: 12px;
+  padding: 5px;
+}
+.popover-title {
+  background-color: $gray-darker;
+  border-bottom: 1px solid $gray-light;
+  color: $gray-lighter;
+  font-size: 14px;
+  padding: 5px;
+}
+.popover-content {
+  padding: 2px 5px;
+}
+.popover.right .arrow:after {
+  border-right-color: $gray-darker;
+}
+.popover.bottom .arrow:after {
+  border-bottom-color: $gray-darker;
+}
+.popover.top .arrow:after {
+  border-top-color: $gray-darker;
+}
+.popover.left .arrow:after {
+  border-left-color: $gray-darker;
+}

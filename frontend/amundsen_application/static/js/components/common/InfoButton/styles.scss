@@ -1,0 +1,29 @@
+@import 'variables';
+
+button.info-button {
+  height: 24px;
+  width: 24px;
+  margin: 0 0 0 8px;
+  padding: 0;
+
+  background-color: $gray-light;
+  border: none;
+  mask-image: url('/static/images/icons/Info.svg');
+  -webkit-mask-image: url('/static/images/icons/Info.svg');
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-position: center;
+  -webkit-mask-position: center;
+  mask-size: 110%;
+  -webkit-mask-size: 110%;
+}
+
+button.info-button.small {
+  height: 18px;
+  width: 18px;
+  margin: -4px 0 0 4px;
+}
+
+button.info-button:hover {
+    background-color: $gradient-4;
+}

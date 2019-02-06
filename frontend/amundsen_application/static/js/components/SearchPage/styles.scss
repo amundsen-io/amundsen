@@ -1,0 +1,52 @@
+@import 'variables';
+
+.search-page {
+  margin: 64px auto 48px;
+}
+.search-list-container {
+  margin: 32px 0px 0px 0px;
+}
+.search-list-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 32px;
+}
+.search-list-header label {
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  font-size: 20px;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: fit-content;
+  line-height: 24px;
+}
+.search-pagination-component {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+ }
+.pagination>li>a,
+.pagination>li>span {
+  color: $gradient-4;
+  border: 1px solid $gray-lighter;
+}
+.pagination>.active>a,
+.pagination>.active>a:hover,
+.pagination>.active>a:focus,
+.pagination>.active>span,
+.pagination>.active>span:hover,
+.pagination>.active>span:focus {
+  z-index: 0;
+  background-color: $gradient-4;
+  border-color: $gradient-4
+}
+.pagination>li>a:focus,
+.pagination>li>a:hover,
+.pagination>li>span:focus,
+.pagination>li>span:hover {
+  z-index: 0;
+  color: $link-hover-color;
+  background-color: $gray-lighter;
+}

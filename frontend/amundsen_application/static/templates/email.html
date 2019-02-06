@@ -1,0 +1,10 @@
+<!doctype html>
+
+{% for key, value in form_data.items() %}
+    <div>
+        <strong>{{ key }}:</strong>
+        <br/>
+        {{ value }}
+    </div>
+    <br/>
+{% endfor %}

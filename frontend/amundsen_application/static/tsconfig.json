@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "lib": ["es5", "es2015", "dom", "scripthost"],
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react",
+    "typeRoots": [
+     "node_modules/@types"
+    ],
+    "allowJs": true,
+    "moduleResolution": "node",
+    "noResolve": false,
+    "removeComments": true,
+    "types": [],
+  },
+  "exclude": [
+    "node_modules",
+    "**/__tests__",
+  ]
+}

@@ -1,0 +1,64 @@
+@import 'variables';
+
+.submit {
+  float: right;
+  margin-top: 16px;
+}
+
+.submit:hover {
+  background-color: $gray-lighter;
+}
+
+.btn-light {
+  border-color: $gray-lighter;
+}
+
+.radio-set {
+  display: flex;
+  margin-top: 8px;
+}
+
+.radio-set-item {
+  cursor: pointer;
+}
+
+.radio-set .radio-set-item:not(:first-child) {
+  margin: 0px 0px 0px 14px;
+}
+
+.radio-set-item label {
+  width: 100%;
+  text-align: center;
+}
+
+.nps-label {
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  margin-bottom: 10px;
+  width: 60px;
+}
+
+.success-message {
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  text-align: center;
+  position: absolute;
+  font-size: 20px;
+  color: $gray-light;
+  /* for centering when parent has automatic height */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+input[type="radio"] {
+  margin: 5px;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid $gray-lighter;
+  border-radius: 5px;
+  padding: 10px;
+}

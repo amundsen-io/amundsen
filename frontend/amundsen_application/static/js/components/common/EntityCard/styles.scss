@@ -1,0 +1,26 @@
+@import 'variables';
+
+
+.entity-card {
+  -webkit-box-shadow: 8px 9px 20px -15px rgba(0,0,0,0.46);
+  -moz-box-shadow: 8px 9px 20px -15px rgba(0,0,0,0.46);
+  box-shadow: 8px 9px 20px -15px rgba(0,0,0,0.46);
+  border: 1px solid $gray-lighter;
+  border-top: 4px solid $gradient-4;
+  border-radius: 5px;
+  padding: 24px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+
+@media (max-width: $screen-sm-max) {
+  .entity-card {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: 0;
+    padding: 0;
+    margin-bottom: 32px;
+  }
+}

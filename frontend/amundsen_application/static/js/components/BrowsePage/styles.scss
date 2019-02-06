@@ -1,0 +1,19 @@
+@import 'variables';
+
+.container {
+  margin-top: 64px;
+}
+
+h3.header {
+  font-size: 20px;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+}
+
+hr.header-hr {
+  border: 2px solid $gradient-4;
+}
+
+.browse-body {
+  margin: 0 -4px;
+}

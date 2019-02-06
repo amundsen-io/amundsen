@@ -1,0 +1,30 @@
+import * as React from 'react';
+import EntityCardSection, { EntityCardSectionProps } from './EntityCardSection';
+
+// TODO: Use css-modules instead of 'import'
+import './styles.scss';
+
+interface EntityCardProps {
+  sections?: EntityCardSectionProps[];
+}
+
+const EntityCard: React.SFC<EntityCardProps> = ({ sections }) => {
+  const cardItems = sections.map((entry, index) => {
+    return (
+      <EntityCardSection key={`section:${index}`} title={ entry.title } infoText={ entry.infoText }
+        contentRenderer={ entry.contentRenderer } isEditable={ entry.isEditable }/>
+    );
+  });
+
+  return (
+    <div className="entity-card">
+      { cardItems }
+    </div>
+  );
+};
+
+EntityCard.defaultProps = {
+  sections: [],
+};
+
+export default EntityCard;

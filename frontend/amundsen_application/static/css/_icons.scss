@@ -1,0 +1,58 @@
+@import 'variables';
+
+img.icon {
+  background-color: $gray-lighter;
+  border: none;
+  height: 24px;
+  margin: -3px 4px -3px 0px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  min-width: 24px;
+  width: 24px;
+
+  &.icon-color {
+    background-color: $gradient-3;
+  }
+
+  // TODO - Add other icons here
+
+  &.icon-database {
+    -webkit-mask-image: url('/static/images/icons/Database.svg');
+    mask-image: url('/static/images/icons/Database.svg');
+  }
+
+  &.icon-loading {
+    -webkit-mask-image: url('/static/images/icons/Loader.svg');
+    mask-image: url('/static/images/icons/Loader.svg');
+  }
+
+  &.icon-preview {
+     -webkit-mask-image: url('/static/images/icons/Preview.svg');
+    mask-image: url('/static/images/icons/Preview.svg');
+  }
+
+  &.icon-right {
+     -webkit-mask-image: url('/static/images/icons/Right.svg');
+    mask-image: url('/static/images/icons/Right.svg');
+  }
+}
+
+.btn img.icon {
+
+  // Some icons need to be scaled down when inside buttons
+  &.icon-database {
+    -webkit-mask-position: 3px 3px;
+    mask-position: 3px 3px;
+
+    -webkit-mask-size: 18px 18px;
+    mask-size: 18px 18px;
+  }
+}
+
+.disabled,
+:disabled {
+  > img.icon,
+  > img.icon.icon-color {
+    background-color: $gray-light;
+  }
+}

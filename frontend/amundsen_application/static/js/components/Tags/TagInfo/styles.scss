@@ -1,0 +1,30 @@
+@import 'variables';
+
+.tag-button {
+  border-radius: 2px;
+  font-size: $font-size-large;
+  margin: 4px;
+  overflow: hidden;
+  padding: 4px 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-button.compact {
+  // Color to match up with the multi select tag library
+  background-color: rgb(230, 230, 230);
+
+  border: 0;
+  font-size: $font-size-small;
+  line-height: 16px;
+  margin: 2px;
+  padding: 3px 6px;
+}
+
+.tag-name {
+  margin-right: 8px;
+}
+
+.tag-count {
+  color: $gray-light;
+}

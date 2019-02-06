@@ -1,0 +1,67 @@
+@import 'variables';
+
+.editable-container {
+  display: flex;
+  font-size: 16px;
+  color: $gray-light;
+}
+
+.editable-text {
+  flex-grow: 0.1;
+  word-break: break-word;
+}
+
+.editable-textarea {
+  padding: 2px 5px;
+  outline: none;
+}
+
+.editable-textarea:focus-within {
+  border: 2px solid $gradient-2;
+  outline: none;
+}
+
+.tooltip-inner {
+  padding: 0px;
+  border-radius: 3px;
+  background-color: $gray-darker;
+}
+
+.tooltip-inner button {
+  height: 36px;
+  width: 96px;
+  font-size:14px;
+  border-radius: 3px;
+  border: none;
+  background-color: $gray-darker;
+  color: $body-bg;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  outline: none;
+}
+.tooltip-inner button:hover {
+  color: $gray-light;
+}
+
+.edit-button {
+  height: 24px;
+  width: 24px;
+  border: none;
+  border-radius: 1px;
+  margin-right: 4px;
+  background-color: $gray-light;
+  -webkit-mask-image: url('/static/images/icons/Edit.svg');
+  mask-image: url('/static/images/icons/Edit.svg');
+}
+
+.error-tooltip {
+  display: flex;
+  padding: 5px;
+}
+.error-tooltip button {
+  height: 24px;
+  width: 24px;
+  font-size: 16px;
+  margin: auto;
+  font-family: 'Glyphicons Halflings';
+}

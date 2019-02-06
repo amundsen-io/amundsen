@@ -1,0 +1,27 @@
+@import 'variables';
+
+.avatar-label-component {
+  display: flex;
+  font-size: 12px;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  width: 80%;
+  word-wrap: break-word;
+}
+
+.component-avatar {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 5px;
+}
+
+.component-label {
+  margin-top: auto;
+  margin-bottom: auto;
+  cursor: inherit;
+  font-weight: normal;
+}
+
+.sb-avatar > img {
+  margin: 0px;
+}
