@@ -1,17 +1,15 @@
 language: python
 python:
-  - "3.6"
-# command to install dependencies
+- '3.6'
 install:
-  - pip install -r requirements.txt
-# command to run tests
+- pip install -r requirements.txt
 script:
-  - make test
+- make test
 deploy:
   provider: pypi
   user: amundsen-dev
   password:
-    secure: H84Mh6ptsSMygcAiL8VPGCKm/sXyNdLWr9o+2wXcrWzSKPdEKRlqCaowGiceqNshxM9kP/aIHLHA92r2q+d9dn8Z7m+ONz/jIOJxeBGKV6TQbCnRRQRpCK3gWkCKHgmydO1RZS9ZTEqXVjVkvKv/fY6PZatxH+YkeG6TlOsCcct5g2VufgXRLf8a2ypDDldw0HULc84XJ9vn27lg8l4gSmEdiU50qR0hANRSnUTj8D8GrCBIzT4tKZXjcnfuzWzPFwZIroS/fMHA3XFwPmCDpuBoIL5i1zY/13IRqR/xt0809W/oWRSb+JqyENdLlH62rsHy8R5W5ZudfnfPAvPdVugS03Gz48ZsOi5s3B5GaWFWf+i4yjkjcwJC5SJxWEqnDibzghLuIptR/qjxYbAerRPEkSmO3Sj/LrQDtWnAqdAnbwJ3S8OwmGGdyZhsXaWJSh6TB0MCGGjutlOiI6W6Ycd/jDTK0Gcfa14zAELyEx4h7ZMSnFMN7hS+FlXdf04sXjkiZZGegiuQnvlA79Dx6Ihtmqy6UyQ5c6Ou+RRJSsjCySRl/UE02k1tU7pX/0yj2Rdl4KN2Kl1YY4HfVmY1Atw65FNgdNsaMbnrcEuT53/5x5zS/6r9BSSPkLIVA5clgqAJq8d3J4OJiOH0B3kR5yljjPOeZC3l/3uHdoqWDK8=
+    secure: pe1IYeD3V+2LdqfRLPiVdm7XXJSLBBesMi0bsY1r0+qLdo9kJozt9RFV3XcExDidIkLElTWtFZOwQVbB97QF27EcnJ5WUlKziH8WjfD9Yp6wnVvuYBGoi2Hj0srioW+MZUDPHiYjqA0w+OSHgrmKVS684KQDNe3O2jsgLCCAb31at3aIUuFudRfyOjj3hnIJhFfMIoesgBkhejsJTOasF+ZEvD/DF7t5H4drsA0zBbcXcZBx2FcLlUC43G1UfP9DmjgIEUd19OQDRW3qw/KEG/acGc20Borsp2yoBLdluEsrZnhXMK0afD1HOO+S2YdbJSJdjXxm8axo1PZGeHfobXDumyWHYYDUjUSKe4TItT5crYC+gphrUma07LQxX4aNTl6jnM6DQbCpPjiU26/1SloEFnfWhE4IneT735ejnSwIibu03ePm+w3a5KH52A+glTGLOWW9p8yrOp1SL8SvzVz5982NIosDpMfA8boOhhjFZXmx+Jrwl57qeaNfPx+XoE627QSkSPE6wjBGexwkw5csIdUxoYB61UT7bfBCa6F3+g8dqKyWmx6Rw9vbAukFjgyNWmEYStFdXcbuaS8tkLdGzcoHI+IwF+vKCQdQZnDGKALgYD+d70bHnhDwlMTO7Yz7grhvu288d16anjHgD4TgfPSGLxXIjPlQm9sS1Cc=
   on:
     tags: true
     distributions: sdist bdist_wheel
