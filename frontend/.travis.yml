@@ -1,0 +1,24 @@
+matrix:
+  include:
+    - language: python
+      python:
+      - "3.6"
+      install:
+        - pip3 install -r requirements3.txt
+      script:
+        - make test
+
+    - language: node_js
+      node_js:
+        - "8"
+      before_install:
+        - cd amundsen_application/static
+      install:
+        - npm install
+      script:
+        - npm run build
+#        TODO - replace build with `tsc` and 'lint`
+#        - npm run tsc
+#        - npm run lint
+#        TODO - Fix and enable 'test'
+#        - npm run test
