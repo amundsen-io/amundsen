@@ -15,6 +15,13 @@ const configDefault: AppConfig = {
     key: 'default-key',
     sampleRate: 100,
   },
+  lineage: {
+    enabled: false,
+    generateUrl: (database: string, cluster: string, schema: string, table: string) => {
+      return `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`;
+    },
+    iconPath: 'PATH_TO_ICON'
+  },
   navLinks: [
     {
       label: "Announcements",

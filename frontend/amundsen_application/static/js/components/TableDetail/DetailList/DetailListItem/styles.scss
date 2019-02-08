@@ -1,24 +1,5 @@
 @import 'variables';
 
-/* Detail List Item */
-img {
-  height: 24px;
-  min-width: 24px;
-  border: none;
-  background-color: $gray-lighter;
-}
-img.icon-down {
-  -webkit-mask-image: url('/static/images/icons/Down.svg');
-  mask-image: url('/static/images/icons/Down.svg');
-}
-img.icon-up {
-  -webkit-mask-image: url('/static/images/icons/Up.svg');
-  mask-image: url('/static/images/icons/Up.svg');
-}
-.expand-icon {
-  width: 24px;
-  margin: 0 4px;
-}
 .detail-list-item {
   text-decoration: none;
   display: flex;
@@ -28,78 +9,103 @@ img.icon-up {
   border-top-color: $gray-lighter !important;
   border-bottom-color: $gray-lighter !important;
   background-color: transparent !important;
-}
-.detail-list-item .description {
-  color: $gray-light;
-  max-width: 100%;
-  font-size: 14px;
-  min-width: 0;
-  padding-right: 32px;
-}
 
-.truncated,
-.truncated .editable-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  img {
+    height: 24px;
+    min-width: 24px;
+    border: none;
+    background-color: $gray-lighter;
+  }
+  img.icon-down {
+    -webkit-mask-image: url('/static/images/icons/Down.svg');
+    mask-image: url('/static/images/icons/Down.svg');
+  }
+  img.icon-up {
+    -webkit-mask-image: url('/static/images/icons/Up.svg');
+    mask-image: url('/static/images/icons/Up.svg');
+  }
+  .expand-icon {
+    width: 24px;
+    margin: 0 4px;
+  }
 
-.detail-list-item .column-info {
-  display: flex;
-  flex-direction: row;
-  margin: -10px -4px 0;
-  padding: 10px 4px 0;
-}
-.detail-list-item .column-info.expandable {
-  cursor: pointer;
-}
-.column-info.expandable:hover {
-  background-image: linear-gradient($gradient-1, $gradient-1, white);
-}
-.detail-list-item .column-stats {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  width: 100%;
-}
-.detail-list-item .title {
-  display: flex;
-  flex-direction: row;
-}
-.detail-list-item .name {
-  font-size: 16px;
-  font-family: $font-family-sans-serif-bold;
-  font-weight: $font-weight-sans-serif-bold;
-  margin-right: 8px;
-}
-.detail-list-item .type {
-  color: $gradient-3;
-  font-size: 13px;
-  margin-top: 4px;
-  font-family: 'Menlo-Bold', Helvetica, Arial, sans-serif;
-}
+  .description {
+    color: $gray-light;
+    max-width: 100%;
+    font-size: 14px;
+    min-width: 0;
+    padding-right: 32px;
+  }
 
-.column-info.expandable:hover .type {
-  color: $gradient-4;
-}
-.column-info.expandable:hover .expand-icon {
-  background-color: $gradient-4;
-}
+  .truncated,
+  .truncated .editable-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.column-stat {
-  flex: 1;
-  min-width: 120px;
-  margin-top: 8px;
-  max-width: 20%;
-}
-.column-stat .title {
-  color: $gray-light;
-  font-size: 12px;
-  font-family: $font-family-sans-serif-bold;
-  font-weight: $font-weight-sans-serif-bold;
-}
-.column-stat .content {
-  color: $gradient-4;
-  font-size: 14px;
+  .column-info {
+    display: flex;
+    flex-direction: row;
+    margin: -10px -4px 0;
+    padding: 10px 4px 0;
+
+    &.expandable {
+      cursor: pointer;
+
+      &:hover {
+        background-image: linear-gradient($gradient-1, $gradient-1, white);
+
+        .type {
+          color: $gradient-4;
+        }
+
+        .expand-icon {
+          background-color: $gradient-4;
+        }
+      }
+    }
+  }
+
+  .column-stats {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    width: 100%;
+  }
+  .title {
+    display: flex;
+    flex-direction: row;
+  }
+  .name {
+    font-size: 16px;
+    font-family: $font-family-sans-serif-bold;
+    font-weight: $font-weight-sans-serif-bold;
+    margin-right: 8px;
+  }
+  .type {
+    color: $gradient-3;
+    font-size: 13px;
+    margin-top: 4px;
+    font-family: 'Menlo-Bold', Helvetica, Arial, sans-serif;
+  }
+
+  .column-stat {
+    flex: 1;
+    min-width: 120px;
+    margin-top: 8px;
+    max-width: 20%;
+
+    .title {
+      color: $gray-light;
+      font-size: 12px;
+      font-family: $font-family-sans-serif-bold;
+      font-weight: $font-weight-sans-serif-bold;
+    }
+    .content {
+      color: $gradient-4;
+      font-size: 14px;
+    }
+  }
 }

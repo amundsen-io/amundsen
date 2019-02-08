@@ -152,6 +152,16 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     }
   }
 
+  getAvatarForLineage = () => {
+    const href = AppConfig.lineage.generateUrl(this.database, this.cluster, this.schema, this.tableName);
+    const displayName = `${this.schema}.${this.tableName}`;
+    return (
+      <a href={ href } target='_blank'>
+        <AvatarLabel label={ displayName } src={ AppConfig.lineage.iconPath }/>
+      </a>
+    );
+  };
+
   getExploreSqlUrl = () => {
     const partition = this.state.tableData.partition;
     if (partition.is_partitioned) {
@@ -221,6 +231,11 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
       };
 
       entityCardSections.push({'title': 'Source Code', 'contentRenderer': sourceRenderer, 'isEditable': false});
+    }
+
+    // "Lineage" Section
+    if (AppConfig.lineage.enabled) {
+      entityCardSections.push({'title': 'Table Lineage', 'contentRenderer': this.getAvatarForLineage, 'isEditable': false});
     }
 
     // "Preview" Section
