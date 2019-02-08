@@ -12,5 +12,9 @@ test_unit:
 lint:
 	flake8 .
 
+.PHONY: mypy
+mypy:
+	mypy --ignore-missing-imports --follow-imports=skip --strict-optional --warn-no-return search_service
+
 .PHONY: test
-test: test_unit lint
+test: test_unit lint mypy
