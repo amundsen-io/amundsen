@@ -7,3 +7,12 @@ install:
 # command to run tests
 script:
   - make test
+deploy:
+  provider: pypi
+  user: amundsen-dev
+  password:
+    secure: H84Mh6ptsSMygcAiL8VPGCKm/sXyNdLWr9o+2wXcrWzSKPdEKRlqCaowGiceqNshxM9kP/aIHLHA92r2q+d9dn8Z7m+ONz/jIOJxeBGKV6TQbCnRRQRpCK3gWkCKHgmydO1RZS9ZTEqXVjVkvKv/fY6PZatxH+YkeG6TlOsCcct5g2VufgXRLf8a2ypDDldw0HULc84XJ9vn27lg8l4gSmEdiU50qR0hANRSnUTj8D8GrCBIzT4tKZXjcnfuzWzPFwZIroS/fMHA3XFwPmCDpuBoIL5i1zY/13IRqR/xt0809W/oWRSb+JqyENdLlH62rsHy8R5W5ZudfnfPAvPdVugS03Gz48ZsOi5s3B5GaWFWf+i4yjkjcwJC5SJxWEqnDibzghLuIptR/qjxYbAerRPEkSmO3Sj/LrQDtWnAqdAnbwJ3S8OwmGGdyZhsXaWJSh6TB0MCGGjutlOiI6W6Ycd/jDTK0Gcfa14zAELyEx4h7ZMSnFMN7hS+FlXdf04sXjkiZZGegiuQnvlA79Dx6Ihtmqy6UyQ5c6Ou+RRJSsjCySRl/UE02k1tU7pX/0yj2Rdl4KN2Kl1YY4HfVmY1Atw65FNgdNsaMbnrcEuT53/5x5zS/6r9BSSPkLIVA5clgqAJq8d3J4OJiOH0B3kR5yljjPOeZC3l/3uHdoqWDK8=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: lyft/amundsensearchlibrary
