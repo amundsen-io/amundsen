@@ -1,24 +1,25 @@
 matrix:
   include:
-    - language: python
-      python:
-      - "3.6"
-      install:
-        - pip3 install -r requirements3.txt
-      script:
-        - make test
-
-    - language: node_js
-      node_js:
-        - "8"
-      before_install:
-        - cd amundsen_application/static
-      install:
-        - npm install
-      script:
-        - npm run build
-#        TODO - replace build with `tsc` and 'lint`
-#        - npm run tsc
-#        - npm run lint
-#        TODO - Fix and enable 'test'
-#        - npm run test
+  - language: python
+    python:
+    - '3.6'
+    install:
+    - pip3 install -r requirements3.txt
+    script:
+    - make test
+  - language: node_js
+    node_js:
+    - '8'
+    before_install:
+    - cd amundsen_application/static
+    install:
+    - npm install
+    script:
+    - npm run build
+deploy:
+  password:
+    secure: QohFWueXLLye2i8KSNRJGqLU4rw8lZJqlByergtyxKpjTuxxMfgl0ejDlu0qZ6qlGiP3kAaS4zAjwDYCNelQmywYODC4UpjarvhfttkltgPH2YDSgFcMxJt5FRXU8Vxwh+AscNo1sZRzXfFPWMRN525mcxDu6CYFCBp2txFW2O9abNHFPU46Jze314tAgmdceHU/Hbs6WT/mBRQRELXoxbw2u2HBVMiHLKCwfio2857xshKGw5Rz1kvt/FVJ1PxwBP57I+6YUfPoy5rOUZWtSuCdBmNlVFk3v1rX/AIap8+PIMACGlUpKhJVRaAGTnSEVzv6bGD6SMOPZ/nVIYl3GssDhRB5uDP2ttilS+Kvbk9BQ/rbcidxxhIGQ8nDx/Auj6PK2e6Hp77N4k4yKxFjz/8cOQhHIKen9LFDXxGfbyoXV5Izf0aYKgvIJxlh3T8Mg42UbyfvztudyjHI1aG1VRF3Qq6Dt0y2yPJYefeAiLqQnCkrDEKTnr6Kxv5lLEi/XTj+tl/pk+OhuVWHyIBGiG+Nb4lZOuW7uo7xqANu6/Ei9plMK7X5ibpPzzRzAWLSpYHOC7dM457XEbgEcWgHzWMC2u1mHoFDlyKcOOqgkgcwmWJZZI4gVVob9uxukdoPN4IABkWhAXC5wQJ3C1eAddRcDAry0bZvFreupsrLIho=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: lyft/amundsenfrontendlibrary
