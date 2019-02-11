@@ -1,0 +1,9 @@
+name,description,col_type,sort_order,database,cluster,schema_name,table_name,table_desc
+col1,"col1","string",1,hive,gold,test_schema,test_table1,"1st test table"
+col2,"col2","string",2,hive,gold,test_schema,test_table1,"1st test table"
+col3,"col3","string",3,hive,gold,test_schema,test_table1,"1st test table"
+col4,"col4","string",4,hive,gold,test_schema,test_table1,"1st test table"
+col1,"col1","string",1,dynamo,gold,test_schema,test_table2,"2nd test table"
+col2,"col2","string",2,dynamo,gold,test_schema,test_table2,"2nd test table"
+col3,"col3","string",3,dynamo,gold,test_schema,test_table2,"2nd test table"
+col4,"col4","string",4,dynamo,gold,test_schema,test_table2,"2nd test table"
