@@ -3,6 +3,8 @@ matrix:
   - language: python
     python:
     - '3.6'
+    env:
+    - IS_DEPLOYABLE=true
     install:
     - pip3 install -r requirements3.txt
     script:
@@ -10,6 +12,8 @@ matrix:
   - language: node_js
     node_js:
     - '8'
+    env:
+    - IS_DEPLOYABLE=false
     before_install:
     - cd amundsen_application/static
     install:
@@ -25,4 +29,4 @@ deploy:
   on:
     tags: true
     repo: lyft/amundsenfrontendlibrary
-    language: python
+    condition: $IS_DEPLOYABLE = true
