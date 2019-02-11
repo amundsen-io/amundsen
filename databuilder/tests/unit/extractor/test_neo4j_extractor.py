@@ -1,0 +1,120 @@
+import unittest
+
+from mock import patch
+from pyhocon import ConfigFactory
+from typing import Any  # noqa: F401
+
+from databuilder import Scoped
+from databuilder.extractor.neo4j_extractor import Neo4jExtractor
+from databuilder.models.neo4j_data import Neo4jDataResult
+
+
+class TestNeo4jExtractor(unittest.TestCase):
+
+    def setUp(self):
+        # type: () -> None
+        config_dict = {
+            'extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): 'TEST_GRAPH_URL',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY): 'TEST_QUERY',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): 'TEST_USER',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): 'TEST_PW'
+        }
+
+        self.conf = ConfigFactory.from_dict(config_dict)
+
+    def text_extraction_with_empty_query_result(self):
+        # type: (Any) -> None
+        """
+        Test Extraction with empty results from query
+        """
+        with patch.object(Neo4jExtractor, '_get_driver'):
+            extractor = Neo4jExtractor()
+            extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                                  scope=extractor.get_scope()))
+
+            extractor.results = ['']
+            result = extractor.extract()
+            self.assertIsNone(result)
+
+    def test_extraction_with_single_query_result(self):
+        # type: (Any) -> None
+        """
+        Test Extraction with single result from query
+        """
+        with patch.object(Neo4jExtractor, '_get_driver'):
+            extractor = Neo4jExtractor()
+            extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                                  scope=extractor.get_scope()))
+
+            extractor.results = ['test_result']
+            result = extractor.extract()
+            self.assertEqual(result, 'test_result')
+
+            # Ensure second result is None
+            result = extractor.extract()
+            self.assertIsNone(result)
+
+    def test_extraction_with_multiple_query_result(self):
+        # type: (Any) -> None
+        """
+        Test Extraction with multiple result from query
+        """
+        with patch.object(Neo4jExtractor, '_get_driver'):
+            extractor = Neo4jExtractor()
+            extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                                  scope=extractor.get_scope()))
+
+            extractor.results = ['test_result1', 'test_result2', 'test_result3']
+
+            result = extractor.extract()
+            self.assertEqual(result, 'test_result1')
+
+            result = extractor.extract()
+            self.assertEqual(result, 'test_result2')
+
+            result = extractor.extract()
+            self.assertEqual(result, 'test_result3')
+
+            # Ensure next result is None
+            result = extractor.extract()
+            self.assertIsNone(result)
+
+    def test_extraction_with_model_class(self):
+        # type: (Any) -> None
+        """
+        Test Extraction using model class
+        """
+        config_dict = {
+            'extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): 'TEST_GRAPH_URL',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY): 'TEST_QUERY',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): 'TEST_USER',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): 'TEST_PW',
+            'extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY):
+                'databuilder.models.neo4j_data.Neo4jDataResult'
+        }
+
+        self.conf = ConfigFactory.from_dict(config_dict)
+
+        with patch.object(Neo4jExtractor, '_get_driver'):
+            extractor = Neo4jExtractor()
+            extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                                  scope=extractor.get_scope()))
+
+            result_dict = dict(database='test_database',
+                               cluster='test_cluster',
+                               schema_name='test_schema',
+                               table_name='test_table_name',
+                               table_key='test_table_key',
+                               table_description='test_table_description',
+                               table_last_updated_epoch=123456789,
+                               column_names=['test_col1', 'test_col2', 'test_col3'],
+                               column_descriptions=['test_description1', 'test_description2', ''],
+                               total_usage=100,
+                               unique_usage=5,
+                               tag_names=['hive'])
+
+            extractor.results = [result_dict]
+            result_obj = extractor.extract()
+
+            self.assertIsInstance(result_obj, Neo4jDataResult)
+            self.assertDictEqual(vars(result_obj), result_dict)

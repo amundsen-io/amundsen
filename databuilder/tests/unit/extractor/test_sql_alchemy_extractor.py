@@ -1,0 +1,120 @@
+import unittest
+
+from mock import patch
+from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
+from typing import Any  # noqa: F401
+
+from databuilder import Scoped
+from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
+
+
+class TestSqlAlchemyExtractor(unittest.TestCase):
+
+    def setUp(self):
+        # type: () -> None
+        config_dict = {
+            'extractor.sqlalchemy.conn_string': 'TEST_CONNECTION',
+            'extractor.sqlalchemy.extract_sql': 'SELECT 1 FROM TEST_TABLE;'
+        }
+        self.conf = ConfigFactory.from_dict(config_dict)
+
+    @patch.object(SQLAlchemyExtractor, '_get_connection')
+    def test_extraction_with_empty_query_result(self, mock_method):
+        # type: (Any, Any) -> None
+        """
+        Test Extraction with empty result from query
+        """
+        extractor = SQLAlchemyExtractor()
+        extractor.results = ['']
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+
+        results = extractor.extract()
+        self.assertEqual(results, '')
+
+    @patch.object(SQLAlchemyExtractor, '_get_connection')
+    def test_extraction_with_single_query_result(self, mock_method):
+        # type: (Any, Any) -> None
+        """
+        Test Extraction from single result from query
+        """
+        extractor = SQLAlchemyExtractor()
+        extractor.results = [('test_result'), ]
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+        results = extractor.extract()
+        self.assertEqual(results, 'test_result')
+
+    @patch.object(SQLAlchemyExtractor, '_get_connection')
+    def test_extraction_with_multiple_query_result(self, mock_method):
+        # type: (Any, Any) -> None
+        """
+        Test Extraction from list of results from query
+        """
+        extractor = SQLAlchemyExtractor()
+        extractor.results = ['test_result', 'test_result2', 'test_result3']
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+        result = [extractor.extract() for _ in range(3)]
+
+        self.assertEqual(len(result), 3)
+        self.assertEqual(result,
+                         ['test_result', 'test_result2', 'test_result3'])
+
+    @patch.object(SQLAlchemyExtractor, '_get_connection')
+    def test_extraction_with_model_class(self, mock_method):
+        # type: (Any, Any) -> None
+        """
+        Test Extraction using model class
+        """
+        config_dict = {
+            'extractor.sqlalchemy.conn_string': 'TEST_CONNECTION',
+            'extractor.sqlalchemy.extract_sql': 'SELECT 1 FROM TEST_TABLE;',
+            'extractor.sqlalchemy.model_class':
+                'tests.unit.extractor.test_sql_alchemy_extractor.TableMetadataResult'
+        }
+        self.conf = ConfigFactory.from_dict(config_dict)
+
+        extractor = SQLAlchemyExtractor()
+        extractor.results = [dict(database='test_database',
+                                  schema='test_schema',
+                                  name='test_table',
+                                  description='test_description',
+                                  column_name='test_column_name',
+                                  column_type='test_column_type',
+                                  column_comment='test_column_comment',
+                                  owner='test_owner')]
+
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+
+        result = extractor.extract()
+
+        self.assertIsInstance(result, TableMetadataResult)
+        self.assertEqual(result.name, 'test_table')
+
+
+class TableMetadataResult:
+    """
+    Table metadata result model.
+    SQL result has one row per column
+    """
+    def __init__(self,
+                 database,  # type: str
+                 schema,  # type: str
+                 name,  # type: str
+                 description,  # type: str
+                 column_name,  # type: str
+                 column_type,  # type: str
+                 column_comment,  # type: str
+                 owner  # type: str
+                 ):
+        # type: (...) -> None
+        self.database = database
+        self.schema = schema
+        self.name = name
+        self.description = description
+        self.column_name = column_name
+        self.column_type = column_type
+        self.column_comment = column_comment
+        self.owner = owner

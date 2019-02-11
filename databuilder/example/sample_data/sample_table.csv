@@ -1,0 +1,3 @@
+database,cluster,schema_name,table_name,table_desc
+hive,gold,test_schema,test_table1,"1st test table"
+dynamo,gold,test_schema,test_table2,"2nd test table"
