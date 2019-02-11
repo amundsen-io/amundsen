@@ -29,11 +29,11 @@ def build_js() -> None:
 
 build_js()
 
-__version__ = '0.2.34'
+__version__ = '1.0.0'
 
 
 setup(
-    name='lyft-amundsenfrontend',
+    name='amundsen-frontend',
     version=__version__,
     description='Web UI for Amundsen',
     url='https://www.github.com/lyft/amundsenfrontendlibrary',
