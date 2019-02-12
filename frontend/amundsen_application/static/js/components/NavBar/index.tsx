@@ -51,6 +51,10 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
         <div className="row">
           <div className="nav-bar">
             <div className="nav-bar-left">
+              {
+                AppConfig.logoPath &&
+                <img className="logo-icon" src={AppConfig.logoPath} />
+              }
               <Link to={`/`}>
                 AMUNDSEN
               </Link>

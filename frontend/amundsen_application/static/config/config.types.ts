@@ -9,6 +9,7 @@ export interface AppConfig {
   exploreSql: ExploreSqlConfig;
   google: GoogleAnalyticsConfig;
   lineage: LineageConfig;
+  logoPath: string | null;
   navLinks: Array<LinkConfig>;
 }
 
@@ -17,6 +18,7 @@ export interface AppConfigCustom {
   exploreSql?: ExploreSqlConfig;
   google?: GoogleAnalyticsConfig
   lineage?: LineageConfig;
+  logoPath?: string;
   navLinks?: Array<LinkConfig>;
 }
 

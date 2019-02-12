@@ -34,8 +34,12 @@
   margin-left: auto;
   display: flex;
 }
+.nav-bar-left > *,
 .nav-bar-right > * {
   margin: auto 10px;
+}
+.nav-bar-left > *:first-child {
+  margin-left: 0px;
 }
 .nav-bar-right > *:last-child {
   margin-right: 0px;
@@ -49,4 +53,9 @@
 
 .sb-avatar > div {
   border: 1px solid white;
+}
+
+.logo-icon {
+  max-height: 48px;
+  max-width: 144px;
 }

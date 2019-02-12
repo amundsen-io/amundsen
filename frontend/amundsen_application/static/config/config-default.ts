@@ -22,6 +22,7 @@ const configDefault: AppConfig = {
     },
     iconPath: 'PATH_TO_ICON'
   },
+  logoPath: null,
   navLinks: [
     {
       label: "Announcements",
