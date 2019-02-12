@@ -8,7 +8,7 @@ export function feedbackSubmitFeedback(action: SubmitFeedbackRequest) {
   return axios({
       data,
       method: 'post',
-      url: '/api/mail/feedback',
+      url: '/api/mail/v0/feedback',
       timeout: 5000,
       headers: {'Content-Type': 'multipart/form-data' }
     })

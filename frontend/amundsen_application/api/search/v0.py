@@ -16,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 
 REQUEST_SESSION_TIMEOUT = 10
 
-search_blueprint = Blueprint('search', __name__, url_prefix='/api')
+search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v0')
 
 valid_search_fields = {
     'tag',
@@ -53,7 +53,7 @@ def _validate_search_term(*, search_term: str, page_index: int) -> Optional[Resp
     return None
 
 
-@search_blueprint.route('/search', methods=['GET'])
+@search_blueprint.route('/', methods=['GET'])
 def search() -> Response:
     search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
     page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')

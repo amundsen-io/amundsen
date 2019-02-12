@@ -7,8 +7,10 @@ from flask import Flask
 
 from amundsen_application.api import init_routes
 from amundsen_application.api.v0 import blueprint
+from amundsen_application.api.announcements.v0 import announcements_blueprint
 from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
+from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.search.v0 import search_blueprint
 
 app_wrapper_class = Flask
@@ -43,8 +45,10 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
     logging.info('Created app with config name {}'.format(config_module_class))
 
     app.register_blueprint(blueprint)
+    app.register_blueprint(announcements_blueprint)
     app.register_blueprint(mail_blueprint)
     app.register_blueprint(metadata_blueprint)
+    app.register_blueprint(preview_blueprint)
     app.register_blueprint(search_blueprint)
     init_routes(app)
 

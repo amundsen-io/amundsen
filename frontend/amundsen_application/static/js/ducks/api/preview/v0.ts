@@ -4,7 +4,7 @@ import { GetPreviewDataRequest } from '../../preview/reducer';
 
 export function getPreviewData(action: GetPreviewDataRequest) {
   return axios({
-    url:'/api/preview',
+    url: '/api/preview/v0/',
     method: 'POST',
     data: action.queryParams,
   })

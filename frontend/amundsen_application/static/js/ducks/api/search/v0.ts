@@ -11,7 +11,7 @@ function transformSearchResults(data) {
 
 export function searchExecuteSearch(action) {
   const { term, pageIndex } = action;
-  return axios.get(`/api/search?query=${term}&page_index=${pageIndex}`)
+  return axios.get(`/api/search/v0/?query=${term}&page_index=${pageIndex}`)
   .then(response => transformSearchResults(response.data))
-  .catch(() => transformSearchResults(error.response.data));
+  .catch((error) => transformSearchResults(error.response.data));
 }

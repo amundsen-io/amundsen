@@ -55,7 +55,7 @@ class SearchTest(unittest.TestCase):
         :return:
         """
         with local_app.test_client() as test:
-            response = test.get('/api/search', query_string=dict(page_index='0'))
+            response = test.get('/api/search/v0/', query_string=dict(page_index='0'))
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def test_search_fail_if_no_page_index(self) -> None:
@@ -65,7 +65,7 @@ class SearchTest(unittest.TestCase):
         :return:
         """
         with local_app.test_client() as test:
-            response = test.get('/api/search', query_string=dict(query='test'))
+            response = test.get('/api/search/v0/', query_string=dict(query='test'))
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @responses.activate
@@ -78,7 +78,7 @@ class SearchTest(unittest.TestCase):
                       json=self.mock_search_results, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
-            response = test.get('/api/search', query_string=dict(query='test', page_index='0'))
+            response = test.get('/api/search/v0/', query_string=dict(query='test', page_index='0'))
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertEqual(data.get('total_results'), self.mock_search_results.get('total_results'))
@@ -94,7 +94,7 @@ class SearchTest(unittest.TestCase):
                       json=self.mock_search_results, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
         with local_app.test_client() as test:
-            response = test.get('/api/search', query_string=dict(query='test', page_index='0'))
+            response = test.get('/api/search/v0/', query_string=dict(query='test', page_index='0'))
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @responses.activate
@@ -108,7 +108,7 @@ class SearchTest(unittest.TestCase):
                       json=self.bad_search_results, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
-            response = test.get('/api/search', query_string=dict(query='test', page_index='0'))
+            response = test.get('/api/search/v0/', query_string=dict(query='test', page_index='0'))
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @responses.activate

@@ -10,7 +10,7 @@ from amundsen_application.log.action_log import action_logging
 
 LOGGER = logging.getLogger(__name__)
 
-mail_blueprint = Blueprint('mail', __name__, url_prefix='/api/mail')
+mail_blueprint = Blueprint('mail', __name__, url_prefix='/api/mail/v0')
 
 
 @mail_blueprint.route('/feedback', methods=['POST'])

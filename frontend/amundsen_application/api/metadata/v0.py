@@ -20,7 +20,7 @@ REQUEST_SESSION_TIMEOUT = 10
 
 POPULAR_TABLE_COUNT = 4
 
-metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata')
+metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
 
 def _get_table_endpoint() -> str:

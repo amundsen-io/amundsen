@@ -5,7 +5,7 @@ import axios from 'axios';
 export function announcementsGet() {
   return axios({
       method: 'get',
-      url: '/api/announcements',
+      url: '/api/announcements/v0/',
     })
     .then((response) => {
       return response.data.posts
