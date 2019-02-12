@@ -1,0 +1,434 @@
+import copy
+import textwrap
+import unittest
+from typing import Any, Dict  # noqa: F401
+
+from mock import patch, MagicMock
+from neo4j.v1 import GraphDatabase
+
+from metadata_service import create_app
+from metadata_service.entity.popular_table import PopularTable
+from metadata_service.entity.table_detail import Application, Column, Table, Tag, Watermark, Source, \
+    Statistics, User
+from metadata_service.entity.tag_detail import TagDetail
+from metadata_service.proxy.neo4j_proxy import Neo4jProxy
+
+
+class TestGetTable(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+        table_entry = {'db': {'name': 'hive'},
+                       'clstr': {
+                           'name': 'gold'},
+                       'schema': {
+                           'name': 'foo_schema'},
+                       'tbl': {
+                           'name': 'foo_table'},
+                       'tbl_dscrpt': {
+                           'description': 'foo description'}
+                       }
+
+        col1 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
+        col1['col'] = {'name': 'bar_id_1',
+                       'type': 'varchar',
+                       'sort_order': 0}
+        col1['col_dscrpt'] = {'description': 'bar col description'}
+        col1['col_stats'] = [{'stat_name': 'avg', 'start_epoch': 1, 'end_epoch': 1, 'stat_val': '1'}]
+
+        col2 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
+        col2['col'] = {'name': 'bar_id_2',
+                       'type': 'bigint',
+                       'sort_order': 1}
+        col2['col_dscrpt'] = {'description': 'bar col2 description'}
+        col2['col_stats'] = [{'stat_name': 'avg', 'start_epoch': 2, 'end_epoch': 2, 'stat_val': '2'}]
+
+        table_level_results = MagicMock()
+        table_level_results.single.return_value = {
+            'wmk_records': [
+                {
+                    'key': 'hive://gold.test_schema/test_table/high_watermark/',
+                    'partition_key': 'ds',
+                    'partition_value': 'fake_value',
+                    'create_time': 'fake_time',
+                },
+                {
+                    'key': 'hive://gold.test_schema/test_table/low_watermark/',
+                    'partition_key': 'ds',
+                    'partition_value': 'fake_value',
+                    'create_time': 'fake_time',
+                }
+            ],
+            'application': {
+                'application_url': 'airflow_host/admin/airflow/tree?dag_id=test_table',
+                'description': 'DAG generating a table',
+                'name': 'Airflow',
+                'id': 'dag/task_id'
+            },
+            'last_updated_timestamp': 1,
+            'owner_records': [
+                {
+                    'key': 'tester@lyft.com',
+                    'email': 'tester@lyft.com'
+                }
+            ],
+            'tag_records': [
+                {
+                    'key': 'test',
+                    'tag_type': 'default'
+                }
+            ],
+            'src': {
+                'source': '/source_file_loc',
+                'key': 'some key',
+                'source_type': 'github'
+            }
+        }
+
+        table_writer = {
+            'application_url': 'airflow_host/admin/airflow/tree?dag_id=test_table',
+            'description': 'DAG generating a table',
+            'name': 'Airflow',
+            'id': 'dag/task_id'
+        }
+
+        last_updated_timestamp = '01'
+
+        self.col_usage_return_value = [
+            col1,
+            col2
+        ]
+        self.table_level_return_value = table_level_results
+
+        self.table_writer = table_writer
+
+        self.last_updated_timestamp = last_updated_timestamp
+
+    def tearDown(self) -> None:
+        pass
+
+    def test_get_table(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.side_effect = [self.col_usage_return_value, [], self.table_level_return_value]
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            table = neo4j_proxy.get_table(table_uri='dummy_uri')
+
+            expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
+                             tags=[Tag(tag_name='test', tag_type='default')],
+                             table_readers=[], description='foo description',
+                             watermarks=[Watermark(watermark_type='high_watermark',
+                                                   partition_key='ds',
+                                                   partition_value='fake_value',
+                                                   create_time='fake_time'),
+                                         Watermark(watermark_type='low_watermark',
+                                                   partition_key='ds',
+                                                   partition_value='fake_value',
+                                                   create_time='fake_time')],
+                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                                             sort_order=0, stats=[Statistics(start_epoch=1,
+                                                                             end_epoch=1,
+                                                                             stat_type='avg',
+                                                                             stat_val='1')]),
+                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                             sort_order=1, stats=[Statistics(start_epoch=2,
+                                                                             end_epoch=2,
+                                                                             stat_type='avg',
+                                                                             stat_val='2')])],
+                             owners=[User(email='tester@lyft.com')],
+                             table_writer=Application(application_url=self.table_writer['application_url'],
+                                                      description=self.table_writer['description'],
+                                                      name=self.table_writer['name'],
+                                                      id=self.table_writer['id']),
+                             last_updated_timestamp=1,
+                             source=Source(source='/source_file_loc',
+                                           source_type='github'))
+
+            self.assertEqual(str(expected), str(table))
+
+    def test_get_table_with_valid_description(self) -> None:
+        """
+        Test description is returned for table
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = dict(description='sample description')
+
+            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            table_description = neo4j_proxy.get_table_description(table_uri='test_table')
+
+            table_description_query = textwrap.dedent("""
+            MATCH (tbl:Table {key: $tbl_key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=table_description_query,
+                                            param_dict={'tbl_key': 'test_table'})
+
+            self.assertEquals(table_description, 'sample description')
+
+    def test_get_table_with_no_description(self) -> None:
+        """
+        Test None is returned for table with no description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = None
+
+            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            table_description = neo4j_proxy.get_table_description(table_uri='test_table')
+
+            table_description_query = textwrap.dedent("""
+            MATCH (tbl:Table {key: $tbl_key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=table_description_query,
+                                            param_dict={'tbl_key': 'test_table'})
+
+            self.assertIsNone(table_description)
+
+    def test_put_table_description(self) -> None:
+        """
+        Test updating table description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy.put_table_description(table_uri='test_table',
+                                              description='test_description')
+
+            self.assertEquals(mock_run.call_count, 2)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_get_column_with_valid_description(self) -> None:
+        """
+        Test description is returned for column
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = dict(description='sample description')
+
+            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            col_description = neo4j_proxy.get_column_description(table_uri='test_table',
+                                                                 column_name='test_column')
+
+            column_description_query = textwrap.dedent("""
+            MATCH (tbl:Table {key: $tbl_key})-[:COLUMN]->(c:Column {name: $column_name})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=column_description_query,
+                                            param_dict={'tbl_key': 'test_table',
+                                                        'column_name': 'test_column'})
+
+            self.assertEquals(col_description, 'sample description')
+
+    def test_get_column_with_no_description(self) -> None:
+        """
+        Test None is returned for column with no description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = None
+
+            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            col_description = neo4j_proxy.get_column_description(table_uri='test_table',
+                                                                 column_name='test_column')
+
+            column_description_query = textwrap.dedent("""
+            MATCH (tbl:Table {key: $tbl_key})-[:COLUMN]->(c:Column {name: $column_name})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=column_description_query,
+                                            param_dict={'tbl_key': 'test_table',
+                                                        'column_name': 'test_column'})
+
+            self.assertIsNone(col_description)
+
+    def test_put_column_description(self) -> None:
+        """
+        Test updating column description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy.put_column_description(table_uri='test_table',
+                                               column_name='test_column',
+                                               description='test_description')
+
+            self.assertEquals(mock_run.call_count, 2)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_add_owner(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy.add_owner(table_uri='dummy_uri',
+                                  owner='tester')
+            # we call neo4j twice in add_owner call
+            self.assertEquals(mock_run.call_count, 2)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_delete_owner(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy.delete_owner(table_uri='dummy_uri',
+                                     owner='tester')
+            # we only call neo4j once in delete_owner call
+            self.assertEquals(mock_run.call_count, 1)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_add_tag(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy.add_tag(table_uri='dummy_uri',
+                                tag='hive')
+            # we call neo4j twice in add_tag call
+            self.assertEquals(mock_run.call_count, 3)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_delete_tag(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy.delete_tag(table_uri='dummy_uri',
+                                   tag='hive')
+            # we only call neo4j once in delete_tag call
+            self.assertEquals(mock_run.call_count, 1)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_get_tags(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+
+            mock_execute.return_value = [
+                {'tag_name': {'key': 'tag1'}, 'tag_count': 2},
+                {'tag_name': {'key': 'tag2'}, 'tag_count': 1}
+            ]
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            actual = neo4j_proxy.get_tags()
+
+            expected = [
+                TagDetail(tag_name='tag1', tag_count=2),
+                TagDetail(tag_name='tag2', tag_count=1),
+            ]
+
+            self.assertEqual(actual.__repr__(), expected.__repr__())
+
+    def test_get_neo4j_latest_updated_ts(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = {
+                'ts': {
+                    'latest_timestmap': '1000'
+                }
+            }
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_last_updated_ts = neo4j_proxy.get_neo4j_latest_updated_ts()
+            self.assertEquals(neo4j_last_updated_ts, '1000')
+
+            mock_execute.return_value.single.return_value = {
+                'ts': {
+
+                }
+            }
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_last_updated_ts = neo4j_proxy.get_neo4j_latest_updated_ts()
+            self.assertIs(neo4j_last_updated_ts, None)
+
+    def test_get_popular_tables(self) -> None:
+        # Test cache hit
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
+
+            self.assertEquals(mock_execute.call_count, 1)
+
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = [
+                {'database_name': 'db', 'cluster_name': 'clstr', 'schema_name': 'sch', 'table_name': 'foo',
+                 'table_description': 'test description'},
+                {'database_name': 'db', 'cluster_name': 'clstr', 'schema_name': 'sch', 'table_name': 'bar'}
+            ]
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            actual = neo4j_proxy.get_popular_tables(num_entries=2)
+
+            expected = [
+                PopularTable(database='db', cluster='clstr', schema='sch', name='foo', description='test description'),
+                PopularTable(database='db', cluster='clstr', schema='sch', name='bar'),
+            ]
+
+            self.assertEqual(actual.__repr__(), expected.__repr__())
+
+
+if __name__ == '__main__':
+    unittest.main()
