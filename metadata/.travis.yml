@@ -6,3 +6,12 @@ install:
   - python3 setup.py install
 script:
   - make test
+deploy:
+  provider: pypi
+  user: amundsen-dev
+  password:
+    secure: ZGfmHZUxxwWVfzKam4R0tzeb80SvopPkkCq1qQw5VIeKhVNHoE0CVyNa85Yo5xsvZSAYHOfGbCP29c6Y6c4+VlXmJQ+1majOFiwzM/kFau2dIaa965N5OXMU/AMtYlw68SpXo/jNlxNSDQwJtd8xEUyaHAS5fc5VvmXD05r4/2SvoodN9TrmkbwzZ8ujJTXG6U3vC3rR5fEIL5WDsdWrvk/Q6b6lvIDqJZ/RXYotauQeG1EXmyB4VroSjYO4+l9Zry+S46gYHWYEidQH1W1UrBRePXwqIH6VAH97PbsCFw6mvUeSkQYJHcSkB+wLUeN+HMcQOk6F3ke9NRkolx4LgD6N+AlXSz0wLta3IUgOAvbUZdxKnBKhjCftWoZx1SWYLtbqIJXEwC51dEQBUd/7GQJuIvXFnNDVz1yKB4zuYqx8v1a5D5uLT69152K14nTB6zu23eRvgPpXUlewAdfyqntOWwFBgK8KMeY54L3IglP+MiebP6smvhm0k5Fk1m7muqzmz3/1/if9UGXCnabG2Yml4MwutRR4PXuN8g9pOgRTQmHd3SV7Y8O9RIL+b8tbagwbpI3CLojO+9b52T7gqrV0d64I4g0WB2M7FsNZBhRuC9Wu7o8a+R9Ft5aK/wF2tRDd+VdurUbBlhhVgdJGWWxkmgk87kqGJjk25Hjm5Oo=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    repo: lyft/amundsenmetadatalibrary
