@@ -18,4 +18,3 @@ test_unit2:
 
 test_unit3:
 	python3 -bb -m pytest tests/unit
-

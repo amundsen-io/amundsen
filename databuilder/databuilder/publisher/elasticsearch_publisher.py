@@ -134,7 +134,7 @@ class ElasticsearchPublisher(Publisher):
         try:
             indices = self.elasticsearch_client.indices.get_alias(self.elasticsearch_alias).keys()
             return indices
-        except NotFoundError as ne:
+        except NotFoundError:
             LOGGER.warn("Received index not found error from Elasticsearch", exc_info=True)
             # return empty list on exception
             return []
