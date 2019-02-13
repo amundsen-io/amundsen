@@ -11,5 +11,9 @@ test_unit:
 lint:
 	python3 -m flake8
 
+.PHONY: mypy
+mypy:
+	mypy --ignore-missing-imports --follow-imports=skip --strict-optional --warn-no-return metadata_service
+
 .PHONY: test
-test: test_unit lint
+test: test_unit lint mypy
