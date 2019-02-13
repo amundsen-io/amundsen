@@ -2,15 +2,15 @@ dist: xenial
 language: python
 python: 3.7
 install:
-  - pip3 install -r requirements.txt
-  - python3 setup.py install
+- pip3 install -r requirements.txt
+- python3 setup.py install
 script:
-  - make test
+- make test
 deploy:
   provider: pypi
   user: amundsen-dev
   password:
-    secure: ZGfmHZUxxwWVfzKam4R0tzeb80SvopPkkCq1qQw5VIeKhVNHoE0CVyNa85Yo5xsvZSAYHOfGbCP29c6Y6c4+VlXmJQ+1majOFiwzM/kFau2dIaa965N5OXMU/AMtYlw68SpXo/jNlxNSDQwJtd8xEUyaHAS5fc5VvmXD05r4/2SvoodN9TrmkbwzZ8ujJTXG6U3vC3rR5fEIL5WDsdWrvk/Q6b6lvIDqJZ/RXYotauQeG1EXmyB4VroSjYO4+l9Zry+S46gYHWYEidQH1W1UrBRePXwqIH6VAH97PbsCFw6mvUeSkQYJHcSkB+wLUeN+HMcQOk6F3ke9NRkolx4LgD6N+AlXSz0wLta3IUgOAvbUZdxKnBKhjCftWoZx1SWYLtbqIJXEwC51dEQBUd/7GQJuIvXFnNDVz1yKB4zuYqx8v1a5D5uLT69152K14nTB6zu23eRvgPpXUlewAdfyqntOWwFBgK8KMeY54L3IglP+MiebP6smvhm0k5Fk1m7muqzmz3/1/if9UGXCnabG2Yml4MwutRR4PXuN8g9pOgRTQmHd3SV7Y8O9RIL+b8tbagwbpI3CLojO+9b52T7gqrV0d64I4g0WB2M7FsNZBhRuC9Wu7o8a+R9Ft5aK/wF2tRDd+VdurUbBlhhVgdJGWWxkmgk87kqGJjk25Hjm5Oo=
+    secure: BjWGHNeeGAc72EPRdbjpphpEzEeeU2puCI5qTD3XJbQUrTWO5qoaBGMzWJ+gu4L6lt3Vkne70Oo/5wMrsn3s/MvS0F2cr72mVToN05rSleOYgeYqIvOg3+nuK5E4jYio+SQBHV+H2oSvxS9lmq8VBVradSY/vN2Km278jopBTf/qqD8M0dMRl9/3DZ8ywPMk8DZmJ5k0Q5t1JGAI2rvoFvjKPP7tPt7j1ZRnwl+LzcF0sQCUQBs9BIrUusOEDlJ2VUPJIL+QCG/9vAJ8iBbrff84sEsv9KJOal5wjhZDvXYNy6H4np/rUeikraZ/b8B/O9R2BWrKIqgEIaKGMfPVw/QkeP1V3/Xa3O8R18jeXLvdb8NMpCBR78mPJtCpmXMPuD70WfiHGkJjEvroNvVnXRnezCXLpOBIHlU3PC/kkibBLNz5ZqHSuxrZVla9VxqpL0eQA7UnW+72/WwKIA6MEA9DnpQT7j3KQenPHzeARZB2ohxcDsaxFH/q/z1izDbaH09tbLWDb7CxBH4pwsTCjsKWzAddTN54Tg8p78V1BQBDb0OOEpQ/Ij3XGnXvB1cgtJVkAOSw6ZOLeLs9cmmLrGYG7GWDM0vJOzGab58lFETWbUEY+KObJHbckB9XYcTbqaQYM6J8BYP/oOtxXm8hfD51KiD8vaQoG/G+iLqcIsA=
   distributions: sdist bdist_wheel
   on:
     tags: true
