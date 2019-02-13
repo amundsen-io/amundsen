@@ -25,6 +25,11 @@ pytest-cov==2.5.1
 # Upstream url: https://mock.readthedocs.io/en/latest/
 mock==2.0.0
 
+# Mypy is an optional static type checker for Python.
+# License: MIT
+# Upstream url: https://github.com/python/mypy
+mypy==0.660
+
 # Thin-wrapper around the mock package for easier use with py.test.
 # License: MIT
 # Upstream url: https://pypi.python.org/pypi/pytest-mock
