@@ -6,20 +6,20 @@
 
 export interface AppConfig {
   browse: BrowseConfig;
-  exploreSql: ExploreSqlConfig;
   google: GoogleAnalyticsConfig;
-  lineage: LineageConfig;
   logoPath: string | null;
   navLinks: Array<LinkConfig>;
+  tableLineage: TableLineageConfig;
+  tableProfile: TableProfileConfig;
 }
 
 export interface AppConfigCustom {
   browse?: BrowseConfig;
-  exploreSql?: ExploreSqlConfig;
   google?: GoogleAnalyticsConfig
-  lineage?: LineageConfig;
   logoPath?: string;
   navLinks?: Array<LinkConfig>;
+  tableLineage?: TableLineageConfig;
+  tableProfile?: TableProfileConfig;
 }
 
 /**
@@ -45,27 +45,31 @@ interface BrowseConfig {
 }
 
 /**
- * ExploreSqlCongfig - Customize an optional section in the 'table details' page where users can run SQL queries.
+ * TableProfileConfig - Customize the "Table Profile" section of the "Table Details" page.
  *
- * enabled - Whether to show or hide this section
- * generateUrl - Generates a URL to a third party SQL explorable website.
+ * isBeta - Adds a "beta" tag to the "Table Profile" section header.
+ * isExploreEnabled - Enables the third party SQL explore feature.
+ * exploreUrlGenerator - Generates a URL to a third party SQL explorable website.
  */
-interface ExploreSqlConfig {
-  enabled: boolean;
-  generateUrl: (database: string, cluster: string, schema: string, table: string, partitionKey?: string, partitionValue?: string) => string;
+interface TableProfileConfig {
+  isBeta: boolean;
+  isExploreEnabled: boolean;
+  exploreUrlGenerator: (database: string, cluster: string, schema: string, table: string, partitionKey?: string, partitionValue?: string) => string;
 }
 
 /**
- * LineageConfig - Customize an optional section in the 'table details' page where users can see a table's lineage.
+ * TableLineageConfig - Customize the "Table Lineage" section of the "Table Details" page.
  *
- * enabled - Whether to show or hide this section
- * generateUrl - Generate a URL to the third party lineage website
  * iconPath - Path to an icon image to display next to the lineage URL.
+ * isBeta - Adds a "beta" tag to the section header.
+ * isEnabled - Whether to show or hide this section
+ * urlGenerator - Generate a URL to the third party lineage website
  */
-interface LineageConfig {
-  enabled: boolean;
-  generateUrl: (database: string, cluster: string, schema: string , table: string) => string;
+interface TableLineageConfig {
   iconPath: string;
+  isBeta: boolean;
+  isEnabled: boolean;
+  urlGenerator: (database: string, cluster: string, schema: string , table: string) => string;
 }
 
 interface LinkConfig {

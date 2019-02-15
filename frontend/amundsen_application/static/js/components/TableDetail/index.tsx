@@ -153,11 +153,11 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
   }
 
   getAvatarForLineage = () => {
-    const href = AppConfig.lineage.generateUrl(this.database, this.cluster, this.schema, this.tableName);
+    const href = AppConfig.tableLineage.urlGenerator(this.database, this.cluster, this.schema, this.tableName);
     const displayName = `${this.schema}.${this.tableName}`;
     return (
       <a href={ href } target='_blank'>
-        <AvatarLabel label={ displayName } src={ AppConfig.lineage.iconPath }/>
+        <AvatarLabel label={ displayName } src={ AppConfig.tableLineage.iconPath }/>
       </a>
     );
   };
@@ -165,9 +165,9 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
   getExploreSqlUrl = () => {
     const partition = this.state.tableData.partition;
     if (partition.is_partitioned) {
-      return AppConfig.exploreSql.generateUrl(this.database, this.cluster, this.schema, this.tableName, partition.key, partition.value);
+      return AppConfig.tableProfile.exploreUrlGenerator(this.database, this.cluster, this.schema, this.tableName, partition.key, partition.value);
     }
-    return AppConfig.exploreSql.generateUrl(this.database, this.cluster, this.schema, this.tableName);
+    return AppConfig.tableProfile.exploreUrlGenerator(this.database, this.cluster, this.schema, this.tableName);
   };
 
   createEntityCardSections(data) {
@@ -234,8 +234,12 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     }
 
     // "Lineage" Section
-    if (AppConfig.lineage.enabled) {
-      entityCardSections.push({'title': 'Table Lineage', 'contentRenderer': this.getAvatarForLineage, 'isEditable': false});
+    if (AppConfig.tableLineage.isEnabled) {
+      entityCardSections.push({
+        'title': 'Table Lineage' + (AppConfig.tableLineage.isBeta ? ' (beta)' : ''),
+        'contentRenderer': this.getAvatarForLineage,
+        'isEditable': false
+      });
     }
 
     // "Preview" Section
@@ -244,7 +248,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
         <div>
           <DataPreviewButton queryParams={{'schema': data.schema, 'tableName': data.table_name}} />
           {
-            AppConfig.exploreSql.enabled &&
+            AppConfig.tableProfile.isExploreEnabled &&
               <a role="button" href={this.getExploreSqlUrl()} target="_blank" className="btn btn-primary btn-block">
                 <img className="icon icon-color icon-database"/>
                 Explore with SQL
@@ -253,7 +257,11 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
         </div>
       );
     };
-    entityCardSections.push({'title': 'Table Profile', 'contentRenderer': previewSectionRenderer, 'isEditable': false});
+    entityCardSections.push({
+      'title': 'Table Profile' + (AppConfig.tableProfile.isBeta ? ' (beta)' : ''),
+      'contentRenderer': previewSectionRenderer,
+      'isEditable': false
+    });
 
     // "Tags" Section
     const sectionContentRenderer = (readOnly: boolean) => {

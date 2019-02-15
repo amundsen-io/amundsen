@@ -193,7 +193,7 @@ class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPrev
        disabled={disabled}
        onClick={this.handleShow}>
          <img className={"icon icon-color " + iconClass} />
-         <span>{`${buttonText} (beta)`}</span>
+         <span>{buttonText}</span>
       </button>
     );
 
