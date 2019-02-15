@@ -26,10 +26,12 @@ class FsNeo4jCSVLoader(Loader):
     # Config keys
     NODE_DIR_PATH = 'node_dir_path'
     RELATION_DIR_PATH = 'relationship_dir_path'
+    FORCE_CREATE_DIR = 'force_create_directory'
     SHOULD_DELETE_CREATED_DIR = 'delete_created_directories'
 
     _DEFAULT_CONFIG = ConfigFactory.from_dict({
-        SHOULD_DELETE_CREATED_DIR: True
+        SHOULD_DELETE_CREATED_DIR: True,
+        FORCE_CREATE_DIR: False
     })
 
     def __init__(self):
@@ -55,6 +57,7 @@ class FsNeo4jCSVLoader(Loader):
 
         self._delete_created_dir = \
             conf.get_bool(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR)
+        self._force_create_dir = conf.get_bool(FsNeo4jCSVLoader.FORCE_CREATE_DIR)
         self._create_directory(self._node_dir)
         self._create_directory(self._relation_dir)
 
@@ -67,8 +70,11 @@ class FsNeo4jCSVLoader(Loader):
         :return:
         """
         if os.path.exists(path):
-            raise RuntimeError(
-                'Directory should not exist: {}'.format(path))
+            if self._force_create_dir:
+                LOGGER.info('Directory exist. Deleting directory {}'.format(path))
+                shutil.rmtree(path)
+            else:
+                raise RuntimeError('Directory should not exist: {}'.format(path))
 
         os.makedirs(path)
 
