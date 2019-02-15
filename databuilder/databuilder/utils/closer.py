@@ -1,3 +1,5 @@
+import atexit
+
 from typing import Callable, List  # noqa: F401
 
 
@@ -13,6 +15,7 @@ class Closer(object):
     def __init__(self):
         # type: () -> None
         self._stack = []  # type: List
+        atexit.register(self.close)
 
     def register(self, close_callable):
         # type: (Callable) -> None
