@@ -30,3 +30,37 @@
 .popover.left .arrow:after {
   border-left-color: $gray-darker;
 }
+
+.tooltip-inner {
+  padding: 0px;
+  border-radius: 3px;
+  background-color: $gray-darker;
+}
+
+.tooltip-inner button {
+  height: 36px;
+  width: 96px;
+  font-size: 14px;
+  border-radius: 3px;
+  border: none;
+  background-color: $gray-darker;
+  color: $body-bg;
+  font-family: $font-family-sans-serif-bold;
+  font-weight: $font-weight-sans-serif-bold;
+  outline: none;
+}
+.tooltip-inner button:hover {
+  color: $gray-light;
+}
+
+.error-tooltip {
+    display: flex;
+    padding: 5px;
+}
+.error-tooltip button {
+  height: 24px;
+  width: 24px;
+  font-size: 16px;
+  margin: auto;
+  font-family: 'Glyphicons Halflings';
+}

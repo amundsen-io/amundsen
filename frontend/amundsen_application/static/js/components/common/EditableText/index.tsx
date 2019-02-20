@@ -32,7 +32,7 @@ interface EditableTextState {
 
 class EditableText extends React.Component<EditableTextProps, EditableTextState> {
   private textAreaTarget: HTMLTextAreaElement;
-  private editButtonTarget: HTMLButtonElement;
+  private editAnchorTarget: HTMLAnchorElement;
 
   public static defaultProps: EditableTextProps = {
     editable: true,
@@ -77,7 +77,7 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
 
   exitEditMode = () => {
     this.setState({ isDisabled: false, inEditMode: false, refreshValue: '' });
-  }
+  };
 
   enterEditMode = () => {
     if (this.props.getLatestValue) {
@@ -86,23 +86,23 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
     } else {
       this.setState({ inEditMode: true });
     }
-  }
+  };
 
   refreshText = () => {
     this.setState({value: this.state.refreshValue, isDisabled: false, inEditMode: false, refreshValue: undefined });
-  }
+  };
 
   updateText = () => {
     const newValue = ReactDOM.findDOMNode(this.textAreaTarget).value;
     const onSuccessCallback = () => { this.setState({value: newValue, inEditMode: false, refreshValue: undefined }); };
-    const onFailureCallback = () => { this.exitEditMode(); }
+    const onFailureCallback = () => { this.exitEditMode(); };
 
     this.props.onSubmitValue(newValue, onSuccessCallback, onFailureCallback);
-  }
+  };
 
   getTarget(type) {
-    if (type === 'editButton') {
-      return ReactDOM.findDOMNode(this.editButtonTarget);
+    if (type === 'editAnchor') {
+      return ReactDOM.findDOMNode(this.editAnchorTarget);
     }
     if (type === 'textArea') {
       return ReactDOM.findDOMNode(this.textAreaTarget)
@@ -110,35 +110,42 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
   }
 
   render() {
-    if (!this.state.inEditMode || (this.state.inEditMode && this.state.isDisabled)){
+    if (!this.state.editable) {
       return (
         <div className='editable-container'>
-          {
-            this.state.editable &&
-            <div>
-              <button
-                className='btn icon edit-button'
-                disabled= { this.state.isDisabled }
-                onClick={ this.enterEditMode }
-                ref={button => {
-                  this.editButtonTarget = button;
+           <div className='editable-text'>{ this.state.value }</div>
+        </div>
+      );
+    }
+    if (!this.state.inEditMode || (this.state.inEditMode && this.state.isDisabled)) {
+      return (
+        <div className='editable-container'>
+          <Overlay
+            placement='top'
+            show={this.state.isDisabled}
+            target={this.getTarget.bind(this,'editAnchor')}
+          >
+            <Tooltip id='error-tooltip'>
+              <div className="error-tooltip">
+                <text>This text is out of date, please refresh the component</text>
+                <button onClick={this.refreshText}>&#xe031;</button>
+              </div>
+            </Tooltip>
+          </Overlay>
+          <div className={"editable-text"}>
+            { this.state.value }
+            <a className={ "edit-link " + (this.state.value ? "" : "no-value") }
+               href="JavaScript:void(0)"
+               onClick={ this.enterEditMode }
+               ref={ anchor => {
+                  this.editAnchorTarget = anchor;
                 }}
-              />
-              <Overlay
-                placement='top'
-                show={this.state.isDisabled}
-                target={this.getTarget.bind(this,'editButton')}
-              >
-                <Tooltip id='error-tooltip'>
-                  <div className="error-tooltip">
-                    <text>This text is out of date, please refresh the component</text>
-                    <button onClick={this.refreshText}>&#xe031;</button>
-                  </div>
-                </Tooltip>
-              </Overlay>
-            </div>
-          }
-          <div className='editable-text'>{ this.state.value }</div>
+            >
+              {
+                this.state.value ? "edit" : "Add Description"
+              }
+            </a>
+          </div>
         </div>
       );
     }
@@ -167,7 +174,6 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
             <button id='save' onClick={this.updateText}>Save</button>
           </Tooltip>
         </Overlay>
-
       </div>
     );
   }
