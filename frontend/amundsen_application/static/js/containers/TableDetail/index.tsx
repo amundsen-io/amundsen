@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { GlobalState } from "../../ducks/rootReducer";
-import { getTableData } from '../../ducks/tableMetadata/reducer';
+import { getPreviewData, getTableData } from '../../ducks/tableMetadata/reducer';
 
 import TableDetail, { DispatchFromProps, StateFromProps } from '../../components/TableDetail';
 
@@ -15,7 +15,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getTableData } , dispatch);
+  return bindActionCreators({ getPreviewData, getTableData } , dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(TableDetail);

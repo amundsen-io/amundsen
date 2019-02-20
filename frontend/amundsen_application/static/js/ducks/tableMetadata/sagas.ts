@@ -2,33 +2,28 @@ import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
 import {
-  GetTableData,
-  GetTableDataRequest,
-  GetTableDescription,
-  GetTableDescriptionRequest,
-  UpdateTableDescription,
-  UpdateTableDescriptionRequest,
-  UpdateTableOwner,
-  UpdateTableOwnerRequest,
-  GetColumnDescription,
-  GetColumnDescriptionRequest,
-  UpdateColumnDescription,
-  UpdateColumnDescriptionRequest,
-  UpdateTags,
-  UpdateTagsRequest,
   GetLastIndexedRequest, GetLastIndexed,
+  GetPreviewData, GetPreviewDataRequest,
+  GetTableData, GetTableDataRequest,
+  GetColumnDescription, GetColumnDescriptionRequest,
+  GetTableDescription, GetTableDescriptionRequest,
+  UpdateColumnDescription, UpdateColumnDescriptionRequest,
+  UpdateTableDescription, UpdateTableDescriptionRequest,
+  UpdateTableOwner, UpdateTableOwnerRequest,
+  UpdateTags, UpdateTagsRequest,
 } from './reducer';
 
 import {
+  metadataGetLastIndexed,
+  metadataGetPreviewData,
   metadataGetTableData,
+  metadataGetColumnDescription,
   metadataGetTableDescription,
+  metadataUpdateColumnDescription,
   metadataUpdateTableDescription,
   metadataUpdateTableOwner,
-  metadataGetColumnDescription,
-  metadataUpdateColumnDescription,
-  metadataTableTags,
   metadataUpdateTableTags,
-  metadataGetLastIndexed,
+  metadataTableTags,
 } from '../api/metadata/v0';
 
 // getTableData
@@ -177,4 +172,19 @@ export function* getLastIndexedWorker(action: GetLastIndexedRequest): SagaIterat
 
 export function* getLastIndexedWatcher(): SagaIterator {
   yield takeEvery(GetLastIndexed.ACTION, getLastIndexedWorker)
+}
+
+// getPreviewData
+export function* getPreviewDataWorker(action: GetPreviewDataRequest): SagaIterator {
+  let response;
+  try {
+    response = yield call(metadataGetPreviewData, action);
+    yield put({ type: GetPreviewData.SUCCESS, payload: response });
+  } catch (e) {
+    yield put({ type: GetPreviewData.FAILURE, payload: response });
+  }
+}
+
+export function* getPreviewDataWatcher(): SagaIterator {
+  yield takeEvery(GetPreviewData.ACTION, getPreviewDataWorker);
 }

@@ -3,9 +3,6 @@ import { all } from 'redux-saga/effects';
 // AnnouncementPage
 import { announcementsGetWatcher } from "./announcements/sagas";
 
-// DataPreviewButton
-import { getPreviewDataWatcher } from './preview/sagas';
-
 // FeedbackForm
 import { submitFeedbackWatcher } from './feedback/sagas';
 
@@ -18,6 +15,7 @@ import {
   getTableDataWatcher,
   getColumnDescriptionWatcher,
   getLastIndexedWatcher,
+  getPreviewDataWatcher,
   getTableDescriptionWatcher,
   updateColumnDescriptionWatcher,
   updateTableDescriptionWatcher,
@@ -35,8 +33,6 @@ export default function* rootSaga() {
   yield all([
     // AnnouncementPage
     announcementsGetWatcher(),
-    // DataPreviewButton
-    getPreviewDataWatcher(),
     // FeedbackForm
     submitFeedbackWatcher(),
     // SearchPage
@@ -49,6 +45,7 @@ export default function* rootSaga() {
     getTableDataWatcher(),
     getColumnDescriptionWatcher(),
     getLastIndexedWatcher(),
+    getPreviewDataWatcher(),
     getTableDescriptionWatcher(),
     updateColumnDescriptionWatcher(),
     updateTableDescriptionWatcher(),

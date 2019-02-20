@@ -1,4 +1,4 @@
-import { TableMetadata } from '../../components/TableDetail/types';
+import { PreviewData, PreviewQueryParams, TableMetadata } from '../../components/TableDetail/types';
 import { UpdateTagData } from '../../components/Tags/types';
 
 /* getTableData */
@@ -230,8 +230,31 @@ interface GetLastIndexedResponse {
 export function getLastIndexed(): GetLastIndexedRequest {
   return { type: GetLastIndexed.ACTION };
 }
-
 /* end getLastIndexed */
+
+/* getPreviewData */
+export enum GetPreviewData {
+  ACTION = 'amundsen/preview/GET_PREVIEW_DATA',
+  SUCCESS = 'amundsen/preview/GET_PREVIEW_DATA_SUCCESS',
+  FAILURE = 'amundsen/preview/GET_PREVIEW_DATA_FAILURE',
+}
+interface PreviewDataState {
+  data: PreviewData;
+  status: number | null;
+}
+export interface GetPreviewDataRequest {
+  type: GetPreviewData.ACTION;
+  queryParams: PreviewQueryParams;
+}
+interface GetPreviewDataResponse {
+  type: GetPreviewData.SUCCESS | GetPreviewData.FAILURE;
+  payload: PreviewDataState;
+}
+
+export function getPreviewData(queryParams: PreviewQueryParams): GetPreviewDataRequest {
+  return { queryParams, type: GetPreviewData.ACTION };
+}
+/* end getPreviewData */
 
 export type TableMetadataReducerAction =
   GetTableDataRequest | GetTableDataResponse |
@@ -241,28 +264,35 @@ export type TableMetadataReducerAction =
   GetColumnDescriptionRequest | GetColumnDescriptionResponse |
   UpdateColumnDescriptionRequest | UpdateColumnDescriptionResponse |
   UpdateTagsRequest | UpdateTagsResponse |
-  GetLastIndexedRequest | GetLastIndexedResponse;
+  GetLastIndexedRequest | GetLastIndexedResponse |
+  GetPreviewDataRequest | GetPreviewDataResponse;
 
 export interface TableMetadataReducerState {
   isLoading: boolean;
   isLoadingTags: boolean;
+  lastIndexed: number;
+  preview: PreviewDataState;
   statusCode: number;
   tableData: TableMetadata;
-  lastIndexed: number;
 }
 
+const initialPreviewState = {
+  data: {},
+  status: null,
+};
 const initialState: TableMetadataReducerState = {
   isLoading: true,
   isLoadingTags: true,
+  lastIndexed: null,
+  preview: initialPreviewState,
   statusCode: null,
   tableData: {} as TableMetadata,
-  lastIndexed: null,
 };
 
 export default function reducer(state: TableMetadataReducerState = initialState, action: TableMetadataReducerAction): TableMetadataReducerState {
   switch (action.type) {
     case GetTableData.ACTION:
-      return { ...state, isLoading: true, isLoadingTags: true };
+      return { ...state, isLoading: true, isLoadingTags: true, preview: initialPreviewState };
     case GetTableData.FAILURE:
     case GetTableData.SUCCESS:
       return { ...state, isLoading: false, isLoadingTags: false, statusCode: action.payload.statusCode, tableData: action.payload.tableData };
@@ -276,6 +306,9 @@ export default function reducer(state: TableMetadataReducerState = initialState,
         return { ...state, lastIndexed: action.payload };
     case GetLastIndexed.FAILURE:
         return { ...state, lastIndexed: null };
+    case GetPreviewData.SUCCESS:
+    case GetPreviewData.FAILURE:
+      return { ...state, preview: action.payload };
     case UpdateTags.FAILURE:
       return { ...state, isLoadingTags: false };
     case UpdateTags.SUCCESS:

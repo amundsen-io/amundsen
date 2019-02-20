@@ -23,7 +23,7 @@ import Avatar from 'react-avatar';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 
-import { TableMetadata } from './types';
+import { PreviewQueryParams, TableMetadata } from './types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -36,6 +36,7 @@ export interface StateFromProps {
 
 export interface DispatchFromProps {
   getTableData: (cluster: string, database: string, schema: string, tableName: string, searchIndex?: string, source?: string, ) => GetTableDataRequest;
+  getPreviewData: (queryParams: PreviewQueryParams) => void;
 }
 
 type TableDetailProps = StateFromProps & DispatchFromProps;
@@ -53,6 +54,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
   private tableName: string;
   public static defaultProps: TableDetailProps = {
     getTableData: () => undefined,
+    getPreviewData: () => undefined,
     isLoading: true,
     statusCode: null,
     tableData: {} as TableMetadata,
@@ -91,6 +93,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     }
 
     this.props.getTableData(this.cluster, this.database, this.schema, this.tableName, searchIndex, source);
+    this.props.getPreviewData({ schema: this.schema, tableName: this.tableName });
   }
 
   getAvatarForUser(fullName, profileUrl) {
@@ -246,7 +249,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     const previewSectionRenderer = () => {
       return (
         <div>
-          <DataPreviewButton queryParams={{'schema': data.schema, 'tableName': data.table_name}} />
+          <DataPreviewButton modalTitle={`${data.schema}.${data.tableName}`} />
           {
             AppConfig.tableProfile.isExploreEnabled &&
               <a role="button" href={this.getExploreSqlUrl()} target="_blank" className="btn btn-primary btn-block">

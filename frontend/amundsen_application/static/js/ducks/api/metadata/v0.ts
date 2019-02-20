@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { GetPreviewDataRequest } from '../../tableMetadata/reducer';
+
 const API_PATH = '/api/metadata/v0';
 const sortTagsAlphabetical = (a, b) => a.tag_name.localeCompare(b.tag_name);
 
@@ -140,9 +142,22 @@ export function metadataUpdateColumnDescription(description, columnIndex, tableD
   }
 }
 
-
 export function metadataGetLastIndexed() {
   return axios.get(`${API_PATH}/get_last_indexed`).then((response) => {
     return response.data.timestamp;
+  });
+}
+
+export function metadataGetPreviewData(action: GetPreviewDataRequest) {
+  return axios({
+    url: '/api/preview/v0/',
+    method: 'POST',
+    data: action.queryParams,
+  })
+  .then((response) => {
+    return { data: response.data.previewData, status: response.status };
+  })
+  .catch((error) => {
+    return { data: error.response.data.previewData, status: error.response.status };
   });
 }
