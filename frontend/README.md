@@ -19,23 +19,23 @@ or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/blob/master
 
 ## Architecture Overview
 
-- [Architecture](docs/architecture.md)
+[Architecture](docs/architecture.md)
 
 ## Installation
 
-- [Installation guideline](docs/installation.md)
+[Installation guideline](docs/installation.md)
 
 ## Configuration
 
-- [Configuration doc](docs/configuration.md)
+[Configuration doc](docs/configuration.md)
 
 ## Developer Guide
 
-- [Developer guideline](docs/developer_guide.md)
+[Developer guideline](docs/developer_guide.md)
 
 ## Roadmap
 
-- [Roadmap](docs/roadmap.md)
+[Roadmap](docs/roadmap.md)
 
 # License
 [Apache 2.0 License.](/LICENSE)
