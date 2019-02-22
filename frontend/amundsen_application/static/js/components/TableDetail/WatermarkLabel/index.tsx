@@ -28,7 +28,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     if (low === undefined && high === undefined) {
       return "Non Partitioned Table. Data available for all dates."
     }
-    const buffer = [low, high].map((wtm) => {
+    return [low, high].map((wtm) => {
       return moment(wtm.partition_value, "YYYY-MM-DD").format("MMM DD, YYYY");
     }).join(" – ");
   }
