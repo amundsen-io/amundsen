@@ -1,6 +1,9 @@
 # Amundsen Databuilder
 Amundsen Databuilder is a [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load "ETL") framework designed to build data from Amundsen.
 
+## Requirements
+- Python = 2.7.x
+
 ## Concept
 ETL job consists of extraction of records from the source, transform records, if necessary, and load records into the sink. Amundsen Databuilder is a ETL framework for Amundsen and there are corresponding components for ETL called Extractor, Transformer, and Loader that deals with record level operation. A component called task controls all these three components.
 Job is the highest level component in Databuilder that controls task and publisher and is the one that client use to launch the ETL job.
