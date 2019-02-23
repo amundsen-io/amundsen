@@ -158,6 +158,6 @@ export function metadataGetPreviewData(action: GetPreviewDataRequest) {
     return { data: response.data.previewData, status: response.status };
   })
   .catch((error) => {
-    return { data: error.response.data.previewData, status: error.response.status };
+    return { data: {}, status: error.response.status };
   });
 }
