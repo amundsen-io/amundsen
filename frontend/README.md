@@ -44,7 +44,7 @@ Please note that the mock images only served as demonstration purpose.
 
 Please visit the Amundsen documentation for help with [installing Amundsen](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#install-standalone-application-directly-from-the-source) 
 and getting a [quick start](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) with dummy data 
-or an [overview of the architecture](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker).
+or an [overview of the architecture](docs/architecture.md).
 
 ## Architecture Overview
 
