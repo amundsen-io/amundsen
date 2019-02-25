@@ -22,6 +22,8 @@ DB_FILE = '/tmp/test.db'
 SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
 Base = declarative_base()
 
+# replace localhost with docker host ip
+# todo: get the ip from input argument
 NEO4J_ENDPOINT = 'bolt://localhost:7687'
 neo4j_endpoint = NEO4J_ENDPOINT
 
@@ -136,6 +138,8 @@ def create_sample_job(table_name, model_name):
             neo4j_user,
         'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
             neo4j_password,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
+            'unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,
                      task=task,
