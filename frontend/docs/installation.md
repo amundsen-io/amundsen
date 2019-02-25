@@ -69,8 +69,9 @@ $ docker-compose -f docker-amundsen.yml up
     ```bash
     # in ~/<your-path-to-cloned-repo>/amundsendatabuilder
     $ virtualenv -p python3 venv3
-    $ source venv3/bin/activate
+    $ source venv3/bin/activate  
     $ pip3 install -r requirements.txt
+    $ python setup.py install      
     $ python example/scripts/sample_data_loader.py
     ```
 8. Verify dummy data has been ingested by viewing in Neo4j by visiting `http://YOUR-DOCKER-HOST-IP:7474/browser/` and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see two tables -- `hive.core.test_driver` and `dynamo.core.test_pax`.
