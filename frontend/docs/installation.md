@@ -55,7 +55,7 @@ $ eval $(docker-machine env default)
     $ docker build -f public.Dockerfile -t amundsen-frontend:latest .
 
     # in ~/<your-path-to-cloned-repo>/amundsensearchlibrary
-    $ docker build -f public.Dockerfile -t amundsen-search:latest .
+    $ docker build -f Dockerfile -t amundsen-search:latest .
     ```
 6. Start all of the services using:
 ```bash
