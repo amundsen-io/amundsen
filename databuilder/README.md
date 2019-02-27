@@ -1,5 +1,5 @@
 # Amundsen Databuilder
-Amundsen Databuilder is a [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load "ETL") framework designed to build data from Amundsen. You could use the library either with an adhoc python script([example](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py)) or inside an Apache Airflow DAG([example](https://github.com/lyft/amundsendatabuilder/blob/master/example/dags/sample_dag.py))
+Amundsen Databuilder is a [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load "ETL") framework designed to build data from Amundsen. You could use the library either with an adhoc python script([example](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py)) or inside an Apache Airflow DAG([example](https://github.com/lyft/amundsendatabuilder/blob/master/example/dags/sample_dag.py)).
 
 ## Requirements
 - Python = 2.7.x
