@@ -1,4 +1,5 @@
 import logging
+from multiprocessing.pool import ThreadPool, TimeoutError
 
 from pyhocon import ConfigTree  # noqa: F401
 from typing import Any, Optional, List, Iterable  # noqa: F401
@@ -20,12 +21,17 @@ class SqlToTblColUsageTransformer(Transformer):
     Currently it's collects on table level that column on same table will be de-duped.
     In many cases, "from" clause does not contain schema and this will be fetched via table name -> schema name mapping
     which it gets from Hive metastore. (Naming collision is disregarded as it needs column level to disambiguate)
+
+    Currently, ColumnUsageProvider could hang on certain SQL statement and as a short term solution it will timeout
+    processing statement at 10 seconds.
     """
     # Config key
     DATABASE_NAME = 'database'
     CLUSTER_NAME = 'cluster'
     SQL_STATEMENT_ATTRIBUTE_NAME = 'sql_stmt_attribute_name'
     USER_EMAIL_ATTRIBUTE_NAME = 'user_email_attribute_name'
+    COLUMN_EXTRACTION_TIMEOUT_SEC = 'column_extraction_timeout_seconds'
+    LOG_ALL_EXTRACTION_FAILURES = 'log_all_extraction_failures'
 
     total_counts = 0
     failure_counts = 0
@@ -38,6 +44,11 @@ class SqlToTblColUsageTransformer(Transformer):
         self._sql_stmt_attr = conf.get_string(SqlToTblColUsageTransformer.SQL_STATEMENT_ATTRIBUTE_NAME)
         self._user_email_attr = conf.get_string(SqlToTblColUsageTransformer.USER_EMAIL_ATTRIBUTE_NAME)
         self._tbl_to_schema_mapping = self._create_schema_by_table_mapping()
+        self._worker_pool = ThreadPool(processes=1)
+        self._time_out_sec = conf.get_int(SqlToTblColUsageTransformer.COLUMN_EXTRACTION_TIMEOUT_SEC, 10)
+        LOGGER.info('Column extraction timeout: {} seconds'.format(self._time_out_sec))
+        self._log_all_extraction_failures = conf.get_bool(SqlToTblColUsageTransformer.LOG_ALL_EXTRACTION_FAILURES,
+                                                          False)
 
     def transform(self, record):
         # type: (Any) -> Optional[TableColumnUsage]
@@ -48,11 +59,20 @@ class SqlToTblColUsageTransformer(Transformer):
 
         result = []  # type: List[ColumnReader]
         try:
-            columns = ColumnUsageProvider.get_columns(query=stmt)
+            columns = self._worker_pool.apply_async(ColumnUsageProvider.get_columns, (stmt,)).get(self._time_out_sec)
             # LOGGER.info('Statement: {} ---> columns: {}'.format(stmt, columns))
+        except TimeoutError:
+            SqlToTblColUsageTransformer.failure_counts += 1
+            LOGGER.exception('Timed out while getting column usage from query: {}'.format(stmt))
+            LOGGER.info('Killing the thread.')
+            self._worker_pool.terminate()
+            self._worker_pool = ThreadPool(processes=1)
+            LOGGER.info('Killed the thread.')
+            return None
         except Exception:
             SqlToTblColUsageTransformer.failure_counts += 1
-            LOGGER.exception('Failed to get column usage from query: {}'.format(stmt))
+            if self._log_all_extraction_failures:
+                LOGGER.exception('Failed to get column usage from query: {}'.format(stmt))
             return None
 
         # Dedupe is needed to make it table level. TODO: Remove this once we are at column level
