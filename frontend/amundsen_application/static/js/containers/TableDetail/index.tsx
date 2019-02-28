@@ -11,6 +11,7 @@ export const mapStateToProps = (state: GlobalState) => {
     isLoading: state.tableMetadata.isLoading,
     statusCode: state.tableMetadata.statusCode,
     tableData: state.tableMetadata.tableData,
+    tableOwners: state.tableMetadata.tableOwners,
   };
 };
 

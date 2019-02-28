@@ -7,7 +7,7 @@ import {
 
 import {
   metadataAllTags,
-} from '../api/metadata/v0';
+} from './api/v0';
 
 export function* getAllTagsWorker(): SagaIterator {
   try {

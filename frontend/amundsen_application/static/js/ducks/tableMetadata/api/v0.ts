@@ -1,43 +1,26 @@
+/** TODO: We will introduce better typing for requests and responses */
 import axios from 'axios';
 
 import { GetPreviewDataRequest } from '../../tableMetadata/reducer';
 
 const API_PATH = '/api/metadata/v0';
-const sortTagsAlphabetical = (a, b) => a.tag_name.localeCompare(b.tag_name);
 
-function getTableParams(tableDataObject) {
-  const { cluster, database, schema, table_name } = tableDataObject;
-  return `db=${database}&cluster=${cluster}&schema=${schema}&table=${table_name}`;
-}
-
-export function metadataPopularTables() {
-  return axios.get(`${API_PATH}/popular_tables`).then((response) => {
-    return response.data.results;
-  })
-  .catch((error) => {
-    return error.response.data.results;
-  });
-}
-
-export function metadataAllTags() {
-  return axios.get(`${API_PATH}/tags`).then((response) => {
-    return response.data.tags.sort(sortTagsAlphabetical);
-  })
-  .catch((error) => {
-    return error.response.data.tags.sort(sortTagsAlphabetical);
-  });
-}
+/** HELPERS **/
+import {
+  getTableParams,
+  getTableDataFromResponseData,
+  getTableOwnersFromResponseData,
+  getTableTagsFromResponseData
+} from './helpers';
 
 export function metadataTableTags(tableData) {
   const tableParams = getTableParams(tableData);
 
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`).then((response) => {
-    const newTableData = response.data.tableData;
-    newTableData.tags = newTableData.tags.sort(sortTagsAlphabetical);
-    return newTableData;
+    return getTableTagsFromResponseData(response.data.tableData);
   })
   .catch((error) => {
-    return tableData;
+    return [];
   });
 }
 
@@ -62,12 +45,16 @@ export function metadataGetTableData(action) {
   const tableParams = getTableParams(action);
 
   return axios.get(`${API_PATH}/table?${tableParams}&index=${searchIndex}&source=${source}`).then((response) => {
-    const tableData = response.data.tableData;
-    tableData.tags = tableData.tags.sort(sortTagsAlphabetical);
-    return { tableData, statusCode: response.status };
+    const responseData = response.data.tableData;
+    return {
+      data: getTableDataFromResponseData(responseData),
+      owners: getTableOwnersFromResponseData(responseData),
+      tags: getTableTagsFromResponseData(responseData),
+      statusCode: response.status,
+    };
   })
   .catch((error) => {
-    return { tableData: {}, statusCode: error.response.status };
+    return { data: {}, owners: [], tags: [], statusCode: error.response.status };
   });
 }
 

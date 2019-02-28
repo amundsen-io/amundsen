@@ -8,7 +8,7 @@ import {
 
 import {
   metadataPopularTables,
-} from '../api/metadata/v0';
+} from './api/v0';
 
 
 export function* getPopularTablesWorker(): SagaIterator {

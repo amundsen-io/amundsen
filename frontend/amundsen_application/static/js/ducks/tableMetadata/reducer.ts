@@ -1,5 +1,14 @@
-import { PreviewData, PreviewQueryParams, TableMetadata } from '../../components/TableDetail/types';
-import { UpdateTagData } from '../../components/Tags/types';
+import { PreviewData, PreviewQueryParams, TableMetadata, User } from '../../components/TableDetail/types';
+import { Tag } from '../../components/Tags/types';
+
+import tableOwnersReducer, { initialOwnersState, TableOwnerReducerState } from './owners/reducer';
+import tableTagsReducer, {
+  initialTagsState,
+  TableTagsReducerState,
+  UpdateTags,
+  UpdateTagsRequest,
+  UpdateTagsResponse,
+} from './tags/reducer';
 
 /* getTableData */
 export enum GetTableData {
@@ -18,11 +27,13 @@ export interface GetTableDataRequest {
   table_name: string;
 }
 
-interface GetTableDataResponse {
+export interface GetTableDataResponse {
   type: GetTableData.SUCCESS | GetTableData.FAILURE;
   payload: {
     statusCode: number;
-    tableData: TableMetadata;
+    data: TableMetadata;
+    owners: User[];
+    tags: Tag[];
   }
 }
 
@@ -94,41 +105,6 @@ export function updateTableDescription(newValue: string, onSuccess?: () => any, 
 }
 /* end updateTableDescription */
 
-/* updateTableOwner */
-export enum UpdateTableOwner {
-  ACTION = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER',
-  SUCCESS = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_FAILURE',
-}
-
-export enum UpdateMethod {
-  PUT = 'PUT',
-  DELETE = 'DELETE',
-}
-
-export interface UpdateTableOwnerRequest {
-  type: UpdateTableOwner.ACTION;
-  method: UpdateMethod;
-  value: string;
-  onSuccess?: () => any;
-  onFailure?: () => any;
-}
-
-interface UpdateTableOwnerResponse {
-  type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
-}
-
-export function updateTableOwner(value: string, method: UpdateMethod, onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
-  return {
-    value,
-    method,
-    onSuccess,
-    onFailure,
-    type: UpdateTableOwner.ACTION,
-  };
-}
-/* end updateTableOwner */
-
 /* getColumnDescription */
 export enum GetColumnDescription {
   ACTION = 'amundsen/tableMetadata/GET_COLUMN_DESCRIPTION',
@@ -187,30 +163,6 @@ export function updateColumnDescription(newValue: string, columnIndex: number, o
 }
 /* end updateColumnDescription */
 
-/* updateTags */
-export enum UpdateTags {
-  ACTION = 'amundsen/tags/UPDATE_TAGS',
-  SUCCESS = 'amundsen/tags/UPDATE_TAGS_SUCCESS',
-  FAILURE = 'amundsen/tags/UPDATE_TAGS_FAILURE',
-}
-
-export interface UpdateTagsRequest {
-  type: UpdateTags.ACTION,
-  tagArray: UpdateTagData[];
-}
-interface UpdateTagsResponse {
-  type: UpdateTags.SUCCESS | UpdateTags.FAILURE,
-  payload: TableMetadata;
-}
-
-export function updateTags(tagArray: UpdateTagData[]): UpdateTagsRequest  {
-  return {
-    tagArray,
-    type: UpdateTags.ACTION,
-  };
-}
-/* end updateTags */
-
 /* getLastIndexed */
 export enum GetLastIndexed {
   ACTION = 'amundsen/tableMetadata/GET_LAST_UPDATED',
@@ -260,42 +212,68 @@ export type TableMetadataReducerAction =
   GetTableDataRequest | GetTableDataResponse |
   GetTableDescriptionRequest | GetTableDescriptionResponse |
   UpdateTableDescriptionRequest | UpdateTableDescriptionResponse |
-  UpdateTableOwnerRequest | UpdateTableOwnerResponse |
   GetColumnDescriptionRequest | GetColumnDescriptionResponse |
   UpdateColumnDescriptionRequest | UpdateColumnDescriptionResponse |
-  UpdateTagsRequest | UpdateTagsResponse |
   GetLastIndexedRequest | GetLastIndexedResponse |
-  GetPreviewDataRequest | GetPreviewDataResponse;
+  GetPreviewDataRequest | GetPreviewDataResponse |
+  UpdateTagsRequest | UpdateTagsResponse ;
 
 export interface TableMetadataReducerState {
   isLoading: boolean;
-  isLoadingTags: boolean;
   lastIndexed: number;
   preview: PreviewDataState;
   statusCode: number;
   tableData: TableMetadata;
+  tableOwners: TableOwnerReducerState;
+  tableTags: TableTagsReducerState;
 }
 
 const initialPreviewState = {
   data: {},
   status: null,
 };
+const initialTableDataState: TableMetadata = {
+  columns: [],
+  is_editable: false,
+  schema: '',
+  table_name: '',
+  table_description: '',
+  table_writer: { application_url: '', description: '', id: '', name: '' },
+  partition: { is_partitioned: false },
+  table_readers: [],
+  source: { source: '', source_type: '' },
+  watermarks: [],
+};
 const initialState: TableMetadataReducerState = {
   isLoading: true,
-  isLoadingTags: true,
   lastIndexed: null,
   preview: initialPreviewState,
   statusCode: null,
-  tableData: {} as TableMetadata,
+  tableData: initialTableDataState,
+  tableOwners: initialOwnersState,
+  tableTags: initialTagsState,
 };
 
 export default function reducer(state: TableMetadataReducerState = initialState, action: TableMetadataReducerAction): TableMetadataReducerState {
   switch (action.type) {
     case GetTableData.ACTION:
-      return { ...state, isLoading: true, isLoadingTags: true, preview: initialPreviewState };
+      return {
+        ...state,
+        isLoading: true,
+        preview: initialPreviewState,
+        tableOwners: tableOwnersReducer(state.tableOwners, action),
+        tableTags: tableTagsReducer(state.tableTags, action),
+      };
     case GetTableData.FAILURE:
     case GetTableData.SUCCESS:
-      return { ...state, isLoading: false, isLoadingTags: false, statusCode: action.payload.statusCode, tableData: action.payload.tableData };
+      return {
+        ...state,
+        isLoading: false,
+        statusCode: action.payload.statusCode,
+        tableData: action.payload.data,
+        tableOwners: tableOwnersReducer(state.tableOwners, action),
+        tableTags: tableTagsReducer(state.tableTags, action),
+      };
     case GetTableDescription.FAILURE:
     case GetTableDescription.SUCCESS:
       return { ...state, tableData: action.payload };
@@ -309,12 +287,10 @@ export default function reducer(state: TableMetadataReducerState = initialState,
     case GetPreviewData.SUCCESS:
     case GetPreviewData.FAILURE:
       return { ...state, preview: action.payload };
-    case UpdateTags.FAILURE:
-      return { ...state, isLoadingTags: false };
-    case UpdateTags.SUCCESS:
-      return { ...state, isLoadingTags: false, tableData: action.payload };
     case UpdateTags.ACTION:
-      return { ...state, isLoadingTags: true };
+    case UpdateTags.FAILURE:
+    case UpdateTags.SUCCESS:
+      return { ...state, tableTags: tableTagsReducer(state.tableTags, action) };
     default:
       return state;
   }

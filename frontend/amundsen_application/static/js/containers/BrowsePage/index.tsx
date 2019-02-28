@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getAllTags } from '../../ducks/tags/reducer';
+import { getAllTags } from '../../ducks/allTags/reducer';
 
 import BrowsePage, { DispatchFromProps, StateFromProps } from '../../components/BrowsePage';
 import { GlobalState } from "../../ducks/rootReducer";
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    allTags: state.tags.allTags,
-    isLoading: state.tags.isLoading,
+    allTags: state.allTags.allTags,
+    isLoading: state.allTags.isLoading,
   };
 };
 

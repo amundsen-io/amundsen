@@ -26,7 +26,12 @@ interface TableColumnStats {
 
 interface TableReader {
   read_count: number;
-  reader: User[];
+  reader: User;
+}
+
+interface TableSource {
+  source: string | null;
+  source_type: string;
 }
 
 interface TableWriter {
@@ -36,8 +41,9 @@ interface TableWriter {
   name: string;
 }
 
-interface User {
+export interface User {
   display_name: string;
+  profile_url: string;
 }
 
 export interface PreviewQueryParams {
@@ -59,6 +65,11 @@ export interface TableColumn {
   stats: TableColumnStats[];
 }
 
+export interface TableOwners {
+  isLoading: boolean;
+  owners: User[];
+}
+
 export interface TableMetadata {
   columns: TableColumn[];
   is_editable: boolean;
@@ -66,10 +77,9 @@ export interface TableMetadata {
   table_name: string;
   table_description: string;
   table_writer: TableWriter;
-  owners: User[];
   partition: PartitionData;
   table_readers: TableReader[];
-  tags: Tag[];
+  source: TableSource;
   watermarks: Watermark[];
 }
 
