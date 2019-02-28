@@ -23,13 +23,13 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 'job.identifier': 'remove_stale_data_job',
-                neo4j_staleness_removal_task.NEO4J_END_POINT_KEY:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
                     'foobar',
-                neo4j_staleness_removal_task.NEO4J_USER:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
                     'foo',
-                neo4j_staleness_removal_task.NEO4J_PASSWORD:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
                     'bar',
-                neo4j_staleness_removal_task.STALENESS_MAX_PCT:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
                     90,
                 neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo'
             })
@@ -47,13 +47,13 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 'job.identifier': 'remove_stale_data_job',
-                neo4j_staleness_removal_task.NEO4J_END_POINT_KEY:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
                     'foobar',
-                neo4j_staleness_removal_task.NEO4J_USER:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
                     'foo',
-                neo4j_staleness_removal_task.NEO4J_PASSWORD:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
                     'bar',
-                neo4j_staleness_removal_task.STALENESS_MAX_PCT:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
                     5,
                 neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo'
             })
@@ -71,15 +71,15 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 'job.identifier': 'remove_stale_data_job',
-                neo4j_staleness_removal_task.NEO4J_END_POINT_KEY:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
                     'foobar',
-                neo4j_staleness_removal_task.NEO4J_USER:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
                     'foo',
-                neo4j_staleness_removal_task.NEO4J_PASSWORD:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
                     'bar',
-                neo4j_staleness_removal_task.STALENESS_MAX_PCT:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
                     5,
-                neo4j_staleness_removal_task.STALENESS_PCT_MAX_DICT:
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_PCT_MAX_DICT):
                     {'foo': 51},
                 neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo'
             })
