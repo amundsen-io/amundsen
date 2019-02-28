@@ -1,0 +1,44 @@
+@import 'variables';
+
+.tabs-component {
+  .nav.nav-tabs {
+    border: none;
+
+    > li {
+      &.active > a {
+        &,
+        &:hover {
+          color: $gradient-4;
+        }
+
+        &:after {
+          opacity: 1;
+        }
+      }
+
+      > a {
+        background: none;
+        border: none;
+        color: $gray-light;
+        font-size: $font-size-large;
+        line-height: $line-height-large;
+
+        &:hover {
+          color: $text-color;
+        }
+
+        // Active tab indicator
+        &:after {
+          border: 2px solid $gradient-4;
+          bottom: 0;
+          content: "";
+          left: 0;
+          opacity: 0;
+          position: absolute;
+          transition: opacity 200ms ease-in;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
