@@ -48,8 +48,7 @@ class DefaultJob(Job):
 
     def _init(self):
         # type: () -> None
-        task_conf = Scoped.get_scoped_conf(self.conf, self.task.get_scope())
-        self.task.init(task_conf.with_fallback(self.conf))
+        self.task.init(self.conf)
 
     def launch(self):
         # type: () -> None

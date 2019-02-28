@@ -6,8 +6,10 @@ from pyhocon import ConfigFactory  # noqa: F401
 from pyhocon import ConfigTree  # noqa: F401
 from typing import Dict, Iterable, Any  # noqa: F401
 
+from databuilder import Scoped
 from databuilder.task.base_task import Task  # noqa: F401
 from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
+
 
 # A end point for Neo4j e.g: bolt://localhost:9999
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'
@@ -53,8 +55,9 @@ class Neo4jStalenessRemovalTask(Task):
 
     def init(self, conf):
         # type: (ConfigTree) -> None
-
-        conf = conf.with_fallback(DEFAULT_CONFIG)
+        conf = Scoped.get_scoped_conf(conf, self.get_scope())\
+            .with_fallback(conf)\
+            .with_fallback(DEFAULT_CONFIG)
         self.target_nodes = set(conf.get_list(TARGET_NODES))
         self.target_relations = set(conf.get_list(TARGET_RELATIONS))
         self.batch_size = conf.get_int(BATCH_SIZE)
