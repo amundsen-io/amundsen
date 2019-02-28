@@ -7,7 +7,7 @@ import AppConfig from '../../../config/config';
 import LoadingSpinner from '../common/LoadingSpinner';
 import TagInfo from "../Tags/TagInfo";
 import { Tag } from "../Tags/types";
-import { GetAllTagsRequest } from "../../ducks/tags/reducer";
+import { GetAllTagsRequest } from "../../ducks/allTags/reducer";
 
 export interface StateFromProps {
   allTags: Tag[];

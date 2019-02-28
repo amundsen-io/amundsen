@@ -11,6 +11,8 @@ import { getPopularTablesWatcher } from './popularTables/sagas';
 import { executeSearchWatcher } from './search/sagas';
 
 // TableDetail
+import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
+import { updateTableTagsWatcher } from './tableMetadata/tags/sagas';
 import {
   getTableDataWatcher,
   getColumnDescriptionWatcher,
@@ -19,12 +21,10 @@ import {
   getTableDescriptionWatcher,
   updateColumnDescriptionWatcher,
   updateTableDescriptionWatcher,
-  updateTableOwnerWatcher,
-  updateTagsWatcher,
 } from './tableMetadata/sagas';
 
 // Tags
-import { getAllTagsWatcher } from './tags/sagas';
+import { getAllTagsWatcher } from './allTags/sagas';
 
 // User
 import { getCurrentUserWatcher } from "./user/sagas";
@@ -40,7 +40,6 @@ export default function* rootSaga() {
     getPopularTablesWatcher(),
     // Tags
     getAllTagsWatcher(),
-    updateTagsWatcher(),
     // TableDetail
     getTableDataWatcher(),
     getColumnDescriptionWatcher(),
@@ -50,6 +49,7 @@ export default function* rootSaga() {
     updateColumnDescriptionWatcher(),
     updateTableDescriptionWatcher(),
     updateTableOwnerWatcher(),
+    updateTableTagsWatcher(),
     // User
     getCurrentUserWatcher(),
   ]);

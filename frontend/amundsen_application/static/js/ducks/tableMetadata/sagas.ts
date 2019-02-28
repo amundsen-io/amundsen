@@ -9,8 +9,6 @@ import {
   GetTableDescription, GetTableDescriptionRequest,
   UpdateColumnDescription, UpdateColumnDescriptionRequest,
   UpdateTableDescription, UpdateTableDescriptionRequest,
-  UpdateTableOwner, UpdateTableOwnerRequest,
-  UpdateTags, UpdateTagsRequest,
 } from './reducer';
 
 import {
@@ -21,19 +19,16 @@ import {
   metadataGetTableDescription,
   metadataUpdateColumnDescription,
   metadataUpdateTableDescription,
-  metadataUpdateTableOwner,
-  metadataUpdateTableTags,
-  metadataTableTags,
-} from '../api/metadata/v0';
+} from './api/v0';
 
 // getTableData
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
   let tableData;
   try {
-    tableData = yield call(metadataGetTableData, action);
-    yield put({ type: GetTableData.SUCCESS, payload: tableData });
+    const { data, owners, tags } = yield call(metadataGetTableData, action);
+    yield put({ type: GetTableData.SUCCESS, payload: { data, owners, tags } });
   } catch (e) {
-    yield put({ type: GetTableData.FAILURE, payload: tableData });
+    yield put({ type: GetTableData.FAILURE, payload: { data: {}, owners: [], tags: [] } });
   }
 }
 
@@ -82,25 +77,6 @@ export function* updateTableDescriptionWatcher(): SagaIterator {
   yield takeEvery(UpdateTableDescription.ACTION, updateTableDescriptionWorker);
 }
 
-// updateTableOwner
-export function* updateTableOwnerWorker(action: UpdateTableOwnerRequest): SagaIterator {
-  const state = yield select();
-  try {
-    yield call(metadataUpdateTableOwner, action.value, action.method, state.tableMetadata.tableData);
-    if (action.onSuccess) {
-      yield call(action.onSuccess);
-    }
-  } catch (e) {
-    if (action.onFailure) {
-      yield call(action.onFailure);
-    }
-  }
-}
-
-export function* updateTableOwnerWatcher(): SagaIterator {
-  yield takeEvery(UpdateTableOwner.ACTION, updateTableOwnerWorker);
-}
-
 // getColumnDescription
 export function* getColumnDescriptionWorker(action: GetColumnDescriptionRequest): SagaIterator {
   const state = yield select();
@@ -140,24 +116,6 @@ export function* updateColumnDescriptionWorker(action: UpdateColumnDescriptionRe
 
 export function* updateColumnDescriptionWatcher(): SagaIterator {
   yield takeEvery(UpdateColumnDescription.ACTION, updateColumnDescriptionWorker);
-}
-
-// updateTags
-export function* updateTagsWorker(action: UpdateTagsRequest): SagaIterator {
-  const state = yield select();
-  const tableData = state.tableMetadata.tableData;
-  try {
-    yield all(metadataUpdateTableTags(action, tableData));
-    const newTableData = yield call(metadataTableTags, tableData);
-    console.log(newTableData);
-    yield put({ type: UpdateTags.SUCCESS, payload: newTableData });
-  } catch (e) {
-    yield put({ type: UpdateTags.FAILURE, payload: tableData });
-  }
-}
-
-export function* updateTagsWatcher(): SagaIterator {
-  yield takeEvery(UpdateTags.ACTION, updateTagsWorker);
 }
 
 // getLastIndexed

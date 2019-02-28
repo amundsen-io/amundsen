@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { updateTableOwner, UpdateMethod } from '../../../ducks/tableMetadata/reducer';
+import { updateTableOwner, UpdateMethod } from '../../../ducks/tableMetadata/owners/reducer';
 
 import EditableList, { ComponentProps, DispatchFromProps } from '../../../components/common/EditableList';
 

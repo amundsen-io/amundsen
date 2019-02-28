@@ -23,7 +23,7 @@ import Avatar from 'react-avatar';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 
-import { PreviewQueryParams, TableMetadata } from './types';
+import { PreviewQueryParams, TableMetadata, TableOwners } from './types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -32,6 +32,7 @@ export interface StateFromProps {
   isLoading: boolean;
   statusCode?: number;
   tableData: TableMetadata;
+  tableOwners: TableOwners;
 }
 
 export interface DispatchFromProps {
@@ -45,6 +46,7 @@ interface TableDetailState {
   isLoading: boolean;
   statusCode: number;
   tableData: TableMetadata;
+  tableOwners: TableOwners;
 }
 
 class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>, TableDetailState> {
@@ -57,12 +59,27 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     getPreviewData: () => undefined,
     isLoading: true,
     statusCode: null,
-    tableData: {} as TableMetadata,
+    tableData: {
+      columns: [],
+      is_editable: false,
+      schema: '',
+      table_name: '',
+      table_description: '',
+      table_writer: { application_url: '', description: '', id: '', name: '' },
+      partition: { is_partitioned: false },
+      table_readers: [],
+      source: { source: '', source_type: '' },
+      watermarks: [],
+    },
+    tableOwners: {
+      isLoading: true,
+      owners: [],
+    },
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { isLoading, statusCode, tableData} = nextProps;
-    return { isLoading, statusCode, tableData };
+    const { isLoading, statusCode, tableData, tableOwners } = nextProps;
+    return { isLoading, statusCode, tableData, tableOwners };
   }
 
   constructor(props) {
@@ -79,6 +96,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
       isLoading: props.isLoading,
       statusCode: props.statusCode,
       tableData: props.tableData,
+      tableOwners: props.tableOwners,
     }
   }
 
@@ -173,14 +191,17 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     return AppConfig.tableProfile.exploreUrlGenerator(this.database, this.cluster, this.schema, this.tableName);
   };
 
-  createEntityCardSections(data) {
+  createEntityCardSections = () => {
+    const data = this.state.tableData;
+    const tableOwners = this.state.tableOwners;
+
     const entityCardSections = [];
 
     // "Owned By" section
     const listItemRenderer = (props) => {
       return React.createElement(AvatarLabel, {label: props.label});
     };
-    const listItemProps = data.owners.map((entry) => {
+    const listItemProps = tableOwners.owners.map((entry) => {
       return { label: entry.display_name };
     });
     const listItemPropTypes = [{name:'email', property: 'label', type: 'text'}];
@@ -307,7 +328,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
                   />
               </div>
               <div className="col-xs-12 col-md-5 float-md-right col-lg-4">
-                <EntityCard sections={ this.createEntityCardSections(data) }/>
+                <EntityCard sections={ this.createEntityCardSections() }/>
               </div>
               <div className="detail-list-header col-xs-12 col-md-7 col-lg-8">
                 <label>Columns</label>

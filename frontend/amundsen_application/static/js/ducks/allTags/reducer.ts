@@ -2,9 +2,9 @@ import { Tag } from '../../components/Tags/types';
 
 /* getAllTags */
 export enum GetAllTags {
-  ACTION = 'amundsen/tags/GET_ALL_TAGS',
-  SUCCESS = 'amundsen/tags/GET_ALL_TAGS_SUCCESS',
-  FAILURE = 'amundsen/tags/GET_ALL_TAGS_FAILURE',
+  ACTION = 'amundsen/allTags/GET_ALL_TAGS',
+  SUCCESS = 'amundsen/allTags/GET_ALL_TAGS_SUCCESS',
+  FAILURE = 'amundsen/allTags/GET_ALL_TAGS_FAILURE',
 }
 
 export interface GetAllTagsRequest {
