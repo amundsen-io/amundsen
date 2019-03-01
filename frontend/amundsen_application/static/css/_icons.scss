@@ -16,6 +16,11 @@ img.icon {
 
   // TODO - Add other icons here
 
+  &.icon-delete {
+    -webkit-mask-image: url('/static/images/icons/Trash.svg');
+    mask-image: url('/static/images/icons/Trash.svg');
+  }
+
   &.icon-database {
     -webkit-mask-image: url('/static/images/icons/Database.svg');
     mask-image: url('/static/images/icons/Database.svg');
@@ -26,13 +31,18 @@ img.icon {
     mask-image: url('/static/images/icons/Loader.svg');
   }
 
+  &.icon-plus-circle {
+    -webkit-mask-image: url('/static/images/icons/Plus-Circle.svg');
+    mask-image: url('/static/images/icons/Plus-Circle.svg');
+  }
+
   &.icon-preview {
-     -webkit-mask-image: url('/static/images/icons/Preview.svg');
+    -webkit-mask-image: url('/static/images/icons/Preview.svg');
     mask-image: url('/static/images/icons/Preview.svg');
   }
 
   &.icon-right {
-     -webkit-mask-image: url('/static/images/icons/Right.svg');
+    -webkit-mask-image: url('/static/images/icons/Right.svg');
     mask-image: url('/static/images/icons/Right.svg');
   }
 }

@@ -13,13 +13,15 @@ $gradient-1: #f2f5fe;
 $gradient-2: #cad6ff;
 $gradient-3: #5679ff;
 $gradient-4: #3250c8;
+$gradient-5: #28409f;
 
 $gray-base:    #000;
 $gray-darker:  lighten($gray-base, 10%); // #1a1a1a
 $gray-dark:    lighten($gray-base, 20%); // #333
 $gray:         lighten($gray-base, 35%); // ##595959
 $gray-light:   lighten($gray-base, 55%); // #8c8c8c
-$gray-lighter: lighten($gray-base, 85%); // #d9d9d9
+$gray-lighter: lighten($gray-base, 75%); // #bfbfbf
+$gray-lightest: lighten($gray-base, 95%); // #f2f2f2
 
 
 // Scaffolding
