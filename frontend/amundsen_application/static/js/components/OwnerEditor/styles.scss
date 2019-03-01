@@ -1,0 +1,158 @@
+/* TODO: The button styles in this file are to be migrated to _buttons-default.scsss */
+
+@import 'variables';
+
+.owner-editor-component {
+  .btn.add-list-item {
+    color: $gray-light;
+    padding: 4px 1px;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    text-align: left;
+    height: 32px;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      color: $gradient-4;
+      background-color: transparent;
+      border-color: transparent;
+
+      .icon {
+        background-color: $gradient-4;
+      }
+    }
+  }
+
+  label {
+    width: 100%;
+  }
+}
+
+.owner-editor-modal {
+  .component-list li {
+    margin: 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 16px;
+    padding-left: 16px;
+
+    &:focus,
+    &:hover {
+      background-color: $gray-lightest;
+
+      .btn.delete-button {
+        display: block;
+      }
+    }
+
+    .btn.delete-button {
+      height: 24px;
+      width: 24px;
+      margin: auto;
+      margin-right: 0px;
+      padding: 0;
+      display: none;
+      background-color: transparent;
+      border: none;
+
+      &:focus,
+      &:not(.disabled):hover,
+      &:not([disabled]):hover {
+        background-color: transparent;
+        border-color: transparent;
+
+        .icon {
+          background-color: $gradient-4;
+        }
+      }
+    }
+  }
+
+  .loading-spinner {
+    margin-top: auto;
+  }
+
+  .btn.save-btn {
+    color: white;
+    background-color: $gradient-4;
+    border-color: $gradient-4;
+    font-family: $font-family-sans-serif-bold;
+    font-weight: $font-weight-sans-serif-bold;
+
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      color: white;
+      background-color: $gradient-5;
+      border-color: $gradient-5;
+    }
+  }
+  .btn.cancel-btn {
+    border-color: $gray-lighter;
+    font-family: $font-family-sans-serif-bold;
+    font-weight: $font-weight-sans-serif-bold;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: $gray-lighter;
+    }
+  }
+  .btn.add-btn {
+    margin-left: 8px;
+  }
+
+  .modal-body {
+    height: calc(100% - 150px);
+    margin: 15px 0px !important;
+  }
+  .modal-content {
+    height: fit-content;
+  }
+  .modal-dialog {
+    min-width: 400px;
+    height: fit-content;
+    width: fit-content;
+
+    p {
+      text-align: start;
+      margin-left: 4px;
+    }
+  }
+
+  form {
+    display: flex;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-bottom: 16px;
+  }
+  input {
+    border: 1px solid $gray-lighter;
+    border-radius: 4px;
+    outline: none;
+    padding: 4px;
+    width: 100%;
+  }
+}
+
+.status-message {
+  margin-left: 4px;
+  margin-bottom: 4px;
+  font-weight: normal;
+}
+
+.component-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    margin: 1px;
+    &:first-child {
+      flex-grow: 1;
+    }
+  }
+}

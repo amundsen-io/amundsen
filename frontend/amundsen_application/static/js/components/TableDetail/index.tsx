@@ -7,7 +7,7 @@ import { GetTableDataRequest } from '../../ducks/tableMetadata/reducer';
 
 import DataPreviewButton from '../../containers/TableDetail/DataPreviewButton';
 import TableDescEditableText from '../../containers/TableDetail/TableDescEditableText';
-import TableOwnerEditableList from '../../containers/TableDetail/TableOwnerEditableList';
+import OwnerEditor from '../../containers/TableDetail/OwnerEditor';
 import TagInput from '../../containers/TagInput';
 
 import AppConfig from '../../../config/config';
@@ -32,7 +32,6 @@ export interface StateFromProps {
   isLoading: boolean;
   statusCode?: number;
   tableData: TableMetadata;
-  tableOwners: TableOwners;
 }
 
 export interface DispatchFromProps {
@@ -46,7 +45,6 @@ interface TableDetailState {
   isLoading: boolean;
   statusCode: number;
   tableData: TableMetadata;
-  tableOwners: TableOwners;
 }
 
 class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>, TableDetailState> {
@@ -71,15 +69,11 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
       source: { source: '', source_type: '' },
       watermarks: [],
     },
-    tableOwners: {
-      isLoading: true,
-      owners: [],
-    },
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { isLoading, statusCode, tableData, tableOwners } = nextProps;
-    return { isLoading, statusCode, tableData, tableOwners };
+    const { isLoading, statusCode, tableData } = nextProps;
+    return { isLoading, statusCode, tableData };
   }
 
   constructor(props) {
@@ -96,7 +90,6 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
       isLoading: props.isLoading,
       statusCode: props.statusCode,
       tableData: props.tableData,
-      tableOwners: props.tableOwners,
     }
   }
 
@@ -193,27 +186,18 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
 
   createEntityCardSections = () => {
     const data = this.state.tableData;
-    const tableOwners = this.state.tableOwners;
 
     const entityCardSections = [];
 
     // "Owned By" section
-    const listItemRenderer = (props) => {
-      return React.createElement(AvatarLabel, {label: props.label});
+    const ownerSectionRenderer = () => {
+      return (
+        <OwnerEditor
+          readOnly={false}
+        />
+      );
     };
-    const listItemProps = tableOwners.owners.map((entry) => {
-      return { label: entry.display_name };
-    });
-    const listItemPropTypes = [{name:'email', property: 'label', type: 'text'}];
-    const ownerSectionRenderer = (readOnly: boolean) => {
-      return React.createElement(TableOwnerEditableList, {
-        readOnly,
-        listItemProps,
-        listItemPropTypes,
-        listItemRenderer,
-      });
-    };
-    entityCardSections.push({'title': 'Owned By', 'contentRenderer': ownerSectionRenderer, 'isEditable': true});
+    entityCardSections.push({'title': 'Owned By', 'contentRenderer': ownerSectionRenderer, 'isEditable': false});
 
 
     // "Frequent Users" section

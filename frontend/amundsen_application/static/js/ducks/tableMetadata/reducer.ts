@@ -1,7 +1,14 @@
+/* TODO: Reorganize types to allow for some consistency with imports */
 import { PreviewData, PreviewQueryParams, TableMetadata, User } from '../../components/TableDetail/types';
 import { Tag } from '../../components/Tags/types';
 
-import tableOwnersReducer, { initialOwnersState, TableOwnerReducerState } from './owners/reducer';
+import tableOwnersReducer, {
+  initialOwnersState,
+  TableOwnerReducerState,
+  UpdateTableOwner,
+  UpdateTableOwnerRequest,
+  UpdateTableOwnerResponse,
+} from './owners/reducer';
 import tableTagsReducer, {
   initialTagsState,
   TableTagsReducerState,
@@ -32,7 +39,7 @@ export interface GetTableDataResponse {
   payload: {
     statusCode: number;
     data: TableMetadata;
-    owners: User[];
+    owners: { [id: string] : User };
     tags: Tag[];
   }
 }
@@ -216,7 +223,8 @@ export type TableMetadataReducerAction =
   UpdateColumnDescriptionRequest | UpdateColumnDescriptionResponse |
   GetLastIndexedRequest | GetLastIndexedResponse |
   GetPreviewDataRequest | GetPreviewDataResponse |
-  UpdateTagsRequest | UpdateTagsResponse ;
+  UpdateTagsRequest | UpdateTagsResponse |
+  UpdateTableOwnerRequest | UpdateTableOwnerResponse ;
 
 export interface TableMetadataReducerState {
   isLoading: boolean;
@@ -287,6 +295,10 @@ export default function reducer(state: TableMetadataReducerState = initialState,
     case GetPreviewData.SUCCESS:
     case GetPreviewData.FAILURE:
       return { ...state, preview: action.payload };
+    case UpdateTableOwner.ACTION:
+    case UpdateTableOwner.FAILURE:
+    case UpdateTableOwner.SUCCESS:
+      return { ...state, tableOwners: tableOwnersReducer(state.tableOwners, action) };
     case UpdateTags.ACTION:
     case UpdateTags.FAILURE:
     case UpdateTags.SUCCESS:

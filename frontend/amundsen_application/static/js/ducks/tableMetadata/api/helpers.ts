@@ -21,7 +21,12 @@ export function getTableDataFromResponseData(responseData) {
  * Parses the response for table metadata to return the array of table owners
  */
 export function getTableOwnersFromResponseData(responseData) {
-  return responseData.owners;
+  // TODO: owner needs proper id, until then we have to remember that we are using display_name
+  const ownerObj = responseData.owners.reduce((resultObj, currentOwner) => {
+    resultObj[currentOwner.display_name] = currentOwner;
+    return resultObj;
+  }, {});
+  return ownerObj;
 }
 
 /**

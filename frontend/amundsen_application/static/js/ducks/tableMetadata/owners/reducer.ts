@@ -1,5 +1,6 @@
 import { GetTableData, GetTableDataRequest, GetTableDataResponse } from '../reducer';
-import { User } from '../../../components/TableDetail/types';
+import { UpdateMethod } from '.../../../components/OwnerEditor/types';
+import { User } from '.../../../components/TableDetail/types';
 
 /* updateTableOwner */
 export enum UpdateTableOwner {
@@ -8,29 +9,28 @@ export enum UpdateTableOwner {
   FAILURE = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_FAILURE',
 }
 
-export enum UpdateMethod {
-  PUT = 'PUT',
-  DELETE = 'DELETE',
+interface UpdatePayload {
+  method: UpdateMethod;
+  id: string;
 }
 
 export interface UpdateTableOwnerRequest {
   type: UpdateTableOwner.ACTION;
-  method: UpdateMethod;
-  value: string;
+  updateArray: UpdatePayload[];
   onSuccess?: () => any;
   onFailure?: () => any;
 }
 
-interface UpdateTableOwnerResponse {
+export interface UpdateTableOwnerResponse {
   type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
+  payload: { [id: string] : User };
 }
 
-export function updateTableOwner(value: string, method: UpdateMethod, onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
+export function updateTableOwner(updateArray: UpdatePayload[], onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
   return {
-    value,
-    method,
     onSuccess,
     onFailure,
+    updateArray,
     type: UpdateTableOwner.ACTION,
   };
 }
@@ -42,21 +42,26 @@ export type TableOwnerReducerAction =
 
 export interface TableOwnerReducerState {
   isLoading: boolean;
-  owners: User[];
+  owners: { [id: string] : User };
 }
 
 export const initialOwnersState: TableOwnerReducerState = {
   isLoading: true,
-  owners: [],
+  owners: {},
 };
 
 export default function reducer(state: TableOwnerReducerState = initialOwnersState, action: TableOwnerReducerAction): TableOwnerReducerState {
   switch (action.type) {
     case GetTableData.ACTION:
-      return { isLoading: true, owners: [] };
+      return { isLoading: true, owners: {} };
     case GetTableData.FAILURE:
     case GetTableData.SUCCESS:
       return { isLoading: false, owners: action.payload.owners };
+    case UpdateTableOwner.ACTION:
+      return { ...state, isLoading: true };
+    case UpdateTableOwner.FAILURE:
+    case UpdateTableOwner.SUCCESS:
+      return { isLoading: false, owners: action.payload };
     default:
       return state;
   }

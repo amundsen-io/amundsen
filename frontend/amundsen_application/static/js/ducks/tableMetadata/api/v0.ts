@@ -54,7 +54,7 @@ export function metadataGetTableData(action) {
     };
   })
   .catch((error) => {
-    return { data: {}, owners: [], tags: [], statusCode: error.response.status };
+    return { data: {}, owners: {}, tags: [], statusCode: error.response.status };
   });
 }
 
@@ -85,18 +85,31 @@ export function metadataUpdateTableDescription(description, tableData) {
   }
 }
 
-export function metadataUpdateTableOwner(owner, method, tableData) {
-  return axios({
-    method,
-    url: `${API_PATH}/update_table_owner`,
-    data: {
-      owner,
-      db: tableData.database,
-      cluster: tableData.cluster,
-      schema: tableData.schema,
-      table: tableData.table_name,
-    }
+export function metadataTableOwners(tableData) {
+  const tableParams = getTableParams(tableData);
+
+  return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`).then((response) => {
+    return getTableOwnersFromResponseData(response.data.tableData);
   })
+  .catch((error) => {
+    return {};
+  });
+}
+
+export function metadataUpdateTableOwner(action, tableData) {
+  const updatePayloads = action.updateArray.map(item => ({
+      method: item.method,
+      url: `${API_PATH}/update_table_owner`,
+      data: {
+        cluster: tableData.cluster,
+        db: tableData.database,
+        owner: item.id,
+        schema: tableData.schema,
+        table: tableData.table_name,
+      },
+    }
+  ));
+  return updatePayloads.map(payload => { axios(payload) });
 }
 
 export function metadataGetColumnDescription(columnIndex, tableData) {
