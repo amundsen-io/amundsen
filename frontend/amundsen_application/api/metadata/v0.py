@@ -60,6 +60,7 @@ def popular_tables() -> Response:
             'database': db,
             'description': result.get('table_description'),
             'key': '{0}://{1}.{2}/{3}'.format(db, cluster, schema_name, table_name),
+            'type': 'table',
         }
 
     try:

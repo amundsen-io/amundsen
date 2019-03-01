@@ -25,11 +25,12 @@ class MetadataTest(unittest.TestCase):
         self.expected_parsed_popular_tables = [
             {
                 'name': 'test_table',
-                'schema_name': 'test_schema',
                 'cluster': 'test_cluster',
                 'database': 'test_db',
                 'description': 'This is a test',
                 'key': 'test_db://test_cluster.test_schema/test_table',
+                'schema_name': 'test_schema',
+                'type': 'table',
             }
         ]
         self.mock_metadata = {

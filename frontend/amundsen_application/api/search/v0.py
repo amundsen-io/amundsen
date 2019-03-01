@@ -98,6 +98,19 @@ def _create_url_with_field(*, search_term: str, page_index: int) -> str:
     return url
 
 
+# TODO - Implement these functions
+def _search_tables(*, search_term: str, page_index: int) -> Dict[str, Any]:
+    return {}
+
+
+def _search_dashboards(*, search_term: str, page_index: int) -> Dict[str, Any]:
+    return {}
+
+
+def _search_people(*, search_term: str, page_index: int) -> Dict[str, Any]:
+    return {}
+
+
 @action_logging
 def _search(*, search_term: str, page_index: int) -> Dict[str, Any]:
     """
@@ -109,12 +122,28 @@ def _search(*, search_term: str, page_index: int) -> Dict[str, Any]:
 
     TODO: Define an interface for envoy_client
     """
-    results_dict = {
-        'results': [],
-        'search_term': search_term,
-        'total_results': 0,
+    def _map_table_result(result: Dict) -> Dict:
+        return {
+            'type': 'table',
+            'key': result.get('key', None),
+            'name': result.get('name', None),
+            'cluster': result.get('cluster', None),
+            'description': result.get('description', None),
+            'database': result.get('database', None),
+            'schema_name': result.get('schema_name', None),
+            'last_updated': result.get('last_updated', None),
+        }
+
+    tables = {
         'page_index': int(page_index),
+        'results': [],
+        'total_results': 0,
+    }
+
+    results_dict = {
+        'search_term': search_term,
         'msg': '',
+        'tables': tables,
     }
 
     try:
@@ -139,20 +168,9 @@ def _search(*, search_term: str, page_index: int) -> Dict[str, Any]:
 
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = 'Success'
-            results_dict['total_results'] = response.json().get('total_results')
-
-            # Filter and parse the response dictionary from the search service
-            params = [
-                'key',
-                'name',
-                'cluster',
-                'description',
-                'database',
-                'schema_name',
-                'last_updated',
-            ]
             results = response.json().get('results')
-            results_dict['results'] = [{key: result.get(key, None) for key in params} for result in results]
+            tables['results'] = [_map_table_result(result) for result in results]
+            tables['total_results'] = response.json().get('total_results')
         else:
             message = 'Encountered error: Search request failed'
             results_dict['msg'] = message

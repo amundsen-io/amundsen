@@ -8,7 +8,7 @@ import {
 
 import {
   searchExecuteSearch,
-} from '../api/search/v0';
+} from './api/v0';
 
 
 export function* executeSearchWorker(action: ExecuteSearchRequest): SagaIterator {

@@ -6,21 +6,27 @@ import Pagination from 'react-js-pagination';
 import SearchBar from './SearchBar';
 import SearchList from './SearchList';
 import InfoButton from '../common/InfoButton';
-import { SearchListResult } from './types';
+import { TableResource } from "../common/ResourceListItem/types";
 
 import { ExecuteSearchRequest } from '../../ducks/search/reducer';
 import { GetPopularTablesRequest } from '../../ducks/popularTables/reducer';
-
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
+import {
+  DashboardSearchResults,
+  TableSearchResults,
+  UserSearchResults
+} from "../../ducks/search/types";
+
 const RESULTS_PER_PAGE = 10;
 
 export interface StateFromProps {
-  pageIndex: number;
-  popularTables: SearchListResult[];
-  searchResults: SearchListResult[];
   searchTerm: string;
-  totalResults: number;
+  popularTables: TableResource[];
+
+  tables: TableSearchResults;
+  dashboards: DashboardSearchResults
+  users: UserSearchResults;
 }
 
 export interface DispatchFromProps {
@@ -39,11 +45,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   public static defaultProps: SearchPageProps = {
     executeSearch: () => undefined,
     getPopularTables: () => undefined,
-    searchResults: [],
     searchTerm: '',
-    pageIndex: 0,
     popularTables: [],
-    totalResults: 0,
+    dashboards: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    tables: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    users: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    }
   };
 
   constructor(props) {
@@ -66,15 +84,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   createErrorMessage() {
-    const { pageIndex, searchResults, searchTerm, totalResults } = this.props;
-    if (totalResults === 0 && searchTerm.length > 0) {
+    const items = this.props.tables;
+    const { page_index, total_results } = items;
+    const { searchTerm } = this.props;
+    if (total_results === 0 && searchTerm.length > 0) {
       return (
         <label>
           Your search - <i>{ searchTerm }</i> - did not match any tables.
         </label>
       )
     }
-    if (totalResults > 0 && (RESULTS_PER_PAGE * pageIndex) + 1 > totalResults) {
+    if (total_results > 0 && (RESULTS_PER_PAGE * page_index) + 1 > total_results) {
       return (
         <label>
           Page index out of bounds for available matches.
@@ -110,23 +130,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       )
     }
 
-    const { pageIndex, popularTables, searchResults, searchTerm, totalResults } = this.props;
-    const showResultsList = searchResults.length > 0 || popularTables.length > 0;
+    const items = this.props.tables;
+    const { page_index, results, total_results } = items;
+    const { popularTables } = this.props;
+
+    const showResultsList = results.length > 0 || popularTables.length > 0;
 
     if (showResultsList) {
-      const startIndex = (RESULTS_PER_PAGE * pageIndex) + 1;
-      const endIndex = RESULTS_PER_PAGE * ( pageIndex + 1);
-      const hasSearchResults = totalResults > 0;
-      const listTitle = hasSearchResults ?
-        `${startIndex}-${Math.min(endIndex, totalResults)} of ${totalResults} results` :
-        'Popular Tables';
-      const infoText = hasSearchResults ?
-        "Ordered by the relevance of matches within a resource's metadata, as well as overall usage." :
-        "These are some of the most commonly accessed tables within your organization.";
+      const startIndex = (RESULTS_PER_PAGE * page_index) + 1;
+      const endIndex = RESULTS_PER_PAGE * ( page_index + 1);
+      let listTitle = `${startIndex}-${Math.min(endIndex, total_results)} of ${total_results} results`;
+      let infoText = "Ordered by the relevance of matches within a resource's metadata, as well as overall usage.";
       const searchListParams = {
-        source: hasSearchResults ? 'search_results' : 'popular_tables',
-        paginationStartIndex: RESULTS_PER_PAGE * pageIndex
+        source: 'search_results',
+        paginationStartIndex: RESULTS_PER_PAGE * page_index
       };
+
+      const showPopularTables = total_results < 1;
+      if (showPopularTables) {
+        listTitle = 'Popular Tables';
+        infoText = "These are some of the most commonly accessed tables within your organization.";
+        searchListParams.source = 'popular_tables';
+      }
 
       return (
         <div className="col-xs-12">
@@ -135,15 +160,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               <label> { listTitle } </label>
               <InfoButton infoText={ infoText }/>
             </div>
-            <SearchList results={ hasSearchResults ? searchResults : popularTables } params={ searchListParams }/>
+            <SearchList results={ showPopularTables ? popularTables : results } params={ searchListParams }/>
           </div>
           <div className="search-pagination-component">
             {
-              totalResults > RESULTS_PER_PAGE &&
+              total_results > RESULTS_PER_PAGE &&
               <Pagination
-                activePage={ pageIndex + 1 }
+                activePage={ page_index + 1 }
                 itemsCountPerPage={ RESULTS_PER_PAGE }
-                totalItemsCount={ totalResults }
+                totalItemsCount={ total_results }
                 pageRangeDisplayed={ 10 }
                 onChange={ this.handlePageChange }
               />

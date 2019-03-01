@@ -1,9 +1,10 @@
 import * as React from 'react';
-import SearchListItem from './SearchListItem';
-import { SearchListResult } from '../types';
+import ResourceListItem from '../../common/ResourceListItem';
+import { Resource } from "../../common/ResourceListItem/types";
+
 
 interface SearchListProps {
-  results?: SearchListResult[];
+  results?: Resource[];
   params?: SearchListParams;
 }
 
@@ -13,22 +14,15 @@ interface SearchListParams {
 }
 
 const SearchList: React.SFC<SearchListProps> = ({ results, params }) => {
-  const { source , paginationStartIndex } = params;
-  const resultMap = results.map((entry, i) =>
-    <SearchListItem
-      key={ entry.key }
-      params={{source, index: paginationStartIndex + i}}
-      title={`${entry.schema_name}.${entry.name}`}
-      subtitle={ entry.description }
-      lastUpdated = { entry.last_updated }
-      schema={ entry.schema_name }
-      cluster={ entry.cluster }
-      table={ entry.name }
-      db={ entry.database }
-  />);
+  const { source, paginationStartIndex } = params;
   return (
     <ul className="list-group">
-      { resultMap }
+      {
+        results.map((resource, index) => {
+          const logging = { source, index: paginationStartIndex + index };
+          return <ResourceListItem item={ resource } logging={ logging } key={ index } />;
+        })
+      }
     </ul>
   );
 };
