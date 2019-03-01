@@ -1,36 +1,33 @@
 @import 'variables';
 
 .feedback-component {
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
+  bottom: 75px;
   position: fixed;
   right: 25px;
-  bottom: 75px;
   z-index: 2;
-  -webkit-box-shadow: 0 0 10px -1px rgba(0, 0, 0, .5);
-  -moz-box-shadow: 0 0 10px -1px rgba(0, 0, 0, .5);
-  box-shadow: 0 0 10px -1px rgba(0, 0, 0, .5);
 
   &.expanded {
     background-color: white;
-    padding: 24px;
-    width: 400px;
+    border-radius: 2px;
+    border-top: 4px solid $brand-primary;
     height: auto;
     min-height: 450px;
-    border: 1px solid $gray-lighter;
-    border-top: 4px solid $brand-primary;
-    border-radius: 0 0 5px 5px;
+    padding: 32px;
+    width: 400px;
   }
 
   &.collapsed {
+    align-items: center;
     background-color: $brand-primary;
     border: 2px solid white;
-    margin: 0;
-    height: 48px;
-    width: 48px;
-    border-radius: 100px; /* makes it a circle */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border-radius: 50%; /* makes it a circle */
     cursor: pointer;
+    display: flex;
+    height: 48px;
+    justify-content: center;
+    margin: 0;
+    width: 48px;
 
     &:hover {
       opacity: 0.5;
