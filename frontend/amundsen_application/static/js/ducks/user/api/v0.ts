@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
-import { CurrentUser } from './types';
+import { CurrentUser } from '../types';
 
 export function getCurrentUser() {
   return axios.get(`/api/current_user`)

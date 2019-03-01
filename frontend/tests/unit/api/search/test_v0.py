@@ -34,6 +34,7 @@ class SearchTest(unittest.TestCase):
         }
         self.expected_parsed_search_results = [
             {
+                'type': 'table',
                 'cluster': 'test_cluster',
                 'database': 'test_db',
                 'description': 'This is a test',
@@ -81,8 +82,10 @@ class SearchTest(unittest.TestCase):
             response = test.get('/api/search/v0/', query_string=dict(query='test', page_index='0'))
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertEqual(data.get('total_results'), self.mock_search_results.get('total_results'))
-            self.assertCountEqual(data.get('results'), self.expected_parsed_search_results)
+
+            tables = data.get('tables')
+            self.assertEqual(tables.get('total_results'), self.mock_search_results.get('total_results'))
+            self.assertCountEqual(tables.get('results'), self.expected_parsed_search_results)
 
     @responses.activate
     def test_search_fail_on_non_200_response(self) -> None:
