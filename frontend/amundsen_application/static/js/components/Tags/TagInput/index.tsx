@@ -270,15 +270,15 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
       <div className='tag-input'>
         { tagBody }
         <Modal className='tag-input-modal' show={this.state.showModal} onHide={this.handleClose}>
-          <Modal.Header className="text-center" closeButton={true}>
+          <Modal.Header className="text-center" closeButton={false}>
             <Modal.Title>Add/Remove Tags</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {this.renderModalBody()}
           </Modal.Body>
           <Modal.Footer>
-            <button type="button" className="btn btn-light" onClick={this.handleSaveModalEdit}>Save</button>
-            <button type="button" className="btn btn-light" onClick={this.handleClose}>Cancel</button>
+            <button type="button" className="btn btn-cancel" onClick={this.handleClose}>Cancel</button>
+            <button type="button" className="btn btn-save" onClick={this.handleSaveModalEdit}>Save</button>
           </Modal.Footer>
         </Modal>
       </div>
