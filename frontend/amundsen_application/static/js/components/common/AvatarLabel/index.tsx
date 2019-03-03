@@ -13,7 +13,7 @@ const AvatarLabel: React.SFC<AvatarLabelProps> = ({ label, src }) => {
   return (
     <div className='avatar-label-component'>
       <div className='component-avatar'>
-        <Avatar name={label} src={src} size={25} round={true} />
+        <Avatar name={label} src={src} size={24} round={true} />
       </div>
       <label className='component-label'>{label}</label>
     </div>

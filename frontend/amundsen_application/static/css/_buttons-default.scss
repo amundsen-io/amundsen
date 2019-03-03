@@ -28,6 +28,38 @@
     margin-bottom: 4px;
   }
 
+  &.btn-cancel {
+    border-color: $gray-lighter;
+    font-family: $font-family-sans-serif-bold;
+    font-weight: $font-weight-sans-serif-bold;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: $gray-lighter;
+      border-color: $gray-lighter;
+    }
+  }
+
+  &.btn-flat-icon {
+    border: none;
+    color: $gray-light;
+    box-shadow: none !important;
+    padding: 0px;
+    text-align: left;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: transparent;
+      color: $gradient-4;
+
+      .icon {
+        background-color: $gradient-4;
+      }
+    }
+  }
+
   &.btn-primary {
     border-width: 2px;
     -webkit-box-shadow: 8px 9px 20px -15px rgba(0,0,0,0.46);
@@ -35,6 +67,22 @@
     box-shadow: 8px 9px 20px -15px rgba(0,0,0,0.46);
     font-family: $font-family-sans-serif-bold;
     font-weight: $font-weight-sans-serif-bold;
+  }
+
+  &.btn-save {
+    color: white;
+    background-color: $gradient-4;
+    border-color: $gradient-4;
+    font-family: $font-family-sans-serif-bold;
+    font-weight: $font-weight-sans-serif-bold;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      color: white;
+      background-color: $gradient-5;
+      border-color: $gradient-5;
+    }
   }
 
   &.disabled,
