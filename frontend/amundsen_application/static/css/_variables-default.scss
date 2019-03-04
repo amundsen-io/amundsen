@@ -9,56 +9,57 @@
 
 
 // Colors
-$gradient-1: #f2f5fe;
-$gradient-2: #cad6ff;
-$gradient-3: #5679ff;
-$gradient-4: #3250c8;
-$gradient-5: #28409f;
+$gradient-1: #f2f5fe !default;
+$gradient-2: #cad6ff !default;
+$gradient-3: #5679ff !default;
+$gradient-4: #3250c8 !default;
+$gradient-5: #28409f !default;
 
-$gray-base:    #000;
-$gray-darker:  lighten($gray-base, 10%); // #1a1a1a
-$gray-dark:    lighten($gray-base, 20%); // #333
-$gray:         lighten($gray-base, 35%); // ##595959
-$gray-light:   lighten($gray-base, 55%); // #8c8c8c
-$gray-lighter: lighten($gray-base, 75%); // #bfbfbf
-$gray-lightest: lighten($gray-base, 95%); // #f2f2f2
+$gray-base:     #000 !default;
+$gray-darker:   lighten($gray-base, 10%) !default; // #1a1a1a
+$gray-dark:     lighten($gray-base, 20%) !default; // #333
+$gray:          lighten($gray-base, 35%) !default; // ##595959
+$gray-light:    lighten($gray-base, 55%) !default; // #8c8c8c
+$gray-lighter:  lighten($gray-base, 75%) !default; // #bfbfbf
+$gray-lightest: lighten($gray-base, 95%) !default; // #f2f2f2
 
 
 // Scaffolding
-$body-bg:    #fff;
-$text-color: $gray-dark;
+$body-bg:    #fff !default;
+$text-color: $gray-dark !default;
 
 
 // Typography
-$font-family-sans-serif:      "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-$font-family-sans-serif-bold: $font-family-sans-serif;
-$font-weight-sans-serif-bold: 600;
-$font-family-serif:           Georgia, "Times New Roman", Times, serif;
-$font-family-monospace:       Menlo, Monaco, Consolas, "Courier New", monospace;
+$font-family-sans-serif:      "Lucida Sans Unicode", "Lucida Grande", sans-serif !default;
+$font-family-sans-serif-bold: $font-family-sans-serif !default;
+$font-weight-sans-serif-bold: 600 !default;
+$font-family-serif:           Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace:       Menlo, Monaco, Consolas, "Courier New", monospace !default;
 
-$font-family-base:            $font-family-sans-serif;
-$headings-font-family:        $font-family-sans-serif-bold;
+$font-family-base:            $font-family-sans-serif !default;
+$headings-font-family:        $font-family-sans-serif-bold !default;
 
-$font-size-small:             12px;
-$line-height-small:           18px;
-$font-size-large:             16px;
-$line-height-large:           24px;
+$font-size-small:    12px !default;
+$font-size-base:     14px !default;
+$font-size-large:    16px !default;
+$line-height-small:  1.5 !default;
+$line-height-large:  1.5 !default;
 
 
 // Buttons
-$btn-default-border: $gray-lighter;
-$btn-default-bg:     white;
-$btn-default-color:  $text-color;
+$btn-default-border: $gray-lighter !default;
+$btn-default-bg:     #fff !default;
+$btn-default-color:  $text-color !default;
 
-$btn-primary-border: $gray-lighter;
-$btn-primary-bg:     white;
-$btn-primary-color:  $text-color;
+$btn-primary-border: $gray-lighter !default;
+$btn-primary-bg:     #fff !default;
+$btn-primary-color:  $text-color !default;
 
 
 // List Group
-$list-group-border:        $gray-lighter;
-$list-group-border-radius: 0;
+$list-group-border:        $gray-lighter !default;
+$list-group-border-radius: 0 !default;
 
 
 // Labels
-$label-primary-bg:  $gradient-3;
+$label-primary-bg: $gradient-3 !default;
