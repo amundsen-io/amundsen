@@ -74,5 +74,5 @@ $ docker-compose -f docker-amundsen.yml up
     $ python setup.py install      
     $ python example/scripts/sample_data_loader.py
     ```
-8. Verify dummy data has been ingested by viewing in Neo4j by visiting `http://YOUR-DOCKER-HOST-IP:7474/browser/` and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see two tables -- `hive.core.test_driver` and `dynamo.core.test_pax`.
-9. View UI at `http://YOUR-DOCKER-HOST-IP:5000/table_detail/gold/hive/core/test_driver`
+8. Verify dummy data has been ingested by viewing in Neo4j by visiting `http://YOUR-DOCKER-HOST-IP:7474/browser/` and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see two tables -- `hive.test_schema.test_table1` and `dynamo.test_schema.test_table2`.
+9. View UI at `http://YOUR-DOCKER-HOST-IP:5000/table_detail/gold/hive/test_schema/test_table1` or `/table_detail/gold/dynamo/test_schema/test_table2`
