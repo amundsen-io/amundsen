@@ -5,8 +5,7 @@
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://bit.ly/2tFsN1X)
 
-Amundsen is a data discovery portal to make data more discoverable. The project named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen) collects and displays
-metadata about various data resources such as Hive and Redshift tables.
+Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover South Pole.
 
 It includes three microservices and a data ingestion library.
 - [amundsenfrontendlibrary](https://github.com/lyft/amundsenfrontendlibrary): Frontend service which is a Flask application with a React frontend.
@@ -39,7 +38,12 @@ Please note that the mock images only served as demonstration purpose.
 - **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset)
     
     ![](docs/img/data_preview.png)
-    
+
+## Get Involved in the Community
+
+Want help or want to help? 
+Join our [slack channel](https://bit.ly/2tFsN1X) and our [mailing list](https://groups.google.com/forum/#!forum/amundsen-dev)
+
 ## Getting started
 
 Please visit the Amundsen documentation for help with [installing Amundsen](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#install-standalone-application-directly-from-the-source) 
@@ -58,17 +62,13 @@ Please visit [Installation guideline](docs/installation.md) on how to install Am
 
 Please visit [Configuration doc](docs/configuration.md) on how to configure Amundsen various enviroment settings(local vs production).
 
-## Developer Guide
+## Developer Guidelines
 
-Please visit [Developer guideline](docs/developer_guide.md) if you want to build Amundsen in your local environment.
+Please visit [Developer guidelines](docs/developer_guide.md) if you want to build Amundsen in your local environment.
 
 ## Roadmap
 
 Please visit [Roadmap](docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
-
-## Community
-
-Want help? Join our [slack channel](https://bit.ly/2tFsN1X)
 
 # License
 [Apache 2.0 License.](/LICENSE)
