@@ -6,6 +6,7 @@ from pyhocon import ConfigTree  # noqa: F401
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
+from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
 
 
 class Neo4jSearchDataExtractor(Extractor):
@@ -18,6 +19,7 @@ class Neo4jSearchDataExtractor(Extractor):
     DEFAULT_NEO4J_CYPHER_QUERY = textwrap.dedent(
         """
         MATCH (db:Database)<-[:CLUSTER_OF]-(cluster:Cluster)<-[:SCHEMA_OF]-(schema:Schema)<-[:TABLE_OF]-(table:Table)
+        {publish_tag_filter}
         OPTIONAL MATCH (table)-[:DESCRIPTION]->(table_description:Description)
         OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)
         OPTIONAL MATCH (table)-[:COLUMN]->(cols:Column)
@@ -44,8 +46,11 @@ class Neo4jSearchDataExtractor(Extractor):
         self.conf = conf
 
         # extract cypher query from conf, if specified, else use default query
-        self.cypher_query = conf.get_string(Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY,
-                                            Neo4jSearchDataExtractor.DEFAULT_NEO4J_CYPHER_QUERY)
+        if Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY in conf:
+            self.cypher_query = conf.get_string(Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY)
+        else:
+            self.cypher_query = self._add_publish_tag_filter(conf.get_string(JOB_PUBLISH_TAG, ''),
+                                                             Neo4jSearchDataExtractor.DEFAULT_NEO4J_CYPHER_QUERY)
 
         self.neo4j_extractor = Neo4jExtractor()
         # write the cypher query in configs in Neo4jExtractor scope
@@ -72,3 +77,18 @@ class Neo4jSearchDataExtractor(Extractor):
     def get_scope(self):
         # type: () -> str
         return 'extractor.search_data'
+
+    def _add_publish_tag_filter(self, publish_tag, cypher_query):
+        """
+        Adds publish tag filter into Cypher query
+        :param publish_tag: value of publish tag.
+        :param cypher_query:
+        :return:
+        """
+        # type: (str, str) -> str
+        if not publish_tag:
+            publish_tag_filter = ''
+        else:
+            publish_tag_filter = """WHERE table.published_tag = '{}'""".format(publish_tag)
+
+        return cypher_query.format(publish_tag_filter=publish_tag_filter)
