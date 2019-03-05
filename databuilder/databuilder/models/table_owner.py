@@ -4,7 +4,7 @@ from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
 
-from databuilder.models.table_column_usage import TableColumnUsage
+from databuilder.models.user import User
 
 
 class TableOwner(Neo4jCsvSerializable):
@@ -50,7 +50,7 @@ class TableOwner(Neo4jCsvSerializable):
     def get_owner_model_key(self, owner  # type: str
                             ):
         # type: (...) -> str
-        return TableColumnUsage.USER_NODE_KEY_FORMAT.format(email=owner)
+        return User.USER_NODE_KEY_FORMAT.format(email=owner)
 
     def get_metadata_model_key(self):
         # type: (...) -> str
@@ -70,8 +70,8 @@ class TableOwner(Neo4jCsvSerializable):
             if owner:
                 results.append({
                     NODE_KEY: self.get_owner_model_key(owner),
-                    NODE_LABEL: TableColumnUsage.USER_NODE_LABEL,
-                    TableColumnUsage.USER_NODE_EMAIL: owner
+                    NODE_LABEL: User.USER_NODE_LABEL,
+                    User.USER_NODE_EMAIL: owner
                 })
         return results
 
@@ -85,7 +85,7 @@ class TableOwner(Neo4jCsvSerializable):
         for owner in self.owners:
             results.append({
                 RELATION_START_KEY: self.get_owner_model_key(owner),
-                RELATION_START_LABEL: TableColumnUsage.USER_NODE_LABEL,
+                RELATION_START_LABEL: User.USER_NODE_LABEL,
                 RELATION_END_KEY: self.get_metadata_model_key(),
                 RELATION_END_LABEL: 'Table',
                 RELATION_TYPE: TableOwner.OWNER_TABLE_RELATION_TYPE,
