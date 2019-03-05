@@ -6,7 +6,7 @@ import SanitizedHTML from 'react-sanitized-html';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import { AnnouncementsGetRequest } from "../../ducks/announcements/reducer";
+import { AnnouncementsGetRequest } from "../../ducks/announcements/types";
 import { AnnouncementPost } from "./types";
 
 interface AnnouncementPageState {

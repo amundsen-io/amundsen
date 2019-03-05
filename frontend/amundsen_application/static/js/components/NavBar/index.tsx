@@ -6,8 +6,8 @@ import { bindActionCreators } from 'redux';
 
 import AppConfig from '../../../config/config';
 import { GlobalState } from "../../ducks/rootReducer";
-import { getCurrentUser, GetCurrentUserRequest } from "../../ducks/user/reducer";
-import { CurrentUser } from "../../ducks/user/types";
+import { getCurrentUser } from "../../ducks/user/reducer";
+import { CurrentUser, GetCurrentUserRequest } from "../../ducks/user/types";
 
 import './styles.scss';
 

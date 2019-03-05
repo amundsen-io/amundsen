@@ -1,13 +1,9 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
-import {
-  GetAllTags,
-} from './reducer';
+import { GetAllTags } from './types';
 
-import {
-  metadataAllTags,
-} from './api/v0';
+import { metadataAllTags } from './api/v0';
 
 export function* getAllTagsWorker(): SagaIterator {
   try {

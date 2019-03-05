@@ -1,40 +1,24 @@
 import { SendingState } from '../../components/common/Feedback/types';
 
-/* SubmitFeedback */
-export enum SubmitFeedback {
-  ACTION = 'amundsen/feedback/SUBMIT_FEEDBACK',
-  SUCCESS = 'amundsen/feedback/SUBMIT_FEEDBACK_SUCCESS',
-  FAILURE = 'amundsen/feedback/SUBMIT_FEEDBACK_FAILURE',
+import {
+  ResetFeedback, ResetFeedbackRequest,
+  SubmitFeedback, SubmitFeedbackRequest, SubmitFeedbackResponse,
+} from './types';
+
+export type SubmitFeedbackAction = SubmitFeedbackRequest | SubmitFeedbackResponse;
+export type ResetFeedbackAction = ResetFeedbackRequest;
+
+export type FeedbackReducerAction = SubmitFeedbackAction | ResetFeedbackAction;
+
+export interface FeedbackReducerState {
+  sendState: SendingState;
 }
 
-export interface SubmitFeedbackRequest {
-  type: SubmitFeedback.ACTION;
-  data: FormData;
-}
-
-interface SubmitFeedbackResponse {
-  type: SubmitFeedback.SUCCESS | SubmitFeedback.FAILURE;
-  payload?: FeedbackReducerState;
-}
-
-export function submitFeedback(formData): SubmitFeedbackRequest {
+export function submitFeedback(formData: FormData): SubmitFeedbackRequest {
   return {
     data: formData,
     type: SubmitFeedback.ACTION,
   };
-}
-
-type SubmitFeedbackAction = SubmitFeedbackRequest | SubmitFeedbackResponse;
-/* end SubmitFeedback */
-
-
-/* ResetFeedback */
-export enum ResetFeedback {
-  ACTION = 'amundsen/feedback/RESET_FEEDBACK',
-}
-
-export interface ResetFeedbackAction {
-  type: ResetFeedback.ACTION;
 }
 
 export function resetFeedback(): ResetFeedbackAction {
@@ -43,16 +27,8 @@ export function resetFeedback(): ResetFeedbackAction {
   };
 }
 
-/* end ResetFeedback */
-
-export type FeedbackReducerAction = SubmitFeedbackAction | ResetFeedbackAction;
-
-export interface FeedbackReducerState {
-  sendState: SendingState;
-}
-
 const initialState: FeedbackReducerState = {
-  sendState: SendingState.IDLE
+  sendState: SendingState.IDLE,
 };
 
 export default function reducer(state: FeedbackReducerState = initialState, action: FeedbackReducerAction): FeedbackReducerState {

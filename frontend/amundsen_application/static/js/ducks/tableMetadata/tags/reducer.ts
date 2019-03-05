@@ -1,30 +1,8 @@
-import { GetTableData, GetTableDataRequest, GetTableDataResponse } from '../reducer';
-import { UpdateTagData, Tag } from '../../../components/Tags/types';
-
-/* updateTags */
-export enum UpdateTags {
-  ACTION = 'amundsen/tags/UPDATE_TAGS',
-  SUCCESS = 'amundsen/tags/UPDATE_TAGS_SUCCESS',
-  FAILURE = 'amundsen/tags/UPDATE_TAGS_FAILURE',
-}
-
-export interface UpdateTagsRequest {
-  type: UpdateTags.ACTION,
-  tagArray: UpdateTagData[];
-}
-
-export interface UpdateTagsResponse {
-  type: UpdateTags.SUCCESS | UpdateTags.FAILURE,
-  payload: Tag[];
-}
-
-export function updateTags(tagArray: UpdateTagData[]): UpdateTagsRequest  {
-  return {
-    tagArray,
-    type: UpdateTags.ACTION,
-  };
-}
-/* end updateTags */
+import {
+  GetTableData, GetTableDataRequest, GetTableDataResponse,
+  UpdateTags, UpdateTagsRequest, UpdateTagsResponse,
+  UpdateTagData, Tag,
+} from '../types';
 
 export type TableTagsReducerAction =
   GetTableDataRequest | GetTableDataResponse |
@@ -33,6 +11,13 @@ export type TableTagsReducerAction =
 export interface TableTagsReducerState {
   isLoading: boolean;
   tags: Tag[];
+}
+
+export function updateTags(tagArray: UpdateTagData[]): UpdateTagsRequest  {
+  return {
+    tagArray,
+    type: UpdateTags.ACTION,
+  };
 }
 
 export const initialTagsState: TableTagsReducerState = {

@@ -3,7 +3,7 @@ import LoadingSpinner from '../../LoadingSpinner';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
-import { ResetFeedbackAction, SubmitFeedbackRequest } from "../../../../ducks/feedback/reducer";
+import { ResetFeedbackRequest, SubmitFeedbackRequest } from "../../../../ducks/feedback/types";
 
 import { SendingState } from '../types';
 
@@ -17,7 +17,7 @@ export interface StateFromProps {
 
 export interface DispatchFromProps {
   submitFeedback: (data: FormData) => SubmitFeedbackRequest;
-  resetFeedback: () => ResetFeedbackAction;
+  resetFeedback: () => ResetFeedbackRequest;
 }
 
 type FeedbackFormProps = StateFromProps & DispatchFromProps;

@@ -1,39 +1,25 @@
-import { Tag } from '../../components/Tags/types';
+import {
+  GetAllTags, GetAllTagsRequest, GetAllTagsResponse,
+  Tag,
+} from './types';
 
-/* getAllTags */
-export enum GetAllTags {
-  ACTION = 'amundsen/allTags/GET_ALL_TAGS',
-  SUCCESS = 'amundsen/allTags/GET_ALL_TAGS_SUCCESS',
-  FAILURE = 'amundsen/allTags/GET_ALL_TAGS_FAILURE',
-}
+export type AllTagsReducerAction = GetAllTagsRequest | GetAllTagsResponse;
 
-export interface GetAllTagsRequest {
-  type: GetAllTags.ACTION;
-}
-interface GetAllTagsResponse {
-  type: GetAllTags.SUCCESS | GetAllTags.FAILURE;
-  payload: Tag[];
-}
-type GetAllTagsAction = GetAllTagsRequest | GetAllTagsResponse;
-
-export function getAllTags(): GetAllTagsRequest {
-  return { type: GetAllTags.ACTION };
-}
-/* end getAllTags */
-
-export type TagReducerAction = GetAllTagsAction;
-
-export interface TagReducerState {
+export interface AllTagsReducerState {
   allTags: Tag[];
   isLoading: boolean;
 }
 
-const initialState: TagReducerState = {
+export function getAllTags(): GetAllTagsRequest {
+  return { type: GetAllTags.ACTION };
+}
+
+const initialState: AllTagsReducerState = {
   allTags: [],
   isLoading: false,
 };
 
-export default function reducer(state: TagReducerState = initialState, action: TagReducerAction): TagReducerState {
+export default function reducer(state: AllTagsReducerState = initialState, action: AllTagsReducerAction): AllTagsReducerState {
   switch (action.type) {
     case GetAllTags.ACTION:
       return { ...state, isLoading: true };

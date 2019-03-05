@@ -5,7 +5,7 @@ import feedback, { FeedbackReducerState } from './feedback/reducer';
 import popularTables, { PopularTablesReducerState } from './popularTables/reducer';
 import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, { TableMetadataReducerState } from './tableMetadata/reducer';
-import allTags, { TagReducerState } from './allTags/reducer';
+import allTags, { AllTagsReducerState } from './allTags/reducer';
 import user, { UserReducerState } from './user/reducer';
 
 export interface GlobalState {
@@ -14,7 +14,7 @@ export interface GlobalState {
   popularTables: PopularTablesReducerState;
   search: SearchReducerState;
   tableMetadata: TableMetadataReducerState;
-  allTags: TagReducerState;
+  allTags: AllTagsReducerState;
   user: UserReducerState;
 }
 

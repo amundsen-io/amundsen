@@ -6,8 +6,8 @@ import Select, { components } from 'react-select';
 import CreatableSelect from 'react-select/lib/Creatable';
 import makeAnimated from 'react-select/lib/animated';
 
-import { GetAllTagsRequest } from '../../../ducks/allTags/reducer';
-import { UpdateTagsRequest } from '../../../ducks/tableMetadata/tags/reducer';
+import { GetAllTagsRequest } from '../../../ducks/allTags/types';
+import { UpdateTagsRequest } from '../../../ducks/tableMetadata/types';
 
 import TagInfo from "../TagInfo";
 import { Tag, UpdateTagMethod, UpdateTagData } from '../types';

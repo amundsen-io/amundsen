@@ -3,7 +3,7 @@ import * as DocumentTitle from 'react-document-title';
 import * as $ from 'jquery';
 import * as qs from 'simple-query-string';
 
-import { GetTableDataRequest } from '../../ducks/tableMetadata/reducer';
+import { GetTableDataRequest } from '../../ducks/tableMetadata/types';
 
 import DataPreviewButton from '../../containers/TableDetail/DataPreviewButton';
 import TableDescEditableText from '../../containers/TableDetail/TableDescEditableText';
@@ -58,7 +58,9 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     isLoading: true,
     statusCode: null,
     tableData: {
+      cluster: '',
       columns: [],
+      database: '',
       is_editable: false,
       schema: '',
       table_name: '',

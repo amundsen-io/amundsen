@@ -1,15 +1,9 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
-import {
-  GetPopularTables,
-  GetPopularTablesRequest,
-} from './reducer';
+import { GetPopularTables, GetPopularTablesRequest } from './types';
 
-import {
-  metadataPopularTables,
-} from './api/v0';
-
+import { metadataPopularTables} from './api/v0';
 
 export function* getPopularTablesWorker(): SagaIterator {
   try {

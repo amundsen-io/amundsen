@@ -1,29 +1,18 @@
-import { CurrentUser } from './types';
+import {
+  GetCurrentUser,
+  GetCurrentUserRequest,
+  GetCurrentUserResponse,
+  CurrentUser
+} from './types';
 
-export enum GetCurrentUser {
-  ACTION = 'amundsen/user/GET_ACTION',
-  SUCCESS = 'amundsen/user/GET_SUCCESS',
-  FAILURE = 'amundsen/user/GET_FAILURE',
-}
+type UserReducerAction = GetCurrentUserRequest | GetCurrentUserResponse;
 
-export interface GetCurrentUserRequest {
-  type: GetCurrentUser.ACTION;
+export interface UserReducerState {
+  currentUser: CurrentUser;
 }
 
 export function getCurrentUser(): GetCurrentUserRequest {
   return { type: GetCurrentUser.ACTION };
-}
-
-interface GetCurrentUserResponse {
-  type: GetCurrentUser.SUCCESS | GetCurrentUser.FAILURE;
-  payload?: CurrentUser;
-}
-type GetUserAction = GetCurrentUserRequest | GetCurrentUserResponse;
-
-type UserReducerAction = GetUserAction
-
-export interface UserReducerState {
-  currentUser: CurrentUser;
 }
 
 const initialState: UserReducerState = {
@@ -32,8 +21,6 @@ const initialState: UserReducerState = {
 
 export default function reducer(state: UserReducerState = initialState, action: UserReducerAction): UserReducerState {
   switch (action.type) {
-    case GetCurrentUser.FAILURE:
-      return state;
     case GetCurrentUser.SUCCESS:
       return { ...state, currentUser: action.payload };
     default:

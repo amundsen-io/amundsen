@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
-import { UpdateTableOwner, UpdateTableOwnerRequest } from './reducer';
+import { UpdateTableOwner, UpdateTableOwnerRequest } from '../types';
 
 import { metadataUpdateTableOwner, metadataTableOwners } from '../api/v0';
 

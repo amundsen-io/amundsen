@@ -1,45 +1,27 @@
-import { AnnouncementPost } from '../../components/AnnouncementPage/types';
+import {
+  AnnouncementsGet, AnnouncementsGetRequest, AnnouncementsGetResponse,
+  AnnouncementPost,
+} from './types';
 
-export enum AnnouncementsGet {
-  ACTION = 'amundsen/announcements/GET_ACTION',
-  SUCCESS = 'amundsen/announcements/GET_SUCCESS',
-  FAILURE = 'amundsen/announcements/GET_FAILURE',
-}
+export type AnnouncementsReducerAction = AnnouncementsGetRequest | AnnouncementsGetResponse;
 
-// announcementsGet
-export interface AnnouncementsGetRequest {
-  type: AnnouncementsGet.ACTION;
+export interface AnnouncementsReducerState {
+  posts: AnnouncementPost[];
 }
 
 export function announcementsGet(): AnnouncementsGetRequest {
   return { type: AnnouncementsGet.ACTION };
 }
 
-interface AnnouncementsGetResponse {
-  type: AnnouncementsGet.SUCCESS | AnnouncementsGet.FAILURE;
-  payload: AnnouncementPost[];
-}
-
-type AnnouncementsGetAction = AnnouncementsGetRequest | AnnouncementsGetResponse;
-
-
-export type AnnouncementsReducerAction = AnnouncementsGetAction;
-
-export interface AnnouncementsReducerState {
-  posts: AnnouncementPost[];
-}
 const initialState: AnnouncementsReducerState = {
-  posts: []
+  posts: [],
 };
 
 export default function reducer(state: AnnouncementsReducerState = initialState, action: AnnouncementsReducerAction): AnnouncementsReducerState {
   switch (action.type) {
-    case AnnouncementsGet.ACTION:
-      return state;
+    case AnnouncementsGet.FAILURE:
     case AnnouncementsGet.SUCCESS:
       return { posts: action.payload };
-    case AnnouncementsGet.FAILURE:
-      return { posts: [] };
     default:
       return state;
   }
