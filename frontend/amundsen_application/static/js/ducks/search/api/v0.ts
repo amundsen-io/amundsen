@@ -1,20 +1,8 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import {
-  DashboardSearchResults,
-  TableSearchResults,
-  UserSearchResults,
-} from '../types';
 
-import { SearchReducerState } from "../reducer";
+import { SearchResponse } from '../types';
 
-interface SearchResponse {
-  msg: string;
-  status_code: number;
-  search_term: string;
-  dashboards: DashboardSearchResults;
-  tables: TableSearchResults;
-  users: UserSearchResults;
-}
+import { SearchReducerState } from '../reducer';
 
 function transformSearchResults(data: SearchResponse): SearchReducerState {
   return {
@@ -28,6 +16,9 @@ function transformSearchResults(data: SearchResponse): SearchReducerState {
 export function searchExecuteSearch(action) {
   const { term, pageIndex } = action;
   return axios.get(`/api/search/v0/?query=${term}&page_index=${pageIndex}`)
-  .then((response: AxiosResponse<SearchResponse>)=> transformSearchResults(response.data))
-  .catch((error: AxiosError) => transformSearchResults(error.response.data));
+  .then((response: AxiosResponse<SearchResponse>) => transformSearchResults(response.data))
+  .catch((error: AxiosError) => {
+    const data = error.response ? error.response.data : {};
+    return transformSearchResults(data);
+  });
 }

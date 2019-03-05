@@ -1,29 +1,16 @@
-import { GetTableData, GetTableDataRequest, GetTableDataResponse } from '../reducer';
-import { UpdateMethod } from '.../../../components/OwnerEditor/types';
-import { User } from '.../../../components/TableDetail/types';
+import {
+  GetTableData, GetTableDataRequest, GetTableDataResponse,
+  UpdateTableOwner, UpdateTableOwnerRequest, UpdateTableOwnerResponse,
+  UpdatePayload, User
+} from '../types';
 
-/* updateTableOwner */
-export enum UpdateTableOwner {
-  ACTION = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER',
-  SUCCESS = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_FAILURE',
-}
+export type TableOwnerReducerAction =
+  GetTableDataRequest | GetTableDataResponse |
+  UpdateTableOwnerRequest | UpdateTableOwnerResponse ;
 
-interface UpdatePayload {
-  method: UpdateMethod;
-  id: string;
-}
-
-export interface UpdateTableOwnerRequest {
-  type: UpdateTableOwner.ACTION;
-  updateArray: UpdatePayload[];
-  onSuccess?: () => any;
-  onFailure?: () => any;
-}
-
-export interface UpdateTableOwnerResponse {
-  type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
-  payload: { [id: string] : User };
+export interface TableOwnerReducerState {
+  isLoading: boolean;
+  owners: { [id: string] : User };
 }
 
 export function updateTableOwner(updateArray: UpdatePayload[], onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
@@ -33,16 +20,6 @@ export function updateTableOwner(updateArray: UpdatePayload[], onSuccess?: () =>
     updateArray,
     type: UpdateTableOwner.ACTION,
   };
-}
-/* end updateTableOwner */
-
-export type TableOwnerReducerAction =
-  GetTableDataRequest | GetTableDataResponse |
-  UpdateTableOwnerRequest | UpdateTableOwnerResponse;
-
-export interface TableOwnerReducerState {
-  isLoading: boolean;
-  owners: { [id: string] : User };
 }
 
 export const initialOwnersState: TableOwnerReducerState = {

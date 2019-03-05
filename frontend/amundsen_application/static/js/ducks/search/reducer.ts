@@ -1,35 +1,11 @@
 import {
+  ExecuteSearch,
+  ExecuteSearchRequest,
+  ExecuteSearchResponse,
   DashboardSearchResults,
   TableSearchResults,
   UserSearchResults,
 } from './types';
-
-/* executeSearch */
-export enum ExecuteSearch {
-  ACTION = 'amundsen/search/EXECUTE_SEARCH',
-  SUCCESS = 'amundsen/search/EXECUTE_SEARCH_SUCCESS',
-  FAILURE = 'amundsen/search/EXECUTE_SEARCH_FAILURE',
-}
-
-export interface ExecuteSearchRequest {
-  type: ExecuteSearch.ACTION;
-  term: string;
-  pageIndex: number;
-}
-
-interface ExecuteSearchResponse {
-  type: ExecuteSearch.SUCCESS | ExecuteSearch.FAILURE;
-  payload?: SearchReducerState;
-}
-
-export function executeSearch(term: string, pageIndex: number): ExecuteSearchRequest  {
-  return {
-    term,
-    pageIndex,
-    type: ExecuteSearch.ACTION,
-  };
-}
-/* end executeSearch */
 
 export type SearchReducerAction = ExecuteSearchRequest | ExecuteSearchResponse;
 
@@ -38,6 +14,14 @@ export interface SearchReducerState {
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+}
+
+export function executeSearch(term: string, pageIndex: number): ExecuteSearchRequest  {
+  return {
+    term,
+    pageIndex,
+    type: ExecuteSearch.ACTION,
+  };
 }
 
 const initialState: SearchReducerState = {

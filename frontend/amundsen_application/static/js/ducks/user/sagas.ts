@@ -1,7 +1,7 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
-import { GetCurrentUser } from './reducer';
+import { GetCurrentUser } from './types';
 import { getCurrentUser } from './api/v0';
 
 export function* getUserWorker(): SagaIterator {

@@ -2,9 +2,8 @@
 import { delay, SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
-import { ResetFeedback, SubmitFeedback, SubmitFeedbackRequest } from './reducer';
-import { feedbackSubmitFeedback } from '../api/feedback/v0';
-
+import { ResetFeedback, SubmitFeedback, SubmitFeedbackRequest } from './types';
+import { feedbackSubmitFeedback } from './api/v0';
 
 function* submitFeedbackWorker(action: SubmitFeedbackRequest): SagaIterator {
   try {

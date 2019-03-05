@@ -7,6 +7,6 @@ export function getCurrentUser() {
     .then((response: AxiosResponse<CurrentUser>) => {
       return response.data;
     }).catch((error: AxiosError) => {
-      console.log(error.response);
+      return {};
     });
 }

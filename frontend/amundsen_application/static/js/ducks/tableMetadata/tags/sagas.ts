@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
-import { UpdateTags, UpdateTagsRequest } from './reducer';
+import { UpdateTags, UpdateTagsRequest } from '../types';
 
 import { metadataUpdateTableTags, metadataTableTags } from '../api/v0';
 

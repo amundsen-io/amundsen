@@ -4,7 +4,7 @@ import { SagaIterator } from 'redux-saga';
 import {
   ExecuteSearch,
   ExecuteSearchRequest,
-} from './reducer';
+} from './types';
 
 import {
   searchExecuteSearch,

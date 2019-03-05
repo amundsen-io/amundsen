@@ -2,14 +2,14 @@ import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
 import {
-  GetLastIndexedRequest, GetLastIndexed,
+  GetLastIndexed, GetLastIndexedRequest,
   GetPreviewData, GetPreviewDataRequest,
   GetTableData, GetTableDataRequest,
   GetColumnDescription, GetColumnDescriptionRequest,
   GetTableDescription, GetTableDescriptionRequest,
   UpdateColumnDescription, UpdateColumnDescriptionRequest,
   UpdateTableDescription, UpdateTableDescriptionRequest,
-} from './reducer';
+} from './types';
 
 import {
   metadataGetLastIndexed,
@@ -23,7 +23,6 @@ import {
 
 // getTableData
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
-  let tableData;
   try {
     const { data, owners, tags } = yield call(metadataGetTableData, action);
     yield put({ type: GetTableData.SUCCESS, payload: { data, owners, tags } });

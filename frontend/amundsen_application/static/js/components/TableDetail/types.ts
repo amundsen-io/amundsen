@@ -71,7 +71,9 @@ export interface TableOwners {
 }
 
 export interface TableMetadata {
+  cluster: string;
   columns: TableColumn[];
+  database: string;
   is_editable: boolean;
   schema: string;
   table_name: string;

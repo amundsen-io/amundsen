@@ -5,7 +5,8 @@ import { bindActionCreators } from 'redux';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 import { GlobalState } from "../../ducks/rootReducer";
-import { getLastIndexed, GetLastIndexedRequest } from "../../ducks/tableMetadata/reducer";
+import { getLastIndexed } from "../../ducks/tableMetadata/reducer";
+import { GetLastIndexedRequest } from "../../ducks/tableMetadata/types";
 
 // Props
 interface StateFromProps {

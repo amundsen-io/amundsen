@@ -1,47 +1,41 @@
-/* TODO: Reorganize types to allow for some consistency with imports */
-import { PreviewData, PreviewQueryParams, TableMetadata, User } from '../../components/TableDetail/types';
-import { Tag } from '../../components/Tags/types';
+import {
+  GetTableData, GetTableDataRequest, GetTableDataResponse, TableMetadata,
+  GetTableDescription, GetTableDescriptionRequest, GetTableDescriptionResponse,
+  UpdateTableDescription, UpdateTableDescriptionRequest, UpdateTableDescriptionResponse,
+  GetColumnDescription, GetColumnDescriptionResponse, GetColumnDescriptionRequest,
+  UpdateColumnDescription, UpdateColumnDescriptionRequest, UpdateColumnDescriptionResponse,
+  GetLastIndexed, GetLastIndexedRequest, GetLastIndexedResponse,
+  GetPreviewData, GetPreviewDataRequest, GetPreviewDataResponse, PreviewQueryParams, PreviewDataState,
+  UpdateTableOwner,
+  UpdateTags,
+} from './types';
 
 import tableOwnersReducer, {
-  initialOwnersState,
-  TableOwnerReducerState,
-  UpdateTableOwner,
-  UpdateTableOwnerRequest,
-  UpdateTableOwnerResponse,
+  initialOwnersState, TableOwnerReducerAction, TableOwnerReducerState,
 } from './owners/reducer';
+
 import tableTagsReducer, {
-  initialTagsState,
-  TableTagsReducerState,
-  UpdateTags,
-  UpdateTagsRequest,
-  UpdateTagsResponse,
+  initialTagsState, TableTagsReducerAction, TableTagsReducerState,
 } from './tags/reducer';
 
-/* getTableData */
-export enum GetTableData {
-  ACTION = 'amundsen/tableMetadata/GET_TABLE_DATA',
-  SUCCESS = 'amundsen/tableMetadata/GET_TABLE_DATA_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/GET_TABLE_DATA_FAILURE',
-}
+export type TableMetadataReducerAction =
+  GetTableDataRequest | GetTableDataResponse |
+  GetTableDescriptionRequest | GetTableDescriptionResponse |
+  UpdateTableDescriptionRequest | UpdateTableDescriptionResponse |
+  GetColumnDescriptionRequest | GetColumnDescriptionResponse |
+  UpdateColumnDescriptionRequest | UpdateColumnDescriptionResponse |
+  GetLastIndexedRequest | GetLastIndexedResponse |
+  GetPreviewDataRequest | GetPreviewDataResponse |
+  TableOwnerReducerAction | TableTagsReducerAction ;
 
-export interface GetTableDataRequest {
-  type: GetTableData.ACTION;
-  cluster: string;
-  database: string;
-  schema: string;
-  searchIndex?: string;
-  source?: string;
-  table_name: string;
-}
-
-export interface GetTableDataResponse {
-  type: GetTableData.SUCCESS | GetTableData.FAILURE;
-  payload: {
-    statusCode: number;
-    data: TableMetadata;
-    owners: { [id: string] : User };
-    tags: Tag[];
-  }
+export interface TableMetadataReducerState {
+  isLoading: boolean;
+  lastIndexed: number;
+  preview: PreviewDataState;
+  statusCode: number;
+  tableData: TableMetadata;
+  tableOwners: TableOwnerReducerState;
+  tableTags: TableTagsReducerState;
 }
 
 export function getTableData(cluster: string, database: string, schema: string, tableName: string, searchIndex?: string, source?: string): GetTableDataRequest {
@@ -55,25 +49,6 @@ export function getTableData(cluster: string, database: string, schema: string, 
     type: GetTableData.ACTION,
   };
 }
-/* end getTableData */
-
-/* getTableDescription */
-export enum GetTableDescription {
-  ACTION = 'amundsen/tableMetadata/GET_TABLE_DESCRIPTION',
-  SUCCESS = 'amundsen/tableMetadata/GET_TABLE_DESCRIPTION_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/GET_TABLE_DESCRIPTION_FAILURE',
-}
-
-export interface GetTableDescriptionRequest {
-  type: GetTableDescription.ACTION;
-  onSuccess?: () => any;
-  onFailure?: () => any;
-}
-
-interface GetTableDescriptionResponse {
-  type: GetTableDescription.SUCCESS | GetTableDescription.FAILURE;
-  payload: TableMetadata;
-}
 
 export function getTableDescription(onSuccess?: () => any, onFailure?: () => any): GetTableDescriptionRequest {
   return {
@@ -81,25 +56,6 @@ export function getTableDescription(onSuccess?: () => any, onFailure?: () => any
     onFailure,
     type: GetTableDescription.ACTION,
   };
-}
-/* end getTableDescription */
-
-/* updateTableDescription */
-export enum UpdateTableDescription {
-  ACTION = 'amundsen/tableMetadata/UPDATE_TABLE_DESCRIPTION',
-  SUCCESS = 'amundsen/tableMetadata/UPDATE_TABLE_DESCRIPTION_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/UPDATE_TABLE_DESCRIPTION_FAILURE',
-}
-
-export interface UpdateTableDescriptionRequest {
-  type: UpdateTableDescription.ACTION;
-  newValue: string;
-  onSuccess?: () => any;
-  onFailure?: () => any;
-}
-
-interface UpdateTableDescriptionResponse {
-  type: UpdateTableDescription.SUCCESS | UpdateTableDescription.FAILURE;
 }
 
 export function updateTableDescription(newValue: string, onSuccess?: () => any, onFailure?: () => any): UpdateTableDescriptionRequest {
@@ -110,26 +66,6 @@ export function updateTableDescription(newValue: string, onSuccess?: () => any, 
     type: UpdateTableDescription.ACTION,
   };
 }
-/* end updateTableDescription */
-
-/* getColumnDescription */
-export enum GetColumnDescription {
-  ACTION = 'amundsen/tableMetadata/GET_COLUMN_DESCRIPTION',
-  SUCCESS = 'amundsen/tableMetadata/GET_COLUMN_DESCRIPTION_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/GET_COLUMN_DESCRIPTION_FAILURE',
-}
-
-export interface GetColumnDescriptionRequest {
-  type: GetColumnDescription.ACTION;
-  columnIndex: number;
-  onSuccess?: () => any;
-  onFailure?: () => any;
-}
-
-interface GetColumnDescriptionResponse {
-  type: GetColumnDescription.SUCCESS | GetColumnDescription.FAILURE;
-  payload: TableMetadata;
-}
 
 export function getColumnDescription(columnIndex: number, onSuccess?: () => any, onFailure?: () => any): GetColumnDescriptionRequest {
   return {
@@ -138,25 +74,6 @@ export function getColumnDescription(columnIndex: number, onSuccess?: () => any,
     columnIndex,
     type: GetColumnDescription.ACTION,
   };
-}
-/* end getColumnDescription */
-
-/* updateColumnDescription */
-export enum UpdateColumnDescription {
-  ACTION = 'amundsen/tableMetadata/UPDATE_COLUMN_DESCRIPTION',
-  SUCCESS = 'amundsen/tableMetadata/UPDATE_COLUMN_DESCRIPTION_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/UPDATE_COLUMN_DESCRIPTION_FAILURE',
-}
-
-export interface UpdateColumnDescriptionRequest {
-  type: UpdateColumnDescription.ACTION;
-  newValue: string;
-  columnIndex: number;
-  onSuccess?: () => any;
-  onFailure?: () => any;
-}
-interface UpdateColumnDescriptionResponse {
-  type: UpdateColumnDescription.SUCCESS | UpdateColumnDescription.FAILURE;
 }
 
 export function updateColumnDescription(newValue: string, columnIndex: number, onSuccess?: () => any, onFailure?: () => any): UpdateColumnDescriptionRequest {
@@ -168,72 +85,13 @@ export function updateColumnDescription(newValue: string, columnIndex: number, o
     type: UpdateColumnDescription.ACTION,
   };
 }
-/* end updateColumnDescription */
-
-/* getLastIndexed */
-export enum GetLastIndexed {
-  ACTION = 'amundsen/tableMetadata/GET_LAST_UPDATED',
-  SUCCESS = 'amundsen/tableMetadata/GET_LAST_UPDATED_SUCCESS',
-  FAILURE = 'amundsen/tableMetadata/GET_LAST_UPDATED_FAILURE',
-}
-
-export interface GetLastIndexedRequest {
-  type: GetLastIndexed.ACTION;
-}
-
-interface GetLastIndexedResponse {
-  type: GetLastIndexed.SUCCESS | GetLastIndexed.FAILURE;
-  payload?: number;
-}
 
 export function getLastIndexed(): GetLastIndexedRequest {
   return { type: GetLastIndexed.ACTION };
 }
-/* end getLastIndexed */
-
-/* getPreviewData */
-export enum GetPreviewData {
-  ACTION = 'amundsen/preview/GET_PREVIEW_DATA',
-  SUCCESS = 'amundsen/preview/GET_PREVIEW_DATA_SUCCESS',
-  FAILURE = 'amundsen/preview/GET_PREVIEW_DATA_FAILURE',
-}
-interface PreviewDataState {
-  data: PreviewData;
-  status: number | null;
-}
-export interface GetPreviewDataRequest {
-  type: GetPreviewData.ACTION;
-  queryParams: PreviewQueryParams;
-}
-interface GetPreviewDataResponse {
-  type: GetPreviewData.SUCCESS | GetPreviewData.FAILURE;
-  payload: PreviewDataState;
-}
 
 export function getPreviewData(queryParams: PreviewQueryParams): GetPreviewDataRequest {
   return { queryParams, type: GetPreviewData.ACTION };
-}
-/* end getPreviewData */
-
-export type TableMetadataReducerAction =
-  GetTableDataRequest | GetTableDataResponse |
-  GetTableDescriptionRequest | GetTableDescriptionResponse |
-  UpdateTableDescriptionRequest | UpdateTableDescriptionResponse |
-  GetColumnDescriptionRequest | GetColumnDescriptionResponse |
-  UpdateColumnDescriptionRequest | UpdateColumnDescriptionResponse |
-  GetLastIndexedRequest | GetLastIndexedResponse |
-  GetPreviewDataRequest | GetPreviewDataResponse |
-  UpdateTagsRequest | UpdateTagsResponse |
-  UpdateTableOwnerRequest | UpdateTableOwnerResponse ;
-
-export interface TableMetadataReducerState {
-  isLoading: boolean;
-  lastIndexed: number;
-  preview: PreviewDataState;
-  statusCode: number;
-  tableData: TableMetadata;
-  tableOwners: TableOwnerReducerState;
-  tableTags: TableTagsReducerState;
 }
 
 const initialPreviewState = {
@@ -241,7 +99,9 @@ const initialPreviewState = {
   status: null,
 };
 const initialTableDataState: TableMetadata = {
+  cluster: '',
   columns: [],
+  database: '',
   is_editable: false,
   schema: '',
   table_name: '',

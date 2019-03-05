@@ -1,15 +1,16 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
-import { announcementsGet } from '../api/announcements/v0';
-import { AnnouncementsGet, AnnouncementsGetRequest } from "./reducer";
 
+import { announcementsGet } from './api/v0';
 
-export function* announcementsGetWorker(action: AnnouncementsGetRequest): SagaIterator {
+import { AnnouncementsGet } from './types';
+
+export function* announcementsGetWorker(): SagaIterator {
   try {
     const announcements = yield call(announcementsGet);
     yield put({ type: AnnouncementsGet.SUCCESS, payload: announcements });
   } catch(error) {
-    yield put({ type: AnnouncementsGet.FAILURE });
+    yield put({ type: AnnouncementsGet.FAILURE, payload: [] });
   }
 }
 
