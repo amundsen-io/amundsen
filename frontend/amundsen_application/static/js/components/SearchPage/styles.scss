@@ -29,7 +29,7 @@
  }
 .pagination>li>a,
 .pagination>li>span {
-  color: $gradient-4;
+  color: $brand-color-4;
   border: 1px solid $gray-lighter;
 }
 .pagination>.active>a,
@@ -39,8 +39,8 @@
 .pagination>.active>span:hover,
 .pagination>.active>span:focus {
   z-index: 0;
-  background-color: $gradient-4;
-  border-color: $gradient-4
+  background-color: $brand-color-4;
+  border-color: $brand-color-4
 }
 .pagination>li>a:focus,
 .pagination>li>a:hover,

@@ -34,23 +34,23 @@ button.edit-button {
   mask-image: url('/static/images/icons/Edit.svg');
 }
 button.edit-button:hover {
-  background-color: $gradient-4;
+  background-color: $brand-color-4;
 }
 button.active-edit-button {
   height: 24px;
   width: 24px;
   border: none;
   border-radius: 5px;
-  background-color: $gradient-1;
+  background-color: $brand-color-1;
   background-image: url('/static/images/icons/Edit_Inverted.svg');
-  -moz-box-shadow: inset 1px 1px 2px $gradient-4;
-  -webkit-box-shadow: inset 1px 1px 2px $gradient-4;
-  box-shadow: inset 1px 1px 2px $gradient-4;
+  -moz-box-shadow: inset 1px 1px 2px $brand-color-4;
+  -webkit-box-shadow: inset 1px 1px 2px $brand-color-4;
+  box-shadow: inset 1px 1px 2px $brand-color-4;
 }
 button.edit-button:focus,
 button.active-edit-button:focus {
   outline: none;
-  box-shadow: 0 0 1pt 1pt $gradient-4
+  box-shadow: 0 0 1pt 1pt $brand-color-4
 }
 
 

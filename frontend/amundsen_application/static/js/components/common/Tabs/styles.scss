@@ -8,7 +8,7 @@
       &.active > a {
         &,
         &:hover {
-          color: $gradient-4;
+          color: $brand-color-4;
         }
 
         &:after {
@@ -29,7 +29,7 @@
 
         // Active tab indicator
         &:after {
-          border: 2px solid $gradient-4;
+          border: 2px solid $brand-color-4;
           bottom: 0;
           content: "";
           left: 0;
