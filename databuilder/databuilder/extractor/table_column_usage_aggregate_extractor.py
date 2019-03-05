@@ -35,7 +35,6 @@ class TblColUsgAggExtractor(Extractor):
 
     def init(self, conf):
         # type: (ConfigTree) -> None
-
         self._extractor = conf.get(RAW_EXTRACTOR)  # type: Extractor
         self._extractor.init(Scoped.get_scoped_conf(conf, self._extractor.get_scope()))
 
