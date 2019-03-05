@@ -2,18 +2,18 @@
  The following are used in Amundsen but are not part of Bootstrap.
  These must be defined here:
 
-  $gradient-1, $gradient-2, $gradient-3, $gradient-4,
+  $brand-color-1, $brand-color-2, $brand-color-3, $brand-color-4, $brand-color-5
   $font-family-sans-serif-bold,
   $font-weight-sans-serif-bold
   */
 
 
 // Colors
-$gradient-1: #f2f5fe !default;
-$gradient-2: #cad6ff !default;
-$gradient-3: #5679ff !default;
-$gradient-4: #3250c8 !default;
-$gradient-5: #28409f !default;
+$brand-color-1: #f2f5fe !default;
+$brand-color-2: #cad6ff !default;
+$brand-color-3: #5679ff !default;
+$brand-color-4: #3250c8 !default;
+$brand-color-5: #28409f !default;
 
 $gray-base:     #000 !default;
 $gray-darker:   lighten($gray-base, 10%) !default; // #1a1a1a
@@ -62,4 +62,4 @@ $list-group-border-radius: 0 !default;
 
 
 // Labels
-$label-primary-bg: $gradient-3 !default;
+$label-primary-bg: $brand-color-3 !default;

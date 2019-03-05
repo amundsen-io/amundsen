@@ -14,11 +14,11 @@
   .edit-link {
     opacity: 0;
     margin-left: 4px;
-    color: $gradient-3;
+    color: $brand-color-3;
     text-decoration: none;
 
     &:hover {
-      color: $gradient-4;
+      color: $brand-color-4;
     }
 
     &.no-value {
@@ -36,8 +36,8 @@
     padding: 0;
     outline: none;
     border: 0;
-    background: $gradient-1;
-    caret-color: $gradient-4;
+    background: $brand-color-1;
+    caret-color: $brand-color-4;
   }
 
   .editable-textarea:focus-within {
