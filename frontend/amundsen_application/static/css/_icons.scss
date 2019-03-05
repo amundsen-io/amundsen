@@ -26,6 +26,16 @@ img.icon {
     mask-image: url('/static/images/icons/Database.svg');
   }
 
+  &.icon-down {
+    -webkit-mask-image: url('/static/images/icons/Down.svg');
+    mask-image: url('/static/images/icons/Down.svg');
+  }
+
+  &.icon-left {
+    -webkit-mask-image: url('/static/images/icons/Left.svg');
+    mask-image: url('/static/images/icons/Left.svg');
+  }
+
   &.icon-loading {
     -webkit-mask-image: url('/static/images/icons/Loader.svg');
     mask-image: url('/static/images/icons/Loader.svg');
@@ -44,6 +54,11 @@ img.icon {
   &.icon-right {
     -webkit-mask-image: url('/static/images/icons/Right.svg');
     mask-image: url('/static/images/icons/Right.svg');
+  }
+
+  &.icon-up {
+    -webkit-mask-image: url('/static/images/icons/Up.svg');
+    mask-image: url('/static/images/icons/Up.svg');
   }
 }
 

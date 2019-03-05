@@ -34,7 +34,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
     this.setState(prevState => ({
       isExpanded: !prevState.isExpanded
     }));
-  }
+  };
 
   formatDate = (unixEpochTimeValue) => {
     const date = new Date(0);
@@ -42,7 +42,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
 
     /* TODO: Internationalization */
     return date.toLocaleDateString();
-  }
+  };
 
   render() {
     const metadata = this.props.data;
@@ -53,10 +53,10 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
     const startDate = isExpandable ? this.formatDate(startEpoch) : null;
     const endDate = isExpandable ? this.formatDate(endEpoch) : null;
 
-    let infoText = 'These stats are based on data collected for this column';
+    let infoText = 'Stats collected';
     if (startDate && endDate) {
       if (startDate === endDate) {
-        infoText = `${infoText} on ${startDate}`;
+        infoText = `${infoText} on ${startDate} partition`;
       }
       else {
         infoText = `${infoText} between ${startDate} and ${endDate}`;
@@ -76,15 +76,8 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
             </div>
           </div>
           {
-            this.state.isExpanded &&
-            <InfoButton title='How is this data generated?'
-              infoText={infoText}
-              placement='top'
-            />
-          }
-          {
             isExpandable &&
-            <img className={'expand-icon ' + (this.state.isExpanded ? 'icon-up' : 'icon-down')}/>
+            <img className={'icon ' + (this.state.isExpanded ? 'icon-up' : 'icon-down')}/>
           }
         </div>
         <div className={'description ' + (this.state.isExpanded ? '' : (isExpandable ? 'truncated' : ''))}>
@@ -109,11 +102,17 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
                 </div>
               )
             }
+            {
+             metadata.stats.length > 0 &&
+             <div className="stat-collection-info">
+              { infoText }
+            </div>
+            }
           </div>
         }
       </li>
     );
   }
-};
+}
 
 export default DetailListItem;
