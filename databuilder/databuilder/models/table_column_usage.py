@@ -1,10 +1,11 @@
 from typing import Iterable, Union, Dict, Any, Iterator  # noqa: F401
 
 from databuilder.models.neo4j_csv_serde import (
-    Neo4jCsvSerializable, NODE_KEY, NODE_LABEL, RELATION_START_KEY, RELATION_END_KEY,
+    Neo4jCsvSerializable, RELATION_START_KEY, RELATION_END_KEY,
     RELATION_START_LABEL, RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
 )
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.user import User
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 
@@ -42,10 +43,6 @@ class TableColumnUsage(Neo4jCsvSerializable):
     A model represents user <--> column graph model
     Currently it only support to serialize to table level
     """
-    USER_NODE_LABEL = 'User'
-    USER_NODE_KEY_FORMAT = '{email}'
-    USER_NODE_EMAIL = 'email'
-
     TABLE_NODE_LABEL = TableMetadata.TABLE_NODE_LABEL
     TABLE_NODE_KEY_FORMAT = TableMetadata.TABLE_KEY_FORMAT
 
@@ -64,7 +61,7 @@ class TableColumnUsage(Neo4jCsvSerializable):
                 raise NotImplementedError('Column is not supported yet {}'.format(col_readers))
 
         self.col_readers = col_readers
-        self._node_iterator = self._create_next_node()
+        self._node_iterator = self._create_node_iterator()
         self._rel_iter = self._create_rel_iterator()
 
     def create_next_node(self):
@@ -75,16 +72,12 @@ class TableColumnUsage(Neo4jCsvSerializable):
         except StopIteration:
             return None
 
-    def _create_next_node(self):
+    def _create_node_iterator(self):
         # type: () -> Iterator[Any]
         for col_reader in self.col_readers:
-            if col_reader.column != '*':
-                raise NotImplementedError('Column is not supported yet {}'.format(col_reader))
-            yield {
-                NODE_LABEL: TableColumnUsage.USER_NODE_LABEL,
-                NODE_KEY: self._get_user_key(col_reader.user_email),
-                TableColumnUsage.USER_NODE_EMAIL: col_reader.user_email
-            }
+            if col_reader.column == '*':
+                # using yield for better memory efficiency
+                yield User(email=col_reader.user_email).create_nodes()[0]
 
     def create_next_relation(self):
         # type: () -> Union[Dict[str, Any], None]
@@ -99,7 +92,7 @@ class TableColumnUsage(Neo4jCsvSerializable):
         for col_reader in self.col_readers:
             yield {
                 RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
-                RELATION_END_LABEL: TableColumnUsage.USER_NODE_LABEL,
+                RELATION_END_LABEL: User.USER_NODE_LABEL,
                 RELATION_START_KEY: self._get_table_key(col_reader),
                 RELATION_END_KEY: self._get_user_key(col_reader.user_email),
                 RELATION_TYPE: TableColumnUsage.TABLE_USER_RELATION_TYPE,
@@ -116,7 +109,7 @@ class TableColumnUsage(Neo4jCsvSerializable):
 
     def _get_user_key(self, email):
         # type: (str) -> str
-        return TableColumnUsage.USER_NODE_KEY_FORMAT.format(email=email)
+        return User.get_user_model_key(email=email)
 
     def __repr__(self):
         # type: () -> str

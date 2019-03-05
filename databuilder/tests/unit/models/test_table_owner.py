@@ -1,5 +1,5 @@
 import unittest
-from databuilder.models.table_column_usage import TableColumnUsage
+from databuilder.models.user import User
 from databuilder.models.table_owner import TableOwner
 
 
@@ -46,7 +46,7 @@ class TestTableOwner(unittest.TestCase):
 
         relation = {
             RELATION_START_KEY: 'user1@1',
-            RELATION_START_LABEL: TableColumnUsage.USER_NODE_LABEL,
+            RELATION_START_LABEL: User.USER_NODE_LABEL,
             RELATION_END_KEY: self.table_owner.get_metadata_model_key(),
             RELATION_END_LABEL: 'Table',
             RELATION_TYPE: TableOwner.OWNER_TABLE_RELATION_TYPE,

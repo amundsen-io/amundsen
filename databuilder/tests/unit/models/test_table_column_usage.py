@@ -22,8 +22,14 @@ class TestTableColumnUsage(unittest.TestCase):
             actual.append(node_row)
             node_row = table_col_usage.next_node()
 
-        expected = [{'email': 'john@example.com', 'KEY': 'john@example.com', 'LABEL': 'User'},
-                    {'email': 'jane@example.com', 'KEY': 'jane@example.com', 'LABEL': 'User'}]
+        expected = [{'is_active': True,
+                     'LABEL': 'User',
+                     'KEY': 'john@example.com',
+                     'email': 'john@example.com'},
+                    {'is_active': True,
+                     'LABEL': 'User',
+                     'KEY': 'jane@example.com',
+                     'email': 'jane@example.com'}]
         self.assertEqual(expected, actual)
 
         rel_row = table_col_usage.next_relation()
