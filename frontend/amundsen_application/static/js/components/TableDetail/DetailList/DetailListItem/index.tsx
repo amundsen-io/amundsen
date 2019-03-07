@@ -1,8 +1,7 @@
 import * as React from 'react';
+import moment from 'moment-timezone';
 
 import ColumnDescEditableText from '../../../../containers/TableDetail/ColumnDescEditableText';
-
-import InfoButton from '../../../common/InfoButton';
 import { TableColumn } from '../../types';
 
 // TODO: Use css-modules instead of 'import'
@@ -36,12 +35,8 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
     }));
   };
 
-  formatDate = (unixEpochTimeValue) => {
-    const date = new Date(0);
-    date.setSeconds(unixEpochTimeValue);
-
-    /* TODO: Internationalization */
-    return date.toLocaleDateString();
+  formatDate = (unixEpochSeconds) => {
+    return moment(unixEpochSeconds * 1000).format("MMM DD, YYYY");
   };
 
   render() {
@@ -53,17 +48,15 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
     const startDate = isExpandable ? this.formatDate(startEpoch) : null;
     const endDate = isExpandable ? this.formatDate(endEpoch) : null;
 
-    let infoText = 'Stats collected';
+    let infoText = 'Stats reflect data collected';
     if (startDate && endDate) {
       if (startDate === endDate) {
-        infoText = `${infoText} on ${startDate} partition`;
+        infoText = `${infoText} on ${startDate} only. (daily partition)`;
+      } else {
+        infoText = `${infoText} between ${startDate} and ${endDate}.`;
       }
-      else {
-        infoText = `${infoText} between ${startDate} and ${endDate}`;
-      }
-    }
-    else {
-      infoText = `${infoText} over a recent period of time`;
+    } else {
+      infoText = `${infoText} over a recent period of time.`;
     }
 
     return (
