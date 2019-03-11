@@ -11,9 +11,7 @@ class TestTableColumnUsage(unittest.TestCase):
         # type: () -> None
 
         col_readers = [ColumnReader(database='db', cluster='gold', schema='scm', table='foo', column='*',
-                                    user_email='john@example.com'),
-                       ColumnReader(database='db', cluster='gold', schema='scm', table='bar', column='*',
-                                    user_email='jane@example.com')]
+                                    user_email='john@example.com')]
         table_col_usage = TableColumnUsage(col_readers=col_readers)
 
         node_row = table_col_usage.next_node()
@@ -22,14 +20,18 @@ class TestTableColumnUsage(unittest.TestCase):
             actual.append(node_row)
             node_row = table_col_usage.next_node()
 
-        expected = [{'is_active': True,
+        expected = [{'first_name': '',
+                     'last_name': '',
+                     'full_name': '',
+                     'employee_type': '',
+                     'is_active': True,
+                     'updated_at': 0,
                      'LABEL': 'User',
+                     'slack_id': '',
                      'KEY': 'john@example.com',
-                     'email': 'john@example.com'},
-                    {'is_active': True,
-                     'LABEL': 'User',
-                     'KEY': 'jane@example.com',
-                     'email': 'jane@example.com'}]
+                     'github_username': '',
+                     'team_name': '',
+                     'email': 'john@example.com'}]
         self.assertEqual(expected, actual)
 
         rel_row = table_col_usage.next_relation()
@@ -39,9 +41,7 @@ class TestTableColumnUsage(unittest.TestCase):
             rel_row = table_col_usage.next_relation()
 
         expected = [{'read_count:UNQUOTED': 1, 'END_KEY': 'john@example.com', 'START_LABEL': 'Table',
-                     'END_LABEL': 'User', 'START_KEY': 'db://gold.scm/foo', 'TYPE': 'READ_BY', 'REVERSE_TYPE': 'READ'},
-                    {'read_count:UNQUOTED': 1, 'END_KEY': 'jane@example.com', 'START_LABEL': 'Table',
-                     'END_LABEL': 'User', 'START_KEY': 'db://gold.scm/bar', 'TYPE': 'READ_BY', 'REVERSE_TYPE': 'READ'}]
+                     'END_LABEL': 'User', 'START_KEY': 'db://gold.scm/foo', 'TYPE': 'READ_BY', 'REVERSE_TYPE': 'READ'}]
         self.assertEqual(expected, actual)
 
 

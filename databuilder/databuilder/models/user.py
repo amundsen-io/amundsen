@@ -57,17 +57,18 @@ class User(Neo4jCsvSerializable):
                            then we will have a cron job to update the ex-employee nodes based on
                            the case if this timestamp hasn't been updated for two weeks.
         """
-        self.first_name = first_name
-        self.last_name = last_name
-        self.name = name
-        self.email = email
-        self.github_username = github_username
+        self.first_name = first_name.encode('utf-8')
+        self.last_name = last_name.encode('utf-8')
+        self.name = name.encode('utf-8')
+
+        self.email = email.encode('utf-8')
+        self.github_username = github_username.encode('utf-8')
         # todo: team will be a separate node once Amundsen People supports team
-        self.team_name = team_name
-        self.manager_email = manager_email
-        self.employee_type = employee_type
+        self.team_name = team_name.encode('utf-8')
+        self.manager_email = manager_email.encode('utf-8')
+        self.employee_type = employee_type.encode('utf-8')
         # this attr not available in team service, either update team service, update with FE
-        self.slack_id = slack_id
+        self.slack_id = slack_id.encode('utf-8')
         self.is_active = is_active
         self.updated_at = updated_at
 
@@ -113,22 +114,14 @@ class User(Neo4jCsvSerializable):
             User.USER_NODE_IS_ACTIVE: self.is_active,
         }
 
-        if self.first_name:
-            result_node[User.USER_NODE_FIRST_NAME] = self.first_name
-        if self.last_name:
-            result_node[User.USER_NODE_LAST_NAME] = self.last_name
-        if self.name:
-            result_node[User.USER_NODE_FULL_NAME] = self.name
-        if self.github_username:
-            result_node[User.USER_NODE_GITHUB_NAME] = self.github_username
-        if self.team_name:
-            result_node[User.USER_NODE_TEAM] = self.team_name
-        if self.employee_type:
-            result_node[User.USER_NODE_EMPLOYEE_TYPE] = self.employee_type
-        if self.slack_id:
-            result_node[User.USER_NODE_SLACK_ID] = self.slack_id
-        if self.updated_at:
-            result_node[User.USER_NODE_UPDATED_AT] = self.updated_at
+        result_node[User.USER_NODE_FIRST_NAME] = self.first_name if self.first_name else ''
+        result_node[User.USER_NODE_LAST_NAME] = self.last_name if self.last_name else ''
+        result_node[User.USER_NODE_FULL_NAME] = self.name if self.name else ''
+        result_node[User.USER_NODE_GITHUB_NAME] = self.github_username if self.github_username else ''
+        result_node[User.USER_NODE_TEAM] = self.team_name if self.team_name else ''
+        result_node[User.USER_NODE_EMPLOYEE_TYPE] = self.employee_type if self.employee_type else ''
+        result_node[User.USER_NODE_SLACK_ID] = self.slack_id if self.slack_id else ''
+        result_node[User.USER_NODE_UPDATED_AT] = self.updated_at if self.updated_at else 0
 
         return [result_node]
 
