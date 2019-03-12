@@ -16,6 +16,7 @@ from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import Application, Column, Reader, Source, \
     Statistics, Table, Tag, User, Watermark
 from metadata_service.entity.tag_detail import TagDetail
+from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 
@@ -681,6 +682,36 @@ class Neo4jProxy:
                                          description=self._safe_get(record, 'table_description'))
             popular_tables.append(popular_table)
         return popular_tables
+
+    @timer_with_counter
+    def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
+        """
+        Retrieve user detail based on user_id(email).
+
+        :param user_id: the email for the given user
+        :return:
+        """
+
+        query = textwrap.dedent("""
+        MATCH (user:User {key: $user_id}) RETURN user as user_record
+        """)
+
+        record = self._execute_cypher_query(statement=query,
+                                            param_dict={'user_id': user_id})
+        if not record:
+            raise NotFoundException('User {user_id} '
+                                    'not found in the graph'.format(user_id=user_id))
+        record = record.single()['user_record']
+        result = UserEntity(email=record['email'],
+                            first_name=record.get('first_name'),
+                            last_name=record.get('last_name'),
+                            full_name=record.get('full_name'),
+                            is_active=record.get('is_active'),
+                            github_username=record.get('github_username'),
+                            team_name=record.get('team_name'),
+                            slack_id=record.get('slack_id'),
+                            employee_type=record.get('employee_type'))
+        return result
 
 
 _neo4j_proxy = None

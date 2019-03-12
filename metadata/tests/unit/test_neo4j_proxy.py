@@ -429,6 +429,25 @@ class TestGetTable(unittest.TestCase):
 
             self.assertEqual(actual.__repr__(), expected.__repr__())
 
+    def test_get_users(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = {
+                'user_record': {
+                    'employee_type': 'teamMember',
+                    'full_name': 'test_full_name',
+                    'is_active': 'True',
+                    'github_username': 'test-github',
+                    'slack_id': 'test_id',
+                    'last_name': 'test_last_name',
+                    'first_name': 'test_first_name',
+                    'team_name': 'test_team',
+                    'email': 'test_email'
+                }
+            }
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_user = neo4j_proxy.get_user_detail(user_id='test_email')
+            self.assertEquals(neo4j_user.email, 'test_email')
+
 
 if __name__ == '__main__':
     unittest.main()
