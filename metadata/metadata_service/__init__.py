@@ -15,6 +15,7 @@ from metadata_service.api.system import Neo4jDetailAPI
 from metadata_service.api.table \
     import TableDetailAPI, TableOwnerAPI, TableTagAPI, TableDescriptionAPI
 from metadata_service.api.tag import TagAPI
+from metadata_service.api.user import UserDetailAPI
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -83,6 +84,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/latest_updated_ts')
     api.add_resource(TagAPI,
                      '/tags/')
+    api.add_resource(UserDetailAPI,
+                     '/user/<path:user_id>')
 
     app.register_blueprint(api_bp)
 
