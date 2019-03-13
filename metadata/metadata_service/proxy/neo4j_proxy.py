@@ -693,7 +693,9 @@ class Neo4jProxy:
         """
 
         query = textwrap.dedent("""
-        MATCH (user:User {key: $user_id}) RETURN user as user_record
+        MATCH (user:User {key: $user_id})
+        OPTIONAL MATCH (user)-[:manage_by]->(manager:User)
+        RETURN user as user_record, manager as manager_record
         """)
 
         record = self._execute_cypher_query(statement=query,
@@ -701,7 +703,9 @@ class Neo4jProxy:
         if not record:
             raise NotFoundException('User {user_id} '
                                     'not found in the graph'.format(user_id=user_id))
-        record = record.single()['user_record']
+        single_result = record.single()
+        record = single_result.get('user_record', {})
+        manager_record = single_result.get('manager_record', {})
         result = UserEntity(email=record['email'],
                             first_name=record.get('first_name'),
                             last_name=record.get('last_name'),
@@ -710,7 +714,8 @@ class Neo4jProxy:
                             github_username=record.get('github_username'),
                             team_name=record.get('team_name'),
                             slack_id=record.get('slack_id'),
-                            employee_type=record.get('employee_type'))
+                            employee_type=record.get('employee_type'),
+                            manager_fullname=manager_record.get('full_name', ''))
         return result
 
 

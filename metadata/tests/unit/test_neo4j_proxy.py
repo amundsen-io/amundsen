@@ -441,7 +441,10 @@ class TestGetTable(unittest.TestCase):
                     'last_name': 'test_last_name',
                     'first_name': 'test_first_name',
                     'team_name': 'test_team',
-                    'email': 'test_email'
+                    'email': 'test_email',
+                },
+                'manager_record': {
+                    'full_name': 'test_manager_fullname'
                 }
             }
             neo4j_proxy = Neo4jProxy(endpoint='bogus')
