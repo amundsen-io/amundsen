@@ -17,6 +17,7 @@ user_detail_fields = {
     'slack_id': fields.String,  # Optional
     'team_name': fields.String,  # Optional
     'employee_type': fields.String,  # Optional
+    'manager_fullname': fields.String,  # Optional
 }
 
 
