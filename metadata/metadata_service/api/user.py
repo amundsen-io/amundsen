@@ -1,8 +1,9 @@
 from http import HTTPStatus
-from typing import Iterable, Mapping, Union, Optional, Any, Tuple
+from typing import Iterable, Mapping, Union, Tuple
 
 from flask_restful import Resource, fields, marshal
 
+from metadata_service.api.table import table_detail_fields
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import neo4j_proxy
 
@@ -20,6 +21,10 @@ user_detail_fields = {
     'manager_fullname': fields.String,  # Optional
 }
 
+table_list_fields = {
+    'table': fields.List(fields.Nested(table_detail_fields))
+}
+
 
 class UserDetailAPI(Resource):
     """
@@ -31,8 +36,8 @@ class UserDetailAPI(Resource):
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            table = self.neo4j.get_user_detail(user_id=user_id)
-            return marshal(table, user_detail_fields), HTTPStatus.OK
+            user = self.neo4j.get_user_detail(user_id=user_id)
+            return marshal(user, user_detail_fields), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'User id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -57,7 +62,7 @@ class UserBookmarkAPI(Resource):
         try:
             resources = self.neo4j.get_resources_by_user_relation(user_id=user_id,
                                                                   relation='FOLLOW')
-            return {'table': resources}, HTTPStatus.OK
+            return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -65,7 +70,7 @@ class UserBookmarkAPI(Resource):
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def put(self, table_uri: str, user_id: str) -> Iterable[Union[Mapping, int, None]]:
+    def put(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Create the relationship between user and resources.
         todo: It will need to refactor all neo4j proxy api to take a type argument.
@@ -86,9 +91,9 @@ class UserBookmarkAPI(Resource):
             return {'message': 'The user {} for table_uri {} '
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, \
-                   HTTPStatus.INTERNAL_SERVER_ERROR
+                HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self, table_uri: str, user_id: str) -> Iterable[Union[Mapping, int, None]]:
+    def delete(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Delete the relationship between user and resources.
         todo: It will need to refactor all neo4j proxy api to take a type argument.
@@ -109,7 +114,7 @@ class UserBookmarkAPI(Resource):
             return {'message': 'The user {} for table_uri {} '
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, \
-                   HTTPStatus.INTERNAL_SERVER_ERROR
+                HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class UserOwnAPI(Resource):
@@ -132,7 +137,7 @@ class UserOwnAPI(Resource):
         try:
             resources = self.neo4j.get_resources_by_user_relation(user_id=user_id,
                                                                   relation='OWNER_OF')
-            return {'table': resources}
+            return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -140,7 +145,7 @@ class UserOwnAPI(Resource):
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def put(self, table_uri: str, user_id: str) -> Iterable[Union[Mapping, int, None]]:
+    def put(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             self.neo4j.add_owner(table_uri=table_uri,
                                  owner=user_id)
@@ -152,7 +157,7 @@ class UserOwnAPI(Resource):
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self, table_uri: str, user_id: str) -> Iterable[Union[Mapping, int, None]]:
+    def delete(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             self.neo4j.delete_owner(table_uri=table_uri,
                                     owner=user_id)
@@ -164,10 +169,13 @@ class UserOwnAPI(Resource):
                                'is not deleted successfully'.format(user_id,
                                                                     table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+
 class UserReadAPI(Resource):
     """
     Build get / put API to support user bookmark resource features.
     It will create a relationship(read / read_by) between user and resources(table, dashboard etc)
+
+    todo: do we need put / delete to this API? And do we need to put a threshold on the get?
     """
 
     def __init__(self) -> None:
@@ -183,7 +191,7 @@ class UserReadAPI(Resource):
         try:
             resources = self.neo4j.get_resources_by_user_relation(user_id=user_id,
                                                                   relation='READ')
-            return {'table': resources}
+            return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -208,13 +216,13 @@ class UserReadAPI(Resource):
             return {'message': 'The user {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
-        except Exception as e:
+        except Exception:
             return {'message': 'The user {} for table_uri {} '
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, \
-                   HTTPStatus.INTERNAL_SERVER_ERROR
+                HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self, table_uri: str, user_id: str) -> Iterable[Union[Mapping, int, None]]:
+    def delete(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Delete the relationship between user and resources.
         todo: It will need to refactor all neo4j proxy api to take a type argument.
@@ -231,8 +239,8 @@ class UserReadAPI(Resource):
             return {'message': 'The user {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
-        except Exception as e:
+        except Exception:
             return {'message': 'The user {} for table_uri {} '
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, \
-                   HTTPStatus.INTERNAL_SERVER_ERROR
+                HTTPStatus.INTERNAL_SERVER_ERROR
