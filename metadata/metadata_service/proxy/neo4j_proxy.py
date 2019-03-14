@@ -706,6 +706,10 @@ class Neo4jProxy:
         single_result = record.single()
         record = single_result.get('user_record', {})
         manager_record = single_result.get('manager_record', {})
+        if manager_record:
+            manager_name = manager_record.get('full_name', '')
+        else:
+            manager_name = ''
         result = UserEntity(email=record['email'],
                             first_name=record.get('first_name'),
                             last_name=record.get('last_name'),
@@ -715,8 +719,124 @@ class Neo4jProxy:
                             team_name=record.get('team_name'),
                             slack_id=record.get('slack_id'),
                             employee_type=record.get('employee_type'),
-                            manager_fullname=manager_record.get('full_name', ''))
+                            manager_fullname=manager_name)
         return result
+
+    @timer_with_counter
+    def get_resources_by_user_relation(self, *, user_id: str, relation: str) -> List[Table]:
+        """
+        Retrive all the resources bookmarked by user.
+        We start with table resources only, then add dashboard.
+
+        :param user_id: the email of the user
+        :param relation: the relation between the user and the resource
+        :return:
+        """
+        query = textwrap.dedent("""
+        MATCH (user:User {key: $user_id})-[:$relation]->(tbl:Table)
+        RETURN COLLECT(DISTINCT tbl) as table_records
+        """)
+
+        records = self._execute_cypher_query(statement=query,
+                                            param_dict={'user_id': user_id,
+                                                        'relation': relation})
+        if not records:
+            raise NotFoundException('User {user_id} does not {relation} '
+                                    'any resources'.format(user_id=user_id,
+                                                           relation=relation))
+
+        table_records = records.get('table_records', [])
+        results = []
+        for record in table_records:
+            # todo: decide whether we want to return a list of table entities or just table_uri
+            results.append(self.get_table(table_uri=record['key']))
+        return results
+
+    @timer_with_counter
+    def add_resource_relation_by_user(self, *,
+                                      table_uri: str,
+                                      user: str,
+                                      relation: str,
+                                      reverse_relation: str) -> None:
+        """
+        Update table user informations.
+        1. Do a upsert of the user node.
+        2. Do a upsert of the relation/reverse-relation edge.
+
+        :param table_uri:
+        :param user:
+        :param relation:
+        :param reverse_relation:
+        :return:
+        """
+        upsert_user_query = textwrap.dedent("""
+        MERGE (u:User {key: $user_email})
+        on CREATE SET u={email: $user_email, key: $user_email}
+        on MATCH SET u={email: $user_email, key: $user_email}
+        """)
+
+        upsert_user_relation_query = textwrap.dedent("""
+        MATCH (n1:User {key: $user_email}), (n2:Table {key: $tbl_key})
+        MERGE (n1)-[r1:$relation]->(n2)-[r2:$reverse_relation]->(n1)
+        RETURN n1.key, n2.key
+        """)
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            # upsert the node
+            tx.run(upsert_user_query, {'user_email': user})
+            result = tx.run(upsert_user_relation_query, {'user_email': user,
+                                                         'tbl_key': table_uri,
+                                                         'relation': relation,
+                                                         'reverse_relation': reverse_relation})
+
+            if not result.single():
+                raise RuntimeError('Failed to create relation between '
+                                   'user {user} and table {tbl}'.format(user=user,
+                                                                        tbl=table_uri))
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            # propagate the exception back to api
+            raise e
+        finally:
+            tx.commit()
+            tx.close()
+
+    @timer_with_counter
+    def delete_resource_relation_by_user(self, *,
+                                         table_uri: str,
+                                         user: str,
+                                         relation: str,
+                                         reverse_relation: str) -> None:
+        """
+        Delete the relationship between user and resources.
+
+        :param table_uri:
+        :param user:
+        :param relation:
+        :param reverse_relation
+        :return:
+        """
+        delete_query = textwrap.dedent("""
+        MATCH (n1:User{key: $user_email})-[r1:$relation]->
+        (n2:Table {key: $tbl_key})-[r2:$reverse_relation]->(n1) DELETE r1,r2
+        """)
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            tx.run(delete_query, {'user_email': user,
+                                  'tbl_key': table_uri,
+                                  'relation': relation,
+                                  'reverse_relation': reverse_relation})
+        except Exception as e:
+            # propagate the exception back to api
+            if not tx.closed():
+                tx.rollback()
+            raise e
+        finally:
+            tx.commit()
+            tx.close()
 
 
 _neo4j_proxy = None
