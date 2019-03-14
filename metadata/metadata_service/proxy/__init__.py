@@ -29,7 +29,7 @@ def get_proxy_client() -> Type[BaseProxy]:
         if _proxy_client:
             return _proxy_client
         else:
-            client = import_string(current_app.config['PROXY_CLIENT'])
+            client = import_string(current_app.config[config.PROXY_CLIENT])
             _proxy_client = client(host=host, port=port, user=user, password=password)
 
     return _proxy_client

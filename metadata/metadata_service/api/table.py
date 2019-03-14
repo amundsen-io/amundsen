@@ -86,11 +86,11 @@ class TableDetailAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.proxy = get_proxy_client()
+        self.client = get_proxy_client()
 
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            table = self.proxy.get_table(table_uri=table_uri)
+            table = self.client.get_table(table_uri=table_uri)
             return marshal(table, table_detail_fields), HTTPStatus.OK
 
         except NotFoundException:
