@@ -723,7 +723,7 @@ class Neo4jProxy:
         return result
 
     @timer_with_counter
-    def get_resources_by_user_relation(self, *, user_id: str, relation: str) -> List[Table]:
+    def get_resources_by_user_relation(self, *, user_id: str, relation: str) -> Dict[str, Any]:
         """
         Retrive all the resources bookmarked by user.
         We start with table resources only, then add dashboard.
@@ -732,25 +732,30 @@ class Neo4jProxy:
         :param relation: the relation between the user and the resource
         :return:
         """
-        query = textwrap.dedent("""
-        MATCH (user:User {key: $user_id})-[:$relation]->(tbl:Table)
-        RETURN COLLECT(DISTINCT tbl) as table_records
-        """)
 
-        records = self._execute_cypher_query(statement=query,
-                                            param_dict={'user_id': user_id,
-                                                        'relation': relation})
-        if not records:
+        # relationship can't be parameterized
+        query_key = 'key: "{user_id}"'.format(user_id=user_id)
+
+        query = textwrap.dedent("""
+        MATCH (user:User {{{key}}})-[:{relation}]->(tbl:Table)
+        RETURN COLLECT(DISTINCT tbl) as table_records
+        """).format(key=query_key,
+                    relation=relation)
+
+        record = self._execute_cypher_query(statement=query,
+                                            param_dict={})
+
+        if not record:
             raise NotFoundException('User {user_id} does not {relation} '
                                     'any resources'.format(user_id=user_id,
                                                            relation=relation))
-
-        table_records = records.get('table_records', [])
         results = []
+        table_records = record.single().get('table_records', [])
+
         for record in table_records:
             # todo: decide whether we want to return a list of table entities or just table_uri
             results.append(self.get_table(table_uri=record['key']))
-        return results
+        return {'table': results}
 
     @timer_with_counter
     def add_resource_relation_by_user(self, *,
@@ -775,20 +780,23 @@ class Neo4jProxy:
         on MATCH SET u={email: $user_email, key: $user_email}
         """)
 
+        user_email = 'key: "{user_email}"'.format(user_email=user)
+        tbl_key = 'key: "{tbl_key}"'.format(tbl_key=table_uri)
+
         upsert_user_relation_query = textwrap.dedent("""
-        MATCH (n1:User {key: $user_email}), (n2:Table {key: $tbl_key})
-        MERGE (n1)-[r1:$relation]->(n2)-[r2:$reverse_relation]->(n1)
+        MATCH (n1:User {{{user_email}}}), (n2:Table {{{tbl_key}}})
+        MERGE (n1)-[r1:{relation}]->(n2)-[r2:{reverse_relation}]->(n1)
         RETURN n1.key, n2.key
-        """)
+        """).format(user_email=user_email,
+                    tbl_key=tbl_key,
+                    relation=relation,
+                    reverse_relation=reverse_relation)
 
         try:
             tx = self._driver.session().begin_transaction()
             # upsert the node
             tx.run(upsert_user_query, {'user_email': user})
-            result = tx.run(upsert_user_relation_query, {'user_email': user,
-                                                         'tbl_key': table_uri,
-                                                         'relation': relation,
-                                                         'reverse_relation': reverse_relation})
+            result = tx.run(upsert_user_relation_query, {})
 
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
@@ -818,17 +826,20 @@ class Neo4jProxy:
         :param reverse_relation
         :return:
         """
+        user_email = 'key: "{user_email}"'.format(user_email=user)
+        tbl_key = 'key: "{tbl_key}"'.format(tbl_key=table_uri)
+
         delete_query = textwrap.dedent("""
-        MATCH (n1:User{key: $user_email})-[r1:$relation]->
-        (n2:Table {key: $tbl_key})-[r2:$reverse_relation]->(n1) DELETE r1,r2
-        """)
+        MATCH (n1:User {{{user_email}}})-[r1:{relation}]->
+        (n2:Table {{{tbl_key}}})-[r2:{reverse_relation}]->(n1) DELETE r1,r2
+        """).format(user_email=user_email,
+                    tbl_key=tbl_key,
+                    relation=relation,
+                    reverse_relation=reverse_relation)
 
         try:
             tx = self._driver.session().begin_transaction()
-            tx.run(delete_query, {'user_email': user,
-                                  'tbl_key': table_uri,
-                                  'relation': relation,
-                                  'reverse_relation': reverse_relation})
+            tx.run(delete_query, {})
         except Exception as e:
             # propagate the exception back to api
             if not tx.closed():
