@@ -18,6 +18,7 @@ from metadata_service.entity.table_detail import Application, Column, Reader, So
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
+from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 
 _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
@@ -29,15 +30,16 @@ _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 LOGGER = logging.getLogger(__name__)
 
 
-class Neo4jProxy:
+class Neo4jProxy(BaseProxy):
     """
     A proxy to Neo4j (Gateway to Neo4j)
     """
 
     def __init__(self, *,
-                 endpoint: str,
-                 neo4j_user: str ='neo4j',
-                 neo4j_password: str ='',
+                 host: str,
+                 port: int,
+                 user: str ='neo4j',
+                 password: str ='',
                  num_conns: int =50,
                  max_connection_lifetime_sec: int =100) -> None:
         """
@@ -50,10 +52,11 @@ class Neo4jProxy:
         words, connection life time longer than this value won't be reused and closed on garbage collection. This
         value needs to be smaller than surrounding network environment's timeout.
         """
+        endpoint = f'{host}:{port}'
         self._driver = GraphDatabase.driver(endpoint, max_connection_pool_size=num_conns,
                                             connection_timeout=10,
                                             max_connection_lifetime=max_connection_lifetime_sec,
-                                            auth=(neo4j_user, neo4j_password))  # type: Driver
+                                            auth=(user, password))  # type: Driver
 
     @timer_with_counter
     def get_table(self, *, table_uri: str) -> Table:
