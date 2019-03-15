@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Iterable, Mapping, Union, Tuple
+from typing import Iterable, Mapping, Union
 
 from flask_restful import Resource, fields, marshal
 
 from metadata_service.api.table import table_detail_fields
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import neo4j_proxy
+from metadata_service.util import UserResourceRel
 
 
 user_detail_fields = {
@@ -43,16 +44,16 @@ class UserDetailAPI(Resource):
             return {'message': 'User id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
 
 
-class UserBookmarkAPI(Resource):
+class UserFollowAPI(Resource):
     """
-    Build get / put API to support user bookmark resource features.
+    Build get / put API to support user follow resource features.
     It will create a relationship(follow / followed_by) between user and resources(table, dashboard etc)
     """
 
     def __init__(self) -> None:
         self.neo4j = neo4j_proxy.get_neo4j()
 
-    def get(self, user_id: str) -> Tuple:
+    def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Return a list of resources that user has followed
 
@@ -60,8 +61,8 @@ class UserBookmarkAPI(Resource):
         :return:
         """
         try:
-            resources = self.neo4j.get_resources_by_user_relation(user_id=user_id,
-                                                                  relation='FOLLOW')
+            resources = self.neo4j.get_table_by_user_relation(user_email=user_id,
+                                                              relation_type=UserResourceRel.follow)
             return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
@@ -70,9 +71,9 @@ class UserBookmarkAPI(Resource):
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def put(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def put(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
-        Create the relationship between user and resources.
+        Create the follow relationship between user and resources.
         todo: It will need to refactor all neo4j proxy api to take a type argument.
 
         :param user_id:
@@ -80,10 +81,9 @@ class UserBookmarkAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.add_resource_relation_by_user(table_uri=table_uri,
-                                                     user=user_id,
-                                                     relation='FOLLOW',
-                                                     reverse_relation='FOLLOWED_BY')
+            self.neo4j.add_table_relation_by_user(table_uri=table_uri,
+                                                  user_email=user_id,
+                                                  relation_type=UserResourceRel.follow)
             return {'message': 'The user {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
@@ -93,9 +93,9 @@ class UserBookmarkAPI(Resource):
                                                                   table_uri)}, \
                 HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
-        Delete the relationship between user and resources.
+        Delete the follow relationship between user and resources.
         todo: It will need to refactor all neo4j proxy api to take a type argument.
 
         :param user_id:
@@ -103,10 +103,9 @@ class UserBookmarkAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.delete_resource_relation_by_user(table_uri=table_uri,
-                                                        user=user_id,
-                                                        relation='FOLLOW',
-                                                        reverse_relation='FOLLOWED_BY')
+            self.neo4j.delete_table_relation_by_user(table_uri=table_uri,
+                                                     user_email=user_id,
+                                                     relation_type=UserResourceRel.follow)
             return {'message': 'The user {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
@@ -127,7 +126,7 @@ class UserOwnAPI(Resource):
     def __init__(self) -> None:
         self.neo4j = neo4j_proxy.get_neo4j()
 
-    def get(self, user_id: str) -> Tuple:
+    def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Return a list of resources that user has owned
 
@@ -135,8 +134,8 @@ class UserOwnAPI(Resource):
         :return:
         """
         try:
-            resources = self.neo4j.get_resources_by_user_relation(user_id=user_id,
-                                                                  relation='OWNER_OF')
+            resources = self.neo4j.get_table_by_user_relation(user_email=user_id,
+                                                              relation_type=UserResourceRel.own)
             return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
@@ -145,7 +144,15 @@ class UserOwnAPI(Resource):
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def put(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def put(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        """
+        Create the follow relationship between user and resources.
+
+        :param user_id:
+        :param resource_type:
+        :param table_uri:
+        :return:
+        """
         try:
             self.neo4j.add_owner(table_uri=table_uri,
                                  owner=user_id)
@@ -157,7 +164,7 @@ class UserOwnAPI(Resource):
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             self.neo4j.delete_owner(table_uri=table_uri,
                                     owner=user_id)
@@ -172,16 +179,14 @@ class UserOwnAPI(Resource):
 
 class UserReadAPI(Resource):
     """
-    Build get / put API to support user bookmark resource features.
+    Build get / put API to support user read resource features.
     It will create a relationship(read / read_by) between user and resources(table, dashboard etc)
-
-    todo: do we need put / delete to this API? And do we need to put a threshold on the get?
     """
 
     def __init__(self) -> None:
         self.neo4j = neo4j_proxy.get_neo4j()
 
-    def get(self, user_id: str) -> Tuple:
+    def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Return a list of resources that user has read
 
@@ -189,8 +194,8 @@ class UserReadAPI(Resource):
         :return:
         """
         try:
-            resources = self.neo4j.get_resources_by_user_relation(user_id=user_id,
-                                                                  relation='READ')
+            resources = self.neo4j.get_table_by_user_relation(user_email=user_id,
+                                                              relation_type=UserResourceRel.read)
             return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
@@ -198,49 +203,3 @@ class UserReadAPI(Resource):
 
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
-
-    def put(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        """
-        Create the relationship between user and resources.
-        todo: It will need to refactor all neo4j proxy api to take a type argument.
-
-        :param user_id:
-        :param table_uri:
-        :return:
-        """
-        try:
-            self.neo4j.add_resource_relation_by_user(table_uri=table_uri,
-                                                     user=user_id,
-                                                     relation='READ',
-                                                     reverse_relation='READ_BY')
-            return {'message': 'The user {} for table_uri {} '
-                               'is added successfully'.format(user_id,
-                                                              table_uri)}, HTTPStatus.OK
-        except Exception:
-            return {'message': 'The user {} for table_uri {} '
-                               'is not added successfully'.format(user_id,
-                                                                  table_uri)}, \
-                HTTPStatus.INTERNAL_SERVER_ERROR
-
-    def delete(self, user_id: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        """
-        Delete the relationship between user and resources.
-        todo: It will need to refactor all neo4j proxy api to take a type argument.
-
-        :param user_id:
-        :param table_uri:
-        :return:
-        """
-        try:
-            self.neo4j.delete_resource_relation_by_user(table_uri=table_uri,
-                                                        user=user_id,
-                                                        relation='READ',
-                                                        reverse_relation='READ_BY')
-            return {'message': 'The user {} for table_uri {} '
-                               'is added successfully'.format(user_id,
-                                                              table_uri)}, HTTPStatus.OK
-        except Exception:
-            return {'message': 'The user {} for table_uri {} '
-                               'is not added successfully'.format(user_id,
-                                                                  table_uri)}, \
-                HTTPStatus.INTERNAL_SERVER_ERROR

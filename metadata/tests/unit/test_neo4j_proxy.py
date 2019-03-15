@@ -12,6 +12,7 @@ from metadata_service.entity.table_detail import Application, Column, Table, Tag
     Statistics, User
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
+from metadata_service.util import UserResourceRel
 
 
 class TestNeo4jProxy(unittest.TestCase):
@@ -503,8 +504,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                                               source_type='github'))
 
             neo4j_proxy = Neo4jProxy(endpoint='bogus')
-            result = neo4j_proxy.get_resources_by_user_relation(user_id='test_user',
-                                                                relation='follow')
+            result = neo4j_proxy.get_table_by_user_relation(user_email='test_user',
+                                                            relation_type=UserResourceRel.follow)
             self.assertEqual(len(result['table']), 1)
             self.assertEqual(result['table'][0].name, 'foo_table')
 
@@ -522,10 +523,9 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(endpoint='bogus')
-            neo4j_proxy.add_resource_relation_by_user(table_uri='dummy_uri',
-                                                      user='tester',
-                                                      relation='follow',
-                                                      reverse_relation='reverse_relation')
+            neo4j_proxy.add_table_relation_by_user(table_uri='dummy_uri',
+                                                   user_email='tester',
+                                                   relation_type=UserResourceRel.follow)
             self.assertEquals(mock_run.call_count, 2)
             self.assertEquals(mock_commit.call_count, 1)
 
@@ -543,10 +543,9 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(endpoint='bogus')
-            neo4j_proxy.delete_resource_relation_by_user(table_uri='dummy_uri',
-                                                         user='tester',
-                                                         relation='follow',
-                                                         reverse_relation='reverse_relation')
+            neo4j_proxy.delete_table_relation_by_user(table_uri='dummy_uri',
+                                                      user_email='tester',
+                                                      relation_type=UserResourceRel.follow)
             self.assertEquals(mock_run.call_count, 1)
             self.assertEquals(mock_commit.call_count, 1)
 
