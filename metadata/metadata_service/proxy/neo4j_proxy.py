@@ -1,17 +1,14 @@
 import logging
 import textwrap
-import time
 from random import randint
-from threading import Lock
 from typing import Dict, Any, no_type_check, List, Tuple, Union  # noqa: F401
 
+import time
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from flask import current_app
 from neo4j.v1 import BoltStatementResult
 from neo4j.v1 import GraphDatabase, Driver  # noqa: F401
 
-from metadata_service import config
 from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import Application, Column, Reader, Source, \
     Statistics, Table, Tag, User, Watermark
@@ -715,31 +712,3 @@ class Neo4jProxy(BaseProxy):
                             slack_id=record.get('slack_id'),
                             employee_type=record.get('employee_type'))
         return result
-
-#
-# _neo4j_proxy = None
-# _neo4j_lock = Lock()
-#
-#
-# def get_neo4j() -> Neo4jProxy:
-#     """
-#     Provides singleton neo4j proxy
-#     :return: Neo4j proxy
-#     """
-#     global _neo4j_proxy
-#     endpoint = current_app.config[config.NEO4J_ENDPOINT_KEY]
-#     neo4j_user = current_app.config[config.NEO4J_USER]
-#     neo4j_password = current_app.config[config.NEO4J_PASSWORD]
-#
-#     if _neo4j_proxy:
-#         return _neo4j_proxy
-#
-#     with _neo4j_lock:
-#         if _neo4j_proxy:
-#             return _neo4j_proxy
-#         else:
-#             _neo4j_proxy = Neo4jProxy(endpoint=endpoint,
-#                                       neo4j_user=neo4j_user,
-#                                       neo4j_password=neo4j_password)
-#
-#     return _neo4j_proxy
