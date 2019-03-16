@@ -4,7 +4,7 @@ from typing import Iterable, Union
 from flask_restful import Resource, reqparse
 
 from metadata_service.exception import NotFoundException
-from metadata_service.proxy import neo4j_proxy
+from metadata_service.proxy import get_proxy_client
 
 
 class ColumnDescriptionAPI(Resource):
@@ -12,7 +12,7 @@ class ColumnDescriptionAPI(Resource):
     ColumnDescriptionAPI supports PUT and GET operations to upsert column description
     """
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('description', type=str, location='json')
@@ -27,7 +27,10 @@ class ColumnDescriptionAPI(Resource):
         Updates column description
         """
         try:
-            self.neo4j.put_column_description(table_uri=table_uri, column_name=column_name, description=description_val)
+            # noinspection PyArgumentList
+            self.client.put_column_description(table_uri=table_uri,
+                                               column_name=column_name,
+                                               description=description_val)
 
             return None, HTTPStatus.OK
 
@@ -40,8 +43,9 @@ class ColumnDescriptionAPI(Resource):
         Gets column descriptions in Neo4j
         """
         try:
-
-            description = self.neo4j.get_column_description(table_uri=table_uri, column_name=column_name)
+            # noinspection PyArgumentList
+            description = self.client.get_column_description(table_uri=table_uri,
+                                                             column_name=column_name)
 
             return {'description': description}, HTTPStatus.OK
 

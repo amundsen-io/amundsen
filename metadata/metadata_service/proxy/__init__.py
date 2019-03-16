@@ -17,10 +17,6 @@ def get_proxy_client() -> Type[BaseProxy]:
     :return: Proxy instance of any subclass of BaseProxy
     """
     global _proxy_client
-    host = current_app.config[config.PROXY_HOST]
-    port = current_app.config[config.PROXY_PORT]
-    user = current_app.config[config.PROXY_USER]
-    password = current_app.config[config.PROXY_PASSWORD]
 
     if _proxy_client:
         return _proxy_client
@@ -29,6 +25,12 @@ def get_proxy_client() -> Type[BaseProxy]:
         if _proxy_client:
             return _proxy_client
         else:
+            # Gather all the configuration to create a Proxy Client
+            host = current_app.config[config.PROXY_HOST]
+            port = current_app.config[config.PROXY_PORT]
+            user = current_app.config[config.PROXY_USER]
+            password = current_app.config[config.PROXY_PASSWORD]
+
             client = import_string(current_app.config[config.PROXY_CLIENT])
             _proxy_client = client(host=host, port=port, user=user, password=password)
 

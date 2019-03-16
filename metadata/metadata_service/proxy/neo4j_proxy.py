@@ -608,7 +608,7 @@ class Neo4jProxy(BaseProxy):
         return results
 
     @timer_with_counter
-    def get_neo4j_latest_updated_ts(self) -> int:
+    def get_latest_updated_ts(self) -> int:
         """
         API method to fetch last updated / index timestamp for neo4j, es
 
@@ -716,30 +716,30 @@ class Neo4jProxy(BaseProxy):
                             employee_type=record.get('employee_type'))
         return result
 
-
-_neo4j_proxy = None
-_neo4j_lock = Lock()
-
-
-def get_neo4j() -> Neo4jProxy:
-    """
-    Provides singleton neo4j proxy
-    :return: Neo4j proxy
-    """
-    global _neo4j_proxy
-    endpoint = current_app.config[config.NEO4J_ENDPOINT_KEY]
-    neo4j_user = current_app.config[config.NEO4J_USER]
-    neo4j_password = current_app.config[config.NEO4J_PASSWORD]
-
-    if _neo4j_proxy:
-        return _neo4j_proxy
-
-    with _neo4j_lock:
-        if _neo4j_proxy:
-            return _neo4j_proxy
-        else:
-            _neo4j_proxy = Neo4jProxy(endpoint=endpoint,
-                                      neo4j_user=neo4j_user,
-                                      neo4j_password=neo4j_password)
-
-    return _neo4j_proxy
+#
+# _neo4j_proxy = None
+# _neo4j_lock = Lock()
+#
+#
+# def get_neo4j() -> Neo4jProxy:
+#     """
+#     Provides singleton neo4j proxy
+#     :return: Neo4j proxy
+#     """
+#     global _neo4j_proxy
+#     endpoint = current_app.config[config.NEO4J_ENDPOINT_KEY]
+#     neo4j_user = current_app.config[config.NEO4J_USER]
+#     neo4j_password = current_app.config[config.NEO4J_PASSWORD]
+#
+#     if _neo4j_proxy:
+#         return _neo4j_proxy
+#
+#     with _neo4j_lock:
+#         if _neo4j_proxy:
+#             return _neo4j_proxy
+#         else:
+#             _neo4j_proxy = Neo4jProxy(endpoint=endpoint,
+#                                       neo4j_user=neo4j_user,
+#                                       neo4j_password=neo4j_password)
+#
+#     return _neo4j_proxy

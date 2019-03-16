@@ -14,7 +14,6 @@ PROXY_CLIENT = 'PROXY_CLIENT'
 
 
 PROXY_CLIENTS = {
-    'ATLAS': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy'
 }
 
