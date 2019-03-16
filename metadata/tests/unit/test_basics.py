@@ -6,9 +6,9 @@ from metadata_service import create_app
 
 
 class BasicTestCase(unittest.TestCase):
-    '''
+    """
     Test the service if it can standup
-    '''
+    """
     def setUp(self) -> None:
         self.app = create_app(
             config_module_class='metadata_service.config.LocalConfig')
