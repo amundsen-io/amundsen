@@ -8,8 +8,8 @@ from neo4j.v1 import GraphDatabase
 
 from metadata_service import create_app
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import Application, Column, Table, Tag, Watermark, Source, \
-    Statistics, User
+from metadata_service.entity.table_detail import (Application, Column, Table, Tag,
+                                                  Watermark, Source, Statistics, User)
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
 
@@ -114,7 +114,7 @@ class TestGetTable(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.side_effect = [self.col_usage_return_value, [], self.table_level_return_value]
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             table = neo4j_proxy.get_table(table_uri='dummy_uri')
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
@@ -157,7 +157,7 @@ class TestGetTable(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
-            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
@@ -177,7 +177,7 @@ class TestGetTable(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
 
-            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
@@ -206,7 +206,7 @@ class TestGetTable(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.put_table_description(table_uri='test_table',
                                               description='test_description')
 
@@ -221,7 +221,7 @@ class TestGetTable(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
-            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             col_description = neo4j_proxy.get_column_description(table_uri='test_table',
                                                                  column_name='test_column')
 
@@ -243,7 +243,7 @@ class TestGetTable(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
 
-            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             col_description = neo4j_proxy.get_column_description(table_uri='test_table',
                                                                  column_name='test_column')
 
@@ -274,7 +274,7 @@ class TestGetTable(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='DOES_NOT_MATTER')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.put_column_description(table_uri='test_table',
                                                column_name='test_column',
                                                description='test_description')
@@ -295,7 +295,7 @@ class TestGetTable(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.add_owner(table_uri='dummy_uri',
                                   owner='tester')
             # we call neo4j twice in add_owner call
@@ -315,7 +315,7 @@ class TestGetTable(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.delete_owner(table_uri='dummy_uri',
                                      owner='tester')
             # we only call neo4j once in delete_owner call
@@ -335,7 +335,7 @@ class TestGetTable(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.add_tag(table_uri='dummy_uri',
                                 tag='hive')
             # we call neo4j twice in add_tag call
@@ -355,7 +355,7 @@ class TestGetTable(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.delete_tag(table_uri='dummy_uri',
                                    tag='hive')
             # we only call neo4j once in delete_tag call
@@ -370,7 +370,7 @@ class TestGetTable(unittest.TestCase):
                 {'tag_name': {'key': 'tag2'}, 'tag_count': 1}
             ]
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             actual = neo4j_proxy.get_tags()
 
             expected = [
@@ -387,8 +387,8 @@ class TestGetTable(unittest.TestCase):
                     'latest_timestmap': '1000'
                 }
             }
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
-            neo4j_last_updated_ts = neo4j_proxy.get_neo4j_latest_updated_ts()
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertEquals(neo4j_last_updated_ts, '1000')
 
             mock_execute.return_value.single.return_value = {
@@ -396,8 +396,8 @@ class TestGetTable(unittest.TestCase):
 
                 }
             }
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
-            neo4j_last_updated_ts = neo4j_proxy.get_neo4j_latest_updated_ts()
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertIs(neo4j_last_updated_ts, None)
 
     def test_get_popular_tables(self) -> None:
@@ -405,7 +405,7 @@ class TestGetTable(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
@@ -419,7 +419,7 @@ class TestGetTable(unittest.TestCase):
                 {'database_name': 'db', 'cluster_name': 'clstr', 'schema_name': 'sch', 'table_name': 'bar'}
             ]
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             actual = neo4j_proxy.get_popular_tables(num_entries=2)
 
             expected = [
@@ -444,7 +444,7 @@ class TestGetTable(unittest.TestCase):
                     'email': 'test_email'
                 }
             }
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_user = neo4j_proxy.get_user_detail(user_id='test_email')
             self.assertEquals(neo4j_user.email, 'test_email')
 

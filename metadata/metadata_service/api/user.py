@@ -4,7 +4,7 @@ from typing import Iterable, Mapping, Union
 from flask_restful import Resource, fields, marshal
 
 from metadata_service.exception import NotFoundException
-from metadata_service.proxy import neo4j_proxy
+from metadata_service.proxy import get_proxy_client
 
 
 user_detail_fields = {
@@ -26,11 +26,12 @@ class UserDetailAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            table = self.neo4j.get_user_detail(user_id=user_id)
+            # noinspection PyArgumentList
+            table = self.client.get_user_detail(user_id=user_id)
             return marshal(table, user_detail_fields), HTTPStatus.OK
 
         except NotFoundException:
