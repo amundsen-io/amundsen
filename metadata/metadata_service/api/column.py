@@ -27,7 +27,6 @@ class ColumnDescriptionAPI(Resource):
         Updates column description
         """
         try:
-            # noinspection PyArgumentList
             self.client.put_column_description(table_uri=table_uri,
                                                column_name=column_name,
                                                description=description_val)
@@ -43,7 +42,6 @@ class ColumnDescriptionAPI(Resource):
         Gets column descriptions in Neo4j
         """
         try:
-            # noinspection PyArgumentList
             description = self.client.get_column_description(table_uri=table_uri,
                                                              column_name=column_name)
 

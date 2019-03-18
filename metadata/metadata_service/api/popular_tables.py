@@ -26,6 +26,5 @@ class PopularTablesAPI(Resource):
         self.client = get_proxy_client()
 
     def get(self) -> Iterable[Union[Mapping, int, None]]:
-        # noinspection PyArgumentList
         popular_tables = self.client.get_popular_tables()
         return marshal({'popular_tables': popular_tables}, popular_tables_fields), HTTPStatus.OK

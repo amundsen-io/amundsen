@@ -15,7 +15,6 @@ class Neo4jDetailAPI(Resource):
         self.client = get_proxy_client()
 
     def get(self) -> Iterable[Union[Mapping, int, None]]:
-        # noinspection PyArgumentList
         last_updated_ts = self.client.get_latest_updated_ts()
         if last_updated_ts is not None:
             return {'neo4j_latest_timestamp': int(last_updated_ts)}, HTTPStatus.OK

@@ -25,6 +25,5 @@ class TagAPI(Resource):
         """
         API to fetch all the existing tags with usage.
         """
-        # noinspection PyArgumentList
         tag_usages = self.client.get_tags()
         return marshal({'tag_usages': tag_usages}, tag_usage_fields), HTTPStatus.OK

@@ -37,7 +37,6 @@ class UserDetailAPI(Resource):
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            # noinspection PyArgumentList
             table = self.client.get_user_detail(user_id=user_id)
             return marshal(table, user_detail_fields), HTTPStatus.OK
 
@@ -62,7 +61,6 @@ class UserFollowAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.follow)
             return marshal(resources, table_list_fields), HTTPStatus.OK
@@ -83,7 +81,6 @@ class UserFollowAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             self.client.add_table_relation_by_user(table_uri=table_uri,
                                                    user_email=user_id,
                                                    relation_type=UserResourceRel.follow)
@@ -106,7 +103,6 @@ class UserFollowAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             self.client.delete_table_relation_by_user(table_uri=table_uri,
                                                       user_email=user_id,
                                                       relation_type=UserResourceRel.follow)
@@ -158,7 +154,6 @@ class UserOwnAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             self.client.add_owner(table_uri=table_uri, owner=user_id)
             return {'message': 'The owner {} for table_uri {} '
                                'is added successfully'.format(user_id,
@@ -198,7 +193,6 @@ class UserReadAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.read)
             return marshal(resources, table_list_fields), HTTPStatus.OK
