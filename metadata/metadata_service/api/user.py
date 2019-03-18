@@ -165,7 +165,6 @@ class UserOwnAPI(Resource):
 
     def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            # noinspection PyArgumentList
             self.client.delete_owner(table_uri=table_uri, owner=user_id)
             return {'message': 'The owner {} for table_uri {} '
                                'is deleted successfully'.format(user_id,
