@@ -1,7 +1,6 @@
 from threading import Lock
 
 from flask import current_app
-from typing import Type
 from werkzeug.utils import import_string
 
 from metadata_service import config
@@ -11,7 +10,7 @@ _proxy_client = None
 _proxy_client_lock = Lock()
 
 
-def get_proxy_client() -> Type[BaseProxy]:
+def get_proxy_client() -> BaseProxy:
     """
     Provides singleton proxy client based on the config
     :return: Proxy instance of any subclass of BaseProxy
