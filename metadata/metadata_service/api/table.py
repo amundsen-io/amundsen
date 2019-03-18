@@ -4,7 +4,8 @@ from typing import Iterable, Mapping, Union, Any
 from flask_restful import Resource, fields, reqparse, marshal
 
 from metadata_service.exception import NotFoundException
-from metadata_service.proxy import neo4j_proxy
+from metadata_service.proxy import get_proxy_client
+
 
 user_fields = {
     'email': fields.String,
@@ -85,11 +86,11 @@ class TableDetailAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            table = self.neo4j.get_table(table_uri=table_uri)
+            table = self.client.get_table(table_uri=table_uri)
             return marshal(table, table_detail_fields), HTTPStatus.OK
 
         except NotFoundException:
@@ -102,12 +103,11 @@ class TableOwnerAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.neo4j.add_owner(table_uri=table_uri,
-                                 owner=owner)
+            self.client.add_owner(table_uri=table_uri, owner=owner)
             return {'message': 'The owner {} for table_uri {} '
                                'is added successfully'.format(owner,
                                                               table_uri)}, HTTPStatus.OK
@@ -118,8 +118,7 @@ class TableOwnerAPI(Resource):
 
     def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.neo4j.delete_owner(table_uri=table_uri,
-                                    owner=owner)
+            self.client.delete_owner(table_uri=table_uri, owner=owner)
             return {'message': 'The owner {} for table_uri {} '
                                'is deleted successfully'.format(owner,
                                                                 table_uri)}, HTTPStatus.OK
@@ -133,9 +132,8 @@ class TableDescriptionAPI(Resource):
     """
     TableDescriptionAPI supports PUT and GET operation to upsert table description
     """
-
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('description', type=str, location='json')
@@ -147,7 +145,7 @@ class TableDescriptionAPI(Resource):
         Returns description in Neo4j endpoint
         """
         try:
-            description = self.neo4j.get_table_description(table_uri=table_uri)
+            description = self.client.get_table_description(table_uri=table_uri)
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
@@ -164,7 +162,7 @@ class TableDescriptionAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.put_table_description(table_uri=table_uri, description=description_val)
+            self.client.put_table_description(table_uri=table_uri, description=description_val)
             return None, HTTPStatus.OK
 
         except NotFoundException:
@@ -178,7 +176,7 @@ class TableTagAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('tag', type=str, location='json')
         super(TableTagAPI, self).__init__()
@@ -192,7 +190,7 @@ class TableTagAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.add_tag(table_uri=table_uri, tag=tag)
+            self.client.add_tag(table_uri=table_uri, tag=tag)
             return {'message': 'The tag {} for table_uri {} '
                                'is added successfully'.format(tag,
                                                               table_uri)}, HTTPStatus.OK
@@ -212,7 +210,7 @@ class TableTagAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.delete_tag(table_uri=table_uri, tag=tag)
+            self.client.delete_tag(table_uri=table_uri, tag=tag)
             return {'message': 'The tag {} for table_uri {} '
                                'is deleted successfully'.format(tag,
                                                                 table_uri)}, HTTPStatus.OK
