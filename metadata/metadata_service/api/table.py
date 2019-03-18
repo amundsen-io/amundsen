@@ -90,7 +90,6 @@ class TableDetailAPI(Resource):
 
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            # noinspection PyArgumentList
             table = self.client.get_table(table_uri=table_uri)
             return marshal(table, table_detail_fields), HTTPStatus.OK
 
@@ -108,7 +107,6 @@ class TableOwnerAPI(Resource):
 
     def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            # noinspection PyArgumentList
             self.client.add_owner(table_uri=table_uri, owner=owner)
             return {'message': 'The owner {} for table_uri {} '
                                'is added successfully'.format(owner,
@@ -120,7 +118,6 @@ class TableOwnerAPI(Resource):
 
     def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            # noinspection PyArgumentList
             self.client.delete_owner(table_uri=table_uri, owner=owner)
             return {'message': 'The owner {} for table_uri {} '
                                'is deleted successfully'.format(owner,
@@ -148,7 +145,6 @@ class TableDescriptionAPI(Resource):
         Returns description in Neo4j endpoint
         """
         try:
-            # noinspection PyArgumentList
             description = self.client.get_table_description(table_uri=table_uri)
             return {'description': description}, HTTPStatus.OK
 
@@ -166,7 +162,6 @@ class TableDescriptionAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             self.client.put_table_description(table_uri=table_uri, description=description_val)
             return None, HTTPStatus.OK
 
@@ -195,7 +190,6 @@ class TableTagAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             self.client.add_tag(table_uri=table_uri, tag=tag)
             return {'message': 'The tag {} for table_uri {} '
                                'is added successfully'.format(tag,
@@ -216,7 +210,6 @@ class TableTagAPI(Resource):
         :return:
         """
         try:
-            # noinspection PyArgumentList
             self.client.delete_tag(table_uri=table_uri, tag=tag)
             return {'message': 'The tag {} for table_uri {} '
                                'is deleted successfully'.format(tag,
