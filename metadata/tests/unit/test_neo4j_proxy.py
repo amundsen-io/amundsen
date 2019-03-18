@@ -12,9 +12,10 @@ from metadata_service.entity.table_detail import (Application, Column, Table, Ta
                                                   Watermark, Source, Statistics, User)
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
+from metadata_service.util import UserResourceRel
 
 
-class TestGetTable(unittest.TestCase):
+class TestNeo4jProxy(unittest.TestCase):
 
     def setUp(self) -> None:
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
@@ -441,12 +442,112 @@ class TestGetTable(unittest.TestCase):
                     'last_name': 'test_last_name',
                     'first_name': 'test_first_name',
                     'team_name': 'test_team',
-                    'email': 'test_email'
+                    'email': 'test_email',
+                },
+                'manager_record': {
+                    'full_name': 'test_manager_fullname'
                 }
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_user = neo4j_proxy.get_user_detail(user_id='test_email')
             self.assertEquals(neo4j_user.email, 'test_email')
+
+    def test_get_resources_by_user_relation(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), \
+            patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute, \
+                patch.object(Neo4jProxy, 'get_table') as mock_get_table:
+
+            mock_execute.return_value.single.return_value = {
+                'table_records': [
+                    {
+                        'key': 'table_uri',
+
+                    }
+                ]
+            }
+            mock_get_table.return_value = Table(database='hive',
+                                                cluster='gold',
+                                                schema='foo_schema',
+                                                name='foo_table',
+                                                tags=[Tag(tag_name='test', tag_type='default')],
+                                                table_readers=[], description='foo description',
+                                                watermarks=[Watermark(watermark_type='high_watermark',
+                                                                      partition_key='ds',
+                                                                      partition_value='fake_value',
+                                                                      create_time='fake_time'),
+                                                            Watermark(watermark_type='low_watermark',
+                                                                      partition_key='ds',
+                                                                      partition_value='fake_value',
+                                                                      create_time='fake_time')],
+                                                columns=[Column(name='bar_id_1',
+                                                                description='bar col description',
+                                                                col_type='varchar',
+                                                                sort_order=0, stats=[Statistics(start_epoch=1,
+                                                                                                end_epoch=1,
+                                                                                                stat_type='avg',
+                                                                                                stat_val='1')]),
+                                                         Column(name='bar_id_2',
+                                                                description='bar col2 description',
+                                                                col_type='bigint',
+                                                                sort_order=1, stats=[Statistics(start_epoch=2,
+                                                                                                end_epoch=2,
+                                                                                                stat_type='avg',
+                                                                                                stat_val='2')])],
+                                                owners=[User(email='tester@lyft.com')],
+                                                table_writer=Application(
+                                                    application_url=self.table_writer['application_url'],
+                                                    description=self.table_writer['description'],
+                                                    name=self.table_writer['name'],
+                                                    id=self.table_writer['id']),
+                                                last_updated_timestamp=1,
+                                                source=Source(source='/source_file_loc',
+                                                              source_type='github'))
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            result = neo4j_proxy.get_table_by_user_relation(user_email='test_user',
+                                                            relation_type=UserResourceRel.follow)
+            self.assertEqual(len(result['table']), 1)
+            self.assertEqual(result['table'][0].name, 'foo_table')
+
+    def test_add_resource_relation_by_user(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy.add_table_relation_by_user(table_uri='dummy_uri',
+                                                   user_email='tester',
+                                                   relation_type=UserResourceRel.follow)
+            self.assertEquals(mock_run.call_count, 2)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_delete_resource_relation_by_user(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy.delete_table_relation_by_user(table_uri='dummy_uri',
+                                                      user_email='tester',
+                                                      relation_type=UserResourceRel.follow)
+            self.assertEquals(mock_run.call_count, 1)
+            self.assertEquals(mock_commit.call_count, 1)
 
 
 if __name__ == '__main__':
