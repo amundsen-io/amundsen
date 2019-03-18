@@ -1,10 +1,11 @@
 from abc import ABCMeta, abstractmethod
 
-from typing import Union, List
+from typing import Union, List, Dict, Any
 
 from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.entity.table_detail import Table
+from metadata_service.util import UserResourceRel
 
 
 class BaseProxy(metaclass=ABCMeta):
@@ -71,4 +72,23 @@ class BaseProxy(metaclass=ABCMeta):
 
     @abstractmethod
     def get_tags(self) -> List:
+        pass
+
+    @abstractmethod
+    def get_table_by_user_relation(self, *, user_email: str,
+                                   relation_type: UserResourceRel) -> Dict[str, Any]:
+        pass
+
+    @abstractmethod
+    def add_table_relation_by_user(self, *,
+                                   table_uri: str,
+                                   user_email: str,
+                                   relation_type: UserResourceRel) -> None:
+        pass
+
+    @abstractmethod
+    def delete_table_relation_by_user(self, *,
+                                      table_uri: str,
+                                      user_email: str,
+                                      relation_type: UserResourceRel) -> None:
         pass

@@ -503,7 +503,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                 source=Source(source='/source_file_loc',
                                                               source_type='github'))
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             result = neo4j_proxy.get_table_by_user_relation(user_email='test_user',
                                                             relation_type=UserResourceRel.follow)
             self.assertEqual(len(result['table']), 1)
@@ -522,7 +522,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.add_table_relation_by_user(table_uri='dummy_uri',
                                                    user_email='tester',
                                                    relation_type=UserResourceRel.follow)
@@ -542,7 +542,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(endpoint='bogus')
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.delete_table_relation_by_user(table_uri='dummy_uri',
                                                       user_email='tester',
                                                       relation_type=UserResourceRel.follow)
