@@ -5,7 +5,7 @@ from flask_restful import Resource, fields, marshal
 
 from metadata_service.api.table import table_detail_fields
 from metadata_service.exception import NotFoundException
-from metadata_service.proxy import neo4j_proxy
+from metadata_service.proxy import get_proxy_client
 from metadata_service.util import UserResourceRel
 
 
@@ -33,12 +33,12 @@ class UserDetailAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            user = self.neo4j.get_user_detail(user_id=user_id)
-            return marshal(user, user_detail_fields), HTTPStatus.OK
+            table = self.client.get_user_detail(user_id=user_id)
+            return marshal(table, user_detail_fields), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'User id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -51,7 +51,7 @@ class UserFollowAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
@@ -61,8 +61,8 @@ class UserFollowAPI(Resource):
         :return:
         """
         try:
-            resources = self.neo4j.get_table_by_user_relation(user_email=user_id,
-                                                              relation_type=UserResourceRel.follow)
+            resources = self.client.get_table_by_user_relation(user_email=user_id,
+                                                               relation_type=UserResourceRel.follow)
             return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
@@ -81,9 +81,9 @@ class UserFollowAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.add_table_relation_by_user(table_uri=table_uri,
-                                                  user_email=user_id,
-                                                  relation_type=UserResourceRel.follow)
+            self.client.add_table_relation_by_user(table_uri=table_uri,
+                                                   user_email=user_id,
+                                                   relation_type=UserResourceRel.follow)
             return {'message': 'The user {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
@@ -103,9 +103,9 @@ class UserFollowAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.delete_table_relation_by_user(table_uri=table_uri,
-                                                     user_email=user_id,
-                                                     relation_type=UserResourceRel.follow)
+            self.client.delete_table_relation_by_user(table_uri=table_uri,
+                                                      user_email=user_id,
+                                                      relation_type=UserResourceRel.follow)
             return {'message': 'The user {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
@@ -124,7 +124,7 @@ class UserOwnAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
@@ -134,8 +134,8 @@ class UserOwnAPI(Resource):
         :return:
         """
         try:
-            resources = self.neo4j.get_table_by_user_relation(user_email=user_id,
-                                                              relation_type=UserResourceRel.own)
+            resources = self.client.get_table_by_user_relation(user_email=user_id,
+                                                               relation_type=UserResourceRel.own)
             return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
@@ -154,8 +154,7 @@ class UserOwnAPI(Resource):
         :return:
         """
         try:
-            self.neo4j.add_owner(table_uri=table_uri,
-                                 owner=user_id)
+            self.client.add_owner(table_uri=table_uri, owner=user_id)
             return {'message': 'The owner {} for table_uri {} '
                                'is added successfully'.format(user_id,
                                                               table_uri)}, HTTPStatus.OK
@@ -166,8 +165,7 @@ class UserOwnAPI(Resource):
 
     def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.neo4j.delete_owner(table_uri=table_uri,
-                                    owner=user_id)
+            self.client.delete_owner(table_uri=table_uri, owner=user_id)
             return {'message': 'The owner {} for table_uri {} '
                                'is deleted successfully'.format(user_id,
                                                                 table_uri)}, HTTPStatus.OK
@@ -184,7 +182,7 @@ class UserReadAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.neo4j = neo4j_proxy.get_neo4j()
+        self.client = get_proxy_client()
 
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
@@ -194,8 +192,8 @@ class UserReadAPI(Resource):
         :return:
         """
         try:
-            resources = self.neo4j.get_table_by_user_relation(user_email=user_id,
-                                                              relation_type=UserResourceRel.read)
+            resources = self.client.get_table_by_user_relation(user_email=user_id,
+                                                               relation_type=UserResourceRel.read)
             return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:

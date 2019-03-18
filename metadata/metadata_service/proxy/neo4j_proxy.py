@@ -1,23 +1,21 @@
 import logging
 import textwrap
-import time
 from random import randint
-from threading import Lock
 from typing import Dict, Any, no_type_check, List, Tuple, Union  # noqa: F401
 
+import time
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from flask import current_app
 from neo4j.v1 import BoltStatementResult
 from neo4j.v1 import GraphDatabase, Driver  # noqa: F401
 
-from metadata_service import config
 from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import Application, Column, Reader, Source, \
     Statistics, Table, Tag, User, Watermark
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
+from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
 
@@ -30,15 +28,16 @@ _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 LOGGER = logging.getLogger(__name__)
 
 
-class Neo4jProxy:
+class Neo4jProxy(BaseProxy):
     """
     A proxy to Neo4j (Gateway to Neo4j)
     """
 
     def __init__(self, *,
-                 endpoint: str,
-                 neo4j_user: str ='neo4j',
-                 neo4j_password: str ='',
+                 host: str,
+                 port: int,
+                 user: str ='neo4j',
+                 password: str ='',
                  num_conns: int =50,
                  max_connection_lifetime_sec: int =100) -> None:
         """
@@ -51,10 +50,11 @@ class Neo4jProxy:
         words, connection life time longer than this value won't be reused and closed on garbage collection. This
         value needs to be smaller than surrounding network environment's timeout.
         """
+        endpoint = f'{host}:{port}'
         self._driver = GraphDatabase.driver(endpoint, max_connection_pool_size=num_conns,
                                             connection_timeout=10,
                                             max_connection_lifetime=max_connection_lifetime_sec,
-                                            auth=(neo4j_user, neo4j_password))  # type: Driver
+                                            auth=(user, password))  # type: Driver
 
     @timer_with_counter
     def get_table(self, *, table_uri: str) -> Table:
@@ -606,7 +606,7 @@ class Neo4jProxy:
         return results
 
     @timer_with_counter
-    def get_neo4j_latest_updated_ts(self) -> int:
+    def get_latest_updated_ts(self) -> int:
         """
         API method to fetch last updated / index timestamp for neo4j, es
 
@@ -862,31 +862,3 @@ class Neo4jProxy:
             raise e
         finally:
             tx.close()
-
-
-_neo4j_proxy = None
-_neo4j_lock = Lock()
-
-
-def get_neo4j() -> Neo4jProxy:
-    """
-    Provides singleton neo4j proxy
-    :return: Neo4j proxy
-    """
-    global _neo4j_proxy
-    endpoint = current_app.config[config.NEO4J_ENDPOINT_KEY]
-    neo4j_user = current_app.config[config.NEO4J_USER]
-    neo4j_password = current_app.config[config.NEO4J_PASSWORD]
-
-    if _neo4j_proxy:
-        return _neo4j_proxy
-
-    with _neo4j_lock:
-        if _neo4j_proxy:
-            return _neo4j_proxy
-        else:
-            _neo4j_proxy = Neo4jProxy(endpoint=endpoint,
-                                      neo4j_user=neo4j_user,
-                                      neo4j_password=neo4j_password)
-
-    return _neo4j_proxy
