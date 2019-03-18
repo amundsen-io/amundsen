@@ -17,6 +17,7 @@ from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
+from metadata_service.util import UserResourceRel
 
 _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 
@@ -693,7 +694,9 @@ class Neo4jProxy(BaseProxy):
         """
 
         query = textwrap.dedent("""
-        MATCH (user:User {key: $user_id}) RETURN user as user_record
+        MATCH (user:User {key: $user_id})
+        OPTIONAL MATCH (user)-[:manage_by]->(manager:User)
+        RETURN user as user_record, manager as manager_record
         """)
 
         record = self._execute_cypher_query(statement=query,
@@ -701,7 +704,13 @@ class Neo4jProxy(BaseProxy):
         if not record:
             raise NotFoundException('User {user_id} '
                                     'not found in the graph'.format(user_id=user_id))
-        record = record.single()['user_record']
+        single_result = record.single()
+        record = single_result.get('user_record', {})
+        manager_record = single_result.get('manager_record', {})
+        if manager_record:
+            manager_name = manager_record.get('full_name', '')
+        else:
+            manager_name = ''
         result = UserEntity(email=record['email'],
                             first_name=record.get('first_name'),
                             last_name=record.get('last_name'),
@@ -710,5 +719,146 @@ class Neo4jProxy(BaseProxy):
                             github_username=record.get('github_username'),
                             team_name=record.get('team_name'),
                             slack_id=record.get('slack_id'),
-                            employee_type=record.get('employee_type'))
+                            employee_type=record.get('employee_type'),
+                            manager_fullname=manager_name)
         return result
+
+    @staticmethod
+    def _get_relation_by_type(relation_type: UserResourceRel) -> Tuple:
+
+        if relation_type == UserResourceRel.follow:
+            relation, reverse_relation = 'FOLLOW', 'FOLLOWED_BY'
+        elif relation_type == UserResourceRel.own:
+            relation, reverse_relation = 'OWNER_OF', 'OWNER'
+        elif relation_type == UserResourceRel.read:
+            relation, reverse_relation = 'READ', 'READ_BY'
+        else:
+            raise NotImplementedError('The relation type {} is not defined!'.format(relation_type))
+        return relation, reverse_relation
+
+    @timer_with_counter
+    def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
+        """
+        Retrive all follow the resources per user based on the relation.
+        We start with table resources only, then add dashboard.
+
+        :param user_email: the email of the user
+        :param relation_type: the relation between the user and the resource
+        :return:
+        """
+        relation, _ = self._get_relation_by_type(relation_type)
+        # relationship can't be parameterized
+        query_key = 'key: "{user_id}"'.format(user_id=user_email)
+
+        query = textwrap.dedent("""
+        MATCH (user:User {{{key}}})-[:{relation}]->(tbl:Table)
+        RETURN COLLECT(DISTINCT tbl) as table_records
+        """).format(key=query_key,
+                    relation=relation)
+
+        record = self._execute_cypher_query(statement=query,
+                                            param_dict={})
+
+        if not record:
+            raise NotFoundException('User {user_id} does not {relation} '
+                                    'any resources'.format(user_id=user_email,
+                                                           relation=relation))
+        results = []
+        table_records = record.single().get('table_records', [])
+
+        for record in table_records:
+            # todo: decide whether we want to return a list of table entities or just table_uri
+            results.append(self.get_table(table_uri=record['key']))
+        return {'table': results}
+
+    @timer_with_counter
+    def add_table_relation_by_user(self, *,
+                                   table_uri: str,
+                                   user_email: str,
+                                   relation_type: UserResourceRel) -> None:
+        """
+        Update table user informations.
+        1. Do a upsert of the user node.
+        2. Do a upsert of the relation/reverse-relation edge.
+
+        :param table_uri:
+        :param user_email:
+        :param relation_type:
+        :return:
+        """
+        relation, reverse_relation = self._get_relation_by_type(relation_type)
+
+        upsert_user_query = textwrap.dedent("""
+        MERGE (u:User {key: $user_email})
+        on CREATE SET u={email: $user_email, key: $user_email}
+        on MATCH SET u={email: $user_email, key: $user_email}
+        """)
+
+        user_email = 'key: "{user_email}"'.format(user_email=user_email)
+        tbl_key = 'key: "{tbl_key}"'.format(tbl_key=table_uri)
+
+        upsert_user_relation_query = textwrap.dedent("""
+        MATCH (n1:User {{{user_email}}}), (n2:Table {{{tbl_key}}})
+        MERGE (n1)-[r1:{relation}]->(n2)-[r2:{reverse_relation}]->(n1)
+        RETURN n1.key, n2.key
+        """).format(user_email=user_email,
+                    tbl_key=tbl_key,
+                    relation=relation,
+                    reverse_relation=reverse_relation)
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            # upsert the node
+            tx.run(upsert_user_query, {'user_email': user_email})
+            result = tx.run(upsert_user_relation_query, {})
+
+            if not result.single():
+                raise RuntimeError('Failed to create relation between '
+                                   'user {user} and table {tbl}'.format(user=user_email,
+                                                                        tbl=table_uri))
+            tx.commit()
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            # propagate the exception back to api
+            raise e
+        finally:
+            tx.close()
+
+    @timer_with_counter
+    def delete_table_relation_by_user(self, *,
+                                      table_uri: str,
+                                      user_email: str,
+                                      relation_type: UserResourceRel) -> None:
+        """
+        Delete the relationship between user and resources.
+
+        :param table_uri:
+        :param user_email:
+        :param relation_type:
+        :return:
+        """
+        relation, reverse_relation = self._get_relation_by_type(relation_type)
+
+        user_email = 'key: "{user_email}"'.format(user_email=user_email)
+        tbl_key = 'key: "{tbl_key}"'.format(tbl_key=table_uri)
+
+        delete_query = textwrap.dedent("""
+        MATCH (n1:User {{{user_email}}})-[r1:{relation}]->
+        (n2:Table {{{tbl_key}}})-[r2:{reverse_relation}]->(n1) DELETE r1,r2
+        """).format(user_email=user_email,
+                    tbl_key=tbl_key,
+                    relation=relation,
+                    reverse_relation=reverse_relation)
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            tx.run(delete_query, {})
+            tx.commit()
+        except Exception as e:
+            # propagate the exception back to api
+            if not tx.closed():
+                tx.rollback()
+            raise e
+        finally:
+            tx.close()
