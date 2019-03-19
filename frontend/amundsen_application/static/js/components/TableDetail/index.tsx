@@ -259,7 +259,11 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
           <DataPreviewButton modalTitle={`${this.schema}.${this.tableName}`} />
           {
             AppConfig.tableProfile.isExploreEnabled &&
-              <a role="button" href={this.getExploreSqlUrl()} target="_blank" className="btn btn-primary btn-block">
+              <a className="btn btn-default btn-shadow btn-block"
+                 href={this.getExploreSqlUrl()}
+                 role="button"
+                 target="_blank"
+              >
                 <img className="icon icon-color icon-database"/>
                 Explore with SQL
               </a>

@@ -56,6 +56,11 @@ img.icon {
     mask-image: url('/static/images/icons/Right.svg');
   }
 
+  &.icon-search {
+    -webkit-mask-image: url('/static/images/icons/Search.svg');
+    mask-image: url('/static/images/icons/Search.svg');
+  }
+
   &.icon-up {
     -webkit-mask-image: url('/static/images/icons/Up.svg');
     mask-image: url('/static/images/icons/Up.svg');

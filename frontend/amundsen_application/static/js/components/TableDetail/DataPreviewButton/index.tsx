@@ -181,7 +181,7 @@ class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPrev
 
     const previewButton = (
       <button
-       className="btn btn-primary btn-block"
+       className="btn btn-default btn-shadow btn-block"
        disabled={disabled}
        onClick={this.handleShow}>
          <img className={"icon icon-color " + iconClass} />

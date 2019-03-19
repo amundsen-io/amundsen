@@ -1,30 +1,36 @@
 @import 'variables';
 
-.tag-button {
-  border-radius: 2px;
+.btn.tag-button {
+  background-color: $gray-lightest;
+  border: 0;
+  border-radius: 4px;
+  color: $gray;
   font-size: $font-size-large;
   margin: 4px;
   overflow: hidden;
   padding: 4px 8px;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
 
-.tag-button.compact {
-  // Color to match up with the multi select tag library
-  background-color: rgb(230, 230, 230);
+  &.compact {
+    font-size: $font-size-base;
+    line-height: 24px;
+    height: 30px;
+    margin: 2px;
+    padding: 3px 6px;
+  }
 
-  border: 0;
-  font-size: $font-size-small;
-  line-height: 16px;
-  margin: 2px;
-  padding: 3px 6px;
-}
+  &:hover,
+  &:focus {
+    color: $gray;
+    background-color: $brand-color-2;
+  }
 
-.tag-name {
-  margin-right: 8px;
-}
+  .tag-name {
+    margin-right: 8px;
+  }
 
-.tag-count {
-  color: $gray-light;
+  .tag-count {
+    color: $gray-light;
+  }
 }
