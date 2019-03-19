@@ -98,7 +98,7 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
         <textarea name="comment" form={AbstractFeedbackForm.FORM_ID}
           rows={ 5 } maxLength={ 2000 } placeholder="Additional Comments"/>
         <div>
-          <button className="btn btn-light submit" type="submit">Submit</button>
+          <button className="btn btn-default submit" type="submit">Submit</button>
         </div>
       </form>
     );
@@ -125,7 +125,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
                     maxLength={ 2000 } placeholder="What you did to encounter this bug?"/>
         </div>
         <div>
-          <button className="btn btn-light submit" type="submit">Submit</button>
+          <button className="btn btn-default submit" type="submit">Submit</button>
         </div>
       </form>
     );
@@ -152,7 +152,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
                     maxLength={ 2000 } placeholder="How does this feature add value?"/>
         </div>
         <div>
-          <button className="btn btn-light submit" type="submit">Submit</button>
+          <button className="btn btn-default submit" type="submit">Submit</button>
         </div>
       </form>
     );

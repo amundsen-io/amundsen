@@ -145,7 +145,7 @@ class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorState> {
             placeholder='Enter an email address'
             ref={ this.inputRef }
           />
-          <button className="btn btn-light add-button" type="submit" aria-label="Add Item">
+          <button className="btn btn-default add-button" type="submit" aria-label="Add Item">
             <span aria-hidden="true">Add</span>
           </button>
         </form>
@@ -222,8 +222,8 @@ class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorState> {
           </Modal.Header>
           { this.renderModalBody() }
           <Modal.Footer>
-            <button type="button" className="btn btn-cancel" onClick={this.cancelEdit}>Cancel</button>
-            <button type="button" className="btn btn-save" onClick={this.saveEdit}>Save</button>
+            <button type="button" className="btn btn-default" onClick={this.cancelEdit}>Cancel</button>
+            <button type="button" className="btn btn-primary" onClick={this.saveEdit}>Save</button>
           </Modal.Footer>
         </Modal>
       </div>

@@ -5,27 +5,51 @@
    using !important as a temporary workaround in places where a compiled class
    is taking precendence,
 */
-.amundsen__multi-value__remove:hover,
-.amundsen__multi-value__remove:focus {
-  background-color: $gray-light !important;
-  color: $text-color !important;
+.tag-input .basic-multi-select {
+  .amundsen__control {
+
+    min-height: 34px;
+
+    &,
+    .amundsen__control--is-focused,
+    .amundsen__control--is-focused:hover  {
+       border: none !important;
+       box-shadow: none !important;
+    }
+
+    .amundsen__multi-value {
+      background-color: $gray-lightest !important;
+      border-radius: 4px;
+
+      .amundsen__multi-value__label {
+        border-radius: 4px 0 0 4px;
+        color: $gray;
+      }
+
+      .amundsen__multi-value__remove {
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+          background-color: $brand-color-2 !important;
+          color: $gray;
+        }
+      }
+    }
+  }
+
+  .amundsen__control--is-disabled {
+    background-color: transparent;
+    border-style: none;
+  }
 }
 
-.amundsen__control.amundsen__control--is-disabled {
-  background-color: transparent;
-  border-style: none;
-}
 
 .amundsen__value-container {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
-.amundsen__control,
-.amundsen__control--is-focused,
-.amundsen__control--is-focused:hover  {
-   border: none !important;
-   box-shadow: none !important;
-}
 
 .amundsen__option--is-focused {
   background-color: #eee !important;
@@ -45,7 +69,7 @@
 }
 
 .multi-value-container {
-  border-radius: 2px;
+  border-radius: 4px;
   border: 1px solid hsl(0,0%,90%);
   display: flex;
   margin: 4px;

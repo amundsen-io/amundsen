@@ -1,9 +1,9 @@
 @import 'variables';
 
 .nav-bar {
-  height: 72px;
-  border-bottom: 1px solid $gray-lighter;
-  padding: 10px 32px 10px 32px;
+  height: 48px;
+  box-shadow: 0 2px 0 -1px $gray-lightest;
+  padding: 8px 32px 8px 32px;
   font-family: $font-family-sans-serif-bold;
   font-weight: $font-weight-sans-serif-bold;
   color: $gray-light;
@@ -56,6 +56,6 @@
 }
 
 .logo-icon {
-  max-height: 48px;
+  max-height: 32px;
   max-width: 144px;
 }

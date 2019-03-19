@@ -9,7 +9,7 @@
 
   &.expanded {
     background-color: white;
-    border-radius: 2px;
+    border-radius: 0 0 6px 6px;
     border-top: 4px solid $brand-primary;
     height: auto;
     min-height: 450px;

@@ -33,7 +33,7 @@ ReactDOM.render(
   <DocumentTitle title="Amundsen - Data Discovery Portal">
     <Provider store={store}>
       <BrowserRouter>
-        <div>
+        <div id="main">
           <NavBar />
           <Switch>
             <Route path="/table_detail/:cluster/:db/:schema/:table" component={TableDetail} />

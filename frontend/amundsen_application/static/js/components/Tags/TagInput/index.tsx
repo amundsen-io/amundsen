@@ -187,7 +187,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     else if (this.batchEditSet[tagName] === BatchEditState.DELETE) {
       this.batchEditSet[tagName] = BatchEditState.CURRENT;
     }
-  }
+  };
 
   renderTagBlob(tagArray, keyPrefix, className) {
     return tagArray.map((tag) => {
@@ -199,7 +199,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
       };
       const updateTag = (event) => {
         this.toggleTag(event, tagName);
-      }
+      };
       return  (
         <div onClick={updateTag} key={`${keyPrefix}:${tagName}`} className={className}>
           <components.MultiValueContainer>
@@ -257,6 +257,9 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
           styles={{
             multiValueLabel: (provided) => ({
               ...provided,
+              fontSize: '14px',
+              height: '30px',
+              lineHeight: '24px',
               width: '100%',
             }),
             option: this.generateCustomOptionStyle
@@ -277,8 +280,8 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
             {this.renderModalBody()}
           </Modal.Body>
           <Modal.Footer>
-            <button type="button" className="btn btn-cancel" onClick={this.handleClose}>Cancel</button>
-            <button type="button" className="btn btn-save" onClick={this.handleSaveModalEdit}>Save</button>
+            <button type="button" className="btn btn-default" onClick={this.handleClose}>Cancel</button>
+            <button type="button" className="btn btn-primary" onClick={this.handleSaveModalEdit}>Save</button>
           </Modal.Footer>
         </Modal>
       </div>

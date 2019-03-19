@@ -23,14 +23,14 @@ class TagInfo extends React.Component<TagInfoProps, {}> {
 
     if (this.props.compact) {
       return (
-        <Link role="button" to={searchUrl} className="btn btn-default tag-button compact">
+        <Link role="button" to={searchUrl} className="btn tag-button compact">
           {this.props.data.tag_name}
         </Link>
       );
     }
 
     return (
-      <Link role="button" to={searchUrl} className="btn btn-default tag-button">
+      <Link role="button" to={searchUrl} className="btn tag-button">
         <span className="tag-name">{this.props.data.tag_name}</span>
         <span className="tag-count">{this.props.data.tag_count}</span>
       </Link>
