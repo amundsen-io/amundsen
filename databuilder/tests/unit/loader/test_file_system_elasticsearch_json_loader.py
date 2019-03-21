@@ -8,7 +8,7 @@ from typing import Any, List  # noqa: F401
 
 from databuilder import Scoped
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
-from databuilder.models.elasticsearch_document import ElasticsearchDocument
+from databuilder.models.table_elasticsearch_document import TableESDocument
 
 
 class TestFSElasticsearchJSONLoader(unittest.TestCase):
@@ -91,20 +91,20 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                 scope=loader.get_scope()))
 
-        data = ElasticsearchDocument(elasticsearch_index='test_es_index',
-                                     elasticsearch_type='test_es_type',
-                                     database='test_database',
-                                     cluster='test_cluster',
-                                     schema_name='test_schema',
-                                     table_name='test_table',
-                                     table_key='test_table_key',
-                                     table_last_updated_epoch=123456789,
-                                     table_description='test_description',
-                                     column_names=['test_col1', 'test_col2'],
-                                     column_descriptions=['test_comment1', 'test_comment2'],
-                                     total_usage=10,
-                                     unique_usage=5,
-                                     tag_names=['test_tag1', 'test_tag2'])
+        data = TableESDocument(elasticsearch_index='test_es_index',
+                               elasticsearch_type='test_es_type',
+                               database='test_database',
+                               cluster='test_cluster',
+                               schema_name='test_schema',
+                               table_name='test_table',
+                               table_key='test_table_key',
+                               table_last_updated_epoch=123456789,
+                               table_description='test_description',
+                               column_names=['test_col1', 'test_col2'],
+                               column_descriptions=['test_comment1', 'test_comment2'],
+                               total_usage=10,
+                               unique_usage=5,
+                               tag_names=['test_tag1', 'test_tag2'])
         loader.load(data)
         loader.close()
 
@@ -130,20 +130,20 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                 scope=loader.get_scope()))
 
-        data = [ElasticsearchDocument(elasticsearch_index='test_es_index',
-                                      elasticsearch_type='test_es_type',
-                                      database='test_database',
-                                      cluster='test_cluster',
-                                      schema_name='test_schema',
-                                      table_name='test_table',
-                                      table_key='test_table_key',
-                                      table_last_updated_epoch=123456789,
-                                      table_description='test_description',
-                                      column_names=['test_col1', 'test_col2'],
-                                      column_descriptions=['test_comment1', 'test_comment2'],
-                                      total_usage=10,
-                                      unique_usage=5,
-                                      tag_names=['test_tag1', 'test_tag2'])] * 5
+        data = [TableESDocument(elasticsearch_index='test_es_index',
+                                elasticsearch_type='test_es_type',
+                                database='test_database',
+                                cluster='test_cluster',
+                                schema_name='test_schema',
+                                table_name='test_table',
+                                table_key='test_table_key',
+                                table_last_updated_epoch=123456789,
+                                table_description='test_description',
+                                column_names=['test_col1', 'test_col2'],
+                                column_descriptions=['test_comment1', 'test_comment2'],
+                                total_usage=10,
+                                unique_usage=5,
+                                tag_names=['test_tag1', 'test_tag2'])] * 5
 
         for d in data:
             loader.load(d)

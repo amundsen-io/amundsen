@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from databuilder.models.elasticsearch_document import ElasticsearchDocument
+from databuilder.models.table_elasticsearch_document import TableESDocument
 
 
 class TestElasticsearchDocument(unittest.TestCase):
@@ -11,20 +11,20 @@ class TestElasticsearchDocument(unittest.TestCase):
         """
         Test string generated from to_json method
         """
-        test_obj = ElasticsearchDocument(elasticsearch_index='test_index',
-                                         elasticsearch_type='test_type',
-                                         database='test_database',
-                                         cluster='test_cluster',
-                                         schema_name='test_schema',
-                                         table_name='test_table',
-                                         table_key='test_table_key',
-                                         table_last_updated_epoch=123456789,
-                                         table_description='test_table_description',
-                                         column_names=['test_col1', 'test_col2'],
-                                         column_descriptions=['test_description1', 'test_description2'],
-                                         total_usage=100,
-                                         unique_usage=10,
-                                         tag_names=['test'])
+        test_obj = TableESDocument(elasticsearch_index='test_index',
+                                   elasticsearch_type='test_type',
+                                   database='test_database',
+                                   cluster='test_cluster',
+                                   schema_name='test_schema',
+                                   table_name='test_table',
+                                   table_key='test_table_key',
+                                   table_last_updated_epoch=123456789,
+                                   table_description='test_table_description',
+                                   column_names=['test_col1', 'test_col2'],
+                                   column_descriptions=['test_description1', 'test_description2'],
+                                   total_usage=100,
+                                   unique_usage=10,
+                                   tag_names=['test'])
 
         expected_index_dict = {"index": {"_type": "test_type", "_index": "test_index"}}
         expected_document_dict = {"database": "test_database",
