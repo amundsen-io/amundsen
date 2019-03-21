@@ -3,8 +3,14 @@
  These must be defined here:
 
   $brand-color-1, $brand-color-2, $brand-color-3, $brand-color-4, $brand-color-5
-  $font-family-sans-serif-bold,
-  $font-weight-sans-serif-bold
+
+  $font-family-sans-serif-bold, $font-weight-sans-serif-bold
+
+  $text-dark, $text-medium, $text-light
+
+  $btn-primary-bg-hover, $btn-default-border-hover,
+  $btn-primary-border-hover, $btn-default-bg-hover,
+
   */
 
 
@@ -26,7 +32,11 @@ $gray-lightest: lighten($gray-base, 95%) !default; // #f2f2f2
 
 // Scaffolding
 $body-bg:    #fff !default;
+// TODO - consider replacing $text-dark with $text-color
+$text-dark: $gray-dark !default;
 $text-color: $gray-dark !default;
+$text-medium: $gray !default;
+$text-light: $gray-lighter !default;
 
 
 // Typography
@@ -40,6 +50,7 @@ $font-family-base:            $font-family-sans-serif !default;
 $headings-font-family:        $font-family-sans-serif-bold !default;
 
 $font-size-small:    12px !default;
+
 $font-size-base:     14px !default;
 $font-size-large:    16px !default;
 $line-height-small:  1.5 !default;
@@ -47,13 +58,21 @@ $line-height-large:  1.5 !default;
 
 
 // Buttons
-$btn-default-border: $gray-lighter !default;
-$btn-default-bg:     #fff !default;
-$btn-default-color:  $text-color !default;
+$btn-border-radius-base: 4px;
 
-$btn-primary-border: $gray-lighter !default;
-$btn-primary-bg:     #fff !default;
-$btn-primary-color:  $text-color !default;
+$btn-primary-bg:           $brand-color-4 !default;
+$btn-primary-bg-hover:     $brand-color-5 !default;
+$btn-primary-border:       transparent !default;
+$btn-primary-border-hover: transparent !default;
+$btn-primary-color:        white !default;
+$btn-primary-color-hover:  white !default;
+
+$btn-default-bg:           white !default;
+$btn-default-bg-hover:     $gray-lightest;
+$btn-default-border:       $gray-lighter !default;
+$btn-default-border-hover: $gray-light !default;
+$btn-default-color:        $gray-dark !default;
+$btn-default-color-hover:  $gray-dark !default;
 
 
 // List Group

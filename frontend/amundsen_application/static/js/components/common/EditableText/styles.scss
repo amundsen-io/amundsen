@@ -3,7 +3,7 @@
 .editable-container {
   display: flex;
   font-size: 16px;
-  color: $gray-light;
+  color: $text-medium;
 
   &:hover {
    .edit-link {
@@ -14,12 +14,7 @@
   .edit-link {
     opacity: 0;
     margin-left: 4px;
-    color: $brand-color-3;
     text-decoration: none;
-
-    &:hover {
-      color: $brand-color-4;
-    }
 
     &.no-value {
       opacity: 1;
