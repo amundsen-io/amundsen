@@ -6,7 +6,7 @@
   padding: 8px 32px 8px 32px;
   font-family: $font-family-sans-serif-bold;
   font-weight: $font-weight-sans-serif-bold;
-  color: $gray-light;
+  color: $text-medium;
   font-size: 14px;
   display: flex;
   flex-direction: row;
@@ -19,7 +19,7 @@
 
 .nav-bar a {
   text-decoration: none;
-  color: $gray-light;
+  color: $text-medium;
 }
 
 .nav-bar a:hover {

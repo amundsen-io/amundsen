@@ -34,3 +34,15 @@ td {
 form {
   margin-bottom: 0;
 }
+
+
+input {
+  &::-webkit-input-placeholder,
+  &::-moz-placeholder,
+  &:-ms-input-placeholder,
+  &:-moz-placeholder,
+  &::placeholder {
+    color: $gray-dark !important;
+  }
+}
+

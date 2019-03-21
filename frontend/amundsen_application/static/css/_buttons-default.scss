@@ -1,27 +1,70 @@
 @import 'variables';
 .btn {
-  &:focus,
-  &:not(.disabled):hover,
-  &:not([disabled]):hover {
-    background-color: $brand-color-1;
-    border-color: $brand-color-2;
-    outline: none;
 
-    &.icon {
-     background-color: $brand-color-4;
+  &.btn-primary,
+  &.btn-default {
+    font-family: $font-family-sans-serif-bold;
+    font-weight: $font-weight-sans-serif-bold;
+    height: 32px;
+    padding: 6px 16px;
+
+    img.icon {
+      border: none;
+      height: 18px;
+      -webkit-mask-size: 18px;
+      mask-size: 18px;
+      margin: 0 4px;
+      vertical-align: top;
+      min-width: 18px;
+      width: 18px;
+    }
+
+    &.btn-lg {
+      font-weight: $font-size-large;
+      height: 48px;
+      padding: 12px 24px;
+
+      img.icon {
+        height: 24px;
+        -webkit-mask-size: 24px;
+        mask-size: 24px;
+        margin: 0 4px;
+        min-width: 24px;
+        width: 24px;
+      }
+    }
+  }
+
+  &.btn-primary {
+    img.icon {
+      background-color: $btn-primary-color;
+    }
+
+    &:not(.disabled):hover,
+    &:not([disabled]):hover,
+    &:focus {
+      background-color: $btn-primary-bg-hover;
+      border-color: $btn-primary-border-hover;
+      outline: none;
+    }
+  }
+
+  &.btn-default {
+    img.icon {
+      background-color: $btn-default-color;
+    }
+
+    &:not(.disabled):hover,
+    &:not([disabled]):hover,
+    &:focus {
+      background-color: $btn-default-bg-hover;
+      border-color: $btn-default-border-hover;
+      outline: none;
     }
   }
 
   * {
     vertical-align: middle;
-  }
-
-  img {
-    border: none;
-    height: 24px;
-    margin: -3px 4px -3px 0px;
-    min-width: 24px;
-    width: 24px;
   }
 
   &.btn-block {
@@ -31,7 +74,7 @@
   &.btn-flat-icon {
     border: none;
     background-color: transparent;
-    color: $gray-light;
+    color: $text-medium;
     box-shadow: none !important;
     padding: 0px;
     text-align: left;
@@ -48,44 +91,17 @@
     }
   }
 
-  &.btn-default {
-    border-radius: 4px;
-    border: 1px solid rgba(0, 7, 39, 0.13);
-    height: 36px;
-    font-family: $font-family-sans-serif-bold;
-    font-weight: $font-weight-sans-serif-bold;
-  }
-
-  &.btn-primary {
-    color: white;
-    background-color: $brand-color-4;
-    border-color: $brand-color-4;
-    font-family: $font-family-sans-serif-bold;
-    font-weight: $font-weight-sans-serif-bold;
-
-    &:focus,
-    &:not(.disabled):hover,
-    &:not([disabled]):hover {
-      color: white;
-      background-color: $brand-color-5;
-      border-color: $brand-color-5;
-    }
-  }
-
-  &.btn-shadow {
-    box-shadow: 0 1px 3px 0 rgba(17, 17, 31, 0.12);
-  }
 
   &.disabled,
   &:disabled {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    color: $gray-light;
+    color: $text-medium;
     pointer-events: none;
 
     &:hover {
-      color: $gray-light;
+      color: $text-medium;
     }
   }
 }

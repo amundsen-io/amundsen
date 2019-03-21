@@ -91,11 +91,8 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     return (
       <div id="search-bar" className="col-xs-12 col-md-offset-1 col-md-10">
         <form className="search-bar-form" onSubmit={ this.handleValueSubmit }>
-            <button className="btn btn-flat-icon search-bar-button" type="submit">
-              <img className="icon icon-search" />
-            </button>
             <input
-              id="searchInput"
+              id="search-input"
               className="search-bar-input form-control"
               value={ this.state.searchTerm }
               onChange={ this.handleValueChange }
@@ -104,6 +101,9 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
               autoFocus={ true }
               ref={ this.inputRef }
             />
+          <button className="btn btn-flat-icon search-bar-button" type="submit">
+            <img className="icon icon-search" />
+          </button>
         </form>
         <div className={ subTextClass }>
           { this.state.subText }

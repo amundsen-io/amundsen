@@ -19,12 +19,12 @@
       > a {
         background: none;
         border: none;
-        color: $gray-light;
+        color: $text-medium;
         font-size: $font-size-large;
         line-height: $line-height-large;
 
         &:hover {
-          color: $text-color;
+          color: $text-dark;
         }
 
         // Active tab indicator

@@ -1,7 +1,7 @@
 @import 'variables';
 
 img.icon {
-  background-color: $gray-lighter;
+  background-color: $gray-light;
   border: none;
   height: 24px;
   margin: -3px 4px -3px 0px;
@@ -64,18 +64,6 @@ img.icon {
   &.icon-up {
     -webkit-mask-image: url('/static/images/icons/Up.svg');
     mask-image: url('/static/images/icons/Up.svg');
-  }
-}
-
-.btn img.icon {
-
-  // Some icons need to be scaled down when inside buttons
-  &.icon-database {
-    -webkit-mask-position: 3px 3px;
-    mask-position: 3px 3px;
-
-    -webkit-mask-size: 18px 18px;
-    mask-size: 18px 18px;
   }
 }
 

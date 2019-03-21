@@ -11,7 +11,7 @@
   background-color: transparent !important;
 
   .description {
-    color: $gray-light;
+    color: $text-medium;
     max-width: 100%;
     font-size: 14px;
     min-width: 0;
@@ -80,7 +80,7 @@
       width: 20%;
 
       .title {
-        color: $gray-light;
+        color: $text-medium;
         font-size: $font-size-small;
         font-family: $font-family-sans-serif-bold;
         font-weight: $font-weight-sans-serif-bold;
@@ -91,7 +91,7 @@
     }
 
     .stat-collection-info {
-      color: $gray-light;
+      color: $text-medium;
       font-style: italic;
       margin-top: 4px;
     }

@@ -1,7 +1,7 @@
 @import 'variables';
 
 .delete-button {
-  color: $gray-light;
+  color: $text-medium;
   height: 24px;
   width: 24px;
   margin: auto;
@@ -35,5 +35,5 @@
 }
 .popover-content button:hover,
 .popover-content button:focus {
-  color: $gray-light;
+  color: $text-medium;
 }
