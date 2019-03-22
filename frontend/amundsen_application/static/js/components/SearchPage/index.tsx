@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
 import Pagination from 'react-js-pagination';
@@ -8,13 +10,17 @@ import SearchList from './SearchList';
 import InfoButton from '../common/InfoButton';
 import { TableResource } from "../common/ResourceListItem/types";
 
+import { GlobalState } from "../../ducks/rootReducer";
+import { executeSearch } from '../../ducks/search/reducer';
 import {
   ExecuteSearchRequest,
   DashboardSearchResults,
   TableSearchResults,
   UserSearchResults
 } from "../../ducks/search/types";
+import { getPopularTables } from '../../ducks/popularTables/reducer';
 import { GetPopularTablesRequest } from '../../ducks/popularTables/types';
+
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
@@ -41,7 +47,7 @@ interface SearchPageState {
   searchTerm: string;
 }
 
-class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
+export class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   public static defaultProps: SearchPageProps = {
     executeSearch: () => undefined,
     getPopularTables: () => undefined,
@@ -201,4 +207,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 }
 
-export default SearchPage;
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    searchTerm: state.search.searchTerm,
+    popularTables: state.popularTables,
+    tables: state.search.tables,
+    users: state.search.users,
+    dashboards: state.search.dashboards,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ executeSearch, getPopularTables } , dispatch);
+};
+
+export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(SearchPage);

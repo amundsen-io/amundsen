@@ -24,7 +24,7 @@ interface FooterState {
   lastIndexed: number;
 }
 
-class Footer extends React.Component<FooterProps, FooterState> {
+export class Footer extends React.Component<FooterProps, FooterState> {
   constructor(props) {
     super(props);
 
@@ -61,13 +61,13 @@ class Footer extends React.Component<FooterProps, FooterState> {
 }
 
 
-const mapStateToProps = (state: GlobalState) => {
+export const mapStateToProps = (state: GlobalState) => {
   return {
     lastIndexed: state.tableMetadata.lastIndexed
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
+export const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ getLastIndexed }, dispatch);
 };
 

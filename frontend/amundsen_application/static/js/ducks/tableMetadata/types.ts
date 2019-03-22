@@ -1,12 +1,12 @@
 import { PreviewData, PreviewQueryParams, TableMetadata, User } from '../../components/TableDetail/types';
 import { UpdateTagData, Tag } from '../../components/Tags/types';
-import { UpdateMethod } from '../../components/OwnerEditor/types';
+import { UpdateMethod } from '../../components/TableDetail/OwnerEditor/types';
 export { PreviewData, PreviewQueryParams, TableMetadata, Tag, User, UpdateMethod, UpdateTagData };
 
 type MessageResponse = { msg: string };
 type TableData = TableMetadata & {
   owners: User[];
-  tags: Tag[]; 
+  tags: Tag[];
 };
 export type DescriptionResponse = { description: string; } & MessageResponse;
 export type LastIndexedResponse = { timestamp: string; } & MessageResponse;

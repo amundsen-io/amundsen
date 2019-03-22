@@ -1,9 +1,12 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import ReactDOM from 'react-dom';
 import serialize from 'form-serialize';
 
-import AvatarLabel, { AvatarLabelProps } from '../common/AvatarLabel';
-import LoadingSpinner from '../common/LoadingSpinner';
+import AvatarLabel, { AvatarLabelProps } from '../../common/AvatarLabel';
+import LoadingSpinner from '../../common/LoadingSpinner';
 import { Modal } from 'react-bootstrap';
 import { UpdateMethod } from './types';
 
@@ -11,6 +14,9 @@ import { UpdateMethod } from './types';
 import './styles.scss';
 
 const DEFAULT_ERROR_TEXT = 'There was a problem with the request, please reload the page.';
+
+import { GlobalState } from "../../../ducks/rootReducer";
+import { updateTableOwner } from '../../../ducks/tableMetadata/owners/reducer';
 
 export interface DispatchFromProps {
   onUpdateList: (updateArray: { method: UpdateMethod; id: string; }[], onSuccess?: () => any, onFailure?: () => any) => void;
@@ -37,7 +43,7 @@ interface OwnerEditorState {
   tempItemProps: { [id: string]: AvatarLabelProps };
 }
 
-class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorState> {
+export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorState> {
   private inputRef: React.RefObject<HTMLInputElement>;
 
   public static defaultProps: OwnerEditorProps = {
@@ -231,4 +237,21 @@ class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorState> {
   }
 }
 
-export default OwnerEditor;
+export const mapStateToProps = (state: GlobalState) => {
+  const ownerObj = state.tableMetadata.tableOwners.owners;
+  const items = Object.keys(ownerObj).reduce((obj, ownerId) => {
+    obj[ownerId] = { label: ownerObj[ownerId].display_name }
+    return obj;
+  }, {});
+
+  return {
+    isLoading: state.tableMetadata.tableOwners.isLoading,
+    itemProps: items,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ onUpdateList: updateTableOwner } , dispatch);
+};
+
+export default connect<StateFromProps, DispatchFromProps, ComponentProps>(mapStateToProps, mapDispatchToProps)(OwnerEditor);
