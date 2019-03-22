@@ -9,7 +9,8 @@ PROXY_CLIENT = 'PROXY_CLIENT'
 
 
 PROXY_CLIENTS = {
-    'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy'
+    'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
+    'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy'
 }
 
 IS_STATSD_ON = 'IS_STATSD_ON'
@@ -32,7 +33,6 @@ class LocalConfig(Config):
     TESTING = False
     LOG_LEVEL = 'DEBUG'
     LOCAL_HOST = '0.0.0.0'
-    NEO4J_ENDPOINT = 'bolt://{LOCAL_HOST}:7687'.format(LOCAL_HOST=LOCAL_HOST)
 
     PROXY_HOST = f'bolt://{LOCAL_HOST}'
     PROXY_PORT = 7687
