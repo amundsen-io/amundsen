@@ -3,10 +3,15 @@ import * as DocumentTitle from 'react-document-title';
 // TODO - Consider an alternative to react-sanitized-html (large filesize)
 import SanitizedHTML from 'react-sanitized-html';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
+import { GlobalState } from "../../ducks/rootReducer";
 import { AnnouncementsGetRequest } from "../../ducks/announcements/types";
+import { announcementsGet } from '../../ducks/announcements/reducer';
 import { AnnouncementPost } from "./types";
 
 interface AnnouncementPageState {
@@ -23,7 +28,7 @@ export interface DispatchFromProps {
 
 type AnnouncementPageProps = StateFromProps & DispatchFromProps;
 
-class AnnouncementPage extends React.Component<AnnouncementPageProps, AnnouncementPageState> {
+export class AnnouncementPage extends React.Component<AnnouncementPageProps, AnnouncementPageState> {
   constructor(props) {
     super(props);
 
@@ -80,4 +85,14 @@ class AnnouncementPage extends React.Component<AnnouncementPageProps, Announceme
   }
 }
 
-export default AnnouncementPage;
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    posts: state.announcements.posts,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ announcementsGet } , dispatch);
+};
+
+export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(AnnouncementPage);

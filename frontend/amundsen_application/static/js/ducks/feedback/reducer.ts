@@ -1,4 +1,4 @@
-import { SendingState } from '../../components/common/Feedback/types';
+import { SendingState } from '../../components/Feedback/types';
 
 import {
   ResetFeedback, ResetFeedbackRequest,

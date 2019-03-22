@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {
-  RatingFeedbackContainer,
-  BugReportFeedbackContainer,
-  RequestFeedbackContainer } from '../../../containers/common/Feedback';
+
+import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
+import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
+import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
+
 import { Button, Panel } from 'react-bootstrap';
 
 // TODO: Use css-modules instead of 'import'
@@ -28,7 +29,7 @@ enum FeedbackType {
 export default class Feedback extends React.Component<FeedbackProps, FeedbackState> {
   /* TODO: harcoded string that should be translatable/customizable */
   static defaultProps = {
-    content: <RatingFeedbackContainer />,
+    content: <RatingFeedbackForm />,
     title: 'Product Feedback'
   };
 
@@ -51,11 +52,11 @@ export default class Feedback extends React.Component<FeedbackProps, FeedbackSta
   changeType = (type: FeedbackType) => (e) =>  {
     let content;
     if (type === FeedbackType.Request) {
-      content = <RequestFeedbackContainer />;
+      content = <RequestFeedbackForm />;
     } else if (type === FeedbackType.Bug) {
-      content = <BugReportFeedbackContainer />;
+      content = <BugReportFeedbackForm />;
     } else {
-      content = <RatingFeedbackContainer />;
+      content = <RatingFeedbackForm />;
     }
     this.setState({
       content,

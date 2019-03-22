@@ -1,20 +1,24 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import * as DocumentTitle from 'react-document-title';
 import * as $ from 'jquery';
 import * as qs from 'simple-query-string';
 
+import { GlobalState } from "../../ducks/rootReducer";
+import { getPreviewData, getTableData } from '../../ducks/tableMetadata/reducer';
 import { GetTableDataRequest } from '../../ducks/tableMetadata/types';
-
-import DataPreviewButton from '../../containers/TableDetail/DataPreviewButton';
-import TableDescEditableText from '../../containers/TableDetail/TableDescEditableText';
-import OwnerEditor from '../../containers/TableDetail/OwnerEditor';
-import TagInput from '../../containers/TagInput';
 
 import AppConfig from '../../../config/config';
 import AvatarLabel from '../common/AvatarLabel';
+import DataPreviewButton from './DataPreviewButton';
 import DetailList from './DetailList';
 import EntityCard from '../common/EntityCard';
 import LoadingSpinner from '../common/LoadingSpinner';
+import OwnerEditor from './OwnerEditor';
+import TableDescEditableText from './TableDescEditableText';
+import TagInput from '../Tags/TagInput';
 import WatermarkLabel from "./WatermarkLabel";
 
 import { Tag } from '../Tags/types';
@@ -47,7 +51,7 @@ interface TableDetailState {
   tableData: TableMetadata;
 }
 
-class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>, TableDetailState> {
+export class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>, TableDetailState> {
   private cluster: string;
   private database: string;
   private schema: string;
@@ -338,4 +342,16 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
   }
 };
 
-export default TableDetail;
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    isLoading: state.tableMetadata.isLoading,
+    statusCode: state.tableMetadata.statusCode,
+    tableData: state.tableMetadata.tableData,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ getPreviewData, getTableData } , dispatch);
+};
+
+export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(TableDetail);

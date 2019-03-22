@@ -1,12 +1,15 @@
 import * as React from 'react';
-import Avatar from 'react-avatar';
-import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
+import Avatar from 'react-avatar';
+import { Link, NavLink } from 'react-router-dom';
 import { withRouter } from 'react-router-dom'
 
 import AppConfig from '../../../config/config';
 import { GlobalState } from "../../ducks/rootReducer";
+import { executeSearch } from '../../ducks/search/reducer';
+import { getPopularTables } from '../../ducks/popularTables/reducer';
 import { getCurrentUser } from "../../ducks/user/reducer";
 import { CurrentUser, GetCurrentUserRequest } from "../../ducks/user/types";
 
@@ -28,7 +31,7 @@ interface NavBarState {
   currentUser: CurrentUser;
 }
 
-class NavBar extends React.Component<NavBarProps, NavBarState> {
+export class NavBar extends React.Component<NavBarProps, NavBarState> {
   constructor(props) {
     super(props);
 
@@ -81,13 +84,13 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
   }
 }
 
-const mapStateToProps = (state: GlobalState) => {
+export const mapStateToProps = (state: GlobalState) => {
   return {
     currentUser: state.user.currentUser,
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
+export const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ getCurrentUser }, dispatch);
 };
 

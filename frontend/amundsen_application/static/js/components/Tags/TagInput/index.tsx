@@ -1,12 +1,17 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import ReactDOM from 'react-dom';
 import { Modal } from 'react-bootstrap';
-
 import Select, { components } from 'react-select';
 import CreatableSelect from 'react-select/lib/Creatable';
 import makeAnimated from 'react-select/lib/animated';
 
+import { GlobalState } from "../../../ducks/rootReducer";
+import { getAllTags } from '../../../ducks/allTags/reducer';
 import { GetAllTagsRequest } from '../../../ducks/allTags/types';
+import { updateTags } from '../../../ducks/tableMetadata/tags/reducer';
 import { UpdateTagsRequest } from '../../../ducks/tableMetadata/types';
 
 import TagInfo from "../TagInfo";
@@ -289,4 +294,16 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 }
 
-export default TagInput;
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    allTags: state.allTags.allTags,
+    isLoading: state.allTags.isLoading || state.tableMetadata.tableTags.isLoading,
+    tags: state.tableMetadata.tableTags.tags,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ getAllTags, updateTags } , dispatch);
+};
+
+export default connect<StateFromProps, DispatchFromProps, ComponentProps>(mapStateToProps, mapDispatchToProps)(TagInput);

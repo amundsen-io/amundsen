@@ -1,5 +1,7 @@
 import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './styles.scss';
 
@@ -7,6 +9,9 @@ import AppConfig from '../../../config/config';
 import LoadingSpinner from '../common/LoadingSpinner';
 import TagInfo from "../Tags/TagInfo";
 import { Tag } from "../Tags/types";
+
+import { GlobalState } from "../../ducks/rootReducer";
+import { getAllTags } from '../../ducks/allTags/reducer';
 import { GetAllTagsRequest } from "../../ducks/allTags/types";
 
 export interface StateFromProps {
@@ -26,7 +31,7 @@ interface BrowsePageState {
 
 type BrowsePageProps = StateFromProps & DispatchFromProps;
 
-class BrowsePage extends React.Component<BrowsePageProps, BrowsePageState> {
+export class BrowsePage extends React.Component<BrowsePageProps, BrowsePageState> {
   constructor(props) {
     super(props);
 
@@ -98,4 +103,15 @@ class BrowsePage extends React.Component<BrowsePageProps, BrowsePageState> {
   }
 }
 
-export default BrowsePage;
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    allTags: state.allTags.allTags,
+    isLoading: state.allTags.isLoading,
+  };
+};
+
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ getAllTags } , dispatch);
+};
+
+export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(BrowsePage);

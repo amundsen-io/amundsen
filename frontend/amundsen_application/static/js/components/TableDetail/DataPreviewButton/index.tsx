@@ -1,8 +1,11 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { Button, Modal, OverlayTrigger, Popover, Table } from 'react-bootstrap';
 import Linkify from 'react-linkify'
 
+import { GlobalState } from "../../../ducks/rootReducer";
 import { PreviewData } from '../types';
 
 // TODO: Use css-modules instead of 'import'
@@ -56,7 +59,7 @@ export function getStatusFromCode(httpErrorCode: number) {
   }
 }
 
-class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPreviewButtonState> {
+export class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPreviewButtonState> {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { previewData, status } = nextProps;
@@ -232,4 +235,12 @@ class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPrev
     )
   }
 }
-export default DataPreviewButton;
+
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    previewData: state.tableMetadata.preview.data,
+    status: getStatusFromCode(state.tableMetadata.preview.status),
+  };
+};
+
+export default connect<StateFromProps, {}, ComponentProps>(mapStateToProps, null)(DataPreviewButton);
