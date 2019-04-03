@@ -70,5 +70,9 @@ Please visit [Developer guidelines](docs/developer_guide.md) if you want to buil
 
 Please visit [Roadmap](docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
+## Publication
+- [Disrupting Data Discovery](https://www.slideshare.net/taofung/strata-sf-amundsen-presentation) (Strata SF 2019)
+- [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (Lyft engineering blog)
+
 # License
 [Apache 2.0 License.](/LICENSE)
