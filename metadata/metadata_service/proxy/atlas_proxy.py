@@ -20,7 +20,6 @@ class AtlasProxy(BaseProxy):
     Atlas Proxy client for the amundsen metadata
     """
     TABLE_ENTITY = 'Table'
-    DATASET_ENTITY = 'DataSet'
     DB_KEY = 'db'
     NAME_KEY = 'qualifiedName'
 
@@ -55,17 +54,17 @@ class AtlasProxy(BaseProxy):
         Extracts the table information from table_uri coming from frontend.
         :param table_uri:
         :return: Dictionary object, containing following information:
-        db: Database Name
+        entity: Type of entity example: rdbms_table, hive_table etc.
         cluster: Cluster information
-        schema: Schema Name
+        db: Database Name
         name: Unique Table Identifier
         """
         pattern = re.compile(r"""
-            ^   (?P<db>.*?)
+            ^   (?P<entity>.*?)
             :\/\/
                 (?P<cluster>.*)
             \.
-                (?P<schema>.*?)
+                (?P<db>.*?)
             \/
                 (?P<name>.*?)
             $
@@ -90,25 +89,28 @@ class AtlasProxy(BaseProxy):
             # is to access the older data (if any) which was generated before
             # introducing the TABLE_ENTITY in atlas.
             entity = self._driver.entity_unique_attribute(
-                self.DATASET_ENTITY,
+                table_info['entity'],
                 qualifiedName=table_info.get('name')).entity
         except Exception as ex:
             LOGGER.exception('Table not found. {}'.format(str(ex)))
-            raise NotFoundException('Table URI( {table_uri} ) does not exist'.format(table_uri=table_uri))
+            raise NotFoundException('Table URI( {table_uri} ) does not exist'
+                                    .format(table_uri=table_uri))
 
         try:
-            table = Table(database=table_info['db'],
+            table = Table(database=table_info['entity'],
                           cluster=table_info['cluster'],
-                          schema=table_info['schema'],
+                          schema=table_info['db'],
                           name=table_info['name'],
                           columns=entity['relationshipAttributes']['columns'],
                           last_updated_timestamp=entity['updateTime'])
 
             return table
         except KeyError as ex:
-            LOGGER.exception('Error while accessing table information. {}'.format(str(ex)))
-            raise BadRequest('Some of the required attributes are missing in : ( {table_uri} )'.
-                             format(table_uri=table_uri))
+            LOGGER.exception('Error while accessing table information. {}'
+                             .format(str(ex)))
+            raise BadRequest('Some of the required attributes '
+                             'are missing in : ( {table_uri} )'
+                             .format(table_uri=table_uri))
 
     def delete_owner(self, *, table_uri: str, owner: str) -> None:
         pass
@@ -165,14 +167,14 @@ class AtlasProxy(BaseProxy):
                 if database:
                     db_attrs = self._driver.entity_guid(database['guid']).entity['attributes']
                     db_name = db_attrs.get(self.NAME_KEY)
-                    db_cluster = db_attrs.get('cluster')
+                    db_cluster = db_attrs.get('clusterName')
                 else:
                     db_name = ''
                     db_cluster = ''
 
-                popular_table = PopularTable(database=db_name,
+                popular_table = PopularTable(database=entity.typeName,
                                              cluster=db_cluster,
-                                             schema=attrs.get('schema'),
+                                             schema=db_name,
                                              name=attrs.get(self.NAME_KEY),
                                              description=attrs.get('description'))
                 popular_tables.append(popular_table)

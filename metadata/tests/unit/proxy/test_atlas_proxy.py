@@ -16,11 +16,11 @@ class TestAtlasProxy(unittest.TestCase):
             self.proxy = AtlasProxy(host='DOES_NOT_MATTER', port=0000)
             self.proxy._driver = MagicMock()
 
-        self.db = 'TEST_DB'
+        self.entity_type = 'TEST_ENTITY'
         self.cluster = 'TEST_CLUSTER'
-        self.schema = 'TEST_SCHEMA'
+        self.db = 'TEST_DB'
         self.name = 'TEST_TABLE'
-        self.table_uri = f'{self.db}://{self.cluster}.{self.schema}/{self.name}'
+        self.table_uri = f'{self.entity_type}://{self.cluster}.{self.db}/{self.name}'
 
         entity1_relationships = {
             'relationshipAttributes': {
@@ -29,14 +29,15 @@ class TestAtlasProxy(unittest.TestCase):
         }
         self.entity1 = {
             'guid': '1',
+            'typeName': self.entity_type,
             'updateTime': 123,
             'attributes': {
                 'qualifiedName': 'Table1_Qualified',
-                'schema': self.schema,
                 'name': 'Table1',
                 'db': {
                     'guid': '-100',
-                    'qualifiedName': self.db
+                    'qualifiedName': self.db,
+                    'typeName': self.entity_type,
                 }
             }
         }
@@ -51,13 +52,14 @@ class TestAtlasProxy(unittest.TestCase):
         self.entity2 = {
             'guid': '2',
             'updateTime': 234,
+            'typeName': self.entity_type,
             'attributes': {
                 'qualifiedName': 'Table2_Qualified',
-                'schema': self.schema,
                 'name': 'Table1',
                 'db': {
                     'guid': '-100',
-                    'qualifiedName': self.db
+                    'qualifiedName': self.db,
+                    'typeName': self.entity_type,
                 }
             }
         }
@@ -74,9 +76,9 @@ class TestAtlasProxy(unittest.TestCase):
     def test_extract_table_uri_info(self):
         table_info = self.proxy._extract_info_from_uri(table_uri=self.table_uri)
         self.assertDictEqual(table_info, {
-            'db': self.db,
+            'entity': self.entity_type,
             'cluster': self.cluster,
-            'schema': self.schema,
+            'db': self.db,
             'name': self.name
         })
 
@@ -93,12 +95,13 @@ class TestAtlasProxy(unittest.TestCase):
         unique_attr_response = MagicMock()
         unique_attr_response.entity = self.entity1
 
-        self.proxy._driver.entity_unique_attribute = MagicMock(return_value=unique_attr_response)
+        self.proxy._driver.entity_unique_attribute = MagicMock(
+            return_value=unique_attr_response)
         response = self.proxy.get_table(table_uri=self.table_uri)
 
-        expected = Table(database=self.db,
+        expected = Table(database=self.entity_type,
                          cluster=self.cluster,
-                         schema=self.schema,
+                         schema=self.db,
                          name=self.name,
                          columns=self.entity1['relationshipAttributes']['columns'],
                          last_updated_timestamp=self.entity1['updateTime'])
@@ -122,9 +125,11 @@ class TestAtlasProxy(unittest.TestCase):
     @patch.object(AtlasProxy, '_get_ids_from_basic_search')
     def test_get_popular_tables(self, mock_basic_search):
         entity1 = MagicMock()
+        entity1.typeName = self.entity1['typeName']
         entity1.attributes = self.entity1['attributes']
 
         entity2 = MagicMock()
+        entity2.typeName = self.entity2['typeName']
         entity2.attributes = self.entity2['attributes']
 
         bulk_ent_collection = MagicMock()
@@ -135,7 +140,7 @@ class TestAtlasProxy(unittest.TestCase):
         db_entity = MagicMock()
         db_entity.entity = {'attributes': {
             'qualifiedName': self.db,
-            'cluster': self.cluster
+            'clusterName': self.cluster
         }}
 
         self.proxy._driver.entity_guid = MagicMock(return_value=db_entity)
@@ -143,9 +148,9 @@ class TestAtlasProxy(unittest.TestCase):
         response = self.proxy.get_popular_tables(num_entries=2)
 
         expected = [
-            PopularTable(database=self.db, cluster=self.cluster, schema=self.schema,
+            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
                          name=self.entity1['attributes']['qualifiedName']),
-            PopularTable(database=self.db, cluster=self.cluster, schema=self.schema,
+            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
                          name=self.entity2['attributes']['qualifiedName']),
         ]
 
@@ -156,11 +161,13 @@ class TestAtlasProxy(unittest.TestCase):
         attrs_ent1 = self.entity1['attributes']
         attrs_ent1.pop('db')
         entity1 = MagicMock()
+        entity1.typeName = self.entity1['typeName']
         entity1.attributes = attrs_ent1
 
         attrs_ent2 = self.entity2['attributes']
         attrs_ent2.pop('db')
         entity2 = MagicMock()
+        entity2.typeName = self.entity2['typeName']
         entity2.attributes = attrs_ent2
 
         bulk_ent_collection = MagicMock()
@@ -170,8 +177,10 @@ class TestAtlasProxy(unittest.TestCase):
         response = self.proxy.get_popular_tables(num_entries=2)
 
         expected = [
-            PopularTable(database='', cluster='', schema=self.schema, name=self.entity1['attributes']['qualifiedName']),
-            PopularTable(database='', cluster='', schema=self.schema, name=self.entity2['attributes']['qualifiedName']),
+            PopularTable(database=self.entity_type, cluster='', schema='',
+                         name=self.entity1['attributes']['qualifiedName']),
+            PopularTable(database=self.entity_type, cluster='', schema='',
+                         name=self.entity2['attributes']['qualifiedName']),
         ]
 
         self.assertEqual(response.__repr__(), expected.__repr__())
