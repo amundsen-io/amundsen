@@ -1,12 +1,15 @@
 import logging
 import re
-from typing import Union, List, Dict, Any
+from typing import Union, List, Dict, Any, Tuple
 
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
+from atlasclient.models import EntityUniqueAttribute
+
+from metadata_service.entity.tag_detail import TagDetail
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import Table
+from metadata_service.entity.table_detail import Table, User, Tag
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -18,6 +21,7 @@ LOGGER = logging.getLogger(__name__)
 class AtlasProxy(BaseProxy):
     """
     Atlas Proxy client for the amundsen metadata
+    {ATLAS_API_DOCS} = https://atlas.apache.org/api/v2/
     """
     TABLE_ENTITY = 'Table'
     DB_KEY = 'db'
@@ -72,37 +76,61 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(table_uri)
         return result.groupdict() if result else dict()
 
-    def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
-        pass
-
-    def get_table(self, *, table_uri: str) -> Table:
+    def _get_table_entity(self, *, table_uri: str) -> Tuple[EntityUniqueAttribute, Dict]:
         """
-        Gathers all the information needed for the Table Detail Page.
-        It tries to get the table information from
+        Fetch information from table_uri and then find the appropriate entity
+        The reason, we're not returning the entity_unique_attribute().entity
+        directly is because the entity_unique_attribute() return entity Object
+        that can be used for update purposes,
+        while entity_unique_attribute().entity only returns the dictionary
         :param table_uri:
         :return:
         """
         table_info = self._extract_info_from_uri(table_uri=table_uri)
 
         try:
-            # The reason to use the DATASET_ENTITY here instead of TABLE_ENTITY
-            # is to access the older data (if any) which was generated before
-            # introducing the TABLE_ENTITY in atlas.
-            entity = self._driver.entity_unique_attribute(
+            return self._driver.entity_unique_attribute(
                 table_info['entity'],
-                qualifiedName=table_info.get('name')).entity
+                qualifiedName=table_info.get('name')), table_info
         except Exception as ex:
             LOGGER.exception('Table not found. {}'.format(str(ex)))
             raise NotFoundException('Table URI( {table_uri} ) does not exist'
                                     .format(table_uri=table_uri))
 
+    def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
+        pass
+
+    def get_table(self, *, table_uri: str) -> Table:
+        """
+        Gathers all the information needed for the Table Detail Page.
+        :param table_uri:
+        :return:
+        """
+        entity, table_info = self._get_table_entity(table_uri=table_uri)
+        table_details = entity.entity
+
         try:
+            attrs = table_details['attributes']
+            rel_attrs = table_details['relationshipAttributes']
+
+            tags = []
+            for classification in table_details.get("classifications", list()):
+                tags.append(
+                    Tag(
+                        tag_name=classification.get('typeName'),
+                        tag_type="default"
+                    )
+                )
+
             table = Table(database=table_info['entity'],
                           cluster=table_info['cluster'],
                           schema=table_info['db'],
                           name=table_info['name'],
-                          columns=entity['relationshipAttributes']['columns'],
-                          last_updated_timestamp=entity['updateTime'])
+                          tags=tags,
+                          description=attrs.get('description'),
+                          owners=[User(email=attrs.get('owner'))],
+                          columns=rel_attrs.get('columns'),
+                          last_updated_timestamp=table_details.get('updateTime'))
 
             return table
         except KeyError as ex:
@@ -116,22 +144,68 @@ class AtlasProxy(BaseProxy):
         pass
 
     def add_owner(self, *, table_uri: str, owner: str) -> None:
-        pass
+        """
+        It simply replaces the owner field in atlas with the new string.
+        FixMe (Verdan): Implement multiple data owners and
+        atlas changes in the documentation if needed to make owner field a list
+        :param table_uri:
+        :param owner: Email address of the owner
+        :return: None, as it simply adds the owner.
+        """
+        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity.entity['attributes']['owner'] = owner
+        entity.update()
 
     def get_table_description(self, *,
                               table_uri: str) -> Union[str, None]:
-        pass
+        """
+        :param table_uri:
+        :return: The description of the table as a string
+        """
+        entity, _ = self._get_table_entity(table_uri=table_uri)
+        return entity.entity['attributes']['description']
 
     def put_table_description(self, *,
                               table_uri: str,
                               description: str) -> None:
-        pass
+        """
+        Update the description of the given table.
+        :param table_uri:
+        :param description: Description string
+        :return: None
+        """
+        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity.entity['attributes']['description'] = description
+        entity.update()
 
     def add_tag(self, *, table_uri: str, tag: str) -> None:
-        pass
+        """
+        Assign the tag/classification to the give table
+        API Ref: /resource_EntityREST.html#resource_EntityREST_addClassification_POST
+        :param table_uri:
+        :param tag: Tag/Classfification Name
+        :return: None
+        """
+        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity_bulk_tag = {"classification": {"typeName": tag},
+                           "entityGuids": [entity.entity['guid']]}
+        self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
 
     def delete_tag(self, *, table_uri: str, tag: str) -> None:
-        pass
+        """
+        Delete the assigned classfication/tag from the given table
+        API Ref: /resource_EntityREST.html#resource_EntityREST_deleteClassification_DELETE
+        :param table_uri:
+        :param tag:
+        :return:
+        """
+        try:
+            entity, _ = self._get_table_entity(table_uri=table_uri)
+            guid_entity = self._driver.entity_guid(entity.entity['guid'])
+            guid_entity.classifications(tag).delete()
+        except Exception as ex:
+            LOGGER.exception('For some reason this deletes the classification '
+                             'but also always return exception. {}'.format(str(ex)))
 
     def put_column_description(self, *,
                                table_uri: str,
@@ -165,7 +239,8 @@ class AtlasProxy(BaseProxy):
                 # Fix: https://github.com/jpoullet2000/atlasclient/pull/60
                 database = attrs.get(self.DB_KEY)
                 if database:
-                    db_attrs = self._driver.entity_guid(database['guid']).entity['attributes']
+                    db_entity = self._driver.entity_guid(database['guid'])
+                    db_attrs = db_entity.entity['attributes']
                     db_name = db_attrs.get(self.NAME_KEY)
                     db_cluster = db_attrs.get('clusterName')
                 else:
@@ -184,7 +259,21 @@ class AtlasProxy(BaseProxy):
         pass
 
     def get_tags(self) -> List:
-        pass
+        """
+        Fetch all the classification entity definitions from atlas  as this
+        will be used to generate the autocomplete on the table detail page
+        :return: A list of TagDetail Objects
+        """
+        tags = []
+        for type_def in self._driver.typedefs:
+            for classification in type_def.classificationDefs:
+                tags.append(
+                    TagDetail(
+                        tag_name=classification.name,
+                        tag_count=0     # FixMe (Verdan): Implement the tag count
+                    )
+                )
+        return tags
 
     def get_table_by_user_relation(self, *, user_email: str,
                                    relation_type: UserResourceRel) -> Dict[str, Any]:
