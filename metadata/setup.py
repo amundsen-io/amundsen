@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 # Dependencies to make Amundsen work with Apache Atlas
-atlas = ['atlasclient>=0.1.2']
+atlas = ['atlasclient>=0.1.3']
 
 setup(
     name='amundsen-metadata',

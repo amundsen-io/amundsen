@@ -9,7 +9,7 @@ from atlasclient.models import EntityUniqueAttribute
 from metadata_service.entity.tag_detail import TagDetail
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import Table, User, Tag
+from metadata_service.entity.table_detail import Table, User, Tag, Column
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -47,7 +47,7 @@ class AtlasProxy(BaseProxy):
         search_results = self._driver.search_basic(**params)
         for result in search_results:
             # result.entities would directly be accessible after below PR
-            # Fix: https://github.com/jpoullet2000/atlasclient/pull/59
+            # Fix: https://github.com/jpoullet2000/atlasclient/pull/69
             # noinspection PyProtectedMember
             for entity in result._data.get('entities', list()):
                 ids.append(entity['guid'])
@@ -58,6 +58,7 @@ class AtlasProxy(BaseProxy):
         Extracts the table information from table_uri coming from frontend.
         :param table_uri:
         :return: Dictionary object, containing following information:
+        entity: Database Namespace: rdbms_table, hive_table etc.
         entity: Type of entity example: rdbms_table, hive_table etc.
         cluster: Cluster information
         db: Database Name
@@ -93,9 +94,30 @@ class AtlasProxy(BaseProxy):
                 table_info['entity'],
                 qualifiedName=table_info.get('name')), table_info
         except Exception as ex:
-            LOGGER.exception('Table not found. {}'.format(str(ex)))
+            LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException('Table URI( {table_uri} ) does not exist'
                                     .format(table_uri=table_uri))
+
+    def _get_column(self, *, table_uri: str, column_name: str) -> Dict:
+        """
+        Fetch the column information from referredEntities of the table entity
+        :param table_uri:
+        :param column_name:
+        :return: A dictionary containing the column details
+        """
+        try:
+            table_entity, _ = self._get_table_entity(table_uri=table_uri)
+            columns = table_entity.entity['attributes'].get('columns', list())
+            for column in columns:
+                col_details = table_entity.referredEntities[column['guid']]
+                if column_name == col_details['attributes']['qualifiedName']:
+                    return col_details
+
+            raise NotFoundException(f'Column not found: {column_name}')
+
+        except KeyError as ex:
+            LOGGER.exception(f'Column not found: {str(ex)}')
+            raise NotFoundException(f'Column not found: {column_name}')
 
     def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
         pass
@@ -104,21 +126,35 @@ class AtlasProxy(BaseProxy):
         """
         Gathers all the information needed for the Table Detail Page.
         :param table_uri:
-        :return:
+        :return: A Table object with all the information available
+        or gathered from different entities.
         """
         entity, table_info = self._get_table_entity(table_uri=table_uri)
         table_details = entity.entity
 
         try:
             attrs = table_details['attributes']
-            rel_attrs = table_details['relationshipAttributes']
 
             tags = []
-            for classification in table_details.get("classifications", list()):
+            # Using or in case, if the key 'classifications' is there with a None
+            for classification in table_details.get("classifications") or list():
                 tags.append(
                     Tag(
                         tag_name=classification.get('typeName'),
                         tag_type="default"
+                    )
+                )
+
+            columns = []
+            for column in attrs.get('columns') or list():
+                col_entity = entity.referredEntities[column['guid']]
+                col_attrs = col_entity['attributes']
+                columns.append(
+                    Column(
+                        name=col_attrs.get(self.NAME_KEY),
+                        description=col_attrs.get('description'),
+                        col_type=col_attrs.get('type'),
+                        sort_order=col_attrs.get('position'),
                     )
                 )
 
@@ -129,7 +165,7 @@ class AtlasProxy(BaseProxy):
                           tags=tags,
                           description=attrs.get('description'),
                           owners=[User(email=attrs.get('owner'))],
-                          columns=rel_attrs.get('columns'),
+                          columns=columns,
                           last_updated_timestamp=table_details.get('updateTime'))
 
             return table
@@ -163,7 +199,7 @@ class AtlasProxy(BaseProxy):
         :return: The description of the table as a string
         """
         entity, _ = self._get_table_entity(table_uri=table_uri)
-        return entity.entity['attributes']['description']
+        return entity.entity['attributes'].get('description')
 
     def put_table_description(self, *,
                               table_uri: str,
@@ -183,7 +219,7 @@ class AtlasProxy(BaseProxy):
         Assign the tag/classification to the give table
         API Ref: /resource_EntityREST.html#resource_EntityREST_addClassification_POST
         :param table_uri:
-        :param tag: Tag/Classfification Name
+        :param tag: Tag/Classification Name
         :return: None
         """
         entity, _ = self._get_table_entity(table_uri=table_uri)
@@ -204,6 +240,7 @@ class AtlasProxy(BaseProxy):
             guid_entity = self._driver.entity_guid(entity.entity['guid'])
             guid_entity.classifications(tag).delete()
         except Exception as ex:
+            # FixMe (Verdan): Too broad exception. Please make it specific
             LOGGER.exception('For some reason this deletes the classification '
                              'but also always return exception. {}'.format(str(ex)))
 
@@ -211,12 +248,34 @@ class AtlasProxy(BaseProxy):
                                table_uri: str,
                                column_name: str,
                                description: str) -> None:
-        pass
+        """
+        :param table_uri:
+        :param column_name: Name of the column to update the description
+        :param description: The description string
+        :return: None, as it simply updates the description of a column
+        """
+        column_detail = self._get_column(
+            table_uri=table_uri,
+            column_name=column_name)
+        col_guid = column_detail['guid']
+
+        entity = self._driver.entity_guid(col_guid)
+        entity.entity['attributes']['description'] = description
+        entity.update(attribute='description')
 
     def get_column_description(self, *,
                                table_uri: str,
                                column_name: str) -> Union[str, None]:
-        pass
+        """
+        :param table_uri:
+        :param column_name:
+        :return: The column description using the referredEntities
+        information of a table entity
+        """
+        column_detail = self._get_column(
+            table_uri=table_uri,
+            column_name=column_name)
+        return column_detail['attributes'].get('description')
 
     def get_popular_tables(self, *,
                            num_entries: int = 10) -> List[PopularTable]:
@@ -234,9 +293,7 @@ class AtlasProxy(BaseProxy):
         for _collection in entity_collection:
             for entity in _collection.entities:
                 attrs = entity.attributes
-                # At the moment, relationship attributes are not available in the entity
-                # and hence, we need to make another request to get details of database
-                # Fix: https://github.com/jpoullet2000/atlasclient/pull/60
+                # ToDo (Verdan): Investigate why db is not in referredEntities
                 database = attrs.get(self.DB_KEY)
                 if database:
                     db_entity = self._driver.entity_guid(database['guid'])

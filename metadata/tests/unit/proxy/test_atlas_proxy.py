@@ -1,11 +1,11 @@
 import unittest
 
 from atlasclient.exceptions import BadRequest
-from metadata_service.entity.tag_detail import TagDetail
 from mock import patch, MagicMock
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import (Table, User, Tag)
+from metadata_service.entity.table_detail import (Table, User, Tag, Column)
+from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.atlas_proxy import AtlasProxy
 
@@ -29,10 +29,16 @@ class TestAtlasProxy(unittest.TestCase):
             ]
         }
 
-        entity1_relationships = {
-            'relationshipAttributes': {
-                'columns': []
+        self.test_column = {
+            'guid': 'DOESNT_MATTER',
+            'typeName': 'COLUMN',
+            'attributes': {
+                'qualifiedName': 'column@name',
+                'type': 'Managed',
+                'description': 'column description',
+                'position': 1
             }
+
         }
         self.entity1 = {
             'guid': '1',
@@ -43,6 +49,7 @@ class TestAtlasProxy(unittest.TestCase):
                 'name': 'Table1',
                 'description': 'Dummy Description',
                 'owner': 'dummy@email.com',
+                'columns': [self.test_column],
                 'db': {
                     'guid': '-100',
                     'qualifiedName': self.db,
@@ -51,14 +58,7 @@ class TestAtlasProxy(unittest.TestCase):
             }
         }
         self.entity1.update(self.classification_entity)
-        self.entity1.update(entity1_relationships)
-        self.entity1['attributes'].update(entity1_relationships)
 
-        entity2_relationships = {
-            'relationshipAttributes': {
-                'columns': []
-            }
-        }
         self.entity2 = {
             'guid': '2',
             'updateTime': 234,
@@ -76,9 +76,6 @@ class TestAtlasProxy(unittest.TestCase):
             }
         }
         self.entity2.update(self.classification_entity)
-        self.entity2.update(entity2_relationships)
-        self.entity2['attributes'].update(entity2_relationships)
-
         self.entities = {
             'entities': [
                 self.entity1,
@@ -89,6 +86,12 @@ class TestAtlasProxy(unittest.TestCase):
     def _mock_get_table_entity(self, entity=None):
         mocked_entity = MagicMock()
         mocked_entity.entity = entity or self.entity1
+        if mocked_entity.entity == self.entity1:
+            mocked_entity.referredEntities = {
+                self.test_column['guid']: self.test_column
+            }
+        else:
+            mocked_entity.referredEntities = {}
         self.proxy._get_table_entity = MagicMock(return_value=(mocked_entity, {
             'entity': self.entity_type,
             'cluster': self.cluster,
@@ -136,6 +139,11 @@ class TestAtlasProxy(unittest.TestCase):
         classif_name = self.classification_entity['classifications'][0]['typeName']
         ent_attrs = self.entity1['attributes']
 
+        col_attrs = self.test_column['attributes']
+        exp_col = Column(name=col_attrs['qualifiedName'],
+                         description='column description',
+                         col_type='Managed',
+                         sort_order=col_attrs['position'])
         expected = Table(database=self.entity_type,
                          cluster=self.cluster,
                          schema=self.db,
@@ -143,7 +151,7 @@ class TestAtlasProxy(unittest.TestCase):
                          tags=[Tag(tag_name=classif_name, tag_type="default")],
                          description=ent_attrs['description'],
                          owners=[User(email=ent_attrs['owner'])],
-                         columns=self.entity1['relationshipAttributes']['columns'],
+                         columns=[exp_col],
                          last_updated_timestamp=self.entity1['updateTime'])
         self.assertEqual(str(expected), str(response))
 
@@ -155,7 +163,7 @@ class TestAtlasProxy(unittest.TestCase):
     def test_get_table_missing_info(self):
         with self.assertRaises(BadRequest):
             local_entity = self.entity1
-            local_entity.pop('relationshipAttributes')
+            local_entity.pop('attributes')
             unique_attr_response = MagicMock()
             unique_attr_response.entity = local_entity
 
@@ -281,6 +289,38 @@ class TestAtlasProxy(unittest.TestCase):
         with patch.object(entity, 'update') as mock_execute:
             self.proxy.add_owner(table_uri=self.table_uri, owner=owner)
             mock_execute.assert_called_with()
+
+    def test_get_column(self):
+        self._mock_get_table_entity()
+        response = self.proxy._get_column(
+            table_uri=self.table_uri,
+            column_name=self.test_column['attributes']['qualifiedName'])
+        self.assertDictEqual(response, self.test_column)
+
+    def test_get_column_wrong_name(self):
+        with self.assertRaises(NotFoundException):
+            self._mock_get_table_entity()
+            self.proxy._get_column(table_uri=self.table_uri, column_name='FAKE')
+
+    def test_get_column_no_referred_entities(self):
+        with self.assertRaises(NotFoundException):
+            local_entity = self.entity2
+            local_entity['attributes']['columns'] = [{'guid': 'ent_2_col'}]
+            self._mock_get_table_entity(local_entity)
+            self.proxy._get_column(table_uri=self.table_uri, column_name='FAKE')
+
+    def test_get_column_description(self):
+        self._mock_get_table_entity()
+        response = self.proxy.get_column_description(
+            table_uri=self.table_uri,
+            column_name=self.test_column['attributes']['qualifiedName'])
+        self.assertEqual(response, self.test_column['attributes'].get('description'))
+
+    def test_put_column_description(self):
+        self._mock_get_table_entity()
+        self.proxy.put_column_description(table_uri=self.table_uri,
+                                          column_name=self.test_column['attributes']['qualifiedName'],
+                                          description='DOESNT_MATTER')
 
 
 if __name__ == '__main__':
