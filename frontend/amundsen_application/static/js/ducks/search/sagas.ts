@@ -2,24 +2,42 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
 import {
-  ExecuteSearch,
-  ExecuteSearchRequest,
+  SearchAll,
+  SearchAllRequest,
+  SearchResource,
+  SearchResourceRequest,
 } from './types';
 
 import {
-  searchExecuteSearch,
+  searchAll, searchResource,
 } from './api/v0';
 
 
-export function* executeSearchWorker(action: ExecuteSearchRequest): SagaIterator {
+// SearchAll
+export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   try {
-    const searchResults = yield call(searchExecuteSearch, action);
-    yield put({ type: ExecuteSearch.SUCCESS, payload: searchResults });
+    const searchResults = yield call(searchAll, action);
+    yield put({ type: SearchAll.SUCCESS, payload: searchResults });
   } catch (e) {
-    yield put({ type: ExecuteSearch.FAILURE });
+    yield put({ type: SearchAll.FAILURE });
   }
 }
 
-export function* executeSearchWatcher(): SagaIterator {
-  yield takeEvery(ExecuteSearch.ACTION, executeSearchWorker);
+export function* searchAllWatcher(): SagaIterator {
+  yield takeEvery(SearchAll.ACTION, searchAllWorker);
+}
+
+
+// SearchResource
+export function* searchResourceWorker(action: SearchResourceRequest): SagaIterator {
+  try {
+    const searchResults = yield call(searchResource, action);
+    yield put({ type: SearchResource.SUCCESS, payload: searchResults });
+  } catch (e) {
+    yield put({ type: SearchResource.FAILURE });
+  }
+}
+
+export function* searchResourceWatcher(): SagaIterator {
+  yield takeEvery(SearchResource.ACTION, searchResourceWorker);
 }

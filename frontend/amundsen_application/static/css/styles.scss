@@ -35,7 +35,6 @@ form {
   margin-bottom: 0;
 }
 
-
 input {
   &::-webkit-input-placeholder,
   &::-moz-placeholder,
@@ -46,3 +45,8 @@ input {
   }
 }
 
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

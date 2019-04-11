@@ -39,7 +39,7 @@ class LocalConfig(Config):
         'http://{LOCAL_HOST}:{PORT}/tags'.format(LOCAL_HOST=LOCAL_HOST, PORT=METADATA_PORT)
     METADATASERVICE_REQUEST_HEADERS = None
 
-    CURRENT_USER_METHOD = None
+    AUTH_USER_METHOD = None
     GET_PROFILE_URL = None
 
     MAIL_CLIENT = None

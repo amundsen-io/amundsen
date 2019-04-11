@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { LoggingParams, TableResource} from '../types';
 
-import './styles.scss';
-
 interface TableListItemProps {
-  item: TableResource;
+  table: TableResource;
   logging: LoggingParams;
 }
 
@@ -15,38 +13,44 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
     super(props);
   }
 
-
-  /* TODO: We have to fix a bug with this feature. Commented out support.
-  const createLastUpdatedTimestamp = () => {
-    if (lastUpdated) {
-      const dateTokens = new Date(lastUpdated).toDateString().split(' ');
-      return (
-        <label>
-          {`${dateTokens[1].toUpperCase()} ${dateTokens[2]}`}
-        </label>
-      )
-    }
-    return null;
-  }*/
-
   getLink = () => {
-    const { item, logging } = this.props;
-    return `/table_detail/${item.cluster}/${item.database}/${item.schema_name}/${item.name}`
+    const { table, logging } = this.props;
+    return `/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}`
       + `?index=${logging.index}&source=${logging.source}`;
   };
 
-
   render() {
-    const { item } = this.props;
+    const { table } = this.props;
+
+    const hasLastUpdated = !!table.last_updated_epoch;
+    const dateTokens = new Date(table.last_updated_epoch * 1000).toDateString().split(' ');
+    const dateLabel = `${dateTokens[1]} ${dateTokens[2]}, ${dateTokens[3]}`;
+
     return (
-      <li className="list-group-item search-list-item">
-        <Link to={ this.getLink() }>
-          <img className="icon icon-color icon-database" />
-          <div className="resultInfo">
-            <span className="title truncated">{ `${item.schema_name}.${item.name} `}</span>
-            <span className="subtitle truncated">{ item.description }</span>
+      <li className="list-group-item">
+        <Link className="resource-list-item table-list-item" to={ this.getLink() }>
+          <img className="icon icon-database icon-color" />
+          <div className="content">
+            <div className={ hasLastUpdated? "col-sm-9 col-md-10" : "col-sm-12"}>
+              <div className="main-title truncated">{ `${table.schema_name}.${table.name}`}</div>
+              <div className="description truncated">{ table.description }</div>
+            </div>
+            {/*<div className={ hasLastUpdated? "hidden-xs col-sm-3 col-md-4" : "hidden-xs col-sm-6"}>*/}
+              {/*<div className="secondary-title">Frequent Users</div>*/}
+              {/*<div className="description truncated">*/}
+                {/*<label> </label>*/}
+              {/*</div>*/}
+            {/*</div>*/}
+            {
+              hasLastUpdated &&
+              <div className="hidden-xs col-sm-3 col-md-2">
+                <div className="secondary-title">Latest Data</div>
+                <div className="description truncated">
+                  { dateLabel }
+                </div>
+              </div>
+            }
           </div>
-          { /*createLastUpdatedTimestamp()*/ }
           <img className="icon icon-right" />
         </Link>
       </li>

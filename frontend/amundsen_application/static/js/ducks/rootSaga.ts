@@ -8,7 +8,7 @@ import { submitFeedbackWatcher } from './feedback/sagas';
 
 // SearchPage
 import { getPopularTablesWatcher } from './popularTables/sagas';
-import { executeSearchWatcher } from './search/sagas';
+import { searchAllWatcher, searchResourceWatcher } from './search/sagas';
 
 // TableDetail
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
@@ -27,7 +27,7 @@ import {
 import { getAllTagsWatcher } from './allTags/sagas';
 
 // User
-import { getCurrentUserWatcher } from "./user/sagas";
+import { getLoggedInUserWatcher, getUserWatcher } from "./user/sagas";
 
 export default function* rootSaga() {
   yield all([
@@ -36,7 +36,8 @@ export default function* rootSaga() {
     // FeedbackForm
     submitFeedbackWatcher(),
     // SearchPage
-    executeSearchWatcher(),
+    searchAllWatcher(),
+    searchResourceWatcher(),
     getPopularTablesWatcher(),
     // Tags
     getAllTagsWatcher(),
@@ -51,6 +52,7 @@ export default function* rootSaga() {
     updateTableOwnerWatcher(),
     updateTableTagsWatcher(),
     // User
-    getCurrentUserWatcher(),
+    getLoggedInUserWatcher(),
+    getUserWatcher(),
   ]);
 }

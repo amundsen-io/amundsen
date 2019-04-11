@@ -31,6 +31,11 @@ img.icon {
     mask-image: url('/static/images/icons/Down.svg');
   }
 
+  &.icon-github {
+    -webkit-mask-image: url('/static/images/icons/github.svg');
+    mask-image: url('/static/images/icons/github.svg');
+  }
+
   &.icon-left {
     -webkit-mask-image: url('/static/images/icons/Left.svg');
     mask-image: url('/static/images/icons/Left.svg');
@@ -39,6 +44,11 @@ img.icon {
   &.icon-loading {
     -webkit-mask-image: url('/static/images/icons/Loader.svg');
     mask-image: url('/static/images/icons/Loader.svg');
+  }
+
+  &.icon-mail {
+    -webkit-mask-image: url('/static/images/icons/mail.svg');
+    mask-image: url('/static/images/icons/mail.svg');
   }
 
   &.icon-plus-circle {
@@ -61,9 +71,19 @@ img.icon {
     mask-image: url('/static/images/icons/Search.svg');
   }
 
+  &.icon-slack {
+    -webkit-mask-image: url('/static/images/icons/slack.svg');
+    mask-image: url('/static/images/icons/slack.svg');
+  }
+
   &.icon-up {
     -webkit-mask-image: url('/static/images/icons/Up.svg');
     mask-image: url('/static/images/icons/Up.svg');
+  }
+
+  &.icon-users {
+    -webkit-mask-image: url('/static/images/icons/users.svg');
+    mask-image: url('/static/images/icons/users.svg');
   }
 }
 

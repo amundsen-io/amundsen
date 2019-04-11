@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as DocumentTitle from 'react-document-title';
-import * as $ from 'jquery';
 import * as qs from 'simple-query-string';
 
 import { GlobalState } from "../../ducks/rootReducer";
@@ -12,6 +11,7 @@ import { GetTableDataRequest } from '../../ducks/tableMetadata/types';
 
 import AppConfig from '../../../config/config';
 import AvatarLabel from '../common/AvatarLabel';
+import Breadcrumb from "../common/Breadcrumb";
 import DataPreviewButton from './DataPreviewButton';
 import DetailList from './DetailList';
 import EntityCard from '../common/EntityCard';
@@ -20,8 +20,6 @@ import OwnerEditor from './OwnerEditor';
 import TableDescEditableText from './TableDescEditableText';
 import TagInput from '../Tags/TagInput';
 import WatermarkLabel from "./WatermarkLabel";
-
-import { Tag } from '../Tags/types';
 
 import Avatar from 'react-avatar';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
@@ -304,13 +302,15 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
       this.props.history.push('/404');
     } else if (this.state.statusCode === 500) {
       innerContent = (
-        <div className="error-label">
+        <div className="container error-label">
+          <Breadcrumb path='/' text='Search Results'/>
           <label className="d-block m-auto">Something went wrong...</label>
         </div>
       )
     } else {
         innerContent = (
           <div className="container table-detail">
+            <Breadcrumb path='/' text='Search Results'/>
             <div className="row">
               <div className="detail-header col-xs-12 col-md-7 col-lg-8">
                   <div className="title">{ `${data.schema}.${data.table_name}` }</div>

@@ -13,17 +13,35 @@ redesign how User handles names
 
 
 class User:
+    # TODO: alphabetize after we have the real params
     def __init__(self,
                  first_name: str = None,
                  last_name: str = None,
                  email: str = None,
                  display_name: str = None,
-                 profile_url: str = None) -> None:
+                 profile_url: str = None,
+                 user_id: str = None,
+                 github_name: str = None,
+                 is_active: bool = True,
+                 manager_name: str = None,
+                 role_name: str = None,
+                 slack_url: str = None,
+                 team_name: str = None) -> None:
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.display_name = display_name
         self.profile_url = profile_url
+
+        # TODO: modify the following names as needed after backend support is implemented
+        self.user_id = user_id
+        self.github_name = github_name
+        self.is_active = is_active
+        self.manager_name = manager_name
+        self.role_name = role_name
+        self.slack_url = slack_url
+        self.team_name = team_name
+        # TODO: frequent_used, bookmarked, & owned resources
 
     def to_json(self) -> Response:
         user_info = dump_user(self)
@@ -36,6 +54,14 @@ class UserSchema(Schema):
     email = fields.Str(allow_none=True)
     display_name = fields.Str(required=True)
     profile_url = fields.Str(allow_none=True)
+
+    user_id = fields.Str(required=True)
+    github_name = fields.Str(allow_none=True)
+    is_active = fields.Bool(allow_none=True)
+    manager_name = fields.Str(allow_none=True)
+    role_name = fields.Str(allow_none=True)
+    slack_url = fields.Str(allow_none=True)
+    team_name = fields.Str(allow_none=True)
 
     @pre_load
     def generate_display_name(self, data: Dict) -> Dict:
@@ -67,6 +93,8 @@ class UserSchema(Schema):
     def validate_user(self, data: Dict) -> None:
         if not data.get('display_name', None):
             raise ValidationError('One or more must be provided: "first_name", "last_name", "email", "display_name"')
+        if not data.get('user_id', None):
+            raise ValidationError('"user_id" must be provided')
 
 
 def load_user(user_data: Dict) -> User:

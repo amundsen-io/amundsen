@@ -6,8 +6,7 @@
   border-left: none;
   border-right: none;
   cursor: pointer;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding: 0;
 
   &:hover {
     border-color: $gray;

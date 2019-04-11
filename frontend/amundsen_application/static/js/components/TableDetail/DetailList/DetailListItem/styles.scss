@@ -9,6 +9,7 @@
   border-top-color: $gray-lighter !important;
   border-bottom-color: $gray-lighter !important;
   background-color: transparent !important;
+  padding: 10px 4px;
 
   .description {
     color: $text-medium;
@@ -54,7 +55,7 @@
       cursor: pointer;
 
       &:hover {
-        background-image: linear-gradient($brand-color-1, $brand-color-1, white);
+        background-image: linear-gradient($gray-lighter, $gray-lighter, white);
 
         .type {
           color: $brand-color-4;
