@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import { Button, Modal, OverlayTrigger, Popover, Table } from 'react-bootstrap';
 import Linkify from 'react-linkify'

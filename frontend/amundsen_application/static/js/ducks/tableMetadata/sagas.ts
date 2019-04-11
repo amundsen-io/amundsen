@@ -24,10 +24,10 @@ import {
 // getTableData
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
   try {
-    const { data, owners, tags } = yield call(metadataGetTableData, action);
-    yield put({ type: GetTableData.SUCCESS, payload: { data, owners, tags } });
+    const { data, owners, statusCode, tags } = yield call(metadataGetTableData, action);
+    yield put({ type: GetTableData.SUCCESS, payload: { data, owners, statusCode, tags } });
   } catch (e) {
-    yield put({ type: GetTableData.FAILURE, payload: { data: {}, owners: [], tags: [] } });
+    yield put({ type: GetTableData.FAILURE, payload: { data: {}, owners: [], statusCode: 500, tags: [] } });
   }
 }
 

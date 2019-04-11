@@ -1,0 +1,51 @@
+@import 'variables';
+
+.list-group-item .resource-list-item {
+  color: $text-dark;
+  display: flex;
+  flex-direction: row;
+  height: 78px;
+  padding: 16px 8px;
+  text-decoration: none;
+
+  img.icon,
+  .sb-avatar {
+    margin: auto 0;
+  }
+
+  &:hover img.icon {
+    background-color: $brand-color-4;
+  }
+
+  .content {
+    width: 100%;
+    min-width: 0; /* Needed to support `white-space: nowrap` */
+
+    .main-title {
+      color: $text-dark;
+      font-size: $font-size-large;
+      font-family: $font-family-sans-serif-bold;
+      font-weight: $font-weight-sans-serif-bold;
+    }
+
+    .secondary-title {
+      color: $text-medium;
+      font-family: $font-family-sans-serif-bold;
+      font-weight: $font-weight-sans-serif-bold;
+    }
+
+    .description {
+      color: $text-medium;
+      display: block;
+      font-size: $font-size-base;
+      margin-top: 2px;
+
+      > a {
+        color: $brand-color-4;
+        &:hover {
+          color: $brand-color-5;
+        }
+      }
+    }
+  }
+}

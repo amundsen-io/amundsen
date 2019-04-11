@@ -1,4 +1,10 @@
-import { Resource, DashboardResource, TableResource, UserResource } from "../../components/common/ResourceListItem/types";
+import {
+  Resource,
+  ResourceType,
+  DashboardResource,
+  TableResource,
+  UserResource,
+} from "../../components/common/ResourceListItem/types";
 import { SearchReducerState } from './reducer';
 
 interface SearchResults<T extends Resource> {
@@ -14,25 +20,51 @@ export type SearchResponse = {
   msg: string;
   status_code: number;
   search_term: string;
-  dashboards: DashboardSearchResults;
-  tables: TableSearchResults;
-  users: UserSearchResults;
+  dashboards?: DashboardSearchResults;
+  tables?: TableSearchResults;
+  users?: UserSearchResults;
 }
 
-/* executeSearch */
-export enum ExecuteSearch {
-  ACTION = 'amundsen/search/EXECUTE_SEARCH',
-  SUCCESS = 'amundsen/search/EXECUTE_SEARCH_SUCCESS',
-  FAILURE = 'amundsen/search/EXECUTE_SEARCH_FAILURE',
+/* searchAll - Search all resource types */
+export enum SearchAll {
+  ACTION = 'amundsen/search/SEARCH_ALL',
+  SUCCESS = 'amundsen/search/SEARCH_ALL_SUCCESS',
+  FAILURE = 'amundsen/search/SEARCH_ALL_FAILURE',
 }
 
-export interface ExecuteSearchRequest {
-  type: ExecuteSearch.ACTION;
+export interface SearchAllOptions {
+  dashboardIndex?: number;
+  tableIndex?: number;
+  userIndex?: number;
+}
+
+export interface SearchAllRequest {
+  options: SearchAllOptions;
   term: string;
-  pageIndex: number;
+  type: SearchAll.ACTION;
 }
 
-export interface ExecuteSearchResponse {
-  type: ExecuteSearch.SUCCESS | ExecuteSearch.FAILURE;
+export interface SearchAllResponse {
+  type: SearchAll.SUCCESS | SearchAll.FAILURE;
+  payload?: SearchReducerState;
+}
+
+
+/* searchResource - Search a single resource type */
+export enum SearchResource {
+  ACTION = 'amundsen/search/SEARCH_RESOURCE',
+  SUCCESS = 'amundsen/search/SEARCH_RESOURCE_SUCCESS',
+  FAILURE = 'amundsen/search/SEARCH_RESOURCE_FAILURE',
+}
+
+export interface SearchResourceRequest {
+  pageIndex: number;
+  resource: ResourceType;
+  term: string;
+  type: SearchResource.ACTION;
+}
+
+export interface SearchResourceResponse {
+  type: SearchResource.SUCCESS | SearchResource.FAILURE;
   payload?: SearchReducerState;
 }

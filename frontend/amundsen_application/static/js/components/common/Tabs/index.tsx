@@ -5,7 +5,7 @@ import './styles.scss';
 
 export interface TabsProps {
   tabs: TabInfo[];
-
+  activeKey?: string;
   defaultTab?: string;
   onSelect?: (key: string) => void;
 }
@@ -16,12 +16,13 @@ interface TabInfo {
   title: string;
 }
 
-const TabsComponent: React.SFC<TabsProps> = ({tabs, defaultTab, onSelect}) => {
+const TabsComponent: React.SFC<TabsProps> = ({tabs, activeKey, defaultTab, onSelect}) => {
   return (
       <Tabs
         id="tab"
         className="tabs-component"
         defaultActiveKey={ defaultTab }
+        activeKey={ activeKey }
         onSelect={ onSelect }
       >
         {

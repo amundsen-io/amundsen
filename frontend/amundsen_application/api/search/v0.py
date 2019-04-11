@@ -53,8 +53,8 @@ def _validate_search_term(*, search_term: str, page_index: int) -> Optional[Resp
     return None
 
 
-@search_blueprint.route('/', methods=['GET'])
-def search() -> Response:
+@search_blueprint.route('/table', methods=['GET'])
+def search_table() -> Response:
     search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
     page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
 
@@ -62,7 +62,20 @@ def search() -> Response:
     if error_response is not None:
         return error_response
 
-    results_dict = _search(search_term=search_term, page_index=page_index)
+    results_dict = _search_table(search_term=search_term, page_index=page_index)
+    return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+
+
+@search_blueprint.route('/user', methods=['GET'])
+def search_user() -> Response:
+    search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
+    page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
+
+    error_response = _validate_search_term(search_term=search_term, page_index=int(page_index))
+    if error_response is not None:
+        return error_response
+
+    results_dict = _search_user(search_term=search_term, page_index=page_index)
     return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
 
 
@@ -98,21 +111,119 @@ def _create_url_with_field(*, search_term: str, page_index: int) -> str:
     return url
 
 
-# TODO - Implement these functions
-def _search_tables(*, search_term: str, page_index: int) -> Dict[str, Any]:
-    return {}
+@action_logging
+def _search_user(*, search_term: str, page_index: int) -> Dict[str, Any]:
+    """
+        call the search service endpoint and return matching results
+        :return: a json output containing search results array as 'results'
 
+        Schema Defined Here: https://github.com/lyft/
+        amundsensearchlibrary/blob/master/search_service/api/search.py
 
-def _search_dashboards(*, search_term: str, page_index: int) -> Dict[str, Any]:
-    return {}
+        TODO: Define an interface for envoy_client
+        """
 
+    def _map_user_result(result: Dict) -> Dict:
+        return {
+            'type': 'user',
+            'active': result.get('active', None),
+            'birthday': result.get('birthday', None),
+            'department': result.get('department', None),
+            'email': result.get('email', None),
+            'first_name': result.get('first_name', None),
+            'github_username': result.get('github_username', None),
+            'id': result.get('id', None),
+            'last_name': result.get('last_name', None),
+            'manager_email': result.get('manager_email', None),
+            'name': result.get('name', None),
+            'offboarded': result.get('offboarded', None),
+            'office': result.get('office', None),
+            'role': result.get('role', None),
+            'start_date': result.get('start_date', None),
+            'team_name': result.get('team_name', None),
+            'title': result.get('title', None),
+        }
 
-def _search_people(*, search_term: str, page_index: int) -> Dict[str, Any]:
-    return {}
+    users = {
+        'page_index': int(page_index),
+        'results': [],
+        'total_results': 0,
+    }
+
+    results_dict = {
+        'search_term': search_term,
+        'msg': 'Success',
+        'status_code': HTTPStatus.OK,
+        'users': users,
+    }
+
+    # TEST CODE
+    users['total_results'] = 3
+    users['results'] = [
+        {
+            'type': 'user',
+            'active': True,
+            'birthday': '10-10-2000',
+            'department': 'Department',
+            'email': 'mail@address.com',
+            'first_name': 'Ash',
+            'github_username': 'github_user',
+            'id': 12345,
+            'last_name': 'Ketchum',
+            'manager_email': 'manager_email',
+            'name': 'Ash Ketchum',
+            'offboarded': False,
+            'office': 'Kanto Region',
+            'role': 'Pokemon Trainer',
+            'start_date': '05-04-2016',
+            'team_name': 'Kanto Trainers',
+            'title': 'Pokemon Master',
+        },
+        {
+            'type': 'user',
+            'active': True,
+            'birthday': '06-01-2000',
+            'department': 'Department',
+            'email': 'mail@address.com',
+            'first_name': 'Gary',
+            'github_username': 'github_user',
+            'id': 12345,
+            'last_name': 'Oak',
+            'manager_email': 'manager_email',
+            'name': 'Gary Oak',
+            'offboarded': False,
+            'office': 'Kanto Region',
+            'role': 'Pokemon Trainer',
+            'start_date': '05-04-2016',
+            'team_name': 'Kanto Trainers',
+            'title': 'Pokemon Master',
+        },
+        {
+            'type': 'user',
+            'active': False,
+            'birthday': '06-01-60',
+            'department': 'Department',
+            'email': 'mail@address.com',
+            'first_name': 'Professor',
+            'github_username': 'github_user',
+            'id': 12345,
+            'last_name': 'Oak',
+            'manager_email': 'manager_email',
+            'name': 'Professor Oak',
+            'offboarded': False,
+            'office': 'Kanto Region',
+            'role': 'Scientist',
+            'start_date': '05-04-2016',
+            'team_name': 'Team Oak',
+            'title': 'Pokemon Researcher',
+        },
+    ]
+
+    return results_dict
 
 
 @action_logging
-def _search(*, search_term: str, page_index: int) -> Dict[str, Any]:
+def _search_table(*, search_term: str, page_index: int) -> Dict[str, Any]:
     """
     call the search service endpoint and return matching results
     :return: a json output containing search results array as 'results'
@@ -131,7 +242,7 @@ def _search(*, search_term: str, page_index: int) -> Dict[str, Any]:
             'description': result.get('description', None),
             'database': result.get('database', None),
             'schema_name': result.get('schema_name', None),
-            'last_updated': result.get('last_updated', None),
+            'last_updated_epoch': result.get('last_updated_epoch', None),
         }
 
     tables = {
@@ -183,3 +294,8 @@ def _search(*, search_term: str, page_index: int) -> Dict[str, Any]:
         results_dict['msg'] = message
         logging.exception(message)
         return results_dict
+
+
+# TODO - Implement
+def _search_dashboard(*, search_term: str, page_index: int) -> Dict[str, Any]:
+    return {}

@@ -1,0 +1,63 @@
+@import 'variables';
+
+.profile-page {
+  margin-bottom: 48px;
+}
+
+.profile-header {
+  display: flex;
+
+  .profile-avatar {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+
+  .profile-details {
+    display: flex;
+    flex-direction: column;
+    
+    h1 {
+      margin-bottom: 0px;
+      margin-top: 0px;
+    }
+
+    .profile-icons {
+      margin-top: 12px;
+
+      a {
+        margin-left: 8px;
+        margin-right: 8px;
+
+        &:first-child {
+          margin-left: 0px;
+        }
+        &:last-child {
+          margin-right: 0px;
+        }
+      }
+    }
+
+    .profile-title {
+      display: flex;
+      margin-bottom: 8px;
+
+      .flag {
+        height: min-content; // TODO: consider moving height into Flag component
+        font-size: 100%;
+        margin: auto auto auto 12px;
+      }
+    }
+
+  }
+}
+
+.profile-tabs {
+  margin-top: 48px;
+}
+
+// TODO: consider moving logic for empty content into Tab component
+.empty-tab-message {
+  color: $gray-light;
+  margin-top: 64px;
+  text-align: center;
+}

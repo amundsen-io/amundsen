@@ -11,11 +11,11 @@ LOGGER = logging.getLogger(__name__)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 
-@blueprint.route('/current_user', methods=['GET'])
+@blueprint.route('/auth_user', methods=['GET'])
 def current_user() -> Response:
-    if (app.config['CURRENT_USER_METHOD']):
-        user = app.config['CURRENT_USER_METHOD'](app)
+    if (app.config['AUTH_USER_METHOD']):
+        user = app.config['AUTH_USER_METHOD'](app)
     else:
-        user = load_user({'display_name': '*'})
+        user = load_user({'user_id': 'undefined', 'display_name': '*'})
 
     return user.to_json()

@@ -129,10 +129,20 @@ export default function reducer(state: TableMetadataReducerState = initialState,
         ...state,
         isLoading: true,
         preview: initialPreviewState,
+        tableData: initialTableDataState,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
         tableTags: tableTagsReducer(state.tableTags, action),
       };
     case GetTableData.FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        preview: initialPreviewState,
+        statusCode: action.payload.statusCode,
+        tableData: initialTableDataState,
+        tableOwners: tableOwnersReducer(state.tableOwners, action),
+        tableTags: tableTagsReducer(state.tableTags, action),
+      };
     case GetTableData.SUCCESS:
       return {
         ...state,
@@ -148,12 +158,13 @@ export default function reducer(state: TableMetadataReducerState = initialState,
     case GetColumnDescription.FAILURE:
     case GetColumnDescription.SUCCESS:
       return { ...state, tableData: action.payload };
-    case GetLastIndexed.SUCCESS:
-        return { ...state, lastIndexed: action.payload };
     case GetLastIndexed.FAILURE:
-        return { ...state, lastIndexed: null };
-    case GetPreviewData.SUCCESS:
+      return { ...state, lastIndexed: null };
+    case GetLastIndexed.SUCCESS:
+      return { ...state, lastIndexed: action.payload };
     case GetPreviewData.FAILURE:
+      return { ...state, preview: initialPreviewState };
+    case GetPreviewData.SUCCESS:
       return { ...state, preview: action.payload };
     case UpdateTableOwner.ACTION:
     case UpdateTableOwner.FAILURE:

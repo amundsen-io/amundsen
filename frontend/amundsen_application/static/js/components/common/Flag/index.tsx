@@ -32,14 +32,14 @@ const Flag: React.SFC<FlagProps> = ({ caseType, text, labelStyle }) => {
   // TODO: After upgrading to Bootstrap 4, this component should leverage badges
   // https://getbootstrap.com/docs/4.1/components/badge/
   return (
-    <span className={`flag label ${labelStyle}`}>{convertText(text, caseType)}</span>
+    <span className={`flag label label-${labelStyle}`}>{convertText(text, caseType)}</span>
   );
 };
 
 Flag.defaultProps = {
   caseType: null,
   text: '',
-  labelStyle: 'label-default',
+  labelStyle: 'default',
 };
 
 export default Flag;

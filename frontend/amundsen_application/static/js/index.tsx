@@ -15,6 +15,7 @@ import Feedback from './components/Feedback';
 import Footer from './components/Footer';
 import NavBar from './components/NavBar';
 import NotFoundPage from './components/NotFoundPage';
+import ProfilePage from './components/ProfilePage';
 import SearchPage from './components/SearchPage';
 import TableDetail from './components/TableDetail';
 
@@ -38,6 +39,7 @@ ReactDOM.render(
             <Route path="/announcements" component={AnnouncementPage} />
             <Route path="/browse" component={BrowsePage} />
             <Route path="/search" component={SearchPage} />
+            <Route path="/user/:userId" component={ProfilePage} />
             <Route path="/404" component={NotFoundPage} />
             <Route path="/" component={SearchPage} />
           </Switch>

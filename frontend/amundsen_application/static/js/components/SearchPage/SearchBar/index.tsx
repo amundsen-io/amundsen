@@ -7,7 +7,7 @@ const DEFAULT_SUBTEXT = `Search within a category using the pattern with wildcar
   Current categories are 'column', 'schema', 'table', and 'tag'.`;
 
 interface SearchBarProps {
-  handleValueSubmit: (term: string, pageIndex: number) => void;
+  handleValueSubmit: (term: string) => void;
   placeholder?: string;
   searchTerm?: string;
   subText?: string;
@@ -50,7 +50,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     event.preventDefault();
     if (this.isFormValid()) {
       const inputElement = this.inputRef.current;
-      this.props.handleValueSubmit(inputElement.value.toLowerCase(), 0);
+      this.props.handleValueSubmit(inputElement.value.toLowerCase());
     }
   };
 

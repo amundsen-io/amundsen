@@ -76,8 +76,8 @@ def _build_metrics(func_name: str,
     metrics['pos_args_json'] = json.dumps(args)
     metrics['keyword_args_json'] = json.dumps(kwargs)
 
-    if flask_app.config['CURRENT_USER_METHOD']:
-        metrics['user'] = flask_app.config['CURRENT_USER_METHOD'](flask_app).email
+    if flask_app.config['AUTH_USER_METHOD']:
+        metrics['user'] = flask_app.config['AUTH_USER_METHOD'](flask_app).email
     else:
         metrics['user'] = getpass.getuser()
 

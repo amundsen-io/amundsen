@@ -1,8 +1,14 @@
 @import 'variables';
 
 .not-found-page {
-  width: 70%;
-  text-align: center;
+  h1 {
+    text-align: center;
+  }
+
+  span  {
+    text-align: center;
+    width: 100%;
+  }
 }
 
 .glyphicon.glyphicon-exclamation-sign {

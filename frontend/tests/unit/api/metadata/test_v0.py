@@ -66,7 +66,6 @@ class MetadataTest(unittest.TestCase):
                 'id': 'test_id',
                 'description': 'This is a test'
             },
-            'last_updated_timestamp': 1534191754
         }
         self.expected_parsed_metadata = {
             'cluster': 'test_cluster',
