@@ -178,12 +178,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
         key: ResourceType.table,
         content: this.getTabContent(this.props.tables, 'tables'),
       },
-      // TODO PEOPLE - Uncomment when enabling people
-      // {
-      //   title: `Users (${ this.props.users.total_results })`,
-      //   key: ResourceType.user,
-      //   content: this.getTabContent(this.props.users, 'users'),
-      // },
+      // TODO PEOPLE - Add users tab
     ];
 
     return (
