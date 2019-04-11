@@ -9,13 +9,11 @@ export function searchAll(action: SearchAllRequest) {
   const { term, options } = action;
   return axios.all([
       axios.get(`${BASE_URL}/table?query=${term}&page_index=${options.tableIndex || 0}`),
-      // TODO PEOPLE - Uncomment when enabling People feature
-      // axios.get(`${BASE_URL}/user?query=${term}&page_index=${options.userIndex || 0}`),
-    ]).then(axios.spread((tableResponse: AxiosResponse<SearchResponse> /*, userResponse: AxiosResponse<SearchResponse>*/) => {
+      // TODO PEOPLE - Add request for people here
+    ]).then(axios.spread((tableResponse: AxiosResponse<SearchResponse>) => {
       return {
         search_term: tableResponse.data.search_term,
         tables: tableResponse.data.tables,
-        // users: userResponse.data.users,
       }
   })).catch((error: AxiosError) => {
     // TODO - handle errors

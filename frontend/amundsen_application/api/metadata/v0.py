@@ -555,32 +555,7 @@ def update_table_tags() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-# TODO: Implement real support
+# TODO: Implement
 @metadata_blueprint.route('/user', methods=['GET'])
 def get_user() -> Response:
-    try:
-        user_id = get_query_param(request.args, 'user_id')
-        user_info = {
-            'first_name': 'Firstname',
-            'last_name': 'Lastname',
-            'email': 'test@test.com',
-            'display_name': 'Firstname Lastname',
-            'profile_url': 'https://github.com/lyft/amundsenfrontendlibrary',
-            'user_id': user_id,
-            'github_name': 'lyft',
-            'is_active': True,
-            'manager_name': 'Roald Amundsen',
-            'role_name': 'Software Engineer',
-            'slack_url': 'https://slack.com',
-            'team_name': 'Amundsen Team',
-        }
-        if user_id == 'alumni':
-            user_info['is_active'] = False
-
-        status_code = HTTPStatus.OK
-        payload = jsonify({'user': user_info})
-        return make_response(payload, status_code)
-    except Exception as e:
-        message = 'Encountered exception: ' + str(e)
-        logging.exception(message)
-        return make_response(jsonify({'user': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+    return make_response(jsonify({'msg': 'Not implemented'}), HTTPStatus.NOT_IMPLEMENTED)

@@ -28,7 +28,7 @@ valid_search_fields = {
 
 def _create_error_response(*, message: str, payload: Dict, status_code: int) -> Response:
     logging.info(message)
-    payload['mg'] = message
+    payload['msg'] = message
     return make_response(jsonify(payload), status_code)
 
 
@@ -68,15 +68,7 @@ def search_table() -> Response:
 
 @search_blueprint.route('/user', methods=['GET'])
 def search_user() -> Response:
-    search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
-    page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
-
-    error_response = _validate_search_term(search_term=search_term, page_index=int(page_index))
-    if error_response is not None:
-        return error_response
-
-    results_dict = _search_user(search_term=search_term, page_index=page_index)
-    return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    return make_response(jsonify({'msg': 'Not implemented'}), HTTPStatus.NOT_IMPLEMENTED)
 
 
 def _create_url_with_field(*, search_term: str, page_index: int) -> str:
@@ -156,68 +148,6 @@ def _search_user(*, search_term: str, page_index: int) -> Dict[str, Any]:
         'status_code': HTTPStatus.OK,
         'users': users,
     }
-
-    # TEST CODE
-    users['total_results'] = 3
-    users['results'] = [
-        {
-            'type': 'user',
-            'active': True,
-            'birthday': '10-10-2000',
-            'department': 'Department',
-            'email': 'mail@address.com',
-            'first_name': 'Ash',
-            'github_username': 'github_user',
-            'id': 12345,
-            'last_name': 'Ketchum',
-            'manager_email': 'manager_email',
-            'name': 'Ash Ketchum',
-            'offboarded': False,
-            'office': 'Kanto Region',
-            'role': 'Pokemon Trainer',
-            'start_date': '05-04-2016',
-            'team_name': 'Kanto Trainers',
-            'title': 'Pokemon Master',
-        },
-        {
-            'type': 'user',
-            'active': True,
-            'birthday': '06-01-2000',
-            'department': 'Department',
-            'email': 'mail@address.com',
-            'first_name': 'Gary',
-            'github_username': 'github_user',
-            'id': 12345,
-            'last_name': 'Oak',
-            'manager_email': 'manager_email',
-            'name': 'Gary Oak',
-            'offboarded': False,
-            'office': 'Kanto Region',
-            'role': 'Pokemon Trainer',
-            'start_date': '05-04-2016',
-            'team_name': 'Kanto Trainers',
-            'title': 'Pokemon Master',
-        },
-        {
-            'type': 'user',
-            'active': False,
-            'birthday': '06-01-60',
-            'department': 'Department',
-            'email': 'mail@address.com',
-            'first_name': 'Professor',
-            'github_username': 'github_user',
-            'id': 12345,
-            'last_name': 'Oak',
-            'manager_email': 'manager_email',
-            'name': 'Professor Oak',
-            'offboarded': False,
-            'office': 'Kanto Region',
-            'role': 'Scientist',
-            'start_date': '05-04-2016',
-            'team_name': 'Team Oak',
-            'title': 'Pokemon Researcher',
-        },
-    ]
 
     return results_dict
 
