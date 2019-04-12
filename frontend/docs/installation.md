@@ -3,16 +3,22 @@
 ## Install standalone application directly from the source
 The following instructions are for setting up a standalone version of the Amundsen application. This approach is ideal for local development.
 ```bash
+# Clone repo
 $ git clone https://github.com/lyft/amundsenfrontendlibrary.git
-$ cd amundsenfrontendlibrary
+
+# Build static content
+$ cd amundsenfrontendlibrary/amundsen_application/static
+$ npm install
+$ npm run build # or npm run dev-build for un-minified source
+$ cd ../../
+
+# Install python resources
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip3 install -r requirements3.txt
 $ python3 setup.py install
-$ cd amundsen_application/static
-$ npm install
-$ npm run build # or npm run dev-build for un-minified source
-$ cd ../..
+
+# Start server
 $ python3 amundsen_application/wsgi.py
 # visit http://localhost:5000 to confirm the application is running
 ```
