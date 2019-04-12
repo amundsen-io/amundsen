@@ -10,6 +10,9 @@ class Config:
 
     UNEDITABLE_SCHEMAS = set()  # type: Set[str]
 
+    # Number of popular tables to be displayed on the index/search page
+    POPULAR_TABLE_COUNT = 4     # type: int
+
 
 class LocalConfig(Config):
     DEBUG = False
