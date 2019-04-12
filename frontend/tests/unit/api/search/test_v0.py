@@ -5,7 +5,7 @@ import unittest
 from http import HTTPStatus
 
 from amundsen_application import create_app
-from amundsen_application.api.search.v0 import _create_url_with_field
+from amundsen_application.api.search.v0 import _create_url_with_field, SEARCH_ENDPOINT
 
 local_app = create_app('amundsen_application.config.LocalConfig', 'static/templates')
 
@@ -121,7 +121,7 @@ class SearchTest(unittest.TestCase):
         Test request success
         :return:
         """
-        responses.add(responses.GET, local_app.config['SEARCHSERVICE_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT,
                       json=self.mock_search_table_results, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -139,7 +139,7 @@ class SearchTest(unittest.TestCase):
         Test request failure if search endpoint returns non-200 http code
         :return:
         """
-        responses.add(responses.GET, local_app.config['SEARCHSERVICE_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT,
                       json=self.mock_search_table_results, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
         with local_app.test_client() as test:
@@ -153,7 +153,7 @@ class SearchTest(unittest.TestCase):
         from the search endpoint
         :return:
         """
-        responses.add(responses.GET, local_app.config['SEARCHSERVICE_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT,
                       json=self.bad_search_results, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -166,7 +166,7 @@ class SearchTest(unittest.TestCase):
         Test search request if user search with colon
         :return:
         """
-        responses.add(responses.GET, local_app.config['SEARCHSERVICE_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT,
                       json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:

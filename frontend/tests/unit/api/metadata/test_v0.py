@@ -5,6 +5,8 @@ import unittest
 from http import HTTPStatus
 
 from amundsen_application import create_app
+from amundsen_application.api.metadata.v0 import \
+    TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT, POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT
 
 local_app = create_app('amundsen_application.config.LocalConfig')
 
@@ -167,7 +169,7 @@ class MetadataTest(unittest.TestCase):
         Test successful popular_tables request
         :return:
         """
-        responses.add(responses.GET, local_app.config['METADATASERVICE_POPULAR_TABLES_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['METADATASERVICE_BASE'] + POPULAR_TABLES_ENDPOINT,
                       json=self.mock_popular_tables, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -183,7 +185,7 @@ class MetadataTest(unittest.TestCase):
         returned to the React application
         :return:
         """
-        responses.add(responses.GET, local_app.config['METADATASERVICE_POPULAR_TABLES_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['METADATASERVICE_BASE'] + POPULAR_TABLES_ENDPOINT,
                       json=self.mock_popular_tables, status=HTTPStatus.BAD_REQUEST)
 
         with local_app.test_client() as test:
@@ -197,7 +199,7 @@ class MetadataTest(unittest.TestCase):
         results from the metadata service
         :return:
         """
-        responses.add(responses.GET, local_app.config['METADATASERVICE_POPULAR_TABLES_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['METADATASERVICE_BASE'] + POPULAR_TABLES_ENDPOINT,
                       json={'popular_tables': None}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -210,7 +212,7 @@ class MetadataTest(unittest.TestCase):
         Test successful get_table_metadata request
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table'
         responses.add(responses.GET, url, json=self.mock_metadata, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -235,7 +237,7 @@ class MetadataTest(unittest.TestCase):
         Test successful update_table_owner request
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/owner/test'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/owner/test'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -257,7 +259,7 @@ class MetadataTest(unittest.TestCase):
         Test successful get_last_indexed request
         :return:
         """
-        responses.add(responses.GET, local_app.config['METADATASERVICE_LAST_INDEXED_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['METADATASERVICE_BASE'] + LAST_INDEXED_ENDPOINT,
                       json={'neo4j_latest_timestamp': 1538352000}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -273,7 +275,7 @@ class MetadataTest(unittest.TestCase):
         to be returned to the React application
         :return:
         """
-        responses.add(responses.GET, local_app.config['METADATASERVICE_LAST_INDEXED_ENDPOINT'],
+        responses.add(responses.GET, local_app.config['METADATASERVICE_BASE'] + LAST_INDEXED_ENDPOINT,
                       json=None, status=HTTPStatus.BAD_REQUEST)
 
         with local_app.test_client() as test:
@@ -286,7 +288,7 @@ class MetadataTest(unittest.TestCase):
         Test successful get_table_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/description'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/description'
         responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -305,7 +307,7 @@ class MetadataTest(unittest.TestCase):
         to be returned to the React application
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/description'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/description'
         responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.BAD_REQUEST)
 
         with local_app.test_client() as test:
@@ -321,7 +323,7 @@ class MetadataTest(unittest.TestCase):
         Test successful put_table_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/description/test'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/description/test'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -344,7 +346,8 @@ class MetadataTest(unittest.TestCase):
         Test successful get_column_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/column/colA/description'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
+            '/db://cluster.schema/table/column/colA/description'
         responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -370,7 +373,8 @@ class MetadataTest(unittest.TestCase):
         to be returned to the React application
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/column/colA/description'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
+            '/db://cluster.schema/table/column/colA/description'
         responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.BAD_REQUEST)
 
         with local_app.test_client() as test:
@@ -393,8 +397,8 @@ class MetadataTest(unittest.TestCase):
         Test successful put_column_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] \
-            + '/db://cluster.schema/table/column/col/description/test'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
+            '/db://cluster.schema/table/column/col/description/test'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -418,7 +422,7 @@ class MetadataTest(unittest.TestCase):
         Test successful fetch of all tags
         :return:
         """
-        url = local_app.config['METADATASERVICE_TAGS_ENDPOINT']
+        url = local_app.config['METADATASERVICE_BASE'] + TAGS_ENDPOINT
         responses.add(responses.GET, url, json=self.mock_tags, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -432,7 +436,7 @@ class MetadataTest(unittest.TestCase):
         Test adding a tag on a table
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/tag/tag_5'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/tag/tag_5'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -454,7 +458,7 @@ class MetadataTest(unittest.TestCase):
         Test deleting a tag on a table
         :return:
         """
-        url = local_app.config['METADATASERVICE_TABLE_ENDPOINT'] + '/db://cluster.schema/table/tag/tag_5'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/tag/tag_5'
         responses.add(responses.DELETE, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:

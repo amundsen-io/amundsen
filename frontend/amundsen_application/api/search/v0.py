@@ -25,6 +25,8 @@ valid_search_fields = {
     'column'
 }
 
+SEARCH_ENDPOINT = '/search'
+
 
 def _create_error_response(*, message: str, payload: Dict, status_code: int) -> Response:
     logging.info(message)
@@ -94,7 +96,7 @@ def _create_url_with_field(*, search_term: str, page_index: int) -> str:
     field_val = search_field[1].lower()
     search_term = ' '.join(fields[1:])
     url = '{0}/field/{1}/field_val/{2}' \
-          '?page_index={3}'.format(app.config['SEARCHSERVICE_ENDPOINT'],
+          '?page_index={3}'.format(app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT,
                                    field_key,
                                    field_val,
                                    page_index)
@@ -192,7 +194,7 @@ def _search_table(*, search_term: str, page_index: int) -> Dict[str, Any]:
             url = _create_url_with_field(search_term=search_term,
                                          page_index=page_index)
         else:
-            url = '{0}?query_term={1}&page_index={2}'.format(app.config['SEARCHSERVICE_ENDPOINT'],
+            url = '{0}?query_term={1}&page_index={2}'.format(app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT,
                                                              search_term,
                                                              page_index)
 
