@@ -7,7 +7,7 @@ flake8-tidy-imports==1.1.0
 Flask==1.0.2
 Flask-RESTful==0.3.6
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2>=2.10.1
 MarkupSafe==1.0
 mock==2.0.0
 pytest==3.5.1
@@ -19,3 +19,4 @@ statsd==3.2.1
 typing==3.6.4
 Werkzeug==0.14.1
 wheel==0.31.1
+mypy==0.660
