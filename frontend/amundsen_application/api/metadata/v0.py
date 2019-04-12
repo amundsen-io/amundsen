@@ -20,9 +20,14 @@ REQUEST_SESSION_TIMEOUT = 10
 
 metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
+TABLE_ENDPOINT = '/table'
+LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
+POPULAR_TABLES_ENDPOINT = '/popular_tables'
+TAGS_ENDPOINT = '/tags'
+
 
 def _get_table_endpoint() -> str:
-    table_endpoint = app.config['METADATASERVICE_TABLE_ENDPOINT']
+    table_endpoint = app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT
     if table_endpoint is None:
         raise Exception('An request endpoint for table resources must be configured')
     return table_endpoint
@@ -62,7 +67,7 @@ def popular_tables() -> Response:
         }
 
     try:
-        url = app.config['METADATASERVICE_POPULAR_TABLES_ENDPOINT']
+        url = app.config['METADATASERVICE_BASE'] + POPULAR_TABLES_ENDPOINT
 
         # TODO: Create an abstraction for this logic that is reused many times
         if app.config['METADATASERVICE_REQUEST_CLIENT'] is not None:
@@ -279,7 +284,7 @@ def get_last_indexed() -> Response:
     Schema Defined Here: https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/system.py
     """
     try:
-        url = app.config['METADATASERVICE_LAST_INDEXED_ENDPOINT']
+        url = app.config['METADATASERVICE_BASE'] + LAST_INDEXED_ENDPOINT
 
         # TODO: Create an abstraction for this logic that is reused many times
         if app.config['METADATASERVICE_REQUEST_CLIENT'] is not None:
@@ -471,7 +476,7 @@ def get_tags() -> Response:
     Schema Defined Here: https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/tag.py
     """
     try:
-        url = app.config['METADATASERVICE_TAGS_ENDPOINT']
+        url = app.config['METADATASERVICE_BASE'] + TAGS_ENDPOINT
 
         # TODO: Create an abstraction for this logic that is reused many times
         if app.config['METADATASERVICE_REQUEST_CLIENT'] is not None:
