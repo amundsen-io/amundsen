@@ -7,7 +7,7 @@ $ git clone https://github.com/lyft/amundsenfrontendlibrary.git
 $ cd amundsenfrontendlibrary
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install -r requirements.txt
+$ pip3 install -r requirements3.txt
 $ python3 setup.py install
 $ cd amundsen_application/static
 $ npm install
