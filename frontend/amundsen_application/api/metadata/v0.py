@@ -22,8 +22,8 @@ metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v
 
 TABLE_ENDPOINT = '/table'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
-POPULAR_TABLES_ENDPOINT = '/popular_tables'
-TAGS_ENDPOINT = '/tags'
+POPULAR_TABLES_ENDPOINT = '/popular_tables/'
+TAGS_ENDPOINT = '/tags/'
 
 
 def _get_table_endpoint() -> str:
