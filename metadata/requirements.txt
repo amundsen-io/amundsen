@@ -46,7 +46,7 @@ Flask==1.0.2
 aniso8601==3.0.0
 click==6.7
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2>=2.10.1
 MarkupSafe==1.0
 pytz==2018.4
 six==1.11.0
