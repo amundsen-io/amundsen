@@ -18,8 +18,6 @@ LOGGER = logging.getLogger(__name__)
 
 REQUEST_SESSION_TIMEOUT = 10
 
-POPULAR_TABLE_COUNT = 4
-
 metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
 
@@ -80,7 +78,7 @@ def popular_tables() -> Response:
         if status_code == HTTPStatus.OK:
             message = 'Success'
             response_list = response.json().get('popular_tables')
-            top4 = response_list[0:min(len(response_list), POPULAR_TABLE_COUNT)]
+            top4 = response_list[0:min(len(response_list), app.config['POPULAR_TABLE_COUNT'])]
             popular_tables = [_map_results(result) for result in top4]
         else:
             message = 'Encountered error: Request to metadata service failed with status code ' + str(status_code)
