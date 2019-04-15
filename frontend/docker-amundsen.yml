@@ -4,8 +4,8 @@ services:
       image: neo4j:3.3.0
       container_name: neo4j_amundsen
       environment:
-        - CREDENTIALS_NEO4J_USER=neo4j
-        - CREDENTIALS_NEO4J_PASSWORD=neo4j
+        - CREDENTIALS_PROXY_USER=neo4j
+        - CREDENTIALS_PROXY_PASSWORD=neo4j
       ulimits:
         nofile:
           soft: 40000
