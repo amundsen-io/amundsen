@@ -4,7 +4,7 @@ import unittest
 from databuilder.models.table_elasticsearch_document import TableESDocument
 
 
-class TestElasticsearchDocument(unittest.TestCase):
+class TestTableElasticsearchDocument(unittest.TestCase):
 
     def test_to_json(self):
         # type: () -> None
