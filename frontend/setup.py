@@ -22,6 +22,7 @@ def build_js() -> None:
 
     try:
         subprocess.check_call(['npm install --only=prod'], cwd=PACKAGE_DIR, shell=True)
+        subprocess.check_call(['npm run build'], cwd=PACKAGE_DIR, shell=True)
     except Exception as e:
         logging.warn('Installation of npm dependencies failed')
         logging.warn(str(e))
@@ -29,7 +30,11 @@ def build_js() -> None:
 
 build_js()
 
-__version__ = '1.0.0'
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements3.txt')
+with open(requirements_path) as requirements_file:
+    requirements = requirements_file.readlines()
+
+__version__ = '1.0.1'
 
 
 setup(
@@ -42,23 +47,7 @@ setup(
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     dependency_links=[],
-    install_requires=[
-        # Packages in here should rarely be pinned. This is because these
-        # packages (at the specified version) are required for project
-        # consuming this library. By pinning to a specific version you are the
-        # number of projects that can consume this or forcing them to
-        # upgrade/downgrade any dependencies pinned here in their project.
-        #
-        # Generally packages listed here are pinned to a major version range.
-        #
-        # e.g.
-        # Python FooBar package for foobaring
-        # pyfoobar>=1.0, <2.0
-        #
-        # This will allow for any consuming projects to use this library as
-        # long as they have a version of pyfoobar equal to or greater than 1.x
-        # and less than 2.x installed.
-    ],
+    install_requires=requirements,
     python_requires=">=3.6",
     entry_points="""
         [action_log.post_exec.plugin]
