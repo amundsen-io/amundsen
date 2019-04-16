@@ -2,8 +2,6 @@ from setuptools import setup, find_packages
 
 __version__ = '1.0.4'
 
-# Dependencies to make Amundsen work with Apache Atlas
-atlas = ['atlasclient>=0.1.3']
 
 setup(
     name='amundsen-metadata',
@@ -34,9 +32,7 @@ setup(
         'Flask-RESTful>=0.3.6',
         'neo4j-driver==1.6.0',
         'beaker>=1.10.0',
-        'statsd>=3.2.1'
-    ],
-    extras_require={
-        'atlas': atlas
-    }
+        'statsd>=3.2.1',
+        'atlasclient>=0.1.3'
+    ]
 )
