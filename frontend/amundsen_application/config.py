@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Set  # noqa: F401
 
 
@@ -29,11 +30,19 @@ class LocalConfig(Config):
 
     SEARCHSERVICE_REQUEST_CLIENT = None
     SEARCHSERVICE_REQUEST_HEADERS = None
-    SEARCHSERVICE_BASE = 'http://{LOCAL_HOST}:{PORT}'.format(LOCAL_HOST=LOCAL_HOST, PORT=SEARCH_PORT)
+    SEARCHSERVICE_BASE = os.environ.get('SEARCHSERVICE_BASE',
+                                        'http://{LOCAL_HOST}:{PORT}'.format(
+                                            LOCAL_HOST=LOCAL_HOST,
+                                            PORT=SEARCH_PORT)
+                                        )
 
     METADATASERVICE_REQUEST_CLIENT = None
     METADATASERVICE_REQUEST_HEADERS = None
-    METADATASERVICE_BASE = 'http://{LOCAL_HOST}:{PORT}'.format(LOCAL_HOST=LOCAL_HOST, PORT=METADATA_PORT)
+    METADATASERVICE_BASE = os.environ.get('METADATASERVICE_BASE',
+                                          'http://{LOCAL_HOST}:{PORT}'.format(
+                                              LOCAL_HOST=LOCAL_HOST,
+                                              PORT=METADATA_PORT)
+                                          )
 
     AUTH_USER_METHOD = None
     GET_PROFILE_URL = None
