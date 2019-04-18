@@ -75,6 +75,7 @@ Please visit [Roadmap](docs/roadmap.md) if you are interested in Amundsen upcomi
 ## Publication
 - [Disrupting Data Discovery](https://www.slideshare.net/taofung/strata-sf-amundsen-presentation) (Strata SF 2019)
 - [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (Lyft engineering blog)
+- [Amundsen: A Data Discovery Platform from Lyft](https://www.slideshare.net/taofung/data-council-sf-amundsen-presentation) (Data council 19 SF)
 
 # License
 [Apache 2.0 License.](/LICENSE)
