@@ -15,6 +15,11 @@ services:
           - 7687:7687
       volumes:
           - ./example/docker/neo4j/conf:/conf
+  elasticsearch:
+      image: elasticsearch:6.7.0
+      container_name: es_amundsen
+      ports:
+          - 9200:9200
       networks:
         - amundsennet
   amundsensearch:
@@ -22,6 +27,8 @@ services:
       container_name: amundsensearch
       ports:
         - 5001:5000
+      depends_on:
+        - elasticsearch
       networks:
         - amundsennet
   amundsenmetadata:
