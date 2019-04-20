@@ -70,7 +70,7 @@ $ docker-compose -f docker-amundsen.yml up
 ```
 7. Ingest dummy data into Neo4j by doing the following:
   * Clone [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder).
-  * Update the `NEO4J_ENDPOINT` in [sample_data_loader.py](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) and replace `localhost` with the IP used for the `default` docker machine. You can see the IP in the `URL` outputted from running `docker-machine ls`.
+  * Update the `NEO4J_ENDPOINT` and `Elasticsearch host` in [sample_data_loader.py](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) and replace `localhost` with the IP used for the `default` docker machine. You can see the IP in the `URL` outputted from running `docker-machine ls`.
   * Run the following commands:
     ```bash
     # in ~/<your-path-to-cloned-repo>/amundsendatabuilder
@@ -82,3 +82,4 @@ $ docker-compose -f docker-amundsen.yml up
     ```
 8. Verify dummy data has been ingested by viewing in Neo4j by visiting `http://YOUR-DOCKER-HOST-IP:7474/browser/` and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see two tables -- `hive.test_schema.test_table1` and `dynamo.test_schema.test_table2`.
 9. View UI at `http://YOUR-DOCKER-HOST-IP:5000/table_detail/gold/hive/test_schema/test_table1` or `/table_detail/gold/dynamo/test_schema/test_table2`
+10. View UI at `http://YOUR-DOCKER-HOST-IP:5000` and try to search `test`, it should return some result.
