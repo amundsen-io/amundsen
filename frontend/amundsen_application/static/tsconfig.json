@@ -14,7 +14,7 @@
     "moduleResolution": "node",
     "noResolve": false,
     "removeComments": true,
-    "types": [],
+    "types": ["jest"],
   },
   "exclude": [
     "node_modules",

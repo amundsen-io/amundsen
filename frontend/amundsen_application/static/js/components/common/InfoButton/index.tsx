@@ -4,7 +4,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-interface InfoButtonProps {
+export interface InfoButtonProps {
   infoText?: string;
   title?: string;
   placement?: string;

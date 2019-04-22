@@ -3,19 +3,19 @@ import * as React from 'react';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-enum CaseType {
+export enum CaseType {
   LOWER_CASE = 'lowerCase',
   SENTENCE_CASE = 'sentenceCase',
   UPPER_CASE = 'upperCase',
 }
 
-interface FlagProps {
+export interface FlagProps {
   caseType?: string | null;
   text: string;
   labelStyle?: string;
 }
 
-function convertText(str: string, caseType: string): string {
+export function convertText(str: string, caseType: string): string {
   switch (caseType) {
     case CaseType.LOWER_CASE:
       return str.toLowerCase();

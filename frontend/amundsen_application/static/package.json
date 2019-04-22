@@ -103,9 +103,6 @@
     "fsevents": "*"
   },
   "jest": {
-    "setupFiles": [
-      "<rootDir>/test-shim.js"
-    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",

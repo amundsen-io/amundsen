@@ -108,7 +108,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
                 <div className="profile-title">
                   <h1>{ user.display_name }</h1>
                   {
-                    (user.is_active === false) &&
+                    (!user.is_active) &&
                     <Flag caseType="sentenceCase" labelStyle="label-danger" text="Alumni"/>
                   }
                 </div>

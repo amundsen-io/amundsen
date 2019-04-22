@@ -4,8 +4,8 @@ import EntityCardSection, { EntityCardSectionProps } from './EntityCardSection';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-interface EntityCardProps {
-  sections?: EntityCardSectionProps[];
+export interface EntityCardProps {
+  sections: EntityCardSectionProps[];
 }
 
 const EntityCard: React.SFC<EntityCardProps> = ({ sections }) => {

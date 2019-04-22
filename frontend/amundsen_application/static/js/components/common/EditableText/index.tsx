@@ -20,7 +20,7 @@ export interface ComponentProps {
   value?: string;
 }
 
-type EditableTextProps = ComponentProps & DispatchFromProps & StateFromProps;
+export type EditableTextProps = ComponentProps & DispatchFromProps & StateFromProps;
 
 interface EditableTextState {
   editable: boolean;
@@ -112,14 +112,14 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
   render() {
     if (!this.state.editable) {
       return (
-        <div className='editable-container'>
-           <div className='editable-text'>{ this.state.value }</div>
+        <div id='editable-container' className='editable-container'>
+           <div id='editable-text' className='editable-text'>{ this.state.value }</div>
         </div>
       );
     }
     if (!this.state.inEditMode || (this.state.inEditMode && this.state.isDisabled)) {
       return (
-        <div className='editable-container'>
+        <div id='editable-container' className='editable-container'>
           <Overlay
             placement='top'
             show={this.state.isDisabled}
@@ -132,9 +132,9 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
               </div>
             </Tooltip>
           </Overlay>
-          <div className={"editable-text"}>
+          <div id='editable-text' className={"editable-text"}>
             { this.state.value }
-            <a className={ "edit-link " + (this.state.value ? "" : "no-value") }
+            <a className={ "edit-link" + (this.state.value ? "" : " no-value") }
                href="JavaScript:void(0)"
                onClick={ this.enterEditMode }
                ref={ anchor => {
@@ -151,9 +151,9 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
     }
 
     return (
-      <div className='editable-container'>
+      <div id='editable-container' className='editable-container'>
         <textarea
-          id='textAreaInput'
+          id='editable-textarea'
           className='editable-textarea'
           rows={2}
           maxLength={this.props.maxLength}

@@ -20,6 +20,7 @@ matrix:
     - npm install
     script:
     - npm run build
+    - npm run test
 deploy:
   provider: pypi
   user: amundsen-dev

@@ -225,7 +225,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
       )
     }
 
-    let title =`${startIndex}-${Math.min(endIndex, total_results)} of ${total_results} results`;
+    const title =`${startIndex}-${Math.min(endIndex, total_results)} of ${total_results} results`;
     return (
       <div className="search-list-container">
         <div className="search-list-header">
