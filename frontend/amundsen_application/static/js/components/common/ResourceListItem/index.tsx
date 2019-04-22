@@ -6,8 +6,7 @@ import UserListItem from './UserListItem';
 
 import './styles.scss';
 
-
-interface ListItemProps {
+export interface ListItemProps {
   logging: LoggingParams;
   item: Resource;
 }

@@ -12,10 +12,10 @@ export interface AvatarLabelProps {
 const AvatarLabel: React.SFC<AvatarLabelProps> = ({ label, src }) => {
   return (
     <div className='avatar-label-component'>
-      <div className='component-avatar'>
+      <div id='component-avatar' className='component-avatar'>
         <Avatar name={label} src={src} size={24} round={true} />
       </div>
-      <label className='component-label'>{label}</label>
+      <label id='component-label' className='component-label'>{label}</label>
     </div>
   );
 };

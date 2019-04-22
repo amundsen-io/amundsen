@@ -39,4 +39,4 @@ Fix all errors before submitting a PR.
 ### JS Assets
 By default, the build commands that are run to verify local changes -- `npm run build` and `npm run dev-build` -- also conduct linting and type checking. During development be sure to fix all errors before submitting a PR.
 
-**TODO: JS unit tests are in progress - document unit test instructions after work is complete**
+Run unit tests by executing `npm run test`. Fix all failures before submitting a PR.
