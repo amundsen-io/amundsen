@@ -24,7 +24,7 @@ class TestTableMetadata(unittest.TestCase):
             ColumnMetadata('ds', None, 'varchar', 5)])
 
         self.expected_nodes_deduped = [
-            {'name': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1', 'LABEL': 'Table'},
+            {'name': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1', 'LABEL': 'Table', 'is_view': False},
             {'description': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1/_description',
              'LABEL': 'Description'},
             {'sort_order': 0, 'type': 'bigint', 'name': 'test_id1',
