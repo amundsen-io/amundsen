@@ -25,6 +25,7 @@ module.exports = {
     '^.+\\.(css|scss)$': '<rootDir>/node_modules/jest-css-modules',
   },
   testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.(j|t)sx?$',
+  moduleDirectories: ['node_modules', 'js'],
   moduleFileExtensions: [
     'ts',
     'tsx',

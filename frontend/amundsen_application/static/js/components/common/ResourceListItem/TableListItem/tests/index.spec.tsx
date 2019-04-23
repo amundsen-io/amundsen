@@ -3,7 +3,6 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import Avatar from 'react-avatar';
-import Flag from '../../../Flag';
 import { Link } from 'react-router-dom';
 
 import TableListItem, { TableListItemProps } from '../';

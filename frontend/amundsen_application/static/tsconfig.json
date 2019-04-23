@@ -15,6 +15,11 @@
     "noResolve": false,
     "removeComments": true,
     "types": ["jest"],
+    "baseUrl": "js",
+    "paths": {
+        "components/*": [ "components/*" ],
+        "ducks/*": [ "ducks/*" ],
+    }
   },
   "exclude": [
     "node_modules",
