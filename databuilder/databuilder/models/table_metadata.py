@@ -62,10 +62,13 @@ class TableMetadata(Neo4jCsvSerializable):
     These are being created here as it does not make much sense to have different extraction to produce this. As
     database, cluster, schema would be very repititive with low cardinality, it will perform de-dupe so that publisher
     won't need to publish same nodes, relationships.
+
+    This class can be used for both table and view metadata. If it is a View, is_view=True should be passed in.
     """
     TABLE_NODE_LABEL = 'Table'
     TABLE_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}'
     TABLE_NAME = 'name'
+    IS_VIEW = 'is_view'
 
     TABLE_DESCRIPTION = 'description'
     TABLE_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/_description'
@@ -100,7 +103,8 @@ class TableMetadata(Neo4jCsvSerializable):
                  schema_name,  # type: str
                  name,  # type: str
                  description,  # type: Union[str, None]
-                 columns=None  # type: Iterable[ColumnMetadata]
+                 columns=None,  # type: Iterable[ColumnMetadata]
+                 is_view=False,  # type: bool
                  ):
         # type: (...) -> None
         """
@@ -118,17 +122,19 @@ class TableMetadata(Neo4jCsvSerializable):
         self.name = name
         self.description = description
         self.columns = columns if columns else []
+        self.is_view = is_view
         self._node_iterator = self._create_next_node()
         self._relation_iterator = self._create_next_relation()
 
     def __repr__(self):
         # type: () -> str
-        return 'TableMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.database,
-                                                                          self.cluster,
-                                                                          self.schema_name,
-                                                                          self.name,
-                                                                          self.description,
-                                                                          self.columns)
+        return 'TableMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.database,
+                                                                                self.cluster,
+                                                                                self.schema_name,
+                                                                                self.name,
+                                                                                self.description,
+                                                                                self.columns,
+                                                                                self.is_view)
 
     def _get_table_key(self):
         # type: () -> str
@@ -186,7 +192,8 @@ class TableMetadata(Neo4jCsvSerializable):
         # type: () -> Iterator[Any]
         yield {NODE_LABEL: TableMetadata.TABLE_NODE_LABEL,
                NODE_KEY: self._get_table_key(),
-               TableMetadata.TABLE_NAME: self.name}
+               TableMetadata.TABLE_NAME: self.name,
+               TableMetadata.IS_VIEW: self.is_view}
 
         if self.description:
             yield {NODE_LABEL: DESCRIPTION_NODE_LABEL,
