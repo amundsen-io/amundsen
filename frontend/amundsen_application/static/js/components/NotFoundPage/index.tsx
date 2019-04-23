@@ -4,7 +4,7 @@ import * as DocumentTitle from 'react-document-title';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import Breadcrumb from "../common/Breadcrumb";
+import Breadcrumb from 'components/common/Breadcrumb';
 
 const NotFoundPage: React.SFC<any> = () => {
   return (

@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { GlobalState } from "../../../ducks/rootReducer";
-import { getColumnDescription, updateColumnDescription } from '../../../ducks/tableMetadata/reducer';
+import { GlobalState } from 'ducks/rootReducer';
+import { getColumnDescription, updateColumnDescription } from 'ducks/tableMetadata/reducer';
 
-import EditableText, { ComponentProps, DispatchFromProps, StateFromProps } from '../../../components/common/EditableText';
+import EditableText, { ComponentProps, DispatchFromProps, StateFromProps } from 'components/common/EditableText';
 
 interface ContainerOwnProps {
   columnIndex: number;

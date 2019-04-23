@@ -1,4 +1,4 @@
-import { AppConfig } from "./config.types";
+import { AppConfig } from './config-types';
 
 const configDefault: AppConfig = {
   browse: {

@@ -7,11 +7,13 @@ import Pagination from 'react-js-pagination';
 
 import SearchBar from './SearchBar';
 import SearchList from './SearchList';
-import InfoButton from '../common/InfoButton';
-import { ResourceType, TableResource } from "../common/ResourceListItem/types";
 
-import { GlobalState } from "../../ducks/rootReducer";
-import { searchAll, searchResource } from '../../ducks/search/reducer';
+import InfoButton from 'components/common/InfoButton';
+import { ResourceType, TableResource } from 'components/common/ResourceListItem/types';
+import TabsComponent from 'components/common/Tabs';
+
+import { GlobalState } from 'ducks/rootReducer';
+import { searchAll, searchResource } from 'ducks/search/reducer';
 import {
   DashboardSearchResults,
   SearchAllOptions,
@@ -19,13 +21,12 @@ import {
   SearchResourceRequest,
   TableSearchResults,
   UserSearchResults
-} from "../../ducks/search/types";
-import { getPopularTables } from '../../ducks/popularTables/reducer';
-import { GetPopularTablesRequest } from '../../ducks/popularTables/types';
+} from 'ducks/search/types';
+import { getPopularTables } from 'ducks/popularTables/reducer';
+import { GetPopularTablesRequest } from 'ducks/popularTables/types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
-import TabsComponent from "../common/Tabs";
 
 const RESULTS_PER_PAGE = 10;
 

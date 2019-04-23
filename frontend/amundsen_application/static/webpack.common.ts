@@ -3,7 +3,7 @@ import * as webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-import appConfig from './config/config';
+import appConfig from './js/config/config';
 
 const config: webpack.Configuration = {
     entry: {
@@ -17,6 +17,7 @@ const config: webpack.Configuration = {
     resolve: {
         alias: {
             components: path.join(__dirname, '/js/components'),
+            config: path.join(__dirname, '/js/config'),
             ducks: path.join(__dirname, '/js/ducks'),
         },
         extensions: ['.tsx', '.ts', '.js', '.jsx', '.css', '.scss'],

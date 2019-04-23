@@ -1,8 +1,8 @@
 import * as React from 'react';
 import moment from 'moment-timezone';
 
-import ColumnDescEditableText from '../../ColumnDescEditableText';
-import { TableColumn } from '../../types';
+import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
+import { TableColumn } from 'components/TableDetail/types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

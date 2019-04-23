@@ -5,7 +5,7 @@ import {
   DescriptionResponse, LastIndexedResponse, PreviewDataResponse, TableDataResponse,
   GetPreviewDataRequest, GetTableDataRequest, UpdateTableOwnerRequest, UpdateTagsRequest,
   PreviewData, TableMetadata, User, Tag
-} from '../../tableMetadata/types';
+} from 'ducks/tableMetadata/types';
 
 const API_PATH = '/api/metadata/v0';
 

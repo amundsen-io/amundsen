@@ -8,11 +8,11 @@ import Select, { components } from 'react-select';
 import CreatableSelect from 'react-select/lib/Creatable';
 import makeAnimated from 'react-select/lib/animated';
 
-import { GlobalState } from "../../../ducks/rootReducer";
-import { getAllTags } from '../../../ducks/allTags/reducer';
-import { GetAllTagsRequest } from '../../../ducks/allTags/types';
-import { updateTags } from '../../../ducks/tableMetadata/tags/reducer';
-import { UpdateTagsRequest } from '../../../ducks/tableMetadata/types';
+import { GlobalState } from 'ducks/rootReducer';
+import { getAllTags } from 'ducks/allTags/reducer';
+import { GetAllTagsRequest } from 'ducks/allTags/types';
+import { updateTags } from 'ducks/tableMetadata/tags/reducer';
+import { UpdateTagsRequest } from 'ducks/tableMetadata/types';
 
 import TagInfo from "../TagInfo";
 import { Tag, UpdateTagMethod, UpdateTagData } from '../types';

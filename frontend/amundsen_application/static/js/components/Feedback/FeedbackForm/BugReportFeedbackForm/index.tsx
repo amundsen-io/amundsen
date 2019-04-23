@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '../../FeedbackForm';
 
-import { GlobalState } from "../../../../ducks/rootReducer";
-import { submitFeedback, resetFeedback } from '../../../../ducks/feedback/reducer';
+import { GlobalState } from 'ducks/rootReducer';
+import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
 
 export class BugReportFeedbackForm extends AbstractFeedbackForm {
   constructor(props) {

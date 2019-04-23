@@ -1,6 +1,6 @@
 import * as React from 'react';
-import ResourceListItem from '../../common/ResourceListItem';
-import { Resource } from "../../common/ResourceListItem/types";
+import ResourceListItem from 'components/common/ResourceListItem';
+import { Resource } from 'components/common/ResourceListItem/types';
 
 
 interface SearchListProps {

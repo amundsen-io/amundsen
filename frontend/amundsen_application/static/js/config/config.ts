@@ -1,4 +1,4 @@
-import { AppConfig } from './config.types';
+import { AppConfig } from './config-types';
 import configDefault from './config-default';
 import configCustom from './config-custom';
 

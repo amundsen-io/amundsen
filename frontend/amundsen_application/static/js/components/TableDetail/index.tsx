@@ -5,20 +5,21 @@ import { bindActionCreators } from 'redux';
 import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
 
-import { GlobalState } from "../../ducks/rootReducer";
-import { getPreviewData, getTableData } from '../../ducks/tableMetadata/reducer';
-import { GetTableDataRequest } from '../../ducks/tableMetadata/types';
+import { GlobalState } from 'ducks/rootReducer';
+import { getPreviewData, getTableData } from 'ducks/tableMetadata/reducer';
+import { GetTableDataRequest } from 'ducks/tableMetadata/types';
 
-import AppConfig from '../../../config/config';
-import AvatarLabel from '../common/AvatarLabel';
-import Breadcrumb from "../common/Breadcrumb";
+import AppConfig from 'config/config';
+import AvatarLabel from 'components/common/AvatarLabel';
+import Breadcrumb from 'components/common/Breadcrumb';
+import EntityCard from 'components/common/EntityCard';
+import LoadingSpinner from 'components/common/LoadingSpinner';
+import TagInput from 'components/Tags/TagInput';
+
 import DataPreviewButton from './DataPreviewButton';
 import DetailList from './DetailList';
-import EntityCard from '../common/EntityCard';
-import LoadingSpinner from '../common/LoadingSpinner';
 import OwnerEditor from './OwnerEditor';
 import TableDescEditableText from './TableDescEditableText';
-import TagInput from '../Tags/TagInput';
 import WatermarkLabel from "./WatermarkLabel";
 
 import Avatar from 'react-avatar';

@@ -1,4 +1,4 @@
-import { Tag } from '../../components/Tags/types';
+import { Tag } from 'components/Tags/types';
 export { Tag };
 
 /* API */
