@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run lint && TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
+    "build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
     "dev-build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts",
     "test": "jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
     "watch": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts --watch",
@@ -14,8 +14,8 @@
     "eslint-fix": "eslint --fix --ignore-path=.eslintignore --ext .js,.jsx .",
     "test:watch": "jest --watch",
     "tsc": "tsc",
-    "tslint": "tslint --project . --force",
-    "tslint-fix": "tslint --fix --project . --force"
+    "tslint": "tslint --project .",
+    "tslint-fix": "tslint --fix --project ."
   },
   "author": "",
   "license": "ISC",
