@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import ReactDOM from 'react-dom';
 import serialize from 'form-serialize';
 
-import AvatarLabel, { AvatarLabelProps } from '../../common/AvatarLabel';
-import LoadingSpinner from '../../common/LoadingSpinner';
+import AvatarLabel, { AvatarLabelProps } from 'components/common/AvatarLabel';
+import LoadingSpinner from 'components/common/LoadingSpinner';
 import { Modal } from 'react-bootstrap';
 import { UpdateMethod } from './types';
 
@@ -15,8 +15,8 @@ import './styles.scss';
 
 const DEFAULT_ERROR_TEXT = 'There was a problem with the request, please reload the page.';
 
-import { GlobalState } from "../../../ducks/rootReducer";
-import { updateTableOwner } from '../../../ducks/tableMetadata/owners/reducer';
+import { GlobalState } from 'ducks/rootReducer';
+import { updateTableOwner } from 'ducks/tableMetadata/owners/reducer';
 
 export interface DispatchFromProps {
   onUpdateList: (updateArray: { method: UpdateMethod; id: string; }[], onSuccess?: () => any, onFailure?: () => any) => void;

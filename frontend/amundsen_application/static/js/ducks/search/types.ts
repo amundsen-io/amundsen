@@ -4,7 +4,7 @@ import {
   DashboardResource,
   TableResource,
   UserResource,
-} from "../../components/common/ResourceListItem/types";
+} from 'components/common/ResourceListItem/types';
 import { SearchReducerState } from './reducer';
 
 interface SearchResults<T extends Resource> {

@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 
 import { AllTagsResponse } from '../types';
 
-import { sortTagsAlphabetical } from '../../utilMethods';
+import { sortTagsAlphabetical } from 'ducks/utilMethods';
 
 export function metadataAllTags() {
   return axios.get('/api/metadata/v0/tags').then((response: AxiosResponse<AllTagsResponse>) => {

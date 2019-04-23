@@ -1,4 +1,4 @@
-import { Tag } from '../Tags/types';
+import { Tag } from 'components/Tags/types';
 
 interface PartitionData {
   is_partitioned: boolean;

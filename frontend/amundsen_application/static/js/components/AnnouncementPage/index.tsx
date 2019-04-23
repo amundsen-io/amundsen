@@ -9,10 +9,10 @@ import { bindActionCreators } from 'redux';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import { GlobalState } from "../../ducks/rootReducer";
-import { AnnouncementsGetRequest } from "../../ducks/announcements/types";
-import { announcementsGet } from '../../ducks/announcements/reducer';
-import { AnnouncementPost } from "./types";
+import { GlobalState } from 'ducks/rootReducer';
+import { AnnouncementsGetRequest } from 'ducks/announcements/types';
+import { announcementsGet } from 'ducks/announcements/reducer';
+import { AnnouncementPost } from './types';
 
 interface AnnouncementPageState {
   posts: AnnouncementPost[];

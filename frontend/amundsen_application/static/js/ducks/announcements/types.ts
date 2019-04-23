@@ -1,4 +1,4 @@
-import { AnnouncementPost } from '../../components/AnnouncementPage/types';
+import { AnnouncementPost } from 'components/AnnouncementPage/types';
 export { AnnouncementPost }
 
 /* API */

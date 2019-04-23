@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { GlobalState } from "../../../ducks/rootReducer";
-import { getTableDescription, updateTableDescription } from '../../../ducks/tableMetadata/reducer';
+import { GlobalState } from 'ducks/rootReducer';
+import { getTableDescription, updateTableDescription } from 'ducks/tableMetadata/reducer';
 
-import EditableText, { ComponentProps, DispatchFromProps, StateFromProps } from '../../../components/common/EditableText';
+import EditableText, { ComponentProps, DispatchFromProps, StateFromProps } from 'components/common/EditableText';
 
 export const mapStateToProps = (state: GlobalState) => {
   return {

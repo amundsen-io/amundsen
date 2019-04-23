@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Modal, OverlayTrigger, Popover, Table } from 'react-bootstrap';
 import Linkify from 'react-linkify'
 
-import { GlobalState } from "../../../ducks/rootReducer";
+import { GlobalState } from 'ducks/rootReducer';
 import { PreviewData } from '../types';
 
 // TODO: Use css-modules instead of 'import'

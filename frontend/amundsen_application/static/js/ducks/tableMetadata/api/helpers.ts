@@ -1,6 +1,6 @@
-import { GetTableDataRequest, TableMetadata, TableDataResponse, Tag, User } from '../../tableMetadata/types';
+import { GetTableDataRequest, TableMetadata, TableDataResponse, Tag, User } from 'ducks/tableMetadata/types';
 
-import { filterFromObj, sortTagsAlphabetical } from '../../utilMethods';
+import { filterFromObj, sortTagsAlphabetical } from 'ducks/utilMethods';
 
 /**
  * Generates the query string parameters needed for requests that act on a particular table resource.

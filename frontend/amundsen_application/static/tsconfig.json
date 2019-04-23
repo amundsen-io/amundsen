@@ -18,6 +18,7 @@
     "baseUrl": "js",
     "paths": {
         "components/*": [ "components/*" ],
+        "config/*": [ "config/*" ],
         "ducks/*": [ "ducks/*" ],
     }
   },

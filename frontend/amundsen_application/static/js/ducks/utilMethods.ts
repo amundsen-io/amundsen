@@ -1,4 +1,4 @@
-import { Tag } from '../components/Tags/types';
+import { Tag } from 'components/Tags/types';
 
 export function sortTagsAlphabetical(a: Tag, b: Tag): number {
   return a.tag_name.localeCompare(b.tag_name);

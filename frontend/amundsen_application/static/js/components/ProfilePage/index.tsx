@@ -4,15 +4,15 @@ import Avatar from 'react-avatar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import LoadingSpinner from '../common/LoadingSpinner';
+import LoadingSpinner from 'components/common/LoadingSpinner';
 
-import { GlobalState } from "../../ducks/rootReducer";
-import { getUserById } from "../../ducks/user/reducer";
-import { LoggedInUser, GetUserRequest } from "../../ducks/user/types";
+import { GlobalState } from 'ducks/rootReducer';
+import { getUserById } from 'ducks/user/reducer';
+import { LoggedInUser, GetUserRequest } from 'ducks/user/types';
 
-import Breadcrumb from "../common/Breadcrumb";
-import Flag from "../common/Flag";
-import Tabs from "../common/Tabs";
+import Breadcrumb from 'components/common/Breadcrumb';
+import Flag from 'components/common/Flag';
+import Tabs from 'components/common/Tabs';
 
 import './styles.scss';
 
@@ -89,7 +89,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
   }
 
   /* TODO: Add support to direct to 404 page for edgecase of someone typing in
-     or pasting in a bad url. This would be consistent with TableDetail page behavior */ 
+     or pasting in a bad url. This would be consistent with TableDetail page behavior */
   render() {
     const user = this.state.user;
     return (

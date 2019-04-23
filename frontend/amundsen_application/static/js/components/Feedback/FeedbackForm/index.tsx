@@ -1,9 +1,9 @@
 import * as React from 'react';
-import LoadingSpinner from '../../common/LoadingSpinner';
+import LoadingSpinner from 'components/common/LoadingSpinner';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
-import { ResetFeedbackRequest, SubmitFeedbackRequest } from "../../../ducks/feedback/types";
+import { ResetFeedbackRequest, SubmitFeedbackRequest } from 'ducks/feedback/types';
 
 import { SendingState } from '../types';
 
