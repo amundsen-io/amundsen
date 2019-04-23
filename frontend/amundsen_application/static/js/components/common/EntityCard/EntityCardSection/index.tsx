@@ -1,5 +1,5 @@
 import * as React from 'react';
-import InfoButton from "../../InfoButton";
+import InfoButton from 'components/common/InfoButton';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

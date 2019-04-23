@@ -15,6 +15,10 @@ const config: webpack.Configuration = {
     },
     devtool: 'source-map',
     resolve: {
+        alias: {
+            components: path.join(__dirname, '/js/components'),
+            ducks: path.join(__dirname, '/js/ducks'),
+        },
         extensions: ['.tsx', '.ts', '.js', '.jsx', '.css', '.scss'],
     },
     module: {
