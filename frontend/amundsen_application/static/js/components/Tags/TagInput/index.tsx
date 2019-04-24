@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import ReactDOM from 'react-dom';
 import { Modal } from 'react-bootstrap';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import CreatableSelect from 'react-select/lib/Creatable';
-import makeAnimated from 'react-select/lib/animated';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getAllTags } from 'ducks/allTags/reducer';
@@ -115,7 +112,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     }, []);
     this.props.updateTags(tagArray);
     this.handleClose();
-  }
+  };
 
   generateCustomOptionStyle(provided, state) {
     // https://react-select.com/props#api
@@ -168,7 +165,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
       tag = actionPayload.removedValue.value;
       this.props.updateTags([{'methodName': UpdateTagMethod.DELETE, 'tagName': tag}]);
     }
-  }
+  };
 
   preventDeleteOnBackSpace(event) {
     if (event.keyCode === 8 && event.target.value.length === 0){
@@ -236,7 +233,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     } : {
       DropdownIndicator: () => { return null },
       IndicatorSeparator: () => { return null },
-    } ;
+    };
 
     let tagBody;
     if (this.state.readOnly) {

@@ -3,6 +3,7 @@ import moment from 'moment-timezone';
 
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
 import { TableColumn } from 'components/TableDetail/types';
+import { logClick } from 'ducks/utilMethods';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -29,7 +30,16 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
     };
   }
 
-  onClick = () => {
+  onClick = (e) => {
+    if (!this.state.isExpanded) {
+      const metadata = this.props.data;
+      logClick(e, {
+        target_id: `column::${metadata.name}`,
+        target_type: 'column stats',
+        label: `${metadata.name} ${metadata.type}`,
+      });
+    }
+
     this.setState(prevState => ({
       isExpanded: !prevState.isExpanded
     }));

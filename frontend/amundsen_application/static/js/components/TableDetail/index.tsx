@@ -14,6 +14,7 @@ import AvatarLabel from 'components/common/AvatarLabel';
 import Breadcrumb from 'components/common/Breadcrumb';
 import EntityCard from 'components/common/EntityCard';
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import ScrollTracker from "components/common/ScrollTracker";
 import TagInput from 'components/Tags/TagInput';
 
 import DataPreviewButton from './DataPreviewButton';
@@ -21,12 +22,13 @@ import DetailList from './DetailList';
 import OwnerEditor from './OwnerEditor';
 import TableDescEditableText from './TableDescEditableText';
 import WatermarkLabel from "./WatermarkLabel";
+import { logClick } from 'ducks/utilMethods';
 
 import Avatar from 'react-avatar';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 
-import { PreviewQueryParams, TableMetadata, TableOwners } from './types';
+import { PreviewQueryParams, TableMetadata } from './types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -55,6 +57,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
   private database: string;
   private schema: string;
   private tableName: string;
+  private displayName: string;
   public static defaultProps: TableDetailProps = {
     getTableData: () => undefined,
     getPreviewData: () => undefined,
@@ -90,6 +93,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     this.database = params ? params.db : '';
     this.schema = params ? params.schema : '';
     this.tableName = params ? params.table : '';
+    this.displayName = params ? `${this.schema}.${this.tableName}` : '';
 
     this.state = {
       isLoading: props.isLoading,
@@ -112,6 +116,12 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     this.props.getPreviewData({ schema: this.schema, tableName: this.tableName });
   }
 
+  frequentUserOnClick = (e) => {
+    logClick(e, {
+      target_id: 'frequent-users',
+    })
+  };
+
   getAvatarForUser(fullName, profileUrl) {
     const popoverHoverFocus = (
       <Popover id="popover-trigger-hover-focus">
@@ -121,8 +131,10 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     if (profileUrl.length !== 0) {
       return (
         <OverlayTrigger key={fullName} trigger={['hover', 'focus']} placement="top" overlay={popoverHoverFocus}>
-          <a href={profileUrl} target='_blank' style={{ display: 'inline-block', marginLeft: '-5px',
-            backgroundColor: 'white', borderRadius: '90%'}}>
+          <a href={profileUrl} target='_blank'
+             style={{ display: 'inline-block', marginLeft: '-5px', backgroundColor: 'white', borderRadius: '90%'}}
+             onClick={this.frequentUserOnClick}
+          >
             <Avatar name={fullName} size={25} round={true} style={{ border: '1px solid white' }} />
           </a>
         </OverlayTrigger>
@@ -147,7 +159,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
 
     if (appUrl.length !== 0) {
       return (
-        <a href={appUrl} target='_blank'>
+        <a href={appUrl} target='_blank' id="explore-writer" onClick={logClick}>
           { avatarLabel }
         </a>
       );
@@ -156,27 +168,28 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     return avatarLabel;
   }
 
-  getAvatarForTableSource(schema, table, source) {
-
+  getAvatarForTableSource = (source) => {
     if (source !== null) {
       const image = (source.source_type === 'github')? '/static/images/github.png': '';
-      const displayName = schema + '.' + table;
-      const avatarLabel = <AvatarLabel label={displayName} src={image}/>;
+      const avatarLabel = <AvatarLabel label={this.displayName} src={image}/>;
 
       return (
-        <a href={source.source} target='_blank'>
+        <a href={ source.source }
+           target='_blank'
+           id="explore-source"
+           onClick={ logClick }
+        >
           { avatarLabel }
         </a>
       );
     }
-  }
+  };
 
   getAvatarForLineage = () => {
     const href = AppConfig.tableLineage.urlGenerator(this.database, this.cluster, this.schema, this.tableName);
-    const displayName = `${this.schema}.${this.tableName}`;
     return (
-      <a href={ href } target='_blank'>
-        <AvatarLabel label={ displayName } src={ AppConfig.tableLineage.iconPath }/>
+      <a href={ href } target='_blank' id="explore-lineage" onClick={logClick}>
+        <AvatarLabel label={ this.displayName } src={ AppConfig.tableLineage.iconPath }/>
       </a>
     );
   };
@@ -240,7 +253,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     const source = data.source;
     if (source && source.source !== null) {
       const sourceRenderer = () => {
-        return this.getAvatarForTableSource(data.schema, data.table_name, source);
+        return this.getAvatarForTableSource(source);
       };
 
       entityCardSections.push({'title': 'Source Code', 'contentRenderer': sourceRenderer, 'isEditable': false});
@@ -259,13 +272,16 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     const previewSectionRenderer = () => {
       return (
         <div>
-          <DataPreviewButton modalTitle={`${this.schema}.${this.tableName}`} />
+          <DataPreviewButton modalTitle={ this.displayName } />
           {
             AppConfig.tableProfile.isExploreEnabled &&
-              <a className="btn btn-default btn-block"
-                 href={this.getExploreSqlUrl()}
-                 role="button"
-                 target="_blank"
+              <a
+                className="btn btn-default btn-block"
+                href={this.getExploreSqlUrl()}
+                role="button"
+                target="_blank"
+                id="explore-sql"
+                onClick={logClick}
               >
                 <img className="icon icon-color icon-database"/>
                 Explore with SQL
@@ -292,7 +308,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
 
 
     return entityCardSections;
-  }
+  };
 
   render() {
     const data = this.state.tableData;
@@ -332,16 +348,17 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
                 />
               </div>
             </div>
+            <ScrollTracker targetId={ this.displayName }/>
           </div>
         );
     }
     return (
-      <DocumentTitle title={ `${this.schema}.${this.tableName} - Amundsen Table Details` }>
+      <DocumentTitle title={ `${this.displayName} - Amundsen Table Details` }>
         { innerContent }
       </DocumentTitle>
     );
   }
-};
+}
 
 export const mapStateToProps = (state: GlobalState) => {
   return {

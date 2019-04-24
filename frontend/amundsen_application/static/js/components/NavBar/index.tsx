@@ -8,6 +8,7 @@ import AppConfig from 'config/config';
 import { GlobalState } from 'ducks/rootReducer';
 import { getLoggedInUser } from 'ducks/user/reducer';
 import { LoggedInUser, GetLoggedInUserRequest } from 'ducks/user/types';
+import { logClick } from "ducks/utilMethods";
 
 import './styles.scss';
 
@@ -63,9 +64,17 @@ export class NavBar extends React.Component<NavBarProps, NavBarState> {
               {
                 AppConfig.navLinks.map((link, index) => {
                   if (link.use_router) {
-                    return <NavLink key={index} to={link.href} target={link.target}>{link.label}</NavLink>
+                    return (
+                      <NavLink id={ link.id } key={ index } to={ link.href } target={ link.target } onClick={logClick}>
+                        {link.label}
+                      </NavLink>
+                    )
                   }
-                  return <a key={index} href={link.href} target={link.target}>{link.label}</a>
+                  return (
+                    <a id={ link.id } key={ index } href={ link.href } target={ link.target } onClick={logClick}>
+                      {link.label}
+                    </a>
+                  )
                 })
               }
               {
