@@ -34,6 +34,6 @@ class LocalConfig(Config):
     LOG_LEVEL = 'DEBUG'
     LOCAL_HOST = '0.0.0.0'
 
-    PROXY_HOST = f'bolt://{LOCAL_HOST}'
-    PROXY_PORT = 7687
+    PROXY_HOST = os.environ.get('PROXY_HOST', f'bolt://{LOCAL_HOST}')
+    PROXY_PORT = os.environ.get('PROXY_PORT', 7687)
     PROXY_CLIENT = PROXY_CLIENTS['NEO4J']

@@ -8,15 +8,18 @@ The [routing of API](https://flask-restful.readthedocs.io/en/latest/quickstart.h
 Proxy package contains proxy modules that talks dependencies of Metadata service. There are currently three modules in Proxy package, 
 [Neo4j](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/neo4j_proxy.py "Neo4j"), 
 [Statsd](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/statsd_utilities.py "Statsd")
-and [[WIP] Atlas](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/atlas_proxy.py "Atlas")
+and [Atlas](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/atlas_proxy.py "Atlas")
 
 Selecting the appropriate proxy (Neo4j or Atlas) is configurable using a config variable `PROXY_CLIENT`, 
-which takes the path to class name of proxy module available [here](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py#L11). 
+which takes the path to class name of proxy module available [here](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py#L11).
+
+_Note: Proxy's host and port are configured using config variables `PROXY_HOST` and `PROXY_PORT` respectively. 
+Both of these variables can be set using environment variables._  
 
 ##### [Neo4j proxy module](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/neo4j_proxy.py "Neo4j proxy module")
 [Neo4j](https://neo4j.com/docs/ "Neo4j") proxy module serves various use case of getting metadata or updating metadata from or into Neo4j. Most of the methods have [Cypher query](https://neo4j.com/developer/cypher/ "Cypher query") for the use case, execute the query and transform into [entity](https://github.com/lyft/amundsenmetadatalibrary/tree/master/metadata_service/entity "entity").
 
-##### [[WIP] Apache Atlas proxy module](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/atlas_proxy.py "Apache Atlas proxy module")
+##### [Apache Atlas proxy module](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/proxy/atlas_proxy.py "Apache Atlas proxy module")
 [Apache Atlas](https://atlas.apache.org/ "Apache Atlas") proxy module serves all of the metadata from Apache Atlas, using [atlasclient](https://atlasclient.readthedocs.io/en/latest/readme.html). 
 More information on how to setup Apache Atlas to make it compatible with Amundsen can be found [here](proxy/atlas_proxy.md) 
 

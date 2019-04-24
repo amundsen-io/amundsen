@@ -46,11 +46,8 @@ class AtlasProxy(BaseProxy):
         ids = list()
         search_results = self._driver.search_basic(**params)
         for result in search_results:
-            # result.entities would directly be accessible after below PR
-            # Fix: https://github.com/jpoullet2000/atlasclient/pull/69
-            # noinspection PyProtectedMember
-            for entity in result._data.get('entities', list()):
-                ids.append(entity['guid'])
+            for entity in result.entities:
+                ids.append(entity.guid)
         return ids
 
     def _extract_info_from_uri(self, *, table_uri: str) -> Dict:
@@ -287,9 +284,16 @@ class AtlasProxy(BaseProxy):
         """
         popular_tables = list()
         params = {'typeName': self.TABLE_ENTITY, 'excludeDeletedEntities': True}
-        guids = self._get_ids_from_basic_search(params=params)
+        try:
+            guids = self._get_ids_from_basic_search(params=params)
 
-        entity_collection = self._driver.entity_bulk(guid=guids)
+            entity_collection = self._driver.entity_bulk(guid=guids)
+        except BadRequest as ex:
+            LOGGER.exception(f'Please make sure you have assigned the appropriate '
+                             f'self.TABLE_ENTITY entity to your atlas tables. {ex}')
+            raise BadRequest('Unable to fetch popular tables. '
+                             'Please check your configurations.')
+
         for _collection in entity_collection:
             for entity in _collection.entities:
                 attrs = entity.attributes
