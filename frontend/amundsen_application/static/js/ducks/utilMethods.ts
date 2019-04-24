@@ -1,3 +1,4 @@
+import { ActionLogParams, postActionLog } from "./log/api/v0";
 import { Tag } from 'components/Tags/types';
 
 export function sortTagsAlphabetical(a: Tag, b: Tag): number {
@@ -24,4 +25,36 @@ export function filterFromObj(initialObj: object, rejectedKeys: string[]): objec
     obj[key] = initialObj[key];
     return obj;
   }, {});
+}
+
+export function logClick(event: React.MouseEvent<HTMLElement>, declaredProps?: ActionLogParams) {
+  const target = event.currentTarget;
+  const inferredProps: ActionLogParams = {
+    command: "click",
+    target_id: target.id,
+    label: target.innerText || target.textContent,
+  };
+
+  if (target.nodeValue !== null) {
+    inferredProps.value = target.nodeValue
+  }
+
+  let nodeName = target.nodeName.toLowerCase();
+  if (nodeName === 'a') {
+    if (target.classList.contains('btn')) {
+      nodeName = 'button';
+    } else {
+      nodeName = 'link';
+    }
+  }
+  inferredProps.target_type = nodeName;
+
+  logAction({ ...inferredProps, ...declaredProps });
+}
+
+export function logAction(declaredProps: ActionLogParams) {
+  const inferredProps = {
+    location: window.location.pathname
+  };
+  postActionLog({ ...inferredProps, ...declaredProps });
 }

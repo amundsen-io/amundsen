@@ -6,6 +6,7 @@ import Linkify from 'react-linkify'
 
 import { GlobalState } from 'ducks/rootReducer';
 import { PreviewData } from '../types';
+import { logClick } from 'ducks/utilMethods';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -77,11 +78,12 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
 
   handleClose = () => {
    this.setState({ showModal: false });
-  }
+  };
 
-  handleShow = () => {
+  handleClick = (e) => {
+    logClick(e);
     this.setState({ showModal: true });
-  }
+  };
 
   getSanitizedValue(value) {
     // Display the string interpretation of the following "false-y" values
@@ -183,9 +185,11 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
 
     const previewButton = (
       <button
-       className="btn btn-default btn-block"
-       disabled={disabled}
-       onClick={this.handleShow}>
+        id="data-preview-button"
+        className="btn btn-default btn-block"
+        disabled={disabled}
+        onClick={this.handleClick}
+      >
          <img className={"icon icon-color " + iconClass} />
          <span>{buttonText}</span>
       </button>

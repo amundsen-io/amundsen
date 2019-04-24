@@ -19,10 +19,10 @@ export const mapStateToProps = (state: GlobalState, ownProps: ContainerOwnProps)
 export const mapDispatchToProps = (dispatch: any, ownProps: ContainerOwnProps) => {
   const getLatestValue = function(onSuccess, onFailure) {
     return getColumnDescription(ownProps.columnIndex, onSuccess, onFailure);
-  }
+  };
   const onSubmitValue = function(newValue, onSuccess, onFailure) {
     return updateColumnDescription(newValue, ownProps.columnIndex, onSuccess, onFailure);
-  }
+  };
 
   return bindActionCreators({ getLatestValue, onSubmitValue } , dispatch);
 };

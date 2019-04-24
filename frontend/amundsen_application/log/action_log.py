@@ -70,11 +70,13 @@ def _build_metrics(func_name: str,
     :return: Dict that matches ActionLogParams variable
     """
 
-    metrics = {'command': func_name}  # type: Dict[str, Any]
-    metrics['start_epoch_ms'] = get_epoch_millisec()
-    metrics['host_name'] = socket.gethostname()
-    metrics['pos_args_json'] = json.dumps(args)
-    metrics['keyword_args_json'] = json.dumps(kwargs)
+    metrics = {
+        'command': kwargs.get('command', func_name),
+        'start_epoch_ms': get_epoch_millisec(),
+        'host_name': socket.gethostname(),
+        'pos_args_json': json.dumps(args),
+        'keyword_args_json': json.dumps(kwargs),
+    }  # type: Dict[str, Any]
 
     if flask_app.config['AUTH_USER_METHOD']:
         metrics['user'] = flask_app.config['AUTH_USER_METHOD'](flask_app).email

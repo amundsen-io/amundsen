@@ -74,6 +74,7 @@ interface TableLineageConfig {
 
 interface LinkConfig {
   href: string;
+  id: string;
   label: string;
   target?: string;
   use_router: boolean;

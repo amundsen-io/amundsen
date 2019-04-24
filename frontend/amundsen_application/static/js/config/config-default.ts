@@ -13,11 +13,13 @@ const configDefault: AppConfig = {
   navLinks: [
     {
       label: "Announcements",
+      id: "nav::announcements",
       href: "/announcements",
       use_router: true,
     },
     {
       label: "Browse",
+      id: "nav::browse",
       href: "/browse",
       use_router: true,
     }
