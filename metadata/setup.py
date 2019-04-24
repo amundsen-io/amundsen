@@ -33,6 +33,6 @@ setup(
         'neo4j-driver==1.6.0',
         'beaker>=1.10.0',
         'statsd>=3.2.1',
-        'atlasclient>=0.1.3'
+        'atlasclient>=0.1.4'
     ]
 )

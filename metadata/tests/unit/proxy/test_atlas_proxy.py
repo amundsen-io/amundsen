@@ -110,8 +110,14 @@ class TestAtlasProxy(unittest.TestCase):
         })
 
     def test_get_ids_from_basic_search(self):
+        entity1 = MagicMock()
+        entity1.guid = self.entity1['guid']
+
+        entity2 = MagicMock()
+        entity2.guid = self.entity2['guid']
+
         basic_search_response = MagicMock()
-        basic_search_response._data = self.entities
+        basic_search_response.entities = [entity1, entity2]
 
         self.proxy._driver.search_basic = MagicMock(return_value=[basic_search_response])
         response = self.proxy._get_ids_from_basic_search(params={})
@@ -237,6 +243,11 @@ class TestAtlasProxy(unittest.TestCase):
         ]
 
         self.assertEqual(response.__repr__(), expected.__repr__())
+
+    def test_get_popular_tables_search_exception(self):
+        with self.assertRaises(BadRequest):
+            self.proxy._driver.search_basic = MagicMock(side_effect=BadRequest('Boom!'))
+            self.proxy.get_popular_tables(num_entries=2)
 
     def test_get_table_description(self):
         self._mock_get_table_entity()
