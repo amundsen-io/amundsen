@@ -5,6 +5,7 @@ from typing import Iterable, Any, Union, Iterator, Dict, Set  # noqa: F401
 from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
+from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 DESCRIPTION_NODE_LABEL = 'Description'
 
@@ -68,7 +69,7 @@ class TableMetadata(Neo4jCsvSerializable):
     TABLE_NODE_LABEL = 'Table'
     TABLE_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}'
     TABLE_NAME = 'name'
-    IS_VIEW = 'is_view'
+    IS_VIEW = 'is_view{}'.format(UNQUOTED_SUFFIX)  # bool value needs to be unquoted when publish to neo4j
 
     TABLE_DESCRIPTION = 'description'
     TABLE_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/_description'
