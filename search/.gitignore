@@ -6,10 +6,11 @@
 *.egg-info
 .*.swp
 .DS_Store
+build/
+dist/
 venv/
 venv3/
 .cache/
-build/
 .idea/
 .coverage
 *coverage.xml
