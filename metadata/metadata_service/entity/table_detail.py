@@ -137,14 +137,15 @@ class Table:
                  schema: str,
                  name: str,
                  tags: Iterable[Tag] =(),
-                 table_readers: Iterable[Reader] =(),
-                 description: Optional[str] =None,
+                 table_readers: Iterable[Reader] = (),
+                 description: Optional[str] = None,
                  columns: Iterable[Column],
-                 owners: Iterable[User] =(),
-                 watermarks: Iterable[Watermark] =(),
-                 table_writer: Optional[Application] =None,
+                 owners: Iterable[User] = (),
+                 watermarks: Iterable[Watermark] = (),
+                 table_writer: Optional[Application] = None,
                  last_updated_timestamp: Optional[int],
-                 source: Optional[Source] = None
+                 source: Optional[Source] = None,
+                 is_view: Optional[bool] = None,
                  ) -> None:
 
         self.database = database
@@ -160,13 +161,15 @@ class Table:
         self.table_writer = table_writer
         self.last_updated_timestamp = last_updated_timestamp
         self.source = source
+        self.is_view = is_view or False
 
     def __repr__(self) -> str:
         return """Table(database={!r}, cluster={!r}, schema={!r}, name={!r}, tags={!r}, table_readers={!r},
                         description={!r}, columns={!r}, owners={!r}, watermarks={!r}, table_writer={!r},
-                        last_updated_timestamp={!r}, source={!r})"""\
+                        last_updated_timestamp={!r}, source={!r}, is_view={!r})"""\
             .format(self.database, self.cluster,
                     self.schema, self.name, self.tags,
                     self.table_readers, self.description,
                     self.columns, self.owners, self.watermarks,
-                    self.table_writer, self.last_updated_timestamp, self.source)
+                    self.table_writer, self.last_updated_timestamp,
+                    self.source, self.is_view)

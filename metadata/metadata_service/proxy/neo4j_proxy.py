@@ -81,7 +81,8 @@ class Neo4jProxy(BaseProxy):
                       watermarks=wmk_results,
                       table_writer=table_writer,
                       last_updated_timestamp=timestamp_value,
-                      source=source)
+                      source=source,
+                      is_view=self._safe_get(last_neo4j_record, 'tbl', 'is_view'))
 
         return table
 
@@ -233,7 +234,7 @@ class Neo4jProxy(BaseProxy):
         """
         for key in keys:
             dct = dct.get(key)
-            if not dct:
+            if dct is None:
                 return None
         return dct
 

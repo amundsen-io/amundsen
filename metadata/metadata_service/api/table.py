@@ -76,7 +76,8 @@ table_detail_fields = {
     'watermarks': fields.List(fields.Nested(watermark_fields)),
     'table_writer': fields.Nested(table_writer_fields),  # Optional
     'last_updated_timestamp': fields.Integer,  # Optional
-    'source': fields.Nested(source_fields)  # Optional
+    'source': fields.Nested(source_fields),  # Optional
+    'is_view': fields.Boolean  # Optional
 }
 
 
