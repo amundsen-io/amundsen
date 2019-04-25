@@ -146,7 +146,52 @@ class TestNeo4jProxy(unittest.TestCase):
                                                       id=self.table_writer['id']),
                              last_updated_timestamp=1,
                              source=Source(source='/source_file_loc',
-                                           source_type='github'))
+                                           source_type='github'),
+                             is_view=False)
+
+            self.assertEqual(str(expected), str(table))
+
+    def test_get_table_view_only(self) -> None:
+        col_usage_return_value = copy.deepcopy(self.col_usage_return_value)
+        for col in col_usage_return_value:
+            col['tbl']['is_view'] = True
+
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.side_effect = [col_usage_return_value, [], self.table_level_return_value]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            table = neo4j_proxy.get_table(table_uri='dummy_uri')
+
+            expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
+                             tags=[Tag(tag_name='test', tag_type='default')],
+                             table_readers=[], description='foo description',
+                             watermarks=[Watermark(watermark_type='high_watermark',
+                                                   partition_key='ds',
+                                                   partition_value='fake_value',
+                                                   create_time='fake_time'),
+                                         Watermark(watermark_type='low_watermark',
+                                                   partition_key='ds',
+                                                   partition_value='fake_value',
+                                                   create_time='fake_time')],
+                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                                             sort_order=0, stats=[Statistics(start_epoch=1,
+                                                                             end_epoch=1,
+                                                                             stat_type='avg',
+                                                                             stat_val='1')]),
+                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                             sort_order=1, stats=[Statistics(start_epoch=2,
+                                                                             end_epoch=2,
+                                                                             stat_type='avg',
+                                                                             stat_val='2')])],
+                             owners=[User(email='tester@lyft.com')],
+                             table_writer=Application(application_url=self.table_writer['application_url'],
+                                                      description=self.table_writer['description'],
+                                                      name=self.table_writer['name'],
+                                                      id=self.table_writer['id']),
+                             last_updated_timestamp=1,
+                             source=Source(source='/source_file_loc',
+                                           source_type='github'),
+                             is_view=True)
 
             self.assertEqual(str(expected), str(table))
 
