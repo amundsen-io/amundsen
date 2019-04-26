@@ -35,7 +35,7 @@ $ python3 amundsen_application/wsgi.py
 The following instructions are for setting up a version of Amundsen using Docker. At the moment, we only support a bootstrap for connecting the Amundsen application to an example metadata service.
 
 1. Install `docker`, `docker-compose`, and `docker-machine`.
-2. Install `virtualbox`.
+2. Install `virtualbox` and `virtualenv`.
 3. Start a managed docker virtual host using the following command:
 ```bash
 # in our examples our machine is named 'default'
@@ -62,7 +62,7 @@ $ eval $(docker-machine env default)
     $ docker build -f public.Dockerfile -t amundsen-frontend:latest .
 
     # in ~/<your-path-to-cloned-repo>/amundsensearchlibrary
-    $ docker build -f Dockerfile -t amundsen-search:latest .
+    $ docker build -f public.Dockerfile -t amundsen-search:latest .
     ```
 7. Start all of the services using:
 ```bash
