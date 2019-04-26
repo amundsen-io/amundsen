@@ -13,6 +13,7 @@ import AppConfig from 'config/config';
 import AvatarLabel from 'components/common/AvatarLabel';
 import Breadcrumb from 'components/common/Breadcrumb';
 import EntityCard from 'components/common/EntityCard';
+import Flag from "components/common/Flag";
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import ScrollTracker from "components/common/ScrollTracker";
 import TagInput from 'components/Tags/TagInput';
@@ -68,6 +69,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
       columns: [],
       database: '',
       is_editable: false,
+      is_view: false,
       schema: '',
       table_name: '',
       table_description: '',
@@ -330,13 +332,20 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
             <Breadcrumb path='/' text='Search Results'/>
             <div className="row">
               <div className="detail-header col-xs-12 col-md-7 col-lg-8">
-                  <div className="title">{ `${data.schema}.${data.table_name}` }</div>
-                  <WatermarkLabel watermarks={ data.watermarks }/>
-                  <TableDescEditableText
-                    maxLength={ 750 }
-                    value={ data.table_description }
-                    editable={ data.is_editable }
-                  />
+                <div className="title">
+                  { `${data.schema}.${data.table_name}` }
+                </div>
+                {
+                  data.is_view && <Flag text="Table View" labelStyle="primary" />
+                }
+                {
+                  !data.is_view && <WatermarkLabel watermarks={ data.watermarks }/>
+                }
+                <TableDescEditableText
+                  maxLength={ 750 }
+                  value={ data.table_description }
+                  editable={ data.is_editable }
+                />
               </div>
               <div className="col-xs-12 col-md-5 float-md-right col-lg-4">
                 <EntityCard sections={ this.createEntityCardSections() }/>

@@ -103,6 +103,7 @@ const initialTableDataState: TableMetadata = {
   columns: [],
   database: '',
   is_editable: false,
+  is_view: false,
   schema: '',
   table_name: '',
   table_description: '',
