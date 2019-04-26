@@ -49,19 +49,19 @@ describe('UserListItem', () => {
           expect(subject.find(Link).find(Avatar).exists()).toBeTruthy();
         });*/
 
-        it('renders user.name in title', () => {
-          expect(subject.find('#main-title').text()).toEqual(props.user.name);
+        it('renders user.name', () => {
+          expect(subject.find('.content').children().at(0).children().at(0).children().at(0).text()).toEqual(props.user.name);
         });
 
         it('renders Alumni flag if user not active', () => {
           props.user.active = false;
           subject.setProps(props);
-          expect(subject.find('#main-title').find(Flag).exists()).toBeTruthy();
+          expect(subject.find('.content').children().at(0).children().at(0).find(Flag).exists()).toBeTruthy();
         });
 
         it('renders description', () => {
           const { user } = props;
-          expect(subject.find('#main-description').text()).toEqual(`${user.role} on ${user.team_name}`);
+          expect(subject.find('.content').children().at(0).children().at(1).text()).toEqual(`${user.role} on ${user.team_name}`);
         });
     });
 
