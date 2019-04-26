@@ -46,6 +46,7 @@ class MetadataTest(unittest.TestCase):
                 {'reader': {'email': 'test@test.com', 'first_name': None, 'last_name': None}, 'read_count': 100}
             ],
             'owners': [],
+            'is_view': False,
             'columns': [
                 {
                     'name': 'column_1',
@@ -94,6 +95,7 @@ class MetadataTest(unittest.TestCase):
                 'value': '01-30-2019'
             },
             'owners': [],
+            'is_view': False,
             'columns': [
                 {
                     'name': 'column_1',

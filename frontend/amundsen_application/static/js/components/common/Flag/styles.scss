@@ -1,6 +1,7 @@
 @import 'variables';
 
 .flag {
-  margin-right: 4px;
-  margin-left: 4px;
+  display: inline-block;
+  margin: 4px 4px 4px 0;
+  font-size: 14px;
 }
