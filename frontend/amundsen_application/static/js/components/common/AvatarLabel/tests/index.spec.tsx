@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 
 import { Avatar } from 'react-avatar';
 import AvatarLabel, { AvatarLabelProps } from '../';

@@ -72,7 +72,7 @@ interface TableLineageConfig {
   urlGenerator: (database: string, cluster: string, schema: string , table: string) => string;
 }
 
-interface LinkConfig {
+export interface LinkConfig {
   href: string;
   id: string;
   label: string;
