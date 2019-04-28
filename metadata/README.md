@@ -1,5 +1,5 @@
 # Amundsen Metadata service
-Amundsen Metadata service serves Restful API and responsible for providing and also updating metadata, such as table & column description, and tags. Metadata service is using Neo4j as a persistent layer.
+Amundsen Metadata service serves Restful API and responsible for providing and also updating metadata, such as table & column description, and tags. Metadata service can use Neo4j or Apache Atlas as a persistent layer.
 
 
 ## Requirements
@@ -58,6 +58,29 @@ For example, in order to have different config for production, you can inherit C
 `METADATA_SVC_CONFIG_MODULE_CLASS=metadata_service.config.ProdConfig`
 
 This way Metadata service will use production config in production environment. For more information on how the configuration is being loaded and used, here's reference from Flask [doc](http://flask.pocoo.org/docs/1.0/config/#development-production "doc").
+
+# Apache Atlas
+Amundsen Metadata service can use Apache Atlas as a backend. Some of the benefits of using Apache Atlas instead of Neo4j is that Apache Atlas offers plugins to several services (e.g. Apache Hive, Apache Spark) that allow for push based updates. It also allows to set policies on what metadata is accesible and editable by means of Apache Ranger.
+
+If you would like to use Apache Atlas as a backend for Metadata service you will need to create a [Config](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py "Config") as mentioned above. Make sure to include the following:
+
+```python
+PROXY_CLIENT = PROXY_CLIENTS['ATLAS'] # or env PROXY_CLIENT='ATLAS'
+PROXY_PORT = 21000          # or env PROXY_PORT
+PROXY_USER = 'atlasuser'    # or env CREDENTIALS_PROXY_USER
+PROXY_PASSWORD = 'password' # or env CREDENTIALS_PROXY_PASSWORD
+```
+
+To start the service with Atlas from Docker. Make sure you have `atlasserver` configured in DNS (or docker-compose)
+
+```bash
+$ docker run -p 5000:5000 --env PROXY_CLIENT=ATLAS --env PROXY_PORT=21000 --env PROXY_HOST=atlasserver --env CREDENTIALS_PROXY_USER=atlasuser --env CREDENTIALS_PROXY_PASSWORD=password amundsen-metadata:latest
+```
+
+---
+**NOTE**
+
+The support for Apache Atlas is work in progress. For example, while Apache Atlas supports fine grained access, Amundsen does not support this yet. 
 
 # Developer guide
 ## Code style

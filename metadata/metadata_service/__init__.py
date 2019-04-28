@@ -61,6 +61,7 @@ def create_app(*, config_module_class: str) -> Flask:
     logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
     logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
     logging.info('Created app with config name {}'.format(config_module_class))
+    logging.info('Using backend {}'.format(app.config.get('PROXY_CLIENT')))
 
     api_bp = Blueprint('api', __name__)
     api_bp.add_url_rule('/healthcheck', 'healthcheck', healthcheck)
