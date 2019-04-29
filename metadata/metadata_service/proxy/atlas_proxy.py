@@ -4,7 +4,7 @@ from typing import Union, List, Dict, Any, Tuple
 
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
-from atlasclient.models import EntityUniqueAttribute
+from atlasclient.models import EntityUniqueAttribute, Entity
 
 from metadata_service.entity.tag_detail import TagDetail
 
@@ -39,6 +39,7 @@ class AtlasProxy(BaseProxy):
 
     def _get_ids_from_basic_search(self, *, params: Dict) -> List[str]:
         """
+        FixMe (Verdan): UNUSED. Please remove after implementing atlas proxy
         Search for the entities based on the params provided as argument.
         :param params: the dictionary of parameters to be used for the basic search
         :return: The flat list of GUIDs of entities founds based on the params.
@@ -49,6 +50,32 @@ class AtlasProxy(BaseProxy):
             for entity in result.entities:
                 ids.append(entity.guid)
         return ids
+
+    def _get_rel_attributes_dict(self, *, entities: List[Entity], attribute: str) -> Dict:
+        """
+        Atlas doesn't provide relational in referredEntities when making queries
+        on the superTypes entities. This function will make a dictionary same
+        as the referredEntities.
+        :param entities: The list of entities from which relational attributes
+        needed to be fetched
+        :param attribute: The name of the relational attribute
+        :return: A dictionary of entities details, with GUIDs as keys of each
+        entity
+        """
+        entities_dict = dict()  # type: Dict
+        rel_attribute_ids = list()
+        for entity in entities:
+            attrs = entity.attributes
+            rel_id = attrs.get(attribute, {}).get('guid')
+            if rel_id:
+                rel_attribute_ids.append(rel_id)
+
+        _rel_attr_collection = self._driver.entity_bulk(guid=rel_attribute_ids)
+        for rel_entities in _rel_attr_collection:
+            entities_dict = dict((rel_entity.guid, rel_entity)
+                                 for rel_entity in rel_entities.entities)
+
+        return entities_dict
 
     def _extract_info_from_uri(self, *, table_uri: str) -> Dict:
         """
@@ -283,37 +310,45 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         popular_tables = list()
-        params = {'typeName': self.TABLE_ENTITY, 'excludeDeletedEntities': True}
+        params = {'typeName': self.TABLE_ENTITY,
+                  'excludeDeletedEntities': True,
+                  'attributes': ['db']
+                  }
         try:
-            guids = self._get_ids_from_basic_search(params=params)
-
-            entity_collection = self._driver.entity_bulk(guid=guids)
+            # Fetch all the Popular Tables
+            _table_collection = self._driver.search_basic.create(data=params)
+            # Inflate the table entities
+            table_entities = _table_collection.entities
         except BadRequest as ex:
             LOGGER.exception(f'Please make sure you have assigned the appropriate '
                              f'self.TABLE_ENTITY entity to your atlas tables. {ex}')
             raise BadRequest('Unable to fetch popular tables. '
                              'Please check your configurations.')
 
-        for _collection in entity_collection:
-            for entity in _collection.entities:
-                attrs = entity.attributes
-                # ToDo (Verdan): Investigate why db is not in referredEntities
-                database = attrs.get(self.DB_KEY)
-                if database:
-                    db_entity = self._driver.entity_guid(database['guid'])
-                    db_attrs = db_entity.entity['attributes']
-                    db_name = db_attrs.get(self.NAME_KEY)
-                    db_cluster = db_attrs.get('clusterName')
-                else:
-                    db_name = ''
-                    db_cluster = ''
+        # Make a dictionary of Database Entities to avoid multiple DB calls
+        dbs_dict = self._get_rel_attributes_dict(entities=table_entities,
+                                                 attribute=self.DB_KEY)
 
-                popular_table = PopularTable(database=entity.typeName,
-                                             cluster=db_cluster,
-                                             schema=db_name,
-                                             name=attrs.get(self.NAME_KEY),
-                                             description=attrs.get('description'))
-                popular_tables.append(popular_table)
+        # Make instances of PopularTable
+        for entity in table_entities:
+            attrs = entity.attributes
+            db_id = attrs.get(self.DB_KEY, {}).get('guid')
+            db_entity = dbs_dict.get(db_id)
+
+            if db_entity:
+                db_attrs = db_entity.attributes
+                db_name = db_attrs.get(self.NAME_KEY)
+                db_cluster = db_attrs.get('clusterName')
+            else:
+                db_name = ''
+                db_cluster = ''
+
+            popular_table = PopularTable(database=entity.typeName,
+                                         cluster=db_cluster,
+                                         schema=db_name,
+                                         name=attrs.get(self.NAME_KEY),
+                                         description=attrs.get('description'))
+            popular_tables.append(popular_table)
         return popular_tables
 
     def get_latest_updated_ts(self) -> int:
