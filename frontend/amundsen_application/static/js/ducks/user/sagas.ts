@@ -7,8 +7,7 @@ import { getLoggedInUser, getUserById } from './api/v0';
 export function* getLoggedInUserWorker(): SagaIterator {
   try {
     const user = yield call(getLoggedInUser);
-    const otherUserInfo = yield call(getUserById, user.user_id);
-    yield put({ type: GetLoggedInUser.SUCCESS, payload: { ...otherUserInfo, ...user }});
+    yield put({ type: GetLoggedInUser.SUCCESS, payload: user });
   } catch (e) {
     yield put({ type: GetLoggedInUser.FAILURE });
   }
