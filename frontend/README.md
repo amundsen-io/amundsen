@@ -44,7 +44,7 @@ Please note that the mock images only served as demonstration purpose.
 ## Get Involved in the Community
 
 Want help or want to help? 
-Join our [slack channel](https://bit.ly/2tFsN1X) and our [mailing list](https://groups.google.com/forum/#!forum/amundsen-dev)
+Use the button in our [header](https://github.com/lyft/amundsenfrontendlibrary#amundsen) to join our slack channel. Please join our [mailing list](https://groups.google.com/forum/#!forum/amundsen-dev) as well.
 
 ## Getting started
 
@@ -72,7 +72,7 @@ Please visit [Developer guidelines](docs/developer_guide.md) if you want to buil
 
 Please visit [Roadmap](docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
-## Publication
+## Publications
 - [Disrupting Data Discovery](https://www.slideshare.net/taofung/strata-sf-amundsen-presentation) (Strata SF 2019)
 - [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (Lyft engineering blog)
 - [Amundsen: A Data Discovery Platform from Lyft](https://www.slideshare.net/taofung/data-council-sf-amundsen-presentation) (Data council 19 SF)
