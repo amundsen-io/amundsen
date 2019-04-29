@@ -14,10 +14,6 @@ import { AnnouncementsGetRequest } from 'ducks/announcements/types';
 import { announcementsGet } from 'ducks/announcements/reducer';
 import { AnnouncementPost } from './types';
 
-interface AnnouncementPageState {
-  posts: AnnouncementPost[];
-}
-
 export interface StateFromProps {
   posts: AnnouncementPost[];
 }
@@ -28,13 +24,9 @@ export interface DispatchFromProps {
 
 export type AnnouncementPageProps = StateFromProps & DispatchFromProps;
 
-export class AnnouncementPage extends React.Component<AnnouncementPageProps, AnnouncementPageState> {
+export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
   constructor(props) {
     super(props);
-
-    this.state = {
-      posts: this.props.posts,
-    };
   }
 
   componentDidMount() {
@@ -56,7 +48,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps, Ann
   }
 
   createPosts() {
-    return this.state.posts.map((post, index) => {
+    return this.props.posts.map((post, index) => {
       return this.createPost(post, index)
     });
   }
