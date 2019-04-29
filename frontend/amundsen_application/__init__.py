@@ -44,6 +44,8 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
     logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
     logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
     logging.info('Created app with config name {}'.format(config_module_class))
+    logging.info('Using metadata service at {}'.format(app.config.get('METADATASERVICE_BASE')))
+    logging.info('Using search service at {}'.format(app.config.get('SEARCHSERVICE_BASE')))
 
     app.register_blueprint(blueprint)
     app.register_blueprint(announcements_blueprint)
