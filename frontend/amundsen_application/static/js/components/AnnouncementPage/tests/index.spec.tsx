@@ -37,22 +37,20 @@ describe('AnnouncementPage', () => {
 
     describe('createPost', () => {
         let content;
-        let post;
         beforeEach(() => {
-            post = subject.state().posts[0];
-            content = shallow(subject.instance().createPost(post, 0));
+            content = shallow(subject.instance().createPost(props.posts[0], 0));
         });
         it('renders the post title', () => {
-            expect(content.children().at(0).children().at(0).text()).toEqual(post.title);
+            expect(content.children().at(0).children().at(0).text()).toEqual(props.posts[0].title);
         });
 
         it('renders the post date', () => {
-            expect(content.children().at(0).children().at(1).text()).toEqual(post.date);
+            expect(content.children().at(0).children().at(1).text()).toEqual(props.posts[0].date);
         });
 
         it('renders SanitizedHTML with the post content', () => {
             expect(content.find(SanitizedHTML).props()).toMatchObject({
-                html: post.html_content,
+                html: props.posts[0].html_content,
             });
         });
     });
@@ -62,12 +60,12 @@ describe('AnnouncementPage', () => {
             subject.instance().createPost = jest.fn();
             subject.instance().createPosts();
         });
-        it('call createPost() for each state.posts[] item', () => {
-            expect(subject.instance().createPost).toHaveBeenCalledTimes(subject.state().posts.length)
+        it('call createPost() for each props.posts[] item', () => {
+            expect(subject.instance().createPost).toHaveBeenCalledTimes(props.posts.length)
         });
 
         it('passes correct props to createPost()', () => {
-            expect(subject.instance().createPost).toHaveBeenCalledWith(subject.state().posts[0], 0);
+            expect(subject.instance().createPost).toHaveBeenCalledWith(props.posts[0], 0);
         });
     });
 

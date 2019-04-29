@@ -24,11 +24,7 @@ interface DispatchFromProps {
 
 export type ProfilePageProps = StateFromProps & DispatchFromProps;
 
-interface ProfilePageState {
-  user: User;
-}
-
-export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
+export class ProfilePage extends React.Component<ProfilePageProps> {
   private userId: string;
 
   constructor(props) {
@@ -37,10 +33,6 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
     const { match } = props;
     const params = match.params;
     this.userId = params && params.userId ? params.userId : '';
-
-    this.state = {
-      user: this.props.user,
-    };
   }
 
   componentDidMount() {
@@ -57,7 +49,7 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
   }
 
   generateTabInfo = () => {
-    const user = this.state.user;
+    const user = this.props.user;
     const tabInfo = [];
 
     // TODO: Populate tabs based on data
@@ -84,7 +76,7 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
   /* TODO: Add support to direct to 404 page for edgecase of someone typing in
      or pasting in a bad url. This would be consistent with TableDetail page behavior */
   render() {
-    const user = this.state.user;
+    const user = this.props.user;
     return (
       <DocumentTitle title={ `${user.display_name} - Amundsen Profile` }>
         <div className="container profile-page">
