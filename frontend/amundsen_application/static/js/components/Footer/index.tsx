@@ -19,17 +19,9 @@ interface DispatchFromProps {
 
 export type FooterProps = StateFromProps & DispatchFromProps;
 
-interface FooterState {
-  lastIndexed: number;
-}
-
-export class Footer extends React.Component<FooterProps, FooterState> {
+export class Footer extends React.Component<FooterProps> {
   constructor(props) {
     super(props);
-
-    this.state = {
-      lastIndexed: this.props.lastIndexed,
-    };
   }
 
   componentDidMount() {
@@ -38,12 +30,12 @@ export class Footer extends React.Component<FooterProps, FooterState> {
 
   generateDateTimeString = () => {
     // 'moment.local' will utilize the client's local timezone.
-    return moment.unix(this.state.lastIndexed).local().format('MMMM Do YYYY [at] h:mm:ss a');
-  }
+    return moment.unix(this.props.lastIndexed).local().format('MMMM Do YYYY [at] h:mm:ss a');
+  };
 
   render() {
     let content;
-    if (this.state.lastIndexed !== null) {
+    if (this.props.lastIndexed !== null) {
       content = <div>{`Amundsen was last indexed on ${this.generateDateTimeString()}`}</div>;
     }
     return (
