@@ -5,6 +5,7 @@ from typing import Union, List, Dict, Any, Tuple
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import EntityUniqueAttribute, Entity
+from flask import current_app as app
 
 from metadata_service.entity.tag_detail import TagDetail
 
@@ -23,9 +24,11 @@ class AtlasProxy(BaseProxy):
     Atlas Proxy client for the amundsen metadata
     {ATLAS_API_DOCS} = https://atlas.apache.org/api/v2/
     """
-    TABLE_ENTITY = 'Table'
-    DB_KEY = 'db'
-    NAME_KEY = 'qualifiedName'
+    TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
+    DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
+    NAME_ATTRIBUTE = app.config['ATLAS_NAME_ATTRIBUTE']
+    ATTRS_KEY = 'attributes'
+    REL_ATTRS_KEY = 'relationshipAttributes'
 
     def __init__(self, *,
                  host: str,
@@ -53,7 +56,7 @@ class AtlasProxy(BaseProxy):
 
     def _get_rel_attributes_dict(self, *, entities: List[Entity], attribute: str) -> Dict:
         """
-        Atlas doesn't provide relational in referredEntities when making queries
+        Atlas doesn't provide relational in referredEntities when making searching
         on the superTypes entities. This function will make a dictionary same
         as the referredEntities.
         :param entities: The list of entities from which relational attributes
@@ -131,10 +134,10 @@ class AtlasProxy(BaseProxy):
         """
         try:
             table_entity, _ = self._get_table_entity(table_uri=table_uri)
-            columns = table_entity.entity['attributes'].get('columns', list())
-            for column in columns:
+            columns = table_entity.entity[self.REL_ATTRS_KEY].get('columns')
+            for column in columns or list():
                 col_details = table_entity.referredEntities[column['guid']]
-                if column_name == col_details['attributes']['qualifiedName']:
+                if column_name == col_details[self.ATTRS_KEY][self.NAME_ATTRIBUTE]:
                     return col_details
 
             raise NotFoundException(f'Column not found: {column_name}')
@@ -157,7 +160,8 @@ class AtlasProxy(BaseProxy):
         table_details = entity.entity
 
         try:
-            attrs = table_details['attributes']
+            attrs = table_details[self.ATTRS_KEY]
+            rel_attrs = table_details[self.REL_ATTRS_KEY]
 
             tags = []
             # Using or in case, if the key 'classifications' is there with a None
@@ -170,14 +174,14 @@ class AtlasProxy(BaseProxy):
                 )
 
             columns = []
-            for column in attrs.get('columns') or list():
+            for column in rel_attrs.get('columns') or list():
                 col_entity = entity.referredEntities[column['guid']]
-                col_attrs = col_entity['attributes']
+                col_attrs = col_entity[self.ATTRS_KEY]
                 columns.append(
                     Column(
-                        name=col_attrs.get(self.NAME_KEY),
+                        name=col_attrs.get(self.NAME_ATTRIBUTE),
                         description=col_attrs.get('description'),
-                        col_type=col_attrs.get('type'),
+                        col_type=col_attrs.get('type') or col_attrs.get('dataType'),
                         sort_order=col_attrs.get('position'),
                     )
                 )
@@ -213,7 +217,7 @@ class AtlasProxy(BaseProxy):
         :return: None, as it simply adds the owner.
         """
         entity, _ = self._get_table_entity(table_uri=table_uri)
-        entity.entity['attributes']['owner'] = owner
+        entity.entity[self.ATTRS_KEY]['owner'] = owner
         entity.update()
 
     def get_table_description(self, *,
@@ -223,7 +227,7 @@ class AtlasProxy(BaseProxy):
         :return: The description of the table as a string
         """
         entity, _ = self._get_table_entity(table_uri=table_uri)
-        return entity.entity['attributes'].get('description')
+        return entity.entity[self.ATTRS_KEY].get('description')
 
     def put_table_description(self, *,
                               table_uri: str,
@@ -235,7 +239,7 @@ class AtlasProxy(BaseProxy):
         :return: None
         """
         entity, _ = self._get_table_entity(table_uri=table_uri)
-        entity.entity['attributes']['description'] = description
+        entity.entity[self.ATTRS_KEY]['description'] = description
         entity.update()
 
     def add_tag(self, *, table_uri: str, tag: str) -> None:
@@ -284,7 +288,7 @@ class AtlasProxy(BaseProxy):
         col_guid = column_detail['guid']
 
         entity = self._driver.entity_guid(col_guid)
-        entity.entity['attributes']['description'] = description
+        entity.entity[self.ATTRS_KEY]['description'] = description
         entity.update(attribute='description')
 
     def get_column_description(self, *,
@@ -299,7 +303,7 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        return column_detail['attributes'].get('description')
+        return column_detail[self.ATTRS_KEY].get('description')
 
     def get_popular_tables(self, *,
                            num_entries: int = 10) -> List[PopularTable]:
@@ -312,7 +316,7 @@ class AtlasProxy(BaseProxy):
         popular_tables = list()
         params = {'typeName': self.TABLE_ENTITY,
                   'excludeDeletedEntities': True,
-                  'attributes': ['db']
+                  self.ATTRS_KEY: [self.DB_ATTRIBUTE]
                   }
         try:
             # Fetch all the Popular Tables
@@ -327,17 +331,20 @@ class AtlasProxy(BaseProxy):
 
         # Make a dictionary of Database Entities to avoid multiple DB calls
         dbs_dict = self._get_rel_attributes_dict(entities=table_entities,
-                                                 attribute=self.DB_KEY)
+                                                 attribute=self.DB_ATTRIBUTE)
 
         # Make instances of PopularTable
         for entity in table_entities:
             attrs = entity.attributes
-            db_id = attrs.get(self.DB_KEY, {}).get('guid')
+
+            # DB would be available in attributes
+            # because it is in the request parameter.
+            db_id = attrs.get(self.DB_ATTRIBUTE, {}).get('guid')
             db_entity = dbs_dict.get(db_id)
 
             if db_entity:
                 db_attrs = db_entity.attributes
-                db_name = db_attrs.get(self.NAME_KEY)
+                db_name = db_attrs.get(self.NAME_ATTRIBUTE)
                 db_cluster = db_attrs.get('clusterName')
             else:
                 db_name = ''
@@ -346,7 +353,7 @@ class AtlasProxy(BaseProxy):
             popular_table = PopularTable(database=entity.typeName,
                                          cluster=db_cluster,
                                          schema=db_name,
-                                         name=attrs.get(self.NAME_KEY),
+                                         name=attrs.get(self.NAME_ATTRIBUTE),
                                          description=attrs.get('description'))
             popular_tables.append(popular_table)
         return popular_tables

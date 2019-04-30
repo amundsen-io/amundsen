@@ -1,19 +1,24 @@
 import unittest
-
 from atlasclient.exceptions import BadRequest
 from mock import patch, MagicMock
 
+from metadata_service import create_app
 from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import (Table, User, Tag, Column)
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
-from metadata_service.proxy.atlas_proxy import AtlasProxy
 
 
 class TestAtlasProxy(unittest.TestCase):
-
     def setUp(self):
+        self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
         with patch('metadata_service.proxy.atlas_proxy.Atlas'):
+            # Importing here to make app context work before
+            # importing `current_app` indirectly using the AtlasProxy
+            from metadata_service.proxy.atlas_proxy import AtlasProxy
             self.proxy = AtlasProxy(host='DOES_NOT_MATTER', port=0000)
             self.proxy._driver = MagicMock()
 
@@ -64,7 +69,11 @@ class TestAtlasProxy(unittest.TestCase):
                 'owner': 'dummy@email.com',
                 'columns': [self.test_column],
                 'db': self.db_entity
-            }
+            },
+            'relationshipAttributes': {
+                'db': self.db_entity,
+                'columns': [self.test_column],
+            },
         }
         self.entity1.update(self.classification_entity)
 
@@ -78,7 +87,10 @@ class TestAtlasProxy(unittest.TestCase):
                 'description': 'Dummy Description',
                 'owner': 'dummy@email.com',
                 'db': self.db_entity
-            }
+            },
+            'relationshipAttributes': {
+                'db': self.db_entity,
+            },
         }
         self.entity2.update(self.classification_entity)
         self.entities = {
