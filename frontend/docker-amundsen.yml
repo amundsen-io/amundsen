@@ -25,7 +25,7 @@ services:
       networks:
         - amundsennet
   amundsensearch:
-      image: amundsen-search:latest
+      image: amundsendev/amundsen-search:latest
       container_name: amundsensearch
       ports:
         - 5001:5000
@@ -34,7 +34,7 @@ services:
       networks:
         - amundsennet
   amundsenmetadata:
-      image: amundsen-metadata:latest
+      image: amundsendev/amundsen-metadata:latest
       container_name: amundsenmetadata
       depends_on:
         - neo4j
@@ -43,7 +43,7 @@ services:
       networks:
         - amundsennet
   amundsenfrontend:
-      image: amundsen-frontend:latest
+      image: amundsendev/amundsen-frontend:latest
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata

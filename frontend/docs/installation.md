@@ -53,17 +53,6 @@ $ eval $(docker-machine env default)
 6. Setup your local environment.
   * Clone [this repo](https://github.com/lyft/amundsenfrontendlibrary), [amundsenmetadatalibrary](https://github.com/lyft/amundsenmetadatalibrary), and [amundsensearchlibrary](https://github.com/lyft/amundsensearchlibrary).
   * In your local versions of each library, update the `LOCAL_HOST` in the `LocalConfig` with the IP used for the `default` docker machine. You can see the IP in the `URL` outputted from running `docker-machine ls`.
-  * Build the docker images
-    ```bash
-    # in ~/<your-path-to-cloned-repo>/amundsenmetadatalibrary
-    $ docker build -f public.Dockerfile -t amundsen-metadata:latest .
-
-    # in ~/<your-path-to-cloned-repo>/amundsenfrontendlibrary
-    $ docker build -f public.Dockerfile -t amundsen-frontend:latest .
-
-    # in ~/<your-path-to-cloned-repo>/amundsensearchlibrary
-    $ docker build -f public.Dockerfile -t amundsen-search:latest .
-    ```
 7. Start all of the services using:
 ```bash
 # in ~/<your-path-to-cloned-repo>/amundsenfrontendlibrary
