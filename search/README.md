@@ -34,8 +34,8 @@ $ curl -v http://localhost:5000/healthcheck
 
 ## Instructions to start the service from the Docker
 ```bash
-$ docker pull amundsen-search
-$ docker run -p 5000:5000 amundsen-search
+$ docker pull amundsendev/amundsen-search:latest
+$ docker run -p 5000:5000 amundsendev/amundsen-search
 ```
 
 In different terminal, verify the service is up by running
@@ -90,5 +90,5 @@ Proxy package contains proxy modules that talks dependencies of Search service. 
 For specific configuration related to statsd, you can configure it through [environment variable.](https://statsd.readthedocs.io/en/latest/configure.html#from-the-environment "environment variable.")
 
 ### [Models package](https://github.com/lyft/amundsensearchlibrary/tree/master/search_service/models "Models package")
-Models package contains many modules where each module has many Python classes in it. These Python classes are being used as a schema and a data holder. All data exchange within Amundsen Search service use classes in Models to ensure validity of itself and improve readability and mainatability.
+Models package contains many modules where each module has many Python classes in it. These Python classes are being used as a schema and a data holder. All data exchange within Amundsen Search service use classes in Models to ensure validity of itself and improve readability and maintainability.
 
