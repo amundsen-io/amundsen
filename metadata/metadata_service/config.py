@@ -27,6 +27,17 @@ class Config:
 
     IS_STATSD_ON = False
 
+    # Used to differentiate tables with other entities in Atlas. For more details:
+    # https://github.com/lyft/amundsenmetadatalibrary/blob/master/docs/proxy/atlas_proxy.md
+    ATLAS_TABLE_ENTITY = 'Table'
+
+    # The relationalAttribute name of Atlas Entity that identifies the database entity.
+    ATLAS_DB_ATTRIBUTE = 'db'
+
+    # Display name of Atlas Entities that we use for amundsen project.
+    # Atlas uses qualifiedName as indexed attribute. but also supports 'name' attribute.
+    ATLAS_NAME_ATTRIBUTE = 'qualifiedName'
+
 
 class LocalConfig(Config):
     DEBUG = False
