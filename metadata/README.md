@@ -33,8 +33,8 @@ $ curl -v http://localhost:5000/healthcheck
 
 ## Instructions to start the service from the Docker
 ```bash
-$ docker pull amundsen-metadata
-$ docker run -p 5000:5000 amundsen-metadata
+$ docker pull amundsendev/amundsen-metadata:latest
+$ docker run -p 5000:5000 amundsendev/amundsen-metadata
 
 -- In different terminal, verify getting HTTP/1.0 200 OK
 $ curl -v http://localhost:5000/healthcheck
