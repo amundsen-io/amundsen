@@ -174,7 +174,7 @@ def create_es_publisher_sample_job():
     # related to mapping type from /databuilder/publisher/elasticsearch_publisher.py#L38
     elasticsearch_new_index_key_type = 'table'
     # alias for Elasticsearch used in amundsensearchlibrary/search_service/config.py as an index
-    elasticsearch_index_alias = 'tables_alias'
+    elasticsearch_index_alias = 'table_search_index'
 
     job_config = ConfigFactory.from_dict({
         'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): neo4j_endpoint,
