@@ -7,6 +7,7 @@
     "build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
     "dev-build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts",
     "test": "jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
+    "test-nocov": "jest",
     "watch": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts --watch",
     "lint": "npm run eslint && npm run tslint",
     "lint-fix": "npm run eslint-fix && npm run tslint-fix",

@@ -1,5 +1,7 @@
 import { GlobalState } from 'ducks/rootReducer';
+
 import { SendingState } from 'components/Feedback/types';
+import { ResourceType } from 'components/common/ResourceListItem/types';
 
 const globalState: GlobalState = {
   announcements: {
@@ -17,9 +19,28 @@ const globalState: GlobalState = {
   feedback: {
       sendState: SendingState.IDLE,
   },
-  popularTables: [],
+  popularTables: [
+    {
+      cluster: 'testCluster',
+      database: 'testDatabase',
+      description: 'I have a lot of users',
+      key: 'testDatabase://testCluster.testSchema/testName',
+      name: 'testName',
+      schema_name: 'testSchema',
+      type: ResourceType.table,
+    },
+    {
+      cluster: 'testCluster',
+      database: 'testDatabase',
+      description: 'I also have a lot of users',
+      key: 'testDatabase://testCluster.testSchema/otherName',
+      name: 'otherName',
+      schema_name: 'testSchema',
+      type: ResourceType.table,
+    }
+  ],
   search: {
-    search_term: '',
+    search_term: 'testName',
     dashboards: {
       page_index: 0,
       results: [],
@@ -27,8 +48,19 @@ const globalState: GlobalState = {
     },
     tables: {
       page_index: 0,
-      results: [],
-      total_results: 0,
+      results: [
+        {
+          cluster: 'testCluster',
+          database: 'testDatabase',
+          description: 'I have a lot of users',
+          key: 'testDatabase://testCluster.testSchema/testName',
+          last_updated_epoch: 946684799,
+          name: 'testName',
+          schema_name: 'testSchema',
+          type: ResourceType.table,
+        },
+      ],
+      total_results: 1,
     },
     users: {
       page_index: 0,

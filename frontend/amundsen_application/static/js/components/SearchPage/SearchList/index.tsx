@@ -2,13 +2,12 @@ import * as React from 'react';
 import ResourceListItem from 'components/common/ResourceListItem';
 import { Resource } from 'components/common/ResourceListItem/types';
 
-
-interface SearchListProps {
+export interface SearchListProps {
   results?: Resource[];
   params?: SearchListParams;
 }
 
-interface SearchListParams {
+export interface SearchListParams {
   source?: string;
   paginationStartIndex?: number;
 }
