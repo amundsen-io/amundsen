@@ -444,7 +444,7 @@ class TestNeo4jProxy(unittest.TestCase):
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
-            self.assertIs(neo4j_last_updated_ts, None)
+            self.assertEqual(neo4j_last_updated_ts, 0)
 
     def test_get_popular_tables(self) -> None:
         # Test cache hit
