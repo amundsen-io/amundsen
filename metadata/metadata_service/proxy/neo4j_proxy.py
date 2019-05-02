@@ -620,7 +620,7 @@ class Neo4jProxy(BaseProxy):
                                             param_dict={})
         # None means we don't have record for neo4j, es last updated / index ts
         record = record.single()
-        return record['ts'].get('latest_timestmap')
+        return record.get('ts', {}).get('latest_timestmap', 0)
 
     @timer_with_counter
     @_CACHE.cache('_get_popular_tables_uris', _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
