@@ -48,7 +48,7 @@ pyparsing==2.2.0
 six==1.11.0
 sqlalchemy==1.3.0
 wheel==0.31.1
-neo4j-driver==1.7.2
+neo4j-driver==1.6.0
 neotime==1.0.0
 pytz==2018.4
 antlr4-python2-runtime==4.7.1
