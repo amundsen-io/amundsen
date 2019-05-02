@@ -25,7 +25,8 @@ $ python3 wsgi.py
 
 ## Contributing
 
-### Python
+### Testing
+#### Python
 
 If changes were made to any python files, run the python unit tests, linter, and type checker. Unit tests are run with `py.test`. They are located in `tests/unit`. Type checks are run with `mypy`. Linting is `flake8`. There are friendly `make` targets for each of these tests:
 ```bash
@@ -36,7 +37,17 @@ make mypy  # type checks
 ```
 Fix all errors before submitting a PR.
 
-### JS Assets
-By default, the build commands that are run to verify local changes -- `npm run build` and `npm run dev-build` -- also conduct linting and type checking. During development be sure to fix all errors before submitting a PR.
+#### JS Assets
 
-Run unit tests by executing `npm run test`. Fix all failures before submitting a PR.
+##### Type Checking
+The build commands `npm run build` and `npm run dev-build` also conduct type checking. Run either of these commands and fix all failed checks before submitting a PR.
+
+##### Lint
+`npm run lint` runs the linter. Fix all lint errors before submitting a PR. `npm run lint-fix` can help auto-fix most common errors.
+
+##### Unit Tests
+`npm run test` runs unit tests. Add unit tests to cover new code additions and fix any test failures before submitting a PR.
+
+To run specific tests, run `npm run test-nocov -t <regex>`, where `<regex>` is any pattern that matches the names of the test blocks that you want to run.
+
+See our recommendations for writing unit tests [here](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/recommended-practices.md).

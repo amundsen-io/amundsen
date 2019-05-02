@@ -3,10 +3,16 @@ import * as React from 'react';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-const DEFAULT_SUBTEXT = `Search within a category using the pattern with wildcard support 'category:*searchTerm*', e.g. 'schema:*core*'.
-  Current categories are 'column', 'schema', 'table', and 'tag'.`;
+import {
+  ERROR_CLASSNAME,
+  PLACEHOLDER_DEFAULT,
+  SUBTEXT_DEFAULT,
+  SYNTAX_ERROR_CATEGORY,
+  SYNTAX_ERROR_PREFIX,
+  SYNTAX_ERROR_SPACING_SUFFIX,
+} from './constants';
 
-interface SearchBarProps {
+export interface SearchBarProps {
   handleValueSubmit: (term: string) => void;
   placeholder?: string;
   searchTerm?: string;
@@ -14,58 +20,52 @@ interface SearchBarProps {
 }
 
 interface SearchBarState {
-  optionalSubTextClass: string;
+  subTextClassName: string;
   searchTerm: string;
   subText: string;
 }
 
 class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
-  private inputRef: React.RefObject<HTMLInputElement>;
-
-  public static defaultProps: SearchBarProps = {
-    handleValueSubmit: () => undefined,
-    placeholder: 'search for data resources...', // TODO: Hard-coded text strings should be translatable/customizable
+  public static defaultProps: Partial<SearchBarProps> = {
+    placeholder: PLACEHOLDER_DEFAULT,
     searchTerm: '',
-    subText: DEFAULT_SUBTEXT,
+    subText: SUBTEXT_DEFAULT,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      optionalSubTextClass: '',
+      subTextClassName: '',
       searchTerm: this.props.searchTerm,
       subText: this.props.subText,
     };
-
-    this.inputRef = React.createRef();
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { searchTerm } = nextProps;
+  static getDerivedStateFromProps(props, state) {
+    const { searchTerm } = props;
     return { searchTerm };
   }
 
-  handleValueSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (this.isFormValid()) {
-      const inputElement = this.inputRef.current;
-      this.props.handleValueSubmit(inputElement.value.toLowerCase());
-    }
-  };
-
-  handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
+  handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>) : void => {
     this.setState({ searchTerm: (event.target as HTMLInputElement).value.toLowerCase() });
   };
 
-  isFormValid = () => {
+  handleValueSubmit = (event: React.FormEvent<HTMLFormElement>) : void => {
+    event.preventDefault();
+    if (this.isFormValid()) {
+      this.props.handleValueSubmit(this.state.searchTerm);
+    }
+  };
+
+  isFormValid = () : boolean => {
     const searchTerm = this.state.searchTerm;
 
     const hasAtMostOneCategory = searchTerm.split(':').length <= 2;
     if (!hasAtMostOneCategory) {
       this.setState({
-        subText: "Advanced search syntax only supports searching one category. Please remove all extra ':'",
-        optionalSubTextClass: "error"
+        subText: SYNTAX_ERROR_CATEGORY,
+        subTextClassName: ERROR_CLASSNAME,
       });
       return false;
     }
@@ -75,19 +75,18 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
       (colonIndex >= 1 && searchTerm.charAt(colonIndex+1) !== " " &&  searchTerm.charAt(colonIndex-1) !== " ");
     if (!hasNoSpaceAroundColon) {
       this.setState({
-        subText: `Did you mean '${searchTerm.substring(0,colonIndex).trim()}:${searchTerm.substring(colonIndex+1).trim()}' ?
-                  Please remove the space around the ':'.`,
-        optionalSubTextClass: "error"
+        subText: `${SYNTAX_ERROR_PREFIX}'${searchTerm.substring(0,colonIndex).trim()}:${searchTerm.substring(colonIndex+1).trim()}'${SYNTAX_ERROR_SPACING_SUFFIX}`,
+        subTextClassName: ERROR_CLASSNAME,
       });
       return false;
     }
 
-    this.setState({ subText: DEFAULT_SUBTEXT, optionalSubTextClass: "" });
+    this.setState({ subText: SUBTEXT_DEFAULT, subTextClassName: "" });
     return true;
   };
 
   render() {
-    const subTextClass = `subtext ${this.state.optionalSubTextClass}`;
+    const subTextClass = `subtext ${this.state.subTextClassName}`;
     return (
       <div id="search-bar" className="col-xs-12 col-md-offset-1 col-md-10">
         <form className="search-bar-form" onSubmit={ this.handleValueSubmit }>
@@ -99,7 +98,6 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
               aria-label={ this.props.placeholder }
               placeholder={ this.props.placeholder }
               autoFocus={ true }
-              ref={ this.inputRef }
             />
           <button className="btn btn-flat-icon search-bar-button" type="submit">
             <img className="icon icon-search" />
