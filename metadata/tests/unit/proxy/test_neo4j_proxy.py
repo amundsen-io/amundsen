@@ -446,6 +446,11 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertEqual(neo4j_last_updated_ts, 0)
 
+            mock_execute.return_value.single.return_value = None
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
+            self.assertIsNone(neo4j_last_updated_ts)
+
     def test_get_popular_tables(self) -> None:
         # Test cache hit
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:

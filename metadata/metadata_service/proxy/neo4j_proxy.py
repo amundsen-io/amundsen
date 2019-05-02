@@ -1,7 +1,7 @@
 import logging
 import textwrap
 from random import randint
-from typing import Dict, Any, no_type_check, List, Tuple, Union  # noqa: F401
+from typing import Dict, Any, no_type_check, List, Tuple, Union, Optional  # noqa: F401
 
 import time
 from beaker.cache import CacheManager
@@ -607,7 +607,7 @@ class Neo4jProxy(BaseProxy):
         return results
 
     @timer_with_counter
-    def get_latest_updated_ts(self) -> int:
+    def get_latest_updated_ts(self) -> Optional[int]:
         """
         API method to fetch last updated / index timestamp for neo4j, es
 
@@ -620,7 +620,10 @@ class Neo4jProxy(BaseProxy):
                                             param_dict={})
         # None means we don't have record for neo4j, es last updated / index ts
         record = record.single()
-        return record.get('ts', {}).get('latest_timestmap', 0)
+        if record:
+            return record.get('ts', {}).get('latest_timestmap', 0)
+        else:
+            return None
 
     @timer_with_counter
     @_CACHE.cache('_get_popular_tables_uris', _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
