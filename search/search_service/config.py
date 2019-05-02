@@ -1,3 +1,5 @@
+import os
+
 ELASTICSEARCH_ENDPOINT_KEY = 'ELASTICSEARCH_ENDPOINT'
 ELASTICSEARCH_INDEX_KEY = 'ELASTICSEARCH_INDEX'
 ELASTICSEARCH_AUTH_USER_KEY = 'ELASTICSEARCH_AUTH_USER'
@@ -19,7 +21,12 @@ class LocalConfig(Config):
     TESTING = False
     STATS = False
     LOCAL_HOST = '0.0.0.0'
-    ELASTICSEARCH_ENDPOINT = 'http://{LOCAL_HOST}:9200'.format(LOCAL_HOST=LOCAL_HOST)
+    ELASTICSEARCH_PORT = '9200'
+    ELASTICSEARCH_ENDPOINT = os.environ.get('ELASTICSEARCH_ENDPOINT',
+                                            'http://{LOCAL_HOST}:{PORT}'.format(
+                                                LOCAL_HOST=LOCAL_HOST,
+                                                PORT=ELASTICSEARCH_PORT)
+                                            )
     ELASTICSEARCH_INDEX = 'table_search_index'
     ELASTICSEARCH_AUTH_USER = 'elastic'
     ELASTICSEARCH_AUTH_PW = 'elastic'
