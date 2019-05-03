@@ -1,10 +1,16 @@
 import logging
 
-from flask import Response
+from http import HTTPStatus
+
+from flask import Response, jsonify, make_response
 from flask import current_app as app
 from flask.blueprints import Blueprint
 
-from amundsen_application.models.user import load_user
+from amundsen_application.api.metadata.v0 import USER_ENDPOINT
+from amundsen_application.api.utils.request_utils import request_wrapper
+from amundsen_application.models.user import load_user, dump_user
+
+REQUEST_SESSION_TIMEOUT_SEC = 3
 
 LOGGER = logging.getLogger(__name__)
 
@@ -13,9 +19,34 @@ blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 @blueprint.route('/auth_user', methods=['GET'])
 def current_user() -> Response:
-    if (app.config['AUTH_USER_METHOD']):
-        user = app.config['AUTH_USER_METHOD'](app)
-    else:
-        user = load_user({'user_id': 'undefined', 'display_name': '*'})
+    try:
+        if app.config['AUTH_USER_METHOD']:
+            user = app.config['AUTH_USER_METHOD'](app)
+        else:
+            raise Exception('AUTH_USER_METHOD is not configured')
 
-    return user.to_json()
+        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user.user_id)
+
+        response = request_wrapper(method='GET',
+                                   url=url,
+                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
+                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
+
+        status_code = response.status_code
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(user.user_id)
+            logging.error(message)
+
+        payload = {
+            'msg': message,
+            'user': dump_user(load_user(response.json()))
+        }
+        return make_response(jsonify(payload), status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        payload = jsonify({'msg': message})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

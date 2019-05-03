@@ -13,7 +13,7 @@ from amundsen_application.api.utils.request_utils import get_query_param, reques
 
 LOGGER = logging.getLogger(__name__)
 
-REQUEST_SESSION_TIMEOUT = 10
+REQUEST_SESSION_TIMEOUT_SEC = 3
 
 search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v0')
 
@@ -201,7 +201,7 @@ def _search_table(*, search_term: str, page_index: int) -> Dict[str, Any]:
                                    url=url,
                                    client=app.config['SEARCHSERVICE_REQUEST_CLIENT'],
                                    headers=app.config['SEARCHSERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 

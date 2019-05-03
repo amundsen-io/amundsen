@@ -27,8 +27,20 @@ export function getUserById(userId: string): GetUserRequest {
 
 
 const defaultUser = {
-  user_id: '',
   display_name: '',
+  email: '',
+  employee_type: '',
+  first_name: '',
+  full_name: '',
+  github_username: '',
+  is_active: true,
+  last_name: '',
+  manager_fullname: '',
+  profile_url: '',
+  role_name: '',
+  slack_id: '',
+  team_name: '',
+  user_id: '',
 };
 const initialState: UserReducerState = {
   loggedInUser: defaultUser,

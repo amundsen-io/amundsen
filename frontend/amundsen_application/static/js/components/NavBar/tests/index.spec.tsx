@@ -37,10 +37,7 @@ import globalState from 'fixtures/globalState';
 describe('NavBar', () => {
   const setup = (propOverrides?: Partial<NavBarProps>) => {
     const props: NavBarProps = {
-      loggedInUser:  {
-        user_id: 'test0',
-        display_name: 'Test User',
-      },
+      loggedInUser: globalState.user.loggedInUser,
       getLoggedInUser: jest.fn(),
       ...propOverrides
     };
@@ -108,7 +105,7 @@ describe('NavBar', () => {
     it('renders homepage Link with correct text', () => {
       element = wrapper.find('#nav-bar-left').find(Link);
       expect(element.children().text()).toEqual('AMUNDSEN');
-    })
+    });
 
     it('calls generateNavLinks with correct props', () => {
       expect(spy).toHaveBeenCalledWith(AppConfig.navLinks);

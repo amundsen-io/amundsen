@@ -14,18 +14,7 @@ import globalState from 'fixtures/globalState';
 describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
     const props: ProfilePageProps = {
-      user:  {
-        user_id: 'test0',
-        display_name: 'Test User',
-        email: 'test@test.com',
-        github_name: 'githubName',
-        is_active: true,
-        manager_name: 'Test Manager',
-        profile_url: 'www.test.com',
-        role_name: 'Tester',
-        slack_url: 'www.slack.com',
-        team_name: 'QA',
-      },
+      user: globalState.user.profileUser,
       getUserById: jest.fn(),
       ...propOverrides
     };
@@ -73,7 +62,7 @@ describe('ProfilePage', () => {
     });
 
     it('creates text with given message', () => {
-      expect(shallow(content).find('text').text()).toEqual('Empty message');
+      expect(shallow(content).find('label').text()).toEqual('Empty message');
     });
   });
 
@@ -119,19 +108,13 @@ describe('ProfilePage', () => {
     });
 
     it('does not render Avatar if user.display_name is empty string', () => {
+
+      const userCopy = {
+        ...globalState.user.profileUser,
+        display_name: "",
+      } ;
       const wrapper = setup({
-        user: {
-          user_id: 'test0',
-          display_name: '',
-          email: 'test@test.com',
-          github_name: 'githubName',
-          is_active: true,
-          manager_name: 'Test Manager',
-          profile_url: 'www.test.com',
-          role_name: 'Tester',
-          slack_url: 'www.slack.com',
-          team_name: 'QA',
-        }
+        user: userCopy,
       }).wrapper;
       expect(wrapper.find('#profile-avatar').children().exists()).toBeFalsy();
     });
@@ -141,19 +124,12 @@ describe('ProfilePage', () => {
     });
 
     it('renders Flag with correct props if user not active', () => {
+      const userCopy = {
+        ...globalState.user.profileUser,
+        is_active: false,
+      };
       const wrapper = setup({
-        user: {
-          user_id: 'test0',
-          display_name: '',
-          email: 'test@test.com',
-          github_name: 'githubName',
-          is_active: false,
-          manager_name: 'Test Manager',
-          profile_url: 'www.test.com',
-          role_name: 'Tester',
-          slack_url: 'www.slack.com',
-          team_name: 'QA',
-        }
+        user: userCopy,
       }).wrapper;
       expect(wrapper.find('#profile-title').find(Flag).props()).toMatchObject({
         caseType: 'sentenceCase',

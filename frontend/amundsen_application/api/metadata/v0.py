@@ -13,9 +13,10 @@ from amundsen_application.models.user import load_user, dump_user
 
 from amundsen_application.api.utils.request_utils import get_query_param, request_wrapper
 
+
 LOGGER = logging.getLogger(__name__)
 
-REQUEST_SESSION_TIMEOUT = 10
+REQUEST_SESSION_TIMEOUT_SEC = 3
 
 metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
@@ -23,6 +24,7 @@ TABLE_ENDPOINT = '/table'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
 POPULAR_TABLES_ENDPOINT = '/popular_tables/'
 TAGS_ENDPOINT = '/tags/'
+USER_ENDPOINT = '/user'
 
 
 def _get_table_endpoint() -> str:
@@ -72,7 +74,7 @@ def popular_tables() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -124,7 +126,7 @@ def _send_metadata_get_request(url: str) -> Response:
                            url=url,
                            client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                            headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                           timeout_sec=REQUEST_SESSION_TIMEOUT)
+                           timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
 
 def _get_partition_data(watermarks: Dict) -> Dict:
@@ -238,7 +240,7 @@ def _update_table_owner(*, table_key: str, method: str, owner: str) -> Dict[str,
                         url=url,
                         client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                         headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                        timeout_sec=REQUEST_SESSION_TIMEOUT)
+                        timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         # TODO: Figure out a way to get this payload from flask.jsonify which wraps with app's response_class
         return {'msg': 'Updated owner'}
@@ -275,7 +277,7 @@ def get_last_indexed() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -305,7 +307,7 @@ def get_table_description() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -337,7 +339,7 @@ def get_column_description() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -379,7 +381,7 @@ def put_table_description() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -421,7 +423,7 @@ def put_column_description() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -452,7 +454,7 @@ def get_tags() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -497,7 +499,7 @@ def update_table_tags() -> Response:
                                    url=url,
                                    client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                                    headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT)
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
 
         status_code = response.status_code
 
@@ -516,7 +518,40 @@ def update_table_tags() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-# TODO: Implement
 @metadata_blueprint.route('/user', methods=['GET'])
 def get_user() -> Response:
-    return make_response(jsonify({'msg': 'Not implemented'}), HTTPStatus.NOT_IMPLEMENTED)
+
+    @action_logging
+    def _log_get_user(*, user_id: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        user_id = get_query_param(request.args, 'user_id')
+        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
+
+        _log_get_user(user_id=user_id)
+
+        response = request_wrapper(method='GET',
+                                   url=url,
+                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
+                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
+                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
+
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(user_id)
+            logging.error(message)
+
+        payload = {
+            'msg': message,
+            'user': dump_user(load_user(response.json())),
+        }
+        return make_response(jsonify(payload), status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        payload = jsonify({'msg': message})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

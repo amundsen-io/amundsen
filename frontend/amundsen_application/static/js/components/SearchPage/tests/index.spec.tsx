@@ -457,17 +457,17 @@ describe('SearchPage', () => {
       content = shallow(wrapper.instance().renderPopularTables());
     });
     it('renders correct label for content', () => {
-      expect(content.children().at(0).children().at(0).find('label').text()).toEqual(POPULAR_TABLES_LABEL);
+      expect(content.children().at(0).find('label').text()).toEqual(POPULAR_TABLES_LABEL);
     });
 
     it('renders InfoButton with correct props', () => {
-      expect(content.children().at(0).children().at(0).find(InfoButton).props()).toMatchObject({
+      expect(content.children().at(0).find(InfoButton).props()).toMatchObject({
         infoText: POPULAR_TABLES_INFO_TEXT,
       });
     });
 
     it('renders SearchList with correct props', () => {
-      expect(content.children().at(0).children().find(SearchList).props()).toMatchObject({
+      expect(content.children().find(SearchList).props()).toMatchObject({
         results: props.popularTables,
         params: {
           source: POPULAR_TABLES_SOURCE_NAME,
@@ -483,11 +483,11 @@ describe('SearchPage', () => {
       const content = shallow(wrapper.instance().renderSearchResults());
       const expectedTabConfig = [
         {
-          title: `Tables (${ props.tables.total_results })`,
+          title: `${TABLE_RESOURCE_TITLE} (${ props.tables.total_results })`,
           key: ResourceType.table,
-          content: wrapper.instance().getTabContent(props.tables, 'tables'),
+          content: wrapper.instance().getTabContent(props.tables, TABLE_RESOURCE_TITLE),
         }
-      ]
+      ];
       expect(content.find(TabsComponent).props()).toMatchObject({
         activeKey: wrapper.state().selectedTab,
         defaultTab: ResourceType.table,
