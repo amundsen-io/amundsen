@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import * as Avatar from 'react-avatar';
 import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
 
@@ -25,7 +26,6 @@ import TableDescEditableText from './TableDescEditableText';
 import WatermarkLabel from "./WatermarkLabel";
 import { logClick } from 'ducks/utilMethods';
 
-import Avatar from 'react-avatar';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 

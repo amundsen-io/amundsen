@@ -38,12 +38,6 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
               <div className="main-title truncated">{ `${table.schema_name}.${table.name}`}</div>
               <div className="description truncated">{ table.description }</div>
             </div>
-            {/*<div className={ hasLastUpdated? "hidden-xs col-sm-3 col-md-4" : "hidden-xs col-sm-6"}>*/}
-              {/*<div className="secondary-title">Frequent Users</div>*/}
-              {/*<div className="description truncated">*/}
-                {/*<label> </label>*/}
-              {/*</div>*/}
-            {/*</div>*/}
             {
               hasLastUpdated &&
               <div className="hidden-xs col-sm-3 col-md-2">

@@ -2,73 +2,93 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
 import TableListItem, { TableListItemProps } from '../';
 import { ResourceType } from '../../types';
 
 describe('TableListItem', () => {
+  const setup = (propOverrides?: Partial<TableListItemProps>) => {
+    const props: TableListItemProps = {
+      logging: { source: 'src', index: 0 },
+      table: {
+        type: ResourceType.table,
+        cluster: '',
+        database: '',
+        description: 'I am the description',
+        key: '',
+        last_updated_epoch: 1553829681,
+        name: 'tableName',
+        schema_name: 'tableSchema',
+      },
+      ...propOverrides
+    };
+    const wrapper = shallow<TableListItem>(<TableListItem {...props} />);
+    return { props, wrapper };
+  };
+
+  describe('render', () => {
     let props: TableListItemProps;
-    let subject;
+    let wrapper;
 
-    beforeEach(() => {
-        props = {
-          logging: { source: 'src', index: 0 },
-          table: {
-            type: ResourceType.table,
-            cluster: '',
-            database: '',
-            description: 'I am the description',
-            key: '',
-            last_updated_epoch: null,
-            name: 'tableName',
-            schema_name: 'tableSchema',
-          },
-        }
-        subject = shallow(<TableListItem {...props} />);
+    beforeAll(() => {
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
+    });
+    it('renders item as Link', () => {
+      expect(wrapper.find(Link).exists()).toBeTruthy();
     });
 
-    describe('render', () => {
-        it('renders item as Link', () => {
-          expect(subject.find(Link).exists()).toBeTruthy();
-        });
-
-        it('renders table name', () => {
-          expect(subject.find('.content').children().at(0).children().at(0).text()).toEqual('tableSchema.tableName');
-        });
-
-        it('renders table description', () => {
-          expect(subject.find('.content').children().at(0).children().at(1).text()).toEqual('I am the description');
-        });
-
-        it('renders secondary title if table has last_updated_epoch ', () => {
-          props.table.last_updated_epoch = 1553829681;
-          subject.setProps(props);
-          expect(subject.find('.content').children().at(1).children().at(0).text()).toEqual('Last Updated');
-        });
-
-        it('renders secondary description w/ getDateLabel value if table has last_updated_epoch ', () => {
-          subject.instance().getDateLabel = jest.fn(() => 'Mar 28, 2019')
-          props.table.last_updated_epoch = 1553829681;
-          subject.setProps(props);
-          expect(subject.find('.content').children().at(1).children().at(1).text()).toEqual('Mar 28, 2019');
-        });
+    it('renders table name', () => {
+      expect(wrapper.find('.content').children().at(0).children().at(0).text()).toEqual('tableSchema.tableName');
     });
 
-    describe('getDateLabel', () => {
-        it('getDateLabel returns correct string', () => {
-          props.table.last_updated_epoch = 1553829681;
-          subject.setProps(props);
-          /* Note: Jest will convert date to UTC, expect to see different strings for an epoch value in the tests vs UI*/
-          expect(subject.instance().getDateLabel()).toEqual('Mar 29, 2019');
-        });
+    it('renders table description', () => {
+      expect(wrapper.find('.content').children().at(0).children().at(1).text()).toEqual('I am the description');
     });
 
-    describe('getLink', () => {
-        it('getLink returns correct string', () => {
-          const { table, logging } = props;
-          expect(subject.instance().getLink()).toEqual(`/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}?index=${logging.index}&source=${logging.source}`);
-        });
+    describe('if props.table has last_updated_epoch', () => {
+      it('renders Last Update title', () => {
+        expect(wrapper.find('.content').children().at(1).children().at(0).text()).toEqual('Last Updated');
+      });
+
+      /*it('renders getDateLabel value', () => {
+        wrapper.update();
+        expect(wrapper.find('.content').children().at(1).children().at(1).text()).toEqual('Mar 29, 2019');
+      });*/
     });
+
+    describe('if props.table does not have last_updated_epoch', () => {
+      it('does not render Last Updated section', () => {
+        const { props, wrapper } = setup({ table: {
+          type: ResourceType.table,
+          cluster: '',
+          database: '',
+          description: 'I am the description',
+          key: '',
+          last_updated_epoch: null,
+          name: 'tableName',
+          schema_name: 'tableSchema',
+        }});
+        expect(wrapper.find('.content').children().at(1).exists()).toBeFalsy();
+      });
+    });
+  });
+
+  /* Note: Jest will convert date to UTC, expect to see different strings for an epoch value in the tests vs UI*/
+  /*describe('getDateLabel', () => {
+    it('getDateLabel returns correct string', () => {
+      const { props, wrapper } = setup();
+      expect(wrapper.instance().getDateLabel()).toEqual('Mar 29, 2019');
+    });
+  });*/
+
+  describe('getLink', () => {
+    it('getLink returns correct string', () => {
+      const { props, wrapper } = setup();
+      const { table, logging } = props;
+      expect(wrapper.instance().getLink()).toEqual(`/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}?index=${logging.index}&source=${logging.source}`);
+    });
+  });
 });

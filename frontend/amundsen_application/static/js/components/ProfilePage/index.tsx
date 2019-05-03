@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
-import Avatar from 'react-avatar';
+import * as Avatar from 'react-avatar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -38,6 +38,10 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
   componentDidMount() {
     this.props.getUserById(this.userId);
   }
+
+  getUserId = () => {
+    return this.userId;
+  };
 
   // TODO: consider moving logic for empty content into Tab component
   createEmptyTabMessage = (message: string) => {
