@@ -203,7 +203,6 @@ class Neo4jCsvPublisher(Publisher):
                 # If label is seen for the first time, try creating unique index
                 if label not in self.labels:
                     tx.commit()  # Transaction needs to be committed as index update will make transaction to abort.
-                    tx.close()
                     LOGGER.info('Committed {} records'.format(count + 1))
 
                     self._try_create_index(label)
@@ -214,7 +213,6 @@ class Neo4jCsvPublisher(Publisher):
                 tx = self._execute_statement(stmt, tx, count)
 
         tx.commit()
-        tx.close()
         LOGGER.info('Committed {} records'.format(count + 1))
 
     def is_create_only_node(self, node_record):
@@ -271,7 +269,6 @@ class Neo4jCsvPublisher(Publisher):
                                              expect_result=self._confirm_rel_created)
 
         tx.commit()
-        tx.close()
         LOGGER.info('Committed {} records'.format(count + 1))
 
     def create_relationship_merge_statement(self, rel_record):
@@ -369,7 +366,6 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
 
             if count > 1 and count % self._transaction_size == 0:
                 tx.commit()
-                tx.close()
                 LOGGER.info('Committed {} records so far'.format(count))
                 return self._session.begin_transaction()
 
