@@ -128,7 +128,9 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
             <Tooltip id='error-tooltip'>
               <div className="error-tooltip">
                 <text>This text is out of date, please refresh the component</text>
-                <button onClick={this.refreshText}>&#xe031;</button>
+                <button onClick={this.refreshText} className="btn btn-flat-icon">
+                  <img className='icon icon-refresh'/>
+                </button>
               </div>
             </Tooltip>
           </Overlay>
