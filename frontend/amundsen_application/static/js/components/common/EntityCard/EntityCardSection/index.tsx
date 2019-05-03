@@ -22,7 +22,7 @@ class EntityCardSection extends React.Component<EntityCardSectionProps, EntityCa
     super(props);
     this.state = {
       readOnly: true,
-    }
+    };
 
     this.editButton = React.createRef();
     this.toggleEditMode = this.toggleEditMode.bind(this);

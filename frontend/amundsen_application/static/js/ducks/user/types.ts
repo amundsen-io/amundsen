@@ -1,17 +1,19 @@
 // Setting up different types for now so we can iterate faster as shared params change
 export interface User {
-  user_id: string;
+  email: string;
+  employee_type: string;
   display_name: string;
-  email?: string;
-  first_name?: string;
-  github_name?: string;
-  is_active?: boolean;
-  last_name?: string;
-  manager_name?: string;
-  profile_url?: string;
+  first_name: string;
+  full_name: string;
+  github_username: string;
+  is_active: boolean;
+  last_name: string;
+  manager_fullname: string;
+  profile_url: string;
   role_name?: string;
-  slack_url?: string;
-  team_name?: string;
+  slack_id: string;
+  team_name: string;
+  user_id: string;
 }
 export type LoggedInUser = User & {};
 

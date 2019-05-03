@@ -13,35 +13,36 @@ redesign how User handles names
 
 
 class User:
-    # TODO: alphabetize after we have the real params
     def __init__(self,
-                 first_name: str = None,
-                 last_name: str = None,
-                 email: str = None,
                  display_name: str = None,
-                 profile_url: str = None,
-                 user_id: str = None,
-                 github_name: str = None,
+                 email: str = None,
+                 employee_type: str = None,
+                 first_name: str = None,
+                 full_name: str = None,
+                 github_username: str = None,
                  is_active: bool = True,
-                 manager_name: str = None,
+                 last_name: str = None,
+                 manager_fullname: str = None,
+                 profile_url: str = None,
                  role_name: str = None,
-                 slack_url: str = None,
-                 team_name: str = None) -> None:
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
+                 slack_id: str = None,
+                 team_name: str = None,
+                 user_id: str = None) -> None:
         self.display_name = display_name
-        self.profile_url = profile_url
-
-        # TODO: modify the following names as needed after backend support is implemented
-        self.user_id = user_id
-        self.github_name = github_name
+        self.email = email
+        self.employee_type = employee_type
+        self.first_name = first_name
+        self.full_name = full_name
+        self.github_username = github_username
         self.is_active = is_active
-        self.manager_name = manager_name
+        self.last_name = last_name
+        self.manager_fullname = manager_fullname
+        self.profile_url = profile_url
         self.role_name = role_name
-        self.slack_url = slack_url
+        self.slack_id = slack_id
         self.team_name = team_name
-        # TODO: frequent_used, bookmarked, & owned resources
+        self.user_id = user_id
+        # TODO: Add frequent_used, bookmarked, & owned resources
 
     def to_json(self) -> Response:
         user_info = dump_user(self)
@@ -49,40 +50,34 @@ class User:
 
 
 class UserSchema(Schema):
-    first_name = fields.Str(allow_none=True)
-    last_name = fields.Str(allow_none=True)
+    display_name = fields.Str(allow_none=True)
     email = fields.Str(allow_none=True)
-    display_name = fields.Str(required=True)
-    profile_url = fields.Str(allow_none=True)
-
-    user_id = fields.Str(required=True)
-    github_name = fields.Str(allow_none=True)
+    employee_type = fields.Str(allow_none=True)
+    first_name = fields.Str(allow_none=True)
+    full_name = fields.Str(allow_none=True)
+    github_username = fields.Str(allow_none=True)
     is_active = fields.Bool(allow_none=True)
-    manager_name = fields.Str(allow_none=True)
+    last_name = fields.Str(allow_none=True)
+    manager_fullname = fields.Str(allow_none=True)
+    profile_url = fields.Str(allow_none=True)
     role_name = fields.Str(allow_none=True)
-    slack_url = fields.Str(allow_none=True)
+    slack_id = fields.Str(allow_none=True)
     team_name = fields.Str(allow_none=True)
+    user_id = fields.Str(required=True)
 
     @pre_load
-    def generate_display_name(self, data: Dict) -> Dict:
-        if data.get('display_name', None):
-            return data
+    def preprocess_data(self, data: Dict) -> Dict:
+        if not data.get('user_id', None):
+            data['user_id'] = data.get('email', None)
 
-        if data.get('first_name', None) or data.get('last_name', None):
-            data['display_name'] = "{} {}".format(data.get('first_name', ''), data.get('last_name', '')).strip()
-            return data
+        if not data.get('profile_url', None):
+            data['profile_url'] = ''
+            if app.config['GET_PROFILE_URL']:
+                data['profile_url'] = app.config['GET_PROFILE_URL'](data['user_id'])
 
-        data['display_name'] = data.get('email', None)
-        return data
+        if not data.get('display_name', None):
+            data['display_name'] = data.get('full_name', data.get('email'))
 
-    @pre_load
-    def generate_profile_url(self, data: Dict) -> Dict:
-        if data.get('profile_url', None):
-            return data
-
-        data['profile_url'] = ''
-        if app.config['GET_PROFILE_URL']:
-            data['profile_url'] = app.config['GET_PROFILE_URL'](data['display_name'])
         return data
 
     @post_load
@@ -92,7 +87,8 @@ class UserSchema(Schema):
     @validates_schema
     def validate_user(self, data: Dict) -> None:
         if not data.get('display_name', None):
-            raise ValidationError('One or more must be provided: "first_name", "last_name", "email", "display_name"')
+            raise ValidationError('"display_name" must be provided')
+
         if not data.get('user_id', None):
             raise ValidationError('"user_id" must be provided')
 

@@ -6,7 +6,7 @@ from http import HTTPStatus
 
 from amundsen_application import create_app
 from amundsen_application.api.metadata.v0 import \
-    TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT, POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT
+    TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT, POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT
 
 local_app = create_app('amundsen_application.config.LocalConfig')
 
@@ -164,6 +164,36 @@ class MetadataTest(unittest.TestCase):
                 "tag_name": "tag_4"
             }
         ]
+        self.mock_user = {
+            "email": "test@test.com",
+            "employee_type": "FTE",
+            "first_name": "Firstname",
+            "full_name": "Firstname Lastname",
+            "github_username": "githubusername",
+            "is_active": True,
+            "last_name": "Lastname",
+            "manager_fullname": "Manager Fullname",
+            "role_name": "SWE",
+            "slack_id": "slackuserid",
+            "team_name": "Amundsen",
+            "user_id": "testuserid",
+        }
+        self.expected_parsed_user = {
+            "display_name": "Firstname Lastname",
+            "email": "test@test.com",
+            "employee_type": "FTE",
+            "first_name": "Firstname",
+            "full_name": "Firstname Lastname",
+            "github_username": "githubusername",
+            "is_active": True,
+            "last_name": "Lastname",
+            "manager_fullname": "Manager Fullname",
+            "profile_url": "https://test-profile-url.com",
+            "role_name": "SWE",
+            "slack_id": "slackuserid",
+            "team_name": "Amundsen",
+            "user_id": "testuserid",
+        }
 
     @responses.activate
     def test_popular_tables_success(self) -> None:
@@ -475,3 +505,29 @@ class MetadataTest(unittest.TestCase):
                 }
             )
             self.assertEquals(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    def test_get_user_failure(self) -> None:
+        """
+        Test get_user fails when no user_id is specified
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + USER_ENDPOINT + '/testuser'
+        responses.add(responses.GET, url, json=self.mock_user, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user')
+            self.assertEquals(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    @responses.activate
+    def test_get_user_success(self) -> None:
+        """
+        Test get_user success
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + USER_ENDPOINT + '/testuser'
+        responses.add(responses.GET, url, json=self.mock_user, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user', query_string=dict(user_id='testuser'))
+            data = json.loads(response.data)
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('user'), self.expected_parsed_user)
