@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = '1.0.14'
+__version__ = '1.0.15'
 
 
 setup(
@@ -32,7 +32,7 @@ setup(
         'pyhocon==0.3.42',
         'pytest==3.6.0',
         'six',
-        'neo4j-driver==1.6.0',
+        'neo4j-driver==1.7.2',
         'antlr4-python2-runtime==4.7.1',
         'statsd==3.2.1',
         'retrying==1.3.3'
