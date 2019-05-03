@@ -27,9 +27,9 @@ describe('NotFoundPage', () => {
         expect(subject.find('h1').text()).toEqual('404 Page Not Found');
     });
 
-    it('renders span with glyphicon', () => {
-        expect(subject.find('span').props()).toMatchObject({
-          className: 'glyphicon glyphicon-exclamation-sign',
+    it('renders image icon', () => {
+        expect(subject.find('img').props()).toMatchObject({
+          className: 'icon icon-alert',
         });
     });
 });

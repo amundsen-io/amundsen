@@ -54,13 +54,11 @@
 }
 
 .error-tooltip {
-    display: flex;
-    padding: 5px;
+  display: flex;
+  padding: 5px;
 }
 .error-tooltip button {
   height: 24px;
   width: 24px;
-  font-size: 16px;
   margin: auto;
-  font-family: 'Glyphicons Halflings';
 }

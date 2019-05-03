@@ -16,6 +16,12 @@ img.icon {
 
   // TODO - Add other icons here
 
+
+  &.icon-alert {
+    -webkit-mask-image: url('/static/images/icons/Alert-Triangle.svg');
+    mask-image: url('/static/images/icons/Alert-Triangle.svg');
+  }
+
   &.icon-delete {
     -webkit-mask-image: url('/static/images/icons/Trash.svg');
     mask-image: url('/static/images/icons/Trash.svg');
@@ -59,6 +65,11 @@ img.icon {
   &.icon-preview {
     -webkit-mask-image: url('/static/images/icons/Preview.svg');
     mask-image: url('/static/images/icons/Preview.svg');
+  }
+
+  &.icon-refresh {
+    -webkit-mask-image: url('/static/images/icons/Refresh-cw.svg');
+    mask-image: url('/static/images/icons/Refresh-cw.svg');
   }
 
   &.icon-right {
