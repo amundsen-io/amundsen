@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Avatar from 'react-avatar';
+import * as Avatar from 'react-avatar';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

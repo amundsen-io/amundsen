@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Avatar from 'react-avatar';
+import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
 import { LoggingParams, UserResource} from '../types';
