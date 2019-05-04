@@ -15,28 +15,30 @@
 
 
 // Colors
-$brand-color-1: #f2f5fe !default;
-$brand-color-2: #cad6ff !default;
-$brand-color-3: #5679ff !default;
-$brand-color-4: #3250c8 !default;
-$brand-color-5: #28409f !default;
+$brand-color-1: #A9E1FF !default;
+$brand-color-2: #82D2FF !default;
+$brand-color-3: #3A97D3 !default;
+$brand-color-4: #2277B3 !default;
+$brand-color-5: #09457B !default;
 
-$gray-base:     #000 !default;
-$gray-darker:   lighten($gray-base, 10%) !default; // #1a1a1a
-$gray-dark:     lighten($gray-base, 20%) !default; // #333
-$gray:          lighten($gray-base, 35%) !default; // #595959
-$gray-light:    lighten($gray-base, 55%) !default; // #8c8c8c
-$gray-lighter:  lighten($gray-base, 75%) !default; // #bfbfbf
-$gray-lightest: lighten($gray-base, 95%) !default; // #f2f2f2
+$brand-primary: $brand-color-4 !default;
+
+$gray-base:     #292936 !default;
+$gray-darker:   #63637B !default;
+$gray-dark:     #9191A8 !default;
+$gray:          #ACACC0 !default;
+$gray-light:    #CACAD9 !default;
+$gray-lighter:  #E7E7EF !default;
+$gray-lightest: #F4F4FA !default;
 
 
 // Scaffolding
 $body-bg:    #fff !default;
 // TODO - consider replacing $text-dark with $text-color
-$text-dark: $gray-dark !default;
-$text-color: $gray-dark !default;
-$text-medium: $gray !default;
-$text-light: $gray-lighter !default;
+$text-dark: $gray-base !default;
+$text-color: $gray-base !default;
+$text-medium: $gray-darker !default;
+$text-light: $gray-light !default;
 
 
 // Typography
@@ -69,14 +71,13 @@ $btn-primary-color-hover:  white !default;
 
 $btn-default-bg:           white !default;
 $btn-default-bg-hover:     $gray-lightest;
-$btn-default-border:       $gray-lighter !default;
-$btn-default-border-hover: $gray-light !default;
-$btn-default-color:        $gray-dark !default;
-$btn-default-color-hover:  $gray-dark !default;
+$btn-default-border:       $gray-light !default;
+$btn-default-border-hover: $gray !default;
+$btn-default-color:        $gray-base !default;
 
 
 // List Group
-$list-group-border:        $gray-lighter !default;
+$list-group-border:        $gray-light !default;
 $list-group-border-radius: 0 !default;
 
 
