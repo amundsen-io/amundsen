@@ -1,4 +1,10 @@
 # Amundsen Search service
+[![PyPI version](https://badge.fury.io/py/amundsen-search.svg)](https://badge.fury.io/py/amundsen-search)
+[![Build Status](https://api.travis-ci.com/lyft/amundsensearchlibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsensearchlibrary)
+[![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+[![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://bit.ly/2FVq37z)
+
 Amundsen Search service serves a Restful API and is responsible for searching metadata. The service leverages [Elasticsearch](https://www.elastic.co/products/elasticsearch "Elasticsearch") for most of it's search capabilites.
 
 ## Instructions to start the Search service from distribution
