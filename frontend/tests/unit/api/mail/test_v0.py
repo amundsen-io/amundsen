@@ -1,7 +1,7 @@
 import unittest
 
 from http import HTTPStatus
-from typing import List
+from typing import Dict, List
 
 from flask import Response, jsonify, make_response
 
@@ -20,7 +20,8 @@ class MockMailClient(BaseMailClient):
                    recipients: List = [],
                    subject: str = None,
                    text: str = None,
-                   html: str = None) -> Response:
+                   html: str = None,
+                   optional_data: Dict = {}) -> Response:
         return make_response(jsonify({}), self.status_code)
 
 
@@ -33,7 +34,8 @@ class MockBadClient(BaseMailClient):
                    recipients: List = [],
                    subject: str = None,
                    text: str = None,
-                   html: str = None) -> Response:
+                   html: str = None,
+                   optional_data: Dict = {}) -> Response:
         raise Exception('Bad client')
 
 

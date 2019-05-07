@@ -1,0 +1,146 @@
+import * as React from 'react';
+
+import { shallow } from 'enzyme';
+
+import AbstractFeedbackForm, { FeedbackFormProps } from 'components/Feedback/FeedbackForm';
+import { SendingState } from 'components/Feedback/types';
+import { BugReportFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
+import {
+  BUG_SUMMARY_LABEL,
+  BUG_SUMMARY_PLACEHOLDER,
+  REPRO_STEPS_LABEL,
+  REPRO_STEPS_PLACEHOLDER,
+  SUBJECT_LABEL,
+  SUBJECT_PLACEHOLDER,
+  SUBMIT_TEXT,
+} from 'components/Feedback/constants';
+
+import globalState from 'fixtures/globalState';
+
+describe('BugReportFeedbackForm', () => {
+  const setup = () => {
+    const props: FeedbackFormProps = {
+      sendState: SendingState.IDLE,
+      submitFeedback: jest.fn(),
+      resetFeedback: jest.fn(),
+    };
+    return shallow<BugReportFeedbackForm>(<BugReportFeedbackForm {...props} />)
+  };
+
+  it('is instance of AbstractFeedbackForm', () => {
+    expect(setup().instance()).toBeInstanceOf(AbstractFeedbackForm);
+  });
+
+  describe('renderCustom', () => {
+    let wrapper;
+    let form;
+    beforeAll(() => {
+      wrapper = setup();
+      form = wrapper.find('form');
+    });
+
+    it('renders form with correct props', () => {
+      expect(form.props()).toMatchObject({
+        id: AbstractFeedbackForm.FORM_ID,
+        onSubmit: wrapper.instance().submitForm,
+      });
+    });
+
+    it('renders feedback-type input as first child with correct props', () => {
+      expect(form.children().at(0).find('input').props()).toMatchObject({
+        type: 'hidden',
+        name: 'feedback-type',
+        value: 'Bug Report'
+      });
+    });
+
+    describe('renders subject input as second child', () => {
+      it('renders correct label', () => {
+        expect(form.children().at(1).find('label').text()).toEqual(SUBJECT_LABEL);
+      });
+
+      it('renders input with correct props', () => {
+        expect(form.children().at(1).find('input').props()).toMatchObject({
+          type: 'text',
+          name: 'subject',
+          className: 'form-control',
+          required: true,
+          placeholder: SUBJECT_PLACEHOLDER,
+        });
+      });
+    });
+
+    describe('renders bug-summary input as third child', () => {
+      it('renders correct label', () => {
+        expect(form.children().at(2).find('label').text()).toEqual(BUG_SUMMARY_LABEL);
+      });
+
+      it('renders textarea with correct props', () => {
+        expect(form.children().at(2).find('textarea').props()).toMatchObject({
+          name: 'bug-summary',
+          className: 'form-control',
+          required: true,
+          rows: 3,
+          maxLength: 2000,
+          placeholder: BUG_SUMMARY_PLACEHOLDER,
+        });
+      });
+    });
+
+    describe('renders repro-steps input as fourth child', () => {
+      it('renders correct label', () => {
+        expect(form.children().at(3).find('label').text()).toEqual(REPRO_STEPS_LABEL);
+      });
+
+      it('renders textarea with correct props', () => {
+        expect(form.children().at(3).find('textarea').props()).toMatchObject({
+          name: 'repro-steps',
+          className: 'form-control',
+          required: true,
+          rows: 5,
+          maxLength: 2000,
+          placeholder: REPRO_STEPS_PLACEHOLDER,
+        });
+      });
+    });
+
+    it('renders submit button with correct props', () => {
+      expect(form.find('button').props()).toMatchObject({
+        className: 'btn btn-default submit',
+        type: 'submit',
+      });
+    });
+
+    it('renders submit button with correct text', () => {
+      expect(form.find('button').text()).toEqual(SUBMIT_TEXT)
+    });
+  });
+});
+
+describe('mapDispatchToProps', () => {
+  let dispatch;
+  let result;
+  beforeAll(() => {
+    dispatch = jest.fn(() => Promise.resolve());
+    result = mapDispatchToProps(dispatch);
+  });
+
+  it('sets submitFeedback on the props', () => {
+    expect(result.submitFeedback).toBeInstanceOf(Function);
+  });
+
+  it('sets resetFeedback on the props', () => {
+    expect(result.resetFeedback).toBeInstanceOf(Function);
+  });
+});
+
+describe('mapStateToProps', () => {
+  let result;
+  beforeAll(() => {
+    result = mapStateToProps(globalState);
+  });
+
+  it('sets sendState on the props', () => {
+    expect(result.sendState).toEqual(globalState.feedback.sendState);
+  });
+});

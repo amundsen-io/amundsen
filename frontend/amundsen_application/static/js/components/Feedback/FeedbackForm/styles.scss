@@ -30,11 +30,11 @@
 .nps-label {
   font-family: $font-family-sans-serif-bold;
   font-weight: $font-weight-sans-serif-bold;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   width: 60px;
 }
 
-.success-message {
+.status-message {
   font-family: $font-family-sans-serif-bold;
   font-weight: $font-weight-sans-serif-bold;
   text-align: center;
@@ -52,8 +52,13 @@ input[type="radio"] {
   margin: 5px;
 }
 
+input[type="text"] {
+  color: $text-medium !important;
+}
+
 textarea {
   width: 100%;
+  color: $text-medium !important;
   border: 1px solid $gray-lighter;
   border-radius: 5px;
   padding: 10px;

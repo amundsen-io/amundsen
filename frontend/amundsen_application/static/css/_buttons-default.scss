@@ -91,6 +91,29 @@
     }
   }
 
+  &.btn-close {
+    height: 18px;
+    width: 18px;
+    margin: 4px 0 0 0;
+    padding: 0;
+
+    background-color: $gray-light;
+    border: none;
+    mask-image: url('/static/images/icons/Close.svg');
+    -webkit-mask-image: url('/static/images/icons/Close.svg');
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-position: center;
+    -webkit-mask-position: center;
+    mask-size: 110%;
+    -webkit-mask-size: 110%;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: $gray-dark;
+    }
+  }
 
   &.disabled,
   &:disabled {

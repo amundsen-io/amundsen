@@ -15,6 +15,10 @@ function* submitFeedbackWorker(action: SubmitFeedbackRequest): SagaIterator {
     yield put({ type: ResetFeedback.ACTION });
   } catch(error) {
     yield put({ type: SubmitFeedback.FAILURE });
+
+    // TODO - yield delay(2000) on redux-saga upgrade
+    yield call(delay, 2000);
+    yield put({ type: ResetFeedback.ACTION });
   }
 }
 
