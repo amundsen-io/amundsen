@@ -112,6 +112,42 @@ def load_col_data_from_csv(file_name):
         conn.commit()
 
 
+def load_user_data_from_csv(file_name):
+    conn = create_connection(DB_FILE)
+    if conn:
+        cur = conn.cursor()
+        cur.execute('drop table if exists test_user_metadata')
+        cur.execute('create table if not exists test_user_metadata '
+                    '(email VARCHAR(64) NOT NULL , '
+                    'first_name VARCHAR(64) NOT NULL , '
+                    'last_name VARCHAR(64) NOT NULL , '
+                    'name VARCHAR(64) NOT NULL , '
+                    'github_username VARCHAR(64) NOT NULL , '
+                    'team_name VARCHAR(64) NOT NULL, '
+                    'employee_type VARCHAR(64) NOT NULL,'
+                    'manager_email VARCHAR(64) NOT NULL,'
+                    'slack_id VARCHAR(64) NOT NULL)')
+        file_loc = 'example/sample_data/' + file_name
+        with open(file_loc, 'r') as fin:
+            dr = csv.DictReader(fin)
+            to_db = [(i['email'],
+                      i['first_name'],
+                      i['last_name'],
+                      i['name'],
+                      i['github_username'],
+                      i['team_name'],
+                      i['employee_type'],
+                      i['manager_email'],
+                      i['slack_id']) for i in dr]
+
+        cur.executemany("INSERT INTO test_user_metadata ("
+                        "email, first_name, last_name, name, github_username, "
+                        "team_name, employee_type, "
+                        "manager_email, slack_id ) VALUES "
+                        "(?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
+        conn.commit()
+
+
 # todo: Add a second model
 def create_sample_job(table_name, model_name):
     sql = textwrap.dedent("""
@@ -209,6 +245,7 @@ def create_es_publisher_sample_job():
 if __name__ == "__main__":
     load_table_data_from_csv('sample_table.csv')
     load_col_data_from_csv('sample_col.csv')
+    load_user_data_from_csv('sample_user.csv')
     if create_connection(DB_FILE):
         # start table job
         job1 = create_sample_job('test_table_metadata',
@@ -220,6 +257,11 @@ if __name__ == "__main__":
                                  'example.models.test_column_model.TestColumnMetadata')
         job2.launch()
 
+        # start user job
+        job_user = create_sample_job('test_user_metadata',
+                                     'databuilder.models.user.User')
+        job_user.launch()
+
         # start Elasticsearch publish job
-        job3 = create_es_publisher_sample_job()
-        job3.launch()
+        job_es = create_es_publisher_sample_job()
+        job_es.launch()

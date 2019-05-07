@@ -1,0 +1,4 @@
+email,first_name,last_name,name,github_username,team_name,employee_type,manager_email,slack_id
+roald.amundsen@example.org,Roald,Amundsen,"Roald Amundsen",lyft,"Team Amundsen",sailor,"phboss@example.org",ramundzn
+chrisc@example.org,Christopher,Columbus,"Christopher Columbus",ChristopherColumbusFAKE,"Team Amundsen",sailor,"phboss@example.org",chrisc
+buzz@example.org,  Buzz,       Aldrin,  "Buzz Aldrin",BuzzAldrinFAKE,                  "Team Amundsen",astronaut,"phboss@example.org",buzz
