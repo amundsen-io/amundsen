@@ -4,8 +4,11 @@ python:
 install:
 - pip3 install -r requirements.txt
 - pip3 install mypy
+- pip3 install codecov
 script:
 - make test
+after_success:
+- codecov
 deploy:
   provider: pypi
   user: amundsen-dev
