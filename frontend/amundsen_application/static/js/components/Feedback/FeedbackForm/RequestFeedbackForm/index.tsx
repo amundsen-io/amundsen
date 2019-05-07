@@ -7,29 +7,40 @@ import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '../../F
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
 
+import {
+  FEATURE_SUMMARY_LABEL,
+  FEATURE_SUMMARY_PLACEHOLDER,
+  PROPOSITION_LABEL,
+  PROPOSITION_PLACEHOLDER,
+  SUBJECT_LABEL,
+  SUBJECT_PLACEHOLDER,
+  SUBMIT_TEXT,
+} from '../../constants';
 
 export class RequestFeedbackForm extends AbstractFeedbackForm {
   constructor(props) {
-    super(props)
+    super(props);
   }
-
+  
   renderCustom() {
     return (
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={ this.submitForm }>
         <input type="hidden" name="feedback-type" value="Feature Request"/>
         <div className="form-group">
-          <label>Feature Summary</label>
-          <textarea name="feature-summary" className="form-control" rows={3} required={ true }
-                    maxLength={ 2000 } placeholder="What feature are you requesting?"/>
+          <label>{SUBJECT_LABEL}</label>
+          <input type="text" name="subject" className="form-control" required={ true } placeholder={SUBJECT_PLACEHOLDER} />
         </div>
         <div className="form-group">
-          <label>Value Proposition</label>
+          <label>{FEATURE_SUMMARY_LABEL}</label>
+          <textarea name="feature-summary" className="form-control" rows={3} required={ true }
+                    maxLength={ 2000 } placeholder={FEATURE_SUMMARY_PLACEHOLDER} />
+        </div>
+        <div className="form-group">
+          <label>{PROPOSITION_LABEL}</label>
           <textarea name="value-prop" className="form-control" rows={5} required={ true }
-                    maxLength={ 2000 } placeholder="How does this feature add value?"/>
+                    maxLength={ 2000 } placeholder={PROPOSITION_PLACEHOLDER} />
         </div>
-        <div>
-          <button className="btn btn-default submit" type="submit">Submit</button>
-        </div>
+        <button className="btn btn-default submit" type="submit">{SUBMIT_TEXT}</button>
       </form>
     );
   }

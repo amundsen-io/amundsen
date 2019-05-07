@@ -7,9 +7,10 @@ import { ResetFeedbackRequest, SubmitFeedbackRequest } from 'ducks/feedback/type
 
 import { SendingState } from '../types';
 
-interface FeedbackFormState {
-  sendState: SendingState;
-}
+import {
+  SUBMIT_FAILURE_MESSAGE,
+  SUBMIT_SUCCESS_MESSAGE,
+} from '../constants';
 
 export interface StateFromProps {
   sendState: SendingState;
@@ -20,28 +21,15 @@ export interface DispatchFromProps {
   resetFeedback: () => ResetFeedbackRequest;
 }
 
-type FeedbackFormProps = StateFromProps & DispatchFromProps;
+export type FeedbackFormProps = StateFromProps & DispatchFromProps;
 
-abstract class AbstractFeedbackForm extends React.Component<FeedbackFormProps, FeedbackFormState> {
-  public static defaultProps: FeedbackFormProps = {
-    sendState: SendingState.IDLE,
-    submitFeedback: () => undefined,
-    resetFeedback: () => undefined,
-  };
+abstract class AbstractFeedbackForm extends React.Component<FeedbackFormProps> {
+  public static defaultProps: Partial<FeedbackFormProps> = {};
 
   static FORM_ID = "feedback-form";
 
   protected constructor(props) {
     super(props);
-
-    this.state = {
-      sendState: this.props.sendState
-    };
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { sendState } = nextProps;
-    return { sendState };
   }
 
   submitForm = (event) => {
@@ -52,13 +40,20 @@ abstract class AbstractFeedbackForm extends React.Component<FeedbackFormProps, F
   };
 
   render() {
-    if (this.state.sendState === SendingState.WAITING) {
+    if (this.props.sendState === SendingState.WAITING) {
       return <LoadingSpinner/>;
     }
-    if (this.state.sendState === SendingState.COMPLETE) {
+    if (this.props.sendState === SendingState.COMPLETE) {
       return (
-        <div className="success-message">
-          Your feedback has been successfully submitted
+        <div className="status-message">
+          {SUBMIT_SUCCESS_MESSAGE}
+        </div>
+      );
+    }
+    if (this.props.sendState === SendingState.ERROR) {
+      return (
+        <div className="status-message">
+          {SUBMIT_FAILURE_MESSAGE}
         </div>
       );
     }

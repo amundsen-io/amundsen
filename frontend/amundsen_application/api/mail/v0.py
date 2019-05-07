@@ -36,6 +36,7 @@ def feedback() -> Response:
         repro_steps = data.get('repro-steps')
         feature_summary = data.get('feature-summary')
         value_prop = data.get('value-prop')
+        subject = data.get('subject') or data.get('feedback-type')
 
         _feedback(feedback_type=feedback_type,
                   rating=rating,
@@ -43,9 +44,10 @@ def feedback() -> Response:
                   bug_summary=bug_summary,
                   repro_steps=repro_steps,
                   feature_summary=feature_summary,
-                  value_prop=value_prop)
+                  value_prop=value_prop,
+                  subject=subject)
 
-        response = mail_client.send_email(text=text_content, html=html_content)
+        response = mail_client.send_email(subject=subject, text=text_content, html=html_content, optional_data=data)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -69,6 +71,7 @@ def _feedback(*,
               bug_summary: str,
               repro_steps: str,
               feature_summary: str,
-              value_prop: str) -> None:
+              value_prop: str,
+              subject: str) -> None:
     """ Logs the content of the feedback form """
     pass  # pragma: no cover

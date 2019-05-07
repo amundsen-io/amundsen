@@ -6,47 +6,53 @@ import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
 
 import { Button, Panel } from 'react-bootstrap';
 
+import {
+  BUG_REPORT_TEXT,
+  BUTTON_CLOSE_TEXT,
+  FEEDBACK_TITLE,
+  FEEDBACK_TYPE_TEXT,
+  RATING_TEXT,
+  REQUEST_TEXT,
+} from './constants';
+
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-interface FeedbackProps {
+export interface FeedbackProps {
   content?: React.SFC<any>,
   title?: string,
 }
 
 interface FeedbackState {
-  open: boolean,
+  content: React.SFC<any>,
   feedbackType: FeedbackType,
-  content: React.SFC<any>
+  isOpen: boolean,
 }
 
-enum FeedbackType {
+export enum FeedbackType {
   Rating,
   Bug,
   Request,
 }
 
 export default class Feedback extends React.Component<FeedbackProps, FeedbackState> {
-  /* TODO: harcoded string that should be translatable/customizable */
   static defaultProps = {
     content: <RatingFeedbackForm />,
-    title: 'Product Feedback'
+    title: FEEDBACK_TITLE,
   };
 
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
-
     this.state = {
-      open: false,
+      isOpen: false,
       content: this.props.content,
       feedbackType: FeedbackType.Rating,
     };
   }
 
-  toggle() {
-   this.setState({ open: !this.state.open });
+  toggle = () => {
+    this.setState({ isOpen: !this.state.isOpen });
   }
 
   changeType = (type: FeedbackType) => (e) =>  {
@@ -65,42 +71,42 @@ export default class Feedback extends React.Component<FeedbackProps, FeedbackSta
   };
 
   render() {
-    const expandedClass = this.state.open ? 'expanded' : 'collapsed';
+    const expandedClass = this.state.isOpen ? 'expanded' : 'collapsed';
     return (
       <div className={`feedback-component ${expandedClass}`}>
         {
-          this.state.open &&
+          this.state.isOpen &&
           <div>
             <div className="feedback-header">
-              <button type="button" className="close" aria-label="Close" onClick={this.toggle}>
-                <span aria-hidden="true">&times;</span>
-                <span className="sr-only">Close</span>
-              </button>
               <div className="title">
                 {this.props.title.toUpperCase()}
               </div>
+              <button type="button" className="btn btn-close" aria-label={BUTTON_CLOSE_TEXT} onClick={this.toggle} />
             </div>
             <div className="text-center">
-              <div className="btn-group" role="group" aria-label="Feedback Type Selector">
+              <div className="btn-group" role="group" aria-label={FEEDBACK_TYPE_TEXT}>
                 <button type="button"
                         className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Rating? " active": "")}
                         onClick={this.changeType(FeedbackType.Rating)}>
-                  Rating</button>
+                  {RATING_TEXT}
+                </button>
                 <button type="button"
                         className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Bug? " active": "")}
                         onClick={this.changeType(FeedbackType.Bug)}>
-                  Bug Report</button>
+                  {BUG_REPORT_TEXT}
+                </button>
                 <button type="button"
                         className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Request? " active": "")}
                         onClick={this.changeType(FeedbackType.Request)}>
-                  Request</button>
+                  {REQUEST_TEXT}
+                </button>
               </div>
             </div>
             {this.state.content}
           </div>
         }
         {
-          !(this.state.open) &&
+          !(this.state.isOpen) &&
           <img className='icon-speech' src='/static/images/icons/Speech.svg' onClick={this.toggle}/>
         }
       </div>

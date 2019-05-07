@@ -38,8 +38,7 @@ export default function reducer(state: FeedbackReducerState = initialState, acti
     case SubmitFeedback.SUCCESS:
       return { sendState: SendingState.COMPLETE };
     case SubmitFeedback.FAILURE:
-      alert('Your feedback was not submitted, please try again');
-      return { sendState: SendingState.IDLE };
+      return { sendState: SendingState.ERROR };
     case ResetFeedback.ACTION:
       return { sendState: SendingState.IDLE };
     default:
