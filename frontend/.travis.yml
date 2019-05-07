@@ -7,8 +7,11 @@ matrix:
     - IS_DEPLOYABLE=true
     install:
     - pip3 install -r requirements3.txt
+    - pip3 install codecov
     script:
     - make test
+    after_success:
+    - codecov
   - language: node_js
     node_js:
     - '8'
@@ -18,10 +21,13 @@ matrix:
     - cd amundsen_application/static
     install:
     - npm install
+    - npm install codecov -g
     script:
     - npm run lint
     - npm run build
     - npm run test
+    after_success:
+    - codecov
 deploy:
   provider: pypi
   user: amundsen-dev
