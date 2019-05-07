@@ -3,9 +3,12 @@ language: python
 python: 3.7
 install:
 - pip3 install -r requirements.txt
+- pip3 install codecov
 - python3 setup.py install
 script:
 - make test
+after_success:
+- codecov
 deploy:
   provider: pypi
   user: amundsen-dev
@@ -15,3 +18,5 @@ deploy:
   on:
     tags: true
     repo: lyft/amundsenmetadatalibrary
+after_success:
+  - codecov
