@@ -33,7 +33,7 @@ import globalState from 'fixtures/globalState';
 describe('SearchPage', () => {
   const setStateSpy = jest.spyOn(SearchPage.prototype, 'setState');
 
-  const setup = (propOverrides?: Partial<SearchPageProps>, useMount?: boolean) => {
+  const setup = (propOverrides?: Partial<SearchPageProps>) => {
     const props: SearchPageProps = {
       searchTerm: globalState.search.search_term,
       popularTables: globalState.popularTables,
