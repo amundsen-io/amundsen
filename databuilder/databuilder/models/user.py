@@ -57,18 +57,18 @@ class User(Neo4jCsvSerializable):
                            then we will have a cron job to update the ex-employee nodes based on
                            the case if this timestamp hasn't been updated for two weeks.
         """
-        self.first_name = first_name.encode('utf-8')
-        self.last_name = last_name.encode('utf-8')
-        self.name = name.encode('utf-8')
+        self.first_name = first_name
+        self.last_name = last_name
+        self.name = name
 
-        self.email = email.encode('utf-8')
-        self.github_username = github_username.encode('utf-8')
+        self.email = email
+        self.github_username = github_username
         # todo: team will be a separate node once Amundsen People supports team
-        self.team_name = team_name.encode('utf-8')
-        self.manager_email = manager_email.encode('utf-8')
-        self.employee_type = employee_type.encode('utf-8')
+        self.team_name = team_name
+        self.manager_email = manager_email
+        self.employee_type = employee_type
         # this attr not available in team service, either update team service, update with FE
-        self.slack_id = slack_id.encode('utf-8')
+        self.slack_id = slack_id
         self.is_active = is_active
         self.updated_at = updated_at
 
