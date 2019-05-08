@@ -17,6 +17,7 @@ export interface User {
 }
 export type LoggedInUser = User & {};
 
+export type LoggedInUserResponse = { user: LoggedInUser; msg: string; };
 export type UserResponse = { user: User; msg: string; };
 
 /* getLoggedInUser */
