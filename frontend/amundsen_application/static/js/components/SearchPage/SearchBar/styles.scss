@@ -12,14 +12,10 @@
       left: 24px;
     }
 
-    .search-bar-input {
+    .h2.search-bar-input {
       border-radius: 4px;
       border-color: $gray-light;
       box-shadow: 0 3px 12px 0 rgba(17, 17, 31, 0.04);
-      color: $text-dark;
-      font-family: $font-family-sans-serif-bold;
-      font-size: 26px;
-      font-weight: $font-weight-sans-serif-bold;
       height: 80px;
       width: 100%;
       padding: 16px 24px 16px 64px;
@@ -40,7 +36,7 @@
         left: 16px;
         top: 18px;
       }
-      .search-bar-input {
+      .h2.search-bar-input {
         font-size: 24px;
         padding: 16px 16px 16px 48px;
         height: 60px;
@@ -49,7 +45,6 @@
   }
 
   .subtext {
-    color: $text-medium;
     margin-top: 16px;
   }
 

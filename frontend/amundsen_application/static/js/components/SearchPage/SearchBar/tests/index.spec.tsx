@@ -172,7 +172,7 @@ describe('SearchBar', () => {
         expect(wrapper.find('form').find('input').props()).toMatchObject({
           'aria-label': SearchBar.defaultProps.placeholder,
           autoFocus: true,
-          className: 'search-bar-input form-control',
+          className: 'h2 search-bar-input form-control',
           id: 'search-input',
           onChange: wrapper.instance().handleValueChange,
           placeholder: SearchBar.defaultProps.placeholder,
@@ -185,7 +185,7 @@ describe('SearchBar', () => {
         expect(wrapper.find('form').find('input').props()).toMatchObject({
           'aria-label': props.placeholder,
           autoFocus: true,
-          className: 'search-bar-input form-control',
+          className: 'h2 search-bar-input form-control',
           id: 'search-input',
           onChange: wrapper.instance().handleValueChange,
           placeholder: props.placeholder,
@@ -212,7 +212,7 @@ describe('SearchBar', () => {
     describe('subtext', () =>{
       it('renders div with correct class', () => {
         expect(wrapper.children().at(1).props()).toMatchObject({
-          className: `subtext ${wrapper.state().subTextClassName}`,
+          className: `subtext body-secondary-3 ${wrapper.state().subTextClassName}`,
         });
       });
 

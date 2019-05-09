@@ -2,27 +2,25 @@
 
 .entity-card-section {
   margin-bottom: 20px;
-}
-.entity-card-section .title {
-  color: $text-medium;
-  font-size: 12px;
-  font-family: $font-family-sans-serif-bold;
-  font-weight: $font-weight-sans-serif-bold;
-  flex-grow: 1;
-  margin: auto;
-}
-.entity-card-section .content-header {
-  display: flex;
-}
-.entity-card-section .content {
-  margin-top: 5px;
+
+  .content-header {
+    display: flex;
+
+    .caption {
+      flex-grow: 1;
+    }
+  }
+  .content {
+    margin-top: 5px;
+  }
+
+  .content-header button.edit-button,
+  .content-header button.active-edit-button {
+    margin-top: -4px;
+    margin-left: 4px;
+  }
 }
 
-.entity-card-section .content-header button.edit-button,
-.entity-card-section .content-header button.active-edit-button {
-  margin-top: -4px;
-  margin-left: 4px;
-}
 
 button.edit-button {
   height: 24px;

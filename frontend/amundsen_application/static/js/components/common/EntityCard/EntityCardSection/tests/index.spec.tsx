@@ -20,7 +20,7 @@ describe('EntityCardSection', () => {
 
     describe('render', () => {
         it('renders the title', () => {
-            expect(subject.find('.title').text()).toEqual('TITLE');
+            expect(subject.find('.caption').text()).toEqual('TITLE');
         });
 
         it('renders InfoButton w/ correct props if props.infoText', () => {

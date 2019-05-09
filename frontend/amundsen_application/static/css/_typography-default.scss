@@ -1,0 +1,122 @@
+@import 'variables';
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+h1, h2, h3,
+.h1, .h2, .h3 {
+  color: $text-dark;
+  font-family: $font-family-header;
+  margin: 0;
+}
+
+h1,
+.h1 {
+  font-size: 36px;
+  font-weight: $font-weight-header-regular;
+}
+
+h2,
+.h2 {
+  font-size: 26px;
+  font-weight: $font-weight-header-bold;
+}
+
+h3,
+.h3 {
+  font-size: 20px;
+  font-weight: $font-weight-header-bold;
+}
+
+body {
+  color: $text-dark;
+  font-size: 14px;
+  font-family: $font-family-body;
+  font-weight: $font-weight-body-regular;
+}
+
+.title-1, .title-2, .title-3,
+.subtitle-1, .subtitle-2, .subtitle-3,
+.body-1, .body-2, .body-3,
+.body-secondary-3, .body-link, .caption {
+  font-family: $font-family-body;
+}
+
+.title-1 {
+  font-size: 20px;
+  font-weight: $font-weight-body-bold;
+  line-height: 24px;
+}
+
+.title-2 {
+  font-size: 16px;
+  font-weight: $font-weight-body-bold;
+}
+
+.title-3 {
+  color: $text-medium;
+  font-size: 14px;
+  font-weight: $font-weight-body-bold;
+}
+
+.subtitle-1 {
+  font-size: 20px;
+  font-weight: $font-weight-body-semi-bold;
+  line-height: 20px;
+}
+
+.subtitle-2 {
+  font-size: 16px;
+  font-weight: $font-weight-body-semi-bold;
+}
+
+.subtitle-3 {
+  font-size: 14px;
+  font-weight: $font-weight-body-semi-bold;
+}
+
+.body-1 {
+  font-size: 20px;
+  font-weight: $font-weight-body-regular;
+  line-height: 24px;
+}
+
+.body-2 {
+  font-size: 16px;
+  font-weight: $font-weight-body-regular;
+}
+
+.body-3 {
+  font-size: 14px;
+  font-weight: $font-weight-body-regular;
+}
+
+.body-secondary-3 {
+  color: $text-medium;
+  font-size: 14px;
+  font-weight: $font-weight-body-regular;
+}
+
+.body-link {
+  color: $brand-color-4;
+  font-size: 14px;
+}
+
+.caption {
+  color: $text-medium;
+  font-size: 13px;
+  font-weight: $font-weight-body-bold;
+}
+
+.column-type {
+  color: $brand-color-3;
+  font-size: 13px;
+  font-family: $font-family-monospace;
+}
+
+.helper-text {
+  color: $text-light;
+  font-size: 12px;
+  font-family: $font-family-body;
+}

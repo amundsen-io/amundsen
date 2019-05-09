@@ -36,9 +36,11 @@ export class NavBar extends React.Component<NavBarProps> {
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
       if (link.use_router) {
-        return <NavLink key={index} to={link.href} target={link.target} onClick={logClick}>{link.label}</NavLink>
+        return <NavLink className="title-3" key={index} to={link.href} target={link.target}
+                        onClick={logClick}>{link.label}</NavLink>
       }
-      return <a key={index} href={link.href} target={link.target} onClick={logClick}>{link.label}</a>
+      return <a className="title-3" key={index} href={link.href} target={link.target}
+                onClick={logClick}>{link.label}</a>
     });
   }
 
@@ -52,7 +54,7 @@ export class NavBar extends React.Component<NavBarProps> {
                 AppConfig.logoPath &&
                 <img id="logo-icon" className="logo-icon" src={AppConfig.logoPath} />
               }
-              <Link to={`/`}>
+              <Link to={`/`} className="title-3">
                 AMUNDSEN
               </Link>
             </div>

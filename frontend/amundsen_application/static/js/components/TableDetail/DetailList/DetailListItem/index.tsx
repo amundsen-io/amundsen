@@ -73,9 +73,9 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
       <li className='list-group-item detail-list-item'>
         <div className={'column-info ' + (isExpandable ? 'expandable' : '')} onClick={ isExpandable? this.onClick : null }>
           <div style={{ width: '100%', display: 'inline-grid' }}>
-            <div className='title'>
-              <div className='name'>{metadata.name}</div>
-              <div className='type'>{metadata.type || 'null'}</div>
+            <div className='title-row'>
+              <div className='name title-2'>{metadata.name}</div>
+              <div className='column-type'>{metadata.type || 'null'}</div>
             </div>
           </div>
           {
@@ -83,7 +83,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
             <img className={'icon ' + (this.state.isExpanded ? 'icon-up' : 'icon-down')}/>
           }
         </div>
-        <div className={'description ' + (this.state.isExpanded ? '' : (isExpandable ? 'truncated' : ''))}>
+        <div className={'body-secondary-3 description ' + (isExpandable && !this.state.isExpanded ? 'truncated' : '')}>
           <ColumnDescEditableText
             columnIndex={this.props.index}
             editable={metadata.is_editable}
@@ -96,10 +96,10 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
             {
               metadata.stats.map(entry =>
                 <div className='column-stat' key={entry.stat_type}>
-                  <div className='title'>
+                  <div className='caption'>
                     {entry.stat_type.toUpperCase()}
                   </div>
-                  <div className='content'>
+                  <div className='body-link'>
                     {entry.stat_val}
                   </div>
                 </div>

@@ -61,7 +61,10 @@ describe('NavBar', () => {
     });
 
     it('returns a NavLink w/ correct props if user_router is true', () => {
-      const expectedContent = JSON.stringify(<NavLink key={0} to='/announcements' target='_blank' onClick={logClick}>Announcements</NavLink>);
+      const expectedContent = JSON.stringify(
+        <NavLink className="title-3" key={0} to='/announcements' target='_blank'
+                 onClick={logClick}>Announcements</NavLink>
+      );
       expect(JSON.stringify(content[0])).toEqual(expectedContent);
     });
 

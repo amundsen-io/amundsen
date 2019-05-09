@@ -37,8 +37,8 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
     return (
       <div key={`post:${postIndex}`} className='post-container'>
         <div className='post-header'>
-          <div className='post-title'>{post.title}</div>
-          <div className='post-date'>{post.date}</div>
+          <div className='post-title title-2'>{post.title}</div>
+          <div className='body-secondary-3'>{post.date}</div>
         </div>
         <div className='post-content'>
           <SanitizedHTML html={post.html_content} />
@@ -59,9 +59,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
         <div className="container announcement-container">
           <div className="row">
             <div className="col-xs-12">
-              <div id="announcement-header" className="announcement-header">
-                Announcements
-              </div>
+              <h3 id="announcement-header">Announcements</h3>
               <hr />
               <div id="announcement-content" className='announcement-content'>
                 {this.createPosts()}
