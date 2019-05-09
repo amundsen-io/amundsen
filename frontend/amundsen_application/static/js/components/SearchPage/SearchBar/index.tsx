@@ -86,13 +86,13 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   };
 
   render() {
-    const subTextClass = `subtext ${this.state.subTextClassName}`;
+    const subTextClass = `subtext body-secondary-3 ${this.state.subTextClassName}`;
     return (
       <div id="search-bar">
         <form className="search-bar-form" onSubmit={ this.handleValueSubmit }>
             <input
               id="search-input"
-              className="search-bar-input form-control"
+              className="h2 search-bar-input form-control"
               value={ this.state.searchTerm }
               onChange={ this.handleValueChange }
               aria-label={ this.props.placeholder }

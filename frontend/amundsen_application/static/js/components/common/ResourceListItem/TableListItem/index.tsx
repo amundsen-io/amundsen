@@ -35,14 +35,14 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
           <img className="icon icon-database icon-color" />
           <div className="content">
             <div className={ hasLastUpdated? "col-sm-9 col-md-10" : "col-sm-12"}>
-              <div className="main-title truncated">{ `${table.schema_name}.${table.name}`}</div>
-              <div className="description truncated">{ table.description }</div>
+              <div className="title-2 truncated">{ `${table.schema_name}.${table.name}`}</div>
+              <div className="body-secondary-3 truncated">{ table.description }</div>
             </div>
             {
               hasLastUpdated &&
               <div className="hidden-xs col-sm-3 col-md-2">
-                <div className="secondary-title">Last Updated</div>
-                <div className="description truncated">
+                <div className="title-3">Last Updated</div>
+                <div className="body-secondary-3 truncated">
                   { this.getDateLabel() }
                 </div>
               </div>

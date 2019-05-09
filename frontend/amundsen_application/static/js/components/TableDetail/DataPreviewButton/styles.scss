@@ -7,8 +7,9 @@
     min-height: 90%;
 
     .modal-title {
-      font-family: $font-family-sans-serif-bold;
-      font-weight: $font-weight-sans-serif-bold;
+      font-size: 20px;
+      font-family: $font-family-header;
+      font-weight: $font-weight-header-bold;
     }
     .modal-body {
       margin: 15px;
@@ -23,11 +24,8 @@
         flex-grow: 1;
       }
       .grid-header.grid-cell {
-        font-size: 14px;
         background-color: $gray-lighter;
         height: 40px;
-        font-family: $font-family-sans-serif-bold;
-        font-weight: $font-weight-sans-serif-bold;
       }
       .grid-cell {
         display: flex;

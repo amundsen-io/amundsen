@@ -40,7 +40,7 @@ class EntityCardSection extends React.Component<EntityCardSectionProps, EntityCa
     return (
       <div className="entity-card-section">
         <div className="content-header">
-          <div id="section-title" className="title">
+          <div id="section-title" className="caption">
               { this.props.title.toUpperCase() }
               {
                 this.props.infoText &&

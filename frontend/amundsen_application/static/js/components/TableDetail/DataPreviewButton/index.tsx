@@ -113,7 +113,7 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
               const fieldName = col.column_name;
               return (
                 <div key={fieldName} id={fieldName} className='grid-column'>
-                  <div className='grid-cell grid-header'>
+                  <div className='grid-cell grid-header subtitle-3'>
                     {fieldName.toUpperCase()}
                   </div>
                   {

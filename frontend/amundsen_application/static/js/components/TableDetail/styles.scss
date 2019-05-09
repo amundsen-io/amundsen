@@ -10,21 +10,12 @@
   .detail-header {
     margin-bottom: 32px;
   }
-  .detail-header .title {
-    font-size: 32px;
+  .detail-header .detail-header-text {
     overflow-wrap: break-word;
-    font-family: $font-family-sans-serif-bold;
-    font-weight: $font-weight-sans-serif-bold;
   }
 
-  .detail-list-header > label {
-    font-size: 20px;
-    margin-top: auto;
+  .detail-list-header {
     margin-bottom: 32px;
-    width: fit-content;
-    line-height: 24px;
-    font-family: $font-family-sans-serif-bold;
-    font-weight: $font-weight-sans-serif-bold;
   }
 
   @media (min-width: $screen-md-min) {

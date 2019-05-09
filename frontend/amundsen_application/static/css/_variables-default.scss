@@ -4,7 +4,8 @@
 
   $brand-color-1, $brand-color-2, $brand-color-3, $brand-color-4, $brand-color-5
 
-  $font-family-sans-serif-bold, $font-weight-sans-serif-bold
+  $font-family-header, $font-weight-header-regular, $font-weight-header-bold
+  $font-family-body, $font-weight-body-regular, $font-weight-body-semi-bold, $font-weight-body-bold
 
   $text-dark, $text-medium, $text-light
 
@@ -42,17 +43,19 @@ $text-light: $gray-light !default;
 
 
 // Typography
-$font-family-sans-serif:      "Lucida Sans Unicode", "Lucida Grande", sans-serif !default;
-$font-family-sans-serif-bold: $font-family-sans-serif !default;
-$font-weight-sans-serif-bold: 600 !default;
-$font-family-serif:           Georgia, "Times New Roman", Times, serif !default;
-$font-family-monospace:       Menlo, Monaco, Consolas, "Courier New", monospace !default;
+$font-family-body:           "Open Sans", sans-serif !default;
+$font-weight-body-regular:   400 !default;
+$font-weight-body-semi-bold: 600 !default;
+$font-weight-body-bold:      700 !default;
 
-$font-family-base:            $font-family-sans-serif !default;
-$headings-font-family:        $font-family-sans-serif-bold !default;
+$font-family-header:         "Roboto", sans-serif !default;
+$font-weight-header-regular: 500 !default;
+$font-weight-header-bold:    700 !default;
+
+$font-family-monospace:       'Menlo-Bold', Menlo, monospace !default;
+$font-family-serif:           Georgia, "Times New Roman", Times, serif !default;
 
 $font-size-small:    12px !default;
-
 $font-size-base:     14px !default;
 $font-size-large:    16px !default;
 $line-height-small:  1.5 !default;

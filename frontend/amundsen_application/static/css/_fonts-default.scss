@@ -1,1 +1,36 @@
-// TODO - Import Open Sans or other default font
+@import 'variables';
+
+// Roboto
+@font-face {
+  font-family: 'Roboto';
+  src: url('/static/fonts/Roboto-Medium.ttf') format('truetype');
+  font-weight: $font-weight-header-regular;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('/static/fonts/Roboto-Bold.ttf') format('truetype');
+  font-weight: $font-weight-header-bold;
+  font-style: normal;
+}
+
+
+// Open Sans
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/static/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-weight: $font-weight-body-regular;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/static/fonts/OpenSans-SemiBold.ttf') format('truetype');
+  font-weight: $font-weight-body-semi-bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/static/fonts/OpenSans-Bold.ttf') format('truetype');
+  font-weight: $font-weight-body-bold;
+  font-style: normal;
+}

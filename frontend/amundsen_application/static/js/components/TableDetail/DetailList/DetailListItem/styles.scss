@@ -12,9 +12,7 @@
   padding: 10px 4px;
 
   .description {
-    color: $text-medium;
     max-width: 100%;
-    font-size: 14px;
     min-width: 0;
     padding-right: 32px;
   }
@@ -33,33 +31,23 @@
     margin: -10px -4px 0;
     padding: 10px 4px 0;
 
-    .title {
+    .title-row {
       display: flex;
       flex-direction: row;
-    }
-    .name {
-      font-size: 16px;
-      font-family: $font-family-sans-serif-bold;
-      font-weight: $font-weight-sans-serif-bold;
-      margin-right: 8px;
-    }
-    .type {
-      color: $brand-color-4;
-      font-size: 13px;
-      margin-top: 4px;
-      font-family: 'Menlo-Bold', Helvetica, Arial, sans-serif;
-    }
 
+      .name {
+        margin-right: 8px;
+      }
+      .column-type {
+        margin-top: 4px;
+      }
+    }
 
     &.expandable {
       cursor: pointer;
 
       &:hover {
         background-image: linear-gradient($gray-lighter, $gray-lighter, white);
-
-        .type {
-          color: $brand-color-4;
-        }
 
         .icon {
           background-color: $brand-color-4;
@@ -79,16 +67,6 @@
       max-width: 150px;
       min-width: 120px;
       width: 20%;
-
-      .title {
-        color: $text-medium;
-        font-size: $font-size-small;
-        font-family: $font-family-sans-serif-bold;
-        font-weight: $font-weight-sans-serif-bold;
-      }
-      .content {
-        color: $brand-color-4;
-      }
     }
 
     .stat-collection-info {

@@ -79,7 +79,7 @@ export class BrowsePage extends React.Component<BrowsePageProps, BrowsePageState
         <div className="container">
           <div className="row">
             <div className="col-xs-12">
-              <h3 id="browse-header" className="header">Browse Tags</h3>
+              <h3 id="browse-header">Browse Tags</h3>
               <hr className="header-hr"/>
               <div id="browse-body" className="browse-body">
                 {this.generateTagInfo(this.state.curatedTags)}
