@@ -38,3 +38,15 @@ deploy:
     tags: true
     repo: lyft/amundsenfrontendlibrary
     condition: $IS_DEPLOYABLE = true
+deploy:
+  provider: script
+  script: docker login -u amundsendev -p $DOCKER_LOGIN_PASSWORD && make build-push-image
+  on:
+    branch: master
+    tags: true
+    repo: lyft/amundsenfrontendlibrary
+    condition: $IS_DEPLOYABLE = true
+
+env:
+  matrix:
+    secure: jvpvfKHbZYDaLgNh/sNPOd2ZU2v4xhrKnPiIKyiHgATTOo1kk+u7H9wsOTjalFwrUi7LtbVgi7XN81bV5toAK/EUBDsNzS7AHJRPnhCLc+jj56JDGH8QcnSeHp3+fDGPQ2rcJUhFZ1r+9NW6V9WQzviuTqUIKY9p7em/Pop2Z8hth6DZuaOkcmozlwMPRGxOZvglEgpD43dVYQraixPJNk+/D3fa26S8be9DdBqE/Cjxs1ZGHQpMxBQSR753/jmt1oCUfS2Bdrh6+/S7oJf7rHrsMWR8TEt1f6HF1wf+0RZUhmY0rCB7PVchcRxz4QusdabQ564pHizIYZ99jd/PGj2wQwYf5hKOgAOukYbxVS/9HPDQOTy9KAcpLmbwXQ6u+GgTF9ZRzhTPY2cvEiavSgUd8Nf5gSyFtw/JDyc8guhxsYSoe44mZHbxNr3VV043YMrQS/5vAiBASwtoC8lzxD1S391EMFcECmmILLne7+bO0h9aQcq+Weijq2W7d/Ec5MTMpHUMZBAgZO6FM9zpY6bTQhfl8PuQViXOfBVZNZZ7n5Cv7XA0vidQS6oPpYBZaw9PZ5nfoFBt5fcZ3kzk/m5JWFQ/+2Ed5ZG7v+fH7Xz/oStkzP/JP2RDnq/5X8VK1L3t3v/r6rM1j8k1DcnaKnbiCDq7W98sA6t1P2xSEAI=
