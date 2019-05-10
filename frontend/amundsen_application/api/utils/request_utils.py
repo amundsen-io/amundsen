@@ -85,12 +85,12 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int):  
     else:
         with requests.Session() as s:
             if method == 'DELETE':
-                return s.delete(url, timeout=timeout_sec)
+                return s.delete(url, headers=headers, timeout=timeout_sec)
             elif method == 'GET':
-                return s.get(url, timeout=timeout_sec)
+                return s.get(url, headers=headers, timeout=timeout_sec)
             elif method == 'POST':
-                return s.post(url, timeout=timeout_sec)
+                return s.post(url, headers=headers, timeout=timeout_sec)
             elif method == 'PUT':
-                return s.put(url, timeout=timeout_sec)
+                return s.put(url, headers=headers, timeout=timeout_sec)
             else:
                 raise Exception('Method not allowed: {}'.format(method))
