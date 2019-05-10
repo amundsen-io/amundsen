@@ -1,8 +1,7 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from marshmallow import Schema, fields, pre_load, post_load, validates_schema, ValidationError
 
-from flask import Response, jsonify
 from flask import current_app as app
 
 
@@ -44,14 +43,10 @@ class User:
         self.user_id = user_id
         # TODO: Add frequent_used, bookmarked, & owned resources
 
-    def to_json(self) -> Response:
-        user_info = dump_user(self)
-        return jsonify(user_info)
-
 
 class UserSchema(Schema):
-    display_name = fields.Str(allow_none=True)
-    email = fields.Str(allow_none=True)
+    display_name = fields.Str(allow_none=False)
+    email = fields.Str(required=True)
     employee_type = fields.Str(allow_none=True)
     first_name = fields.Str(allow_none=True)
     full_name = fields.Str(allow_none=True)
@@ -63,20 +58,31 @@ class UserSchema(Schema):
     role_name = fields.Str(allow_none=True)
     slack_id = fields.Str(allow_none=True)
     team_name = fields.Str(allow_none=True)
-    user_id = fields.Str(required=True)
+    user_id = fields.Str(allow_none=False)
+
+    def _str_no_value(self, s: Optional[str]) -> bool:
+        # Returns True if the given string is None or empty
+        if not s:
+            return True
+        if len(s.strip()) == 0:
+            return True
+        return False
 
     @pre_load
     def preprocess_data(self, data: Dict) -> Dict:
-        if not data.get('user_id', None):
-            data['user_id'] = data.get('email', None)
+        if self._str_no_value(data.get('user_id')):
+            data['user_id'] = data.get('email')
 
-        if not data.get('profile_url', None):
+        if self._str_no_value(data.get('profile_url')):
             data['profile_url'] = ''
             if app.config['GET_PROFILE_URL']:
                 data['profile_url'] = app.config['GET_PROFILE_URL'](data['user_id'])
 
-        if not data.get('display_name', None):
-            data['display_name'] = data.get('full_name', data.get('email'))
+        if self. _str_no_value(data.get('display_name')):
+            if self._str_no_value(data.get('full_name')):
+                data['display_name'] = data.get('email')
+            else:
+                data['display_name'] = data.get('full_name')
 
         return data
 
@@ -86,11 +92,11 @@ class UserSchema(Schema):
 
     @validates_schema
     def validate_user(self, data: Dict) -> None:
-        if not data.get('display_name', None):
-            raise ValidationError('"display_name" must be provided')
+        if self._str_no_value(data.get('display_name')):
+            raise ValidationError('"display_name", "full_name", or "email" must be provided')
 
-        if not data.get('user_id', None):
-            raise ValidationError('"user_id" must be provided')
+        if self._str_no_value(data.get('user_id')):
+            raise ValidationError('"user_id" or "email" must be provided')
 
 
 def load_user(user_data: Dict) -> User:
