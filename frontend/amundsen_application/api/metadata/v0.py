@@ -11,12 +11,11 @@ from amundsen_application.log.action_log import action_logging
 
 from amundsen_application.models.user import load_user, dump_user
 
-from amundsen_application.api.utils.request_utils import get_query_param, request_wrapper
+from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 
 LOGGER = logging.getLogger(__name__)
 
-REQUEST_SESSION_TIMEOUT_SEC = 3
 
 metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
@@ -69,13 +68,7 @@ def popular_tables() -> Response:
 
     try:
         url = app.config['METADATASERVICE_BASE'] + POPULAR_TABLES_ENDPOINT
-
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -121,14 +114,6 @@ def get_table_metadata() -> Response:
         return make_response(jsonify({'tableData': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-def _send_metadata_get_request(url: str) -> Response:
-    return request_wrapper(method='GET',
-                           url=url,
-                           client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                           headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                           timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
-
 def _get_partition_data(watermarks: Dict) -> Dict:
     if watermarks:
         high_watermark = next(filter(lambda x: x['watermark_type'] == 'high_watermark', watermarks))
@@ -157,7 +142,7 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
     try:
         table_endpoint = _get_table_endpoint()
         url = '{0}/{1}'.format(table_endpoint, table_key)
-        response = _send_metadata_get_request(url)
+        response = request_metadata(url=url)
     except ValueError as e:
         # envoy client BadResponse is a subclass of ValueError
         message = 'Encountered exception: ' + str(e)
@@ -235,12 +220,7 @@ def _update_table_owner(*, table_key: str, method: str, owner: str) -> Dict[str,
     try:
         table_endpoint = _get_table_endpoint()
         url = '{0}/{1}/owner/{2}'.format(table_endpoint, table_key, owner)
-
-        request_wrapper(method=method,
-                        url=url,
-                        client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                        headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                        timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
+        request_metadata(url=url, method=method)
 
         # TODO: Figure out a way to get this payload from flask.jsonify which wraps with app's response_class
         return {'msg': 'Updated owner'}
@@ -273,12 +253,7 @@ def get_last_indexed() -> Response:
     try:
         url = app.config['METADATASERVICE_BASE'] + LAST_INDEXED_ENDPOINT
 
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -303,12 +278,7 @@ def get_table_description() -> Response:
 
         url = '{0}/{1}/description'.format(table_endpoint, table_key)
 
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -335,12 +305,7 @@ def get_column_description() -> Response:
 
         url = '{0}/{1}/column/{2}/description'.format(table_endpoint, table_key, column_name)
 
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -377,12 +342,7 @@ def put_table_description() -> Response:
         url = '{0}/{1}/description/{2}'.format(table_endpoint, table_key, description)
         _log_put_table_description(table_key=table_key, description=description, source=src)
 
-        response = request_wrapper(method='PUT',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url, method='PUT')
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -419,12 +379,7 @@ def put_column_description() -> Response:
         url = '{0}/{1}/column/{2}/description/{3}'.format(table_endpoint, table_key, column_name, description)
         _log_put_column_description(table_key=table_key, column_name=column_name, description=description, source=src)
 
-        response = request_wrapper(method='PUT',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url, method='PUT')
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -449,13 +404,7 @@ def get_tags() -> Response:
     """
     try:
         url = app.config['METADATASERVICE_BASE'] + TAGS_ENDPOINT
-
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -495,12 +444,7 @@ def update_table_tags() -> Response:
 
         _log_update_table_tags(table_key=table_key, method=method, tag=tag)
 
-        response = request_wrapper(method=method,
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url, method=method)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -531,12 +475,7 @@ def get_user() -> Response:
 
         _log_get_user(user_id=user_id)
 
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['METADATASERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['METADATASERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
