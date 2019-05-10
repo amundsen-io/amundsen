@@ -9,7 +9,7 @@ from flask import current_app as app
 from flask.blueprints import Blueprint
 
 from amundsen_application.log.action_log import action_logging
-from amundsen_application.api.utils.request_utils import get_query_param, request_wrapper
+from amundsen_application.api.utils.request_utils import get_query_param, request_search
 
 LOGGER = logging.getLogger(__name__)
 
@@ -197,12 +197,7 @@ def _search_table(*, search_term: str, page_index: int) -> Dict[str, Any]:
                                                              search_term,
                                                              page_index)
 
-        response = request_wrapper(method='GET',
-                                   url=url,
-                                   client=app.config['SEARCHSERVICE_REQUEST_CLIENT'],
-                                   headers=app.config['SEARCHSERVICE_REQUEST_HEADERS'],
-                                   timeout_sec=REQUEST_SESSION_TIMEOUT_SEC)
-
+        response = request_search(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:

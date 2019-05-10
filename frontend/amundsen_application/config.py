@@ -12,7 +12,7 @@ class Config:
     UNEDITABLE_SCHEMAS = set()  # type: Set[str]
 
     # Number of popular tables to be displayed on the index/search page
-    POPULAR_TABLE_COUNT = 4     # type: int
+    POPULAR_TABLE_COUNT = 4  # type: int
 
 
 class LocalConfig(Config):
@@ -43,6 +43,12 @@ class LocalConfig(Config):
                                               LOCAL_HOST=LOCAL_HOST,
                                               PORT=METADATA_PORT)
                                           )
+
+    # If specified, will be used to generate headers for service-to-service communication
+    # Please note that if specified, this will ignore following config properties:
+    # 1. METADATASERVICE_REQUEST_HEADERS
+    # 2. SEARCHSERVICE_REQUEST_HEADERS
+    REQUEST_HEADERS_METHOD = None
 
     AUTH_USER_METHOD = None
     GET_PROFILE_URL = None
