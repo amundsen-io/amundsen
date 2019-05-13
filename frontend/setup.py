@@ -53,4 +53,8 @@ setup(
         [action_log.post_exec.plugin]
         logging_action_log=amundsen_application.log.action_log_callback:logging_action_log
     """,
+    classifiers=[
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
 )
