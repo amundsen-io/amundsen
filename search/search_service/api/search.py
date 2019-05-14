@@ -2,7 +2,7 @@ from typing import Iterable, Any
 
 from flask_restful import Resource, fields, marshal_with, reqparse
 
-from search_service.proxy import elasticsearch
+from search_service.proxy import get_proxy_client
 
 table_fields = {
     "name": fields.String,
@@ -30,7 +30,7 @@ class SearchAPI(Resource):
     Search API
     """
     def __init__(self) -> None:
-        self.elasticsearch = elasticsearch.get_elasticsearch_proxy()
+        self.proxy = get_proxy_client()
 
         self.parser = reqparse.RequestParser(bundle_errors=True)
 
@@ -50,7 +50,7 @@ class SearchAPI(Resource):
 
         try:
 
-            results = self.elasticsearch.fetch_search_results(
+            results = self.proxy.fetch_search_results(
                 query_term=args['query_term'],
                 page_index=args['page_index']
             )
@@ -68,7 +68,7 @@ class SearchFieldAPI(Resource):
     Search API with explict field
     """
     def __init__(self) -> None:
-        self.elasticsearch = elasticsearch.get_elasticsearch_proxy()
+        self.proxy = get_proxy_client()
 
         self.parser = reqparse.RequestParser(bundle_errors=True)
 
@@ -91,7 +91,7 @@ class SearchFieldAPI(Resource):
         args = self.parser.parse_args(strict=True)
 
         try:
-            results = self.elasticsearch.fetch_search_results_with_field(
+            results = self.proxy.fetch_search_results_with_field(
                 query_term=args.get('query_term'),
                 field_name=field_name,
                 field_value=field_value,
