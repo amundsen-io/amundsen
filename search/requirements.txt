@@ -20,3 +20,4 @@ typing==3.6.4
 Werkzeug==0.14.1
 wheel==0.31.1
 mypy==0.660
+atlasclient==0.1.6

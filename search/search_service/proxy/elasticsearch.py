@@ -11,6 +11,7 @@ from flask import current_app
 from search_service import config
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
+from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
 # Default Elasticsearch index to use, if none specified
@@ -22,7 +23,7 @@ DEFAULT_PAGE_SIZE = 10
 LOGGING = logging.getLogger(__name__)
 
 
-class ElasticsearchProxy:
+class ElasticsearchProxy(BaseProxy):
     """
     ElasticSearch connection handler
     """
