@@ -25,5 +25,8 @@
   "exclude": [
     "node_modules",
     "**/__tests__",
+  ],
+  "include": [
+    "js"
   ]
 }
