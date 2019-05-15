@@ -47,6 +47,7 @@ export interface User {
 }
 
 export interface PreviewQueryParams {
+  database: string;
   schema: string;
   tableName: string;
 }
