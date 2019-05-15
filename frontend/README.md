@@ -4,6 +4,7 @@
 [![Build Status](https://api.travis-ci.com/lyft/amundsenfrontendlibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsenfrontendlibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsenfrontendlibrary/master.svg)](https://codecov.io/github/lyft/amundsenfrontendlibrary?branch=master)
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/amundsen-frontend.svg)](https://pypi.org/project/amundsen-frontend/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://bit.ly/2FVq37z)
 
