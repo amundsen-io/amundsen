@@ -40,7 +40,7 @@ Fix all errors before submitting a PR.
 #### JS Assets
 
 ##### Type Checking
-The build commands `npm run build` and `npm run dev-build` also conduct type checking. Run either of these commands and fix all failed checks before submitting a PR.
+`npm run tsc` conducts type checking. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
 
 ##### Lint
 `npm run lint` runs the linter. Fix all lint errors before submitting a PR. `npm run lint-fix` can help auto-fix most common errors.
