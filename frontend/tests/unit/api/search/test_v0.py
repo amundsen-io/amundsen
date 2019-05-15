@@ -189,14 +189,14 @@ class SearchTest(unittest.TestCase):
         with local_app.app_context():
             # test single tag with query term
             search_term = 'tag:hive test_table'
-            expected = 'http://0.0.0.0:5001/search/field/tag/field_val' \
-                       '/hive?page_index=1&query_term=test_table'
+            expected = local_app.config['SEARCHSERVICE_BASE'] + \
+                '/search/field/tag/field_val/hive?page_index=1&query_term=test_table'
             self.assertEqual(_create_url_with_field(search_term=search_term,
                                                     page_index=1), expected)
 
             # test single tag without query term
             search_term = 'tag:hive'
-            expected = 'http://0.0.0.0:5001/search/field/tag/field_val' \
-                       '/hive?page_index=1'
+            expected = local_app.config['SEARCHSERVICE_BASE'] + \
+                '/search/field/tag/field_val/hive?page_index=1'
             self.assertEqual(_create_url_with_field(search_term=search_term,
                                                     page_index=1), expected)

@@ -115,7 +115,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     }
 
     this.props.getTableData(this.cluster, this.database, this.schema, this.tableName, searchIndex, source);
-    this.props.getPreviewData({ schema: this.schema, tableName: this.tableName });
+    this.props.getPreviewData({ database: this.database, schema: this.schema, tableName: this.tableName });
   }
 
   frequentUserOnClick = (e) => {
