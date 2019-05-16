@@ -87,8 +87,11 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
 
   getSanitizedValue(value) {
     // Display the string interpretation of the following "false-y" values
-    if (value === 0 || typeof(value) === "boolean") {
+    if (value === 0 || typeof value === "boolean") {
       return value.toString();
+    }
+    if (typeof value === "object") {
+      return JSON.stringify(value);
     }
 
     return value || '';
