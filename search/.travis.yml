@@ -10,7 +10,7 @@ script:
 after_success:
 - codecov
 deploy:
-  provider: pypi
+- provider: pypi
   user: amundsen-dev
   password:
     secure: ZGfmHZUxxwWVfzKam4R0tzeb80SvopPkkCq1qQw5VIeKhVNHoE0CVyNa85Yo5xsvZSAYHOfGbCP29c6Y6c4+VlXmJQ+1majOFiwzM/kFau2dIaa965N5OXMU/AMtYlw68SpXo/jNlxNSDQwJtd8xEUyaHAS5fc5VvmXD05r4/2SvoodN9TrmkbwzZ8ujJTXG6U3vC3rR5fEIL5WDsdWrvk/Q6b6lvIDqJZ/RXYotauQeG1EXmyB4VroSjYO4+l9Zry+S46gYHWYEidQH1W1UrBRePXwqIH6VAH97PbsCFw6mvUeSkQYJHcSkB+wLUeN+HMcQOk6F3ke9NRkolx4LgD6N+AlXSz0wLta3IUgOAvbUZdxKnBKhjCftWoZx1SWYLtbqIJXEwC51dEQBUd/7GQJuIvXFnNDVz1yKB4zuYqx8v1a5D5uLT69152K14nTB6zu23eRvgPpXUlewAdfyqntOWwFBgK8KMeY54L3IglP+MiebP6smvhm0k5Fk1m7muqzmz3/1/if9UGXCnabG2Yml4MwutRR4PXuN8g9pOgRTQmHd3SV7Y8O9RIL+b8tbagwbpI3CLojO+9b52T7gqrV0d64I4g0WB2M7FsNZBhRuC9Wu7o8a+R9Ft5aK/wF2tRDd+VdurUbBlhhVgdJGWWxkmgk87kqGJjk25Hjm5Oo=
@@ -18,3 +18,11 @@ deploy:
     tags: true
     distributions: sdist bdist_wheel
     repo: lyft/amundsensearchlibrary
+- provider: script
+  script: docker login -u amundsendev -p $DOCKER_LOGIN_PASSWORD && make build-push-image
+  on:
+    branch: master
+    tags: true
+env:
+  global:
+    secure: beSR8ZRLfnRGfO3xTZo24ETvkPMRmrejS8toR1TfCmcAUZRYrgo7qQ2WaNhCESqyVTY0VcGguamhb8kA8BZ9/WgnCXXqGUfoRhEcViqgpTY0oTnB0Jc0EN4JqTVDAGXio0JdejGQa2LiDfjGZSFCsQkg1GlmN+EzmhliA0VKKpeYJKJS4uCLCEULRkUG7pVvYCEPaVkLrVuj0Jv9nLhfPrgLsIxSQVySRklB6raooEWhFAgH2TMWL6XD/5Hb4kbtx7Diookmlz/lzTxxq8wdOlRAC9tysofkGYIw+KCndi2zVztBvmvewMYMaY4H+MbF5sI1ld7a0nc3xy0QWjamBOgreqalDay0Cj1I2NHcuHW4G4ynHR6uzo8GZInT8owQiKblWlgSLh+DvmYj6EaoIBzEBZz8ULw++0ICJhQjntj+c+qNiSvqK5GTsuCK6eMEPCuf/izDQzJQccV11N5f6qkXKn54XrjvHXHuc+Cq4Np9oObKzQeQlUYugWudWI1GJw5eKhcgSJoDYNNWbjXJhXWpBjyiXvhlwtvVIz7umqhd2B7JihSHR5HOY9Ublk1XAGCuhMXwo5HywFAIiaYoNu0BWsXZL93MaVL98+JkVTpino7IHi3TX0CcpU5Qbt4sHwoerHYbcqA/7XiItH27pV7vO6VH84nZIQ3lNk1SdG8=
