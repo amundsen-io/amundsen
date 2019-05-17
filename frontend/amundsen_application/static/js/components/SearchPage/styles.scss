@@ -24,6 +24,8 @@
 
   .tab-content {
     .search-list-header {
+      display: flex;
+      flex-direction: row;
       label {
         color: $text-medium;
         font-size: 18px;
