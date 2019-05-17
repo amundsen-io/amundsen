@@ -6,8 +6,8 @@ __version__ = '1.0.6'
 setup(
     name='amundsen-metadata',
     version=__version__,
-    description='Metadata service package for Amundsen',
-    url='https://www.github.com/lyft/amundsen',
+    description='Metadata service for Amundsen',
+    url='https://www.github.com/lyft/amundsenmetadatalibrary',
     maintainer='Lyft',
     maintainer_email='dev@lyft.com',
     packages=find_packages(exclude=['tests*']),
