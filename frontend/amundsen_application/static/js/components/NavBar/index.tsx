@@ -50,12 +50,12 @@ export class NavBar extends React.Component<NavBarProps> {
         <div className="row">
           <div className="nav-bar">
             <div id="nav-bar-left" className="nav-bar-left">
-              {
-                AppConfig.logoPath &&
-                <img id="logo-icon" className="logo-icon" src={AppConfig.logoPath} />
-              }
-              <Link to={`/`} className="title-3">
-                AMUNDSEN
+              <Link to={`/`}>
+                {
+                  AppConfig.logoPath &&
+                  <img id="logo-icon" className="logo-icon" src={AppConfig.logoPath} />
+                }
+                <span className="title-3">AMUNDSEN</span>
               </Link>
             </div>
             <div id="nav-bar-right" className="nav-bar-right">
