@@ -505,7 +505,7 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_resources_by_user_relation(self) -> None:
         with patch.object(GraphDatabase, 'driver'), \
             patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute, \
-                patch.object(Neo4jProxy, 'get_table') as mock_get_table:
+                patch.object(Neo4jProxy, '_exec_col_query') as mock_col_query:
 
             mock_execute.return_value.single.return_value = {
                 'table_records': [
@@ -515,49 +515,30 @@ class TestNeo4jProxy(unittest.TestCase):
                     }
                 ]
             }
-            mock_get_table.return_value = Table(database='hive',
-                                                cluster='gold',
-                                                schema='foo_schema',
-                                                name='foo_table',
-                                                tags=[Tag(tag_name='test', tag_type='default')],
-                                                table_readers=[], description='foo description',
-                                                watermarks=[Watermark(watermark_type='high_watermark',
-                                                                      partition_key='ds',
-                                                                      partition_value='fake_value',
-                                                                      create_time='fake_time'),
-                                                            Watermark(watermark_type='low_watermark',
-                                                                      partition_key='ds',
-                                                                      partition_value='fake_value',
-                                                                      create_time='fake_time')],
-                                                columns=[Column(name='bar_id_1',
-                                                                description='bar col description',
-                                                                col_type='varchar',
-                                                                sort_order=0, stats=[Statistics(start_epoch=1,
-                                                                                                end_epoch=1,
-                                                                                                stat_type='avg',
-                                                                                                stat_val='1')]),
-                                                         Column(name='bar_id_2',
-                                                                description='bar col2 description',
-                                                                col_type='bigint',
-                                                                sort_order=1, stats=[Statistics(start_epoch=2,
-                                                                                                end_epoch=2,
-                                                                                                stat_type='avg',
-                                                                                                stat_val='2')])],
-                                                owners=[User(email='tester@lyft.com')],
-                                                table_writer=Application(
-                                                    application_url=self.table_writer['application_url'],
-                                                    description=self.table_writer['description'],
-                                                    name=self.table_writer['name'],
-                                                    id=self.table_writer['id']),
-                                                last_updated_timestamp=1,
-                                                source=Source(source='/source_file_loc',
-                                                              source_type='github'))
+
+            mock_col_query.return_value = 'not_related', {
+                'db': {
+                    'name': 'db_name'
+                },
+                'clstr': {
+                    'name': 'cluster'
+                },
+                'schema': {
+                    'name': 'schema'
+                },
+                'tbl': {
+                    'name': 'table_name'
+                }
+            }
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             result = neo4j_proxy.get_table_by_user_relation(user_email='test_user',
                                                             relation_type=UserResourceRel.follow)
             self.assertEqual(len(result['table']), 1)
-            self.assertEqual(result['table'][0].name, 'foo_table')
+            self.assertEqual(result['table'][0].name, 'table_name')
+            self.assertEqual(result['table'][0].database, 'db_name')
+            self.assertEqual(result['table'][0].cluster, 'cluster')
+            self.assertEqual(result['table'][0].schema, 'schema')
 
     def test_add_resource_relation_by_user(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
