@@ -771,8 +771,13 @@ class Neo4jProxy(BaseProxy):
         table_records = record.single().get('table_records', [])
 
         for record in table_records:
-            # todo: decide whether we want to return a list of table entities or just table_uri
-            results.append(self.get_table(table_uri=record['key']))
+            _, last_neo4j_record = self._exec_col_query(record['key'])
+            results.append(PopularTable(
+                database=last_neo4j_record['db']['name'],
+                cluster=last_neo4j_record['clstr']['name'],
+                schema=last_neo4j_record['schema']['name'],
+                name=last_neo4j_record['tbl']['name'],
+                description=self._safe_get(last_neo4j_record, 'tbl_dscrpt', 'description')))
         return {'table': results}
 
     @timer_with_counter

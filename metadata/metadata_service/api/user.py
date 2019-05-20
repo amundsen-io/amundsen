@@ -3,7 +3,7 @@ from typing import Iterable, Mapping, Union
 
 from flask_restful import Resource, fields, marshal
 
-from metadata_service.api.table import table_detail_fields
+from metadata_service.api.popular_tables import popular_table_fields
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.util import UserResourceRel
@@ -23,7 +23,7 @@ user_detail_fields = {
 }
 
 table_list_fields = {
-    'table': fields.List(fields.Nested(table_detail_fields))
+    'table': fields.List(fields.Nested(popular_table_fields))
 }
 
 
