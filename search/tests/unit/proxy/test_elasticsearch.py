@@ -1,8 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
+
 from typing import Iterable
 
 from search_service import create_app
+from search_service.proxy import get_proxy_client
 from search_service.proxy.elasticsearch import ElasticsearchProxy
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
@@ -38,7 +40,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         self.app_context.push()
 
         mock_elasticsearch_client = MagicMock()
-        self.es_proxy = ElasticsearchProxy(elasticsearch_client=mock_elasticsearch_client)
+        self.es_proxy = ElasticsearchProxy(client=mock_elasticsearch_client)
 
         self.mock_result1 = MockSearchResult(table_name='test_table',
                                              table_key='test_key',
@@ -69,6 +71,27 @@ class TestElasticsearchProxy(unittest.TestCase):
                                   column_names=['test_col1', 'test_col2'],
                                   tags=['match'],
                                   last_updated_epoch=1527283287)
+
+    def test_setup_client(self) -> None:
+        self.es_proxy = ElasticsearchProxy(
+            host="http://0.0.0.0:9200",
+            index="random123",
+            user="elastic",
+            password="elastic"
+        )
+        a = self.es_proxy.elasticsearch
+        for client in [a, a.cat, a.cluster, a.indices, a.ingest, a.nodes, a.snapshot, a.tasks]:
+            self.assertEqual(client.transport.hosts[0]['host'], "0.0.0.0")
+            self.assertEqual(client.transport.hosts[0]['port'], 9200)
+        self.assertEqual(self.es_proxy.index, "random123")
+
+    def test_setup_config(self) -> None:
+        es: ElasticsearchProxy = get_proxy_client()
+        a = es.elasticsearch
+        for client in [a, a.cat, a.cluster, a.indices, a.ingest, a.nodes, a.snapshot, a.tasks]:
+            self.assertEqual(client.transport.hosts[0]['host'], "0.0.0.0")
+            self.assertEqual(client.transport.hosts[0]['port'], 9200)
+        self.assertEqual(self.es_proxy.index, "table_search_index")
 
     @patch('elasticsearch_dsl.Search.execute')
     def test_search_with_empty_query_string(self, mock_search: MagicMock) -> None:

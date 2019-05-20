@@ -12,7 +12,6 @@ from search_service.models.table import Table
 from search_service.proxy import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
-DEFAULT_PAGE_SIZE = 10
 LOGGER = logging.getLogger(__name__)
 
 
@@ -33,7 +32,7 @@ class AtlasProxy(BaseProxy):
                  index: str = None,
                  user: str = '',
                  password: str = '',
-                 page_size: int = DEFAULT_PAGE_SIZE) -> None:
+                 page_size: int = 10) -> None:
         self.atlas = Atlas(host, username=user, password=password)
         self.index = index
         self.page_size = page_size

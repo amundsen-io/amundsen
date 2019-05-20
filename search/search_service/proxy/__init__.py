@@ -9,6 +9,8 @@ from werkzeug.utils import import_string
 _proxy_client = None
 _proxy_client_lock = Lock()
 
+DEFAULT_PAGE_SIZE = 10
+
 
 def get_proxy_client() -> BaseProxy:
     """
@@ -24,12 +26,17 @@ def get_proxy_client() -> BaseProxy:
         if _proxy_client:
             return _proxy_client
         else:
+            obj = current_app.config[config.PROXY_CLIENT_KEY]
+
             # Gather all the configuration to create a Proxy Client
             host = current_app.config[config.PROXY_ENDPOINT]
             user = current_app.config[config.PROXY_USER]
             password = current_app.config[config.PROXY_PASSWORD]
-
             client = import_string(current_app.config[config.PROXY_CLIENT])
-            _proxy_client = client(host=host, index=None, user=user, password=password)
+
+            # number of results per search page
+            page_size = current_app.config.get(config.SEARCH_PAGE_SIZE_KEY, DEFAULT_PAGE_SIZE)
+
+            _proxy_client = client(host=host, index=None, user=user, password=password, client=obj, page_size=page_size)
 
     return _proxy_client
