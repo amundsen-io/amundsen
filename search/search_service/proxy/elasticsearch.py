@@ -1,11 +1,8 @@
-from typing import List  # noqa: F401
-from threading import Lock
 import logging
 import re
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, query
-
 from flask import current_app
 
 from search_service import config
@@ -17,9 +14,6 @@ from search_service.proxy.statsd_utilities import timer_with_counter
 # Default Elasticsearch index to use, if none specified
 DEFAULT_ES_INDEX = 'table_search_index'
 
-# default search page size
-DEFAULT_PAGE_SIZE = 10
-
 LOGGING = logging.getLogger(__name__)
 
 
@@ -29,11 +23,12 @@ class ElasticsearchProxy(BaseProxy):
     """
     def __init__(self, *,
                  host: str = None,
+                 user: str = '',
                  index: str = None,
-                 auth_user: str = '',
-                 auth_pw: str = '',
-                 elasticsearch_client: Elasticsearch = None,
-                 page_size: int = DEFAULT_PAGE_SIZE) -> None:
+                 password: str = '',
+                 client: Elasticsearch = None,
+                 page_size: int = 10
+                 ) -> None:
         """
         Constructs Elasticsearch client for interactions with the cluster.
         Allows caller to pass a fully constructed Elasticsearch client, {elasticsearch_client}
@@ -46,21 +41,21 @@ class ElasticsearchProxy(BaseProxy):
         :param elasticsearch_client: Elasticsearch client to use, if provided
         :param  page_size: Number of search results to return per request
         """
-        if elasticsearch_client:
-            self.elasticsearch = elasticsearch_client
+        if client:
+            self.elasticsearch = client
         else:
             self.elasticsearch = self._create_client_from_credentials(host=host,
-                                                                      auth_user=auth_user,
-                                                                      auth_pw=auth_pw)
+                                                                      user=user,
+                                                                      password=password)
 
-        self.index = index
+        self.index = index or current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
         self.page_size = page_size
 
     @staticmethod
     def _create_client_from_credentials(*,
                                         host: str = None,
-                                        auth_user: str = '',
-                                        auth_pw: str = '') -> Elasticsearch:
+                                        user: str = '',
+                                        password: str = '') -> Elasticsearch:
         """
         Construct Elasticsearch client that connects to cluster at {host}
         and authenticates using {auth_user} and {auth_pw}
@@ -68,7 +63,7 @@ class ElasticsearchProxy(BaseProxy):
         the client
         :return: Elasticsearch client object
         """
-        return Elasticsearch(host, http_auth=(auth_user, auth_pw))
+        return Elasticsearch(host, http_auth=(user, password))
 
     def _get_search_result(self, page_index: int,
                            client: Search) -> SearchResult:
@@ -243,48 +238,3 @@ class ElasticsearchProxy(BaseProxy):
         return self._search_helper(query_term=query_term,
                                    page_index=page_index,
                                    client=s)
-
-
-_elasticsearch_proxy = None
-_elasticsearch_lock = Lock()
-
-
-def get_elasticsearch_proxy() -> ElasticsearchProxy:
-    """
-    Fetch ElasticSearch proxy instance. Use a lock to create an instance
-    if one doesn't exist
-    :return: ElasticSearchProxy instance
-    """
-    global _elasticsearch_proxy
-
-    # elasticsearch cluster host to connect to
-    host = current_app.config.get(config.ELASTICSEARCH_ENDPOINT_KEY, None)
-
-    # elasticsearch index
-    index = current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
-
-    # user name and password to connect to elasticsearch cluster
-    auth_user = current_app.config.get(config.ELASTICSEARCH_AUTH_USER_KEY, '')
-    auth_pw = current_app.config.get(config.ELASTICSEARCH_AUTH_PW_KEY, '')
-
-    # fully constructed client object to use, if provided
-    elasticsearch_client = current_app.config.get(config.ELASTICSEARCH_CLIENT_KEY, None)
-
-    # number of results per search page
-    page_size = current_app.config.get(config.SEARCH_PAGE_SIZE_KEY, DEFAULT_PAGE_SIZE)
-
-    if _elasticsearch_proxy:
-        return _elasticsearch_proxy
-
-    with _elasticsearch_lock:
-        if _elasticsearch_proxy:
-            return _elasticsearch_proxy
-        else:
-            _elasticsearch_proxy = ElasticsearchProxy(host=host,
-                                                      index=index,
-                                                      auth_user=auth_user,
-                                                      auth_pw=auth_pw,
-                                                      elasticsearch_client=elasticsearch_client,
-                                                      page_size=page_size)
-
-    return _elasticsearch_proxy

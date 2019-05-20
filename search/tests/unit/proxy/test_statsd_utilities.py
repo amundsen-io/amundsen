@@ -60,7 +60,7 @@ class TestStatsdUtilities(unittest.TestCase):
                                       mock_search: MagicMock) -> None:
 
         mock_elasticsearch_client = MagicMock()
-        es_proxy = ElasticsearchProxy(elasticsearch_client=mock_elasticsearch_client)
+        es_proxy = ElasticsearchProxy(client=mock_elasticsearch_client)
 
         with patch.object(statsd_utilities, '_get_statsd_client') as mock_statsd_client:
             mock_success_incr = MagicMock()
