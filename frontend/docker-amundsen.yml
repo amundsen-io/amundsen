@@ -52,6 +52,9 @@ services:
         - 5000:5000
       networks:
         - amundsennet
+      environment:
+        - SEARCHSERVICE_BASE=http://amundsensearch:5000
+        - METADATASERVICE_BASE=http://amundsenmetadata:5000
 
 networks:
   amundsennet:
