@@ -25,7 +25,7 @@ services:
       networks:
         - amundsennet
   amundsensearch:
-      image: amundsendev/amundsen-search:latest
+      image: amundsendev/amundsen-search:1.0.2
       container_name: amundsensearch
       ports:
         - 5001:5000
@@ -33,8 +33,10 @@ services:
         - elasticsearch
       networks:
         - amundsennet
+      environment:
+        - PROXY_ENDPOINT=es_amundsen
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:latest
+      image: amundsendev/amundsen-metadata:1.0.7
       container_name: amundsenmetadata
       depends_on:
         - neo4j
@@ -42,8 +44,11 @@ services:
         - 5002:5000
       networks:
         - amundsennet
+      environment:
+         - PROXY_HOST=bolt://neo4j_amundsen
+#         - CREDENTIALS_PROXY_PASSWORD=neo4j_NOTE_FOR_NOW_IT_SEEMS_NEO4JCONFIG_DISREGARDS_CREDENTIALS_WE_SHOULD_FILE_A_BUG
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:latest
+      image: amundsendev/amundsen-frontend:1.0.5
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata
