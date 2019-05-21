@@ -124,12 +124,11 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     })
   };
 
-  getAvatarForUser(fullName, profileUrl) {
+  getAvatarForUser(fullName, profileUrl, zIndex) {
     const popoverHoverFocus = (
       <Popover id="popover-trigger-hover-focus">
         {fullName}
       </Popover>);
-
     if (profileUrl.length !== 0) {
       return (
         <OverlayTrigger key={fullName} trigger={['hover', 'focus']} placement="top" overlay={popoverHoverFocus}>
@@ -137,7 +136,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
              style={{ display: 'inline-block', marginLeft: '-5px', backgroundColor: 'white', borderRadius: '90%'}}
              onClick={this.frequentUserOnClick}
           >
-            <Avatar name={fullName} size={25} round={true} style={{ border: '1px solid white' }} />
+            <Avatar name={fullName} size={25} round={true} style={{zIndex, position: 'relative'}} />
           </a>
         </OverlayTrigger>
       );
@@ -146,7 +145,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
       <OverlayTrigger key={fullName} trigger={['hover', 'focus']} placement="top" overlay={popoverHoverFocus}>
         <div style={{display: 'inline-block', marginLeft: '-5px',
           backgroundColor: 'white', borderRadius: '90%'}}>
-          <Avatar name={fullName} size={25} round={true} style={{border: '1px solid white'}}/>
+          <Avatar name={fullName} size={25} round={true} style={{zIndex, position: 'relative'}}/>
         </div>
       </OverlayTrigger>
     );
@@ -223,12 +222,12 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     // "Frequent Users" section
     const readerSectionRenderer = () => {
       return (data.table_readers && data.table_readers.length > 0) ?
-        data.table_readers.map((entry) => {
+        data.table_readers.map((entry, index) => {
           const fullName = entry.reader.display_name;
           const profileUrl = entry.reader.profile_url;
 
           return (
-              this.getAvatarForUser(fullName, profileUrl)
+              this.getAvatarForUser(fullName, profileUrl, data.table_readers.length - index)
           );
         }) :
         (<label className="m-auto">No frequent users exist</label>);
