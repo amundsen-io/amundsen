@@ -5,7 +5,7 @@ services:
       container_name: neo4j_amundsen
       environment:
         - CREDENTIALS_PROXY_USER=neo4j
-        - CREDENTIALS_PROXY_PASSWORD=neo4j
+        - CREDENTIALS_PROXY_PASSWORD=test
       ulimits:
         nofile:
           soft: 40000
