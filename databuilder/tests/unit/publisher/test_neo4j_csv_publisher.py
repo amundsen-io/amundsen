@@ -51,8 +51,8 @@ class TestPublish(unittest.TestCase):
 
             self.assertEqual(mock_run.call_count, 6)
 
-            # 2 node files, 1 relation file, and 2 more commits before index creation
-            self.assertEqual(mock_commit.call_count, 5)
+            # 2 node files, 1 relation file
+            self.assertEqual(mock_commit.call_count, 3)
 
 
 if __name__ == '__main__':
