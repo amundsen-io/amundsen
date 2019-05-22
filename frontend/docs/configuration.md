@@ -5,6 +5,11 @@ The default Flask application uses a [LocalConfig](https://github.com/lyft/amund
 
 For more information on how the configuration is being loaded and used, please reference the official Flask [documentation](http://flask.pocoo.org/docs/1.0/config/#development-production).
 
+## Authentication
+Authentication can be hooked within Amundsen using either wrapper class or using proxy to secure the microservices
+on the nginx/server level. Following are the ways to setup the end-to-end authentication.
+- [OIDC / Keycloak](authentication/oidc.md)
+
 ## React Application
 
 ### Application Config
