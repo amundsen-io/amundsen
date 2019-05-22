@@ -1,11 +1,20 @@
+import ast
+import importlib
 import os
 import logging
+import sys
 
 from flask import Flask, Blueprint
 from flask_restful import Api
+from typing import Dict, Any    # noqa: F401
 
 from search_service.api.search import SearchAPI, SearchFieldAPI
 from search_service.api.healthcheck import healthcheck
+
+# For customized flask use below arguments to override.
+FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
+FLASK_APP_CLASS_NAME = os.getenv('FLASK_APP_CLASS_NAME')
+FLASK_APP_KWARGS_DICT_STR = os.getenv('FLASK_APP_KWARGS_DICT')
 
 
 def create_app(*, config_module_class: str) -> Flask:
@@ -23,8 +32,24 @@ def create_app(*, config_module_class: str) -> Flask:
     :param config_module_class: name of the config
     :return: Flask
     """
+    if FLASK_APP_MODULE_NAME and FLASK_APP_CLASS_NAME:
+        print(f'Using requested Flask module {FLASK_APP_MODULE_NAME} '
+              f'and class {FLASK_APP_CLASS_NAME}', file=sys.stderr)
+        class_obj = getattr(
+            importlib.import_module(FLASK_APP_MODULE_NAME),
+            FLASK_APP_CLASS_NAME
+        )
 
-    app = Flask(__name__)
+        flask_kwargs_dict = {}  # type: Dict[str, Any]
+        if FLASK_APP_KWARGS_DICT_STR:
+            print(f'Using kwargs {FLASK_APP_KWARGS_DICT_STR} to instantiate Flask',
+                  file=sys.stderr)
+            flask_kwargs_dict = ast.literal_eval(FLASK_APP_KWARGS_DICT_STR)
+
+        app = class_obj(__name__, **flask_kwargs_dict)
+
+    else:
+        app = Flask(__name__)
 
     logging.info('Creating app with config name {}'
                  .format(config_module_class))
