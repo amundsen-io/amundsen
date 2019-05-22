@@ -19,12 +19,13 @@ $ docker-machine ls
 ```bash
 $ eval $(docker-machine env default)
 ```
+TODO (ttannis): Once submodules configured, they _should_ be able to `cd amundsenfrontendlibrary`, etc. Will go through setup again and verify it works.
 6. Setup your local environment.
-  * Clone [this repo](https://github.com/lyft/amundsenfrontendlibrary), [amundsenmetadatalibrary](https://github.com/lyft/amundsenmetadatalibrary), and [amundsensearchlibrary](https://github.com/lyft/amundsensearchlibrary).
+  * Clone [amundsenfrontendlibrary](https://github.com/lyft/amundsenfrontendlibrary), [amundsenmetadatalibrary](https://github.com/lyft/amundsenmetadatalibrary), and [amundsensearchlibrary](https://github.com/lyft/amundsensearchlibrary).
   * In your local versions of each library, update the `LOCAL_HOST` in the `LocalConfig` with the IP used for the `default` docker machine. You can see the IP in the `URL` outputted from running `docker-machine ls`.
 7. Start all of the services using:
 ```bash
-# in ~/<your-path-to-cloned-repo>/amundsenfrontendlibrary
+# in ~/<your-path-to-cloned-repo>/amundsen
 $ docker-compose -f docker-amundsen.yml up
 ```
 8. Ingest dummy data into Neo4j by doing the following:
