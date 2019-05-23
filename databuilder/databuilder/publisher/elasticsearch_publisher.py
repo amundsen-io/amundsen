@@ -107,7 +107,7 @@ class ElasticsearchPublisher(Publisher):
 
     def __init__(self):
         # type: () -> None
-        pass
+        super(ElasticsearchPublisher, self).__init__()
 
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -139,7 +139,7 @@ class ElasticsearchPublisher(Publisher):
             # return empty list on exception
             return []
 
-    def publish(self):
+    def publish_impl(self):
         # type: () -> None
         """
         Use Elasticsearch Bulk API to load data from file to a {new_index}.

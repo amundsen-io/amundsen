@@ -25,6 +25,7 @@ class DefaultJob(Job):
 
     To configure statsd itself, use environment variable: https://statsd.readthedocs.io/en/v3.2.1/configure.html
     """
+
     def __init__(self,
                  conf,
                  task,
@@ -53,7 +54,7 @@ class DefaultJob(Job):
     def launch(self):
         # type: () -> None
         """
-        Launch a job by initializing job, run task and publish
+        Launch a job by initializing job, run task and publish.
         :return:
         """
 
@@ -71,6 +72,7 @@ class DefaultJob(Job):
             self.publisher.init(Scoped.get_scoped_conf(self.conf, self.publisher.get_scope()))
             Job.closer.register(self.publisher.close)
             self.publisher.publish()
+
         except Exception as e:
             is_success = False
             raise e
