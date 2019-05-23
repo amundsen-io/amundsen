@@ -101,7 +101,7 @@ class Neo4jCsvPublisher(Publisher):
 
     def __init__(self):
         # type: () -> None
-        pass
+        super(Neo4jCsvPublisher, self).__init__()
 
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -146,7 +146,7 @@ class Neo4jCsvPublisher(Publisher):
         path = conf.get_string(path_key)
         return [join(path, f) for f in listdir(path) if isfile(join(path, f))]
 
-    def publish(self):
+    def publish_impl(self):
         # type: () -> None
         """
         Publishes Nodes first and then Relations
