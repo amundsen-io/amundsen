@@ -85,6 +85,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             self.assertEqual(client.transport.hosts[0]['port'], 9200)
         self.assertEqual(self.es_proxy.index, "random123")
 
+    @patch('search_service.proxy._proxy_client', None)
     def test_setup_config(self) -> None:
         es: ElasticsearchProxy = get_proxy_client()
         a = es.elasticsearch
