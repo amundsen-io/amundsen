@@ -1,12 +1,13 @@
 import string
 import unittest
 
-from mock import MagicMock
+from mock import MagicMock, patch
 from typing import List, Callable, Tuple
 
-from search_service import create_app
+from search_service import create_app, config
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
+from search_service.proxy import get_proxy_client
 
 
 class TestAtlasProxy(unittest.TestCase):
@@ -173,6 +174,33 @@ class TestAtlasProxy(unittest.TestCase):
             }])
 
         return guid_filter
+
+    def test_setup_client(self) -> None:
+        with self.app_context:
+            from search_service.proxy.atlas import AtlasProxy
+            client = AtlasProxy(
+                host="http://localhost:21000",
+                user="admin",
+                password="admin",
+                page_size=1337
+            )
+            self.assertEqual(client.atlas.base_url, "http://localhost:21000")
+            self.assertEqual(client.atlas.client.request_params['headers']['Authorization'], 'Basic YWRtaW46YWRtaW4=')
+            self.assertEqual(client.page_size, 1337)
+
+    @patch('search_service.proxy._proxy_client', None)
+    def test_setup_config(self) -> None:
+        # Gather all the configuration to create a Proxy Client
+        self.app.config[config.PROXY_ENDPOINT] = "http://localhost:21000"
+        self.app.config[config.PROXY_USER] = "admin"
+        self.app.config[config.PROXY_PASSWORD] = "admin"
+        self.app.config[config.PROXY_CLIENT] = config.PROXY_CLIENTS['ATLAS']
+        self.app.config[config.SEARCH_PAGE_SIZE_KEY] = 1337
+
+        client = get_proxy_client()
+        self.assertEqual(client.atlas.base_url, "http://localhost:21000")
+        self.assertEqual(client.atlas.client.request_params['headers']['Authorization'], 'Basic YWRtaW46YWRtaW4=')
+        self.assertEqual(client.page_size, 1337)
 
     def test_search_normal(self):
         expected = SearchResult(total_results=1,
