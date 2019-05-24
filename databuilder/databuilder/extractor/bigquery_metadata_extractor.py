@@ -159,6 +159,7 @@ class BigQueryMetadataExtractor(Extractor):
             total_cols += 1
             for field in column['fields']:
                 total_cols = self._iterate_over_cols(col_name, field, cols, total_cols)
+            return total_cols
         else:
             col = ColumnMetadata(
                 name=col_name,
@@ -180,10 +181,10 @@ class BigQueryMetadataExtractor(Extractor):
             yield response
 
             if 'nextPageToken' in response:
-                response = self.bigquery_service.datasets().list(
+                response = self.bigquery_service.tables().list(
                     projectId=dataset.projectId,
                     datasetId=dataset.datasetId,
-                    maxRResults=self.pagesize,
+                    maxResults=self.pagesize,
                     pageToken=response['nextPageToken']).execute(
                         num_retries=BigQueryMetadataExtractor.NUM_RETRIES)
             else:
