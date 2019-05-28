@@ -68,5 +68,34 @@ REQUEST_HEADERS_METHOD = get_access_headers
 This function will be called using the current `app` instance to add the headers in each request when calling any endpoint of 
 metadatalibrary and searchlibrary [here](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/api/utils/request_utils.py)
 
+
+## Setting Up Auth User Method
+In order to get the current authenticated user (which is being used in Amundsen for many operations), we need to set
+`AUTH_USER_METHOD` config variable in frontendlibrary. 
+This function should return email address, user id and any other required information. 
+
+- Define a function to fetch the user information in your config.py:
+```python
+def get_auth_user(app):
+    """
+    Retrieves the user information from oidc token, and then makes
+    a dictionary 'UserInfo' from the token information dictionary.
+    We need to convert it to a class in order to use the information
+    in the rest of the Amundsen application.
+    :param app: The instance of the current app.
+    :return: A class UserInfo
+    """
+    from flask import g
+    user_info = type('UserInfo', (object,), g.oidc_id_token)
+    # noinspection PyUnresolvedReferences
+    user_info.user_id = user_info.preferred_username
+    return user_info
+``` 
+
+- Set the method as the auth user method in your config.py:
+```python
+AUTH_USER_METHOD = get_auth_user
+```
+
 Once done, you'll have the end-to-end authentication in Amundsen without any proxy or code changes.
   
