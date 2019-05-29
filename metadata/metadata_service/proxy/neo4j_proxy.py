@@ -699,16 +699,18 @@ class Neo4jProxy(BaseProxy):
 
         query = textwrap.dedent("""
         MATCH (user:User {key: $user_id})
-        OPTIONAL MATCH (user)-[:manage_by]->(manager:User)
+        OPTIONAL MATCH (user)-[:MANAGE_BY]->(manager:User)
         RETURN user as user_record, manager as manager_record
         """)
 
         record = self._execute_cypher_query(statement=query,
                                             param_dict={'user_id': user_id})
-        if not record:
+        single_result = record.single()
+
+        if not single_result:
             raise NotFoundException('User {user_id} '
                                     'not found in the graph'.format(user_id=user_id))
-        single_result = record.single()
+
         record = single_result.get('user_record', {})
         manager_record = single_result.get('manager_record', {})
         if manager_record:

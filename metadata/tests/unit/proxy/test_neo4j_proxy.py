@@ -11,6 +11,7 @@ from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import (Application, Column, Table, Tag,
                                                   Watermark, Source, Statistics, User)
 from metadata_service.entity.tag_detail import TagDetail
+from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
 from metadata_service.util import UserResourceRel
 
@@ -579,6 +580,12 @@ class TestNeo4jProxy(unittest.TestCase):
                                                       relation_type=UserResourceRel.follow)
             self.assertEquals(mock_run.call_count, 1)
             self.assertEquals(mock_commit.call_count, 1)
+
+    def test_get_invalid_user(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = None
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            self.assertRaises(NotFoundException, neo4j_proxy.get_user_detail, user_id='invalid_email')
 
 
 if __name__ == '__main__':
