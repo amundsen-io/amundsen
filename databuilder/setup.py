@@ -35,7 +35,8 @@ setup(
         'neo4j-driver==1.7.2',
         'antlr4-python2-runtime==4.7.1',
         'statsd==3.2.1',
-        'retrying==1.3.3'
+        'retrying==1.3.3',
+        'confluent-kafka==1.0.0'
     ],
     extras_require={
         ':python_version=="2.7"': ['typing>=3.6'],  # allow typehinting PY2
