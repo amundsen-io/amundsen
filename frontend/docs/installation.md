@@ -53,10 +53,6 @@ The following instructions are for setting up a version of Amundsen using Docker
     $ python3 example/scripts/sample_data_loader.py
    ```
 5. View UI at [`http://localhost:5000`](http://localhost:5000) and try to search `test`, it should return some result.
-6. From where the `docker-amundsen.yml` file is, run the following command when done:
-    ```bash
-    $ docker-compose -f docker-amundsen.yml down
-    ```
 
 ### Verify setup
 
