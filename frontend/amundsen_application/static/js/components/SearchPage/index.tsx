@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
 import Pagination from 'react-js-pagination';
+import { RouteComponentProps } from 'react-router';
 
 import SearchBar from './SearchBar';
 import SearchList from './SearchList';
@@ -48,7 +49,7 @@ export interface StateFromProps {
   searchTerm: string;
   popularTables: TableResource[];
   tables: TableSearchResults;
-  dashboards: DashboardSearchResults
+  dashboards: DashboardSearchResults;
   users: UserSearchResults;
 }
 
@@ -58,7 +59,7 @@ export interface DispatchFromProps {
   getPopularTables: () => GetPopularTablesRequest;
 }
 
-export type SearchPageProps = StateFromProps & DispatchFromProps;
+export type SearchPageProps = StateFromProps & DispatchFromProps & RouteComponentProps<any>;
 
 interface SearchPageState {
   selectedTab: ResourceType;
@@ -77,17 +78,25 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
 
   componentDidMount() {
     this.props.getPopularTables();
-
-    const params = qs.parse(window.location.search);
+    const params = qs.parse(this.props.location.search);
     const { searchTerm, pageIndex, selectedTab } = params;
-
-    const currentTab = this.getSelectedTabByResourceType(selectedTab);
+    const { term, index, currentTab } = this.getSanitizedUrlParams(searchTerm, pageIndex, selectedTab);
     this.setState({ selectedTab: currentTab });
-    if (searchTerm && searchTerm.length > 0) {
-      const index = pageIndex || 0;
-      this.props.searchAll(searchTerm, this.createSearchOptions(index, currentTab));
-      // Update the page URL with validated parameters.
-      this.updatePageUrl(searchTerm, currentTab, index);
+    if (term !== "") {
+      this.props.searchAll(term, this.createSearchOptions(index, currentTab));
+      if (currentTab !== selectedTab || pageIndex !== index) {
+        this.updatePageUrl(term, currentTab, index);
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.search !== prevProps.location.search) {
+      const params = qs.parse(this.props.location.search);
+      const { searchTerm, pageIndex, selectedTab } = params;
+      const { term, index, currentTab } = this.getSanitizedUrlParams(searchTerm, pageIndex, selectedTab);
+      this.setState({ selectedTab: currentTab });
+      this.props.searchAll(term, this.createSearchOptions(index, currentTab));
     }
   }
 
@@ -110,6 +119,13 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     };
   };
 
+  getSanitizedUrlParams = (searchTerm: string, pageIndex: number, selectedTab: ResourceType) => {
+    const currentTab = this.getSelectedTabByResourceType(selectedTab);
+    const index = pageIndex || 0;
+    const term = searchTerm ? searchTerm : "";
+    return {term, index, currentTab};
+  };
+
   getPageIndexByResourceType = (tab: ResourceType): number => {
     switch(tab) {
       case ResourceType.table:
@@ -123,7 +139,6 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
   };
 
   onSearchBarSubmit = (searchTerm: string): void => {
-    this.props.searchAll(searchTerm);
     this.updatePageUrl(searchTerm, this.state.selectedTab,0);
   };
 
@@ -141,7 +156,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
 
   updatePageUrl = (searchTerm: string, tab: ResourceType, pageIndex: number): void => {
     const pathName = `/search?searchTerm=${searchTerm}&selectedTab=${tab}&pageIndex=${pageIndex}`;
-    window.history.pushState({}, '', `${window.location.origin}${pathName}`);
+    this.props.history.push(pathName);
   };
 
   renderPopularTables = () => {
