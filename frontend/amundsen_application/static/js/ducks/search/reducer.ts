@@ -12,7 +12,7 @@ import {
 } from './types';
 import { ResourceType } from 'components/common/ResourceListItem/types';
 
-export type SearchReducerAction = SearchAllResponse | SearchResourceResponse;
+export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest;
 
 export interface SearchReducerState {
   search_term: string;
@@ -58,19 +58,26 @@ const initialState: SearchReducerState = {
 };
 
 export default function reducer(state: SearchReducerState = initialState, action: SearchReducerAction): SearchReducerState {
-  const newState = action.payload;
   switch (action.type) {
+    // Updates search term to reflect action
+    case SearchAll.ACTION:
+      return {
+        ...state,
+        search_term: action.term,
+      };
     // SearchAll will reset all resources with search results or the initial state
     case SearchAll.SUCCESS:
+      const newState = action.payload;
       return {
         ...initialState,
         ...newState,
       };
     // SearchResource will set only a single resource and preserves search state for other resources
     case SearchResource.SUCCESS:
+      const resourceNewState = action.payload;
       return {
         ...state,
-        ...newState,
+        ...resourceNewState,
       };
     case SearchAll.FAILURE:
     case SearchResource.FAILURE:
