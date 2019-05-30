@@ -3,6 +3,7 @@ from typing import Union, Dict, Any  # noqa: F401
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 
 class User(Neo4jCsvSerializable):
@@ -21,7 +22,7 @@ class User(Neo4jCsvSerializable):
     USER_NODE_EMPLOYEE_TYPE = 'employee_type'
     USER_NODE_MANAGER_EMAIL = 'manager_email'
     USER_NODE_SLACK_ID = 'slack_id'
-    USER_NODE_IS_ACTIVE = 'is_active'
+    USER_NODE_IS_ACTIVE = 'is_active{}'.format(UNQUOTED_SUFFIX)  # bool value needs to be unquoted when publish to neo4j
     USER_NODE_UPDATED_AT = 'updated_at'
 
     USER_MANAGER_RELATION_TYPE = 'MANAGE_BY'

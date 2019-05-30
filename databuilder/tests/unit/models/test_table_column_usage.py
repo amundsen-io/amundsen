@@ -24,7 +24,7 @@ class TestTableColumnUsage(unittest.TestCase):
                      'last_name': '',
                      'full_name': '',
                      'employee_type': '',
-                     'is_active': True,
+                     'is_active:UNQUOTED': True,
                      'updated_at': 0,
                      'LABEL': 'User',
                      'slack_id': '',
