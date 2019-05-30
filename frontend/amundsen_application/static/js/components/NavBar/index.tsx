@@ -2,13 +2,11 @@ import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import AppConfig from 'config/config';
 import { LinkConfig } from 'config/config-types';
 import { GlobalState } from 'ducks/rootReducer';
-import { getLoggedInUser } from 'ducks/user/reducer';
-import { LoggedInUser, GetLoggedInUserRequest } from 'ducks/user/types';
+import { LoggedInUser } from 'ducks/user/types';
 import { logClick } from "ducks/utilMethods";
 
 import './styles.scss';
@@ -18,19 +16,11 @@ interface StateFromProps {
   loggedInUser: LoggedInUser;
 }
 
-interface DispatchFromProps {
-  getLoggedInUser: () => GetLoggedInUserRequest;
-}
-
-export type NavBarProps = StateFromProps & DispatchFromProps;
+export type NavBarProps = StateFromProps;
 
 export class NavBar extends React.Component<NavBarProps> {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
-    this.props.getLoggedInUser();
   }
 
   generateNavLinks(navLinks: LinkConfig[]) {
@@ -81,8 +71,4 @@ export const mapStateToProps = (state: GlobalState) => {
   }
 };
 
-export const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getLoggedInUser }, dispatch);
-};
-
-export default withRouter(connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(NavBar));
+export default withRouter(connect<StateFromProps>(mapStateToProps)(NavBar));

@@ -4,7 +4,7 @@ import * as Avatar from 'react-avatar';
 import { shallow } from 'enzyme';
 
 import { Link, NavLink } from 'react-router-dom';
-import { NavBar, NavBarProps, mapDispatchToProps, mapStateToProps } from '../';
+import { NavBar, NavBarProps, mapStateToProps } from '../';
 
 import { logClick } from "ducks/utilMethods";
 jest.mock('ducks/utilMethods', () => {
@@ -38,20 +38,11 @@ describe('NavBar', () => {
   const setup = (propOverrides?: Partial<NavBarProps>) => {
     const props: NavBarProps = {
       loggedInUser: globalState.user.loggedInUser,
-      getLoggedInUser: jest.fn(),
       ...propOverrides
     };
     const wrapper = shallow<NavBar>(<NavBar {...props} />);
     return { props, wrapper };
   };
-
-  describe('componentDidMount', () => {
-    it('calls props.getLoggedInUser', () => {
-      const { props, wrapper } = setup();
-      wrapper.instance().componentDidMount();
-      expect(props.getLoggedInUser).toHaveBeenCalled();
-    });
-  });
 
   describe('generateNavLinks', () => {
     let content;
@@ -124,19 +115,6 @@ describe('NavBar', () => {
   });
 });
 
-describe('mapDispatchToProps', () => {
-  let dispatch;
-  let result;
-
-  beforeEach(() => {
-    dispatch = jest.fn(() => Promise.resolve());
-    result = mapDispatchToProps(dispatch);
-  });
-
-  it('sets getLoggedInUser on the props', () => {
-    expect(result.getLoggedInUser).toBeInstanceOf(Function);
-  });
-});
 
 describe('mapStateToProps', () => {
   let result;

@@ -39,7 +39,7 @@ body {
 .title-1, .title-2, .title-3,
 .subtitle-1, .subtitle-2, .subtitle-3,
 .body-1, .body-2, .body-3,
-.body-secondary-3, .body-link, .caption {
+.body-secondary-3, .body-placeholder , .body-link, .caption {
   font-family: $font-family-body;
 }
 
@@ -98,6 +98,12 @@ body {
   font-weight: $font-weight-body-regular;
 }
 
+.body-placeholder {
+  color: $text-medium;
+  font-size: 14px;
+  font-weight: $font-weight-body-regular;
+}
+
 .body-link {
   color: $brand-color-4;
   font-size: 14px;
@@ -116,7 +122,7 @@ body {
 }
 
 .helper-text {
-  color: $text-light;
+  color: $text-medium;
   font-size: 12px;
   font-family: $font-family-body;
 }

@@ -9,6 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import SearchBar from './SearchBar';
 import SearchList from './SearchList';
 
+import BookmarkList from 'components/common/Bookmark/BookmarkList'
 import InfoButton from 'components/common/InfoButton';
 import { ResourceType, TableResource } from 'components/common/ResourceListItem/types';
 import TabsComponent from 'components/common/Tabs';
@@ -166,6 +167,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     };
     return (
         <div className="search-list-container">
+          <BookmarkList />
           <div className="popular-tables-header">
             <label className="title-1">{POPULAR_TABLES_LABEL}</label>
             <InfoButton infoText={POPULAR_TABLES_INFO_TEXT}/>
@@ -208,7 +210,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     if (total_results === 0 && searchTerm.length > 0) {
       return (
         <div className="search-list-container">
-          <div className="search-error">
+          <div className="search-error body-placeholder">
             {SEARCH_ERROR_MESSAGE_PREFIX}<i>{ searchTerm }</i>{SEARCH_ERROR_MESSAGE_INFIX}{tabLabel.toLowerCase()}{SEARCH_ERROR_MESSAGE_SUFFIX}
           </div>
         </div>
@@ -219,7 +221,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     if (page_index < 0 || startIndex > total_results) {
       return (
         <div className="search-list-container">
-          <div className="search-error">
+          <div className="search-error body-placeholder">
             {PAGE_INDEX_ERROR_MESSAGE}
           </div>
         </div>

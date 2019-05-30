@@ -8,7 +8,9 @@ from amundsen_application import create_app
 from amundsen_application.api.metadata.v0 import \
     TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT, POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT
 
-local_app = create_app('amundsen_application.config.LocalConfig')
+from amundsen_application.tests.test_utils import TEST_USER_ID
+
+local_app = create_app('amundsen_application.config.TestConfig')
 
 
 class MetadataTest(unittest.TestCase):
@@ -33,6 +35,7 @@ class MetadataTest(unittest.TestCase):
                 'key': 'test_db://test_cluster.test_schema/test_table',
                 'schema_name': 'test_schema',
                 'type': 'table',
+                'last_updated_epoch': None,
             }
         ]
         self.mock_metadata = {
@@ -71,6 +74,7 @@ class MetadataTest(unittest.TestCase):
             },
         }
         self.expected_parsed_metadata = {
+            'key': 'table_key',
             'cluster': 'test_cluster',
             'database': 'test_db',
             'schema': 'test_schema',
@@ -144,56 +148,96 @@ class MetadataTest(unittest.TestCase):
         }
         self.expected_parsed_tags = [
             {
-                "tag_count": 3,
-                "tag_name": "tag_0"
+                'tag_count': 3,
+                'tag_name': 'tag_0'
             },
             {
-                "tag_count": 4,
-                "tag_name": "tag_1"
+                'tag_count': 4,
+                'tag_name': 'tag_1'
             },
             {
-                "tag_count": 5,
-                "tag_name": "tag_2"
+                'tag_count': 5,
+                'tag_name': 'tag_2'
             },
             {
-                "tag_count": 10,
-                "tag_name": "tag_3"
+                'tag_count': 10,
+                'tag_name': 'tag_3'
             },
             {
-                "tag_count": 1,
-                "tag_name": "tag_4"
+                'tag_count': 1,
+                'tag_name': 'tag_4'
             }
         ]
         self.mock_user = {
-            "email": "test@test.com",
-            "employee_type": "FTE",
-            "first_name": "Firstname",
-            "full_name": "Firstname Lastname",
-            "github_username": "githubusername",
-            "is_active": True,
-            "last_name": "Lastname",
-            "manager_fullname": "Manager Fullname",
-            "role_name": "SWE",
-            "slack_id": "slackuserid",
-            "team_name": "Amundsen",
-            "user_id": "testuserid",
+            'email': 'test@test.com',
+            'employee_type': 'FTE',
+            'first_name': 'Firstname',
+            'full_name': 'Firstname Lastname',
+            'github_username': 'githubusername',
+            'is_active': True,
+            'last_name': 'Lastname',
+            'manager_fullname': 'Manager Fullname',
+            'role_name': 'SWE',
+            'slack_id': 'slackuserid',
+            'team_name': 'Amundsen',
+            'user_id': 'testuserid',
         }
         self.expected_parsed_user = {
-            "display_name": "Firstname Lastname",
-            "email": "test@test.com",
-            "employee_type": "FTE",
-            "first_name": "Firstname",
-            "full_name": "Firstname Lastname",
-            "github_username": "githubusername",
-            "is_active": True,
-            "last_name": "Lastname",
-            "manager_fullname": "Manager Fullname",
-            "profile_url": "https://test-profile-url.com",
-            "role_name": "SWE",
-            "slack_id": "slackuserid",
-            "team_name": "Amundsen",
-            "user_id": "testuserid",
+            'display_name': 'Firstname Lastname',
+            'email': 'test@test.com',
+            'employee_type': 'FTE',
+            'first_name': 'Firstname',
+            'full_name': 'Firstname Lastname',
+            'github_username': 'githubusername',
+            'is_active': True,
+            'last_name': 'Lastname',
+            'manager_fullname': 'Manager Fullname',
+            'profile_url': 'https://test-profile-url.com',
+            'role_name': 'SWE',
+            'slack_id': 'slackuserid',
+            'team_name': 'Amundsen',
+            'user_id': 'testuserid',
         }
+        self.get_bookmark_response = {
+            'table': [
+                {
+                    'cluster': 'cluster',
+                    'database': 'database',
+                    'schema': 'schema',
+                    'table_name': 'table_name_0',
+                    'table_description': 'description',
+                },
+                {
+                    'cluster': 'cluster',
+                    'database': 'database',
+                    'schema': 'schema',
+                    'table_name': 'table_name_1',
+                    'table_description': 'description',
+                },
+            ]
+        }
+        self.expected_parsed_bookmarks = [
+            {
+                'cluster': 'cluster',
+                'database': 'database',
+                'description': 'description',
+                'key': 'database://cluster.schema/table_name_0',
+                'last_updated_epoch': None,
+                'name': 'table_name_0',
+                'schema_name': 'schema',
+                'type': 'table',
+            },
+            {
+                'cluster': 'cluster',
+                'database': 'database',
+                'description': 'description',
+                'key': 'database://cluster.schema/table_name_1',
+                'last_updated_epoch': None,
+                'name': 'table_name_1',
+                'schema_name': 'schema',
+                'type': 'table',
+            },
+        ]
 
     @responses.activate
     def test_popular_tables_success(self) -> None:
@@ -531,3 +575,80 @@ class MetadataTest(unittest.TestCase):
             data = json.loads(response.data)
             self.assertEquals(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('user'), self.expected_parsed_user)
+
+    @responses.activate
+    def test_get_bookmark(self) -> None:
+        """
+        Test get_bookmark with no user specified
+        """
+        url = '{0}{1}/{2}/follow/'.format(local_app.config['METADATASERVICE_BASE'], USER_ENDPOINT, TEST_USER_ID)
+        responses.add(responses.GET, url, json=self.get_bookmark_response, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user/bookmark')
+            data = json.loads(response.data)
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_bookmarks)
+
+    @responses.activate
+    def test_get_bookmark_for_user(self) -> None:
+        """
+        Test get_bookmark with a specified user
+        """
+        specified_user = 'other_user'
+        url = '{0}{1}/{2}/follow/'.format(local_app.config['METADATASERVICE_BASE'], USER_ENDPOINT, specified_user)
+        responses.add(responses.GET, url, json=self.get_bookmark_response, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user/bookmark', query_string=dict(user_id=specified_user))
+            data = json.loads(response.data)
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_bookmarks)
+
+    @responses.activate
+    def test_put_bookmark(self) -> None:
+        """
+        Test update_bookmark with a PUT request
+        """
+        resource_type = 'table'
+        key = 'database://cluster.schema/table_name_1'
+        url = '{0}{1}/{2}/follow/{3}/{4}'.format(local_app.config['METADATASERVICE_BASE'],
+                                                 USER_ENDPOINT,
+                                                 TEST_USER_ID,
+                                                 resource_type,
+                                                 key)
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/user/bookmark',
+                json={
+                    'type': resource_type,
+                    'key': key,
+                })
+
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    def test_delete_bookmark(self) -> None:
+        """
+        Test update_bookmark with a DELETE request
+        """
+        resource_type = 'table'
+        key = 'database://cluster.schema/table_name_1'
+        url = '{0}{1}/{2}/follow/{3}/{4}'.format(local_app.config['METADATASERVICE_BASE'],
+                                                 USER_ENDPOINT,
+                                                 TEST_USER_ID,
+                                                 resource_type,
+                                                 key)
+        responses.add(responses.DELETE, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.delete(
+                '/api/metadata/v0/user/bookmark',
+                json={
+                    'type': resource_type,
+                    'key': key,
+                })
+
+            self.assertEquals(response.status_code, HTTPStatus.OK)

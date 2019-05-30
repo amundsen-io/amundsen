@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { LoggingParams, TableResource} from '../types';
+import BookmarkIcon from "components/common/Bookmark/BookmarkIcon";
 
 export interface TableListItemProps {
   table: TableResource;
@@ -35,7 +36,12 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
           <img className="icon icon-database icon-color" />
           <div className="content">
             <div className={ hasLastUpdated? "col-sm-9 col-md-10" : "col-sm-12"}>
-              <div className="title-2 truncated">{ `${table.schema_name}.${table.name}`}</div>
+              <div className="resource-name title-2">
+                <div className="truncated">
+                  { `${table.schema_name}.${table.name}`}
+                </div>
+                <BookmarkIcon bookmarkKey={ this.props.table.key }/>
+              </div>
               <div className="body-secondary-3 truncated">{ table.description }</div>
             </div>
             {
