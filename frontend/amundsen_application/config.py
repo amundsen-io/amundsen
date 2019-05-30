@@ -1,5 +1,6 @@
 import os
-from typing import Dict, Set  # noqa: F401
+from typing import Dict, Optional, Set  # noqa: F401
+from amundsen_application.tests.test_utils import get_test_user
 
 
 class Config:
@@ -50,7 +51,11 @@ class LocalConfig(Config):
     # 2. SEARCHSERVICE_REQUEST_HEADERS
     REQUEST_HEADERS_METHOD = None
 
-    AUTH_USER_METHOD = None
+    AUTH_USER_METHOD = None  # type: Optional[function]
     GET_PROFILE_URL = None
 
     MAIL_CLIENT = None
+
+
+class TestConfig(LocalConfig):
+    AUTH_USER_METHOD = get_test_user

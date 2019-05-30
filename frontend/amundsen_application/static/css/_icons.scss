@@ -22,6 +22,16 @@ img.icon {
     mask-image: url('/static/images/icons/Alert-Triangle.svg');
   }
 
+   &.icon-bookmark {
+    -webkit-mask-image: url('/static/images/icons/Favorite.svg');
+    mask-image: url('/static/images/icons/Favorite.svg');
+  }
+
+   &.icon-bookmark-filled {
+    -webkit-mask-image: url('/static/images/icons/Favorite-Filled.svg');
+    mask-image: url('/static/images/icons/Favorite-Filled.svg');
+  }
+
   &.icon-delete {
     -webkit-mask-image: url('/static/images/icons/Trash.svg');
     mask-image: url('/static/images/icons/Trash.svg');

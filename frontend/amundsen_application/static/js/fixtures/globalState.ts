@@ -16,6 +16,21 @@ const globalState: GlobalState = {
         html_content: '<div>Just kidding</div>',
       }],
   },
+  bookmarks: {
+    myBookmarks: [
+      {
+        key: 'bookmarked_key',
+        type: ResourceType.table,
+        cluster: 'cluster',
+        database: 'database',
+        description: 'description',
+        name: 'name',
+        schema_name: 'schema_name',
+      },
+    ],
+    myBookmarksIsLoaded: false,
+    bookmarksForUser: [],
+  },
   feedback: {
       sendState: SendingState.IDLE,
   },
@@ -82,6 +97,7 @@ const globalState: GlobalState = {
       database: '',
       is_editable: false,
       is_view: false,
+      key: '',
       schema: '',
       table_name: '',
       table_description: '',

@@ -77,6 +77,7 @@ export interface TableMetadata {
   database: string;
   is_editable: boolean;
   is_view: boolean;
+  key: string;
   schema: string;
   table_name: string;
   table_description: string;

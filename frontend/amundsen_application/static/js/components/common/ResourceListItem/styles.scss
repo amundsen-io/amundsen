@@ -20,5 +20,10 @@
   .content {
     width: 100%;
     min-width: 0; /* Needed to support `white-space: nowrap` */
+
+    .resource-name .truncated {
+      display: inline-block;
+      max-width: calc(100% - 32px);
+    }
   }
 }

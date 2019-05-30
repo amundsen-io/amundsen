@@ -7,9 +7,11 @@ import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, { TableMetadataReducerState } from './tableMetadata/reducer';
 import allTags, { AllTagsReducerState } from './allTags/reducer';
 import user, { UserReducerState } from './user/reducer';
+import bookmarks, { BookmarkReducerState } from "./bookmark/reducer";
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;
+  bookmarks: BookmarkReducerState;
   feedback: FeedbackReducerState;
   popularTables: PopularTablesReducerState;
   search: SearchReducerState;
@@ -20,6 +22,7 @@ export interface GlobalState {
 
 export default combineReducers<GlobalState>({
   announcements,
+  bookmarks,
   feedback,
   popularTables,
   search,

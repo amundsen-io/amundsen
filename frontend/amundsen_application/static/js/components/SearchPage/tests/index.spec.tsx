@@ -617,11 +617,11 @@ describe('SearchPage', () => {
       content = shallow(wrapper.instance().renderPopularTables());
     });
     it('renders correct label for content', () => {
-      expect(content.children().at(0).find('label').text()).toEqual(POPULAR_TABLES_LABEL);
+      expect(content.children().at(1).find('label').text()).toEqual(POPULAR_TABLES_LABEL);
     });
 
     it('renders InfoButton with correct props', () => {
-      expect(content.children().at(0).find(InfoButton).props()).toMatchObject({
+      expect(content.children().at(1).find(InfoButton).props()).toMatchObject({
         infoText: POPULAR_TABLES_INFO_TEXT,
       });
     });
