@@ -4,8 +4,7 @@ services:
       image: neo4j:3.3.0
       container_name: neo4j_amundsen
       environment:
-        - CREDENTIALS_PROXY_USER=neo4j
-        - CREDENTIALS_PROXY_PASSWORD=test
+        - NEO4J_AUTH=neo4j/test
       ulimits:
         nofile:
           soft: 40000
@@ -46,7 +45,6 @@ services:
         - amundsennet
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
-#         - CREDENTIALS_PROXY_PASSWORD=neo4j_NOTE_FOR_NOW_IT_SEEMS_NEO4JCONFIG_DISREGARDS_CREDENTIALS_WE_SHOULD_FILE_A_BUG
   amundsenfrontend:
       image: amundsendev/amundsen-frontend:1.0.5
       container_name: amundsenfrontend
