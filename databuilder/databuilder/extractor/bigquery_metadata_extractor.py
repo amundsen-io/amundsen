@@ -37,6 +37,7 @@ class BigQueryMetadataExtractor(Extractor):
     _DEFAULT_SCOPES = ('https://www.googleapis.com/auth/bigquery.readonly')
     DEFAULT_PAGE_SIZE = 300
     NUM_RETRIES = 3
+    DATE_LENGTH = 8
 
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -59,6 +60,7 @@ class BigQueryMetadataExtractor(Extractor):
         self.bigquery_service = build('bigquery', 'v2', http=authed_http, cache_discovery=False)
         self.datasets = self._retrieve_datasets()
         self.iter = iter(self._iterate_over_tables())
+        self.grouped_tables = set([])
 
     def extract(self):
         # type: () -> Any
@@ -117,6 +119,25 @@ class BigQueryMetadataExtractor(Extractor):
 
             for table in page['tables']:
                 tableRef = table['tableReference']
+
+                table_id = tableRef['tableId']
+
+                # BigQuery tables that have 8 digits as last characters are
+                # considered date range tables and are grouped together in the UI.
+                # ( e.g. ga_sessions_20190101, ga_sessions_20190102, etc. )
+                last_eight_chars = table_id[-BigQueryMetadataExtractor.DATE_LENGTH:]
+                if last_eight_chars.isdigit():
+                    # If the last eight characters are digits, we assume the table is of a table date range type
+                    # and then we only need one schema definition
+                    table_prefix = table_id[:-BigQueryMetadataExtractor.DATE_LENGTH]
+                    if table_prefix in self.grouped_tables:
+                        # If one table in the date range is processed, then ignore other ones
+                        # (it adds too much metadata)
+                        continue
+
+                    table_id = table_prefix
+                    self.grouped_tables.add(table_prefix)
+
                 table = self.bigquery_service.tables().get(
                     projectId=tableRef['projectId'],
                     datasetId=tableRef['datasetId'],
@@ -135,7 +156,7 @@ class BigQueryMetadataExtractor(Extractor):
                     database='bigquery',
                     cluster=tableRef['projectId'],
                     schema_name=tableRef['datasetId'],
-                    name=tableRef['tableId'],
+                    name=table_id,
                     description=table.get('description', ''),
                     columns=cols,
                     is_view=table['type'] == 'VIEW')

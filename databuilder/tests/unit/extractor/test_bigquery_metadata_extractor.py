@@ -31,6 +31,13 @@ TIME_PARTITIONED = {'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkj
             {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'other'},
             'type': 'TABLE', 'timePartitioning': {'type': 'DAY', 'requirePartitionFilter': False},
             'creationTime': '1557577779306'}], 'totalItems': 1}  # noqa
+TABLE_DATE_RANGE = {'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
+    'tables': [{'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.other_20190101', 'tableReference':
+            {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'date_range_20190101'},
+            'type': 'TABLE', 'creationTime': '1557577779306'},
+            {'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.other_20190102', 'tableReference':
+            {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'date_range_20190102'},
+            'type': 'TABLE', 'creationTime': '1557577779306'}], 'totalItems': 2}  # noqa
 TABLE_DATA = {'kind': 'bigquery#table', 'etag': 'Hzc/56Rp9VR4Y6jhZApD/g==', 'id': 'your-project-here:fdgdfgh.test',
     'selfLink': 'https://www.googleapis.com/bigquery/v2/projects/your-project-here/datasets/fdgdfgh/tables/test',
     'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'test'},
@@ -242,3 +249,20 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             extractor.init(Scoped.get_scoped_conf(conf=conf,
                                                   scope=extractor.get_scope()))
+
+    @patch('databuilder.extractor.bigquery_metadata_extractor.build')
+    def test_table_part_of_table_date_range(self, mock_build):
+        mock_build.return_value = MockBigQueryClient(ONE_DATASET, TABLE_DATE_RANGE, TABLE_DATA)
+        extractor = BigQueryMetadataExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+
+        count = 0
+        result = extractor.extract()
+        table_name = result.name
+        while result:
+            count += 1
+            result = extractor.extract()
+
+        self.assertEquals(count, 1)
+        self.assertEquals(table_name, 'date_range_')
