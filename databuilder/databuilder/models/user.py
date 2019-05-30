@@ -151,4 +151,5 @@ class User(Neo4jCsvSerializable):
                                                              self.slack_id,
                                                              self.manager_email,
                                                              self.employee_type,
-                                                             self.is_active)
+                                                             self.is_active,
+                                                             self.updated_at)
