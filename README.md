@@ -47,7 +47,7 @@ Use the button in our [header](https://github.com/lyft/amundsen#amundsen) to joi
 
 ## Getting started
 
-Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
