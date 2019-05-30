@@ -47,9 +47,7 @@ Use the button in our [header](https://github.com/lyft/amundsen#amundsen) to joi
 
 ## Getting started
 
-Please visit the Amundsen documentation for help with [installing Amundsen](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#install-standalone-application-directly-from-the-source)
-and getting a [quick start](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) with dummy data
-or an [overview of the architecture](docs/architecture.md).
+Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
@@ -58,14 +56,6 @@ Please visit [Architecture](docs/architecture.md) for Amundsen architecture over
 ## Installation
 
 Please visit [Installation guideline](docs/installation.md) on how to install Amundsen.
-
-## Configuration
-
-Please visit [Configuration doc](docs/configuration.md) on how to configure Amundsen various enviroment settings(local vs production).
-
-## Developer Guidelines
-
-Please visit [Developer guidelines](docs/developer_guide.md) if you want to build Amundsen in your local environment.
 
 ## Roadmap
 
