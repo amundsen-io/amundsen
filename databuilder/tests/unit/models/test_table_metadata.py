@@ -23,6 +23,14 @@ class TestTableMetadata(unittest.TestCase):
             ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
             ColumnMetadata('ds', None, 'varchar', 5)])
 
+        self.table_metadata3 = TableMetadata('hive', 'gold', 'test_schema3', 'test_table3', 'test_table3', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
+            ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
+            ColumnMetadata('is_active', None, 'boolean', 2),
+            ColumnMetadata('source', 'description of source', 'varchar', 3),
+            ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
+            ColumnMetadata('ds', None, 'varchar', 5)], is_view=False, attr1='uri', attr2='attr2')
+
         self.expected_nodes_deduped = [
             {'name': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1', 'LABEL': 'Table',
              'is_view:UNQUOTED': False},
@@ -131,6 +139,15 @@ class TestTableMetadata(unittest.TestCase):
             relation_row = self.table_metadata2.next_relation()
 
         self.assertEqual(self.expected_rels_deduped, actual)
+
+        node_row = self.table_metadata3.next_node()
+        t2_actual = []
+        while node_row:
+            t2_actual.append(node_row)
+            node_row = self.table_metadata3.next_node()
+
+        self.assertEqual(t2_actual[0].get('attr1'), 'uri')
+        self.assertEqual(t2_actual[0].get('attr2'), 'attr2')
 
 
 if __name__ == '__main__':
