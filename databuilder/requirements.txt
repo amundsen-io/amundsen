@@ -49,7 +49,7 @@ six==1.11.0
 sqlalchemy==1.3.0
 wheel==0.31.1
 neo4j-driver==1.7.2
-neotime==1.0.0
+neotime==1.7.1
 pytz==2018.4
 antlr4-python2-runtime==4.7.1
 statsd==3.2.1

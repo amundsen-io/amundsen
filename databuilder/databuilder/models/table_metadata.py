@@ -1,3 +1,4 @@
+import copy
 from collections import namedtuple
 
 from typing import Iterable, Any, Union, Iterator, Dict, Set  # noqa: F401
@@ -106,6 +107,7 @@ class TableMetadata(Neo4jCsvSerializable):
                  description,  # type: Union[str, None]
                  columns=None,  # type: Iterable[ColumnMetadata]
                  is_view=False,  # type: bool
+                 **kwargs  # type: Dict
                  ):
         # type: (...) -> None
         """
@@ -116,6 +118,8 @@ class TableMetadata(Neo4jCsvSerializable):
         :param name:
         :param description:
         :param columns:
+        :param is_view: Indicate whether the table is a view or not
+        :param kwargs: Put additional attributes to the table model if there is any.
         """
         self.database = database
         self.cluster = cluster
@@ -124,6 +128,10 @@ class TableMetadata(Neo4jCsvSerializable):
         self.description = description
         self.columns = columns if columns else []
         self.is_view = is_view
+        self.attrs = None
+        if kwargs:
+            self.attrs = copy.deepcopy(kwargs)
+
         self._node_iterator = self._create_next_node()
         self._relation_iterator = self._create_next_relation()
 
@@ -191,10 +199,16 @@ class TableMetadata(Neo4jCsvSerializable):
 
     def _create_next_node(self):
         # type: () -> Iterator[Any]
-        yield {NODE_LABEL: TableMetadata.TABLE_NODE_LABEL,
-               NODE_KEY: self._get_table_key(),
-               TableMetadata.TABLE_NAME: self.name,
-               TableMetadata.IS_VIEW: self.is_view}
+
+        table_node = {NODE_LABEL: TableMetadata.TABLE_NODE_LABEL,
+                      NODE_KEY: self._get_table_key(),
+                      TableMetadata.TABLE_NAME: self.name,
+                      TableMetadata.IS_VIEW: self.is_view}
+        if self.attrs:
+            for k, v in self.attrs.items():
+                if k not in table_node:
+                    table_node[k] = v
+        yield table_node
 
         if self.description:
             yield {NODE_LABEL: DESCRIPTION_NODE_LABEL,
