@@ -12,10 +12,11 @@ import {
 } from './types';
 import { ResourceType } from 'components/common/ResourceListItem/types';
 
-export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest;
+export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest | SearchResourceRequest;
 
 export interface SearchReducerState {
   search_term: string;
+  isLoading: boolean;
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
@@ -40,6 +41,7 @@ export function searchResource(resource: ResourceType, term: string, pageIndex: 
 
 const initialState: SearchReducerState = {
   search_term: '',
+  isLoading: false,
   dashboards: {
     page_index: 0,
     results: [],
@@ -64,6 +66,12 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...state,
         search_term: action.term,
+        isLoading: true,
+      };
+    case SearchResource.ACTION:
+      return {
+        ...state,
+        isLoading: true,
       };
     // SearchAll will reset all resources with search results or the initial state
     case SearchAll.SUCCESS:
@@ -71,6 +79,7 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...initialState,
         ...newState,
+        isLoading: false,
       };
     // SearchResource will set only a single resource and preserves search state for other resources
     case SearchResource.SUCCESS:
@@ -78,10 +87,14 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...state,
         ...resourceNewState,
+        isLoading: false,
       };
     case SearchAll.FAILURE:
     case SearchResource.FAILURE:
-      return initialState;
+      return {
+        ...initialState,
+        isLoading: false,
+      };      
     default:
       return state;
   }
