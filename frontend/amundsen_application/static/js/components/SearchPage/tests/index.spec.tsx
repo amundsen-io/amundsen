@@ -29,12 +29,14 @@ import SearchBar from '../SearchBar';
 import SearchList from '../SearchList';
 
 import globalState from 'fixtures/globalState';
+import LoadingSpinner from 'components/common/LoadingSpinner';
 
 describe('SearchPage', () => {
   const setStateSpy = jest.spyOn(SearchPage.prototype, 'setState');
   const setup = (propOverrides?: Partial<SearchPageProps>) => {
     const props: SearchPageProps = {
       searchTerm: globalState.search.search_term,
+      isLoading: false,
       popularTables: globalState.popularTables,
       dashboards: globalState.search.dashboards,
       tables: globalState.search.tables,
@@ -226,16 +228,16 @@ describe('SearchPage', () => {
   });
 
   describe('componentDidUpdate', () => {
-    let props;
-    let wrapper;
     let searchAllSpy;
-    
+      
     let mockSearchOptions;
     let mockSanitizedUrlParams;
 
     let createSearchOptionsSpy;
     let getSanitizedUrlParamsSpy;
 
+    let props;
+    let wrapper;
     beforeAll(() => {
       const setupResult = setup({
         location: {
@@ -263,6 +265,7 @@ describe('SearchPage', () => {
       setStateSpy.mockClear();
 
       const mockPrevProps = {
+        searchTerm: 'previous',
         location: {
           search: '/search?searchTerm=previous&selectedTab=table&pageIndex=0', 
           pathname: 'mockstr',
@@ -277,8 +280,23 @@ describe('SearchPage', () => {
       expect(setStateSpy).toHaveBeenCalledWith({ selectedTab: ResourceType.table });
     });
 
-    it('calls searchAll', () => {
+    it('calls searchAll if called with a new search term', () => {
       expect(searchAllSpy).toHaveBeenCalledWith(mockSanitizedUrlParams.term, mockSearchOptions);
+    });
+
+    it('does not call searchAll if called with the same search term with a new page', () => {
+      searchAllSpy.mockClear();
+      const mockPrevProps = {
+        searchTerm: 'current',
+        location: {
+          search: '/search?searchTerm=current&current=table&pageIndex=1', 
+          pathname: 'mockstr',
+          state: jest.fn(),
+          hash: 'mockstr',
+        }
+      };
+      wrapper.instance().componentDidUpdate(mockPrevProps);
+      expect(searchAllSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -606,6 +624,23 @@ describe('SearchPage', () => {
     });
   });
 
+  describe('renderContent', () => {
+    it('renders popular tables if searchTerm is empty', () => {
+      const {props, wrapper} = setup({ searchTerm: '' });
+      expect(wrapper.instance().renderContent()).toEqual(wrapper.instance().renderPopularTables());
+    });
+
+    it('renders search results when given search term', () => {
+      const {props, wrapper} = setup({ searchTerm: 'test' });
+      expect(wrapper.instance().renderContent()).toEqual(wrapper.instance().renderSearchResults());
+    });
+
+    it('renders loading spinner when in loading state', () => {
+      const {props, wrapper} = setup({ isLoading: true });
+      expect(wrapper.instance().renderContent()).toEqual(<LoadingSpinner/>);
+    });
+  });
+
   describe('renderPopularTables', () => {
     let content;
     let props;
@@ -725,6 +760,10 @@ describe('mapStateToProps', () => {
 
   it('sets searchTerm on the props', () => {
     expect(result.searchTerm).toEqual(globalState.search.search_term);
+  });
+
+  it('sets isLoading on the props', () => {
+    expect(result.isLoading).toEqual(globalState.search.isLoading);
   });
 
   it('sets popularTables on the props', () => {
