@@ -9,6 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import SearchBar from './SearchBar';
 import SearchList from './SearchList';
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import PopularTables from 'components/common/PopularTables';
 
 import BookmarkList from 'components/common/Bookmark/BookmarkList'
 import InfoButton from 'components/common/InfoButton';
@@ -25,8 +26,6 @@ import {
   TableSearchResults,
   UserSearchResults
 } from 'ducks/search/types';
-import { getPopularTables } from 'ducks/popularTables/reducer';
-import { GetPopularTablesRequest } from 'ducks/popularTables/types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -35,9 +34,6 @@ import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
   PAGINATION_PAGE_RANGE,
-  POPULAR_TABLES_INFO_TEXT,
-  POPULAR_TABLES_LABEL,
-  POPULAR_TABLES_SOURCE_NAME,
   RESULTS_PER_PAGE,
   SEARCH_ERROR_MESSAGE_INFIX,
   SEARCH_ERROR_MESSAGE_PREFIX,
@@ -50,7 +46,6 @@ import {
 export interface StateFromProps {
   searchTerm: string;
   isLoading: boolean;
-  popularTables: TableResource[];
   tables: TableSearchResults;
   dashboards: DashboardSearchResults;
   users: UserSearchResults;
@@ -59,7 +54,6 @@ export interface StateFromProps {
 export interface DispatchFromProps {
   searchAll: (term: string, options?: SearchAllOptions) => SearchAllRequest;
   searchResource: (resource: ResourceType, term: string, pageIndex: number) => SearchResourceRequest;
-  getPopularTables: () => GetPopularTablesRequest;
 }
 
 export type SearchPageProps = StateFromProps & DispatchFromProps & RouteComponentProps<any>;
@@ -80,7 +74,6 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
   }
 
   componentDidMount() {
-    this.props.getPopularTables();
     const params = qs.parse(this.props.location.search);
     const { searchTerm, pageIndex, selectedTab } = params;
     const { term, index, currentTab } = this.getSanitizedUrlParams(searchTerm, pageIndex, selectedTab);
@@ -166,20 +159,12 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
   };
 
   renderPopularTables = () => {
-    const searchListParams = {
-      source: POPULAR_TABLES_SOURCE_NAME,
-      paginationStartIndex: 0,
-    };
     return (
-        <div className="search-list-container">
-          <BookmarkList />
-          <div className="popular-tables-header">
-            <label className="title-1">{POPULAR_TABLES_LABEL}</label>
-            <InfoButton infoText={POPULAR_TABLES_INFO_TEXT}/>
-          </div>
-          <SearchList results={ this.props.popularTables } params={ searchListParams }/>
-        </div>
-      )
+      <div className="search-list-container">
+        <BookmarkList />
+        <PopularTables />
+      </div>
+    )
   };
 
   renderSearchResults = () => {
@@ -294,7 +279,6 @@ export const mapStateToProps = (state: GlobalState) => {
   return {
     searchTerm: state.search.search_term,
     isLoading: state.search.isLoading,
-    popularTables: state.popularTables,
     tables: state.search.tables,
     users: state.search.users,
     dashboards: state.search.dashboards,
@@ -302,7 +286,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ searchAll, searchResource, getPopularTables } , dispatch);
+  return bindActionCreators({ searchAll, searchResource } , dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(SearchPage);
