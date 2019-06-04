@@ -11,6 +11,24 @@ from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 DESCRIPTION_NODE_LABEL = 'Description'
 
 
+class TagMetadata:
+    TAG_NODE_LABEL = 'Tag'
+    TAG_KEY_FORMAT = '{tag}'
+    TAG_TYPE = 'tag_type'
+
+    def __init__(self,
+                 name,  # type: str,
+                 tag_type='default',  # type: str
+                 ):
+        self._name = name
+        self._tag_type = tag_type
+
+    @staticmethod
+    def get_tag_key(name):
+        # type: (str) -> str
+        return TagMetadata.TAG_KEY_FORMAT.format(tag=name)
+
+
 class ColumnMetadata:
     COLUMN_NODE_LABEL = 'Column'
     COLUMN_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}'
@@ -24,11 +42,16 @@ class ColumnMetadata:
     COL_DESCRIPTION_RELATION_TYPE = 'DESCRIPTION'
     DESCRIPTION_COL_RELATION_TYPE = 'DESCRIPTION_OF'
 
+    # Relation between column and tag
+    COL_TAG_RELATION_TYPE = 'TAGGED_BY'
+    TAG_COL_RELATION_TYPE = 'TAG'
+
     def __init__(self,
                  name,  # type: str
                  description,  # type: Union[str, None]
                  col_type,  # type: str
                  sort_order,  # type: int
+                 tags=None,  # Union[List[str], None]
                  ):
         # type: (...) -> None
         """
@@ -42,6 +65,7 @@ class ColumnMetadata:
         self.description = description
         self.type = col_type
         self.sort_order = sort_order
+        self.tags = tags
 
     def __repr__(self):
         # type: () -> str
@@ -95,6 +119,9 @@ class TableMetadata(Neo4jCsvSerializable):
     TABLE_COL_RELATION_TYPE = 'COLUMN'
     COL_TABLE_RELATION_TYPE = 'COLUMN_OF'
 
+    TABLE_TAG_RELATION_TYPE = 'TAGGED_BY'
+    TAG_TABLE_RELATION_TYPE = 'TAG'
+
     # Only for deduping database, cluster, and schema (table and column will be always processed)
     serialized_nodes = set()  # type: Set[Any]
     serialized_rels = set()  # type: Set[Any]
@@ -107,6 +134,7 @@ class TableMetadata(Neo4jCsvSerializable):
                  description,  # type: Union[str, None]
                  columns=None,  # type: Iterable[ColumnMetadata]
                  is_view=False,  # type: bool
+                 tags=None,  # type: List
                  **kwargs  # type: Dict
                  ):
         # type: (...) -> None
@@ -129,6 +157,8 @@ class TableMetadata(Neo4jCsvSerializable):
         self.columns = columns if columns else []
         self.is_view = is_view
         self.attrs = None
+        self.tags = tags
+
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
 
@@ -197,7 +227,7 @@ class TableMetadata(Neo4jCsvSerializable):
         except StopIteration:
             return None
 
-    def _create_next_node(self):
+    def _create_next_node(self):  # noqa: C901
         # type: () -> Iterator[Any]
 
         table_node = {NODE_LABEL: TableMetadata.TABLE_NODE_LABEL,
@@ -215,6 +245,13 @@ class TableMetadata(Neo4jCsvSerializable):
                    NODE_KEY: self._get_table_description_key(),
                    TableMetadata.TABLE_DESCRIPTION: self.description}
 
+        # Create the table tag node
+        if self.tags:
+            for tag in self.tags:
+                yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
+                       NODE_KEY: TagMetadata.get_tag_key(tag),
+                       TagMetadata.TAG_TYPE: 'default'}
+
         for col in self.columns:
             yield {
                 NODE_LABEL: ColumnMetadata.COLUMN_NODE_LABEL,
@@ -230,6 +267,14 @@ class TableMetadata(Neo4jCsvSerializable):
                 NODE_LABEL: DESCRIPTION_NODE_LABEL,
                 NODE_KEY: self._get_col_description_key(col),
                 ColumnMetadata.COLUMN_DESCRIPTION: col.description}
+
+            if not col.tags:
+                continue
+
+            for tag in col.tags:
+                yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
+                       NODE_KEY: TagMetadata.get_tag_key(tag),
+                       TagMetadata.TAG_TYPE: 'default'}
 
         # Database, cluster, schema
         others = [NodeTuple(key=self._get_database_key(),
@@ -281,6 +326,17 @@ class TableMetadata(Neo4jCsvSerializable):
                 RELATION_REVERSE_TYPE: TableMetadata.DESCRIPTION_TABLE_RELATION_TYPE
             }
 
+        if self.tags:
+            for tag in self.tags:
+                yield {
+                    RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
+                    RELATION_END_LABEL: TagMetadata.TAG_NODE_LABEL,
+                    RELATION_START_KEY: self._get_table_key(),
+                    RELATION_END_KEY: TagMetadata.get_tag_key(tag),
+                    RELATION_TYPE: TableMetadata.TABLE_TAG_RELATION_TYPE,
+                    RELATION_REVERSE_TYPE: TableMetadata.TAG_TABLE_RELATION_TYPE,
+                }
+
         for col in self.columns:
             yield {
                 RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
@@ -302,6 +358,19 @@ class TableMetadata(Neo4jCsvSerializable):
                 RELATION_TYPE: ColumnMetadata.COL_DESCRIPTION_RELATION_TYPE,
                 RELATION_REVERSE_TYPE: ColumnMetadata.DESCRIPTION_COL_RELATION_TYPE
             }
+
+            if not col.tags:
+                continue
+
+            for tag in col.tags:
+                yield {
+                    RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
+                    RELATION_END_LABEL: TagMetadata.TAG_NODE_LABEL,
+                    RELATION_START_KEY: self._get_table_key(),
+                    RELATION_END_KEY: TagMetadata.get_tag_key(tag),
+                    RELATION_TYPE: ColumnMetadata.COL_TAG_RELATION_TYPE,
+                    RELATION_REVERSE_TYPE: ColumnMetadata.TAG_COL_RELATION_TYPE,
+                }
 
         others = [
             RelTuple(start_label=TableMetadata.DATABASE_NODE_LABEL,

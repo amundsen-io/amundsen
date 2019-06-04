@@ -1,7 +1,7 @@
 import copy
 import unittest
 
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestTableMetadata(unittest.TestCase):
@@ -30,6 +30,10 @@ class TestTableMetadata(unittest.TestCase):
             ColumnMetadata('source', 'description of source', 'varchar', 3),
             ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
             ColumnMetadata('ds', None, 'varchar', 5)], is_view=False, attr1='uri', attr2='attr2')
+
+        self.table_metadata4 = TableMetadata('hive', 'gold', 'test_schema4', 'test_table4', 'test_table4', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0, ['col-tag1', 'col-tag2'])],
+            is_view=False, tags=['tag1', 'tag2'], attr1='uri', attr2='attr2')
 
         self.expected_nodes_deduped = [
             {'name': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1', 'LABEL': 'Table',
@@ -140,14 +144,57 @@ class TestTableMetadata(unittest.TestCase):
 
         self.assertEqual(self.expected_rels_deduped, actual)
 
+        # Test additional K/V Attributes
         node_row = self.table_metadata3.next_node()
-        t2_actual = []
+        actual = []
         while node_row:
-            t2_actual.append(node_row)
+            actual.append(node_row)
             node_row = self.table_metadata3.next_node()
 
-        self.assertEqual(t2_actual[0].get('attr1'), 'uri')
-        self.assertEqual(t2_actual[0].get('attr2'), 'attr2')
+        self.assertEqual(actual[0].get('attr1'), 'uri')
+        self.assertEqual(actual[0].get('attr2'), 'attr2')
+
+        # Test tag field
+        node_row = self.table_metadata4.next_node()
+        actual = []
+        while node_row:
+            actual.append(node_row)
+            node_row = self.table_metadata4.next_node()
+
+        self.assertEqual(actual[0].get('attr1'), 'uri')
+        self.assertEqual(actual[0].get('attr2'), 'attr2')
+
+        self.assertEqual(actual[2].get('LABEL'), 'Tag')
+        self.assertEqual(actual[2].get('KEY'), 'tag1')
+        self.assertEqual(actual[3].get('KEY'), 'tag2')
+        self.assertEqual(actual[6].get('KEY'), 'col-tag1')
+        self.assertEqual(actual[7].get('KEY'), 'col-tag2')
+
+        relation_row = self.table_metadata4.next_relation()
+        actual = []
+        while relation_row:
+            actual.append(relation_row)
+            relation_row = self.table_metadata4.next_relation()
+
+        # Table tag relationship
+        expected_tab_tag_rel1 = {'END_KEY': 'tag1', 'START_LABEL': 'Table', 'END_LABEL':
+                                 'Tag', 'START_KEY': 'hive://gold.test_schema4/test_table4',
+                                 'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
+        expected_tab_tag_rel2 = {'END_KEY': 'tag2', 'START_LABEL': 'Table',
+                                 'END_LABEL': 'Tag', 'START_KEY': 'hive://gold.test_schema4/test_table4',
+                                 'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
+        expected_col_tag_rel1 = {'END_KEY': 'col-tag1', 'START_LABEL': 'Table',
+                                 'END_LABEL': 'Tag',
+                                 'START_KEY': 'hive://gold.test_schema4/test_table4',
+                                 'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
+        expected_col_tag_rel2 = {'END_KEY': 'col-tag2', 'START_LABEL': 'Table',
+                                 'END_LABEL': 'Tag',
+                                 'START_KEY': 'hive://gold.test_schema4/test_table4',
+                                 'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
+        self.assertEqual(actual[2], expected_tab_tag_rel1)
+        self.assertEqual(actual[3], expected_tab_tag_rel2)
+        self.assertEqual(actual[6], expected_col_tag_rel1)
+        self.assertEqual(actual[7], expected_col_tag_rel2)
 
 
 if __name__ == '__main__':
