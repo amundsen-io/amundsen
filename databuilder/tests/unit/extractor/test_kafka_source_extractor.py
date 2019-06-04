@@ -13,12 +13,12 @@ class TestKafkaSourceExtractor(unittest.TestCase):
         # type: () -> None
         logging.basicConfig(level=logging.INFO)
         config_dict = {
-            'extractor.kafka_source_extractor.consumer_config': {'"group.id"': 'consumer-group',
-                                                                 '"enable.auto.commit"': False},
-            'extractor.kafka_source_extractor.{}'.format(KafkaSourceExtractor.RAW_VALUE_TRANSFORMER):
+            'extractor.kafka_source.consumer_config': {'"group.id"': 'consumer-group',
+                                                       '"enable.auto.commit"': False},
+            'extractor.kafka_source.{}'.format(KafkaSourceExtractor.RAW_VALUE_TRANSFORMER):
                 'databuilder.transformer.base_transformer.NoopTransformer',
-            'extractor.kafka_source_extractor.{}'.format(KafkaSourceExtractor.TOPIC_NAME_LIST): ['test-topic'],
-            'extractor.kafka_source_extractor.{}'.format(KafkaSourceExtractor.CONSUMER_TOTAL_TIMEOUT_SEC): 1,
+            'extractor.kafka_source.{}'.format(KafkaSourceExtractor.TOPIC_NAME_LIST): ['test-topic'],
+            'extractor.kafka_source.{}'.format(KafkaSourceExtractor.CONSUMER_TOTAL_TIMEOUT_SEC): 1,
 
         }
         self.conf = ConfigFactory.from_dict(config_dict)

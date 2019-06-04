@@ -169,4 +169,4 @@ class KafkaSourceExtractor(Extractor, Callback):
 
     def get_scope(self):
         # type: () -> str
-        return 'extractor.kafka_source_extractor'
+        return 'extractor.kafka_source'
