@@ -10,9 +10,6 @@ import {
   DOCUMENT_TITLE_SUFFIX,
   PAGINATION_PAGE_RANGE,
   PAGE_INDEX_ERROR_MESSAGE,
-  POPULAR_TABLES_INFO_TEXT,
-  POPULAR_TABLES_LABEL,
-  POPULAR_TABLES_SOURCE_NAME,
   RESULTS_PER_PAGE,
   SEARCH_ERROR_MESSAGE_INFIX,
   SEARCH_ERROR_MESSAGE_PREFIX,
@@ -30,6 +27,8 @@ import SearchList from '../SearchList';
 
 import globalState from 'fixtures/globalState';
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import BookmarkList from 'components/common/Bookmark/BookmarkList';
+import PopularTables from 'components/common/PopularTables';
 
 describe('SearchPage', () => {
   const setStateSpy = jest.spyOn(SearchPage.prototype, 'setState');
@@ -37,13 +36,11 @@ describe('SearchPage', () => {
     const props: SearchPageProps = {
       searchTerm: globalState.search.search_term,
       isLoading: false,
-      popularTables: globalState.popularTables,
       dashboards: globalState.search.dashboards,
       tables: globalState.search.tables,
       users: globalState.search.users,
       searchAll: jest.fn(),
       searchResource: jest.fn(),
-      getPopularTables: jest.fn(),
       history: {
         length: 2,
         action: "POP",
@@ -114,10 +111,6 @@ describe('SearchPage', () => {
       setStateSpy.mockClear();
 
       wrapper.instance().componentDidMount();
-    });
-
-    it('calls props.getPopularTables', () => {
-      expect(props.getPopularTables).toHaveBeenCalled();
     });
 
     it('calls setState', () => {
@@ -642,33 +635,11 @@ describe('SearchPage', () => {
   });
 
   describe('renderPopularTables', () => {
-    let content;
-    let props;
-    let wrapper;
-    beforeAll(() => {
-      const setupResult = setup({ searchTerm: '' });
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      content = shallow(wrapper.instance().renderPopularTables());
-    });
-    it('renders correct label for content', () => {
-      expect(content.children().at(1).find('label').text()).toEqual(POPULAR_TABLES_LABEL);
-    });
-
-    it('renders InfoButton with correct props', () => {
-      expect(content.children().at(1).find(InfoButton).props()).toMatchObject({
-        infoText: POPULAR_TABLES_INFO_TEXT,
-      });
-    });
-
-    it('renders SearchList with correct props', () => {
-      expect(content.children().find(SearchList).props()).toMatchObject({
-        results: props.popularTables,
-        params: {
-          source: POPULAR_TABLES_SOURCE_NAME,
-          paginationStartIndex: 0,
-        },
-      });
+    it('renders bookmark list and popular tables', () => {
+      const {props, wrapper} = setup();
+      wrapper.instance().renderPopularTables();
+      expect(wrapper.contains(<BookmarkList />));
+      expect(wrapper.contains(<PopularTables />));
     });
   });
 
@@ -746,10 +717,6 @@ describe('mapDispatchToProps', () => {
   it('sets searchResource on the props', () => {
     expect(result.searchResource).toBeInstanceOf(Function);
   });
-
-  it('sets getPopularTables on the props', () => {
-    expect(result.getPopularTables).toBeInstanceOf(Function);
-  });
 });
 
 describe('mapStateToProps', () => {
@@ -764,10 +731,6 @@ describe('mapStateToProps', () => {
 
   it('sets isLoading on the props', () => {
     expect(result.isLoading).toEqual(globalState.search.isLoading);
-  });
-
-  it('sets popularTables on the props', () => {
-    expect(result.popularTables).toEqual(globalState.popularTables);
   });
 
   it('sets tables on the props', () => {
