@@ -16,7 +16,9 @@ class TestElasticsearchDocumentTransformer(unittest.TestCase):
         self.elasticsearch_index = 'test_es_index'
         self.elasticsearch_type = 'test_es_type'
         config_dict = {'transformer.elasticsearch.index': self.elasticsearch_index,
-                       'transformer.elasticsearch.doc_type': self.elasticsearch_type}
+                       'transformer.elasticsearch.doc_type': self.elasticsearch_type,
+                       'transformer.elasticsearch.model_class':
+                           'databuilder.models.table_elasticsearch_document.TableESDocument'}
         self.conf = ConfigFactory.from_dict(config_dict)
 
     def test_empty_transform(self):
@@ -90,3 +92,33 @@ class TestElasticsearchDocumentTransformer(unittest.TestCase):
 
         self.assertIsInstance(result, ElasticsearchDocument)
         self.assertDictEqual(vars(result), vars(expected))
+
+    def test_transform_without_model_class_conf(self):
+        # type: () -> None
+        """
+        Test model_class conf is required
+        """
+        config_dict = {'transformer.elasticsearch.index': self.elasticsearch_index,
+                       'transformer.elasticsearch.doc_type': self.elasticsearch_type}
+        transformer = ElasticsearchDocumentTransformer()
+        with self.assertRaises(Exception) as context:
+            transformer.init(conf=Scoped.get_scoped_conf(conf=ConfigFactory.from_dict(config_dict),
+                                                         scope=transformer.get_scope()))
+        self.assertTrue("User needs to provide the ElasticsearchDocument model class"
+                        in context.exception)
+
+    def test_transform_with_invalid_model_class_conf(self):
+        # type: () -> None
+        """
+        Test non existing model_class conf will throw error
+        """
+        config_dict = {'transformer.elasticsearch.index': self.elasticsearch_index,
+                       'transformer.elasticsearch.doc_type': self.elasticsearch_type,
+                       'transformer.elasticsearch.model_class':
+                           'databuilder.models.table_elasticsearch_document.NonExistingESDocument'}
+        transformer = ElasticsearchDocumentTransformer()
+        with self.assertRaises(Exception) as context:
+            transformer.init(conf=Scoped.get_scoped_conf(conf=ConfigFactory.from_dict(config_dict),
+                                                         scope=transformer.get_scope()))
+        self.assertTrue("'module' object has no attribute 'NonExistingESDocument'"
+                        in context.exception)
