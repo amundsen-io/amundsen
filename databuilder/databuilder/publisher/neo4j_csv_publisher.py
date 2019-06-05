@@ -13,6 +13,8 @@ from pyhocon import ConfigTree  # noqa: F401
 from typing import Set, List  # noqa: F401
 
 from databuilder.publisher.base_publisher import Publisher
+from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
+
 
 # Config keys
 # A directory that contains CSV files for nodes
@@ -23,6 +25,8 @@ RELATION_FILES_DIR = 'relation_files_directory'
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'
 # A transaction size that determines how often it commits.
 NEO4J_TRANSCATION_SIZE = 'neo4j_transaction_size'
+# A progress report frequency that determines how often it report the progress.
+NEO4J_PROGRESS_REPORT_FREQUENCY = 'neo4j_progress_report_frequency'
 # A boolean flag to make it fail if relationship is not created
 NEO4J_RELATIONSHIP_CREATION_CONFIRM = 'neo4j_relationship_creation_confirm'
 
@@ -39,6 +43,8 @@ JOB_PUBLISH_TAG = 'job_publish_tag'
 
 # Neo4j property name for published tag
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
+
+RELATION_PREPROCESSOR = 'relation_preprocessor'
 
 # CSV HEADER
 # A header with this suffix will be pass to Neo4j statement without quote
@@ -69,8 +75,10 @@ RELATION_REQUIRED_KEYS = {RELATION_START_LABEL, RELATION_START_KEY,
                           RELATION_TYPE, RELATION_REVERSE_TYPE}
 
 DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSCATION_SIZE: 500,
+                                          NEO4J_PROGRESS_REPORT_FREQUENCY: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
-                                          NEO4J_MAX_CONN_LIFE_TIME_SEC: 50})
+                                          NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
+                                          RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
 
 NODE_MERGE_TEMPLATE = Template("""MERGE (node:$LABEL {key: '${KEY}'})
 ON CREATE SET ${create_prop_body}
@@ -107,6 +115,8 @@ class Neo4jCsvPublisher(Publisher):
         # type: (ConfigTree) -> None
         conf = conf.with_fallback(DEFAULT_CONFIG)
 
+        self._count = 0  # type: int
+        self._progress_report_frequency = conf.get_int(NEO4J_PROGRESS_REPORT_FREQUENCY)
         self._node_files = self._list_files(conf, NODE_FILES_DIR)
         self._node_files_iter = iter(self._node_files)
 
@@ -129,6 +139,8 @@ class Neo4jCsvPublisher(Publisher):
         if not self.publish_tag:
             raise Exception('{} should not be empty'.format(JOB_PUBLISH_TAG))
 
+        self._relation_preprocessor = conf.get(RELATION_PREPROCESSOR)
+
         LOGGER.info('Publishing Node csv files {}, and Relation CSV files {}'
                     .format(self._node_files, self._relation_files))
 
@@ -146,7 +158,7 @@ class Neo4jCsvPublisher(Publisher):
         path = conf.get_string(path_key)
         return [join(path, f) for f in listdir(path) if isfile(join(path, f))]
 
-    def publish_impl(self):
+    def publish_impl(self):  # noqa: C901
         # type: () -> None
         """
         Publishes Nodes first and then Relations
@@ -160,23 +172,33 @@ class Neo4jCsvPublisher(Publisher):
             self._create_indices(node_file=node_file)
 
         LOGGER.info('Publishing Node files: {}'.format(self._node_files))
-        while True:
-            try:
-                node_file = next(self._node_files_iter)
-                self._publish_node(node_file)
-            except StopIteration:
-                break
+        try:
+            tx = self._session.begin_transaction()
+            while True:
+                try:
+                    node_file = next(self._node_files_iter)
+                    tx = self._publish_node(node_file, tx=tx)
+                except StopIteration:
+                    break
 
-        LOGGER.info('Publishing Relationship files: {}'.format(self._relation_files))
-        while True:
-            try:
-                relation_file = next(self._relation_files_iter)
-                self._publish_relation(relation_file)
-            except StopIteration:
-                break
+            LOGGER.info('Publishing Relationship files: {}'.format(self._relation_files))
+            while True:
+                try:
+                    relation_file = next(self._relation_files_iter)
+                    tx = self._publish_relation(relation_file, tx=tx)
+                except StopIteration:
+                    break
 
-        # TODO: Add statsd support
-        LOGGER.info('Successfully published. Elapsed: {} seconds'.format(time.time() - start))
+            tx.commit()
+            LOGGER.info('Committed total {} statements'.format(self._count))
+
+            # TODO: Add statsd support
+            LOGGER.info('Successfully published. Elapsed: {} seconds'.format(time.time() - start))
+        except Exception as e:
+            LOGGER.exception('Failed to publish. Rolling back.')
+            if not tx.closed():
+                tx.rollback()
+            raise e
 
     def get_scope(self):
         # type: () -> str
@@ -200,8 +222,8 @@ class Neo4jCsvPublisher(Publisher):
 
         LOGGER.info('Indices have been created.')
 
-    def _publish_node(self, node_file):
-        # type: (str) -> None
+    def _publish_node(self, node_file, tx):
+        # type: (str, Transaction) -> Transaction
         """
         Iterate over the csv records of a file, each csv record transform to Merge statement and will be executed.
         All nodes should have a unique key, and this method will try to create unique index on the LABEL when it sees
@@ -218,14 +240,12 @@ class Neo4jCsvPublisher(Publisher):
         :param node_file:
         :return:
         """
-        tx = self._session.begin_transaction()
+
         with open(node_file, 'r') as node_csv:
             for count, node_record in enumerate(csv.DictReader(node_csv)):
                 stmt = self.create_node_merge_statement(node_record=node_record)
-                tx = self._execute_statement(stmt, tx, count)
-
-        tx.commit()
-        LOGGER.info('Committed {} records'.format(count + 1))
+                tx = self._execute_statement(stmt, tx)
+        return tx
 
     def is_create_only_node(self, node_record):
         # type: (dict) -> bool
@@ -257,8 +277,8 @@ class Neo4jCsvPublisher(Publisher):
 
         return NODE_MERGE_TEMPLATE.substitute(params)
 
-    def _publish_relation(self, relation_file):
-        # type: (str) -> None
+    def _publish_relation(self, relation_file, tx):
+        # type: (str, Transaction) -> Transaction
         """
         Creates relation between two nodes.
         (In Amundsen, all relation is bi-directional)
@@ -273,15 +293,33 @@ class Neo4jCsvPublisher(Publisher):
         :return:
         """
 
-        tx = self._session.begin_transaction()
+        if self._relation_preprocessor.is_perform_preprocess():
+            LOGGER.info('Pre-processing relation with {}'.format(self._relation_preprocessor))
+
+            count = 0
+            with open(relation_file, 'r') as relation_csv:
+                for rel_record in csv.DictReader(relation_csv):
+                    stmt, params = self._relation_preprocessor.preprocess_cypher(
+                        start_label=rel_record[RELATION_START_LABEL],
+                        end_label=rel_record[RELATION_END_LABEL],
+                        start_key=rel_record[RELATION_START_KEY],
+                        end_key=rel_record[RELATION_END_KEY],
+                        relation=rel_record[RELATION_TYPE],
+                        reverse_relation=rel_record[RELATION_REVERSE_TYPE])
+
+                    if stmt:
+                        tx = self._execute_statement(stmt, tx=tx, params=params)
+                        count += 1
+
+            LOGGER.info('Executed pre-processing Cypher statement {} times'.format(count))
+
         with open(relation_file, 'r') as relation_csv:
             for count, rel_record in enumerate(csv.DictReader(relation_csv)):
                 stmt = self.create_relationship_merge_statement(rel_record=rel_record)
-                tx = self._execute_statement(stmt, tx, count,
+                tx = self._execute_statement(stmt, tx,
                                              expect_result=self._confirm_rel_created)
 
-        tx.commit()
-        LOGGER.info('Committed {} records'.format(count + 1))
+        return tx
 
     def create_relationship_merge_statement(self, rel_record):
         # type: (dict) -> str
@@ -352,9 +390,9 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
     def _execute_statement(self,
                            stmt,
                            tx,
-                           count,
+                           params=None,
                            expect_result=False):
-        # type: (str, Transaction, int, bool) -> Transaction
+        # type: (str, Transaction, bool) -> Transaction
 
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
@@ -367,19 +405,23 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         """
         try:
             if LOGGER.isEnabledFor(logging.DEBUG):
-                LOGGER.debug('Executing statement: {}'.format(stmt))
+                LOGGER.debug('Executing statement: {} with params {}'.format(stmt, params))
 
             if six.PY2:
-                result = tx.run(unicode(stmt, errors='ignore'))  # noqa
+                result = tx.run(unicode(stmt, errors='ignore'), parameters=params)  # noqa
             else:
-                result = tx.run(str(stmt).encode('utf-8', 'ignore'))
+                result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
             if expect_result and not result.single():
                 raise RuntimeError('Failed to executed statement: {}'.format(stmt))
 
-            if count > 1 and count % self._transaction_size == 0:
+            self._count += 1
+            if self._count > 1 and self._count % self._transaction_size == 0:
                 tx.commit()
-                LOGGER.info('Committed {} records so far'.format(count))
+                LOGGER.info('Committed {} statements so far'.format(self._count))
                 return self._session.begin_transaction()
+
+            if self._count > 1 and self._count % self._progress_report_frequency == 0:
+                LOGGER.info('Processed {} statements so far'.format(self._count))
 
             return tx
         except Exception as e:
