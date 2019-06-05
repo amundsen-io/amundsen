@@ -514,6 +514,11 @@ def update_bookmark() -> Response:
     :param key: Resource key for the bookmarked item.
     :return:
     """
+
+    @action_logging
+    def _log_update_bookmark(*, resource_key: str, resource_type: str, method: str) -> None:
+        pass  # pragma: no cover
+
     try:
         if app.config['AUTH_USER_METHOD']:
             user = app.config['AUTH_USER_METHOD'](app)
@@ -529,6 +534,8 @@ def update_bookmark() -> Response:
                                                  user.user_id,
                                                  resource_type,
                                                  resource_key)
+
+        _log_update_bookmark(resource_key=resource_key, resource_type=resource_type, method=request.method)
 
         response = request_metadata(url=url, method=request.method)
         status_code = response.status_code
