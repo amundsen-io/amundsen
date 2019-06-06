@@ -432,17 +432,16 @@ class Neo4jProxy(BaseProxy):
                   owner: str) -> None:
         """
         Update table owner informations.
-        1. Do a upsert of the owner(user) node.
+        1. Do a create if not exists query of the owner(user) node.
         2. Do a upsert of the owner/owned_by relation.
 
         :param table_uri:
         :param owner:
         :return:
         """
-        upsert_owner_query = textwrap.dedent("""
+        create_owner_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
         on CREATE SET u={email: $user_email, key: $user_email}
-        on MATCH SET u={email: $user_email, key: $user_email}
         """)
 
         upsert_owner_relation_query = textwrap.dedent("""
@@ -454,7 +453,7 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session().begin_transaction()
             # upsert the node
-            tx.run(upsert_owner_query, {'user_email': owner})
+            tx.run(create_owner_query, {'user_email': owner})
             result = tx.run(upsert_owner_relation_query, {'user_email': owner,
                                                           'tbl_key': table_uri})
 
