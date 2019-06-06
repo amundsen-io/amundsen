@@ -44,6 +44,9 @@ JOB_PUBLISH_TAG = 'job_publish_tag'
 # Neo4j property name for published tag
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 
+# Neo4j property name for last updated timestamp
+LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
+
 RELATION_PREPROCESSOR = 'relation_preprocessor'
 
 # CSV HEADER
@@ -385,6 +388,10 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
                                                        key=PUBLISHED_TAG_PROPERTY_NAME,
                                                        val=self.publish_tag))
 
+        props.append("""{id}.{key} = {val}""".format(id=identifier,
+                                                     key=LAST_UPDATED_EPOCH_MS,
+                                                     val='timestamp()'))
+
         return ', '.join(props)
 
     def _execute_statement(self,
@@ -403,6 +410,7 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         :param expect_result: By having this True, it will validate if result object is not None.
         :return:
         """
+        LOGGER.info('Executing statement: {} with params {}'.format(stmt, params))
         try:
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Executing statement: {} with params {}'.format(stmt, params))
