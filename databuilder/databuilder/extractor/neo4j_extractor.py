@@ -2,7 +2,7 @@ import importlib
 import logging
 from typing import Any, Iterator, Union  # noqa: F401
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
 from neo4j.v1 import GraphDatabase
 
 from databuilder.extractor.base_extractor import Extractor
@@ -19,6 +19,9 @@ class Neo4jExtractor(Extractor):
     MODEL_CLASS_CONFIG_KEY = 'model_class'
     NEO4J_AUTH_USER = 'neo4j_auth_user'
     NEO4J_AUTH_PW = 'neo4j_auth_pw'
+    NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
+
+    DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_MAX_CONN_LIFE_TIME_SEC: 50, })
 
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -26,7 +29,7 @@ class Neo4jExtractor(Extractor):
         Establish connections and import data model class if provided
         :param conf:
         """
-        self.conf = conf
+        self.conf = conf.with_fallback(Neo4jExtractor.DEFAULT_CONFIG)
         self.graph_url = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
         self.cypher_query = conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
         self.driver = self._get_driver()
@@ -55,6 +58,8 @@ class Neo4jExtractor(Extractor):
         Create a Neo4j connection to Database
         """
         return GraphDatabase.driver(self.graph_url,
+                                    max_connection_life_time=self.conf.get_int(
+                                        Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                     auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
                                           self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)))
 

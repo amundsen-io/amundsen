@@ -128,7 +128,7 @@ class Neo4jCsvPublisher(Publisher):
 
         self._driver = \
             GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_life_time=50,
+                                 max_connection_life_time=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                  auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
         self._transaction_size = conf.get_int(NEO4J_TRANSCATION_SIZE)
         self._session = self._driver.session()
@@ -410,7 +410,6 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         :param expect_result: By having this True, it will validate if result object is not None.
         :return:
         """
-        LOGGER.info('Executing statement: {} with params {}'.format(stmt, params))
         try:
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Executing statement: {} with params {}'.format(stmt, params))
