@@ -22,7 +22,6 @@ from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
-from databuilder.transformer.elasticsearch_document_transformer import ElasticsearchDocumentTransformer
 
 # change to the address of Elasticsearh service
 es = Elasticsearch([
@@ -201,7 +200,7 @@ def create_es_publisher_sample_job():
 
     task = DefaultTask(loader=FSElasticsearchJSONLoader(),
                        extractor=Neo4jSearchDataExtractor(),
-                       transformer=ElasticsearchDocumentTransformer())
+                       transformer=NoopTransformer())
 
     # elastic search client instance
     elasticsearch_client = es
@@ -215,16 +214,12 @@ def create_es_publisher_sample_job():
     job_config = ConfigFactory.from_dict({
         'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): neo4j_endpoint,
         'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY):
-            'databuilder.models.neo4j_data.Neo4jDataResult',
+            'databuilder.models.table_elasticsearch_document.TableESDocument',
         'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): neo4j_user,
         'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): neo4j_password,
         'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY):
             extracted_search_data_path,
         'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY): 'w',
-        'transformer.elasticsearch.{}'.format(ElasticsearchDocumentTransformer.ELASTICSEARCH_INDEX_CONFIG_KEY):
-            elasticsearch_new_index_key,
-        'transformer.elasticsearch.{}'.format(ElasticsearchDocumentTransformer.ELASTICSEARCH_DOC_CONFIG_KEY):
-            elasticsearch_new_index_key_type,
         'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY):
             extracted_search_data_path,
         'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY): 'r',
@@ -232,6 +227,8 @@ def create_es_publisher_sample_job():
             elasticsearch_client,
         'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY):
             elasticsearch_new_index_key,
+        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY):
+            elasticsearch_new_index_key_type,
         'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY):
             elasticsearch_index_alias
     })

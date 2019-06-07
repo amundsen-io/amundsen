@@ -6,7 +6,7 @@ from typing import Any  # noqa: F401
 
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
-from databuilder.models.neo4j_data import Neo4jDataResult
+from databuilder.models.table_elasticsearch_document import TableESDocument
 
 
 class TestNeo4jExtractor(unittest.TestCase):
@@ -90,7 +90,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): 'TEST_USER',
             'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): 'TEST_PW',
             'extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY):
-                'databuilder.models.neo4j_data.Neo4jDataResult'
+                'databuilder.models.table_elasticsearch_document.TableESDocument'
         }
 
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -116,5 +116,5 @@ class TestNeo4jExtractor(unittest.TestCase):
             extractor.results = [result_dict]
             result_obj = extractor.extract()
 
-            self.assertIsInstance(result_obj, Neo4jDataResult)
+            self.assertIsInstance(result_obj, TableESDocument)
             self.assertDictEqual(vars(result_obj), result_dict)
