@@ -17,7 +17,7 @@ Amundsen Metadata service serves Restful API and responsible for providing and a
 $ venv_path=[path_for_virtual_environment]
 $ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
-$ pip3 install amundsenmetadata
+$ pip3 install amundsen-metadata
 $ python3 metadata_service/metadata_wsgi.py
 
 -- In different terminal, verify getting HTTP/1.0 200 OK
