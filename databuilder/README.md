@@ -187,9 +187,6 @@ An extractor that extracts table usage from SQL statements. It accept any extrac
 #### [ChainedTransformer](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
 A chanined transformer that can take multiple transformer.
 
-#### [ElasticsearchDocumentTransformer](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/transformer/elasticsearch_document_transformer.py "ElasticsearchDocumentTransformer")
-A transformer that transform [Neo4j record](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/models/neo4j_data.py "Neo4j record") to [Elasticserach document](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/models/elasticsearch_document.py "Elasticserach document").
-
 #### [RegexStrReplaceTransformer](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/transformer/regex_str_replace_transformer.py "RegexStrReplaceTransformer")
 Generic string replacement transformer using REGEX. User can pass list of tuples where tuple contains regex and replacement pair.
 ```python
@@ -287,6 +284,7 @@ job_config = ConfigFactory.from_dict({
 	'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY): 'r',
 	'publisher.elasticsearch{}'.format(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY): elasticsearch_client,
 	'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY): elasticsearch_new_index,
+	'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY): elasticsearch_doc_type,
 	'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY): elasticsearch_index_alias,)
 
 job = DefaultJob(

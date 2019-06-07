@@ -11,9 +11,7 @@ class TestUserElasticsearchDocument(unittest.TestCase):
         """
         Test string generated from to_json method
         """
-        test_obj = UserESDocument(elasticsearch_index='test_index',
-                                  elasticsearch_type='test_type',
-                                  email='test@email.com',
+        test_obj = UserESDocument(email='test@email.com',
                                   first_name='test_firstname',
                                   last_name='test_lastname',
                                   name='full_name',
@@ -27,7 +25,6 @@ class TestUserElasticsearchDocument(unittest.TestCase):
                                   total_own=3,
                                   total_follow=1)
 
-        expected_index_dict = {"index": {"_type": "test_type", "_index": "test_index"}}
         expected_document_dict = {"first_name": "test_firstname",
                                   "last_name": "test_lastname",
                                   "name": "full_name",
@@ -47,7 +44,6 @@ class TestUserElasticsearchDocument(unittest.TestCase):
         results = result.split("\n")
 
         # verify two new line characters in result
-        self.assertEqual(len(results), 3, "Result from to_json() function doesn't have 2 newlines!")
+        self.assertEqual(len(results), 2, "Result from to_json() function doesn't have a newline!")
 
-        self.assertDictEqual(json.loads(results[0]), expected_index_dict)
-        self.assertDictEqual(json.loads(results[1]), expected_document_dict)
+        self.assertDictEqual(json.loads(results[0]), expected_document_dict)

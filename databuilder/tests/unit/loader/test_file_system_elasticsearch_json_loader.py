@@ -61,9 +61,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                 scope=loader.get_scope()))
 
-        data = dict(elasticsearch_index='test_es_index',
-                    elasticsearch_type='test_es_type',
-                    database='test_database',
+        data = dict(database='test_database',
                     cluster='test_cluster',
                     schema_name='test_schema',
                     table_name='test_table',
@@ -91,9 +89,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                 scope=loader.get_scope()))
 
-        data = TableESDocument(elasticsearch_index='test_es_index',
-                               elasticsearch_type='test_es_type',
-                               database='test_database',
+        data = TableESDocument(database='test_database',
                                cluster='test_cluster',
                                schema_name='test_schema',
                                table_name='test_table',
@@ -109,7 +105,6 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.close()
 
         expected = [
-            '{"index": {"_type": "test_es_type", "_index": "test_es_index"}}',
             ('{"table_key": "test_table_key", "column_descriptions": ["test_comment1", "test_comment2"], '
              '"schema_name": "test_schema", "database": "test_database", "cluster": "test_cluster", '
              '"column_names": ["test_col1", "test_col2"], "table_name": "test_table", '
@@ -130,9 +125,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                 scope=loader.get_scope()))
 
-        data = [TableESDocument(elasticsearch_index='test_es_index',
-                                elasticsearch_type='test_es_type',
-                                database='test_database',
+        data = [TableESDocument(database='test_database',
                                 cluster='test_cluster',
                                 schema_name='test_schema',
                                 table_name='test_table',
@@ -150,7 +143,6 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
         loader.close()
 
         expected = [
-            '{"index": {"_type": "test_es_type", "_index": "test_es_index"}}',
             ('{"table_key": "test_table_key", "column_descriptions": ["test_comment1", "test_comment2"], '
              '"schema_name": "test_schema", "database": "test_database", "cluster": "test_cluster", '
              '"column_names": ["test_col1", "test_col2"], "table_name": "test_table", '

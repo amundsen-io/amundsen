@@ -1,4 +1,5 @@
-from abc import ABCMeta, abstractmethod
+import json
+from abc import ABCMeta
 
 
 class ElasticsearchDocument:
@@ -8,13 +9,12 @@ class ElasticsearchDocument:
     """
     __metaclass__ = ABCMeta
 
-    @abstractmethod
     def to_json(self):
         # type: () -> str
         """
-        Convert object to json for elasticsearch bulk upload
-        Bulk load JSON format is defined here:
-        https://www.elastic.co/guide/en/elasticsearch/reference/6.2/docs-bulk.html
+        Convert object to json
         :return:
         """
-        pass
+        obj_dict = {k: v for k, v in sorted(self.__dict__.items())}
+        data = json.dumps(obj_dict) + "\n"
+        return data
