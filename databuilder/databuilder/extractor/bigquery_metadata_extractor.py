@@ -34,7 +34,7 @@ class BigQueryMetadataExtractor(Extractor):
     KEY_PATH_KEY = 'key_path'
     PAGE_SIZE_KEY = 'page_size'
     FILTER_KEY = 'filter'
-    _DEFAULT_SCOPES = ('https://www.googleapis.com/auth/bigquery.readonly')
+    _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/bigquery.readonly', ]
     DEFAULT_PAGE_SIZE = 300
     NUM_RETRIES = 3
     DATE_LENGTH = 8
