@@ -22,12 +22,9 @@ export enum GetTableData {
 }
 export interface GetTableDataRequest {
   type: GetTableData.ACTION;
-  cluster: string;
-  database: string;
-  schema: string;
+  key: string;
   searchIndex?: string;
   source?: string;
-  table_name: string;
 }
 export interface GetTableDataResponse {
   type: GetTableData.SUCCESS | GetTableData.FAILURE;

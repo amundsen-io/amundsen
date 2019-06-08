@@ -18,38 +18,30 @@ class MetadataTest(unittest.TestCase):
         self.mock_popular_tables = {
             'popular_tables': [
                 {
-                    'table_name': 'test_table',
-                    'schema': 'test_schema',
-                    'database': 'test_db',
                     'cluster': 'test_cluster',
-                    'table_description': 'This is a test'
+                    'database': 'test_db',
+                    'key': 'test_db://test_cluster.test_schema/test_table',
+                    'schema': 'test_schema',
+                    'table_description': 'This is a test',
+                    'table_name': 'test_table',
+                    'type': 'table',
                 }
             ]
         }
         self.expected_parsed_popular_tables = [
             {
-                'name': 'test_table',
                 'cluster': 'test_cluster',
                 'database': 'test_db',
                 'description': 'This is a test',
                 'key': 'test_db://test_cluster.test_schema/test_table',
                 'schema_name': 'test_schema',
                 'type': 'table',
+                'name': 'test_table',
                 'last_updated_epoch': None,
             }
         ]
         self.mock_metadata = {
-            'database': 'test_db',
             'cluster': 'test_cluster',
-            'schema': 'test_schema',
-            'table_name': 'test_table',
-            'table_description': 'This is a test',
-            'tags': [],
-            'table_readers': [
-                {'reader': {'email': 'test@test.com', 'first_name': None, 'last_name': None}, 'read_count': 100}
-            ],
-            'owners': [],
-            'is_view': False,
             'columns': [
                 {
                     'name': 'column_1',
@@ -61,6 +53,17 @@ class MetadataTest(unittest.TestCase):
                         {'stat_type': 'count_null', 'stat_val': '0', 'start_epoch': 1538352000, 'end_epoch': 1538352000}
                     ]
                 }
+            ],
+            'database': 'test_db',
+            'is_view': False,
+            'key': 'test_db://test_cluster.test_schema/test_table',
+            'owners': [],
+            'schema': 'test_schema',
+            'table_name': 'test_table',
+            'table_description': 'This is a test',
+            'tags': [],
+            'table_readers': [
+                {'reader': {'email': 'test@test.com', 'first_name': None, 'last_name': None}, 'read_count': 100}
             ],
             'watermarks': [
                 {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
@@ -295,10 +298,7 @@ class MetadataTest(unittest.TestCase):
             response = test.get(
                 '/api/metadata/v0/table',
                 query_string=dict(
-                    db='db',
-                    cluster='cluster',
-                    schema='schema',
-                    table='table',
+                    key='db://cluster.schema/table',
                     index='0',
                     source='test_source'
                 )
@@ -320,10 +320,7 @@ class MetadataTest(unittest.TestCase):
             response = test.put(
                 '/api/metadata/v0/update_table_owner',
                 json={
-                    'db': 'db',
-                    'cluster': 'cluster',
-                    'schema': 'schema',
-                    'table': 'table',
+                    'key': 'db://cluster.schema/table',
                     'owner': 'test'
                 }
             )
@@ -370,7 +367,7 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get(
                 '/api/metadata/v0/get_table_description',
-                query_string=dict(db='db', cluster='cluster', schema='schema', table='table')
+                query_string=dict(key='db://cluster.schema/table')
             )
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -389,7 +386,7 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get(
                 '/api/metadata/v0/get_table_description',
-                query_string=dict(db='db', cluster='cluster', schema='schema', table='table')
+                query_string=dict(key='db://cluster.schema/table')
             )
             self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
@@ -406,10 +403,7 @@ class MetadataTest(unittest.TestCase):
             response = test.put(
                 '/api/metadata/v0/put_table_description',
                 json={
-                    'db': 'db',
-                    'cluster': 'cluster',
-                    'schema': 'schema',
-                    'table': 'table',
+                    'key': 'db://cluster.schema/table',
                     'description': 'test',
                     'source': 'source'
                 }
@@ -430,10 +424,7 @@ class MetadataTest(unittest.TestCase):
             response = test.get(
                 '/api/metadata/v0/get_column_description',
                 query_string=dict(
-                    db='db',
-                    cluster='cluster',
-                    schema='schema',
-                    table='table',
+                    key='db://cluster.schema/table',
                     index='0',
                     column_name='colA'
                 )
@@ -457,10 +448,7 @@ class MetadataTest(unittest.TestCase):
             response = test.get(
                 '/api/metadata/v0/get_column_description',
                 query_string=dict(
-                    db='db',
-                    cluster='cluster',
-                    schema='schema',
-                    table='table',
+                    key='db://cluster.schema/table',
                     index='0',
                     column_name='colA'
                 )
@@ -481,10 +469,7 @@ class MetadataTest(unittest.TestCase):
             response = test.put(
                 '/api/metadata/v0/put_column_description',
                 json={
-                    'db': 'db',
-                    'cluster': 'cluster',
-                    'schema': 'schema',
-                    'table': 'table',
+                    'key': 'db://cluster.schema/table',
                     'column_name': 'col',
                     'description': 'test',
                     'source': 'source'
@@ -519,10 +504,7 @@ class MetadataTest(unittest.TestCase):
             response = test.put(
                 '/api/metadata/v0/update_table_tags',
                 json={
-                    'db': 'db',
-                    'cluster': 'cluster',
-                    'schema': 'schema',
-                    'table': 'table',
+                    'key': 'db://cluster.schema/table',
                     'tag': 'tag_5'
                 }
             )
@@ -541,10 +523,7 @@ class MetadataTest(unittest.TestCase):
             response = test.delete(
                 '/api/metadata/v0/update_table_tags',
                 json={
-                    'db': 'db',
-                    'cluster': 'cluster',
-                    'schema': 'schema',
-                    'table': 'table',
+                    'key': 'db://cluster.schema/table',
                     'tag': 'tag_5'
                 }
             )

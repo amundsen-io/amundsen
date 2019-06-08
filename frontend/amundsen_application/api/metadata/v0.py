@@ -11,7 +11,7 @@ from amundsen_application.log.action_log import action_logging
 
 from amundsen_application.models.user import load_user, dump_user
 
-from amundsen_application.api.utils.metadata_utils import get_table_key, marshall_table_partial
+from amundsen_application.api.utils.metadata_utils import marshall_table_partial, marshall_table_full
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 
@@ -79,7 +79,7 @@ def get_table_metadata() -> Response:
     TODO: Define an interface for envoy_client
     """
     try:
-        table_key = get_table_key(request.args)
+        table_key = get_query_param(request.args, 'key')
         list_item_index = get_query_param(request.args, 'index')
         list_item_source = get_query_param(request.args, 'source')
 
@@ -91,25 +91,8 @@ def get_table_metadata() -> Response:
         return make_response(jsonify({'tableData': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-def _get_partition_data(watermarks: Dict) -> Dict:
-    if watermarks:
-        high_watermark = next(filter(lambda x: x['watermark_type'] == 'high_watermark', watermarks))
-        if high_watermark:
-            return {
-                'is_partitioned': True,
-                'key': high_watermark['partition_key'],
-                'value': high_watermark['partition_value']
-            }
-    return {
-        'is_partitioned': False
-    }
-
-
 @action_logging
 def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str, Any]:
-
-    def _map_user_object_to_schema(u: Dict) -> Dict:
-        return dump_user(load_user(u))
 
     results_dict = {
         'tableData': {},
@@ -138,50 +121,12 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
         return results_dict
 
     try:
-        # Filter and parse the response dictionary from the metadata service
-        params = [
-            'columns',
-            'cluster',
-            'database',
-            'owners',
-            'is_view',
-            'schema',
-            'table_description',
-            'table_name',
-            'table_readers',
-            'table_writer',
-            'tags',
-            'watermarks',
-            'source',
-        ]
+        table_data_raw = response.json()
 
-        results = {key: response.json().get(key, None) for key in params}
-        results['key'] = table_key
+        # Ideally the response should include 'key' to begin with
+        table_data_raw['key'] = table_key
 
-        is_editable = results['schema'] not in app.config['UNEDITABLE_SCHEMAS']
-        results['is_editable'] = is_editable
-
-        # In the list of owners, sanitize each entry
-        results['owners'] = [_map_user_object_to_schema(owner) for owner in results['owners']]
-
-        # In the list of reader_objects, sanitize the reader value on each entry
-        readers = results['table_readers']
-        for reader_object in readers:
-            reader_object['reader'] = _map_user_object_to_schema(reader_object['reader'])
-
-        # If order is provided, we sort the column based on the pre-defined order
-        if app.config['COLUMN_STAT_ORDER']:
-            columns = results['columns']
-            for col in columns:
-                # the stat_type isn't defined in COLUMN_STAT_ORDER, we just use the max index for sorting
-                col['stats'].sort(key=lambda x: app.config['COLUMN_STAT_ORDER'].
-                                  get(x['stat_type'], len(app.config['COLUMN_STAT_ORDER'])))
-                col['is_editable'] = is_editable
-
-        # Temp code to make 'partition_key' and 'partition_value' part of the table
-        results['partition'] = _get_partition_data(results['watermarks'])
-
-        results_dict['tableData'] = results
+        results_dict['tableData'] = marshall_table_full(table_data_raw)
         results_dict['msg'] = 'Success'
         return results_dict
     except Exception as e:
@@ -210,7 +155,7 @@ def _update_table_owner(*, table_key: str, method: str, owner: str) -> Dict[str,
 def update_table_owner() -> Response:
     try:
         args = request.get_json()
-        table_key = get_table_key(args)
+        table_key = get_query_param(args, 'key')
         owner = get_query_param(args, 'owner')
 
         payload = jsonify(_update_table_owner(table_key=table_key, method=request.method, owner=owner))
@@ -252,7 +197,7 @@ def get_last_indexed() -> Response:
 def get_table_description() -> Response:
     try:
         table_endpoint = _get_table_endpoint()
-        table_key = get_table_key(request.args)
+        table_key = get_query_param(request.args, 'key')
 
         url = '{0}/{1}/description'.format(table_endpoint, table_key)
 
@@ -277,7 +222,7 @@ def get_table_description() -> Response:
 def get_column_description() -> Response:
     try:
         table_endpoint = _get_table_endpoint()
-        table_key = get_table_key(request.args)
+        table_key = get_query_param(request.args, 'key')
 
         column_name = get_query_param(request.args, 'column_name')
 
@@ -311,7 +256,7 @@ def put_table_description() -> Response:
         args = request.get_json()
         table_endpoint = _get_table_endpoint()
 
-        table_key = get_table_key(args)
+        table_key = get_query_param(args, 'key')
 
         description = get_query_param(args, 'description')
         description = ' '.join(description.split())
@@ -345,7 +290,7 @@ def put_column_description() -> Response:
     try:
         args = request.get_json()
 
-        table_key = get_table_key(args)
+        table_key = get_query_param(args, 'key')
         table_endpoint = _get_table_endpoint()
 
         column_name = get_query_param(args, 'column_name')
@@ -414,7 +359,7 @@ def update_table_tags() -> Response:
         method = request.method
 
         table_endpoint = _get_table_endpoint()
-        table_key = get_table_key(args)
+        table_key = get_query_param(args, 'key')
 
         tag = get_query_param(args, 'tag')
 

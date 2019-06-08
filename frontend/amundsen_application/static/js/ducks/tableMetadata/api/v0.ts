@@ -11,11 +11,11 @@ const API_PATH = '/api/metadata/v0';
 
 /** HELPERS **/
 import {
-  getTableParams, getTableDataFromResponseData, getTableOwnersFromResponseData, getTableTagsFromResponseData,
+  getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData, getTableTagsFromResponseData,
 } from './helpers';
 
 export function metadataTableTags(tableData: TableMetadata) {
-  const tableParams = getTableParams(tableData);
+  const tableParams = getTableQueryParams(tableData);
 
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
   .then((response: AxiosResponse<TableDataResponse>) => {
@@ -33,10 +33,7 @@ export function metadataUpdateTableTags(action, tableData) {
       method: tagObject.methodName,
       url: `${API_PATH}/update_table_tags`,
       data: {
-        cluster: tableData.cluster,
-        db: tableData.database,
-        schema: tableData.schema,
-        table: tableData.table_name,
+        key: tableData.key,
         tag: tagObject.tagName,
       },
     }
@@ -46,7 +43,7 @@ export function metadataUpdateTableTags(action, tableData) {
 
 export function metadataGetTableData(action: GetTableDataRequest) {
   const { searchIndex, source } = action;
-  const tableParams = getTableParams(action);
+  const tableParams = getTableQueryParams(action);
 
   return axios.get(`${API_PATH}/table?${tableParams}&index=${searchIndex}&source=${source}`)
   .then((response: AxiosResponse<TableDataResponse>) => {
@@ -64,7 +61,7 @@ export function metadataGetTableData(action: GetTableDataRequest) {
 }
 
 export function metadataGetTableDescription(tableData: TableMetadata) {
-  const tableParams = getTableParams(tableData);
+  const tableParams = getTableQueryParams(tableData);
   return axios.get(`${API_PATH}/v0/get_table_description?${tableParams}`)
   .then((response: AxiosResponse<DescriptionResponse>) => {
     tableData.table_description = response.data.description;
@@ -82,17 +79,14 @@ export function metadataUpdateTableDescription(description: string, tableData: T
   else {
     return axios.put(`${API_PATH}/put_table_description`, {
       description,
-      db: tableData.database,
-      cluster: tableData.cluster,
-      schema: tableData.schema,
-      table: tableData.table_name,
+      key: tableData.key,
       source: 'user',
     });
   }
 }
 
 export function metadataTableOwners(tableData: TableMetadata) {
-  const tableParams = getTableParams(tableData);
+  const tableParams = getTableQueryParams(tableData);
 
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
   .then((response: AxiosResponse<TableDataResponse>) => {
@@ -104,17 +98,15 @@ export function metadataTableOwners(tableData: TableMetadata) {
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that need more dedicated debugging */
-export function metadataUpdateTableOwner(action, tableData) {
+// TODO - Add 'key' to the action and remove 'tableData' as a param.
+export function metadataUpdateTableOwner(action, tableData: TableMetadata) {
   const updatePayloads = action.updateArray.map((item) => {
     return {
       method: item.method,
       url: `${API_PATH}/update_table_owner`,
       data: {
-        cluster: tableData.cluster,
-        db: tableData.database,
+        key: tableData.key,
         owner: item.id,
-        schema: tableData.schema,
-        table: tableData.table_name,
       },
     }
   });
@@ -122,7 +114,7 @@ export function metadataUpdateTableOwner(action, tableData) {
 }
 
 export function metadataGetColumnDescription(columnIndex: number, tableData: TableMetadata) {
-  const tableParams = getTableParams(tableData);
+  const tableParams = getTableQueryParams(tableData);
   const columnName = tableData.columns[columnIndex].name;
   return axios.get(`${API_PATH}/get_column_description?${tableParams}&column_name=${columnName}`)
   .then((response: AxiosResponse<DescriptionResponse>) => {
@@ -142,11 +134,8 @@ export function metadataUpdateColumnDescription(description: string, columnIndex
     const columnName = tableData.columns[columnIndex].name;
     return axios.put(`${API_PATH}/put_column_description`, {
       description,
-      db: tableData.database,
-      cluster: tableData.cluster,
       column_name: columnName,
-      schema: tableData.schema,
-      table: tableData.table_name,
+      key: tableData.key,
       source: 'user',
     });
   }

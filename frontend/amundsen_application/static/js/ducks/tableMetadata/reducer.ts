@@ -38,14 +38,11 @@ export interface TableMetadataReducerState {
   tableTags: TableTagsReducerState;
 }
 
-export function getTableData(cluster: string, database: string, schema: string, tableName: string, searchIndex?: string, source?: string): GetTableDataRequest {
+export function getTableData(key: string, searchIndex?: string, source?: string): GetTableDataRequest {
   return {
-    cluster,
-    database,
-    schema,
+    key,
     searchIndex,
     source,
-    table_name: tableName,
     type: GetTableData.ACTION,
   };
 }
