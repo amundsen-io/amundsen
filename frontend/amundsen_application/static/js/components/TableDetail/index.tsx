@@ -42,7 +42,7 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  getTableData: (cluster: string, database: string, schema: string, tableName: string, searchIndex?: string, source?: string, ) => GetTableDataRequest;
+  getTableData: (key: string, searchIndex?: string, source?: string, ) => GetTableDataRequest;
   getPreviewData: (queryParams: PreviewQueryParams) => void;
 }
 
@@ -57,9 +57,10 @@ interface TableDetailState {
 export class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>, TableDetailState> {
   private cluster: string;
   private database: string;
+  private displayName: string;
+  private key: string;
   private schema: string;
   private tableName: string;
-  private displayName: string;
   public static defaultProps: TableDetailProps = {
     getTableData: () => undefined,
     getPreviewData: () => undefined,
@@ -72,13 +73,13 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
       is_editable: false,
       is_view: false,
       key: '',
+      partition: { is_partitioned: false },
       schema: '',
+      source: { source: '', source_type: '' },
       table_name: '',
       table_description: '',
       table_writer: { application_url: '', description: '', id: '', name: '' },
-      partition: { is_partitioned: false },
       table_readers: [],
-      source: { source: '', source_type: '' },
       watermarks: [],
     },
   };
@@ -99,6 +100,13 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     this.tableName = params ? params.table : '';
     this.displayName = params ? `${this.schema}.${this.tableName}` : '';
 
+    /*
+    This 'key' is the `table_uri` format described in metadataservice. Because it contains the '/' character,
+    we can't pass it as a single URL parameter without encodeURIComponent which makes ugly URLs.
+    DO NOT CHANGE
+    */
+    this.key = params ? `${this.database}://${this.cluster}.${this.schema}/${this.tableName}` : '';
+
     this.state = {
       isLoading: props.isLoading,
       statusCode: props.statusCode,
@@ -116,7 +124,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
       window.history.replaceState({}, '', `${window.location.origin}${window.location.pathname}`);
     }
 
-    this.props.getTableData(this.cluster, this.database, this.schema, this.tableName, searchIndex, source);
+    this.props.getTableData(this.key, searchIndex, source);
     this.props.getPreviewData({ database: this.database, schema: this.schema, tableName: this.tableName });
   }
 
