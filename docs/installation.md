@@ -11,7 +11,7 @@ The following instructions are for setting up a version of Amundsen using Docker
     ```
 4. Ingest dummy data into Neo4j by doing the following:
    * Clone [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder).
-   * Run the following commands in the `amundsenddatabuilder` directory:
+   * Run the following commands in the `amundsendatabuilder` directory:
    ```bash
     $ python3 -m venv venv
     $ source venv/bin/activate  
