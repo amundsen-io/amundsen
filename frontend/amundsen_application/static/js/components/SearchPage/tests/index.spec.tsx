@@ -4,7 +4,7 @@ import Pagination from 'react-js-pagination';
 
 import { shallow } from 'enzyme';
 
-import { ResourceType } from 'components/common/ResourceListItem/types';
+import { ResourceType } from 'interfaces';
 import { SearchPage, SearchPageProps, mapDispatchToProps, mapStateToProps } from '../';
 import {
   DOCUMENT_TITLE_SUFFIX,

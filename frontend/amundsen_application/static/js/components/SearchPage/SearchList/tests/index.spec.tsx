@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { Resource, ResourceType } from 'components/common/ResourceListItem/types';
+import { Resource, ResourceType } from 'interfaces';
 import ResourceListItem from 'components/common/ResourceListItem';
 import SearchList, { SearchListProps, SearchListParams } from '../';
 

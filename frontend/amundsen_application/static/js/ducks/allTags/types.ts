@@ -1,22 +1,16 @@
-import { Tag } from 'components/Tags/types';
-export { Tag };
+import { Tag } from 'interfaces';
 
-/* API */
-export type AllTagsResponse = {
-  msg: string;
-  tags: Tag[];
-}
-
-/* getAllTags */
 export enum GetAllTags {
-  ACTION = 'amundsen/allTags/GET_ALL_TAGS',
-  SUCCESS = 'amundsen/allTags/GET_ALL_TAGS_SUCCESS',
-  FAILURE = 'amundsen/allTags/GET_ALL_TAGS_FAILURE',
+  REQUEST = 'amundsen/allTags/GET_REQUEST',
+  SUCCESS = 'amundsen/allTags/GET_SUCCESS',
+  FAILURE = 'amundsen/allTags/GET_FAILURE',
 }
 export interface GetAllTagsRequest {
-  type: GetAllTags.ACTION;
+  type: GetAllTags.REQUEST;
 }
 export interface GetAllTagsResponse {
   type: GetAllTags.SUCCESS | GetAllTags.FAILURE;
-  payload: Tag[];
+  payload: {
+    tags: Tag[];
+  };
 }

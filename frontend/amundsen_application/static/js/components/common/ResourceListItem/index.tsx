@@ -1,6 +1,8 @@
 import * as React from 'react'
 
-import { LoggingParams, Resource, ResourceType, TableResource, UserResource } from './types';
+import { Resource, ResourceType, TableResource, UserResource } from 'interfaces';
+
+import { LoggingParams } from './types';
 import TableListItem from './TableListItem';
 import UserListItem from './UserListItem';
 

@@ -1,12 +1,12 @@
 import { all } from 'redux-saga/effects';
 
 // AnnouncementPage
-import { announcementsGetWatcher } from "./announcements/sagas";
+import { getAnnouncementsWatcher } from "./announcements/sagas";
 
 import {
   addBookmarkWatcher,
   getBookmarksForUserWatcher,
-  getBookmarkskWatcher,
+  getBookmarksWatcher,
   removeBookmarkWatcher
 } from "ducks/bookmark/sagas";
 
@@ -39,11 +39,11 @@ import { getLoggedInUserWatcher, getUserWatcher } from "./user/sagas";
 export default function* rootSaga() {
   yield all([
     // AnnouncementPage
-    announcementsGetWatcher(),
+    getAnnouncementsWatcher(),
     // Bookmarks
     addBookmarkWatcher(),
     getBookmarksForUserWatcher(),
-    getBookmarkskWatcher(),
+    getBookmarksWatcher(),
     removeBookmarkWatcher(),
     // FeedbackForm
     submitFeedbackWatcher(),

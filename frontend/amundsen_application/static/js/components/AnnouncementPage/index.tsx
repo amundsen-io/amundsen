@@ -10,16 +10,16 @@ import { bindActionCreators } from 'redux';
 import './styles.scss';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { AnnouncementsGetRequest } from 'ducks/announcements/types';
-import { announcementsGet } from 'ducks/announcements/reducer';
-import { AnnouncementPost } from './types';
+import { GetAnnouncementsRequest } from 'ducks/announcements/types';
+import { getAnnouncements } from 'ducks/announcements/reducer';
+import { AnnouncementPost } from 'interfaces';
 
 export interface StateFromProps {
   posts: AnnouncementPost[];
 }
 
 export interface DispatchFromProps {
-  announcementsGet: () => AnnouncementsGetRequest;
+  announcementsGet: () => GetAnnouncementsRequest;
 }
 
 export type AnnouncementPageProps = StateFromProps & DispatchFromProps;
@@ -79,7 +79,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ announcementsGet } , dispatch);
+  return bindActionCreators({ announcementsGet: getAnnouncements } , dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(AnnouncementPage);

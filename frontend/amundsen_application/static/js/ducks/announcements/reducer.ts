@@ -1,28 +1,28 @@
-import {
-  AnnouncementsGet, AnnouncementsGetRequest, AnnouncementsGetResponse,
-  AnnouncementPost,
-} from './types';
+import { AnnouncementPost } from 'interfaces';
 
-export type AnnouncementsReducerAction = AnnouncementsGetRequest | AnnouncementsGetResponse;
+import { GetAnnouncements, GetAnnouncementsRequest, GetAnnouncementsResponse } from './types';
 
+/* ACTIONS */
+export function getAnnouncements(): GetAnnouncementsRequest {
+  return { type: GetAnnouncements.REQUEST };
+};
+
+/* REDUCER */
 export interface AnnouncementsReducerState {
   posts: AnnouncementPost[];
-}
+};
 
-export function announcementsGet(): AnnouncementsGetRequest {
-  return { type: AnnouncementsGet.ACTION };
-}
-
-const initialState: AnnouncementsReducerState = {
+export const initialState: AnnouncementsReducerState = {
   posts: [],
 };
 
-export default function reducer(state: AnnouncementsReducerState = initialState, action: AnnouncementsReducerAction): AnnouncementsReducerState {
+export default function reducer(state: AnnouncementsReducerState = initialState, action): AnnouncementsReducerState {
   switch (action.type) {
-    case AnnouncementsGet.FAILURE:
-    case AnnouncementsGet.SUCCESS:
-      return { posts: action.payload };
+    case GetAnnouncements.FAILURE:
+      return initialState;
+    case GetAnnouncements.SUCCESS:
+      return { posts: (<GetAnnouncementsResponse>action).payload.posts };
     default:
       return state;
   }
-}
+};

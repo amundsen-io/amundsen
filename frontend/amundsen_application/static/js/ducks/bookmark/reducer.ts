@@ -1,81 +1,71 @@
+import { Bookmark } from 'interfaces';
+
 import {
   AddBookmark,
   AddBookmarkRequest,
-  AddBookmarkResponse,
-  Bookmark,
   GetBookmarks,
-  GetBookmarksForUser,
-  GetBookmarksForUserRequest,
-  GetBookmarksForUserResponse,
   GetBookmarksRequest,
   GetBookmarksResponse,
+  GetBookmarksForUser,
+  GetBookmarksForUserRequest,
   RemoveBookmark,
   RemoveBookmarkRequest,
   RemoveBookmarkResponse,
-} from "./types";
+} from './types';
 
-export type BookmarkReducerAction =
-  AddBookmarkRequest | AddBookmarkResponse |
-  GetBookmarksRequest | GetBookmarksResponse |
-  GetBookmarksForUserRequest | GetBookmarksForUserResponse |
-  RemoveBookmarkRequest | RemoveBookmarkResponse;
-
-
+/* ACTIONS */
 export function addBookmark(resourceKey: string, resourceType: string): AddBookmarkRequest {
   return {
     resourceKey,
     resourceType,
-    type: AddBookmark.ACTION,
+    type: AddBookmark.REQUEST,
   }
-}
-
+};
 export function removeBookmark(resourceKey: string, resourceType: string): RemoveBookmarkRequest {
   return {
     resourceKey,
     resourceType,
-    type: RemoveBookmark.ACTION,
+    type: RemoveBookmark.REQUEST,
   }
-}
-
+};
 export function getBookmarks(): GetBookmarksRequest {
   return {
-    type: GetBookmarks.ACTION
+    type: GetBookmarks.REQUEST,
   }
-}
-
+};
 export function getBookmarksForUser(userId: string): GetBookmarksForUserRequest {
   return {
     userId,
-    type: GetBookmarksForUser.ACTION,
+    type: GetBookmarksForUser.REQUEST,
   }
-}
+};
 
- export interface BookmarkReducerState {
+/* REDUCER */
+export interface BookmarkReducerState {
   myBookmarks: Bookmark[];
   myBookmarksIsLoaded: boolean;
   bookmarksForUser: Bookmark[];
 }
 
- const initialState: BookmarkReducerState = {
+export const initialState: BookmarkReducerState = {
   myBookmarks: [],
   myBookmarksIsLoaded: false,
   bookmarksForUser: [],
 };
 
- export default function reducer(state: BookmarkReducerState = initialState, action: BookmarkReducerAction): BookmarkReducerState {
+ export default function reducer(state: BookmarkReducerState = initialState, action): BookmarkReducerState {
   switch(action.type) {
     case RemoveBookmark.SUCCESS:
-      const { resourceKey } = action.payload;
+      const { resourceKey } = (<RemoveBookmarkResponse>action).payload;
       return {
         ...state,
         myBookmarks: state.myBookmarks.filter((bookmark) => bookmark.key !== resourceKey)
       };
-
     case AddBookmark.SUCCESS:
     case GetBookmarks.SUCCESS:
       return {
         ...state,
-        myBookmarks: action.payload,
+        myBookmarks: (<GetBookmarksResponse>action).payload.bookmarks,
         myBookmarksIsLoaded: true,
       };
     case AddBookmark.FAILURE:

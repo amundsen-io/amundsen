@@ -2,7 +2,9 @@ import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
-import { LoggingParams, UserResource} from '../types';
+import { LoggingParams } from '../types';
+
+import { UserResource } from 'interfaces';
 import Flag from 'components/common/Flag';
 
 export interface UserListItemProps {

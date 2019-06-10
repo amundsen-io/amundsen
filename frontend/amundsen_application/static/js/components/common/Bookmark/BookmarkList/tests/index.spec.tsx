@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
-import { ResourceType } from 'components/common/ResourceListItem/types';
+import { ResourceType } from 'interfaces';
 import Pagination from 'react-js-pagination';
 import ResourceListItem from 'components/common/ResourceListItem'
 import { BookmarkList, BookmarkListProps, mapStateToProps } from "../";

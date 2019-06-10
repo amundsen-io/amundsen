@@ -1,17 +1,15 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
-
-import { AllTagsResponse } from '../types';
+import axios, { AxiosResponse } from 'axios';
 
 import { sortTagsAlphabetical } from 'ducks/utilMethods';
+import { Tag } from 'interfaces';
+
+export type AllTagsResponseAPI = {
+  msg: string;
+  tags: Tag[];
+};
 
 export function metadataAllTags() {
-  return axios.get('/api/metadata/v0/tags').then((response: AxiosResponse<AllTagsResponse>) => {
+  return axios.get('/api/metadata/v0/tags').then((response: AxiosResponse<AllTagsResponseAPI>) => {
     return response.data.tags.sort(sortTagsAlphabetical);
   })
-  .catch((error: AxiosError) => {
-    if (error.response) {
-      return error.response.data.tags.sort(sortTagsAlphabetical);
-    }
-    return [];
-  });
-}
+};

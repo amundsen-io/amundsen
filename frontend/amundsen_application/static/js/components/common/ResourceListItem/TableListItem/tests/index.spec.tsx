@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import TableListItem, { TableListItemProps } from '../';
-import { ResourceType } from '../../types';
+import { ResourceType } from 'interfaces';
 
 describe('TableListItem', () => {
   const setup = (propOverrides?: Partial<TableListItemProps>) => {

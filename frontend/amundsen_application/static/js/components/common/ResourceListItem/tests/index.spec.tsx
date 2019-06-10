@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import TableListItem from '../TableListItem';
 import UserListItem from '../UserListItem';
 import ResourceListItem, { ListItemProps } from '../';
-import { ResourceType } from '../types';
+import { ResourceType } from 'interfaces';
 
 describe('ResourceListItem', () => {
     let props: ListItemProps;

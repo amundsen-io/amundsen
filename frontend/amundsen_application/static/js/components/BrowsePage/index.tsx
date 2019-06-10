@@ -8,7 +8,7 @@ import './styles.scss';
 import AppConfig from 'config/config';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import TagInfo from 'components/Tags/TagInfo';
-import { Tag } from 'components/Tags/types';
+import { Tag } from 'interfaces';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getAllTags } from 'ducks/allTags/reducer';

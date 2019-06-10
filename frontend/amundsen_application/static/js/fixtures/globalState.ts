@@ -1,7 +1,7 @@
 import { GlobalState } from 'ducks/rootReducer';
 
 import { SendingState } from 'components/Feedback/types';
-import { ResourceType } from 'components/common/ResourceListItem/types';
+import { ResourceType } from 'interfaces';
 
 const globalState: GlobalState = {
   announcements: {

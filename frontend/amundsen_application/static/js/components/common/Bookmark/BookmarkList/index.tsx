@@ -4,7 +4,7 @@ import Pagination from 'react-js-pagination';
 import { GlobalState } from "ducks/rootReducer";
 
 import './styles.scss'
-import { Bookmark } from "ducks/bookmark/types";
+import { Bookmark } from 'interfaces';
 import ResourceListItem from "components/common/ResourceListItem";
 import {
   ITEMS_PER_PAGE,

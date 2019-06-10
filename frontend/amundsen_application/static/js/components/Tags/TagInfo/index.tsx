@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Tag } from '../types';
+import { Tag } from 'interfaces';
 import { logClick } from 'ducks/utilMethods';
 
 import './styles.scss';
