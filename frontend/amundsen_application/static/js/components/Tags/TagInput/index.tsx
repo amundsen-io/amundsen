@@ -12,7 +12,8 @@ import { updateTags } from 'ducks/tableMetadata/tags/reducer';
 import { UpdateTagsRequest } from 'ducks/tableMetadata/types';
 
 import TagInfo from "../TagInfo";
-import { Tag, UpdateTagMethod, UpdateTagData } from '../types';
+import { Tag } from 'interfaces';
+import { UpdateTagMethod, UpdateTagData } from '../types';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

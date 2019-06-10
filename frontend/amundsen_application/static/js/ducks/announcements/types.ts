@@ -1,22 +1,16 @@
-import { AnnouncementPost } from 'components/AnnouncementPage/types';
-export { AnnouncementPost }
+import { AnnouncementPost } from 'interfaces';
 
-/* API */
-export type AnnouncementsResponse = {
-  msg: string;
-  posts: AnnouncementPost[];
-}
-
-/* getAnnouncements */
-export enum AnnouncementsGet {
-  ACTION = 'amundsen/announcements/GET_ACTION',
+export enum GetAnnouncements {
+  REQUEST = 'amundsen/announcements/GET_REQUEST',
   SUCCESS = 'amundsen/announcements/GET_SUCCESS',
   FAILURE = 'amundsen/announcements/GET_FAILURE',
 }
-export interface AnnouncementsGetRequest {
-  type: AnnouncementsGet.ACTION;
+export interface GetAnnouncementsRequest {
+  type: GetAnnouncements.REQUEST;
 }
-export interface AnnouncementsGetResponse {
-  type: AnnouncementsGet.SUCCESS | AnnouncementsGet.FAILURE;
-  payload: AnnouncementPost[];
+export interface GetAnnouncementsResponse {
+  type: GetAnnouncements.SUCCESS | GetAnnouncements.FAILURE;
+  payload: {
+    posts: AnnouncementPost[];
+  };
 }

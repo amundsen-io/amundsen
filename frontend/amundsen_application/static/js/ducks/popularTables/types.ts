@@ -1,4 +1,4 @@
-import { TableResource } from 'components/common/ResourceListItem/types';
+import { TableResource } from 'interfaces';
 export { TableResource };
 
 /* API */

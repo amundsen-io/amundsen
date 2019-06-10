@@ -13,7 +13,7 @@ import PopularTables from 'components/common/PopularTables';
 
 import BookmarkList from 'components/common/Bookmark/BookmarkList'
 import InfoButton from 'components/common/InfoButton';
-import { ResourceType, TableResource } from 'components/common/ResourceListItem/types';
+import { ResourceType, TableResource } from 'interfaces';
 import TabsComponent from 'components/common/Tabs';
 
 import { GlobalState } from 'ducks/rootReducer';

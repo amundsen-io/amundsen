@@ -1,32 +1,29 @@
-import { TableResource } from "components/common/ResourceListItem/types";
+import { Bookmark } from 'interfaces';
 
-export type Bookmark = TableResource;
-
- // AddBookmark
 export enum AddBookmark {
-  ACTION = 'amundsen/bookmark/ADD',
+  REQUEST = 'amundsen/bookmark/ADD_REQUEST',
   SUCCESS = 'amundsen/bookmark/ADD_SUCCESS',
   FAILURE = 'amundsen/bookmark/ADD_FAILURE',
 }
 export interface AddBookmarkRequest {
-  type: AddBookmark.ACTION;
+  type: AddBookmark.REQUEST;
   resourceKey: string;
   resourceType: string;
 }
 export interface AddBookmarkResponse {
   type: AddBookmark.SUCCESS | AddBookmark.FAILURE;
-  payload: Bookmark[];
+  payload: {
+    bookmarks: Bookmark[];
+  }
 }
 
-
- // RemoveBookmark
 export enum RemoveBookmark {
-  ACTION = 'amundsen/bookmark/REMOVE',
+  REQUEST = 'amundsen/bookmark/REMOVE_REQUEST',
   SUCCESS = 'amundsen/bookmark/REMOVE_SUCCESS',
   FAILURE = 'amundsen/bookmark/REMOVE_FAILURE',
 }
 export interface RemoveBookmarkRequest {
-  type: RemoveBookmark.ACTION;
+  type: RemoveBookmark.REQUEST;
   resourceKey: string;
   resourceType: string;
 }
@@ -38,30 +35,30 @@ export interface RemoveBookmarkResponse {
   };
 }
 
-
- // GetBookmarks - Get all bookmarks for the logged in user. This result will be cached
+// GetBookmarks - Get all bookmarks for the logged in user. This result will be cached
 export enum GetBookmarks {
-  ACTION = 'amundsen/bookmark/GET',
+  REQUEST = 'amundsen/bookmark/GET_REQUEST',
   SUCCESS = 'amundsen/bookmark/GET_SUCCESS',
   FAILURE = 'amundsen/bookmark/GET_FAILURE',
 }
 export interface GetBookmarksRequest {
-  type: GetBookmarks.ACTION;
+  type: GetBookmarks.REQUEST;
 }
 export interface GetBookmarksResponse {
   type: GetBookmarks.SUCCESS | GetBookmarks.FAILURE;
-  payload: Bookmark[];
+  payload: {
+    bookmarks: Bookmark[];
+  };
 }
 
-
- // GetBookmarksForUser - Get all bookmarks for a specified user
+// GetBookmarksForUser - Get all bookmarks for a specified user
 export enum GetBookmarksForUser {
-  ACTION = 'amundsen/bookmark/GET_FOR_USER',
+  REQUEST = 'amundsen/bookmark/GET_FOR_USER_REQUEST',
   SUCCESS = 'amundsen/bookmark/GET_FOR_USER_SUCCESS',
   FAILURE = 'amundsen/bookmark/GET_FOR_USER_FAILURE',
 }
 export interface GetBookmarksForUserRequest {
-  type: GetBookmarksForUser.ACTION;
+  type: GetBookmarksForUser.REQUEST;
   userId: string;
 }
 export interface GetBookmarksForUserResponse {

@@ -10,7 +10,7 @@ import {
   TableSearchResults,
   UserSearchResults,
 } from './types';
-import { ResourceType } from 'components/common/ResourceListItem/types';
+import { ResourceType } from 'interfaces';
 
 export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest | SearchResourceRequest;
 

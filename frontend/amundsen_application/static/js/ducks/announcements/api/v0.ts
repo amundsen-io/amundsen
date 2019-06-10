@@ -1,16 +1,18 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
-import { AnnouncementsResponse } from '../types';
+import { AnnouncementPost } from 'interfaces';
+
+export type AnnouncementsResponseAPI = {
+  msg: string;
+  posts: AnnouncementPost[];
+};
 
 export function announcementsGet() {
   return axios({
       method: 'get',
       url: '/api/announcements/v0/',
     })
-    .then((response: AxiosResponse<AnnouncementsResponse>) => {
+    .then((response: AxiosResponse<AnnouncementsResponseAPI>) => {
       return response.data.posts;
     })
-    .catch((error: AxiosError) => {
-      return [];
-    });
-}
+};

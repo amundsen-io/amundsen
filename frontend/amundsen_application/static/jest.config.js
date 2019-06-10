@@ -13,10 +13,10 @@ module.exports = {
           statements: 45, // 75
       },
       './js/ducks': {
-          branches: 0, // 75
-          functions: 0, // 75
-          lines: 0, // 75
-          statements: 0, // 75
+          branches: 35, // 75
+          functions: 30, // 75
+          lines: 35, // 75
+          statements: 35, // 75
       },
       './js/fixtures': {
           branches: 100,

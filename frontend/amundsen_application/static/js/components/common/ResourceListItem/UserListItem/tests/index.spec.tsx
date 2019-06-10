@@ -7,7 +7,7 @@ import Flag from 'components/common/Flag';
 import { Link } from 'react-router-dom';
 
 import UserListItem, { UserListItemProps } from '../';
-import { ResourceType } from '../../types';
+import { ResourceType } from 'interfaces';
 
 describe('UserListItem', () => {
   const setup = (propOverrides?: Partial<UserListItemProps>) => {
