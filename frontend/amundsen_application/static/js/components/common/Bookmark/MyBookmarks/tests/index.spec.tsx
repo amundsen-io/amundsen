@@ -4,20 +4,20 @@ import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces';
-import Pagination from 'react-js-pagination';
-import ResourceListItem from 'components/common/ResourceListItem'
-import { BookmarkList, BookmarkListProps, mapStateToProps } from "../";
+import { MyBookmarks, MyBookmarksProps, mapStateToProps } from '../';
+import ResourceList from 'components/common/ResourceList';
 import {
-  ITEMS_PER_PAGE,
-  EMPTY_BOOKMARK_MESSAGE,
   BOOKMARK_TITLE,
+  BOOKMARKS_PER_PAGE,
+  EMPTY_BOOKMARK_MESSAGE,
+  MY_BOOKMARKS_SOURCE_NAME,
 } from '../constants';
 
-describe('BookmarkList', () => {
-  const setStateSpy = jest.spyOn(BookmarkList.prototype, 'setState');
+describe('MyBookmarks', () => {
+  const setStateSpy = jest.spyOn(MyBookmarks.prototype, 'setState');
 
-  const setup = (propOverrides?: Partial<BookmarkListProps>) => {
-    const props: BookmarkListProps = {
+  const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
+    const props: MyBookmarksProps = {
       myBookmarks: [
         {
           key: 'bookmark-1',
@@ -77,19 +77,9 @@ describe('BookmarkList', () => {
       isLoaded: true,
       ...propOverrides
     };
-    const wrapper = shallow<BookmarkList>(<BookmarkList {...props} />);
+    const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
     return { props, wrapper };
   };
-
-  describe('onPaginationChange', () => {
-    it('reduces the page index by 1 and updates state', () => {
-      const { props, wrapper } = setup();
-        const pageNumber = 3;
-        wrapper.instance().onPaginationChange(pageNumber);
-        expect(setStateSpy).toHaveBeenCalledWith({ activePage: pageNumber - 1 });
-    });
-  });
-
 
   describe('Render', () => {
     it('Renders nothing until ready', () => {
@@ -107,29 +97,14 @@ describe('BookmarkList', () => {
       expect(wrapper.find('.empty-message').text()).toEqual(EMPTY_BOOKMARK_MESSAGE);
     });
 
-    it('Renders at most ITEMS_PER_PAGE bookmarks at once', () => {
+    it('Renders ResourceList with the correct props', () => {
       const { props, wrapper } = setup();
-      expect(wrapper.find(ResourceListItem).length).toEqual(ITEMS_PER_PAGE)
-    });
 
-    it('Renders a pagination widget when there are more than ITEMS_PER_PAGE bookmarks', () => {
-      const { props, wrapper } = setup();
-      expect(wrapper.find(Pagination).exists()).toBe(true)
-    });
-
-    it('Hides a pagination widget when there are fewer than ITEMS_PER_PAGE bookmarks', () => {
-      const { props, wrapper } = setup({
-        myBookmarks: [{
-          key: 'bookmark-1',
-          type: ResourceType.table,
-          cluster: 'cluster',
-          database: 'database',
-          description: 'description',
-          name: 'name',
-          schema_name: 'schema_name',
-        }]
+      expect(wrapper.children().find(ResourceList).props()).toMatchObject({
+        allItems: props.myBookmarks,
+        itemsPerPage: BOOKMARKS_PER_PAGE,
+        source: MY_BOOKMARKS_SOURCE_NAME,
       });
-      expect(wrapper.find(Pagination).exists()).toBe(false)
     });
   });
 });

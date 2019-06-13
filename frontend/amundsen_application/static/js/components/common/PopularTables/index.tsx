@@ -3,9 +3,14 @@ import * as React from 'react';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import { POPULAR_TABLES_LABEL, POPULAR_TABLES_INFO_TEXT, POPULAR_TABLES_SOURCE_NAME } from './constants';
+import {
+  POPULAR_TABLES_LABEL,
+  POPULAR_TABLES_INFO_TEXT,
+  POPULAR_TABLES_SOURCE_NAME,
+  POPULAR_TABLES_PER_PAGE
+} from './constants';
 import InfoButton from 'components/common/InfoButton';
-import SearchList from 'components/SearchPage/SearchList';
+import ResourceList from 'components/common/ResourceList';
 
 import { getPopularTables } from 'ducks/popularTables/reducer';
 import { GetPopularTablesRequest, TableResource } from 'ducks/popularTables/types';
@@ -39,12 +44,10 @@ export class PopularTables extends React.Component<PopularTablesProps> {
           <label className="title-1">{POPULAR_TABLES_LABEL}</label>
           <InfoButton infoText={POPULAR_TABLES_INFO_TEXT} />
         </div>
-        <SearchList 
-          results={this.props.popularTables} 
-          params={{
-            source: POPULAR_TABLES_SOURCE_NAME,
-            paginationStartIndex: 0,
-          }} 
+        <ResourceList
+          allItems={ this.props.popularTables }
+          source={ POPULAR_TABLES_SOURCE_NAME }
+          itemsPerPage={ POPULAR_TABLES_PER_PAGE }
         />
       </>
     );

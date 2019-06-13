@@ -5,7 +5,7 @@ import { LoggingParams } from '../types';
 
 import { TableResource } from 'interfaces';
 
-import BookmarkIcon from "components/common/Bookmark/BookmarkIcon";
+import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 export interface TableListItemProps {
   table: TableResource;

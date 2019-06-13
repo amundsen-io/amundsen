@@ -13,7 +13,7 @@ export interface ListItemProps {
   item: Resource;
 }
 
-export default class ResourceListItem extends React.Component<ListItemProps, {}> {
+export default class ResourceListItem extends React.Component<ListItemProps> {
   constructor(props) {
     super(props);
   }

@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import { mapDispatchToProps, HomePage, HomePageProps } from '../';
 
 import SearchBar from 'components/SearchPage/SearchBar';
-import BookmarkList from 'components/common/Bookmark/BookmarkList';
+import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
 
 describe('HomePage', () => {
@@ -49,7 +49,7 @@ describe('HomePage', () => {
   describe('render', () => {
     it('contains Searchbar, BookmarkList, and PopularTables', () => {
       expect(wrapper.contains(<SearchBar />));
-      expect(wrapper.contains(<BookmarkList />));
+      expect(wrapper.contains(<MyBookmarks />));
       expect(wrapper.contains(<PopularTables />));
     });
   });

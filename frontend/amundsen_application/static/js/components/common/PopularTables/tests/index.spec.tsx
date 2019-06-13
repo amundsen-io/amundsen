@@ -4,10 +4,11 @@ import { shallow } from 'enzyme';
 import {
   POPULAR_TABLES_INFO_TEXT,
   POPULAR_TABLES_LABEL,
+  POPULAR_TABLES_PER_PAGE,
   POPULAR_TABLES_SOURCE_NAME,
 } from '../constants';
 import InfoButton from 'components/common/InfoButton';
-import SearchList from 'components/SearchPage/SearchList';
+import ResourceList from 'components/common/ResourceList';
 import globalState from 'fixtures/globalState';
 import { PopularTables, PopularTablesProps, mapStateToProps, mapDispatchToProps } from '..';
 
@@ -80,13 +81,11 @@ describe('PopularTables', () => {
       });
     });
 
-    it('renders SearchList with correct props', () => {
-      expect(wrapper.children().find(SearchList).props()).toMatchObject({
-        results: props.popularTables,
-        params: {
-          source: POPULAR_TABLES_SOURCE_NAME,
-          paginationStartIndex: 0,
-        },
+    it('renders ResourceList with correct props', () => {
+      expect(wrapper.children().find(ResourceList).props()).toMatchObject({
+        allItems: props.popularTables,
+        itemsPerPage: POPULAR_TABLES_PER_PAGE,
+        source: POPULAR_TABLES_SOURCE_NAME,
       });
     });
   });
