@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -11,13 +13,18 @@ import {
   SYNTAX_ERROR_PREFIX,
   SYNTAX_ERROR_SPACING_SUFFIX,
 } from './constants';
+import { GlobalState } from 'ducks/rootReducer';
 
-export interface SearchBarProps {
-  handleValueSubmit: (term: string) => void;
+export interface StateFromProps {
+  searchTerm: string;
+}
+
+export interface OwnProps {
   placeholder?: string;
-  searchTerm?: string;
   subText?: string;
 }
+
+export type SearchBarProps = StateFromProps & OwnProps & RouteComponentProps<any>;
 
 interface SearchBarState {
   subTextClassName: string;
@@ -25,10 +32,9 @@ interface SearchBarState {
   subText: string;
 }
 
-class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
+export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   public static defaultProps: Partial<SearchBarProps> = {
     placeholder: PLACEHOLDER_DEFAULT,
-    searchTerm: '',
     subText: SUBTEXT_DEFAULT,
   };
 
@@ -54,7 +60,8 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   handleValueSubmit = (event: React.FormEvent<HTMLFormElement>) : void => {
     event.preventDefault();
     if (this.isFormValid()) {
-      this.props.handleValueSubmit(this.state.searchTerm);
+      const pathName = `/search?searchTerm=${this.state.searchTerm}&selectedTab=table&pageIndex=0`;
+      this.props.history.push(pathName);    
     }
   };
 
@@ -111,4 +118,10 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   }
 }
 
-export default SearchBar;
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    searchTerm: state.search.search_term,
+  };
+};
+
+export default connect<StateFromProps>(mapStateToProps, null)(withRouter(SearchBar));

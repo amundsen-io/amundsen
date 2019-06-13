@@ -9,9 +9,6 @@ import { RouteComponentProps } from 'react-router';
 import SearchBar from './SearchBar';
 import SearchList from './SearchList';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import PopularTables from 'components/common/PopularTables';
-
-import BookmarkList from 'components/common/Bookmark/BookmarkList'
 import InfoButton from 'components/common/InfoButton';
 import { ResourceType, TableResource } from 'interfaces';
 import TabsComponent from 'components/common/Tabs';
@@ -78,7 +75,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     const { searchTerm, pageIndex, selectedTab } = params;
     const { term, index, currentTab } = this.getSanitizedUrlParams(searchTerm, pageIndex, selectedTab);
     this.setState({ selectedTab: currentTab });
-    if (term !== "") {
+    if (term !== '') {
       this.props.searchAll(term, this.createSearchOptions(index, currentTab));
       if (currentTab !== selectedTab || pageIndex !== index) {
         this.updatePageUrl(term, currentTab, index);
@@ -137,10 +134,6 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     return 0;
   };
 
-  onSearchBarSubmit = (searchTerm: string): void => {
-    this.updatePageUrl(searchTerm, this.state.selectedTab,0);
-  };
-
   onPaginationChange = (pageNumber: number): void => {
     const index = pageNumber - 1;
     this.props.searchResource(this.state.selectedTab, this.props.searchTerm, index);
@@ -156,15 +149,6 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
   updatePageUrl = (searchTerm: string, tab: ResourceType, pageIndex: number): void => {
     const pathName = `/search?searchTerm=${searchTerm}&selectedTab=${tab}&pageIndex=${pageIndex}`;
     this.props.history.push(pathName);
-  };
-
-  renderPopularTables = () => {
-    return (
-      <div className="search-list-container">
-        <BookmarkList />
-        <PopularTables />
-      </div>
-    )
   };
 
   renderSearchResults = () => {
@@ -246,10 +230,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     if (this.props.isLoading) {
       return (<LoadingSpinner/>);
     }
-    if (this.props.searchTerm.length > 0) {
-      return this.renderSearchResults();
-    }
-    return this.renderPopularTables();
+    return this.renderSearchResults();
   };
 
   render() {
@@ -258,7 +239,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
       <div className="container search-page">
         <div className="row">
           <div className="col-xs-12 col-md-offset-1 col-md-10">
-            <SearchBar handleValueSubmit={ this.onSearchBarSubmit } searchTerm={ searchTerm }/>
+            <SearchBar />
             { this.renderContent() }
           </div>
         </div>

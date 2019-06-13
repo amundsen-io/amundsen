@@ -86,7 +86,8 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
         <div className="container profile-page">
           <div className="row">
             <div className="col-xs-12 col-md-offset-1 col-md-10">
-              <Breadcrumb path='/' text='Search Results'/>
+              {/* remove hardcode to home when this page is ready for production */}
+              <Breadcrumb path="/" text="Home" />
               <div className="profile-header">
                   <div id="profile-avatar" className="profile-avatar">
                     {

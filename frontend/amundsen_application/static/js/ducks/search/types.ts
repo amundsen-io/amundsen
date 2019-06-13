@@ -30,6 +30,7 @@ export enum SearchAll {
   ACTION = 'amundsen/search/SEARCH_ALL',
   SUCCESS = 'amundsen/search/SEARCH_ALL_SUCCESS',
   FAILURE = 'amundsen/search/SEARCH_ALL_FAILURE',
+  RESET = 'amundsen/search/SEARCH_ALL_RESET',
 }
 
 export interface SearchAllOptions {
@@ -49,6 +50,9 @@ export interface SearchAllResponse {
   payload?: SearchReducerState;
 }
 
+export interface SearchAllReset {
+  type: SearchAll.RESET;
+}
 
 /* searchResource - Search a single resource type */
 export enum SearchResource {

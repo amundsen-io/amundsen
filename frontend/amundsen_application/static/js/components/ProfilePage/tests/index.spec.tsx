@@ -95,7 +95,7 @@ describe('ProfilePage', () => {
     it('renders Breadcrumb with correct props', () => {
       expect(wrapper.find(Breadcrumb).props()).toMatchObject({
         path: '/',
-        text: 'Search Results',
+        text: 'Home',
       });
     });
 

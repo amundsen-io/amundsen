@@ -2,6 +2,7 @@ import {
   SearchAll,
   SearchAllOptions,
   SearchAllRequest,
+  SearchAllReset,
   SearchAllResponse,
   SearchResource,
   SearchResourceRequest,
@@ -12,7 +13,7 @@ import {
 } from './types';
 import { ResourceType } from 'interfaces';
 
-export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest | SearchResourceRequest;
+export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest | SearchResourceRequest | SearchAllReset;
 
 export interface SearchReducerState {
   search_term: string;
@@ -39,6 +40,12 @@ export function searchResource(resource: ResourceType, term: string, pageIndex: 
   };
 }
 
+export function searchReset(): SearchAllReset {
+  return {
+    type: SearchAll.RESET,
+  };
+}
+
 const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
@@ -62,6 +69,8 @@ const initialState: SearchReducerState = {
 export default function reducer(state: SearchReducerState = initialState, action: SearchReducerAction): SearchReducerState {
   switch (action.type) {
     // Updates search term to reflect action
+    case SearchAll.RESET:
+      return initialState;
     case SearchAll.ACTION:
       return {
         ...state,

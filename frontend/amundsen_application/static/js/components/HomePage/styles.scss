@@ -1,0 +1,13 @@
+@import 'variables';
+
+.home-page {
+  .home-element-container {
+    margin-top: 64px;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    .home-element-container {
+      margin-top: 32px;
+    }
+  }
+}
