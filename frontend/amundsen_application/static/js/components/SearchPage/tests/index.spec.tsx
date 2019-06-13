@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
-import Pagination from 'react-js-pagination';
 
 import { shallow } from 'enzyme';
 
@@ -23,11 +22,11 @@ import InfoButton from 'components/common/InfoButton';
 import TabsComponent from 'components/common/Tabs';
 
 import SearchBar from '../SearchBar';
-import SearchList from '../SearchList';
 
-import globalState from 'fixtures/globalState';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import BookmarkList from 'components/common/Bookmark/BookmarkList';
+
+import ResourceList from 'components/common/ResourceList';
+import globalState from 'fixtures/globalState';
 
 describe('SearchPage', () => {
   const setStateSpy = jest.spyOn(SearchPage.prototype, 'setState');
@@ -449,11 +448,11 @@ describe('SearchPage', () => {
     });
 
     it('calls props.searchResource with correct parameters', () => {
-      expect(searchResourceSpy).toHaveBeenCalledWith(wrapper.state().selectedTab, props.searchTerm, testIndex - 1);
+      expect(searchResourceSpy).toHaveBeenCalledWith(wrapper.state().selectedTab, props.searchTerm, testIndex);
     });
 
     it('calls updatePageUrl with correct parameters', () => {
-      expect(updatePageUrlSpy).toHaveBeenCalledWith(props.searchTerm, wrapper.state().selectedTab, testIndex - 1);
+      expect(updatePageUrlSpy).toHaveBeenCalledWith(props.searchTerm, wrapper.state().selectedTab, testIndex);
     });
   });
 
@@ -563,21 +562,7 @@ describe('SearchPage', () => {
         });
       });
 
-      it('renders SearchList with correct props', () => {
-        expect(content.children().find(SearchList).props()).toMatchObject({
-          results: props.tables.results,
-          params: {
-            source: SEARCH_SOURCE_NAME,
-            paginationStartIndex: 0,
-          },
-        });
-      });
-
-      it('does not render Pagination if total_results <= RESULTS_PER_PAGE', () => {
-        expect(content.children().find(Pagination).exists()).toBeFalsy()
-      });
-
-      it('renders Pagination with correct props if total_results > RESULTS_PER_PAGE', () => {
+      it('renders ResourceList with correct props', () => {
         const { props, wrapper } = setup();
         const testResults = {
           page_index: 0,
@@ -585,12 +570,14 @@ describe('SearchPage', () => {
           total_results: 11,
         };
         content = shallow(wrapper.instance().getTabContent(testResults, TABLE_RESOURCE_TITLE));
-        expect(content.children().find(Pagination).props()).toMatchObject({
-          activePage: 1,
-          itemsCountPerPage: RESULTS_PER_PAGE,
-          totalItemsCount: 11,
-          pageRangeDisplayed: PAGINATION_PAGE_RANGE,
-          onChange: wrapper.instance().onPaginationChange,
+
+        expect(content.children().find(ResourceList).props()).toMatchObject({
+          activePage: 0,
+          slicedItems: testResults.results,
+          slicedItemsCount: testResults.total_results,
+          itemsPerPage: RESULTS_PER_PAGE,
+          onPagination: wrapper.instance().onPaginationChange,
+          source: SEARCH_SOURCE_NAME,
         });
       });
     });

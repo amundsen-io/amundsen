@@ -6,7 +6,7 @@ import { RouteComponentProps } from 'react-router';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import BookmarkList from 'components/common/Bookmark/BookmarkList';
+import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
 import { SearchAllReset } from 'ducks/search/types';
 import { searchReset } from 'ducks/search/reducer';
@@ -35,7 +35,7 @@ export class HomePage extends React.Component<HomePageProps> {
           <div className="col-xs-12 col-md-offset-1 col-md-10">
             <SearchBar />
             <div className="home-element-container">
-              <BookmarkList />
+              <MyBookmarks />
             </div>
             <div className="home-element-container">
               <PopularTables />

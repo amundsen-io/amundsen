@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
-import Pagination from 'react-js-pagination';
 import { RouteComponentProps } from 'react-router';
 
 import SearchBar from './SearchBar';
-import SearchList from './SearchList';
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import { ResourceType } from 'interfaces';
+
 import InfoButton from 'components/common/InfoButton';
-import { ResourceType, TableResource } from 'interfaces';
+import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/Tabs';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -30,7 +30,6 @@ import './styles.scss';
 import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
-  PAGINATION_PAGE_RANGE,
   RESULTS_PER_PAGE,
   SEARCH_ERROR_MESSAGE_INFIX,
   SEARCH_ERROR_MESSAGE_PREFIX,
@@ -134,8 +133,7 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     return 0;
   };
 
-  onPaginationChange = (pageNumber: number): void => {
-    const index = pageNumber - 1;
+  onPaginationChange = (index: number): void => {
     this.props.searchResource(this.state.selectedTab, this.props.searchTerm, index);
     this.updatePageUrl(this.props.searchTerm, this.state.selectedTab, index);
   };
@@ -209,19 +207,14 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
           <label>{ title }</label>
           <InfoButton infoText={SEARCH_INFO_TEXT}/>
         </div>
-        <SearchList results={ results.results } params={ {source: SEARCH_SOURCE_NAME, paginationStartIndex: 0 } }/>
-        <div className="search-pagination-component">
-            {
-              total_results > RESULTS_PER_PAGE &&
-              <Pagination
-                activePage={ page_index + 1 }
-                itemsCountPerPage={ RESULTS_PER_PAGE }
-                totalItemsCount={ total_results }
-                pageRangeDisplayed={ PAGINATION_PAGE_RANGE }
-                onChange={ this.onPaginationChange }
-              />
-            }
-        </div>
+        <ResourceList
+          slicedItems={ results.results }
+          slicedItemsCount={ total_results }
+          source={ SEARCH_SOURCE_NAME }
+          itemsPerPage={ RESULTS_PER_PAGE }
+          activePage={ page_index }
+          onPagination={ this.onPaginationChange }
+        />
       </div>
       );
   };
