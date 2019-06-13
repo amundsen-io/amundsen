@@ -118,7 +118,6 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     const params = qs.parse(this.props.location.search);
     const searchIndex = params['index'];
     const source = params['source'];
-
     /* update the url stored in the browser history to remove params used for logging purposes */
     if (searchIndex !== undefined) {
       window.history.replaceState({}, '', `${window.location.origin}${window.location.pathname}`);
@@ -331,14 +330,14 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     } else if (this.state.statusCode === 500) {
       innerContent = (
         <div className="container error-label">
-          <Breadcrumb path='/' text='Search Results'/>
+          <Breadcrumb />
           <label className="d-block m-auto">Something went wrong...</label>
         </div>
       )
     } else {
         innerContent = (
           <div className="container table-detail">
-            <Breadcrumb path='/' text='Search Results'/>
+            <Breadcrumb />
             <div className="row">
               <div className="detail-header col-xs-12 col-md-7 col-lg-8">
                 <h1 className="detail-header-text">

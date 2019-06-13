@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import SearchBar, { SearchBarProps } from '../';
+import { mapStateToProps, SearchBar, SearchBarProps } from '../';
 import {
   ERROR_CLASSNAME,
   SUBTEXT_DEFAULT,
@@ -10,6 +10,7 @@ import {
   SYNTAX_ERROR_PREFIX,
   SYNTAX_ERROR_SPACING_SUFFIX,
 } from '../constants';
+import globalState from 'fixtures/globalState';
 
 describe('SearchBar', () => {
   const valueChangeMockEvent = { target: { value: 'Data Resources' } };
@@ -18,7 +19,28 @@ describe('SearchBar', () => {
 
   const setup = (propOverrides?: Partial<SearchBarProps>) => {
     const props: SearchBarProps = {
-      handleValueSubmit: jest.fn(),
+      searchTerm: '',
+      history: {
+        length: 2,
+        action: "POP",
+        location: jest.fn() as any,
+        push: jest.fn(),
+        replace: jest.fn(),
+        go: jest.fn(),
+        goBack: jest.fn(),
+        goForward: jest.fn(),
+        block: jest.fn(),
+        createHref: jest.fn(),
+        listen: jest.fn(),
+      },
+      location: {
+        search: '/search?searchTerm=testName&selectedTab=table&pageIndex=1', 
+        pathname: 'mockstr',
+        state: jest.fn(),
+        hash: 'mockstr',
+      },
+      match: jest.fn() as any,
+      staticContext: jest.fn() as any,
       ...propOverrides
     };
     const wrapper = shallow<SearchBar>(<SearchBar {...props} />)
@@ -81,14 +103,14 @@ describe('SearchBar', () => {
     it('submits with correct props if isFormValid()', () => {
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(props.handleValueSubmit).toHaveBeenCalledWith(wrapper.state().searchTerm);
+      expect(props.history.push).toHaveBeenCalledWith(`/search?searchTerm=${wrapper.state().searchTerm}&selectedTab=table&pageIndex=0`);
     });
 
     it('does not submit if !isFormValid()', () => {
       const { props, wrapper } = setup({ searchTerm: 'tag:tag1 tag:tag2' });
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(props.handleValueSubmit).not.toHaveBeenCalled();
+      expect(props.history.push).not.toHaveBeenCalled();
     });
   });
 
@@ -220,5 +242,16 @@ describe('SearchBar', () => {
         expect(wrapper.children().at(1).text()).toEqual(wrapper.state().subText);
       });
     });
+  });
+});
+
+describe('mapStateToProps', () => {
+  let result;
+  beforeAll(() => {
+    result = mapStateToProps(globalState);
+  });
+
+  it('sets searchTerm on the props', () => {
+    expect(result.searchTerm).toEqual(globalState.search.search_term);
   });
 });

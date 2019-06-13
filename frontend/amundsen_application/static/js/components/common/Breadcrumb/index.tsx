@@ -1,14 +1,32 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import './styles.scss';
+import { GlobalState } from 'ducks/rootReducer';
 
-export interface BreadcrumbProps {
-  path: string;
-  text: string;
+export interface OwnProps {
+  path?: string;
+  text?: string;
 }
 
-const Breadcrumb: React.SFC<BreadcrumbProps> = ({ path, text }) => {
+export interface StateFromProps {
+  searchTerm: string;
+}
+
+export type BreadcrumbProps = OwnProps & StateFromProps;
+
+export const Breadcrumb: React.SFC<BreadcrumbProps> = (props) => {
+  let path = props.path;
+  let text = props.text;
+  if (!path && !text) {
+    path = '/';
+    text = 'Home';
+    if (props.searchTerm) {
+      path = `/search?searchTerm=${props.searchTerm}&selectedTab=table&pageIndex=0`
+      text = 'Search Results'
+    }
+  }
   return (
     <div className="amundsen-breadcrumb">
       <Link to={path}>
@@ -21,9 +39,10 @@ const Breadcrumb: React.SFC<BreadcrumbProps> = ({ path, text }) => {
   );
 };
 
-Breadcrumb.defaultProps = {
-  path: '/',
-  text: 'Home',
+export const mapStateToProps = (state: GlobalState) => {
+  return {
+    searchTerm: state.search.search_term,
+  };
 };
 
-export default Breadcrumb;
+export default connect<StateFromProps>(mapStateToProps, null)(Breadcrumb);
