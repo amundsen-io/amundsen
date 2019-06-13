@@ -1,6 +1,7 @@
 from collections import namedtuple
 from datetime import date, timedelta
 import logging
+from time import sleep
 
 import google.oauth2.service_account
 import google_auth_httplib2
@@ -30,6 +31,7 @@ class BigQueryTableUsageExtractor(Extractor):
     KEY_PATH_KEY = 'key_path'
     _DEFAULT_SCOPES = ('https://www.googleapis.com/auth/cloud-platform',)
     NUM_RETRIES = 3
+    DELAY_TIME = 10
 
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -52,6 +54,7 @@ class BigQueryTableUsageExtractor(Extractor):
         self.pagesize = conf.get_int(
             BigQueryTableUsageExtractor.PAGE_SIZE_KEY,
             BigQueryTableUsageExtractor.DEFAULT_PAGE_SIZE)
+
         self.table_usage_counts = {}
         self._count_usage()
         self.iter = iter(self.table_usage_counts)
@@ -64,7 +67,11 @@ class BigQueryTableUsageExtractor(Extractor):
             if count % self.pagesize == 0:
                 LOGGER.info('Aggregated {} records'.format(count))
 
-            job = entry['protoPayload']['serviceData']['jobCompletedEvent']['job']
+            try:
+                job = entry['protoPayload']['serviceData']['jobCompletedEvent']['job']
+            except Exception:
+                # Skip the record if the record missing certain fields
+                continue
             if job['jobStatus']['state'] != 'DONE':
                 # This job seems not to have finished yet, so we ignore it.
                 continue
@@ -134,12 +141,16 @@ class BigQueryTableUsageExtractor(Extractor):
         while response:
             yield response
 
-            if 'nextPageToken' in response:
-                body['pageToken'] = response['nextPageToken']
-                response = self.logging_service.entries().list(body=body).execute(
-                    num_retries=BigQueryTableUsageExtractor.NUM_RETRIES)
-            else:
-                response = None
+            try:
+                if 'nextPageToken' in response:
+                    body['pageToken'] = response['nextPageToken']
+                    response = self.logging_service.entries().list(body=body).execute(
+                        num_retries=BigQueryTableUsageExtractor.NUM_RETRIES)
+                else:
+                    response = None
+            except Exception:
+                # Add a delay when BQ quota exceeds limitation
+                sleep(BigQueryTableUsageExtractor.DELAY_TIME)
 
     def get_scope(self):
         # type: () -> str
