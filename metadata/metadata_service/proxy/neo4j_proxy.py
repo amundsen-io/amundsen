@@ -441,7 +441,7 @@ class Neo4jProxy(BaseProxy):
         """
         create_owner_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
-        on CREATE SET u={email: $user_email, key: $user_email}
+        on CREATE SET u.email: $user_email, u.key: $user_email
         """)
 
         upsert_owner_relation_query = textwrap.dedent("""
@@ -800,8 +800,7 @@ class Neo4jProxy(BaseProxy):
 
         upsert_user_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
-        on CREATE SET u={email: $user_email, key: $user_email}
-        on MATCH SET u={email: $user_email, key: $user_email}
+        on CREATE SET u.email: $user_email, u.key: $user_email
         """)
 
         user_email = 'key: "{user_email}"'.format(user_email=user_email)
