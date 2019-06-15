@@ -2,8 +2,8 @@ import * as React from 'react';
 import moment from 'moment-timezone';
 
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
-import { TableColumn } from 'components/TableDetail/types';
 import { logClick } from 'ducks/utilMethods';
+import { TableColumn } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

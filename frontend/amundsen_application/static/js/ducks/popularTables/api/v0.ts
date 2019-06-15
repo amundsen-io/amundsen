@@ -1,16 +1,15 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
-import { PopularTablesResponse } from '../types';
+import { TableResource } from 'interfaces';
+
+export type PopularTablesResponse = {
+  msg: string;
+  results: TableResource[];
+}
 
 export function metadataPopularTables() {
   return axios.get('/api/metadata/v0/popular_tables')
   .then((response: AxiosResponse<PopularTablesResponse>) => {
     return response.data.results;
-  })
-  .catch((error: AxiosError) => {
-    if (error.response) {
-      return error.response.data.results;
-    }
-    return [];
   });
 }

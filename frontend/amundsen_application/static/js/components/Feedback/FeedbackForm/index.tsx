@@ -5,7 +5,7 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 import './styles.scss';
 import { ResetFeedbackRequest, SubmitFeedbackRequest } from 'ducks/feedback/types';
 
-import { SendingState } from '../types';
+import { SendingState } from 'interfaces';
 
 import {
   SUBMIT_FAILURE_MESSAGE,

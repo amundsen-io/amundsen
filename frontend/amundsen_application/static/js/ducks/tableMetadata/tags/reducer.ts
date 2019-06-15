@@ -1,44 +1,43 @@
+import { UpdateTagData, Tag } from 'interfaces';
+
 import {
-  GetTableData, GetTableDataRequest, GetTableDataResponse,
+  GetTableData, GetTableDataResponse,
   UpdateTags, UpdateTagsRequest, UpdateTagsResponse,
-  UpdateTagData, Tag,
 } from '../types';
 
-export type TableTagsReducerAction =
-  GetTableDataRequest | GetTableDataResponse |
-  UpdateTagsRequest | UpdateTagsResponse;
-
-export interface TableTagsReducerState {
-  isLoading: boolean;
-  tags: Tag[];
-}
-
+/* ACTIONS */
 export function updateTags(tagArray: UpdateTagData[]): UpdateTagsRequest  {
   return {
     tagArray,
-    type: UpdateTags.ACTION,
+    type: UpdateTags.REQUEST,
   };
-}
+};
+
+/* REDUCER */
+export interface TableTagsReducerState {
+  isLoading: boolean;
+  tags: Tag[];
+};
 
 export const initialTagsState: TableTagsReducerState = {
   isLoading: true,
   tags: [],
 };
 
-export default function reducer(state: TableTagsReducerState = initialTagsState, action: TableTagsReducerAction): TableTagsReducerState {
+export default function reducer(state: TableTagsReducerState = initialTagsState, action): TableTagsReducerState {
   switch (action.type) {
-    case GetTableData.ACTION:
+    case GetTableData.REQUEST:
       return { isLoading: true, tags: [] };
     case GetTableData.FAILURE:
     case GetTableData.SUCCESS:
-      return { isLoading: false, tags: action.payload.tags };
+      return { isLoading: false, tags: (<GetTableDataResponse>action).payload.tags };
     case UpdateTags.FAILURE:
       return { ...state, isLoading: false };
     case UpdateTags.SUCCESS:
-      return { isLoading: false, tags: action.payload };
-    case UpdateTags.ACTION:
+      return { isLoading: false, tags: (<UpdateTagsResponse>action).payload.tags };
+    case UpdateTags.REQUEST:
       return { ...state, isLoading: true };
     default:
       return state;
   }
-}
+};

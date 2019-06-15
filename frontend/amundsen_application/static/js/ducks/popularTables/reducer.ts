@@ -1,25 +1,26 @@
+import { TableResource } from 'interfaces'
+
 import {
   GetPopularTables,
   GetPopularTablesRequest,
   GetPopularTablesResponse,
-  TableResource,
 } from './types';
 
-export type PopularTablesReducerAction = GetPopularTablesRequest | GetPopularTablesResponse;
-
-export type PopularTablesReducerState = TableResource[];
-
+/* ACTIONS */
 export function getPopularTables(): GetPopularTablesRequest {
-  return { type: GetPopularTables.ACTION };
+  return { type: GetPopularTables.REQUEST };
 }
+
+/* REDUCER */
+export type PopularTablesReducerState = TableResource[];
 
 const initialState: PopularTablesReducerState = [];
 
-export default function reducer(state: PopularTablesReducerState = initialState, action: PopularTablesReducerAction): PopularTablesReducerState {
+export default function reducer(state: PopularTablesReducerState = initialState, action): PopularTablesReducerState {
   switch (action.type) {
     case GetPopularTables.SUCCESS:
     case GetPopularTables.FAILURE:
-      return action.payload;
+      return (<GetPopularTablesResponse>action).payload.tables;
     default:
       return state;
   }

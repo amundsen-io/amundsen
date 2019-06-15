@@ -2,12 +2,22 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import { Effect } from 'redux-saga';
 
 import {
-  DescriptionResponse, LastIndexedResponse, PreviewDataResponse, TableDataResponse,
   GetPreviewDataRequest, GetTableDataRequest, UpdateTableOwnerRequest, UpdateTagsRequest,
-  PreviewData, TableMetadata, User, Tag
 } from 'ducks/tableMetadata/types';
 
+import { PreviewData, PreviewQueryParams, TableMetadata, User, Tag } from 'interfaces';
+
 const API_PATH = '/api/metadata/v0';
+
+type MessageResponse = { msg: string };
+type TableData = TableMetadata & {
+  owners: User[];
+  tags: Tag[];
+};
+export type DescriptionResponse = { description: string; } & MessageResponse;
+export type LastIndexedResponse = { timestamp: string; } & MessageResponse;
+export type PreviewDataResponse = { previewData: PreviewData; } & MessageResponse;
+export type TableDataResponse = { tableData: TableData; } & MessageResponse;
 
 /** HELPERS **/
 import {
@@ -16,13 +26,9 @@ import {
 
 export function metadataTableTags(tableData: TableMetadata) {
   const tableParams = getTableQueryParams(tableData);
-
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
   .then((response: AxiosResponse<TableDataResponse>) => {
     return getTableTagsFromResponseData(response.data);
-  })
-  .catch((error: AxiosError) => {
-    return [];
   });
 }
 
@@ -53,10 +59,6 @@ export function metadataGetTableData(action: GetTableDataRequest) {
       tags: getTableTagsFromResponseData(response.data),
       statusCode: response.status,
     };
-  })
-  .catch((error: AxiosError) => {
-    const statusCode = error.response ? error.response.status : 500;
-    return { statusCode, data: {}, owners: {}, tags: [] };
   });
 }
 
@@ -65,9 +67,6 @@ export function metadataGetTableDescription(tableData: TableMetadata) {
   return axios.get(`${API_PATH}/v0/get_table_description?${tableParams}`)
   .then((response: AxiosResponse<DescriptionResponse>) => {
     tableData.table_description = response.data.description;
-    return tableData;
-  })
-  .catch((error: AxiosError) => {
     return tableData;
   });
 }
@@ -87,13 +86,9 @@ export function metadataUpdateTableDescription(description: string, tableData: T
 
 export function metadataTableOwners(tableData: TableMetadata) {
   const tableParams = getTableQueryParams(tableData);
-
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
   .then((response: AxiosResponse<TableDataResponse>) => {
     return getTableOwnersFromResponseData(response.data);
-  })
-  .catch((error) => {
-    return {};
   });
 }
 
@@ -120,9 +115,6 @@ export function metadataGetColumnDescription(columnIndex: number, tableData: Tab
   .then((response: AxiosResponse<DescriptionResponse>) => {
     tableData.columns[columnIndex].description = response.data.description;
     return tableData;
-  })
-  .catch((error: AxiosError) => {
-    return tableData;
   });
 }
 
@@ -148,18 +140,13 @@ export function metadataGetLastIndexed() {
   });
 }
 
-export function metadataGetPreviewData(action: GetPreviewDataRequest) {
+export function metadataGetPreviewData(queryParams: PreviewQueryParams) {
   return axios({
     url: '/api/preview/v0/',
     method: 'POST',
-    data: action.queryParams,
+    data: queryParams,
   })
   .then((response: AxiosResponse<PreviewDataResponse>) => {
     return { data: response.data.previewData, status: response.status };
-  })
-  .catch((error: AxiosError) => {
-    const data = error.response ? error.response.data : {};
-    const status = error.response ? error.response.status : null;
-    return { data, status };
   });
 }

@@ -1,10 +1,8 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
 
-import { SubmitFeedbackRequest } from '../types';
-
-export function feedbackSubmitFeedback(action: SubmitFeedbackRequest) {
+export function feedbackSubmit(data: FormData) {
   return axios({
-    data: action.data,
+    data,
     method: 'post',
     url: '/api/mail/v0/feedback',
     timeout: 5000,

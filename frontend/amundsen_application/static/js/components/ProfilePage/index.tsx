@@ -10,12 +10,14 @@ import Tabs from 'components/common/Tabs';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getUserById } from 'ducks/user/reducer';
-import { User, GetUserRequest } from 'ducks/user/types';
+import { GetUserRequest } from 'ducks/user/types';
+
+import { PeopleUser } from 'interfaces';
 
 import './styles.scss';
 
 interface StateFromProps {
-  user: User;
+  user: PeopleUser;
 }
 
 interface DispatchFromProps {

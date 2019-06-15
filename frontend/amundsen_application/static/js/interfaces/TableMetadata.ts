@@ -1,3 +1,6 @@
+import { UpdateMethod } from './Enums';
+import { User } from './User';
+
 interface PartitionData {
   is_partitioned: boolean;
   key?: string;
@@ -37,11 +40,6 @@ interface TableWriter {
   description: string;
   id: string;
   name: string;
-}
-
-export interface User {
-  display_name: string;
-  profile_url: string;
 }
 
 export interface PreviewQueryParams {
@@ -84,6 +82,11 @@ export interface TableMetadata {
   table_readers: TableReader[];
   source: TableSource;
   watermarks: Watermark[];
+}
+
+export interface UpdateOwnerPayload {
+  method: UpdateMethod;
+  id: string;
 }
 
 export interface Watermark {

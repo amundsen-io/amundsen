@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
 
 export interface ActionLogParams {
   command?: string;
@@ -11,15 +11,7 @@ export interface ActionLogParams {
 
 const BASE_URL = '/api/log/v0/log_event';
 
-
+/* TODO: Consider what we want to do on success/failure, if anything */
 export function postActionLog(params: ActionLogParams) {
-  axios.post(BASE_URL, params)
-  .then((response: AxiosResponse) => {
-    return response.data;
-  })
-  .catch((error: AxiosError) => {
-    if (error.response) {
-      return error.response.data;
-    }
-  });
-}
+  axios.post(BASE_URL, params);
+};

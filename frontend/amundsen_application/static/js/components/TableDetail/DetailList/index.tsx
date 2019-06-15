@@ -1,7 +1,7 @@
 import * as React from 'react';
 import DetailListItem from './DetailListItem';
 
-import { TableColumn } from '../types';
+import { TableColumn } from 'interfaces';
 
 interface DetailListProps {
   columns?: TableColumn[];
