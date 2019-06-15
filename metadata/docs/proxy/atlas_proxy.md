@@ -1,3 +1,5 @@
+# Atlas Proxy Configurations
+
 Create a new atlas client instance. (update the host and credentials information)
 ```python
 from atlasclient.client import Atlas
@@ -28,12 +30,6 @@ typedef_dict = {
 client.typedefs.create(data=typedef_dict)
 ```
 
-### Add required fields
-We need to add some extra fields to atlas in order to get all the information needed for the amundsen frontend. 
-Adding those extra attributes in the super type entity definition would be handy to keep them in once place.
-
-[TBD - How to add attributes definition] 
-
 ### Assign superType to entity definitions
 Assign newly created TABLE_ENTITY entity as super type to the entity definitions you want to behave like tables.
 in the code snippet below, `'hive_table' and 'rdbms_table'` would be affected. 
@@ -55,3 +51,9 @@ typedef_dict = {
 }
 client.typedefs.update(data=typedef_dict)
 ```
+
+### Add required fields
+We need to add some extra fields to atlas in order to get all the information needed for the amundsen frontend. 
+Following is the details (along with the code) for each item:
+
+- [Column Configurations](/docs/proxy/atlas/column_configs.md)

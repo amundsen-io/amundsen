@@ -4,7 +4,7 @@ from mock import patch, MagicMock
 
 from metadata_service import create_app
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import (Table, User, Tag, Column)
+from metadata_service.entity.table_detail import (Table, User, Tag, Column, Statistics)
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 
@@ -41,7 +41,21 @@ class TestAtlasProxy(unittest.TestCase):
                 'qualifiedName': 'column@name',
                 'type': 'Managed',
                 'description': 'column description',
-                'position': 1
+                'position': 1,
+                'stats': [
+                    {'attributes': {
+                        'stat_name': 'max',
+                        'stat_val': '100',
+                        'start_epoch': '100',
+                        'end_epoch': '200',
+                    }},
+                    {'attributes': {
+                        'stat_name': 'min',
+                        'stat_val': '0',
+                        'start_epoch': '100',
+                        'end_epoch': '200',
+                    }},
+                ]
             }
 
         }
@@ -155,6 +169,7 @@ class TestAtlasProxy(unittest.TestCase):
         rel_attr_collection.entities = [db_entity]
 
         self.proxy._driver.entity_bulk = MagicMock(return_value=[rel_attr_collection])
+        # noinspection PyTypeChecker
         response = self.proxy._get_rel_attributes_dict(entities=[entity1, entity2],
                                                        attribute='db')
         expected = {
@@ -184,10 +199,22 @@ class TestAtlasProxy(unittest.TestCase):
         ent_attrs = self.entity1['attributes']
 
         col_attrs = self.test_column['attributes']
+        exp_col_stats = list()
+
+        for stats in col_attrs['stats']:
+            exp_col_stats.append(
+                Statistics(
+                    stat_type=stats['attributes']['stat_name'],
+                    stat_val=stats['attributes']['stat_val'],
+                    start_epoch=stats['attributes']['start_epoch'],
+                    end_epoch=stats['attributes']['end_epoch'],
+                )
+            )
         exp_col = Column(name=col_attrs['qualifiedName'],
                          description='column description',
                          col_type='Managed',
-                         sort_order=col_attrs['position'])
+                         sort_order=col_attrs['position'],
+                         stats=exp_col_stats)
         expected = Table(database=self.entity_type,
                          cluster=self.cluster,
                          schema=self.db,
