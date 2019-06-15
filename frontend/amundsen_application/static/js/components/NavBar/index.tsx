@@ -6,8 +6,9 @@ import { connect } from 'react-redux';
 import AppConfig from 'config/config';
 import { LinkConfig } from 'config/config-types';
 import { GlobalState } from 'ducks/rootReducer';
-import { LoggedInUser } from 'ducks/user/types';
 import { logClick } from 'ducks/utilMethods';
+
+import { LoggedInUser } from 'interfaces';
 
 import './styles.scss';
 

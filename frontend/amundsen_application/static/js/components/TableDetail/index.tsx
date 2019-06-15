@@ -29,7 +29,7 @@ import { logClick } from 'ducks/utilMethods';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 
-import { PreviewQueryParams, TableMetadata } from './types';
+import { PreviewQueryParams, TableMetadata } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

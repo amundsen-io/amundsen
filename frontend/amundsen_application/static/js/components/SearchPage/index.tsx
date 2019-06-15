@@ -5,24 +5,23 @@ import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
 import { RouteComponentProps } from 'react-router';
 
-import SearchBar from './SearchBar';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import { ResourceType } from 'interfaces';
-
 import InfoButton from 'components/common/InfoButton';
 import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/Tabs';
+import SearchBar from './SearchBar';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { searchAll, searchResource } from 'ducks/search/reducer';
 import {
   DashboardSearchResults,
-  SearchAllOptions,
   SearchAllRequest,
   SearchResourceRequest,
   TableSearchResults,
-  UserSearchResults
+  UserSearchResults,
 } from 'ducks/search/types';
+
+import { ResourceType, SearchAllOptions } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

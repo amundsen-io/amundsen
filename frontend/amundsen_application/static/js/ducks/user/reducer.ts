@@ -1,3 +1,5 @@
+import { LoggedInUser, PeopleUser } from 'interfaces';
+
 import {
   GetLoggedInUser,
   GetLoggedInUserRequest,
@@ -5,26 +7,21 @@ import {
   GetUser,
   GetUserRequest,
   GetUserResponse,
-  LoggedInUser, User
 } from './types';
 
-type UserReducerAction =
-  GetLoggedInUserRequest | GetLoggedInUserResponse |
-  GetUserRequest | GetUserResponse ;
+/* ACTIONS */
+export function getLoggedInUser(): GetLoggedInUserRequest {
+  return { type: GetLoggedInUser.REQUEST };
+};
+export function getUserById(userId: string): GetUserRequest {
+  return { userId, type: GetUser.REQUEST };
+};
 
+/* REDUCER */
 export interface UserReducerState {
   loggedInUser: LoggedInUser;
-  profileUser: User;
-}
-
-export function getLoggedInUser(): GetLoggedInUserRequest {
-  return { type: GetLoggedInUser.ACTION };
-}
-
-export function getUserById(userId: string): GetUserRequest {
-  return { userId, type: GetUser.ACTION };
-}
-
+  profileUser: PeopleUser;
+};
 
 const defaultUser = {
   display_name: '',
@@ -47,15 +44,15 @@ const initialState: UserReducerState = {
   profileUser: defaultUser,
 };
 
-export default function reducer(state: UserReducerState = initialState, action: UserReducerAction): UserReducerState {
+export default function reducer(state: UserReducerState = initialState, action): UserReducerState {
   switch (action.type) {
     case GetLoggedInUser.SUCCESS:
-      return { ...state, loggedInUser: action.payload };
-    case GetUser.ACTION:
+      return { ...state, loggedInUser: (<GetLoggedInUserResponse>action).payload.user };
+    case GetUser.REQUEST:
     case GetUser.FAILURE:
       return { ...state, profileUser: defaultUser };
     case GetUser.SUCCESS:
-      return { ...state, profileUser: action.payload };
+      return { ...state, profileUser: (<GetUserResponse>action).payload.user };
     default:
       return state;
   }

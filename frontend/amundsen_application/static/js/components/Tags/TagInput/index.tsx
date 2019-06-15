@@ -12,8 +12,7 @@ import { updateTags } from 'ducks/tableMetadata/tags/reducer';
 import { UpdateTagsRequest } from 'ducks/tableMetadata/types';
 
 import TagInfo from "../TagInfo";
-import { Tag } from 'interfaces';
-import { UpdateTagMethod, UpdateTagData } from '../types';
+import { Tag, UpdateMethod, UpdateTagData } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -104,10 +103,10 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     const tagArray = Object.keys(this.batchEditSet).reduce((previousValue, tag) => {
       const action = this.batchEditSet[tag];
       if (action === BatchEditState.DELETE) {
-        previousValue.push({'methodName': UpdateTagMethod.DELETE, 'tagName': tag});
+        previousValue.push({'methodName': UpdateMethod.DELETE, 'tagName': tag});
       }
       else if (action === BatchEditState.PUT) {
-        previousValue.push({'methodName': UpdateTagMethod.PUT, 'tagName': tag});
+        previousValue.push({'methodName': UpdateMethod.PUT, 'tagName': tag});
       }
       return previousValue;
     }, []);
@@ -159,12 +158,12 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
         this.handleShow();
       }
       else {
-        this.props.updateTags([{'methodName': UpdateTagMethod.PUT, 'tagName': tag}]);
+        this.props.updateTags([{'methodName': UpdateMethod.PUT, 'tagName': tag}]);
       }
     }
     else if (actionType === "remove-value" || actionType === "pop-value") {
       tag = actionPayload.removedValue.value;
-      this.props.updateTags([{'methodName': UpdateTagMethod.DELETE, 'tagName': tag}]);
+      this.props.updateTags([{'methodName': UpdateMethod.DELETE, 'tagName': tag}]);
     }
   };
 

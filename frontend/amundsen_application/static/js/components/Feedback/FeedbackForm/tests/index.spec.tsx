@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import { SendingState } from '../../types';
+import { SendingState } from 'interfaces';
 import FeedbackForm, { FeedbackFormProps } from '../';
 import { RatingFeedbackForm } from '../RatingFeedbackForm';
 

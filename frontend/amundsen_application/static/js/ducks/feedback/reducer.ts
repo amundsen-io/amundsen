@@ -1,47 +1,45 @@
-import { SendingState } from 'components/Feedback/types';
+import { SendingState } from 'interfaces';
 
 import {
   ResetFeedback, ResetFeedbackRequest,
-  SubmitFeedback, SubmitFeedbackRequest, SubmitFeedbackResponse,
+  SubmitFeedback, SubmitFeedbackRequest,
 } from './types';
 
-export type SubmitFeedbackAction = SubmitFeedbackRequest | SubmitFeedbackResponse;
-export type ResetFeedbackAction = ResetFeedbackRequest;
-
-export type FeedbackReducerAction = SubmitFeedbackAction | ResetFeedbackAction;
-
-export interface FeedbackReducerState {
-  sendState: SendingState;
-}
-
+/* ACTIONS */
 export function submitFeedback(formData: FormData): SubmitFeedbackRequest {
   return {
-    data: formData,
-    type: SubmitFeedback.ACTION,
+    payload: {
+      data: formData,
+    },
+    type: SubmitFeedback.REQUEST,
   };
-}
-
-export function resetFeedback(): ResetFeedbackAction {
+};
+export function resetFeedback(): ResetFeedbackRequest {
   return {
-    type: ResetFeedback.ACTION,
+    type: ResetFeedback.REQUEST,
   };
-}
+};
+
+/* REDUCER */
+export interface FeedbackReducerState {
+  sendState: SendingState;
+};
 
 const initialState: FeedbackReducerState = {
   sendState: SendingState.IDLE,
 };
 
-export default function reducer(state: FeedbackReducerState = initialState, action: FeedbackReducerAction): FeedbackReducerState {
+export default function reducer(state: FeedbackReducerState = initialState, action): FeedbackReducerState {
   switch (action.type) {
-    case SubmitFeedback.ACTION:
+    case SubmitFeedback.REQUEST:
       return { sendState: SendingState.WAITING };
     case SubmitFeedback.SUCCESS:
       return { sendState: SendingState.COMPLETE };
     case SubmitFeedback.FAILURE:
       return { sendState: SendingState.ERROR };
-    case ResetFeedback.ACTION:
+    case ResetFeedback.REQUEST:
       return { sendState: SendingState.IDLE };
     default:
       return state;
   }
-}
+};

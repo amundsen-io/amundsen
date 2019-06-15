@@ -3,7 +3,7 @@ import moment from 'moment-timezone';
 
 import './styles.scss';
 
-import { Watermark } from '../types';
+import { Watermark } from 'interfaces';
 
 interface WatermarkLabelProps {
   watermarks: Watermark[];

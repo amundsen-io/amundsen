@@ -8,7 +8,7 @@ import serialize from 'form-serialize';
 import AvatarLabel, { AvatarLabelProps } from 'components/common/AvatarLabel';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import { Modal } from 'react-bootstrap';
-import { UpdateMethod } from './types';
+import { UpdateMethod } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

@@ -1,44 +1,43 @@
+import { UpdateOwnerPayload, User } from 'interfaces';
+
 import {
-  GetTableData, GetTableDataRequest, GetTableDataResponse,
+  GetTableData, GetTableDataResponse,
   UpdateTableOwner, UpdateTableOwnerRequest, UpdateTableOwnerResponse,
-  UpdatePayload, User
 } from '../types';
 
-export type TableOwnerReducerAction =
-  GetTableDataRequest | GetTableDataResponse |
-  UpdateTableOwnerRequest | UpdateTableOwnerResponse ;
-
-export interface TableOwnerReducerState {
-  isLoading: boolean;
-  owners: { [id: string] : User };
-}
-
-export function updateTableOwner(updateArray: UpdatePayload[], onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
+/* ACTIONS */
+export function updateTableOwner(updateArray: UpdateOwnerPayload[], onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
   return {
     onSuccess,
     onFailure,
     updateArray,
-    type: UpdateTableOwner.ACTION,
+    type: UpdateTableOwner.REQUEST,
   };
-}
+};
+
+/* REDUCER */
+export interface TableOwnerReducerState {
+  isLoading: boolean;
+  owners: { [id: string] : User };
+};
 
 export const initialOwnersState: TableOwnerReducerState = {
   isLoading: true,
   owners: {},
 };
 
-export default function reducer(state: TableOwnerReducerState = initialOwnersState, action: TableOwnerReducerAction): TableOwnerReducerState {
+export default function reducer(state: TableOwnerReducerState = initialOwnersState, action): TableOwnerReducerState {
   switch (action.type) {
-    case GetTableData.ACTION:
+    case GetTableData.REQUEST:
       return { isLoading: true, owners: {} };
     case GetTableData.FAILURE:
     case GetTableData.SUCCESS:
-      return { isLoading: false, owners: action.payload.owners };
-    case UpdateTableOwner.ACTION:
+      return { isLoading: false, owners: (<GetTableDataResponse>action).payload.owners };
+    case UpdateTableOwner.REQUEST:
       return { ...state, isLoading: true };
     case UpdateTableOwner.FAILURE:
     case UpdateTableOwner.SUCCESS:
-      return { isLoading: false, owners: action.payload };
+      return { isLoading: false, owners: (<UpdateTableOwnerResponse>action).payload.owners };
     default:
       return state;
   }

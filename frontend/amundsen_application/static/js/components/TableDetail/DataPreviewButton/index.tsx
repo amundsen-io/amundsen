@@ -5,8 +5,9 @@ import { Button, Modal, OverlayTrigger, Popover, Table } from 'react-bootstrap';
 import Linkify from 'react-linkify'
 
 import { GlobalState } from 'ducks/rootReducer';
-import { PreviewData } from '../types';
 import { logClick } from 'ducks/utilMethods';
+
+import { PreviewData } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';

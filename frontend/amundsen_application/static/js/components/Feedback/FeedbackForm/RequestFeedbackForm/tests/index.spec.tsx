@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import AbstractFeedbackForm, { FeedbackFormProps } from 'components/Feedback/FeedbackForm';
-import { SendingState } from 'components/Feedback/types';
+import { SendingState } from 'interfaces';
 import { RequestFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
 import {
   FEATURE_SUMMARY_LABEL,

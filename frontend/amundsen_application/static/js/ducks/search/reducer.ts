@@ -1,6 +1,7 @@
+import { ResourceType, SearchAllOptions } from 'interfaces';
+
 import {
   SearchAll,
-  SearchAllOptions,
   SearchAllRequest,
   SearchAllReset,
   SearchAllResponse,
@@ -11,9 +12,6 @@ import {
   TableSearchResults,
   UserSearchResults,
 } from './types';
-import { ResourceType } from 'interfaces';
-
-export type SearchReducerAction = SearchAllResponse | SearchResourceResponse | SearchAllRequest | SearchResourceRequest | SearchAllReset;
 
 export interface SearchReducerState {
   search_term: string;
@@ -21,31 +19,31 @@ export interface SearchReducerState {
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
-}
+};
 
+/* ACTIONS */
 export function searchAll(term: string, options: SearchAllOptions = {}): SearchAllRequest {
   return {
     options,
     term,
-    type: SearchAll.ACTION,
+    type: SearchAll.REQUEST,
   };
-}
-
+};
 export function searchResource(resource: ResourceType, term: string, pageIndex: number): SearchResourceRequest {
   return {
     pageIndex,
     term,
     resource,
-    type: SearchResource.ACTION,
+    type: SearchResource.REQUEST,
   };
-}
-
+};
 export function searchReset(): SearchAllReset {
   return {
     type: SearchAll.RESET,
   };
 }
 
+/* REDUCER */
 const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
@@ -66,33 +64,33 @@ const initialState: SearchReducerState = {
   },
 };
 
-export default function reducer(state: SearchReducerState = initialState, action: SearchReducerAction): SearchReducerState {
+export default function reducer(state: SearchReducerState = initialState, action): SearchReducerState {
   switch (action.type) {
-    // Updates search term to reflect action
     case SearchAll.RESET:
       return initialState;
-    case SearchAll.ACTION:
+    case SearchAll.REQUEST:
+      // updates search term to reflect action
       return {
         ...state,
-        search_term: action.term,
+        search_term: (<SearchAllRequest>action).term,
         isLoading: true,
       };
-    case SearchResource.ACTION:
+    case SearchResource.REQUEST:
       return {
         ...state,
         isLoading: true,
       };
-    // SearchAll will reset all resources with search results or the initial state
     case SearchAll.SUCCESS:
-      const newState = action.payload;
+      // resets all resources with initial state then applies search results
+      const newState = (<SearchAllResponse>action).payload;
       return {
         ...initialState,
         ...newState,
         isLoading: false,
       };
-    // SearchResource will set only a single resource and preserves search state for other resources
     case SearchResource.SUCCESS:
-      const resourceNewState = action.payload;
+      // resets only a single resource and preserves search state for other resources
+      const resourceNewState = (<SearchResourceResponse>action).payload;
       return {
         ...state,
         ...resourceNewState,
@@ -103,8 +101,8 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...initialState,
         isLoading: false,
-      };      
+      };
     default:
       return state;
-  }
-}
+  };
+};
