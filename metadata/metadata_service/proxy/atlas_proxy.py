@@ -10,7 +10,7 @@ from flask import current_app as app
 from metadata_service.entity.tag_detail import TagDetail
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import Table, User, Tag, Column
+from metadata_service.entity.table_detail import Table, User, Tag, Column, Statistics
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -146,6 +146,43 @@ class AtlasProxy(BaseProxy):
             LOGGER.exception(f'Column not found: {str(ex)}')
             raise NotFoundException(f'Column not found: {column_name}')
 
+    def _serialize_columns(self, *, entity: EntityUniqueAttribute) -> \
+            Union[List[Column], List]:
+        """
+        Helper function to fetch the columns from entity and serialize them
+        using Column and Statistics model.
+        :param entity: EntityUniqueAttribute object,
+        along with relationshipAttributes
+        :return: A list of Column objects, if there are any columns available,
+        else an empty list.
+        """
+        columns = list()
+        for column in entity.entity[self.REL_ATTRS_KEY].get('columns') or list():
+            col_entity = entity.referredEntities[column['guid']]
+            col_attrs = col_entity[self.ATTRS_KEY]
+            statistics = list()
+            for stats in col_attrs.get('stats') or list():
+                stats_attrs = stats['attributes']
+                statistics.append(
+                    Statistics(
+                        stat_type=stats_attrs.get('stat_name'),
+                        stat_val=stats_attrs.get('stat_val'),
+                        start_epoch=stats_attrs.get('start_epoch'),
+                        end_epoch=stats_attrs.get('end_epoch'),
+                    )
+                )
+
+            columns.append(
+                Column(
+                    name=col_attrs.get(self.NAME_ATTRIBUTE),
+                    description=col_attrs.get('description'),
+                    col_type=col_attrs.get('type') or col_attrs.get('dataType'),
+                    sort_order=col_attrs.get('position'),
+                    stats=statistics,
+                )
+            )
+        return columns
+
     def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
         pass
 
@@ -161,7 +198,6 @@ class AtlasProxy(BaseProxy):
 
         try:
             attrs = table_details[self.ATTRS_KEY]
-            rel_attrs = table_details[self.REL_ATTRS_KEY]
 
             tags = []
             # Using or in case, if the key 'classifications' is there with a None
@@ -173,18 +209,7 @@ class AtlasProxy(BaseProxy):
                     )
                 )
 
-            columns = []
-            for column in rel_attrs.get('columns') or list():
-                col_entity = entity.referredEntities[column['guid']]
-                col_attrs = col_entity[self.ATTRS_KEY]
-                columns.append(
-                    Column(
-                        name=col_attrs.get(self.NAME_ATTRIBUTE),
-                        description=col_attrs.get('description'),
-                        col_type=col_attrs.get('type') or col_attrs.get('dataType'),
-                        sort_order=col_attrs.get('position'),
-                    )
-                )
+            columns = self._serialize_columns(entity=entity)
 
             table = Table(database=table_info['entity'],
                           cluster=table_info['cluster'],
