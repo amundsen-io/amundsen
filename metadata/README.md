@@ -1,4 +1,4 @@
-# Amundsen Metadata service
+# Amundsen Metadata Service
 [![PyPI version](https://badge.fury.io/py/amundsen-metadata.svg)](https://badge.fury.io/py/amundsen-metadata)
 [![Build Status](https://api.travis-ci.com/lyft/amundsenmetadatalibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsenmetadatalibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsenmetadatalibrary/master.svg)](https://codecov.io/github/lyft/amundsenmetadatalibrary?branch=master)
