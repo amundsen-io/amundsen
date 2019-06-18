@@ -6,7 +6,7 @@ from elasticsearch_dsl import Search, query
 from flask import current_app
 
 from search_service import config
-from search_service.models.search_result import SearchResult
+from search_service.models.search_result import SearchTableResult
 from search_service.models.table import Table
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
@@ -66,7 +66,7 @@ class ElasticsearchProxy(BaseProxy):
         return Elasticsearch(host, http_auth=(user, password))
 
     def _get_search_result(self, page_index: int,
-                           client: Search) -> SearchResult:
+                           client: Search) -> SearchTableResult:
         """
         Common helper function to get search result.
 
@@ -95,12 +95,12 @@ class ElasticsearchProxy(BaseProxy):
 
             table_results.append(table)
 
-        return SearchResult(total_results=response.hits.total,
-                            results=table_results)
+        return SearchTableResult(total_results=response.hits.total,
+                                 results=table_results)
 
     def _search_helper(self, query_term: str,
                        page_index: int,
-                       client: Search) -> SearchResult:
+                       client: Search) -> SearchTableResult:
         """
         Constructs Elasticsearch Query DSL to:
           1. Use function score to customize scoring of search result. It currently uses "total_usage" field to score.
@@ -143,7 +143,7 @@ class ElasticsearchProxy(BaseProxy):
     def _search_wildcard_helper(self, field_value: str,
                                 page_index: int,
                                 client: Search,
-                                field_name: str) -> SearchResult:
+                                field_name: str) -> SearchTableResult:
         """
         Do a wildcard match search with the query term.
 
@@ -188,7 +188,7 @@ class ElasticsearchProxy(BaseProxy):
                                         query_term: str,
                                         field_name: str,
                                         field_value: str,
-                                        page_index: int = 0) -> SearchResult:
+                                        page_index: int = 0) -> SearchTableResult:
         """
         Query Elasticsearch and return results as list of Table objects
         In order to support search filtered by field, it uses Elasticsearch's filter.
@@ -198,7 +198,7 @@ class ElasticsearchProxy(BaseProxy):
         :param field_name: field name to do the searching(e.g schema_name, tag_names)
         :param field_value: value for the field for filtering
         :param page_index: index of search page user is currently on
-        :return: SearchResult Object
+        :return: SearchTableResult Object
         :return:
         """
         s = Search(using=self.elasticsearch, index=self.index)
@@ -221,17 +221,17 @@ class ElasticsearchProxy(BaseProxy):
     @timer_with_counter
     def fetch_search_results(self, *,
                              query_term: str,
-                             page_index: int = 0) -> SearchResult:
+                             page_index: int = 0) -> SearchTableResult:
         """
         Query Elasticsearch and return results as list of Table objects
         :param query_term: search query term
         :param page_index: index of search page user is currently on
-        :return: SearchResult Object
+        :return: SearchTableResult Object
         """
 
         if not query_term:
             # return empty result for blank query term
-            return SearchResult(total_results=0, results=[])
+            return SearchTableResult(total_results=0, results=[])
 
         s = Search(using=self.elasticsearch, index=self.index)
 
