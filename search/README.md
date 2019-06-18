@@ -1,4 +1,4 @@
-# Amundsen Search service
+# Amundsen Search Service
 [![PyPI version](https://badge.fury.io/py/amundsen-search.svg)](https://badge.fury.io/py/amundsen-search)
 [![Build Status](https://api.travis-ci.com/lyft/amundsensearchlibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsensearchlibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsensearchlibrary/master.svg)](https://codecov.io/github/lyft/amundsensearchlibrary?branch=master)
