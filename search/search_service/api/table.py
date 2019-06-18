@@ -19,15 +19,15 @@ table_fields = {
     "last_updated_epoch": fields.Integer,
 }
 
-search_results = {
+search_table_results = {
     "total_results": fields.Integer,
     "results": fields.Nested(table_fields, default=[])
 }
 
 
-class SearchAPI(Resource):
+class SearchTableAPI(Resource):
     """
-    Search API
+    Search Table API
     """
     def __init__(self) -> None:
         self.proxy = get_proxy_client()
@@ -37,9 +37,9 @@ class SearchAPI(Resource):
         self.parser.add_argument('query_term', required=True, type=str)
         self.parser.add_argument('page_index', required=False, default=0, type=int)
 
-        super(SearchAPI, self).__init__()
+        super(SearchTableAPI, self).__init__()
 
-    @marshal_with(search_results)
+    @marshal_with(search_table_results)
     def get(self) -> Iterable[Any]:
         """
         Fetch search results based on query_term.
@@ -63,9 +63,9 @@ class SearchAPI(Resource):
             return {'message': err_msg}, 500
 
 
-class SearchFieldAPI(Resource):
+class SearchTableFieldAPI(Resource):
     """
-    Search API with explict field
+    Search Table API with explict field
     """
     def __init__(self) -> None:
         self.proxy = get_proxy_client()
@@ -75,9 +75,9 @@ class SearchFieldAPI(Resource):
         self.parser.add_argument('query_term', required=False, type=str)
         self.parser.add_argument('page_index', required=False, default=0, type=int)
 
-        super(SearchFieldAPI, self).__init__()
+        super(SearchTableFieldAPI, self).__init__()
 
-    @marshal_with(search_results)
+    @marshal_with(search_table_results)
     def get(self, *, field_name: str,
             field_value: str) -> Iterable[Any]:
         """

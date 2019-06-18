@@ -8,7 +8,7 @@ from flask import Flask, Blueprint
 from flask_restful import Api
 from typing import Dict, Any    # noqa: F401
 
-from search_service.api.search import SearchAPI, SearchFieldAPI
+from search_service.api.table import SearchTableAPI, SearchTableFieldAPI
 from search_service.api.healthcheck import healthcheck
 
 # For customized flask use below arguments to override.
@@ -64,8 +64,9 @@ def create_app(*, config_module_class: str) -> Flask:
     api_bp = Blueprint('api', __name__)
     api_bp.add_url_rule('/healthcheck', 'healthcheck', healthcheck)
     api = Api(api_bp)
-    api.add_resource(SearchAPI, '/search')
-    api.add_resource(SearchFieldAPI,
+    # Table Search API
+    api.add_resource(SearchTableAPI, '/search')
+    api.add_resource(SearchTableFieldAPI,
                      '/search/field/<field_name>/field_val/<field_value>')
 
     app.register_blueprint(api_bp)
