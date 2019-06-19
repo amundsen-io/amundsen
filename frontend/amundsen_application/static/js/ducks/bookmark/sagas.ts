@@ -1,7 +1,7 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
- import {
+import {
   AddBookmark,
   AddBookmarkRequest,
   GetBookmarks,
@@ -30,7 +30,7 @@ export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
     yield put({ type: AddBookmark.SUCCESS, payload: { bookmarks: response.bookmarks } });
   } catch(e) {
     yield put({ type: AddBookmark.FAILURE, payload: { bookmarks: [] } });
-   }
+  }
 }
 export function* addBookmarkWatcher(): SagaIterator {
   yield takeEvery(AddBookmark.REQUEST , addBookmarkWorker)
@@ -69,14 +69,12 @@ export function* getBookmarksWatcher(): SagaIterator {
 export function* getBookmarkForUserWorker(action: GetBookmarksForUserRequest): SagaIterator {
   let response;
   const { userId } = action;
-
   try {
     response = yield call(getBookmarks, userId);
-
     yield put({ type: GetBookmarksForUser.SUCCESS, payload: { userId, bookmarks: response.bookmarks } });
   } catch(e) {
     yield put({ type: GetBookmarksForUser.FAILURE, payload: { userId, bookmarks: [] } });
-   }
+  }
 }
 export function* getBookmarksForUserWatcher(): SagaIterator {
   yield takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker)

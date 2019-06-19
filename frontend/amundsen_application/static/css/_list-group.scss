@@ -1,0 +1,21 @@
+// TODO - Try to implement this with bootstrap variables
+@import 'variables';
+.list-group {
+  margin: 24px 0;
+
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+      border-color: $gray;
+      background-color: $gray-lightest;
+    }
+
+    &:hover + li {
+      border-top-color: $gray;
+    }
+  }
+}

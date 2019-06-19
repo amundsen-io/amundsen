@@ -8,6 +8,7 @@ import {
   GetBookmarksResponse,
   GetBookmarksForUser,
   GetBookmarksForUserRequest,
+  GetBookmarksForUserResponse,
   RemoveBookmark,
   RemoveBookmarkRequest,
   RemoveBookmarkResponse,
@@ -20,25 +21,25 @@ export function addBookmark(resourceKey: string, resourceType: string): AddBookm
     resourceType,
     type: AddBookmark.REQUEST,
   }
-};
+}
 export function removeBookmark(resourceKey: string, resourceType: string): RemoveBookmarkRequest {
   return {
     resourceKey,
     resourceType,
     type: RemoveBookmark.REQUEST,
   }
-};
+}
 export function getBookmarks(): GetBookmarksRequest {
   return {
     type: GetBookmarks.REQUEST,
   }
-};
+}
 export function getBookmarksForUser(userId: string): GetBookmarksForUserRequest {
   return {
     userId,
     type: GetBookmarksForUser.REQUEST,
   }
-};
+}
 
 /* REDUCER */
 export interface BookmarkReducerState {
@@ -53,7 +54,7 @@ export const initialState: BookmarkReducerState = {
   bookmarksForUser: [],
 };
 
- export default function reducer(state: BookmarkReducerState = initialState, action): BookmarkReducerState {
+export default function reducer(state: BookmarkReducerState = initialState, action): BookmarkReducerState {
   switch(action.type) {
     case RemoveBookmark.SUCCESS:
       const { resourceKey } = (<RemoveBookmarkResponse>action).payload;
@@ -68,12 +69,19 @@ export const initialState: BookmarkReducerState = {
         myBookmarks: (<GetBookmarksResponse>action).payload.bookmarks,
         myBookmarksIsLoaded: true,
       };
-    case AddBookmark.FAILURE:
-    case GetBookmarks.FAILURE:
+
     case GetBookmarksForUser.SUCCESS:
     case GetBookmarksForUser.FAILURE:
+      return {
+        ...state,
+        bookmarksForUser: (<GetBookmarksForUserResponse>action).payload.bookmarks,
+      };
+
+    case AddBookmark.FAILURE:
+    case GetBookmarks.FAILURE:
     case RemoveBookmark.FAILURE:
     default:
       return state;
   }
 }
+

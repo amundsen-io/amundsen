@@ -65,6 +65,5 @@ export interface GetBookmarksForUserResponse {
   type: GetBookmarksForUser.SUCCESS | GetBookmarksForUser.FAILURE;
   payload: {
     bookmarks: Bookmark[];
-    userId: string;
   };
 }

@@ -9,19 +9,41 @@ import Flag from 'components/common/Flag';
 import Tabs from 'components/common/Tabs';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getUserById } from 'ducks/user/reducer';
-import { GetUserRequest } from 'ducks/user/types';
-
-import { PeopleUser } from 'interfaces';
+import { getUserById, getUserOwn, getUserRead } from 'ducks/user/reducer';
+import { PeopleUser, Resource } from 'interfaces';
+import { GetUserRequest, GetUserOwnRequest, GetUserReadRequest } from 'ducks/user/types';
 
 import './styles.scss';
+import ResourceList from 'components/common/ResourceList';
+import { GetBookmarksForUserRequest } from 'ducks/bookmark/types';
+import { getBookmarksForUser } from 'ducks/bookmark/reducer';
+
+import {
+  BOOKMARKED_LABEL,
+  BOOKMARKED_SOURCE,
+  BOOKMARKED_TAB_KEY,
+  BOOKMARKED_TAB_TITLE,
+  ITEMS_PER_PAGE, OWNED_LABEL,
+  OWNED_SOURCE, OWNED_TAB_KEY,
+  OWNED_TAB_TITLE, READ_LABEL,
+  READ_SOURCE, READ_TAB_KEY,
+  READ_TAB_TITLE,
+} from './constants';
+
+
 
 interface StateFromProps {
+  bookmarks: Resource[];
   user: PeopleUser;
+  own: Resource[];
+  read: Resource[];
 }
 
 interface DispatchFromProps {
   getUserById: (userId: string) => GetUserRequest;
+  getUserOwn: (userId: string) => GetUserOwnRequest;
+  getUserRead: (userId: string) => GetUserReadRequest;
+  getBookmarksForUser: (userId: string) => GetBookmarksForUserRequest;
 }
 
 export type ProfilePageProps = StateFromProps & DispatchFromProps;
@@ -39,41 +61,52 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
 
   componentDidMount() {
     this.props.getUserById(this.userId);
+    this.props.getUserOwn(this.userId);
+    this.props.getUserRead(this.userId);
+    this.props.getBookmarksForUser(this.userId);
   }
 
   getUserId = () => {
     return this.userId;
   };
 
-  // TODO: consider moving logic for empty content into Tab component
-  createEmptyTabMessage = (message: string) => {
+
+  getTabContent = (resource: Resource[], source: string, label: string) => {
+    // TODO: consider moving logic for empty content into Tab component
+    if (resource.length === 0) {
+      return (
+        <div className="empty-tab-message">
+          <label>User has no { label } resources.</label>
+        </div>
+      );
+    }
     return (
-      <div className="empty-tab-message">
-        <label>{ message }</label>
-      </div>
-    );
+      <ResourceList
+        allItems={ resource }
+        source={ source }
+        itemsPerPage={ ITEMS_PER_PAGE }
+      />
+    )
   };
 
   generateTabInfo = () => {
-    const user = this.props.user;
     const tabInfo = [];
+    const { bookmarks, read, own } = this.props;
 
-    // TODO: Populate tabs based on data
-    // TODO: consider moving logic for empty content into Tab component
     tabInfo.push({
-      content: this.createEmptyTabMessage('User has no frequently used resources.'),
-      key: 'frequentUses_tab',
-      title: 'Frequently Uses (0)',
+      content: this.getTabContent(read, READ_SOURCE, READ_LABEL),
+      key: READ_TAB_KEY,
+      title: `${READ_TAB_TITLE} (${read.length})`,
     });
     tabInfo.push({
-      content: this.createEmptyTabMessage('User has no bookmarked resources.'),
-      key: 'bookmarks_tab',
-      title: 'Bookmarks (0)',
+      content: this.getTabContent(bookmarks, BOOKMARKED_SOURCE, BOOKMARKED_LABEL),
+      key: BOOKMARKED_TAB_KEY,
+      title: `${BOOKMARKED_TAB_TITLE} (${bookmarks.length})`,
     });
     tabInfo.push({
-      content: this.createEmptyTabMessage('User has no owned resources.'),
-      key: 'owner_tab',
-      title: 'Owner (0)',
+      content: this.getTabContent(own, OWNED_SOURCE, OWNED_LABEL),
+      key: OWNED_TAB_KEY,
+      title: `${OWNED_TAB_TITLE} (${own.length})`,
     });
 
     return tabInfo;
@@ -90,6 +123,7 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
             <div className="col-xs-12 col-md-offset-1 col-md-10">
               {/* remove hardcode to home when this page is ready for production */}
               <Breadcrumb path="/" text="Home" />
+              {/* TODO - Consider making this part a separate component */}
               <div className="profile-header">
                   <div id="profile-avatar" className="profile-avatar">
                     {
@@ -147,7 +181,7 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
                   </div>
               </div>
               <div id="profile-tabs" className="profile-tabs">
-                <Tabs tabs={ this.generateTabInfo() } defaultTab='frequentUses_tab' />
+                <Tabs tabs={ this.generateTabInfo() } defaultTab={ READ_TAB_KEY } />
               </div>
             </div>
           </div>
@@ -159,12 +193,15 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    user: state.user.profileUser,
+    user: state.user.profile.user,
+    own: state.user.profile.own,
+    read: state.user.profile.read,
+    bookmarks: state.bookmarks.bookmarksForUser,
   }
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getUserById }, dispatch);
+  return bindActionCreators({ getUserById, getUserOwn, getUserRead, getBookmarksForUser }, dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(ProfilePage);
