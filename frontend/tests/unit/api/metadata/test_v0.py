@@ -201,7 +201,7 @@ class MetadataTest(unittest.TestCase):
             'team_name': 'Amundsen',
             'user_id': 'testuserid',
         }
-        self.get_bookmark_response = {
+        self.get_user_resource_response = {
             'table': [
                 {
                     'cluster': 'cluster',
@@ -219,7 +219,7 @@ class MetadataTest(unittest.TestCase):
                 },
             ]
         }
-        self.expected_parsed_bookmarks = [
+        self.expected_parsed_user_resources = [
             {
                 'cluster': 'cluster',
                 'database': 'database',
@@ -561,13 +561,13 @@ class MetadataTest(unittest.TestCase):
         Test get_bookmark with no user specified
         """
         url = '{0}{1}/{2}/follow/'.format(local_app.config['METADATASERVICE_BASE'], USER_ENDPOINT, TEST_USER_ID)
-        responses.add(responses.GET, url, json=self.get_bookmark_response, status=HTTPStatus.OK)
+        responses.add(responses.GET, url, json=self.get_user_resource_response, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/bookmark')
             data = json.loads(response.data)
             self.assertEquals(response.status_code, HTTPStatus.OK)
-            self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_bookmarks)
+            self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_user_resources)
 
     @responses.activate
     def test_get_bookmark_for_user(self) -> None:
@@ -576,13 +576,13 @@ class MetadataTest(unittest.TestCase):
         """
         specified_user = 'other_user'
         url = '{0}{1}/{2}/follow/'.format(local_app.config['METADATASERVICE_BASE'], USER_ENDPOINT, specified_user)
-        responses.add(responses.GET, url, json=self.get_bookmark_response, status=HTTPStatus.OK)
+        responses.add(responses.GET, url, json=self.get_user_resource_response, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/bookmark', query_string=dict(user_id=specified_user))
             data = json.loads(response.data)
             self.assertEquals(response.status_code, HTTPStatus.OK)
-            self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_bookmarks)
+            self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_user_resources)
 
     @responses.activate
     def test_put_bookmark(self) -> None:
@@ -631,3 +631,33 @@ class MetadataTest(unittest.TestCase):
                 })
 
             self.assertEquals(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    def test_get_user_read(self) -> None:
+        """
+        Test get_user_read API request
+        """
+        test_user = 'test_user'
+        url = '{0}{1}/{2}/read/'.format(local_app.config['METADATASERVICE_BASE'], USER_ENDPOINT, test_user)
+        responses.add(responses.GET, url, json=self.get_user_resource_response, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user/read', query_string=dict(user_id=test_user))
+            data = json.loads(response.data)
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('read'), self.expected_parsed_user_resources)
+
+    @responses.activate
+    def test_get_user_own(self) -> None:
+        """
+        Test get_user_own API request
+        """
+        test_user = 'test_user'
+        url = '{0}{1}/{2}/own/'.format(local_app.config['METADATASERVICE_BASE'], USER_ENDPOINT, test_user)
+        responses.add(responses.GET, url, json=self.get_user_resource_response, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user/own', query_string=dict(user_id=test_user))
+            data = json.loads(response.data)
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('own'), self.expected_parsed_user_resources)

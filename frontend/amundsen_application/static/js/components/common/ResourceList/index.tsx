@@ -74,15 +74,13 @@ class ResourceList extends React.Component<ResourceListProps, ResourceListState>
         {
           paginate &&
           itemsCount > itemsPerPage &&
-          <div className="text-center">
-            <Pagination
-              activePage={ activePage + 1 }
-              itemsCountPerPage={ itemsPerPage }
-              totalItemsCount={ itemsCount }
-              pageRangeDisplayed={ PAGINATION_PAGE_RANGE }
-              onChange={ this.onPagination }
-            />
-          </div>
+          <Pagination
+            activePage={ activePage + 1 }
+            itemsCountPerPage={ itemsPerPage }
+            totalItemsCount={ itemsCount }
+            pageRangeDisplayed={ PAGINATION_PAGE_RANGE }
+            onChange={ this.onPagination }
+          />
         }
       </>
     );

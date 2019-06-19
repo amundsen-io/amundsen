@@ -1,4 +1,5 @@
-import { LoggedInUser, PeopleUser } from 'interfaces';
+
+import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
 
 export enum GetLoggedInUser {
   REQUEST = 'amundsen/current_user/GET_REQUEST',
@@ -28,5 +29,48 @@ export interface GetUserResponse {
   type: GetUser.SUCCESS | GetUser.FAILURE;
   payload?: {
     user: PeopleUser;
+  };
+};
+
+
+/* getUserOwn */
+export enum GetUserOwn {
+  REQUEST = 'amundsen/user/own/GET_REQUEST',
+  SUCCESS = 'amundsen/user/own/GET_SUCCESS',
+  FAILURE = 'amundsen/user/own/GET_FAILURE',
+}
+
+export interface GetUserOwnRequest {
+  type: GetUserOwn.REQUEST;
+  payload: {
+    userId: string;
+  };
+};
+
+export interface GetUserOwnResponse {
+  type: GetUserOwn.SUCCESS | GetUserOwn.FAILURE;
+  payload?: {
+    own: Resource[];
+  };
+};
+
+/* getUserRead */
+export enum GetUserRead {
+  REQUEST = 'amundsen/user/read/GET_REQUEST',
+  SUCCESS = 'amundsen/user/read/GET_SUCCESS',
+  FAILURE = 'amundsen/user/read/GET_FAILURE',
+}
+
+export interface GetUserReadRequest {
+  type: GetUserRead.REQUEST;
+  payload: {
+    userId: string;
+  };
+};
+
+export interface GetUserReadResponse {
+  type: GetUserRead.SUCCESS | GetUserRead.FAILURE;
+  payload?: {
+    read: Resource[];
   };
 };

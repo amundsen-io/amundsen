@@ -34,7 +34,7 @@ import {
 import { getAllTagsWatcher } from './allTags/sagas';
 
 // User
-import { getLoggedInUserWatcher, getUserWatcher } from "./user/sagas";
+import { getLoggedInUserWatcher, getUserOwnWatcher, getUserReadWatcher, getUserWatcher } from "./user/sagas";
 
 export default function* rootSaga() {
   yield all([
@@ -66,5 +66,7 @@ export default function* rootSaga() {
     // User
     getLoggedInUserWatcher(),
     getUserWatcher(),
+    getUserOwnWatcher(),
+    getUserReadWatcher(),
   ]);
 }

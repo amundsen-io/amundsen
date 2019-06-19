@@ -490,3 +490,51 @@ def update_bookmark() -> Response:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
         return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/user/read', methods=['GET'])
+def get_user_read() -> Response:
+    """
+    Calls metadata service to GET read/frequently used resources
+    :return: a JSON object with an array of read resources
+    """
+    try:
+        user_id = get_query_param(request.args, 'user_id')
+
+        url = '{0}{1}/{2}/read/'.format(app.config['METADATASERVICE_BASE'],
+                                        USER_ENDPOINT,
+                                        user_id)
+        response = request_metadata(url=url, method=request.method)
+        status_code = response.status_code
+        read_tables_raw = response.json().get('table')
+        read_tables = [marshall_table_partial(table) for table in read_tables_raw]
+        return make_response(jsonify({'msg': 'success', 'read': read_tables}), status_code)
+
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/user/own', methods=['GET'])
+def get_user_own() -> Response:
+    """
+    Calls metadata service to GET owned resources
+    :return: a JSON object with an array of owned resources
+    """
+    try:
+        user_id = get_query_param(request.args, 'user_id')
+
+        url = '{0}{1}/{2}/own/'.format(app.config['METADATASERVICE_BASE'],
+                                       USER_ENDPOINT,
+                                       user_id)
+        response = request_metadata(url=url, method=request.method)
+        status_code = response.status_code
+        owned_tables_raw = response.json().get('table')
+        owned_tables = [marshall_table_partial(table) for table in owned_tables_raw]
+        return make_response(jsonify({'msg': 'success', 'own': owned_tables}), status_code)
+
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)

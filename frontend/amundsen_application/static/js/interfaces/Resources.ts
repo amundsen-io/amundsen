@@ -81,4 +81,5 @@ export interface UserResource extends Resource  {
   title: string;
 }
 
+// TODO - Consider just using the 'Resource' type instead
 export type Bookmark = TableResource & {};
