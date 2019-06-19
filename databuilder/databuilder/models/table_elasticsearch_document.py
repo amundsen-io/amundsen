@@ -11,27 +11,28 @@ class TableESDocument(ElasticsearchDocument):
                  database,  # type: str
                  cluster,  # type: str
                  schema_name,  # type: str
-                 table_name,  # type: str
-                 table_key,  # type: str
-                 table_description,  # type: str
-                 table_last_updated_epoch,  # type: Optional[int]
+                 name,  # type: str
+                 key,  # type: str
+                 description,  # type: str
+                 last_updated_epoch,  # type: Optional[int]
                  column_names,  # type: List[str]
                  column_descriptions,  # type: List[str]
                  total_usage,  # type: int
                  unique_usage,  # type: int
-                 tag_names,  # type: List[str]
+                 tags,  # type: List[str]
                  ):
         # type: (...) -> None
         self.database = database
         self.cluster = cluster
         self.schema_name = schema_name
-        self.table_name = table_name
-        self.table_key = table_key
-        self.table_description = table_description
-        self.table_last_updated_epoch = int(table_last_updated_epoch) if table_last_updated_epoch else None
+        self.name = name
+        self.key = key
+        self.description = description
+        # todo: use last_updated_timestamp to match the record in metadata
+        self.last_updated_epoch = int(last_updated_epoch) if last_updated_epoch else None
         self.column_names = column_names
         self.column_descriptions = column_descriptions
         self.total_usage = total_usage
         self.unique_usage = unique_usage
         # todo: will include tag_type once we have better understanding from UI flow.
-        self.tag_names = tag_names
+        self.tags = tags

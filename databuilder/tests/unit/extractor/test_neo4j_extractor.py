@@ -103,15 +103,15 @@ class TestNeo4jExtractor(unittest.TestCase):
             result_dict = dict(database='test_database',
                                cluster='test_cluster',
                                schema_name='test_schema',
-                               table_name='test_table_name',
-                               table_key='test_table_key',
-                               table_description='test_table_description',
-                               table_last_updated_epoch=123456789,
+                               name='test_table_name',
+                               key='test_table_key',
+                               description='test_table_description',
+                               last_updated_epoch=123456789,
                                column_names=['test_col1', 'test_col2', 'test_col3'],
                                column_descriptions=['test_description1', 'test_description2', ''],
                                total_usage=100,
                                unique_usage=5,
-                               tag_names=['hive'])
+                               tags=['hive'])
 
             extractor.results = [result_dict]
             result_obj = extractor.extract()

@@ -27,13 +27,13 @@ class Neo4jSearchDataExtractor(Extractor):
         OPTIONAL MATCH (table)-[:TAGGED_BY]->(tags:Tag)
         OPTIONAL MATCH (table)-[:LAST_UPDATED_AT]->(time_stamp:Timestamp)
         RETURN db.name as database, cluster.name AS cluster, schema.name AS schema_name,
-        table.name AS table_name, table.key AS table_key, table_description.description AS table_description,
-        time_stamp.last_updated_timestamp AS table_last_updated_epoch,
+        table.name AS name, table.key AS key, table_description.description AS description,
+        time_stamp.last_updated_timestamp AS last_updated_epoch,
         EXTRACT(c in COLLECT(DISTINCT cols)| c.name) AS column_names,
         EXTRACT(cd IN COLLECT(DISTINCT col_description)| cd.description) AS column_descriptions,
         REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count) AS total_usage,
         COUNT(DISTINCT user.email) as unique_usage,
-        COLLECT(DISTINCT tags.key) as tag_names
+        COLLECT(DISTINCT tags.key) as tags
         ORDER BY table.name;
         """
     )
