@@ -83,17 +83,21 @@ class ElasticsearchProxy(BaseProxy):
 
         for hit in response:
 
-            table = Table(name=hit.table_name,
-                          key=hit.table_key,
-                          description=hit.table_description,
-                          cluster=hit.cluster,
-                          database=hit.database,
-                          schema_name=hit.schema_name,
-                          column_names=hit.column_names,
-                          tags=hit.tag_names,
-                          last_updated_epoch=hit.table_last_updated_epoch)
+            try:
+                table = Table(name=hit.name,
+                              key=hit.key,
+                              description=hit.description,
+                              cluster=hit.cluster,
+                              database=hit.database,
+                              schema_name=hit.schema_name,
+                              column_names=hit.column_names,
+                              tags=hit.tags,
+                              last_updated_epoch=hit.last_updated_epoch)
 
-            table_results.append(table)
+                table_results.append(table)
+            except Exception:
+                LOGGING.exception('The record doesnt contain specified field.')
+                pass
 
         return SearchTableResult(total_results=response.hits.total,
                                  results=table_results)
@@ -120,12 +124,12 @@ class ElasticsearchProxy(BaseProxy):
                     "query": {
                         "multi_match": {
                             "query": query_term,
-                            "fields": ["table_name.raw^30",
-                                       "table_name^5",
+                            "fields": ["name.raw^30",
+                                       "name^5",
                                        "schema_name^3",
-                                       "table_description^3",
+                                       "description^3",
                                        "column_names^2",
-                                       "column_descriptions", "tag_names"]
+                                       "column_descriptions", "tags"]
                         }
                     },
                     "field_value_factor": {
@@ -174,11 +178,11 @@ class ElasticsearchProxy(BaseProxy):
         :return:
         """
         if field_name == 'tag':
-            field_name = 'tag_names'
+            field_name = 'tags'
         elif field_name == 'schema':
             field_name = 'schema_name.raw'
         elif field_name == 'table':
-            field_name = 'table_name.raw'
+            field_name = 'name.raw'
         elif field_name == 'column':
             field_name = 'column_names.raw'
         return field_name

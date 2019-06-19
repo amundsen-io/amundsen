@@ -12,24 +12,24 @@ from search_service.models.table import Table
 
 class MockSearchTableResult:
     def __init__(self, *,
-                 table_name: str,
-                 table_key: str,
-                 table_description: str,
+                 name: str,
+                 key: str,
+                 description: str,
                  cluster: str,
                  database: str,
                  schema_name: str,
                  column_names: Iterable[str],
-                 tag_names: Iterable[str],
-                 table_last_updated_epoch: int) -> None:
-        self.table_name = table_name
-        self.table_key = table_key
-        self.table_description = table_description
+                 tags: Iterable[str],
+                 last_updated_epoch: int) -> None:
+        self.name = name
+        self.key = key
+        self.description = description
         self.cluster = cluster
         self.database = database
         self.schema_name = schema_name
         self.column_names = column_names
-        self.tag_names = tag_names
-        self.table_last_updated_epoch = table_last_updated_epoch
+        self.tags = tags
+        self.last_updated_epoch = last_updated_epoch
 
 
 class TestElasticsearchProxy(unittest.TestCase):
@@ -42,25 +42,25 @@ class TestElasticsearchProxy(unittest.TestCase):
         mock_elasticsearch_client = MagicMock()
         self.es_proxy = ElasticsearchProxy(client=mock_elasticsearch_client)
 
-        self.mock_result1 = MockSearchTableResult(table_name='test_table',
-                                                  table_key='test_key',
-                                                  table_description='test_description',
+        self.mock_result1 = MockSearchTableResult(name='test_table',
+                                                  key='test_key',
+                                                  description='test_description',
                                                   cluster='gold',
                                                   database='test_db',
                                                   schema_name='test_schema',
                                                   column_names=['test_col1', 'test_col2'],
-                                                  tag_names=[],
-                                                  table_last_updated_epoch=1527283287)
+                                                  tags=[],
+                                                  last_updated_epoch=1527283287)
 
-        self.mock_result2 = MockSearchTableResult(table_name='test_table2',
-                                                  table_key='test_key2',
-                                                  table_description='test_description2',
+        self.mock_result2 = MockSearchTableResult(name='test_table2',
+                                                  key='test_key2',
+                                                  description='test_description2',
                                                   cluster='gold',
                                                   database='test_db2',
                                                   schema_name='test_schema2',
                                                   column_names=['test_col1', 'test_col2'],
-                                                  tag_names=[],
-                                                  table_last_updated_epoch=1527283287)
+                                                  tags=[],
+                                                  last_updated_epoch=1527283287)
 
         self.mock_result3 = Table(name='test_table3',
                                   key='test_key3',
