@@ -23,7 +23,9 @@ export enum GetUser {
 };
 export interface GetUserRequest {
   type: GetUser.REQUEST;
-  userId: string;
+  payload: {
+    userId: string;
+  };
 };
 export interface GetUserResponse {
   type: GetUser.SUCCESS | GetUser.FAILURE;

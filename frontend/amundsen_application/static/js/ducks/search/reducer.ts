@@ -24,16 +24,20 @@ export interface SearchReducerState {
 /* ACTIONS */
 export function searchAll(term: string, options: SearchAllOptions = {}): SearchAllRequest {
   return {
-    options,
-    term,
+    payload: {
+      options,
+      term,
+    },
     type: SearchAll.REQUEST,
   };
 };
 export function searchResource(resource: ResourceType, term: string, pageIndex: number): SearchResourceRequest {
   return {
-    pageIndex,
-    term,
-    resource,
+    payload: {
+      pageIndex,
+      term,
+      resource,
+    },
     type: SearchResource.REQUEST,
   };
 };
@@ -72,7 +76,7 @@ export default function reducer(state: SearchReducerState = initialState, action
       // updates search term to reflect action
       return {
         ...state,
-        search_term: (<SearchAllRequest>action).term,
+        search_term: (<SearchAllRequest>action).payload.term,
         isLoading: true,
       };
     case SearchResource.REQUEST:

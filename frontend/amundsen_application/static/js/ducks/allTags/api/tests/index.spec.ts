@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import { Tag } from 'interfaces';
 
-import { metadataAllTags, AllTagsResponseAPI } from '../v0';
+import { metadataAllTags, AllTagsAPI } from '../v0';
 
 describe('metadataAllTags', () => {
   it('resolves with array of sorted result of response.data.tags on success', async () => {
@@ -14,7 +14,7 @@ describe('metadataAllTags', () => {
       {tag_count: 1, tag_name: 'atest'},
       {tag_count: 2, tag_name: 'test'}
     ];
-    const mockResponse: AxiosResponse<AllTagsResponseAPI> = {
+    const mockResponse: AxiosResponse<AllTagsAPI> = {
       data: {
         tags: rawTags,
         msg: 'Success'

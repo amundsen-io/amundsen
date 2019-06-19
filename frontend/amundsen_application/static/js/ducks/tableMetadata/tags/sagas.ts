@@ -9,9 +9,8 @@ export function* updateTableTagsWorker(action: UpdateTagsRequest): SagaIterator 
   const state = yield select();
   const tableData = state.tableMetadata.tableData;
   try {
-    /* TODO: Pass explicit params into api method and not action */
-    yield all(metadataUpdateTableTags(action, tableData));
-    const newTags = yield call(metadataTableTags, tableData);
+    yield all(metadataUpdateTableTags(action.payload.tagArray, tableData.key));
+    const newTags = yield call(metadataTableTags, tableData.key);
     yield put({ type: UpdateTags.SUCCESS, payload: { tags: newTags } });
   } catch (e) {
     yield put({ type: UpdateTags.FAILURE, payload: { tags: [] } });

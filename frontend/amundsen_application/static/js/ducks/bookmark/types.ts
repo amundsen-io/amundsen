@@ -7,8 +7,10 @@ export enum AddBookmark {
 }
 export interface AddBookmarkRequest {
   type: AddBookmark.REQUEST;
-  resourceKey: string;
-  resourceType: string;
+  payload: {
+    resourceKey: string;
+    resourceType: string;
+  };
 }
 export interface AddBookmarkResponse {
   type: AddBookmark.SUCCESS | AddBookmark.FAILURE;
@@ -24,8 +26,10 @@ export enum RemoveBookmark {
 }
 export interface RemoveBookmarkRequest {
   type: RemoveBookmark.REQUEST;
-  resourceKey: string;
-  resourceType: string;
+  payload: {
+    resourceKey: string;
+    resourceType: string;
+  };
 }
 export interface RemoveBookmarkResponse {
   type: RemoveBookmark.SUCCESS | RemoveBookmark.FAILURE;
@@ -59,7 +63,9 @@ export enum GetBookmarksForUser {
 }
 export interface GetBookmarksForUserRequest {
   type: GetBookmarksForUser.REQUEST;
-  userId: string;
+  payload: {
+    userId: string;
+  };
 }
 export interface GetBookmarksForUserResponse {
   type: GetBookmarksForUser.SUCCESS | GetBookmarksForUser.FAILURE;

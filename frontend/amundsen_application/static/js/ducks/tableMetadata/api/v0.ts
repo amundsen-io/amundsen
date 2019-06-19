@@ -9,37 +9,39 @@ import { PreviewData, PreviewQueryParams, TableMetadata, User, Tag } from 'inter
 
 const API_PATH = '/api/metadata/v0';
 
-type MessageResponse = { msg: string };
+// TODO: Consider created shared interfaces for ducks so we can reuse MessageAPI everywhere else
+type MessageAPI = { msg: string };
+
 type TableData = TableMetadata & {
   owners: User[];
   tags: Tag[];
 };
-export type DescriptionResponse = { description: string; } & MessageResponse;
-export type LastIndexedResponse = { timestamp: string; } & MessageResponse;
-export type PreviewDataResponse = { previewData: PreviewData; } & MessageResponse;
-export type TableDataResponse = { tableData: TableData; } & MessageResponse;
+export type DescriptionAPI = { description: string; } & MessageAPI;
+export type LastIndexedAPI = { timestamp: string; } & MessageAPI;
+export type PreviewDataAPI = { previewData: PreviewData; } & MessageAPI;
+export type TableDataAPI= { tableData: TableData; } & MessageAPI;
 
 /** HELPERS **/
 import {
   getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData, getTableTagsFromResponseData,
 } from './helpers';
 
-export function metadataTableTags(tableData: TableMetadata) {
-  const tableParams = getTableQueryParams(tableData);
+export function metadataTableTags(tableKey: string) {
+  const tableParams = getTableQueryParams(tableKey);
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
-  .then((response: AxiosResponse<TableDataResponse>) => {
+  .then((response: AxiosResponse<TableDataAPI>) => {
     return getTableTagsFromResponseData(response.data);
   });
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that needs more dedicated debugging */
-export function metadataUpdateTableTags(action, tableData) {
-  const updatePayloads = action.tagArray.map((tagObject) => {
+export function metadataUpdateTableTags(tagArray, tableKey: string) {
+  const updatePayloads = tagArray.map((tagObject) => {
     return {
       method: tagObject.methodName,
       url: `${API_PATH}/update_table_tags`,
       data: {
-        key: tableData.key,
+        key: tableKey,
         tag: tagObject.tagName,
       },
     }
@@ -47,12 +49,10 @@ export function metadataUpdateTableTags(action, tableData) {
   return updatePayloads.map(payload => { axios(payload) });
 }
 
-export function metadataGetTableData(action: GetTableDataRequest) {
-  const { searchIndex, source } = action;
-  const tableParams = getTableQueryParams(action);
-
+export function metadataGetTableData(tableKey: string, searchIndex: string, source: string ) {
+  const tableParams = getTableQueryParams(tableKey);
   return axios.get(`${API_PATH}/table?${tableParams}&index=${searchIndex}&source=${source}`)
-  .then((response: AxiosResponse<TableDataResponse>) => {
+  .then((response: AxiosResponse<TableDataAPI>) => {
     return {
       data: getTableDataFromResponseData(response.data),
       owners: getTableOwnersFromResponseData(response.data),
@@ -63,9 +63,9 @@ export function metadataGetTableData(action: GetTableDataRequest) {
 }
 
 export function metadataGetTableDescription(tableData: TableMetadata) {
-  const tableParams = getTableQueryParams(tableData);
+  const tableParams = getTableQueryParams(tableData.key);
   return axios.get(`${API_PATH}/v0/get_table_description?${tableParams}`)
-  .then((response: AxiosResponse<DescriptionResponse>) => {
+  .then((response: AxiosResponse<DescriptionAPI>) => {
     tableData.table_description = response.data.description;
     return tableData;
   });
@@ -84,23 +84,22 @@ export function metadataUpdateTableDescription(description: string, tableData: T
   }
 }
 
-export function metadataTableOwners(tableData: TableMetadata) {
-  const tableParams = getTableQueryParams(tableData);
+export function metadataTableOwners(tableKey: string) {
+  const tableParams = getTableQueryParams(tableKey);
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
-  .then((response: AxiosResponse<TableDataResponse>) => {
+  .then((response: AxiosResponse<TableDataAPI>) => {
     return getTableOwnersFromResponseData(response.data);
   });
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that need more dedicated debugging */
-// TODO - Add 'key' to the action and remove 'tableData' as a param.
-export function metadataUpdateTableOwner(action, tableData: TableMetadata) {
-  const updatePayloads = action.updateArray.map((item) => {
+export function metadataUpdateTableOwner(updateArray, tableKey: string) {
+  const updatePayloads = updateArray.map((item) => {
     return {
       method: item.method,
       url: `${API_PATH}/update_table_owner`,
       data: {
-        key: tableData.key,
+        key: tableKey,
         owner: item.id,
       },
     }
@@ -109,10 +108,10 @@ export function metadataUpdateTableOwner(action, tableData: TableMetadata) {
 }
 
 export function metadataGetColumnDescription(columnIndex: number, tableData: TableMetadata) {
-  const tableParams = getTableQueryParams(tableData);
+  const tableParams = getTableQueryParams(tableData.key);
   const columnName = tableData.columns[columnIndex].name;
   return axios.get(`${API_PATH}/get_column_description?${tableParams}&column_name=${columnName}`)
-  .then((response: AxiosResponse<DescriptionResponse>) => {
+  .then((response: AxiosResponse<DescriptionAPI>) => {
     tableData.columns[columnIndex].description = response.data.description;
     return tableData;
   });
@@ -135,7 +134,7 @@ export function metadataUpdateColumnDescription(description: string, columnIndex
 
 export function metadataGetLastIndexed() {
   return axios.get(`${API_PATH}/get_last_indexed`)
-  .then((response: AxiosResponse<LastIndexedResponse>) => {
+  .then((response: AxiosResponse<LastIndexedAPI>) => {
     return response.data.timestamp;
   });
 }
@@ -146,7 +145,7 @@ export function metadataGetPreviewData(queryParams: PreviewQueryParams) {
     method: 'POST',
     data: queryParams,
   })
-  .then((response: AxiosResponse<PreviewDataResponse>) => {
+  .then((response: AxiosResponse<PreviewDataAPI>) => {
     return { data: response.data.previewData, status: response.status };
   });
 }

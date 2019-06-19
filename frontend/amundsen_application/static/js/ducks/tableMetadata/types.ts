@@ -15,9 +15,11 @@ export enum GetTableData {
 };
 export interface GetTableDataRequest {
   type: GetTableData.REQUEST;
-  key: string;
-  searchIndex?: string;
-  source?: string;
+  payload: {
+    key: string;
+    searchIndex?: string;
+    source?: string;
+  };
 };
 export interface GetTableDataResponse {
   type: GetTableData.SUCCESS | GetTableData.FAILURE;
@@ -36,8 +38,10 @@ export enum GetTableDescription {
 };
 export interface GetTableDescriptionRequest {
   type: GetTableDescription.REQUEST;
-  onSuccess?: () => any;
-  onFailure?: () => any;
+  payload: {
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
 };
 export interface GetTableDescriptionResponse {
   type: GetTableDescription.SUCCESS | GetTableDescription.FAILURE;
@@ -53,9 +57,11 @@ export enum UpdateTableDescription {
 };
 export interface UpdateTableDescriptionRequest {
   type: UpdateTableDescription.REQUEST;
-  newValue: string;
-  onSuccess?: () => any;
-  onFailure?: () => any;
+  payload: {
+    newValue: string;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
 };
 export interface UpdateTableDescriptionResponse {
   type: UpdateTableDescription.SUCCESS | UpdateTableDescription.FAILURE;
@@ -68,9 +74,11 @@ export enum GetColumnDescription {
 };
 export interface GetColumnDescriptionRequest {
   type: GetColumnDescription.REQUEST;
-  columnIndex: number;
-  onSuccess?: () => any;
-  onFailure?: () => any;
+  payload: {
+    columnIndex: number;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
 };
 export interface GetColumnDescriptionResponse {
   type: GetColumnDescription.SUCCESS | GetColumnDescription.FAILURE;
@@ -86,10 +94,12 @@ export enum UpdateColumnDescription {
 };
 export interface UpdateColumnDescriptionRequest {
   type: UpdateColumnDescription.REQUEST;
-  newValue: string;
-  columnIndex: number;
-  onSuccess?: () => any;
-  onFailure?: () => any;
+  payload: {
+    newValue: string;
+    columnIndex: number;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
 };
 export interface UpdateColumnDescriptionResponse {
   type: UpdateColumnDescription.SUCCESS | UpdateColumnDescription.FAILURE;
@@ -117,7 +127,9 @@ export enum GetPreviewData {
 };
 export interface GetPreviewDataRequest {
   type: GetPreviewData.REQUEST;
-  queryParams: PreviewQueryParams;
+  payload: {
+    queryParams: PreviewQueryParams;
+  };
 };
 export interface GetPreviewDataResponse {
   type: GetPreviewData.SUCCESS | GetPreviewData.FAILURE;
@@ -134,9 +146,11 @@ export enum UpdateTableOwner {
 };
 export interface UpdateTableOwnerRequest {
   type: UpdateTableOwner.REQUEST;
-  updateArray: UpdateOwnerPayload[];
-  onSuccess?: () => any;
-  onFailure?: () => any;
+  payload: {
+    updateArray: UpdateOwnerPayload[];
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
 };
 export interface UpdateTableOwnerResponse {
   type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
@@ -153,7 +167,9 @@ export enum UpdateTags {
 };
 export interface UpdateTagsRequest {
   type: UpdateTags.REQUEST,
-  tagArray: UpdateTagData[];
+  payload: {
+    tagArray: UpdateTagData[];
+  };
 };
 export interface UpdateTagsResponse {
   type: UpdateTags.SUCCESS | UpdateTags.FAILURE,

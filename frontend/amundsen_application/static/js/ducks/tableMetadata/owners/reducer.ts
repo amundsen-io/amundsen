@@ -8,9 +8,11 @@ import {
 /* ACTIONS */
 export function updateTableOwner(updateArray: UpdateOwnerPayload[], onSuccess?: () => any, onFailure?: () => any): UpdateTableOwnerRequest {
   return {
-    onSuccess,
-    onFailure,
-    updateArray,
+    payload: {
+      onSuccess,
+      onFailure,
+      updateArray,
+    },
     type: UpdateTableOwner.REQUEST,
   };
 };

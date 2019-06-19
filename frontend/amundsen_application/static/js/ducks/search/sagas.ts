@@ -13,7 +13,7 @@ import {
 } from './api/v0';
 
 export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
-  const { options, term } = action;
+  const { options, term } = action.payload;
   try {
     const searchResults = yield call(searchAll, options, term);
     yield put({ type: SearchAll.SUCCESS, payload: searchResults });
@@ -26,7 +26,7 @@ export function* searchAllWatcher(): SagaIterator {
 };
 
 export function* searchResourceWorker(action: SearchResourceRequest): SagaIterator {
-  const { pageIndex, resource, term } = action;
+  const { pageIndex, resource, term } = action.payload;
   try {
     const searchResults = yield call(searchResource, pageIndex, resource, term);
     yield put({ type: SearchResource.SUCCESS, payload: searchResults });

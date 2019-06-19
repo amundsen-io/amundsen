@@ -2,13 +2,13 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AnnouncementPost } from 'interfaces';
 
-import { announcementsGet, AnnouncementsResponseAPI } from '../v0';
+import { announcementsGet, AnnouncementsAPI } from '../v0';
 
 jest.mock('axios');
 
 describe('announcementsGet', () => {
   let expectedPosts: AnnouncementPost[];
-  let mockResponse: AxiosResponse<AnnouncementsResponseAPI>;
+  let mockResponse: AxiosResponse<AnnouncementsAPI>;
   beforeAll(() => {
     expectedPosts = [{ date: '12/31/1999', title: 'Test', html_content: '<div>Test content</div>' }];
     mockResponse = {

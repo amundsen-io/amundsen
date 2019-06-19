@@ -6,20 +6,20 @@ import { UpdateTableOwner, UpdateTableOwnerRequest } from '../types';
 import { metadataUpdateTableOwner, metadataTableOwners } from '../api/v0';
 
 export function* updateTableOwnerWorker(action: UpdateTableOwnerRequest): SagaIterator {
+  const { payload } = action;
   const state = yield select();
   const tableData = state.tableMetadata.tableData;
   try {
-    /* TODO: Pass explicit params into api method and not action */
-    yield all(metadataUpdateTableOwner(action, tableData));
-    const newOwners = yield call(metadataTableOwners, tableData);
+    yield all(metadataUpdateTableOwner(payload.updateArray, tableData.key));
+    const newOwners = yield call(metadataTableOwners, tableData.key);
     yield put({ type: UpdateTableOwner.SUCCESS, payload: { owners: newOwners } });
-    if (action.onSuccess) {
-      yield call(action.onSuccess);
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
     }
   } catch (e) {
     yield put({ type: UpdateTableOwner.FAILURE, payload: { owners: state.tableMetadata.tableOwners.owners } });
-    if (action.onFailure) {
-      yield call(action.onFailure);
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
     }
   }
 };

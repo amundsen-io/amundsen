@@ -17,15 +17,19 @@ import {
 /* ACTIONS */
 export function addBookmark(resourceKey: string, resourceType: string): AddBookmarkRequest {
   return {
-    resourceKey,
-    resourceType,
+    payload: {
+      resourceKey,
+      resourceType,
+    },
     type: AddBookmark.REQUEST,
   }
 }
 export function removeBookmark(resourceKey: string, resourceType: string): RemoveBookmarkRequest {
   return {
-    resourceKey,
-    resourceType,
+    payload: {
+      resourceKey,
+      resourceType,
+    },
     type: RemoveBookmark.REQUEST,
   }
 }
@@ -36,7 +40,9 @@ export function getBookmarks(): GetBookmarksRequest {
 }
 export function getBookmarksForUser(userId: string): GetBookmarksForUserRequest {
   return {
-    userId,
+    payload: {
+      userId,
+    },
     type: GetBookmarksForUser.REQUEST,
   }
 }

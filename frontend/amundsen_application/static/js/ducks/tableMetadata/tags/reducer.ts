@@ -8,7 +8,9 @@ import {
 /* ACTIONS */
 export function updateTags(tagArray: UpdateTagData[]): UpdateTagsRequest  {
   return {
-    tagArray,
+    payload: {
+      tagArray,
+    },
     type: UpdateTags.REQUEST,
   };
 };
