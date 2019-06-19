@@ -22,7 +22,7 @@ export function getLoggedInUser(): GetLoggedInUserRequest {
   return { type: GetLoggedInUser.REQUEST };
 };
 export function getUserById(userId: string): GetUserRequest {
-  return { userId, type: GetUser.REQUEST };
+  return { payload: { userId }, type: GetUser.REQUEST };
 };
 
 export function getUserOwn(userId: string): GetUserOwnRequest {

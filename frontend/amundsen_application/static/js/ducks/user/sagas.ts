@@ -26,7 +26,7 @@ export function* getLoggedInUserWatcher(): SagaIterator {
 
 export function* getUserWorker(action: GetUserRequest): SagaIterator {
   try {
-    const user = yield call(getUserById, action.userId);
+    const user = yield call(getUserById, action.payload.userId);
     yield put({ type: GetUser.SUCCESS, payload: { user } });
   } catch (e) {
     yield put({ type: GetUser.FAILURE });

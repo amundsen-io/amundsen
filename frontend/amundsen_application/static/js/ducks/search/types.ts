@@ -23,8 +23,10 @@ export enum SearchAll {
   RESET = 'amundsen/search/SEARCH_ALL_RESET',
 };
 export interface SearchAllRequest {
-  options: SearchAllOptions;
-  term: string;
+  payload: {
+    options: SearchAllOptions;
+    term: string;
+  };
   type: SearchAll.REQUEST;
 };
 export interface SearchAllResponse {
@@ -47,9 +49,11 @@ export enum SearchResource {
   FAILURE = 'amundsen/search/SEARCH_RESOURCE_FAILURE',
 };
 export interface SearchResourceRequest {
-  pageIndex: number;
-  resource: ResourceType;
-  term: string;
+  payload: {
+    pageIndex: number;
+    resource: ResourceType;
+    term: string;
+  };
   type: SearchResource.REQUEST;
 };
 export interface SearchResourceResponse {

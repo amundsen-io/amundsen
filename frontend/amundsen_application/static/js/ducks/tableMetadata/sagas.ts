@@ -23,8 +23,8 @@ import {
 
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
   try {
-    /* TODO: Pass explicit params into api method and not action */
-    const { data, owners, statusCode, tags } = yield call(metadataGetTableData, action);
+    const { key, searchIndex, source } = action.payload;
+    const { data, owners, statusCode, tags } = yield call(metadataGetTableData, key, searchIndex, source);
     yield put({ type: GetTableData.SUCCESS, payload: { data, owners, statusCode, tags } });
   } catch (e) {
     yield put({ type: GetTableData.FAILURE, payload: { data: {}, owners: [], statusCode: 500, tags: [] } });
@@ -35,18 +35,19 @@ export function* getTableDataWatcher(): SagaIterator {
 };
 
 export function* getTableDescriptionWorker(action: GetTableDescriptionRequest): SagaIterator {
+  const { payload } = action;
   const state = yield select();
   let tableData;
   try {
     tableData = yield call(metadataGetTableDescription, state.tableMetadata.tableData);
     yield put({ type: GetTableDescription.SUCCESS, payload: { tableMetadata: tableData } });
-    if (action.onSuccess) {
-      yield call(action.onSuccess);
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
     }
   } catch (e) {
     yield put({ type: GetTableDescription.FAILURE, payload: { tableMetadata: tableData } });
-    if (action.onFailure) {
-      yield call(action.onFailure);
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
     }
   }
 };
@@ -55,15 +56,16 @@ export function* getTableDescriptionWatcher(): SagaIterator {
 };
 
 export function* updateTableDescriptionWorker(action: UpdateTableDescriptionRequest): SagaIterator {
+  const { payload } = action;
   const state = yield select();
   try {
-    yield call(metadataUpdateTableDescription, action.newValue, state.tableMetadata.tableData);
-    if (action.onSuccess) {
-      yield call(action.onSuccess);
+    yield call(metadataUpdateTableDescription, payload.newValue, state.tableMetadata.tableData);
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
     }
   } catch (e) {
-    if (action.onFailure) {
-      yield call(action.onFailure);
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
     }
   }
 };
@@ -72,18 +74,19 @@ export function* updateTableDescriptionWatcher(): SagaIterator {
 };
 
 export function* getColumnDescriptionWorker(action: GetColumnDescriptionRequest): SagaIterator {
+  const { payload } = action;
   const state = yield select();
   let tableData;
   try {
-    tableData = yield call(metadataGetColumnDescription, action.columnIndex, state.tableMetadata.tableData);
+    tableData = yield call(metadataGetColumnDescription, payload.columnIndex, state.tableMetadata.tableData);
     yield put({ type: GetColumnDescription.SUCCESS, payload: { tableMetadata: tableData } });
-    if (action.onSuccess) {
-      yield call(action.onSuccess);
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
     }
   } catch (e) {
     yield put({ type: GetColumnDescription.FAILURE, payload: { tableMetadata: tableData } });
-    if (action.onFailure) {
-      yield call(action.onFailure);
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
     }
   }
 };
@@ -92,15 +95,16 @@ export function* getColumnDescriptionWatcher(): SagaIterator {
 };
 
 export function* updateColumnDescriptionWorker(action: UpdateColumnDescriptionRequest): SagaIterator {
+  const { payload } = action;
   const state = yield select();
   try {
-    yield call(metadataUpdateColumnDescription, action.newValue, action.columnIndex, state.tableMetadata.tableData);
-    if (action.onSuccess) {
-      yield call(action.onSuccess);
+    yield call(metadataUpdateColumnDescription, payload.newValue, payload.columnIndex, state.tableMetadata.tableData);
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
     }
   } catch (e) {
-    if (action.onFailure) {
-      yield call(action.onFailure);
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
     }
   }
 };
@@ -122,7 +126,7 @@ export function* getLastIndexedWatcher(): SagaIterator {
 
 export function* getPreviewDataWorker(action: GetPreviewDataRequest): SagaIterator {
   try {
-    const response = yield call(metadataGetPreviewData, action.queryParams);
+    const response = yield call(metadataGetPreviewData, action.payload.queryParams);
     const { data, status } = response;
     yield put({ type: GetPreviewData.SUCCESS, payload: { data, status } });
   } catch (e) {

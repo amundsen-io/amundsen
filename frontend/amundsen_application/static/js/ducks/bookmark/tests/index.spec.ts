@@ -31,7 +31,13 @@ describe('bookmark ducks', () => {
   describe('actions', () => {
     describe('addBookmark', () => {
       it('should return action of type AddBookmarkRequest', () => {
-        expect(addBookmark(testResourceKey, testResourceType)).toEqual({ type: AddBookmark.REQUEST, resourceKey: testResourceKey, resourceType: testResourceType });
+        expect(addBookmark(testResourceKey, testResourceType)).toEqual({
+          type: AddBookmark.REQUEST,
+          payload: {
+            resourceKey: testResourceKey,
+            resourceType: testResourceType,
+          },
+        });
       });
     });
 
@@ -43,13 +49,24 @@ describe('bookmark ducks', () => {
 
     describe('getBookmarksForUser', () => {
       it('should return action of type GetBookmarksForUserRequest', () => {
-        expect(getBookmarksForUser(testUserId)).toEqual({ type: GetBookmarksForUser.REQUEST, userId: testUserId });
+        expect(getBookmarksForUser(testUserId)).toEqual({
+          type: GetBookmarksForUser.REQUEST,
+          payload: {
+            userId: testUserId,
+          },
+        });
       });
     });
 
     describe('removeBookmark', () => {
       it('should return action of type RemoveBookmarkRequest', () => {
-        expect(removeBookmark(testResourceKey, testResourceType)).toEqual({ type: RemoveBookmark.REQUEST, resourceKey: testResourceKey, resourceType: testResourceType });
+        expect(removeBookmark(testResourceKey, testResourceType)).toEqual({
+          type: RemoveBookmark.REQUEST,
+          payload: {
+            resourceKey: testResourceKey,
+            resourceType: testResourceType,
+          }, 
+        });
       });
     });
   });
@@ -238,11 +255,11 @@ describe('sagas', () => {
         ];
         return expectSaga(getBookmarkForUserWorker, action)
           .provide([
-            [matchers.call.fn(getBkmrks), { bookmarks, userId: action.userId }],
+            [matchers.call.fn(getBkmrks), { bookmarks, userId: action.payload.userId }],
           ])
           .put({
             type: GetBookmarksForUser.SUCCESS,
-            payload: { bookmarks, userId: action.userId }
+            payload: { bookmarks, userId: action.payload.userId }
           })
           .run();
       });
@@ -254,7 +271,7 @@ describe('sagas', () => {
           ])
           .put({
             type: GetBookmarksForUser.FAILURE,
-            payload: { bookmarks: [], userId: action.userId }
+            payload: { bookmarks: [], userId: action.payload.userId }
           })
           .run();
       });
@@ -285,7 +302,7 @@ describe('sagas', () => {
           ])
           .put({
             type: RemoveBookmark.SUCCESS,
-            payload: { resourceKey: action.resourceKey, resourceType: action.resourceType }
+            payload: { resourceKey: action.payload.resourceKey, resourceType: action.payload.resourceType }
           })
           .run();
       });
@@ -297,7 +314,7 @@ describe('sagas', () => {
           ])
           .put({
             type: RemoveBookmark.FAILURE,
-            payload: { resourceKey: action.resourceKey, resourceType: action.resourceType }
+            payload: { resourceKey: action.payload.resourceKey, resourceType: action.payload.resourceType }
           })
           .run();
       });

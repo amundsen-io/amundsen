@@ -17,43 +17,53 @@ import tableOwnersReducer, { initialOwnersState, TableOwnerReducerState } from '
 import tableTagsReducer, { initialTagsState,  TableTagsReducerState } from './tags/reducer';
 
 /* ACTIONS */
-export function getTableData(key: string, searchIndex?: string, source?: string): GetTableDataRequest {
+export function getTableData(key: string, searchIndex: string = '', source: string = ''): GetTableDataRequest {
   return {
-    key,
-    searchIndex,
-    source,
+    payload: {
+      key,
+      searchIndex,
+      source,
+    },
     type: GetTableData.REQUEST,
   };
 };
 export function getTableDescription(onSuccess?: () => any, onFailure?: () => any): GetTableDescriptionRequest {
   return {
-    onSuccess,
-    onFailure,
+    payload: {
+      onSuccess,
+      onFailure,
+    },
     type: GetTableDescription.REQUEST,
   };
 };
 export function updateTableDescription(newValue: string, onSuccess?: () => any, onFailure?: () => any): UpdateTableDescriptionRequest {
   return {
-    newValue,
-    onSuccess,
-    onFailure,
+    payload: {
+      newValue,
+      onSuccess,
+      onFailure,
+    },
     type: UpdateTableDescription.REQUEST,
   };
 };
 export function getColumnDescription(columnIndex: number, onSuccess?: () => any, onFailure?: () => any): GetColumnDescriptionRequest {
   return {
-    onSuccess,
-    onFailure,
-    columnIndex,
+    payload: {
+      onSuccess,
+      onFailure,
+      columnIndex,
+    },
     type: GetColumnDescription.REQUEST,
   };
 };
 export function updateColumnDescription(newValue: string, columnIndex: number, onSuccess?: () => any, onFailure?: () => any): UpdateColumnDescriptionRequest {
   return {
-    newValue,
-    columnIndex,
-    onSuccess,
-    onFailure,
+    payload: {
+      newValue,
+      columnIndex,
+      onSuccess,
+      onFailure,
+    },
     type: UpdateColumnDescription.REQUEST,
   };
 };
@@ -61,7 +71,7 @@ export function getLastIndexed(): GetLastIndexedRequest {
   return { type: GetLastIndexed.REQUEST };
 };
 export function getPreviewData(queryParams: PreviewQueryParams): GetPreviewDataRequest {
-  return { queryParams, type: GetPreviewData.REQUEST };
+  return { payload: { queryParams }, type: GetPreviewData.REQUEST };
 };
 
 /* REDUCER */

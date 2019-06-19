@@ -20,7 +20,7 @@ import {
 
 export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
   let response;
-  const { resourceKey, resourceType } = action;
+  const { resourceKey, resourceType } = action.payload;
 
   try {
     yield call(addBookmark, resourceKey, resourceType);
@@ -39,7 +39,7 @@ export function* addBookmarkWatcher(): SagaIterator {
 
 export function* removeBookmarkWorker(action: RemoveBookmarkRequest): SagaIterator {
   let response;
-  const { resourceKey, resourceType } = action;
+  const { resourceKey, resourceType } = action.payload;
   try {
     response = yield call(removeBookmark, resourceKey, resourceType);
     yield put({ type: RemoveBookmark.SUCCESS, payload: { resourceKey, resourceType }});
@@ -68,7 +68,7 @@ export function* getBookmarksWatcher(): SagaIterator {
 
 export function* getBookmarkForUserWorker(action: GetBookmarksForUserRequest): SagaIterator {
   let response;
-  const { userId } = action;
+  const { userId } = action.payload;
   try {
     response = yield call(getBookmarks, userId);
     yield put({ type: GetBookmarksForUser.SUCCESS, payload: { userId, bookmarks: response.bookmarks } });
