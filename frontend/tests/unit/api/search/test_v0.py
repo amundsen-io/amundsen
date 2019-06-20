@@ -7,7 +7,7 @@ from http import HTTPStatus
 from amundsen_application import create_app
 from amundsen_application.api.search.v0 import _create_url_with_field, SEARCH_ENDPOINT
 
-local_app = create_app('amundsen_application.config.LocalConfig', 'static/templates')
+local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
 
 class SearchTest(unittest.TestCase):

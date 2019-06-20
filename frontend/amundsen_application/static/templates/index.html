@@ -1,15 +1,8 @@
 <html>
   <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= htmlWebpackPlugin.options.config.google.key%>"></script>
-    <script>
-      const google = <%= JSON.stringify(htmlWebpackPlugin.options.config.google) %>;
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', google.key);
-      gtag('create', google.key, { 'siteSpeedSampleRate': google.sampleRate });
-    </script>
+{% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
+{% include 'fragments/google-analytics-loader.html' %}
+{% endif %}
     <meta charset="utf-8">
     <link rel="shortcut icon" href="/static/images/favicon.png">
     <link href="/static/dist/main.css" type="text/css" rel="stylesheet"/>
@@ -20,19 +13,7 @@
     <script src="/static/dist/vendors.js" type="text/javascript"></script>
     <script src="/static/dist/main.js" type="text/javascript"></script>
   </body>
-  <script type="text/javascript">
-    // Feature detects Navigation Timing API support.
-    if (window.performance) {
-      // Gets the number of milliseconds since page load
-      // (and rounds the result since the value must be an integer).
-      const timeSincePageLoad = Math.round(performance.now());
-
-      // Sends the timing event to Google Analytics.
-      gtag('event', 'timing_complete', {
-        'name': 'load',
-        'value': timeSincePageLoad,
-        'event_category': 'JS Dependencies'
-      });
-    }
-  </script>
+{% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
+{% include 'fragments/google-analytics-post-loader.html' %}
+{% endif %}
 </html>
