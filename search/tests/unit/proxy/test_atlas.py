@@ -5,7 +5,7 @@ from mock import MagicMock, patch
 from typing import List, Callable, Tuple
 
 from search_service import create_app, config
-from search_service.models.search_result import SearchTableResult
+from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.proxy import get_proxy_client
 
@@ -203,31 +203,31 @@ class TestAtlasProxy(unittest.TestCase):
         self.assertEqual(client.page_size, 1337)
 
     def test_search_normal(self):
-        expected = SearchTableResult(total_results=1,
-                                     results=[Table(name=self._qualified('table', 'Table1'),
-                                                    key=f"TEST_ENTITY://TEST_CLUSTER."
-                                                        f"{self._qualified('db', 'TEST_DB')}/"
-                                                    f"{self._qualified('table', 'Table1')}",
-                                                    description='Dummy Description',
-                                                    cluster='TEST_CLUSTER',
-                                                    database='TEST_ENTITY',
-                                                    schema_name=self._qualified('db', 'TEST_DB'),
-                                                    column_names=[
-                                                    # 'column@name'
-                                                    ],
-                                                    tags=['PII_DATA'],
-                                                    last_updated_epoch=123),
-                                              Table(name='Table2',
-                                                    key=f"TEST_ENTITY://./Table2",
-                                                    description='Dummy Description',
-                                                    cluster='',
-                                                    database='TEST_ENTITY',
-                                                    schema_name='',
-                                                    column_names=[
-                                                        # 'column@name'
-                                                    ],
-                                                    tags=[],
-                                                    last_updated_epoch=234)])
+        expected = SearchResult(total_results=1,
+                                results=[Table(name=self._qualified('table', 'Table1'),
+                                               key=f"TEST_ENTITY://TEST_CLUSTER."
+                                                   f"{self._qualified('db', 'TEST_DB')}/"
+                                                   f"{self._qualified('table', 'Table1')}",
+                                               description='Dummy Description',
+                                               cluster='TEST_CLUSTER',
+                                               database='TEST_ENTITY',
+                                               schema_name=self._qualified('db', 'TEST_DB'),
+                                               column_names=[
+                                               # 'column@name'
+                                               ],
+                                               tags=['PII_DATA'],
+                                               last_updated_epoch=123),
+                                         Table(name='Table2',
+                                               key=f"TEST_ENTITY://./Table2",
+                                               description='Dummy Description',
+                                               cluster='',
+                                               database='TEST_ENTITY',
+                                               schema_name='',
+                                               column_names=[
+                                                   # 'column@name'
+                                               ],
+                                               tags=[],
+                                               last_updated_epoch=234)])
         self.proxy.atlas.search_dsl = self.dsl_inject(
             [
                 (lambda dsl: "select count()" in dsl and "Table" in dsl,
@@ -241,7 +241,7 @@ class TestAtlasProxy(unittest.TestCase):
             self.entity2,
             self.db_entity
         ])
-        resp = self.proxy.fetch_search_results(query_term="Table")
+        resp = self.proxy.fetch_table_search_results(query_term="Table")
         self.assertTrue(resp.total_results == 2, "there should be 2 search result")
         self.assertIsInstance(resp.results[0], Table, "Search result received is not of 'Table' type!")
         self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]),
@@ -250,8 +250,8 @@ class TestAtlasProxy(unittest.TestCase):
                              "Search Result doesn't match with expected result!")
 
     def test_search_empty(self):
-        expected = SearchTableResult(total_results=0,
-                                     results=[])
+        expected = SearchResult(total_results=0,
+                                results=[])
         self.proxy.atlas.search_dsl = self.dsl_inject([
             (lambda dsl: "select count()" in dsl,
              {"attributes": {"name": ["count()"], "values": [[0]]}}),
@@ -263,9 +263,9 @@ class TestAtlasProxy(unittest.TestCase):
             self.entity2,
             self.db_entity
         ])
-        resp = self.proxy.fetch_search_results(query_term="Table1")
+        resp = self.proxy.fetch_table_search_results(query_term="Table1")
         self.assertTrue(resp.total_results == 0, "there should no search results")
-        self.assertIsInstance(resp, SearchTableResult, "Search result received is not of 'SearchTableResult' type!")
+        self.assertIsInstance(resp, SearchResult, "Search result received is not of 'SearchResult' type!")
         self.assertDictEqual(vars(resp), vars(expected),
                              "Search Result doesn't match with expected result!")
 
@@ -273,20 +273,20 @@ class TestAtlasProxy(unittest.TestCase):
         fields = ['tag', 'schema', 'table', 'column']
         for field in fields:
 
-            expected = SearchTableResult(total_results=1,
-                                         results=[Table(name=self._qualified('table', 'Table1'),
-                                                        key=f"TEST_ENTITY://TEST_CLUSTER"
-                                                            f".{self._qualified('db', 'TEST_DB')}/"
-                                                        f"{self._qualified('table', 'Table1')}",
-                                                        description='Dummy Description',
-                                                        cluster='TEST_CLUSTER',
-                                                        database='TEST_ENTITY',
-                                                        schema_name=self._qualified('db', 'TEST_DB'),
-                                                        column_names=[
-                                                        # 'column@name'
-                                                        ],
-                                                        tags=['PII_DATA'],
-                                                        last_updated_epoch=123)])
+            expected = SearchResult(total_results=1,
+                                    results=[Table(name=self._qualified('table', 'Table1'),
+                                                   key=f"TEST_ENTITY://TEST_CLUSTER"
+                                                       f".{self._qualified('db', 'TEST_DB')}/"
+                                                       f"{self._qualified('table', 'Table1')}",
+                                                   description='Dummy Description',
+                                                   cluster='TEST_CLUSTER',
+                                                   database='TEST_ENTITY',
+                                                   schema_name=self._qualified('db', 'TEST_DB'),
+                                                   column_names=[
+                                                   # 'column@name'
+                                                   ],
+                                                   tags=['PII_DATA'],
+                                                   last_updated_epoch=123)])
             self.proxy.atlas.search_dsl = self.dsl_inject(
                 [
                     (lambda dsl: "select count()" in dsl,
@@ -299,7 +299,7 @@ class TestAtlasProxy(unittest.TestCase):
                 self.entity1,
                 self.db_entity
             ])
-            resp = self.proxy.fetch_search_results_with_field(
+            resp = self.proxy.fetch_table_search_results_with_field(
                 query_term=field + "Table1",
                 field_name=field,
                 field_value="Table1"
@@ -310,8 +310,8 @@ class TestAtlasProxy(unittest.TestCase):
                                  "Search Result doesn't match with expected result!")
 
     def test_unknown_field(self):
-        expected = SearchTableResult(total_results=0,
-                                     results=[])
+        expected = SearchResult(total_results=0,
+                                results=[])
         self.proxy.atlas.search_dsl = self.dsl_inject([
             (lambda dsl: "select count()" in dsl,
              {"attributes": {"name": ["count()"], "values": [[0]]}}),
@@ -323,8 +323,8 @@ class TestAtlasProxy(unittest.TestCase):
             self.entity2,
             self.db_entity
         ])
-        resp = self.proxy.fetch_search_results(query_term="unknown:Table1")
+        resp = self.proxy.fetch_table_search_results(query_term="unknown:Table1")
         self.assertTrue(resp.total_results == 0, "there should no search results")
-        self.assertIsInstance(resp, SearchTableResult, "Search result received is not of 'SearchTableResult' type!")
+        self.assertIsInstance(resp, SearchResult, "Search result received is not of 'SearchResult' type!")
         self.assertDictEqual(vars(resp), vars(expected),
                              "Search Result doesn't match with expected result!")

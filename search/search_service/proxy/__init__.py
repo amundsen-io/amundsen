@@ -37,6 +37,6 @@ def get_proxy_client() -> BaseProxy:
             # number of results per search page
             page_size = current_app.config.get(config.SEARCH_PAGE_SIZE_KEY, DEFAULT_PAGE_SIZE)
 
-            _proxy_client = client(host=host, index=None, user=user, password=password, client=obj, page_size=page_size)
+            _proxy_client = client(host=host, user=user, password=password, client=obj, page_size=page_size)
 
     return _proxy_client

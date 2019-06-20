@@ -7,7 +7,7 @@ from atlasclient.models import Entity, EntityCollection
 from flask import current_app as app
 from typing import List, Dict
 
-from search_service.models.search_result import SearchTableResult
+from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.proxy import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
@@ -29,13 +29,11 @@ class AtlasProxy(BaseProxy):
 
     def __init__(self, *,
                  host: str = None,
-                 index: str = None,
                  user: str = '',
                  password: str = '',
                  client: Atlas = None,
                  page_size: int = 10) -> None:
         self.atlas = client or Atlas(host, username=user, password=password)
-        self.index = index
         self.page_size = page_size
 
     @staticmethod
@@ -113,11 +111,12 @@ class AtlasProxy(BaseProxy):
         return table_results
 
     @timer_with_counter
-    def fetch_search_results_with_field(self, *,
-                                        query_term: str,
-                                        field_name: str,
-                                        field_value: str,
-                                        page_index: int = 0) -> SearchTableResult:
+    def fetch_table_search_results_with_field(self, *,
+                                              query_term: str,
+                                              field_name: str,
+                                              field_value: str,
+                                              page_index: int = 0,
+                                              index: str = '') -> SearchResult:
         """
         Query Atlas and return results as list of Table objects.
         Per field name we have a count query and a query for the tables.
@@ -127,7 +126,8 @@ class AtlasProxy(BaseProxy):
         :param field_name: field name to do the searching(e.g schema_name, tag_names)
         :param field_value: value for the field for filtering
         :param page_index: index of search page user is currently on
-        :return: SearchTableResult Object
+        :param index: search index (different resource corresponding to different index
+        :return: SearchResult Object
         :return:
         """
 
@@ -166,12 +166,13 @@ class AtlasProxy(BaseProxy):
         except BadRequest:
             LOGGER.error("Atlas Search DSL error with the following query:", sql)
 
-        return SearchTableResult(total_results=count_value, results=tables)
+        return SearchResult(total_results=count_value, results=tables)
 
     @timer_with_counter
-    def fetch_search_results(self, *,
-                             query_term: str,
-                             page_index: int = 0) -> SearchTableResult:
+    def fetch_table_search_results(self, *,
+                                   query_term: str,
+                                   page_index: int = 0,
+                                   index: str = '') -> SearchResult:
         """
         Query Atlas and return results as list of Table objects
         We use the Atlas DSL for querying the tables.
@@ -179,12 +180,13 @@ class AtlasProxy(BaseProxy):
 
         :param query_term: search query term
         :param page_index: index of search page user is currently on
-        :return: SearchTableResult Object
+        :param index: search index (different resource corresponding to different index)
+        :return: SearchResult Object
         """
 
         if not query_term:
             # return empty result for blank query term
-            return SearchTableResult(total_results=0, results=[])
+            return SearchResult(total_results=0, results=[])
 
         # define query
         sql = f"Table from Table " \
@@ -209,4 +211,10 @@ class AtlasProxy(BaseProxy):
             for s in search_results:
                 tables.extend(self._parse_results(response=s.entities))
 
-        return SearchTableResult(total_results=count_value, results=tables)
+        return SearchResult(total_results=count_value, results=tables)
+
+    def fetch_user_search_results(self, *,
+                                  query_term: str,
+                                  page_index: int = 0,
+                                  index: str = '') -> SearchResult:
+        pass
