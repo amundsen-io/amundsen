@@ -1,0 +1,9 @@
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= htmlWebpackPlugin.options.config.google.key%>"></script>
+    <script>
+      const google = <%= JSON.stringify(htmlWebpackPlugin.options.config.google) %>;
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', google.key);
+      gtag('create', google.key, { 'siteSpeedSampleRate': google.sampleRate });
+    </script>

@@ -1,9 +1,28 @@
 import * as path from 'path';
+import * as fs from 'fs';
 import * as webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 import appConfig from './js/config/config';
+
+const walkSync = (dir, filelist = []) => {
+  fs.readdirSync(dir).forEach(file => {
+    filelist = fs.statSync(path.join(dir, file)).isDirectory()
+      ? walkSync(path.join(dir, file), filelist)
+      : filelist.concat(path.join(dir, file));
+  });
+  return filelist;
+};
+const templatesList = walkSync('templates');
+const htmlWebpackPluginConfig = templatesList.map(file => {
+  return new HtmlWebpackPlugin({
+      filename: file,
+      template: file,
+      config: appConfig,
+      inject: false,
+    });
+});
 
 const config: webpack.Configuration = {
     entry: {
@@ -51,17 +70,7 @@ const config: webpack.Configuration = {
     },
     plugins: [
       new MiniCssExtractPlugin(),
-      new HtmlWebpackPlugin({
-        template: path.join(__dirname, 'templates/index.html'),
-        filename: 'templates/index.html',
-        config: appConfig,
-        inject: false,
-      }),
-      new HtmlWebpackPlugin({
-        template: path.join(__dirname, 'templates/email.html'),
-        filename: 'templates/email.html',
-        inject: false,
-      }),
+      ...htmlWebpackPluginConfig,
     ],
     optimization: {
       splitChunks: {

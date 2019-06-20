@@ -8,7 +8,7 @@ from flask import Response, jsonify, make_response
 from amundsen_application import create_app
 from amundsen_application.base.base_mail_client import BaseMailClient
 
-local_app = create_app('amundsen_application.config.LocalConfig', 'static/templates')
+local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
 
 class MockMailClient(BaseMailClient):
