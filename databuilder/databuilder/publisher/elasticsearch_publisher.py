@@ -42,7 +42,7 @@ class ElasticsearchPublisher(Publisher):
         "mappings":{
             "table":{
               "properties": {
-                "table_name": {
+                "name": {
                   "type":"text",
                   "analyzer": "simple",
                   "fields": {
@@ -60,11 +60,11 @@ class ElasticsearchPublisher(Publisher):
                     }
                   }
                 },
-                "table_last_updated_epoch": {
+                "last_updated_epoch": {
                   "type": "date",
                   "format": "epoch_second"
                 },
-                "table_description": {
+                "description": {
                   "type": "text",
                   "analyzer": "simple"
                 },
@@ -81,7 +81,7 @@ class ElasticsearchPublisher(Publisher):
                   "type": "text",
                   "analyzer": "simple"
                 },
-                "tag_names": {
+                "tags": {
                   "type": "keyword"
                 },
                 "cluster": {
@@ -90,7 +90,7 @@ class ElasticsearchPublisher(Publisher):
                 "database": {
                   "type": "text"
                 },
-                "table_key": {
+                "key": {
                   "type": "keyword"
                 },
                 "total_usage":{
