@@ -66,6 +66,6 @@ class TestStatsdUtilities(unittest.TestCase):
             mock_success_incr = MagicMock()
             mock_statsd_client.return_value.incr = mock_success_incr
 
-            es_proxy.fetch_search_results(query_term='DOES_NOT_MATTER')
+            es_proxy.fetch_table_search_results(query_term='DOES_NOT_MATTER')
 
             self.assertEqual(mock_success_incr.call_count, 1)
