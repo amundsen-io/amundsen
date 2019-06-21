@@ -14,7 +14,7 @@ It includes three microservices and a data ingestion library.
 - [amundsenfrontendlibrary](https://github.com/lyft/amundsenfrontendlibrary): Frontend service which is a Flask application with a React frontend.
 - [amundsensearchlibrary](https://github.com/lyft/amundsensearchlibrary): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching.
 - [amundsenmetadatalibrary](https://github.com/lyft/amundsenmetadatalibrary): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata.
-- [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder): Data ingestion library for building metadata graph and search index. 
+- [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder): Data ingestion library for building metadata graph and search index.
 Users could either load the data with [a python script](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
 or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/blob/master/example/dags/sample_dag.py) importing the library.
 
@@ -29,30 +29,45 @@ or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/blob/master
 Please note that the mock images only served as demonstration purpose.
 
 - **Landing Page**: The landing page for Amundsen including 1. search bars; 2. popular used tables;
-    
+
     ![](docs/img/landing_page.png)
-    
+
 - **Table Detail Page**: Visualization of a Hive / Redshift table
-    
+
     ![](docs/img/table_detail_page.png)
-    
+
 - **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
-    
+
     ![](docs/img/column_details.png)
-    
+
 - **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset)
-    
+
     ![](docs/img/data_preview.png)
 
 ## Get Involved in the Community
 
-Want help or want to help? 
+Want help or want to help?
 Use the button in our [header](https://github.com/lyft/amundsenfrontendlibrary#amundsen) to join our slack channel. Please join our [mailing list](https://groups.google.com/forum/#!forum/amundsen-dev) as well.
+
+## Powered By
+
+Here is the list of organizations that are using Amundsen today. If your organization uses Amundsen, please file a PR and update this list.
+
+Currently **officially** using Amundsen:
+
+1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
+1. [Data Sprints](https://datasprints.com/)
+1. [Everfi](https://everfi.com/)
+1. [ING](https://www.ing.com/Home.htm)
+1. [LMC](https://www.lmc.eu/cs/)
+1. [Lyft](https://www.lyft.com/)
+1. [Square](https://squareup.com/us/en)
+1. [Workday](https://www.workday.com/en-us/homepage.html)
 
 ## Getting started
 
-Please visit the Amundsen documentation for help with [installing Amundsen](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#install-standalone-application-directly-from-the-source) 
-and getting a [quick start](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) with dummy data 
+Please visit the Amundsen documentation for help with [installing Amundsen](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#install-standalone-application-directly-from-the-source)
+and getting a [quick start](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) with dummy data
 or an [overview of the architecture](docs/architecture.md).
 
 ## Architecture Overview
