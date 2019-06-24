@@ -33,6 +33,25 @@ class TestUser(unittest.TestCase):
         nodes = self.user.create_nodes()
         self.assertEquals(len(nodes), 1)
 
+    def test_create_node_additional_attr(self):
+        test_user = User(first_name='test_first',
+                         last_name='test_last',
+                         name='test_first test_last',
+                         email='test@email.com',
+                         github_username='github_test',
+                         team_name='test_team',
+                         employee_type='FTE',
+                         manager_email='test_manager@email.com',
+                         slack_id='slack',
+                         is_active=True,
+                         updated_at=1,
+                         role='SWE',
+                         enable_notify=True)
+        nodes = test_user.create_nodes()
+        self.assertEqual(nodes[0]['email'], 'test@email.com')
+        self.assertEqual(nodes[0]['role'], 'SWE')
+        self.assertTrue(nodes[0]['enable_notify'])
+
     def test_create_relation(self):
         # type: () -> None
         relations = self.user.create_relation()

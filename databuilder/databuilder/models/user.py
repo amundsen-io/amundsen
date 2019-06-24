@@ -1,3 +1,4 @@
+import copy
 from typing import Union, Dict, Any  # noqa: F401
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
@@ -40,6 +41,7 @@ class User(Neo4jCsvSerializable):
                  slack_id='',  # type: str
                  is_active=True,  # type: bool
                  updated_at=0,  # type: int
+                 **kwargs  # type: Dict
                  ):
         # type: (...) -> None
         """
@@ -57,6 +59,7 @@ class User(Neo4jCsvSerializable):
         :param updated_at: everytime we update the node, we will push the timestamp.
                            then we will have a cron job to update the ex-employee nodes based on
                            the case if this timestamp hasn't been updated for two weeks.
+        :param kwargs: Any K/V attributes we want to update the
         """
         self.first_name = first_name
         self.last_name = last_name
@@ -72,6 +75,9 @@ class User(Neo4jCsvSerializable):
         self.slack_id = slack_id
         self.is_active = is_active
         self.updated_at = updated_at
+        self.attrs = None
+        if kwargs:
+            self.attrs = copy.deepcopy(kwargs)
 
         self._node_iter = iter(self.create_nodes())
         self._rel_iter = iter(self.create_relation())
@@ -123,6 +129,12 @@ class User(Neo4jCsvSerializable):
         result_node[User.USER_NODE_EMPLOYEE_TYPE] = self.employee_type if self.employee_type else ''
         result_node[User.USER_NODE_SLACK_ID] = self.slack_id if self.slack_id else ''
         result_node[User.USER_NODE_UPDATED_AT] = self.updated_at if self.updated_at else 0
+
+        if self.attrs:
+            print (self.attrs)
+            for k, v in self.attrs.items():
+                if k not in result_node:
+                    result_node[k] = v
 
         return [result_node]
 
