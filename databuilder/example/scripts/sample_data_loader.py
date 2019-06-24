@@ -149,8 +149,31 @@ def load_user_data_from_csv(file_name):
         conn.commit()
 
 
+def load_application_data_from_csv(file_name):
+    conn = create_connection(DB_FILE)
+    if conn:
+        cur = conn.cursor()
+        cur.execute('drop table if exists test_application_metadata')
+        cur.execute('create table if not exists test_application_metadata '
+                    '(task_id VARCHAR(64) NOT NULL , '
+                    'dag_id VARCHAR(64) NOT NULL , '
+                    'exec_date VARCHAR(64) NOT NULL, '
+                    'application_url_template VARCHAR(128) NOT NULL)')
+        file_loc = 'example/sample_data/' + file_name
+        with open(file_loc, 'r') as fin:
+            dr = csv.DictReader(fin)
+            to_db = [(i['task_id'],
+                      i['dag_id'],
+                      i['exec_date'],
+                      i['application_url_template']) for i in dr]
+
+        cur.executemany("INSERT INTO test_application_metadata (task_id, dag_id, "
+                        "exec_date, application_url_template) VALUES (?, ?, ?, ?);", to_db)
+        conn.commit()
+
+
 # todo: Add a second model
-def create_sample_job(table_name, model_name):
+def create_sample_job(table_name, model_name, transformer=NoopTransformer()):
     sql = textwrap.dedent("""
     select * from {table_name};
     """).format(table_name=table_name)
@@ -164,7 +187,7 @@ def create_sample_job(table_name, model_name):
 
     task = DefaultTask(extractor=sql_extractor,
                        loader=csv_loader,
-                       transformer=NoopTransformer())
+                       transformer=transformer)
 
     job_config = ConfigFactory.from_dict({
         'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): SQLITE_CONN_STRING,
@@ -279,9 +302,13 @@ def create_es_publisher_sample_job():
 
 
 if __name__ == "__main__":
+    # Uncomment next line to get INFO level logging
+    # logging.basicConfig(level=logging.INFO)
+
     load_table_data_from_csv('sample_table.csv')
     load_col_data_from_csv('sample_col.csv')
     load_user_data_from_csv('sample_user.csv')
+    load_application_data_from_csv('sample_application.csv')
     if create_connection(DB_FILE):
         # start table job
         job1 = create_sample_job('test_table_metadata',
@@ -297,6 +324,11 @@ if __name__ == "__main__":
         job_user = create_sample_job('test_user_metadata',
                                      'databuilder.models.user.User')
         job_user.launch()
+
+        # start application job
+        job_app = create_sample_job('test_application_metadata',
+                                    'databuilder.models.application.Application')
+        job_app.launch()
 
         # start last updated job
         job_lastupdated = create_last_updated_job()

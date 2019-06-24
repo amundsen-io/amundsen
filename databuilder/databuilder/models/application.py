@@ -98,7 +98,7 @@ class Application(Neo4jCsvSerializable):
     def create_relation(self):
         # type: () -> List[Dict[str, Any]]
         """
-        Create a list of relation map between watermark record with original hive table
+        Create a list of relations between application and table nodes
         :return:
         """
         results = [{
