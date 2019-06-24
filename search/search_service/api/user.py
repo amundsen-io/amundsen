@@ -55,7 +55,7 @@ class SearchUserAPI(Resource):
             results = self.proxy.fetch_user_search_results(
                 query_term=args['query_term'],
                 page_index=args['page_index'],
-                index=args.get(args['index'])
+                index=args.get('index')
             )
 
             return results, HTTPStatus.OK
