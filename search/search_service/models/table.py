@@ -1,7 +1,8 @@
-from typing import Iterable
+from typing import Iterable, Set
+from .base import Base
 
 
-class Table:
+class Table(Base):
     def __init__(self, *,
                  name: str,
                  key: str,
@@ -21,6 +22,20 @@ class Table:
         self.column_names = column_names
         self.tags = tags
         self.last_updated_epoch = last_updated_epoch
+
+    @classmethod
+    def get_attrs(cls) -> Set:
+        return {
+            'name',
+            'key',
+            'description',
+            'cluster',
+            'database',
+            'schema_name',
+            'column_names',
+            'tags',
+            'last_updated_epoch'
+        }
 
     def __repr__(self) -> str:
         return 'Table(name={!r}, key={!r}, description={!r}, ' \

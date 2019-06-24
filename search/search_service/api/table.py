@@ -99,11 +99,11 @@ class SearchTableFieldAPI(Resource):
 
         try:
             results = self.proxy.fetch_table_search_results_with_field(
-                query_term=args.get('query_term'),
+                query_term=args.get('query_term', ''),
                 field_name=field_name,
                 field_value=field_value,
                 page_index=args['page_index'],
-                index=args['index']
+                index=args.get('index')
             )
 
             return results, HTTPStatus.OK
