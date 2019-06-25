@@ -1,6 +1,7 @@
 from collections import namedtuple
 from datetime import date, timedelta
 import logging
+import re
 from time import sleep
 
 import google.oauth2.service_account
@@ -30,6 +31,7 @@ class BigQueryTableUsageExtractor(Extractor):
     PAGE_SIZE_KEY = 'page_size'
     KEY_PATH_KEY = 'key_path'
     _DEFAULT_SCOPES = ('https://www.googleapis.com/auth/cloud-platform',)
+    EMAIL_PATTERN = 'email_pattern'
     NUM_RETRIES = 3
     DELAY_TIME = 10
 
@@ -55,11 +57,13 @@ class BigQueryTableUsageExtractor(Extractor):
             BigQueryTableUsageExtractor.PAGE_SIZE_KEY,
             BigQueryTableUsageExtractor.DEFAULT_PAGE_SIZE)
 
+        self.email_pattern = conf.get_string(BigQueryTableUsageExtractor.EMAIL_PATTERN, None)
+
         self.table_usage_counts = {}
         self._count_usage()
         self.iter = iter(self.table_usage_counts)
 
-    def _count_usage(self):
+    def _count_usage(self):  # noqa: C901
         # type: () -> None
         count = 0
         for entry in self._retrieve_records():
@@ -88,6 +92,12 @@ class BigQueryTableUsageExtractor(Extractor):
                 # case, referencedTables has been observed to be empty:
                 # https://cloud.google.com/logging/docs/reference/audit/bigquery/rest/Shared.Types/AuditData#JobStatistics
                 continue
+
+            # if email filter is provided, only the email matched with filter will be recorded.
+            if self.email_pattern:
+                if not re.match(self.email_pattern, email):
+                    # the usage account not match email pattern
+                    continue
 
             numTablesProcessed = job['jobStatistics']['totalTablesProcessed']
             if len(refTables) != numTablesProcessed:

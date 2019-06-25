@@ -288,3 +288,48 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
 
         result = extractor.extract()
         self.assertIsNone(result)
+
+    @patch('databuilder.extractor.bigquery_usage_extractor.build')
+    def test_email_filter_not_counted(self, mock_build):
+        config_dict = {
+            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
+                'your-project-here',
+            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.EMAIL_PATTERN):
+                'emailFilter',
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(CORRECT_DATA)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+        self.assertIsNone(result)
+
+    @patch('databuilder.extractor.bigquery_usage_extractor.build')
+    def test_email_filter_counted(self, mock_build):
+        config_dict = {
+            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
+                'your-project-here',
+            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.EMAIL_PATTERN):
+                '.*@test.com.*',
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(CORRECT_DATA)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+        self.assertIsInstance(result, tuple)
+
+        (key, value) = result
+        self.assertIsInstance(key, TableColumnUsageTuple)
+        self.assertIsInstance(value, int)
+
+        self.assertEqual(key.database, 'bigquery')
+        self.assertEqual(key.cluster, 'bigquery-public-data')
+        self.assertEqual(key.schema, 'austin_incidents')
+        self.assertEqual(key.table, 'incidents_2008')
+        self.assertEqual(key.email, 'your-user-here@test.com')
+        self.assertEqual(value, 1)
