@@ -31,15 +31,22 @@
     margin: -10px -4px 0;
     padding: 10px 4px 0;
 
-    .title-row {
-      display: flex;
-      flex-direction: row;
+    .title-section {
+      width: 100%;
+      overflow-wrap: break-word;
 
-      .name {
-        margin-right: 8px;
-      }
-      .column-type {
-        margin-top: 4px;
+      .title-row {
+        display: flex;
+        flex-direction: row;
+
+        .name {
+          margin-right: 8px;
+          max-width: 85%;
+        }
+        .column-type {
+          margin-top: 4px;
+          max-width: 15%;
+        }
       }
     }
 
