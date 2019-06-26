@@ -161,7 +161,6 @@ export default function reducer(state: TableMetadataReducerState = initialState,
     case GetLastIndexed.SUCCESS:
       return { ...state, lastIndexed: (<GetLastIndexedResponse>action).payload.lastIndexedEpoch };
     case GetPreviewData.FAILURE:
-      return { ...state, preview: initialPreviewState };
     case GetPreviewData.SUCCESS:
       return { ...state, preview: (<GetPreviewDataResponse>action).payload };
     case UpdateTableOwner.REQUEST:

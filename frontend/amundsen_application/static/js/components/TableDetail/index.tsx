@@ -195,8 +195,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     }
   };
 
-  getAvatarForLineage = () => {
-    const href = AppConfig.tableLineage.urlGenerator(this.database, this.cluster, this.schema, this.tableName);
+  renderAvatarForLineage = (href: string) => {
     return (
       <a href={ href } target='_blank' id="explore-lineage" onClick={logClick}>
         <AvatarLabel label={ this.displayName } src={ AppConfig.tableLineage.iconPath }/>
@@ -216,6 +215,14 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     const data = this.state.tableData;
 
     const entityCardSections = [];
+
+    // "Data Store" section
+    const dataStoreRenderer = () => {
+      return (
+        <label className="m-auto">{ data.database.toUpperCase() }</label>
+      );
+    };
+    entityCardSections.push({'title': 'Data Store', 'contentRenderer': dataStoreRenderer, 'isEditable': false});
 
     // "Owned By" section
     const ownerSectionRenderer = () => {
@@ -271,23 +278,27 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
 
     // "Lineage" Section
     if (AppConfig.tableLineage.isEnabled) {
-      entityCardSections.push({
-        'title': 'Table Lineage' + (AppConfig.tableLineage.isBeta ? ' (beta)' : ''),
-        'contentRenderer': this.getAvatarForLineage,
-        'isEditable': false
-      });
+      const href = AppConfig.tableLineage.urlGenerator(this.database, this.cluster, this.schema, this.tableName);
+      if (!!href) {
+        entityCardSections.push({
+          'title': 'Table Lineage' + (AppConfig.tableLineage.isBeta ? ' (beta)' : ''),
+          'contentRenderer': () => { return this.renderAvatarForLineage(href) },
+          'isEditable': false
+        });
+      };
     }
 
     // "Preview" Section
     const previewSectionRenderer = () => {
+      const exploreSqlHref = AppConfig.tableProfile.isExploreEnabled ? this.getExploreSqlUrl() : '';
       return (
         <div>
           <DataPreviewButton modalTitle={ this.displayName } />
           {
-            AppConfig.tableProfile.isExploreEnabled &&
+            exploreSqlHref &&
               <a
                 className="btn btn-default btn-block"
-                href={this.getExploreSqlUrl()}
+                href={exploreSqlHref}
                 role="button"
                 target="_blank"
                 id="explore-sql"
