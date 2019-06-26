@@ -45,6 +45,21 @@ Please note that the mock images only served as demonstration purpose.
 Want help or want to help?
 Use the button in our [header](https://github.com/lyft/amundsen#amundsen) to join our slack channel. Please join our [mailing list](https://groups.google.com/forum/#!forum/amundsen-dev) as well.
 
+## Powered By
+
+Here is the list of organizations that are using Amundsen today. If your organization uses Amundsen, please file a PR and update this list.
+
+Currently **officially** using Amundsen:
+
+1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
+1. [Data Sprints](https://datasprints.com/)
+1. [Everfi](https://everfi.com/)
+1. [ING](https://www.ing.com/Home.htm)
+1. [LMC](https://www.lmc.eu/cs/)
+1. [Lyft](https://www.lyft.com/)
+1. [Square](https://squareup.com/us/en)
+1. [Workday](https://www.workday.com/en-us/homepage.html)
+
 ## Getting started
 
 Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
