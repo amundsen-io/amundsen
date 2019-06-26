@@ -10,7 +10,7 @@ services:
       environment:
         - ATLAS_PROVISION_EXAMPLES=true
   amundsensearch:
-      image: amundsendev/amundsen-search:latest
+      image: amundsendev/amundsen-search:1.1.1
       container_name: amundsensearch
       ports:
         - 5001:5000
@@ -19,7 +19,7 @@ services:
       networks:
         - amundsennet
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:latest
+      image: amundsendev/amundsen-metadata:1.0.11
       container_name: amundsenmetadata
       depends_on:
         - atlas
@@ -34,7 +34,7 @@ services:
         - PROXY_PORT=21000
         - PROXY_CLIENT=ATLAS
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:latest
+      image: amundsendev/amundsen-frontend:1.0.6
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata
