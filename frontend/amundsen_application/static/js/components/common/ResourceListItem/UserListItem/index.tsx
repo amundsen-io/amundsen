@@ -19,7 +19,7 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
 
   getLink = () => {
     const { user, logging } = this.props;
-    return `/user/${user.id}/?index=${logging.index}&source=${logging.source}`;
+    return `/user/${user.user_id}/?index=${logging.index}&source=${logging.source}`;
   };
 
   render() {
@@ -27,25 +27,25 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
     return (
       <li className="list-group-item">
         <Link className="resource-list-item user-list-item" to={ this.getLink() }>
-          <Avatar name={ user.name } size={ 24 } round={ true } />
+          <Avatar name={ user.display_name } size={ 24 } round={ true } />
           <div className="content">
-            <div className="col-xs-12 col-sm-6">
+            <div className="col-xs-12">
               <div className="title-2">
-                { user.name }
+                { user.display_name }
                 {
-                  !user.active &&
+                  !user.is_active &&
                   <Flag text="Alumni" labelStyle='danger' />
                 }
               </div>
               <div className="body-secondary-3">
-                { `${user.role} on ${user.team_name}` }
-              </div>
-            </div>
-            <div className="hidden-xs col-sm-6">
-              <div className="title-3">Frequently Uses</div>
-              <div className="body-secondary-3 truncated">
-                { /*TODO Fill this with a real value*/ }
-                <label>{ user.title }</label>
+                {
+                  !user.role_name && user.team_name &&
+                  `${user.team_name}`
+                }
+                {
+                  user.role_name && user.team_name &&
+                  `${user.role_name} on ${user.team_name}`
+                }
               </div>
             </div>
           </div>

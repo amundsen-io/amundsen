@@ -10,6 +10,7 @@ from flask.blueprints import Blueprint
 
 from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
+from amundsen_application.models.user import load_user, dump_user
 
 LOGGER = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ valid_search_fields = {
 }
 
 SEARCH_ENDPOINT = '/search'
+SEARCH_USER_ENDPOINT = '/search_user'
 
 
 def _create_error_response(*, message: str, payload: Dict, status_code: int) -> Response:
@@ -69,7 +71,11 @@ def search_table() -> Response:
 
 @search_blueprint.route('/user', methods=['GET'])
 def search_user() -> Response:
-    return make_response(jsonify({'msg': 'Not implemented'}), HTTPStatus.NOT_IMPLEMENTED)
+    search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
+    page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
+    results_dict = _search_user(search_term=search_term, page_index=page_index)
+
+    return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
 
 
 def _create_url_with_field(*, search_term: str, page_index: int) -> str:
@@ -107,35 +113,18 @@ def _create_url_with_field(*, search_term: str, page_index: int) -> str:
 @action_logging
 def _search_user(*, search_term: str, page_index: int) -> Dict[str, Any]:
     """
-        call the search service endpoint and return matching results
-        :return: a json output containing search results array as 'results'
+    call the search service endpoint and return matching results
+    :return: a json output containing search results array as 'results'
 
-        Schema Defined Here: https://github.com/lyft/
-        amundsensearchlibrary/blob/master/search_service/api/search.py
-
-        TODO: Define an interface for envoy_client
-        """
+    Schema Defined Here:
+    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/user.py
+    TODO: Define an interface for envoy_client
+    """
 
     def _map_user_result(result: Dict) -> Dict:
-        return {
-            'type': 'user',
-            'active': result.get('active', None),
-            'birthday': result.get('birthday', None),
-            'department': result.get('department', None),
-            'email': result.get('email', None),
-            'first_name': result.get('first_name', None),
-            'github_username': result.get('github_username', None),
-            'id': result.get('id', None),
-            'last_name': result.get('last_name', None),
-            'manager_email': result.get('manager_email', None),
-            'name': result.get('name', None),
-            'offboarded': result.get('offboarded', None),
-            'office': result.get('office', None),
-            'role': result.get('role', None),
-            'start_date': result.get('start_date', None),
-            'team_name': result.get('team_name', None),
-            'title': result.get('title', None),
-        }
+        user_result = dump_user(load_user(result))
+        user_result['type'] = 'user'
+        return user_result
 
     users = {
         'page_index': int(page_index),
@@ -150,7 +139,31 @@ def _search_user(*, search_term: str, page_index: int) -> Dict[str, Any]:
         'users': users,
     }
 
-    return results_dict
+    try:
+        url = '{0}?query_term={1}&page_index={2}'.format(app.config['SEARCHSERVICE_BASE'] + SEARCH_USER_ENDPOINT,
+                                                         search_term,
+                                                         page_index)
+
+        response = request_search(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            results_dict['msg'] = 'Success'
+            results = response.json().get('results')
+            users['results'] = [_map_user_result(result) for result in results]
+            users['total_results'] = response.json().get('total_results')
+        else:
+            message = 'Encountered error: Search request failed'
+            results_dict['msg'] = message
+            logging.error(message)
+
+            results_dict['status_code'] = status_code
+        return results_dict
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
+        return results_dict
 
 
 @action_logging
@@ -159,8 +172,8 @@ def _search_table(*, search_term: str, page_index: int) -> Dict[str, Any]:
     call the search service endpoint and return matching results
     :return: a json output containing search results array as 'results'
 
-    Schema Defined Here: https://github.com/lyft/
-    amundsensearchlibrary/blob/master/search_service/api/search.py
+    Schema Defined Here:
+    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/search.py
 
     TODO: Define an interface for envoy_client
     """

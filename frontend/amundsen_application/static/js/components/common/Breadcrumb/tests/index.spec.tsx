@@ -25,8 +25,8 @@ describe('Breadcrumb', () => {
       });
     });
 
-    it('renders button with correct text within the Link', () => {
-      expect(subject.find(Link).find('button').text()).toEqual(props.text);
+    it('renders Link with correct text', () => {
+      expect(subject.find(Link).find('span').text()).toEqual(props.text);
     });
   });
 
@@ -44,8 +44,8 @@ describe('Breadcrumb', () => {
       });
     });
 
-    it('renders button with correct text within the Link', () => {
-      expect(subject.find(Link).find('button').text()).toEqual('Search Results');
+    it('renders Link with correct text', () => {
+      expect(subject.find(Link).find('span').text()).toEqual('Search Results');
     });
   });
 
@@ -65,8 +65,8 @@ describe('Breadcrumb', () => {
       });
     });
 
-    it('renders button with correct text within the Link', () => {
-      expect(subject.find(Link).find('button').text()).toEqual('testText');
+    it('renders Link with correct text', () => {
+      expect(subject.find(Link).find('span').text()).toEqual('testText');
     });
   });
 });

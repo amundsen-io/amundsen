@@ -21,6 +21,7 @@ class User:
                  github_username: str = None,
                  is_active: bool = True,
                  last_name: str = None,
+                 manager_email: str = None,
                  manager_fullname: str = None,
                  profile_url: str = None,
                  role_name: str = None,
@@ -35,6 +36,7 @@ class User:
         self.github_username = github_username
         self.is_active = is_active
         self.last_name = last_name
+        self.manager_email = manager_email
         self.manager_fullname = manager_fullname
         self.profile_url = profile_url
         self.role_name = role_name
@@ -53,6 +55,7 @@ class UserSchema(Schema):
     github_username = fields.Str(allow_none=True)
     is_active = fields.Bool(allow_none=True)
     last_name = fields.Str(allow_none=True)
+    manager_email = fields.Str(allow_none=True)
     manager_fullname = fields.Str(allow_none=True)
     profile_url = fields.Str(allow_none=True)
     role_name = fields.Str(allow_none=True)
@@ -77,6 +80,9 @@ class UserSchema(Schema):
             data['profile_url'] = ''
             if app.config['GET_PROFILE_URL']:
                 data['profile_url'] = app.config['GET_PROFILE_URL'](data['user_id'])
+
+        # Fallback since search and metadata use a different key for 'full_name'
+        data['full_name'] = data.get('full_name', data.get('name'))
 
         if self. _str_no_value(data.get('display_name')):
             if self._str_no_value(data.get('full_name')):

@@ -14,6 +14,10 @@ img.icon {
     background-color: $brand-color-3;
   }
 
+  &.icon-dark {
+    background-color: $text-medium;
+  }
+
   // TODO - Add other icons here
 
 

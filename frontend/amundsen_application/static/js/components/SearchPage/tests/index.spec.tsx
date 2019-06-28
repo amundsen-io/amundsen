@@ -3,6 +3,7 @@ import * as DocumentTitle from 'react-document-title';
 
 import { shallow } from 'enzyme';
 
+import AppConfig from 'config/config';
 import { ResourceType } from 'interfaces';
 import { SearchPage, SearchPageProps, mapDispatchToProps, mapStateToProps } from '../';
 import {
@@ -596,22 +597,41 @@ describe('SearchPage', () => {
   });
 
   describe('renderSearchResults', () => {
+    let props;
+    let wrapper;
+
+    beforeAll(() => {
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
+    });
+
     it('renders TabsComponent with correct props', () => {
-      const { props, wrapper } = setup({ searchTerm: 'test search' });
+      AppConfig.indexUsers.enabled = false;
       const content = shallow(wrapper.instance().renderSearchResults());
-      const expectedTabConfig = [
-        {
-          title: `${TABLE_RESOURCE_TITLE} (${props.tables.total_results})`,
-          key: ResourceType.table,
-          content: wrapper.instance().getTabContent(props.tables, TABLE_RESOURCE_TITLE),
-        }
-      ];
-      expect(content.find(TabsComponent).props()).toMatchObject({
-        activeKey: wrapper.state().selectedTab,
-        defaultTab: ResourceType.table,
-        onSelect: wrapper.instance().onTabChange,
-        tabs: expectedTabConfig,
-      });
+      const tabProps = content.find(TabsComponent).props();
+      expect(tabProps.activeKey).toEqual(wrapper.state().selectedTab);
+      expect(tabProps.defaultTab).toEqual(ResourceType.table);
+      expect(tabProps.onSelect).toEqual(wrapper.instance().onTabChange);
+
+      const firstTab = tabProps.tabs[0];
+      expect(firstTab.key).toEqual(ResourceType.table);
+      expect(firstTab.title).toEqual(`${TABLE_RESOURCE_TITLE} (${props.tables.total_results})`);
+      expect(firstTab.content).toEqual(wrapper.instance().getTabContent(props.tables, TABLE_RESOURCE_TITLE));
+    });
+
+    it('renders only one tab if people is disabled', () => {
+      AppConfig.indexUsers.enabled = false;
+      const content = shallow(wrapper.instance().renderSearchResults());
+      const tabConfig = content.find(TabsComponent).props().tabs;
+      expect(tabConfig.length).toEqual(1)
+    });
+
+    it('renders two tabs if indexUsers is enabled', () => {
+      AppConfig.indexUsers.enabled = true;
+      const content = shallow(wrapper.instance().renderSearchResults());
+      const tabConfig = content.find(TabsComponent).props().tabs;
+      expect(tabConfig.length).toEqual(2)
     });
   });
 

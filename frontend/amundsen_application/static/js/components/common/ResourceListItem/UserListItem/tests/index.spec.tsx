@@ -15,22 +15,20 @@ describe('UserListItem', () => {
       logging: { source: 'src', index: 0 },
       user: {
         type: ResourceType.user,
-        active: true,
-        birthday: null,
-        department: 'Department',
+        display_name: 'firstname lastname',
         email: 'test@test.com',
-        first_name: '',
-        github_username: '',
-        id: 0,
-        last_name: '',
-        manager_email: '',
-        name: 'Test Tester',
-        offboarded: true,
-        office: '',
-        role: '',
-        start_date: '',
-        team_name: '',
-        title: '',
+        employee_type: 'fulltime',
+        first_name: 'firstname',
+        full_name: 'firstname lastname',
+        github_username: 'githubName',
+        is_active: true,
+        last_name: 'lastname',
+        manager_fullname: 'Test Manager',
+        profile_url: 'www.test.com',
+        role_name: 'Tester',
+        slack_id: 'www.slack.com',
+        team_name: 'QA',
+        user_id: 'test0',
       },
       ...propOverrides
     };
@@ -54,14 +52,14 @@ describe('UserListItem', () => {
 
     it('renders Avatar', () => {
       expect(wrapper.find(Link).find(Avatar).props()).toMatchObject({
-        name: props.user.name,
+        name: props.user.display_name,
         size: 24,
         round: true,
       });
     });
 
     it('renders user.name', () => {
-      expect(wrapper.find('.content').children().at(0).children().at(0).children().at(0).text()).toEqual(props.user.name);
+      expect(wrapper.find('.content').children().at(0).children().at(0).children().at(0).text()).toEqual(props.user.display_name);
     });
 
     it('does not render Alumni flag if user is active', () => {
@@ -69,29 +67,27 @@ describe('UserListItem', () => {
     });
 
     it('renders description', () => {
-      expect(wrapper.find('.content').children().at(0).children().at(1).text()).toEqual(`${props.user.role} on ${props.user.team_name}`);
+      expect(wrapper.find('.content').children().at(0).children().at(1).text()).toEqual(`${props.user.role_name} on ${props.user.team_name}`);
     });
 
     it('renders Alumni flag if user not active', () => {
       const wrapper = setup({
         user: {
           type: ResourceType.user,
-          active: false,
-          birthday: null,
-          department: 'Department',
+          display_name: 'firstname lastname',
           email: 'test@test.com',
-          first_name: '',
-          github_username: '',
-          id: 0,
-          last_name: '',
-          manager_email: '',
-          name: 'Test Tester',
-          offboarded: true,
-          office: '',
-          role: '',
-          start_date: '',
-          team_name: '',
-          title: '',
+          employee_type: 'fulltime',
+          first_name: 'firstname',
+          full_name: 'firstname lastname',
+          github_username: 'githubName',
+          is_active: false,
+          last_name: 'lastname',
+          manager_fullname: 'Test Manager',
+          profile_url: 'www.test.com',
+          role_name: 'Tester',
+          slack_id: 'www.slack.com',
+          team_name: 'QA',
+          user_id: 'test0',
         }
       }).wrapper;
       expect(wrapper.find('.content').children().at(0).children().at(0).find(Flag).exists()).toBeTruthy();
@@ -102,7 +98,7 @@ describe('UserListItem', () => {
     it('getLink returns correct string', () => {
       const { props, wrapper } = setup();
       const { user, logging } = props;
-      expect(wrapper.instance().getLink()).toEqual(`/user/${user.id}/?index=${logging.index}&source=${logging.source}`);
+      expect(wrapper.instance().getLink()).toEqual(`/user/${user.user_id}/?index=${logging.index}&source=${logging.source}`);
     });
   });
 });

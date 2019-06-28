@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 import * as Avatar from 'react-avatar';
 import { connect } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 
 import Breadcrumb from 'components/common/Breadcrumb';
@@ -30,8 +31,6 @@ import {
   READ_TAB_TITLE,
 } from './constants';
 
-
-
 interface StateFromProps {
   bookmarks: Resource[];
   user: PeopleUser;
@@ -46,30 +45,41 @@ interface DispatchFromProps {
   getBookmarksForUser: (userId: string) => GetBookmarksForUserRequest;
 }
 
-export type ProfilePageProps = StateFromProps & DispatchFromProps;
+interface RouteProps {
+  userId: string;
+}
 
-export class ProfilePage extends React.Component<ProfilePageProps> {
-  private userId: string;
+interface ProfilePageState {
+  userId: string;
+}
+
+export type ProfilePageProps = StateFromProps & DispatchFromProps & RouteComponentProps<RouteProps>;
+
+export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
 
   constructor(props) {
     super(props);
-
-    const { match } = props;
-    const params = match.params;
-    this.userId = params && params.userId ? params.userId : '';
+    this.state = { userId: props.match.params.userId }
   }
 
   componentDidMount() {
-    this.props.getUserById(this.userId);
-    this.props.getUserOwn(this.userId);
-    this.props.getUserRead(this.userId);
-    this.props.getBookmarksForUser(this.userId);
+    this.loadUserInfo(this.state.userId);
   }
 
-  getUserId = () => {
-    return this.userId;
-  };
+  componentDidUpdate() {
+    const userId = this.props.match.params.userId;
+    if (userId !== this.state.userId) {
+      this.setState({ userId });
+      this.loadUserInfo(userId);
+    }
+  }
 
+  loadUserInfo = (userId: string) => {
+    this.props.getUserById(userId);
+    this.props.getUserOwn(userId);
+    this.props.getUserRead(userId);
+    this.props.getBookmarksForUser(userId);
+  };
 
   getTabContent = (resource: Resource[], source: string, label: string) => {
     // TODO: consider moving logic for empty content into Tab component
@@ -94,14 +104,14 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
     const { bookmarks, read, own } = this.props;
 
     tabInfo.push({
-      content: this.getTabContent(read, READ_SOURCE, READ_LABEL),
-      key: READ_TAB_KEY,
-      title: `${READ_TAB_TITLE} (${read.length})`,
-    });
-    tabInfo.push({
       content: this.getTabContent(bookmarks, BOOKMARKED_SOURCE, BOOKMARKED_LABEL),
       key: BOOKMARKED_TAB_KEY,
       title: `${BOOKMARKED_TAB_TITLE} (${bookmarks.length})`,
+    });
+    tabInfo.push({
+      content: this.getTabContent(read, READ_SOURCE, READ_LABEL),
+      key: READ_TAB_KEY,
+      title: `${READ_TAB_TITLE} (${read.length})`,
     });
     tabInfo.push({
       content: this.getTabContent(own, OWNED_SOURCE, OWNED_LABEL),
@@ -121,8 +131,7 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
         <div className="container profile-page">
           <div className="row">
             <div className="col-xs-12 col-md-offset-1 col-md-10">
-              {/* remove hardcode to home when this page is ready for production */}
-              <Breadcrumb path="/" text="Home" />
+              <Breadcrumb />
               {/* TODO - Consider making this part a separate component */}
               <div className="profile-header">
                   <div id="profile-avatar" className="profile-avatar">
@@ -137,51 +146,57 @@ export class ProfilePage extends React.Component<ProfilePageProps> {
                       <h1>{ user.display_name }</h1>
                       {
                         (!user.is_active) &&
-                        <Flag caseType="sentenceCase" labelStyle="label-danger" text="Alumni"/>
+                        <Flag caseType="sentenceCase" labelStyle="danger" text="Alumni"/>
                       }
                     </div>
                     {
                       user.role_name && user.team_name &&
-                      <label id="user-role">{ `${user.role_name} on ${user.team_name}` }</label>
+                      <div id="user-role" className="body-2">{ `${user.role_name} on ${user.team_name}` }</div>
+                    }
+                    {/*TODO - delete when 'role_name'/'title' is added to user object in backend */}
+                    {
+                      !user.role_name && user.team_name &&
+                      <div id="user-role" className="body-2">{ `Team: ${user.team_name}` }</div>
                     }
                     {
                       user.manager_fullname &&
-                      <label id="user-manager">{ `Manager: ${user.manager_fullname}` }</label>
+                      <div id="user-manager" className="body-2">{ `Manager: ${user.manager_fullname}` }</div>
                     }
                     <div className="profile-icons">
-                      {
-                        user.is_active &&
-                        <a id="slack-link" href={user.slack_id} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-slack'/>
-                          <span>Slack</span>
-                        </a>
-                      }
+                      {/*TODO - Implement deep links to open Slack */}
+                      {/*{*/}
+                        {/*user.is_active && user.slack_id &&*/}
+                        {/*<a id="slack-link" href={user.slack_id} className='btn btn-flat-icon' target='_blank'>*/}
+                          {/*<img className='icon icon-dark icon-slack'/>*/}
+                          {/*<span className="body-2">Slack</span>*/}
+                        {/*</a>*/}
+                      {/*}*/}
                       {
                         user.is_active &&
                         <a id="email-link" href={`mailto:${user.email}`} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-mail'/>
-                          <span>{ user.email }</span>
+                          <img className='icon icon-dark icon-mail'/>
+                          <span className="body-2">{ user.email }</span>
                         </a>
                       }
                       {
                         user.is_active && user.profile_url &&
                         <a id="profile-link" href={user.profile_url} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-users'/>
-                          <span>Employee Profile</span>
+                          <img className='icon icon-dark icon-users'/>
+                          <span className="body-2">Employee Profile</span>
                         </a>
                       }
                       {
                         user.github_username &&
                         <a id="github-link" href={`https://github.com/${user.github_username}`} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-github'/>
-                          <span>Github</span>
+                          <img className='icon icon-dark icon-github'/>
+                          <span className="body-2">Github</span>
                         </a>
                       }
                     </div>
                   </div>
               </div>
               <div id="profile-tabs" className="profile-tabs">
-                <Tabs tabs={ this.generateTabInfo() } defaultTab={ READ_TAB_KEY } />
+                <Tabs tabs={ this.generateTabInfo() } defaultTab={ BOOKMARKED_TAB_KEY } />
               </div>
             </div>
           </div>
@@ -204,4 +219,4 @@ export const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ getUserById, getUserOwn, getUserRead, getBookmarksForUser }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(withRouter(ProfilePage));

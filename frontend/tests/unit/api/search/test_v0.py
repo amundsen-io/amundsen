@@ -5,7 +5,7 @@ import unittest
 from http import HTTPStatus
 
 from amundsen_application import create_app
-from amundsen_application.api.search.v0 import _create_url_with_field, SEARCH_ENDPOINT
+from amundsen_application.api.search.v0 import _create_url_with_field, SEARCH_ENDPOINT, SEARCH_USER_ENDPOINT
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
@@ -46,46 +46,40 @@ class SearchTest(unittest.TestCase):
         ]
         self.mock_search_user_results = {
             'total_results': 1,
-            # TODO update data schema
             'results': [
                 {
-                    'active': True,
-                    'birthday': '10-10-2000',
-                    'department': 'Department',
-                    'email': 'mail@address.com',
-                    'first_name': 'Ash',
-                    'github_username': 'github_user',
-                    'id': 12345,
-                    'last_name': 'Ketchum',
-                    'manager_email': 'manager_email',
-                    'name': 'Ash Ketchum',
-                    'offboarded': False,
-                    'office': 'Kanto Region',
-                    'role': 'Pokemon Trainer',
-                    'start_date': '05-04-2016',
-                    'team_name': 'Kanto Trainers',
-                    'title': 'Pokemon Master',
+                    'name': 'First Last',
+                    'first_name': 'First',
+                    'last_name': 'Last',
+                    'team_name': 'Team Name',
+                    'email': 'email@email.com',
+                    'manager_email': 'manager@email.com',
+                    'github_username': '',
+                    'is_active': True,
+                    'employee_type': 'teamMember',
+                    'role_name': 'SWE',
                 }
             ]
         }
         self.expected_parsed_search_user_results = [
+
             {
-                'active': True,
-                'birthday': '10-10-2000',
-                'department': 'Department',
-                'email': 'mail@address.com',
-                'first_name': 'Ash',
-                'github_username': 'github_user',
-                'id': 12345,
-                'last_name': 'Ketchum',
-                'manager_email': 'manager_email',
-                'name': 'Ash Ketchum',
-                'offboarded': False,
-                'office': 'Kanto Region',
-                'role': 'Pokemon Trainer',
-                'start_date': '05-04-2016',
-                'team_name': 'Kanto Trainers',
-                'title': 'Pokemon Master',
+                'display_name': 'First Last',
+                'email': 'email@email.com',
+                'employee_type': 'teamMember',
+                'first_name': 'First',
+                'full_name': 'First Last',
+                'github_username': '',
+                'is_active': True,
+                'last_name': 'Last',
+                'manager_email': 'manager@email.com',
+                'manager_fullname': None,
+                'profile_url': '',
+                'role_name': 'SWE',
+                'slack_id': None,
+                'team_name': 'Team Name',
+                'type': 'user',
+                'user_id': 'email@email.com'
             }
         ]
         self.bad_search_results = {
@@ -200,3 +194,54 @@ class SearchTest(unittest.TestCase):
                 '/search/field/tag/field_val/hive?page_index=1'
             self.assertEqual(_create_url_with_field(search_term=search_term,
                                                     page_index=1), expected)
+
+    def test_search_user_fail_if_no_query(self) -> None:
+        """
+        Test request failure if 'query' is not provided in the query string
+        to the search endpoint
+        :return:
+        """
+        with local_app.test_client() as test:
+            response = test.get('/api/search/v0/user', query_string=dict(page_index='0'))
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def test_search_user_fail_if_no_page_index(self) -> None:
+        """
+        Test request failure if 'page_index' is not provided in the query string
+        to the search endpoint
+        :return:
+        """
+        with local_app.test_client() as test:
+            response = test.get('/api/search/v0/user', query_string=dict(query='test'))
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    @responses.activate
+    def test_search_user_success(self) -> None:
+        """
+        Test request success
+        :return:
+        """
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_USER_ENDPOINT,
+                      json=self.mock_search_user_results, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/search/v0/user', query_string=dict(query='test', page_index='0'))
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+            users = data.get('users')
+            self.assertEqual(users.get('total_results'), self.mock_search_table_results.get('total_results'))
+            self.assertCountEqual(users.get('results'), self.expected_parsed_search_user_results)
+
+    @responses.activate
+    def test_search_user_fail_on_non_200_response(self) -> None:
+        """
+        Test request failure if search endpoint returns non-200 http code
+        :return:
+        """
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_USER_ENDPOINT,
+                      json=self.mock_search_table_results, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/search/v0/user', query_string=dict(query='test', page_index='0'))
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
