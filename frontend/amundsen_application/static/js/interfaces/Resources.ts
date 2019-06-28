@@ -1,3 +1,5 @@
+import { PeopleUser } from 'interfaces/User';
+
 export enum ResourceType {
   table = "table",
   user = "user",
@@ -26,59 +28,8 @@ export interface TableResource extends Resource {
   schema_name: string;
 };
 
-/**
- * This is a sample of the user data type which includes all fields.
- * We will only need a subset of this for UserResource.
-
-interface User {
-  active : boolean;
-  backupCodes: any[]; // Not sure of type
-  birthday : string | null;
-  department: string;
-  department_id: string;
-  email: string;
-  employment_type: string;
-  first_name: string;
-  github_username: string;
-  hris_active: boolean;
-  hris_number: string;
-  hris_source : string;
-  id: number;
-  last_name: string;
-  manager_email : string;
-  manager_id: number;
-  manager_hris_number: string;
-  mobile_phone : string | null;
-  name : string;
-  offboarded : boolean;
-  office: string;
-  role: string;
-  start_date : string;
-  team_name: string;
-  title: string;
-  work_phone: string;
-}
-*/
-
-// Placeholder until the schema is defined.
-export interface UserResource extends Resource  {
+export interface UserResource extends Resource, PeopleUser {
   type: ResourceType.user;
-  active : boolean;
-  birthday : string | null;
-  department: string;
-  email: string;
-  first_name: string;
-  github_username: string;
-  id: number;
-  last_name: string;
-  manager_email : string;
-  name : string;
-  offboarded : boolean;
-  office: string;
-  role: string;
-  start_date : string;
-  team_name: string;
-  title: string;
 }
 
 // TODO - Consider just using the 'Resource' type instead

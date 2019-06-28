@@ -4,6 +4,8 @@
   border: none;
 
   > li {
+    margin-right: 24px;
+
     &.active > a {
       &,
       &:hover {
@@ -21,6 +23,7 @@
       color: $text-medium;
       font-size: $font-size-large;
       line-height: $line-height-large;
+      margin: -4px 0 0 0;
       padding: 4px 8px 12px;
 
       &:hover {

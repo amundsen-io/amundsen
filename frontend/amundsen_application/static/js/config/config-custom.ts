@@ -12,6 +12,9 @@ const configCustom: AppConfigCustom = {
     key: 'default-key',
     sampleRate: 100,
   },
+  indexUsers: {
+    enabled: false,
+  }
 };
 
 export default configCustom;

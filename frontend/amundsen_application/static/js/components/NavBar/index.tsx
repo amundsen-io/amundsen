@@ -52,8 +52,15 @@ export class NavBar extends React.Component<NavBarProps> {
             <div id="nav-bar-right" className="nav-bar-right">
               {this.generateNavLinks(AppConfig.navLinks)}
               {
-                // TODO PEOPLE - Add link to user profile
-                this.props.loggedInUser &&
+                this.props.loggedInUser && AppConfig.indexUsers.enabled &&
+                <Link id="nav-bar-avatar-link" to={`/user/${this.props.loggedInUser.user_id}`}>
+                  <div id="nav-bar-avatar">
+                    <Avatar name={this.props.loggedInUser.display_name} size={32} round={true} />
+                  </div>
+                </Link>
+              }
+              {
+                this.props.loggedInUser && !AppConfig.indexUsers.enabled &&
                 <div id="nav-bar-avatar">
                   <Avatar name={this.props.loggedInUser.display_name} size={32} round={true} />
                 </div>

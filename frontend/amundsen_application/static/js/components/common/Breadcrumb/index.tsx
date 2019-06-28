@@ -23,17 +23,15 @@ export const Breadcrumb: React.SFC<BreadcrumbProps> = (props) => {
     path = '/';
     text = 'Home';
     if (props.searchTerm) {
-      path = `/search?searchTerm=${props.searchTerm}&selectedTab=table&pageIndex=0`
-      text = 'Search Results'
+      path = `/search?searchTerm=${props.searchTerm}&selectedTab=table&pageIndex=0`;
+      text = 'Search Results';
     }
   }
   return (
     <div className="amundsen-breadcrumb">
-      <Link to={path}>
-        <button className='btn btn-flat-icon title-3'>
-          <img className='icon icon-left'/>
-          <span>{text}</span>
-        </button>
+      <Link to={path} className='btn btn-flat-icon title-3'>
+        <img className='icon icon-left'/>
+        <span>{text}</span>
       </Link>
     </div>
   );

@@ -15,18 +15,21 @@ h1,
 .h1 {
   font-size: 36px;
   font-weight: $font-weight-header-regular;
+  line-height: 34px;
 }
 
 h2,
 .h2 {
   font-size: 26px;
   font-weight: $font-weight-header-bold;
+  line-height: 34px;
 }
 
 h3,
 .h3 {
   font-size: 20px;
   font-weight: $font-weight-header-bold;
+  line-height: 34px;
 }
 
 body {
@@ -46,7 +49,7 @@ body {
 .title-1 {
   font-size: 20px;
   font-weight: $font-weight-body-bold;
-  line-height: 24px;
+  line-height: 28px;
 }
 
 .title-2 {
@@ -63,7 +66,7 @@ body {
 .subtitle-1 {
   font-size: 20px;
   font-weight: $font-weight-body-semi-bold;
-  line-height: 20px;
+  line-height: 28px;
 }
 
 .subtitle-2 {
@@ -79,12 +82,13 @@ body {
 .body-1 {
   font-size: 20px;
   font-weight: $font-weight-body-regular;
-  line-height: 24px;
+  line-height: 20px;
 }
 
 .body-2 {
   font-size: 16px;
   font-weight: $font-weight-body-regular;
+  line-height: 20px;
 }
 
 .body-3 {

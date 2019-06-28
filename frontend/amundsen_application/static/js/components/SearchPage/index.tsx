@@ -5,6 +5,7 @@ import * as DocumentTitle from 'react-document-title';
 import * as qs from 'simple-query-string';
 import { RouteComponentProps } from 'react-router';
 
+import AppConfig from 'config/config';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import InfoButton from 'components/common/InfoButton';
 import ResourceList from 'components/common/ResourceList';
@@ -36,6 +37,7 @@ import {
   SEARCH_INFO_TEXT,
   SEARCH_SOURCE_NAME,
   TABLE_RESOURCE_TITLE,
+  USER_RESOURCE_TITLE,
 } from './constants';
 
 export interface StateFromProps {
@@ -155,8 +157,14 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
         key: ResourceType.table,
         content: this.getTabContent(this.props.tables, TABLE_RESOURCE_TITLE),
       },
-      // TODO PEOPLE - Add users tab
     ];
+    if (AppConfig.indexUsers.enabled) {
+      tabConfig.push({
+        title: `Users (${ this.props.users.total_results })`,
+        key: ResourceType.user,
+        content: this.getTabContent(this.props.users, USER_RESOURCE_TITLE),
+      })
+    }
 
     return (
       <div>

@@ -19,3 +19,11 @@
   font-weight: normal;
   min-width: 0;
 }
+
+.avatar-overlap {
+  margin-left: -5px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}

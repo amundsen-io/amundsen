@@ -194,6 +194,7 @@ class MetadataTest(unittest.TestCase):
             'github_username': 'githubusername',
             'is_active': True,
             'last_name': 'Lastname',
+            'manager_email': 'manager@email.com',
             'manager_fullname': 'Manager Fullname',
             'profile_url': 'https://test-profile-url.com',
             'role_name': 'SWE',
