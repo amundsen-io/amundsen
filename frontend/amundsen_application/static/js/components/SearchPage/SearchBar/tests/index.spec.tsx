@@ -100,10 +100,17 @@ describe('SearchBar', () => {
       expect(submitMockEvent.preventDefault).toHaveBeenCalled();
     });
 
-    it('submits with correct props if isFormValid()', () => {
+    it('redirects back to home if searchTerm is empty', () => {
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(props.history.push).toHaveBeenCalledWith(`/search?searchTerm=${wrapper.state().searchTerm}&selectedTab=table&pageIndex=0`);
+      expect(props.history.push).toHaveBeenCalledWith('/');
+    });
+
+    it('submits with correct props if isFormValid()', () => {
+      const { props, wrapper } = setup({ searchTerm: 'testTerm' });
+      // @ts-ignore: mocked events throw type errors
+      wrapper.instance().handleValueSubmit(submitMockEvent);
+      expect(props.history.push).toHaveBeenCalledWith(`/search?searchTerm=${wrapper.state().searchTerm}`);
     });
 
     it('does not submit if !isFormValid()', () => {
@@ -118,11 +125,11 @@ describe('SearchBar', () => {
     describe('if searchTerm has more than one category', () => {
       let wrapper;
       beforeAll(() => {
-        wrapper = setup({ searchTerm: 'tag:tag1 tag:tag2' }).wrapper;
+        wrapper = setup().wrapper;
       })
 
       it('returns false', () => {
-        expect(wrapper.instance().isFormValid()).toEqual(false);
+        expect(wrapper.instance().isFormValid('tag:tag1 tag:tag2')).toEqual(false);
       });
 
       it('sets state.subText correctly', () => {
@@ -141,7 +148,7 @@ describe('SearchBar', () => {
       })
 
       it('returns false', () => {
-        expect(wrapper.instance().isFormValid()).toEqual(false);
+        expect(wrapper.instance().isFormValid('tag : tag1')).toEqual(false);
       });
 
       it('sets state.subText correctly', () => {
@@ -156,11 +163,11 @@ describe('SearchBar', () => {
     describe('if searchTerm has correct syntax', () => {
       let wrapper;
       beforeAll(() => {
-        wrapper = setup({ searchTerm: 'tag:tag1' }).wrapper;
+        wrapper = setup().wrapper;
       })
 
       it('returns true', () => {
-        expect(wrapper.instance().isFormValid()).toEqual(true);
+        expect(wrapper.instance().isFormValid('tag:tag1')).toEqual(true);
       });
 
       it('sets state.subText correctly', () => {
