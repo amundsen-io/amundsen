@@ -6,6 +6,12 @@ import { GetAllTags, GetAllTagsRequest, GetAllTagsResponse } from './types';
 export function getAllTags(): GetAllTagsRequest {
   return { type: GetAllTags.REQUEST };
 };
+export function getAllTagsFailure(): GetAllTagsResponse {
+  return { type: GetAllTags.FAILURE, payload: { tags: [] } };
+};
+export function getAllTagsSuccess(tags: Tag[]): GetAllTagsResponse {
+  return { type: GetAllTags.SUCCESS, payload: { tags } };
+};
 
 /* REDUCER */
 export interface AllTagsReducerState {

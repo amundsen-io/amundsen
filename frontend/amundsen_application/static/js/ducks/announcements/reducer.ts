@@ -6,6 +6,12 @@ import { GetAnnouncements, GetAnnouncementsRequest, GetAnnouncementsResponse } f
 export function getAnnouncements(): GetAnnouncementsRequest {
   return { type: GetAnnouncements.REQUEST };
 };
+export function getAnnouncementsFailure(): GetAnnouncementsResponse {
+  return { type: GetAnnouncements.FAILURE, payload: { posts: [] } };
+};
+export function getAnnouncementsSuccess(posts: AnnouncementPost[]): GetAnnouncementsResponse {
+  return { type: GetAnnouncements.SUCCESS, payload: { posts } };
+};
 
 /* REDUCER */
 export interface AnnouncementsReducerState {

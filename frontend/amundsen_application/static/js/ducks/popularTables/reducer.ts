@@ -10,6 +10,12 @@ import {
 export function getPopularTables(): GetPopularTablesRequest {
   return { type: GetPopularTables.REQUEST };
 }
+export function getPopularTablesFailure(): GetPopularTablesResponse {
+  return { type: GetPopularTables.FAILURE, payload: { tables: [] } };
+}
+export function getPopularTablesSuccess(tables: TableResource[]): GetPopularTablesResponse {
+  return { type: GetPopularTables.SUCCESS, payload: { tables } };
+}
 
 /* REDUCER */
 export type PopularTablesReducerState = TableResource[];

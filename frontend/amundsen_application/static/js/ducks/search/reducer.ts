@@ -1,6 +1,7 @@
 import { ResourceType, SearchAllOptions } from 'interfaces';
 
 import {
+  SearchResponsePayload,
   SearchAll,
   SearchAllRequest,
   SearchAllReset,
@@ -22,7 +23,7 @@ export interface SearchReducerState {
 };
 
 /* ACTIONS */
-export function searchAll(term: string, options: SearchAllOptions = {}): SearchAllRequest {
+export function searchAll(term: string, options: SearchAllOptions): SearchAllRequest {
   return {
     payload: {
       options,
@@ -31,6 +32,13 @@ export function searchAll(term: string, options: SearchAllOptions = {}): SearchA
     type: SearchAll.REQUEST,
   };
 };
+export function searchAllSuccess(searchResults: SearchResponsePayload): SearchAllResponse {
+  return { type: SearchAll.SUCCESS, payload: searchResults };
+};
+export function searchAllFailure(): SearchAllResponse {
+  return { type: SearchAll.FAILURE };
+};
+
 export function searchResource(resource: ResourceType, term: string, pageIndex: number): SearchResourceRequest {
   return {
     payload: {
@@ -41,14 +49,21 @@ export function searchResource(resource: ResourceType, term: string, pageIndex: 
     type: SearchResource.REQUEST,
   };
 };
+export function searchResourceSuccess(searchResults: SearchResponsePayload): SearchResourceResponse {
+  return { type: SearchResource.SUCCESS, payload: searchResults };
+};
+export function searchResourceFailure(): SearchResourceResponse {
+  return { type: SearchResource.FAILURE };
+};
+
 export function searchReset(): SearchAllReset {
   return {
     type: SearchAll.RESET,
   };
-}
+};
 
 /* REDUCER */
-const initialState: SearchReducerState = {
+export const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
   dashboards: {

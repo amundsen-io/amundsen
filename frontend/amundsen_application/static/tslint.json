@@ -17,6 +17,7 @@
        "import-name": [
          false
        ],
+       "no-parameter-reassignment": false,
        "prefer-array-literal": [
          false
        ]

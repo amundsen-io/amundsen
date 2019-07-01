@@ -2,15 +2,15 @@ import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
 import { metadataPopularTables} from './api/v0';
-
+import { getPopularTablesFailure, getPopularTablesSuccess } from './reducer';
 import { GetPopularTables } from './types';
 
 export function* getPopularTablesWorker(): SagaIterator {
   try {
     const popularTables = yield call(metadataPopularTables);
-    yield put({ type: GetPopularTables.SUCCESS, payload: { tables: popularTables } });
+    yield put(getPopularTablesSuccess(popularTables));
   } catch (e) {
-    yield put({ type: GetPopularTables.FAILURE, payload: { tables: [] } });
+    yield put(getPopularTablesFailure());
   }
 }
 

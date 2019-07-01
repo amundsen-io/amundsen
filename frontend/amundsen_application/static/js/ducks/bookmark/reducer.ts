@@ -3,6 +3,7 @@ import { Bookmark } from 'interfaces';
 import {
   AddBookmark,
   AddBookmarkRequest,
+  AddBookmarkResponse,
   GetBookmarks,
   GetBookmarksRequest,
   GetBookmarksResponse,
@@ -24,6 +25,13 @@ export function addBookmark(resourceKey: string, resourceType: string): AddBookm
     type: AddBookmark.REQUEST,
   }
 }
+export function addBookmarkFailure(): AddBookmarkResponse {
+  return { type: AddBookmark.FAILURE };
+}
+export function addBookmarkSuccess(bookmarks: Bookmark[]): AddBookmarkResponse {
+  return { type: AddBookmark.SUCCESS, payload: { bookmarks } };
+}
+
 export function removeBookmark(resourceKey: string, resourceType: string): RemoveBookmarkRequest {
   return {
     payload: {
@@ -33,11 +41,25 @@ export function removeBookmark(resourceKey: string, resourceType: string): Remov
     type: RemoveBookmark.REQUEST,
   }
 }
+export function removeBookmarkFailure(): RemoveBookmarkResponse {
+  return { type: RemoveBookmark.FAILURE };
+}
+export function removeBookmarkSuccess(resourceKey: string, resourceType: string): RemoveBookmarkResponse {
+  return { type: RemoveBookmark.SUCCESS, payload: { resourceKey, resourceType } };
+}
+
 export function getBookmarks(): GetBookmarksRequest {
   return {
     type: GetBookmarks.REQUEST,
   }
 }
+export function getBookmarksFailure(): GetBookmarksResponse {
+  return { type: GetBookmarks.FAILURE, payload: { bookmarks: [] } };
+}
+export function getBookmarksSuccess(bookmarks: Bookmark[]): GetBookmarksResponse {
+  return { type: GetBookmarks.SUCCESS, payload: { bookmarks } };
+}
+
 export function getBookmarksForUser(userId: string): GetBookmarksForUserRequest {
   return {
     payload: {
@@ -45,6 +67,12 @@ export function getBookmarksForUser(userId: string): GetBookmarksForUserRequest 
     },
     type: GetBookmarksForUser.REQUEST,
   }
+}
+export function getBookmarksForUserFailure(): GetBookmarksForUserResponse {
+  return { type: GetBookmarksForUser.FAILURE, payload: { bookmarks: [] } };
+}
+export function getBookmarksForUserSuccess(bookmarks: Bookmark[]): GetBookmarksForUserResponse {
+  return { type: GetBookmarksForUser.SUCCESS, payload: { bookmarks } };
 }
 
 /* REDUCER */
@@ -62,12 +90,6 @@ export const initialState: BookmarkReducerState = {
 
 export default function reducer(state: BookmarkReducerState = initialState, action): BookmarkReducerState {
   switch(action.type) {
-    case RemoveBookmark.SUCCESS:
-      const { resourceKey } = (<RemoveBookmarkResponse>action).payload;
-      return {
-        ...state,
-        myBookmarks: state.myBookmarks.filter((bookmark) => bookmark.key !== resourceKey)
-      };
     case AddBookmark.SUCCESS:
     case GetBookmarks.SUCCESS:
       return {
@@ -75,24 +97,27 @@ export default function reducer(state: BookmarkReducerState = initialState, acti
         myBookmarks: (<GetBookmarksResponse>action).payload.bookmarks,
         myBookmarksIsLoaded: true,
       };
-
     case GetBookmarksForUser.REQUEST:
       return {
         ...state,
         bookmarksForUser: [],
       };
     case GetBookmarksForUser.SUCCESS:
-    case GetBookmarksForUser.FAILURE:
       return {
         ...state,
         bookmarksForUser: (<GetBookmarksForUserResponse>action).payload.bookmarks,
       };
-
+    case RemoveBookmark.SUCCESS:
+      const { resourceKey } = (<RemoveBookmarkResponse>action).payload;
+      return {
+        ...state,
+        myBookmarks: state.myBookmarks.filter((bookmark) => bookmark.key !== resourceKey)
+      };
     case AddBookmark.FAILURE:
     case GetBookmarks.FAILURE:
+    case GetBookmarksForUser.FAILURE:
     case RemoveBookmark.FAILURE:
     default:
       return state;
   }
 }
-
