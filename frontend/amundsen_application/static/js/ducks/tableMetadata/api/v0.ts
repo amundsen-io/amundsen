@@ -1,5 +1,4 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { Effect } from 'redux-saga';
 
 import {
   GetPreviewDataRequest, GetTableDataRequest, UpdateTableOwnerRequest, UpdateTagsRequest,

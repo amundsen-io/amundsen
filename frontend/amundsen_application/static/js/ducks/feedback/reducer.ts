@@ -2,7 +2,7 @@ import { SendingState } from 'interfaces';
 
 import {
   ResetFeedback, ResetFeedbackRequest,
-  SubmitFeedback, SubmitFeedbackRequest,
+  SubmitFeedback, SubmitFeedbackRequest, SubmitFeedbackResponse
 } from './types';
 
 /* ACTIONS */
@@ -14,6 +14,17 @@ export function submitFeedback(formData: FormData): SubmitFeedbackRequest {
     type: SubmitFeedback.REQUEST,
   };
 };
+export function submitFeedbackFailure(): SubmitFeedbackResponse {
+  return {
+    type: SubmitFeedback.FAILURE,
+  };
+};
+export function submitFeedbackSuccess(): SubmitFeedbackResponse {
+  return {
+    type: SubmitFeedback.SUCCESS,
+  };
+};
+
 export function resetFeedback(): ResetFeedbackRequest {
   return {
     type: ResetFeedback.REQUEST,

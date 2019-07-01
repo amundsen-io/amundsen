@@ -3,17 +3,34 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 
 import { metadataAllTags } from '../api/v0';
-import reducer, { getAllTags, initialState, AllTagsReducerState } from '../reducer';
+import reducer, {
+  getAllTags, getAllTagsFailure, getAllTagsSuccess,
+  initialState, AllTagsReducerState
+} from '../reducer';
 import { getAllTagsWatcher, getAllTagsWorker } from '../sagas';
 import { GetAllTags } from '../types';
 
 describe('allTags ducks', () => {
   describe('actions', () => {
-    describe('getAllTags', () => {
-      it('should return action of type GetAllTagsRequest', () => {
-        expect(getAllTags()).toEqual({ type: GetAllTags.REQUEST });
-      });
-    })
+    it('getAllTags - returns the action to get all tags', () => {
+      const action = getAllTags();
+      expect(action.type).toEqual(GetAllTags.REQUEST);
+    });
+
+    it('getAllTagsFailure - returns the action to process failure', () => {
+      const action = getAllTagsFailure();
+      const { payload } = action;
+      expect(action.type).toBe(GetAllTags.FAILURE);
+      expect(payload.tags).toEqual([]);
+    });
+
+    it('getAllTagsSuccess - returns the action to process success', () => {
+      const expectedTags = [{tag_count: 2, tag_name: 'test'}, {tag_count: 1, tag_name: 'test2'}];
+      const action = getAllTagsSuccess(expectedTags);
+      const { payload } = action;
+      expect(action.type).toBe(GetAllTags.SUCCESS);
+      expect(payload.tags).toBe(expectedTags);
+    });
   });
 
   describe('reducer', () => {
@@ -29,7 +46,7 @@ describe('allTags ducks', () => {
     });
 
     it('should handle GetAllTags.REQUEST', () => {
-      expect(reducer(testState, { type: GetAllTags.REQUEST })).toEqual({
+      expect(reducer(testState, getAllTags())).toEqual({
         allTags: [],
         isLoading: true,
       });
@@ -37,14 +54,14 @@ describe('allTags ducks', () => {
 
     it('should handle GetAllTags.SUCCESS', () => {
       const expectedTags = [{tag_count: 2, tag_name: 'test'}, {tag_count: 1, tag_name: 'test2'}];
-      expect(reducer(testState, { type: GetAllTags.SUCCESS, payload: { tags: expectedTags }})).toEqual({
+      expect(reducer(testState, getAllTagsSuccess(expectedTags))).toEqual({
         allTags: expectedTags,
         isLoading: false,
       });
     });
 
     it('should return the initialState if GetAllTags.FAILURE', () => {
-      expect(reducer(testState, { type: GetAllTags.FAILURE, payload: { tags: [] } })).toEqual(initialState);
+      expect(reducer(testState, getAllTagsFailure())).toEqual(initialState);
     });
   });
 
@@ -53,7 +70,7 @@ describe('allTags ducks', () => {
       it('takes GetAllTags.REQUEST with getAllTagsWorker', () => {
         testSaga(getAllTagsWatcher)
           .next()
-          .takeEveryEffect(GetAllTags.REQUEST, getAllTagsWorker);
+          .takeEvery(GetAllTags.REQUEST, getAllTagsWorker);
       });
     });
 
@@ -64,10 +81,7 @@ describe('allTags ducks', () => {
           .provide([
             [matchers.call.fn(metadataAllTags), mockTags],
           ])
-          .put({
-            type: GetAllTags.SUCCESS,
-            payload: { tags: mockTags }
-          })
+          .put(getAllTagsSuccess(mockTags))
           .run();
       });
 
@@ -76,10 +90,7 @@ describe('allTags ducks', () => {
           .provide([
             [matchers.call.fn(metadataAllTags), throwError(new Error())],
           ])
-          .put({
-            type: GetAllTags.FAILURE,
-            payload: { tags: [] }
-          })
+          .put(getAllTagsFailure())
           .run();
       });
     });

@@ -1,25 +1,22 @@
-// TODO - Import 'delay' from 'redux-saga/effects' if we upgrade to 1.0
-import { delay, SagaIterator } from 'redux-saga';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
+import { call, delay, put, takeEvery } from 'redux-saga/effects';
 
 import { feedbackSubmit } from './api/v0';
+import { submitFeedbackFailure, submitFeedbackSuccess, resetFeedback } from './reducer';
+import { SubmitFeedback, SubmitFeedbackRequest } from './types';
 
-import { ResetFeedback, SubmitFeedback, SubmitFeedbackRequest } from './types';
-
-function* submitFeedbackWorker(action: SubmitFeedbackRequest): SagaIterator {
+export function* submitFeedbackWorker(action: SubmitFeedbackRequest): SagaIterator {
   try {
     yield call(feedbackSubmit, action.payload.data);
-    yield put({ type: SubmitFeedback.SUCCESS });
+    yield put(submitFeedbackSuccess());
 
-    // TODO - yield delay(2000) on redux-saga upgrade
-    yield call(delay, 2000);
-    yield put({ type: ResetFeedback.REQUEST });
+    yield delay(2000);
+    yield put(resetFeedback());
   } catch(error) {
-    yield put({ type: SubmitFeedback.FAILURE });
+    yield put(submitFeedbackFailure());
 
-    // TODO - yield delay(2000) on redux-saga upgrade
-    yield call(delay, 2000);
-    yield put({ type: ResetFeedback.REQUEST });
+    yield delay(2000);
+    yield put(resetFeedback());
   }
 }
 

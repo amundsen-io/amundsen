@@ -16,6 +16,14 @@ export type DashboardSearchResults = SearchResults<DashboardResource>;
 export type TableSearchResults = SearchResults<TableResource>;
 export type UserSearchResults = SearchResults<UserResource>;
 
+export interface SearchResponsePayload {
+  search_term: string;
+  isLoading: boolean;
+  dashboards: DashboardSearchResults;
+  tables: TableSearchResults;
+  users: UserSearchResults;
+};
+
 export enum SearchAll {
   REQUEST = 'amundsen/search/SEARCH_ALL_REQUEST',
   SUCCESS = 'amundsen/search/SEARCH_ALL_SUCCESS',
@@ -31,13 +39,7 @@ export interface SearchAllRequest {
 };
 export interface SearchAllResponse {
   type: SearchAll.SUCCESS | SearchAll.FAILURE;
-  payload?: {
-    search_term: string;
-    isLoading: boolean;
-    dashboards: DashboardSearchResults;
-    tables: TableSearchResults;
-    users: UserSearchResults;
-  };
+  payload?: SearchResponsePayload;
 };
 export interface SearchAllReset {
   type: SearchAll.RESET;
@@ -58,11 +60,5 @@ export interface SearchResourceRequest {
 };
 export interface SearchResourceResponse {
   type: SearchResource.SUCCESS | SearchResource.FAILURE;
-  payload?: {
-    search_term: string;
-    isLoading: boolean;
-    dashboards: DashboardSearchResults;
-    tables: TableSearchResults;
-    users: UserSearchResults;
-  };
+  payload?: SearchResponsePayload;
 };

@@ -13,6 +13,11 @@ import {
 } from './api/v0';
 import { ResourceType } from 'interfaces/Resources';
 
+import {
+  searchAllSuccess, searchAllFailure,
+  searchResourceSuccess, searchResourceFailure,
+} from './reducer';
+
 export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   const { options, term } = action.payload;
   try {
@@ -29,7 +34,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
     };
     yield put({ type: SearchAll.SUCCESS, payload: searchAllResponse });
   } catch (e) {
-    yield put({ type: SearchAll.FAILURE });
+    yield put(searchAllFailure());
   }
 };
 export function* searchAllWatcher(): SagaIterator {
@@ -40,9 +45,9 @@ export function* searchResourceWorker(action: SearchResourceRequest): SagaIterat
   const { pageIndex, resource, term } = action.payload;
   try {
     const searchResults = yield call(searchResource, pageIndex, resource, term);
-    yield put({ type: SearchResource.SUCCESS, payload: searchResults });
+    yield put(searchResourceSuccess(searchResults));
   } catch (e) {
-    yield put({ type: SearchResource.FAILURE });
+    yield put(searchResourceFailure());
   }
 }
 export function* searchResourceWatcher(): SagaIterator {

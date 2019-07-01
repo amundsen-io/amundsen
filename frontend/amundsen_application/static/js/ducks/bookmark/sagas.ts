@@ -2,6 +2,23 @@ import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
 import {
+  addBookmark,
+  removeBookmark,
+  getBookmarks,
+} from './api/v0';
+
+import {
+  addBookmarkFailure,
+  addBookmarkSuccess,
+  getBookmarksFailure,
+  getBookmarksSuccess,
+  getBookmarksForUserFailure,
+  getBookmarksForUserSuccess,
+  removeBookmarkFailure,
+  removeBookmarkSuccess,
+} from './reducer';
+
+import {
   AddBookmark,
   AddBookmarkRequest,
   GetBookmarks,
@@ -12,12 +29,6 @@ import {
   RemoveBookmarkRequest
 } from './types';
 
- import {
-  addBookmark,
-  removeBookmark,
-  getBookmarks,
-} from './api/v0';
-
 export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
   let response;
   const { resourceKey, resourceType } = action.payload;
@@ -27,9 +38,9 @@ export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
 
     // TODO - Consider adding the newly bookmarked resource directly to local store. This would save a round trip.
     response = yield call(getBookmarks);
-    yield put({ type: AddBookmark.SUCCESS, payload: { bookmarks: response.bookmarks } });
+    yield put(addBookmarkSuccess(response.bookmarks));
   } catch(e) {
-    yield put({ type: AddBookmark.FAILURE, payload: { bookmarks: [] } });
+    yield put(addBookmarkFailure());
   }
 }
 export function* addBookmarkWatcher(): SagaIterator {
@@ -42,9 +53,9 @@ export function* removeBookmarkWorker(action: RemoveBookmarkRequest): SagaIterat
   const { resourceKey, resourceType } = action.payload;
   try {
     response = yield call(removeBookmark, resourceKey, resourceType);
-    yield put({ type: RemoveBookmark.SUCCESS, payload: { resourceKey, resourceType }});
+    yield put(removeBookmarkSuccess(resourceKey, resourceType));
   } catch(e) {
-    yield put({ type: RemoveBookmark.FAILURE, payload: { resourceKey, resourceType } });
+    yield put(removeBookmarkFailure());
   }
 }
 export function* removeBookmarkWatcher(): SagaIterator {
@@ -56,9 +67,9 @@ export function* getBookmarksWorker(action: GetBookmarksRequest): SagaIterator {
   let response;
   try {
     response = yield call(getBookmarks);
-    yield put({ type: GetBookmarks.SUCCESS, payload: { bookmarks: response.bookmarks } });
+    yield put(getBookmarksSuccess(response.bookmarks));
   } catch(e) {
-    yield put({ type: GetBookmarks.FAILURE, payload: { bookmarks: [] } });
+    yield put(getBookmarksFailure());
   }
 }
 export function* getBookmarksWatcher(): SagaIterator {
@@ -71,9 +82,9 @@ export function* getBookmarkForUserWorker(action: GetBookmarksForUserRequest): S
   const { userId } = action.payload;
   try {
     response = yield call(getBookmarks, userId);
-    yield put({ type: GetBookmarksForUser.SUCCESS, payload: { userId, bookmarks: response.bookmarks } });
+    yield put(getBookmarksForUserSuccess(response.bookmarks));
   } catch(e) {
-    yield put({ type: GetBookmarksForUser.FAILURE, payload: { userId, bookmarks: [] } });
+    yield put(getBookmarksForUserFailure());
   }
 }
 export function* getBookmarksForUserWatcher(): SagaIterator {
