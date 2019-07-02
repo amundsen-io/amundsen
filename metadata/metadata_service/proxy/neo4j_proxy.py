@@ -785,7 +785,7 @@ RETURN db, clstr, schema, tbl, tbl_dscrpt""").format(relation=relation)
         """
 
         query = textwrap.dedent("""
-MATCH (user:User {{key: $query_key}})-[r:READ]->(tbl:Table)
+MATCH (user:User {key: $query_key})-[r:READ]->(tbl:Table)
 WHERE EXISTS(r.published_tag) AND r.published_tag IS NOT NULL
 WITH user, r, tbl ORDER BY r.published_tag DESC, r.total_reads DESC LIMIT 50
 MATCH (tbl:Table)-[:TABLE_OF]->(schema:Schema)-[:SCHEMA_OF]->(clstr:Cluster)-[:CLUSTER_OF]->(db:Database)
