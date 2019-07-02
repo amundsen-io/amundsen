@@ -407,6 +407,9 @@ class AtlasProxy(BaseProxy):
                                    relation_type: UserResourceRel) -> Dict[str, Any]:
         pass
 
+    def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
+        pass
+
     def add_table_relation_by_user(self, *,
                                    table_uri: str,
                                    user_email: str,
