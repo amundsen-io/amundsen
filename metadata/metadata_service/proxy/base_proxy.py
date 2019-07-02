@@ -80,6 +80,10 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
+        pass
+
+    @abstractmethod
     def add_table_relation_by_user(self, *,
                                    table_uri: str,
                                    user_email: str,

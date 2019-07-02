@@ -504,33 +504,24 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEquals(neo4j_user.email, 'test_email')
 
     def test_get_resources_by_user_relation(self) -> None:
-        with patch.object(GraphDatabase, 'driver'), \
-            patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute, \
-                patch.object(Neo4jProxy, '_exec_col_query') as mock_col_query:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
 
-            mock_execute.return_value.single.return_value = {
-                'table_records': [
-                    {
-                        'key': 'table_uri',
-
-                    }
-                ]
-            }
-
-            mock_col_query.return_value = 'not_related', {
-                'db': {
-                    'name': 'db_name'
-                },
-                'clstr': {
-                    'name': 'cluster'
-                },
-                'schema': {
-                    'name': 'schema'
-                },
-                'tbl': {
-                    'name': 'table_name'
+            mock_execute.return_value = [
+                {
+                    'tbl': {
+                        'name': 'table_name'
+                    },
+                    'db': {
+                        'name': 'db_name'
+                    },
+                    'clstr': {
+                        'name': 'cluster'
+                    },
+                    'schema': {
+                        'name': 'schema'
+                    },
                 }
-            }
+            ]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             result = neo4j_proxy.get_table_by_user_relation(user_email='test_user',

@@ -21,7 +21,6 @@ from metadata_service.util import UserResourceRel
 
 _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 
-
 # Expire cache every 11 hours + jitter
 _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
@@ -36,10 +35,10 @@ class Neo4jProxy(BaseProxy):
     def __init__(self, *,
                  host: str,
                  port: int,
-                 user: str ='neo4j',
-                 password: str ='',
-                 num_conns: int =50,
-                 max_connection_lifetime_sec: int =100) -> None:
+                 user: str = 'neo4j',
+                 password: str = '',
+                 num_conns: int = 50,
+                 max_connection_lifetime_sec: int = 100) -> None:
         """
         There's currently no request timeout from client side where server
         side can be enforced via "dbms.transaction.timeout"
@@ -652,7 +651,7 @@ class Neo4jProxy(BaseProxy):
         return [record['table_key'] for record in records]
 
     @timer_with_counter
-    def get_popular_tables(self, *, num_entries: int =10) -> List[PopularTable]:
+    def get_popular_tables(self, *, num_entries: int = 10) -> List[PopularTable]:
         """
         Retrieve popular tables. As popular table computation requires full scan of table and user relationship,
         it will utilize cached method _get_popular_tables_uris.
@@ -752,33 +751,61 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
         relation, _ = self._get_relation_by_type(relation_type)
-        # relationship can't be parameterized
-        query_key = 'key: "{user_id}"'.format(user_id=user_email)
 
         query = textwrap.dedent("""
-        MATCH (user:User {{{key}}})-[:{relation}]->(tbl:Table)
-        RETURN COLLECT(DISTINCT tbl) as table_records
-        """).format(key=query_key,
-                    relation=relation)
+MATCH (user:User {{key: $query_key}})-[:{relation}]->(tbl:Table)-[:TABLE_OF]->
+(schema:Schema)-[:SCHEMA_OF]->(clstr:Cluster)-[:CLUSTER_OF]->(db:Database)
+WITH db, clstr, schema, tbl
+OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
+RETURN db, clstr, schema, tbl, tbl_dscrpt""").format(relation=relation)
 
-        record = self._execute_cypher_query(statement=query,
-                                            param_dict={})
+        table_records = self._execute_cypher_query(statement=query, param_dict={'query_key': user_email})
 
-        if not record:
-            raise NotFoundException('User {user_id} does not {relation} '
-                                    'any resources'.format(user_id=user_email,
-                                                           relation=relation))
+        if not table_records:
+            raise NotFoundException('User {user_id} does not {relation} any resources'.format(user_id=user_email,
+                                                                                              relation=relation))
         results = []
-        table_records = record.single().get('table_records', [])
 
         for record in table_records:
-            _, last_neo4j_record = self._exec_col_query(record['key'])
             results.append(PopularTable(
-                database=last_neo4j_record['db']['name'],
-                cluster=last_neo4j_record['clstr']['name'],
-                schema=last_neo4j_record['schema']['name'],
-                name=last_neo4j_record['tbl']['name'],
-                description=self._safe_get(last_neo4j_record, 'tbl_dscrpt', 'description')))
+                database=record['db']['name'],
+                cluster=record['clstr']['name'],
+                schema=record['schema']['name'],
+                name=record['tbl']['name'],
+                description=self._safe_get(record, 'tbl_dscrpt', 'description')))
+        return {'table': results}
+
+    @timer_with_counter
+    def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
+        """
+        Retrieves all Table the resources per user on READ relation.
+
+        :param user_email: the email of the user
+        :return:
+        """
+
+        query = textwrap.dedent("""
+MATCH (user:User {{key: $query_key}})-[r:READ]->(tbl:Table)
+WHERE EXISTS(r.published_tag) AND r.published_tag IS NOT NULL
+WITH user, r, tbl ORDER BY r.published_tag DESC, r.total_reads DESC LIMIT 50
+MATCH (tbl:Table)-[:TABLE_OF]->(schema:Schema)-[:SCHEMA_OF]->(clstr:Cluster)-[:CLUSTER_OF]->(db:Database)
+OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
+RETURN db, clstr, schema, tbl, tbl_dscrpt
+""")
+
+        table_records = self._execute_cypher_query(statement=query, param_dict={'query_key': user_email})
+
+        if not table_records:
+            raise NotFoundException('User {user_id} does not READ any resources'.format(user_id=user_email))
+        results = []
+
+        for record in table_records:
+            results.append(PopularTable(
+                database=record['db']['name'],
+                cluster=record['clstr']['name'],
+                schema=record['schema']['name'],
+                name=record['tbl']['name'],
+                description=self._safe_get(record, 'tbl_dscrpt', 'description')))
         return {'table': results}
 
     @timer_with_counter
