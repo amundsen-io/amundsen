@@ -200,7 +200,7 @@ class ElasticsearchProxy(BaseProxy):
         new_field_name = mapping[field_name]
 
         # We allow user to use ? * for wildcard support
-        m = re.search('[\?\*]', field_value)
+        m = re.search('[?*]', field_value)
         if m:
             return self._search_wildcard_helper(field_value=field_value,
                                                 page_index=page_index,
