@@ -14,6 +14,22 @@ export function updateTags(tagArray: UpdateTagData[]): UpdateTagsRequest  {
     type: UpdateTags.REQUEST,
   };
 };
+export function updateTagsFailure(): UpdateTagsResponse  {
+  return {
+    type: UpdateTags.FAILURE,
+    payload: {
+      tags: [],
+    }
+  };
+};
+export function updateTagsSuccess(tags: Tag[]): UpdateTagsResponse  {
+  return {
+    type: UpdateTags.SUCCESS,
+    payload: {
+      tags
+    }
+  };
+};
 
 /* REDUCER */
 export interface TableTagsReducerState {

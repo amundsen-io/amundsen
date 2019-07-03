@@ -118,8 +118,8 @@ export default function reducer(state: SearchReducerState = initialState, action
     case SearchAll.FAILURE:
     case SearchResource.FAILURE:
       return {
-        ...initialState,
-        isLoading: false,
+        ...initialState,  
+        search_term: state.search_term,
       };
     default:
       return state;

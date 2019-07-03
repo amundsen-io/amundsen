@@ -1,4 +1,5 @@
 import {
+  OwnerDict,
   PreviewData,
   PreviewQueryParams,
   TableMetadata,
@@ -26,7 +27,7 @@ export interface GetTableDataResponse {
   payload: {
     statusCode: number;
     data: TableMetadata;
-    owners: { [id: string] : User };
+    owners: OwnerDict;
     tags: Tag[];
   }
 };
@@ -155,7 +156,7 @@ export interface UpdateTableOwnerRequest {
 export interface UpdateTableOwnerResponse {
   type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
   payload: {
-    owners: { [id: string] : User };
+    owners: OwnerDict;
   };
 };
 

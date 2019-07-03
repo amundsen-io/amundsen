@@ -10,7 +10,7 @@ import Flag from 'components/common/Flag';
 import Tabs from 'components/common/Tabs';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getUserById, getUserOwn, getUserRead } from 'ducks/user/reducer';
+import { getUser, getUserOwn, getUserRead } from 'ducks/user/reducer';
 import { PeopleUser, Resource } from 'interfaces';
 import { GetUserRequest, GetUserOwnRequest, GetUserReadRequest } from 'ducks/user/types';
 
@@ -216,7 +216,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getUserById, getUserOwn, getUserRead, getBookmarksForUser }, dispatch);
+  return bindActionCreators({ getUserOwn, getUserRead, getBookmarksForUser, getUserById: getUser }, dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(withRouter(ProfilePage));
