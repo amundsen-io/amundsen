@@ -1,0 +1,3 @@
+database,cluster,schema_name,table_name,column_name,user_email,read_count
+hive,gold,test_schema,test_table1,col1,roald.amundsen@example.org,100
+dynamo,gold,test_schema,test_table2,col1,chrisc@example.org,500
