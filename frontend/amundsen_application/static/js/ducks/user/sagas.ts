@@ -1,6 +1,8 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
+import { loggedInUser, userById, userOwn, userRead } from './api/v0';
+
 import {
   GetLoggedInUser,
   GetUser,
@@ -10,14 +12,20 @@ import {
   GetUserReadRequest,
   GetUserRequest
 } from './types';
-import { getLoggedInUser, getUserById, getUserOwn, getUserRead } from './api/v0';
+
+import {
+  getLoggedInUserFailure, getLoggedInUserSuccess,
+  getUserFailure, getUserSuccess,
+  getUserOwnFailure, getUserOwnSuccess,
+  getUserReadFailure, getUserReadSuccess,
+} from './reducer';
 
 export function* getLoggedInUserWorker(): SagaIterator {
   try {
-    const user = yield call(getLoggedInUser);
-    yield put({ type: GetLoggedInUser.SUCCESS, payload: { user } });
+    const user = yield call(loggedInUser);
+    yield put(getLoggedInUserSuccess(user));
   } catch (e) {
-    yield put({ type: GetLoggedInUser.FAILURE });
+    yield put(getLoggedInUserFailure());
   }
 };
 export function* getLoggedInUserWatcher(): SagaIterator {
@@ -26,10 +34,10 @@ export function* getLoggedInUserWatcher(): SagaIterator {
 
 export function* getUserWorker(action: GetUserRequest): SagaIterator {
   try {
-    const user = yield call(getUserById, action.payload.userId);
-    yield put({ type: GetUser.SUCCESS, payload: { user } });
+    const user = yield call(userById, action.payload.userId);
+    yield put(getUserSuccess(user));
   } catch (e) {
-    yield put({ type: GetUser.FAILURE });
+    yield put(getUserFailure());
   }
 };
 export function* getUserWatcher(): SagaIterator {
@@ -38,10 +46,10 @@ export function* getUserWatcher(): SagaIterator {
 
 export function* getUserOwnWorker(action: GetUserOwnRequest): SagaIterator {
   try {
-    const userOwn = yield call(getUserOwn, action.payload.userId);
-    yield put({ type: GetUserOwn.SUCCESS, payload: { own: userOwn.own }});
+    const responseData = yield call(userOwn, action.payload.userId);
+    yield put(getUserOwnSuccess(responseData.own));
   } catch (e) {
-    yield put({ type: GetUserOwn.FAILURE })
+    yield put(getUserOwnFailure())
   }
 };
 
@@ -51,10 +59,10 @@ export function* getUserOwnWatcher(): SagaIterator {
 
 export function* getUserReadWorker(action: GetUserReadRequest): SagaIterator {
   try {
-    const userRead = yield call(getUserRead, action.payload.userId);
-    yield put({ type: GetUserRead.SUCCESS, payload: { read: userRead.read }});
+    const responseData = yield call(userRead, action.payload.userId);
+    yield put(getUserReadSuccess(responseData.read));
   } catch (e) {
-    yield put({ type: GetUserRead.FAILURE })
+    yield put(getUserReadFailure())
   }
 };
 

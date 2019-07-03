@@ -1,6 +1,8 @@
 import { SagaIterator } from 'redux-saga';
 import { all, call, put, takeEvery } from 'redux-saga/effects';
 
+import { ResourceType } from 'interfaces/Resources';
+
 import {
   SearchAll,
   SearchAllRequest,
@@ -11,7 +13,6 @@ import {
 import {
   searchResource,
 } from './api/v0';
-import { ResourceType } from 'interfaces/Resources';
 
 import {
   searchAllSuccess, searchAllFailure,

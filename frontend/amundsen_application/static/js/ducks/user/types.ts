@@ -34,21 +34,17 @@ export interface GetUserResponse {
   };
 };
 
-
-/* getUserOwn */
 export enum GetUserOwn {
   REQUEST = 'amundsen/user/own/GET_REQUEST',
   SUCCESS = 'amundsen/user/own/GET_SUCCESS',
   FAILURE = 'amundsen/user/own/GET_FAILURE',
 }
-
 export interface GetUserOwnRequest {
   type: GetUserOwn.REQUEST;
   payload: {
     userId: string;
   };
 };
-
 export interface GetUserOwnResponse {
   type: GetUserOwn.SUCCESS | GetUserOwn.FAILURE;
   payload?: {
@@ -56,20 +52,17 @@ export interface GetUserOwnResponse {
   };
 };
 
-/* getUserRead */
 export enum GetUserRead {
   REQUEST = 'amundsen/user/read/GET_REQUEST',
   SUCCESS = 'amundsen/user/read/GET_SUCCESS',
   FAILURE = 'amundsen/user/read/GET_FAILURE',
 }
-
 export interface GetUserReadRequest {
   type: GetUserRead.REQUEST;
   payload: {
     userId: string;
   };
 };
-
 export interface GetUserReadResponse {
   type: GetUserRead.SUCCESS | GetUserRead.FAILURE;
   payload?: {
