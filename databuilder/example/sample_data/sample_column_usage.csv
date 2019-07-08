@@ -1,3 +1,13 @@
 database,cluster,schema_name,table_name,column_name,user_email,read_count
 hive,gold,test_schema,test_table1,col1,roald.amundsen@example.org,100
+hive,gold,test_schema,test_table1,col1,roald0@example.org,10
+hive,gold,test_schema,test_table1,col1,roald1@example.org,10
+hive,gold,test_schema,test_table1,col1,roald2@example.org,10
+hive,gold,test_schema,test_table1,col1,roald3@example.org,10
+hive,gold,test_schema,test_table1,col1,roald4@example.org,10
+hive,gold,test_schema,test_table1,col1,roald5@example.org,10
+hive,gold,test_schema,test_table1,col1,roald6@example.org,10
+hive,gold,test_schema,test_table1,col1,roald7@example.org,10
+hive,gold,test_schema,test_table1,col1,roald8@example.org,10
+hive,gold,test_schema,test_table1,col1,roald9@example.org,10
 dynamo,gold,test_schema,test_table2,col1,chrisc@example.org,500
