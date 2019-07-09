@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from typing import Iterable, Union, Mapping
 
+from flask import request
 from flask_restful import Resource, fields, marshal
 
 from metadata_service.proxy import get_proxy_client
@@ -26,5 +27,6 @@ class PopularTablesAPI(Resource):
         self.client = get_proxy_client()
 
     def get(self) -> Iterable[Union[Mapping, int, None]]:
-        popular_tables = self.client.get_popular_tables()
+        limit = request.args.get('limit', 10)
+        popular_tables = self.client.get_popular_tables(num_entries=limit)
         return marshal({'popular_tables': popular_tables}, popular_tables_fields), HTTPStatus.OK

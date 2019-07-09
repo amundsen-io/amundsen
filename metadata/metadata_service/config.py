@@ -34,6 +34,7 @@ class Config:
     # The relationalAttribute name of Atlas Entity that identifies the database entity.
     ATLAS_DB_ATTRIBUTE = 'db'
 
+    # FixMe: Once GUIDs are in place, then change it to 'name' (display name)
     # Display name of Atlas Entities that we use for amundsen project.
     # Atlas uses qualifiedName as indexed attribute. but also supports 'name' attribute.
     ATLAS_NAME_ATTRIBUTE = 'qualifiedName'

@@ -4,13 +4,12 @@ from typing import Union, List, Dict, Any, Tuple
 
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
-from atlasclient.models import EntityUniqueAttribute, Entity
+from atlasclient.models import EntityUniqueAttribute
 from flask import current_app as app
-
-from metadata_service.entity.tag_detail import TagDetail
 
 from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import Table, User, Tag, Column, Statistics
+from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -27,8 +26,14 @@ class AtlasProxy(BaseProxy):
     TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
     DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
     NAME_ATTRIBUTE = app.config['ATLAS_NAME_ATTRIBUTE']
+    QN_KEY = 'qualifiedName'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
+
+    # Table Qualified Name Regex
+    TABLE_QN_REGEX = pattern = re.compile(r"""
+    ^(?P<db_name>.*?)\.(?P<table_name>.*)@(?P<cluster_name>.*?)$
+    """, re.X)
 
     def __init__(self, *,
                  host: str,
@@ -54,31 +59,18 @@ class AtlasProxy(BaseProxy):
                 ids.append(entity.guid)
         return ids
 
-    def _get_rel_attributes_dict(self, *, entities: List[Entity], attribute: str) -> Dict:
+    def _get_flat_values_from_dsl(self, dsl_param: dict) -> List:
         """
-        Atlas doesn't provide relational in referredEntities when making searching
-        on the superTypes entities. This function will make a dictionary same
-        as the referredEntities.
-        :param entities: The list of entities from which relational attributes
-        needed to be fetched
-        :param attribute: The name of the relational attribute
-        :return: A dictionary of entities details, with GUIDs as keys of each
-        entity
+        Makes a DSL query asking for specific attribute, extracts that attribute
+        from result (which is a list of list, and converts that into a flat list.
+        :param dsl_param: A DSL parameter, with SELECT clause
+        :return: A Flat list of specified attributes in SELECT clause
         """
-        entities_dict = dict()  # type: Dict
-        rel_attribute_ids = list()
-        for entity in entities:
-            attrs = entity.attributes
-            rel_id = attrs.get(attribute, {}).get('guid')
-            if rel_id:
-                rel_attribute_ids.append(rel_id)
-
-        _rel_attr_collection = self._driver.entity_bulk(guid=rel_attribute_ids)
-        for rel_entities in _rel_attr_collection:
-            entities_dict = dict((rel_entity.guid, rel_entity)
-                                 for rel_entity in rel_entities.entities)
-
-        return entities_dict
+        attributes: List = list()
+        _search_collection = self._driver.search_dsl(**dsl_param)
+        for collection in _search_collection:
+            attributes = collection.flatten_attrs()
+        return attributes
 
     def _extract_info_from_uri(self, *, table_uri: str) -> Dict:
         """
@@ -330,57 +322,50 @@ class AtlasProxy(BaseProxy):
             column_name=column_name)
         return column_detail[self.ATTRS_KEY].get('description')
 
-    def get_popular_tables(self, *,
-                           num_entries: int = 10) -> List[PopularTable]:
+    def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
         """
-        FixMe: For now it simply returns ALL the tables available,
-        Need to generate the formula for popular tables only.
-        :param num_entries:
-        :return:
+        :param num_entries: Number of popular tables to fetch
+        :return: A List of popular tables instances
         """
         popular_tables = list()
-        params = {'typeName': self.TABLE_ENTITY,
-                  'excludeDeletedEntities': True,
-                  self.ATTRS_KEY: [self.DB_ATTRIBUTE]
-                  }
         try:
-            # Fetch all the Popular Tables
-            _table_collection = self._driver.search_basic.create(data=params)
-            # Inflate the table entities
-            table_entities = _table_collection.entities
-        except BadRequest as ex:
-            LOGGER.exception(f'Please make sure you have assigned the appropriate '
-                             f'self.TABLE_ENTITY entity to your atlas tables. {ex}')
+            # Fetch the metadata entities based on popularity score
+            query_metadata_ids = {'query': f'FROM Table SELECT metadata.__guid '
+                                           f'ORDERBY popularityScore desc '
+                                           f'LIMIT {num_entries}'}
+            metadata_ids = self._get_flat_values_from_dsl(dsl_param=query_metadata_ids)
+            metadata_collection = self._driver.entity_bulk(guid=metadata_ids)
+        except KeyError as ex:
+            LOGGER.exception(f'DSL Search query failed: {ex}')
             raise BadRequest('Unable to fetch popular tables. '
                              'Please check your configurations.')
 
-        # Make a dictionary of Database Entities to avoid multiple DB calls
-        dbs_dict = self._get_rel_attributes_dict(entities=table_entities,
-                                                 attribute=self.DB_ATTRIBUTE)
+        if not metadata_collection:
+            raise NotFoundException('Unable to fetch popular tables. '
+                                    'Please check your configurations.')
 
-        # Make instances of PopularTable
-        for entity in table_entities:
-            attrs = entity.attributes
+        for _collection in metadata_collection:
+            metadata_entities = _collection.entities_with_relationships(attributes=["parentEntity"])
 
-            # DB would be available in attributes
-            # because it is in the request parameter.
-            db_id = attrs.get(self.DB_ATTRIBUTE, {}).get('guid')
-            db_entity = dbs_dict.get(db_id)
+            for metadata in metadata_entities:
+                table = metadata.relationshipAttributes.get("parentEntity")
+                table_attrs = table.get(self.ATTRS_KEY)
 
-            if db_entity:
-                db_attrs = db_entity.attributes
-                db_name = db_attrs.get(self.NAME_ATTRIBUTE)
-                db_cluster = db_attrs.get('clusterName')
-            else:
-                db_name = ''
-                db_cluster = ''
+                _regex_result = self.TABLE_QN_REGEX.match(table_attrs.get(self.QN_KEY))
+                table_qn = _regex_result.groupdict() if _regex_result else dict()
 
-            popular_table = PopularTable(database=entity.typeName,
-                                         cluster=db_cluster,
-                                         schema=db_name,
-                                         name=attrs.get(self.NAME_ATTRIBUTE),
-                                         description=attrs.get('description'))
-            popular_tables.append(popular_table)
+                # Hardcoded empty strings as default, because these values are not optional
+                table_name = table_attrs.get(self.NAME_ATTRIBUTE) or table_qn.get("table_name", '')
+                db_name = table_qn.get("db_name", '')
+                db_cluster = table_qn.get("cluster_name", '')
+
+                popular_table = PopularTable(database=table.get("typeName"),
+                                             cluster=db_cluster,
+                                             schema=db_name,
+                                             name=table_name,
+                                             description=table_attrs.get('description'))
+                popular_tables.append(popular_table)
+
         return popular_tables
 
     def get_latest_updated_ts(self) -> int:
@@ -398,7 +383,7 @@ class AtlasProxy(BaseProxy):
                 tags.append(
                     TagDetail(
                         tag_name=classification.name,
-                        tag_count=0     # FixMe (Verdan): Implement the tag count
+                        tag_count=0  # FixMe (Verdan): Implement the tag count
                     )
                 )
         return tags

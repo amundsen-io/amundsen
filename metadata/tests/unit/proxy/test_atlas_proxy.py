@@ -7,9 +7,10 @@ from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.table_detail import (Table, User, Tag, Column, Statistics)
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
+from tests.unit.proxy.fixtures.atlas_test_data import Data
 
 
-class TestAtlasProxy(unittest.TestCase):
+class TestAtlasProxy(unittest.TestCase, Data):
     def setUp(self):
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
         self.app_context = self.app.app_context()
@@ -22,97 +23,12 @@ class TestAtlasProxy(unittest.TestCase):
             self.proxy = AtlasProxy(host='DOES_NOT_MATTER', port=0000)
             self.proxy._driver = MagicMock()
 
-        self.entity_type = 'TEST_ENTITY'
-        self.cluster = 'TEST_CLUSTER'
-        self.db = 'TEST_DB'
-        self.name = 'TEST_TABLE'
-        self.table_uri = f'{self.entity_type}://{self.cluster}.{self.db}/{self.name}'
+    def to_class(self, entity):
+        class ObjectView(object):
+            def __init__(self, dictionary):
+                self.__dict__ = dictionary
 
-        self.classification_entity = {
-            'classifications': [
-                {'typeName': 'PII_DATA', 'name': 'PII_DATA'},
-            ]
-        }
-
-        self.test_column = {
-            'guid': 'DOESNT_MATTER',
-            'typeName': 'COLUMN',
-            'attributes': {
-                'qualifiedName': 'column@name',
-                'type': 'Managed',
-                'description': 'column description',
-                'position': 1,
-                'stats': [
-                    {'attributes': {
-                        'stat_name': 'max',
-                        'stat_val': '100',
-                        'start_epoch': '100',
-                        'end_epoch': '200',
-                    }},
-                    {'attributes': {
-                        'stat_name': 'min',
-                        'stat_val': '0',
-                        'start_epoch': '100',
-                        'end_epoch': '200',
-                    }},
-                ]
-            }
-
-        }
-
-        self.db_entity = {
-            'guid': '-100',
-            'updateTime': 234,
-            'typeName': self.entity_type,
-            'attributes': {
-                'qualifiedName': self.db,
-                'name': 'self.db',
-                'description': 'Dummy DB Description',
-                'owner': 'dummy@email.com',
-            }
-        }
-
-        self.entity1 = {
-            'guid': '1',
-            'typeName': self.entity_type,
-            'updateTime': 123,
-            'attributes': {
-                'qualifiedName': 'Table1_Qualified',
-                'name': 'Table1',
-                'description': 'Dummy Description',
-                'owner': 'dummy@email.com',
-                'columns': [self.test_column],
-                'db': self.db_entity
-            },
-            'relationshipAttributes': {
-                'db': self.db_entity,
-                'columns': [self.test_column],
-            },
-        }
-        self.entity1.update(self.classification_entity)
-
-        self.entity2 = {
-            'guid': '2',
-            'updateTime': 234,
-            'typeName': self.entity_type,
-            'attributes': {
-                'qualifiedName': 'Table2_Qualified',
-                'name': 'Table1',
-                'description': 'Dummy Description',
-                'owner': 'dummy@email.com',
-                'db': self.db_entity
-            },
-            'relationshipAttributes': {
-                'db': self.db_entity,
-            },
-        }
-        self.entity2.update(self.classification_entity)
-        self.entities = {
-            'entities': [
-                self.entity1,
-                self.entity2,
-            ]
-        }
+        return ObjectView(entity)
 
     def _mock_get_table_entity(self, entity=None):
         mocked_entity = MagicMock()
@@ -154,28 +70,6 @@ class TestAtlasProxy(unittest.TestCase):
         response = self.proxy._get_ids_from_basic_search(params={})
         expected = ['1', '2']
         self.assertListEqual(response, expected)
-
-    def test_get_rel_attributes_dict(self):
-        entity1 = MagicMock()
-        entity1.attributes = self.entity1['attributes']
-
-        entity2 = MagicMock()
-        entity2.attributes = self.entity2['attributes']
-
-        db_entity = MagicMock()
-        db_entity.guid = self.db_entity['guid']
-
-        rel_attr_collection = MagicMock()
-        rel_attr_collection.entities = [db_entity]
-
-        self.proxy._driver.entity_bulk = MagicMock(return_value=[rel_attr_collection])
-        # noinspection PyTypeChecker
-        response = self.proxy._get_rel_attributes_dict(entities=[entity1, entity2],
-                                                       attribute='db')
-        expected = {
-            self.db_entity['guid']: db_entity
-        }
-        self.assertDictEqual(response, expected)
 
     def test_get_table_entity(self):
         unique_attr_response = MagicMock()
@@ -233,7 +127,7 @@ class TestAtlasProxy(unittest.TestCase):
 
     def test_get_table_missing_info(self):
         with self.assertRaises(BadRequest):
-            local_entity = self.entity1
+            local_entity = self.entity1.copy()
             local_entity.pop('attributes')
             unique_attr_response = MagicMock()
             unique_attr_response.entity = local_entity
@@ -242,29 +136,14 @@ class TestAtlasProxy(unittest.TestCase):
             self.proxy.get_table(table_uri=self.table_uri)
 
     def test_get_popular_tables(self):
-        entity1 = MagicMock()
-        entity1.typeName = self.entity1['typeName']
-        entity1.attributes = self.entity1['attributes']
+        metadata1 = self.to_class(self.metadata1)
+        metadata2 = self.to_class(self.metadata2)
+        self.proxy._get_flat_values_from_dsl = MagicMock(return_value=[])
 
-        entity2 = MagicMock()
-        entity2.typeName = self.entity2['typeName']
-        entity2.attributes = self.entity2['attributes']
+        metadata_collection = MagicMock()
+        metadata_collection.entities_with_relationships = MagicMock(return_value=[metadata1, metadata2])
 
-        basic_search_collection = MagicMock()
-        basic_search_collection.entities = [entity1, entity2]
-
-        self.proxy._driver.search_basic.create = MagicMock(return_value=basic_search_collection)
-
-        db_entity = MagicMock()
-        db_entity.attributes = {
-            'qualifiedName': self.db,
-            'clusterName': self.cluster
-        }
-
-        db_dict = {self.entity1['attributes']['db']['guid']: db_entity}
-
-        self.proxy._get_rel_attributes_dict = MagicMock(return_value=db_dict)
-
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[metadata_collection])
         response = self.proxy.get_popular_tables(num_entries=2)
         ent1_attrs = self.entity1['attributes']
         ent2_attrs = self.entity2['attributes']
@@ -279,26 +158,21 @@ class TestAtlasProxy(unittest.TestCase):
         self.assertEqual(expected.__repr__(), response.__repr__())
 
     def test_get_popular_tables_without_db(self):
-        attrs_ent1 = self.entity1['attributes']
-        attrs_ent1.pop('db')
-        entity1 = MagicMock()
-        entity1.typeName = self.entity1['typeName']
-        entity1.attributes = attrs_ent1
+        meta1 = self.metadata1.copy()
+        meta2 = self.metadata2.copy()
 
-        attrs_ent2 = self.entity2['attributes']
-        attrs_ent2.pop('db')
-        entity2 = MagicMock()
-        entity2.typeName = self.entity2['typeName']
-        entity2.attributes = attrs_ent2
+        for meta in [meta1, meta2]:
+            meta['relationshipAttributes']['parentEntity']['attributes']['qualifiedName'] = 'meta@cluster'
 
-        basic_search_collection = MagicMock()
-        basic_search_collection.entities = [entity1, entity2]
+        metadata1 = self.to_class(meta1)
+        metadata2 = self.to_class(meta2)
+        self.proxy._get_flat_values_from_dsl = MagicMock(return_value=[])
 
-        self.proxy._driver.search_basic.create = MagicMock(return_value=basic_search_collection)
-        self.proxy._get_rel_attributes_dict = MagicMock(return_value=dict())
+        metadata_collection = MagicMock()
+        metadata_collection.entities_with_relationships = MagicMock(return_value=[metadata1, metadata2])
 
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[metadata_collection])
         response = self.proxy.get_popular_tables(num_entries=2)
-
         ent1_attrs = self.entity1['attributes']
         ent2_attrs = self.entity2['attributes']
 
@@ -312,8 +186,10 @@ class TestAtlasProxy(unittest.TestCase):
         self.assertEqual(expected.__repr__(), response.__repr__())
 
     def test_get_popular_tables_search_exception(self):
-        with self.assertRaises(BadRequest):
-            self.proxy._driver.search_basic.create = MagicMock(side_effect=BadRequest('Boom!'))
+        with self.assertRaises(NotFoundException):
+            self.proxy._get_flat_values_from_dsl = MagicMock(return_value=[])
+            self.proxy._driver.entity_bulk = MagicMock(return_value=None)
+
             self.proxy.get_popular_tables(num_entries=2)
 
     def test_get_table_description(self):
