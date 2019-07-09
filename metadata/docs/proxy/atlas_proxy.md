@@ -56,4 +56,5 @@ client.typedefs.update(data=typedef_dict)
 We need to add some extra fields to atlas in order to get all the information needed for the amundsen frontend. 
 Following is the details (along with the code) for each item:
 
+- [Popular Tables Configurations (Table, Metadata, User Relationship)](/docs/proxy/atlas/metadata_configs.md) [REQUIRED]
 - [Column Configurations](/docs/proxy/atlas/column_configs.md)

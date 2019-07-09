@@ -62,8 +62,7 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_popular_tables(self, *,
-                           num_entries: int =10) -> List[PopularTable]:
+    def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
         pass
 
     @abstractmethod

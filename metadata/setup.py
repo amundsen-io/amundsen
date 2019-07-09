@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version__ = '1.0.13'
+__version__ = '1.0.14'
 
 
 setup(
@@ -33,6 +33,6 @@ setup(
         'neo4j-driver==1.6.0',
         'beaker>=1.10.0',
         'statsd>=3.2.1',
-        'atlasclient>=0.1.6'
+        'atlasclient>=0.1.7'
     ]
 )
