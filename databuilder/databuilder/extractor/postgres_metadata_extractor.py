@@ -41,6 +41,7 @@ class PostgresMetadataExtractor(Extractor):
     WHERE_CLAUSE_SUFFIX_KEY = 'where_clause_suffix'
     CLUSTER_KEY = 'cluster_key'
     USE_CATALOG_AS_CLUSTER_NAME = 'use_catalog_as_cluster_name'
+    DATABASE_KEY = 'database_key'
 
     # Default values
     DEFAULT_CLUSTER_NAME = 'master'
@@ -58,6 +59,9 @@ class PostgresMetadataExtractor(Extractor):
             cluster_source = "c.table_catalog"
         else:
             cluster_source = "'{}'".format(self._cluster)
+
+        self._database = conf.get_string(PostgresMetadataExtractor.DATABASE_KEY,
+                                         default='postgres').encode('utf-8', 'ignore')
 
         self.sql_stmt = PostgresMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
@@ -100,7 +104,7 @@ class PostgresMetadataExtractor(Extractor):
                 columns.append(ColumnMetadata(row['col_name'], row['col_description'],
                                               row['col_type'], row['col_sort_order']))
 
-            yield TableMetadata('postgres', last_row['cluster'],
+            yield TableMetadata(self._database, last_row['cluster'],
                                 last_row['schema_name'],
                                 last_row['name'],
                                 last_row['description'],

@@ -21,7 +21,9 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
             'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.CLUSTER_KEY):
             'MY_CLUSTER',
             'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
-            False
+            False,
+            'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.DATABASE_KEY):
+            'postgres'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -94,6 +96,7 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
                                       ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
                                       ColumnMetadata('ds', None, 'varchar', 5)])
+
             self.assertEqual(expected.__repr__(), actual.__repr__())
             self.assertIsNone(extractor.extract())
 
