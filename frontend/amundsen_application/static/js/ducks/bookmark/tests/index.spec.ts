@@ -4,7 +4,7 @@ import { throwError } from 'redux-saga-test-plan/providers';
 
 import { Bookmark, ResourceType } from 'interfaces';
 
-import { addBookmark as addBkmrk, getBookmarks as getBkmrks, removeBookmark as removeBkmrk } from '../api/v0';
+import * as API from '../api/v0';
 import reducer, {
   addBookmark, addBookmarkFailure, addBookmarkSuccess,
   getBookmarks, getBookmarksFailure, getBookmarksSuccess,
@@ -222,8 +222,8 @@ describe('bookmark ducks', () => {
     describe('addBookmarkWatcher', () => {
       it('takes AddBookmark.REQUEST with addBookmarkWorker', () => {
         testSaga(addBookmarkWatcher)
-          .next()
-          .takeEvery(AddBookmark.REQUEST, addBookmarkWorker);
+          .next().takeEvery(AddBookmark.REQUEST, addBookmarkWorker)
+          .next().isDone();
       });
     });
 
@@ -236,8 +236,8 @@ describe('bookmark ducks', () => {
       it('adds a bookmark', () => {
         return expectSaga(addBookmarkWorker, action)
           .provide([
-            [matchers.call.fn(addBkmrk), {}],
-            [matchers.call.fn(getBkmrks), { bookmarks }],
+            [matchers.call.fn(API.addBookmark), {}],
+            [matchers.call.fn(API.getBookmarks), { bookmarks }],
           ])
           .put(addBookmarkSuccess(bookmarks))
           .run();
@@ -246,8 +246,8 @@ describe('bookmark ducks', () => {
       it('handles request error', () => {
         return expectSaga(addBookmarkWorker, action)
           .provide([
-            [matchers.call.fn(addBkmrk), throwError(new Error())],
-            [matchers.call.fn(getBkmrks), throwError(new Error())],
+            [matchers.call.fn(API.addBookmark), throwError(new Error())],
+            [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
           .put(addBookmarkFailure())
           .run();
@@ -257,8 +257,8 @@ describe('bookmark ducks', () => {
     describe('getBookmarksWatcher', () => {
       it('takes GetBookmark.REQUEST with getBookmarksWorker', () => {
         testSaga(getBookmarksWatcher)
-          .next()
-          .takeEvery(GetBookmarks.REQUEST, getBookmarksWorker);
+          .next().takeEvery(GetBookmarks.REQUEST, getBookmarksWorker)
+          .next().isDone();
       });
     });
 
@@ -266,7 +266,7 @@ describe('bookmark ducks', () => {
       it('gets bookmarks', () => {
         return expectSaga(getBookmarksWorker)
           .provide([
-            [matchers.call.fn(getBkmrks), { bookmarks }],
+            [matchers.call.fn(API.getBookmarks), { bookmarks }],
           ])
           .put(getBookmarksSuccess(bookmarks))
           .run();
@@ -275,7 +275,7 @@ describe('bookmark ducks', () => {
       it('handles request error', () => {
         return expectSaga(getBookmarksWorker)
           .provide([
-            [matchers.call.fn(getBkmrks), throwError(new Error())],
+            [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
           .put(getBookmarksFailure())
           .run();
@@ -285,8 +285,8 @@ describe('bookmark ducks', () => {
     describe('getBookmarksForUserWatcher', () => {
       it('takes GetBookmarksForUser.REQUEST with getBookmarkForUserWorker', () => {
         testSaga(getBookmarksForUserWatcher)
-          .next()
-          .takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker);
+          .next().takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker)
+          .next().isDone();
       });
     });
 
@@ -296,10 +296,10 @@ describe('bookmark ducks', () => {
         action = getBookmarksForUser(testUserId);
       });
 
-      it('adds a bookmark', () => {
+      it('gets bookmarks', () => {
         return expectSaga(getBookmarkForUserWorker, action)
           .provide([
-            [matchers.call.fn(getBkmrks), { bookmarks }],
+            [matchers.call.fn(API.getBookmarks), { bookmarks }],
           ])
           .put(getBookmarksForUserSuccess(bookmarks))
           .run();
@@ -308,7 +308,7 @@ describe('bookmark ducks', () => {
       it('handles request error', () => {
         return expectSaga(getBookmarkForUserWorker, action)
           .provide([
-            [matchers.call.fn(getBkmrks), throwError(new Error())],
+            [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
           .put(getBookmarksForUserFailure())
           .run();
@@ -318,8 +318,8 @@ describe('bookmark ducks', () => {
     describe('removeBookmarkWatcher', () => {
       it('takes RemoveBookmark.REQUEST with removeBookmarkWorker', () => {
         testSaga(removeBookmarkWatcher)
-          .next()
-          .takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker);
+          .next().takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker)
+          .next().isDone();
       });
     });
 
@@ -332,7 +332,7 @@ describe('bookmark ducks', () => {
       it('removes a bookmark', () => {
         return expectSaga(removeBookmarkWorker, action)
           .provide([
-            [matchers.call.fn(removeBkmrk), {}],
+            [matchers.call.fn(API.removeBookmark), {}],
           ])
           .put(removeBookmarkSuccess(testResourceKey, testResourceType))
           .run();
@@ -341,7 +341,7 @@ describe('bookmark ducks', () => {
       it('handles request error', () => {
         return expectSaga(removeBookmarkWorker, action)
           .provide([
-            [matchers.call.fn(removeBkmrk), throwError(new Error())],
+            [matchers.call.fn(API.removeBookmark), throwError(new Error())],
           ])
           .put(removeBookmarkFailure())
           .run();

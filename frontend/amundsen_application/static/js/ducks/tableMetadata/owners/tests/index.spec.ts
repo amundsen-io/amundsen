@@ -4,7 +4,7 @@ import { OwnerDict, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
-import * as apis from '../../api/v0';
+import * as API from '../../api/v0';
 
 import reducer, {
   updateTableOwner, updateTableOwnerFailure, updateTableOwnerSuccess,
@@ -16,7 +16,7 @@ import { updateTableOwnerWorker, updateTableOwnerWatcher } from '../sagas';
 
 import { GetTableData, UpdateTableOwner } from '../../types';
 
-const metadataUpdateTableOwnerSpy = jest.spyOn(apis, 'metadataUpdateTableOwner').mockImplementation((payload, key) => []);
+const updateTableOwnerSpy = jest.spyOn(API, 'updateTableOwner').mockImplementation((payload, key) => []);
 
 describe('tableMetadata:owners ducks', () => {
   let expectedOwners: OwnerDict;
@@ -131,8 +131,8 @@ describe('tableMetadata:owners ducks', () => {
           sagaTest = (action) => {
             return testSaga(updateTableOwnerWorker, action)
                 .next().select()
-                .next(globalState).all(apis.metadataUpdateTableOwner(updatePayload, globalState.tableMetadata.tableData.key))
-                .next().call(apis.metadataTableOwners, globalState.tableMetadata.tableData.key)
+                .next(globalState).all(API.updateTableOwner(updatePayload, globalState.tableMetadata.tableData.key))
+                .next().call(API.getTableOwners, globalState.tableMetadata.tableData.key)
                 .next(expectedOwners).put(updateTableOwnerSuccess(expectedOwners));
           };
         });

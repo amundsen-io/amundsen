@@ -2,9 +2,9 @@ import axios, { AxiosResponse } from 'axios';
 
 import { Tag } from 'interfaces';
 
-import { metadataAllTags, AllTagsAPI } from '../v0';
+import * as API from '../v0';
 
-describe('metadataAllTags', () => {
+describe('getAllTags', () => {
   it('resolves with array of sorted result of response.data.tags on success', async () => {
     const rawTags: Tag[] = [
       {tag_count: 2, tag_name: 'test'},
@@ -14,7 +14,7 @@ describe('metadataAllTags', () => {
       {tag_count: 1, tag_name: 'atest'},
       {tag_count: 2, tag_name: 'test'}
     ];
-    const mockResponse: AxiosResponse<AllTagsAPI> = {
+    const mockResponse: AxiosResponse<API.AllTagsAPI> = {
       data: {
         tags: rawTags,
         msg: 'Success'
@@ -27,7 +27,7 @@ describe('metadataAllTags', () => {
 
     const axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockResponse));
     expect.assertions(1);
-    await metadataAllTags().then(sortedTags => {
+    await API.getAllTags().then(sortedTags => {
       expect(sortedTags).toEqual(expectedTags);
     });
   });

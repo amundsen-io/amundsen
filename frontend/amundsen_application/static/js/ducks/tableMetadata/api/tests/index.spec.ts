@@ -6,15 +6,15 @@ import * as Utils from 'ducks/utilMethods';
 
 import globalState from 'fixtures/globalState';
 
-import { TableData, TableDataAPI } from '../v0';
+import * as API from '../v0';
 
 const filterFromObjSpy = jest.spyOn(Utils, 'filterFromObj').mockImplementation(() => {});
 
 jest.mock('axios');
 
 describe('helpers', () => {
-  let mockResponseData: TableDataAPI;
-  let tableResponseData: TableData;
+  let mockResponseData: API.TableDataAPI;
+  let tableResponseData: API.TableData;
   beforeAll(() => {
     tableResponseData = {
       ...globalState.tableMetadata.tableData,

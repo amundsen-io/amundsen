@@ -1,13 +1,13 @@
 import { SagaIterator } from 'redux-saga';
 import { call, delay, put, takeEvery } from 'redux-saga/effects';
 
-import { feedbackSubmit } from './api/v0';
+import * as API from './api/v0';
 import { submitFeedbackFailure, submitFeedbackSuccess, resetFeedback } from './reducer';
 import { SubmitFeedback, SubmitFeedbackRequest } from './types';
 
 export function* submitFeedbackWorker(action: SubmitFeedbackRequest): SagaIterator {
   try {
-    yield call(feedbackSubmit, action.payload.data);
+    yield call(API.submitFeedback, action.payload.data);
     yield put(submitFeedbackSuccess());
 
     yield delay(2000);

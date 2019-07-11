@@ -4,7 +4,7 @@ import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
-import { loggedInUser, userById, userOwn, userRead } from '../api/v0';
+import * as API from '../api/v0';
 import reducer, {
   getLoggedInUser, getLoggedInUserFailure, getLoggedInUserSuccess,
   getUser, getUserFailure, getUserSuccess,
@@ -233,7 +233,7 @@ describe('user ducks', () => {
     describe('getLoggedInUserWorker', () => {
       it('executes flow for returning the currentUser', () => {
         testSaga(getLoggedInUserWorker, getLoggedInUser())
-          .next().call(loggedInUser)
+          .next().call(API.getLoggedInUser)
           .next(currentUser).put(getLoggedInUserSuccess(currentUser))
           .next().isDone();
       });
@@ -255,7 +255,7 @@ describe('user ducks', () => {
     describe('getUserWorker', () => {
       it('executes flow for returning a user given an id', () => {
         testSaga(getUserWorker, getUser(userId))
-          .next().call(userById, userId)
+          .next().call(API.getUser, userId)
           .next(otherUser.user).put(getUserSuccess(otherUser.user))
           .next().isDone();
       });
@@ -277,7 +277,7 @@ describe('user ducks', () => {
     describe('getUserOwnWorker', () => {
       it('executes flow for returning a users owned resources given an id', () => {
         testSaga(getUserOwnWorker, getUserOwn(userId))
-          .next().call(userOwn, userId)
+          .next().call(API.getUserOwn, userId)
           .next(otherUser).put(getUserOwnSuccess(otherUser.own))
           .next().isDone();
       });
@@ -299,7 +299,7 @@ describe('user ducks', () => {
     describe('getUserReadWorker', () => {
       it('executes flow for returning a users frequently used resources given an id', () => {
         testSaga(getUserReadWorker, getUserRead(userId))
-          .next().call(userRead, userId)
+          .next().call(API.getUserRead, userId)
           .next(otherUser).put(getUserReadSuccess(otherUser.read))
           .next().isDone();
       });

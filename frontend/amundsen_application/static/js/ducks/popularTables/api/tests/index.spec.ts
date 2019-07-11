@@ -4,14 +4,14 @@ import globalState from 'fixtures/globalState';
 
 import { TableResource } from 'interfaces';
 
-import { metadataPopularTables, PopularTablesAPI } from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
-describe('metadataPopularTables', () => {
+describe('getPopularTables', () => {
   let axiosMock;
   let expectedTables: TableResource[];
-  let mockGetResponse: AxiosResponse<PopularTablesAPI>;
+  let mockGetResponse: AxiosResponse<API.PopularTablesAPI>;
   beforeAll(() => {
     expectedTables = globalState.popularTables;
     mockGetResponse = {
@@ -29,7 +29,7 @@ describe('metadataPopularTables', () => {
 
   it('resolves with array of table resources from response.data on success', async () => {
     expect.assertions(1);
-    await metadataPopularTables().then(results => {
+    await API.getPopularTables().then(results => {
       expect(results).toEqual(expectedTables);
     });
   });

@@ -25,7 +25,7 @@ import {
   getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData, getTableTagsFromResponseData,
 } from './helpers';
 
-export function metadataTableTags(tableKey: string) {
+export function getTableTags(tableKey: string) {
   const tableParams = getTableQueryParams(tableKey);
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
   .then((response: AxiosResponse<TableDataAPI>) => {
@@ -34,7 +34,7 @@ export function metadataTableTags(tableKey: string) {
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that needs more dedicated debugging */
-export function metadataUpdateTableTags(tagArray, tableKey: string) {
+export function updateTableTags(tagArray, tableKey: string) {
   const updatePayloads = tagArray.map((tagObject) => {
     return {
       method: tagObject.methodName,
@@ -48,7 +48,7 @@ export function metadataUpdateTableTags(tagArray, tableKey: string) {
   return updatePayloads.map(payload => { axios(payload) });
 }
 
-export function metadataGetTableData(tableKey: string, searchIndex: string, source: string ) {
+export function getTableData(tableKey: string, searchIndex: string, source: string ) {
   const tableParams = getTableQueryParams(tableKey);
   return axios.get(`${API_PATH}/table?${tableParams}&index=${searchIndex}&source=${source}`)
   .then((response: AxiosResponse<TableDataAPI>) => {
@@ -61,7 +61,7 @@ export function metadataGetTableData(tableKey: string, searchIndex: string, sour
   });
 }
 
-export function metadataGetTableDescription(tableData: TableMetadata) {
+export function getTableDescription(tableData: TableMetadata) {
   const tableParams = getTableQueryParams(tableData.key);
   return axios.get(`${API_PATH}/v0/get_table_description?${tableParams}`)
   .then((response: AxiosResponse<DescriptionAPI>) => {
@@ -70,7 +70,7 @@ export function metadataGetTableDescription(tableData: TableMetadata) {
   });
 }
 
-export function metadataUpdateTableDescription(description: string, tableData: TableMetadata) {
+export function updateTableDescription(description: string, tableData: TableMetadata) {
   if (description.length === 0) {
     throw new Error();
   }
@@ -83,7 +83,7 @@ export function metadataUpdateTableDescription(description: string, tableData: T
   }
 }
 
-export function metadataTableOwners(tableKey: string) {
+export function getTableOwners(tableKey: string) {
   const tableParams = getTableQueryParams(tableKey);
   return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
   .then((response: AxiosResponse<TableDataAPI>) => {
@@ -92,7 +92,7 @@ export function metadataTableOwners(tableKey: string) {
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that need more dedicated debugging */
-export function metadataUpdateTableOwner(updateArray, tableKey: string) {
+export function updateTableOwner(updateArray, tableKey: string) {
   const updatePayloads = updateArray.map((item) => {
     return {
       method: item.method,
@@ -106,7 +106,7 @@ export function metadataUpdateTableOwner(updateArray, tableKey: string) {
   return updatePayloads.map(payload => { axios(payload) });
 }
 
-export function metadataGetColumnDescription(columnIndex: number, tableData: TableMetadata) {
+export function getColumnDescription(columnIndex: number, tableData: TableMetadata) {
   const tableParams = getTableQueryParams(tableData.key);
   const columnName = tableData.columns[columnIndex].name;
   return axios.get(`${API_PATH}/get_column_description?${tableParams}&column_name=${columnName}`)
@@ -116,7 +116,7 @@ export function metadataGetColumnDescription(columnIndex: number, tableData: Tab
   });
 }
 
-export function metadataUpdateColumnDescription(description: string, columnIndex: number, tableData: TableMetadata) {
+export function updateColumnDescription(description: string, columnIndex: number, tableData: TableMetadata) {
   if (description.length === 0) {
     throw new Error();
   }
@@ -131,14 +131,14 @@ export function metadataUpdateColumnDescription(description: string, columnIndex
   }
 }
 
-export function metadataGetLastIndexed() {
+export function getLastIndexed() {
   return axios.get(`${API_PATH}/get_last_indexed`)
   .then((response: AxiosResponse<LastIndexedAPI>) => {
     return response.data.timestamp;
   });
 }
 
-export function metadataGetPreviewData(queryParams: PreviewQueryParams) {
+export function getPreviewData(queryParams: PreviewQueryParams) {
   return axios({
     url: '/api/preview/v0/',
     method: 'POST',

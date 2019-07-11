@@ -1,11 +1,7 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
-import {
-  addBookmark,
-  removeBookmark,
-  getBookmarks,
-} from './api/v0';
+import * as API from './api/v0';
 
 import {
   addBookmarkFailure,
@@ -34,10 +30,10 @@ export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
   const { resourceKey, resourceType } = action.payload;
 
   try {
-    yield call(addBookmark, resourceKey, resourceType);
+    yield call(API.addBookmark, resourceKey, resourceType);
 
     // TODO - Consider adding the newly bookmarked resource directly to local store. This would save a round trip.
-    response = yield call(getBookmarks);
+    response = yield call(API.getBookmarks);
     yield put(addBookmarkSuccess(response.bookmarks));
   } catch(e) {
     yield put(addBookmarkFailure());
@@ -52,7 +48,7 @@ export function* removeBookmarkWorker(action: RemoveBookmarkRequest): SagaIterat
   let response;
   const { resourceKey, resourceType } = action.payload;
   try {
-    response = yield call(removeBookmark, resourceKey, resourceType);
+    response = yield call(API.removeBookmark, resourceKey, resourceType);
     yield put(removeBookmarkSuccess(resourceKey, resourceType));
   } catch(e) {
     yield put(removeBookmarkFailure());
@@ -66,7 +62,7 @@ export function* removeBookmarkWatcher(): SagaIterator {
 export function* getBookmarksWorker(action: GetBookmarksRequest): SagaIterator {
   let response;
   try {
-    response = yield call(getBookmarks);
+    response = yield call(API.getBookmarks);
     yield put(getBookmarksSuccess(response.bookmarks));
   } catch(e) {
     yield put(getBookmarksFailure());
@@ -81,7 +77,7 @@ export function* getBookmarkForUserWorker(action: GetBookmarksForUserRequest): S
   let response;
   const { userId } = action.payload;
   try {
-    response = yield call(getBookmarks, userId);
+    response = yield call(API.getBookmarks, userId);
     yield put(getBookmarksForUserSuccess(response.bookmarks));
   } catch(e) {
     yield put(getBookmarksForUserFailure());

@@ -2,7 +2,7 @@ import { testSaga } from 'redux-saga-test-plan';
 
 import { SendingState } from 'interfaces';
 
-import { feedbackSubmit } from '../api/v0';
+import * as API from '../api/v0';
 import reducer, {
   submitFeedback,
   submitFeedbackFailure,
@@ -87,37 +87,27 @@ describe('feedback ducks', () => {
     describe('submitFeedbackWatcher', () => {
       it('takes every SubmitFeedback.REQUEST with submitFeedbackWorker', () => {
         testSaga(submitFeedbackWatcher)
-          .next()
-          .takeEvery(SubmitFeedback.REQUEST, submitFeedbackWorker);
+          .next().takeEvery(SubmitFeedback.REQUEST, submitFeedbackWorker)
+          .next().isDone();
       });
     });
 
     describe('submitFeedbackWorker', () => {
       it('executes submit feedback flow', () => {
         testSaga(submitFeedbackWorker, action)
-          .next()
-          .call(feedbackSubmit, formData)
-          .next()
-          .put(submitFeedbackSuccess())
-          .next()
-          .delay(2000)
-          .next()
-          .put(resetFeedback())
-          .next()
-          .isDone();
+          .next().call(API.submitFeedback, formData)
+          .next().put(submitFeedbackSuccess())
+          .next().delay(2000)
+          .next().put(resetFeedback())
+          .next().isDone();
       });
 
       it('handles request error', () => {
         testSaga(submitFeedbackWorker, action)
-          .next()
-          .throw(new Error())
-          .put(submitFeedbackFailure())
-          .next()
-          .delay(2000)
-          .next()
-          .put(resetFeedback())
-          .next()
-          .isDone();
+          .next().throw(new Error()).put(submitFeedbackFailure())
+          .next().delay(2000)
+          .next().put(resetFeedback())
+          .next().isDone();
       });
     });
   });

@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import { Bookmark } from 'interfaces';
 
-import { addBookmark, getBookmarks, removeBookmark, API_PATH } from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
@@ -25,14 +25,14 @@ describe('addBookmark', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await addBookmark('test', 'table').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API_PATH}/user/bookmark`, { type: 'table', key: 'test' });
+    await API.addBookmark('test', 'table').then(data => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { type: 'table', key: 'test' });
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await addBookmark('test', 'table').then(data => {
+    await API.addBookmark('test', 'table').then(data => {
       expect(data).toEqual(mockPutResponse.data);
     });
   });
@@ -61,21 +61,21 @@ describe('getBookmarks', () => {
 
   it('calls axios with correct parameters if userId provided', async () => {
     expect.assertions(1);
-    await getBookmarks('testUserId').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API_PATH}/user/bookmark?user_id=testUserId`);
+    await API.getBookmarks('testUserId').then(data => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark?user_id=testUserId`);
     });
   });
 
   it('calls axios with correct parameters if userId not provided', async () => {
     expect.assertions(1);
-    await getBookmarks().then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API_PATH}/user/bookmark`);
+    await API.getBookmarks().then(data => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`);
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await getBookmarks('testUserId').then(data => {
+    await API.getBookmarks('testUserId').then(data => {
       expect(data).toEqual(mockGetResponse.data);
     });
   });
@@ -105,14 +105,14 @@ describe('removeBookmark', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await removeBookmark('testKey', 'table').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API_PATH}/user/bookmark`, { data: { type: 'table', key: 'testKey' }});
+    await API.removeBookmark('testKey', 'table').then(data => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { data: { type: 'table', key: 'testKey' }});
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await removeBookmark('test', 'table').then(data => {
+    await API.removeBookmark('test', 'table').then(data => {
       expect(data).toEqual(mockDeleteResponse.data);
     });
   });
