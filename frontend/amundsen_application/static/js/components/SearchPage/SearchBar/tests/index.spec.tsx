@@ -11,36 +11,18 @@ import {
   SYNTAX_ERROR_SPACING_SUFFIX,
 } from '../constants';
 import globalState from 'fixtures/globalState';
+import { getMockRouterProps } from 'fixtures/mockRouter';
 
 describe('SearchBar', () => {
   const valueChangeMockEvent = { target: { value: 'Data Resources' } };
   const submitMockEvent = { preventDefault: jest.fn() };
   const setStateSpy = jest.spyOn(SearchBar.prototype, 'setState');
-
+  const routerProps = getMockRouterProps<any>(null, null);
+  const historyPushSpy = jest.spyOn(routerProps.history, 'push');
   const setup = (propOverrides?: Partial<SearchBarProps>) => {
     const props: SearchBarProps = {
       searchTerm: '',
-      history: {
-        length: 2,
-        action: "POP",
-        location: jest.fn() as any,
-        push: jest.fn(),
-        replace: jest.fn(),
-        go: jest.fn(),
-        goBack: jest.fn(),
-        goForward: jest.fn(),
-        block: jest.fn(),
-        createHref: jest.fn(),
-        listen: jest.fn(),
-      },
-      location: {
-        search: '/search?searchTerm=testName&selectedTab=table&pageIndex=1', 
-        pathname: 'mockstr',
-        state: jest.fn(),
-        hash: 'mockstr',
-      },
-      match: jest.fn() as any,
-      staticContext: jest.fn() as any,
+      ...routerProps,
       ...propOverrides
     };
     const wrapper = shallow<SearchBar>(<SearchBar {...props} />)
@@ -101,23 +83,26 @@ describe('SearchBar', () => {
     });
 
     it('redirects back to home if searchTerm is empty', () => {
+      historyPushSpy.mockClear();
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(props.history.push).toHaveBeenCalledWith('/');
+      expect(historyPushSpy).toHaveBeenCalledWith('/');
     });
 
     it('submits with correct props if isFormValid()', () => {
+      historyPushSpy.mockClear();
       const { props, wrapper } = setup({ searchTerm: 'testTerm' });
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(props.history.push).toHaveBeenCalledWith(`/search?searchTerm=${wrapper.state().searchTerm}`);
+      expect(historyPushSpy).toHaveBeenCalledWith(`/search?searchTerm=${wrapper.state().searchTerm}`);
     });
 
     it('does not submit if !isFormValid()', () => {
+      historyPushSpy.mockClear();
       const { props, wrapper } = setup({ searchTerm: 'tag:tag1 tag:tag2' });
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(props.history.push).not.toHaveBeenCalled();
+      expect(historyPushSpy).not.toHaveBeenCalled();
     });
   });
 

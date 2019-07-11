@@ -45,7 +45,7 @@ interface DispatchFromProps {
   getBookmarksForUser: (userId: string) => GetBookmarksForUserRequest;
 }
 
-interface RouteProps {
+export interface RouteProps {
   userId: string;
 }
 

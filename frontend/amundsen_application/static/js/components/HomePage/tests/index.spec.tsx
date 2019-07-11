@@ -8,31 +8,17 @@ import SearchBar from 'components/SearchPage/SearchBar';
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
 
+import { getMockRouterProps } from 'fixtures/mockRouter';
+
 describe('HomePage', () => {
   const setup = (propOverrides?: Partial<HomePageProps>) => {
+    const mockLocation = {
+      search: '/search?searchTerm=testName&selectedTab=table&pageIndex=1',
+    };
+    const routerProps = getMockRouterProps<any>(null, mockLocation);
     const props: HomePageProps = {
       searchReset: jest.fn(),
-      history: {
-        length: 2,
-        action: "POP",
-        location: jest.fn() as any,
-        push: jest.fn(),
-        replace: jest.fn(),
-        go: jest.fn(),
-        goBack: jest.fn(),
-        goForward: jest.fn(),
-        block: jest.fn(),
-        createHref: jest.fn(),
-        listen: jest.fn(),
-      },
-      location: {
-        search: '/search?searchTerm=testName&selectedTab=table&pageIndex=1', 
-        pathname: 'mockstr',
-        state: jest.fn(),
-        hash: 'mockstr',
-      },
-      match: jest.fn() as any,
-      staticContext: jest.fn() as any,
+      ...routerProps,
       ...propOverrides
     };
     const wrapper = shallow<HomePage>(<HomePage {...props} />)
@@ -53,7 +39,7 @@ describe('HomePage', () => {
       expect(wrapper.contains(<PopularTables />));
     });
   });
-  
+
   describe('componentDidMount', () => {
     it('calls searchReset', () => {
       const searchResetSpy = jest.spyOn(props, 'searchReset');

@@ -10,14 +10,14 @@
   "scripts": {
     "build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
     "dev-build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts",
-    "test": "jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
-    "test-nocov": "jest",
+    "test": "TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
+    "test-nocov": "TZ=UTC jest",
     "watch": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts --watch",
     "lint": "npm run eslint && npm run tslint",
     "lint-fix": "npm run eslint-fix && npm run tslint-fix",
     "eslint": "eslint --ignore-path=.eslintignore --ext .js,.jsx .",
     "eslint-fix": "eslint --fix --ignore-path=.eslintignore --ext .js,.jsx .",
-    "test:watch": "jest --watch",
+    "test:watch": "TZ=UTC jest --watch",
     "tsc": "tsc",
     "tslint": "tslint --project .",
     "tslint-fix": "tslint --fix --project ."

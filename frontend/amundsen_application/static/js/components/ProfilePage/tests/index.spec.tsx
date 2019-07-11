@@ -7,9 +7,10 @@ import { shallow } from 'enzyme';
 import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
 import Tabs from 'components/common/Tabs';
-import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps } from '../';
+import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from '../';
 
 import globalState from 'fixtures/globalState';
+import { getMockRouterProps } from 'fixtures/mockRouter';
 import { ResourceType } from 'interfaces/Resources';
 
 import {
@@ -23,7 +24,8 @@ import {
 
 describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
-    const props: Partial<ProfilePageProps> = {
+    const routerProps = getMockRouterProps<RouteProps>({userId: 'test0'}, null);
+    const props: ProfilePageProps = {
       user: globalState.user.profile.user,
       bookmarks: [
         { type: ResourceType.table },
@@ -37,10 +39,10 @@ describe('ProfilePage', () => {
       getUserOwn: jest.fn(),
       getUserRead: jest.fn(),
       getBookmarksForUser: jest.fn(),
+      ...routerProps,
       ...propOverrides
     };
-    // @ts-ignore : complains about match
-    const wrapper = shallow<ProfilePage>(<ProfilePage {...props} match={{params: {userId: 'test0'}}}/>);
+    const wrapper = shallow<ProfilePage>(<ProfilePage {...props} />);
     return { props, wrapper };
   };
 
