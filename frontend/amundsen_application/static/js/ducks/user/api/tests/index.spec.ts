@@ -4,16 +4,13 @@ import globalState from 'fixtures/globalState';
 
 import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
 
-import {
-  loggedInUser, userById, userOwn, userRead,
-  LoggedInUserAPI, UserAPI, UserOwnAPI, UserReadAPI
-} from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
-describe('loggedInUser', () => {
+describe('getLoggedInUser', () => {
   let axiosMock;
-  let mockGetResponse: AxiosResponse<LoggedInUserAPI>;
+  let mockGetResponse: AxiosResponse<API.LoggedInUserAPI>;
   let testUser: LoggedInUser;
   beforeAll(() => {
     testUser = globalState.user.loggedInUser;
@@ -32,14 +29,14 @@ describe('loggedInUser', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await loggedInUser().then(user => {
+    await API.getLoggedInUser().then(user => {
       expect(axiosMock).toHaveBeenCalledWith(`/api/auth_user`);
     });
   });
 
   it('returns user from response data', async () => {
     expect.assertions(1);
-    await loggedInUser().then(user => {
+    await API.getLoggedInUser().then(user => {
       expect(user).toBe(testUser);
     });
   });
@@ -49,9 +46,9 @@ describe('loggedInUser', () => {
   })
 });
 
-describe('userById', () => {
+describe('getUser', () => {
   let axiosMock;
-  let mockGetResponse: AxiosResponse<UserAPI>;
+  let mockGetResponse: AxiosResponse<API.UserAPI>;
   let testId: string;
   let testUser: PeopleUser;
   beforeAll(() => {
@@ -72,14 +69,14 @@ describe('userById', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await userById(testId).then(user => {
+    await API.getUser(testId).then(user => {
       expect(axiosMock).toHaveBeenCalledWith(`/api/metadata/v0/user?user_id=${testId}`);
     });
   });
 
   it('returns user from response data', async () => {
     expect.assertions(1);
-    await userById(testId).then(user => {
+    await API.getUser(testId).then(user => {
       expect(user).toBe(testUser);
     });
   });
@@ -89,9 +86,9 @@ describe('userById', () => {
   })
 });
 
-describe('userOwn', () => {
+describe('getUserOwn', () => {
   let axiosMock;
-  let mockGetResponse: AxiosResponse<UserOwnAPI>;
+  let mockGetResponse: AxiosResponse<API.UserOwnAPI>;
   let testId: string;
   let testResources: Resource[];
   beforeAll(() => {
@@ -112,14 +109,14 @@ describe('userOwn', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await userOwn(testId).then(data => {
+    await API.getUserOwn(testId).then(data => {
       expect(axiosMock).toHaveBeenCalledWith(`/api/metadata/v0/user/own?user_id=${testId}`);
     });
   });
 
   it('returns response data with owned resources', async () => {
     expect.assertions(1);
-    await userOwn(testId).then(data => {
+    await API.getUserOwn(testId).then(data => {
       expect(data.own).toBe(testResources);
     });
   });
@@ -129,9 +126,9 @@ describe('userOwn', () => {
   })
 });
 
-describe('userRead', () => {
+describe('getUserRead', () => {
   let axiosMock;
-  let mockGetResponse: AxiosResponse<UserReadAPI>;
+  let mockGetResponse: AxiosResponse<API.UserReadAPI>;
   let testId: string;
   let testResources: Resource[];
   beforeAll(() => {
@@ -152,14 +149,14 @@ describe('userRead', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await userRead(testId).then(data => {
+    await API.getUserRead(testId).then(data => {
       expect(axiosMock).toHaveBeenCalledWith(`/api/metadata/v0/user/read?user_id=${testId}`);
     });
   });
 
   it('returns response data with frequently read resources', async () => {
     expect.assertions(1);
-    await userRead(testId).then(data => {
+    await API.getUserRead(testId).then(data => {
       expect(data.read).toBe(testResources);
     });
   });

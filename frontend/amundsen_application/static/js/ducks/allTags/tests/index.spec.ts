@@ -2,7 +2,7 @@ import { expectSaga, testSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 
-import { metadataAllTags } from '../api/v0';
+import * as API from '../api/v0';
 import reducer, {
   getAllTags, getAllTagsFailure, getAllTagsSuccess,
   initialState, AllTagsReducerState
@@ -69,8 +69,8 @@ describe('allTags ducks', () => {
     describe('getAllTagsWatcher', () => {
       it('takes GetAllTags.REQUEST with getAllTagsWorker', () => {
         testSaga(getAllTagsWatcher)
-          .next()
-          .takeEvery(GetAllTags.REQUEST, getAllTagsWorker);
+          .next().takeEvery(GetAllTags.REQUEST, getAllTagsWorker)
+          .next().isDone();
       });
     });
 
@@ -79,7 +79,7 @@ describe('allTags ducks', () => {
         const mockTags = [{tag_count: 2, tag_name: 'test'}, {tag_count: 1, tag_name: 'test2'}];
         return expectSaga(getAllTagsWorker)
           .provide([
-            [matchers.call.fn(metadataAllTags), mockTags],
+            [matchers.call.fn(API.getAllTags), mockTags],
           ])
           .put(getAllTagsSuccess(mockTags))
           .run();
@@ -88,7 +88,7 @@ describe('allTags ducks', () => {
       it('handles request error', () => {
         return expectSaga(getAllTagsWorker)
           .provide([
-            [matchers.call.fn(metadataAllTags), throwError(new Error())],
+            [matchers.call.fn(API.getAllTags), throwError(new Error())],
           ])
           .put(getAllTagsFailure())
           .run();

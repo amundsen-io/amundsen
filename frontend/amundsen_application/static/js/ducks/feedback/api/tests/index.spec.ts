@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-import { feedbackSubmit } from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
-describe('feedbackSubmit', () => {
+describe('submitFeedback', () => {
   let formData: FormData;
   beforeAll(() => {
     formData = new FormData();
-    feedbackSubmit(formData);
+    API.submitFeedback(formData);
   });
 
   it('calls axios with expected payload', () => {

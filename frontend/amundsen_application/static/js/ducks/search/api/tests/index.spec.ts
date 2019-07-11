@@ -1,18 +1,22 @@
 import axios, { AxiosResponse } from 'axios';
 
+import AppConfig from 'config/config';
+
 import { DashboardSearchResults, TableSearchResults, UserSearchResults } from 'ducks/search/types';
 
 import globalState from 'fixtures/globalState';
 
 import { ResourceType, SearchAllOptions } from 'interfaces';
 
-import { searchResource, searchResourceHelper, SearchAPI, BASE_URL } from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
+
+
 describe('searchResource', () => {
   let axiosMockGet;
-  let mockTableResponse: AxiosResponse<SearchAPI>;
+  let mockTableResponse: AxiosResponse<API.SearchAPI>;
   beforeAll(() => {
     mockTableResponse = {
       data: {
@@ -30,25 +34,51 @@ describe('searchResource', () => {
     axiosMockGet = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockTableResponse));
   });
 
-  it('calls axios get with request for a resource', async () => {
-    const pageIndex = 0;
-    const resourceType = ResourceType.table;
-    const term = 'test';
-    await searchResource(pageIndex, resourceType, term);
-    expect(axiosMockGet).toHaveBeenCalledWith(`${BASE_URL}/${resourceType}?query=${term}&page_index=${pageIndex}`);
-  });
+  describe('searchResource', () => {
+    it('calls axios get with request for a resource', async () => {
+      axiosMockGet.mockClear();
+      const pageIndex = 0;
+      const resourceType = ResourceType.table;
+      const term = 'test';
+      await API.searchResource(pageIndex, resourceType, term);
+      expect(axiosMockGet).toHaveBeenCalledWith(`${API.BASE_URL}/${resourceType}?query=${term}&page_index=${pageIndex}`);
+    });
 
-  /*
-  TODO: Not set up to test this.
-  it('calls searchResourceHelper with resolved results', async () => {
-    await searchResource(0, ResourceType.table, 'test');
-    expect(searchResourceHelper).toHaveBeenCalledWith(mockTableResponse);
+    it('calls searchResourceHelper with api call response', async () => {
+      const searchResourceHelperSpy = jest.spyOn(API, 'searchResourceHelper');
+      await API.searchResource(0, ResourceType.table, 'test');
+      expect(searchResourceHelperSpy).toHaveBeenCalledWith(mockTableResponse);
+    });
+
+    it('resolves with empty object if dashboard resource search not supported', async () => {
+      axiosMockGet.mockClear();
+      const pageIndex = 0;
+      const resourceType = ResourceType.dashboard;
+      const term = 'test';
+      expect.assertions(2);
+      await API.searchResource(pageIndex, resourceType, term).then(results => {
+        expect(results).toEqual({});
+      });
+      expect(axiosMockGet).not.toHaveBeenCalled();
+    });
+
+    it('resolves with empty object if user resource search not supported', async () => {
+      axiosMockGet.mockClear();
+      AppConfig.indexUsers.enabled = false;
+      const pageIndex = 0;
+      const resourceType = ResourceType.user;
+      const term = 'test';
+      expect.assertions(2);
+      await API.searchResource(pageIndex, resourceType, term).then(results => {
+        expect(results).toEqual({});
+      });
+      expect(axiosMockGet).not.toHaveBeenCalled();
+    });
   });
-  */
 
   describe('searchResourceHelper', () => {
     it('returns expected object', () => {
-      expect(searchResourceHelper(mockTableResponse)).toEqual({
+      expect(API.searchResourceHelper(mockTableResponse)).toEqual({
         searchTerm: mockTableResponse.data.search_term,
         tables: mockTableResponse.data.tables,
         users: mockTableResponse.data.users,

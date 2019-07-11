@@ -7,7 +7,7 @@ export type AnnouncementsAPI = {
   posts: AnnouncementPost[];
 };
 
-export function announcementsGet() {
+export function getAnnouncements() {
   return axios({
       method: 'get',
       url: '/api/announcements/v0/',

@@ -8,7 +8,7 @@ export type AllTagsAPI = {
   tags: Tag[];
 };
 
-export function metadataAllTags() {
+export function getAllTags() {
   return axios.get('/api/metadata/v0/tags').then((response: AxiosResponse<AllTagsAPI>) => {
     return response.data.tags.sort(sortTagsAlphabetical);
   })

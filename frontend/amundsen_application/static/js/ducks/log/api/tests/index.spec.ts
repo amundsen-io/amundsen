@@ -1,20 +1,20 @@
 import axios from 'axios';
 
-import { postActionLog, BASE_URL, ActionLogParams } from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
 describe('postActionLog', () => {
   let axiosMock;
-  let params: ActionLogParams;
+  let params: API.ActionLogParams;
   beforeAll(() => {
     axiosMock = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
     params = {};
-    postActionLog(params);
+    API.postActionLog(params);
   });
 
   it('calls axios with expected parameters',() => {
-    expect(axiosMock).toHaveBeenCalledWith(BASE_URL, params);
+    expect(axiosMock).toHaveBeenCalledWith(API.BASE_URL, params);
   });
 
   afterAll(() => {

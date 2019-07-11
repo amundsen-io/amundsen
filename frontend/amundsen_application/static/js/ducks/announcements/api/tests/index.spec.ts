@@ -2,13 +2,13 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AnnouncementPost } from 'interfaces';
 
-import { announcementsGet, AnnouncementsAPI } from '../v0';
+import * as API from '../v0';
 
 jest.mock('axios');
 
-describe('announcementsGet', () => {
+describe('getAnnouncements', () => {
   let expectedPosts: AnnouncementPost[];
-  let mockResponse: AxiosResponse<AnnouncementsAPI>;
+  let mockResponse: AxiosResponse<API.AnnouncementsAPI>;
   beforeAll(() => {
     expectedPosts = [{ date: '12/31/1999', title: 'Test', html_content: '<div>Test content</div>' }];
     mockResponse = {
@@ -27,13 +27,13 @@ describe('announcementsGet', () => {
 
   it('resolves with array of posts from response.data on success', async () => {
     expect.assertions(1);
-    await announcementsGet().then(posts => {
+    await API.getAnnouncements().then(posts => {
       expect(posts).toEqual(expectedPosts);
     });
   });
 
   afterAll(() => {
-    // @ts-ignore: TypeScript errors on Jest mock methods unless we extend AxiosStatic for tests 
+    // @ts-ignore: TypeScript errors on Jest mock methods unless we extend AxiosStatic for tests
     axios.mockClear();
   })
 });

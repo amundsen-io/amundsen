@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function feedbackSubmit(data: FormData) {
+export function submitFeedback(data: FormData) {
   return axios({
     data,
     method: 'post',

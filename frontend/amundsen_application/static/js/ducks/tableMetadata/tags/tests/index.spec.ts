@@ -4,7 +4,7 @@ import { UpdateMethod, UpdateTagData, Tag } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
-import * as apis from '../../api/v0';
+import * as API from '../../api/v0';
 
 import reducer, {
   updateTags, updateTagsFailure, updateTagsSuccess,
@@ -16,7 +16,7 @@ import { updateTableTagsWorker, updateTableTagsWatcher } from '../sagas';
 
 import { GetTableData, UpdateTags } from '../../types';
 
-const metadataUpdateTableTagsSpy = jest.spyOn(apis, 'metadataUpdateTableTags').mockImplementation((payload, key) => []);
+const updateTableTagsSpy = jest.spyOn(API, 'updateTableTags').mockImplementation((payload, key) => []);
 
 describe('tableMetadata:tags ducks', () => {
   let expectedTags: Tag[];
@@ -119,8 +119,8 @@ describe('tableMetadata:tags ducks', () => {
       it('executes flow for updating tags and returning up to date tag array', () => {
         testSaga(updateTableTagsWorker, updateTags(updatePayload))
           .next().select()
-          .next(globalState).all(apis.metadataUpdateTableTags(updatePayload, globalState.tableMetadata.tableData.key))
-          .next().call(apis.metadataTableTags, globalState.tableMetadata.tableData.key)
+          .next(globalState).all(API.updateTableTags(updatePayload, globalState.tableMetadata.tableData.key))
+          .next().call(API.getTableTags, globalState.tableMetadata.tableData.key)
           .next(expectedTags).put(updateTagsSuccess(expectedTags))
           .next().isDone();
       });

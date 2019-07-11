@@ -7,7 +7,7 @@ export type PopularTablesAPI = {
   results: TableResource[];
 }
 
-export function metadataPopularTables() {
+export function getPopularTables() {
   return axios.get('/api/metadata/v0/popular_tables')
   .then((response: AxiosResponse<PopularTablesAPI>) => {
     return response.data.results;

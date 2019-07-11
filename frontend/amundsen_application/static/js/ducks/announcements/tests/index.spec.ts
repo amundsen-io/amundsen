@@ -2,7 +2,7 @@ import { expectSaga, testSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 
-import { announcementsGet } from '../api/v0';
+import * as API from '../api/v0';
 import reducer, {
   getAnnouncements, getAnnouncementsFailure, getAnnouncementsSuccess,
   initialState, AnnouncementsReducerState
@@ -60,8 +60,8 @@ describe('announcements ducks', () => {
     describe('getAnnouncementsWatcher', () => {
       it('takes GetAnnouncements.REQUEST with getAnnouncementsWorker', () => {
         testSaga(getAnnouncementsWatcher)
-          .next()
-          .takeEvery(GetAnnouncements.REQUEST, getAnnouncementsWorker);
+          .next().takeEvery(GetAnnouncements.REQUEST, getAnnouncementsWorker)
+          .next().isDone();
       });
     });
 
@@ -70,7 +70,7 @@ describe('announcements ducks', () => {
         const mockPosts = [{ date: '12/31/1999', title: 'Test', html_content: '<div>Test content</div>' }];
         return expectSaga(getAnnouncementsWorker)
           .provide([
-            [matchers.call.fn(announcementsGet), mockPosts],
+            [matchers.call.fn(API.getAnnouncements), mockPosts],
           ])
           .put(getAnnouncementsSuccess(mockPosts))
           .run();
@@ -79,7 +79,7 @@ describe('announcements ducks', () => {
       it('handles request error', () => {
         return expectSaga(getAnnouncementsWorker)
           .provide([
-            [matchers.call.fn(announcementsGet), throwError(new Error())],
+            [matchers.call.fn(API.getAnnouncements), throwError(new Error())],
           ])
           .put(getAnnouncementsFailure())
           .run();
