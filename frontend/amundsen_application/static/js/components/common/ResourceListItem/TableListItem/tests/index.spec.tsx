@@ -57,10 +57,9 @@ describe('TableListItem', () => {
         expect(wrapper.find('.content').children().at(1).children().at(0).text()).toEqual('Last Updated');
       });
 
-      /*it('renders getDateLabel value', () => {
-        wrapper.update();
-        expect(wrapper.find('.content').children().at(1).children().at(1).text()).toEqual('Mar 29, 2019');
-      });*/
+      it('renders getDateLabel value', () => {
+        expect(wrapper.find('.content').children().at(1).children().at(1).text()).toEqual(wrapper.instance().getDateLabel());
+      });
     });
 
     describe('if props.table does not have last_updated_epoch', () => {
@@ -80,13 +79,13 @@ describe('TableListItem', () => {
     });
   });
 
-  /* Note: Jest will convert date to UTC, expect to see different strings for an epoch value in the tests vs UI*/
-  /*describe('getDateLabel', () => {
+  /* Note: Jest is configured to use UTC */
+  describe('getDateLabel', () => {
     it('getDateLabel returns correct string', () => {
       const { props, wrapper } = setup();
       expect(wrapper.instance().getDateLabel()).toEqual('Mar 29, 2019');
     });
-  });*/
+  });
 
   describe('getLink', () => {
     it('getLink returns correct string', () => {
