@@ -8,7 +8,7 @@ import globalState from 'fixtures/globalState';
 
 import * as API from '../v0';
 
-const filterFromObjSpy = jest.spyOn(Utils, 'filterFromObj').mockImplementation(() => {});
+const filterFromObjSpy = jest.spyOn(Utils, 'filterFromObj').mockImplementation((initialObject, rejectedKeys) => { return initialObject; });
 
 jest.mock('axios');
 
