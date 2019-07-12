@@ -18,6 +18,11 @@ services:
       #  - elasticsearch
       networks:
         - amundsennet
+      environment:
+        - CREDENTIALS_PROXY_USER=admin
+        - CREDENTIALS_PROXY_PASSWORD=admin
+        - PROXY_ENDPOINT=atlas:21000
+        - PROXY_CLIENT=ATLAS
   amundsenmetadata:
       image: amundsendev/amundsen-metadata:1.0.11
       container_name: amundsenmetadata
