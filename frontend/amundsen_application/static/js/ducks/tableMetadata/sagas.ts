@@ -129,9 +129,8 @@ export function* getPreviewDataWorker(action: GetPreviewDataRequest): SagaIterat
     const response = yield call(API.getPreviewData, action.payload.queryParams);
     const { data, status } = response;
     yield put(getPreviewDataSuccess(data, status));
-  } catch (e) {
-    const data = e.response ? e.response.data : {};
-    const status = e.response ? e.response.status : null;
+  } catch (error) {
+    const { data, status } = error;
     yield put(getPreviewDataFailure(data, status));
   }
 };
