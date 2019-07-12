@@ -14,6 +14,11 @@ services:
       container_name: amundsensearch
       ports:
         - 5001:5000
+      environment:
+        - CREDENTIALS_PROXY_USER=admin
+        - CREDENTIALS_PROXY_PASSWORD=admin
+        - PROXY_ENDPOINT=atlas:21000
+        - PROXY_CLIENT=ATLAS
       #depends_on:
       #  - elasticsearch
       networks:
