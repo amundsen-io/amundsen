@@ -146,5 +146,10 @@ export function getPreviewData(queryParams: PreviewQueryParams) {
   })
   .then((response: AxiosResponse<PreviewDataAPI>) => {
     return { data: response.data.previewData, status: response.status };
+  })
+  .catch((e: AxiosError<PreviewDataAPI>) => {
+    const data = e.response ? e.response.data.previewData : {};
+    const status = e.response ? e.response.status : null;
+    return Promise.reject({ data, status });
   });
 }

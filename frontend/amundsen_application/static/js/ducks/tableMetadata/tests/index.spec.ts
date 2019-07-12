@@ -577,24 +577,17 @@ describe('reducer', () => {
 
     describe('getPreviewDataWorker', () => {
       it('executes flow for getting preview data', () => {
-        const mockResponse = { data: previewData, status: 200 };
         testSaga(getPreviewDataWorker, getPreviewData(queryParams))
           .next().call(API.getPreviewData, queryParams)
-          .next(mockResponse).put(getPreviewDataSuccess(previewData, 200))
+          .next({ data: previewData, status: 200 }).put(getPreviewDataSuccess(previewData, 200))
           .next().isDone();
       });
 
       it('handles request error', () => {
-        const mockErrorResponse = { name: '', message: '', response: { data: previewData, status: 500 }};
         testSaga(getPreviewDataWorker, getPreviewData(queryParams))
-          .next().throw(mockErrorResponse).put(getPreviewDataFailure(previewData, 500))
-          .next().isDone();
-      });
-
-      it('handles request error with response fallbacks', () => {
-        const mockErrorResponse = { name: '', message: '' };
-        testSaga(getPreviewDataWorker, getPreviewData(queryParams))
-          .next().throw(mockErrorResponse).put(getPreviewDataFailure({}, null))
+          .next().call(API.getPreviewData, queryParams)
+          // @ts-ignore TODO: Investigate why redux-saga-test-plan throw() complains
+          .throw({ data: previewData, status: 500 }).put(getPreviewDataFailure(previewData, 500))
           .next().isDone();
       });
     });
