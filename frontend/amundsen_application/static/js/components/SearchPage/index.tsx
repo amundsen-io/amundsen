@@ -18,11 +18,12 @@ import {
   DashboardSearchResults,
   SearchAllRequest,
   SearchResourceRequest,
+  SearchResults,
   TableSearchResults,
   UserSearchResults,
 } from 'ducks/search/types';
 
-import { ResourceType, SearchAllOptions } from 'interfaces';
+import { Resource, ResourceType, SearchAllOptions } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -34,7 +35,8 @@ import {
   SEARCH_ERROR_MESSAGE_INFIX,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
-  SEARCH_INFO_TEXT,
+  SEARCH_INFO_TEXT_BASE,
+  SEARCH_INFO_TEXT_TABLE_SUFFIX,
   SEARCH_SOURCE_NAME,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
@@ -155,14 +157,14 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
       {
         title: `${TABLE_RESOURCE_TITLE} (${ this.props.tables.total_results })`,
         key: ResourceType.table,
-        content: this.getTabContent(this.props.tables, TABLE_RESOURCE_TITLE),
+        content: this.getTabContent(this.props.tables, ResourceType.table),
       },
     ];
     if (AppConfig.indexUsers.enabled) {
       tabConfig.push({
         title: `Users (${ this.props.users.total_results })`,
         key: ResourceType.user,
-        content: this.getTabContent(this.props.users, USER_RESOURCE_TITLE),
+        content: this.getTabContent(this.props.users, ResourceType.user),
       })
     }
 
@@ -178,11 +180,32 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     );
   };
 
-  getTabContent = (results, tabLabel) => {
+  generateInfoText = (tab: ResourceType): string => {
+    switch (tab) {
+      case ResourceType.table:
+        return `${SEARCH_INFO_TEXT_BASE}${SEARCH_INFO_TEXT_TABLE_SUFFIX}`;
+      default:
+        return SEARCH_INFO_TEXT_BASE;
+    }
+  };
+
+  generateTabLabel = (tab: ResourceType): string => {
+    switch (tab) {
+      case ResourceType.table:
+        return TABLE_RESOURCE_TITLE;
+      case ResourceType.user:
+        return USER_RESOURCE_TITLE;
+      default:
+        return '';
+    }
+  };
+
+  getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
     const { searchTerm } = this.props;
     const { page_index, total_results } = results;
     const startIndex = (RESULTS_PER_PAGE * page_index) + 1;
     const endIndex = RESULTS_PER_PAGE * (page_index + 1);
+    const tabLabel = this.generateTabLabel(tab);
 
     // TODO - Move error messages into Tab Component
     // Check no results
@@ -208,11 +231,12 @@ export class SearchPage extends React.Component<SearchPageProps, SearchPageState
     }
 
     const title =`${startIndex}-${Math.min(endIndex, total_results)} of ${total_results} results`;
+    const infoText = this.generateInfoText(tab);
     return (
       <div className="search-list-container">
         <div className="search-list-header">
           <label>{ title }</label>
-          <InfoButton infoText={SEARCH_INFO_TEXT}/>
+          <InfoButton infoText={infoText}/>
         </div>
         <ResourceList
           slicedItems={ results.results }
