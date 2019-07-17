@@ -22,7 +22,8 @@ valid_search_fields = {
     'tag',
     'schema',
     'table',
-    'column'
+    'column',
+    'database'
 }
 
 SEARCH_ENDPOINT = '/search'
