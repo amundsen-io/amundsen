@@ -88,7 +88,13 @@ class ElasticsearchPublisher(Publisher):
                   "type": "text"
                 },
                 "database": {
-                  "type": "text"
+                  "type": "text",
+                  "analyzer": "simple",
+                  "fields": {
+                    "raw": {
+                      "type": "keyword"
+                    }
+                  }
                 },
                 "key": {
                   "type": "keyword"
