@@ -170,7 +170,8 @@ class ElasticsearchProxy(BaseProxy):
             'tag': 'tags',
             'schema': 'schema_name.raw',
             'table': 'name.raw',
-            'column': 'column_names.raw'
+            'column': 'column_names.raw',
+            'database': 'database.raw'
         }
 
         if query_term:
