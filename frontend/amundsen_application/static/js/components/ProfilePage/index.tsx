@@ -85,8 +85,8 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
     // TODO: consider moving logic for empty content into Tab component
     if (resource.length === 0) {
       return (
-        <div className="empty-tab-message">
-          <label>User has no { label } resources.</label>
+        <div className="empty-tab-message body-placeholder">
+          User has no { label } resources.
         </div>
       );
     }

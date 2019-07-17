@@ -7,7 +7,7 @@ import {
   UserResource,
 } from 'interfaces';
 
-interface SearchResults<T extends Resource> {
+export interface SearchResults<T extends Resource> {
   page_index: number;
   total_results: number;
   results: T[];

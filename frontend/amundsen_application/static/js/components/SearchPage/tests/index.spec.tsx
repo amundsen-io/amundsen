@@ -15,9 +15,11 @@ import {
   SEARCH_ERROR_MESSAGE_INFIX,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
-  SEARCH_INFO_TEXT,
+  SEARCH_INFO_TEXT_BASE,
+  SEARCH_INFO_TEXT_TABLE_SUFFIX,
   SEARCH_SOURCE_NAME,
   TABLE_RESOURCE_TITLE,
+  USER_RESOURCE_TITLE,
 } from '../constants';
 
 import InfoButton from 'components/common/InfoButton';
@@ -462,6 +464,46 @@ describe('SearchPage', () => {
     });
   });
 
+  describe('generateInfoText', () => {
+    let wrapper;
+    beforeAll(() => {
+      wrapper = setup().wrapper;
+    });
+
+    it('returns correct text for ResourceType.table', () => {
+      const text = wrapper.instance().generateInfoText(ResourceType.table);
+      const expectedText = `${SEARCH_INFO_TEXT_BASE}${SEARCH_INFO_TEXT_TABLE_SUFFIX}`;
+      expect(text).toEqual(expectedText);
+    });
+
+    it('returns correct text for the default case', () => {
+      const text = wrapper.instance().generateInfoText(ResourceType.user);
+      expect(text).toEqual(SEARCH_INFO_TEXT_BASE);
+    });
+  });
+
+  describe('generateTabLabel', () => {
+    let wrapper;
+    beforeAll(() => {
+      wrapper = setup().wrapper;
+    });
+
+    it('returns correct text for ResourceType.table', () => {
+      const text = wrapper.instance().generateTabLabel(ResourceType.table);
+      expect(text).toEqual(TABLE_RESOURCE_TITLE);
+    });
+
+    it('returns correct text for ResourceType.user', () => {
+      const text = wrapper.instance().generateTabLabel(ResourceType.user);
+      expect(text).toEqual(USER_RESOURCE_TITLE);
+    });
+
+    it('returns empty string for the default case', () => {
+      const text = wrapper.instance().generateTabLabel(ResourceType.dashboard);
+      expect(text).toEqual('');
+    });
+  });
+
   describe('getTabContent', () => {
     let content;
 
@@ -473,7 +515,7 @@ describe('SearchPage', () => {
           results: [],
           total_results: 0,
         };
-        content = shallow(wrapper.instance().getTabContent(testResults, TABLE_RESOURCE_TITLE));
+        content = shallow(wrapper.instance().getTabContent(testResults, ResourceType.table));
         expect(content.children().at(0).text()).toEqual(`${SEARCH_ERROR_MESSAGE_PREFIX}data${SEARCH_ERROR_MESSAGE_INFIX}tables${SEARCH_ERROR_MESSAGE_SUFFIX}`);
       });
     });
@@ -486,7 +528,7 @@ describe('SearchPage', () => {
           results: [],
           total_results: 1,
         };
-        content = shallow(wrapper.instance().getTabContent(testResults, TABLE_RESOURCE_TITLE));
+        content = shallow(wrapper.instance().getTabContent(testResults, ResourceType.table));
         expect(content.children().at(0).text()).toEqual(PAGE_INDEX_ERROR_MESSAGE);
       });
     });
@@ -494,11 +536,14 @@ describe('SearchPage', () => {
     describe('if searchTerm and search results exist', () => {
       let props;
       let wrapper;
+      let generateInfoTextMockResults;
       beforeAll(() => {
         const setupResult = setup({ searchTerm: '' });
         props = setupResult.props;
         wrapper = setupResult.wrapper;
-        content = shallow(wrapper.instance().getTabContent(props.tables, TABLE_RESOURCE_TITLE));
+        generateInfoTextMockResults = 'test info text';
+        jest.spyOn(wrapper.instance(), 'generateInfoText').mockImplementation(() => generateInfoTextMockResults);
+        content = shallow(wrapper.instance().getTabContent(props.tables, ResourceType.table));
       });
 
       it('renders correct label for content', () => {
@@ -507,7 +552,7 @@ describe('SearchPage', () => {
 
       it('renders InfoButton with correct props', () => {
         expect(content.children().at(0).find(InfoButton).props()).toMatchObject({
-          infoText: SEARCH_INFO_TEXT,
+          infoText: generateInfoTextMockResults,
         });
       });
 
@@ -518,7 +563,7 @@ describe('SearchPage', () => {
           results: [],
           total_results: 11,
         };
-        content = shallow(wrapper.instance().getTabContent(testResults, TABLE_RESOURCE_TITLE));
+        content = shallow(wrapper.instance().getTabContent(testResults, ResourceType.table));
 
         expect(content.children().find(ResourceList).props()).toMatchObject({
           activePage: 0,
@@ -565,7 +610,7 @@ describe('SearchPage', () => {
       const firstTab = tabProps.tabs[0];
       expect(firstTab.key).toEqual(ResourceType.table);
       expect(firstTab.title).toEqual(`${TABLE_RESOURCE_TITLE} (${props.tables.total_results})`);
-      expect(firstTab.content).toEqual(wrapper.instance().getTabContent(props.tables, TABLE_RESOURCE_TITLE));
+      expect(firstTab.content).toEqual(wrapper.instance().getTabContent(props.tables, firstTab.key));
     });
 
     it('renders only one tab if people is disabled', () => {
