@@ -2,7 +2,6 @@ import {
   DashboardResource,
   Resource,
   ResourceType,
-  SearchAllOptions,
   TableResource,
   UserResource,
 } from 'interfaces';
@@ -18,7 +17,12 @@ export type UserSearchResults = SearchResults<UserResource>;
 
 export interface SearchResponsePayload {
   search_term: string;
-  isLoading: boolean;
+  dashboards?: DashboardSearchResults;
+  tables?: TableSearchResults;
+  users?: UserSearchResults;
+};
+export interface SearchAllResponsePayload extends SearchResponsePayload {
+  selectedTab: ResourceType;
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
@@ -32,14 +36,15 @@ export enum SearchAll {
 };
 export interface SearchAllRequest {
   payload: {
-    options: SearchAllOptions;
+    resource: ResourceType;
+    pageIndex: number;
     term: string;
   };
   type: SearchAll.REQUEST;
 };
 export interface SearchAllResponse {
   type: SearchAll.SUCCESS | SearchAll.FAILURE;
-  payload?: SearchResponsePayload;
+  payload?: SearchAllResponsePayload;
 };
 export interface SearchAllReset {
   type: SearchAll.RESET;
@@ -62,3 +67,13 @@ export interface SearchResourceResponse {
   type: SearchResource.SUCCESS | SearchResource.FAILURE;
   payload?: SearchResponsePayload;
 };
+
+export enum UpdateSearchTab {
+  REQUEST = 'amundsen/search/UPDATE_SEARCH_TAB_REQUEST',
+}
+export interface UpdateSearchTabRequest {
+  type: UpdateSearchTab.REQUEST;
+  payload: {
+    selectedTab: ResourceType;
+  }
+}

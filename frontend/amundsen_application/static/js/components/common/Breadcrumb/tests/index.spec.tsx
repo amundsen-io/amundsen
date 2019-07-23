@@ -40,7 +40,7 @@ describe('Breadcrumb', () => {
 
     it('renders Link with correct path', () => {
       expect(subject.find(Link).props()).toMatchObject({
-        to: '/search?searchTerm=testTerm&selectedTab=table&pageIndex=0',
+        to: '/search',
       });
     });
 

@@ -1,21 +1,25 @@
-import { ResourceType, SearchAllOptions } from 'interfaces';
+import { ResourceType } from 'interfaces';
 
 import {
-  SearchResponsePayload,
+  DashboardSearchResults,
   SearchAll,
   SearchAllRequest,
   SearchAllReset,
   SearchAllResponse,
+  SearchAllResponsePayload,
   SearchResource,
+  SearchResponsePayload,
   SearchResourceRequest,
   SearchResourceResponse,
-  DashboardSearchResults,
   TableSearchResults,
+  UpdateSearchTab,
+  UpdateSearchTabRequest,
   UserSearchResults,
 } from './types';
 
 export interface SearchReducerState {
   search_term: string;
+  selectedTab: ResourceType;
   isLoading: boolean;
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
@@ -23,23 +27,24 @@ export interface SearchReducerState {
 };
 
 /* ACTIONS */
-export function searchAll(term: string, options: SearchAllOptions): SearchAllRequest {
+export function searchAll(term: string, resource: ResourceType, pageIndex: number): SearchAllRequest {
   return {
     payload: {
-      options,
+      resource,
+      pageIndex,
       term,
     },
     type: SearchAll.REQUEST,
   };
 };
-export function searchAllSuccess(searchResults: SearchResponsePayload): SearchAllResponse {
+export function searchAllSuccess(searchResults: SearchAllResponsePayload): SearchAllResponse {
   return { type: SearchAll.SUCCESS, payload: searchResults };
 };
 export function searchAllFailure(): SearchAllResponse {
   return { type: SearchAll.FAILURE };
 };
 
-export function searchResource(resource: ResourceType, term: string, pageIndex: number): SearchResourceRequest {
+export function searchResource(term: string, resource: ResourceType, pageIndex: number): SearchResourceRequest {
   return {
     payload: {
       pageIndex,
@@ -62,10 +67,19 @@ export function searchReset(): SearchAllReset {
   };
 };
 
+export function updateSearchTab(selectedTab: ResourceType): UpdateSearchTabRequest {
+  return {
+    payload: { selectedTab },
+    type: UpdateSearchTab.REQUEST,
+  };
+}
+
+
 /* REDUCER */
 export const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
+  selectedTab: ResourceType.table,
   dashboards: {
     page_index: 0,
     results: [],
@@ -120,6 +134,11 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...initialState,  
         search_term: state.search_term,
+      };
+    case UpdateSearchTab.REQUEST:
+      return {
+        ...state,
+        selectedTab: (<UpdateSearchTabRequest>action).payload.selectedTab
       };
     default:
       return state;
