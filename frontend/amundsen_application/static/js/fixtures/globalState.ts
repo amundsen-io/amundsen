@@ -54,6 +54,7 @@ const globalState: GlobalState = {
   ],
   search: {
     search_term: 'testName',
+    selectedTab: ResourceType.table,
     isLoading: false,
     dashboards: {
       page_index: 0,

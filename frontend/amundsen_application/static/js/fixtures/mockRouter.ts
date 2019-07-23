@@ -26,7 +26,7 @@ export function getMockRouterProps<P>(data: P, location: Partial<History.Locatio
       action: 'POP',
       location: mockLocation,
       push: () => {},
-      replace: null,
+      replace: () => {},
       go: null,
       goBack: null,
       goForward: null,

@@ -23,7 +23,7 @@ export const Breadcrumb: React.SFC<BreadcrumbProps> = (props) => {
     path = '/';
     text = 'Home';
     if (props.searchTerm) {
-      path = `/search?searchTerm=${props.searchTerm}&selectedTab=table&pageIndex=0`;
+      path = `/search`;
       text = 'Search Results';
     }
   }
