@@ -47,6 +47,16 @@ $ docker run -p 5000:5000 amundsendev/amundsen-metadata
 $ curl -v http://localhost:5000/healthcheck
 ```
 
+## Instructions to start the service from Docker image with gunicorn (production use case)
+Note that there below command uses default config of gunicorn. Please visit [Gunicorn homepage](https://gunicorn.org/ "Gunicorn") for more information.
+```bash
+$ docker pull amundsendev/amundsen-metadata:latest
+$ docker run -p 5000:5000 amundsendev/amundsen-metadata gunicorn --bind 0.0.0.0:5000 metadata_service.metadata_wsgi
+
+-- In different terminal, verify getting HTTP/1.0 200 OK
+$ curl -v http://localhost:5000/healthcheck
+```
+
 ## Production environment
 By default, Flask comes with Werkzeug webserver, which is for development. For production environment use production grade web server such as [Gunicorn](https://gunicorn.org/ "Gunicorn").
 
