@@ -60,7 +60,7 @@ Currently **officially** using Amundsen:
 1. [Square](https://squareup.com/us/en)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
-## Getting started
+## Getting Started
 
 Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
 
@@ -76,7 +76,7 @@ Please visit [Installation guideline](docs/installation.md) on how to install Am
 
 Please visit [Roadmap](docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
-## Blog Posts and interviews
+## Blog Posts and Interviews
 
 - [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (April 2019)
 - [Software Engineering Daily podcast on Amundsen](https://softwareengineeringdaily.com/2019/04/16/lyft-data-discovery-with-tao-feng-and-mark-grover/) (April 2019)
