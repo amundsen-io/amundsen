@@ -3,6 +3,6 @@ WORKDIR /app
 COPY . /app
 RUN pip3 install -r requirements.txt
 RUN python3 setup.py install
+RUN pip3 install gunicorn
 
-ENTRYPOINT [ "python3" ]
-CMD [ "metadata_service/metadata_wsgi.py" ]
+CMD [ "python3", "metadata_service/metadata_wsgi.py" ]
