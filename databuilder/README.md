@@ -129,6 +129,33 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [SnowflakeMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_metadata_extractor.py "SnowflakeMetadataExtractor")
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Snowflake database.
+
+By default, the Snowflake database name is used as the cluter name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
+to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
+
+By default, the Snowflake database is set to `PROD`. To override this, set `DATABASE_KEY`
+to `WhateverNameOfYourDb`.
+
+The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_snowflake_data_loader.py) for an example).
+
+The SQL query driving the extraction is defined [here](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_metadata_extractor.py)
+
+```python
+job_config = ConfigFactory.from_dict({
+	'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.DATABASE_KEY): 'YourDbName',
+	'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
+    'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME): True,
+	'extractor.postgres_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=SnowflakeMetadataExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
 #### [Neo4jEsLastUpdatedExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/neo4j_es_last_updated_extractor.py "Neo4jEsLastUpdatedExtractor")
 An extractor that basically get current timestamp and passes it GenericExtractor. This extractor is basically being used to create timestamp for "Amundsen was last indexed on ..." in Amundsen web page's footer.
 
