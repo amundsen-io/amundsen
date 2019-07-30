@@ -60,7 +60,7 @@ Currently **officially** using Amundsen:
 1. [Square](https://squareup.com/us/en)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
-## Getting started
+## Getting Started
 
 Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
 
@@ -76,14 +76,20 @@ Please visit [Installation guideline](docs/installation.md) on how to install Am
 
 Please visit [Roadmap](docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
-## Publications
-- [Disrupting Data Discovery](https://www.slideshare.net/taofung/strata-sf-amundsen-presentation) (Strata SF 2019)
-- [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (Lyft engineering blog)
-- [Amundsen: A Data Discovery Platform from Lyft](https://www.slideshare.net/taofung/data-council-sf-amundsen-presentation) (Data council 19 SF)
+## Blog Posts and Interviews
+
+- [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (April 2019)
 - [Software Engineering Daily podcast on Amundsen](https://softwareengineeringdaily.com/2019/04/16/lyft-data-discovery-with-tao-feng-and-mark-grover/) (April 2019)
-- [Disrupting Data Discovery](https://www.slideshare.net/markgrover/disrupting-data-discovery) (Strata London 2019)
-- [Disrupting Data Discovery (video)](https://www.youtube.com/watch?v=m1B-ptm0Rrw) (Strata SF 2019)
-- ING Data Analytics Platform (Amundsen is mentioned) { [slides](https://static.sched.com/hosted_files/kccnceu19/65/ING%20Data%20Analytics%20Platform.pdf), [video](https://www.youtube.com/watch?v=8cE9ppbnDPs&t=465) } (Kubecon Barcelona 2019)
+- [How Lyft Drives Data Discovery](https://youtu.be/WVjss62XIG0) (July 2019)
+
+## Talks
+
+- Disrupting Data Discovery {[slides](https://www.slideshare.net/taofung/strata-sf-amundsen-presentation), [video](https://www.youtube.com/watch?v=m1B-ptm0Rrw)} (Strata SF, March 2019)
+- Amundsen: A Data Discovery Platform from Lyft {[slides](https://www.slideshare.net/taofung/data-council-sf-amundsen-presentation)} (Data Council SF, April 2019)
+- Disrupting Data Discovery {[slides](https://www.slideshare.net/markgrover/disrupting-data-discovery)} (Strata London, May 2019)
+- ING Data Analytics Platform (Amundsen is mentioned) {[slides](https://static.sched.com/hosted_files/kccnceu19/65/ING%20Data%20Analytics%20Platform.pdf), [video](https://www.youtube.com/watch?v=8cE9ppbnDPs&t=465) } (Kubecon Barcelona, May 2019)
+- Disrupting Data Discovery {[slides](https://www.slideshare.net/PhilippeMizrahi/meetup-sf-amundsen), [video](https://www.youtube.com/watch?v=NgeCOVjSJ7A)} (Making Big Data Easy SF, May 2019)
+
 
 # License
 [Apache 2.0 License.](/LICENSE)
