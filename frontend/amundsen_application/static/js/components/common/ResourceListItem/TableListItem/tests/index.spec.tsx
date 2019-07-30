@@ -14,7 +14,7 @@ describe('TableListItem', () => {
       table: {
         type: ResourceType.table,
         cluster: '',
-        database: '',
+        database: 'testdb',
         description: 'I am the description',
         key: '',
         last_updated_epoch: 1553829681,
@@ -52,13 +52,17 @@ describe('TableListItem', () => {
       expect(wrapper.find('.content').children().at(0).children().at(1).text()).toEqual('I am the description');
     });
 
+    it('renders resource type', () => {
+      expect(wrapper.find('.content').children().at(1).text()).toEqual(props.table.database);
+    });
+
     describe('if props.table has last_updated_epoch', () => {
       it('renders Last Update title', () => {
-        expect(wrapper.find('.content').children().at(1).children().at(0).text()).toEqual('Last Updated');
+        expect(wrapper.find('.content').children().at(2).children().at(0).text()).toEqual('Last Updated');
       });
 
       it('renders getDateLabel value', () => {
-        expect(wrapper.find('.content').children().at(1).children().at(1).text()).toEqual(wrapper.instance().getDateLabel());
+        expect(wrapper.find('.content').children().at(2).children().at(1).text()).toEqual(wrapper.instance().getDateLabel());
       });
     });
 
@@ -74,7 +78,7 @@ describe('TableListItem', () => {
           name: 'tableName',
           schema_name: 'tableSchema',
         }});
-        expect(wrapper.find('.content').children().at(1).exists()).toBeFalsy();
+        expect(wrapper.find('.content').children().at(2).exists()).toBeFalsy();
       });
     });
   });

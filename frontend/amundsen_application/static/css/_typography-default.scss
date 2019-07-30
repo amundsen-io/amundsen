@@ -125,6 +125,12 @@ body {
   font-family: $font-family-monospace;
 }
 
+.resource-type {
+  color: $gray;
+  font-size: 13px;
+  font-family: $font-family-monospace;
+}
+
 .helper-text {
   color: $text-medium;
   font-size: 12px;

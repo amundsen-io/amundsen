@@ -38,7 +38,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
         <Link className="resource-list-item table-list-item" to={ this.getLink() }>
           <img className="icon icon-database icon-color" />
           <div className="content">
-            <div className={ hasLastUpdated? "col-sm-9 col-md-10" : "col-sm-12"}>
+            <div className="col-sm-6 col-md-8">
               <div className="resource-name title-2">
                 <div className="truncated">
                   { `${table.schema_name}.${table.name}`}
@@ -46,6 +46,9 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
                 <BookmarkIcon bookmarkKey={ this.props.table.key }/>
               </div>
               <div className="body-secondary-3 truncated">{ table.description }</div>
+            </div>
+            <div className="resource-type hidden-xs col-sm-3 col-md-2 text-center">
+              { table.database }
             </div>
             {
               hasLastUpdated &&
