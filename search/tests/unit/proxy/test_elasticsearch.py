@@ -327,3 +327,153 @@ class TestElasticsearchProxy(unittest.TestCase):
                               "Search result received is not of 'Table' type!")
         self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]),
                              "Search Result doesn't match with expected result!")
+
+    def test_create_document_with_no_data(self) -> None:
+        expected = ''
+        result = self.es_proxy.create_document(data=None, index='table_search_index')
+        self.assertEquals(expected, result)
+
+    @patch('uuid.uuid4')
+    def test_create_document(self, mock_uuid: MagicMock) -> None:
+        mock_elasticsearch = self.es_proxy.elasticsearch
+        new_index_name = 'tester_index_name'
+        mock_uuid.return_value = new_index_name
+        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
+        start_data = [
+            Table(cluster='blue', column_names=['1', '2'], database='snowflake',
+                  schema_name='test_schema', description='A table for something',
+                  key='snowflake://blue.test_schema/bank_accounts',
+                  last_updated_epoch=0, name='bank_accounts', tags=[]),
+            Table(cluster='blue', column_names=['5', '6'], database='snowflake',
+                  schema_name='test_schema', description='A table for lots of things!',
+                  key='snowflake://blue.test_schema/bitcoin_wallets',
+                  last_updated_epoch=0, name='bitcoin_wallets', tags=[])
+        ]
+        expected_data = [
+            {
+                'index': {
+                    '_index': new_index_name,
+                    '_type': 'table',
+                    '_id': 'snowflake://blue.test_schema/bank_accounts'
+                }
+            },
+            {
+                'cluster': 'blue',
+                'column_names': ['1', '2'],
+                'database': 'snowflake',
+                'schema_name': 'test_schema',
+                'description': 'A table for something',
+                'key': 'snowflake://blue.test_schema/bank_accounts',
+                'last_updated_epoch': 0,
+                'name': 'bank_accounts',
+                'tags': [],
+                'total_usage': 0
+            },
+            {
+                'index': {
+                    '_index': new_index_name,
+                    '_type': 'table',
+                    '_id': 'snowflake://blue.test_schema/bitcoin_wallets'
+                }
+            },
+            {
+                'cluster': 'blue',
+                'column_names': ['5', '6'],
+                'database': 'snowflake',
+                'schema_name': 'test_schema',
+                'description': 'A table for lots of things!',
+                'key': 'snowflake://blue.test_schema/bitcoin_wallets',
+                'last_updated_epoch': 0,
+                'name': 'bitcoin_wallets',
+                'tags': [],
+                'total_usage': 0
+            }
+        ]
+        mock_elasticsearch.bulk.return_value = {'errors': False}
+
+        expected_alias = 'table_search_index'
+        result = self.es_proxy.create_document(data=start_data, index=expected_alias)
+        self.assertEquals(expected_alias, result)
+        mock_elasticsearch.bulk.assert_called_with(expected_data)
+
+    def test_update_document_with_no_data(self) -> None:
+        expected = ''
+        result = self.es_proxy.update_document(data=None, index='table_search_index')
+        self.assertEquals(expected, result)
+
+    @patch('uuid.uuid4')
+    def test_update_document(self, mock_uuid: MagicMock) -> None:
+        mock_elasticsearch = self.es_proxy.elasticsearch
+        new_index_name = 'tester_index_name'
+        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
+        mock_uuid.return_value = new_index_name
+        table_key = 'snowflake://blue.test_schema/bitcoin_wallets'
+        expected_alias = 'table_search_index'
+        data = [
+            Table(cluster='blue', column_names=['5', '6'], database='snowflake',
+                  schema_name='test_schema', description='A table for lots of things!',
+                  key=table_key, last_updated_epoch=0, name='bitcoin_wallets',
+                  tags=[])
+        ]
+        expected_data = [
+            {
+                'update': {
+                    '_index': new_index_name,
+                    '_type': 'table',
+                    '_id': table_key
+                }
+            },
+            {
+                'doc': {
+                    'cluster': 'blue',
+                    'column_names': ['5', '6'],
+                    'database': 'snowflake',
+                    'schema_name': 'test_schema',
+                    'description': 'A table for lots of things!',
+                    'key': table_key,
+                    'last_updated_epoch': 0,
+                    'name': 'bitcoin_wallets',
+                    'tags': [],
+                    'total_usage': 0
+                }
+            }
+        ]
+        result = self.es_proxy.update_document(data=data, index=expected_alias)
+        self.assertEquals(expected_alias, result)
+        mock_elasticsearch.bulk.assert_called_with(expected_data)
+
+    @patch('uuid.uuid4')
+    def test_delete_table_document(self, mock_uuid: MagicMock) -> None:
+        mock_elasticsearch = self.es_proxy.elasticsearch
+        new_index_name = 'tester_index_name'
+        mock_uuid.return_value = new_index_name
+        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
+        expected_alias = 'table_search_index'
+        data = ['id1', 'id2']
+
+        expected_data = [
+            {'delete': {'_index': new_index_name, '_id': 'id1', '_type': 'table'}},
+            {'delete': {'_index': new_index_name, '_id': 'id2', '_type': 'table'}}
+        ]
+        result = self.es_proxy.delete_document(data=data, index=expected_alias)
+
+        self.assertEquals(expected_alias, result)
+        mock_elasticsearch.bulk.assert_called_with(expected_data)
+
+    @patch('uuid.uuid4')
+    def test_delete_user_document(self, mock_uuid: MagicMock) -> None:
+        mock_elasticsearch = self.es_proxy.elasticsearch
+        new_index_name = 'tester_index_name'
+        mock_uuid.return_value = new_index_name
+        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
+        expected_alias = 'user_search_index'
+        data = ['id1', 'id2']
+
+        expected_data = [
+            {'delete': {'_index': new_index_name, '_id': 'id1', '_type': 'user'}},
+            {'delete': {'_index': new_index_name, '_id': 'id2', '_type': 'user'}}
+        ]
+        result = self.es_proxy.delete_document(data=data, index=expected_alias)
+
+        self.assertEquals(expected_alias, result)
+        mock_elasticsearch.bulk.assert_called_with(expected_data)

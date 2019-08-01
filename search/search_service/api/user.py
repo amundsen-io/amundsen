@@ -23,6 +23,8 @@ search_user_results = {
     "results": fields.Nested(user_fields, default=[])
 }
 
+USER_INDEX = 'user_search_index'
+
 
 class SearchUserAPI(Resource):
     """

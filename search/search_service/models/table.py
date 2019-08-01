@@ -1,8 +1,11 @@
-from typing import Iterable, Set
+from marshmallow import Schema, fields, post_load
+from typing import Any, Dict, Iterable, Set
 from .base import Base
 
 
 class Table(Base):
+    TYPE = 'table'
+
     def __init__(self, *,
                  name: str,
                  key: str,
@@ -12,7 +15,8 @@ class Table(Base):
                  schema_name: str,
                  column_names: Iterable[str],
                  tags: Iterable[str],
-                 last_updated_epoch: int) -> None:
+                 last_updated_epoch: int,
+                 total_usage: int = 0) -> None:
         self.name = name
         self.key = key
         self.description = description
@@ -22,6 +26,11 @@ class Table(Base):
         self.column_names = column_names
         self.tags = tags
         self.last_updated_epoch = last_updated_epoch
+        self.total_usage = total_usage
+
+    def get_id(self) -> str:
+        # uses the table key as the document id in ES
+        return self.key
 
     @classmethod
     def get_attrs(cls) -> Set:
@@ -49,3 +58,20 @@ class Table(Base):
                                                       self.column_names,
                                                       self.tags,
                                                       self.last_updated_epoch)
+
+
+class TableSchema(Schema):
+    database = fields.Str()
+    cluster = fields.Str()
+    column_names = fields.List(fields.Str())
+    schema_name = fields.Str()
+    name = fields.Str()
+    key = fields.Str()
+    description = fields.Str()
+    last_updated_epoch = fields.Str(allow_none=True)
+    tags = fields.List(fields.Str())
+    total_usage = fields.Int(allow_none=True)
+
+    @post_load
+    def make(self, data: Dict[str, Any], **kwargs: Any) -> Table:
+        return Table(**data)

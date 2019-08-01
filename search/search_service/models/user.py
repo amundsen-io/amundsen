@@ -3,6 +3,8 @@ from .base import Base
 
 
 class User(Base):
+    TYPE = 'user'
+
     def __init__(self, *,
                  first_name: str,
                  last_name: str,
@@ -22,6 +24,10 @@ class User(Base):
         self.github_username = github_username
         self.is_active = is_active
         self.employee_type = employee_type
+
+    def get_id(self) -> str:
+        # uses the user email as the document id in ES
+        return self.email
 
     @classmethod
     def get_attrs(cls) -> Set:

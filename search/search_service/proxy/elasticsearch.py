@@ -1,15 +1,19 @@
 import logging
 import re
-from typing import Any
+import uuid
+from typing import Any, List, Dict
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, query
+from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 
 from search_service import config
+from search_service.api.user import USER_INDEX
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.user import User
+from search_service.models.index_map import IndexMap
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
@@ -112,6 +116,102 @@ class ElasticsearchProxy(BaseProxy):
         return self._get_search_result(page_index=page_index,
                                        client=client,
                                        model=model)
+
+    def _create_document_helper(self, data: List[Table], index: str) -> str:
+        # fetch indices that use our chosen alias (should only ever return one in a list)
+        indices = self._fetch_old_index(index)
+
+        for i in indices:
+            # build a list of elasticsearch actions for bulk upload
+            actions = self._build_index_actions(data=data, index_key=i)
+
+            # bulk create or update data
+            self._bulk_helper(actions)
+
+        return index
+
+    def _update_document_helper(self, data: List[Table], index: str) -> str:
+        # fetch indices that use our chosen alias (should only ever return one in a list)
+        indices = self._fetch_old_index(index)
+
+        for i in indices:
+            # build a list of elasticsearch actions for bulk update
+            actions = self._build_update_actions(data=data, index_key=i)
+
+            # bulk update existing documents in index
+            self._bulk_helper(actions)
+
+        return index
+
+    def _delete_document_helper(self, data: List[str], index: str) -> str:
+        # fetch indices that use our chosen alias
+        indices = self._fetch_old_index(index)
+
+        # set the document type
+        type = User.TYPE if index is USER_INDEX else Table.TYPE
+
+        for i in indices:
+            # build a list of elasticsearch actions for bulk deletion
+            actions = self._build_delete_actions(data=data, index_key=i, type=type)
+
+            # bulk delete documents in index
+            self._bulk_helper(actions)
+
+        return index
+
+    def _build_index_actions(self, data: List[Table], index_key: str) -> List[Dict[str, Any]]:
+        actions = list()
+        for item in data:
+            index_action = {'index': {'_index': index_key, '_type': item.TYPE, '_id': item.get_id()}}
+            actions.append(index_action)
+            actions.append(item.__dict__)
+        return actions
+
+    def _build_update_actions(self, data: List[Table], index_key: str) -> List[Dict[str, Any]]:
+        actions = list()
+
+        for item in data:
+            actions.append({'update': {'_index': index_key, '_type': item.TYPE, '_id': item.get_id()}})
+            actions.append({'doc': item.__dict__})
+        return actions
+
+    def _build_delete_actions(self, data: List[str], index_key: str, type: str) -> List[Dict[str, Any]]:
+        return [{'delete': {'_index': index_key, '_id': id, '_type': type}} for id in data]
+
+    def _bulk_helper(self, actions: List[Dict[str, Any]]) -> None:
+        result = self.elasticsearch.bulk(actions)
+
+        if result['errors']:
+            # ES's error messages are nested within elasticsearch objects and can
+            # fail silently if you aren't careful
+            LOGGING.error('Error during Elasticsearch bulk actions')
+            LOGGING.debug(result['items'])
+            return
+
+    def _fetch_old_index(self, alias: str) -> List[str]:
+        """
+        Retrieve all indices that are currently tied to alias
+        (Can most often expect only one index to be returned in this list)
+        :return: list of elasticsearch indices
+        """
+        try:
+            indices = self.elasticsearch.indices.get_alias(alias).keys()
+            return indices
+        except NotFoundError:
+            LOGGING.warn('Received index not found error from Elasticsearch', exc_info=True)
+
+            # create a new index if there isn't already one that is usable
+            new_index = self._create_index_helper(alias=alias)
+            return [new_index]
+
+    def _create_index_helper(self, alias: str, mapping: str = IndexMap().mapping) -> str:
+        index_key = str(uuid.uuid4())
+        self.elasticsearch.indices.create(index=index_key, body=mapping)
+
+        # alias our new index
+        index_actions = {'actions': [{'add': {'index': index_key, 'alias': alias}}]}
+        self.elasticsearch.indices.update_aliases(index_actions)
+        return index_key
 
     def _search_wildcard_helper(self, field_value: str,
                                 page_index: int,
@@ -295,3 +395,43 @@ class ElasticsearchProxy(BaseProxy):
                                    client=s,
                                    query_name=query_name,
                                    model=User)
+
+    @timer_with_counter
+    def create_document(self, *, data: List[Table], index: str) -> str:
+        """
+        Creates new index in elasticsearch, then routes traffic to the new index
+        instead of the old one
+        :return: str
+        """
+
+        if not index:
+            raise Exception('Index cant be empty for creating document')
+        if not data:
+            LOGGING.warn('Received no data to upload to Elasticsearch')
+            return ''
+
+        return self._create_document_helper(data=data, index=index)
+
+    @timer_with_counter
+    def update_document(self, *, data: List[Table], index: str) -> str:
+        """
+        Updates the existing index in elasticsearch
+        :return: str
+        """
+        if not index:
+            raise Exception('Index cant be empty for updating document')
+        if not data:
+            LOGGING.warn('Received no data to upload to Elasticsearch')
+            return ''
+
+        return self._update_document_helper(data=data, index=index)
+
+    @timer_with_counter
+    def delete_document(self, *, data: List[str], index: str) -> str:
+        if not index:
+            raise Exception('Index cant be empty for deleting document')
+        if not data:
+            LOGGING.warn('Received no data to upload to Elasticsearch')
+            return ''
+
+        return self._delete_document_helper(data=data, index=index)

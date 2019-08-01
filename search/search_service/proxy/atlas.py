@@ -5,7 +5,7 @@ from atlasclient.exceptions import BadRequest
 from atlasclient.models import Entity, EntityCollection
 # default search page size
 from flask import current_app as app
-from typing import List, Dict
+from typing import Any, List, Dict
 
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
@@ -218,3 +218,12 @@ class AtlasProxy(BaseProxy):
                                   page_index: int = 0,
                                   index: str = '') -> SearchResult:
         pass
+
+    def update_document(self, *, data: List[Dict[str, Any]], index: str = '') -> str:
+        raise NotImplementedError()
+
+    def create_document(self, *, data: List[Dict[str, Any]], index: str = '') -> str:
+        raise NotImplementedError()
+
+    def delete_document(self, *, data: List[str], index: str = '') -> str:
+        raise NotImplementedError()
