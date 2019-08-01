@@ -10,6 +10,7 @@ Flask-RESTful==0.3.6
 itsdangerous==0.24
 Jinja2>=2.10.1
 MarkupSafe==1.0
+marshmallow==3.0.0rc7
 mock==2.0.0
 mypy==0.660
 pytest==3.5.1
