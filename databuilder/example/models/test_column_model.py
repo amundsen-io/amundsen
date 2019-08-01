@@ -4,7 +4,7 @@ from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
 
-from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.table_metadata import TableMetadata, DESCRIPTION_NODE_LABEL
 
 
 class TestColumnMetadata(Neo4jCsvSerializable):
@@ -76,6 +76,14 @@ class TestColumnMetadata(Neo4jCsvSerializable):
                                                            tbl=self.table_name,
                                                            col=self.name)
 
+    def _get_col_description_key(self):
+        # type: (TestColumnMetadata) -> str
+        return TestColumnMetadata.COLUMN_DESCRIPTION_FORMAT.format(db=self.database,
+                                                                   cluster=self.cluster,
+                                                                   schema=self.schema_name,
+                                                                   tbl=self.table_name,
+                                                                   col=self.name)
+
     def _get_table_key(self):
         # type: () -> str
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
@@ -89,15 +97,21 @@ class TestColumnMetadata(Neo4jCsvSerializable):
         Create a list of Neo4j node records
         :return:
         """
-        results = []
-
-        results.append({
+        results = [{
             NODE_LABEL: TestColumnMetadata.COLUMN_NODE_LABEL,
             NODE_KEY: self._get_col_key(),
             TestColumnMetadata.COLUMN_NAME: self.name,
             TestColumnMetadata.COLUMN_TYPE: self.type,
             TestColumnMetadata.COLUMN_ORDER: self.sort_order
-        })
+        }]
+
+        if self.description:
+            results.append({
+                NODE_LABEL: DESCRIPTION_NODE_LABEL,
+                NODE_KEY: self._get_col_description_key(),
+                TestColumnMetadata.COLUMN_DESCRIPTION: self.description
+            })
+
         return results
 
     def create_relation(self):
@@ -106,7 +120,8 @@ class TestColumnMetadata(Neo4jCsvSerializable):
         Create a list of relation map between watermark record with original hive table
         :return:
         """
-        return [{
+
+        results = [{
             RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
             RELATION_END_LABEL: TestColumnMetadata.COLUMN_NODE_LABEL,
             RELATION_START_KEY: self._get_table_key(),
@@ -114,6 +129,18 @@ class TestColumnMetadata(Neo4jCsvSerializable):
             RELATION_TYPE: TableMetadata.TABLE_COL_RELATION_TYPE,
             RELATION_REVERSE_TYPE: TableMetadata.COL_TABLE_RELATION_TYPE
         }]
+
+        if self.description:
+            results.append({
+                RELATION_START_LABEL: self.COLUMN_NODE_LABEL,
+                RELATION_END_LABEL: self.DESCRIPTION_NODE_LABEL,
+                RELATION_START_KEY: self._get_col_key(),
+                RELATION_END_KEY: self._get_col_description_key(),
+                RELATION_TYPE: self.COL_DESCRIPTION_RELATION_TYPE,
+                RELATION_REVERSE_TYPE: self.DESCRIPTION_COL_RELATION_TYPE
+            })
+
+        return results
 
     def __repr__(self):
         # type: () -> str
