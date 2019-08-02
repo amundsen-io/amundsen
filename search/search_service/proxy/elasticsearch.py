@@ -285,7 +285,8 @@ class ElasticsearchProxy(BaseProxy):
                                        "schema_name^3",
                                        "description^3",
                                        "column_names^2",
-                                       "column_descriptions", "tags"]
+                                       "column_descriptions", "tags"],
+                            "operator": "and"
                         }
                     },
                     "field_value_factor": {
@@ -345,7 +346,8 @@ class ElasticsearchProxy(BaseProxy):
                                    "schema_name^3",
                                    "description^3",
                                    "column_names^2",
-                                   "column_descriptions", "tags"]
+                                   "column_descriptions", "tags"],
+                        "operator": "and"
                     }
                 },
                 "field_value_factor": {
@@ -385,7 +387,9 @@ class ElasticsearchProxy(BaseProxy):
                                    "last_name.raw^5",
                                    "first_name^3",
                                    "last_name^3",
-                                   "email^3"]
+                                   "email^3"],
+                        "operator": "and"
+
                     }
                 }
             }
