@@ -8,6 +8,8 @@
 
 Amundsen Search service serves a Restful API and is responsible for searching metadata. The service leverages [Elasticsearch](https://www.elastic.co/products/elasticsearch "Elasticsearch") for most of it's search capabilites.
 
+For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
+
 ## Instructions to start the Search service from distribution
 ```bash
 $ venv_path=[path_for_virtual_environment]
