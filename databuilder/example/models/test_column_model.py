@@ -133,7 +133,7 @@ class TestColumnMetadata(Neo4jCsvSerializable):
         if self.description:
             results.append({
                 RELATION_START_LABEL: self.COLUMN_NODE_LABEL,
-                RELATION_END_LABEL: self.DESCRIPTION_NODE_LABEL,
+                RELATION_END_LABEL: DESCRIPTION_NODE_LABEL,
                 RELATION_START_KEY: self._get_col_key(),
                 RELATION_END_KEY: self._get_col_description_key(),
                 RELATION_TYPE: self.COL_DESCRIPTION_RELATION_TYPE,
