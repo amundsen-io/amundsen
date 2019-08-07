@@ -95,4 +95,10 @@ class TestColumnUsageModel(Neo4jCsvSerializable):
 
     def __repr__(self):
         # type: () -> str
-        return 'TableColumnUsage(col_readers={!r})'.format(self.col_readers)
+        return 'TableColumnUsage({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.database,
+                                                                                   self.cluster,
+                                                                                   self.schema_name,
+                                                                                   self.table_name,
+                                                                                   self.column_name,
+                                                                                   self.user_email,
+                                                                                   self.read_count)
