@@ -1,7 +1,7 @@
 import logging
 
 from http import HTTPStatus
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from flask import Response, jsonify, make_response, request
 from flask import current_app as app
@@ -80,8 +80,8 @@ def get_table_metadata() -> Response:
     """
     try:
         table_key = get_query_param(request.args, 'key')
-        list_item_index = get_query_param(request.args, 'index')
-        list_item_source = get_query_param(request.args, 'source')
+        list_item_index = request.args.get('index', None)
+        list_item_source = request.args.get('source', None)
 
         results_dict = _get_table_metadata(table_key=table_key, index=list_item_index, source=list_item_source)
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
@@ -389,14 +389,16 @@ def update_table_tags() -> Response:
 def get_user() -> Response:
 
     @action_logging
-    def _log_get_user(*, user_id: str) -> None:
+    def _log_get_user(*, user_id: str, index: Optional[int], source: Optional[str]) -> None:
         pass  # pragma: no cover
 
     try:
         user_id = get_query_param(request.args, 'user_id')
-        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
+        index = request.args.get('index', None)
+        source = request.args.get('source', None)
 
-        _log_get_user(user_id=user_id)
+        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
+        _log_get_user(user_id=user_id, index=index, source=source)
 
         response = request_metadata(url=url)
         status_code = response.status_code

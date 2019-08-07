@@ -138,7 +138,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     let link = user.profile_url;
     let target = '_blank';
     if (AppConfig.indexUsers.enabled) {
-      link = `/user/${user.user_id}`;
+      link = `/user/${user.user_id}?source=frequent_users`;
       target = '';
     }
 

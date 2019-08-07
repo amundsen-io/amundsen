@@ -1,3 +1,5 @@
+import * as qs from 'simple-query-string';
+
 import { filterFromObj, sortTagsAlphabetical } from 'ducks/utilMethods';
 
 import { OwnerDict, TableMetadata, Tag, User } from 'interfaces';
@@ -6,8 +8,8 @@ import * as API from './v0';
 /**
  * Generates the query string parameters needed for requests that act on a particular table resource.
  */
-export function getTableQueryParams(tableKey: string): string {
-  return `key=${encodeURIComponent(tableKey)}`;
+export function getTableQueryParams(key: string, index?: string, source?: string): string {
+  return qs.stringify({ key, index, source });
 }
 
 /**

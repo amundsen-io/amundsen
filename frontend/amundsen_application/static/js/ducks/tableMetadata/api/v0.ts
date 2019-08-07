@@ -1,9 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
-import {
-  GetPreviewDataRequest, GetTableDataRequest, UpdateTableOwnerRequest, UpdateTagsRequest,
-} from 'ducks/tableMetadata/types';
-
 import { PreviewData, PreviewQueryParams, TableMetadata, User, Tag } from 'interfaces';
 
 const API_PATH = '/api/metadata/v0';
@@ -27,7 +23,7 @@ import {
 
 export function getTableTags(tableKey: string) {
   const tableParams = getTableQueryParams(tableKey);
-  return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
+  return axios.get(`${API_PATH}/table?${tableParams}`)
   .then((response: AxiosResponse<TableDataAPI>) => {
     return getTableTagsFromResponseData(response.data);
   });
@@ -48,9 +44,9 @@ export function updateTableTags(tagArray, tableKey: string) {
   return updatePayloads.map(payload => { axios(payload) });
 }
 
-export function getTableData(tableKey: string, searchIndex: string, source: string ) {
-  const tableParams = getTableQueryParams(tableKey);
-  return axios.get(`${API_PATH}/table?${tableParams}&index=${searchIndex}&source=${source}`)
+export function getTableData(tableKey: string, index?: string, source?: string ) {
+  const queryParams = getTableQueryParams(tableKey, index, source);
+  return axios.get(`${API_PATH}/table?${queryParams}`)
   .then((response: AxiosResponse<TableDataAPI>) => {
     return {
       data: getTableDataFromResponseData(response.data),
@@ -85,7 +81,7 @@ export function updateTableDescription(description: string, tableData: TableMeta
 
 export function getTableOwners(tableKey: string) {
   const tableParams = getTableQueryParams(tableKey);
-  return axios.get(`${API_PATH}/table?${tableParams}&index=&source=`)
+  return axios.get(`${API_PATH}/table?${tableParams}`)
   .then((response: AxiosResponse<TableDataAPI>) => {
     return getTableOwnersFromResponseData(response.data);
   });

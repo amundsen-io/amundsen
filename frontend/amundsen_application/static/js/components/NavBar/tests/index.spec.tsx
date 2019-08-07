@@ -117,6 +117,10 @@ describe('NavBar', () => {
 
     it('renders a Link to the user profile if `indexUsers` is enabled', () => {
       expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(true)
+
+      expect(wrapper.find('#nav-bar-avatar-link').props()).toMatchObject({
+        to: `/user/${props.loggedInUser.user_id}?source=navbar`
+      });
     });
 
     it('does not render a Link to the user profile if `indexUsers` is disabled', () => {
