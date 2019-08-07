@@ -33,10 +33,14 @@ describe('user ducks', () => {
     user: PeopleUser,
   };
   let userId: string;
+  let source: string;
+  let index: number;
   beforeAll(() => {
     currentUser = globalState.user.loggedInUser;
     otherUser = globalState.user.profile;
     userId = 'testId';
+    source = 'test';
+    index = 0;
   });
 
   describe('actions', () => {
@@ -254,8 +258,8 @@ describe('user ducks', () => {
 
     describe('getUserWorker', () => {
       it('executes flow for returning a user given an id', () => {
-        testSaga(getUserWorker, getUser(userId))
-          .next().call(API.getUser, userId)
+        testSaga(getUserWorker, getUser(userId, index, source))
+          .next().call(API.getUser, userId, index, source)
           .next(otherUser.user).put(getUserSuccess(otherUser.user))
           .next().isDone();
       });

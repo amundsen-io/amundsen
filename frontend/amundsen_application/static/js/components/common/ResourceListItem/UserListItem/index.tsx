@@ -19,7 +19,7 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
 
   getLink = () => {
     const { user, logging } = this.props;
-    return `/user/${user.user_id}/?index=${logging.index}&source=${logging.source}`;
+    return `/user/${user.user_id}?index=${logging.index}&source=${logging.source}`;
   };
 
   render() {

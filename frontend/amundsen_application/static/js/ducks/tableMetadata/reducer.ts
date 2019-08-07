@@ -17,7 +17,7 @@ import tableOwnersReducer, { initialOwnersState, TableOwnerReducerState } from '
 import tableTagsReducer, { initialTagsState,  TableTagsReducerState } from './tags/reducer';
 
 /* ACTIONS */
-export function getTableData(key: string, searchIndex: string = '', source: string = ''): GetTableDataRequest {
+export function getTableData(key: string, searchIndex?: string, source?: string): GetTableDataRequest {
   return {
     payload: {
       key,

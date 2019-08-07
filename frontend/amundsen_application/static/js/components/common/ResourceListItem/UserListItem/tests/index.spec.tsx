@@ -98,7 +98,7 @@ describe('UserListItem', () => {
     it('getLink returns correct string', () => {
       const { props, wrapper } = setup();
       const { user, logging } = props;
-      expect(wrapper.instance().getLink()).toEqual(`/user/${user.user_id}/?index=${logging.index}&source=${logging.source}`);
+      expect(wrapper.instance().getLink()).toEqual(`/user/${user.user_id}?index=${logging.index}&source=${logging.source}`);
     });
   });
 });

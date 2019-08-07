@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import * as qs from 'simple-query-string';
 
 import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
 
@@ -14,8 +15,10 @@ export function getLoggedInUser() {
     });
 }
 
-export function getUser(userId: string) {
-  return axios.get(`/api/metadata/v0/user?user_id=${userId}`)
+export function getUser(userId: string, index?: number, source?: string) {
+  const queryParams = qs.stringify({ index, source, user_id: userId });
+
+  return axios.get(`/api/metadata/v0/user?${queryParams}`)
     .then((response: AxiosResponse<UserAPI>) => {
       return response.data.user;
     });
