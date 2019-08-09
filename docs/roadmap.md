@@ -29,7 +29,7 @@ The following roadmap gives an overview of what we are currently working on and 
  
  
    
-#### Native lineage integration<br>
+#### Native lineage integration
 *What*: We want to create a native lineage integration in Amundsen, to better surface how data assets interact with each other  
 *Status*: implementation has not started
   
