@@ -1,3 +1,4 @@
+import copy
 import unittest
 from atlasclient.exceptions import BadRequest
 from mock import patch, MagicMock
@@ -31,8 +32,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
         return ObjectView(entity)
 
     def _mock_get_table_entity(self, entity=None):
+        entity = entity or self.entity1
         mocked_entity = MagicMock()
-        mocked_entity.entity = entity or self.entity1
+        mocked_entity.entity = entity
         if mocked_entity.entity == self.entity1:
             mocked_entity.referredEntities = {
                 self.test_column['guid']: self.test_column
@@ -43,7 +45,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
             'entity': self.entity_type,
             'cluster': self.cluster,
             'db': self.db,
-            'name': self.name
+            'name': entity['attributes']['name']
         }))
         return mocked_entity
 
@@ -104,7 +106,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                     end_epoch=stats['attributes']['end_epoch'],
                 )
             )
-        exp_col = Column(name=col_attrs['qualifiedName'],
+        exp_col = Column(name=col_attrs['name'],
                          description='column description',
                          col_type='Managed',
                          sort_order=col_attrs['position'],
@@ -112,7 +114,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         expected = Table(database=self.entity_type,
                          cluster=self.cluster,
                          schema=self.db,
-                         name=self.name,
+                         name=ent_attrs['name'],
                          tags=[Tag(tag_name=classif_name, tag_type="default")],
                          description=ent_attrs['description'],
                          owners=[User(email=ent_attrs['owner'])],
@@ -127,7 +129,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
     def test_get_table_missing_info(self):
         with self.assertRaises(BadRequest):
-            local_entity = self.entity1.copy()
+            local_entity = copy.deepcopy(self.entity1)
             local_entity.pop('attributes')
             unique_attr_response = MagicMock()
             unique_attr_response.entity = local_entity
@@ -150,19 +152,21 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         expected = [
             PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                         name=ent1_attrs['qualifiedName'], description=ent1_attrs['description']),
+                         name=ent1_attrs['name'], description=ent1_attrs['description']),
             PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                         name=ent2_attrs['qualifiedName'], description=ent1_attrs['description']),
+                         name=ent2_attrs['name'], description=ent1_attrs['description']),
         ]
 
         self.assertEqual(expected.__repr__(), response.__repr__())
 
+    # noinspection PyTypeChecker
     def test_get_popular_tables_without_db(self):
-        meta1 = self.metadata1.copy()
-        meta2 = self.metadata2.copy()
+        meta1 = copy.deepcopy(self.metadata1)
+        meta2 = copy.deepcopy(self.metadata2)
 
         for meta in [meta1, meta2]:
-            meta['relationshipAttributes']['parentEntity']['attributes']['qualifiedName'] = 'meta@cluster'
+            meta['relationshipAttributes']['parentEntity']['attributes']['qualifiedName'] = \
+                meta['relationshipAttributes']['parentEntity']['attributes']['name']
 
         metadata1 = self.to_class(meta1)
         metadata2 = self.to_class(meta2)
@@ -177,10 +181,10 @@ class TestAtlasProxy(unittest.TestCase, Data):
         ent2_attrs = self.entity2['attributes']
 
         expected = [
-            PopularTable(database=self.entity_type, cluster='', schema='',
-                         name=ent1_attrs['qualifiedName'], description=ent1_attrs['description']),
-            PopularTable(database=self.entity_type, cluster='', schema='',
-                         name=ent2_attrs['qualifiedName'], description=ent1_attrs['description']),
+            PopularTable(database=self.entity_type, cluster='default', schema='default',
+                         name=ent1_attrs['name'], description=ent1_attrs['description']),
+            PopularTable(database=self.entity_type, cluster='default', schema='default',
+                         name=ent2_attrs['name'], description=ent1_attrs['description']),
         ]
 
         self.assertEqual(expected.__repr__(), response.__repr__())
@@ -203,19 +207,22 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                          description="DOESNT_MATTER")
 
     def test_get_tags(self):
-        name = "DUMMY_CLASSIFICATION"
-        mocked_classif = MagicMock()
-        mocked_classif.name = name
+        tag_response = {
+            'tagEntities': {
+                'PII': 3,
+                'NON_PII': 2
+            }
+        }
 
-        mocked_def = MagicMock()
-        mocked_def.classificationDefs = [mocked_classif]
+        mocked_metrics = MagicMock()
+        mocked_metrics.tag = tag_response
 
-        self.proxy._driver.typedefs = [mocked_def]
+        self.proxy._driver.admin_metrics = [mocked_metrics]
 
         response = self.proxy.get_tags()
 
-        expected = [TagDetail(tag_name=name, tag_count=0)]
-        self.assertEqual(response.__repr__(), expected.__repr__())
+        expected = [TagDetail(tag_name='PII', tag_count=3), TagDetail(tag_name='NON_PII', tag_count=2)]
+        self.assertEqual(expected.__repr__(), response.__repr__())
 
     def test_add_tag(self):
         tag = "TAG"
@@ -248,7 +255,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self._mock_get_table_entity()
         response = self.proxy._get_column(
             table_uri=self.table_uri,
-            column_name=self.test_column['attributes']['qualifiedName'])
+            column_name=self.test_column['attributes']['name'])
         self.assertDictEqual(response, self.test_column)
 
     def test_get_column_wrong_name(self):
@@ -267,13 +274,13 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self._mock_get_table_entity()
         response = self.proxy.get_column_description(
             table_uri=self.table_uri,
-            column_name=self.test_column['attributes']['qualifiedName'])
+            column_name=self.test_column['attributes']['name'])
         self.assertEqual(response, self.test_column['attributes'].get('description'))
 
     def test_put_column_description(self):
         self._mock_get_table_entity()
         self.proxy.put_column_description(table_uri=self.table_uri,
-                                          column_name=self.test_column['attributes']['qualifiedName'],
+                                          column_name=self.test_column['attributes']['name'],
                                           description='DOESNT_MATTER')
 
 
