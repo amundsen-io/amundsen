@@ -5,6 +5,7 @@ from typing import Union, List, Dict, Any, Tuple
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import EntityUniqueAttribute
+from atlasclient.utils import parse_table_qualified_name, make_table_qualified_name
 from flask import current_app as app
 
 from metadata_service.entity.popular_table import PopularTable
@@ -18,6 +19,7 @@ from metadata_service.util import UserResourceRel
 LOGGER = logging.getLogger(__name__)
 
 
+# noinspection PyMethodMayBeStatic
 class AtlasProxy(BaseProxy):
     """
     Atlas Proxy client for the amundsen metadata
@@ -25,15 +27,9 @@ class AtlasProxy(BaseProxy):
     """
     TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
     DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
-    NAME_ATTRIBUTE = app.config['ATLAS_NAME_ATTRIBUTE']
     QN_KEY = 'qualifiedName'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
-
-    # Table Qualified Name Regex
-    TABLE_QN_REGEX = pattern = re.compile(r"""
-    ^(?P<db_name>.*?)\.(?P<table_name>.*)@(?P<cluster_name>.*?)$
-    """, re.X)
 
     def __init__(self, *,
                  host: str,
@@ -77,11 +73,10 @@ class AtlasProxy(BaseProxy):
         Extracts the table information from table_uri coming from frontend.
         :param table_uri:
         :return: Dictionary object, containing following information:
-        entity: Database Namespace: rdbms_table, hive_table etc.
         entity: Type of entity example: rdbms_table, hive_table etc.
         cluster: Cluster information
         db: Database Name
-        name: Unique Table Identifier
+        name: Table Name
         """
         pattern = re.compile(r"""
             ^   (?P<entity>.*?)
@@ -104,14 +99,17 @@ class AtlasProxy(BaseProxy):
         that can be used for update purposes,
         while entity_unique_attribute().entity only returns the dictionary
         :param table_uri:
-        :return:
+        :return: A tuple of Table entity and parsed information of table qualified name
         """
         table_info = self._extract_info_from_uri(table_uri=table_uri)
+        table_qn = make_table_qualified_name(table_info.get('name'),
+                                             table_info.get('cluster'),
+                                             table_info.get('db')
+                                             )
 
         try:
             return self._driver.entity_unique_attribute(
-                table_info['entity'],
-                qualifiedName=table_info.get('name')), table_info
+                table_info['entity'], qualifiedName=table_qn), table_info
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException('Table URI( {table_uri} ) does not exist'
@@ -129,7 +127,7 @@ class AtlasProxy(BaseProxy):
             columns = table_entity.entity[self.REL_ATTRS_KEY].get('columns')
             for column in columns or list():
                 col_details = table_entity.referredEntities[column['guid']]
-                if column_name == col_details[self.ATTRS_KEY][self.NAME_ATTRIBUTE]:
+                if column_name == col_details[self.ATTRS_KEY]['name']:
                     return col_details
 
             raise NotFoundException(f'Column not found: {column_name}')
@@ -166,8 +164,8 @@ class AtlasProxy(BaseProxy):
 
             columns.append(
                 Column(
-                    name=col_attrs.get(self.NAME_ATTRIBUTE),
-                    description=col_attrs.get('description'),
+                    name=col_attrs.get('name'),
+                    description=col_attrs.get('description') or col_attrs.get('comment'),
                     col_type=col_attrs.get('type') or col_attrs.get('dataType'),
                     sort_order=col_attrs.get('position'),
                     stats=statistics,
@@ -191,6 +189,10 @@ class AtlasProxy(BaseProxy):
         try:
             attrs = table_details[self.ATTRS_KEY]
 
+            table_qn = parse_table_qualified_name(
+                qualified_name=attrs.get(self.QN_KEY)
+            )
+
             tags = []
             # Using or in case, if the key 'classifications' is there with a None
             for classification in table_details.get("classifications") or list():
@@ -203,15 +205,16 @@ class AtlasProxy(BaseProxy):
 
             columns = self._serialize_columns(entity=entity)
 
-            table = Table(database=table_info['entity'],
-                          cluster=table_info['cluster'],
-                          schema=table_info['db'],
-                          name=table_info['name'],
-                          tags=tags,
-                          description=attrs.get('description'),
-                          owners=[User(email=attrs.get('owner'))],
-                          columns=columns,
-                          last_updated_timestamp=table_details.get('updateTime'))
+            table = Table(
+                database=table_details.get('typeName'),
+                cluster=table_qn.get('cluster_name', ''),
+                schema=table_qn.get('db_name', ''),
+                name=attrs.get('name') or table_qn.get("table_name", ''),
+                tags=tags,
+                description=attrs.get('description'),
+                owners=[User(email=attrs.get('owner'))],
+                columns=columns,
+                last_updated_timestamp=table_details.get('updateTime'))
 
             return table
         except KeyError as ex:
@@ -351,19 +354,20 @@ class AtlasProxy(BaseProxy):
                 table = metadata.relationshipAttributes.get("parentEntity")
                 table_attrs = table.get(self.ATTRS_KEY)
 
-                _regex_result = self.TABLE_QN_REGEX.match(table_attrs.get(self.QN_KEY))
-                table_qn = _regex_result.groupdict() if _regex_result else dict()
+                table_qn = parse_table_qualified_name(
+                    qualified_name=table_attrs.get(self.QN_KEY)
+                )
 
-                # Hardcoded empty strings as default, because these values are not optional
-                table_name = table_attrs.get(self.NAME_ATTRIBUTE) or table_qn.get("table_name", '')
+                table_name = table_qn.get("table_name") or table_attrs.get('name')
                 db_name = table_qn.get("db_name", '')
                 db_cluster = table_qn.get("cluster_name", '')
 
-                popular_table = PopularTable(database=table.get("typeName"),
-                                             cluster=db_cluster,
-                                             schema=db_name,
-                                             name=table_name,
-                                             description=table_attrs.get('description'))
+                popular_table = PopularTable(
+                    database=table.get("typeName"),
+                    cluster=db_cluster,
+                    schema=db_name,
+                    name=table_name,
+                    description=table_attrs.get('description'))
                 popular_tables.append(popular_table)
 
         return popular_tables
@@ -378,12 +382,13 @@ class AtlasProxy(BaseProxy):
         :return: A list of TagDetail Objects
         """
         tags = []
-        for type_def in self._driver.typedefs:
-            for classification in type_def.classificationDefs:
+        for metrics in self._driver.admin_metrics:
+            tag_stats = metrics.tag
+            for tag, count in tag_stats["tagEntities"].items():
                 tags.append(
                     TagDetail(
-                        tag_name=classification.name,
-                        tag_count=0  # FixMe (Verdan): Implement the tag count
+                        tag_name=tag,
+                        tag_count=count
                     )
                 )
         return tags

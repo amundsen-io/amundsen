@@ -16,6 +16,7 @@ class Data:
         'guid': 'DOESNT_MATTER',
         'typeName': 'COLUMN',
         'attributes': {
+            'name': 'column name',
             'qualifiedName': 'column@name',
             'type': 'Managed',
             'description': 'column description',
