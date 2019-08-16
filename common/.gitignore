@@ -1,0 +1,16 @@
+*~
+*.pyc
+*.pyo
+*.pyt
+*.pytc
+*.egg-info
+.*.swp
+.DS_Store
+/venv*
+.cache/
+build/
+.idea/
+.coverage
+/.mypy_cache
+/dist
+tests/unit/log/htmlcov
