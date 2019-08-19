@@ -1,0 +1,7 @@
+dist: xenial
+language: python
+python: 3.7
+install:
+- pip3 install -r requirements.txt
+- pip3 install codecov
+- python3 setup.py install
