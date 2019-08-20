@@ -68,6 +68,61 @@ DEFAULT_INDEX_MAP = textwrap.dedent("""
   }
 }""")
 
+USER_INDEX_MAP = textwrap.dedent("""
+{
+"mappings":{
+    "user":{
+      "properties": {
+        "email": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "first_name": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "last_name": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "name": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "total_read":{
+          "type": "long"
+        },
+        "total_own": {
+          "type": "long"
+        },
+        "total_follow": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}""")
+
 
 class IndexMap:
     def __init__(self, map: str = DEFAULT_INDEX_MAP) -> None:

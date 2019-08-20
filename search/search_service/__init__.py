@@ -10,7 +10,7 @@ from typing import Dict, Any    # noqa: F401
 
 from search_service.api.table import SearchTableAPI, SearchTableFieldAPI
 from search_service.api.user import SearchUserAPI
-from search_service.api.document import DocumentTableAPI
+from search_service.api.document import DocumentTableAPI, DocumentUserAPI
 from search_service.api.healthcheck import healthcheck
 
 # For customized flask use below arguments to override.
@@ -74,7 +74,9 @@ def create_app(*, config_module_class: str) -> Flask:
     # User Search API
     api.add_resource(SearchUserAPI, '/search_user')
 
+    # DocumentAPI
     api.add_resource(DocumentTableAPI, '/document_table', '/document_table/<document_id>')
+    api.add_resource(DocumentUserAPI, '/document_user', '/document_user/<document_id>')
 
     app.register_blueprint(api_bp)
 
