@@ -10,10 +10,11 @@ from flask import current_app
 
 from search_service import config
 from search_service.api.user import USER_INDEX
+from search_service.api.table import TABLE_INDEX
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.user import User
-from search_service.models.index_map import IndexMap
+from search_service.models.index_map import IndexMap, USER_INDEX_MAP
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
@@ -204,14 +205,22 @@ class ElasticsearchProxy(BaseProxy):
             new_index = self._create_index_helper(alias=alias)
             return [new_index]
 
-    def _create_index_helper(self, alias: str, mapping: str = IndexMap().mapping) -> str:
+    def _create_index_helper(self, alias: str) -> str:
         index_key = str(uuid.uuid4())
+        mapping: str = self._get_mapping(alias=alias)
         self.elasticsearch.indices.create(index=index_key, body=mapping)
 
         # alias our new index
         index_actions = {'actions': [{'add': {'index': index_key, 'alias': alias}}]}
         self.elasticsearch.indices.update_aliases(index_actions)
         return index_key
+
+    def _get_mapping(self, alias: str) -> str:
+        if alias is USER_INDEX:
+            return IndexMap(map=USER_INDEX_MAP).mapping
+        elif alias is TABLE_INDEX:
+            return IndexMap().mapping
+        return ''
 
     def _search_wildcard_helper(self, field_value: str,
                                 page_index: int,

@@ -1,4 +1,5 @@
-from typing import Set
+from marshmallow import Schema, fields, post_load
+from typing import Any, Dict, Set
 from .base import Base
 
 
@@ -55,3 +56,14 @@ class User(Base):
                                                             self.github_username,
                                                             self.is_active,
                                                             self.employee_type)
+
+
+class UserSchema(Schema):
+    name = fields.Str(allow_none=True)
+    email = fields.Str()
+    is_active = fields.Boolean(allow_none=True)
+    employee_type = fields.Str(allow_none=True)
+
+    @post_load
+    def make(self, data: Dict[str, Any], **kwargs: Any) -> User:
+        return User(**data)
