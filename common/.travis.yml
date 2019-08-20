@@ -5,3 +5,5 @@ install:
 - pip3 install -r requirements.txt
 - pip3 install codecov
 - python3 setup.py install
+script:
+- make test
