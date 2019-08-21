@@ -7,3 +7,15 @@ install:
 - python3 setup.py install
 script:
 - make test
+after_success:
+- codecov
+deploy:
+  provider: pypi
+  user: amundsen-dev
+  distributions: sdist bdist_wheel
+  skip_existing: true
+  on:
+    tags: true
+    repo: lyft/amundsencommon
+  password:
+    secure: NXVfA0RWsk0NAfLhwKIi50UQovOmanlR2KiIUJm1dhQFkkrCIbMIJ0tXSBCOmxJEzKRCObkei4IF9TFBYndE2NkvuuuZHPIQHgXjDr7brIMAeTD7pdJwgzBfLeFbBvIGX/RqZTbkulpQS+rtgr4XpnWELJpnDQlaoCkP2VCqorchhYm34fBahQOHHnsEG2o3ZxU2HXaLTNaW1Q9htrBM65t7TYi/kE1dVhGdh65/M2EP0owed5T5rQNs8jN+QTCuLdqKBsg49zyZUHs46ffs7o67bwx0BSfF6WLdFa4s3sTEDVn0frkgOeJfDDZiTPOYnQSLACskzLiBaG7sILU5hlD3ME45IT8W1Unryti5uS5LCcv01PvpEMp86ZLJGkQFOmTilLXvz+o20ssDWCPUaXxqLNk8iu4C+nSbq52b7EvhYwYFn8eruiloBuG9QFS8YE8UEYxE5t7KORMt2+xz8AiAWr+2EkVkZOTocSXnJavjW1Ihr0U9Tn+hkGFGD5SMfO2G7STYmd1wHEzCf/AOeDrDi3IH2KLrd6tvK7ZRfT6AbIYMsdvFxfCeiVlrt47n3XpQ9KTepXgMGDmdzu7YYmqRMWg4CirOiVr9zh6uPrtXNv5nt38S2Uzie1TtOyzJlWpKLQG7jzyNW9SIK4oU7Fwvi9V0jQ8r7pW5xbZcdEQ=
