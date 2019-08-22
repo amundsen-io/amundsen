@@ -18,6 +18,8 @@ class RegexStrReplaceTransformer(Transformer):
     """
     Generic string replacement transformer using REGEX.
     User can pass list of tuples where tuple contains regex and replacement pair.
+
+    Any non-string values will be ignored.
     """
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -27,7 +29,12 @@ class RegexStrReplaceTransformer(Transformer):
     def transform(self, record):
         # type: (Any) -> Any
         val = getattr(record, self._attribute_name)
-        if six.PY2 and isinstance(val, six.text_type):
+
+        if val is None or not isinstance(val, six.string_types):
+            return record
+
+        # Encode unicode string
+        if six.PY2:
             val = val.encode('utf-8', 'ignore')
 
         for regex_replace_tuple in self._regex_replace_tuples:
