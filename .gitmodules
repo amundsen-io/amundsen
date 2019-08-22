@@ -14,3 +14,8 @@
 	path = amundsensearchlibrary
 	url = https://github.com/lyft/amundsensearchlibrary
 	branch = master
+[submodule "amundsencommon"]
+	path = amundsencommon
+	url = https://github.com/lyft/amundsencommon
+	branch = master
+	
