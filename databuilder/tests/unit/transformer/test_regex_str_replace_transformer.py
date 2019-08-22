@@ -9,6 +9,33 @@ class TestRegexReplacement(unittest.TestCase):
 
     def test(self):
         # type: () -> None
+        transformer = self._default_test_transformer()
+
+        foo = Foo('abc')
+        actual = transformer.transform(foo)
+
+        self.assertEqual('bba', actual.val)
+
+    def test_numeric_val(self):
+        # type: () -> None
+        transformer = self._default_test_transformer()
+
+        foo = Foo(6)
+        actual = transformer.transform(foo)
+
+        self.assertEqual(6, actual.val)
+
+    def test_none_val(self):
+        # type: () -> None
+        transformer = self._default_test_transformer()
+
+        foo = Foo(None)
+        actual = transformer.transform(foo)
+
+        self.assertEqual(None, actual.val)
+
+    def _default_test_transformer(self):
+        # type: () -> RegexStrReplaceTransformer
         config = ConfigFactory.from_dict({
             'regex_replace_tuple_list': [('a', 'b'), ('c', 'a')],
             'attribute_name': 'val'
@@ -17,10 +44,7 @@ class TestRegexReplacement(unittest.TestCase):
         transformer = RegexStrReplaceTransformer()
         transformer.init(config)
 
-        foo = Foo('abc')
-        actual = transformer.transform(foo)
-
-        self.assertEqual('bba', actual.val)
+        return transformer
 
 
 class Foo(object):
