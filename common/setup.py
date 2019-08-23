@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='amundsen-common',
-    version='0.1.1',
+    version='0.1.2',
     description='Common code library for Amundsen',
+    long_description=open('README.md').read(),
     url='https://github.com/lyft/amundsencommon',
     maintainer='Lyft',
     maintainer_email='amundsen-dev@lyft.com',
