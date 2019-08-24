@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='amundsen-common',
-    version='0.1.1',
+    version='0.1.2',
     description='Common code library for Amundsen',
+    long_description=open('README.md').read(),
     url='https://github.com/lyft/amundsencommon',
     maintainer='Lyft',
     maintainer_email='amundsen-dev@lyft.com',
@@ -27,5 +28,6 @@ setup(
         # and less than 2.x installed.
         'flask>=1.0.2',
     ],
+    python_requires=">=3.7",
     package_data={'amundsen_common': ['py.typed']},
 )
