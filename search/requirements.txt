@@ -1,5 +1,5 @@
 aniso8601==3.0.0
-atlasclient==0.1.8
+pyatlasclient==1.0.1
 click==6.7
 elasticsearch==6.2.0
 elasticsearch-dsl==6.1.0
