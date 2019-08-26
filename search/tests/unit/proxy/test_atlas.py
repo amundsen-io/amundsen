@@ -167,8 +167,8 @@ class TestAtlasProxy(unittest.TestCase):
         :param entities:
         :return:
         """
-
-        def guid_filter(guid: List):
+        # noinspection PyPep8Naming
+        def guid_filter(guid: List, ignoreRelationships=False):
             return TestAtlasProxy.recursive_mock([{
                 'entities': list(filter(lambda x: x['guid'] in guid, entities))
             }])
@@ -203,29 +203,25 @@ class TestAtlasProxy(unittest.TestCase):
         self.assertEqual(client.page_size, 1337)
 
     def test_search_normal(self):
-        expected = SearchResult(total_results=1,
-                                results=[Table(name=self._qualified('table', 'Table1'),
-                                               key=f"TEST_ENTITY://TEST_CLUSTER."
-                                                   f"{self._qualified('db', 'TEST_DB')}/"
-                                                   f"{self._qualified('table', 'Table1')}",
-                                               description='Dummy Description',
-                                               cluster='TEST_CLUSTER',
-                                               database='TEST_ENTITY',
-                                               schema_name=self._qualified('db', 'TEST_DB'),
-                                               column_names=[
-                                               # 'column@name'
-                                               ],
+        expected = SearchResult(total_results=2,
+                                results=[Table(name=self.entity1['attributes']['name'],
+                                               key=f"{self.entity_type}://"
+                                                   f"{self.cluster}.{self.db}/"
+                                                   f"{self.entity1['attributes']['name']}",
+                                               description=self.entity1['attributes']['description'],
+                                               cluster=self.cluster,
+                                               database=self.entity_type,
+                                               schema_name=self.db,
+                                               column_names=[],
                                                tags=['PII_DATA'],
                                                last_updated_epoch=123),
                                          Table(name='Table2',
-                                               key=f"TEST_ENTITY://./Table2",
+                                               key=f"TEST_ENTITY://default.default/Table2",
                                                description='Dummy Description',
-                                               cluster='',
-                                               database='TEST_ENTITY',
-                                               schema_name='',
-                                               column_names=[
-                                                   # 'column@name'
-                                               ],
+                                               cluster='default',
+                                               database=self.entity_type,
+                                               schema_name='default',
+                                               column_names=[],
                                                tags=[],
                                                last_updated_epoch=234)])
         self.proxy.atlas.search_dsl = self.dsl_inject(
@@ -274,17 +270,15 @@ class TestAtlasProxy(unittest.TestCase):
         for field in fields:
 
             expected = SearchResult(total_results=1,
-                                    results=[Table(name=self._qualified('table', 'Table1'),
-                                                   key=f"TEST_ENTITY://TEST_CLUSTER"
-                                                       f".{self._qualified('db', 'TEST_DB')}/"
-                                                       f"{self._qualified('table', 'Table1')}",
-                                                   description='Dummy Description',
-                                                   cluster='TEST_CLUSTER',
-                                                   database='TEST_ENTITY',
-                                                   schema_name=self._qualified('db', 'TEST_DB'),
-                                                   column_names=[
-                                                   # 'column@name'
-                                                   ],
+                                    results=[Table(name=self.entity1['attributes']['name'],
+                                                   key=f"{self.entity_type}://"
+                                                       f"{self.cluster}.{self.db}/"
+                                                       f"{self.entity1['attributes']['name']}",
+                                                   description=self.entity1['attributes']['description'],
+                                                   cluster=self.cluster,
+                                                   database=self.entity_type,
+                                                   schema_name=self.db,
+                                                   column_names=[],
                                                    tags=['PII_DATA'],
                                                    last_updated_epoch=123)])
             self.proxy.atlas.search_dsl = self.dsl_inject(

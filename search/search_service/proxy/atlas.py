@@ -4,6 +4,7 @@ from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import Entity, EntityCollection
 # default search page size
+from atlasclient.utils import parse_table_qualified_name
 from flask import current_app as app
 from typing import Any, List, Dict
 
@@ -21,6 +22,7 @@ class AtlasProxy(BaseProxy):
     NAME_ATTRIBUTE = app.config['ATLAS_NAME_ATTRIBUTE']
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
+    QN_KEY = 'qualifiedName'
 
     """
     AtlasSearch connection handler
@@ -56,55 +58,45 @@ class AtlasProxy(BaseProxy):
         ids = list()
         for hit in response:
             ids.append(hit.guid)
-        # receive all entities
-        entities = self._entities(self.atlas.entity_bulk(guid=ids))
-        db_ids = []
-        for entity in entities:
-            relations = entity.relationshipAttributes
-            database = relations.get(self.DB_ATTRIBUTE)
-            if database:
-                db_ids.append(database['guid'])
+        # Receive all entities, with attributes
+        # FixMe: Can ask for the Description and Qualified Name
+        # FixMe: in DSL query above, once it uses indexes
+        entities = self._entities(self.atlas.entity_bulk(guid=ids, ignoreRelationships=True))
 
-        # request databases
-        dbs_list = self._entities(self.atlas.entity_bulk(guid=db_ids)) if len(db_ids) > 0 else []
-        dbs_dict: Dict[str, Entity] = {db.guid: db for db in dbs_list}
-        for entity in entities:
-            relations = entity.relationshipAttributes
-            attrs = entity.attributes
-            database = relations.get(self.DB_ATTRIBUTE)
-            if database and database['guid'] in dbs_dict:
-                db_entity = dbs_dict[database['guid']]
-                db_attrs = db_entity.attributes
+        for table in entities:
+            table_attrs = table.attributes
 
-                db_name = db_attrs.get(self.NAME_ATTRIBUTE)
-                db_cluster = db_attrs.get("clusterName", "")
-            else:
-                db_cluster = ''
-                db_name = ''
+            table_qn = parse_table_qualified_name(
+                qualified_name=table_attrs.get(self.QN_KEY)
+            )
+
+            table_name = table_qn.get("table_name") or table_attrs.get('name')
+            db_name = table_qn.get("db_name", '')
+            db_cluster = table_qn.get("cluster_name", '')
 
             tags = []
             # Using or in case, if the key 'classifications' is there with attrs None
-            for classification in attrs.get("classifications") or list():
+            for classification in table_attrs.get("classifications") or list():
                 tags.append(
                     classification.get('typeName')
                 )
 
-            # TODO: Implement columns
+            # TODO: Implement columns: Not sure if we need this for the search results.
             columns: List[str] = []
             # for column in attrs.get('columns') or list():
             #     col_entity = entity.referredEntities[column['guid']]
             #     col_attrs = col_entity['attributes']
             #     columns.append(col_attrs.get(self.NAME_KEY))
-            table_name = attrs.get(self.NAME_ATTRIBUTE)
+            # table_name = attrs.get(self.NAME_ATTRIBUTE)
             table = Table(name=table_name,
-                          key=f"{entity.typeName}://{db_cluster}.{db_name}/{table_name}",
-                          description=attrs.get('description'),
+                          key=f"{table.typeName}://{db_cluster}.{db_name}/{table_name}",
+                          description=table_attrs.get('description'),
                           cluster=db_cluster,
-                          database=entity.typeName or 'Table',
+                          database=table.typeName,
                           schema_name=db_name,
                           column_names=columns,
                           tags=tags,
-                          last_updated_epoch=attrs.get('updateTime'))
+                          last_updated_epoch=table_attrs.get('updateTime'))
 
             table_results.append(table)
 
