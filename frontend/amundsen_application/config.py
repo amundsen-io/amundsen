@@ -15,6 +15,9 @@ class Config:
     # Number of popular tables to be displayed on the index/search page
     POPULAR_TABLE_COUNT = 4  # type: int
 
+    # Request Timeout Configurations in Seconds
+    REQUEST_SESSION_TIMEOUT_SEC = 3
+
 
 class LocalConfig(Config):
     DEBUG = False

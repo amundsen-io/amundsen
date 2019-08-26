@@ -3,8 +3,6 @@ from typing import Dict
 import requests
 from flask import current_app as app
 
-REQUEST_SESSION_TIMEOUT_SEC = 3
-
 
 def get_query_param(args: Dict, param: str, error_msg: str = None) -> str:
     value = args.get(param)
@@ -17,7 +15,7 @@ def get_query_param(args: Dict, param: str, error_msg: str = None) -> str:
 def request_metadata(*,     # type: ignore
                      url: str,
                      method: str = 'GET',
-                     timeout_sec: int = REQUEST_SESSION_TIMEOUT_SEC):
+                     timeout_sec: int = 0):
     """
     Helper function to make a request to metadata service.
     Sets the client and header information based on the configuration
@@ -40,7 +38,7 @@ def request_metadata(*,     # type: ignore
 def request_search(*,     # type: ignore
                    url: str,
                    method: str = 'GET',
-                   timeout_sec: int = REQUEST_SESSION_TIMEOUT_SEC):
+                   timeout_sec: int = 0):
     """
     Helper function to make a request to search service.
     Sets the client and header information based on the configuration
@@ -71,6 +69,9 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int):  
     :param timeout_sec: Number of seconds before timeout is triggered. Not used with Envoy
     :return:
     """
+    # If no timeout specified, use the one from the configurations.
+    timeout_sec = timeout_sec or app.config['REQUEST_SESSION_TIMEOUT_SEC']
+
     if client is not None:
         if method == 'DELETE':
             return client.delete(url, headers=headers, raw_response=True)
