@@ -13,10 +13,11 @@ It includes three microservices and a data ingestion library.
 - [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder): Data ingestion library for building metadata graph and search index.
 Users could either load the data with [a python script](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
 or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/blob/master/example/dags/sample_dag.py) importing the library.
+- [amundsencommon](https://github.com/lyft/amundsencommon): Amundsen Common library holds common codes among micro services in Amundsen
 
 
 ## Requirements
-- Python >= 3.4
+- Python >= 3.4 (AmundsenDatabuilder: Python >= 2.7.x)
 - Node = v8.x.x or v10.x.x (v11.x.x has compatibility issues)
 - npm >= 6.x.x
 
