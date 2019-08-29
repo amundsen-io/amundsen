@@ -1,5 +1,6 @@
 import copy
 import unittest
+
 from atlasclient.exceptions import BadRequest
 from mock import patch, MagicMock
 
@@ -146,7 +147,17 @@ class TestAtlasProxy(unittest.TestCase, Data):
         metadata_collection.entities_with_relationships = MagicMock(return_value=[metadata1, metadata2])
 
         self.proxy._driver.entity_bulk = MagicMock(return_value=[metadata_collection])
+
         response = self.proxy.get_popular_tables(num_entries=2)
+
+        # Call multiple times for cache test.
+        self.proxy.get_popular_tables(num_entries=2)
+        self.proxy.get_popular_tables(num_entries=2)
+        self.proxy.get_popular_tables(num_entries=2)
+        self.proxy.get_popular_tables(num_entries=2)
+
+        self.assertEqual(self.proxy._driver.entity_bulk.call_count, 1)
+
         ent1_attrs = self.entity1['attributes']
         ent2_attrs = self.entity2['attributes']
 
@@ -181,9 +192,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
         ent2_attrs = self.entity2['attributes']
 
         expected = [
-            PopularTable(database=self.entity_type, cluster='default', schema='default',
+            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
                          name=ent1_attrs['name'], description=ent1_attrs['description']),
-            PopularTable(database=self.entity_type, cluster='default', schema='default',
+            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
                          name=ent2_attrs['name'], description=ent1_attrs['description']),
         ]
 
@@ -191,10 +202,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
     def test_get_popular_tables_search_exception(self):
         with self.assertRaises(NotFoundException):
-            self.proxy._get_flat_values_from_dsl = MagicMock(return_value=[])
+            self.proxy._get_flat_values_from_dsl = MagicMock(return_value=None)
             self.proxy._driver.entity_bulk = MagicMock(return_value=None)
-
-            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy._get_metadata_entities({'query': 'test'})
 
     def test_get_table_description(self):
         self._mock_get_table_entity()
