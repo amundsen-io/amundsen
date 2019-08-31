@@ -343,7 +343,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             Table(cluster='blue', column_names=['1', '2'], database='snowflake',
                   schema_name='test_schema', description='A table for something',
                   key='snowflake://blue.test_schema/bank_accounts',
-                  last_updated_epoch=0, name='bank_accounts', tags=[]),
+                  last_updated_epoch=0, name='bank_accounts', tags=[], column_descriptions=['desc']),
             Table(cluster='blue', column_names=['5', '6'], database='snowflake',
                   schema_name='test_schema', description='A table for lots of things!',
                   key='snowflake://blue.test_schema/bitcoin_wallets',
@@ -360,6 +360,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             {
                 'cluster': 'blue',
                 'column_names': ['1', '2'],
+                'column_descriptions': ['desc'],
                 'database': 'snowflake',
                 'schema_name': 'test_schema',
                 'description': 'A table for something',
@@ -379,6 +380,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             {
                 'cluster': 'blue',
                 'column_names': ['5', '6'],
+                'column_descriptions': [],
                 'database': 'snowflake',
                 'schema_name': 'test_schema',
                 'description': 'A table for lots of things!',
@@ -413,7 +415,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             Table(cluster='blue', column_names=['5', '6'], database='snowflake',
                   schema_name='test_schema', description='A table for lots of things!',
                   key=table_key, last_updated_epoch=0, name='bitcoin_wallets',
-                  tags=[])
+                  tags=[], column_descriptions=['hello'])
         ]
         expected_data = [
             {
@@ -427,6 +429,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'doc': {
                     'cluster': 'blue',
                     'column_names': ['5', '6'],
+                    'column_descriptions': ['hello'],
                     'database': 'snowflake',
                     'schema_name': 'test_schema',
                     'description': 'A table for lots of things!',
