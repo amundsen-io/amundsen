@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, post_load
-from typing import Any, Dict, Iterable, Set
+from typing import Any, Dict, Iterable, List, Set
 from .base import Base
 
 
@@ -14,6 +14,7 @@ class Table(Base):
                  database: str,
                  schema_name: str,
                  column_names: Iterable[str],
+                 column_descriptions: List[str] = [],
                  tags: Iterable[str],
                  last_updated_epoch: int,
                  total_usage: int = 0) -> None:
@@ -27,6 +28,7 @@ class Table(Base):
         self.tags = tags
         self.last_updated_epoch = last_updated_epoch
         self.total_usage = total_usage
+        self.column_descriptions = column_descriptions
 
     def get_id(self) -> str:
         # uses the table key as the document id in ES
@@ -71,6 +73,7 @@ class TableSchema(Schema):
     last_updated_epoch = fields.Str(allow_none=True)
     tags = fields.List(fields.Str())
     total_usage = fields.Int(allow_none=True)
+    column_descriptions = fields.List(fields.Str(), allow_none=True)
 
     @post_load
     def make(self, data: Dict[str, Any], **kwargs: Any) -> Table:
