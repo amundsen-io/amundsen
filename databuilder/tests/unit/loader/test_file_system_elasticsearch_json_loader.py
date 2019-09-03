@@ -76,7 +76,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         with self.assertRaises(Exception) as context:
             loader.load(data)  # type: ignore
-        self.assertTrue("Record not of type 'ElasticsearchDocument'!" in context.exception)
+        self.assertIn("Record not of type 'ElasticsearchDocument'!", str(context.exception))
 
         loader.close()
 

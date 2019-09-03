@@ -1,10 +1,17 @@
 import logging
+import pytest
+import six
 import unittest
 
 from databuilder.sql_parser.usage.column import Column, Table, OrTable, remove_double_quotes
-from databuilder.sql_parser.usage.presto.column_usage_provider import ColumnUsageProvider
+if six.PY2:
+    from databuilder.sql_parser.usage.presto.column_usage_provider import ColumnUsageProvider
 
 
+@pytest.mark.skipif(
+    six.PY3,
+    reason="Deactivated for Python3 because of issue [#40](https://github.com/lyft/amundsen/issues/40) (ANTLR for py3)"
+)
 class TestColumnUsage(unittest.TestCase):
 
     def setUp(self):
