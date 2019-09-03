@@ -2,6 +2,8 @@ from mock import patch, Mock
 import base64
 import tempfile
 import unittest
+import six
+import pytest
 
 from pyhocon import ConfigFactory
 
@@ -180,6 +182,10 @@ class MockLoggingClient():
         return self.b
 
 
+@pytest.mark.skipif(
+    six.PY3,
+    reason="Deactivated for Python3 because of issue [#40](https://github.com/lyft/amundsen/issues/40) (ANTLR for py3)"
+)
 class TestBigqueryUsageExtractor(unittest.TestCase):
 
     @patch('databuilder.extractor.bigquery_usage_extractor.build')

@@ -4,7 +4,7 @@ clean:
 	rm -rf dist/
 
 .PHONY: test_unit
-test_unit: test_unit2
+test_unit: test_unit2_or3_if_its_default
 
 lint:
 	flake8 .
@@ -13,8 +13,8 @@ lint:
 test: test_unit lint
 
 .PHONY: test_unit
-test_unit2:
-	python -m pytest tests/unit
+test_unit2_or3_if_its_default:
+	python -bb -m pytest tests/unit
 
 test_unit3:
 	python3 -bb -m pytest tests/unit

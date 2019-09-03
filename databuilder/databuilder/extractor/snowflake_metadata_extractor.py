@@ -1,4 +1,5 @@
 import logging
+import six
 from collections import namedtuple
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
@@ -72,7 +73,9 @@ class SnowflakeMetadataExtractor(Extractor):
         else:
             cluster_source = "'{}'".format(self._cluster)
 
-        self._database = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY).encode('utf-8', 'ignore')
+        self._database = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY)
+        if six.PY2:
+            self._database = self._database.encode('utf-8', 'ignore')
 
         self.sql_stmt = SnowflakeMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(SnowflakeMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),

@@ -1,5 +1,6 @@
 import json
 from mock import MagicMock, mock_open, patch
+import six
 import unittest
 
 from pyhocon import ConfigFactory
@@ -34,7 +35,10 @@ class TestElasticsearchPublisher(unittest.TestCase):
         """
         Test Publish functionality with no data
         """
-        with patch('__builtin__.open', mock_open(read_data='')) as mock_file:
+        target = 'builtins.open'
+        if six.PY2:
+            target = '__builtin__.open'
+        with patch(target, mock_open(read_data='')) as mock_file:
             publisher = ElasticsearchPublisher()
             publisher.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                        scope=publisher.get_scope()))
@@ -55,7 +59,10 @@ class TestElasticsearchPublisher(unittest.TestCase):
                                 'KEY_DOESNOT_MATTER2': 'NO_VALUE2'})
         self.mock_es_client.indices.get_alias.return_value = {}
 
-        with patch('__builtin__.open', mock_open(read_data=mock_data)) as mock_file:
+        target = 'builtins.open'
+        if six.PY2:
+            target = '__builtin__.open'
+        with patch(target, mock_open(read_data=mock_data)) as mock_file:
             publisher = ElasticsearchPublisher()
             publisher.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                        scope=publisher.get_scope()))
@@ -89,7 +96,10 @@ class TestElasticsearchPublisher(unittest.TestCase):
                                 'KEY_DOESNOT_MATTER2': 'NO_VALUE2'})
         self.mock_es_client.indices.get_alias.return_value = {'test_old_index': 'DOES_NOT_MATTER'}
 
-        with patch('__builtin__.open', mock_open(read_data=mock_data)) as mock_file:
+        target = 'builtins.open'
+        if six.PY2:
+            target = '__builtin__.open'
+        with patch(target, mock_open(read_data=mock_data)) as mock_file:
             publisher = ElasticsearchPublisher()
             publisher.init(conf=Scoped.get_scoped_conf(conf=self.conf,
                                                        scope=publisher.get_scope()))

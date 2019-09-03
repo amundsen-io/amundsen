@@ -1,14 +1,21 @@
+import pytest
+import six
 import unittest
 from typing import no_type_check
 from mock import patch
 from pyhocon import ConfigFactory
 
 from databuilder.extractor.hive_table_metadata_extractor import HiveTableMetadataExtractor
-from databuilder.models.table_column_usage import TableColumnUsage, ColumnReader
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-from databuilder.transformer.sql_to_table_col_usage_transformer import SqlToTblColUsageTransformer
+if six.PY2:
+    from databuilder.models.table_column_usage import TableColumnUsage, ColumnReader
+    from databuilder.transformer.sql_to_table_col_usage_transformer import SqlToTblColUsageTransformer
 
 
+@pytest.mark.skipif(
+    six.PY3,
+    reason="Deactivated for Python3 because of issue [#40](https://github.com/lyft/amundsen/issues/40) (ANTLR for py3)"
+)
 class TestSqlToTblColUsageTransformer(unittest.TestCase):
 
     @no_type_check
