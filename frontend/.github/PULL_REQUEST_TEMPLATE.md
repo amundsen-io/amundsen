@@ -19,4 +19,3 @@ Make sure you have checked **all** steps below to ensure a timely review.
 - [ ] In case of new functionality, my PR adds documentation that describes how to use it.
     - All the public python functions and the classes in the PR contain docstrings that explain what it does
 - [ ] PR passes all tests documented in the [developer guide](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/developer_guide.md#testing)
-- [ ] I have squashed multiple commits if they address the same issue. In addition, my commits follow the guidelines from "[How to write a good git commit message](http://chris.beams.io/posts/git-commit/)"
