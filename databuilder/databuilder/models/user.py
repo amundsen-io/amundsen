@@ -131,7 +131,6 @@ class User(Neo4jCsvSerializable):
         result_node[User.USER_NODE_UPDATED_AT] = self.updated_at if self.updated_at else 0
 
         if self.attrs:
-            print(self.attrs)
             for k, v in self.attrs.items():
                 if k not in result_node:
                     result_node[k] = v
