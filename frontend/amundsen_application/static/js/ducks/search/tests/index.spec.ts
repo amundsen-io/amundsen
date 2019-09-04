@@ -6,6 +6,7 @@ import * as API from '../api/v0';
 
 import reducer, {
   initialState,
+  loadPreviousSearch,
   searchAll,
   searchAllFailure,
   searchAllSuccess,
@@ -14,10 +15,45 @@ import reducer, {
   searchResource,
   searchResourceFailure,
   searchResourceSuccess,
-  updateSearchTab,
+  setPageIndex,
+  setResource,
+  submitSearch,
+  urlDidUpdate,
 } from '../reducer';
-import { searchAllWatcher, searchAllWorker, searchResourceWatcher, searchResourceWorker } from '../sagas';
-import { SearchAll, SearchAllResponsePayload, SearchResource, SearchResponsePayload, UpdateSearchTab, } from '../types';
+import {
+  loadPreviousSearchWatcher,
+  loadPreviousSearchWorker,
+  searchAllWatcher,
+  searchAllWorker,
+  searchResourceWatcher,
+  searchResourceWorker,
+  setPageIndexWatcher,
+  setPageIndexWorker,
+  setResourceWatcher,
+  setResourceWorker,
+  submitSearchWatcher,
+  submitSearchWorker,
+  urlDidUpdateWatcher,
+  urlDidUpdateWorker
+} from '../sagas';
+import {
+  LoadPreviousSearch,
+  SearchAll,
+  SearchAllResponsePayload,
+  SearchResource,
+  SearchResponsePayload,
+  SetPageIndex,
+  SetResource,
+  SubmitSearch,
+  UrlDidUpdate,
+} from '../types';
+import * as NavigationUtils from '../../../utils/navigation-utils';
+import * as SearchUtils from 'ducks/search/utils';
+
+import globalState from '../../../fixtures/globalState';
+
+const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
+const searchState = globalState.search;
 
 describe('search ducks', () => {
   const expectedSearchResults: SearchResponsePayload = {
@@ -124,12 +160,43 @@ describe('search ducks', () => {
       expect(action.type).toBe(SearchAll.RESET);
     });
 
-    it('updateSearchTab - returns the action to update the search tab', () => {
-      const selectedTab = ResourceType.user;
-      const action = updateSearchTab(selectedTab);
-      const payload = action.payload;
-      expect(action.type).toBe(UpdateSearchTab.REQUEST);
-      expect(payload.selectedTab).toBe(selectedTab);
+    it('submitSearch - returns the action to submit a search', () => {
+      const term = 'test';
+      const action = submitSearch(term);
+      expect(action.type).toBe(SubmitSearch.REQUEST);
+      expect(action.payload.searchTerm).toBe(term);
+    });
+
+    it('setResource - returns the action to set the selected resource', () => {
+      const resource = ResourceType.table;
+      const updateUrl = true;
+      const action = setResource(resource, updateUrl);
+      const { payload } = action;
+      expect(action.type).toBe(SetResource.REQUEST);
+      expect(payload.resource).toBe(resource);
+      expect(payload.updateUrl).toBe(updateUrl);
+    });
+
+    it('setPageIndex - returns the action to set the page index', () => {
+      const index = 3;
+      const updateUrl = true;
+      const action = setPageIndex(index, updateUrl);
+      const { payload } = action;
+      expect(action.type).toBe(SetPageIndex.REQUEST);
+      expect(payload.pageIndex).toBe(index);
+      expect(payload.updateUrl).toBe(updateUrl);
+    });
+
+    it('loadPreviousSearch - returns the action to load the previous search', () => {
+      const action = loadPreviousSearch();
+      expect(action.type).toBe(LoadPreviousSearch.REQUEST);
+    });
+
+    it('urlDidUpdate - returns the action to run when the search page URL changes', () => {
+      const urlSearch = 'test url search';
+      const action = urlDidUpdate(urlSearch);
+      expect(action.type).toBe(UrlDidUpdate.REQUEST);
+      expect(action.payload.urlSearch).toBe(urlSearch);
     });
   });
 
@@ -194,9 +261,9 @@ describe('search ducks', () => {
       });
     });
 
-    it('should handle UpdateSearchTab.REQUEST', () => {
+    it('should handle SetResource.REQUEST', () => {
       const selectedTab = ResourceType.user;
-      expect(reducer(testState, updateSearchTab(selectedTab))).toEqual({
+      expect(reducer(testState, setResource(selectedTab))).toEqual({
         ...testState,
         selectedTab,
       });
@@ -256,6 +323,217 @@ describe('search ducks', () => {
         testSaga(searchResourceWorker, searchResource('test', ResourceType.table, 0))
           .next().throw(new Error()).put(searchResourceFailure())
           .next().isDone();
+      });
+    });
+
+    describe('submitSearchWorker', () => {
+      it('initiates a searchAll action', () => {
+        const term = 'test';
+        updateSearchUrlSpy.mockClear();
+        testSaga(submitSearchWorker, submitSearch(term))
+          .next().put(searchAll(term, ResourceType.table, 0))
+          .next().isDone();
+          expect(updateSearchUrlSpy).toHaveBeenCalledWith({ term });
+
+      });
+    });
+
+    describe('submitSearchWatcher', () => {
+      it('takes every SubmitSearch.REQUEST with submitSearchWorker', () => {
+        testSaga(submitSearchWatcher)
+          .next().takeEvery(SubmitSearch.REQUEST, submitSearchWorker)
+          .next().isDone();
+      });
+    });
+
+    describe('setResourceWorker', () => {
+      it('calls updateSearchUrl when updateUrl is true', () => {
+        const resource = ResourceType.table;
+        const updateUrl = true;
+        updateSearchUrlSpy.mockClear();
+        testSaga(setResourceWorker, setResource(resource, updateUrl))
+          .next().select(SearchUtils.getSearchState)
+          .next(globalState.search).isDone();
+        expect(updateSearchUrlSpy).toHaveBeenCalledWith({
+          resource,
+          term: searchState.search_term,
+          index: searchState.tables.page_index,
+        });
+      });
+
+      it('calls updateSearchUrl when updateUrl is true', () => {
+        const resource = ResourceType.table;
+        const updateUrl = false;
+        updateSearchUrlSpy.mockClear();
+
+        testSaga(setResourceWorker, setResource(resource, updateUrl))
+          .next().select(SearchUtils.getSearchState)
+          .next(searchState).isDone();
+        expect(updateSearchUrlSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('setResourceWatcher', () => {
+      it('takes every SetResource.REQUEST with setResourceWorker', () => {
+        testSaga(setResourceWatcher)
+          .next().takeEvery(SetResource.REQUEST, setResourceWorker)
+          .next().isDone();
+      });
+    });
+
+    describe('setPageIndexWorker', () => {
+      it('initiates a searchResource and updates the url search when specified', () => {
+        const index = 1;
+        const updateUrl = true;
+        updateSearchUrlSpy.mockClear();
+
+        testSaga(setPageIndexWorker, setPageIndex(index, updateUrl))
+          .next().select(SearchUtils.getSearchState)
+          .next(searchState).put(searchResource(searchState.search_term, searchState.selectedTab, index))
+          .next().isDone();
+        expect(updateSearchUrlSpy).toHaveBeenCalled();
+      });
+
+      it('initiates a searchResource and does not update url search', () => {
+        const index = 3;
+        const updateUrl = false;
+        updateSearchUrlSpy.mockClear();
+
+        testSaga(setPageIndexWorker, setPageIndex(index, updateUrl))
+          .next().select(SearchUtils.getSearchState)
+          .next(searchState).put(searchResource(searchState.search_term, searchState.selectedTab, index))
+          .next().isDone();
+        expect(updateSearchUrlSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('setPageIndexWatcher', () => {
+      it('takes every SetPageIndex.REQUEST with setPageIndexWorker', () => {
+        testSaga(setPageIndexWatcher)
+          .next().takeEvery(SetPageIndex.REQUEST, setPageIndexWorker)
+          .next().isDone();
+      });
+    });
+
+    describe('urlDidUpdateWorker', () => {
+      let sagaTest;
+      let term;
+      let resource;
+      let index;
+
+      beforeEach(() => {
+        term = searchState.search_term;
+        resource = searchState.selectedTab;
+        index = SearchUtils.getPageIndex(searchState, resource);
+
+        sagaTest = (action) => {
+          return testSaga(urlDidUpdateWorker, action)
+            .next().select(SearchUtils.getSearchState)
+            .next(searchState);
+        };
+      });
+
+      it('Calls searchAll when search term changes', () => {
+        term = 'new search';
+        sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}`))
+          .put(searchAll(term, resource, index))
+          .next().isDone();
+      });
+
+      it('Calls setResource when the resource has changed', () => {
+        resource = ResourceType.user;
+        sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}`))
+          .put(setResource(resource, false))
+          .next().isDone();
+      });
+
+      it('Calls setPageIndex when the index changes', () => {
+        index = 10;
+        sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}`))
+          .put(setPageIndex(index, false))
+          .next().isDone();
+      });
+    });
+
+    describe('urlDidUpdateWatcher', () => {
+      it('takes every UrlDidUpdate.REQUEST with urlDidUpdateWorker', () => {
+        testSaga(urlDidUpdateWatcher)
+          .next().takeEvery(UrlDidUpdate.REQUEST, urlDidUpdateWorker)
+          .next().isDone();
+      });
+    });
+
+    describe('loadPreviousSearchWorker', () => {
+      it('applies the existing search state into the URL', () => {
+        updateSearchUrlSpy.mockClear();
+
+        testSaga(loadPreviousSearchWorker, loadPreviousSearch())
+          .next().select(SearchUtils.getSearchState)
+          .next(searchState).isDone();
+
+        expect(updateSearchUrlSpy).toHaveBeenCalledWith({
+          term: searchState.search_term,
+          resource: searchState.selectedTab,
+          index: SearchUtils.getPageIndex(searchState, searchState.selectedTab),
+        });
+      });
+    });
+
+    describe('loadPreviousSearchWatcher', () => {
+      it('takes every LoadPreviousSearch.REQUEST with loadPreviousSearchWorker', () => {
+        testSaga(loadPreviousSearchWatcher)
+          .next().takeEvery(LoadPreviousSearch.REQUEST, loadPreviousSearchWorker)
+          .next().isDone();
+      });
+    });
+  });
+
+  describe('utils', () => {
+    describe('getSearchState', () => {
+      it('returns the search state', () => {
+        const result = SearchUtils.getSearchState(globalState);
+        expect(result).toEqual(searchState);
+      });
+    });
+
+    describe('getPageIndex', () => {
+      const mockState = {
+        ...searchState,
+        selectedTab: ResourceType.dashboard,
+        dashboards: {
+          ...searchState.dashboards,
+          page_index: 1,
+        },
+        tables: {
+          ...searchState.tables,
+          page_index: 2,
+        },
+        users: {
+          ...searchState.users,
+          page_index: 3,
+        }
+      };
+
+      it('given ResourceType.dashboard, returns page_index for dashboards', () => {
+        expect(SearchUtils.getPageIndex(mockState, ResourceType.dashboard)).toEqual(mockState.dashboards.page_index);
+      });
+
+      it('given ResourceType.table, returns page_index for table', () => {
+        expect(SearchUtils.getPageIndex(mockState, ResourceType.table)).toEqual(mockState.tables.page_index);
+      });
+
+      it('given ResourceType.user, returns page_index for users', () => {
+        expect(SearchUtils.getPageIndex(mockState, ResourceType.user)).toEqual(mockState.users.page_index);
+      });
+
+      it('given no resource, returns page_index for the selected resource', () => {
+        const resourceToUse = mockState[mockState.selectedTab + 's'];
+        expect(SearchUtils.getPageIndex(mockState)).toEqual(resourceToUse.page_index);
+      });
+
+      it('returns 0 if not given a supported ResourceType', () => {
+        // @ts-ignore: cover default case
+        expect(SearchUtils.getPageIndex(mockState, 'not valid input')).toEqual(0);
       });
     });
   });

@@ -2,9 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as DocumentTitle from 'react-document-title';
-import * as qs from 'simple-query-string';
 import { RouteComponentProps } from 'react-router';
-import { Search } from 'history';
+import { Search as UrlSearch } from 'history';
 
 import AppConfig from 'config/config';
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -14,14 +13,14 @@ import TabsComponent from 'components/common/Tabs';
 import SearchBar from './SearchBar';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { searchAll, searchResource, updateSearchTab } from 'ducks/search/reducer';
+import { setPageIndex, setResource, urlDidUpdate } from 'ducks/search/reducer';
 import {
   DashboardSearchResults,
-  SearchAllRequest,
-  SearchResourceRequest,
   SearchResults,
+  SetPageIndexRequest,
+  SetResourceRequest,
   TableSearchResults,
-  UpdateSearchTabRequest,
+  UrlDidUpdateRequest,
   UserSearchResults,
 } from 'ducks/search/types';
 
@@ -54,9 +53,9 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  searchAll: (term: string, selectedTab: ResourceType, pageIndex: number) => SearchAllRequest;
-  searchResource: (term: string, resource: ResourceType, pageIndex: number) => SearchResourceRequest;
-  updateSearchTab: (selectedTab: ResourceType) => UpdateSearchTabRequest;
+  setResource: (resource: ResourceType) => SetResourceRequest;
+  setPageIndex: (pageIndex: number) => SetPageIndexRequest;
+  urlDidUpdate: (urlSearch: UrlSearch) => UrlDidUpdateRequest;
 }
 
 export type SearchPageProps = StateFromProps & DispatchFromProps & RouteComponentProps<any>;
@@ -69,126 +68,14 @@ export class SearchPage extends React.Component<SearchPageProps> {
   }
 
   componentDidMount() {
-    const urlSearchParams = this.getUrlParams(this.props.location.search);
-    const globalStateParams = this.getGlobalStateParams();
-
-    if (this.shouldUpdateFromGlobalState(urlSearchParams, globalStateParams)) {
-       this.updatePageUrl(globalStateParams.term, globalStateParams.tab, globalStateParams.index, true);
-
-    } else if (this.shouldUpdateFromUrlParams(urlSearchParams, globalStateParams)) {
-      this.props.searchAll(urlSearchParams.term, urlSearchParams.tab, urlSearchParams.index);
-      this.updatePageUrl(urlSearchParams.term, urlSearchParams.tab, urlSearchParams.index, true);
-    }
-  }
-
-  shouldUpdateFromGlobalState(urlParams, globalStateParams): boolean {
-    return urlParams.term === '' && globalStateParams.term !== '';
-  }
-
-  shouldUpdateFromUrlParams(urlParams, globalStateParams): boolean {
-    return urlParams.term !== '' && urlParams.term !== globalStateParams.term;
+    this.props.urlDidUpdate(this.props.location.search);
   }
 
   componentDidUpdate(prevProps: SearchPageProps) {
-    const nextUrlParams = this.getUrlParams(this.props.location.search);
-    const prevUrlParams = this.getUrlParams(prevProps.location.search);
-
-    // If urlParams and globalState are synced, no need to update
-    if (this.isUrlStateSynced(nextUrlParams)) return;
-
-    // Capture any updates in URL
-    if (this.shouldUpdateSearchTerm(nextUrlParams, prevUrlParams)) {
-      this.props.searchAll(nextUrlParams.term, nextUrlParams.tab, nextUrlParams.index);
-
-    } else if (this.shouldUpdateTab(nextUrlParams, prevUrlParams)) {
-      this.props.updateSearchTab(nextUrlParams.tab)
-
-    } else if (this.shouldUpdatePageIndex(nextUrlParams, prevUrlParams)) {
-      this.props.searchResource(nextUrlParams.term, nextUrlParams.tab, nextUrlParams.index);
+    if (this.props.location.search !== prevProps.location.search) {
+      this.props.urlDidUpdate(this.props.location.search);
     }
   }
-
-  isUrlStateSynced(urlParams): boolean {
-    const globalStateParams = this.getGlobalStateParams();
-
-    return urlParams.term === globalStateParams.term &&
-      urlParams.tab === globalStateParams.tab &&
-      urlParams.index === globalStateParams.index;
-  }
-
-  shouldUpdateSearchTerm(nextUrlParams, prevUrlParams): boolean {
-    return nextUrlParams.term !== prevUrlParams.term;
-  }
-
-  shouldUpdateTab(nextUrlParams, prevUrlParams): boolean {
-    return nextUrlParams.tab !== prevUrlParams.tab;
-  }
-
-  shouldUpdatePageIndex(nextUrlParams, prevUrlParams): boolean {
-    return nextUrlParams.index !== prevUrlParams.index;
-  }
-
-  getSelectedTabByResourceType = (newTab: ResourceType): ResourceType => {
-    switch(newTab) {
-      case ResourceType.table:
-      case ResourceType.user:
-        return newTab;
-      case ResourceType.dashboard:
-      default:
-        return this.props.selectedTab;
-    }
-  };
-
-  getUrlParams(search: Search) {
-    const urlParams = qs.parse(search);
-    const { searchTerm, pageIndex, selectedTab } = urlParams;
-    const index = parseInt(pageIndex, 10);
-    return {
-      term: (searchTerm || '').trim(),
-      tab: this.getSelectedTabByResourceType(selectedTab),
-      index: isNaN(index) ? 0 : index,
-    };
-  };
-
-  getGlobalStateParams() {
-    return {
-      term: this.props.searchTerm,
-      tab: this.props.selectedTab,
-      index: this.getPageIndexByResourceType(this.props.selectedTab),
-    };
-  }
-
-
-  getPageIndexByResourceType = (tab: ResourceType): number => {
-    switch(tab) {
-      case ResourceType.table:
-        return this.props.tables.page_index;
-      case ResourceType.user:
-        return this.props.users.page_index;
-      case ResourceType.dashboard:
-        return this.props.dashboards.page_index;
-    }
-    return 0;
-  };
-
-  onPaginationChange = (index: number): void => {
-    this.updatePageUrl(this.props.searchTerm, this.props.selectedTab, index);
-  };
-
-  onTabChange = (tab: ResourceType): void => {
-    const newTab = this.getSelectedTabByResourceType(tab);
-    this.updatePageUrl(this.props.searchTerm, newTab, this.getPageIndexByResourceType(newTab));
-  };
-
-  updatePageUrl = (searchTerm: string, tab: ResourceType, pageIndex: number, replace: boolean = false): void => {
-    const pathName = `/search?searchTerm=${searchTerm}&selectedTab=${tab}&pageIndex=${pageIndex}`;
-
-    if (replace) {
-      this.props.history.replace(pathName);
-    } else {
-      this.props.history.push(pathName);
-    }
-  };
 
   renderSearchResults = () => {
     const tabConfig = [
@@ -212,7 +99,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
           tabs={ tabConfig }
           defaultTab={ ResourceType.table }
           activeKey={ this.props.selectedTab }
-          onSelect={ this.onTabChange }
+          onSelect={ this.props.setResource }
         />
       </div>
     );
@@ -282,7 +169,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
           source={ SEARCH_SOURCE_NAME }
           itemsPerPage={ RESULTS_PER_PAGE }
           activePage={ page_index }
-          onPagination={ this.onPaginationChange }
+          onPagination={ this.props.setPageIndex }
         />
       </div>
       );
@@ -330,7 +217,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ searchAll, searchResource, updateSearchTab }, dispatch);
+  return bindActionCreators({ setResource, setPageIndex, urlDidUpdate }, dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(SearchPage);
