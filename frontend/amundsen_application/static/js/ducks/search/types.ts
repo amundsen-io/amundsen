@@ -1,3 +1,5 @@
+import { Search as UrlSearch } from 'history';
+
 import {
   DashboardResource,
   Resource,
@@ -28,6 +30,7 @@ export interface SearchAllResponsePayload extends SearchResponsePayload {
   users: UserSearchResults;
 };
 
+
 export enum SearchAll {
   REQUEST = 'amundsen/search/SEARCH_ALL_REQUEST',
   SUCCESS = 'amundsen/search/SEARCH_ALL_SUCCESS',
@@ -48,7 +51,8 @@ export interface SearchAllResponse {
 };
 export interface SearchAllReset {
   type: SearchAll.RESET;
-}
+};
+
 
 export enum SearchResource {
   REQUEST = 'amundsen/search/SEARCH_RESOURCE_REQUEST',
@@ -68,12 +72,56 @@ export interface SearchResourceResponse {
   payload?: SearchResponsePayload;
 };
 
-export enum UpdateSearchTab {
-  REQUEST = 'amundsen/search/UPDATE_SEARCH_TAB_REQUEST',
-}
-export interface UpdateSearchTabRequest {
-  type: UpdateSearchTab.REQUEST;
+
+export enum SubmitSearch {
+  REQUEST = 'amundsen/search/SUBMIT_SEARCH_REQUEST',
+};
+export interface SubmitSearchRequest {
   payload: {
-    selectedTab: ResourceType;
-  }
-}
+    searchTerm: string;
+  };
+  type: SubmitSearch.REQUEST;
+};
+
+
+export enum SetResource {
+  REQUEST = 'amundsen/search/SET_RESOURCE_REQUEST',
+};
+export interface SetResourceRequest {
+  payload: {
+    resource: ResourceType;
+    updateUrl: boolean;
+  };
+  type: SetResource.REQUEST;
+};
+
+
+export enum SetPageIndex {
+  REQUEST = 'amundsen/search/SET_PAGE_INDEX_REQUEST',
+};
+export interface SetPageIndexRequest {
+  payload: {
+    pageIndex: number;
+    updateUrl: boolean;
+  };
+  type: SetPageIndex.REQUEST;
+};
+
+
+export enum LoadPreviousSearch {
+  REQUEST = 'amundsen/search/LOAD_PREVIOUS_SEARCH_REQUEST',
+};
+export interface LoadPreviousSearchRequest {
+  type: LoadPreviousSearch.REQUEST;
+};
+
+
+export enum UrlDidUpdate {
+  REQUEST = 'amundsen/search/URL_DID_UPDATE_REQUEST',
+};
+export interface UrlDidUpdateRequest {
+  payload: {
+    urlSearch: UrlSearch;
+  };
+  type: UrlDidUpdate.REQUEST;
+};

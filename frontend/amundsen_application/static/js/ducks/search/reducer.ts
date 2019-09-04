@@ -1,5 +1,7 @@
 import { ResourceType } from 'interfaces';
 
+import { Search as UrlSearch } from 'history';
+
 import {
   DashboardSearchResults,
   SearchAll,
@@ -12,9 +14,12 @@ import {
   SearchResourceRequest,
   SearchResourceResponse,
   TableSearchResults,
-  UpdateSearchTab,
-  UpdateSearchTabRequest,
   UserSearchResults,
+  SubmitSearchRequest,
+  SubmitSearch,
+  SetResourceRequest,
+  SetResource,
+  SetPageIndexRequest, SetPageIndex, LoadPreviousSearchRequest, LoadPreviousSearch, UrlDidUpdateRequest, UrlDidUpdate,
 } from './types';
 
 export interface SearchReducerState {
@@ -67,12 +72,39 @@ export function searchReset(): SearchAllReset {
   };
 };
 
-export function updateSearchTab(selectedTab: ResourceType): UpdateSearchTabRequest {
+export function submitSearch(searchTerm: string): SubmitSearchRequest {
   return {
-    payload: { selectedTab },
-    type: UpdateSearchTab.REQUEST,
+    payload: { searchTerm },
+    type: SubmitSearch.REQUEST,
   };
-}
+};
+
+export function setResource(resource: ResourceType, updateUrl: boolean = true): SetResourceRequest {
+  return {
+    payload: { resource, updateUrl },
+    type: SetResource.REQUEST,
+  };
+};
+
+export function setPageIndex(pageIndex: number, updateUrl: boolean = true): SetPageIndexRequest {
+  return {
+    payload: { pageIndex, updateUrl },
+    type: SetPageIndex.REQUEST,
+  };
+};
+
+export function loadPreviousSearch(): LoadPreviousSearchRequest {
+  return {
+    type: LoadPreviousSearch.REQUEST,
+  };
+};
+
+export function urlDidUpdate(urlSearch: UrlSearch): UrlDidUpdateRequest{
+  return {
+    payload: { urlSearch },
+    type: UrlDidUpdate.REQUEST,
+  };
+};
 
 
 /* REDUCER */
@@ -135,10 +167,10 @@ export default function reducer(state: SearchReducerState = initialState, action
         ...initialState,  
         search_term: state.search_term,
       };
-    case UpdateSearchTab.REQUEST:
+    case SetResource.REQUEST:
       return {
         ...state,
-        selectedTab: (<UpdateSearchTabRequest>action).payload.selectedTab
+        selectedTab: (<SetResourceRequest>action).payload.resource
       };
     default:
       return state;

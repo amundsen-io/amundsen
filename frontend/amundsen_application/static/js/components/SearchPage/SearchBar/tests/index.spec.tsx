@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { mapStateToProps, SearchBar, SearchBarProps } from '../';
+import { mapStateToProps, mapDispatchToProps, SearchBar, SearchBarProps } from '../';
 import {
   ERROR_CLASSNAME,
   SUBTEXT_DEFAULT,
@@ -11,18 +11,15 @@ import {
   SYNTAX_ERROR_SPACING_SUFFIX,
 } from '../constants';
 import globalState from 'fixtures/globalState';
-import { getMockRouterProps } from 'fixtures/mockRouter';
 
 describe('SearchBar', () => {
   const valueChangeMockEvent = { target: { value: 'Data Resources' } };
   const submitMockEvent = { preventDefault: jest.fn() };
   const setStateSpy = jest.spyOn(SearchBar.prototype, 'setState');
-  const routerProps = getMockRouterProps<any>(null, null);
-  const historyPushSpy = jest.spyOn(routerProps.history, 'push');
   const setup = (propOverrides?: Partial<SearchBarProps>) => {
     const props: SearchBarProps = {
       searchTerm: '',
-      ...routerProps,
+      submitSearch: jest.fn(),
       ...propOverrides
     };
     const wrapper = shallow<SearchBar>(<SearchBar {...props} />)
@@ -82,27 +79,18 @@ describe('SearchBar', () => {
       expect(submitMockEvent.preventDefault).toHaveBeenCalled();
     });
 
-    it('redirects back to home if searchTerm is empty', () => {
-      historyPushSpy.mockClear();
-      // @ts-ignore: mocked events throw type errors
-      wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(historyPushSpy).toHaveBeenCalledWith('/');
-    });
-
     it('submits with correct props if isFormValid()', () => {
-      historyPushSpy.mockClear();
       const { props, wrapper } = setup({ searchTerm: 'testTerm' });
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(historyPushSpy).toHaveBeenCalledWith(`/search?searchTerm=${wrapper.state().searchTerm}`);
+      expect(props.submitSearch).toHaveBeenCalledWith(props.searchTerm);
     });
 
     it('does not submit if !isFormValid()', () => {
-      historyPushSpy.mockClear();
       const { props, wrapper } = setup({ searchTerm: 'tag:tag1 tag:tag2' });
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().handleValueSubmit(submitMockEvent);
-      expect(historyPushSpy).not.toHaveBeenCalled();
+      expect(props.submitSearch).not.toHaveBeenCalled();
     });
   });
 
@@ -111,10 +99,14 @@ describe('SearchBar', () => {
       let wrapper;
       beforeAll(() => {
         wrapper = setup().wrapper;
-      })
+      });
 
-      it('returns false', () => {
+      it('does not accept multiple search categories', () => {
         expect(wrapper.instance().isFormValid('tag:tag1 tag:tag2')).toEqual(false);
+      });
+
+      it('does not accept empty search term', () => {
+        expect(wrapper.instance().isFormValid('')).toEqual(false);
       });
 
       it('sets state.subText correctly', () => {
@@ -130,7 +122,7 @@ describe('SearchBar', () => {
       let wrapper;
       beforeAll(() => {
         wrapper = setup({ searchTerm: 'tag : tag1' }).wrapper;
-      })
+      });
 
       it('returns false', () => {
         expect(wrapper.instance().isFormValid('tag : tag1')).toEqual(false);
@@ -149,7 +141,7 @@ describe('SearchBar', () => {
       let wrapper;
       beforeAll(() => {
         wrapper = setup().wrapper;
-      })
+      });
 
       it('returns true', () => {
         expect(wrapper.instance().isFormValid('tag:tag1')).toEqual(true);
@@ -234,6 +226,19 @@ describe('SearchBar', () => {
         expect(wrapper.children().at(1).text()).toEqual(wrapper.state().subText);
       });
     });
+  });
+});
+
+describe('mapDispatchToProps', () => {
+  let dispatch;
+  let result;
+  beforeAll(() => {
+    dispatch = jest.fn(() => Promise.resolve());
+    result = mapDispatchToProps(dispatch);
+  });
+
+  it('sets searchAll on the props', () => {
+    expect(result.submitSearch).toBeInstanceOf(Function);
   });
 });
 

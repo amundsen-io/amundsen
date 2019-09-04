@@ -39,6 +39,7 @@ const config: webpack.Configuration = {
             config: path.join(__dirname, '/js/config'),
             ducks: path.join(__dirname, '/js/ducks'),
             interfaces: path.join(__dirname, '/js/interfaces'),
+            utils: path.join(__dirname, '/js/utils'),
         },
         extensions: ['.tsx', '.ts', '.js', '.jsx', '.css', '.scss'],
     },
