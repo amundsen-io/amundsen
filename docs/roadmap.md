@@ -9,14 +9,14 @@ The following roadmap gives an overview of what we are currently working on and 
 
 #### Search & Resource page redesign
 *What*: Redesign the search experience and the resource page, to make them scalable in the number of resources types and the number of metadata  
-*Status*: Designs are ready, engineering work has started  
+*Status*: In Progress 
 *Links*: [Designs](https://drive.google.com/drive/folders/12oBrcXUsDtOsuU_QvO93LTvs4Dehx6az?usp=sharing)
-  
-  
+
  
 #### Email notifications system
 *What*: We are creating an email notification system to reach Amundsen’s users. The primary goal is to use this system to help solve the lack of ownership for data assets at Lyft. The secondary goal is to engage with users for general purposes.  
-*Status*: Designs are ready, engineering work has started
+*Status*: In Review
+*Links*: [Product Specifications](https://docs.google.com/document/d/1x3IeRECKKJRMoO7VxXp4GZRlI0Gu9XUXo-upYjoVpnw/edit?usp=sharing) | [Technical RFC](https://docs.google.com/document/d/1dRBQG5SszeiAePQvsCP-_xiqqMpTCKmZJV6_Q2YsK-A/edit?usp=sharing)
   
   
   
