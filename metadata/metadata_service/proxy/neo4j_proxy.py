@@ -90,8 +90,8 @@ class Neo4jProxy(BaseProxy):
         # Return Value: (Columns, Last Processed Record)
 
         column_level_query = textwrap.dedent("""
-        MATCH (db:Database)<-[:CLUSTER_OF]-(clstr:Cluster)<-[:SCHEMA_OF]-(schema:Schema)
-        <-[:TABLE_OF]-(tbl:Table {key: $tbl_key})-[:COLUMN]->(col:Column)
+        MATCH (db:Database)-[:CLUSTER]->(clstr:Cluster)-[:SCHEMA]->(schema:Schema)
+        -[:TABLE]->(tbl:Table {key: $tbl_key})-[:COLUMN]->(col:Column)
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:DESCRIPTION]->(col_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:STAT]->(stat:Stat)
@@ -161,7 +161,7 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(tbl)
         OPTIONAL MATCH (application:Application)-[:GENERATES]->(tbl)
         OPTIONAL MATCH (tbl)-[:LAST_UPDATED_AT]->(t:Timestamp)
-        OPTIONAL MATCH (owner:User)-[:OWNER_OF]->(tbl)
+        OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
         OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (tbl)-[:SOURCE]->(src:Source)
         RETURN collect(distinct wmk) as wmk_records,
@@ -298,7 +298,7 @@ class Neo4jProxy(BaseProxy):
 
         upsert_desc_tab_relation_query = textwrap.dedent("""
             MATCH (n1:Description {key: $desc_key}), (n2:Table {key: $tbl_key})
-            MERGE (n1)-[r1:DESCRIPTION_OF]->(n2)-[r2:DESCRIPTION]->(n1)
+            MERGE (n2)-[r2:DESCRIPTION]->(n1)
             RETURN n1.key, n2.key
             """)
 
@@ -385,7 +385,7 @@ class Neo4jProxy(BaseProxy):
 
         upsert_desc_col_relation_query = textwrap.dedent("""
             MATCH (n1:Description {key: $desc_key}), (n2:Column {key: $column_key})
-            MERGE (n1)-[r1:DESCRIPTION_OF]->(n2)-[r2:DESCRIPTION]->(n1)
+            MERGE (n2)-[r2:DESCRIPTION]->(n1)
             RETURN n1.key, n2.key
             """)
 
@@ -445,7 +445,7 @@ class Neo4jProxy(BaseProxy):
 
         upsert_owner_relation_query = textwrap.dedent("""
         MATCH (n1:User {key: $user_email}), (n2:Table {key: $tbl_key})
-        MERGE (n1)-[r1:OWNER_OF]->(n2)-[r2:OWNER]->(n1)
+        MERGE (n2)-[r2:OWNER]->(n1)
         RETURN n1.key, n2.key
         """)
 
@@ -481,7 +481,7 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
         delete_query = textwrap.dedent("""
-        MATCH (n1:User{key: $user_email})-[r1:OWNER_OF]->(n2:Table {key: $tbl_key})-[r2:OWNER]->(n1) DELETE r1,r2
+        MATCH (n1:User{key: $user_email})<-[r1:OWNER]-(n2:Table {key: $tbl_key}) DELETE r1
         """)
 
         try:
@@ -665,7 +665,7 @@ class Neo4jProxy(BaseProxy):
             return []
 
         query = textwrap.dedent("""
-        MATCH (db:Database)<-[:CLUSTER_OF]-(clstr:Cluster)<-[:SCHEMA_OF]-(schema:Schema)<-[:TABLE_OF]-(tbl:Table)
+        MATCH (db:Database)-[:CLUSTER]->(clstr:Cluster)-[:SCHEMA]->(schema:Schema)-[:TABLE]->(tbl:Table)
         WHERE tbl.key IN $table_uris
         WITH db.name as database_name, clstr.name as cluster_name, schema.name as schema_name, tbl
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(dscrpt:Description)
@@ -728,17 +728,35 @@ class Neo4jProxy(BaseProxy):
         return result
 
     @staticmethod
-    def _get_relation_by_type(relation_type: UserResourceRel) -> Tuple:
+    def _get_user_table_relationship_clause(relation_type: UserResourceRel, tbl_key: str = None,
+                                            user_key: str = None) -> str:
+        """
+        Returns the relationship clause of a cypher query between users and tables
+        The User node is 'usr', the table node is 'tbl', and the relationship is 'rel'
+        e.g. (usr:User)-[rel:READ]->(tbl:Table), (usr)-[rel:READ]->(tbl)
+        """
+        tbl_matcher: str = ''
+        user_matcher: str = ''
+
+        if tbl_key is not None:
+            tbl_matcher += ':Table'
+            if tbl_key != '':
+                tbl_matcher += f' {{key: "{tbl_key}"}}'
+
+        if user_key is not None:
+            user_matcher += ':User'
+            if user_key != '':
+                user_matcher += f' {{key: "{user_key}"}}'
 
         if relation_type == UserResourceRel.follow:
-            relation, reverse_relation = 'FOLLOW', 'FOLLOWED_BY'
+            relation = f'(usr{user_matcher})-[rel:FOLLOW]->(tbl{tbl_matcher})'
         elif relation_type == UserResourceRel.own:
-            relation, reverse_relation = 'OWNER_OF', 'OWNER'
+            relation = f'(usr{user_matcher})<-[rel:OWNER]-(tbl{tbl_matcher})'
         elif relation_type == UserResourceRel.read:
-            relation, reverse_relation = 'READ', 'READ_BY'
+            relation = f'(usr{user_matcher})-[rel:READ]->(tbl{tbl_matcher})'
         else:
-            raise NotImplementedError('The relation type {} is not defined!'.format(relation_type))
-        return relation, reverse_relation
+            raise NotImplementedError(f'The relation type {relation_type} is not defined!')
+        return relation
 
     @timer_with_counter
     def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
@@ -750,22 +768,21 @@ class Neo4jProxy(BaseProxy):
         :param relation_type: the relation between the user and the resource
         :return:
         """
-        relation, _ = self._get_relation_by_type(relation_type)
-
-        query = textwrap.dedent("""
-MATCH (user:User {{key: $query_key}})-[:{relation}]->(tbl:Table)-[:TABLE_OF]->
-(schema:Schema)-[:SCHEMA_OF]->(clstr:Cluster)-[:CLUSTER_OF]->(db:Database)
-WITH db, clstr, schema, tbl
-OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
-RETURN db, clstr, schema, tbl, tbl_dscrpt""").format(relation=relation)
+        rel_clause: str = self._get_user_table_relationship_clause(relation_type=relation_type,
+                                                                   tbl_key='',
+                                                                   user_key=user_email)
+        query = textwrap.dedent(f"""
+        MATCH {rel_clause}<-[:TABLE]-(schema:Schema)<-[:SCHEMA]-(clstr:Cluster)<-[:CLUSTER]-(db:Database)
+        WITH db, clstr, schema, tbl
+        OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
+        RETURN db, clstr, schema, tbl, tbl_dscrpt""")
 
         table_records = self._execute_cypher_query(statement=query, param_dict={'query_key': user_email})
 
         if not table_records:
             raise NotFoundException('User {user_id} does not {relation} any resources'.format(user_id=user_email,
-                                                                                              relation=relation))
+                                                                                              relation=relation_type))
         results = []
-
         for record in table_records:
             results.append(PopularTable(
                 database=record['db']['name'],
@@ -785,13 +802,13 @@ RETURN db, clstr, schema, tbl, tbl_dscrpt""").format(relation=relation)
         """
 
         query = textwrap.dedent("""
-MATCH (user:User {key: $query_key})-[r:READ]->(tbl:Table)
-WHERE EXISTS(r.published_tag) AND r.published_tag IS NOT NULL
-WITH user, r, tbl ORDER BY r.published_tag DESC, r.total_reads DESC LIMIT 50
-MATCH (tbl:Table)-[:TABLE_OF]->(schema:Schema)-[:SCHEMA_OF]->(clstr:Cluster)-[:CLUSTER_OF]->(db:Database)
-OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
-RETURN db, clstr, schema, tbl, tbl_dscrpt
-""")
+        MATCH (user:User {key: $query_key})-[r:READ]->(tbl:Table)
+        WHERE EXISTS(r.published_tag) AND r.published_tag IS NOT NULL
+        WITH user, r, tbl ORDER BY r.published_tag DESC, r.total_reads DESC LIMIT 50
+        MATCH (tbl:Table)<-[:TABLE]-(schema:Schema)<-[:SCHEMA]-(clstr:Cluster)<-[:CLUSTER]-(db:Database)
+        OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
+        RETURN db, clstr, schema, tbl, tbl_dscrpt
+        """)
 
         table_records = self._execute_cypher_query(statement=query, param_dict={'query_key': user_email})
 
@@ -823,24 +840,21 @@ RETURN db, clstr, schema, tbl, tbl_dscrpt
         :param relation_type:
         :return:
         """
-        relation, reverse_relation = self._get_relation_by_type(relation_type)
 
         upsert_user_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
         on CREATE SET u={email: $user_email, key: $user_email}
         """)
 
-        user_email = 'key: "{user_email}"'.format(user_email=user_email)
-        tbl_key = 'key: "{tbl_key}"'.format(tbl_key=table_uri)
+        user_email_clause = f'key: "{user_email}"'
+        tbl_key = f'key: "{table_uri}"'
 
-        upsert_user_relation_query = textwrap.dedent("""
-        MATCH (n1:User {{{user_email}}}), (n2:Table {{{tbl_key}}})
-        MERGE (n1)-[r1:{relation}]->(n2)-[r2:{reverse_relation}]->(n1)
-        RETURN n1.key, n2.key
-        """).format(user_email=user_email,
-                    tbl_key=tbl_key,
-                    relation=relation,
-                    reverse_relation=reverse_relation)
+        rel_clause: str = self._get_user_table_relationship_clause(relation_type=relation_type)
+        upsert_user_relation_query = textwrap.dedent(f"""
+        MATCH (usr:User {{{user_email_clause}}}), (tbl:Table {{{tbl_key}}})
+        MERGE {rel_clause}
+        RETURN usr.key, tbl.key
+        """)
 
         try:
             tx = self._driver.session().begin_transaction()
@@ -874,18 +888,14 @@ RETURN db, clstr, schema, tbl, tbl_dscrpt
         :param relation_type:
         :return:
         """
-        relation, reverse_relation = self._get_relation_by_type(relation_type)
+        rel_clause: str = self._get_user_table_relationship_clause(relation_type=relation_type,
+                                                                   user_key=user_email,
+                                                                   tbl_key=table_uri)
 
-        user_email = 'key: "{user_email}"'.format(user_email=user_email)
-        tbl_key = 'key: "{tbl_key}"'.format(tbl_key=table_uri)
-
-        delete_query = textwrap.dedent("""
-        MATCH (n1:User {{{user_email}}})-[r1:{relation}]->
-        (n2:Table {{{tbl_key}}})-[r2:{reverse_relation}]->(n1) DELETE r1,r2
-        """).format(user_email=user_email,
-                    tbl_key=tbl_key,
-                    relation=relation,
-                    reverse_relation=reverse_relation)
+        delete_query = textwrap.dedent(f"""
+        MATCH {rel_clause}
+        DELETE rel
+        """)
 
         try:
             tx = self._driver.session().begin_transaction()
