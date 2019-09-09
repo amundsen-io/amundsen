@@ -139,70 +139,110 @@ class TestAtlasProxy(unittest.TestCase, Data):
             self.proxy.get_table(table_uri=self.table_uri)
 
     def test_get_popular_tables(self):
-        metadata1 = self.to_class(self.metadata1)
-        metadata2 = self.to_class(self.metadata2)
-        self.proxy._get_flat_values_from_dsl = MagicMock(return_value=[])
+        meta1 = copy.deepcopy(self.metadata1)
+        meta2 = copy.deepcopy(self.metadata2)
+
+        meta1['attributes']['parentEntity'] = self.entity1
+        meta2['attributes']['parentEntity'] = self.entity2
+
+        metadata1 = self.to_class(meta1)
+        metadata2 = self.to_class(meta2)
 
         metadata_collection = MagicMock()
-        metadata_collection.entities_with_relationships = MagicMock(return_value=[metadata1, metadata2])
+        metadata_collection.entities = [metadata1, metadata2]
 
-        self.proxy._driver.entity_bulk = MagicMock(return_value=[metadata_collection])
+        result = MagicMock(return_value=metadata_collection)
 
-        response = self.proxy.get_popular_tables(num_entries=2)
+        with patch.object(self.proxy._driver.search_basic, 'create', result):
+            entities_collection = MagicMock()
+            entities_collection.entities = [self.to_class(self.entity1), self.to_class(self.entity2)]
 
-        # Call multiple times for cache test.
-        self.proxy.get_popular_tables(num_entries=2)
-        self.proxy.get_popular_tables(num_entries=2)
-        self.proxy.get_popular_tables(num_entries=2)
-        self.proxy.get_popular_tables(num_entries=2)
+            self.proxy._driver.entity_bulk = MagicMock(return_value=[entities_collection])
 
-        self.assertEqual(self.proxy._driver.entity_bulk.call_count, 1)
+            response = self.proxy.get_popular_tables(num_entries=2)
 
-        ent1_attrs = self.entity1['attributes']
-        ent2_attrs = self.entity2['attributes']
+            # Call multiple times for cache test.
+            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy.get_popular_tables(num_entries=2)
 
-        expected = [
-            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                         name=ent1_attrs['name'], description=ent1_attrs['description']),
-            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                         name=ent2_attrs['name'], description=ent1_attrs['description']),
-        ]
+            self.assertEqual(self.proxy._driver.entity_bulk.call_count, 1)
 
-        self.assertEqual(expected.__repr__(), response.__repr__())
+            ent1_attrs = self.entity1['attributes']
+            ent2_attrs = self.entity2['attributes']
+
+            expected = [
+                PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                             name=ent1_attrs['name'], description=ent1_attrs['description']),
+                PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                             name=ent2_attrs['name'], description=ent1_attrs['description']),
+            ]
+
+            self.assertEqual(expected.__repr__(), response.__repr__())
 
     # noinspection PyTypeChecker
     def test_get_popular_tables_without_db(self):
         meta1 = copy.deepcopy(self.metadata1)
         meta2 = copy.deepcopy(self.metadata2)
 
-        for meta in [meta1, meta2]:
-            meta['relationshipAttributes']['parentEntity']['attributes']['qualifiedName'] = \
-                meta['relationshipAttributes']['parentEntity']['attributes']['name']
+        meta1['attributes']['parentEntity'] = self.entity1
+        meta2['attributes']['parentEntity'] = self.entity2
 
         metadata1 = self.to_class(meta1)
         metadata2 = self.to_class(meta2)
-        self.proxy._get_flat_values_from_dsl = MagicMock(return_value=[])
 
         metadata_collection = MagicMock()
-        metadata_collection.entities_with_relationships = MagicMock(return_value=[metadata1, metadata2])
+        metadata_collection.entities = [metadata1, metadata2]
 
-        self.proxy._driver.entity_bulk = MagicMock(return_value=[metadata_collection])
-        response = self.proxy.get_popular_tables(num_entries=2)
-        ent1_attrs = self.entity1['attributes']
-        ent2_attrs = self.entity2['attributes']
+        result = MagicMock(return_value=metadata_collection)
 
-        expected = [
-            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                         name=ent1_attrs['name'], description=ent1_attrs['description']),
-            PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                         name=ent2_attrs['name'], description=ent1_attrs['description']),
-        ]
+        with patch.object(self.proxy._driver.search_basic, 'create', result):
+            entity1 = copy.deepcopy(self.entity1)
+            entity2 = copy.deepcopy(self.entity2)
 
-        self.assertEqual(expected.__repr__(), response.__repr__())
+            for entity in [entity1, entity2]:
+                entity['attributes']['qualifiedName'] = entity['attributes']['name']
+
+            entities_collection = MagicMock()
+            entities_collection.entities = [self.to_class(entity1), self.to_class(entity2)]
+
+            # Invalidate the cache to test the cache functionality
+            popular_query_params = {'typeName': 'Metadata',
+                                    'sortBy': 'popularityScore',
+                                    'sortOrder': 'DESCENDING',
+                                    'excludeDeletedEntities': True,
+                                    'limit': 2,
+                                    'attributes': ['parentEntity']}
+            self.proxy._CACHE.region_invalidate(self.proxy._get_metadata_entities,
+                                                None, '_get_metadata_entities',
+                                                popular_query_params)
+
+            self.proxy._driver.entity_bulk = MagicMock(return_value=[entities_collection])
+            response = self.proxy.get_popular_tables(num_entries=2)
+
+            # Call multiple times for cache test.
+            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy.get_popular_tables(num_entries=2)
+            self.proxy.get_popular_tables(num_entries=2)
+
+            self.assertEqual(1, self.proxy._driver.entity_bulk.call_count)
+
+            ent1_attrs = self.entity1['attributes']
+            ent2_attrs = self.entity2['attributes']
+
+            expected = [
+                PopularTable(database=self.entity_type, cluster='default', schema='default',
+                             name=ent1_attrs['name'], description=ent1_attrs['description']),
+                PopularTable(database=self.entity_type, cluster='default', schema='default',
+                             name=ent2_attrs['name'], description=ent1_attrs['description']),
+            ]
+
+            self.assertEqual(expected.__repr__(), response.__repr__())
 
     def test_get_popular_tables_search_exception(self):
         with self.assertRaises(NotFoundException):
-            self.proxy._get_flat_values_from_dsl = MagicMock(return_value=None)
             self.proxy._driver.entity_bulk = MagicMock(return_value=None)
             self.proxy._get_metadata_entities({'query': 'test'})
 
