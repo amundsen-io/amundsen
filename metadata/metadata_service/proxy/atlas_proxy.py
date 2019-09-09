@@ -24,10 +24,6 @@ LOGGER = logging.getLogger(__name__)
 # Expire cache every 11 hours + jitter
 _ATLAS_PROXY_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
-_CACHE = CacheManager(**parse_cache_config_options({'cache.regions': 'atlas_proxy',
-                                                    'cache.atlas_proxy.type': 'memory',
-                                                    'cache.atlas_proxy.expire': _ATLAS_PROXY_CACHE_EXPIRY_SEC}))
-
 
 # noinspection PyMethodMayBeStatic
 class AtlasProxy(BaseProxy):
@@ -40,6 +36,9 @@ class AtlasProxy(BaseProxy):
     QN_KEY = 'qualifiedName'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
+    _CACHE = CacheManager(**parse_cache_config_options({'cache.regions': 'atlas_proxy',
+                                                        'cache.atlas_proxy.type': 'memory',
+                                                        'cache.atlas_proxy.expire': _ATLAS_PROXY_CACHE_EXPIRY_SEC}))
 
     def __init__(self, *,
                  host: str,
@@ -221,7 +220,7 @@ class AtlasProxy(BaseProxy):
                 schema=table_qn.get('db_name', ''),
                 name=attrs.get('name') or table_qn.get("table_name", ''),
                 tags=tags,
-                description=attrs.get('description'),
+                description=attrs.get('description') or attrs.get('comment'),
                 owners=[User(email=attrs.get('owner'))],
                 columns=columns,
                 last_updated_timestamp=table_details.get('updateTime'))
@@ -336,20 +335,27 @@ class AtlasProxy(BaseProxy):
         return column_detail[self.ATTRS_KEY].get('description')
 
     @_CACHE.region('atlas_proxy', '_get_metadata_entities')
-    def _get_metadata_entities(self, dsl_param: dict) -> List:
+    def _get_metadata_entities(self, popular_query_params: dict) -> List:
         try:
+            popular_tables_guids = list()
+
             # Fetch the metadata entities based on popularity score
-            metadata_ids = self._get_flat_values_from_dsl(dsl_param=dsl_param)
-            metadata_collection = self._driver.entity_bulk(guid=metadata_ids)
+            search_results = self._driver.search_basic.create(data=popular_query_params)
+            for metadata in search_results.entities:
+                table_guid = metadata.attributes.get("parentEntity").get("guid")
+                popular_tables_guids.append(table_guid)
 
-            metadata_entities: List = list()
-            for _collection in metadata_collection:
-                metadata_entities.extend(_collection.entities_with_relationships(attributes=["parentEntity"]))
+            table_collection = self._driver.entity_bulk(guid=popular_tables_guids,
+                                                        ignoreRelationships=True)
 
-            return metadata_entities
+            table_entities: List = list()
+            for _collection in table_collection:
+                table_entities.extend(_collection.entities)
+
+            return table_entities
 
         except (KeyError, TypeError) as ex:
-            LOGGER.exception(f'DSL Search query failed: {ex}')
+            LOGGER.exception(f'_get_metadata_entities Failed : {ex}')
             raise NotFoundException('Unable to fetch popular tables. '
                                     'Please check your configurations.')
 
@@ -359,15 +365,17 @@ class AtlasProxy(BaseProxy):
         :return: A List of popular tables instances
         """
         popular_tables = list()
-        query_metadata_ids = {'query': f'FROM Table SELECT metadata.__guid '
-                                       f'ORDERBY popularityScore desc '
-                                       f'LIMIT {num_entries}'}
+        popular_query_params = {'typeName': 'Metadata',
+                                'sortBy': 'popularityScore',
+                                'sortOrder': 'DESCENDING',
+                                'excludeDeletedEntities': True,
+                                'limit': num_entries,
+                                'attributes': ['parentEntity']}
 
-        metadata_entities = self._get_metadata_entities(query_metadata_ids)
+        table_entities = self._get_metadata_entities(popular_query_params)
 
-        for metadata in metadata_entities:
-            table = metadata.relationshipAttributes.get("parentEntity")
-            table_attrs = table.get(self.ATTRS_KEY)
+        for table in table_entities:
+            table_attrs = table.attributes
 
             table_qn = parse_table_qualified_name(
                 qualified_name=table_attrs.get(self.QN_KEY)
@@ -378,11 +386,11 @@ class AtlasProxy(BaseProxy):
             db_cluster = table_qn.get("cluster_name", '')
 
             popular_table = PopularTable(
-                database=table.get("typeName"),
+                database=table.typeName,
                 cluster=db_cluster,
                 schema=db_name,
                 name=table_name,
-                description=table_attrs.get('description'))
+                description=table_attrs.get('description') or table_attrs.get('comment'))
             popular_tables.append(popular_table)
 
         return popular_tables
