@@ -1,6 +1,6 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { ResourceType } from 'interfaces';
+import { DEFAULT_RESOURCE_TYPE, ResourceType } from 'interfaces';
 
 import * as API from '../api/v0';
 
@@ -331,7 +331,7 @@ describe('search ducks', () => {
         const term = 'test';
         updateSearchUrlSpy.mockClear();
         testSaga(submitSearchWorker, submitSearch(term))
-          .next().put(searchAll(term, ResourceType.table, 0))
+          .next().put(searchAll(term))
           .next().isDone();
           expect(updateSearchUrlSpy).toHaveBeenCalledWith({ term });
 
@@ -534,6 +534,52 @@ describe('search ducks', () => {
       it('returns 0 if not given a supported ResourceType', () => {
         // @ts-ignore: cover default case
         expect(SearchUtils.getPageIndex(mockState, 'not valid input')).toEqual(0);
+      });
+    });
+
+    describe('autoSelectResource', () => {
+      const emptyMockState = {
+        ...searchState,
+        dashboards: {
+          ...searchState.dashboards,
+          total_results: 0,
+        },
+        tables: {
+          ...searchState.tables,
+          total_results: 0,
+        },
+        users: {
+          ...searchState.users,
+          total_results: 0,
+        }
+      };
+
+      it('returns the DEFAULT_RESOURCE_TYPE when search results are empty', () => {
+        expect(SearchUtils.autoSelectResource(emptyMockState)).toEqual(DEFAULT_RESOURCE_TYPE);
+      });
+
+      it('prefers `table` over `user` and `dashboard`', () => {
+        const mockState = { ...emptyMockState };
+        mockState.tables.total_results = 10;
+        mockState.users.total_results = 10;
+        mockState.dashboards.total_results = 10;
+        expect(SearchUtils.autoSelectResource(mockState)).toEqual(ResourceType.table);
+      });
+
+      it('prefers `user` over `dashboard`', () => {
+        const mockState = { ...emptyMockState };
+        mockState.tables.total_results = 0;
+        mockState.users.total_results = 10;
+        mockState.dashboards.total_results = 10;
+        expect(SearchUtils.autoSelectResource(mockState)).toEqual(ResourceType.user);
+      });
+
+      it('returns `dashboard` if there are dashboards but no other results', () => {
+        const mockState = { ...emptyMockState };
+        mockState.tables.total_results = 0;
+        mockState.users.total_results = 0;
+        mockState.dashboards.total_results = 10;
+        expect(SearchUtils.autoSelectResource(mockState)).toEqual(ResourceType.dashboard);
       });
     });
   });

@@ -6,6 +6,8 @@ export enum ResourceType {
   dashboard = "dashboard",
 };
 
+export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
+
 export interface Resource {
   type: ResourceType;
 };
