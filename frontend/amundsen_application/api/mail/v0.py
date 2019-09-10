@@ -2,7 +2,7 @@ import logging
 
 from http import HTTPStatus
 
-from flask import Response, jsonify, make_response, render_template, request
+from flask import Response, jsonify, make_response, request
 from flask import current_app as app
 from flask.blueprints import Blueprint
 
@@ -25,8 +25,8 @@ def feedback() -> Response:
 
     try:
         data = request.form.to_dict()
-        text_content = '\r\n'.join('{}:\r\n{}\r\n'.format(key, val) for key, val in data.items())
-        html_content = render_template('email.html', form_data=data)
+        text_content = '\r\n'.join('{}:\r\n{}\r\n'.format(k, v) for k, v in data.items())
+        html_content = ''.join('<div><strong>{}:</strong><br/>{}</div><br/>'.format(k, v) for k, v in data.items())
 
         # action logging
         feedback_type = data.get('feedback-type')
