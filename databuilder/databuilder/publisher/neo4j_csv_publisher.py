@@ -1,5 +1,6 @@
 import copy
 import csv
+import ctypes
 import logging
 import time
 from os import listdir
@@ -15,6 +16,11 @@ from typing import Set, List  # noqa: F401
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
 
+
+# Setting field_size_limit to solve the error below
+# _csv.Error: field larger than field limit (131072)
+# https://stackoverflow.com/a/54517228/5972935
+csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
 # Config keys
 # A directory that contains CSV files for nodes
