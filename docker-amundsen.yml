@@ -58,6 +58,7 @@ services:
       environment:
         - SEARCHSERVICE_BASE=http://amundsensearch:5000
         - METADATASERVICE_BASE=http://amundsenmetadata:5000
+        - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
 
 networks:
   amundsennet:
