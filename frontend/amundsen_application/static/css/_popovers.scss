@@ -61,3 +61,8 @@
   width: 24px;
   margin: auto;
 }
+
+.column-type-popover {
+  max-width: 552px; // arbitrary 2x default
+  word-break: break-word;
+}

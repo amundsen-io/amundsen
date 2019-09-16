@@ -1,6 +1,8 @@
 import * as React from 'react';
 import moment from 'moment-timezone';
 
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
 import { logClick } from 'ducks/utilMethods';
 import { TableColumn } from 'interfaces';
@@ -49,6 +51,48 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
     return moment(unixEpochSeconds * 1000).format("MMM DD, YYYY");
   };
 
+  renderColumnType = (columnIndex: number, type: string) => {
+    const truncatedTypes: string[] = ['array', 'struct', 'map'];
+    let shouldTrucate = false;
+
+    const fullText = type.toLowerCase();
+    let text = fullText;
+
+    truncatedTypes.forEach((truncatedType) => {
+      if (type.startsWith(truncatedType) && type !== truncatedType) {
+        shouldTrucate = true;
+        text = `${truncatedType}<...>`;
+        return;
+      };
+    })
+
+    if (shouldTrucate) {
+      const popoverHover = (
+        <Popover className='column-type-popover' id={`column-type-popover:${columnIndex}`}>
+          {fullText}
+        </Popover>
+      );
+      const stopPropagation = (event) => {
+        event.stopPropagation();
+      }
+      return (
+        <OverlayTrigger
+          trigger={['click']}
+          placement='right'
+          overlay={popoverHover}
+          rootClose={true}>
+            <a className='column-type'
+               href="JavaScript:void(0)"
+               onClick={ stopPropagation }
+            >
+              {text}
+            </a>
+        </OverlayTrigger>
+      )
+    }
+    return (<div className='column-type'>{text}</div>);
+  };
+
   render() {
     const metadata = this.props.data;
     const isExpandable = metadata.stats && metadata.stats.length > 0;
@@ -75,7 +119,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
           <div className='title-section'>
             <div className='title-row'>
               <div className='name title-2'>{metadata.name}</div>
-              <div className='column-type'>{metadata.type ? metadata.type.toLowerCase() : 'null'}</div>
+              { this.renderColumnType(this.props.index, metadata.type) }
             </div>
           </div>
           {
