@@ -21,6 +21,31 @@ class BaseDocumentAPI(Resource):
         self.parser = reqparse.RequestParser(bundle_errors=True)
         super(BaseDocumentAPI, self).__init__()
 
+    def delete(self, *, document_id: str) -> Tuple[Any, int]:
+        """
+        Uses the Elasticsearch bulk API to delete existing documents by id
+
+        :param document_id: document id for document to be deleted
+        :return:
+        """
+        args = self.parser.parse_args()
+
+        try:
+            self.proxy.delete_document(data=[document_id], index=args.get('index'))
+            return {}, HTTPStatus.OK
+        except RuntimeError as e:
+            err_msg = 'Exception encountered while deleting document '
+            LOGGER.error(err_msg + str(e))
+            return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+class BaseDocumentsAPI(Resource):
+    def __init__(self, schema: Any, proxy: BaseProxy) -> None:
+        self.schema = schema
+        self.proxy = proxy
+        self.parser = reqparse.RequestParser(bundle_errors=True)
+        super(BaseDocumentsAPI, self).__init__()
+
     def post(self) -> Tuple[Any, int]:
         """
         Uses the Elasticsearch bulk API to load data from JSON. Uses Elasticsearch
@@ -61,23 +86,6 @@ class BaseDocumentAPI(Resource):
             LOGGER.error(err_msg + str(e))
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self, *, document_id: str) -> Tuple[Any, int]:
-        """
-        Uses the Elasticsearch bulk API to delete existing documents by id
-
-        :param document_id: document id for document to be deleted
-        :return:
-        """
-        args = self.parser.parse_args()
-
-        try:
-            self.proxy.delete_document(data=[document_id], index=args.get('index'))
-            return {}, HTTPStatus.OK
-        except RuntimeError as e:
-            err_msg = 'Exception encountered while deleting document '
-            LOGGER.error(err_msg + str(e))
-            return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
-
 
 class DocumentTableAPI(BaseDocumentAPI):
 
@@ -87,6 +95,20 @@ class DocumentTableAPI(BaseDocumentAPI):
 
 
 class DocumentUserAPI(BaseDocumentAPI):
+
+    def __init__(self) -> None:
+        super().__init__(schema=UserSchema, proxy=get_proxy_client())
+        self.parser.add_argument('index', required=False, default=USER_INDEX, type=str)
+
+
+class DocumentTablesAPI(BaseDocumentsAPI):
+
+    def __init__(self) -> None:
+        super().__init__(schema=TableSchema, proxy=get_proxy_client())
+        self.parser.add_argument('index', required=False, default=TABLE_INDEX, type=str)
+
+
+class DocumentUsersAPI(BaseDocumentsAPI):
 
     def __init__(self) -> None:
         super().__init__(schema=UserSchema, proxy=get_proxy_client())
