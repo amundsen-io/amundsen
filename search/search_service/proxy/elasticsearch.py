@@ -300,7 +300,7 @@ class ElasticsearchProxy(BaseProxy):
                     },
                     "field_value_factor": {
                         "field": "total_usage",
-                        "modifier": "log1p"
+                        "modifier": "log2p"
                     }
                 }
             }
@@ -361,7 +361,7 @@ class ElasticsearchProxy(BaseProxy):
                 },
                 "field_value_factor": {
                     "field": "total_usage",
-                    "modifier": "log1p"
+                    "modifier": "log2p"
                 }
             }
         }
