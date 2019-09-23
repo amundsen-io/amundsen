@@ -1,0 +1,122 @@
+openapi: '3.0.2'
+info:
+  title: 'Search Service'
+  description: 'Used to communicate with elasticsearch or apache atlas to get search results. Used by the frontend service'
+  version: '1.1.12'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'A simple description of what went wrong'
+          example: 'An Exception encountered while processing your request'
+    EmptyResponse:
+      type: object
+      properties: {}
+    SearchTableResults:
+      type: object
+      properties:
+        total_results:
+          type: integer
+          description: 'number of results'
+          example: 10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableFields'
+    SearchUserResults:
+      type: object
+      properties:
+        total_results:
+          type: integer
+          description: 'number of results'
+          example: 10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserFields'
+    TableFields:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'name of table'
+          example: 'table_name'
+        key:
+          type: string
+          description: 'key format: {cluster}://{schema}.{database}/{table_name}'
+          example: 'cluster://schema.db/table_name'
+        description:
+          type: string
+          description: 'table description'
+          example: 'this table holds revenue data'
+        cluster:
+          type: string
+          description: 'table cluster'
+          example: 'cluster'
+        database:
+          type: string
+          description: 'table database'
+          example: 'db'
+        schema_name:
+          type: string
+          description: 'table schema'
+          example: 'schema'
+        column_names:
+          type: array
+          items:
+              type: string
+          description: 'list of column names'
+          example: ['col1', 'col2']
+        tags:
+          type: array
+          items:
+              type: string
+          description: 'list of table tags'
+          example: ['tag2', 'tag1']
+        last_updated_epoch:
+          type: integer
+          description: 'table last updated time'
+          example: 1568814420
+    UserFields:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'user name'
+          example: 'Harry Potter'
+        first_name:
+          type: string
+          description: 'user first name'
+          example: 'Harry'
+        last_name:
+          type: string
+          description: 'user last name'
+          example: 'Potter'
+        team_name:
+          type: string
+          description: 'name of team user is on'
+          example: 'Gryffindor'
+        email:
+          type: string
+          description: 'users email address'
+          example: 'harry.potter@hogwarts.edu'
+        manager_email:
+          type: string
+          description: "email address for the user's manager"
+          example: 'minerva.mcgonagall@hogwarts.edu'
+        github_username:
+          type: string
+          description: "user's github username"
+          example: 'wizard_coder'
+        is_active:
+          type: bool
+          description: 'indicates if the user is still part of the platform'
+          example: True
+        employee_type:
+          type: string
+          description: 'the kinds of users'
+          example: 'student'

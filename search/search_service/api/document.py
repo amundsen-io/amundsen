@@ -3,6 +3,7 @@ import logging
 from http import HTTPStatus
 from typing import Tuple, Any
 
+from flasgger import swag_from
 from flask_restful import Resource, reqparse
 from search_service.proxy import get_proxy_client
 from search_service.proxy.base import BaseProxy
@@ -48,12 +49,12 @@ class BaseDocumentsAPI(Resource):
 
     def post(self) -> Tuple[Any, int]:
         """
-        Uses the Elasticsearch bulk API to load data from JSON. Uses Elasticsearch
-        index actions to create or update documents by id
+         Uses the Elasticsearch bulk API to load data from JSON. Uses Elasticsearch
+         index actions to create or update documents by id
 
-        :param data: list of data objects to be indexed in Elasticsearch
-        :return: name of new index
-        """
+         :param data: list of data objects to be indexed in Elasticsearch
+         :return: name of new index
+         """
         self.parser.add_argument('data', required=True)
         args = self.parser.parse_args()
 
@@ -93,12 +94,20 @@ class DocumentTableAPI(BaseDocumentAPI):
         super().__init__(schema=TableSchema, proxy=get_proxy_client())
         self.parser.add_argument('index', required=False, default=TABLE_INDEX, type=str)
 
+    @swag_from('swagger_doc/document/table_delete.yml')
+    def delete(self, *, document_id: str) -> Tuple[Any, int]:
+        return super().delete(document_id=document_id)
+
 
 class DocumentUserAPI(BaseDocumentAPI):
 
     def __init__(self) -> None:
         super().__init__(schema=UserSchema, proxy=get_proxy_client())
         self.parser.add_argument('index', required=False, default=USER_INDEX, type=str)
+
+    @swag_from('swagger_doc/document/user_delete.yml')
+    def delete(self, *, document_id: str) -> Tuple[Any, int]:
+        return super().delete(document_id=document_id)
 
 
 class DocumentTablesAPI(BaseDocumentsAPI):
@@ -107,9 +116,25 @@ class DocumentTablesAPI(BaseDocumentsAPI):
         super().__init__(schema=TableSchema, proxy=get_proxy_client())
         self.parser.add_argument('index', required=False, default=TABLE_INDEX, type=str)
 
+    @swag_from('swagger_doc/document/table_post.yml')
+    def post(self) -> Tuple[Any, int]:
+        return super().post()
+
+    @swag_from('swagger_doc/document/table_put.yml')
+    def put(self) -> Tuple[Any, int]:
+        return super().put()
+
 
 class DocumentUsersAPI(BaseDocumentsAPI):
 
     def __init__(self) -> None:
         super().__init__(schema=UserSchema, proxy=get_proxy_client())
         self.parser.add_argument('index', required=False, default=USER_INDEX, type=str)
+
+    @swag_from('swagger_doc/document/user_post.yml')
+    def post(self) -> Tuple[Any, int]:
+        return super().post()
+
+    @swag_from('swagger_doc/document/user_put.yml')
+    def put(self) -> Tuple[Any, int]:
+        return super().put()

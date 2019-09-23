@@ -35,6 +35,8 @@ class Config:
     # Config used by ElastichSearch
     ELASTICSEARCH_INDEX = 'table_search_index'
 
+    SWAGGER_ENABLED = False
+
 
 class LocalConfig(Config):
     DEBUG = False
@@ -51,3 +53,11 @@ class LocalConfig(Config):
     PROXY_CLIENT_KEY = os.environ.get('PROXY_CLIENT_KEY')
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'elastic')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'elastic')
+
+    SWAGGER_ENABLED = True
+    SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
+    SWAGGER = {
+        'openapi': '3.0.2',
+        'title': 'Search Service',
+        'uiversion': 3
+    }

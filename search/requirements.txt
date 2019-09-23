@@ -5,10 +5,12 @@ elasticsearch==6.2.0
 elasticsearch-dsl==6.1.0
 flake8==3.5.0
 flake8-tidy-imports==1.1.0
+flasgger==0.9.3
 Flask==1.0.2
 Flask-RESTful==0.3.6
 itsdangerous==0.24
 Jinja2>=2.10.1
+jsonschema==2.6.0
 MarkupSafe==1.0
 marshmallow==3.0.0rc7
 mock==2.0.0

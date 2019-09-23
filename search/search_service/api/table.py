@@ -2,6 +2,8 @@ from http import HTTPStatus
 from typing import Iterable, Any
 
 from flask_restful import Resource, fields, marshal_with, reqparse
+from flasgger import swag_from
+
 
 from search_service.proxy import get_proxy_client
 
@@ -45,6 +47,7 @@ class SearchTableAPI(Resource):
         super(SearchTableAPI, self).__init__()
 
     @marshal_with(search_table_results)
+    @swag_from('swagger_doc/table/search_table.yml')
     def get(self) -> Iterable[Any]:
         """
         Fetch search results based on query_term.
@@ -85,8 +88,8 @@ class SearchTableFieldAPI(Resource):
         super(SearchTableFieldAPI, self).__init__()
 
     @marshal_with(search_table_results)
-    def get(self, *, field_name: str,
-            field_value: str) -> Iterable[Any]:
+    @swag_from('swagger_doc/table/search_table_field.yml')
+    def get(self, *, field_name: str, field_value: str) -> Iterable[Any]:
         """
         Fetch search results based on query_term.
 

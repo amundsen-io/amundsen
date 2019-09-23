@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from typing import Iterable, Any
 
+from flasgger import swag_from
 from flask_restful import Resource, fields, marshal_with, reqparse
 
 from search_service.proxy import get_proxy_client
@@ -44,6 +45,7 @@ class SearchUserAPI(Resource):
         super(SearchUserAPI, self).__init__()
 
     @marshal_with(search_user_results)
+    @swag_from('swagger_doc/user.yml')
     def get(self) -> Iterable[Any]:
         """
         Fetch search results based on query_term.
