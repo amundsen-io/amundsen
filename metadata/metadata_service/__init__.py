@@ -71,16 +71,14 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(PopularTablesAPI, '/popular_tables/')
     api.add_resource(TableDetailAPI, '/table/<path:table_uri>')
     api.add_resource(TableDescriptionAPI,
-                     '/table/<path:table_uri>/description',
-                     '/table/<path:table_uri>/description/<path:description_val>')
+                     '/table/<path:table_uri>/description')
     api.add_resource(TableTagAPI,
                      '/table/<path:table_uri>/tag',
                      '/table/<path:table_uri>/tag/<tag>')
     api.add_resource(TableOwnerAPI,
                      '/table/<path:table_uri>/owner/<owner>')
     api.add_resource(ColumnDescriptionAPI,
-                     '/table/<path:table_uri>/column/<column_name>/description',
-                     '/table/<path:table_uri>/column/<column_name>/description/<path:description_val>')
+                     '/table/<path:table_uri>/column/<column_name>/description')
     api.add_resource(Neo4jDetailAPI,
                      '/latest_updated_ts')
     api.add_resource(TagAPI,

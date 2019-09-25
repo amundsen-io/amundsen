@@ -1,6 +1,8 @@
+import json
 from http import HTTPStatus
 from typing import Iterable, Mapping, Union, Any
 
+from flask import request
 from flask_restful import Resource, fields, reqparse, marshal
 
 from metadata_service.exception import NotFoundException
@@ -135,10 +137,6 @@ class TableDescriptionAPI(Resource):
     """
     def __init__(self) -> None:
         self.client = get_proxy_client()
-
-        self.parser = reqparse.RequestParser()
-        self.parser.add_argument('description', type=str, location='json')
-
         super(TableDescriptionAPI, self).__init__()
 
     def get(self, table_uri: str) -> Iterable[Any]:
@@ -155,15 +153,15 @@ class TableDescriptionAPI(Resource):
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def put(self, table_uri: str, description_val: str) -> Iterable[Any]:
+    def put(self, table_uri: str) -> Iterable[Any]:
         """
-        Updates table description
+        Updates table description (passed as a request body)
         :param table_uri:
-        :param description_val:
         :return:
         """
         try:
-            self.client.put_table_description(table_uri=table_uri, description=description_val)
+            description = json.loads(request.json).get('description')
+            self.client.put_table_description(table_uri=table_uri, description=description)
             return None, HTTPStatus.OK
 
         except NotFoundException:
