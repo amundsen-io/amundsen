@@ -1,7 +1,11 @@
-FROM python:3
+FROM python:3-slim
 WORKDIR /app
-COPY . /app
-RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN pip3 install gunicorn
 
-ENTRYPOINT [ "python3" ]
-CMD [ "search_service/search_wsgi.py" ]
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . /app
+RUN python3 setup.py install
+
+CMD [ "python3", "search_service/search_wsgi.py" ]
