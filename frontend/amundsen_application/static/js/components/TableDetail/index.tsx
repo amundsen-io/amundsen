@@ -354,7 +354,6 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
                   !data.is_view && <WatermarkLabel watermarks={ data.watermarks }/>
                 }
                 <TableDescEditableText
-                  maxLength={ 750 }
                   value={ data.table_description }
                   editable={ data.is_editable }
                 />

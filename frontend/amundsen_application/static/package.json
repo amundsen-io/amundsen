@@ -8,16 +8,16 @@
     "url": "https://github.com/lyft/amundsenfrontendlibrary"
   },
   "scripts": {
-    "build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
-    "dev-build": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts",
-    "test": "TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
-    "test-nocov": "TZ=UTC jest",
-    "watch": "TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts --watch",
+    "build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
+    "dev-build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts",
+    "test": "cross-env TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
+    "test-nocov": "cross-env TZ=UTC jest",
+    "watch": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts --watch",
     "lint": "npm run eslint && npm run tslint",
     "lint-fix": "npm run eslint-fix && npm run tslint-fix",
     "eslint": "eslint --ignore-path=.eslintignore --ext .js,.jsx .",
     "eslint-fix": "eslint --fix --ignore-path=.eslintignore --ext .js,.jsx .",
-    "test:watch": "TZ=UTC jest --watch",
+    "test:watch": "cross-env TZ=UTC jest --watch",
     "tsc": "tsc",
     "tslint": "tslint --project .",
     "tslint-fix": "tslint --fix --project ."
@@ -44,6 +44,7 @@
     "babel-preset-stage-0": "^6.0.15",
     "bootstrap-sass": "^3.3.7",
     "clean-webpack-plugin": "^0.1.19",
+    "cross-env": "^5.2.1",
     "css-loader": "^0.28.11",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
@@ -84,6 +85,7 @@
     "webworkify-webpack": "2.1.0"
   },
   "dependencies": {
+    "autosize": "^4.0.2",
     "axios": "0.19.0",
     "form-serialize": "^0.7.2",
     "jquery": "^3.3.1",
@@ -95,6 +97,7 @@
     "react-dom": "^16.3.1",
     "react-js-pagination": "^3.0.2",
     "react-linkify": "^0.2.2",
+    "react-markdown": "^4.2.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-sanitized-html": "^2.0.0",

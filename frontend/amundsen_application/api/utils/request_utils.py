@@ -15,13 +15,15 @@ def get_query_param(args: Dict, param: str, error_msg: str = None) -> str:
 def request_metadata(*,     # type: ignore
                      url: str,
                      method: str = 'GET',
-                     timeout_sec: int = 0):
+                     timeout_sec: int = 0,
+                     json: str = '{}'):
     """
     Helper function to make a request to metadata service.
     Sets the client and header information based on the configuration
     :param method: DELETE | GET | POST | PUT
     :param url: The request URL
     :param timeout_sec: Number of seconds before timeout is triggered.
+    :param json: Optional request payload
     :return:
     """
     if app.config['REQUEST_HEADERS_METHOD']:
@@ -32,19 +34,22 @@ def request_metadata(*,     # type: ignore
                            url=url,
                            client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                            headers=headers,
-                           timeout_sec=timeout_sec)
+                           timeout_sec=timeout_sec,
+                           json=json)
 
 
 def request_search(*,     # type: ignore
                    url: str,
                    method: str = 'GET',
-                   timeout_sec: int = 0):
+                   timeout_sec: int = 0,
+                   json: str = '{}'):
     """
     Helper function to make a request to search service.
     Sets the client and header information based on the configuration
     :param method: DELETE | GET | POST | PUT
     :param url: The request URL
     :param timeout_sec: Number of seconds before timeout is triggered.
+    :param json: Optional request payload
     :return:
     """
     if app.config['REQUEST_HEADERS_METHOD']:
@@ -55,11 +60,12 @@ def request_search(*,     # type: ignore
                            url=url,
                            client=app.config['SEARCHSERVICE_REQUEST_CLIENT'],
                            headers=headers,
-                           timeout_sec=timeout_sec)
+                           timeout_sec=timeout_sec,
+                           json=json)
 
 
 # TODO: Define an interface for envoy_client
-def request_wrapper(method: str, url: str, client, headers, timeout_sec: int):  # type: ignore
+def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, json: str = '{}'):  # type: ignore
     """
     Wraps a request to use Envoy client and headers, if available
     :param method: DELETE | GET | POST | PUT
@@ -67,6 +73,7 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int):  
     :param client: Optional Envoy client
     :param headers: Optional Envoy request headers
     :param timeout_sec: Number of seconds before timeout is triggered. Not used with Envoy
+    :param json: Optional request payload
     :return:
     """
     # If no timeout specified, use the one from the configurations.
@@ -78,9 +85,9 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int):  
         elif method == 'GET':
             return client.get(url, headers=headers, raw_response=True)
         elif method == 'POST':
-            return client.post(url, headers=headers, raw_response=True)
+            return client.post(url, headers=headers, raw_response=True, json=json)
         elif method == 'PUT':
-            return client.put(url, headers=headers, raw_response=True)
+            return client.put(url, headers=headers, raw_response=True, json=json)
         else:
             raise Exception('Method not allowed: {}'.format(method))
     else:
@@ -90,8 +97,8 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int):  
             elif method == 'GET':
                 return s.get(url, headers=headers, timeout=timeout_sec)
             elif method == 'POST':
-                return s.post(url, headers=headers, timeout=timeout_sec)
+                return s.post(url, headers=headers, timeout=timeout_sec, json=json)
             elif method == 'PUT':
-                return s.put(url, headers=headers, timeout=timeout_sec)
+                return s.put(url, headers=headers, timeout=timeout_sec, json=json)
             else:
                 raise Exception('Method not allowed: {}'.format(method))
