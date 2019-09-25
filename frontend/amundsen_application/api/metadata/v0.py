@@ -1,3 +1,4 @@
+import json
 import logging
 
 from http import HTTPStatus
@@ -259,13 +260,12 @@ def put_table_description() -> Response:
         table_key = get_query_param(args, 'key')
 
         description = get_query_param(args, 'description')
-        description = ' '.join(description.split())
         src = get_query_param(args, 'source')
 
-        url = '{0}/{1}/description/{2}'.format(table_endpoint, table_key, description)
+        url = '{0}/{1}/description'.format(table_endpoint, table_key)
         _log_put_table_description(table_key=table_key, description=description, source=src)
 
-        response = request_metadata(url=url, method='PUT')
+        response = request_metadata(url=url, method='PUT', json=json.dumps({'description': description}))
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -295,14 +295,13 @@ def put_column_description() -> Response:
 
         column_name = get_query_param(args, 'column_name')
         description = get_query_param(args, 'description')
-        description = ' '.join(description.split())
 
         src = get_query_param(args, 'source')
 
-        url = '{0}/{1}/column/{2}/description/{3}'.format(table_endpoint, table_key, column_name, description)
+        url = '{0}/{1}/column/{2}/description'.format(table_endpoint, table_key, column_name)
         _log_put_column_description(table_key=table_key, column_name=column_name, description=description, source=src)
 
-        response = request_metadata(url=url, method='PUT')
+        response = request_metadata(url=url, method='PUT', json=json.dumps({'description': description}))
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:

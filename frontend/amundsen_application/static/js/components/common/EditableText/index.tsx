@@ -1,8 +1,11 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
+import * as ReactMarkdown from 'react-markdown';
 import { Overlay, Popover, Tooltip } from 'react-bootstrap';
+import autosize from 'autosize';
 
 // TODO: Use css-modules instead of 'import'
+// TODO: Outdated approach (lines 148, 168). Replace with React.createRef(). See more at https://reactjs.org/docs/refs-and-the-dom.html
 import './styles.scss';
 
 export interface StateFromProps {
@@ -36,7 +39,7 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
 
   public static defaultProps: EditableTextProps = {
     editable: true,
-    maxLength: 250,
+    maxLength: 4000,
     onSubmitValue: null,
     getLatestValue: null,
     value: '',
@@ -61,6 +64,7 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
   componentDidUpdate() {
     const { isDisabled, inEditMode, refreshValue, value } = this.state;
     if (inEditMode) {
+      autosize(this.textAreaTarget);
       if (refreshValue && refreshValue !== value && !isDisabled) {
         // disable the component if a refresh is needed
         this.setState({ isDisabled: true })
@@ -113,7 +117,9 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
     if (!this.state.editable) {
       return (
         <div id='editable-container' className='editable-container'>
-           <div id='editable-text' className='editable-text'>{ this.state.value }</div>
+           <div id='editable-text' className='editable-text'>
+              <ReactMarkdown source={this.state.value}/>
+           </div>
         </div>
       );
     }
@@ -135,7 +141,7 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
             </Tooltip>
           </Overlay>
           <div id='editable-text' className={"editable-text"}>
-            { this.state.value }
+            <ReactMarkdown source={this.state.value}/>
             <a className={ "edit-link" + (this.state.value ? "" : " no-value") }
                href="JavaScript:void(0)"
                onClick={ this.enterEditMode }

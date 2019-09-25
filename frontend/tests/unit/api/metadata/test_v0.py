@@ -397,7 +397,7 @@ class MetadataTest(unittest.TestCase):
         Test successful put_table_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/description/test'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/description'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -463,7 +463,7 @@ class MetadataTest(unittest.TestCase):
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
-            '/db://cluster.schema/table/column/col/description/test'
+            '/db://cluster.schema/table/column/col/description'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:

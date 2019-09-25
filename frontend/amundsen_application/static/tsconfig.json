@@ -14,6 +14,7 @@
     "moduleResolution": "node",
     "noResolve": false,
     "removeComments": true,
+    "allowSyntheticDefaultImports": true,
     "types": ["jest"],
     "baseUrl": "js",
     "paths": {
