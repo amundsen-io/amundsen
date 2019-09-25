@@ -2,11 +2,11 @@
 [![PyPI version](https://badge.fury.io/py/amundsen-metadata.svg)](https://badge.fury.io/py/amundsen-metadata)
 [![Build Status](https://api.travis-ci.com/lyft/amundsenmetadatalibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsenmetadatalibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsenmetadatalibrary/master.svg)](https://codecov.io/github/lyft/amundsenmetadatalibrary?branch=master)
-[![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+[![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#developer-guide)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://bit.ly/2FVq37z)
 
-Amundsen Metadata service serves Restful API and responsible for providing and also updating metadata, such as table & column description, and tags. Metadata service can use Neo4j or Apache Atlas as a persistent layer.
+Amundsen Metadata service serves Restful API and is responsible for providing and also updating metadata, such as table & column description, and tags. Metadata service can use Neo4j or Apache Atlas as a persistent layer.
 
 For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
 
@@ -21,7 +21,7 @@ $ source $venv_path/bin/activate
 $ pip3 install amundsen-metadata
 $ python3 metadata_service/metadata_wsgi.py
 
--- In different terminal, verify getting HTTP/1.0 200 OK
+-- In a different terminal, verify getting HTTP/1.0 200 OK
 $ curl -v http://localhost:5000/healthcheck
 ```
 
@@ -35,7 +35,7 @@ $ pip3 install -r requirements.txt
 $ python3 setup.py install
 $ python3 metadata_service/metadata_wsgi.py
 
--- In different terminal, verify getting HTTP/1.0 200 OK
+-- In a different terminal, verify getting HTTP/1.0 200 OK
 $ curl -v http://localhost:5000/healthcheck
 ```
 
@@ -44,17 +44,17 @@ $ curl -v http://localhost:5000/healthcheck
 $ docker pull amundsendev/amundsen-metadata:latest
 $ docker run -p 5000:5000 amundsendev/amundsen-metadata
 
--- In different terminal, verify getting HTTP/1.0 200 OK
+-- In a different terminal, verify getting HTTP/1.0 200 OK
 $ curl -v http://localhost:5000/healthcheck
 ```
 
-## Instructions to start the service from Docker image with gunicorn (production use case)
+## Instructions to start the service from Docker with gunicorn (production use case)
 Note that there below command uses default config of gunicorn. Please visit [Gunicorn homepage](https://gunicorn.org/ "Gunicorn") for more information.
 ```bash
 $ docker pull amundsendev/amundsen-metadata:latest
 $ docker run -p 5000:5000 amundsendev/amundsen-metadata gunicorn --bind 0.0.0.0:5000 metadata_service.metadata_wsgi
 
--- In different terminal, verify getting HTTP/1.0 200 OK
+-- In a different terminal, verify getting HTTP/1.0 200 OK
 $ curl -v http://localhost:5000/healthcheck
 ```
 
@@ -65,7 +65,7 @@ By default, Flask comes with Werkzeug webserver, which is for development. For p
 $ pip install gunicorn
 $ gunicorn metadata_service.metadata_wsgi
 ```
-Here is [documentation](http://docs.gunicorn.org/en/latest/run.html "documentation") of gunicorn configuration.
+Here is [documentation](https://docs.gunicorn.org/en/latest/run.html "documentation") of gunicorn configuration.
 
 ### Configuration outside local environment
 By default, Metadata service uses [LocalConfig](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py "LocalConfig") that looks for Neo4j running in localhost.
