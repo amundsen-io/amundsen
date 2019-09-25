@@ -2,7 +2,7 @@
 [![PyPI version](https://badge.fury.io/py/amundsen-search.svg)](https://badge.fury.io/py/amundsen-search)
 [![Build Status](https://api.travis-ci.com/lyft/amundsensearchlibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsensearchlibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsensearchlibrary/master.svg)](https://codecov.io/github/lyft/amundsensearchlibrary?branch=master)
-[![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://bit.ly/2FVq37z)
 
@@ -10,45 +10,59 @@ Amundsen Search service serves a Restful API and is responsible for searching me
 
 For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
 
+## Requirements
+
+- Python >= 3.6
+
+
 ## Instructions to start the Search service from distribution
+
 ```bash
 $ venv_path=[path_for_virtual_environment]
-$ python3 -m virtualenv $venv_path
+$ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
 $ pip3 install amundsensearch
 $ python3 search_service/search_wsgi.py
-```
 
-In a different terminal, verify the service is up by running
-```bash
+# In a different terminal, verify the service is up by running
 $ curl -v http://localhost:5000/healthcheck
 ```
 
-## Instructions to start the Search service from the source
+
+## Instructions to start the Search service from source
+
 ```bash
 $ git clone https://github.com/lyft/amundsensearchlibrary.git
 $ cd amundsensearchlibrary
 $ venv_path=[path_for_virtual_environment]
-$ python3 -m virtualenv $venv_path
+$ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
 $ pip3 install -r requirements.txt
 $ python3 setup.py install
 $ python3 search_service/search_wsgi.py
-```
 
-In different terminal, verify the service is up by running
-```bash
+# In a different terminal, verify the service is up by running
 $ curl -v http://localhost:5000/healthcheck
 ```
 
-## Instructions to start the service from the Docker
+## Instructions to start the service from Docker
+
 ```bash
 $ docker pull amundsendev/amundsen-search:latest
 $ docker run -p 5000:5000 amundsendev/amundsen-search
+
+# In a different terminal, verify the service is up by running
+$ curl -v http://localhost:5000/healthcheck
 ```
 
-In different terminal, verify the service is up by running
+## Instructions to start the service from Docker with gunicorn (production use case)
+Note that the commands below uses default config of gunicorn. Please visit [Gunicorn homepage](https://gunicorn.org/ "Gunicorn") for more information.
+
 ```bash
+$ docker pull amundsendev/amundsen-search:latest
+$ docker run -p 5000:5000 amundsendev/amundsen-search gunicorn --bind 0.0.0.0:5000 search_service.search_wsgi
+
+# In a different terminal, verify the service is up by running
 $ curl -v http://localhost:5000/healthcheck
 ```
 
@@ -58,13 +72,11 @@ By default, Flask comes with a Werkzeug webserver, which is used for development
 ```bash
 $ pip3 install gunicorn
 $ gunicorn search_service.search_wsgi
-```
 
-In different terminal, verify the service is up by running
-```bash
+# In a different terminal, verify the service is up by running
 $ curl -v http://localhost:8000/healthcheck
 ```
-For more imformation see the [Gunicorn configuration documentation](http://docs.gunicorn.org/en/latest/run.html "documentation").
+For more imformation see the [Gunicorn configuration documentation](https://docs.gunicorn.org/en/latest/run.html "documentation").
 
 ### Configuration outside local environment
 By default, Search service uses [LocalConfig](https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/config.py "LocalConfig") that looks for Elasticsearch running in localhost.
