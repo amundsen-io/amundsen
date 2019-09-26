@@ -17,9 +17,8 @@
     padding-right: 32px;
   }
 
-  // TODO - move to common styles
-  .truncated,
-  .truncated .editable-text {
+  .truncated .editable-text,
+  .truncated .editable-text p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
