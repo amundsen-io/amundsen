@@ -5,10 +5,17 @@ const configDefault: AppConfig = {
     curatedTags: [],
     showAllTags: true,
   },
+  editableText: {
+    tableDescLength: 750,
+    columnDescLength: 250,
+  },
   google: {
     enabled: false,
     key: 'default-key',
     sampleRate: 100,
+  },
+  indexUsers: {
+    enabled: false,
   },
   logoPath: null,
   navLinks: [
@@ -40,9 +47,6 @@ const configDefault: AppConfig = {
       return `https://DEFAULT_EXPLORE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`;
     }
   },
-  indexUsers: {
-    enabled: false,
-  }
 };
 
 export default configDefault;

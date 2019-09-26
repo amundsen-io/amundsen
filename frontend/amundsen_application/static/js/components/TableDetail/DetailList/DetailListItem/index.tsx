@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import moment from 'moment-timezone';
 
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-
+import AppConfig from 'config/config';
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
 import { logClick } from 'ducks/utilMethods';
 import { TableColumn } from 'interfaces';
@@ -132,6 +132,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
             columnIndex={this.props.index}
             editable={metadata.is_editable}
             value={metadata.description}
+            maxLength={AppConfig.editableText.columnDescLength}
           />
         </div>
         {
