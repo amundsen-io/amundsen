@@ -93,7 +93,7 @@ This way Search service will use production config in production environment. Fo
 - PEP 8: Amundsen Search service follows [PEP8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/ "PEP8 - Style Guide for Python Code"). 
 - Typing hints: Amundsen Search service also utilizes [Typing hint](https://docs.python.org/3/library/typing.html "Typing hint") for better readability.
 
-##API documentation
+## API documentation
 We have Swagger documentation setup with OpenApi 3.0.2. This documentation is generated via [Flasgger](https://github.com/flasgger/flasgger). 
 When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to `localhost:5000/apidocs/`. 
 Currently the documentation only works with local configuration. 
