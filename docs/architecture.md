@@ -4,7 +4,7 @@ The following diagram shows the overall architecture for Amundsen.
 ![](img/Amundsen_Architecture.png)
 
 ## Frontend
-The frontend service serves as web UI portal for users interaction. 
+The [frontend service](https://github.com/lyft/amundsenfrontendlibrary#amundsen-frontend-service) serves as web UI portal for users interaction. 
 It is Flask-based web app which representation layer is built with React with Redux, Bootstrap, Webpack, and Babel.
 
 ## Search
