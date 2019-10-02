@@ -1,6 +1,5 @@
-import json
 import logging
-
+import json
 from http import HTTPStatus
 from typing import Any, Dict, Optional
 
@@ -265,7 +264,7 @@ def put_table_description() -> Response:
         url = '{0}/{1}/description'.format(table_endpoint, table_key)
         _log_put_table_description(table_key=table_key, description=description, source=src)
 
-        response = request_metadata(url=url, method='PUT', json=json.dumps({'description': description}))
+        response = request_metadata(url=url, method='PUT', data=json.dumps({'description': description}))
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -301,7 +300,7 @@ def put_column_description() -> Response:
         url = '{0}/{1}/column/{2}/description'.format(table_endpoint, table_key, column_name)
         _log_put_column_description(table_key=table_key, column_name=column_name, description=description, source=src)
 
-        response = request_metadata(url=url, method='PUT', json=json.dumps({'description': description}))
+        response = request_metadata(url=url, method='PUT', data=json.dumps({'description': description}))
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
