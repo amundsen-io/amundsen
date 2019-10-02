@@ -12,6 +12,10 @@ const configCustom: AppConfigCustom = {
     key: 'default-key',
     sampleRate: 100,
   },
+  mailClientFeatures: {
+    feedbackEnabled: false,
+    notificationsEnabled: false,
+  },
   indexUsers: {
     enabled: false,
   }

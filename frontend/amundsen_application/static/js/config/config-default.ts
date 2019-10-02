@@ -32,6 +32,10 @@ const configDefault: AppConfig = {
       use_router: true,
     }
   ],
+  mailClientFeatures: {
+    feedbackEnabled: false,
+    notificationsEnabled: false,
+  },
   tableLineage: {
     iconPath: 'PATH_TO_ICON',
     isBeta: false,

@@ -9,6 +9,8 @@ import { createStore, applyMiddleware } from 'redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
+import { feedbackEnabled } from 'config/config-utils';
+
 import AnnouncementPage from './components/AnnouncementPage';
 import BrowsePage from './components/BrowsePage';
 import Feedback from './components/Feedback';
@@ -18,7 +20,7 @@ import NavBar from './components/NavBar';
 import NotFoundPage from './components/NotFoundPage';
 import Preloader from 'components/common/Preloader';
 import ProfilePage from './components/ProfilePage';
-import SearchPage from './components/SearchPage'; 
+import SearchPage from './components/SearchPage';
 import TableDetail from './components/TableDetail';
 
 import rootReducer from './ducks/rootReducer';
@@ -47,7 +49,10 @@ ReactDOM.render(
             <Route path="/404" component={NotFoundPage} />
             <Route path="/" component={HomePage} />
           </Switch>
-          <Feedback />
+          {
+            feedbackEnabled() && 
+            <Feedback />
+          }
           <Footer />
         </div>
       </Router>

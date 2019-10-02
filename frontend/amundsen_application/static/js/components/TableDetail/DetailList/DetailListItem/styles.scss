@@ -14,7 +14,6 @@
   .description {
     max-width: 100%;
     min-width: 0;
-    padding-right: 32px;
   }
 
   .truncated .editable-text,
@@ -22,6 +21,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .description-container {
+    display: flex;
+    justify-content: space-between;
   }
 
   .column-info {
@@ -57,7 +61,7 @@
       cursor: pointer;
 
       &:hover {
-        background-image: linear-gradient($gray-lighter, $gray-lighter, white);
+        background-image: linear-gradient($gray-lightest, $gray-lightest, white);
 
         .icon {
           background-color: $brand-color-4;
@@ -83,6 +87,36 @@
       color: $text-medium;
       font-style: italic;
       margin-top: 4px;
+    }
+  }
+  .open {
+    .dropdown-icon-more {
+      box-shadow: none;
+      visibility: visible;
+    }
+  }
+
+  .dropdown-icon-more {
+    border-style: none;
+    border-radius: 4px;
+    height: 22px;
+    width: 22px;
+    padding: 4px;
+    margin-right: 5px;
+    .icon {
+      background-color: $gray-light;
+      height: 14px;
+      -webkit-mask-size: 14px;
+      mask-size: 14px;
+      width: 14px;
+      margin: 0;
+    }
+    &:hover,
+    &:focus {
+      background-color: $gray-lightest;
+      .icon {
+        background-color: $gray-base;
+      }
     }
   }
 }

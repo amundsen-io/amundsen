@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Avatar from 'react-avatar';
 
 import { shallow } from 'enzyme';
+import { Dropdown } from 'react-bootstrap';
 
 import { Link, NavLink } from 'react-router-dom';
 import { NavBar, NavBarProps, mapStateToProps } from '../';
@@ -107,27 +108,35 @@ describe('NavBar', () => {
       expect(spy).toHaveBeenCalledWith(AppConfig.navLinks);
     });
 
-    it('renders Avatar for loggedInUser', () => {
-      expect(wrapper.find(Avatar).props()).toMatchObject({
-        name: props.loggedInUser.display_name,
-        size: 32,
-        round: true,
-      })
-    });
+    describe('if indexUsers is enabled', () => {
+      it('renders Avatar for loggedInUser inside of user dropdown', () => {
+        expect(wrapper.find(Dropdown).find(Dropdown.Toggle).find(Avatar).props()).toMatchObject({
+          name: props.loggedInUser.display_name,
+          size: 32,
+          round: true,
+        })
+      });
 
-    it('renders a Link to the user profile if `indexUsers` is enabled', () => {
-      expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(true)
+      it('renders user dropdown header', () => {
+        element = wrapper.find(Dropdown).find(Dropdown.Menu).find('.profile-menu-header');
+        expect(element.children().at(0).text()).toEqual(props.loggedInUser.display_name);
+        expect(element.children().at(1).text()).toEqual(props.loggedInUser.email);
+      });
 
-      expect(wrapper.find('#nav-bar-avatar-link').props()).toMatchObject({
-        to: `/user/${props.loggedInUser.user_id}?source=navbar`
+      it('renders My Profile link correctly inside of user dropdown', () => {
+        element = wrapper.find(Dropdown).find(Dropdown.Menu).find(Link).at(0);
+        expect(element.children().text()).toEqual('My Profile');
+        expect(element.props().to).toEqual('/user/test0?source=navbar');
       });
     });
 
-    it('does not render a Link to the user profile if `indexUsers` is disabled', () => {
-      AppConfig.indexUsers.enabled = false;
-      const { wrapper } = setup();
-      expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false)
-    });
+    describe('if indexUsers is disabled', () => {
+      it('does not render a Link to the user profile', () => {
+        AppConfig.indexUsers.enabled = false;
+        const { wrapper } = setup();
+        expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false)
+      });
+    })
   });
 });
 

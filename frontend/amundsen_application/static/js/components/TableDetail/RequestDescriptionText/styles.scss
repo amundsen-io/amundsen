@@ -1,0 +1,13 @@
+@import 'variables';
+
+.request-description {
+  font-size: 16px;
+  text-decoration: none;
+
+  &:hover,
+  &:visited,
+  &:active,
+  &:link {
+    text-decoration: none;
+  }
+}
