@@ -35,7 +35,7 @@ services:
       environment:
         - PROXY_ENDPOINT=es_amundsen
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:1.0.19
+      image: amundsendev/amundsen-metadata:1.1.2
       container_name: amundsenmetadata
       depends_on:
         - neo4j
@@ -46,7 +46,7 @@ services:
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:1.0.7
+      image: amundsendev/amundsen-frontend:1.0.9
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata
