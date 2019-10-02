@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/amundsen-frontend.svg)](https://badge.fury.io/py/amundsen-frontend)
 [![Build Status](https://api.travis-ci.com/lyft/amundsenfrontendlibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsenfrontendlibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsenfrontendlibrary/master.svg)](https://codecov.io/github/lyft/amundsenfrontendlibrary?branch=master)
-[![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/amundsen-frontend.svg)](https://pypi.org/project/amundsen-frontend/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
@@ -12,7 +12,7 @@ Amundsen is a metadata driven application for improving the productivity of data
 
 The frontend service leverages a separate [search service](https://github.com/lyft/amundsensearchlibrary) for allowing users to search for data resources, and a separate [metadata service](https://github.com/lyft/amundsenmetadatalibrary) for viewing and editing metadata for a given resource. It is a Flask application with a React frontend.
 
-For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
+For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen#amundsen) `README.md`. Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture).
 
 ## Requirements
 - Python >= 3.5
