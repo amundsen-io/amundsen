@@ -1,12 +1,13 @@
 import unittest
-from databuilder.models.hive_watermark import HiveWatermark
+from databuilder.models.watermark import Watermark
 
 from databuilder.models.neo4j_csv_serde import NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
 
+
 CREATE_TIME = '2017-09-18T00:00:00'
-DATABASE = 'HIVE'
+DATABASE = 'DYNAMO'
 SCHEMA = 'BASE'
 TABLE = 'TEST'
 NESTED_PART = 'ds=2017-09-18/feature_id=9'
@@ -14,17 +15,18 @@ CLUSTER = 'DEFAULT'
 PART_TYPE = 'LOW_WATERMARK'
 
 
-class TestHiveWatermark(unittest.TestCase):
+class TestWatermark(unittest.TestCase):
 
     def setUp(self):
         # type: () -> None
-        super(TestHiveWatermark, self).setUp()
-        self.watermark = HiveWatermark(create_time='2017-09-18T00:00:00',
-                                       schema_name=SCHEMA,
-                                       table_name=TABLE,
-                                       cluster=CLUSTER,
-                                       part_type=PART_TYPE,
-                                       part_name=NESTED_PART)
+        super(TestWatermark, self).setUp()
+        self.watermark = Watermark(create_time='2017-09-18T00:00:00',
+                                   database=DATABASE,
+                                   schema_name=SCHEMA,
+                                   table_name=TABLE,
+                                   cluster=CLUSTER,
+                                   part_type=PART_TYPE,
+                                   part_name=NESTED_PART)
 
         self.expected_node_result = {
             NODE_KEY: '{database}://{cluster}.{schema}/{table}/{part_type}/'
