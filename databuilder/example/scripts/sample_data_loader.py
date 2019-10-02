@@ -113,6 +113,39 @@ def load_col_data_from_csv(file_name):
         conn.commit()
 
 
+def load_watermark_data_from_csv(file_name):
+    conn = create_connection(DB_FILE)
+    if conn:
+        cur = conn.cursor()
+        cur.execute('drop table if exists test_watermark_metadata')
+        cur.execute('create table if not exists test_watermark_metadata '
+                    '(create_time VARCHAR(64) NOT NULL , '
+                    'database VARCHAR(64) NOT NULL , '
+                    'schema_name VARCHAR(64) NOT NULL , '
+                    'table_name VARCHAR(64) NOT NULL , '
+                    'part_name VARCHAR(64) NOT NULL , '
+                    'part_type VARCHAR(64) NOT NULL , '
+                    'cluster VARCHAR(64) NOT NULL)')
+        file_loc = 'example/sample_data/' + file_name
+        with open(file_loc, 'r') as fin:
+            dr = csv.DictReader(fin)
+            to_db = []
+            for i in dr:
+                to_db.append((i['create_time'],
+                              i['database'],
+                              i['schema_name'],
+                              i['table_name'],
+                              i['part_name'],
+                              i['part_type'],
+                              i['cluster']))
+
+        cur.executemany("INSERT INTO test_watermark_metadata ("
+                        "create_time, database, schema_name, table_name,"
+                        "part_name, part_type, cluster) VALUES "
+                        "(?, ?, ?, ?, ?, ?, ?);", to_db)
+        conn.commit()
+
+
 def load_user_data_from_csv(file_name):
     conn = create_connection(DB_FILE)
     if conn:
@@ -357,6 +390,7 @@ if __name__ == "__main__":
 
     load_table_data_from_csv('sample_table.csv')
     load_col_data_from_csv('sample_col.csv')
+    load_watermark_data_from_csv('sample_watermark.csv')
     load_usage_data_from_csv('sample_column_usage.csv')
     load_user_data_from_csv('sample_user.csv')
     load_application_data_from_csv('sample_application.csv')
@@ -371,6 +405,11 @@ if __name__ == "__main__":
         job2 = create_sample_job('test_col_metadata',
                                  'example.models.test_column_model.TestColumnMetadata')
         job2.launch()
+
+        # # start watermark job
+        job3 = create_sample_job('test_watermark_metadata',
+                                 'databuilder.models.watermark.Watermark')
+        job3.launch()
 
         # start usage job
         job_col_usage = create_sample_job('test_usage_metadata',
