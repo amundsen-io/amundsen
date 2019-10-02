@@ -1,0 +1,19 @@
+.dropdown-menu {
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
+  border-radius: 5px;
+  border-style: none;
+  padding: 0;
+  overflow: hidden;
+
+  li {
+    &:hover {
+      background-color: $gray-lightest;
+    }
+    a {
+      padding: 8px;
+      &:hover {
+        background-color: inherit;
+      }
+    }
+  }
+}

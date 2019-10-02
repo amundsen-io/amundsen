@@ -7,6 +7,8 @@ import * as Utils from 'ducks/utilMethods';
 
 import globalState from 'fixtures/globalState';
 
+import { NotificationType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
+
 import * as API from '../v0';
 
 const filterFromObjSpy = jest.spyOn(Utils, 'filterFromObj').mockImplementation((initialObject, rejectedKeys) => { return initialObject; });
@@ -29,7 +31,7 @@ describe('helpers', () => {
   });
 
   describe('getTableQueryParams', () => {
-    it('generates table query params with a key',() => {
+    it('generates table query params with a key', () => {
       const tableKey = 'database://cluster.schema/table';
       const queryString = Helpers.getTableQueryParams(tableKey);
       const params = qs.parse(queryString);
@@ -39,7 +41,7 @@ describe('helpers', () => {
       expect(params.source).toEqual(undefined);
     });
 
-    it('generates query params with logging params',() => {
+    it('generates query params with logging params', () => {
       const tableKey = 'database://cluster.schema/table';
       const index = '4';
       const source = 'test-source';
@@ -52,21 +54,88 @@ describe('helpers', () => {
     });
   });
 
-  it('getTableDataFromResponseData',() => {
+  it('getTableDataFromResponseData', () => {
     Helpers.getTableDataFromResponseData(mockResponseData);
     expect(filterFromObjSpy).toHaveBeenCalledWith(tableResponseData, ['owners', 'tags']);
   });
 
-  it('getTableOwnersFromResponseData',() => {
+  it('getTableOwnersFromResponseData', () => {
     expect(Helpers.getTableOwnersFromResponseData(mockResponseData)).toEqual({
       'test': {display_name: 'test', profile_url: 'test.io', email: 'test@test.com', user_id: 'test'}
     });
   });
 
-  it('getTableTagsFromResponseData',() => {
+  it('getTableTagsFromResponseData', () => {
     expect(Helpers.getTableTagsFromResponseData(mockResponseData)).toEqual([
       {tag_count: 1, tag_name: 'aname'},
       {tag_count: 2, tag_name: 'zname'},
     ]);
+  });
+
+  describe('createOwnerNotificationData', () => {
+    it('creates correct request data for PUT', () => {
+      const testId =  'testId@test.com';
+      const testMethod = UpdateMethod.PUT;
+      const testName = 'schema.tableName';
+      expect(Helpers.createOwnerNotificationData({ method: testMethod, id: testId }, testName)).toMatchObject({
+        notificationType: NotificationType.OWNER_ADDED,
+        options: {
+          resource_name: testName,
+          resource_url: window.location.href,
+        },
+        recipients: [testId],
+      });
+    });
+
+    it('creates correct request data for DELETE', () => {
+      const testId =  'testId@test.com';
+      const testMethod = UpdateMethod.DELETE;
+      const testName = 'schema.tableName';
+      expect(Helpers.createOwnerNotificationData({ method: testMethod, id: testId }, testName)).toMatchObject({
+        notificationType: NotificationType.OWNER_REMOVED,
+        options: {
+          resource_name: testName,
+          resource_url: window.location.href,
+        },
+        recipients: [testId],
+      });
+    });
+  });
+
+  it('createOwnerUpdatePayload', () => {
+    const testId =  'testId@test.com';
+    const testKey = 'testKey';
+    const testMethod = UpdateMethod.PUT;
+    expect(Helpers.createOwnerUpdatePayload({ method: testMethod, id: testId }, testKey)).toMatchObject({
+      method: testMethod,
+      url: `${API.API_PATH}/update_table_owner`,
+      data: {
+        key: testKey,
+        owner: testId,
+      },
+    });
+  });
+
+  describe('shouldSendNotification', () => {
+    it('returns false if alumni', () => {
+      const testUser = {
+        ... globalState.user.loggedInUser,
+        is_active: false,
+      }
+      expect(Helpers.shouldSendNotification(testUser)).toBe(false);
+    });
+
+    it('returns false if not a user with display_name', () => {
+      const testUser = {
+        ... globalState.user.loggedInUser,
+        display_name: null,
+      }
+      expect(Helpers.shouldSendNotification(testUser)).toBe(false);
+    });
+
+    it('returns true if user is_active and has a display_name', () => {
+      const testUser = { ... globalState.user.loggedInUser }
+      expect(Helpers.shouldSendNotification(testUser)).toBe(true);
+    });
   });
 });

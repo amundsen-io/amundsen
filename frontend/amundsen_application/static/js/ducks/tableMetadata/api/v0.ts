@@ -1,8 +1,8 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
-import { PreviewData, PreviewQueryParams, TableMetadata, User, Tag } from 'interfaces';
+import { PreviewData, PreviewQueryParams, TableMetadata, UpdateOwnerPayload, User, Tag } from 'interfaces';
 
-const API_PATH = '/api/metadata/v0';
+export const API_PATH = '/api/metadata/v0';
 
 // TODO: Consider created shared interfaces for ducks so we can reuse MessageAPI everywhere else
 type MessageAPI = { msg: string };
@@ -19,6 +19,7 @@ export type TableDataAPI= { tableData: TableData; } & MessageAPI;
 /** HELPERS **/
 import {
   getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData, getTableTagsFromResponseData,
+  createOwnerUpdatePayload, createOwnerNotificationData, shouldSendNotification
 } from './helpers';
 
 export function getTableTags(tableKey: string) {
@@ -87,19 +88,32 @@ export function getTableOwners(tableKey: string) {
   });
 }
 
-/* TODO: Typing this method generates redux-saga related type errors that need more dedicated debugging */
-export function updateTableOwner(updateArray, tableKey: string) {
-  const updatePayloads = updateArray.map((item) => {
-    return {
-      method: item.method,
-      url: `${API_PATH}/update_table_owner`,
-      data: {
-        key: tableKey,
-        owner: item.id,
-      },
-    }
+/* TODO: Typing return type generates redux-saga related type error that need more dedicated debugging */
+export function generateOwnerUpdateRequests(updateArray: UpdateOwnerPayload[], tableKey: string, resourceName: string) {
+  const updateRequests = [];
+
+  /* Create the request for updating each owner*/
+  updateArray.forEach((item) => {
+    const updatePayload = createOwnerUpdatePayload(item, tableKey);
+    const notificationData = createOwnerNotificationData(item, resourceName);
+
+    /* Chain requests to send notification on success to desired users */
+    const request =
+      axios(updatePayload)
+      .then((response) => {
+        return axios.get(`/api/metadata/v0/user?user_id=${item.id}`)
+      })
+      .then((response) => {
+        if(shouldSendNotification(response.data.user)) {
+          return axios.post('/api/mail/v0/notification', notificationData);
+        }
+      });
+
+    updateRequests.push(request);
   });
-  return updatePayloads.map(payload => { axios(payload) });
+
+  /* Return the list of requests to be executed */
+  return updateRequests;
 }
 
 export function getColumnDescription(columnIndex: number, tableData: TableMetadata) {

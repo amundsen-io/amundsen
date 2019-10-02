@@ -328,6 +328,26 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
+    def test_update_table_owner_propagate_failure(self) -> None:
+        """
+        Test that any error codes from the update_table_owner request are propagated
+        to be returned to the React application
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/owner/test'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.BAD_REQUEST)
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/update_table_owner',
+                json={
+                    'key': 'db://cluster.schema/table',
+                    'owner': 'test'
+                }
+            )
+            self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+
+    @responses.activate
     def test_get_last_indexed_success(self) -> None:
         """
         Test successful get_last_indexed request

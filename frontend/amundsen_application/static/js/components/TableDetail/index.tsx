@@ -12,6 +12,7 @@ import { getPreviewData, getTableData } from 'ducks/tableMetadata/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
 
 import AppConfig from 'config/config';
+import { notificationsEnabled } from 'config/config-utils';
 import AvatarLabel from 'components/common/AvatarLabel';
 import Breadcrumb from 'components/common/Breadcrumb';
 import EntityCard from 'components/common/EntityCard';
@@ -22,6 +23,7 @@ import TagInput from 'components/Tags/TagInput';
 
 import DataPreviewButton from './DataPreviewButton';
 import DetailList from './DetailList';
+import RequestDescriptionText from './RequestDescriptionText';
 import OwnerEditor from './OwnerEditor';
 import TableDescEditableText from './TableDescEditableText';
 import WatermarkLabel from "./WatermarkLabel";
@@ -35,6 +37,7 @@ import { PreviewQueryParams, TableMetadata, User } from 'interfaces';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 import BookmarkIcon from "components/common/Bookmark/BookmarkIcon";
+import RequestMetadataForm from './RequestMetadataForm';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -341,6 +344,10 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
         innerContent = (
           <div className="container table-detail">
             <Breadcrumb />
+            {
+              notificationsEnabled() &&
+              <RequestMetadataForm />
+            }
             <div className="row">
               <div className="detail-header col-xs-12 col-md-7 col-lg-8">
                 <h1 className="detail-header-text">
@@ -358,6 +365,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
                   editable={ data.is_editable }
                   maxLength={ AppConfig.editableText.tableDescLength }
                 />
+                { !data.table_description && notificationsEnabled() && <RequestDescriptionText/> }
               </div>
               <div className="col-xs-12 col-md-5 float-md-right col-lg-4">
                 <EntityCard sections={ this.createEntityCardSections() }/>

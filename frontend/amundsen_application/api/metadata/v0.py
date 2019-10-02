@@ -138,28 +138,33 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
         return results_dict
 
 
-@action_logging
-def _update_table_owner(*, table_key: str, method: str, owner: str) -> Dict[str, str]:
-    try:
-        table_endpoint = _get_table_endpoint()
-        url = '{0}/{1}/owner/{2}'.format(table_endpoint, table_key, owner)
-        request_metadata(url=url, method=method)
-
-        # TODO: Figure out a way to get this payload from flask.jsonify which wraps with app's response_class
-        return {'msg': 'Updated owner'}
-    except Exception as e:
-        return {'msg': 'Encountered exception: ' + str(e)}
-
-
 @metadata_blueprint.route('/update_table_owner', methods=['PUT', 'DELETE'])
 def update_table_owner() -> Response:
+
+    @action_logging
+    def _log_update_table_owner(*, table_key: str, method: str, owner: str) -> None:
+        pass  # pragma: no cover
+
     try:
         args = request.get_json()
         table_key = get_query_param(args, 'key')
         owner = get_query_param(args, 'owner')
 
-        payload = jsonify(_update_table_owner(table_key=table_key, method=request.method, owner=owner))
-        return make_response(payload, HTTPStatus.OK)
+        table_endpoint = _get_table_endpoint()
+        url = '{0}/{1}/owner/{2}'.format(table_endpoint, table_key, owner)
+        method = request.method
+        _log_update_table_owner(table_key=table_key, method=method, owner=owner)
+
+        response = request_metadata(url=url, method=method)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Updated owner'
+        else:
+            message = 'There was a problem updating owner {0}'.format(owner)
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
     except Exception as e:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

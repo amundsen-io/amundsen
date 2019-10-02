@@ -1,0 +1,20 @@
+@import 'variables';
+
+.flash-message {
+  background-color: #292936; // $gray100
+  border-radius: 6px;
+  display: flex;
+  color: white;
+  height: 56px;
+  padding: $spacer-2 $spacer-1;
+
+  .message {
+    margin-right: $spacer-2;
+    line-height: 24px;
+  }
+
+  .icon,
+  .btn-close {
+    margin: auto $spacer-1;
+  }
+}

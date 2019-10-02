@@ -11,6 +11,10 @@
   label {
     width: 100%;
   }
+
+  .status-message {
+    font-weight: normal;
+  }
 }
 
 .owner-editor-modal {
@@ -77,12 +81,6 @@
     padding: 4px;
     width: 100%;
   }
-}
-
-.status-message {
-  margin-left: 4px;
-  margin-bottom: 4px;
-  font-weight: normal;
 }
 
 .component-list {

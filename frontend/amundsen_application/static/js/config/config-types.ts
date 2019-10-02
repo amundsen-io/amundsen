@@ -10,6 +10,7 @@ export interface AppConfig {
   google: GoogleAnalyticsConfig;
   indexUsers: IndexUsersConfig;
   logoPath: string | null;
+  mailClientFeatures: MailClientFeaturesConfig;
   navLinks: Array<LinkConfig>;
   tableLineage: TableLineageConfig;
   tableProfile: TableProfileConfig;
@@ -21,6 +22,7 @@ export interface AppConfigCustom {
   google?: GoogleAnalyticsConfig
   indexUsers?: IndexUsersConfig;
   logoPath?: string;
+  mailClientFeatures: MailClientFeaturesConfig;
   navLinks?: Array<LinkConfig>;
   tableLineage?: TableLineageConfig;
   tableProfile?: TableProfileConfig;
@@ -47,6 +49,18 @@ interface GoogleAnalyticsConfig {
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
+}
+
+/**
+ * MailClientFeaturesConfig - Enable/disable UI features with a dependency on
+ *                            configuring a custom mail client.
+ *
+ * feedbackEnabled - Enables the feedback feature UI
+ * notificationsEnabled - Enables any UI related to sending notifications to users
+ */
+interface MailClientFeaturesConfig {
+  feedbackEnabled: boolean;
+  notificationsEnabled: boolean;
 }
 
 /**
