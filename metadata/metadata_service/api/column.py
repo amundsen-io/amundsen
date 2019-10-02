@@ -27,7 +27,7 @@ class ColumnDescriptionAPI(Resource):
         :return:
         """
         try:
-            description = json.loads(request.json).get('description')
+            description = json.loads(request.data).get('description')
             self.client.put_column_description(table_uri=table_uri,
                                                column_name=column_name,
                                                description=description)
