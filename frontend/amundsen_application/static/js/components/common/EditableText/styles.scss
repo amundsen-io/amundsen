@@ -13,12 +13,10 @@
 
   .edit-link {
     opacity: 0;
-    margin-left: 4px;
     text-decoration: none;
 
     &.no-value {
       opacity: 1;
-      margin-left: 0;
     }
   }
 
@@ -29,7 +27,6 @@
     // React-Markdown wraps editable text with a paragraph
     > p {
       margin: 0;
-      display: inline;
     }
   }
 
