@@ -17,3 +17,6 @@
 [submodule "amundsencommon"]
 	path = amundsencommon
 	url = https://github.com/lyft/amundsencommon
+[submodule "amundseninfrastructure"]
+	path = amundseninfrastructure
+	url = https://github.com/lyft/amundseninfrastructure
