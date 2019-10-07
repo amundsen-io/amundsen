@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import FlashMessage from 'components/common/FlashMessage';
 
 import globalState from 'fixtures/globalState';
-import { NotificationType, SendingState } from 'interfaces';
+import { NotificationType, RequestMetadataType, SendingState } from 'interfaces';
 import { RequestMetadataForm, mapDispatchToProps, mapStateToProps, RequestMetadataProps } from '../';
 import {
   TITLE_TEXT,
@@ -13,6 +13,9 @@ import {
   REQUEST_TYPE,
   TABLE_DESCRIPTION,
   COLUMN_DESCRIPTIONS,
+  COLUMN_REQUESTED_COMMENT_PREFIX,
+  COMMENT_PLACEHOLDER_COLUMN,
+  COMMENT_PLACEHOLDER_DEFAULT,
   ADDITIONAL_DETAILS,
   SEND_BUTTON,
   SEND_FAILURE_MESSAGE,
@@ -38,8 +41,8 @@ describe('RequestMetadataForm', () => {
   const setup = (propOverrides?: Partial<RequestMetadataProps>) => {
     const props: RequestMetadataProps = {
       userEmail: 'test0@lyft.com',
-      displayName: '',
       tableOwners: ['test1@lyft.com', 'test2@lyft.com'],
+      tableMetadata: globalState.tableMetadata.tableData,
       submitNotification: jest.fn(),
       requestIsOpen: true,
       sendState: SendingState.IDLE,
@@ -111,6 +114,7 @@ describe('RequestMetadataForm', () => {
     it('calls submitNotification', () => {
       const { props, wrapper } = setup();
       const submitNotificationSpy = jest.spyOn(props, 'submitNotification');
+       const { cluster, database, schema, table_name } = props.tableMetadata;
       wrapper.instance().submitNotification({ preventDefault: jest.fn() });
       expect(submitNotificationSpy).toHaveBeenCalledWith(
         mockFormData['recipients'].split(','),
@@ -118,8 +122,8 @@ describe('RequestMetadataForm', () => {
         NotificationType.METADATA_REQUESTED,
         {
           comment: mockFormData['comment'],
-          resource_name: props.displayName,
-          resource_url: window.location.href,
+          resource_name: `${schema}.${table_name}`,
+          resource_path: `/table_detail/${cluster}/${database}/${schema}/${table_name}`,
           description_requested: true,
           fields_requested: false,
         }
@@ -133,68 +137,112 @@ describe('RequestMetadataForm', () => {
     let element;
 
     describe('when this.props.requestIsOpen', () => {
-      beforeAll(() => {
-        const setupResult = setup();
-        props = setupResult.props;
-        wrapper = setupResult.wrapper;
-      });
-      it('renders header title', () => {
-        element = wrapper.find('#request-metadata-title');
-        expect(element.find('h3').text()).toEqual(TITLE_TEXT);
-      });
-      it('renders close button', () => {
-        element = wrapper.find('#request-metadata-title');
-        expect(element.find('button').exists()).toEqual(true);
+      describe('no optional props', () => {
+        beforeAll(() => {
+          const setupResult = setup();
+          props = setupResult.props;
+          wrapper = setupResult.wrapper;
+        });
+        it('renders header title', () => {
+          element = wrapper.find('#request-metadata-title');
+          expect(element.find('h3').text()).toEqual(TITLE_TEXT);
+        });
+        it('renders close button', () => {
+          element = wrapper.find('#request-metadata-title');
+          expect(element.find('button').exists()).toEqual(true);
+        });
+
+        it('renders from input with current user', () => {
+          element = wrapper.find('#sender-form-group');
+          expect(element.find('input').props().value).toEqual('test0@lyft.com');
+        });
+
+        it('renders from label', () => {
+          element = wrapper.find('#sender-form-group');
+          expect(element.find('label').text()).toEqual(FROM_LABEL);
+        });
+        it('renders from input with current user', () => {
+          element = wrapper.find('#sender-form-group');
+          expect(element.find('input').props().value).toEqual('test0@lyft.com');
+        });
+
+        it('renders to label', () => {
+          element = wrapper.find('#recipients-form-group');
+          expect(element.find('label').text()).toEqual(TO_LABEL);
+        });
+        it('renders to input with correct recipients', () => {
+          element = wrapper.find('#recipients-form-group');
+          expect(element.find('input').props().defaultValue).toEqual('test1@lyft.com, test2@lyft.com');
+        });
+
+        it('renders request type label', () => {
+          element = wrapper.find('#request-type-form-group');
+          expect(element.find('label').at(0).text()).toEqual(REQUEST_TYPE);
+        });
+        it('renders unchecked table description checkbox', () => {
+          element = wrapper.find('#request-type-form-group');
+          const label = element.find('label').at(1);
+          expect(label.text()).toEqual(TABLE_DESCRIPTION);
+          expect(label.find('input').props().defaultChecked).toBe(false);
+        });
+        it('renders unchecked column descriptions checkbox', () => {
+          element = wrapper.find('#request-type-form-group');
+          const label = element.find('label').at(2);
+          expect(label.text()).toEqual(COLUMN_DESCRIPTIONS);
+          expect(label.find('input').props().defaultChecked).toBe(false);
+        });
+
+        it('renders additional details label', () => {
+          element = wrapper.find('#additional-comments-form-group');
+          expect(element.find('label').text()).toEqual(ADDITIONAL_DETAILS);
+        });
+        it('renders default textarea', () => {
+          element = wrapper.find('#additional-comments-form-group');
+          const textArea = element.find('textarea');
+          expect(textArea.text()).toEqual('');
+          expect(textArea.props().required).toBe(false);
+          expect(textArea.props().placeholder).toBe(COMMENT_PLACEHOLDER_DEFAULT);
+        });
+
+        it('renders submit button with correct text', () => {
+          element = wrapper.find('#submit-request-button');
+          expect(element.text()).toEqual(SEND_BUTTON);
+        });
       });
 
-      it('renders from input with current user', () => {
-        element = wrapper.find('#sender-form-group');
-        expect(element.find('input').props().value).toEqual('test0@lyft.com');
+
+      describe('table description requested', () => {
+        beforeAll(() => {
+          const setupResult = setup({ requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION });
+          props = setupResult.props;
+          wrapper = setupResult.wrapper;
+        });
+        it('renders checked table description checkbox', () => {
+          element = wrapper.find('#request-type-form-group');
+          const label = element.find('label').at(1);
+          expect(label.find('input').props().defaultChecked).toBe(true);
+        });
       });
 
-      it('renders from label', () => {
-        element = wrapper.find('#sender-form-group');
-        expect(element.find('label').text()).toEqual(FROM_LABEL);
-      });
-      it('renders from input with current user', () => {
-        element = wrapper.find('#sender-form-group');
-        expect(element.find('input').props().value).toEqual('test0@lyft.com');
-      });
+      describe('column description requested', () => {
+        beforeAll(() => {
+          const setupResult = setup({ requestMetadataType: RequestMetadataType.COLUMN_DESCRIPTION, columnName: 'Test' });
+          props = setupResult.props;
+          wrapper = setupResult.wrapper;
+        });
+        it('renders checked column description checkbox', () => {
+          element = wrapper.find('#request-type-form-group');
+          const label = element.find('label').at(2);
+          expect(label.find('input').props().defaultChecked).toBe(true);
+        });
 
-      it('renders to label', () => {
-        element = wrapper.find('#recipients-form-group');
-        expect(element.find('label').text()).toEqual(TO_LABEL);
-      });
-      it('renders to input with correct recipients', () => {
-        element = wrapper.find('#recipients-form-group');
-        expect(element.find('input').props().defaultValue).toEqual('test1@lyft.com,test2@lyft.com');
-      });
-
-      it('renders request type label', () => {
-        element = wrapper.find('#request-type-form-group');
-        expect(element.find('label').at(0).text()).toEqual(REQUEST_TYPE);
-      });
-      it('renders table description checkbox', () => {
-        element = wrapper.find('#request-type-form-group');
-        expect(element.find('label').at(1).text()).toEqual(TABLE_DESCRIPTION);
-      });
-      it('renders column descriptions checkbox', () => {
-        element = wrapper.find('#request-type-form-group');
-        expect(element.find('label').at(2).text()).toEqual(COLUMN_DESCRIPTIONS);
-      });
-
-      it('renders additional details label', () => {
-        element = wrapper.find('#additional-comments-form-group');
-        expect(element.find('label').text()).toEqual(ADDITIONAL_DETAILS);
-      });
-      it('renders empty textarea', () => {
-        element = wrapper.find('#additional-comments-form-group');
-        expect(element.find('textarea').text()).toEqual('');
-      });
-
-      it('renders submit button with correct text', () => {
-        element = wrapper.find('#submit-request-button');
-        expect(element.text()).toEqual(SEND_BUTTON);
+        it('renders textarea for column request', () => {
+          element = wrapper.find('#additional-comments-form-group');
+          const textArea = element.find('textarea');
+          expect(textArea.text()).toEqual(`${COLUMN_REQUESTED_COMMENT_PREFIX}Test`);
+          expect(textArea.props().required).toBe(true);
+          expect(textArea.props().placeholder).toBe(COMMENT_PLACEHOLDER_COLUMN);
+        });
       });
     });
 
@@ -235,9 +283,6 @@ describe('RequestMetadataForm', () => {
     it('sets userEmail on the props', () => {
       expect(result.userEmail).toEqual(globalState.user.loggedInUser.email);
     });
-    it('sets displayName on the props', () => {
-      expect(result.displayName).toEqual(globalState.tableMetadata.tableData.schema + '.' + globalState.tableMetadata.tableData.table_name);
-    });
     it('sets ownerObj on the props', () => {
       expect(result.tableOwners).toEqual(Object.keys(globalState.tableMetadata.tableOwners.owners));
     });
@@ -246,6 +291,18 @@ describe('RequestMetadataForm', () => {
     });
     it('sets sendState on the props', () => {
       expect(result.sendState).toEqual(globalState.notification.sendState);
+    });
+    it('sets columnName on the props if it exists in globalState', () => {
+      const newState = { ...globalState };
+      newState.notification.columnName = 'test_name';
+      result = mapStateToProps(newState);
+      expect(result.columnName).toEqual(newState.notification.columnName);
+    });
+    it('sets requestMetadataType on the props if it exists in globalState', () => {
+      const newState = { ...globalState };
+      newState.notification.requestMetadataType = RequestMetadataType.TABLE_DESCRIPTION;
+      result = mapStateToProps(newState);
+      expect(result.requestMetadataType).toEqual(newState.notification.requestMetadataType);
     });
   });
 

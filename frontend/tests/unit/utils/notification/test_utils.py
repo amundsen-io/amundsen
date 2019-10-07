@@ -34,48 +34,104 @@ class NotificationUtilsTest(unittest.TestCase):
     def setUp(self) -> None:
         self.mock_table_key = 'db://cluster.schema/table'
 
-    def test_get_notification_html_no_resource_url(self) -> None:
-        test_notification_type = 'added'
+    def test_validate_resource_path_none(self) -> None:
+        """
+        Test Exception is raised if resource_path is None
+        :return:
+        """
+        test_notification_type = 'removed'
         test_sender = 'test@test.com'
         test_options = {'resource_name': 'testtable'}
 
-        self.assertRaises(Exception,
-                          get_notification_html,
-                          notification_type=test_notification_type,
-                          options=test_options,
-                          sender=test_sender)
+        with local_app.app_context():
+            self.assertRaises(Exception,
+                              get_notification_html,
+                              notification_type=test_notification_type,
+                              options=test_options,
+                              sender=test_sender)
+
+    def test_validate_resource_path_bad_syntax(self) -> None:
+        """
+        Test Exception is raised if resource_path violates leading '/' syntax
+        :return:
+        """
+        test_notification_type = 'removed'
+        test_sender = 'test@test.com'
+        test_options = {'resource_name': 'testtable', 'resource_path': 'testpath'}
+
+        with local_app.app_context():
+            self.assertRaises(Exception,
+                              get_notification_html,
+                              notification_type=test_notification_type,
+                              options=test_options,
+                              sender=test_sender)
+
+    def test_get_notification_html_bad_base_url(self) -> None:
+        """
+        Test Exception is raised if configured FRONTEND_BASE violates no trailing '/' syntax
+        :return:
+        """
+        test_notification_type = 'added'
+        test_sender = 'test@test.com'
+        test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
+
+        with local_app.app_context():
+            temp = local_app.config['FRONTEND_BASE']
+            local_app.config['FRONTEND_BASE'] = 'garbagetest_rewrite_file_to_setup_teardown_each_case/'
+            self.assertRaises(Exception,
+                              get_notification_html,
+                              notification_type=test_notification_type,
+                              options=test_options,
+                              sender=test_sender)
+            local_app.config['FRONTEND_BASE'] = temp
 
     def test_get_notification_html_no_resource_name(self) -> None:
+        """
+        Test Exception is raised if resource_name is not provided
+        :return:
+        """
         test_notification_type = 'added'
         test_sender = 'test@test.com'
-        test_options = {'resource_url': 'testUrl'}
+        test_options = {'resource_path': '/testpath'}
 
-        self.assertRaises(Exception,
-                          get_notification_html,
-                          notification_type=test_notification_type,
-                          options=test_options,
-                          sender=test_sender)
+        with local_app.app_context():
+            self.assertRaises(Exception,
+                              get_notification_html,
+                              notification_type=test_notification_type,
+                              options=test_options,
+                              sender=test_sender)
 
     def test_get_notification_html_unsupported_type(self) -> None:
+        """
+        Test Exception is raised if notification_type is not supported
+        :return:
+        """
         test_notification_type = 'invalid_type'
         test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable', 'resource_url': 'testUrl'}
+        test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
 
-        self.assertRaises(Exception,
-                          get_notification_html,
-                          notification_type=test_notification_type,
-                          options=test_options,
-                          sender=test_sender)
+        with local_app.app_context():
+            self.assertRaises(Exception,
+                              get_notification_html,
+                              notification_type=test_notification_type,
+                              options=test_options,
+                              sender=test_sender)
 
     def test_get_notification_html_added_success(self) -> None:
+        """
+        Test successful generation of html for 'added' notification email
+        :return:
+        """
         test_notification_type = 'added'
         test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable', 'resource_url': 'testUrl'}
+        test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
 
-        html = get_notification_html(notification_type=test_notification_type,
-                                     options=test_options,
-                                     sender=test_sender)
-        expectedHTML = ('Hello,<br/><br/>You have been added to the owners list of the <a href="testUrl">testtable</a>'
+        with local_app.app_context():
+            html = get_notification_html(notification_type=test_notification_type,
+                                         options=test_options,
+                                         sender=test_sender)
+        expectedHTML = ('Hello,<br/><br/>You have been added to the owners list of the '
+                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>'
                         ' dataset by test@test.com.<br/><br/>What is expected of you?<br/>As an owner, you take an '
                         'important part in making sure that the datasets you own can be used as swiftly as possible '
                         'across the company.<br/>Make sure the metadata is correct and up to date.<br/><br/>If you '
@@ -85,85 +141,117 @@ class NotificationUtilsTest(unittest.TestCase):
         self.assertEqual(html, expectedHTML)
 
     def test_get_notification_html_removed_success(self) -> None:
+        """
+        Test successful generation of html for 'removed' notification email
+        :return:
+        """
         test_notification_type = 'removed'
         test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable', 'resource_url': 'testUrl'}
+        test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
 
-        html = get_notification_html(notification_type=test_notification_type,
-                                     options=test_options,
-                                     sender=test_sender)
+        with local_app.app_context():
+            html = get_notification_html(notification_type=test_notification_type,
+                                         options=test_options,
+                                         sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>You have been removed from the owners list of the '
-                        '<a href="testUrl">testtable</a> dataset by test@test.com.<br/><br/>If you think you '
-                        'have been incorrectly removed as an owner, add yourself back to the owners list.<br/>'
-                        '<br/>Thanks,<br/>Amundsen Team')
+                        '<a href="http://0.0.0.0:5000/testpath">testtable</a> dataset by test@test.com.<br/><br/>If you'
+                        ' think you have been incorrectly removed as an owner, add yourself back to the owners list.'
+                        '<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
 
     def test_get_notification_html_requested_success_all_fields(self) -> None:
+        """
+        Test successful generation of html for 'requested' notification email using
+        all required and optional fields
+        :return:
+        """
         test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
-            'resource_url': 'testUrl',
+            'resource_path': '/testpath',
             'description_requested': True,
             'fields_requested': True,
             'comment': 'Test Comment'
         }
-
-        html = get_notification_html(notification_type=test_notification_type,
-                                     options=test_options,
-                                     sender=test_sender)
-        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use <a href="testUrl">testtable</a>, '
+        with local_app.app_context():
+            html = get_notification_html(notification_type=test_notification_type,
+                                         options=test_options,
+                                         sender=test_sender)
+        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
+                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, '
                         'and requests improved table and column descriptions.<br/><br/>test@test.com has included the '
                         'following information with their request:<br/>Test Comment<br/><br/>Please visit the provided '
                         'link and improve descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
 
     def test_get_notification_html_requested_success_table_only(self) -> None:
+        """
+        Test successful generation of html for 'requested' notification email using
+        all required fields and 'description_requested' optional field
+        :return:
+        """
         test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
-            'resource_url': 'testUrl',
+            'resource_path': '/testpath',
             'description_requested': True,
         }
 
-        html = get_notification_html(notification_type=test_notification_type,
-                                     options=test_options,
-                                     sender=test_sender)
-        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use <a href="testUrl">testtable</a>, and requests '
+        with local_app.app_context():
+            html = get_notification_html(notification_type=test_notification_type,
+                                         options=test_options,
+                                         sender=test_sender)
+        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
+                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, and requests '
                         'an improved table description.<br/><br/>Please visit the provided link and improve '
                         'descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
 
     def test_get_notification_html_requested_success_columns_only(self) -> None:
+        """
+        Test successful generation of html for 'requested' notification email using
+        all required fields and 'fields_requested' optional field
+        :return:
+        """
         test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
-            'resource_url': 'testUrl',
+            'resource_path': '/testpath',
             'fields_requested': True,
         }
 
-        html = get_notification_html(notification_type=test_notification_type,
-                                     options=test_options,
-                                     sender=test_sender)
-        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use <a href="testUrl">testtable</a>, and requests '
+        with local_app.app_context():
+            html = get_notification_html(notification_type=test_notification_type,
+                                         options=test_options,
+                                         sender=test_sender)
+        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
+                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, and requests '
                         'improved column descriptions.<br/><br/>Please visit the provided link and improve '
                         'descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
 
     def test_get_notification_html_requested_success_no_optional_options(self) -> None:
+        """
+        Test successful generation of html for 'requested' notification email using
+        all required fields and no optional fields
+        :return:
+        """
         test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
-            'resource_url': 'testUrl',
+            'resource_path': '/testpath',
         }
 
-        html = get_notification_html(notification_type=test_notification_type,
-                                     options=test_options,
-                                     sender=test_sender)
-        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use <a href="testUrl">testtable</a>, and requests '
+        with local_app.app_context():
+            html = get_notification_html(notification_type=test_notification_type,
+                                         options=test_options,
+                                         sender=test_sender)
+        expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
+                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, and requests '
                         'more information about that resource.<br/><br/>Please visit the provided link and improve '
                         'descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)

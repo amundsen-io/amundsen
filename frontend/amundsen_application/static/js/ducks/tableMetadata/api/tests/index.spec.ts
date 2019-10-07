@@ -73,29 +73,34 @@ describe('helpers', () => {
   });
 
   describe('createOwnerNotificationData', () => {
+    let testData;
+    let testId;
+    let expectedName;
+    let expectedPath;
+    beforeAll(() => {
+      testData = globalState.tableMetadata.tableData;
+      testId =  'testId@test.com';
+      expectedName = `${testData.schema}.${testData.table_name}`;
+      expectedPath = `/table_detail/${testData.cluster}/${testData.database}/${testData.schema}/${testData.table_name}`;
+    });
+
     it('creates correct request data for PUT', () => {
-      const testId =  'testId@test.com';
-      const testMethod = UpdateMethod.PUT;
-      const testName = 'schema.tableName';
-      expect(Helpers.createOwnerNotificationData({ method: testMethod, id: testId }, testName)).toMatchObject({
+      expect(Helpers.createOwnerNotificationData({ method: UpdateMethod.PUT, id: testId }, testData)).toMatchObject({
         notificationType: NotificationType.OWNER_ADDED,
         options: {
-          resource_name: testName,
-          resource_url: window.location.href,
+          resource_name: expectedName,
+          resource_path: expectedPath,
         },
         recipients: [testId],
       });
     });
 
     it('creates correct request data for DELETE', () => {
-      const testId =  'testId@test.com';
-      const testMethod = UpdateMethod.DELETE;
-      const testName = 'schema.tableName';
-      expect(Helpers.createOwnerNotificationData({ method: testMethod, id: testId }, testName)).toMatchObject({
+      expect(Helpers.createOwnerNotificationData({ method: UpdateMethod.DELETE, id: testId }, testData)).toMatchObject({
         notificationType: NotificationType.OWNER_REMOVED,
         options: {
-          resource_name: testName,
-          resource_url: window.location.href,
+          resource_name: expectedName,
+          resource_path: expectedPath,
         },
         recipients: [testId],
       });

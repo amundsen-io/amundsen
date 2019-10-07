@@ -41,12 +41,12 @@ export function getTableTagsFromResponseData(responseData: API.TableDataAPI): Ta
 /**
  * Creates post data for sending a notification to owners when they are added/removed
  */
-export function createOwnerNotificationData(payload: UpdateOwnerPayload, resourceName: string) {
+export function createOwnerNotificationData(payload: UpdateOwnerPayload, tableData: TableMetadata) {
   return {
     notificationType: payload.method === UpdateMethod.PUT ? NotificationType.OWNER_ADDED : NotificationType.OWNER_REMOVED,
     options: {
-      resource_name: resourceName,
-      resource_url: window.location.href,
+      resource_name: `${tableData.schema}.${tableData.table_name}`,
+      resource_path: `/table_detail/${tableData.cluster}/${tableData.database}/${tableData.schema}/${tableData.table_name}`
     },
     recipients: [payload.id],
   };

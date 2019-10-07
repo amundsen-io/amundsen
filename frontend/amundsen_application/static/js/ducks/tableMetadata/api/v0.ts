@@ -89,13 +89,13 @@ export function getTableOwners(tableKey: string) {
 }
 
 /* TODO: Typing return type generates redux-saga related type error that need more dedicated debugging */
-export function generateOwnerUpdateRequests(updateArray: UpdateOwnerPayload[], tableKey: string, resourceName: string) {
+export function generateOwnerUpdateRequests(updateArray: UpdateOwnerPayload[], tableData: TableMetadata) {
   const updateRequests = [];
 
   /* Create the request for updating each owner*/
   updateArray.forEach((item) => {
-    const updatePayload = createOwnerUpdatePayload(item, tableKey);
-    const notificationData = createOwnerNotificationData(item, resourceName);
+    const updatePayload = createOwnerUpdatePayload(item, tableData.key);
+    const notificationData = createOwnerNotificationData(item, tableData);
 
     /* Chain requests to send notification on success to desired users */
     const request =

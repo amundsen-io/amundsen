@@ -11,15 +11,15 @@ import AppConfig from 'config/config';
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
-import { ToggleRequestAction } from 'ducks/notification/types';
+import { OpenRequestAction } from 'ducks/notification/types';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
-import { TableColumn } from 'interfaces';
+import { RequestMetadataType, TableColumn } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
 interface DispatchFromProps {
-  openRequestDescriptionDialog: () => ToggleRequestAction;
+  openRequestDescriptionDialog: (requestMetadataType: RequestMetadataType, columnName: string) => OpenRequestAction;
 }
 
 interface OwnProps {
@@ -47,7 +47,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
   }
 
   openRequest = () => {
-    this.props.openRequestDescriptionDialog();
+    this.props.openRequestDescriptionDialog(RequestMetadataType.COLUMN_DESCRIPTION, this.props.data.name);
   }
 
   onClick = (e) => {
@@ -156,7 +156,7 @@ class DetailListItem extends React.Component<DetailListItemProps, DetailListItem
           </div>
           {
             notificationsEnabled() &&
-            <Dropdown id={`detail-list-item-dropdown:${this.props.index}`} pullRight={true}>
+            <Dropdown id={`detail-list-item-dropdown:${this.props.index}`} pullRight={true} className="column-dropdown">
               <Dropdown.Toggle noCaret={true} className="dropdown-icon-more">
                 <img className="icon icon-more"/>
               </Dropdown.Toggle>

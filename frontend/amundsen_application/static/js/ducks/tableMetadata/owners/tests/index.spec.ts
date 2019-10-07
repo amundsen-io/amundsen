@@ -131,7 +131,7 @@ describe('tableMetadata:owners ducks', () => {
           sagaTest = (action) => {
             return testSaga(updateTableOwnerWorker, action)
                 .next().select()
-                .next(globalState).all(API.generateOwnerUpdateRequests(updatePayload, globalState.tableMetadata.tableData.key, globalState.tableMetadata.tableData.table_name))
+                .next(globalState).all(API.generateOwnerUpdateRequests(updatePayload, globalState.tableMetadata.tableData))
                 .next().call(API.getTableOwners, globalState.tableMetadata.tableData.key)
                 .next(expectedOwners).put(updateTableOwnerSuccess(expectedOwners));
           };
