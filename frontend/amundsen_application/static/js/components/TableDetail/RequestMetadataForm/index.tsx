@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import './styles.scss';
 
-import { NotificationType, SendNotificationOptions, SendingState } from 'interfaces';
+import { NotificationType, RequestMetadataType, SendNotificationOptions, SendingState, TableMetadata } from 'interfaces';
 
 import FlashMessage from 'components/common/FlashMessage'
 
@@ -17,31 +17,37 @@ import {
   REQUEST_TYPE,
   TABLE_DESCRIPTION,
   COLUMN_DESCRIPTIONS,
+  COLUMN_REQUESTED_COMMENT_PREFIX,
+  COMMENT_PLACEHOLDER_COLUMN,
+  COMMENT_PLACEHOLDER_DEFAULT,
   ADDITIONAL_DETAILS,
+  RECIPIENT_LIST_DELIMETER,
   SEND_BUTTON,
   SEND_FAILURE_MESSAGE,
   SEND_INPROGRESS_MESSAGE,
   SEND_SUCCESS_MESSAGE,
 } from './constants'
-import { ToggleRequestAction, SubmitNotificationRequest } from 'ducks/notification/types';
+import { CloseRequestAction, OpenRequestAction, SubmitNotificationRequest } from 'ducks/notification/types';
 import { closeRequestDescriptionDialog, submitNotification } from 'ducks/notification/reducer';
 
 interface StateFromProps {
+  columnName?: string;
+  requestMetadataType?: RequestMetadataType;
   userEmail: string;
-  displayName: string;
-  tableOwners: Array<string>;
+  tableMetadata: TableMetadata;
+  tableOwners: string[];
   requestIsOpen: boolean;
   sendState: SendingState;
 }
 
 export interface DispatchFromProps {
   submitNotification: (
-    recipients: Array<string>,
+    recipients: string[],
     sender: string,
     notificationType: NotificationType,
     options?: SendNotificationOptions
   ) => SubmitNotificationRequest;
-  closeRequestDescriptionDialog: () => ToggleRequestAction;
+  closeRequestDescriptionDialog: () => CloseRequestAction;
 }
 
 export type RequestMetadataProps = StateFromProps & DispatchFromProps;
@@ -91,19 +97,20 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
     const form = document.getElementById("RequestForm") as HTMLFormElement;
     const formData = new FormData(form);
     const recipientString = formData.get('recipients') as string
-    const recipients = recipientString.split(",")
+    const recipients = recipientString.split(RECIPIENT_LIST_DELIMETER.trim())
     const sender = formData.get('sender') as string;
     const descriptionRequested = formData.get('table-description') === "on";
     const fieldsRequested = formData.get('column-description') === "on";
     const comment = formData.get('comment') as string;
+    const { cluster, database, schema, table_name } = this.props.tableMetadata;
     this.props.submitNotification(
       recipients,
       sender,
       NotificationType.METADATA_REQUESTED,
       {
         comment,
-        resource_name: this.props.displayName,
-        resource_url: window.location.href,
+        resource_name: `${schema}.${table_name}`,
+        resource_path: `/table_detail/${cluster}/${database}/${schema}/${table_name}`,
         description_requested: descriptionRequested,
         fields_requested: fieldsRequested,
       }
@@ -111,14 +118,19 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
   };
 
   render() {
-    if (this.props.sendState !== SendingState.IDLE) {
+    const { columnName, requestIsOpen, requestMetadataType, sendState, tableMetadata, tableOwners, userEmail } = this.props;
+    const tableDescriptionNeeded = requestMetadataType === RequestMetadataType.TABLE_DESCRIPTION;
+    const colDescriptionNeeded = requestMetadataType === RequestMetadataType.COLUMN_DESCRIPTION;
+    const defaultComment = columnName ? `${COLUMN_REQUESTED_COMMENT_PREFIX}${columnName}`: '';
+
+    if (sendState !== SendingState.IDLE) {
       return (
         <div className="request-component">
           {this.renderFlashMessage()}
         </div>
       );
     }
-    if (!this.props.requestIsOpen) {
+    if (!requestIsOpen) {
       return (null);
     }
     return (
@@ -130,20 +142,43 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
         <form onSubmit={ this.submitNotification } id="RequestForm">
           <div id="sender-form-group" className="form-group">
             <label>{FROM_LABEL}</label>
-            <input type="email" name="sender" className="form-control" required={true} value={this.props.userEmail} readOnly={true}/>
+            <input type="email" name="sender" className="form-control" required={true} value={userEmail} readOnly={true}/>
           </div>
           <div id="recipients-form-group" className="form-group">
             <label>{TO_LABEL}</label>
-            <input type="email" name="recipients" className="form-control" required={true} multiple={true} defaultValue={this.props.tableOwners.join(",")}/>
+            <input type="text" name="recipients" className="form-control" required={true} multiple={true} defaultValue={tableOwners.join(RECIPIENT_LIST_DELIMETER)}/>
           </div>
           <div id="request-type-form-group" className="form-group">
             <label>{REQUEST_TYPE}</label>
-            <label className="select-label"><input type="checkbox" name="table-description"/>{TABLE_DESCRIPTION}</label>
-            <label className="select-label"><input type="checkbox" name="column-description"/>{COLUMN_DESCRIPTIONS}</label>
+            <label className="select-label">
+              <input
+                type="checkbox"
+                name="table-description"
+                defaultChecked={tableDescriptionNeeded}
+              />
+              {TABLE_DESCRIPTION}
+            </label>
+            <label className="select-label">
+              <input
+                type="checkbox"
+                name="column-description"
+                defaultChecked={colDescriptionNeeded}
+              />
+              {COLUMN_DESCRIPTIONS}
+            </label>
           </div>
           <div id="additional-comments-form-group" className="form-group">
             <label>{ADDITIONAL_DETAILS}</label>
-            <textarea className="form-control" name="comment" rows={ 8 } maxLength={ 2000 } />
+            <textarea
+              className="form-control"
+              name="comment"
+              placeholder={ colDescriptionNeeded ? COMMENT_PLACEHOLDER_COLUMN : COMMENT_PLACEHOLDER_DEFAULT }
+              required={ colDescriptionNeeded }
+              rows={ 8 }
+              maxLength={ 2000 }
+            >
+              { defaultComment }
+            </textarea>
           </div>
           <button id="submit-request-button" className="btn btn-primary" type="submit">
             {SEND_BUTTON}
@@ -156,16 +191,22 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
 
 export const mapStateToProps = (state: GlobalState) => {
   const userEmail = state.user.loggedInUser.email;
-  const displayName = `${state.tableMetadata.tableData.schema}.${state.tableMetadata.tableData.table_name}`;
+  const { columnName, requestMetadataType, requestIsOpen, sendState } = state.notification;
   const ownerObj = state.tableMetadata.tableOwners.owners;
-  const { requestIsOpen, sendState } = state.notification;
-  return {
+  const mappedProps = {
     userEmail,
-    displayName,
     requestIsOpen,
     sendState,
+    tableMetadata: state.tableMetadata.tableData,
     tableOwners: Object.keys(ownerObj),
   };
+  if (columnName) {
+    mappedProps['columnName'] = columnName;
+  }
+  if (requestMetadataType) {
+    mappedProps['requestMetadataType'] = requestMetadataType;
+  }
+  return mappedProps;
 };
 
 export const mapDispatchToProps = (dispatch: any) => {

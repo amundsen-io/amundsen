@@ -1,6 +1,6 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { NotificationType, SendingState } from 'interfaces';
+import { NotificationType, RequestMetadataType, SendingState } from 'interfaces';
 
 import * as API from '../api/v0';
 import reducer, {
@@ -23,7 +23,7 @@ const testSender = 'user2@test.com';
 const testNotificationType = NotificationType.OWNER_ADDED;
 const testOptions = {
   resource_name: 'testResource',
-  resource_url: 'https://testResource.com',
+  resource_path: '/testResource',
   description_requested: false,
   fields_requested: false,
 };
@@ -55,9 +55,23 @@ describe('notifications ducks', () => {
       expect(action.type).toBe(ToggleRequest.CLOSE);
     });
 
-    it('openRequestDescriptionDialog - returns the action to trigger the request description to opem', () => {
-      const action = openRequestDescriptionDialog();
-      expect(action.type).toBe(ToggleRequest.OPEN);
+    it('openRequestDescriptionDialog - returns the action to trigger the request description to open', () => {
+      const testType = RequestMetadataType.TABLE_DESCRIPTION;
+      const action = openRequestDescriptionDialog(testType);
+      const { payload, type } = action;
+      expect(type).toBe(ToggleRequest.OPEN);
+      expect(payload.requestMetadataType).toBe(testType);
+      expect(payload.columnName).toBe(undefined);
+    });
+
+    it('openRequestDescriptionDialog w/ columnName - returns the action to trigger the request description to open', () => {
+      const testType = RequestMetadataType.TABLE_DESCRIPTION;
+      const testName = 'columnName';
+      const action = openRequestDescriptionDialog(testType, testName);
+      const { payload, type } = action;
+      expect(type).toBe(ToggleRequest.OPEN);
+      expect(payload.requestMetadataType).toBe(testType);
+      expect(payload.columnName).toBe(testName);
     });
   });
 
@@ -73,8 +87,18 @@ describe('notifications ducks', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
 
-    it('should handle ToggleRequest.OPEN', () => {
-      expect(reducer(testState, openRequestDescriptionDialog())).toEqual({
+    it('should handle ToggleRequest.OPEN without columnName', () => {
+      expect(reducer(testState, openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION))).toEqual({
+        requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION,
+        requestIsOpen: true,
+        sendState: SendingState.IDLE,
+      });
+    });
+
+    it('should handle ToggleRequest.OPEN with columnName', () => {
+      expect(reducer(testState, openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION, 'col'))).toEqual({
+        columnName: 'col',
+        requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION,
         requestIsOpen: true,
         sendState: SendingState.IDLE,
       });
@@ -97,6 +121,7 @@ describe('notifications ducks', () => {
     it('should handle SubmitNotification.REQUEST', () => {
       const action = submitNotification(testRecipients, testSender, testNotificationType, testOptions);
       expect(reducer(testState, action)).toEqual({
+        ...testState,
         requestIsOpen: false,
         sendState: SendingState.WAITING,
       });

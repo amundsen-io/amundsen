@@ -96,26 +96,30 @@
     }
   }
 
-  .dropdown-icon-more {
-    border-style: none;
-    border-radius: 4px;
-    height: 22px;
-    width: 22px;
-    padding: 4px;
-    margin-right: 5px;
-    .icon {
-      background-color: $gray-light;
-      height: 14px;
-      -webkit-mask-size: 14px;
-      mask-size: 14px;
-      width: 14px;
-      margin: 0;
-    }
-    &:hover,
-    &:focus {
-      background-color: $gray-lightest;
+  .column-dropdown {
+    height: fit-content;
+
+    .dropdown-icon-more {
+      border-style: none;
+      border-radius: 4px;
+      height: 22px;
+      width: 22px;
+      padding: 4px;
+      margin-right: 5px;
       .icon {
-        background-color: $gray-base;
+        background-color: $gray-light;
+        height: 14px;
+        -webkit-mask-size: 14px;
+        mask-size: 14px;
+        width: 14px;
+        margin: 0;
+      }
+      &:hover,
+      &:focus {
+        background-color: $gray-lightest;
+        .icon {
+          background-color: $gray-base;
+        }
       }
     }
   }

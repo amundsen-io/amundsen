@@ -3,13 +3,15 @@ import './styles.scss';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { connect } from 'react-redux';
-import { ToggleRequestAction } from 'ducks/notification/types';
+import { OpenRequestAction } from 'ducks/notification/types';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { bindActionCreators } from 'redux';
 import { REQUEST_DESCRIPTION } from './constants';
 
+import { RequestMetadataType } from 'interfaces';
+
 export interface DispatchFromProps {
-  openRequestDescriptionDialog: () => ToggleRequestAction;
+  openRequestDescriptionDialog: (requestMetadataType: RequestMetadataType) => OpenRequestAction;
 }
 
 export type RequestDescriptionTextProps = DispatchFromProps;
@@ -24,7 +26,7 @@ export class RequestDescriptionText extends React.Component<RequestDescriptionTe
   }
 
   openRequest = () => {
-    this.props.openRequestDescriptionDialog();
+    this.props.openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION);
   }
 
   render() {

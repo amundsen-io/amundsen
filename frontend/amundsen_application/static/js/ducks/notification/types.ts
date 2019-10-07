@@ -1,4 +1,4 @@
-import { NotificationType, SendNotificationOptions } from 'interfaces'
+import { NotificationType, RequestMetadataType, SendNotificationOptions } from 'interfaces'
 
 export enum SubmitNotification {
   REQUEST = 'amundsen/notification/SUBMIT_NOTIFICATION_REQUEST',
@@ -9,7 +9,7 @@ export enum SubmitNotification {
 export interface SubmitNotificationRequest {
   type: SubmitNotification.REQUEST;
   payload: {
-    recipients: Array<string>,
+    recipients: string[],
     sender: string,
     notificationType: NotificationType,
     options?: SendNotificationOptions
@@ -24,6 +24,14 @@ export enum ToggleRequest {
   CLOSE = 'close',
 };
 
-export interface ToggleRequestAction {
-  type: ToggleRequest.OPEN | ToggleRequest.CLOSE;
+export interface OpenRequestAction {
+  type: ToggleRequest.OPEN,
+  payload: {
+    columnName?: string,
+    requestMetadataType: RequestMetadataType,
+  }
+};
+
+export interface CloseRequestAction {
+  type: ToggleRequest.CLOSE
 };

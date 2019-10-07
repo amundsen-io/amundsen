@@ -1,21 +1,22 @@
-import { NotificationType, SendNotificationOptions, SendingState } from 'interfaces'
+import { NotificationType, RequestMetadataType, SendNotificationOptions, SendingState } from 'interfaces'
 
 import {
   SubmitNotification,
   SubmitNotificationRequest,
   SubmitNotificationResponse,
   ToggleRequest,
-  ToggleRequestAction,
+  CloseRequestAction,
+  OpenRequestAction,
 } from './types';
 
 /* ACTIONS */
 export function submitNotification(recipients: Array<string>, sender: string, notificationType: NotificationType, options?: SendNotificationOptions): SubmitNotificationRequest {
   return {
     payload: {
-        recipients,
-        sender,
-        notificationType,
-        options
+      recipients,
+      sender,
+      notificationType,
+      options
     },
     type: SubmitNotification.REQUEST,
   };
@@ -31,20 +32,34 @@ export function submitNotificationSuccess(): SubmitNotificationResponse {
   };
 };
 
-export function closeRequestDescriptionDialog(): ToggleRequestAction {
+export function closeRequestDescriptionDialog(): CloseRequestAction {
   return {
-    type: ToggleRequest.CLOSE,
+    type: ToggleRequest.CLOSE
   };
 };
 
-export function openRequestDescriptionDialog(): ToggleRequestAction {
+export function openRequestDescriptionDialog(requestMetadataType: RequestMetadataType, columnName?: string): OpenRequestAction {
+  if (columnName) {
+    return {
+      type: ToggleRequest.OPEN,
+      payload: {
+        columnName,
+        requestMetadataType
+      }
+    }
+  }
   return {
     type: ToggleRequest.OPEN,
+    payload: {
+      requestMetadataType
+    }
   }
 }
 
 /* REDUCER */
 export interface NotificationReducerState {
+  columnName?: string,
+  requestMetadataType?: RequestMetadataType,
   requestIsOpen: boolean,
   sendState: SendingState,
 };
@@ -68,6 +83,7 @@ export default function reducer(state: NotificationReducerState = initialState, 
       }
     case SubmitNotification.REQUEST:
       return {
+        ...state,
         requestIsOpen: false,
         sendState: SendingState.WAITING,
       }
@@ -77,10 +93,16 @@ export default function reducer(state: NotificationReducerState = initialState, 
         sendState: SendingState.IDLE,
       }
     case ToggleRequest.OPEN:
-      return {
+      const newState = {
+        requestMetadataType: (<OpenRequestAction>action).payload.requestMetadataType,
         requestIsOpen: true,
         sendState: SendingState.IDLE,
       }
+      const columnName = (<OpenRequestAction>action).payload.columnName;
+      if (columnName) {
+        newState['columnName'] = columnName;
+      }
+      return newState;
     default:
       return state;
   }

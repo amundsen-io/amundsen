@@ -1,9 +1,5 @@
 @import 'variables';
 
-input[type="email"] {
-  color: $text-medium !important;
-}
-
 .request-component {
   box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
   border-radius: 6px;
@@ -33,6 +29,10 @@ input[type="email"] {
       font-weight: $font-weight-body-regular;
     }
 
+    input,
+    textarea {
+      color: $text-medium;
+    }
     input[type="checkbox"] {
       margin-right: 8px;
     }
