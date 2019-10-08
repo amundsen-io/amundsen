@@ -27,6 +27,6 @@ class PopularTablesAPI(Resource):
         self.client = get_proxy_client()
 
     def get(self) -> Iterable[Union[Mapping, int, None]]:
-        limit = request.args.get('limit', 10)
+        limit = request.args.get('limit', 10, type=int)
         popular_tables = self.client.get_popular_tables(num_entries=limit)
         return marshal({'popular_tables': popular_tables}, popular_tables_fields), HTTPStatus.OK
