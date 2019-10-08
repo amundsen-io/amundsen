@@ -1,0 +1,48 @@
+from http import HTTPStatus
+from unittest import TestCase
+
+from mock import patch, Mock
+
+from metadata_service import create_app
+
+API_RESPONSE = [{'database': 'ministry',
+                 'cluster': 'postgres',
+                 'schema': 'ministry',
+                 'table_name': 'wizards',
+                 'table_description': 'all wizards'}]
+
+CLIENT_RESPONSE = [{'database': 'ministry',
+                    'cluster': 'postgres',
+                    'schema': 'ministry',
+                    'name': 'wizards',
+                    'description': 'all wizards'}]
+
+
+class TestColumnDescriptionAPI(TestCase):
+    def setUp(self) -> None:
+        self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+        self.mock_client = patch('metadata_service.api.popular_tables.get_proxy_client')
+        self.mock_proxy = self.mock_client.start().return_value = Mock()
+
+    def tear_down(self):
+        self.app_context.pop()
+        self.mock_client.stop()
+
+    def test_should_get_popular_tables_with_default_limits(self) -> None:
+        self.mock_proxy.get_popular_tables.return_value = CLIENT_RESPONSE
+
+        response = self.app.test_client().get('popular_tables/')
+
+        self.assertEqual(response.json, {'popular_tables': API_RESPONSE})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.mock_proxy.get_popular_tables.assert_called_with(num_entries=10)
+
+    def test_should_get_popular_tables_with_requested_limits(self) -> None:
+        self.mock_proxy.get_popular_tables.return_value = CLIENT_RESPONSE
+
+        self.app.test_client().get('popular_tables/?limit=90')
+
+        self.mock_proxy.get_popular_tables.assert_called_with(num_entries=90)
