@@ -1,9 +1,8 @@
 from http import HTTPStatus
-from unittest import TestCase
 
 from mock import patch, Mock
 
-from metadata_service import create_app
+from tests.unit.test_basics import BasicTestCase
 
 API_RESPONSE = [{'database': 'ministry',
                  'cluster': 'postgres',
@@ -18,17 +17,16 @@ CLIENT_RESPONSE = [{'database': 'ministry',
                     'description': 'all wizards'}]
 
 
-class TestColumnDescriptionAPI(TestCase):
+class TestColumnDescriptionAPI(BasicTestCase):
     def setUp(self) -> None:
-        self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        super().setUp()
 
         self.mock_client = patch('metadata_service.api.popular_tables.get_proxy_client')
         self.mock_proxy = self.mock_client.start().return_value = Mock()
 
-    def tear_down(self):
-        self.app_context.pop()
+    def tearDown(self):
+        super().tearDown()
+
         self.mock_client.stop()
 
     def test_should_get_popular_tables_with_default_limits(self) -> None:

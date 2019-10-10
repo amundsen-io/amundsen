@@ -114,7 +114,7 @@ class TableOwnerAPI(Resource):
             return {'message': 'The owner {} for table_uri {} '
                                'is added successfully'.format(owner,
                                                               table_uri)}, HTTPStatus.OK
-        except Exception as e:
+        except Exception:
             return {'message': 'The owner {} for table_uri {} '
                                'is not added successfully'.format(owner,
                                                                   table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR

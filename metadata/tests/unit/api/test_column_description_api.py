@@ -1,27 +1,25 @@
 from http import HTTPStatus
-from unittest import TestCase
 
 from mock import patch, Mock
 
-from metadata_service import create_app
 from metadata_service.exception import NotFoundException
+from tests.unit.test_basics import BasicTestCase
 
 DESCRIPTION = 'This is the name of the spell.'
 COLUMN_NAME = 'spell'
 TABLE_NAME = 'magic'
 
 
-class TestColumnDescriptionAPI(TestCase):
+class TestColumnDescriptionAPI(BasicTestCase):
     def setUp(self) -> None:
-        self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        super().setUp()
 
         self.mock_client = patch('metadata_service.api.column.get_proxy_client')
         self.mock_proxy = self.mock_client.start().return_value = Mock()
 
-    def tear_down(self):
-        self.app_context.pop()
+    def tearDown(self):
+        super().tearDown()
+
         self.mock_client.stop()
 
     def test_should_update_column_description(self) -> None:
