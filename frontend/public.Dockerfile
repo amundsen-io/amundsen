@@ -1,20 +1,22 @@
-FROM node:8 as node-stage
-
-COPY . /app
-
+FROM node:8-slim as node-stage
 WORKDIR /app/amundsen_application/static
 
+COPY amundsen_application/static/package.json /app/amundsen_application/static/package.json
+COPY amundsen_application/static/package-lock.json /app/amundsen_application/static/package-lock.json
 RUN npm install
+
+COPY amundsen_application/static /app/amundsen_application/static
 RUN npm run build
 
-FROM python:3
+FROM python:3-slim
+WORKDIR /app
+RUN pip3 install gunicorn
+
+COPY requirements3.txt /app/requirements3.txt
+RUN pip3 install -r requirements3.txt
 
 COPY --from=node-stage /app /app
-
-WORKDIR /app
-
-RUN pip3 install -r requirements3.txt
+COPY . /app
 RUN python3 setup.py install
 
-ENTRYPOINT [ "python3" ]
-CMD [ "amundsen_application/wsgi.py" ]
+CMD [ "python3",  "amundsen_application/wsgi.py" ]
