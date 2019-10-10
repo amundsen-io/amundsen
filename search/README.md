@@ -8,7 +8,7 @@
 
 Amundsen Search service serves a Restful API and is responsible for searching metadata. The service leverages [Elasticsearch](https://www.elastic.co/products/elasticsearch "Elasticsearch") for most of it's search capabilites.
 
-For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
+For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen#amundsen) `README.md`. Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture).
 
 ## Requirements
 
@@ -50,21 +50,13 @@ $ curl -v http://localhost:5000/healthcheck
 ```bash
 $ docker pull amundsendev/amundsen-search:latest
 $ docker run -p 5000:5000 amundsendev/amundsen-search
+# - alternative, for production environment with Gunicorn (see its homepage link below)
+$ ## docker run -p 5000:5000 amundsendev/amundsen-search gunicorn --bind 0.0.0.0:5000 search_service.search_wsgi
 
 # In a different terminal, verify the service is up by running
 $ curl -v http://localhost:5000/healthcheck
 ```
 
-## Instructions to start the service from Docker with gunicorn (production use case)
-Note that the commands below uses default config of gunicorn. Please visit [Gunicorn homepage](https://gunicorn.org/ "Gunicorn") for more information.
-
-```bash
-$ docker pull amundsendev/amundsen-search:latest
-$ docker run -p 5000:5000 amundsendev/amundsen-search gunicorn --bind 0.0.0.0:5000 search_service.search_wsgi
-
-# In a different terminal, verify the service is up by running
-$ curl -v http://localhost:5000/healthcheck
-```
 
 ## Production environment
 By default, Flask comes with a Werkzeug webserver, which is used for development. For production environments a production grade web server such as [Gunicorn](https://gunicorn.org/ "Gunicorn") should be used.
