@@ -8,7 +8,7 @@
 
 Amundsen Metadata service serves Restful API and is responsible for providing and also updating metadata, such as table & column description, and tags. Metadata service can use Neo4j or Apache Atlas as a persistent layer.
 
-For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
+For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen#amundsen) `README.md`. Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture).
 
 ## Requirements
 - Python >= 3.7
@@ -39,24 +39,18 @@ $ python3 metadata_service/metadata_wsgi.py
 $ curl -v http://localhost:5000/healthcheck
 ```
 
-## Instructions to start the service from the Docker
+## Instructions to start the service from Docker
+
 ```bash
 $ docker pull amundsendev/amundsen-metadata:latest
 $ docker run -p 5000:5000 amundsendev/amundsen-metadata
+# - alternative, for production environment with Gunicorn (see its homepage link below)
+$ ## docker run -p 5000:5000 amundsendev/amundsen-metadata gunicorn --bind 0.0.0.0:5000 metadata_service.metadata_wsgi
 
 -- In a different terminal, verify getting HTTP/1.0 200 OK
 $ curl -v http://localhost:5000/healthcheck
 ```
 
-## Instructions to start the service from Docker with gunicorn (production use case)
-Note that there below command uses default config of gunicorn. Please visit [Gunicorn homepage](https://gunicorn.org/ "Gunicorn") for more information.
-```bash
-$ docker pull amundsendev/amundsen-metadata:latest
-$ docker run -p 5000:5000 amundsendev/amundsen-metadata gunicorn --bind 0.0.0.0:5000 metadata_service.metadata_wsgi
-
--- In a different terminal, verify getting HTTP/1.0 200 OK
-$ curl -v http://localhost:5000/healthcheck
-```
 
 ## Production environment
 By default, Flask comes with Werkzeug webserver, which is for development. For production environment use production grade web server such as [Gunicorn](https://gunicorn.org/ "Gunicorn").
