@@ -56,4 +56,8 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
     app.register_blueprint(search_blueprint)
     init_routes(app)
 
+    init_custom_routes = app.config.get('INIT_CUSTOM_ROUTES')
+    if init_custom_routes:
+        init_custom_routes(app)
+
     return app
