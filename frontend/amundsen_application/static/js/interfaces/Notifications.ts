@@ -1,9 +1,8 @@
-// TODO: Remove notification types that can be triggered in flask layer if necessary
 export enum NotificationType {
-  OWNER_ADDED = 'added',
-  OWNER_REMOVED = 'removed',
-  METADATA_EDITED = 'edited',
-  METADATA_REQUESTED = 'requested',
+  OWNER_ADDED = 'owner_added',
+  OWNER_REMOVED = 'owner_removed',
+  METADATA_EDITED = 'metadata_edited',
+  METADATA_REQUESTED = 'metadata_requested',
 }
 
 export enum RequestMetadataType {

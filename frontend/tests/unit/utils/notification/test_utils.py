@@ -9,7 +9,7 @@ from flask import jsonify, make_response, Response
 from amundsen_application import create_app
 from amundsen_application.api.exceptions import MailClientNotImplemented
 from amundsen_application.api.utils.notification_utils import get_mail_client, \
-    get_notification_html, get_notification_subject, send_notification
+    get_notification_html, get_notification_subject, send_notification, NotificationType
 from amundsen_application.base.base_mail_client import BaseMailClient
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
@@ -39,50 +39,38 @@ class NotificationUtilsTest(unittest.TestCase):
         Test Exception is raised if resource_path is None
         :return:
         """
-        test_notification_type = 'removed'
-        test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable'}
-
         with local_app.app_context():
             self.assertRaises(Exception,
                               get_notification_html,
-                              notification_type=test_notification_type,
-                              options=test_options,
-                              sender=test_sender)
+                              notification_type=NotificationType.OWNER_REMOVED,
+                              options={'resource_name': 'testtable'},
+                              sender='test@test.com')
 
     def test_validate_resource_path_bad_syntax(self) -> None:
         """
         Test Exception is raised if resource_path violates leading '/' syntax
         :return:
         """
-        test_notification_type = 'removed'
-        test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable', 'resource_path': 'testpath'}
-
         with local_app.app_context():
             self.assertRaises(Exception,
                               get_notification_html,
-                              notification_type=test_notification_type,
-                              options=test_options,
-                              sender=test_sender)
+                              notification_type=NotificationType.OWNER_REMOVED,
+                              options={'resource_name': 'testtable', 'resource_path': 'testpath'},
+                              sender='test@test.com')
 
     def test_get_notification_html_bad_base_url(self) -> None:
         """
         Test Exception is raised if configured FRONTEND_BASE violates no trailing '/' syntax
         :return:
         """
-        test_notification_type = 'added'
-        test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
-
         with local_app.app_context():
             temp = local_app.config['FRONTEND_BASE']
             local_app.config['FRONTEND_BASE'] = 'garbagetest_rewrite_file_to_setup_teardown_each_case/'
             self.assertRaises(Exception,
                               get_notification_html,
-                              notification_type=test_notification_type,
-                              options=test_options,
-                              sender=test_sender)
+                              notification_type=NotificationType.OWNER_ADDED,
+                              options={'resource_name': 'testtable', 'resource_path': '/testpath'},
+                              sender='test@test.com')
             local_app.config['FRONTEND_BASE'] = temp
 
     def test_get_notification_html_no_resource_name(self) -> None:
@@ -90,44 +78,35 @@ class NotificationUtilsTest(unittest.TestCase):
         Test Exception is raised if resource_name is not provided
         :return:
         """
-        test_notification_type = 'added'
-        test_sender = 'test@test.com'
-        test_options = {'resource_path': '/testpath'}
-
         with local_app.app_context():
             self.assertRaises(Exception,
                               get_notification_html,
-                              notification_type=test_notification_type,
-                              options=test_options,
-                              sender=test_sender)
+                              notification_type=NotificationType.OWNER_ADDED,
+                              options={'resource_path': '/testpath'},
+                              sender='test@test.com')
 
     def test_get_notification_html_unsupported_type(self) -> None:
         """
         Test Exception is raised if notification_type is not supported
         :return:
         """
-        test_notification_type = 'invalid_type'
-        test_sender = 'test@test.com'
-        test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
-
         with local_app.app_context():
             self.assertRaises(Exception,
                               get_notification_html,
-                              notification_type=test_notification_type,
-                              options=test_options,
-                              sender=test_sender)
+                              notification_type='invalid_type',
+                              options={'resource_name': 'testtable', 'resource_path': '/testpath'},
+                              sender='test@test.com')
 
     def test_get_notification_html_added_success(self) -> None:
         """
         Test successful generation of html for 'added' notification email
         :return:
         """
-        test_notification_type = 'added'
         test_sender = 'test@test.com'
         test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
 
         with local_app.app_context():
-            html = get_notification_html(notification_type=test_notification_type,
+            html = get_notification_html(notification_type=NotificationType.OWNER_ADDED,
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>You have been added to the owners list of the '
@@ -145,12 +124,11 @@ class NotificationUtilsTest(unittest.TestCase):
         Test successful generation of html for 'removed' notification email
         :return:
         """
-        test_notification_type = 'removed'
         test_sender = 'test@test.com'
         test_options = {'resource_name': 'testtable', 'resource_path': '/testpath'}
 
         with local_app.app_context():
-            html = get_notification_html(notification_type=test_notification_type,
+            html = get_notification_html(notification_type=NotificationType.OWNER_REMOVED,
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>You have been removed from the owners list of the '
@@ -165,7 +143,6 @@ class NotificationUtilsTest(unittest.TestCase):
         all required and optional fields
         :return:
         """
-        test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
@@ -175,7 +152,7 @@ class NotificationUtilsTest(unittest.TestCase):
             'comment': 'Test Comment'
         }
         with local_app.app_context():
-            html = get_notification_html(notification_type=test_notification_type,
+            html = get_notification_html(notification_type=NotificationType.METADATA_REQUESTED,
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
@@ -191,7 +168,6 @@ class NotificationUtilsTest(unittest.TestCase):
         all required fields and 'description_requested' optional field
         :return:
         """
-        test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
@@ -200,7 +176,7 @@ class NotificationUtilsTest(unittest.TestCase):
         }
 
         with local_app.app_context():
-            html = get_notification_html(notification_type=test_notification_type,
+            html = get_notification_html(notification_type=NotificationType.METADATA_REQUESTED,
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
@@ -215,7 +191,6 @@ class NotificationUtilsTest(unittest.TestCase):
         all required fields and 'fields_requested' optional field
         :return:
         """
-        test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
@@ -224,7 +199,7 @@ class NotificationUtilsTest(unittest.TestCase):
         }
 
         with local_app.app_context():
-            html = get_notification_html(notification_type=test_notification_type,
+            html = get_notification_html(notification_type=NotificationType.METADATA_REQUESTED,
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
@@ -239,7 +214,6 @@ class NotificationUtilsTest(unittest.TestCase):
         all required fields and no optional fields
         :return:
         """
-        test_notification_type = 'requested'
         test_sender = 'test@test.com'
         test_options = {
             'resource_name': 'testtable',
@@ -247,7 +221,7 @@ class NotificationUtilsTest(unittest.TestCase):
         }
 
         with local_app.app_context():
-            html = get_notification_html(notification_type=test_notification_type,
+            html = get_notification_html(notification_type=NotificationType.METADATA_REQUESTED,
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
@@ -258,35 +232,50 @@ class NotificationUtilsTest(unittest.TestCase):
 
     def test_get_notification_subject_added(self) -> None:
         """
-        Test successful executed of get_notification_subject for the 'added' notification type
+        Test successful executed of get_notification_subject for the OWNER_ADDED notification type
         :return:
         """
-        result = get_notification_subject(notification_type='added', options={'resource_name': 'testtable'})
+        result = get_notification_subject(notification_type=NotificationType.OWNER_ADDED,
+                                          options={'resource_name': 'testtable'})
         self.assertEqual(result, 'You are now an owner of testtable')
 
     def test_get_notification_subject_removed(self) -> None:
         """
-        Test successful executed of get_notification_subject for the 'removed' notification type
+        Test successful executed of get_notification_subject for the OWNER_REMOVED notification type
         :return:
         """
-        result = get_notification_subject(notification_type='removed', options={'resource_name': 'testtable'})
+        result = get_notification_subject(notification_type=NotificationType.OWNER_REMOVED,
+                                          options={'resource_name': 'testtable'})
         self.assertEqual(result, 'You have been removed as an owner of testtable')
 
     def test_get_notification_subject_edited(self) -> None:
         """
-        Test successful executed of get_notification_subject for the 'edited' notification type
+        Test successful executed of get_notification_subject for the METADATA_EDITED notification type
         :return:
         """
-        result = get_notification_subject(notification_type='edited', options={'resource_name': 'testtable'})
+        result = get_notification_subject(notification_type=NotificationType.METADATA_EDITED,
+                                          options={'resource_name': 'testtable'})
         self.assertEqual(result, 'Your dataset testtable\'s metadata has been edited')
 
     def test_get_notification_subject_requested(self) -> None:
         """
-        Test successful executed of get_notification_subject for the 'requested' notification type
+        Test successful executed of get_notification_subject for the METADATA_REQUESTED notification type
         :return:
         """
-        result = get_notification_subject(notification_type='requested', options={'resource_name': 'testtable'})
+        result = get_notification_subject(notification_type=NotificationType.METADATA_REQUESTED,
+                                          options={'resource_name': 'testtable'})
         self.assertEqual(result, 'Request for metadata on testtable')
+
+    def test_get_notification_subject_unsupported_type(self) -> None:
+        """
+        Test Exception is raised if notification_type is not supported
+        :return:
+        """
+        with local_app.app_context():
+            self.assertRaises(Exception,
+                              get_notification_subject,
+                              notification_type='invalid_type',
+                              options={'resource_name': 'testtable'})
 
     def test_get_mail_client_success(self) -> None:
         """
@@ -312,7 +301,7 @@ class NotificationUtilsTest(unittest.TestCase):
         """
         with local_no_notification_app.app_context():
             response = send_notification(
-                notification_type='added',
+                notification_type=NotificationType.OWNER_ADDED,
                 options={},
                 recipients=['test@test.com'],
                 sender='test2@test.com'
@@ -334,7 +323,7 @@ class NotificationUtilsTest(unittest.TestCase):
 
             test_recipients = ['test@test.com']
             test_sender = 'test2@test.com'
-            test_notification_type = 'added'
+            test_notification_type = NotificationType.OWNER_ADDED
             test_options = {}
 
             response = send_notification(
@@ -372,7 +361,7 @@ class NotificationUtilsTest(unittest.TestCase):
 
             test_sender = 'test@test.com'
             test_recipients = [test_sender, 'test2@test.com']
-            test_notification_type = 'added'
+            test_notification_type = NotificationType.OWNER_ADDED
             test_options = {}
             expected_recipients = ['test2@test.com']
 
@@ -387,7 +376,7 @@ class NotificationUtilsTest(unittest.TestCase):
                 sender=test_sender,
                 subject=mock_subject,
                 html=mock_html,
-                optional_data={'email_type': 'notification'},
+                optional_data={'email_type': test_notification_type},
             )
 
     def test_no_recipients_for_notification(self) -> None:
@@ -397,7 +386,7 @@ class NotificationUtilsTest(unittest.TestCase):
         """
         with local_app.app_context():
             response = send_notification(
-                notification_type='added',
+                notification_type=NotificationType.OWNER_ADDED,
                 options={},
                 recipients=[],
                 sender='test@test.com'

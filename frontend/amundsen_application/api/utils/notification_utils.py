@@ -1,6 +1,7 @@
 import logging
 
 from http import HTTPStatus
+from enum import Enum
 
 from flask import current_app as app
 from flask import jsonify, make_response, Response
@@ -9,8 +10,27 @@ from typing import Dict, List
 from amundsen_application.api.exceptions import MailClientNotImplemented
 from amundsen_application.log.action_log import action_logging
 
+
+class NotificationType(str, Enum):
+    """
+    Enum to describe supported notification types. Must match NotificationType interface defined in:
+    https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/interfaces/Notifications.ts
+    """
+    OWNER_ADDED = 'owner_added'
+    OWNER_REMOVED = 'owner_removed'
+    METADATA_EDITED = 'metadata_edited'
+    METADATA_REQUESTED = 'metadata_requested'
+
+    @classmethod
+    def has_value(cls, value: str) -> bool:
+        for key in cls:
+            if key.value == value:
+                return True
+        return False
+
+
 NOTIFICATION_STRINGS = {
-    'added': {
+    NotificationType.OWNER_ADDED.value: {
         'comment': ('<br/>What is expected of you?<br/>As an owner, you take an important part in making '
                     'sure that the datasets you own can be used as swiftly as possible across the company.<br/>'
                     'Make sure the metadata is correct and up to date.<br/>'),
@@ -20,14 +40,14 @@ NOTIFICATION_STRINGS = {
         'notification': ('<br/>You have been added to the owners list of the <a href="{resource_url}">'
                          '{resource_name}</a> dataset by {sender}.<br/>'),
     },
-    'removed': {
+    NotificationType.OWNER_REMOVED.value: {
         'comment': '',
         'end_note': ('<br/>If you think you have been incorrectly removed as an owner, '
                      'add yourself back to the owners list.<br/>'),
         'notification': ('<br/>You have been removed from the owners list of the <a href="{resource_url}">'
                          '{resource_name}</a> dataset by {sender}.<br/>'),
     },
-    'requested': {
+    NotificationType.METADATA_REQUESTED.value: {
         'comment': '',
         'end_note': '<br/>Please visit the provided link and improve descriptions on that resource.<br/>',
         'notification': '<br/>{sender} is trying to use <a href="{resource_url}">{resource_name}</a>, ',
@@ -84,7 +104,7 @@ def get_notification_html(*, notification_type: str, options: Dict, sender: str)
     end_note = notification_strings.get('end_note', '')
     salutation = '<br/>Thanks,<br/>Amundsen Team'
 
-    if notification_type == 'requested':
+    if notification_type == NotificationType.METADATA_REQUESTED:
         options_comment = options.get('comment')
         need_resource_description = options.get('description_requested')
         need_fields_descriptions = options.get('fields_requested')
@@ -118,12 +138,15 @@ def get_notification_subject(*, notification_type: str, options: Dict) -> str:
     """
     resource_name = options.get('resource_name')
     notification_subject_dict = {
-        'added': 'You are now an owner of {}'.format(resource_name),
-        'removed': 'You have been removed as an owner of {}'.format(resource_name),
-        'edited': 'Your dataset {}\'s metadata has been edited'.format(resource_name),
-        'requested': 'Request for metadata on {}'.format(resource_name),
+        NotificationType.OWNER_ADDED.value: 'You are now an owner of {}'.format(resource_name),
+        NotificationType.OWNER_REMOVED.value: 'You have been removed as an owner of {}'.format(resource_name),
+        NotificationType.METADATA_EDITED.value: 'Your dataset {}\'s metadata has been edited'.format(resource_name),
+        NotificationType.METADATA_REQUESTED.value: 'Request for metadata on {}'.format(resource_name),
     }
-    return notification_subject_dict.get(notification_type, '')
+    subject = notification_subject_dict.get(notification_type)
+    if subject is None:
+        raise Exception('Unsupported notification_type')
+    return subject
 
 
 def send_notification(*, notification_type: str, options: Dict, recipients: List, sender: str) -> Response:
@@ -174,7 +197,7 @@ def send_notification(*, notification_type: str, options: Dict, recipients: List
             subject=subject,
             html=html,
             optional_data={
-                'email_type': 'notification'
+                'email_type': notification_type,
             },
         )
         status_code = response.status_code
