@@ -123,7 +123,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     const searchIndex = params['index'];
     const source = params['source'];
     /* update the url stored in the browser history to remove params used for logging purposes */
-    if (searchIndex !== undefined) {
+    if (searchIndex !== undefined || source !== undefined) {
       window.history.replaceState({}, '', `${window.location.origin}${window.location.pathname}`);
     }
 

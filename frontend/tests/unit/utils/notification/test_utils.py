@@ -110,7 +110,7 @@ class NotificationUtilsTest(unittest.TestCase):
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>You have been added to the owners list of the '
-                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>'
+                        '<a href="http://0.0.0.0:5000/testpath?source=notification">testtable</a>'
                         ' dataset by test@test.com.<br/><br/>What is expected of you?<br/>As an owner, you take an '
                         'important part in making sure that the datasets you own can be used as swiftly as possible '
                         'across the company.<br/>Make sure the metadata is correct and up to date.<br/><br/>If you '
@@ -132,9 +132,9 @@ class NotificationUtilsTest(unittest.TestCase):
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>You have been removed from the owners list of the '
-                        '<a href="http://0.0.0.0:5000/testpath">testtable</a> dataset by test@test.com.<br/><br/>If you'
-                        ' think you have been incorrectly removed as an owner, add yourself back to the owners list.'
-                        '<br/><br/>Thanks,<br/>Amundsen Team')
+                        '<a href="http://0.0.0.0:5000/testpath?source=notification">testtable</a> dataset by'
+                        ' test@test.com.<br/><br/>If you think you have been incorrectly removed as an owner,'
+                        ' add yourself back to the owners list.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
 
     def test_get_notification_html_requested_success_all_fields(self) -> None:
@@ -156,7 +156,7 @@ class NotificationUtilsTest(unittest.TestCase):
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
-                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, '
+                        '<a href="http://0.0.0.0:5000/testpath?source=notification">testtable</a>, '
                         'and requests improved table and column descriptions.<br/><br/>test@test.com has included the '
                         'following information with their request:<br/>Test Comment<br/><br/>Please visit the provided '
                         'link and improve descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
@@ -180,7 +180,7 @@ class NotificationUtilsTest(unittest.TestCase):
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
-                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, and requests '
+                        '<a href="http://0.0.0.0:5000/testpath?source=notification">testtable</a>, and requests '
                         'an improved table description.<br/><br/>Please visit the provided link and improve '
                         'descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
@@ -203,7 +203,7 @@ class NotificationUtilsTest(unittest.TestCase):
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
-                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, and requests '
+                        '<a href="http://0.0.0.0:5000/testpath?source=notification">testtable</a>, and requests '
                         'improved column descriptions.<br/><br/>Please visit the provided link and improve '
                         'descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)
@@ -225,7 +225,7 @@ class NotificationUtilsTest(unittest.TestCase):
                                          options=test_options,
                                          sender=test_sender)
         expectedHTML = ('Hello,<br/><br/>test@test.com is trying to use '
-                        '<a href="http://0.0.0.0:5000/testpath">testtable</a>, and requests '
+                        '<a href="http://0.0.0.0:5000/testpath?source=notification">testtable</a>, and requests '
                         'more information about that resource.<br/><br/>Please visit the provided link and improve '
                         'descriptions on that resource.<br/><br/>Thanks,<br/>Amundsen Team')
         self.assertEqual(html, expectedHTML)

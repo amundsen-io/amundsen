@@ -86,8 +86,8 @@ def get_notification_html(*, notification_type: str, options: Dict, sender: str)
     validate_options(options=options)
 
     url_base = app.config['FRONTEND_BASE']
-    resource_url = '{url_base}{resource_path}'.format(resource_path=options.get('resource_path'),
-                                                      url_base=url_base)
+    resource_url = '{url_base}{resource_path}?source=notification'.format(resource_path=options.get('resource_path'),
+                                                                          url_base=url_base)
     joined_chars = resource_url[len(url_base) - 1:len(url_base) + 1]
     if joined_chars.count('/') != 1:
         raise Exception('Configured "FRONTEND_BASE" and "resource_path" do not form a valid url')
