@@ -14,7 +14,7 @@ RUN npm run dev-build
 
 COPY . /app
 
-FROM python:3-slim
+FROM python:3.7-slim
 WORKDIR /app
 
 COPY requirements3.txt /app/requirements3.txt
