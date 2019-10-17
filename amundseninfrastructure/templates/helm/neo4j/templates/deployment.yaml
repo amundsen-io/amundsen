@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      run: {{ .Chart.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: {{ .Chart.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Chart.Name }}:{{ .Chart.AppVersion }}
+        ports:
+        - containerPort: 7474
+        - containerPort: 7687
+        env:
+          - name: NEO4J_AUTH
+            value: "neo4j/test"
+          - name: NEO4J_CONF
+            value: "/conf"
+        volumeMounts:
+        - name: conf
+          mountPath: /conf                 
+      volumes:
+        - name: conf
+          configMap:
+            name: {{ .Chart.Name }}-configmap
