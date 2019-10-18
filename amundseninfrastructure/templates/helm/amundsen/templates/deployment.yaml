@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+spec:
+  selector:
+    matchLabels:
+      run: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.searchServiceName }}:{{ .Values.searchImageVersion }}
+        ports:
+        - containerPort: 5000  
+        env:
+        - name: PROXY_ENDPOINT
+          value: elasticsearch  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+spec:
+  selector:
+    matchLabels:
+      run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:{{ .Values.metadataImageVersion }}
+        ports:
+        - containerPort: 5000  
+        env:
+        - name: PROXY_HOST
+          value: bolt://neo4j
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+spec:
+  selector:
+    matchLabels:
+      run: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}:1.0.9
+        ports:
+        - containerPort: 5000  
+        env:
+        - name: SEARCHSERVICE_BASE
+          value: http://{{ .Chart.Name }}-{{ .Values.searchServiceName }}:5001
+        - name: METADATASERVICE_BASE
+          value: http://{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:5002
+        - name: FRONTEND_SVC_CONFIG_MODULE_CLASS
+          value: amundsen_application.config.TestConfig                     
+---                          
