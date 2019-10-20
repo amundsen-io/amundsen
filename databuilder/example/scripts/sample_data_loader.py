@@ -205,6 +205,33 @@ def load_application_data_from_csv(file_name):
         conn.commit()
 
 
+def load_source_data_from_csv(file_name):
+    conn = create_connection(DB_FILE)
+    if conn:
+        cur = conn.cursor()
+        cur.execute('drop table if exists test_source_metadata')
+        cur.execute('create table if not exists test_source_metadata '
+                    '(db_name VARCHAR(64) NOT NULL , '
+                    'cluster VARCHAR(64) NOT NULL , '
+                    'schema_name VARCHAR(64) NOT NULL, '
+                    'table_name VARCHAR(64) NOT NULL, '
+                    'source VARCHAR(64) NOT NULL , '
+                    'source_type VARCHAR(32) NOT NULL)')
+        file_loc = 'example/sample_data/' + file_name
+        with open(file_loc, 'r') as fin:
+            dr = csv.DictReader(fin)
+            to_db = [(i['db_name'],
+                      i['cluster'],
+                      i['schema_name'],
+                      i['table_name'],
+                      i['source'],
+                      i['source_type']) for i in dr]
+
+        cur.executemany("INSERT INTO test_source_metadata (db_name, cluster, "
+                        "schema_name, table_name, source, source_type) VALUES (?, ?, ?, ?, ?, ?);", to_db)
+        conn.commit()
+
+
 # todo: Add a second model
 def create_sample_job(table_name, model_name, transformer=NoopTransformer()):
     sql = textwrap.dedent("""
@@ -394,6 +421,7 @@ if __name__ == "__main__":
     load_usage_data_from_csv('sample_column_usage.csv')
     load_user_data_from_csv('sample_user.csv')
     load_application_data_from_csv('sample_application.csv')
+    load_source_data_from_csv('sample_source.csv')
 
     if create_connection(DB_FILE):
         # start table job
@@ -425,6 +453,11 @@ if __name__ == "__main__":
         job_app = create_sample_job('test_application_metadata',
                                     'databuilder.models.application.Application')
         job_app.launch()
+
+        # start job_source job
+        job_source = create_sample_job('test_source_metadata',
+                                       'databuilder.models.table_source.TableSource')
+        job_source.launch()
 
         # start last updated job
         job_lastupdated = create_last_updated_job()
