@@ -19,14 +19,16 @@ class TableOwner(Neo4jCsvSerializable):
                  db_name,  # type: str
                  schema_name,  # type: str
                  table_name,  # type: str
-                 owners,  # type: List
+                 owners,  # type: Union[List, str]
                  cluster='gold',  # type: str
                  ):
         # type: (...) -> None
         self.db = db_name.lower()
         self.schema = schema_name.lower()
         self.table = table_name.lower()
-        self.owners = owners
+        if isinstance(owners, str):
+            owners = owners.split(',')
+        self.owners = [owner.lower().strip() for owner in owners]
 
         self.cluster = cluster.lower()
         self._node_iter = iter(self.create_nodes())

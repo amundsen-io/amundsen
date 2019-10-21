@@ -285,7 +285,7 @@ def load_usage_data_from_csv(file_name):
         cur = conn.cursor()
         cur.execute('drop table if exists test_usage_metadata')
         cur.execute('create table if not exists test_usage_metadata '
-                    '(database VARCHAR(64) NOT NULL , '
+                    '(database VARCHAR(64) NOT NULL, '
                     'cluster VARCHAR(64) NOT NULL, '
                     'schema_name VARCHAR(64) NOT NULL, '
                     'table_name VARCHAR(64) NOT NULL, '
@@ -307,6 +307,34 @@ def load_usage_data_from_csv(file_name):
         cur.executemany("INSERT INTO test_usage_metadata (database, cluster, "
                         "schema_name, table_name, column_name, user_email, read_count) "
                         "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
+        conn.commit()
+
+
+def load_table_owner_data_from_csv(file_name):
+    # Load usage data
+    conn = create_connection(DB_FILE)
+    if conn:
+        cur = conn.cursor()
+        cur.execute('drop table if exists test_table_owner_metadata')
+        cur.execute('create table if not exists test_table_owner_metadata '
+                    '(db_name VARCHAR(64) NOT NULL, '
+                    'schema_name VARCHAR(64) NOT NULL, '
+                    'table_name VARCHAR(64) NOT NULL, '
+                    'owners VARCHAR(128) NOT NULL, '
+                    'cluster VARCHAR(64) NOT NULL)')
+        file_loc = 'example/sample_data/' + file_name
+        with open(file_loc, 'r') as fin:
+            dr = csv.DictReader(fin)
+            to_db = [(i['database'],
+                      i['schema_name'],
+                      i['table_name'],
+                      i['owners'],
+                      i['cluster']
+                      ) for i in dr]
+
+        cur.executemany("INSERT INTO test_table_owner_metadata "
+                        "(db_name, schema_name, table_name, owners, cluster) "
+                        "VALUES (?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
 
@@ -418,6 +446,7 @@ if __name__ == "__main__":
     load_table_data_from_csv('sample_table.csv')
     load_col_data_from_csv('sample_col.csv')
     load_watermark_data_from_csv('sample_watermark.csv')
+    load_table_owner_data_from_csv('sample_table_owner.csv')
     load_usage_data_from_csv('sample_column_usage.csv')
     load_user_data_from_csv('sample_user.csv')
     load_application_data_from_csv('sample_application.csv')
@@ -438,6 +467,11 @@ if __name__ == "__main__":
         job3 = create_sample_job('test_watermark_metadata',
                                  'databuilder.models.watermark.Watermark')
         job3.launch()
+
+        # start owner job
+        job_table_owner = create_sample_job('test_table_owner_metadata',
+                                            'databuilder.models.table_owner.TableOwner')
+        job_table_owner.launch()
 
         # start usage job
         job_col_usage = create_sample_job('test_usage_metadata',
