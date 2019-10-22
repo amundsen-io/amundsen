@@ -296,7 +296,6 @@ class ElasticsearchProxy(BaseProxy):
                                        "description^3",
                                        "column_names^2",
                                        "column_descriptions", "tags"],
-                            "operator": "and"
                         }
                     },
                     "field_value_factor": {
@@ -357,7 +356,6 @@ class ElasticsearchProxy(BaseProxy):
                                    "description^3",
                                    "column_names^2",
                                    "column_descriptions", "tags"],
-                        "operator": "and"
                     }
                 },
                 "field_value_factor": {
@@ -399,7 +397,6 @@ class ElasticsearchProxy(BaseProxy):
                                    "last_name^3",
                                    "email^3"],
                         "operator": "and"
-
                     }
                 }
             }
