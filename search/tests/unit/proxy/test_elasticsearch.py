@@ -126,6 +126,30 @@ class TestElasticsearchProxy(unittest.TestCase):
             self.assertEqual(client.transport.hosts[0]['host'], "0.0.0.0")
             self.assertEqual(client.transport.hosts[0]['port'], 9200)
 
+    @patch('search_service.proxy.elasticsearch.Elasticsearch', autospec=True)
+    def test_setup_client_with_username_and_password(self, elasticsearch_mock) -> None:
+        self.es_proxy = ElasticsearchProxy(
+            host='http://unit-test-host',
+            user='unit-test-user',
+            password='unit-test-pass'
+        )
+
+        elasticsearch_mock.assert_called_once()
+        elasticsearch_mock.assert_called_once_with(
+            'http://unit-test-host',
+            http_auth=('unit-test-user', 'unit-test-pass')
+        )
+
+    @patch('search_service.proxy.elasticsearch.Elasticsearch', autospec=True)
+    def test_setup_client_without_username(self, elasticsearch_mock) -> None:
+        self.es_proxy = ElasticsearchProxy(
+            host='http://unit-test-host',
+            user=''
+        )
+
+        elasticsearch_mock.assert_called_once()
+        elasticsearch_mock.assert_called_once_with('http://unit-test-host', http_auth=None)
+
     @patch('search_service.proxy._proxy_client', None)
     def test_setup_config(self) -> None:
         es: ElasticsearchProxy = get_proxy_client()

@@ -49,7 +49,8 @@ class ElasticsearchProxy(BaseProxy):
         if client:
             self.elasticsearch = client
         else:
-            self.elasticsearch = Elasticsearch(host, http_auth=(user, password))
+            http_auth = (user, password) if user else None
+            self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
         self.page_size = page_size
 
