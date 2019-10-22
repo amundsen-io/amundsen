@@ -73,7 +73,7 @@
   &.btn-flat-icon {
     border: none;
     background-color: transparent;
-    color: $text-medium;
+    color: $text-secondary;
     box-shadow: none !important;
     padding: 0px;
     text-align: left;
@@ -96,7 +96,7 @@
     margin: 4px 0 0 0;
     padding: 0;
 
-    background-color: $gray-light;
+    background-color: $icon-bg;
     border: none;
     mask-image: url('/static/images/icons/Close.svg');
     -webkit-mask-image: url('/static/images/icons/Close.svg');
@@ -110,7 +110,7 @@
     &:focus,
     &:not(.disabled):hover,
     &:not([disabled]):hover {
-      background-color: $gray-dark;
+      background-color: $icon-bg-dark;
     }
   }
 
@@ -119,11 +119,11 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    color: $text-medium;
+    color: $text-secondary;
     pointer-events: none;
 
     &:hover {
-      color: $text-medium;
+      color: $text-secondary;
     }
   }
 }

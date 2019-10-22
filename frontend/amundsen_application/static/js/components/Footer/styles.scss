@@ -2,16 +2,16 @@
 
 /* TODO: Not the greatest sticky footer implementation */
 .footer {
-  border-top: 1px solid $gray-lighter;
-  background-color: white;
-  color: $text-medium;
+  border-top: 1px solid $stroke;
+  background-color: $white;
+  color: $text-secondary;
   font-size: 14px;
   text-align: center;
   padding: 20px;
   position: fixed;
   left: 0;
   bottom: 0;
-  height: 60px;
+  height: $footer-height;
   width: 100%;
 }
 

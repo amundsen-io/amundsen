@@ -1,0 +1,21 @@
+@import 'variables';
+
+.label-danger {
+  color: $badge-text-color;
+  background-color: $badge-danger-color;
+}
+
+.label-primary {
+  color: $badge-text-color;
+  background-color: $badge-primary-color;
+}
+
+.label-success {
+  color: $badge-text-color;
+  background-color: $badge-success-color;
+}
+
+.label-warning {
+  color: $badge-text-color;
+  background-color: $badge-warning-color;
+}

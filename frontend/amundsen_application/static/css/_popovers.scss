@@ -2,15 +2,14 @@
 @import 'variables';
 
 .popover {
-  background-color: $gray-base;
-  border: 1px solid $gray-base;
+  background-color: $body-bg-dark;
+  border: 1px solid $body-bg-dark;
   color: $text-light;
   font-size: 12px;
   padding: 5px;
 }
 .popover-title {
-  background-color: $gray-darker;
-  border-bottom: 1px solid $gray-light;
+  border-bottom: 1px solid $stroke;
   color: $text-light;
   font-size: 14px;
   padding: 5px;
@@ -19,22 +18,22 @@
   padding: 2px 5px;
 }
 .popover.right .arrow:after {
-  border-right-color: $gray-base;
+  border-right-color: $body-bg-dark;
 }
 .popover.bottom .arrow:after {
-  border-bottom-color: $gray-base;
+  border-bottom-color: $body-bg-dark;
 }
 .popover.top .arrow:after {
-  border-top-color: $gray-base;
+  border-top-color: $body-bg-dark;
 }
 .popover.left .arrow:after {
-  border-left-color: $gray-base;
+  border-left-color: $body-bg-dark;
 }
 
 .tooltip-inner {
   padding: 0;
   border-radius: 3px;
-  background-color: $gray-base;
+  background-color: $body-bg-dark;
 }
 
 .tooltip-inner button {
@@ -43,13 +42,13 @@
   font-size: 14px;
   border-radius: 3px;
   border: none;
-  background-color: $gray-base;
+  background-color: $body-bg-dark;
   color: $body-bg;
   font-weight: $font-weight-body-bold;
   outline: none;
 }
 .tooltip-inner button:hover {
-  color: $text-medium;
+  color: $text-secondary;
 }
 
 .error-tooltip {

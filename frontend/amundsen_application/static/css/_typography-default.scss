@@ -6,7 +6,7 @@
 
 h1, h2, h3,
 .h1, .h2, .h3 {
-  color: $text-dark;
+  color: $text-primary;
   font-family: $font-family-header;
   margin: 0;
 }
@@ -33,7 +33,7 @@ h3,
 }
 
 body {
-  color: $text-dark;
+  color: $text-primary;
   font-size: 14px;
   font-family: $font-family-body;
   font-weight: $font-weight-body-regular;
@@ -58,7 +58,7 @@ body {
 }
 
 .title-3 {
-  color: $text-medium;
+  color: $text-secondary;
   font-size: 14px;
   font-weight: $font-weight-body-bold;
 }
@@ -97,13 +97,13 @@ body {
 }
 
 .body-secondary-3 {
-  color: $text-medium;
+  color: $text-secondary;
   font-size: 14px;
   font-weight: $font-weight-body-regular;
 }
 
 .body-placeholder {
-  color: $text-medium;
+  color: $text-placeholder;
   font-size: 14px;
   font-weight: $font-weight-body-regular;
 }
@@ -114,7 +114,7 @@ body {
 }
 
 .caption {
-  color: $text-medium;
+  color: $text-secondary;
   font-size: 13px;
   font-weight: $font-weight-body-bold;
 }
@@ -126,13 +126,13 @@ body {
 }
 
 .resource-type {
-  color: $gray;
+  color: $text-placeholder;
   font-size: 13px;
   font-family: $font-family-monospace;
 }
 
 .helper-text {
-  color: $text-medium;
+  color: $text-secondary;
   font-size: 12px;
   font-family: $font-family-body;
 }

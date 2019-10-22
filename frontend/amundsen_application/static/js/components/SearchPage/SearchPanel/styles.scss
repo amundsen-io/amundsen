@@ -1,0 +1,25 @@
+@import 'variables';
+
+.search-control-panel {
+  border-right: 4px solid $stroke;
+  flex: 0 0 270px;
+  display: flex;
+  flex-direction: column;
+
+  .section {
+    padding: 32px 24px 32px 32px;
+
+    &:not(:first-child) {
+      border-top: 2px solid $stroke;
+    }
+  }
+
+  .radio {
+    margin-top: 16px;
+    margin-bottom: 16px;
+
+    .radio-label {
+      display: block;
+    }
+  }
+}

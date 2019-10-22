@@ -54,7 +54,6 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
       dashboards: dashboardResponse.dashboards || initialState.dashboards,
       isLoading: false,
     };
-
     if (resource === undefined) {
       resource = autoSelectResource(searchAllResponse);
       searchAllResponse.selectedTab = resource;

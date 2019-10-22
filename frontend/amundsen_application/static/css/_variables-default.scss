@@ -1,48 +1,35 @@
-/**
- The following are used in Amundsen but are not part of Bootstrap.
- These must be defined here:
+@import 'colors';
 
-  $brand-color-1, $brand-color-2, $brand-color-3, $brand-color-4, $brand-color-5
-
-  $font-family-header, $font-weight-header-regular, $font-weight-header-bold
-  $font-family-body, $font-weight-body-regular, $font-weight-body-semi-bold, $font-weight-body-bold
-
-  $text-dark, $text-medium, $text-light
-
-  $btn-primary-bg-hover, $btn-default-border-hover,
-  $btn-primary-border-hover, $btn-default-bg-hover,
-
-  */
-
-
+// TODO - consider using more descriptive names, or replacing with more specific variables.
 // Colors
-$brand-color-1: #A9E1FF !default;
-$brand-color-2: #82D2FF !default;
-$brand-color-3: #3A97D3 !default;
-$brand-color-4: #2277B3 !default;
-$brand-color-5: #09457B !default;
+$brand-color-1: $indigo10 !default;
+$brand-color-2: $indigo20 !default;
+$brand-color-3: $indigo40 !default;
+$brand-color-4: $indigo60 !default;
+$brand-color-5: $indigo80 !default;
 
 $brand-primary: $brand-color-4 !default;
 
-$gray-base:     #292936 !default;
-$gray-darker:   #63637B !default;
-$gray-dark:     #9191A8 !default;
-$gray:          #ACACC0 !default;
-$gray-light:    #CACAD9 !default;
-$gray-lighter:  #E7E7EF !default;
-$gray-lightest: #F4F4FA !default;
 
 
-// Scaffolding
-$body-bg:    #fff !default;
-// TODO - consider replacing $text-dark with $text-color
-$text-dark: $gray-base !default;
-$text-color: $gray-base !default;
-$text-medium: $gray-darker !default;
-$text-light: $gray-light !default;
+/* Scaffolding */
+$body-bg:           $white !default;
+$body-bg-secondary: $gray5 !default;
+$body-bg-dark:      $gray100 !default;
+$divider:           $gray15 !default;
+$stroke:            $gray20 !default;
+$stroke-focus:      $gray60 !default;
 
 
 // Typography
+$text-primary:     $gray100 !default;
+$text-secondary:   $gray60 !default;
+$text-light:       $white !default;
+$text-placeholder: $gray40;
+
+$link-color:        $brand-color-4;
+$link-hover-color:  $brand-color-5;
+
 $font-family-body:           "Open Sans", sans-serif !default;
 $font-weight-body-regular:   400 !default;
 $font-weight-body-semi-bold: 600 !default;
@@ -62,6 +49,14 @@ $line-height-small:  1.5 !default;
 $line-height-large:  1.5 !default;
 
 
+// Badges
+$badge-text-color: $text-primary;
+$badge-danger-color: $sunset10;
+$badge-primary-color: $cyan10;
+$badge-success-color: $mint10;
+$badge-warning-color: $yellow10;
+
+
 // Buttons
 $btn-border-radius-base: 4px;
 
@@ -69,23 +64,46 @@ $btn-primary-bg:           $brand-color-4 !default;
 $btn-primary-bg-hover:     $brand-color-5 !default;
 $btn-primary-border:       transparent !default;
 $btn-primary-border-hover: transparent !default;
-$btn-primary-color:        white !default;
-$btn-primary-color-hover:  white !default;
+$btn-primary-color:        $white !default;
+$btn-primary-color-hover:  $white !default;
 
-$btn-default-bg:           white !default;
-$btn-default-bg-hover:     $gray-lightest;
-$btn-default-border:       $gray-light !default;
-$btn-default-border-hover: $gray !default;
-$btn-default-color:        $gray-base !default;
+$btn-default-bg:           $white !default;
+$btn-default-bg-hover:     $gray5 !default;
+$btn-default-border:       $gray20 !default;
+$btn-default-border-hover: $gray30 !default;
+$btn-default-color:        $gray100 !default;
+$btn-default-color-hover:  $gray90 !default;
+
+
+// Icons
+$icon-bg:          $gray20 !default;
+$icon-bg-brand:    $brand-color-3 !default;
+$icon-bg-dark:     $gray60 !default;
+$icon-bg-disabled: $gray20 !default;
+
+
+// Header & Footer
+$nav-bar-color: $indigo100;
+$nav-bar-height: 60px;
+$footer-height: 60px;
 
 
 // List Group
-$list-group-border:        $gray-light !default;
+$list-group-border:        $stroke !default;
 $list-group-border-radius: 0 !default;
 
 
 // Labels
 $label-primary-bg: $brand-color-3 !default;
+
+
+// Tags
+$tag-bg: $gray5;
+$tag-bg-hover: $gray10;
+
+
+// TODO Temp Colors
+$resource-title-color: $indigo60;
 
 // Spacing
 $spacer-size: 8px;

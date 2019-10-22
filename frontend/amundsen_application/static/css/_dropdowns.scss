@@ -1,3 +1,5 @@
+@import 'variables';
+
 .dropdown-menu {
   box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
   border-radius: 5px;
@@ -7,7 +9,7 @@
 
   li {
     &:hover {
-      background-color: $gray-lightest;
+      background-color: $body-bg-secondary;
     }
     a {
       padding: 8px;

@@ -1,30 +1,26 @@
 @import 'variables';
 
 .search-page {
-  .tabs-component,
-  .search-list-container {
-    margin-top: 32px;
+  display: flex;
+  min-height: calc(100% - #{$nav-bar-height + $footer-height});
+
+  .list-group {
+     margin-top: 0px;
+  }
+
+  .search-results {
+    flex-grow: 1;
+    width: 0; // Temporary hack since list-items use width %
   }
 
   @media (max-width: $screen-sm-max) {
-    .tabs-component,
-    .search-list-container {
+    .search-error {
       margin-top: 16px;
-    }
-  }
-
-  .tab-content {
-    .search-list-header {
-      display: flex;
-      flex-direction: row;
-      label {
-        color: $text-medium;
-        font-size: 18px;
-      }
     }
   }
 
   .search-error {
     text-align: center;
+    margin-top: 32px;
   }
 }

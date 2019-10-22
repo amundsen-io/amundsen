@@ -71,45 +71,43 @@ export default class Feedback extends React.Component<FeedbackProps, FeedbackSta
   };
 
   render() {
-    const expandedClass = this.state.isOpen ? 'expanded' : 'collapsed';
     return (
-      <div className={`feedback-component ${expandedClass}`}>
-        {
-          this.state.isOpen &&
-          <div>
-            <div className="feedback-header">
-              <div className="title">
-                {this.props.title.toUpperCase()}
+        <>
+          <button className={`btn btn-flat-icon feedback-icon${this.state.isOpen ? ' is-open' : ''}`} onClick={this.toggle}>
+            <img className='icon icon-help'/>
+          </button>
+          {
+            this.state.isOpen &&
+            <div className="feedback-component">
+              <div className="feedback-header">
+                <div className="title">
+                  {this.props.title.toUpperCase()}
+                </div>
+                <button type="button" className="btn btn-close" aria-label={BUTTON_CLOSE_TEXT} onClick={this.toggle} />
               </div>
-              <button type="button" className="btn btn-close" aria-label={BUTTON_CLOSE_TEXT} onClick={this.toggle} />
-            </div>
-            <div className="text-center">
-              <div className="btn-group" role="group" aria-label={FEEDBACK_TYPE_TEXT}>
-                <button type="button"
-                        className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Rating? " active": "")}
-                        onClick={this.changeType(FeedbackType.Rating)}>
-                  {RATING_TEXT}
-                </button>
-                <button type="button"
-                        className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Bug? " active": "")}
-                        onClick={this.changeType(FeedbackType.Bug)}>
-                  {BUG_REPORT_TEXT}
-                </button>
-                <button type="button"
-                        className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Request? " active": "")}
-                        onClick={this.changeType(FeedbackType.Request)}>
-                  {REQUEST_TEXT}
-                </button>
+              <div className="text-center">
+                <div className="btn-group" role="group" aria-label={FEEDBACK_TYPE_TEXT}>
+                  <button type="button"
+                          className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Rating? " active": "")}
+                          onClick={this.changeType(FeedbackType.Rating)}>
+                    {RATING_TEXT}
+                  </button>
+                  <button type="button"
+                          className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Bug? " active": "")}
+                          onClick={this.changeType(FeedbackType.Bug)}>
+                    {BUG_REPORT_TEXT}
+                  </button>
+                  <button type="button"
+                          className={"btn btn-default" + (this.state.feedbackType === FeedbackType.Request? " active": "")}
+                          onClick={this.changeType(FeedbackType.Request)}>
+                    {REQUEST_TEXT}
+                  </button>
+                </div>
               </div>
+              {this.state.content}
             </div>
-            {this.state.content}
-          </div>
-        }
-        {
-          !(this.state.isOpen) &&
-          <img className='icon-speech' src='/static/images/icons/Speech.svg' onClick={this.toggle}/>
-        }
-      </div>
+          }
+      </>
     );
   }
 }

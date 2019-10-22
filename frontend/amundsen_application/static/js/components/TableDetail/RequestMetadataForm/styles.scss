@@ -10,7 +10,7 @@
   z-index: 6;
 
   &.expanded {
-    background-color: white;
+    background-color: $white;
     height: auto;
     min-height: 450px;
     padding: 32px;
@@ -31,7 +31,7 @@
 
     input,
     textarea {
-      color: $text-medium;
+      color: $text-secondary;
     }
     input[type="checkbox"] {
       margin-right: 8px;

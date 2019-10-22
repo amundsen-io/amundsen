@@ -1,0 +1,27 @@
+@import 'variables';
+
+input {
+  &::-webkit-input-placeholder,
+  &::-moz-placeholder,
+  &:-ms-input-placeholder,
+  &:-moz-placeholder,
+  &::placeholder {
+    color: $text-placeholder !important;
+  }
+
+  &[type="radio"] {
+    margin: 5px;
+  }
+
+  &[type="text"] {
+    color: $text-secondary !important;
+  }
+}
+
+textarea {
+  width: 100%;
+  color: $text-secondary !important;
+  border: 1px solid $stroke;
+  border-radius: 5px;
+  padding: 10px;
+}

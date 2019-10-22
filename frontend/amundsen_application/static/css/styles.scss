@@ -5,6 +5,8 @@
 @import 'dropdowns';
 @import 'fonts';
 @import 'icons';
+@import 'inputs';
+@import 'labels';
 @import 'list-group';
 @import 'pagination';
 @import 'popovers';
@@ -37,16 +39,6 @@ td {
 }
 form {
   margin-bottom: 0;
-}
-
-input {
-  &::-webkit-input-placeholder,
-  &::-moz-placeholder,
-  &:-ms-input-placeholder,
-  &:-moz-placeholder,
-  &::placeholder {
-    color: $gray-dark !important;
-  }
 }
 
 .truncated {

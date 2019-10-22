@@ -7,6 +7,8 @@ import { TableResource } from 'interfaces';
 
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
+import { getDatabaseDisplayName, getDatabaseIconClass } from 'config/config-utils';
+
 export interface TableListItemProps {
   table: TableResource;
   logging: LoggingParams;
@@ -29,6 +31,10 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
       + `?index=${logging.index}&source=${logging.source}`;
   };
 
+  generateResourceIconClass = (databaseId: string): string => {
+    return `icon resource-icon ${getDatabaseIconClass(databaseId)}`;
+  };
+
   render() {
     const { table } = this.props;
     const hasLastUpdated = !!table.last_updated_epoch;
@@ -36,9 +42,9 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
     return (
       <li className="list-group-item">
         <Link className="resource-list-item table-list-item" to={ this.getLink() }>
-          <img className="icon icon-database icon-color" />
-          <div className="content">
-            <div className="col-sm-6 col-md-8">
+          <div className="resource-info">
+            <img className={this.generateResourceIconClass(table.database)} />
+            <div className="resource-info-text">
               <div className="resource-name title-2">
                 <div className="truncated">
                   { `${table.schema_name}.${table.name}`}
@@ -47,20 +53,22 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
               </div>
               <div className="body-secondary-3 truncated">{ table.description }</div>
             </div>
-            <div className="resource-type hidden-xs col-sm-3 col-md-2 text-center">
-              { table.database }
-            </div>
+          </div>
+          <div className="resource-type">
+            { getDatabaseDisplayName(table.database) }
+          </div>
+          <div className="resource-badges">
             {
               hasLastUpdated &&
-              <div className="hidden-xs col-sm-3 col-md-2">
+              <div>
                 <div className="title-3">Last Updated</div>
-                <div className="body-secondary-3 truncated">
+                <div className="body-secondary-3">
                   { this.getDateLabel() }
                 </div>
               </div>
             }
+            <img className="icon icon-right" />
           </div>
-          <img className="icon icon-right" />
         </Link>
       </li>
     );

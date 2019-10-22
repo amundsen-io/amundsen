@@ -5,12 +5,10 @@ import * as DocumentTitle from 'react-document-title';
 import { RouteComponentProps } from 'react-router';
 import { Search as UrlSearch } from 'history';
 
-import AppConfig from 'config/config';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import InfoButton from 'components/common/InfoButton';
 import ResourceList from 'components/common/ResourceList';
-import TabsComponent from 'components/common/Tabs';
-import SearchBar from './SearchBar';
+import ResourceSelector from './ResourceSelector';
+import SearchPanel from './SearchPanel';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { setPageIndex, setResource, urlDidUpdate } from 'ducks/search/reducer';
@@ -25,7 +23,6 @@ import {
 } from 'ducks/search/types';
 
 import { Resource, ResourceType } from 'interfaces';
-
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
@@ -36,12 +33,11 @@ import {
   SEARCH_ERROR_MESSAGE_INFIX,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
-  SEARCH_INFO_TEXT_BASE,
-  SEARCH_INFO_TEXT_TABLE_SUFFIX,
   SEARCH_SOURCE_NAME,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
 } from './constants';
+
 
 export interface StateFromProps {
   searchTerm: string;
@@ -78,40 +74,15 @@ export class SearchPage extends React.Component<SearchPageProps> {
   }
 
   renderSearchResults = () => {
-    const tabConfig = [
-      {
-        title: `${TABLE_RESOURCE_TITLE} (${ this.props.tables.total_results })`,
-        key: ResourceType.table,
-        content: this.getTabContent(this.props.tables, ResourceType.table),
-      },
-    ];
-    if (AppConfig.indexUsers.enabled) {
-      tabConfig.push({
-        title: `Users (${ this.props.users.total_results })`,
-        key: ResourceType.user,
-        content: this.getTabContent(this.props.users, ResourceType.user),
-      })
-    }
-
-    return (
-      <div>
-        <TabsComponent
-          tabs={ tabConfig }
-          defaultTab={ ResourceType.table }
-          activeKey={ this.props.selectedTab }
-          onSelect={ this.props.setResource }
-        />
-      </div>
-    );
-  };
-
-  generateInfoText = (tab: ResourceType): string => {
-    switch (tab) {
+    switch(this.props.selectedTab) {
       case ResourceType.table:
-        return `${SEARCH_INFO_TEXT_BASE}${SEARCH_INFO_TEXT_TABLE_SUFFIX}`;
-      default:
-        return SEARCH_INFO_TEXT_BASE;
+        return this.getTabContent(this.props.tables, ResourceType.table);
+      case ResourceType.user:
+        return this.getTabContent(this.props.users, ResourceType.user);
+      case ResourceType.dashboard:
+        return this.getTabContent(this.props.dashboards, ResourceType.dashboard);
     }
+    return null;
   };
 
   generateTabLabel = (tab: ResourceType): string => {
@@ -129,7 +100,6 @@ export class SearchPage extends React.Component<SearchPageProps> {
     const { searchTerm } = this.props;
     const { page_index, total_results } = results;
     const startIndex = (RESULTS_PER_PAGE * page_index) + 1;
-    const endIndex = RESULTS_PER_PAGE * (page_index + 1);
     const tabLabel = this.generateTabLabel(tab);
 
     // TODO - Move error messages into Tab Component
@@ -155,14 +125,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
       )
     }
 
-    const title =`${startIndex}-${Math.min(endIndex, total_results)} of ${total_results} results`;
-    const infoText = this.generateInfoText(tab);
     return (
       <div className="search-list-container">
-        <div className="search-list-header">
-          <label>{ title }</label>
-          <InfoButton infoText={infoText}/>
-        </div>
         <ResourceList
           slicedItems={ results.results }
           slicedItemsCount={ total_results }
@@ -172,7 +136,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
           onPagination={ this.props.setPageIndex }
         />
       </div>
-      );
+    );
   };
 
   renderContent = () => {
@@ -185,12 +149,12 @@ export class SearchPage extends React.Component<SearchPageProps> {
   render() {
     const { searchTerm } = this.props;
     const innerContent = (
-      <div className="container search-page">
-        <div className="row">
-          <div className="col-xs-12 col-md-offset-1 col-md-10">
-            <SearchBar />
-            { this.renderContent() }
-          </div>
+      <div className="search-page">
+        <SearchPanel>
+          <ResourceSelector/>
+        </SearchPanel>
+        <div className="search-results">
+          { this.renderContent() }
         </div>
       </div>
     );

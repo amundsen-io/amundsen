@@ -83,7 +83,8 @@ describe('Feedback', () => {
 
   describe('render', () => {
     describe('if state.isOpen', () => {
-      let element;
+      let feedbackIcon;
+      let feedbackComponent;
       let props;
       let wrapper;
 
@@ -98,17 +99,23 @@ describe('Feedback', () => {
         changeTypeMockResult = jest.fn(() => {});
         changeTypeSpy = jest.spyOn(wrapper.instance(), 'changeType').mockImplementation(() => changeTypeMockResult);
         wrapper.update();
-        element = wrapper.children().at(0);
+        feedbackIcon = wrapper.children().at(0);
+        feedbackComponent = wrapper.children().at(1);
       });
+      it('renders help button with correct props', () => {
+        expect(feedbackIcon.exists()).toBe(true);
+        expect(feedbackIcon.props().className).toEqual('btn btn-flat-icon feedback-icon is-open');
+      });
+
       it('renders wrapper with correct className', () => {
-        expect(wrapper.props().className).toEqual('feedback-component expanded');
+        expect(feedbackComponent.props().className).toEqual('feedback-component');
       });
 
       describe('correct feedback-header', () => {
         let button;
         let title;
         beforeAll(() => {
-          const header = element.children().at(0);
+          const header = feedbackComponent.children().at(0);
           title = header.children().at(0);
           button = header.children().at(1);
         });
@@ -130,7 +137,7 @@ describe('Feedback', () => {
         let buttonGroupParent;
         let buttonGroup;
         beforeAll(() => {
-          buttonGroupParent = element.children().at(1);
+          buttonGroupParent = feedbackComponent.children().at(1);
           buttonGroup = buttonGroupParent.children().at(0);
         });
         it('renders button group parent with correct className', () => {
@@ -149,7 +156,7 @@ describe('Feedback', () => {
           let button;
           beforeAll(() => {
             wrapper.setState({ feedbackType: FeedbackType.Rating });
-            button = wrapper.children().at(0).children().at(1).children().at(0).find('button').at(0);
+            button = wrapper.children().at(1).children().at(1).children().at(0).find('button').at(0);
           });
           it('has correct props if active', () => {
             expect(button.props()).toMatchObject({
@@ -165,7 +172,7 @@ describe('Feedback', () => {
 
           it('has correct props if not active', () => {
             wrapper.setState({ feedbackType: FeedbackType.Bug });
-            button = wrapper.children().at(0).children().at(1).children().at(0).find('button').at(0);
+            button = wrapper.children().at(1).children().at(1).children().at(0).find('button').at(0);
             expect(button.props()).toMatchObject({
               type: 'button',
               className: 'btn btn-default',
@@ -178,7 +185,7 @@ describe('Feedback', () => {
           let button;
           beforeAll(() => {
             wrapper.setState({ feedbackType: FeedbackType.Bug });
-            button = wrapper.children().at(0).children().at(1).children().at(0).find('button').at(1);
+            button = wrapper.children().at(1).children().at(1).children().at(0).find('button').at(1);
           });
           it('has correct props if active', () => {
             expect(button.props()).toMatchObject({
@@ -194,7 +201,7 @@ describe('Feedback', () => {
 
           it('has correct props if not active', () => {
             wrapper.setState({ feedbackType: FeedbackType.Request });
-            button = wrapper.children().at(0).children().at(1).children().at(0).find('button').at(1);
+            button = wrapper.children().at(1).children().at(1).children().at(0).find('button').at(1);
             expect(button.props()).toMatchObject({
               type: 'button',
               className: 'btn btn-default',
@@ -207,7 +214,7 @@ describe('Feedback', () => {
           let button;
           beforeAll(() => {
             wrapper.setState({ feedbackType: FeedbackType.Request });
-            button = wrapper.children().at(0).children().at(1).children().at(0).find('button').at(2);
+            button = wrapper.children().at(1).children().at(1).children().at(0).find('button').at(2);
           });
           it('has correct props if active', () => {
             expect(button.props()).toMatchObject({
@@ -223,7 +230,7 @@ describe('Feedback', () => {
 
           it('has correct props if not active', () => {
             wrapper.setState({ feedbackType: FeedbackType.Rating });
-            button = wrapper.children().at(0).children().at(1).children().at(0).find('button').at(2);
+            button = wrapper.children().at(1).children().at(1).children().at(0).find('button').at(2);
             expect(button.props()).toMatchObject({
               type: 'button',
               className: 'btn btn-default',
@@ -240,7 +247,7 @@ describe('Feedback', () => {
                           of its child form and refreshing it.
       */
       it('renders state.content', () => {
-        expect(wrapper.children().at(0).children().at(2).debug()).toEqual('<Connect(RatingFeedbackForm) />');
+        expect(wrapper.children().at(1).children().at(2).debug()).toEqual('<Connect(RatingFeedbackForm) />');
       });
 
       afterAll(() => {
@@ -256,16 +263,14 @@ describe('Feedback', () => {
         props = setupResult.props;
         wrapper = setupResult.wrapper;
       });
-      it('renders wrapper with correct className', () => {
-        expect(wrapper.props().className).toEqual('feedback-component collapsed');
+      it('renders help button with correct props', () => {
+        const feedbackIcon = wrapper.children().at(0);
+        expect(feedbackIcon.exists()).toBe(true);
+        expect(feedbackIcon.props().className).toEqual('btn btn-flat-icon feedback-icon');
       });
 
-      it('renders img correct props', () => {
-        expect(wrapper.find('img').props()).toMatchObject({
-          className: 'icon-speech',
-          src: '/static/images/icons/Speech.svg',
-          onClick: wrapper.instance().toggle,
-        });
+      it('does not render expanded form', () => {
+        expect(wrapper.children().at(1).exists()).toBe(false);
       });
     });
   });
