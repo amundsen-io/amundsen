@@ -30,7 +30,7 @@ services:
       networks:
         - amundsennet
   amundsensearch:
-      image: amundsendev/amundsen-search:1.4.0
+      image: amundsendev/amundsen-search:1.4.1
       container_name: amundsensearch
       ports:
         - 5001:5000
