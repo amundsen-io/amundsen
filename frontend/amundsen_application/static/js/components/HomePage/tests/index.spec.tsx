@@ -6,7 +6,7 @@ import { mapDispatchToProps, HomePage, HomePageProps } from '../';
 
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
-import SearchBar from 'components/SearchPage/SearchBar';
+import SearchBar from 'components/common/SearchBar';
 import TagsList from 'components/common/TagsList';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
@@ -39,14 +39,14 @@ describe('HomePage', () => {
     });
 
     it('contains TagsList', () => {
-      expect(wrapper.find('#browse-tags-header').text()).toEqual('Browse Tags');	
+      expect(wrapper.find('#browse-tags-header').text()).toEqual('Browse Tags');
       expect(wrapper.contains(<TagsList />));
     });
 
     it('contains MyBookmarks', () => {
       expect(wrapper.contains(<MyBookmarks />));
     });
-    
+
     it('contains PopularTables', () => {
       expect(wrapper.contains(<PopularTables />));
     });

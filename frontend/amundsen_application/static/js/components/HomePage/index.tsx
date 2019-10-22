@@ -10,7 +10,7 @@ import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
 import { SearchAllReset } from 'ducks/search/types';
 import { searchReset } from 'ducks/search/reducer';
-import SearchBar from 'components/SearchPage/SearchBar';
+import SearchBar from 'components/common/SearchBar';
 import TagsList from 'components/common/TagsList';
 
 
@@ -24,7 +24,7 @@ export class HomePage extends React.Component<HomePageProps> {
   constructor(props) {
     super(props);
   }
-  
+
   componentDidMount() {
     this.props.searchReset();
   }

@@ -13,7 +13,6 @@ import { feedbackEnabled } from 'config/config-utils';
 
 import AnnouncementPage from './components/AnnouncementPage';
 import BrowsePage from './components/BrowsePage';
-import Feedback from './components/Feedback';
 import Footer from './components/Footer';
 import HomePage from './components/HomePage'
 import NavBar from './components/NavBar';
@@ -39,7 +38,7 @@ ReactDOM.render(
       <Router history={BrowserHistory}>
         <div id="main">
           <Preloader/>
-          <NavBar />
+          <Route component={NavBar} />
           <Switch>
             <Route path="/table_detail/:cluster/:db/:schema/:table" component={TableDetail} />
             <Route path="/announcements" component={AnnouncementPage} />
@@ -49,10 +48,6 @@ ReactDOM.render(
             <Route path="/404" component={NotFoundPage} />
             <Route path="/" component={HomePage} />
           </Switch>
-          {
-            feedbackEnabled() && 
-            <Feedback />
-          }
           <Footer />
         </div>
       </Router>

@@ -6,8 +6,10 @@ import { connect } from 'react-redux';
 import './styles.scss';
 
 import {
+  BUTTON_CLOSE_TEXT,
   ERROR_CLASSNAME,
   PLACEHOLDER_DEFAULT,
+  SIZE_SMALL,
   SUBTEXT_DEFAULT,
   SYNTAX_ERROR_CATEGORY,
   SYNTAX_ERROR_PREFIX,
@@ -28,6 +30,7 @@ export interface DispatchFromProps {
 export interface OwnProps {
   placeholder?: string;
   subText?: string;
+  size?: string;
 }
 
 export type SearchBarProps = StateFromProps & DispatchFromProps & OwnProps;
@@ -42,6 +45,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   public static defaultProps: Partial<SearchBarProps> = {
     placeholder: PLACEHOLDER_DEFAULT,
     subText: SUBTEXT_DEFAULT,
+    size: '',
   };
 
   constructor(props) {
@@ -58,6 +62,10 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     const { searchTerm } = props;
     return { searchTerm };
   }
+
+  clearSearchTerm = () : void => {
+    this.setState({ searchTerm: '' });
+  };
 
   handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>) : void => {
     this.setState({ searchTerm: (event.target as HTMLInputElement).value.toLowerCase() });
@@ -101,26 +109,36 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   };
 
   render() {
+    const inputClass = `${this.props.size === SIZE_SMALL ? 'h3 small' : 'h2 large'} search-bar-input form-control`;
+    const searchButtonClass = `btn btn-flat-icon search-button ${this.props.size === SIZE_SMALL ? 'small' : 'large'}`;
     const subTextClass = `subtext body-secondary-3 ${this.state.subTextClassName}`;
+
     return (
       <div id="search-bar">
         <form className="search-bar-form" onSubmit={ this.handleValueSubmit }>
             <input
               id="search-input"
-              className="h2 search-bar-input form-control"
+              className={ inputClass }
               value={ this.state.searchTerm }
               onChange={ this.handleValueChange }
               aria-label={ this.props.placeholder }
               placeholder={ this.props.placeholder }
               autoFocus={ true }
             />
-          <button className="btn btn-flat-icon search-bar-button" type="submit">
+          <button className={ searchButtonClass } type="submit">
             <img className="icon icon-search" />
           </button>
+          {
+            this.props.size === SIZE_SMALL &&
+            <button type="button" className="btn btn-close clear-button" aria-label={BUTTON_CLOSE_TEXT} onClick={this.clearSearchTerm} />
+          }
         </form>
-        <div className={ subTextClass }>
-          { this.state.subText }
-        </div>
+        {
+          this.props.size !== SIZE_SMALL &&
+          <div className={ subTextClass }>
+            { this.state.subText }
+          </div>
+        }
       </div>
     );
   }
@@ -136,4 +154,4 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({ submitSearch }, dispatch);
 };
 
-export default connect<StateFromProps>(mapStateToProps, mapDispatchToProps)(SearchBar);
+export default connect<StateFromProps, DispatchFromProps, OwnProps>(mapStateToProps, mapDispatchToProps)(SearchBar);

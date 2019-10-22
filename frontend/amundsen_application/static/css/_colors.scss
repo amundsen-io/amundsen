@@ -1,0 +1,264 @@
+/**
+
+Avoid using these color definitions directly.
+Define semantic variables that reference this color palette instead.
+The color palette can be swapped out or modified without
+revisiting each individual color usage.
+
+---------------
+Do this:
+  $text-primary: $gray100;
+
+  body {
+    color: $text-primary;
+  }
+
+----------------
+Don't do this:
+  body {
+    color: $gray100;
+  }
+
+*/
+
+$white: #FFFFFF;
+$black: #000000;
+
+/* Red */
+$red0: #FFFAFB;
+$red5: #FFE5E9;
+$red10: #FFCFD5;
+$red20: #FFA0AC;
+$red30: #FF7689;
+$red40: #FF516B;
+$red50: #FF3354;
+$red60: #E6193F;
+$red70: #B8072C;
+$red80: #8C0020;
+$red90: #670019;
+$red100: #560015;
+
+/* Sunset */
+$sunset0: #FFFBFA;
+$sunset5: #FFE4DD;
+$sunset10: #FFCCBF;
+$sunset20: #FF9E87;
+$sunset30: #FF7B5C;
+$sunset40: #FF623E;
+$sunset50: #FF4E28;
+$sunset60: #DB3615;
+$sunset70: #AF230A;
+$sunset80: #841604;
+$sunset90: #5F0E01;
+$sunset100: #4E0B00;
+
+/* Orange */
+$orange0: #FFF6F2;
+$orange5: #FFE8DD;
+$orange10: #FFD9C7;
+$orange20: #FFB38F;
+$orange30: #FF915D;
+$orange40: #FF7232;
+$orange50: #F9560E;
+$orange60: #D03D00;
+$orange70: #A82E00;
+$orange80: #832300;
+$orange90: #651A00;
+$orange100: #581600;
+
+/* Amber */
+$amber0: #FFFDFA;
+$amber5: #FFF6E7;
+$amber10: #FFF0D4;
+$amber20: #FFE0A9;
+$amber30: #FFD082;
+$amber40: #FFC161;
+$amber50: #FFB146;
+$amber60: #FFA030;
+$amber70: #FF8D1F;
+$amber80: #FE7E13;
+$amber90: #E66909;
+$amber100: #CB5803;
+
+/* Yellow */
+$yellow0: #FFFEFA;
+$yellow5: #FFF8D9;
+$yellow10: #FFF3B8;
+$yellow20: #FFE77B;
+$yellow30: #FFDD4C;
+$yellow40: #FFD32A;
+$yellow50: #FFCA13;
+$yellow60: #FFC002;
+$yellow70: #EFAC00;
+$yellow80: #DC9900;
+$yellow90: #C78700;
+$yellow100: #B07600;
+
+/* Citron */
+$citron0: #FFFFF2;
+$citron5: #FFFFD2;
+$citron10: #FEFFB2;
+$citron20: #FBFF6F;
+$citron30: #F1FB3B;
+$citron40: #E2F316;
+$citron50: #CCE700;
+$citron60: #B5D900;
+$citron70: #9AC800;
+$citron80: #82B400;
+$citron90: #6C9C00;
+$citron100: #578000;
+
+/* Lime */
+$lime0: #FDFFFA;
+$lime5: #EDFED0;
+$lime10: #D6F3A0;
+$lime20: #A4DC48;
+$lime30: #75C404;
+$lime40: #5EAB00;
+$lime50: #499300;
+$lime60: #347D00;
+$lime70: #216800;
+$lime80: #155600;
+$lime90: #0E4400;
+$lime100: #0A3600;
+
+/* Green */
+$green0: #FAFFFC;
+$green5: #D1FFE2;
+$green10: #A8FFC4;
+$green20: #4BE77A;
+$green30: #04CD3D;
+$green40: #00B32E;
+$green50: #009B22;
+$green60: #008316;
+$green70: #006E0B;
+$green80: #005A05;
+$green90: #004802;
+$green100: #003901;
+
+/* Mint */
+$mint0: #FAFFFD;
+$mint5: #D1FFEE;
+$mint10: #A6FBDE;
+$mint20: #4AE3AE;
+$mint30: #04CA83;
+$mint40: #00B16F;
+$mint50: #00985D;
+$mint60: #00824C;
+$mint70: #006C3C;
+$mint80: #00592F;
+$mint90: #004724;
+$mint100: #00381C;
+
+/* Teal */
+$teal0: #FAFFFE;
+$teal5: #D1FFF7;
+$teal10: #A8FFF4;
+$teal20: #4CEAE4;
+$teal30: #04CED2;
+$teal40: #00B0B9;
+$teal50: #00949F;
+$teal60: #007B85;
+$teal70: #00626B;
+$teal80: #004C53;
+$teal90: #003B40;
+$teal100: #003338;
+
+/* Cyan */
+$cyan0: #FAFDFF;
+$cyan5: #E7F6FF;
+$cyan10: #D4F0FF;
+$cyan20: #A9E1FF;
+$cyan30: #82D2FF;
+$cyan40: #5DBCF4;
+$cyan50: #3A97D3;
+$cyan60: #2277B3;
+$cyan70: #135B96;
+$cyan80: #09457B;
+$cyan90: #043563;
+$cyan100: #01284E;
+
+/* Blue */
+$blue0: #FAFBFF;
+$blue5: #E8ECFF;
+$blue10: #D5DCFF;
+$blue20: #ACBBFF;
+$blue30: #869DFF;
+$blue40: #6686FF;
+$blue50: #4B73FF;
+$blue60: #3668FF;
+$blue70: #2156DB;
+$blue80: #1242AF;
+$blue90: #093186;
+$blue100: #042260;
+
+/* Indigo */
+$indigo0: #FAFAFF;
+$indigo5: #EBEBFF;
+$indigo10: #DCDCFF;
+$indigo20: #BABAFF;
+$indigo30: #9C9BFF;
+$indigo40: #8481FF;
+$indigo50: #726BFF;
+$indigo60: #665AFF;
+$indigo70: #604CFF;
+$indigo80: #523BE4;
+$indigo90: #3E29B1;
+$indigo100: #2B1B81;
+
+/* Purple */
+$purple0: #FDFAFF;
+$purple5: #F6EBFF;
+$purple10: #ECDCFF;
+$purple20: #D7B8FF;
+$purple30: #C294FF;
+$purple40: #AD71FF;
+$purple50: #9B52FF;
+$purple60: #8B37FF;
+$purple70: #7B20F9;
+$purple80: #590DC4;
+$purple90: #420499;
+$purple100: #390188;
+
+/* Pink */
+$pink0: #FFFAFD;
+$pink5: #FFE1F2;
+$pink10: #FFC7E4;
+$pink20: #FF8FCC;
+$pink30: #FF5DBB;
+$pink40: #FF32B1;
+$pink50: #FF0EB0;
+$pink60: #DE00A7;
+$pink70: #BD00A0;
+$pink80: #A00093;
+$pink90: #860081;
+$pink100: #71006F;
+
+/* Rose */
+$rose0: #FFF2F5;
+$rose5: #FFE1E9;
+$rose10: #FFCFDC;
+$rose20: #FFA0BA;
+$rose30: #FF769E;
+$rose40: #FF5187;
+$rose50: #FF3378;
+$rose60: #E51966;
+$rose70: #B70752;
+$rose80: #8B0040;
+$rose90: #660031;
+$rose100: #55002A;
+
+/* Gray */
+$gray0: #FCFCFF;
+$gray5: #F4F4FA;
+$gray10: #E7E7EF;
+$gray15: #D8D8E4;
+$gray20: #CACAD9;
+$gray30: #ACACC0;
+$gray40: #9191A8;
+$gray50: #787891;
+$gray60: #63637B;
+$gray70: #515167;
+$gray80: #414155;
+$gray90: #333344;
+$gray100: #292936;

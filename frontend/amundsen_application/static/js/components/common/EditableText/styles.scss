@@ -3,7 +3,7 @@
 .editable-container {
   display: flex;
   font-size: 16px;
-  color: $text-medium;
+  color: $text-secondary;
 
   &:hover {
    .edit-link {
@@ -40,6 +40,6 @@
 
   .editable-textarea:focus-within {
     outline: none;
-    background: white;
+    background: $white;
   }
 }

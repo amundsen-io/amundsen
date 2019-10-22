@@ -27,12 +27,12 @@ button.edit-button {
   width: 24px;
   border: none;
   border-radius: 5px;
-  background-color: $gray-light;
+  background-color: $icon-bg;
   -webkit-mask-image: url('/static/images/icons/Edit.svg');
   mask-image: url('/static/images/icons/Edit.svg');
 }
 button.edit-button:hover {
-  background-color: $brand-color-4;
+  background-color: $icon-bg-brand;
 }
 button.active-edit-button {
   height: 24px;

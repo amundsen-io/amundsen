@@ -1,53 +1,53 @@
 @import 'variables';
+.feedback-icon {
+  height: 32px;
+  width: 32px;
+  outline: 0 !important;
+
+  img {
+    margin: 4px;
+    background-color: $white;
+  }
+
+  &:hover,
+  &:focus,
+  &.is-open {
+    border-radius: 50%;
+    border: 6px solid $white;
+
+    img {
+      margin: -2px 0 0 -2px;
+      &.icon.icon-help {
+        background-color: white !important;
+      }
+    }
+  }
+}
 
 .feedback-component {
   box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
-  bottom: 75px;
+  top: $nav-bar-height + 4px;
   position: fixed;
-  right: 25px;
+  right: 76px;
   z-index: 2;
 
-  &.expanded {
-    background-color: white;
-    border-radius: 0 0 6px 6px;
-    border-top: 4px solid $brand-primary;
-    height: auto;
-    min-height: 450px;
-    padding: 32px;
-    width: 400px;
-  }
+  background-color: $white;
+  border-radius: 6px;
+  height: auto;
+  min-height: 450px;
+  padding: 32px;
+  width: 400px;
 
-  &.collapsed {
-    align-items: center;
-    background-color: $brand-primary;
-    border: 2px solid white;
-    border-radius: 50%; /* makes it a circle */
-    cursor: pointer;
-    display: flex;
-    height: 48px;
-    justify-content: center;
-    margin: 0;
-    width: 48px;
-
-    &:hover {
-      opacity: 0.5;
-    }
-  }
+  color: $text-primary;
 
   .title {
-    color: $text-medium;
+    color: $text-secondary;
     flex-grow: 1;
     font-size: 12px;
     font-family: $font-family-header;
     font-weight: $font-weight-header-regular;
     height: 24px;
     line-height: 32px;
-  }
-
-  img.icon-speech {
-    background-color: $brand-primary;
-    height: 36px;
-    width: 24px;
   }
 
   .feedback-header {
@@ -99,7 +99,7 @@
     text-align: center;
     position: absolute;
     font-size: 20px;
-    color: $text-medium;
+    color: $text-secondary;
     /* for centering when parent has automatic height */
     top: 50%;
     left: 50%;
@@ -112,12 +112,12 @@
   }
 
   input[type="text"] {
-    color: $text-medium !important;
+    color: $text-secondary !important;
   }
 
   textarea {
     width: 100%;
-    color: $text-medium !important;
+    color: $text-secondary !important;
     border: 1px solid $gray-lighter;
     border-radius: 5px;
     padding: 10px;

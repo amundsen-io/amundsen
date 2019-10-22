@@ -1,7 +1,14 @@
 @import 'variables';
 
 .flag {
+  height: 20px;
   display: inline-block;
-  margin: 4px 4px 4px 8px;
+  margin: 0px 8px;
   font-size: 14px;
+  border-radius: 5px;
+}
+
+.label {
+  font-weight: normal;
+  border-radius: 10px;
 }

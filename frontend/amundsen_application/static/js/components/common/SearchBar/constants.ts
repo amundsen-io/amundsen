@@ -8,3 +8,7 @@ export const SUBTEXT_DEFAULT = `Search within a category using the pattern with 
 export const SYNTAX_ERROR_CATEGORY = `Advanced search syntax only supports searching one category. Please remove all extra ':'`;
 export const SYNTAX_ERROR_PREFIX = 'Did you mean ';
 export const SYNTAX_ERROR_SPACING_SUFFIX = ` ? Please remove the space around the ':'.`;
+
+export const BUTTON_CLOSE_TEXT = 'Close';
+
+export const SIZE_SMALL = 'small';

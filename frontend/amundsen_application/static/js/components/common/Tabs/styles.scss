@@ -20,14 +20,14 @@
     > a {
       background: none;
       border: none;
-      color: $text-medium;
+      color: $text-secondary;
       font-size: $font-size-large;
       line-height: $line-height-large;
       margin: -4px 0 0 0;
       padding: 4px 8px 12px;
 
       &:hover {
-        color: $text-dark;
+        color: $text-primary;
       }
 
       // Active tab indicator

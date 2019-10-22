@@ -12,6 +12,7 @@ export interface AppConfig {
   logoPath: string | null;
   mailClientFeatures: MailClientFeaturesConfig;
   navLinks: Array<LinkConfig>;
+  resourceConfig: ResourceConfig;
   tableLineage: TableLineageConfig;
   tableProfile: TableProfileConfig;
 }
@@ -49,6 +50,39 @@ interface GoogleAnalyticsConfig {
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
+}
+
+/** ResourceConfig - For customizing values related to how various resources
+ *                   are displayed in the UI.
+ *
+ * datasets - A map of each dataset id to an optional display name or icon class
+ */
+interface ResourceConfig {
+  datasets: { [id: string]: DatasetConfig }
+}
+
+/** DatasetConfig - For customizing values related to how each dataset resource
+ *                  is displayed in the UI.
+ *
+ * displayName - An optional display name for this dataset source
+ * iconClass - An option icon class to be used for this dataset source. This
+ *             value should be defined in static/css/_icons.scss
+ */
+interface DatasetConfig {
+  displayName?: string;
+  iconClass?: string;
+}
+
+/**
+ * MailClientFeaturesConfig - Enable/disable UI features with a dependency on
+ *                            configuring a custom mail client.
+ *
+ * feedbackEnabled - Enables the feedback feature UI
+ * notificationsEnabled - Enables any UI related to sending notifications to users
+ */
+interface MailClientFeaturesConfig {
+  feedbackEnabled: boolean;
+  notificationsEnabled: boolean;
 }
 
 /**

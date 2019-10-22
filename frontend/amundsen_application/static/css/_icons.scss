@@ -1,7 +1,7 @@
 @import 'variables';
 
 img.icon {
-  background-color: $gray-light;
+  background-color: $icon-bg;
   border: none;
   height: 24px;
   margin: -3px 4px -3px 0px;
@@ -11,11 +11,11 @@ img.icon {
   width: 24px;
 
   &.icon-color {
-    background-color: $brand-color-3;
+    background-color: $icon-bg-brand;
   }
 
   &.icon-dark {
-    background-color: $text-medium;
+    background-color: $icon-bg-dark;
   }
 
   // TODO - Add other icons here
@@ -24,6 +24,11 @@ img.icon {
   &.icon-alert {
     -webkit-mask-image: url('/static/images/icons/Alert-Triangle.svg');
     mask-image: url('/static/images/icons/Alert-Triangle.svg');
+  }
+
+  &.icon-bigquery {
+    content: url('/static/images/icons/logo-bigquery.svg');
+    background-color: transparent;
   }
 
    &.icon-bookmark {
@@ -51,6 +56,16 @@ img.icon {
     mask-image: url('/static/images/icons/Down.svg');
   }
 
+  &.icon-help {
+   -webkit-mask-image: url('/static/images/icons/Help-Circle.svg');
+   mask-image: url('/static/images/icons/Help-Circle.svg');
+ }
+
+  &.icon-hive {
+    content: url('/static/images/icons/logo-hive.svg');
+    background-color: transparent;
+  }
+
   &.icon-github {
     -webkit-mask-image: url('/static/images/icons/github.svg');
     mask-image: url('/static/images/icons/github.svg');
@@ -76,9 +91,19 @@ img.icon {
     mask-image: url('/static/images/icons/Plus-Circle.svg');
   }
 
+  &.icon-postgres {
+    content: url('/static/images/icons/logo-postgres.svg');
+    background-color: transparent;
+  }
+
   &.icon-preview {
     -webkit-mask-image: url('/static/images/icons/Preview.svg');
     mask-image: url('/static/images/icons/Preview.svg');
+  }
+
+  &.icon-redshift {
+    content: url('/static/images/icons/logo-redshift.svg');
+    background-color: transparent;
   }
 
   &.icon-refresh {
@@ -121,6 +146,6 @@ img.icon {
 :disabled {
   > img.icon,
   > img.icon.icon-color {
-    background-color: $gray-light;
+    background-color: $icon-bg-disabled;
   }
 }

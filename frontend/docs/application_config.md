@@ -18,7 +18,7 @@ _TODO: Please add doc_
 _TODO: Please add doc_
 
 ## Mail Client Features
-Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications. 
+Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications.
 
 As these are optional features, our `MailClientFeaturesConfig` can be used to hide/display any UI related to these features:
 1. Set `MailClientFeaturesConfig.feedbackEnabled` to `true` in order to display the `Feedback` component in the UI.
@@ -28,6 +28,20 @@ For information about how to configure a custom mail
 client, please see this [entry](flask_config.md#mail-client-features) in our flask configuration doc.
 
 ## Navigation Links
+
+_TODO: Please add doc_
+
+## Resource Configurations
+
+### Datasets
+
+We provide a `datasets` option on our `ResourceConfig`. This can be used for the following customizations:
+1. You can configure custom icons to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `iconClass`. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
+2. You can configure a specific display name to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `displayName`.
+
+#### Custom Icons
+
+#### Display Names
 
 _TODO: Please add doc_
 
