@@ -35,6 +35,9 @@ class TestTableMetadata(unittest.TestCase):
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0, ['col-tag1', 'col-tag2'])],
             is_view=False, tags=['tag1', 'tag2'], attr1='uri', attr2='attr2')
 
+        self.table_metadata5 = TableMetadata('hive', 'gold', 'test_schema5', 'test_table5', 'test_table5', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags="tag3, tag4")
+
         self.expected_nodes_deduped = [
             {'name': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1', 'LABEL': 'Table',
              'is_view:UNQUOTED': False},
@@ -195,6 +198,33 @@ class TestTableMetadata(unittest.TestCase):
         self.assertEqual(actual[3], expected_tab_tag_rel2)
         self.assertEqual(actual[6], expected_col_tag_rel1)
         self.assertEqual(actual[7], expected_col_tag_rel2)
+
+        # Test table tag field populated from str
+        node_row = self.table_metadata5.next_node()
+        actual = []
+        while node_row:
+            actual.append(node_row)
+            node_row = self.table_metadata5.next_node()
+
+        self.assertEqual(actual[2].get('LABEL'), 'Tag')
+        self.assertEqual(actual[2].get('KEY'), 'tag3')
+        self.assertEqual(actual[3].get('KEY'), 'tag4')
+
+        relation_row = self.table_metadata5.next_relation()
+        actual = []
+        while relation_row:
+            actual.append(relation_row)
+            relation_row = self.table_metadata5.next_relation()
+
+        # Table tag relationship
+        expected_tab_tag_rel3 = {'END_KEY': 'tag3', 'START_LABEL': 'Table', 'END_LABEL':
+                                 'Tag', 'START_KEY': 'hive://gold.test_schema5/test_table5',
+                                 'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
+        expected_tab_tag_rel4 = {'END_KEY': 'tag4', 'START_LABEL': 'Table',
+                                 'END_LABEL': 'Tag', 'START_KEY': 'hive://gold.test_schema5/test_table5',
+                                 'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
+        self.assertEqual(actual[2], expected_tab_tag_rel3)
+        self.assertEqual(actual[3], expected_tab_tag_rel4)
 
 
 if __name__ == '__main__':
