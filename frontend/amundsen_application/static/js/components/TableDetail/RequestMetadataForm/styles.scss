@@ -29,6 +29,13 @@
       font-weight: $font-weight-body-regular;
     }
 
+    .submit-request-button {
+      img.icon {
+        margin: 0 12px 0 0;
+        transform: rotate(45deg);
+      }
+    }
+
     input,
     textarea {
       color: $text-secondary;

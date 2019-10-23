@@ -31,6 +31,7 @@
     display: flex;
     flex: 7;
     min-width: 0px;
+    margin-right: 24px;
 
     .resource-info-text {
       max-width: calc(100% - 32px);
@@ -68,6 +69,7 @@
     flex-wrap: wrap;
     margin-top: auto;
     margin-bottom: auto;
+    margin-left: 24px;
 
     .flag {
       margin: 4px;

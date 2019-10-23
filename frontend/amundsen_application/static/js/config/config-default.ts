@@ -46,6 +46,10 @@ const configDefault: AppConfig = {
         displayName: 'Hive',
         iconClass: 'icon-hive',
       },
+      'presto': {
+        displayName: 'Presto',
+        iconClass: 'icon-presto',
+      },
       'postgres': {
         displayName: 'Postgres',
         iconClass: 'icon-postgres',

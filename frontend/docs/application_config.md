@@ -17,6 +17,11 @@ _TODO: Please add doc_
 
 _TODO: Please add doc_
 
+## Index Users
+In Amundsen, users themselves are data resources and user metadata helps to facilitate network based discovery. When users are indexed they will show up in search results, and selecting a user surfaces a profile page that displays that user's relationships with different data resources.
+
+After ingesting user metadata into the search and metadata services, set `IndexUsersConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features. 
+
 ## Mail Client Features
 Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications.
 
@@ -34,16 +39,13 @@ _TODO: Please add doc_
 ## Resource Configurations
 
 ### Datasets
-
 We provide a `datasets` option on our `ResourceConfig`. This can be used for the following customizations:
-1. You can configure custom icons to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `iconClass`. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
-2. You can configure a specific display name to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `displayName`.
 
 #### Custom Icons
+You can configure custom icons to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `iconClass`. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
 
 #### Display Names
-
-_TODO: Please add doc_
+You can configure a specific display name to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `displayName`.
 
 ## Table Lineage
 
@@ -52,7 +54,3 @@ _TODO: Please add doc_
 ## Table Profile
 
 _TODO: Please add doc*_
-
-## Feature Flags
-
-_TODO: Please add doc_

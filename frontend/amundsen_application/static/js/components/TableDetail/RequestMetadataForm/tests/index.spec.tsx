@@ -204,9 +204,10 @@ describe('RequestMetadataForm', () => {
           expect(textArea.props().placeholder).toBe(COMMENT_PLACEHOLDER_DEFAULT);
         });
 
-        it('renders submit button with correct text', () => {
+        it('renders submit button with correct text and icon', () => {
           element = wrapper.find('#submit-request-button');
           expect(element.text()).toEqual(SEND_BUTTON);
+          expect(element.find('img').props().className).toEqual('icon icon-send');
         });
       });
 
