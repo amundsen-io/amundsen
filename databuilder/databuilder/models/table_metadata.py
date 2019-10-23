@@ -26,6 +26,8 @@ class TagMetadata:
     @staticmethod
     def get_tag_key(name):
         # type: (str) -> str
+        if not name:
+            return ''
         return TagMetadata.TAG_KEY_FORMAT.format(tag=name)
 
 
@@ -134,12 +136,11 @@ class TableMetadata(Neo4jCsvSerializable):
                  description,  # type: Union[str, None]
                  columns=None,  # type: Iterable[ColumnMetadata]
                  is_view=False,  # type: bool
-                 tags=None,  # type: List
+                 tags=None,  # type: Union[List, str]
                  **kwargs  # type: Dict
                  ):
         # type: (...) -> None
         """
-        TODO: Add owners
         :param database:
         :param cluster:
         :param schema_name:
@@ -147,6 +148,7 @@ class TableMetadata(Neo4jCsvSerializable):
         :param description:
         :param columns:
         :param is_view: Indicate whether the table is a view or not
+        :param tags:
         :param kwargs: Put additional attributes to the table model if there is any.
         """
         self.database = database
@@ -157,6 +159,10 @@ class TableMetadata(Neo4jCsvSerializable):
         self.columns = columns if columns else []
         self.is_view = is_view
         self.attrs = None
+        if isinstance(tags, str):
+            tags = tags.split(',')
+        if isinstance(tags, list):
+            tags = [tag.lower().strip() for tag in tags]
         self.tags = tags
 
         if kwargs:
@@ -167,13 +173,15 @@ class TableMetadata(Neo4jCsvSerializable):
 
     def __repr__(self):
         # type: () -> str
-        return 'TableMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.database,
-                                                                                self.cluster,
-                                                                                self.schema_name,
-                                                                                self.name,
-                                                                                self.description,
-                                                                                self.columns,
-                                                                                self.is_view)
+        return 'TableMetadata({!r}, {!r}, {!r}, {!r} ' \
+            '{!r}, {!r}, {!r}, {!r})'.format(self.database,
+                                             self.cluster,
+                                             self.schema_name,
+                                             self.name,
+                                             self.description,
+                                             self.columns,
+                                             self.is_view,
+                                             self.tags)
 
     def _get_table_key(self):
         # type: () -> str

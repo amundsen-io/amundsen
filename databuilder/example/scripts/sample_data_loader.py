@@ -62,7 +62,8 @@ def load_table_data_from_csv(file_name):
                     'cluster VARCHAR(64) NOT NULL, '
                     'schema_name VARCHAR(64) NOT NULL,'
                     'name VARCHAR(64) NOT NULL,'
-                    'description VARCHAR(64) NOT NULL)')
+                    'description VARCHAR(64) NOT NULL, '
+                    'tags VARCHAR(128) NOT NULL)')
         file_loc = 'example/sample_data/' + file_name
         with open(file_loc, 'r') as fin:
             dr = csv.DictReader(fin)
@@ -70,10 +71,11 @@ def load_table_data_from_csv(file_name):
                       i['cluster'],
                       i['schema_name'],
                       i['table_name'],
-                      i['table_desc']) for i in dr]
+                      i['table_desc'],
+                      i['tags']) for i in dr]
 
         cur.executemany("INSERT INTO test_table_metadata (database, cluster, "
-                        "schema_name, name, description) VALUES (?, ?, ?, ?, ?);", to_db)
+                        "schema_name, name, description, tags) VALUES (?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
 
