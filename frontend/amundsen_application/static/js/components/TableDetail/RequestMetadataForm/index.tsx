@@ -180,7 +180,8 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
               { defaultComment }
             </textarea>
           </div>
-          <button id="submit-request-button" className="btn btn-primary" type="submit">
+          <button id="submit-request-button" className="btn btn-primary submit-request-button" type="submit">
+            <img className='icon icon-send'/>
             {SEND_BUTTON}
           </button>
         </form>

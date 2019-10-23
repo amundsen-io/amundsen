@@ -59,7 +59,7 @@ export class NavBar extends React.Component<NavBarProps> {
         <div className="row">
           <div className="nav-bar">
             <div id="nav-bar-left" className="nav-bar-left">
-              <Link to={`/`}>
+              <Link to={`/`} className="no-border-on-hover">
                 {
                   AppConfig.logoPath &&
                   <img id="logo-icon" className="logo-icon" src={AppConfig.logoPath} />
@@ -86,7 +86,7 @@ export class NavBar extends React.Component<NavBarProps> {
                       <div>{this.props.loggedInUser.email}</div>
                     </div>
                     <li>
-                      <Link id="nav-bar-avatar-link" to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
+                      <Link id="nav-bar-avatar-link" className="no-border-on-hover" to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
                         My Profile
                       </Link>
                     </li>
