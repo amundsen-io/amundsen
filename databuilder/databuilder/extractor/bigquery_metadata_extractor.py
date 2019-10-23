@@ -1,3 +1,4 @@
+import json
 import logging
 from collections import namedtuple
 
@@ -32,6 +33,8 @@ class BigQueryMetadataExtractor(Extractor):
 
     PROJECT_ID_KEY = 'project_id'
     KEY_PATH_KEY = 'key_path'
+    # sometimes we don't have a key path, but only have an variable
+    CRED_KEY = 'project_cred'
     PAGE_SIZE_KEY = 'page_size'
     FILTER_KEY = 'filter'
     _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/bigquery.readonly', ]
@@ -41,7 +44,9 @@ class BigQueryMetadataExtractor(Extractor):
 
     def init(self, conf):
         # type: (ConfigTree) -> None
+        # should use key_path, or cred_key if the former doesn't exist
         self.key_path = conf.get_string(BigQueryMetadataExtractor.KEY_PATH_KEY, None)
+        self.cred_key = conf.get_string(BigQueryMetadataExtractor.CRED_KEY, None)
         self.project_id = conf.get_string(BigQueryMetadataExtractor.PROJECT_ID_KEY)
         self.pagesize = conf.get_int(
             BigQueryMetadataExtractor.PAGE_SIZE_KEY,
@@ -53,7 +58,13 @@ class BigQueryMetadataExtractor(Extractor):
                 google.oauth2.service_account.Credentials.from_service_account_file(
                     self.key_path, scopes=BigQueryMetadataExtractor._DEFAULT_SCOPES))
         else:
-            credentials, _ = google.auth.default(scopes=BigQueryMetadataExtractor._DEFAULT_SCOPES)
+            if self.cred_key:
+                service_account_info = json.loads(self.cred_key)
+                credentials = (
+                    google.oauth2.service_account.Credentials.from_service_account_info(
+                        service_account_info, scopes=BigQueryMetadataExtractor._DEFAULT_SCOPES))
+            else:
+                credentials, _ = google.auth.default(scopes=BigQueryMetadataExtractor._DEFAULT_SCOPES)
 
         http = httplib2.Http()
         authed_http = google_auth_httplib2.AuthorizedHttp(credentials, http=http)
