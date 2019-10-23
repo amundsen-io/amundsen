@@ -5,14 +5,13 @@
   cursor: pointer;
   display: inline-block;
   height: 32px;
-  margin: -6px 0 -8px 4px;
+  margin-left: 4px;
   padding: 4px;
   vertical-align: top;
   width: 32px;
 
   &.bookmark-large {
     height: 40px;
-    margin: 8px 0 0 4px;
     width: 40px;
 
     .icon {
