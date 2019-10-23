@@ -23,13 +23,17 @@
     opacity: 1;
   }
 
+  .bookmark-icon {
+    margin: -6px 0 -4px 4px;
+  }
+
   .resource-info {
     display: flex;
     flex: 7;
     min-width: 0px;
 
     .resource-info-text {
-      overflow: hidden;
+      max-width: calc(100% - 32px);
     }
 
     .resource-name {
