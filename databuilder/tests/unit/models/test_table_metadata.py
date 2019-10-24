@@ -7,6 +7,10 @@ from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 class TestTableMetadata(unittest.TestCase):
     def setUp(self):
         # type: () -> None
+        super(TestTableMetadata, self).setUp()
+
+    def test_serialize(self):
+        # type: () -> None
         self.table_metadata = TableMetadata('hive', 'gold', 'test_schema1', 'test_table1', 'test_table1', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
             ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
@@ -22,21 +26,6 @@ class TestTableMetadata(unittest.TestCase):
             ColumnMetadata('source', 'description of source', 'varchar', 3),
             ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
             ColumnMetadata('ds', None, 'varchar', 5)])
-
-        self.table_metadata3 = TableMetadata('hive', 'gold', 'test_schema3', 'test_table3', 'test_table3', [
-            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
-            ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
-            ColumnMetadata('is_active', None, 'boolean', 2),
-            ColumnMetadata('source', 'description of source', 'varchar', 3),
-            ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
-            ColumnMetadata('ds', None, 'varchar', 5)], is_view=False, attr1='uri', attr2='attr2')
-
-        self.table_metadata4 = TableMetadata('hive', 'gold', 'test_schema4', 'test_table4', 'test_table4', [
-            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0, ['col-tag1', 'col-tag2'])],
-            is_view=False, tags=['tag1', 'tag2'], attr1='uri', attr2='attr2')
-
-        self.table_metadata5 = TableMetadata('hive', 'gold', 'test_schema5', 'test_table5', 'test_table5', [
-            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags="tag3, tag4")
 
         self.expected_nodes_deduped = [
             {'name': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1', 'LABEL': 'Table',
@@ -112,8 +101,6 @@ class TestTableMetadata(unittest.TestCase):
                                    'END_LABEL': 'Schema', 'START_KEY': 'hive://gold',
                                    'TYPE': 'SCHEMA', 'REVERSE_TYPE': 'SCHEMA_OF'})
 
-    def test_serialize(self):
-        # type: () -> None
         node_row = self.table_metadata.next_node()
         actual = []
         while node_row:
@@ -147,7 +134,16 @@ class TestTableMetadata(unittest.TestCase):
 
         self.assertEqual(self.expected_rels_deduped, actual)
 
-        # Test additional K/V Attributes
+    def test_table_attributes(self):
+        # type: () -> None
+        self.table_metadata3 = TableMetadata('hive', 'gold', 'test_schema3', 'test_table3', 'test_table3', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
+            ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
+            ColumnMetadata('is_active', None, 'boolean', 2),
+            ColumnMetadata('source', 'description of source', 'varchar', 3),
+            ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
+            ColumnMetadata('ds', None, 'varchar', 5)], is_view=False, attr1='uri', attr2='attr2')
+
         node_row = self.table_metadata3.next_node()
         actual = []
         while node_row:
@@ -157,7 +153,12 @@ class TestTableMetadata(unittest.TestCase):
         self.assertEqual(actual[0].get('attr1'), 'uri')
         self.assertEqual(actual[0].get('attr2'), 'attr2')
 
-        # Test tag field
+    def test_tags_field(self):
+        # type: () -> None
+        self.table_metadata4 = TableMetadata('hive', 'gold', 'test_schema4', 'test_table4', 'test_table4', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0, ['col-tag1', 'col-tag2'])],
+            is_view=False, tags=['tag1', 'tag2'], attr1='uri', attr2='attr2')
+
         node_row = self.table_metadata4.next_node()
         actual = []
         while node_row:
@@ -199,6 +200,11 @@ class TestTableMetadata(unittest.TestCase):
         self.assertEqual(actual[6], expected_col_tag_rel1)
         self.assertEqual(actual[7], expected_col_tag_rel2)
 
+    def test_tags_populated_from_str(self):
+        # type: () -> None
+        self.table_metadata5 = TableMetadata('hive', 'gold', 'test_schema5', 'test_table5', 'test_table5', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags="tag3, tag4")
+
         # Test table tag field populated from str
         node_row = self.table_metadata5.next_node()
         actual = []
@@ -225,6 +231,26 @@ class TestTableMetadata(unittest.TestCase):
                                  'TYPE': 'TAGGED_BY', 'REVERSE_TYPE': 'TAG'}
         self.assertEqual(actual[2], expected_tab_tag_rel3)
         self.assertEqual(actual[3], expected_tab_tag_rel4)
+
+    def test_tags_arent_populated_from_empty_list_and_str(self):
+        # type: () -> None
+        self.table_metadata6 = TableMetadata('hive', 'gold', 'test_schema6', 'test_table6', 'test_table6', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags=[])
+
+        self.table_metadata7 = TableMetadata('hive', 'gold', 'test_schema7', 'test_table7', 'test_table7', [
+            ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags="")
+
+        # Test table tag fields are not populated from empty List
+        node_row = self.table_metadata6.next_node()
+        while node_row:
+            self.assertNotEqual(node_row.get('LABEL'), 'Tag')
+            node_row = self.table_metadata6.next_node()
+
+        # Test table tag fields are not populated from empty str
+        node_row = self.table_metadata7.next_node()
+        while node_row:
+            self.assertNotEqual(node_row.get('LABEL'), 'Tag')
+            node_row = self.table_metadata7.next_node()
 
 
 if __name__ == '__main__':
