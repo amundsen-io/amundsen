@@ -160,7 +160,7 @@ class TableMetadata(Neo4jCsvSerializable):
         self.is_view = is_view
         self.attrs = None
         if isinstance(tags, str):
-            tags = tags.split(',')
+            tags = list(filter(None, tags.split(',')))
         if isinstance(tags, list):
             tags = [tag.lower().strip() for tag in tags]
         self.tags = tags
