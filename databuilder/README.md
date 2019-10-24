@@ -108,6 +108,20 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [GlueExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/glue_extractor.py "GlueExtractor")
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from AWS Glue metastore.
+
+Before running make sure you have a working AWS profile configured and have access to search tables on Glue 
+```python
+job_config = ConfigFactory.from_dict({})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=GlueExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
 #### [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Postgres or Redshift database.
 
