@@ -29,22 +29,24 @@ $ git submodule update --remote
 
 ### Building local changes
 1. First, be sure that you have first followed the [installation documentation](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) and can spin up a default version of Amundsen without any issues. If you have already completed this step, be sure to have stopped and removed those containers by running:
-```bash
-$ docker-compose -f docker-amundsen.yml down
-```
-2. Launch the containers needed for local development by running:
-```bash
-$ docker-compose -f docker-amundsen-local.yml up
-```
-3. After making local changes rebuild the containers for any submodule that was modified. For example, to build a local change in `amundsen/amundsenmetadatalibrary` run:
-```bash
-$ docker-compose -f docker-amundsen-local.yml build amundsenmetadata
-```
-4. Relaunch the services by running:
-```bash
-$ docker-compose -f docker-amundsen-local.yml stop
-$ docker-compose -f docker-amundsen-local.yml up
-```
+    ```bash
+    $ docker-compose -f docker-amundsen.yml down
+    ```
+2. Launch the containers needed for local development (the `-d` option launches in background) :
+    ```bash
+    $ docker-compose -f docker-amundsen-local.yml up -d
+    ```
+3. After making local changes rebuild and relaunch modified containers:
+    ```bash
+    $ docker-compose -f docker-amundsen-local.yml build \
+      && docker-compose -f docker-amundsen-local.yml up -d
+    ```
+4. Optionally, to still tail logs, in a different terminal you can:
+    ```bash
+    $ docker-compose -f docker-amundsen-local.yml logs --tail=3 -f
+    ## - or just tail single container(s):
+    $ docker logs amundsenmetadata --tail 10 -f
+    ```
 
 ### Troubleshooting
 1. If you have made a change in `amundsen/amundsenfrontendlibrary` and do not see your changes, this could be due to your browser's caching behaviors. Either execute a hard refresh (recommended) or clear your browser cache (last resort).
