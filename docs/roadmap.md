@@ -3,7 +3,7 @@
 **Mission**: To organize all information about data and make it universally actionable  
 **Vision (2020)**: Centralize a comprehensive and actionable map of all our data resources that can be leveraged to solve a growing number of use cases and workflows
 
-The following roadmap gives an overview of what we are currently working on and what we want to tackle next. We share it so that the community can plan work together. Let us know in the Slack channel if you are interested in taking a stab at leading the development of one of these features (or of a non listed one!).
+The following roadmap gives an overview of what we are currently working on and what we want to tackle next. We share it so that the community can plan work together. Let us know in the [Slack channel](https://app.slack.com/client/TGFR0CZM3/CGFBVT23V) if you are interested in taking a stab at leading the development of one of these features (or of a non listed one!).
 
 ## Current focus
 
