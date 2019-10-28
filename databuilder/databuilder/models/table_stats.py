@@ -27,15 +27,19 @@ class TableColumnStats(Neo4jCsvSerializable):
                  end_epoch,  # type: str
                  db='hive',  # type: str
                  cluster='gold',  # type: str
+                 schema_name=None  # type: str
                  ):
         # type: (...) -> None
+        if schema_name is None:
+            self.schema, self.table = table_name.split('.')
+        else:
+            self.table = table_name.lower()
+            self.schema = schema_name.lower()
         self.db = db
-        self.schema, self.table = table_name.lower().split('.')
         self.col_name = col_name.lower()
         self.start_epoch = start_epoch
         self.end_epoch = end_epoch
         self.cluster = cluster
-
         self.stat_name = stat_name
         self.stat_val = stat_val
         self._node_iter = iter(self.create_nodes())
