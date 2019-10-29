@@ -31,8 +31,8 @@ _The following roadmap gives an overview of what we are currently working on and
    
 #### Native lineage integration
 *What*: We want to create a native lineage integration in Amundsen, to better surface how data assets interact with each other  
-*Status*: being spec’d out, a PoC UI demo is being worked on
-*Links*: #69 Initial issue | [Technical RFC](https://docs.google.com/document/d/1FPa9AK_ILINL399ykm-X6e6EOqXQ7bvgbevV3Ip-K-U) (_Early_ WIP:  - ask for access)
+*Status*: being spec’d out, a PoC UI demo is being worked on <br>
+*Links*: https://github.com/lyft/amundsen/issues/69 https://github.com/lyft/amundsen/issues/42 Initial issues | [Technical RFC](https://docs.google.com/document/d/1FPa9AK_ILINL399ykm-X6e6EOqXQ7bvgbevV3Ip-K-U) (_Early_ WIP:  - ask for access)
   
   
   
