@@ -1,5 +1,6 @@
 from collections import namedtuple
 from datetime import date, timedelta
+import json
 import logging
 import re
 from time import sleep
@@ -30,6 +31,8 @@ class BigQueryTableUsageExtractor(Extractor):
     DEFAULT_PAGE_SIZE = 300
     PAGE_SIZE_KEY = 'page_size'
     KEY_PATH_KEY = 'key_path'
+    # sometimes we don't have a key path, but only have an variable
+    CRED_KEY = 'project_cred'
     _DEFAULT_SCOPES = ('https://www.googleapis.com/auth/cloud-platform',)
     EMAIL_PATTERN = 'email_pattern'
     NUM_RETRIES = 3
@@ -38,10 +41,16 @@ class BigQueryTableUsageExtractor(Extractor):
     def init(self, conf):
         # type: (ConfigTree) -> None
         self.key_path = conf.get_string(BigQueryTableUsageExtractor.KEY_PATH_KEY, None)
+        self.cred_key = conf.get_string(BigQueryTableUsageExtractor.CRED_KEY, None)
         if self.key_path:
             credentials = (
                 google.oauth2.service_account.Credentials.from_service_account_file(
                     self.key_path, scopes=BigQueryTableUsageExtractor._DEFAULT_SCOPES))
+        elif self.cred_key:
+            service_account_info = json.loads(self.cred_key)
+            credentials = (
+                google.oauth2.service_account.Credentials.from_service_account_info(
+                    service_account_info, scopes=BigQueryTableUsageExtractor._DEFAULT_SCOPES))
         else:
             credentials, _ = google.auth.default(scopes=BigQueryTableUsageExtractor._DEFAULT_SCOPES)
 
