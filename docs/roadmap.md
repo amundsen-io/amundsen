@@ -3,19 +3,19 @@
 **Mission**: To organize all information about data and make it universally actionable  
 **Vision (2020)**: Centralize a comprehensive and actionable map of all our data resources that can be leveraged to solve a growing number of use cases and workflows
 
-_The following roadmap gives an overview of what we are currently working on and what we want to tackle next. We share it so that the community can plan work together. Let us know in the Slack channel if you are interested in taking a stab at leading the development of one of these features (or of a non listed one!)._
+_The following roadmap gives an overview of what we are currently working on and what we want to tackle next. We share it so that the community can plan work together. Let us know in the [Slack channel](https://app.slack.com/client/TGFR0CZM3/CGFBVT23V) if you are interested in taking a stab at leading the development of one of these features (or of a non listed one!)._
 
 ## Current focus
 
 #### Email notifications system
 *What*: We are creating an email notification system to reach Amundsen’s users. The primary goal is to use this system to help solve the lack of ownership for data assets at Lyft. The secondary goal is to engage with users for general purposes.  
-*Status*: In Review - bulk of it merged to frontend `master` <br>
+*Status*: In Review - **bulk of it merged to frontend `master` and the `v1.1.0` branch**<br>
 *Links*: [Product Specifications](https://docs.google.com/document/d/1x3IeRECKKJRMoO7VxXp4GZRlI0Gu9XUXo-upYjoVpnw/edit?usp=sharing) | [Technical RFC](https://docs.google.com/document/d/1dRBQG5SszeiAePQvsCP-_xiqqMpTCKmZJV6_Q2YsK-A/edit?usp=sharing)
   
 
 #### Search & Resource page redesign
 *What*: Redesign the search experience and the resource page, to make them scalable in the number of resources types and the number of metadata  
-*Status*: In Progress <br>
+*Status*: In Progress - **new top bar search merged to FE `master`** <br>
 *Links*: [Designs](https://drive.google.com/drive/folders/12oBrcXUsDtOsuU_QvO93LTvs4Dehx6az?usp=sharing)
  
 
@@ -31,7 +31,7 @@ _The following roadmap gives an overview of what we are currently working on and
    
 #### Native lineage integration
 *What*: We want to create a native lineage integration in Amundsen, to better surface how data assets interact with each other  
-*Status*: being spec’d out  
+*Status*: being spec’d out, a PoC UI demo is being worked on
 *Links*: #69 Initial issue | [Technical RFC](https://docs.google.com/document/d/1FPa9AK_ILINL399ykm-X6e6EOqXQ7bvgbevV3Ip-K-U) (_Early_ WIP:  - ask for access)
   
   
