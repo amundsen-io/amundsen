@@ -84,6 +84,7 @@ Please visit [Roadmap](docs/roadmap.md#amundsen-roadmap) if you are interested i
 - [Software Engineering Daily podcast on Amundsen](https://softwareengineeringdaily.com/2019/04/16/lyft-data-discovery-with-tao-feng-and-mark-grover/) (April 2019)
 - [How Lyft Drives Data Discovery](https://youtu.be/WVjss62XIG0) (July 2019)
 - [Data Engineering podcast on Solving Data Discovery At Lyft](https://www.dataengineeringpodcast.com/amundsen-data-discovery-episode-92/) (Aug 2019)
+- [Open Sourcing Amundsen: A Data Discovery And Metadata Platform](https://eng.lyft.com/open-sourcing-amundsen-a-data-discovery-and-metadata-platform-2282bb436234) (Oct 2019)
 
 ## Talks
 
