@@ -70,6 +70,19 @@ Please visit the Amundsen installation documentation for a [quick start](https:/
 
 Please visit [Architecture](docs/architecture.md#architecture) for Amundsen architecture overview.
 
+## Supported connectors
+Amundsen supports two kinds of "nodes" in its graph today:
+- Tables (from Databases)
+- People (from HR systems)
+
+Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide). 
+The databases we see most frequently used in the community are:
+- Hive and anything that works with Hive metastore (Spark SQL, Presto, Athena, etc.)
+- BigQuery
+- PostgreSQL and anything that uses the same interface (Redshift)
+- Snowflake
+- Amazon Glue and anything built over it (like Databricks Delta - which is a work in progress).
+
 ## Installation
 
 Please visit [Installation guideline](docs/installation.md) on how to install Amundsen.
