@@ -50,7 +50,8 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                      'name': 'test_table',
                      'description': 'a table for testing',
                      'cluster':
-                     self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)]
+                     self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                     'is_view': 'false'
                      }
 
             sql_execute.return_value = [
@@ -112,21 +113,24 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                      'name': 'test_table1',
                      'description': 'test table 1',
                      'cluster':
-                     self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)]
+                     self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                     'is_view': 'nottrue'
                      }
 
             table1 = {'schema_name': 'test_schema1',
                       'name': 'test_table2',
                       'description': 'test table 2',
                       'cluster':
-                      self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)]
+                      self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                      'is_view': 'false'
                       }
 
             table2 = {'schema_name': 'test_schema2',
                       'name': 'test_table3',
                       'description': 'test table 3',
                       'cluster':
-                      self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)]
+                      self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                      'is_view': 'true'
                       }
 
             sql_execute.return_value = [
@@ -212,7 +216,8 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                                      'test_schema2', 'test_table3', 'test table 3',
                                      [ColumnMetadata('col_id3', 'description of col_id3', 'varchar', 0),
                                       ColumnMetadata('col_name3', 'description of col_name3',
-                                                     'varchar', 1)])
+                                                     'varchar', 1)],
+                                     True)
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             self.assertIsNone(extractor.extract())
