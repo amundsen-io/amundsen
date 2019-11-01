@@ -30,7 +30,7 @@ class DefaultJob(Job):
                  conf,
                  task,
                  publisher=NoopPublisher()):
-        # type: (Task, ConfigTree, Publisher) -> None
+        # type: (ConfigTree, Task, Publisher) -> None
         self.task = task
         self.conf = conf
         self.publisher = publisher
