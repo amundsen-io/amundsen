@@ -54,6 +54,7 @@ Currently **officially** using Amundsen:
 
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Data Sprints](https://datasprints.com/)
+1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
 1. [ING](https://www.ing.com/Home.htm)
 1. [LMC](https://www.lmc.eu/cs/)
