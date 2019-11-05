@@ -33,9 +33,14 @@ class AtlasProxy(BaseProxy):
     """
     TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
     DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
+    READER_TYPE = 'Reader'
     QN_KEY = 'qualifiedName'
+    BKMARKS_KEY = 'isFollowing'
+    METADATA_KEY = 'metadata'
+    GUID_KEY = 'guid'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
+    ENTITY_URI_KEY = 'entityUri'
     _CACHE = CacheManager(**parse_cache_config_options({'cache.regions': 'atlas_proxy',
                                                         'cache.atlas_proxy.type': 'memory',
                                                         'cache.atlas_proxy.expire': _ATLAS_PROXY_CACHE_EXPIRY_SEC}))
@@ -100,6 +105,28 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(table_uri)
         return result.groupdict() if result else dict()
 
+    def _parse_reader_qn(self, reader_qn: str) -> Dict:
+        """
+        Parse reader qualifiedName and extract the info
+        :param reader_qn:
+        :return: Dictionary object containing following information:
+        cluster: cluster information
+        db: Database name
+        name: Table name
+        """
+        pattern = re.compile(r"""
+        ^(?P<db>[^.]*)
+        \.
+        (?P<table>[^.]*)\.metadata
+        \.
+        (?P<user_id>[^.]*)\.reader
+        \@
+        (?P<cluster>.*)
+        $
+        """, re.X)
+        result = pattern.match(reader_qn)
+        return result.groupdict() if result else dict()
+
     def _get_table_entity(self, *, table_uri: str) -> Tuple[EntityUniqueAttribute, Dict]:
         """
         Fetch information from table_uri and then find the appropriate entity
@@ -123,6 +150,72 @@ class AtlasProxy(BaseProxy):
             LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException('Table URI( {table_uri} ) does not exist'
                                     .format(table_uri=table_uri))
+
+    def _get_user_entity(self, user_id: str) -> EntityUniqueAttribute:
+        """
+        Fetches an user entity from an id
+        :param user_id:
+        :return:
+        """
+        try:
+            return self._driver.entity_unique_attribute("User",
+                                                        qualifiedName=user_id)
+        except Exception as ex:
+            raise NotFoundException('(User {user_id}) does not exist'
+                                    .format(user_id=user_id))
+
+    def _create_reader(self, metadata_guid: str, user_guid: str, reader_qn: str, table_uri: str) -> None:
+        """
+        Creates a reader entity for a specific user and table uri.
+        :param metadata_guid: Table's metadata guid
+        :param user_guid: User's guid
+        :param reader_qn: Reader qualifiedName
+        :return:
+        """
+        reader_entity = {
+            'typeName': self.READER_TYPE,
+            'attributes': {'qualifiedName': reader_qn,
+                           'isFollowing': True,
+                           'count': 0,
+                           'entityMetadata': {'guid': metadata_guid},
+                           'user': {'guid': user_guid},
+                           'entityUri': table_uri}
+        }
+        self._driver.entity_bulk.create(data={'entities': [reader_entity]})
+
+    def _get_reader_entity(self, table_uri: str, user_id: str) -> EntityUniqueAttribute:
+        """
+        Fetch a Reader entity from parsing table uri and user id.
+        If Reader is not present, create one for the user.
+        :param table_uri:
+        :param user_id: Qualified Name of a user
+        :return:
+        """
+        table_info = self._extract_info_from_uri(table_uri=table_uri)
+        reader_qn = '{}.{}.metadata.{}.reader@{}'.format(table_info.get('db'),
+                                                         table_info.get('name'),
+                                                         user_id,
+                                                         table_info.get('cluster'))
+
+        try:
+            reader_entity = self._driver.entity_unique_attribute(
+                self.READER_TYPE, qualifiedName=reader_qn)
+            if not reader_entity.entity:
+                # Fetch the table entity from the uri for obtaining metadata guid.
+                table_entity, table_info = self._get_table_entity(table_uri=table_uri)
+                # Fetch user entity from user_id for relation
+                user_entity = self._get_user_entity(user_id)
+                # Create reader entity with the metadata and user relation.
+                self._create_reader(table_entity.entity[self.ATTRS_KEY][self.METADATA_KEY][self.GUID_KEY],
+                                    user_entity.entity[self.GUID_KEY], reader_qn, table_uri)
+                # Fetch reader entity after creating it.
+                reader_entity = self._driver.entity_unique_attribute(self.READER_TYPE, qualifiedName=reader_qn)
+            return reader_entity
+
+        except Exception as ex:
+            LOGGER.exception(f'Reader not found. {str(ex)}')
+            raise NotFoundException('Reader( {reader_qn} ) does not exist'
+                                    .format(reader_qn=reader_qn))
 
     def _get_column(self, *, table_uri: str, column_name: str) -> Dict:
         """
@@ -416,9 +509,42 @@ class AtlasProxy(BaseProxy):
                 )
         return tags
 
-    def get_table_by_user_relation(self, *, user_email: str,
-                                   relation_type: UserResourceRel) -> Dict[str, Any]:
-        pass
+    def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
+        params = {
+            'typeName': self.READER_TYPE,
+            'offset': '0',
+            'limit': '1000',
+            'entityFilters': {
+                'condition': 'AND',
+                'criterion': [
+                    {
+                        'attributeName': self.QN_KEY,
+                        'operator': 'contains',
+                        'attributeValue': user_email
+                    },
+                    {
+                        'attributeName': self.BKMARKS_KEY,
+                        'operator': 'eq',
+                        'attributeValue': 'true'
+                    }
+                ]
+            },
+            'attributes': ['count', self.QN_KEY, self.ENTITY_URI_KEY]
+        }
+        # Fetches the reader entities based on filters
+        search_results = self._driver.search_basic.create(data=params)
+
+        results = []
+        for record in search_results.entities:
+            table_info = self._extract_info_from_uri(table_uri=record.attributes[self.ENTITY_URI_KEY])
+            res = self._parse_reader_qn(record.attributes[self.QN_KEY])
+            results.append(PopularTable(
+                database=table_info['entity'],
+                cluster=res['cluster'],
+                schema=res['db'],
+                name=res['table']))
+
+        return {'table': results}
 
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
         pass
@@ -427,10 +553,15 @@ class AtlasProxy(BaseProxy):
                                    table_uri: str,
                                    user_email: str,
                                    relation_type: UserResourceRel) -> None:
-        pass
+
+        entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
+        entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = True
+        entity.update()
 
     def delete_table_relation_by_user(self, *,
                                       table_uri: str,
                                       user_email: str,
                                       relation_type: UserResourceRel) -> None:
-        pass
+        entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
+        entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = False
+        entity.update()
