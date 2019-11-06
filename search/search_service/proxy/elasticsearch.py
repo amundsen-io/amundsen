@@ -70,9 +70,14 @@ class ElasticsearchProxy(BaseProxy):
 
         results = []
         # Use {page_index} to calculate index of results to fetch from
-        start_from = page_index * self.page_size
-        end_at = start_from + self.page_size
-        client = client[start_from:end_at]
+        if page_index != -1:
+            start_from = page_index * self.page_size
+            end_at = start_from + self.page_size
+            client = client[start_from:end_at]
+        else:
+            # if page index is -1, return everything
+            client = client[0:client.count()]
+
         response = client.execute()
 
         for hit in response:
