@@ -229,17 +229,24 @@ def load_application_data_from_csv(file_name):
                     '(task_id VARCHAR(64) NOT NULL , '
                     'dag_id VARCHAR(64) NOT NULL , '
                     'exec_date VARCHAR(64) NOT NULL, '
-                    'application_url_template VARCHAR(128) NOT NULL)')
+                    'application_url_template VARCHAR(128) NOT NULL, '
+                    'db_name VARCHAR(64) NOT NULL, '
+                    'schema_name VARCHAR(64) NOT NULL, '
+                    'table_name VARCHAR(64) NOT NULL)')
         file_loc = 'example/sample_data/' + file_name
         with open(file_loc, 'r') as fin:
             dr = csv.DictReader(fin)
             to_db = [(i['task_id'],
                       i['dag_id'],
                       i['exec_date'],
-                      i['application_url_template']) for i in dr]
+                      i['application_url_template'],
+                      i['db_name'],
+                      i['schema_name'],
+                      i['table_name'],) for i in dr]
 
         cur.executemany("INSERT INTO test_application_metadata (task_id, dag_id, "
-                        "exec_date, application_url_template) VALUES (?, ?, ?, ?);", to_db)
+                        "exec_date, application_url_template, db_name, schema_name, table_name) "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
 

@@ -16,7 +16,8 @@ class TestApplication(unittest.TestCase):
 
         self.application = Application(task_id='hive.default.test_table',
                                        dag_id='event_test',
-                                       exec_date='2018-05-31T00:00:00',
+                                       schema_name='default',
+                                       table_name='test_table',
                                        application_url_template='airflow_host.net/admin/airflow/tree?dag_id={dag_id}')
 
         self.expected_node_result = {
