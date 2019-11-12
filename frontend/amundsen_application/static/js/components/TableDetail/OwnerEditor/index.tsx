@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 
 import ReactDOM from 'react-dom';
 import serialize from 'form-serialize';
 
+import AppConfig from 'config/config';
 import AvatarLabel, { AvatarLabelProps } from 'components/common/AvatarLabel';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import { Modal } from 'react-bootstrap';
@@ -17,6 +19,7 @@ const DEFAULT_ERROR_TEXT = 'There was a problem with the request, please reload 
 
 import { GlobalState } from 'ducks/rootReducer';
 import { updateTableOwner } from 'ducks/tableMetadata/owners/reducer';
+import { logClick } from 'ducks/utilMethods';
 
 export interface DispatchFromProps {
   onUpdateList: (updateArray: UpdateOwnerPayload[], onSuccess?: () => any, onFailure?: () => any) => void;
@@ -27,9 +30,14 @@ export interface ComponentProps {
   readOnly: boolean;
 }
 
+interface OwnerAvatarLabelProps extends AvatarLabelProps {
+  link?: string;
+  isExternal?: boolean;
+}
+
 export interface StateFromProps {
   isLoading: boolean;
-  itemProps: { [id: string]: AvatarLabelProps };
+  itemProps: { [id: string]: OwnerAvatarLabelProps };
 }
 
 type OwnerEditorProps = ComponentProps & DispatchFromProps & StateFromProps;
@@ -37,7 +45,7 @@ type OwnerEditorProps = ComponentProps & DispatchFromProps & StateFromProps;
 interface OwnerEditorState {
   errorText: string | null;
   isLoading: boolean;
-  itemProps: { [id: string]: AvatarLabelProps };
+  itemProps: { [id: string]: OwnerAvatarLabelProps };
   readOnly: boolean;
   showModal: boolean;
   tempItemProps: { [id: string]: AvatarLabelProps };
@@ -198,11 +206,30 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
         <ul className='component-list'>
           {
             Object.keys(this.state.itemProps).map((key) => {
+              const owner = this.state.itemProps[key]
+              const avatarLabel = React.createElement(AvatarLabel, owner)
+
+              let listItem;
+              if (owner.link === undefined) {
+                listItem = avatarLabel
+              } else if (owner.isExternal) {
+                listItem =
+                  <a href={owner.link} target="_blank" id={`table-owners:${key}`} onClick={logClick}>
+                    { avatarLabel }
+                  </a>
+              } else {
+                listItem =
+                  <Link to={owner.link} id={`table-owners:${key}`} onClick={logClick}>
+                    { avatarLabel }
+                  </Link>
+              }
+
               return (
                 <li key={`list-item:${key}`}>
-                  { React.createElement(AvatarLabel, this.state.itemProps[key]) }
+                  { listItem }
                 </li>
               );
+
             })
           }
         </ul>
@@ -240,7 +267,14 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
 export const mapStateToProps = (state: GlobalState) => {
   const ownerObj = state.tableMetadata.tableOwners.owners;
   const items = Object.keys(ownerObj).reduce((obj, ownerId) => {
-    obj[ownerId] = { label: ownerObj[ownerId].display_name }
+    const { profile_url, user_id, display_name } = ownerObj[ownerId];
+    let profileLink = profile_url;
+    let isExternalLink = true;
+    if (AppConfig.indexUsers.enabled) {
+      isExternalLink = false;
+      profileLink = `/user/${user_id}?source=owned_by`;
+    }
+    obj[ownerId] = { label: display_name, link: profileLink, isExternal: isExternalLink }
     return obj;
   }, {});
 
