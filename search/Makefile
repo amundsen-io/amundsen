@@ -17,7 +17,7 @@ lint:
 
 .PHONY: mypy
 mypy:
-	mypy --ignore-missing-imports --follow-imports=skip --strict-optional --warn-no-return search_service
+	mypy --ignore-missing-imports --follow-imports=skip --strict-optional --warn-no-return .
 
 .PHONY: test
 test: test_unit lint mypy

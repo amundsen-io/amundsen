@@ -1,5 +1,7 @@
 import unittest
 
+from typing import Any, Dict
+
 from search_service import create_app
 
 
@@ -58,7 +60,7 @@ class TestSwagger(unittest.TestCase):
                 self.fail(f'The following endpoint is not in swagger: {endpoint}')
 
     @staticmethod
-    def find(key, json_response):
+    def find(key: str, json_response: Dict[str, Any]) -> Any:
         for json_key, json_value in json_response.items():
             if json_key == key:
                 yield json_value

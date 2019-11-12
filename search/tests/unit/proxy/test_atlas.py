@@ -1,8 +1,7 @@
-import string
 import unittest
 
 from mock import MagicMock, patch
-from typing import List, Callable, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 from search_service import create_app, config
 from search_service.models.search_result import SearchResult
@@ -13,14 +12,14 @@ from search_service.proxy import get_proxy_client
 class TestAtlasProxy(unittest.TestCase):
     maxDiff = None
 
-    def to_class(self, entity):
+    def to_class(self, entity: Dict[str, Any]) -> Any:
         class ObjectView(object):
-            def __init__(self, dictionary):
+            def __init__(self, dictionary: Dict[str, Any]):
                 self.__dict__ = dictionary
 
         return ObjectView(entity)
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.app = create_app(config_module_class='search_service.config.LocalConfig')
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -50,8 +49,8 @@ class TestAtlasProxy(unittest.TestCase):
                 'description': 'column description',
                 'position': 1
             }
-
         }
+
         self.db_entity = {
             'guid': '-100',
             'typeName': self.entity_type,
@@ -61,6 +60,9 @@ class TestAtlasProxy(unittest.TestCase):
                 'clusterName': self.cluster
             }
         }
+
+        self.entity1_name = 'Table1'
+        self.entity1_description = 'Dummy Description'
         self.entity1 = {
             'guid': '1',
             'typeName': self.entity_type,
@@ -72,33 +74,35 @@ class TestAtlasProxy(unittest.TestCase):
             },
             'attributes': {
                 'updateTime': 123,
-                'name': 'Table1',
+                'name': self.entity1_name,
                 'qualifiedName': f"{self.db}.Table1@{self.cluster}",
                 'classifications': [
                     {'typeName': 'PII_DATA'}
                 ],
-                'description': 'Dummy Description',
+                'description': self.entity1_description,
                 'owner': 'dummy@email.com',
                 'columns': [self.test_column],
                 'db': self.db_entity
-            }
+            },
+            'classifications': self.classification_entity['classifications']
         }
-        self.entity1.update(self.classification_entity)
 
+        self.entity2_name = 'Table2'
         self.entity2 = {
             'guid': '2',
             'typeName': self.entity_type,
             'classificationNames': [],
             'attributes': {
                 'updateTime': 234,
-                'qualifiedName': f"Table2",
-                'name': 'Table2',
+                'qualifiedName': 'Table2',
+                'name': self.entity2_name,
                 'db': None,
                 'description': 'Dummy Description',
                 'owner': 'dummy@email.com',
-            }
+            },
+            'classifications': self.classification_entity['classifications']
         }
-        self.entity2.update(self.classification_entity)
+
         self.entities = {
             'entities': [
                 self.entity1,
@@ -106,7 +110,7 @@ class TestAtlasProxy(unittest.TestCase):
             ],
         }
 
-    def _qualified(self, kind, name, table=None):
+    def _qualified(self, kind: str, name: str, table: str = None) -> str:
         if not self.qn:
             return name
         if kind == "db":
@@ -118,7 +122,7 @@ class TestAtlasProxy(unittest.TestCase):
         return name
 
     @staticmethod
-    def recursive_mock(start: any):
+    def recursive_mock(start: Any) -> Any:
         """
         The atlas client allows retrieval of data via __getattr__.
         That is why we build this method to recursively mock dictionary's to add
@@ -143,13 +147,13 @@ class TestAtlasProxy(unittest.TestCase):
             return start
 
     @staticmethod
-    def dsl_inject(checks: List[Tuple[Callable[[str], bool], dict]]):
+    def dsl_inject(checks: List[Tuple[Callable[[str], bool], dict]]) -> Callable:
         """
         helper method for returning results based on sql queries
         :param checks:
         :return:
         """
-        def search_dsl(query: string):
+        def search_dsl(query: str) -> Dict[str, Any]:
             for check, data in checks:
                 if check(query):
                     response = MagicMock()
@@ -168,14 +172,14 @@ class TestAtlasProxy(unittest.TestCase):
         return search_dsl
 
     @staticmethod
-    def bulk_inject(entities: dict):
+    def bulk_inject(entities: List[Dict[str, Any]]) -> Callable:
         """
         provide an entity_bulk method for atlas
         :param entities:
         :return:
         """
         # noinspection PyPep8Naming
-        def guid_filter(guid: List, ignoreRelationships=False):
+        def guid_filter(guid: List, ignoreRelationships: bool = False) -> Any:
             return TestAtlasProxy.recursive_mock([{
                 'entities': list(filter(lambda x: x['guid'] in guid, entities))
             }])
@@ -205,17 +209,18 @@ class TestAtlasProxy(unittest.TestCase):
         self.app.config[config.SEARCH_PAGE_SIZE_KEY] = 1337
 
         client = get_proxy_client()
-        self.assertEqual(client.atlas.base_url, "http://localhost:21000")
-        self.assertEqual(client.atlas.client.request_params['headers']['Authorization'], 'Basic YWRtaW46YWRtaW4=')
-        self.assertEqual(client.page_size, 1337)
+        self.assertEqual(client.atlas.base_url, "http://localhost:21000")   # type: ignore
+        self.assertEqual(client.atlas.client.request_params['headers']['Authorization'],    # type: ignore
+                         'Basic YWRtaW46YWRtaW4=')
+        self.assertEqual(client.page_size, 1337)    # type: ignore
 
-    def test_search_normal(self):
+    def test_search_normal(self) -> None:
         expected = SearchResult(total_results=2,
-                                results=[Table(name=self.entity1['attributes']['name'],
+                                results=[Table(name=self.entity1_name,
                                                key=f"{self.entity_type}://"
                                                    f"{self.cluster}.{self.db}/"
-                                                   f"{self.entity1['attributes']['name']}",
-                                               description=self.entity1['attributes']['description'],
+                                                   f"{self.entity1_name}",
+                                               description=self.entity1_description,
                                                cluster=self.cluster,
                                                database=self.entity_type,
                                                schema_name=self.db,
@@ -236,7 +241,7 @@ class TestAtlasProxy(unittest.TestCase):
             self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]),
                                  "Search Result doesn't match with expected result!")
 
-    def test_search_empty(self):
+    def test_search_empty(self) -> None:
         expected = SearchResult(total_results=0,
                                 results=[])
         self.proxy.atlas.search_dsl = self.dsl_inject([
@@ -256,16 +261,16 @@ class TestAtlasProxy(unittest.TestCase):
         self.assertDictEqual(vars(resp), vars(expected),
                              "Search Result doesn't match with expected result!")
 
-    def test_search_tag_table(self):
+    def test_search_tag_table(self) -> None:
         fields = ['tag', 'table']
         for field in fields:
 
             expected = SearchResult(total_results=1,
-                                    results=[Table(name=self.entity1['attributes']['name'],
+                                    results=[Table(name=self.entity1_name,
                                                    key=f"{self.entity_type}://"
                                                        f"{self.cluster}.{self.db}/"
-                                                       f"{self.entity1['attributes']['name']}",
-                                                   description=self.entity1['attributes']['description'],
+                                                       f"{self.entity1_name}",
+                                                   description=self.entity1_description,
                                                    cluster=self.cluster,
                                                    database=self.entity_type,
                                                    schema_name=self.db,
@@ -290,16 +295,16 @@ class TestAtlasProxy(unittest.TestCase):
                 self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]),
                                      "Search Result doesn't match with expected result!")
 
-    def test_search_schema_column(self):
+    def test_search_schema_column(self) -> None:
         fields = ['schema', 'column']
         for field in fields:
 
             expected = SearchResult(total_results=1,
-                                    results=[Table(name=self.entity1['attributes']['name'],
+                                    results=[Table(name=self.entity1_name,
                                                    key=f"{self.entity_type}://"
                                                        f"{self.cluster}.{self.db}/"
-                                                       f"{self.entity1['attributes']['name']}",
-                                                   description=self.entity1['attributes']['description'],
+                                                       f"{self.entity1_name}",
+                                                   description=self.entity1_description,
                                                    cluster=self.cluster,
                                                    database=self.entity_type,
                                                    schema_name=self.db,
@@ -328,7 +333,7 @@ class TestAtlasProxy(unittest.TestCase):
             self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]),
                                  "Search Result doesn't match with expected result!")
 
-    def test_unknown_field(self):
+    def test_unknown_field(self) -> None:
         expected = SearchResult(total_results=0,
                                 results=[])
         self.proxy.atlas.search_dsl = self.dsl_inject([

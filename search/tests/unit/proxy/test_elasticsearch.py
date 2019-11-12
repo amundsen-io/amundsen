@@ -1,8 +1,7 @@
-from typing import Any
 import unittest
-from unittest.mock import patch, MagicMock
 
-from typing import Iterable
+from unittest.mock import patch, MagicMock
+from typing import Any, Iterable
 
 from search_service import create_app
 from search_service.proxy import get_proxy_client
@@ -127,7 +126,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             self.assertEqual(client.transport.hosts[0]['port'], 9200)
 
     @patch('search_service.proxy.elasticsearch.Elasticsearch', autospec=True)
-    def test_setup_client_with_username_and_password(self, elasticsearch_mock) -> None:
+    def test_setup_client_with_username_and_password(self, elasticsearch_mock: MagicMock) -> None:
         self.es_proxy = ElasticsearchProxy(
             host='http://unit-test-host',
             user='unit-test-user',
@@ -141,7 +140,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         )
 
     @patch('search_service.proxy.elasticsearch.Elasticsearch', autospec=True)
-    def test_setup_client_without_username(self, elasticsearch_mock) -> None:
+    def test_setup_client_without_username(self, elasticsearch_mock: MagicMock) -> None:
         self.es_proxy = ElasticsearchProxy(
             host='http://unit-test-host',
             user=''
@@ -152,7 +151,7 @@ class TestElasticsearchProxy(unittest.TestCase):
 
     @patch('search_service.proxy._proxy_client', None)
     def test_setup_config(self) -> None:
-        es: ElasticsearchProxy = get_proxy_client()
+        es: Any = get_proxy_client()
         a = es.elasticsearch
         for client in [a, a.cat, a.cluster, a.indices, a.ingest, a.nodes, a.snapshot, a.tasks]:
             self.assertEqual(client.transport.hosts[0]['host'], "0.0.0.0")
