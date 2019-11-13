@@ -13,12 +13,13 @@ class GlueExtractor(Extractor):
     """
 
     CLUSTER_KEY = 'cluster'
-
-    DEFAULT_CONFIG = ConfigFactory.from_dict({CLUSTER_KEY: 'gold'})
+    FILTER_KEY = 'filters'
+    DEFAULT_CONFIG = ConfigFactory.from_dict({CLUSTER_KEY: 'gold', FILTER_KEY: None})
 
     def init(self, conf):
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
         self._cluster = '{}'.format(conf.get_string(GlueExtractor.CLUSTER_KEY))
+        self._filters = conf.get(GlueExtractor.FILTER_KEY)
         self._glue = boto3.client('glue')
         self._extract_iter = None  # type: Union[None, Iterator]
 
@@ -33,7 +34,7 @@ class GlueExtractor(Extractor):
 
     def get_scope(self):
         # type: () -> str
-        return 'extractor.glue_extractor'
+        return 'extractor.glue'
 
     def _get_extract_iter(self):
         # type: () -> Iterator[TableMetadata]
@@ -73,10 +74,14 @@ class GlueExtractor(Extractor):
 
     def _search_tables(self):
         tables = []
-        data = self._glue.search_tables()
+        kwargs = {}
+        if self._filters is not None:
+            kwargs['Filters'] = self._filters
+        data = self._glue.search_tables(**kwargs)
         tables += data['TableList']
         while 'NextToken' in data:
             token = data['NextToken']
-            data = self._glue.search_tables(NextToken=token)
+            kwargs['NextToken'] = token
+            data = self._glue.search_tables(**kwargs)
             tables += data['TableList']
         return tables

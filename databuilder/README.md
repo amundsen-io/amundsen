@@ -113,13 +113,27 @@ An extractor that extracts table and column metadata including database, schema,
 
 Before running make sure you have a working AWS profile configured and have access to search tables on Glue 
 ```python
-job_config = ConfigFactory.from_dict({})
+job_config = ConfigFactory.from_dict({
+	'extractor.glue.{}'.format(GlueExtractor.CLUSTER_KEY): cluster_identifier_string,
+	'extractor.glue.{}'.format(GlueExtractor.FILTER_KEY): []})
 job = DefaultJob(
 	conf=job_config,
 	task=DefaultTask(
 		extractor=GlueExtractor(),
 		loader=AnyLoader()))
 job.launch()
+```
+
+If using the filters option here is the input format
+```
+[
+  {
+    "Key": "string",
+    "Value": "string",
+    "Comparator": "EQUALS"|"GREATER_THAN"|"LESS_THAN"|"GREATER_THAN_EQUALS"|"LESS_THAN_EQUALS"
+  }
+  ...
+]
 ```
 
 #### [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor")
