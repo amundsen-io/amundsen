@@ -13,6 +13,7 @@ For information about Amundsen and our other services, visit the [main repositor
 ## Requirements
 
 - Python >= 3.6
+- elasticsearch 6.x (currently it doesn't support 7.x)
 
 
 ## Instructions to start the Search service from distribution
