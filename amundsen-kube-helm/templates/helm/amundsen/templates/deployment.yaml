@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
-        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.searchServiceName }}:{{ .Values.searchImageVersion }}
+        image: {{- if .Values.searchServiceImage }} {{.Values.searchServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.searchServiceName }}:{{ .Values.searchImageVersion }}{{- end }}
         ports:
         - containerPort: 5000  
         env:
@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
-        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:{{ .Values.metadataImageVersion }}
+        image: {{- if .Values.metadataServiceImage }} {{.Values.metadataServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:{{ .Values.metadataImageVersion }}{{- end }}
         ports:
         - containerPort: 5000  
         env:
@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
-        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}:1.0.9
+        image: {{- if .Values.frontEndServiceImage }} {{.Values.frontEndServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}:{{ .Values.frontEndImageVersion }}{{- end }}
         ports:
         - containerPort: 5000  
         env:
