@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, post_load
-from typing import Any, Dict, Iterable, List, Set
+from typing import Any, Dict, Iterable, List, Optional, Set
 from .base import Base
 
 
@@ -17,6 +17,7 @@ class Table(Base):
                  column_descriptions: List[str] = [],
                  tags: Iterable[str],
                  last_updated_epoch: int,
+                 display_name: Optional[str] = None,
                  total_usage: int = 0) -> None:
         self.name = name
         self.key = key
@@ -29,6 +30,7 @@ class Table(Base):
         self.last_updated_epoch = last_updated_epoch
         self.total_usage = total_usage
         self.column_descriptions = column_descriptions
+        self.display_name = display_name
 
     def get_id(self) -> str:
         # uses the table key as the document id in ES
@@ -45,21 +47,23 @@ class Table(Base):
             'schema_name',
             'column_names',
             'tags',
-            'last_updated_epoch'
+            'last_updated_epoch',
+            'display_name'
         }
 
     def __repr__(self) -> str:
         return 'Table(name={!r}, key={!r}, description={!r}, ' \
                'cluster={!r} database={!r}, schema_name={!r}, column_names={!r}, ' \
-               'tags={!r}, last_updated={!r})'.format(self.name,
-                                                      self.key,
-                                                      self.description,
-                                                      self.cluster,
-                                                      self.database,
-                                                      self.schema_name,
-                                                      self.column_names,
-                                                      self.tags,
-                                                      self.last_updated_epoch)
+               'tags={!r}, last_updated={!r}, display_name={!r})'.format(self.name,
+                                                                         self.key,
+                                                                         self.description,
+                                                                         self.cluster,
+                                                                         self.database,
+                                                                         self.schema_name,
+                                                                         self.column_names,
+                                                                         self.tags,
+                                                                         self.last_updated_epoch,
+                                                                         self.display_name)
 
 
 class TableSchema(Schema):
@@ -74,6 +78,7 @@ class TableSchema(Schema):
     tags = fields.List(fields.Str())
     total_usage = fields.Int(allow_none=True)
     column_descriptions = fields.List(fields.Str(), allow_none=True)
+    display_name = fields.Str(allow_none=True)
 
     @post_load
     def make(self, data: Dict[str, Any], **kwargs: Any) -> Table:
