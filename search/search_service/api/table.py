@@ -20,6 +20,7 @@ table_fields = {
     "tags": fields.List(fields.String),
     # last etl timestamp as epoch
     "last_updated_epoch": fields.Integer,
+    "display_name": fields.String
 }
 
 search_table_results = {
