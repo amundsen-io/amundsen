@@ -3,8 +3,14 @@
 @import 'variables';
 
 .owner-editor-component {
+  .avatar-label-component {
+    .avatar-label {
+      margin-left: 4px;
+    }
+  }
+
   .btn.add-item-button {
-    height: 32px;
+    height: 24px;
     padding: 0px 1px;
   }
 
@@ -27,10 +33,10 @@
 
     &:focus,
     &:hover {
-      background-color: $body-bg-secondary;
+      background-color: $body-bg-tertiary;
 
       .btn.delete-button {
-        background-color: $body-bg-secondary;
+        background-color: $body-bg-tertiary;
         display: block
       }
     }

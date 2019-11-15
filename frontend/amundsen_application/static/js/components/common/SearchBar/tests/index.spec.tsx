@@ -269,6 +269,19 @@ describe('mapDispatchToProps', () => {
   });
 });
 
+describe('mapDispatchToProps', () => {
+  let dispatch;
+  let result;
+  beforeAll(() => {
+    dispatch = jest.fn(() => Promise.resolve());
+    result = mapDispatchToProps(dispatch);
+  });
+
+  it('sets searchAll on the props', () => {
+    expect(result.submitSearch).toBeInstanceOf(Function);
+  });
+});
+
 describe('mapStateToProps', () => {
   let result;
   beforeAll(() => {

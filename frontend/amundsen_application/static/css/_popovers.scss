@@ -4,18 +4,19 @@
 .popover {
   background-color: $body-bg-dark;
   border: 1px solid $body-bg-dark;
-  color: $text-light;
+  color: $text-inverse;
   font-size: 12px;
   padding: 5px;
 }
 .popover-title {
   border-bottom: 1px solid $stroke;
-  color: $text-light;
+  color: $text-inverse;
   font-size: 14px;
   padding: 5px;
 }
 .popover-content {
   padding: 2px 5px;
+  word-break: break-word;
 }
 .popover.right .arrow:after {
   border-right-color: $body-bg-dark;

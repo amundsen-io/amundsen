@@ -5,7 +5,7 @@
   border: 0;
   border-radius: 4px;
   color: $text-primary;
-  margin: 4px;
+  margin: 0 8px 8px 0;
   overflow: hidden;
   padding: 8px;
   text-overflow: ellipsis;
@@ -14,7 +14,6 @@
   &.compact {
     line-height: 14px;
     height: 30px;
-    margin: 2px;
   }
 
   &:hover,

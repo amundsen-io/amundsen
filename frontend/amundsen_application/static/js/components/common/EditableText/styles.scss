@@ -1,45 +1,54 @@
 @import 'variables';
 
-.editable-container {
-  display: flex;
-  font-size: 16px;
-  color: $text-secondary;
+.editable-text {
 
-  &:hover {
-   .edit-link {
-     opacity: 1;
-   }
+  // React-Markdown
+  .markdown-wrapper {
+    font-size: 14px;
+    word-break: break-word;
+
+    // Remove extra margin form text elements
+    > p, ul, ol {
+      margin: 0;
+    }
+
+    // Restrict max size of header elements
+    h1, h2, h3 {
+      font-size: 20px;
+      font-weight: $font-weight-header-bold;
+      line-height: 28px;
+    }
   }
 
   .edit-link {
-    opacity: 0;
     text-decoration: none;
-
-    &.no-value {
-      opacity: 1;
-    }
-  }
-
-  .editable-text {
-    flex-grow: 0.1;
-    word-break: break-word;
-
-    // React-Markdown wraps editable text with a paragraph
-    > p {
-      margin: 0;
-    }
   }
 
   .editable-textarea {
-    padding: 0;
+    background: $body-bg-secondary;
+    border-radius: 4px;
+    border-color: $stroke;
+    min-width: 300px;
+    max-width: 600px;
     outline: none;
-    border: 0;
-    background: $brand-color-1;
-    caret-color: $brand-color-4;
+    padding: 8px;
+    resize: none;
+
+    &:disabled {
+      background: $body-bg-tertiary;
+    }
   }
 
-  .editable-textarea:focus-within {
-    outline: none;
-    background: $white;
+  .editable-textarea-controls {
+    margin: 16px 0 8px;
+
+    .btn {
+      margin-right: 8px;
+    }
+
+    .label.label-danger {
+      display: block;
+      margin-bottom: 16px;
+    }
   }
 }

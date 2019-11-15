@@ -1,0 +1,48 @@
+@import 'variables';
+
+.column-stats {
+  .stat-collection-info {
+    color: $text-secondary;
+    font-style: italic;
+    margin: 8px 0;
+  }
+
+  .column-stats-table {
+    display: flex;
+    max-width: 600px;
+
+    .column-stats-column {
+      flex-basis: 50%;
+      flex-grow: 1;
+
+      &:first-child {
+        margin-right: 16px;
+      }
+
+      .column-stat-row {
+        display: flex;
+        border-top: 1px solid $divider;
+        line-height: 32px;
+
+        &:nth-child(odd) {
+          background-color: $body-bg-secondary;
+        }
+
+        &:last-child {
+          border-bottom: 1px solid $divider;
+        }
+
+        .stat-name {
+          flex: 100px 1 0;
+          padding-left: 4px;
+          text-transform: lowercase;
+        }
+
+        .stat-value {
+          flex: 100px 1 1;
+          padding-right: 4px;
+        }
+      }
+    }
+  }
+}

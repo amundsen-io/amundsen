@@ -1,23 +1,15 @@
 @import 'variables';
 
 .avatar-label-component {
-  display: flex;
-  font-size: 12px;
-  word-wrap: break-word;
-}
+  display: inline-block;
 
-.component-avatar {
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 4px;
-}
-
-.component-label {
-  margin-top: auto;
-  margin-bottom: auto;
-  cursor: inherit;
-  font-weight: normal;
-  min-width: 0;
+  .avatar-label {
+    margin-left: 8px;
+    cursor: inherit;
+    min-width: 0;
+    color: $text-secondary;
+    vertical-align: middle;
+  }
 }
 
 .avatar-overlap {

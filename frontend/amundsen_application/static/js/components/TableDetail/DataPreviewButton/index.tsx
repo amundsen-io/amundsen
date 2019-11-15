@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-
-import { Button, Modal, OverlayTrigger, Popover, Table } from 'react-bootstrap';
+import { Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import Linkify from 'react-linkify'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import { getPreviewData } from 'ducks/tableMetadata/reducer';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
-
-import { PreviewData } from 'interfaces';
+import { PreviewData, PreviewQueryParams, TableMetadata } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -24,18 +24,21 @@ enum LoadingStatus {
 export interface StateFromProps {
   previewData: PreviewData;
   status: LoadingStatus;
+  tableData: TableMetadata;
+}
+
+export interface DispatchFromProps {
+  getPreviewData: (queryParams: PreviewQueryParams) => void;
 }
 
 export interface ComponentProps {
   modalTitle: string;
 }
 
-type DataPreviewButtonProps = StateFromProps & ComponentProps;
+type DataPreviewButtonProps = StateFromProps & DispatchFromProps & ComponentProps;
 
 interface DataPreviewButtonState {
-  status: LoadingStatus;
   showModal: boolean;
-  previewData: PreviewData;
 }
 
 export function getStatusFromCode(httpErrorCode: number) {
@@ -61,20 +64,21 @@ export function getStatusFromCode(httpErrorCode: number) {
 }
 
 export class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPreviewButtonState> {
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { previewData, status } = nextProps;
-    return { ...prevState, previewData, status };
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      status: LoadingStatus.LOADING,
       showModal: false,
-      previewData: {},
-    }
+    };
+  }
+
+  componentDidMount() {
+    const tableData = this.props.tableData;
+    this.props.getPreviewData({
+      database: tableData.database,
+      schema: tableData.schema,
+      tableName: tableData.table_name,
+    });
   }
 
   handleClose = () => {
@@ -99,9 +103,9 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
   }
 
   renderModalBody() {
-    const previewData = this.state.previewData;
+    const previewData = this.props.previewData;
 
-    if (this.state.status === LoadingStatus.SUCCESS) {
+    if (this.props.status === LoadingStatus.SUCCESS) {
       if (!previewData.columns || !previewData.data || previewData.columns.length === 0 || previewData.data.length === 0) {
         return (
           <div>
@@ -140,7 +144,7 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
 
     }
 
-    if (this.state.status === LoadingStatus.UNAUTHORIZED) {
+    if (this.props.status === LoadingStatus.UNAUTHORIZED) {
       return (
         <div>
           <Linkify>{previewData.error_text}</Linkify>
@@ -152,7 +156,7 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
   }
 
   renderPreviewButton() {
-    const previewData = this.state.previewData;
+    const previewData = this.props.previewData;
 
     // Based on the state, the preview button will show different things.
     let buttonText = 'Loading...';
@@ -161,25 +165,25 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
     let popoverText = 'The data preview is loading';
 
     // TODO: Setting hardcoded strings that should be customizable/translatable
-    switch (this.state.status) {
+    switch (this.props.status) {
       case LoadingStatus.SUCCESS:
       case LoadingStatus.UNAUTHORIZED:
-        buttonText = 'Preview Data';
+        buttonText = 'Preview';
         iconClass = 'icon-preview';
         disabled = false;
         break;
       case LoadingStatus.FORBIDDEN:
-        buttonText = 'Preview Forbidden';
+        buttonText = 'Preview';
         iconClass = 'icon-preview';
         popoverText = previewData.error_text || 'User is forbidden to preview this data';
         break;
       case LoadingStatus.UNAVAILABLE:
-        buttonText = 'Preview Unavailable';
+        buttonText = 'Preview';
         iconClass = 'icon-preview';
         popoverText = 'This feature has not been configured by your service';
         break;
       case LoadingStatus.ERROR:
-        buttonText = 'Preview Unavailable';
+        buttonText = 'Preview';
         iconClass = 'icon-preview';
         popoverText = previewData.error_text || 'An internal server error has occurred, please contact service admin';
         break;
@@ -190,12 +194,11 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
     const previewButton = (
       <button
         id="data-preview-button"
-        className="btn btn-default btn-block"
-        disabled={disabled}
-        onClick={this.handleClick}
+        className="btn btn-default btn-lg"
+        disabled={ disabled }
+        onClick={ this.handleClick }
       >
-         <img className={"icon icon-color " + iconClass} />
-         <span>{buttonText}</span>
+        { buttonText }
       </button>
     );
 
@@ -213,32 +216,31 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
       <OverlayTrigger
         trigger={['hover', 'focus']}
         placement='top'
-        delayHide={200}
-        overlay={popoverHover}>
-          <div className="overlay-trigger">
-            {previewButton}
-          </div>
+        delayHide={ 200 }
+        overlay={ popoverHover }>
+        {/* Disabled buttons don't trigger hover/focus events so we need a wrapper */}
+        <div className="overlay-trigger">
+          { previewButton }
+        </div>
       </OverlayTrigger>
     )
   }
 
   render() {
-    // else render button that triggers the preview data modal
     return (
-      <div className="preview-data">
-        {this.renderPreviewButton()}
-
-        <Modal show={this.state.showModal} onHide={this.handleClose}>
-          <Modal.Header className="text-center" closeButton={true}>
+      <>
+        { this.renderPreviewButton() }
+        <Modal show={ this.state.showModal } onHide={ this.handleClose }>
+          <Modal.Header className="text-center" closeButton={ true }>
             <Modal.Title>
-              {this.props.modalTitle}
+              { this.props.modalTitle }
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {this.renderModalBody()}
+            { this.renderModalBody() }
           </Modal.Body>
         </Modal>
-      </div>
+      </>
     )
   }
 }
@@ -247,7 +249,12 @@ export const mapStateToProps = (state: GlobalState) => {
   return {
     previewData: state.tableMetadata.preview.data,
     status: getStatusFromCode(state.tableMetadata.preview.status),
+    tableData: state.tableMetadata.tableData,
   };
 };
 
-export default connect<StateFromProps, {}, ComponentProps>(mapStateToProps, null)(DataPreviewButton);
+export const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({ getPreviewData }, dispatch);
+};
+
+export default connect<StateFromProps, {}, ComponentProps>(mapStateToProps, mapDispatchToProps)(DataPreviewButton);

@@ -1,0 +1,23 @@
+@import 'variables';
+
+.editable-section {
+  .section-title {
+    color: $text-tertiary;
+    margin-bottom: 4px;
+  }
+
+  .edit-button {
+    opacity: 0;
+    margin-left: 4px;
+
+    &.active {
+      opacity: 1;
+    }
+  }
+
+  &:hover {
+    .edit-button {
+      opacity: 1;
+    }
+  }
+}

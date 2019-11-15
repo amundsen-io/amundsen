@@ -98,6 +98,18 @@ interface MailClientFeaturesConfig {
 }
 
 /**
+ * MailClientFeaturesConfig - Enable/disable UI features with a dependency on
+ *                            configuring a custom mail client.
+ *
+ * feedbackEnabled - Enables the feedback feature UI
+ * notificationsEnabled - Enables any UI related to sending notifications to users
+ */
+interface MailClientFeaturesConfig {
+  feedbackEnabled: boolean;
+  notificationsEnabled: boolean;
+}
+
+/**
  * TableProfileConfig - Customize the "Table Profile" section of the "Table Details" page.
  *
  * isBeta - Adds a "beta" tag to the "Table Profile" section header.
