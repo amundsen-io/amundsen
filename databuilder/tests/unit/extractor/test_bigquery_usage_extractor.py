@@ -125,6 +125,12 @@ FAILURE = {"entries": [
         },
     },
 }]}   # noqa
+
+# An empty dict will be ignored, but putting in nextPageToken causes the test
+# to loop infinitely, so we need a bogus key/value to ensure that we will try
+# to read entries
+NO_ENTRIES = { 'key': 'value' }   # noqa
+
 KEYFILE_DATA = """
 ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAieW91ci1wcm9q
 ZWN0LWhlcmUiLAogICJwcml2YXRlX2tleV9pZCI6ICJiMDQ0N2U1ODEyYTg5ZTAyOTgxYjRkMWE1
@@ -216,6 +222,21 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         self.assertEqual(key.table, 'incidents_2008')
         self.assertEqual(key.email, 'your-user-here@test.com')
         self.assertEqual(value, 1)
+
+    @patch('databuilder.extractor.bigquery_usage_extractor.build')
+    def test_no_entries(self, mock_build):
+        config_dict = {
+            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
+                'your-project-here',
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(NO_ENTRIES)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+        self.assertIsNone(result)
 
     @patch('databuilder.extractor.bigquery_usage_extractor.build')
     def test_key_path(self, mock_build):
