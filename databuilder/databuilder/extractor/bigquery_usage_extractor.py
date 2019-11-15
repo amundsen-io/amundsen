@@ -158,7 +158,8 @@ class BigQueryTableUsageExtractor(Extractor):
         response = self.logging_service.entries().list(body=body).execute(
             num_retries=BigQueryTableUsageExtractor.NUM_RETRIES)
         while response:
-            yield response
+            if 'entries' in response:
+                yield response
 
             try:
                 if 'nextPageToken' in response:
