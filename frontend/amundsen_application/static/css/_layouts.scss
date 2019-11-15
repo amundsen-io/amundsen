@@ -1,0 +1,101 @@
+@import 'variables';
+$header-height: 84px;
+
+.resource-detail-layout {
+  min-width: 1048px;
+
+  .resource-header {
+    display: flex;
+    height: $header-height;
+    border-bottom: 2px solid $divider;
+    padding: 16px 24px 0;
+
+
+    .icon-header {
+      height: 32px;
+      width: 32px;
+      margin: 10px;
+    }
+
+    .header-section {
+      &.header-title {
+        flex-grow: 1;
+        overflow: hidden;
+
+        .header-title-text {
+          display: inline-block;
+          max-width: calc(100% - 100px);
+        }
+      }
+      &.header-links {
+        flex-shrink: 0;
+        > * {
+          margin-right: 16px;
+
+        }
+      }
+      &.header-buttons {
+        flex-shrink: 0;
+        > * {
+          margin-right: 8px;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+
+    }
+  }
+
+
+  // 630 | 414+ Flexible layout
+  .column-layout-1 {
+    display: flex;
+    height: calc(100% - #{$header-height});
+
+    > .left-panel {
+      > .banner {
+        border: 1px solid $stroke;
+        height: 40px;
+        margin: 24px 24px 0 24px;
+        padding: 8px;
+      }
+
+      border-right: 4px solid $divider;
+      flex-basis: 634px; // 630 + 4px border
+      flex-shrink: 0;
+      overflow-y: scroll;
+      padding: 0 24px;
+    }
+
+    > .right-panel {
+      flex-basis: 414px;
+      flex-grow: 1;
+      flex-shrink: 0;
+      overflow-y: scroll;
+      width: 0; // Required for text truncation
+    }
+  }
+
+  // 313 | 245 Fixed Layout
+  .column-layout-2 {
+    display: flex;
+    flex-basis: 100%;
+
+    > .left-panel {
+      flex-basis: 313px;
+      margin-right: 24px;
+      flex-direction: column;
+    }
+
+    > .right-panel {
+      flex-basis: 245px;
+    }
+  }
+
+  .left-panel,
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+  }
+}

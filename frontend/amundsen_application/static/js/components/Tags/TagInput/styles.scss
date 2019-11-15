@@ -1,101 +1,70 @@
 @import 'variables';
 
-/*
+.tag-input {
+
+  /*
    override default react-select style classes.
    using !important as a temporary workaround in places where a compiled class
    is taking precendence,
-*/
-.tag-input .basic-multi-select {
-  .amundsen__control {
-    min-height: 32px;
+  */
+  .basic-multi-select {
+    .amundsen__control {
+      min-height: 32px;
 
-    &,
-    .amundsen__control--is-focused,
-    .amundsen__control--is-focused:hover  {
-       border: none !important;
-       box-shadow: none !important;
-    }
-
-    .amundsen__multi-value {
-      background-color: $tag-bg !important;
-      border-radius: 4px;
-
-      .amundsen__multi-value__label {
-        border-radius: 4px 0 0 4px;
-        color: $text-primary;
-        line-height: 14px;
-        padding: 8px;
+      &,
+      .amundsen__control--is-focused,
+      .amundsen__control--is-focused:hover {
+        border: none !important;
+        box-shadow: none !important;
       }
 
-      .amundsen__multi-value__remove {
-        border-radius: 0 4px 4px 0;
-        cursor: pointer;
+      .amundsen__multi-value {
+        background-color: $tag-bg !important;
+        border-radius: 4px;
+        margin: 8px 8px 0 0;
 
-        &:hover,
-        &:focus {
-          background-color: $tag-bg-hover !important;
+        .amundsen__multi-value__label {
+          border-radius: 4px 0 0 4px;
           color: $text-primary;
+          line-height: 14px;
+          padding: 8px;
+        }
+
+        .amundsen__multi-value__remove {
+          border-radius: 0 4px 4px 0;
+          cursor: pointer;
+
+          &:hover,
+          &:focus {
+            background-color: $tag-bg-hover !important;
+            color: $text-primary;
+          }
         }
       }
     }
+
+    .amundsen__control--is-disabled {
+      background-color: transparent;
+      border-style: none;
+    }
   }
 
-  .amundsen__control--is-disabled {
-    background-color: transparent;
-    border-style: none;
+
+  .amundsen__value-container {
+    padding: 0 !important;
   }
-}
 
+  .amundsen__option--is-focused {
+    background-color: #eee !important;
+  }
 
-.amundsen__value-container {
-  padding: 0 !important;
-}
+  .amundsen__multi-value--is-disabled .amundsen__multi-value__label {
+    padding-right: 6px;
+  }
 
-
-.amundsen__option--is-focused {
-  background-color: #eee !important;
-}
-
-.amundsen__multi-value--is-disabled .amundsen__multi-value__label {
-  padding-right: 6px;
-}
-
-.amundsen__indicators {
-  width: 48px;
-}
-
-.tag-blob {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.multi-value-container {
-  border-radius: 4px;
-  border: 1px solid hsl(0,0%,90%);
-  display: flex;
-  margin: 4px;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.multi-value-container.selected {
-  background-color: hsl(0,0%,90%);
-}
-
-.multi-value-label {
-  color: hsl(0,0%,20%);
-  overflow: hidden;
-  padding: 3px;
-  padding-left: 6px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  box-sizing: border-box;
-  width: 100%;
-  padding-right: 6px;
-}
-
-.multi-value-label:hover {
-  cursor: pointer;
+  .amundsen__indicators {
+    width: 48px;
+  }
 }
 
 .tag-input-modal {
@@ -118,4 +87,40 @@
       margin-left: 4px;
     }
   }
+
+  .tag-blob {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .multi-value-container {
+    border-radius: 4px;
+    border: 1px solid hsl(0, 0%, 90%);
+    display: flex;
+    margin: 4px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .multi-value-container.selected {
+    background-color: hsl(0, 0%, 90%);
+  }
+
+  .multi-value-label {
+    color: hsl(0, 0%, 20%);
+    overflow: hidden;
+    padding: 3px;
+    padding-left: 6px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 6px;
+  }
+
+  .multi-value-label:hover {
+    cursor: pointer;
+  }
+
+
 }

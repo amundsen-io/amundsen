@@ -109,7 +109,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   };
 
   render() {
-    const inputClass = `${this.props.size === SIZE_SMALL ? 'h3 small' : 'h2 large'} search-bar-input form-control`;
+    const inputClass = `${this.props.size === SIZE_SMALL ? 'title-2 small' : 'h2 large'} search-bar-input form-control`;
     const searchButtonClass = `btn btn-flat-icon search-button ${this.props.size === SIZE_SMALL ? 'small' : 'large'}`;
     const subTextClass = `subtext body-secondary-3 ${this.state.subTextClassName}`;
 

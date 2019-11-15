@@ -10,6 +10,7 @@
       flex-grow: 1;
     }
   }
+
   .content {
     margin-top: 5px;
   }
@@ -19,7 +20,6 @@
     margin-top: -4px;
     margin-left: 4px;
   }
-}
 
 
 button.edit-button {
@@ -50,11 +50,33 @@ button.active-edit-button:focus {
   outline: none;
   box-shadow: 0 0 1pt 1pt $brand-color-4
 }
+  button.edit-button:hover {
+    background-color: $brand-color-4;
+  }
 
-
-@media (min-width: $screen-md-min) {
-  button.edit-button,
   button.active-edit-button {
-    float: right;
+    height: 24px;
+    width: 24px;
+    border: none;
+    border-radius: 5px;
+    background-color: $brand-color-1;
+    background-image: url('/static/images/icons/Edit_Inverted.svg');
+    -moz-box-shadow: inset 1px 1px 2px $brand-color-4;
+    -webkit-box-shadow: inset 1px 1px 2px $brand-color-4;
+    box-shadow: inset 1px 1px 2px $brand-color-4;
+  }
+
+  button.edit-button:focus,
+  button.active-edit-button:focus {
+    outline: none;
+    box-shadow: 0 0 1pt 1pt $brand-color-4
+  }
+
+
+  @media (min-width: $screen-md-min) {
+    button.edit-button,
+    button.active-edit-button {
+      float: right;
+    }
   }
 }

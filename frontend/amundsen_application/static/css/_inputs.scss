@@ -9,6 +9,14 @@ input {
     color: $text-placeholder !important;
   }
 
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px $white inset !important;
+    font-size: 20px !important;
+  }
+
   &[type="radio"] {
     margin: 5px;
   }

@@ -35,7 +35,7 @@ describe('AvatarLabel', () => {
     });
 
     it('renders label with correct text', () => {
-      expect(wrapper.find('label').text()).toEqual(props.label);
+      expect(wrapper.find('.avatar-label').text()).toEqual(props.label);
     });
   });
 });

@@ -1,8 +1,10 @@
 @import 'variables';
+
 .btn {
 
   &.btn-primary,
   &.btn-default {
+    border-width: 2px;
     font-weight: $font-weight-body-bold;
     height: 32px;
     padding: 6px 16px;
@@ -12,7 +14,7 @@
       height: 18px;
       -webkit-mask-size: 18px;
       mask-size: 18px;
-      margin: 0 4px;
+      margin: 0 4px 0 0;
       vertical-align: top;
       min-width: 18px;
       width: 18px;
@@ -21,13 +23,13 @@
     &.btn-lg {
       font-weight: $font-size-large;
       height: 48px;
-      padding: 12px 24px;
+      padding: 10px 16px;
 
       img.icon {
         height: 24px;
         -webkit-mask-size: 24px;
         mask-size: 24px;
-        margin: 0 4px;
+        margin: 0 4px 0 0;
         min-width: 24px;
         width: 24px;
       }
@@ -51,6 +53,16 @@
   &.btn-default {
     img.icon {
       background-color: $btn-default-color;
+    }
+
+    &.muted {
+      border-color: $divider;
+      color: $text-secondary;
+      padding: 0 8px;
+
+      .icon {
+        background-color: $text-secondary;
+      }
     }
 
     &:not(.disabled):hover,

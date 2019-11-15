@@ -1,36 +1,72 @@
 import * as React from 'react';
-import moment from 'moment-timezone';
+import * as moment from 'moment-timezone';
 
 import './styles.scss';
 
 import { Watermark } from 'interfaces';
+import {
+  HIGH_WATERMARK_LABEL,
+  NO_WATERMARK_LINE_1, NO_WATERMARK_LINE_2, LOW_WATERMARK_LABEL,
+  WATERMARK_DISPLAY_FORMAT,
+  WATERMARK_INPUT_FORMAT,
+  WatermarkType
+} from './constants';
 
-interface WatermarkLabelProps {
+export interface WatermarkLabelProps {
   watermarks: Watermark[];
 }
 
 class WatermarkLabel extends React.Component<WatermarkLabelProps> {
-
   constructor(props) {
     super(props);
-    this.getWatermarksLabel = this.getWatermarksLabel.bind(this);
   }
+
+  formatWatermarkDate = (dateString: string) => {
+    return moment(dateString, WATERMARK_INPUT_FORMAT).format(WATERMARK_DISPLAY_FORMAT);
+  };
+
+  getWatermarkValue = (type: WatermarkType) => {
+    const watermark = this.props.watermarks.find((watermark: Watermark) => watermark.watermark_type === type);
+    return watermark && watermark.partition_value || null;
+  };
+
+  renderWatermarkInfo = (low: string, high: string) => {
+    if (low === null && high === null) {
+      return (
+        <div className="body-2">
+          { NO_WATERMARK_LINE_1 }
+          <br/>
+          { NO_WATERMARK_LINE_2 }
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <div className="range-labels body-2">
+          { LOW_WATERMARK_LABEL }
+          <br/>
+          { HIGH_WATERMARK_LABEL }
+        </div>
+        <div className="range-dates body-2">
+          { low && this.formatWatermarkDate(low) }
+          <br/>
+          { high && this.formatWatermarkDate(high) }
+        </div>
+      </>
+    );
+  };
 
   render() {
-    return (
-        <div className="watermark-label">{this.getWatermarksLabel(this.props.watermarks)}</div>
-      )
-  }
+    const low = this.getWatermarkValue(WatermarkType.LOW);
+    const high = this.getWatermarkValue(WatermarkType.HIGH);
 
-  getWatermarksLabel(watermarks: Watermark[]) {
-    const low = watermarks.find((wtm) => wtm.watermark_type === "low_watermark");
-    const high = watermarks.find((wtm) => wtm.watermark_type === "high_watermark");
-    if (low === undefined && high === undefined) {
-      return "Non Partitioned Table. Data available for all dates."
-    }
-    return [low, high].map((wtm) => {
-      return moment(wtm.partition_value, "YYYY-MM-DD").format("MMM DD, YYYY");
-    }).join(" – ");
+    return (
+      <div className="watermark-label">
+        <img className="range-icon" src="/static/images/watermark-range.png"/>
+        { this.renderWatermarkInfo(low, high) }
+      </div>
+    );
   }
 }
 
