@@ -119,6 +119,8 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               <div className="body-2">
                 Datasets &bull;&nbsp;
                 { getDatabaseDisplayName(data.database) }
+                &nbsp;&bull;&nbsp;
+                { data.cluster }
                 {
                   data.is_view && <Flag text="Table View" labelStyle="primary"/>
                 }
