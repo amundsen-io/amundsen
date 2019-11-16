@@ -108,6 +108,42 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [CassandraExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/cassandra_extractor.py "CassandraExtractor")
+An extractor that extracts table and column metadata including keyspace, table name, column name and column type from Apache Cassandra databases
+
+```python
+job_config = ConfigFactory.from_dict({
+	'extractor.cassandra.{}'.format(CassandraExtractor.CLUSTER_KEY): cluster_identifier_string,
+	'extractor.cassandra.{}'.format(CassandraExtractor.IPS_KEY): [127.0.0.1],
+	'extractor.cassandra.{}'.format(CassandraExtractor.KWARGS_KEY): {},
+	'extractor.cassandra.{}'.format(CassandraExtractor.FILTER_FUNCTION_KEY): my_filter_function,
+
+})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=CassandraExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
+If using the function filter options here is the function description
+```python
+def filter(keytab, table):
+  # return False if you don't want to add that table and True if you want to add
+  return True
+```
+
+If needed to define more args on the cassandra cluster you can pass through kwargs args
+```python
+config = ConfigFactory.from_dict({
+	'extractor.cassandra.{}'.format(CassandraExtractor.IPS_KEY): [127.0.0.1],
+	'extractor.cassandra.{}'.format(CassandraExtractor.KWARGS_KEY): {'port': 9042}
+})
+# it will call the cluster constructor like this
+Cluster([127.0.0.1], **kwargs)
+```
+
 #### [GlueExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/glue_extractor.py "GlueExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from AWS Glue metastore.
 
