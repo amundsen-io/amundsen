@@ -1,6 +1,7 @@
 class Data:
-    metadata_type = 'TEST_METADATA'
-    entity_type = 'TEST_ENTITY'
+    table_metadata = 'table_metadata'
+    column_metadata = 'column_metadata'
+    entity_type = 'hive_table'
     cluster = 'TEST_CLUSTER'
     db = 'TEST_DB'
     name = 'TEST_TABLE'
@@ -12,16 +13,13 @@ class Data:
         ]
     }
 
-    test_column = {
-        'guid': 'DOESNT_MATTER',
-        'typeName': 'COLUMN',
+    column_metadata_entity = {
+        'guid': 'COLUMN_METADATA_GUID',
+        'typeName': column_metadata,
+        'updateTime': 12312312,
         'attributes': {
-            'name': 'column name',
-            'qualifiedName': 'column@name',
-            'type': 'Managed',
-            'description': 'column description',
-            'position': 1,
-            'stats': [
+            'qualifiedName': 'Column_Metadata_Qualified',
+            'statistics': [
                 {'attributes': {
                     'stat_name': 'max',
                     'stat_val': '100',
@@ -35,9 +33,26 @@ class Data:
                     'end_epoch': '200',
                 }},
             ]
-        }
+        },
+        'relationshipAttributes': {}
+    }
+
+    test_column = {
+        'guid': 'COLUMN_GUID',
+        'typeName': 'COLUMN',
+        'attributes': {
+            'name': 'column name',
+            'qualifiedName': 'column@name',
+            'type': 'Managed',
+            'description': 'column description',
+            'position': 1
+        },
+        'relationshipAttributes': {
+            'metadata': column_metadata_entity
+        },
 
     }
+    column_metadata_entity['relationshipAttributes']['column'] = test_column
 
     db_entity = {
         'guid': '-100',
@@ -53,7 +68,7 @@ class Data:
 
     metadata1 = {
         'guid': '-1',
-        'typeName': metadata_type,
+        'typeName': table_metadata,
         'updateTime': 12312312,
         'attributes': {
             'qualifiedName': 'Metadata1_Qualified',
@@ -81,11 +96,11 @@ class Data:
         },
     }
     entity1.update(classification_entity)
-    metadata1['relationshipAttributes']['parentEntity'] = entity1
+    metadata1['relationshipAttributes']['table'] = entity1
 
     metadata2 = {
         'guid': '-2',
-        'typeName': metadata_type,
+        'typeName': table_metadata,
         'updateTime': 12312,
         'attributes': {
             'qualifiedName': 'Metadata2_Qualified',
@@ -111,7 +126,7 @@ class Data:
         },
     }
     entity2.update(classification_entity)
-    metadata2['relationshipAttributes']['parentEntity'] = entity2
+    metadata2['relationshipAttributes']['table'] = entity2
 
     entities = {
         'entities': [
@@ -119,7 +134,6 @@ class Data:
             entity2,
         ]
     }
-
     reader_entity1 = {
         "typeName": "Reader",
         "attributes": {

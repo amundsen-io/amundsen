@@ -252,17 +252,23 @@ class AtlasProxy(BaseProxy):
         for column in entity.entity[self.REL_ATTRS_KEY].get('columns') or list():
             col_entity = entity.referredEntities[column['guid']]
             col_attrs = col_entity[self.ATTRS_KEY]
+            col_rel_attrs = col_entity[self.REL_ATTRS_KEY]
+            col_metadata = col_rel_attrs.get('metadata')
             statistics = list()
-            for stats in col_attrs.get('stats') or list():
-                stats_attrs = stats['attributes']
-                statistics.append(
-                    Statistics(
-                        stat_type=stats_attrs.get('stat_name'),
-                        stat_val=stats_attrs.get('stat_val'),
-                        start_epoch=stats_attrs.get('start_epoch'),
-                        end_epoch=stats_attrs.get('end_epoch'),
+
+            if col_metadata:
+                col_metadata = entity.referredEntities.get(col_metadata.get('guid'))
+
+                for stats in col_metadata['attributes'].get('statistics') or list():
+                    stats_attrs = stats['attributes']
+                    statistics.append(
+                        Statistics(
+                            stat_type=stats_attrs.get('stat_name'),
+                            stat_val=stats_attrs.get('stat_val'),
+                            start_epoch=stats_attrs.get('start_epoch'),
+                            end_epoch=stats_attrs.get('end_epoch'),
+                        )
                     )
-                )
 
             columns.append(
                 Column(
@@ -435,9 +441,10 @@ class AtlasProxy(BaseProxy):
             # Fetch the metadata entities based on popularity score
             search_results = self._driver.search_basic.create(data=popular_query_params)
             for metadata in search_results.entities:
-                table_guid = metadata.attributes.get("parentEntity").get("guid")
+                table_guid = metadata.attributes.get("table").get("guid")
                 popular_tables_guids.append(table_guid)
 
+            # In order to get comments and other extra fields from table entity
             table_collection = self._driver.entity_bulk(guid=popular_tables_guids,
                                                         ignoreRelationships=True)
 
@@ -458,12 +465,12 @@ class AtlasProxy(BaseProxy):
         :return: A List of popular tables instances
         """
         popular_tables = list()
-        popular_query_params = {'typeName': 'Metadata',
+        popular_query_params = {'typeName': 'table_metadata',
                                 'sortBy': 'popularityScore',
                                 'sortOrder': 'DESCENDING',
                                 'excludeDeletedEntities': True,
                                 'limit': num_entries,
-                                'attributes': ['parentEntity']}
+                                'attributes': ['table']}
 
         table_entities = self._get_metadata_entities(popular_query_params)
 

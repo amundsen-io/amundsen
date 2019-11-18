@@ -38,7 +38,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
         mocked_entity.entity = entity
         if mocked_entity.entity == self.entity1:
             mocked_entity.referredEntities = {
-                self.test_column['guid']: self.test_column
+                self.test_column['guid']: self.test_column,
+                self.column_metadata_entity['guid']: self.column_metadata_entity
             }
         else:
             mocked_entity.referredEntities = {}
@@ -103,9 +104,10 @@ class TestAtlasProxy(unittest.TestCase, Data):
         ent_attrs = self.entity1['attributes']
 
         col_attrs = self.test_column['attributes']
+        col_metadata_attrs = self.column_metadata_entity['attributes']
         exp_col_stats = list()
 
-        for stats in col_attrs['stats']:
+        for stats in col_metadata_attrs['statistics']:
             exp_col_stats.append(
                 Statistics(
                     stat_type=stats['attributes']['stat_name'],
@@ -149,8 +151,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
         meta1 = copy.deepcopy(self.metadata1)
         meta2 = copy.deepcopy(self.metadata2)
 
-        meta1['attributes']['parentEntity'] = self.entity1
-        meta2['attributes']['parentEntity'] = self.entity2
+        meta1['attributes']['table'] = self.entity1
+        meta2['attributes']['table'] = self.entity2
 
         metadata1 = self.to_class(meta1)
         metadata2 = self.to_class(meta2)
@@ -193,8 +195,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
         meta1 = copy.deepcopy(self.metadata1)
         meta2 = copy.deepcopy(self.metadata2)
 
-        meta1['attributes']['parentEntity'] = self.entity1
-        meta2['attributes']['parentEntity'] = self.entity2
+        meta1['attributes']['table'] = self.entity1
+        meta2['attributes']['table'] = self.entity2
 
         metadata1 = self.to_class(meta1)
         metadata2 = self.to_class(meta2)
@@ -215,12 +217,12 @@ class TestAtlasProxy(unittest.TestCase, Data):
             entities_collection.entities = [self.to_class(entity1), self.to_class(entity2)]
 
             # Invalidate the cache to test the cache functionality
-            popular_query_params = {'typeName': 'Metadata',
+            popular_query_params = {'typeName': 'table_metadata',
                                     'sortBy': 'popularityScore',
                                     'sortOrder': 'DESCENDING',
                                     'excludeDeletedEntities': True,
                                     'limit': 2,
-                                    'attributes': ['parentEntity']}
+                                    'attributes': ['table']}
             self.proxy._CACHE.region_invalidate(self.proxy._get_metadata_entities,
                                                 None, '_get_metadata_entities',
                                                 popular_query_params)
