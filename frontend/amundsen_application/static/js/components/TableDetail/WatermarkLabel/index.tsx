@@ -42,7 +42,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     }
 
     return (
-      <>
+      <div>
         <div className="range-labels body-2">
           { LOW_WATERMARK_LABEL }
           <br/>
@@ -53,7 +53,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
           <br/>
           { high && this.formatWatermarkDate(high) }
         </div>
-      </>
+      </div>
     );
   };
 
