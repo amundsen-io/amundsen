@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -57,6 +57,46 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
     e.stopPropagation();
   };
 
+  renderColumnType = (columnIndex: number, type: string) => {
+    const truncatedTypes: string[] = ['array', 'struct', 'map'];
+    let shouldTrucate = false;
+
+    const fullText = type.toLowerCase();
+    let text = fullText;
+
+    truncatedTypes.forEach((truncatedType) => {
+      if (type.startsWith(truncatedType) && type !== truncatedType) {
+        shouldTrucate = true;
+        text = `${truncatedType}<...>`;
+        return;
+      };
+    });
+
+    if (shouldTrucate) {
+      const popoverHover = (
+        <Popover className='column-type-popover' id={`column-type-popover:${columnIndex}`}>
+          {fullText}
+        </Popover>
+      );
+      return (
+        <OverlayTrigger
+          trigger={['click']}
+          placement='left'
+          overlay={popoverHover}
+          rootClose={true}>
+            <a className='column-type'
+               href="JavaScript:void(0)"
+               onClick={ this.stopPropagation }
+            >
+              {text}
+            </a>
+        </OverlayTrigger>
+      )
+    }
+    return (<div className='column-type'>{text}</div>);
+  };
+
+
   render() {
     const metadata = this.props.data;
     return (
@@ -75,7 +115,7 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
               }
             </div>
             <div className="resource-type">
-              { metadata.type ? metadata.type.toLowerCase() : 'null' }
+              { this.renderColumnType(this.props.index, metadata.type) }
             </div>
             <div className="badges">
               {/* Placeholder */}
