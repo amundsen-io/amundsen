@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import WatermarkLabel, { WatermarkLabelProps } from '../';
 import {
   NO_WATERMARK_LINE_1,
@@ -76,7 +76,7 @@ describe('WatermarkLabel', () => {
 
     it('renders the date when present', () => {
       const watermarkInfo = instance.renderWatermarkInfo('2018-08-03', '2019-10-15');
-      expect(shallow(watermarkInfo).find('.range-dates').text()).toBe('Aug 03, 2018Oct 15, 2019')
+      expect(mount(watermarkInfo).find('.range-dates').text()).toBe('Aug 03, 2018Oct 15, 2019')
     });
   });
 
