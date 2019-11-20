@@ -72,11 +72,13 @@ class PostgresMetadataExtractor(Extractor):
             cluster_source=cluster_source
         )
 
-        LOGGER.info('SQL for postgres metadata: {}'.format(self.sql_stmt))
-
         self._alchemy_extractor = SQLAlchemyExtractor()
         sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope())\
             .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
+
+        self.sql_stmt = sql_alch_conf.get_string(SQLAlchemyExtractor.EXTRACT_SQL)
+
+        LOGGER.info('SQL for postgres metadata: {}'.format(self.sql_stmt))
 
         self._alchemy_extractor.init(sql_alch_conf)
         self._extract_iter = None  # type: Union[None, Iterator]
