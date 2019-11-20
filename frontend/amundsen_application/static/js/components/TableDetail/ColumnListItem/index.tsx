@@ -58,7 +58,7 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
   };
 
   renderColumnType = (columnIndex: number, type: string) => {
-    const truncatedTypes: string[] = ['array', 'struct', 'map'];
+    const truncatedTypes: string[] = ['array', 'struct', 'map', 'row'];
     let shouldTrucate = false;
 
     const fullText = type.toLowerCase();
@@ -67,7 +67,14 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
     truncatedTypes.forEach((truncatedType) => {
       if (type.startsWith(truncatedType) && type !== truncatedType) {
         shouldTrucate = true;
-        text = `${truncatedType}<...>`;
+        const lastChar = type.charAt(type.length - 1);
+        if (lastChar === '>'){
+          text = `${truncatedType}<...>`;
+        } else if (lastChar === ')') {
+          text = `${truncatedType}(...)`;
+        } else {
+          text = `${truncatedType}...`;
+        }
         return;
       };
     });
