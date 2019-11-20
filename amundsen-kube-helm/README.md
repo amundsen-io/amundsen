@@ -1,4 +1,4 @@
-# Amundsen Infrastructure
+# Amundsen k8s Helm Charts
 
 ## What is this?
 This is setup templates for deploying [amundsen](https://github.com/lyft/amundsen) on [k8s (kubernetes)](https://kubernetes.io/), using [helm.](https://helm.sh/) 
