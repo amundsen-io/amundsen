@@ -1,5 +1,5 @@
 import { SagaIterator } from 'redux-saga';
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import * as API from './api/v0';
 
@@ -135,5 +135,5 @@ export function* getPreviewDataWorker(action: GetPreviewDataRequest): SagaIterat
   }
 };
 export function* getPreviewDataWatcher(): SagaIterator {
-  yield takeEvery(GetPreviewData.REQUEST, getPreviewDataWorker);
+  yield takeLatest(GetPreviewData.REQUEST, getPreviewDataWorker);
 };

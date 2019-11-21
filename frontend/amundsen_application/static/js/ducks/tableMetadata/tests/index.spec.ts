@@ -570,7 +570,7 @@ describe('reducer', () => {
     describe('getPreviewDataWatcher', () => {
       it('takes every GetPreviewData.REQUEST with getPreviewDataWorker', () => {
         testSaga(getPreviewDataWatcher)
-          .next().takeEvery(GetPreviewData.REQUEST, getPreviewDataWorker)
+          .next().takeLatest(GetPreviewData.REQUEST, getPreviewDataWorker)
           .next().isDone();
       });
     });
