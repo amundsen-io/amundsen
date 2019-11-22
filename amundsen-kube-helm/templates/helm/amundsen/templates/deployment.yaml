@@ -64,14 +64,40 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      volumes:
+      {{- if .Values.oidcEnabled }}
+        - name: oidc-config
+          secret:
+            secretName: oidc-config
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
-        image: {{- if .Values.metadataServiceImage }} {{.Values.metadataServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:{{ .Values.metadataImageVersion }}{{- end }}
+        {{- with .Values.metadataServiceImage }}
+        image: {{ . }}
+        {{- else }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}{{ if .Values.oidcEnabled }}-oidc{{ end }}:{{ .Values.metadataImageVersion }}
+        {{- end }}
+        imagePullPolicy: Never
         ports:
-        - containerPort: 5000  
+        - containerPort: 5000
         env:
         - name: PROXY_HOST
           value: bolt://neo4j
+        {{- if .Values.oidcEnabled }}
+        - name: FLASK_OIDC_CLIENT_SECRETS
+          value: /etc/client_secrets.json
+        - name: FLASK_OIDC_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: oidc-config
+              key: OIDC_CLIENT_SECRET
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.oidcEnabled }}
+          - name: oidc-config
+            mountPath: /etc/client_secrets.json
+            subPath: client_secrets.json
+        {{- end }}
         {{- with .Values.metadata.resources }}
         resources:
 {{ toYaml . | indent 10 }}
@@ -103,16 +129,40 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      volumes:
+      {{- if .Values.oidcEnabled }}
+        - name: oidc-config
+          secret:
+            secretName: oidc-config
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
-        image: {{- if .Values.frontEndServiceImage }} {{.Values.frontEndServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}:{{ .Values.frontEndImageVersion }}{{- end }}
+        {{- with .Values.frontEndServiceImage }}
+        image: {{ . }}
+        {{- else }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}{{ if .Values.oidcEnabled }}-oidc{{ end }}:{{ .Values.frontEndImageVersion }}
+        {{- end }}
         ports:
-        - containerPort: 5000  
+          - containerPort: 5000
         env:
-        - name: SEARCHSERVICE_BASE
-          value: http://{{ .Chart.Name }}-{{ .Values.searchServiceName }}:5001
-        - name: METADATASERVICE_BASE
-          value: http://{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:5002
-        - name: FRONTEND_SVC_CONFIG_MODULE_CLASS
-          value: amundsen_application.config.TestConfig                     
----                          
+          - name: SEARCHSERVICE_BASE
+            value: http://{{ .Chart.Name }}-{{ .Values.searchServiceName }}:5001
+          - name: METADATASERVICE_BASE
+            value: http://{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:5002
+          - name: LONG_RANDOM_STRING
+            value: {{ quote .Values.LONG_RANDOM_STRING }}
+        {{- if .Values.oidcEnabled }}
+          - name: FLASK_OIDC_CLIENT_SECRETS
+            value: /etc/client_secrets.json
+          - name: FLASK_OIDC_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: oidc-config
+                key: OIDC_CLIENT_SECRET
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.oidcEnabled }}
+          - name: oidc-config
+            mountPath: /etc/client_secrets.json
+            subPath: client_secrets.json
+        {{- end }}
