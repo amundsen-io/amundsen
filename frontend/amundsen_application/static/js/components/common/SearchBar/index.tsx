@@ -2,7 +2,14 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
-// TODO: Use css-modules instead of 'import'
+import { GlobalState } from 'ducks/rootReducer';
+import { submitSearch, getInlineResultsDebounce, selectInlineResult } from 'ducks/search/reducer';
+import { SubmitSearchRequest, InlineSearchRequest, InlineSearchSelect } from 'ducks/search/types';
+
+import { ResourceType } from 'interfaces';
+
+import InlineSearchResults from './InlineSearchResults';
+
 import './styles.scss';
 
 import {
@@ -15,9 +22,6 @@ import {
   SYNTAX_ERROR_PREFIX,
   SYNTAX_ERROR_SPACING_SUFFIX,
 } from './constants';
-import { GlobalState } from 'ducks/rootReducer';
-import { submitSearch } from 'ducks/search/reducer';
-import { SubmitSearchRequest } from 'ducks/search/types';
 
 export interface StateFromProps {
   searchTerm: string;
@@ -25,6 +29,8 @@ export interface StateFromProps {
 
 export interface DispatchFromProps {
   submitSearch: (searchTerm: string) => SubmitSearchRequest;
+  onInputChange: (term: string) => InlineSearchRequest;
+  onSelectInlineResult: (resourceType: ResourceType, searchTerm: string, updateUrl: boolean) => InlineSearchSelect;
 }
 
 export interface OwnProps {
@@ -36,12 +42,15 @@ export interface OwnProps {
 export type SearchBarProps = StateFromProps & DispatchFromProps & OwnProps;
 
 interface SearchBarState {
+  showTypeAhead: boolean;
   subTextClassName: string;
   searchTerm: string;
   subText: string;
 }
 
 export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
+  private refToSelf: React.RefObject<HTMLDivElement>;
+
   public static defaultProps: Partial<SearchBarProps> = {
     placeholder: PLACEHOLDER_DEFAULT,
     subText: SUBTEXT_DEFAULT,
@@ -50,8 +59,10 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   constructor(props) {
     super(props);
+    this.refToSelf = React.createRef<HTMLDivElement>();
 
     this.state = {
+      showTypeAhead: false,
       subTextClassName: '',
       searchTerm: this.props.searchTerm,
       subText: this.props.subText,
@@ -64,11 +75,25 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   }
 
   clearSearchTerm = () : void => {
-    this.setState({ searchTerm: '' });
+    this.setState({ showTypeAhead: false, searchTerm: '' });
   };
 
+  componentDidMount = () => {
+    document.addEventListener('mousedown', this.updateTypeAhead, false);
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.updateTypeAhead, false);
+  }
+
   handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>) : void => {
-    this.setState({ searchTerm: (event.target as HTMLInputElement).value.toLowerCase() });
+    const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
+    const showTypeAhead = this.shouldShowTypeAhead(searchTerm);
+    this.setState({ searchTerm, showTypeAhead });
+
+    if (showTypeAhead) {
+      this.props.onInputChange(searchTerm);
+    }
   };
 
   handleValueSubmit = (event: React.FormEvent<HTMLFormElement>) : void => {
@@ -76,8 +101,13 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     event.preventDefault();
     if (this.isFormValid(searchTerm)) {
       this.props.submitSearch(searchTerm);
+      this.hideTypeAhead();
     }
   };
+
+  hideTypeAhead = () : void => {
+    this.setState({ showTypeAhead: false });
+  }
 
   isFormValid = (searchTerm: string) : boolean => {
     if (searchTerm.length === 0) {
@@ -108,13 +138,32 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     return true;
   };
 
+  onSelectInlineResult = (resourceType: ResourceType, updateUrl: boolean = false) : void => {
+    this.hideTypeAhead();
+    this.props.onSelectInlineResult(resourceType, this.state.searchTerm, updateUrl);
+  }
+
+  shouldShowTypeAhead = (searchTerm: string) : boolean => {
+    return searchTerm.length > 0;
+  }
+
+  updateTypeAhead = (event: Event): void => {
+    /* This logic will hide/show the inline results component when the user clicks
+      outside/inside of the search bar */
+    if (this.refToSelf.current && this.refToSelf.current.contains(event.target as Node)) {
+      this.setState({ showTypeAhead: this.shouldShowTypeAhead(this.state.searchTerm) });
+    } else {
+      this.hideTypeAhead();
+    }
+  };
+
   render() {
     const inputClass = `${this.props.size === SIZE_SMALL ? 'title-2 small' : 'h2 large'} search-bar-input form-control`;
     const searchButtonClass = `btn btn-flat-icon search-button ${this.props.size === SIZE_SMALL ? 'small' : 'large'}`;
     const subTextClass = `subtext body-secondary-3 ${this.state.subTextClassName}`;
 
     return (
-      <div id="search-bar">
+      <div id="search-bar" ref={this.refToSelf}>
         <form className="search-bar-form" onSubmit={ this.handleValueSubmit }>
             <input
               id="search-input"
@@ -124,6 +173,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
               aria-label={ this.props.placeholder }
               placeholder={ this.props.placeholder }
               autoFocus={ true }
+              autoComplete="off"
             />
           <button className={ searchButtonClass } type="submit">
             <img className="icon icon-search" />
@@ -133,6 +183,15 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             <button type="button" className="btn btn-close clear-button" aria-label={BUTTON_CLOSE_TEXT} onClick={this.clearSearchTerm} />
           }
         </form>
+        {
+          this.state.showTypeAhead &&
+          // @ts-ignore: Investigate proper configuration for 'className' to be valid by default on custom components
+          <InlineSearchResults
+            className={this.props.size === SIZE_SMALL ? 'small' : ''}
+            onItemSelect={this.onSelectInlineResult}
+            searchTerm={this.state.searchTerm}
+          />
+        }
         {
           this.props.size !== SIZE_SMALL &&
           <div className={ subTextClass }>
@@ -151,7 +210,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ submitSearch }, dispatch);
+  return bindActionCreators({ submitSearch, onInputChange: getInlineResultsDebounce, onSelectInlineResult: selectInlineResult }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps, OwnProps>(mapStateToProps, mapDispatchToProps)(SearchBar);
+export default connect<StateFromProps, DispatchFromProps, OwnProps>(mapStateToProps,  mapDispatchToProps)(SearchBar);

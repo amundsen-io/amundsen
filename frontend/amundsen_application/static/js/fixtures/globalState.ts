@@ -86,6 +86,19 @@ const globalState: GlobalState = {
       results: [],
       total_results: 0,
     },
+    inlineResults: {
+      isLoading: false,
+      tables: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
+      users: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
+    }
   },
   tableMetadata: {
     isLoading: true,

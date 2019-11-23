@@ -17,13 +17,16 @@ import { submitNotificationWatcher } from './notification/sagas';
 import { submitFeedbackWatcher } from './feedback/sagas';
 // PopularTables
 import { getPopularTablesWatcher } from './popularTables/sagas';
-// SearchPage
+// Search
 import {
+  inlineSearchWatcher,
+  inlineSearchWatcherDebounce,
   loadPreviousSearchWatcher,
   searchAllWatcher,
   searchResourceWatcher,
   setPageIndexWatcher,
   setResourceWatcher,
+  selectInlineResultsWatcher,
   submitSearchWatcher,
   urlDidUpdateWatcher
 } from './search/sagas';
@@ -60,10 +63,13 @@ export default function* rootSaga() {
     submitNotificationWatcher(),
     // FeedbackForm
     submitFeedbackWatcher(),
-    // SearchPage
+    // Search
+    inlineSearchWatcher(),
+    inlineSearchWatcherDebounce(),
     loadPreviousSearchWatcher(),
     searchAllWatcher(),
     searchResourceWatcher(),
+    selectInlineResultsWatcher(),
     setPageIndexWatcher(),
     setResourceWatcher(),
     submitSearchWatcher(),

@@ -39,6 +39,13 @@ export function feedbackEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not user features should be shown
+ */
+export function indexUsersEnabled(): boolean {
+  return AppConfig.indexUsers.enabled;
+}
+
+/**
  * Returns whether or not notification features should be enabled
  */
 export function notificationsEnabled(): boolean {

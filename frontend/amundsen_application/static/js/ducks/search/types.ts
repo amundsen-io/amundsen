@@ -29,6 +29,16 @@ export interface SearchAllResponsePayload extends SearchResponsePayload {
   tables: TableSearchResults;
   users: UserSearchResults;
 };
+export interface InlineSearchResponsePayload {
+  tables: TableSearchResults;
+  users: UserSearchResults;
+};
+export interface InlineSearchUpdatePayload {
+  searchTerm: string;
+  selectedTab: ResourceType;
+  tables: TableSearchResults;
+  users: UserSearchResults;
+};
 
 
 export enum SearchAll {
@@ -72,6 +82,37 @@ export interface SearchResourceResponse {
   payload?: SearchResponsePayload;
 };
 
+
+export enum InlineSearch {
+  REQUEST = 'amundsen/search/INLINE_SEARCH_REQUEST',
+  REQUEST_DEBOUNCE = 'amundsen/search/INLINE_SEARCH_REQUEST_DEBOUNCE',
+  SELECT = 'amundsen/search/INLINE_SEARCH_SELECT',
+  SUCCESS = 'amundsen/search/INLINE_SEARCH_SUCCESS',
+  FAILURE = 'amundsen/search/INLINE_SEARCH_FAILURE',
+  UPDATE = 'amundsen/search/INLINE_SEARCH_UPDATE',
+};
+export interface InlineSearchRequest {
+  payload: {
+    term: string;
+  };
+  type: InlineSearch.REQUEST | InlineSearch.REQUEST_DEBOUNCE;
+};
+export interface InlineSearchResponse {
+  type: InlineSearch.SUCCESS | InlineSearch.FAILURE;
+  payload?: InlineSearchResponsePayload;
+};
+export interface InlineSearchSelect {
+  payload: {
+    resourceType: ResourceType;
+    searchTerm: string;
+    updateUrl: boolean;
+  };
+  type: InlineSearch.SELECT;
+};
+export interface InlineSearchUpdate {
+  payload: InlineSearchUpdatePayload,
+  type: InlineSearch.UPDATE;
+};
 
 export enum SubmitSearch {
   REQUEST = 'amundsen/search/SUBMIT_SEARCH_REQUEST',

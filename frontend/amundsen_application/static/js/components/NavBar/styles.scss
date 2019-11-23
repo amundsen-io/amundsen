@@ -2,72 +2,62 @@
 
 .nav-bar {
   height: $nav-bar-height;
-
   background: $nav-bar-color;
   padding: 0px 32px 1px 32px;
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  .title-3 {
-    color: $white;
-  }
-
-  a {
-    display: inline-block;
-    height: 100%;
-    line-height: 32px;
-    text-decoration: none;
-    color: $white;
-    padding-left: 8px;
-    padding-right: 8px;
-
-    &:hover:not(.nav-bar-avatar-link),
-    &.active {
-      border-bottom: 4px solid $white;
-    }
-
-    &.no-border-on-hover {
-      &:hover {
-        /* override border-bottom style */
-        border-bottom: none;
-      }
-    }
-
-    &.nav-bar-avatar-link {
-      margin-top: -4px;
-      padding-left: 4px;
-      padding-right: 4px;
-
-      .nav-bar-avatar {
-        height: 40px;
-        width: 40px;
-        padding: 4px;
-
-        &:hover {
-          /* override border-bottom style */
-          border-bottom: none;
-          /* circular background */
-          background-color: $white;
-          border-radius: 50%;
-        }
-      }
-    }
-  }
-
   .nav-bar-left {
     flex-basis: 234px;
+    span.title-3 {
+      color: $white;
+    }
   }
 
   .nav-bar-right {
     margin-left: auto;
     display: flex;
+    a {
+      color: $white;
+      display: inline-block;
+      height: 100%;
+      line-height: 32px;
+      padding: 0 8px;
+
+      &.border-bottom-white:hover,
+      &.border-bottom-white.active {
+        border-bottom: 4px solid $white;
+      }
+   }
+
+    .nav-bar-avatar {
+      &:not(.avatar-dropdown) {
+        .sb-avatar {
+          margin: 4px 0 0 4px;
+        }
+      }
+      background-color: $nav-bar-color;
+      border-style: none;
+      border-radius: 50%;
+      margin-top: -4px;
+      padding: 0;
+      height: 40px;
+      width: 40px;
+
+      &:hover {
+        background-color: $white;
+      }
+    }
   }
 
   .nav-bar-left,
   .nav-bar-right {
     height: 100%;
     padding-top: 12px;
+    a {
+      text-decoration: none;
+    }
   }
 
   .nav-bar-right > *:not(:last-child) {
@@ -78,56 +68,28 @@
     flex-grow: 1;
     margin: auto 16px auto auto;
   }
-}
 
-.logo-icon {
-  max-height: 32px;
-  max-width: 144px;
-  margin-right: 16px;
-}
-
-.avatar-dropdown {
-  border-style: none;
-  padding: 0 !important;
-  border-radius: 50%;
-}
-
-.profile-menu {
-  $profile-menu-width: 200px;
-  width: $profile-menu-width;
-
-  .profile-menu-header {
-    padding: 16px 16px 0 16px;
+  .logo-icon {
+    max-height: 32px;
+    max-width: 144px;
+    margin-right: 16px;
   }
 
-  li {
-    padding: 16px;
+  .profile-menu {
+    $profile-menu-width: 200px;
+    width: $profile-menu-width;
 
-    a {
-      padding: 0;
+    .profile-menu-header {
+      padding: 16px 16px 0 16px;
     }
-  }
-}
 
-.avatar-dropdown {
-  border-style: none;
-  padding: 0 !important;
-  border-radius: 50%;
-}
-
-.profile-menu {
-  $profile-menu-width: 200px;
-  width: $profile-menu-width;
-
-  .profile-menu-header {
-    padding: 16px 16px 0 16px;
-  }
-
-  li {
-    padding: 16px;
-
-    a {
-      padding: 0;
+    li {
+      padding: 16px;
+      a {
+        color: $text-primary;
+        padding: 0;
+        width: 100%;
+      }
     }
   }
 }

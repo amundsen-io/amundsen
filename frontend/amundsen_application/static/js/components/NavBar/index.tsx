@@ -12,7 +12,7 @@ import { Dropdown } from 'react-bootstrap';
 
 import { LoggedInUser } from 'interfaces';
 
-import { feedbackEnabled } from 'config/config-utils';
+import { feedbackEnabled, indexUsersEnabled } from 'config/config-utils';
 
 import Feedback from 'components/Feedback';
 import SearchBar from 'components/common/SearchBar';
@@ -34,10 +34,10 @@ export class NavBar extends React.Component<NavBarProps> {
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
       if (link.use_router) {
-        return <NavLink className="title-3" key={index} to={link.href} target={link.target}
+        return <NavLink className="title-3 border-bottom-white" key={index} to={link.href} target={link.target}
                         onClick={logClick}>{link.label}</NavLink>
       }
-      return <a className="title-3" key={index} href={link.href} target={link.target}
+      return <a className="title-3 border-bottom-white" key={index} href={link.href} target={link.target}
                 onClick={logClick}>{link.label}</a>
     });
   }
@@ -59,7 +59,7 @@ export class NavBar extends React.Component<NavBarProps> {
         <div className="row">
           <div className="nav-bar">
             <div id="nav-bar-left" className="nav-bar-left">
-              <Link to={`/`} className="no-border-on-hover">
+              <Link to={`/`}>
                 {
                   AppConfig.logoPath &&
                   <img id="logo-icon" className="logo-icon" src={AppConfig.logoPath} />
@@ -75,9 +75,9 @@ export class NavBar extends React.Component<NavBarProps> {
                 <Feedback />
               }
               {
-                this.props.loggedInUser && AppConfig.indexUsers.enabled &&
+                this.props.loggedInUser && indexUsersEnabled() &&
                 <Dropdown id='user-dropdown' pullRight={true}>
-                  <Dropdown.Toggle noCaret={true} className="avatar-dropdown">
+                  <Dropdown.Toggle noCaret={true} className="nav-bar-avatar avatar-dropdown">
                     <Avatar name={this.props.loggedInUser.display_name} size={32} round={true} />
                   </Dropdown.Toggle>
                   <Dropdown.Menu className='profile-menu'>
@@ -86,7 +86,7 @@ export class NavBar extends React.Component<NavBarProps> {
                       <div>{this.props.loggedInUser.email}</div>
                     </div>
                     <li>
-                      <Link id="nav-bar-avatar-link" className="no-border-on-hover" to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
+                      <Link id="nav-bar-avatar-link" to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
                         My Profile
                       </Link>
                     </li>
@@ -94,8 +94,8 @@ export class NavBar extends React.Component<NavBarProps> {
                 </Dropdown>
               }
               {
-                this.props.loggedInUser && !AppConfig.indexUsers.enabled &&
-                <div id="nav-bar-avatar" className="nav-bar-avatar">
+                this.props.loggedInUser && !indexUsersEnabled() &&
+                <div className="nav-bar-avatar">
                   <Avatar name={this.props.loggedInUser.display_name} size={32} round={true} />
                 </div>
               }

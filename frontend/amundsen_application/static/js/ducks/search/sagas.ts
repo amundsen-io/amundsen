@@ -1,5 +1,5 @@
 import { SagaIterator } from 'redux-saga';
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { all, call, debounce, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import * as qs from 'simple-query-string';
 
 import { ResourceType } from 'interfaces/Resources';
@@ -13,6 +13,8 @@ import {
   SearchAllRequest,
   SearchResource,
   SearchResourceRequest,
+  InlineSearch,
+  InlineSearchRequest,
   SetPageIndex,
   SetPageIndexRequest, SetResource, SetResourceRequest,
   SubmitSearch,
@@ -23,15 +25,73 @@ import {
 
 import {
   initialState,
+  initialInlineResultsState,
   searchAll,
   searchAllFailure,
   searchAllSuccess,
   searchResource,
   searchResourceFailure,
-  searchResourceSuccess, setPageIndex, setResource,
+  searchResourceSuccess,
+  getInlineResults,
+  getInlineResultsDebounce,
+  getInlineResultsSuccess,
+  getInlineResultsFailure,
+  updateFromInlineResult,
+  setPageIndex, setResource,
 } from './reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
 import { updateSearchUrl } from 'utils/navigation-utils';
+
+export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
+  const { term } = action.payload;
+  try {
+    const [tableResponse, userResponse] = yield all([
+      call(API.searchResource, 0, ResourceType.table, term),
+      call(API.searchResource, 0, ResourceType.user, term),
+    ]);
+    const inlineSearchResponse = {
+      tables: tableResponse.tables || initialInlineResultsState.tables,
+      users: userResponse.users || initialInlineResultsState.users,
+    };
+    yield put(getInlineResultsSuccess(inlineSearchResponse));
+  } catch (e) {
+    yield put(getInlineResultsFailure());
+  }
+};
+export function* inlineSearchWatcher(): SagaIterator {
+  yield takeLatest(InlineSearch.REQUEST, inlineSearchWorker);
+}
+export function* debounceWorker(action): SagaIterator {
+  yield put(getInlineResults(action.payload.term));
+}
+export function* inlineSearchWatcherDebounce(): SagaIterator {
+  yield debounce(350, InlineSearch.REQUEST_DEBOUNCE, debounceWorker);
+}
+
+export function* selectInlineResultWorker(action): SagaIterator {
+  const state = yield select();
+  const { searchTerm, resourceType, updateUrl } = action.payload;
+  if (state.search.inlineResults.isLoading) {
+    yield put(searchAll(searchTerm, resourceType, 0))
+    updateSearchUrl({ term: searchTerm });
+  }
+  else {
+    if (updateUrl) {
+      updateSearchUrl({ resource: resourceType, term: searchTerm, index: 0 });
+    }
+    const data = {
+      searchTerm,
+      selectedTab: resourceType,
+      tables: state.search.inlineResults.tables,
+      users: state.search.inlineResults.users,
+    };
+    yield put(updateFromInlineResult(data));
+  }
+};
+export function* selectInlineResultsWatcher(): SagaIterator {
+  yield takeEvery(InlineSearch.SELECT, selectInlineResultWorker);
+};
+
 
 export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   let { resource } = action.payload;

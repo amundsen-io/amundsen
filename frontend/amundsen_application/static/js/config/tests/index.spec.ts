@@ -33,6 +33,12 @@ describe('feedbackEnabled', () => {
   });
 });
 
+describe('indexUsersEnabled', () => {
+  it('returns whether or not the notifications feature is enabled', () => {
+    expect(ConfigUtils.indexUsersEnabled()).toBe(AppConfig.indexUsers.enabled);
+  });
+});
+
 describe('notificationsEnabled', () => {
   it('returns whether or not the notifications feature is enabled', () => {
     expect(ConfigUtils.notificationsEnabled()).toBe(AppConfig.mailClientFeatures.notificationsEnabled);
