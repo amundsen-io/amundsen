@@ -5,7 +5,11 @@ import { DEFAULT_RESOURCE_TYPE, ResourceType } from 'interfaces';
 import * as API from '../api/v0';
 
 import reducer, {
+  getInlineResults,
+  getInlineResultsSuccess,
+  getInlineResultsFailure,
   initialState,
+  initialInlineResultsState,
   loadPreviousSearch,
   searchAll,
   searchAllFailure,
@@ -15,18 +19,24 @@ import reducer, {
   searchResource,
   searchResourceFailure,
   searchResourceSuccess,
+  selectInlineResult,
   setPageIndex,
   setResource,
   submitSearch,
+  updateFromInlineResult,
   urlDidUpdate,
 } from '../reducer';
 import {
+  inlineSearchWatcher,
+  inlineSearchWorker,
   loadPreviousSearchWatcher,
   loadPreviousSearchWorker,
   searchAllWatcher,
   searchAllWorker,
   searchResourceWatcher,
   searchResourceWorker,
+  selectInlineResultsWatcher,
+  selectInlineResultWorker,
   setPageIndexWatcher,
   setPageIndexWorker,
   setResourceWatcher,
@@ -38,6 +48,9 @@ import {
 } from '../sagas';
 import {
   LoadPreviousSearch,
+  InlineSearch,
+  InlineSearchResponsePayload,
+  InlineSearchUpdatePayload,
   SearchAll,
   SearchAllResponsePayload,
   SearchResource,
@@ -98,6 +111,34 @@ describe('search ducks', () => {
         },
       ],
       total_results: 1,
+    },
+    users: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+  };
+
+  const expectedInlineResults: InlineSearchResponsePayload = {
+    tables: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    users: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    }
+  };
+
+  const inlineUpdatePayload: InlineSearchUpdatePayload = {
+    searchTerm: 'testName',
+    selectedTab: ResourceType.table,
+    tables: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
     },
     users: {
       page_index: 0,
@@ -198,6 +239,43 @@ describe('search ducks', () => {
       expect(action.type).toBe(UrlDidUpdate.REQUEST);
       expect(action.payload.urlSearch).toBe(urlSearch);
     });
+
+    it('getInlineResultsSuccess - returns the action to get inline results', () => {
+      const term = 'test'
+      const action = getInlineResults(term);
+      expect(action.type).toBe(InlineSearch.REQUEST);
+      expect(action.payload.term).toBe(term);
+    });
+
+    it('getInlineResultsSuccess - returns the action to process the success', () => {
+      const action = getInlineResultsSuccess(expectedInlineResults);
+      const { payload } = action;
+      expect(action.type).toBe(InlineSearch.SUCCESS);
+      expect(payload).toBe(expectedInlineResults);
+    });
+
+    it('getInlineResultsFailure - returns the action to process the failure', () => {
+      const action = getInlineResultsFailure();
+      expect(action.type).toBe(InlineSearch.FAILURE);
+    });
+
+    it('selectInlineResult - returns the action to process the selection of an inline result', () => {
+      const resource = ResourceType.table;
+      const searchTerm = 'test;'
+      const updateUrl = true;
+      const action = selectInlineResult(resource, searchTerm, updateUrl);
+      const { payload } = action;
+      expect(action.type).toBe(InlineSearch.SELECT);
+      expect(payload.resourceType).toBe(resource);
+      expect(payload.searchTerm).toBe(searchTerm);
+      expect(payload.updateUrl).toBe(updateUrl);
+    });
+
+    it('updateFromInlineResult - returns the action to populate the search results with existing inlineResults', () => {
+      const action = updateFromInlineResult(inlineUpdatePayload)
+      expect(action.type).toBe(InlineSearch.UPDATE);
+      expect(action.payload).toBe(inlineUpdatePayload);
+    });
   });
 
   describe('reducer', () => {
@@ -215,6 +293,7 @@ describe('search ducks', () => {
       const pageIndex = 0;
       expect(reducer(testState, searchAll(term, resource, pageIndex))).toEqual({
         ...testState,
+        inlineResults: initialInlineResultsState,
         search_term: term,
         isLoading: true,
       });
@@ -223,8 +302,12 @@ describe('search ducks', () => {
     it('should handle SearchAll.SUCCESS', () => {
       expect(reducer(testState, searchAllSuccess(expectedSearchAllResults))).toEqual({
         ...initialState,
-        ...expectedSearchResults,
-        isLoading: false,
+        ...expectedSearchAllResults,
+        inlineResults: {
+          tables: expectedSearchAllResults.tables,
+          users: expectedSearchAllResults.users,
+          isLoading: false,
+        },
       });
     });
 
@@ -266,6 +349,48 @@ describe('search ducks', () => {
       expect(reducer(testState, setResource(selectedTab))).toEqual({
         ...testState,
         selectedTab,
+      });
+    });
+
+    it('should handle InlineSearch.UPDATE', () => {
+      const { searchTerm, selectedTab, tables, users } = inlineUpdatePayload;
+      expect(reducer(testState, updateFromInlineResult(inlineUpdatePayload))).toEqual({
+        ...testState,
+        selectedTab,
+        tables,
+        users,
+        search_term: searchTerm,
+      });
+    });
+
+    it('should handle InlineSearch.SUCCESS', () => {
+      const { tables, users } = expectedInlineResults;
+      expect(reducer(testState, getInlineResultsSuccess(expectedInlineResults))).toEqual({
+        ...testState,
+        inlineResults: {
+          tables,
+          users,
+          isLoading: false,
+        }
+      });
+    });
+
+    it('should handle InlineSearch.FAILURE', () => {
+      expect(reducer(testState, getInlineResultsFailure())).toEqual({
+        ...testState,
+        inlineResults: initialInlineResultsState,
+      });
+    });
+
+    it('should handle InlineSearch.REQUEST', () => {
+      const term = 'testSearch';
+      expect(reducer(testState, getInlineResults(term))).toEqual({
+        ...testState,
+        inlineResults: {
+          tables: initialInlineResultsState.tables,
+          users: initialInlineResultsState.users,
+          isLoading: true,
+        },
       });
     });
   });
@@ -483,6 +608,29 @@ describe('search ducks', () => {
       it('takes every LoadPreviousSearch.REQUEST with loadPreviousSearchWorker', () => {
         testSaga(loadPreviousSearchWatcher)
           .next().takeEvery(LoadPreviousSearch.REQUEST, loadPreviousSearchWorker)
+          .next().isDone();
+      });
+    });
+
+    describe('inlineSearchWorker', () => {
+      /* TODO - Considering some cleanup */
+    });
+
+    describe('inlineSearchWatcher', () => {
+      /* TODO - Need to investigate proper test approach
+      it('debounces InlineSearch.REQUEST and calls inlineSearchWorker', () => {
+      });
+      */
+    });
+
+    describe('selectInlineResultWorker', () => {
+      /* TODO - Considering some cleanup */
+    });
+
+    describe('selectInlineResultsWatcher', () => {
+      it('takes every InlineSearch.REQUEST with selectInlineResultWorker', () => {
+        testSaga(selectInlineResultsWatcher)
+          .next().takeEvery(InlineSearch.SELECT, selectInlineResultWorker)
           .next().isDone();
       });
     });

@@ -13,6 +13,13 @@ import {
   SearchResponsePayload,
   SearchResourceRequest,
   SearchResourceResponse,
+  InlineSearch,
+  InlineSearchRequest,
+  InlineSearchResponse,
+  InlineSearchResponsePayload,
+  InlineSearchUpdatePayload,
+  InlineSearchSelect,
+  InlineSearchUpdate,
   TableSearchResults,
   UserSearchResults,
   SubmitSearchRequest,
@@ -29,6 +36,11 @@ export interface SearchReducerState {
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  inlineResults: {
+    isLoading: boolean;
+    tables: TableSearchResults;
+    users: UserSearchResults;
+  }
 };
 
 /* ACTIONS */
@@ -64,6 +76,45 @@ export function searchResourceSuccess(searchResults: SearchResponsePayload): Sea
 };
 export function searchResourceFailure(): SearchResourceResponse {
   return { type: SearchResource.FAILURE };
+};
+
+export function getInlineResultsDebounce(term: string): InlineSearchRequest {
+  return {
+    payload: {
+      term,
+    },
+    type: InlineSearch.REQUEST_DEBOUNCE,
+  };
+};
+export function getInlineResults(term: string): InlineSearchRequest {
+  return {
+    payload: {
+      term,
+    },
+    type: InlineSearch.REQUEST,
+  };
+};
+export function getInlineResultsSuccess(inlineResults: InlineSearchResponsePayload): InlineSearchResponse {
+  return { type: InlineSearch.SUCCESS, payload: inlineResults };
+};
+export function getInlineResultsFailure(): InlineSearchResponse {
+  return { type: InlineSearch.FAILURE };
+};
+export function selectInlineResult(resourceType: ResourceType, searchTerm: string, updateUrl: boolean = false): InlineSearchSelect {
+  return {
+    payload: {
+      resourceType,
+      searchTerm,
+      updateUrl,
+    },
+    type: InlineSearch.SELECT
+  };
+};
+export function updateFromInlineResult(data: InlineSearchUpdatePayload): InlineSearchUpdate {
+  return {
+    payload: data,
+    type: InlineSearch.UPDATE
+  };
 };
 
 export function searchReset(): SearchAllReset {
@@ -108,6 +159,19 @@ export function urlDidUpdate(urlSearch: UrlSearch): UrlDidUpdateRequest{
 
 
 /* REDUCER */
+export const initialInlineResultsState = {
+  isLoading: false,
+  tables: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  users: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+}
 export const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
@@ -127,6 +191,7 @@ export const initialState: SearchReducerState = {
     results: [],
     total_results: 0,
   },
+  inlineResults: initialInlineResultsState,
 };
 
 export default function reducer(state: SearchReducerState = initialState, action): SearchReducerState {
@@ -137,6 +202,9 @@ export default function reducer(state: SearchReducerState = initialState, action
       // updates search term to reflect action
       return {
         ...state,
+        inlineResults: {
+          ...initialInlineResultsState,
+        },
         search_term: (<SearchAllRequest>action).payload.term,
         isLoading: true,
       };
@@ -151,7 +219,11 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...initialState,
         ...newState,
-        isLoading: false,
+        inlineResults: {
+          tables: newState.tables,
+          users: newState.users,
+          isLoading: false,
+        },
       };
     case SearchResource.SUCCESS:
       // resets only a single resource and preserves search state for other resources
@@ -164,13 +236,48 @@ export default function reducer(state: SearchReducerState = initialState, action
     case SearchAll.FAILURE:
     case SearchResource.FAILURE:
       return {
-        ...initialState,  
+        ...initialState,
         search_term: state.search_term,
       };
     case SetResource.REQUEST:
       return {
         ...state,
         selectedTab: (<SetResourceRequest>action).payload.resource
+      };
+    case InlineSearch.UPDATE:
+      const { searchTerm, selectedTab, tables, users } = (<InlineSearchUpdate>action).payload;
+      return {
+        ...state,
+        selectedTab,
+        tables,
+        users,
+        search_term: searchTerm,
+      };
+    case InlineSearch.SUCCESS:
+      const inlineResults = (<InlineSearchResponse>action).payload;
+      return {
+        ...state,
+        inlineResults: {
+          tables: inlineResults.tables,
+          users: inlineResults.users,
+          isLoading: false,
+        },
+      };
+    case InlineSearch.FAILURE:
+      return {
+        ...state,
+        inlineResults: {
+          ...initialInlineResultsState,
+        },
+      };
+    case InlineSearch.REQUEST:
+    case InlineSearch.REQUEST_DEBOUNCE:
+      return {
+        ...state,
+        inlineResults: {
+          ...initialInlineResultsState,
+          isLoading: true,
+        }
       };
     default:
       return state;

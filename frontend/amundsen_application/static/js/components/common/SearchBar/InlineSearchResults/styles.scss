@@ -1,0 +1,117 @@
+@import 'variables';
+
+.inline-results {
+  background: white;
+  width: 100%;
+  z-index: 10; // TODO: Establish levels for cases where we can't avoid z-index. This is a topmost element.
+  position: absolute;
+
+  border-radius: 4px;
+  border: 1px solid $stroke;
+  box-shadow: 0 3px 12px 0 rgba(17, 17, 31, 0.04);
+
+  &.small {
+    .search-item-link {
+      padding-left: 8px !important;
+    }
+
+    .result-item-link {
+      padding-left: 20px !important;
+    }
+
+    .section-footer.title-3,
+    .section-title.title-3 {
+      margin-left: 12px;
+    }
+  }
+
+  .inline-results-section {
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $stroke;
+    }
+
+    .section-title,
+    .section-footer {
+      margin-left: 24px;
+    }
+
+    a.section-footer {
+      color: $brand-color-4 !important;
+      display: block;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .list-group {
+      margin: 0;
+
+      .list-group-item {
+        /* Override some shared list-group-item styles */
+        border: none;
+        &:hover {
+          box-shadow: none !important;
+          background-color: $indigo5;
+        }
+        &:hover + .list-group-item {
+          box-shadow: none !important;
+        }
+
+        .result-item-link,
+        .search-item-link {
+          color: $text-primary;
+          display: flex;
+          flex-direction: row;
+          text-decoration: none;
+
+          img.icon.icon-search,
+          img.icon.result-icon,
+          .sb-avatar {
+            margin: auto 8px auto 0px;
+          }
+        }
+
+        /* SEARCH ITEM */
+        .search-item-link {
+          height: 32px;
+          padding: 4px 4px 4px 24px;
+          line-height: inherit;
+          &:hover {
+            .search-item-info .search-item-text {
+              text-shadow: 0 0 .6px $text-primary, 0 0 .6px $text-primary;
+            }
+          }
+          .search-item-info {
+            display: flex;
+            .search-item-text {
+              font-weight: $font-weight-body-regular;
+            }
+          }
+        }
+
+        /* RESULT ITEM */
+        .result-item-link {
+          height: 56px;
+          padding: 8px 8px 8px 32px;
+          .result-info {
+            display: flex;
+            flex: 1;
+            min-width: 0px;
+            margin-right: 8px;
+          }
+          .resource-type {
+            margin: auto;
+          }
+        }
+      }
+    }
+  }
+
+  .loading-spinner {
+    margin-top: 5%;
+    margin-bottom: 5%;
+  }
+}
