@@ -1,3 +1,3 @@
-database,cluster,schema_name,table_name,table_desc,tags
+database,cluster,schema_name,name,description,tags
 hive,gold,test_schema,test_table1,"1st test table","tag1,tag2"
 dynamo,gold,test_schema,test_table2,"2nd test table",
