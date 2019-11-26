@@ -4,6 +4,8 @@ into Neo4j and Elasticsearch without using an Airflow DAG.
 """
 
 import csv
+
+import sys
 from elasticsearch import Elasticsearch
 import logging
 from pyhocon import ConfigFactory
@@ -25,18 +27,22 @@ from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
 
-# change to the address of Elasticsearch service
+es_host = None
+neo_host = None
+if len(sys.argv) > 1:
+    es_host = sys.argv[1]
+if len(sys.argv) > 2:
+    neo_host = sys.argv[2]
+
 es = Elasticsearch([
-    {'host': 'localhost'},
+    {'host': es_host if es_host else 'localhost'},
 ])
 
 DB_FILE = '/tmp/test.db'
 SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
 Base = declarative_base()
 
-# replace localhost with docker host ip
-# todo: get the ip from input argument
-NEO4J_ENDPOINT = 'bolt://localhost:7687'
+NEO4J_ENDPOINT = 'bolt://{}:7687'.format(neo_host if neo_host else 'localhost')
 neo4j_endpoint = NEO4J_ENDPOINT
 
 neo4j_user = 'neo4j'
@@ -70,8 +76,8 @@ def load_table_data_from_csv(file_name):
             to_db = [(i['database'],
                       i['cluster'],
                       i['schema_name'],
-                      i['table_name'],
-                      i['table_desc'],
+                      i['name'],
+                      i['description'],
                       i['tags']) for i in dr]
 
         cur.executemany("INSERT INTO test_table_metadata (database, cluster, "
@@ -105,7 +111,7 @@ def load_col_data_from_csv(file_name):
                       i['cluster'],
                       i['schema_name'],
                       i['table_name'],
-                      i['table_desc']) for i in dr]
+                      i['table_description']) for i in dr]
 
         cur.executemany("INSERT INTO test_col_metadata ("
                         "name, description, col_type, sort_order,"
@@ -139,7 +145,7 @@ def load_table_column_stats_from_csv(file_name):
                       i['table_name'],
                       i['col_name'],
                       i['stat_name'],
-                      '"' + i['stat_val'] + '"',
+                      i['stat_val'],
                       i['start_epoch'],
                       i['end_epoch']) for i in dr]
 
@@ -396,15 +402,15 @@ def load_table_owner_data_from_csv(file_name):
         file_loc = 'example/sample_data/' + file_name
         with open(file_loc, 'r') as fin:
             dr = csv.DictReader(fin)
-            to_db = [(i['database'],
+            to_db = [(i['db_name'],
                       i['schema_name'],
+                      i['cluster'],
                       i['table_name'],
-                      i['owners'],
-                      i['cluster']
+                      i['owners']
                       ) for i in dr]
 
         cur.executemany("INSERT INTO test_table_owner_metadata "
-                        "(db_name, schema_name, table_name, owners, cluster) "
+                        "(db_name, schema_name, cluster, table_name, owners) "
                         "VALUES (?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
@@ -533,7 +539,7 @@ if __name__ == "__main__":
 
         # start col job
         job2 = create_sample_job('test_col_metadata',
-                                 'example.models.test_column_model.TestColumnMetadata')
+                                 'databuilder.models.standalone_column_model.StandaloneColumnMetadata')
         job2.launch()
 
         # start table stats job
@@ -553,7 +559,7 @@ if __name__ == "__main__":
 
         # start usage job
         job_col_usage = create_sample_job('test_usage_metadata',
-                                          'example.models.test_column_usage_model.TestColumnUsageModel')
+                                          'databuilder.models.column_usage_model.ColumnUsageModel')
         job_col_usage.launch()
 
         # start user job

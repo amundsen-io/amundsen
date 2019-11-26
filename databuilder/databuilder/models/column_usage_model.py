@@ -9,7 +9,7 @@ from databuilder.models.user import User
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 
-class TestColumnUsageModel(Neo4jCsvSerializable):
+class ColumnUsageModel(Neo4jCsvSerializable):
 
     """
     A model represents user <--> column graph model
@@ -77,9 +77,9 @@ class TestColumnUsageModel(Neo4jCsvSerializable):
             RELATION_END_LABEL: User.USER_NODE_LABEL,
             RELATION_START_KEY: self._get_table_key(),
             RELATION_END_KEY: self._get_user_key(self.user_email),
-            RELATION_TYPE: TestColumnUsageModel.TABLE_USER_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: TestColumnUsageModel.USER_TABLE_RELATION_TYPE,
-            TestColumnUsageModel.READ_RELATION_COUNT: self.read_count
+            RELATION_TYPE: ColumnUsageModel.TABLE_USER_RELATION_TYPE,
+            RELATION_REVERSE_TYPE: ColumnUsageModel.USER_TABLE_RELATION_TYPE,
+            ColumnUsageModel.READ_RELATION_COUNT: self.read_count
         }]
 
     def _get_table_key(self):
