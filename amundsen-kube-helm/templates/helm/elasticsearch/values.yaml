@@ -1,0 +1,15 @@
+provider: aws
+# nodeSelector 
+# affinity 
+# tolerations 
+# resources
+# annotations 
+environment: staging
+dnsZone: teamname.company.com
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 1Gi

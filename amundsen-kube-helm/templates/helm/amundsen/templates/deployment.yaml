@@ -7,12 +7,24 @@ spec:
   selector:
     matchLabels:
       run: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
-  replicas: 1
+  replicas: {{ default 1 .Values.search.replicas }}
   template:
     metadata:
       labels:
         run: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
     spec:
+      {{- with default .Values.nodeSelector .Values.search.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.affinity .Values.search.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.tolerations .Values.search.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
         image: {{- if .Values.searchServiceImage }} {{.Values.searchServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.searchServiceName }}:{{ .Values.searchImageVersion }}{{- end }}
@@ -21,6 +33,10 @@ spec:
         env:
         - name: PROXY_ENDPOINT
           value: elasticsearch  
+        {{- with .Values.search.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,12 +46,24 @@ spec:
   selector:
     matchLabels:
       run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
-  replicas: 1
+  replicas: {{ default 1 .Values.metadataReplicas }}
   template:
     metadata:
       labels:
         run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
     spec:
+      {{- with default .Values.nodeSelector .Values.metadata.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.affinity .Values.metadata.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.tolerations .Values.metadata.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
         image: {{- if .Values.metadataServiceImage }} {{.Values.metadataServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:{{ .Values.metadataImageVersion }}{{- end }}
@@ -44,6 +72,10 @@ spec:
         env:
         - name: PROXY_HOST
           value: bolt://neo4j
+        {{- with .Values.metadata.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,12 +85,24 @@ spec:
   selector:
     matchLabels:
       run: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
-  replicas: 1
+  replicas: {{ default 1 .Values.frontEnd.replicas }}
   template:
     metadata:
       labels:
         run: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
     spec:
+      {{- with default .Values.nodeSelector .Values.frontEnd.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.affinity .Values.frontEnd.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.tolerations .Values.frontEnd.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
         image: {{- if .Values.frontEndServiceImage }} {{.Values.frontEndServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}:{{ .Values.frontEndImageVersion }}{{- end }}

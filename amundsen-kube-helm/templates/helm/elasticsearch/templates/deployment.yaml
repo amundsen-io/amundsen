@@ -12,8 +12,24 @@ spec:
       labels:
         run: {{ .Chart.Name }}
     spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Chart.Name }}:{{ .Chart.AppVersion }}
         ports:
         - containerPort: 9200  
+        {{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end }}
