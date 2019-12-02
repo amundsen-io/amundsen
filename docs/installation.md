@@ -10,9 +10,14 @@ The following instructions are for setting up a version of Amundsen using Docker
    ```
 3. Enter the cloned directory and run:
     ```bash
+    # For Neo4j Backend
     $ docker-compose -f docker-amundsen.yml up
+
+    # For Atlas
+    $ docker-compose -f docker-amundsen-atlas.yml up
     ```
-4. Ingest dummy data into Neo4j by doing the following:
+4. Ingest dummy data into Neo4j by doing the following: _(Please skip if you are using Atlas backend)_
+
    * Change directory to the [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder) submodule.
    * Run the following commands in the `amundsendatabuilder` upstream directory:
    ```bash
@@ -23,6 +28,10 @@ The following instructions are for setting up a version of Amundsen using Docker
     $ python3 example/scripts/sample_data_loader.py
    ```
 5. View UI at [`http://localhost:5000`](http://localhost:5000) and try to search `test`, it should return some result.
+
+**Atlas Note:** Atlas takes some time to boot properly. So you may not be able to see the results immediately 
+after `docker-compose up` command. 
+Atlas would be ready once you'll have the following output in the docker output `Amundsen Entity Definitions Created...`  
 
 ### Verify setup
 
