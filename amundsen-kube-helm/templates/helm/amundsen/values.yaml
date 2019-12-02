@@ -1,0 +1,60 @@
+environment: "dev"
+provider: aws
+dnsZone: teamname.company.com
+dockerhubImagePath: amundsendev
+
+## Support Node, affinity and tolerations for scheduler pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+affinity: {}
+tolerations: []
+
+searchServiceName: search
+searchImageVersion: 1.4.0
+search:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+metadataServiceName: metadata
+metadataImageVersion: 1.1.1
+metadata:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
+  # You can also set these properties to override the ones set above
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+frontEndServiceName: frontend
+frontEndImageVersion: 1.0.9
+frontEndServicePort: 80
+frontEnd:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
+  # You can also set these properties to override the ones set above
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
