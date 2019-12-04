@@ -135,8 +135,8 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               <SourceLink tableSource={ data.source }/>
             </div>
             <div className="header-section header-buttons">
-              <ExploreButton tableData={ data }/>
               <DataPreviewButton modalTitle={ this.displayName }/>
+              <ExploreButton tableData={ data }/>
             </div>
           </header>
           <main className="column-layout-1">
