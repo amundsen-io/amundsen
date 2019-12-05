@@ -103,7 +103,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
                 table=tableRef['tableId']),
             'useLegacySql': True
         }
-        result = self.bigquery_service.jobs().query(projectId='rea-gcp-dataservices-dev', body=body).execute()
+        result = self.bigquery_service.jobs().query(projectId=self.project_id, body=body).execute()
 
         if 'rows' not in result:
             return
