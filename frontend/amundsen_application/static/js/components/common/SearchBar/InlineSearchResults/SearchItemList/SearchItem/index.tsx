@@ -1,16 +1,32 @@
 import * as React from 'react';
+import { connect } from 'react-redux'
 
 import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
 
-export interface SearchItemProps {
+import LoadingSpinner from 'components/common/LoadingSpinner';
+
+import { GlobalState } from 'ducks/rootReducer'
+
+import {
+  SEARCH_ITEM_NO_RESULTS
+} from 'components/common/SearchBar/InlineSearchResults/constants';
+
+export interface StateFromProps {
+  isLoading: boolean;
+  hasResults: boolean;
+}
+
+export interface OwnProps {
   listItemText: string;
   onItemSelect: (resourceType: ResourceType, updateUrl: boolean) => void;
   searchTerm: string;
   resourceType: ResourceType;
 }
 
-class SearchItem extends React.Component<SearchItemProps, {}> {
+export type SearchItemProps = StateFromProps & OwnProps;
+
+export class SearchItem extends React.Component<SearchItemProps, {}> {
   constructor(props) {
     super(props);
   }
@@ -18,6 +34,20 @@ class SearchItem extends React.Component<SearchItemProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
     this.props.onItemSelect(this.props.resourceType, true);
+  }
+
+  renderIndicator = () => {
+    if (this.props.isLoading) {
+      return (<LoadingSpinner/>)
+    }
+    if (!this.props.hasResults) {
+      return (
+        <div className="search-item-indicator body-placeholder">
+          { SEARCH_ITEM_NO_RESULTS }
+        </div>
+      )
+    }
+    return null;
   }
 
   render = () => {
@@ -35,10 +65,29 @@ class SearchItem extends React.Component<SearchItemProps, {}> {
             <div className="search-term">{`${searchTerm}\u00a0`}</div>
             <div className="search-item-text">{listItemText}</div>
           </div>
+          { this.renderIndicator() }
         </a>
       </li>
     );
   }
 };
 
-export default SearchItem;
+export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
+  const { isLoading, tables, users } = state.search.inlineResults;
+  let hasResults = false;
+  switch (ownProps.resourceType) {
+    case ResourceType.table:
+      hasResults = tables.results.length > 0;
+      break;
+    case ResourceType.user:
+      hasResults = users.results.length > 0;
+    default:
+      break;
+  }
+  return {
+    isLoading,
+    hasResults
+  };
+};
+
+export default connect<{}, {}, OwnProps>(mapStateToProps)(SearchItem);

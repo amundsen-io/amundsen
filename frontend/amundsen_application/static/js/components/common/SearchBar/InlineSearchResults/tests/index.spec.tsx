@@ -309,44 +309,70 @@ describe('InlineSearchResults', () => {
     let getTotalResultsForResourceSpy;
     let mockTitle;
     let getTitleForResourceSpy;
-    beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      mockResults = [
-        { href: '/test', iconClass: 'test-class', subtitle: 'subtitle', title: 'title', type: 'User' },
-        { href: '/test2', iconClass: 'test-class2', subtitle: 'subtitle2', title: 'title2', type: 'User' },
-      ]
-      getSuggestedResultsForResourceSpy = jest.spyOn(wrapper.instance(), 'getSuggestedResultsForResource').mockImplementation(() => mockResults);
-      mockTotal = 65;
-      getTotalResultsForResourceSpy = jest.spyOn(wrapper.instance(), 'getTotalResultsForResource').mockImplementation(() => mockTotal);
-      mockTitle = 'Datasets';
-      getTitleForResourceSpy = jest.spyOn(wrapper.instance(), 'getTitleForResource').mockImplementation(() => mockTitle);
-      wrapper.instance().forceUpdate();
+
+    describe('if results do not exist', () => {
+      beforeAll(() => {
+        const setupResult = setup();
+        props = setupResult.props;
+        wrapper = setupResult.wrapper;
+        mockResults = []
+        getSuggestedResultsForResourceSpy = jest.spyOn(wrapper.instance(), 'getSuggestedResultsForResource').mockImplementation(() => mockResults);
+        wrapper.instance().forceUpdate();
+      });
+
+      it('calls helper methods with given resourceType', () => {
+        getSuggestedResultsForResourceSpy.mockClear();
+        const givenResourceType = ResourceType.dashboard;
+        wrapper.instance().renderResultsByResource(givenResourceType);
+        expect(getSuggestedResultsForResourceSpy).toHaveBeenCalledWith(givenResourceType);
+      });
+
+      it('renders nothing', () => {
+        const givenResourceType = ResourceType.dashboard;
+        expect(wrapper.instance().renderResultsByResource(givenResourceType)).toBe(null);
+      });
     });
 
-    it('calls helper methods with given resourceType', () => {
-      getSuggestedResultsForResourceSpy.mockClear();
-      getTotalResultsForResourceSpy.mockClear();
-      getTitleForResourceSpy.mockClear();
-      const givenResourceType = ResourceType.dashboard;
-      wrapper.instance().renderResultsByResource(givenResourceType);
-      expect(getSuggestedResultsForResourceSpy).toHaveBeenCalledWith(givenResourceType);
-      expect(getTotalResultsForResourceSpy).toHaveBeenCalledWith(givenResourceType);
-      expect(getTitleForResourceSpy).toHaveBeenCalledWith(givenResourceType);
-    });
+    describe('if results exist', () => {
+      beforeAll(() => {
+        const setupResult = setup();
+        props = setupResult.props;
+        wrapper = setupResult.wrapper;
+        mockResults = [
+          { href: '/test', iconClass: 'test-class', subtitle: 'subtitle', title: 'title', type: 'User' },
+          { href: '/test2', iconClass: 'test-class2', subtitle: 'subtitle2', title: 'title2', type: 'User' },
+        ]
+        getSuggestedResultsForResourceSpy = jest.spyOn(wrapper.instance(), 'getSuggestedResultsForResource').mockImplementation(() => mockResults);
+        mockTotal = 65;
+        getTotalResultsForResourceSpy = jest.spyOn(wrapper.instance(), 'getTotalResultsForResource').mockImplementation(() => mockTotal);
+        mockTitle = 'Datasets';
+        getTitleForResourceSpy = jest.spyOn(wrapper.instance(), 'getTitleForResource').mockImplementation(() => mockTitle);
+        wrapper.instance().forceUpdate();
+      });
 
-    it('renders ResultItemList with expected props', () => {
-      const givenResourceType = ResourceType.dashboard;
-      const content = shallow(wrapper.instance().renderResultsByResource(givenResourceType));
-      const item = content.find('.inline-results-section').find(ResultItemList);
-      const itemProps = item.props();
-      expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
-      expect(itemProps.resourceType).toEqual(givenResourceType);
-      expect(itemProps.suggestedResults).toEqual(mockResults);
-      expect(itemProps.totalResults).toEqual(mockTotal);
-      expect(itemProps.title).toEqual(mockTitle);
-    })
+      it('calls helper methods with given resourceType', () => {
+        getSuggestedResultsForResourceSpy.mockClear();
+        getTotalResultsForResourceSpy.mockClear();
+        getTitleForResourceSpy.mockClear();
+        const givenResourceType = ResourceType.dashboard;
+        wrapper.instance().renderResultsByResource(givenResourceType);
+        expect(getSuggestedResultsForResourceSpy).toHaveBeenCalledWith(givenResourceType);
+        expect(getTotalResultsForResourceSpy).toHaveBeenCalledWith(givenResourceType);
+        expect(getTitleForResourceSpy).toHaveBeenCalledWith(givenResourceType);
+      });
+
+      it('renders ResultItemList with expected props', () => {
+        const givenResourceType = ResourceType.dashboard;
+        const content = shallow(wrapper.instance().renderResultsByResource(givenResourceType));
+        const item = content.find('.inline-results-section').find(ResultItemList);
+        const itemProps = item.props();
+        expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
+        expect(itemProps.resourceType).toEqual(givenResourceType);
+        expect(itemProps.suggestedResults).toEqual(mockResults);
+        expect(itemProps.totalResults).toEqual(mockTotal);
+        expect(itemProps.title).toEqual(mockTitle);
+      });
+    });
   });
 
   describe('renderResults', () => {
@@ -358,10 +384,9 @@ describe('InlineSearchResults', () => {
       wrapper.update();
     });
 
-    it('renders a LoadingSpinner when props.isLoading', () => {
+    it('does not render anything when props.isLoading', () => {
       const wrapper = setup({isLoading: true}).wrapper;
-      const content = shallow(wrapper.instance().renderResults());
-      expect(content.find(LoadingSpinner).exists()).toBe(true);
+      expect(wrapper.instance().renderResults()).toBe(null);
     });
 
     describe('when !props.isLoading', () => {
