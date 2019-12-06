@@ -12,6 +12,14 @@ import * as CONSTANTS from '../../constants';
 jest.mock('config/config-utils', () => ({ indexUsersEnabled: jest.fn() }));
 import { indexUsersEnabled } from 'config/config-utils';
 
+jest.mock("react-redux", () => {
+  return {
+    connect: (mapStateToProps, mapDispatchToProps) => (
+      SearchItem
+    ) => SearchItem
+  };
+});
+
 describe('SearchItemList', () => {
   const setup = (propOverrides?: Partial<SearchItemListProps>) => {
     const props: SearchItemListProps = {

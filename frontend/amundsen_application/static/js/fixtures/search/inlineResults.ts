@@ -14,6 +14,20 @@ export const isLoadingExample = {
   },
 };
 
+export const noResultsExample = {
+  isLoading: false,
+  tables: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  users: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+};
+
 export const allResourcesExample = {
   isLoading: false,
   tables: {
