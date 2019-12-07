@@ -60,6 +60,7 @@ class DefaultTask(Task):
             while record:
                 record = self.transformer.transform(record)
                 if not record:
+                    record = self.extractor.extract()
                     continue
                 self.loader.load(record)
                 record = self.extractor.extract()
