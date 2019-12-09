@@ -66,13 +66,14 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, timestamp_value, owners, tags, source = self._exec_table_query(table_uri)
+        wmk_results, table_writer, timestamp_value, owners, tags, source, badges = self._exec_table_query(table_uri)
 
         table = Table(database=last_neo4j_record['db']['name'],
                       cluster=last_neo4j_record['clstr']['name'],
                       schema=last_neo4j_record['schema']['name'],
                       name=last_neo4j_record['tbl']['name'],
                       tags=tags,
+                      badges=badges,
                       description=self._safe_get(last_neo4j_record, 'tbl_dscrpt', 'description'),
                       columns=cols,
                       owners=owners,
@@ -162,18 +163,22 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (application:Application)-[:GENERATES]->(tbl)
         OPTIONAL MATCH (tbl)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
-        OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(tag:Tag)
+        OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(tag:Tag{tag_type: $tag_normal_type})
+        OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(badge:Tag{tag_type: $tag_badge_type})
         OPTIONAL MATCH (tbl)-[:SOURCE]->(src:Source)
         RETURN collect(distinct wmk) as wmk_records,
         application,
         t.last_updated_timestamp as last_updated_timestamp,
         collect(distinct owner) as owner_records,
         collect(distinct tag) as tag_records,
+        collect(distinct badge) as badge_records,
         src
         """)
 
         table_records = self._execute_cypher_query(statement=table_level_query,
-                                                   param_dict={'tbl_key': table_uri})
+                                                   param_dict={'tbl_key': table_uri,
+                                                               'tag_normal_type': 'default',
+                                                               'tag_badge_type': 'badge'})
 
         table_records = table_records.single()
 
@@ -199,6 +204,14 @@ class Neo4jProxy(BaseProxy):
                                  tag_type=record['tag_type'])
                 tags.append(tag_result)
 
+        badges = []
+        if table_records.get('badge_records'):
+            badge_records = table_records['badge_records']
+            for record in badge_records:
+                badge_result = Tag(tag_name=record['key'],
+                                   tag_type=record['tag_type'])
+                badges.append(badge_result)
+
         application_record = table_records['application']
         if application_record is not None:
             table_writer = Application(
@@ -221,7 +234,7 @@ class Neo4jProxy(BaseProxy):
             src = Source(source_type=table_records['src']['source_type'],
                          source=table_records['src']['source'])
 
-        return wmk_results, table_writer, timestamp_value, owner_record, tags, src
+        return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges
 
     @no_type_check
     def _safe_get(self, dct, *keys):
@@ -500,7 +513,8 @@ class Neo4jProxy(BaseProxy):
     @timer_with_counter
     def add_tag(self, *,
                 table_uri: str,
-                tag: str) -> None:
+                tag: str,
+                tag_type: str = 'default') -> None:
         """
         Add new tag
         1. Create the node with type Tag if the node doesn't exist.
@@ -508,9 +522,10 @@ class Neo4jProxy(BaseProxy):
 
         :param table_uri:
         :param tag:
+        :param tag_type
         :return: None
         """
-        LOGGER.info('New tag {} for table_uri {}'.format(tag, table_uri))
+        LOGGER.info('New tag {} for table_uri {} with type {}'.format(tag, table_uri, tag_type))
 
         table_validation_query = 'MATCH (t:Table {key: $tbl_key}) return t'
 
@@ -521,7 +536,7 @@ class Neo4jProxy(BaseProxy):
         """)
 
         upsert_tag_relation_query = textwrap.dedent("""
-        MATCH (n1:Tag {key: $tag}), (n2:Table {key: $tbl_key})
+        MATCH (n1:Tag {key: $tag, tag_type: $tag_type}), (n2:Table {key: $tbl_key})
         MERGE (n1)-[r1:TAG]->(n2)-[r2:TAGGED_BY]->(n1)
         RETURN n1.key, n2.key
         """)
@@ -534,9 +549,10 @@ class Neo4jProxy(BaseProxy):
 
             # upsert the node. Currently the type for all the tags is default. We could change it later per UI.
             tx.run(upsert_tag_query, {'tag': tag,
-                                      'tag_type': 'default'})
+                                      'tag_type': tag_type})
             result = tx.run(upsert_tag_relation_query, {'tag': tag,
-                                                        'tbl_key': table_uri})
+                                                        'tbl_key': table_uri,
+                                                        'tag_type': tag_type})
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
                                    'tag {tag} and table {tbl}'.format(tag=tag,
@@ -553,7 +569,8 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def delete_tag(self, *, table_uri: str,
-                   tag: str) -> None:
+                   tag: str,
+                   tag_type: str = 'default') -> None:
         """
         Deletes tag
         1. Delete the relation between table and the tag
@@ -561,18 +578,21 @@ class Neo4jProxy(BaseProxy):
 
         :param table_uri:
         :param tag:
+        :param tag_type: {default-> normal tag, badge->non writable tag from UI}
         :return:
         """
 
-        LOGGER.info('Delete tag {} for table_uri {}'.format(tag, table_uri))
+        LOGGER.info('Delete tag {} for table_uri {} with type {}'.format(tag, table_uri, tag_type))
         delete_query = textwrap.dedent("""
-        MATCH (n1:Tag{key: $tag})-[r1:TAG]->(n2:Table {key: $tbl_key})-[r2:TAGGED_BY]->(n1) DELETE r1,r2
+        MATCH (n1:Tag{key: $tag, tag_type: $tag_type})-
+        [r1:TAG]->(n2:Table {key: $tbl_key})-[r2:TAGGED_BY]->(n1) DELETE r1,r2
         """)
 
         try:
             tx = self._driver.session().begin_transaction()
             tx.run(delete_query, {'tag': tag,
-                                  'tbl_key': table_uri})
+                                  'tbl_key': table_uri,
+                                  'tag_type': tag_type})
         except Exception as e:
             # propagate the exception back to api
             if not tx.closed():
@@ -590,8 +610,9 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
         LOGGER.info('Get all the tags')
+        # todo: Currently all the tags are default type, we could open it up if we want to include badge
         query = textwrap.dedent("""
-        MATCH (t:Tag)
+        MATCH (t:Tag{tag_type: 'default'})
         OPTIONAL MATCH (tbl:Table)-[:TAGGED_BY]->(t)
         RETURN t as tag_name, count(distinct tbl.key) as tag_count
         """)

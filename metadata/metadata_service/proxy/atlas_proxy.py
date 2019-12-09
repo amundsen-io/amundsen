@@ -370,12 +370,13 @@ class AtlasProxy(BaseProxy):
         entity.entity[self.ATTRS_KEY]['description'] = description
         entity.update()
 
-    def add_tag(self, *, table_uri: str, tag: str) -> None:
+    def add_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
         """
         Assign the tag/classification to the give table
         API Ref: /resource_EntityREST.html#resource_EntityREST_addClassification_POST
         :param table_uri:
         :param tag: Tag/Classification Name
+        :param tag_type
         :return: None
         """
         entity, _ = self._get_table_entity(table_uri=table_uri)
@@ -383,7 +384,7 @@ class AtlasProxy(BaseProxy):
                            "entityGuids": [entity.entity['guid']]}
         self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
 
-    def delete_tag(self, *, table_uri: str, tag: str) -> None:
+    def delete_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
         """
         Delete the assigned classfication/tag from the given table
         API Ref: /resource_EntityREST.html#resource_EntityREST_deleteClassification_DELETE

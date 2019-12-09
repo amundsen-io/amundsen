@@ -288,7 +288,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self._mock_get_table_entity()
 
         with patch.object(self.proxy._driver.entity_bulk_classification, 'create') as mock_execute:
-            self.proxy.add_tag(table_uri=self.table_uri, tag=tag)
+            self.proxy.add_tag(table_uri=self.table_uri, tag=tag, tag_type='default')
             mock_execute.assert_called_with(
                 data={'classification': {'typeName': tag}, 'entityGuids': [self.entity1['guid']]}
             )
@@ -300,7 +300,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy._driver.entity_guid = MagicMock(return_value=mocked_entity)
 
         with patch.object(mocked_entity.classifications(tag), 'delete') as mock_execute:
-            self.proxy.delete_tag(table_uri=self.table_uri, tag=tag)
+            self.proxy.delete_tag(table_uri=self.table_uri, tag=tag, tag_type='default')
             mock_execute.assert_called_with()
 
     def test_add_owner(self):

@@ -123,6 +123,7 @@ class Table:
     schema: str = attr.ib()
     name: str = attr.ib()
     tags: List[Tag] = []
+    badges: Optional[List[Tag]] = []
     table_readers: List[Reader] = []
     description: Optional[str] = None
     columns: List[Column] = attr.ib()
