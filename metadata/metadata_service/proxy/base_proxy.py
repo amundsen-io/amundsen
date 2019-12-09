@@ -41,11 +41,11 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_tag(self, *, table_uri: str, tag: str) -> None:
+    def add_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
         pass
 
     @abstractmethod
-    def delete_tag(self, *, table_uri: str, tag: str) -> None:
+    def delete_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
         pass
 
     @abstractmethod

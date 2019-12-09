@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'
@@ -33,6 +34,9 @@ class Config:
 
     # The relationalAttribute name of Atlas Entity that identifies the database entity.
     ATLAS_DB_ATTRIBUTE = 'db'
+
+    # whitelist badges
+    WHITELIST_BADGES: List[str] = []
 
 
 class LocalConfig(Config):
