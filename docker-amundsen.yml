@@ -54,7 +54,7 @@ services:
          - PROXY_HOST=bolt://neo4j_amundsen
       command: gunicorn -w 2 --bind :5000 metadata_service.metadata_wsgi
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:1.1.0
+      image: amundsendev/amundsen-frontend:1.2.0
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata
@@ -66,6 +66,9 @@ services:
       environment:
         - SEARCHSERVICE_BASE=http://amundsensearch:5000
         - METADATASERVICE_BASE=http://amundsenmetadata:5000
+        - APP_WRAPPER=flaskoidc
+        - APP_WRAPPER_CLASS=FlaskOIDC
+
         # Only for easy config-less Quickstart bookmark evalutation. `TestConfig` extends ordinary `LocalConfig` by
         # defining `AUTH_USER_METHOD` to a hardcoded dummy user in `amundsen_application.tests.test_utils.get_test_user()`
         # See further docs in https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/configuration.md#flask
@@ -73,5 +76,14 @@ services:
         - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
       command: gunicorn -w 2 --bind :5000 amundsen_application.wsgi
 
+  db.amundsensession.dev:
+    container_name: db.amundsen-session.dev
+    image: postgres:9.6
+    environment:
+        - POSTGRES_USER=amundsen
+        - POSTGRES_PASSWORD=amundsen
+        - POSTGRES_DB=amundsen
+    ports:
+        - "5432:5432"
 networks:
   amundsennet:
