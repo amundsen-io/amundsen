@@ -36,6 +36,7 @@ def marshall_table_full(table: Dict) -> Dict:
     """
     # Filter and parse the response dictionary from the metadata service
     fields = [
+        'badges',
         'columns',
         'cluster',
         'database',

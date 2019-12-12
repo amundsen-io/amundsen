@@ -10,6 +10,7 @@ import { getTableData } from 'ducks/tableMetadata/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
 
 import AppConfig from 'config/config';
+import BadgeList from 'components/common/BadgeList';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
 import DataPreviewButton from 'components/TableDetail/DataPreviewButton';
@@ -28,11 +29,10 @@ import TagInput from 'components/Tags/TagInput';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
 import { EditableSection } from 'components/TableDetail/EditableSection';
-import RequestDescriptionText from './RequestDescriptionText';
 import { getDatabaseDisplayName, getDatabaseIconClass, notificationsEnabled } from 'config/config-utils';
 
 import './styles';
-
+import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 
 export interface StateFromProps {
@@ -124,8 +124,14 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
                 { getDatabaseDisplayName(data.database) }
                 &nbsp;&bull;&nbsp;
                 { data.cluster }
+                &nbsp;
                 {
-                  data.is_view && <Flag text="Table View" labelStyle="primary"/>
+                  data.badges.length > 0 &&
+                  <BadgeList badges={ data.badges } />
+                }
+                {
+                  data.is_view &&
+                  <Flag text="table view" labelStyle="warning"/>
                 }
               </div>
             </div>

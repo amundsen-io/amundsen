@@ -78,6 +78,7 @@ class MetadataTest(unittest.TestCase):
         }
         self.expected_parsed_metadata = {
             'key': 'table_key',
+            'badges': [],
             'cluster': 'test_cluster',
             'database': 'test_db',
             'schema': 'test_schema',

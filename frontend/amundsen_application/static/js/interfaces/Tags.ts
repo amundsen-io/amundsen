@@ -5,8 +5,18 @@ export interface UpdateTagData {
   tagName: string;
 }
 
+export enum TagType {
+  TAG = 'default',
+  BADGE = 'badge',
+}
+
 export interface Tag {
-  tag_count: number;
+  tag_count?: number;
   tag_name: string;
-  tag_type?: string;
+  tag_type?: TagType.TAG;
+}
+
+export interface Badge {
+  tag_name: string;
+  tag_type: TagType.BADGE;
 }

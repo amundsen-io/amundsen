@@ -109,6 +109,7 @@ const globalState: GlobalState = {
     },
     statusCode: null,
     tableData: {
+      badges: [],
       cluster: '',
       columns: [],
       database: '',
