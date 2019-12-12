@@ -179,6 +179,7 @@ export const initialPreviewState = {
 };
 
 export const initialTableDataState: TableMetadata = {
+  badges: [],
   cluster: '',
   columns: [],
   database: '',

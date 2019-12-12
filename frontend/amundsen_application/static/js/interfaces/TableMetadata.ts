@@ -1,5 +1,6 @@
 import { UpdateMethod } from './Enums';
 import { User } from './User';
+import { Badge } from 'interfaces/Tags';
 
 interface PartitionData {
   is_partitioned: boolean;
@@ -68,6 +69,7 @@ export interface TableOwners {
 }
 
 export interface TableMetadata {
+  badges: Badge[];
   cluster: string;
   columns: TableColumn[];
   database: string;
