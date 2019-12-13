@@ -3,6 +3,7 @@ This is a example script which demo how to load data into neo4j without using Ai
 """
 
 import logging
+import os
 from pyhocon import ConfigFactory
 from urllib import unquote_plus
 
@@ -21,8 +22,8 @@ logging.getLogger("snowflake.connector.network").disabled = True
 
 SNOWFLAKE_CONN_STRING = 'snowflake://username:%s@account' % unquote_plus('password')
 
-# replace localhost with docker host ip
-NEO4J_ENDPOINT = 'bolt://localhost:7687'
+# set env NEO4J_HOST to override localhost
+NEO4J_ENDPOINT = 'bolt://{}:7687'.format(os.getenv('NEO4J_HOST', 'localhost'))
 neo4j_endpoint = NEO4J_ENDPOINT
 
 neo4j_user = 'neo4j'
