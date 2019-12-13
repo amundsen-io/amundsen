@@ -4,7 +4,7 @@ python:
 - '3.6'
 install:
 - pip install -r requirements.txt
-- python setup.py install
+- pip install .[all]
 - pip install codecov
 script:
 - make test
