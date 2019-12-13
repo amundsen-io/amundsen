@@ -3,6 +3,7 @@ This is a example script for extracting BigQuery usage results
 """
 
 import logging
+import os
 from pyhocon import ConfigFactory
 import sqlite3
 
@@ -16,9 +17,8 @@ from databuilder.transformer.base_transformer import NoopTransformer
 
 logging.basicConfig(level=logging.INFO)
 
-# replace localhost with docker host ip
-# todo: get the ip from input argument
-NEO4J_ENDPOINT = 'bolt://localhost:7687'
+# set env NEO4J_HOST to override localhost
+NEO4J_ENDPOINT = 'bolt://{}:7687'.format(os.getenv('NEO4J_HOST', 'localhost'))
 neo4j_endpoint = NEO4J_ENDPOINT
 
 neo4j_user = 'neo4j'

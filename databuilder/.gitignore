@@ -11,6 +11,7 @@ dist/
 venv/
 venv3/
 .cache/
+.env
 .idea/
 .vscode/
 .coverage

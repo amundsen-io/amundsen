@@ -43,6 +43,7 @@ SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
 Base = declarative_base()
 
 NEO4J_ENDPOINT = 'bolt://{}:7687'.format(neo_host if neo_host else 'localhost')
+
 neo4j_endpoint = NEO4J_ENDPOINT
 
 neo4j_user = 'neo4j'
