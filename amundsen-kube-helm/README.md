@@ -27,6 +27,15 @@ frontEndImageVersion: 1.0.9
 frontEndServicePort: 80
 ```
 
+You may want to override the default memory usage for Neo4J. In particular, if you're just test-driving a deployment and your node exits with status 137, you should set the usage to smaller values:
+```
+config:
+  dbms:
+    heap_initial_size: 2Gi
+    heap_max_size: 2Gi
+    pagecache_size: 2Gi
+```
+
 With this values file, you can then setup amundsen with these commands:
 ```
 helm install templates/helm/neo4j --values impl/helm/dev/values.yaml
