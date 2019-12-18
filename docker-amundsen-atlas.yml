@@ -23,7 +23,7 @@ services:
       networks:
         - amundsennet
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:1.1.4
+      image: amundsendev/amundsen-metadata:1.1.5
       container_name: amundsenmetadata
       depends_on:
         - atlas
@@ -38,7 +38,7 @@ services:
         - PROXY_PORT=21000
         - PROXY_CLIENT=ATLAS
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:1.1.1
+      image: amundsendev/amundsen-frontend:1.2.0
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata
