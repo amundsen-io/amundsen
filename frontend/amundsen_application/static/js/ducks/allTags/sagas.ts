@@ -7,8 +7,9 @@ import { GetAllTags } from './types';
 
 export function* getAllTagsWorker(): SagaIterator {
   try {
-    const tags = yield call(API.getAllTags);
-    yield put(getAllTagsSuccess(tags));
+    const allTags = yield call(API.getAllTags);
+
+    yield put(getAllTagsSuccess(allTags));
   } catch (e) {
     yield put(getAllTagsFailure());
   }

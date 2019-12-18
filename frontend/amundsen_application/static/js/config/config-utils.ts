@@ -67,3 +67,17 @@ export function indexUsersEnabled(): boolean {
 export function notificationsEnabled(): boolean {
   return AppConfig.mailClientFeatures.notificationsEnabled;
 }
+
+/**
+ * Returns whether or not to show all tags
+ */
+export function showAllTags(): boolean {
+  return AppConfig.browse.showAllTags;
+}
+
+/**
+ * Returns a list of curated tag names
+ */
+export function getCuratedTags(): string[] {
+  return AppConfig.browse.curatedTags;
+}

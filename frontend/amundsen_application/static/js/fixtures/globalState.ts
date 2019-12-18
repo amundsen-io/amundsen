@@ -1,5 +1,5 @@
 import { GlobalState } from 'ducks/rootReducer';
-import { RequestMetadataType, ResourceType, SendingState } from 'interfaces';
+import { ResourceType, SendingState } from 'interfaces';
 
 const globalState: GlobalState = {
   announcements: {
@@ -135,7 +135,16 @@ const globalState: GlobalState = {
     },
   },
   allTags: {
-    allTags: [],
+    allTags: [
+      {
+        tag_name: 'curated_tag_1',
+        tag_count: 20,
+      },
+      {
+        tag_name: 'other_tag_1',
+        tag_count: 15,
+      }
+    ],
     isLoading: false,
   },
   user:  {

@@ -50,20 +50,6 @@ describe('SearchBar', () => {
     });
   });
 
-  describe('getDerivedStateFromProps', () => {
-    it('sets searchTerm on state from props', () => {
-      const { props, wrapper } = setup();
-      const prevState = wrapper.state();
-      props.searchTerm = 'newTerm';
-      // @ts-ignore: Why does this work in other tests but complain here
-      wrapper.setProps(props);
-      expect(wrapper.state()).toMatchObject({
-        ...prevState,
-        searchTerm: 'newTerm',
-      });
-    });
-  });
-
   describe('clearSearchTerm', () => {
     it('sets the searchTerm to an empty string', () => {
       setStateSpy.mockClear();
@@ -87,6 +73,20 @@ describe('SearchBar', () => {
       const { wrapper } = setup({}, true);
       wrapper.instance().componentWillUnmount();
       expect(document.removeEventListener).toHaveBeenCalledWith('mousedown', wrapper.instance().updateTypeAhead, false);
+    });
+  });
+
+  describe('componentDidUpdate', () => {
+    it('sets the searchTerm state when props update', () => {
+      const { props, wrapper } = setup();
+      const prevState = wrapper.state();
+      props.searchTerm = 'newTerm';
+      // @ts-ignore: Why does this work in other tests but complain here
+      wrapper.setProps(props);
+      expect(wrapper.state()).toMatchObject({
+        ...prevState,
+        searchTerm: 'newTerm',
+      });
     });
   });
 

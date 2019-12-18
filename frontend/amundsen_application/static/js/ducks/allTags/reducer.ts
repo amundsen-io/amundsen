@@ -7,10 +7,10 @@ export function getAllTags(): GetAllTagsRequest {
   return { type: GetAllTags.REQUEST };
 };
 export function getAllTagsFailure(): GetAllTagsResponse {
-  return { type: GetAllTags.FAILURE, payload: { tags: [] } };
+  return { type: GetAllTags.FAILURE, payload: { allTags: [] } };
 };
-export function getAllTagsSuccess(tags: Tag[]): GetAllTagsResponse {
-  return { type: GetAllTags.SUCCESS, payload: { tags } };
+export function getAllTagsSuccess(allTags: Tag[]): GetAllTagsResponse {
+  return { type: GetAllTags.SUCCESS, payload: { allTags } };
 };
 
 /* REDUCER */
@@ -31,7 +31,11 @@ export default function reducer(state: AllTagsReducerState = initialState, actio
     case GetAllTags.FAILURE:
       return initialState;
     case GetAllTags.SUCCESS:
-      return { ...state, allTags: (<GetAllTagsResponse>action).payload.tags, isLoading: false };
+      return {
+        ...state,
+        allTags: (<GetAllTagsResponse>action).payload.allTags,
+        isLoading: false,
+      };
     default:
       return state;
   }
