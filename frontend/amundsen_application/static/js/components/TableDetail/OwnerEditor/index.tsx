@@ -25,7 +25,6 @@ export interface DispatchFromProps {
 
 export interface ComponentProps {
   errorText?: string | null;
-  readOnly: boolean;
 }
 
 interface OwnerAvatarLabelProps extends AvatarLabelProps {
@@ -42,7 +41,6 @@ type OwnerEditorProps = ComponentProps & DispatchFromProps & StateFromProps & Ed
 
 interface OwnerEditorState {
   errorText: string | null;
-  isLoading: boolean;
   itemProps: { [id: string]: OwnerAvatarLabelProps };
   readOnly: boolean;
   tempItemProps: { [id: string]: AvatarLabelProps };
@@ -56,26 +54,26 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
     isLoading: false,
     itemProps: {},
     onUpdateList: () => undefined,
-    readOnly: true,
   };
-
-  static getDerivedStateFromProps(nextProps) {
-    const { isLoading, itemProps, readOnly } = nextProps;
-    return { isLoading, itemProps, readOnly, tempItemProps: itemProps };
-  }
 
   constructor(props) {
     super(props);
 
     this.state = {
       errorText: props.errorText,
-      isLoading: props.isLoading,
       itemProps: props.itemProps,
       readOnly: props.readOnly,
       tempItemProps: props.itemProps,
     };
 
     this.inputRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    // TODO - itemProps is a new object and this check needs to be fixed
+    if (prevProps.itemProps !== this.props.itemProps) {
+      this.setState({ itemProps: this.props.itemProps, tempItemProps: this.props.itemProps });
+    }
   }
 
   handleShow = () => {
@@ -140,7 +138,7 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
       return null;
     }
 
-    if (this.state.isLoading) {
+    if (this.props.isLoading) {
       return (
         <Modal.Body>
           <LoadingSpinner/>

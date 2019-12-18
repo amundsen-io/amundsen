@@ -34,7 +34,6 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.js$': 'babel-jest',
-    '^.+\\.(css|scss)$': '<rootDir>/node_modules/jest-css-modules',
   },
   testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.(j|t)sx?$',
   moduleDirectories: ['node_modules', 'js'],
@@ -45,6 +44,9 @@ module.exports = {
     'jsx',
     'json',
   ],
+  moduleNameMapper: {
+    '^.+\\.(css|scss)$': '<rootDir>/node_modules/jest-css-modules',
+  },
   globals: {
     'ts-jest': {
       diagnostics: false,

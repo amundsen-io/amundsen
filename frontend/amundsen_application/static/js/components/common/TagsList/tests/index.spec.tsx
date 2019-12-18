@@ -10,17 +10,27 @@ import globalState from 'fixtures/globalState';
 import AppConfig from 'config/config';
 AppConfig.browse.curatedTags = ['test1'];
 
-describe('TagsList', () => {
-  let props: TagsListProps;
-  let subject;
+jest.mock('config/config-utils', () => (
+  {
+    showAllTags: jest.fn(),
+    getCuratedTags: () => { return ['curated_tag_1']; },
+  }
+));
 
-  beforeEach(() => {
-    props = {
-      allTags: [
+import { getCuratedTags, showAllTags } from 'config/config-utils';
+
+
+describe('TagsList', () => {
+
+  const setup = (propOverrides?: Partial<TagsListProps>) => {
+    const props: TagsListProps = {
+      curatedTags: [
         {
           tag_count: 2,
           tag_name: 'test1',
         },
+      ],
+      otherTags: [
         {
           tag_count: 1,
           tag_name: 'test2',
@@ -28,78 +38,58 @@ describe('TagsList', () => {
       ],
       isLoading: false,
       getAllTags: jest.fn(),
+      ...propOverrides,
     };
-    subject = shallow(<TagsList {...props} />);
-  });
 
-  describe('getDerivedStateFromProps', () => {
-    it('returns correct state if props.isLoading', () => {
-      const prevState = subject.state();
-      props.isLoading = true;
-      subject.setProps(props);
-      expect(subject.state()).toMatchObject({
-        ...prevState,
-        isLoading: true,
-      });
-    });
-
-    it('returns correct state if !props.isLoading', () => {
-      props.isLoading = false;
-      subject.setProps(props);
-      expect(subject.state()).toMatchObject({
-        curatedTags: [{ tag_count: 2, tag_name: 'test1'}],
-        otherTags: [{ tag_count: 1, tag_name: 'test2'}],
-        isLoading: false,
-      });
-    });
-
-    it('returns correct state if !props.isLoading and !AppConfig.browse.showAllTags', () => {
-      AppConfig.browse.showAllTags = false;
-      subject = shallow(<TagsList {...props} />);
-      expect(subject.state()).toMatchObject({
-        curatedTags: [{tag_count: 2, tag_name: 'test1'}],
-        otherTags: [],
-        isLoading: false,
-      });
-      AppConfig.browse.showAllTags = true; // reset so other tests aren't affected
-    });
-  });
+    const wrapper = shallow(<TagsList {...props} />);
+    return { props, wrapper };
+  };
 
   describe('componentDidMount', () => {
-      it('calls props.getAllTags', () => {
-          expect(props.getAllTags).toHaveBeenCalled();
-      });
+    it('calls props.getAllTags', () => {
+      const { props, wrapper } = setup();
+      expect(props.getAllTags).toHaveBeenCalled();
+    });
   });
 
   describe('render', () => {
-    let spy;
-    beforeEach(() => {
-      spy = jest.spyOn(TagsList.prototype, 'generateTagInfo');
-    });
-    it('renders LoadingSpinner if state.isLoading', () => {
-      /* Note: For some reason setState is not updating the component in this case */
-      props.isLoading = true;
-      subject.setProps(props);
-      expect(subject.find(LoadingSpinner).exists()).toBeTruthy();
+    it('renders LoadingSpinner if props.isLoading is true', () => {
+      const { props, wrapper } = setup({ isLoading: true });
+      expect(wrapper.find(LoadingSpinner).exists()).toBe(true);
     });
 
-    it('renders <hr> in if curatedTags.length > 0 & otherTags.length > 0 ', () => {
-      expect(subject.find('#browse-body').find('hr').exists()).toBeTruthy();
+    it('renders <hr> if curatedTags.length > 0 & otherTags.length > 0 & showAllTags == true', () => {
+      // @ts-ignore
+      showAllTags.mockImplementation(() => true);
+      const { props, wrapper } = setup();
+      expect(wrapper.find('hr').exists()).toBe(true);
     });
 
-    it('does not render <hr> if !(curatedTags.length > 0 & otherTags.length > 0) ', () => {
-      AppConfig.browse.curatedTags = ['test1', 'test2'];
-      subject = shallow(<TagsList {...props} />);
-      expect(subject.find('#browse-body').find('hr').exists()).toBeFalsy();
-      AppConfig.browse.curatedTags = ['test1']; // reset so other tests aren't affected
+    it('does not render <hr> if showAllTags is false', () => {
+      // @ts-ignore
+      showAllTags.mockImplementation(() => false);
+      const { props, wrapper } = setup();
+      expect(wrapper.find('hr').exists()).toBe(false);
+    });
+
+    it('does not render an <hr> if otherTags is empty', () => {
+      // @ts-ignore
+      showAllTags.mockImplementation(() => true);
+      const { props, wrapper } = setup();
+
+      expect(wrapper.find('#tags-list').find('hr').exists()).toBe(true);
     });
 
     it('calls generateTagInfo with curatedTags', () => {
-      expect(spy).toHaveBeenCalledWith(subject.state().curatedTags);
+      const generateTagInfoSpy = jest.spyOn(TagsList.prototype, 'generateTagInfo');
+      const { props, wrapper } = setup();
+      expect(generateTagInfoSpy).toHaveBeenCalledWith(props.curatedTags)
     });
 
     it('call generateTagInfo with otherTags', () => {
-      expect(spy).toHaveBeenCalledWith(subject.state().otherTags);
+      const generateTagInfoSpy = jest.spyOn(TagsList.prototype, 'generateTagInfo');
+      const { props, wrapper } = setup();
+      expect(generateTagInfoSpy).toHaveBeenCalledWith(props.otherTags)
     });
   });
 });
@@ -120,12 +110,22 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+  let expectedCuratedTags;
+  let expectedOtherTags;
   beforeEach(() => {
     result = mapStateToProps(globalState);
+    const allTags = globalState.allTags.allTags;
+    const curatedTagsList = getCuratedTags();
+    expectedCuratedTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) !== -1);
+    expectedOtherTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) === -1);
   });
 
-  it('sets allTags on the props', () => {
-    expect(result.allTags).toEqual(globalState.allTags.allTags);
+  it('sets curatedTags on the props', () => {
+    expect(result.curatedTags).toEqual(expectedCuratedTags);
+  });
+
+  it('sets otherTags on the props', () => {
+    expect(result.otherTags).toEqual(expectedOtherTags);
   });
 
   it('sets isLoading on the props', () => {

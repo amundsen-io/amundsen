@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 import SanitizedHTML from 'react-sanitized-html';
 
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 
 import { AnnouncementPage, AnnouncementPageProps, mapDispatchToProps, mapStateToProps } from '../';
 
@@ -26,7 +26,7 @@ describe('AnnouncementPage', () => {
             html_content: '<div>Just kidding</div>',
           }],
         };
-        subject = mount(<AnnouncementPage {...props} />);
+        subject = shallow(<AnnouncementPage {...props} />);
     });
 
     describe('componentDidMount', () => {

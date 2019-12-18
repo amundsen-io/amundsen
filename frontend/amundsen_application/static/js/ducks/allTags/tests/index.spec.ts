@@ -21,7 +21,7 @@ describe('allTags ducks', () => {
       const action = getAllTagsFailure();
       const { payload } = action;
       expect(action.type).toBe(GetAllTags.FAILURE);
-      expect(payload.tags).toEqual([]);
+      expect(payload.allTags).toEqual([]);
     });
 
     it('getAllTagsSuccess - returns the action to process success', () => {
@@ -29,7 +29,7 @@ describe('allTags ducks', () => {
       const action = getAllTagsSuccess(expectedTags);
       const { payload } = action;
       expect(action.type).toBe(GetAllTags.SUCCESS);
-      expect(payload.tags).toBe(expectedTags);
+      expect(payload.allTags).toBe(expectedTags);
     });
   });
 

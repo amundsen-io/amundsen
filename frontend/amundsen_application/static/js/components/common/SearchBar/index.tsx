@@ -69,22 +69,23 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { searchTerm } = props;
-    return { searchTerm };
-  }
-
   clearSearchTerm = () : void => {
     this.setState({ showTypeAhead: false, searchTerm: '' });
   };
 
   componentDidMount = () => {
     document.addEventListener('mousedown', this.updateTypeAhead, false);
-  }
+  };
 
   componentWillUnmount = () => {
     document.removeEventListener('mousedown', this.updateTypeAhead, false);
-  }
+  };
+
+  componentDidUpdate = (prevProps: SearchBarProps) => {
+    if (this.props.searchTerm !== prevProps.searchTerm) {
+      this.setState({ searchTerm: this.props.searchTerm });
+    }
+  };
 
   handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>) : void => {
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
@@ -107,7 +108,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   hideTypeAhead = () : void => {
     this.setState({ showTypeAhead: false });
-  }
+  };
 
   isFormValid = (searchTerm: string) : boolean => {
     if (searchTerm.length === 0) {

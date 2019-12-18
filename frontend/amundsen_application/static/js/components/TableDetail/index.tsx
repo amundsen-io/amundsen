@@ -177,7 +177,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
                   </EditableSection>
 
                   <EditableSection title="Owners">
-                    <OwnerEditor readOnly={false}/>
+                    <OwnerEditor />
                   </EditableSection>
 
                 </section>
