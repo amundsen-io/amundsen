@@ -1,3 +1,5 @@
 example/backup/
 example/docker/neo4j/plugins/
 example/docker/es_data*
+
+.idea/
