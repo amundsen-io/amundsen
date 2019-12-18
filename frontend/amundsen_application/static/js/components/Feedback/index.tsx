@@ -80,9 +80,9 @@ export default class Feedback extends React.Component<FeedbackProps, FeedbackSta
             this.state.isOpen &&
             <div className="feedback-component">
               <div className="feedback-header">
-                <div className="title">
-                  {this.props.title.toUpperCase()}
-                </div>
+                <h3 className="title">
+                  {this.props.title}
+                </h3>
                 <button type="button" className="btn btn-close" aria-label={BUTTON_CLOSE_TEXT} onClick={this.toggle} />
               </div>
               <div className="text-center">

@@ -106,7 +106,7 @@ describe('BugReportFeedbackForm', () => {
 
     it('renders submit button with correct props', () => {
       expect(form.find('button').props()).toMatchObject({
-        className: 'btn btn-default submit',
+        className: 'btn btn-primary',
         type: 'submit',
       });
     });

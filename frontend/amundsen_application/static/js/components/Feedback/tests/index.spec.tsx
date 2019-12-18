@@ -120,7 +120,7 @@ describe('Feedback', () => {
           button = header.children().at(1);
         });
         it('renders correct title', () => {
-          expect(title.text()).toEqual(props.title.toUpperCase());
+          expect(title.text()).toEqual(props.title);
         });
 
         it('renders close button with correct props', () => {
