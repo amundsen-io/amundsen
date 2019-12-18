@@ -23,7 +23,7 @@ services:
       networks:
         - amundsennet
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:1.1.4
+      image: amundsendev/amundsen-metadata:1.1.5
       container_name: amundsenmetadata
       depends_on:
         - atlas
