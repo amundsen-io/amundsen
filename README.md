@@ -29,6 +29,10 @@ Please note that the mock images only served as demonstration purpose.
 
     ![](docs/img/landing_page.png)
 
+- **Search Preview**: See inline search results as you type
+
+    ![](docs/img/search_preview.png)
+    
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
     ![](docs/img/table_detail_page.png)
