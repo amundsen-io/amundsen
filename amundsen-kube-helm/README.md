@@ -19,11 +19,11 @@ provider: aws
 dnsZone: teamname.company.com
 dockerhubImagePath: amundsendev
 searchServiceName: search
-searchImageVersion: 1.4.0
+searchImageVersion: 1.4.2
 metadataServiceName: metadata
-metadataImageVersion: 1.1.1
+metadataImageVersion: 1.1.5
 frontEndServiceName: frontend
-frontEndImageVersion: 1.0.9
+frontEndImageVersion: 1.1.1
 frontEndServicePort: 80
 ```
 

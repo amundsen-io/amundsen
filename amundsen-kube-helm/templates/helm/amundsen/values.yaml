@@ -12,7 +12,7 @@ affinity: {}
 tolerations: []
 
 searchServiceName: search
-searchImageVersion: 1.4.0
+searchImageVersion: 1.4.2
 search:
   replicas: 1
   resources:
@@ -27,7 +27,7 @@ search:
   tolerations: []
 
 metadataServiceName: metadata
-metadataImageVersion: 1.1.1
+metadataImageVersion: 1.1.5
 metadata:
   replicas: 1
   resources:
@@ -43,7 +43,7 @@ metadata:
   tolerations: []
 
 frontEndServiceName: frontend
-frontEndImageVersion: 1.0.9
+frontEndImageVersion: 1.1.1
 frontEndServicePort: 80
 frontEnd:
   replicas: 1
