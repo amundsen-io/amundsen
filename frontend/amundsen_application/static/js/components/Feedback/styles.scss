@@ -40,32 +40,20 @@
 
   color: $text-primary;
 
-  .title {
-    color: $text-secondary;
-    flex-grow: 1;
-    font-size: 12px;
-    font-family: $font-family-header;
-    font-weight: $font-weight-header-regular;
-    height: 24px;
-    line-height: 32px;
-  }
-
   .feedback-header {
     display: flex;
     margin-bottom: 8px;
+    .title {
+      flex-grow: 1;
+    }
+
+    button {
+      margin: auto 0;
+    }
   }
 
   .btn-group {
     margin: 8px auto 16px;
-  }
-
-  .submit {
-    float: right;
-    margin-top: 16px;
-  }
-
-  .submit:hover {
-    background-color: $gray-lighter;
   }
 
   .radio-set {

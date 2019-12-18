@@ -110,7 +110,7 @@ describe('RatingFeedbackForm', () => {
 
     it('renders submit button with correct props as fourth child', () => {
       expect(form.children().at(3).find('button').props()).toMatchObject({
-        className: 'btn btn-default submit',
+        className: 'btn btn-primary',
         type: 'submit',
       });
     });

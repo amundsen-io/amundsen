@@ -21,7 +21,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
   constructor(props) {
     super(props);
   }
-  
+
   renderCustom() {
     return (
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={ this.submitForm }>
@@ -40,7 +40,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
           <textarea name="value-prop" className="form-control" rows={5} required={ true }
                     maxLength={ 2000 } placeholder={PROPOSITION_PLACEHOLDER} />
         </div>
-        <button className="btn btn-default submit" type="submit">{SUBMIT_TEXT}</button>
+        <button className="btn btn-primary" type="submit">{SUBMIT_TEXT}</button>
       </form>
     );
   }

@@ -19,7 +19,7 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
   constructor(props) {
     super(props);
   }
-  
+
   renderCustom() {
     const ratings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const radioButtonSet = ratings.map(rating => (
@@ -46,7 +46,7 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
         </div>
         <textarea className="form-control form-group" name="comment" form={AbstractFeedbackForm.FORM_ID}
           rows={ 8 } maxLength={ 2000 } placeholder={COMMENTS_PLACEHOLDER}/>
-        <button className="btn btn-default submit" type="submit">{SUBMIT_TEXT}</button>
+        <button className="btn btn-primary" type="submit">{SUBMIT_TEXT}</button>
       </form>
     );
   }
