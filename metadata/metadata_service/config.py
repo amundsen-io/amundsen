@@ -8,7 +8,6 @@ PROXY_USER = 'PROXY_USER'
 PROXY_PASSWORD = 'PROXY_PASSWORD'
 PROXY_CLIENT = 'PROXY_CLIENT'
 
-
 PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
     'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy'
@@ -18,10 +17,15 @@ IS_STATSD_ON = 'IS_STATSD_ON'
 
 
 class Config:
-    LOG_FORMAT = '%(asctime)s.%(msecs)03d [%(levelname)s] %(module)s.%(funcName)s:%(lineno)d (%(process)d:'\
+    LOG_FORMAT = '%(asctime)s.%(msecs)03d [%(levelname)s] %(module)s.%(funcName)s:%(lineno)d (%(process)d:' \
                  '%(threadName)s) - %(message)s'
     LOG_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
     LOG_LEVEL = 'INFO'
+
+    # Path to the logging configuration file to be used by `fileConfig()` method
+    # https://docs.python.org/3.7/library/logging.config.html#logging.config.fileConfig
+    # LOG_CONFIG_FILE = 'metadata_service/logging.conf'
+    LOG_CONFIG_FILE = None
 
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'neo4j')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'test')

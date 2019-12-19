@@ -1,6 +1,7 @@
 import ast
 import importlib
 import logging
+import logging.config
 import os
 import sys
 from typing import Dict, Any  # noqa: F401
@@ -58,8 +59,11 @@ def create_app(*, config_module_class: str) -> Flask:
         os.getenv('METADATA_SVC_CONFIG_MODULE_CLASS') or config_module_class
     app.config.from_object(config_module_class)
 
-    logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
-    logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+    if app.config.get('LOG_CONFIG_FILE'):
+        logging.config.fileConfig(app.config.get('LOG_CONFIG_FILE'))
+    else:
+        logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
+        logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
     logging.info('Created app with config name {}'.format(config_module_class))
     logging.info('Using backend {}'.format(app.config.get('PROXY_CLIENT')))
 
