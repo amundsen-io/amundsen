@@ -1,4 +1,5 @@
 IMAGE := amundsendev/amundsen-metadata
+OIDC_IMAGE := ${IMAGE}-oidc
 VERSION:= $(shell grep -m 1 '__version__' setup.py | cut -d '=' -f 2 | tr -d "'" | tr -d '[:space:]')
 
 .PHONY: clean
@@ -31,6 +32,15 @@ push-image:
 	docker push ${IMAGE}:${VERSION}
 	docker push ${IMAGE}:latest
 
-.PHONY: build-push-image
-build-push-image: image push-image
+.PHONY: oidc-image
+oidc-image:
+	docker build -f public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} .
+	docker tag ${OIDC_IMAGE}:${VERSION} ${OIDC_IMAGE}:latest
 
+.PHONY: push-odic-image
+push-oidc-image:
+	docker push ${OIDC_IMAGE}:${VERSION}
+	docker push ${OIDC_IMAGE}:latest
+
+.PHONY: build-push-image
+build-push-image: image oidc-image push-image push-oidc-image
