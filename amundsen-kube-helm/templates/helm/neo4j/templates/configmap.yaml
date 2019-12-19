@@ -21,11 +21,11 @@ data:
     dbms.logs.query.enabled=true
     dbms.logs.query.rotation.keep_number=7
     dbms.logs.query.rotation.size=20m
-    dbms.memory.heap.initial_size=23000m
-    dbms.memory.heap.max_size=23000m
-    dbms.memory.pagecache.size=26600m
+    dbms.memory.heap.initial_size={{ .Values.config.dbms.heap_initial_size }}
+    dbms.memory.heap.max_size={{ .Values.config.dbms.heap_max_size }}
+    dbms.memory.pagecache.size={{ .Values.config.dbms.pagecache_size }}
     dbms.security.allow_csv_import_from_file_urls=true
     dbms.security.procedures.unrestricted=algo.*,apoc.*
-    dbms.windows_service_name=neo4j  
+    dbms.windows_service_name=neo4j
     apoc.export.file.enabled=true
     apoc.import.file.enabled=true

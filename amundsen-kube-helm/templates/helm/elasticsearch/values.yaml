@@ -1,11 +1,13 @@
 provider: aws
-# nodeSelector 
-# affinity 
-# tolerations 
+# nodeSelector
+# affinity
+# tolerations
 # resources
-# annotations 
+# annotations
 environment: staging
 dnsZone: teamname.company.com
+initContainer:
+  vmMaxMapCount: 262144
 resources:
   limits:
     cpu: 2
