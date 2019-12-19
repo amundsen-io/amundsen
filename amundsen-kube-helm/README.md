@@ -19,12 +19,21 @@ provider: aws
 dnsZone: teamname.company.com
 dockerhubImagePath: amundsendev
 searchServiceName: search
-searchImageVersion: 1.4.0
+searchImageVersion: 1.4.2
 metadataServiceName: metadata
-metadataImageVersion: 1.1.1
+metadataImageVersion: 1.1.5
 frontEndServiceName: frontend
-frontEndImageVersion: 1.0.9
+frontEndImageVersion: 1.1.1
 frontEndServicePort: 80
+```
+
+You may want to override the default memory usage for Neo4J. In particular, if you're just test-driving a deployment and your node exits with status 137, you should set the usage to smaller values:
+```
+config:
+  dbms:
+    heap_initial_size: 2Gi
+    heap_max_size: 2Gi
+    pagecache_size: 2Gi
 ```
 
 With this values file, you can then setup amundsen with these commands:
