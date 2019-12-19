@@ -19,4 +19,7 @@ setup(
     packages=find_packages(exclude=['tests*']),
     dependency_links=[],
     install_requires=requirements,
+    extras_require={
+        'oidc': ['flaskoidc==0.0.2']
+    },
 )
