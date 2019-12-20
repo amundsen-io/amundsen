@@ -825,7 +825,7 @@ class Neo4jProxy(BaseProxy):
         query = textwrap.dedent("""
         MATCH (user:User {key: $query_key})-[r:READ]->(tbl:Table)
         WHERE EXISTS(r.published_tag) AND r.published_tag IS NOT NULL
-        WITH user, r, tbl ORDER BY r.published_tag DESC, r.total_reads DESC LIMIT 50
+        WITH user, r, tbl ORDER BY r.published_tag DESC, r.read_count DESC LIMIT 50
         MATCH (tbl:Table)<-[:TABLE]-(schema:Schema)<-[:SCHEMA]-(clstr:Cluster)<-[:CLUSTER]-(db:Database)
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
         RETURN db, clstr, schema, tbl, tbl_dscrpt
