@@ -2,6 +2,7 @@ import ast
 import importlib
 import os
 import logging
+import logging.config
 import sys
 
 from flask import Flask, Blueprint
@@ -55,14 +56,18 @@ def create_app(*, config_module_class: str) -> Flask:
     else:
         app = Flask(__name__)
 
-    logging.info('Creating app with config name {}'
-                 .format(config_module_class))
     config_module_class = \
         os.getenv('SEARCH_SVC_CONFIG_MODULE_CLASS') or config_module_class
     app.config.from_object(config_module_class)
 
-    logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
-    logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+    if app.config.get('LOG_CONFIG_FILE'):
+        logging.config.fileConfig(app.config.get('LOG_CONFIG_FILE'), disable_existing_loggers=False)
+    else:
+        logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
+        logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+
+    logging.info('Creating app with config name {}'
+                 .format(config_module_class))
     logging.info('Created app with config name {}'.format(config_module_class))
 
     api_bp = Blueprint('api', __name__)
