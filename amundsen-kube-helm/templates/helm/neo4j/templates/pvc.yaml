@@ -1,3 +1,4 @@
+{{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -7,7 +8,7 @@ metadata:
 spec:
     storageClassName: manual
     capacity:
-        storage: 3Gi
+        storage: {{ default "3Gi" .Values.neo4jpvcSize }}
     accessModes:
         - ReadWriteMany
     hostPath:
@@ -23,4 +24,5 @@ spec:
         - ReadWriteMany
     resources:
         requests:
-            storage: 3Gi
+            storage: {{ default "3Gi" .Values.neo4jpvcSize }}
+{{- end -}}
