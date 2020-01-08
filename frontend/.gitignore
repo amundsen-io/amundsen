@@ -12,6 +12,7 @@ venv3/
 .cache/
 build/
 .idea/
+.vscode/
 .coverage
 .mypy_cache
 .pytest_cache
