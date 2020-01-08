@@ -12,6 +12,7 @@ venv/
 venv3/
 .cache/
 .idea/
+.vscode/
 .coverage
 *coverage.xml
 .mypy_cache
