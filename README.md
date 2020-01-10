@@ -68,7 +68,7 @@ Currently **officially** using Amundsen:
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
-1. [Cimpress Technology](https://cimpress.com)
+1. [Cimpress Technology](https://cimpress.com/)
 
 ## Getting Started
 
