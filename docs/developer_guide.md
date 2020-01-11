@@ -48,5 +48,18 @@ $ git submodule update --remote
     $ docker logs amundsenmetadata --tail 10 -f
     ```
 
+### Local data
+
+Local data is persisted under [.local/](../.local/), clean up those directories to reset the databases
+
+```bash
+#  reset elasticsearch
+rm -rf .local/elasticsearch
+
+#  reset neo4j
+rm -rf .local/neo4j
+```
+
+
 ### Troubleshooting
 1. If you have made a change in `amundsen/amundsenfrontendlibrary` and do not see your changes, this could be due to your browser's caching behaviors. Either execute a hard refresh (recommended) or clear your browser cache (last resort).
