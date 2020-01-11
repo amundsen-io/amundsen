@@ -4,4 +4,3 @@ example/docker/es_data*
 .local/
 
 .idea/
-!.gitkeep
