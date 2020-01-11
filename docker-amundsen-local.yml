@@ -14,6 +14,7 @@ services:
           - 7687:7687
       volumes:
           - ./example/docker/neo4j/conf:/conf
+          - ./.local/neo4j/data:/neo4j/data
       networks:
         - amundsennet
   elasticsearch:
@@ -23,6 +24,8 @@ services:
           - 9200:9200
       networks:
         - amundsennet
+      volumes:
+        - ./.local/elasticsearch/data:/usr/share/elasticsearch/data
   amundsensearch:
       build:
         context: ./amundsensearchlibrary
