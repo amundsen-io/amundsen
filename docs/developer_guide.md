@@ -50,7 +50,7 @@ $ git submodule update --remote
 
 ### Local data
 
-Local data is persisted under [.local/](../.local/), clean up those directories to reset the databases
+Local data is persisted under .local/ (at the root of the project), clean up the following directories to reset the databases:
 
 ```bash
 #  reset elasticsearch
