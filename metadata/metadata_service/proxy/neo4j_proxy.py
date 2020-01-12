@@ -102,6 +102,7 @@ class Neo4jProxy(BaseProxy):
         tbl_col_neo4j_records = self._execute_cypher_query(
             statement=column_level_query, param_dict={'tbl_key': table_uri})
         cols = []
+        last_neo4j_record = None
         for tbl_col_neo4j_record in tbl_col_neo4j_records:
             # Getting last record from this for loop as Neo4j's result's random access is O(n) operation.
             col_stats = []
@@ -126,7 +127,7 @@ class Neo4jProxy(BaseProxy):
         if not cols:
             raise NotFoundException('Table URI( {table_uri} ) does not exist'.format(table_uri=table_uri))
 
-        return (cols, last_neo4j_record)
+        return sorted(cols, key=lambda item: item.sort_order), last_neo4j_record
 
     @timer_with_counter
     def _exec_usage_query(self, table_uri: str) -> List[Reader]:
