@@ -52,7 +52,7 @@ class Data:
         },
 
     }
-    column_metadata_entity['relationshipAttributes']['column'] = test_column
+    column_metadata_entity['relationshipAttributes']['column'] = test_column    # type: ignore
 
     db_entity = {
         'guid': '-100',
@@ -96,7 +96,7 @@ class Data:
         },
     }
     entity1.update(classification_entity)
-    metadata1['relationshipAttributes']['table'] = entity1
+    metadata1['relationshipAttributes']['table'] = entity1    # type: ignore
 
     metadata2 = {
         'guid': '-2',
@@ -126,7 +126,7 @@ class Data:
         },
     }
     entity2.update(classification_entity)
-    metadata2['relationshipAttributes']['table'] = entity2
+    metadata2['relationshipAttributes']['table'] = entity2    # type: ignore
 
     entities = {
         'entities': [
