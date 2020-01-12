@@ -58,6 +58,7 @@ Currently **officially** using Amundsen:
 
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Cameo](https://www.cameo.com)
+1. [Cimpress Technology](https://cimpress.com)
 1. [Data Sprints](https://datasprints.com/)
 1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
@@ -68,7 +69,6 @@ Currently **officially** using Amundsen:
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
-1. [Cimpress Technology](https://cimpress.com)
 
 ## Getting Started
 
