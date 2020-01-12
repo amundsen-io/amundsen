@@ -279,7 +279,7 @@ class AtlasProxy(BaseProxy):
                     stats=statistics,
                 )
             )
-        return columns
+        return sorted(columns, key=lambda item: item.sort_order)
 
     def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
         pass
