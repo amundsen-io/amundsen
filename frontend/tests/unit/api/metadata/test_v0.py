@@ -592,6 +592,20 @@ class MetadataTest(unittest.TestCase):
             self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_user_resources)
 
     @responses.activate
+    def test_get_bookmark_failure(self) -> None:
+        """
+        Test correct response returned when get_bookmark fails
+        """
+        url = f"{local_app.config['METADATASERVICE_BASE']}{USER_ENDPOINT}/{TEST_USER_ID}/follow/"
+        responses.add(responses.GET, url, json=self.mock_user, status=HTTPStatus.BAD_REQUEST)
+
+        with local_app.test_client() as test:
+            response = test.get('/api/metadata/v0/user/bookmark')
+            self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+            expected = {'bookmarks': [], 'msg': 'Encountered error: failed to get bookmark for user_id: test_user_id'}
+            self.assertEqual(response.json, expected)
+
+    @responses.activate
     def test_get_bookmark_for_user(self) -> None:
         """
         Test get_bookmark with a specified user

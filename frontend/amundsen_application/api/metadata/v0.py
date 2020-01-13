@@ -445,10 +445,16 @@ def get_bookmark() -> Response:
         response = request_metadata(url=url, method=request.method)
         status_code = response.status_code
 
-        tables = response.json().get('table')
-        table_bookmarks = [marshall_table_partial(table) for table in tables]
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+            tables = response.json().get('table')
+            table_bookmarks = [marshall_table_partial(table) for table in tables]
+        else:
+            message = f'Encountered error: failed to get bookmark for user_id: {user_id}'
+            logging.error(message)
+            table_bookmarks = []
 
-        return make_response(jsonify({'msg': 'success', 'bookmarks': table_bookmarks}), status_code)
+        return make_response(jsonify({'msg': message, 'bookmarks': table_bookmarks}), status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
