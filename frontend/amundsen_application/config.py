@@ -12,6 +12,12 @@ class Config:
                  + '%(threadName)s) - %(message)s'
     LOG_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
     LOG_LEVEL = 'INFO'
+
+    # Path to the logging configuration file to be used by `fileConfig()` method
+    # https://docs.python.org/3.7/library/logging.config.html#logging.config.fileConfig
+    # LOG_CONFIG_FILE = 'amundsen_application/logging.conf'
+    LOG_CONFIG_FILE = None
+
     COLUMN_STAT_ORDER = None  # type: Dict[str, int]
 
     UNEDITABLE_SCHEMAS = set()  # type: Set[str]

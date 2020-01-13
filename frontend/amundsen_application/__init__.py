@@ -1,6 +1,7 @@
 import ast
 import importlib
 import logging
+import logging.config
 import os
 
 from flask import Flask
@@ -41,8 +42,12 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
 
     app.config.from_object(config_module_class)
 
-    logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
-    logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+    if app.config.get('LOG_CONFIG_FILE'):
+        logging.config.fileConfig(app.config.get('LOG_CONFIG_FILE'), disable_existing_loggers=False)
+    else:
+        logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
+        logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+
     logging.info('Created app with config name {}'.format(config_module_class))
     logging.info('Using metadata service at {}'.format(app.config.get('METADATASERVICE_BASE')))
     logging.info('Using search service at {}'.format(app.config.get('SEARCHSERVICE_BASE')))
