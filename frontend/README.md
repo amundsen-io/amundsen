@@ -16,7 +16,7 @@ For information about Amundsen and our other services, visit the [main repositor
 
 ## Requirements
 - Python >= 3.5
-- Node = v8.x.x or v10.x.x (v11.x.x has compatibility issues)
+- Node = v10 or v12 
 - npm >= 6.x.x
 
 ## User Interface

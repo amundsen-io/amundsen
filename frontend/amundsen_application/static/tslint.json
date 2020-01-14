@@ -20,7 +20,8 @@
        "no-parameter-reassignment": false,
        "prefer-array-literal": [
          false
-       ]
+       ],
+       "prefer-template": false
     },
     "rulesDirectory": []
 }
