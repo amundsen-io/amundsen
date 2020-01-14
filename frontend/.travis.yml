@@ -14,7 +14,7 @@ matrix:
     - codecov
   - language: node_js
     node_js:
-    - '8'
+    - '12'
     env:
     - IS_DEPLOYABLE=false
     before_install:
