@@ -7,7 +7,7 @@ app = flask.Flask(__name__)
 app.config.from_object('amundsen_application.config.LocalConfig')
 
 
-def mock_get_profile_url(app):
+def mock_get_profile_url(app: str) -> str:
     return 'testUrl'
 
 

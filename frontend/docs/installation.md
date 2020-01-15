@@ -16,7 +16,7 @@ $ cd ../../
 # Install python resources
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install -r requirements3.txt
+$ pip3 install -r requirements.txt
 $ python3 setup.py install
 
 # Start server
