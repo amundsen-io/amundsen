@@ -63,6 +63,7 @@ Currently **officially** using Amundsen:
 1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
 1. [ING](https://www.ing.com/Home.htm)
+1. [iRobot](https://www.irobot.com)
 1. [LMC](https://www.lmc.eu/cs/)
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)
