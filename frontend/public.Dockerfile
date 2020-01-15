@@ -12,8 +12,8 @@ FROM python:3.7-slim as base
 WORKDIR /app
 RUN pip3 install gunicorn
 
-COPY requirements3.txt /app/requirements3.txt
-RUN pip3 install -r requirements3.txt
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY --from=node-stage /app /app
 COPY . /app
