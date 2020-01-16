@@ -1,0 +1,23 @@
+{{- if .Values.createOidcSecret }}
+apiVersion: v1
+kind: Secret
+metadata:
+    name: oidc-config
+    namespace: {{ .Release.Namespace }}
+stringData:
+  OIDC_CLIENT_SECRET: {{ .Values.OIDC_CLIENT_SECRET }}
+  client_secrets.json: |-
+    {
+      "web": {
+        "client_id": "{{ .Values.OIDC_CLIENT_ID }}",
+        "client_secret": "{{ .Values.OIDC_CLIENT_SECRET }}",
+        "auth_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/v1/authorize",
+        "token_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/v1/token",
+        "issuer": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}",
+        "userinfo_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/userinfo",
+        "redirect_uris": [
+          "http://localhost/oidc_callback"
+        ]
+      }
+    }
+{{- end }}
