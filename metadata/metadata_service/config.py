@@ -42,6 +42,8 @@ class Config:
     # whitelist badges
     WHITELIST_BADGES: List[str] = []
 
+    SWAGGER_ENABLED = False
+
 
 class LocalConfig(Config):
     DEBUG = False
@@ -54,3 +56,11 @@ class LocalConfig(Config):
     PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'NEO4J')]
 
     JANUS_GRAPH_URL = None
+
+    SWAGGER_ENABLED = True
+    SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
+    SWAGGER = {
+        'openapi': '3.0.2',
+        'title': 'Metadata Service',
+        'uiversion': 3
+    }

@@ -3,6 +3,7 @@ from typing import Iterable, Union, Mapping
 
 from flask import request
 from flask_restful import Resource, fields, marshal
+from flasgger import swag_from
 
 from metadata_service.proxy import get_proxy_client
 
@@ -26,6 +27,7 @@ class PopularTablesAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/popular_tables_get.yml')
     def get(self) -> Iterable[Union[Mapping, int, None]]:
         limit = request.args.get('limit', 10, type=int)
         popular_tables = self.client.get_popular_tables(num_entries=limit)

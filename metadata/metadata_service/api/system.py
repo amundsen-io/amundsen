@@ -2,6 +2,7 @@ from http import HTTPStatus
 from typing import Iterable, Union, Mapping
 
 from flask_restful import Resource
+from flasgger import swag_from
 
 from metadata_service.proxy import get_proxy_client
 
@@ -14,6 +15,7 @@ class Neo4jDetailAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/neo4j/detail_get.yml')
     def get(self) -> Iterable[Union[Mapping, int, None]]:
         last_updated_ts = self.client.get_latest_updated_ts()
         if last_updated_ts is not None:
