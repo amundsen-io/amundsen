@@ -2,6 +2,7 @@ from http import HTTPStatus
 from typing import Iterable, Union, Mapping
 
 from flask_restful import Resource, fields, marshal
+from flasgger import swag_from
 
 from metadata_service.proxy import get_proxy_client
 
@@ -21,6 +22,7 @@ class TagAPI(Resource):
         self.client = get_proxy_client()
         super(TagAPI, self).__init__()
 
+    @swag_from('swagger_doc/tag/tag_get.yml')
     def get(self) -> Iterable[Union[Mapping, int, None]]:
         """
         API to fetch all the existing tags with usage.

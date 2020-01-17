@@ -5,6 +5,7 @@ import logging.config
 import os
 import sys
 from typing import Dict, Any  # noqa: F401
+from flasgger import Swagger
 
 from flask import Flask, Blueprint
 from flask_restful import Api
@@ -16,12 +17,15 @@ from metadata_service.api.system import Neo4jDetailAPI
 from metadata_service.api.table \
     import TableDetailAPI, TableOwnerAPI, TableTagAPI, TableDescriptionAPI
 from metadata_service.api.tag import TagAPI
-from metadata_service.api.user import UserDetailAPI, UserFollowAPI, UserOwnAPI, UserReadAPI
+from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
+                                       UserFollowsAPI, UserOwnsAPI,
+                                       UserOwnAPI, UserReadsAPI)
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
 FLASK_APP_CLASS_NAME = os.getenv('FLASK_APP_CLASS_NAME')
 FLASK_APP_KWARGS_DICT_STR = os.getenv('FLASK_APP_KWARGS_DICT')
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def create_app(*, config_module_class: str) -> Flask:
@@ -88,15 +92,18 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/tags/')
     api.add_resource(UserDetailAPI,
                      '/user/<path:user_id>')
+    api.add_resource(UserFollowsAPI,
+                     '/user/<path:user_id>/follow/')
     api.add_resource(UserFollowAPI,
-                     '/user/<path:user_id>/follow/',
                      '/user/<path:user_id>/follow/<resource_type>/<path:table_uri>')
+    api.add_resource(UserOwnsAPI,
+                     '/user/<path:user_id>/own/')
     api.add_resource(UserOwnAPI,
-                     '/user/<path:user_id>/own/',
                      '/user/<path:user_id>/own/<resource_type>/<path:table_uri>')
-    api.add_resource(UserReadAPI,
-                     '/user/<path:user_id>/read/',
-                     '/user/<path:user_id>/read/<resource_type>/<path:table_uri>')
+    api.add_resource(UserReadsAPI,
+                     '/user/<path:user_id>/read/')
     app.register_blueprint(api_bp)
 
+    if app.config.get('SWAGGER_ENABLED'):
+        Swagger(app, template_file=os.path.join(ROOT_DIR, app.config.get('SWAGGER_TEMPLATE_PATH')), parse=True)
     return app

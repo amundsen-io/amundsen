@@ -3,6 +3,7 @@ from http import HTTPStatus
 from typing import Iterable, Union
 
 from flask import request
+from flasgger import swag_from
 from flask_restful import Resource
 
 from metadata_service.exception import NotFoundException
@@ -17,6 +18,7 @@ class ColumnDescriptionAPI(Resource):
         self.client = get_proxy_client()
         super(ColumnDescriptionAPI, self).__init__()
 
+    @swag_from('swagger_doc/column/description_put.yml')
     def put(self,
             table_uri: str,
             column_name: str) -> Iterable[Union[dict, tuple, int, None]]:
@@ -37,6 +39,7 @@ class ColumnDescriptionAPI(Resource):
             msg = 'table_uri {} with column {} does not exist'.format(table_uri, column_name)
             return {'message': msg}, HTTPStatus.NOT_FOUND
 
+    @swag_from('swagger_doc/column/description_get.yml')
     def get(self, table_uri: str, column_name: str) -> Union[tuple, int, None]:
         """
         Gets column descriptions in Neo4j

@@ -92,12 +92,16 @@ $ docker run -p 5000:5000 --env PROXY_CLIENT=ATLAS --env PROXY_PORT=21000 --env 
 ---
 **NOTE**
 
-The support for Apache Atlas is work in progress. For example, while Apache Atlas supports fine grained access, Amundsen does not support this yet. 
+The support for Apache Atlas is work in progress. For example, while Apache Atlas supports fine grained access, Amundsen does not support this yet.
 
 # Developer guide
 ## Code style
-- PEP 8: Amundsen Metadata service follows [PEP8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/ "PEP8 - Style Guide for Python Code"). 
+- PEP 8: Amundsen Metadata service follows [PEP8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/ "PEP8 - Style Guide for Python Code").
 - Typing hints: Amundsen Metadata service also utilizes [Typing hint](https://docs.python.org/3/library/typing.html "Typing hint") for better readability.
+
+## API documentation
+
+We have Swagger documentation setup with OpenApi 3.0.2. This documentation is generated via Flasgger. When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to localhost:5000/apidocs/. Currently the documentation only works with local configuration.
 
 ## Code structure
 Please visit [Code Structure](docs/structure.md) to read how different modules are structured in Amundsen Metadata service.

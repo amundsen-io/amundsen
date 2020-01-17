@@ -5,6 +5,7 @@ from typing import Iterable, Mapping, Union, Any
 from flask import current_app as app
 from flask import request
 from flask_restful import Resource, fields, reqparse, marshal
+from flasgger import swag_from
 
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
@@ -93,6 +94,7 @@ class TableDetailAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/table/detail_get.yml')
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             table = self.client.get_table(table_uri=table_uri)
@@ -110,6 +112,7 @@ class TableOwnerAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/table/owner_put.yml')
     def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             self.client.add_owner(table_uri=table_uri, owner=owner)
@@ -121,6 +124,7 @@ class TableOwnerAPI(Resource):
                                'is not added successfully'.format(owner,
                                                                   table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+    @swag_from('swagger_doc/table/owner_delete.yml')
     def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             self.client.delete_owner(table_uri=table_uri, owner=owner)
@@ -141,6 +145,7 @@ class TableDescriptionAPI(Resource):
         self.client = get_proxy_client()
         super(TableDescriptionAPI, self).__init__()
 
+    @swag_from('swagger_doc/table/description_get.yml')
     def get(self, table_uri: str) -> Iterable[Any]:
         """
         Returns description in Neo4j endpoint
@@ -155,6 +160,7 @@ class TableDescriptionAPI(Resource):
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+    @swag_from('swagger_doc/table/description_put.yml')
     def put(self, table_uri: str) -> Iterable[Any]:
         """
         Updates table description (passed as a request body)
@@ -182,6 +188,7 @@ class TableTagAPI(Resource):
         self.parser.add_argument('tag_type', type=str, required=False, default='default')
         super(TableTagAPI, self).__init__()
 
+    @swag_from('swagger_doc/table/tag_put.yml')
     def put(self, table_uri: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
         """
         API to add a tag to existing table uri.
@@ -221,6 +228,7 @@ class TableTagAPI(Resource):
                                                                tag_type)}, \
                 HTTPStatus.NOT_FOUND
 
+    @swag_from('swagger_doc/table/tag_delete.yml')
     def delete(self, table_uri: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
         """
         API to remove a association between a given tag and a table.

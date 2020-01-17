@@ -2,6 +2,7 @@ from http import HTTPStatus
 from typing import Iterable, Mapping, Union
 
 from flask_restful import Resource, fields, marshal
+from flasgger import swag_from
 
 from metadata_service.api.popular_tables import popular_table_fields
 from metadata_service.exception import NotFoundException
@@ -41,6 +42,7 @@ class UserDetailAPI(Resource):
 
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/user/detail_get.yml')
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             table = self.client.get_user_detail(user_id=user_id)
@@ -50,15 +52,15 @@ class UserDetailAPI(Resource):
             return {'message': 'User id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
 
 
-class UserFollowAPI(Resource):
+class UserFollowsAPI(Resource):
     """
-    Build get / put API to support user follow resource features.
-    It will create a relationship(follow / followed_by) between user and resources(table, dashboard etc)
+    Build get API to support user follow resource features.
     """
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/user/follow_get.yml')
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Return a list of resources that user has followed
@@ -78,6 +80,17 @@ class UserFollowAPI(Resource):
             LOGGER.exception('UserFollowAPI GET Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+
+class UserFollowAPI(Resource):
+    """
+    Build put / delete API to support user follow resource features.
+    It will create a relationship(follow / followed_by) between user and resources(table, dashboard etc
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/user/follow_put.yml')
     def put(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Create the follow relationship between user and resources.
@@ -101,6 +114,7 @@ class UserFollowAPI(Resource):
                                                                   table_uri)}, \
                 HTTPStatus.INTERNAL_SERVER_ERROR
 
+    @swag_from('swagger_doc/user/follow_delete.yml')
     def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Delete the follow relationship between user and resources.
@@ -114,9 +128,9 @@ class UserFollowAPI(Resource):
             self.client.delete_table_relation_by_user(table_uri=table_uri,
                                                       user_email=user_id,
                                                       relation_type=UserResourceRel.follow)
-            return {'message': 'The user {} for table_uri {} '
-                               'is added successfully'.format(user_id,
-                                                              table_uri)}, HTTPStatus.OK
+            return {'message': 'The user following {} for table_uri {} '
+                               'is deleted successfully'.format(user_id,
+                                                                table_uri)}, HTTPStatus.OK
         except Exception as e:
             LOGGER.exception('UserFollowAPI DELETE Failed')
             return {'message': 'The user {} for table_uri {} '
@@ -125,16 +139,15 @@ class UserFollowAPI(Resource):
                 HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-class UserOwnAPI(Resource):
+class UserOwnsAPI(Resource):
     """
-    Build get / put API to support user own resource features.
-    It will create a relationship(owner / owner_of) between user and resources(table, dashboard etc)
-    todo: Deprecate TableOwner API
+    Build get API to support user own resource features.
     """
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/user/own_get.yml')
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Return a list of resources that user has owned
@@ -154,6 +167,18 @@ class UserOwnAPI(Resource):
             LOGGER.exception('UserOwnAPI GET Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+
+class UserOwnAPI(Resource):
+    """
+    Build put / delete API to support user own resource features.
+    It will create a relationship(owner / owner_of) between user and resources(table, dashboard etc)
+    todo: Deprecate TableOwner API
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/user/own_put.yml')
     def put(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Create the follow relationship between user and resources.
@@ -174,6 +199,7 @@ class UserOwnAPI(Resource):
                                'is not added successfully'.format(user_id,
                                                                   table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+    @swag_from('swagger_doc/user/own_delete.yml')
     def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             self.client.delete_owner(table_uri=table_uri, owner=user_id)
@@ -187,15 +213,15 @@ class UserOwnAPI(Resource):
                                                                     table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-class UserReadAPI(Resource):
+class UserReadsAPI(Resource):
     """
-    Build get / put API to support user read resource features.
-    It will create a relationship(read / read_by) between user and resources(table, dashboard etc)
+    Build get API to support user read resource features.
     """
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @swag_from('swagger_doc/user/read_get.yml')
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
         Return a list of resources that user has read

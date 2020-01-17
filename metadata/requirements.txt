@@ -41,6 +41,7 @@ pytest-mock==1.1
 typing==3.6.4
 
 
+flasgger==0.9.3
 Flask-RESTful==0.3.6
 Flask==1.0.2
 gremlinpython==3.4.3
@@ -49,6 +50,7 @@ attrs==19.1.0
 click==6.7
 itsdangerous==0.24
 Jinja2>=2.10.1
+jsonschema==2.6.0
 marshmallow==2.15.3
 marshmallow-annotations==2.4.0
 MarkupSafe==1.0

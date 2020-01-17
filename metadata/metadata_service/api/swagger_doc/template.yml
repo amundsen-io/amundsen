@@ -1,0 +1,259 @@
+openapi: '3.0.2'
+info:
+  title: 'Metadata Service'
+  description: 'Used to provide and update metadata, such as table & column description, stored in either neo4j or apache atlas.'
+  version: '1.1.7'
+
+components:
+  schemas:
+    Description:
+      type: object
+      properties:
+        description:
+          type: string
+    PopularTables:
+      type: object
+      properties:
+        database:
+          description: 'Database name'
+          type: string
+        cluster:
+          description: 'Cluster name'
+          type: string
+        schema:
+          description: 'Schema name'
+          type: string
+        table_name:
+          description: 'Table name'
+          type: string
+        table_description:
+          description: 'Table description'
+          type: string
+    TagFields:
+      type: object
+      properties:
+        tag_type:
+          type: string
+          description: 'Tag type'
+        tag_name:
+          type: string
+          description: 'Tag name'
+    TagUsage:
+      type: object
+      properties:
+        tag_name:
+          type: string
+          description: 'Tag name'
+        tag_count:
+          type: integer
+          description: 'Count of times used'
+    TableReaderFields:
+      type: object
+      properties:
+        reader:
+          $ref: '#/components/schemas/UserFields'
+        read_count:
+          type: integer
+          description: 'Number of times the reader accessed the table'
+    UserFields:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 'User email'
+        first_name:
+          type: string
+          description: 'User first name'
+        last_name:
+          type: string
+          description: 'User last name'
+    UserDetailFields:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 'User email'
+        first_name:
+          type: string
+          description: 'User first name'
+        last_name:
+          type: string
+          description: 'User last name'
+        full_name:
+          type: string
+          description: 'User full name'
+        is_active:
+          type: boolean
+          description: 'Is user active'
+        github_username:
+          type: string
+          description: 'User github'
+        slack_id:
+          type: string
+          description: 'User slack'
+        team_name:
+          type: string
+          description: 'User team name'
+        employee_type:
+          type: string
+          description: 'User type'
+        manager_fullname:
+          type: string
+          description: 'User manager full name'
+    ColumnFields:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Column name'
+        description:
+          type: string
+          description: 'Column description'
+        type:
+          type: string
+          description: 'Column type'
+        sort_order:
+          type: integer
+          description: 'Sort order in the column'
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnStatFields'
+    ColumnStatFields:
+      type: object
+      properties:
+        stat_type:
+          type: string
+          description: 'Type of column statistic'
+        stat_val:
+          type: string
+          description: 'Value of the statistic'
+        start_epoch:
+          type: integer
+          description: 'Start of the statistic (epoch)'
+        end_epoch:
+          type: integer
+          description: 'End of the statistic (epoch)'
+    WatermarkFields:
+      type: object
+      properties:
+        watermark_type:
+          type: string
+          description: 'Watermark type'
+        partition_key:
+          type: string
+          description: 'Partition key'
+        partition_value:
+          type: string
+          description: 'Partition value'
+        create_time:
+          type: string
+          description: 'Create time'
+    TableWriterFields:
+      type: object
+      properties:
+        application_url:
+          type: string
+          description: 'Application url'
+        name:
+          type: string
+          description: 'Table writer name'
+        id:
+          type: string
+          description: 'Table writer id'
+        description:
+          type: string
+          description: 'Table writer description'
+    SourceFields:
+      type: object
+      properties:
+        source_type:
+          type: string
+          description: 'Source type'
+        source:
+          type: string
+          description: 'Source name'
+    TableDetail:
+      type: object
+      properties:
+          database:
+            type: string
+            description: 'Name of the database'
+            example: 'dynamo'
+          cluster:
+            type: string
+            description: 'Name of the cluster'
+            example: 'gold'
+          schema:
+            type: string
+            description: 'Name of the database schema'
+          table_name:
+            type: string
+            description: 'Name of the table'
+          table_description:
+            type: string
+            description: 'Table description'
+          tags:
+            type: array
+            description: 'Tags attached to the table'
+            items:
+              $ref: '#/components/schemas/TagFields'
+          badges:
+            type: array
+            description: 'Badges associated with the table'
+            items:
+              $ref: '#/components/schemas/TagFields'
+          table_readers:
+            type: array
+            description: 'Table readers'
+            items:
+              $ref: '#/components/schemas/TableReaderFields'
+          owners:
+            type: array
+            description: 'Owners of the table'
+            items:
+              $ref: '#/components/schemas/UserFields'
+          columns:
+            type: array
+            description: 'Columns of the table'
+            items:
+              $ref: '#/components/schemas/ColumnFields'
+          watermarks:
+            type: array
+            description: 'Watermarks of the table'
+            items:
+              $ref: '#/components/schemas/WatermarkFields'
+          table_writer:
+            $ref: '#/components/schemas/TableWriterFields'
+          last_updated_timestamp:
+            type: integer
+            description: 'Epoch timestamp of when it was last updated'
+          source:
+            $ref: '#/components/schemas/SourceFields'
+          is_view:
+            type: boolean
+            description: 'If the table is a view'
+    Neo4jDetail:
+      type: object
+      properties:
+        neo4j_latest_timestamp:
+          type: integer
+          description: 'Last time at which neo4j was updated (epoch)'
+          example: '1577836800'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'A simple description of what went wrong'
+          example: 'An Exception encountered while processing your request'
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'A simple message to give additional information about the result of the request'
+          example: 'Table was created successfully'
+    EmptyResponse:
+      type: object
+      properties: {}
