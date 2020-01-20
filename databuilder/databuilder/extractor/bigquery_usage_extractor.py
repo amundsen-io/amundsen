@@ -24,6 +24,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
     TIMESTAMP_KEY = 'timestamp'
     _DEFAULT_SCOPES = ('https://www.googleapis.com/auth/cloud-platform',)
     EMAIL_PATTERN = 'email_pattern'
+    DELAY_TIME = 'delay_time'
 
     def init(self, conf):
         # type: (ConfigTree) -> None
@@ -33,6 +34,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             (date.today() - timedelta(days=1)).strftime('%Y-%m-%dT00:00:00Z'))
 
         self.email_pattern = conf.get_string(BigQueryTableUsageExtractor.EMAIL_PATTERN, None)
+        self.delay_time = conf.get_int(BigQueryTableUsageExtractor.DELAY_TIME, 100)
 
         self.table_usage_counts = {}
         self._count_usage()
@@ -136,7 +138,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
                     response = None
             except Exception:
                 # Add a delay when BQ quota exceeds limitation
-                sleep(BigQueryTableUsageExtractor.DELAY_TIME)
+                sleep(self.delay_time)
 
     def get_scope(self):
         # type: () -> str
