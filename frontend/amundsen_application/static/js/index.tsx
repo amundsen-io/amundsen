@@ -9,8 +9,6 @@ import { createStore, applyMiddleware } from 'redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
-import { feedbackEnabled } from 'config/config-utils';
-
 import AnnouncementPage from './components/AnnouncementPage';
 import BrowsePage from './components/BrowsePage';
 import Footer from './components/Footer';

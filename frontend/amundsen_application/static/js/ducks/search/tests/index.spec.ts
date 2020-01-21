@@ -589,6 +589,8 @@ describe('search ducks', () => {
     });
 
     describe('loadPreviousSearchWorker', () => {
+      // TODO - test 'BrowserHistory.goBack' case
+
       it('applies the existing search state into the URL', () => {
         updateSearchUrlSpy.mockClear();
 

@@ -1,3 +1,5 @@
+export const AVATAR_SIZE = 40;
+
 export const BOOKMARKED_LABEL = 'bookmarked';
 export const BOOKMARKED_SOURCE = 'profile_bookmark';
 export const BOOKMARKED_TAB_KEY = 'bookmark_tab';

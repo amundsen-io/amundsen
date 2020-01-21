@@ -40,7 +40,7 @@ import {
   setPageIndex, setResource,
 } from './reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
-import { updateSearchUrl } from 'utils/navigation-utils';
+import { BrowserHistory, updateSearchUrl } from 'utils/navigation-utils';
 
 export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
   const { term } = action.payload;
@@ -204,6 +204,10 @@ export function* urlDidUpdateWatcher(): SagaIterator {
 
 export function* loadPreviousSearchWorker(action: LoadPreviousSearchRequest): SagaIterator {
   const state = yield select(getSearchState);
+  if (state.search_term === "") {
+    BrowserHistory.goBack();
+    return;
+  }
   updateSearchUrl({
     term: state.search_term,
     resource: state.selectedTab,

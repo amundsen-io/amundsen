@@ -21,6 +21,7 @@ import { GetBookmarksForUserRequest } from 'ducks/bookmark/types';
 import { getBookmarksForUser } from 'ducks/bookmark/reducer';
 
 import {
+  AVATAR_SIZE,
   BOOKMARKED_LABEL,
   BOOKMARKED_SOURCE,
   BOOKMARKED_TAB_KEY,
@@ -142,78 +143,80 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
     const user = this.props.user;
     return (
       <DocumentTitle title={ `${user.display_name} - Amundsen Profile` }>
-        <div className="container profile-page">
-          <div className="row">
-            <div className="col-xs-12 col-md-offset-1 col-md-10">
+        <div className="resource-detail-layout profile-page">
+          <header className="resource-header">
+            <div className="header-section">
               <Breadcrumb />
-              {/* TODO - Consider making this part a separate component */}
-              <div className="profile-header">
-                  <div id="profile-avatar" className="profile-avatar">
-                    {
-                      // default Avatar looks a bit jarring -- intentionally not rendering if no display_name
-                      user.display_name && user.display_name.length > 0 &&
-                      <Avatar name={user.display_name} size={74} round={true} />
-                    }
-                  </div>
-                  <div className="profile-details">
-                    <div id="profile-title" className="profile-title">
-                      <h1>{ user.display_name }</h1>
-                      {
-                        (!user.is_active) &&
-                        <Flag caseType="sentenceCase" labelStyle="danger" text="Alumni"/>
-                      }
-                    </div>
-                    {
-                      user.role_name && user.team_name &&
-                      <div id="user-role" className="body-2">{ `${user.role_name} on ${user.team_name}` }</div>
-                    }
-                    {/*TODO - delete when 'role_name'/'title' is added to user object in backend */}
-                    {
-                      !user.role_name && user.team_name &&
-                      <div id="user-role" className="body-2">{ `Team: ${user.team_name}` }</div>
-                    }
-                    {
-                      user.manager_fullname &&
-                      <div id="user-manager" className="body-2">{ `Manager: ${user.manager_fullname}` }</div>
-                    }
-                    <div className="profile-icons">
-                      {/*TODO - Implement deep links to open Slack */}
-                      {/*{*/}
-                        {/*user.is_active && user.slack_id &&*/}
-                        {/*<a id="slack-link" href={user.slack_id} className='btn btn-flat-icon' target='_blank'>*/}
-                          {/*<img className='icon icon-dark icon-slack'/>*/}
-                          {/*<span className="body-2">Slack</span>*/}
-                        {/*</a>*/}
-                      {/*}*/}
-                      {
-                        user.is_active &&
-                        <a id="email-link" href={`mailto:${user.email}`} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-dark icon-mail'/>
-                          <span className="body-2">{ user.email }</span>
-                        </a>
-                      }
-                      {
-                        user.is_active && user.profile_url &&
-                        <a id="profile-link" href={user.profile_url} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-dark icon-users'/>
-                          <span className="body-2">Employee Profile</span>
-                        </a>
-                      }
-                      {
-                        user.github_username &&
-                        <a id="github-link" href={`https://github.com/${user.github_username}`} className='btn btn-flat-icon' target='_blank'>
-                          <img className='icon icon-dark icon-github'/>
-                          <span className="body-2">Github</span>
-                        </a>
-                      }
-                    </div>
-                  </div>
-              </div>
-              <div id="profile-tabs" className="profile-tabs">
-                <Tabs tabs={ this.generateTabInfo() } defaultTab={ BOOKMARKED_TAB_KEY } />
+              <div id="profile-avatar" className="profile-avatar">
+                {
+                  user.display_name && user.display_name.length > 0 &&
+                  <Avatar name={user.display_name} size={AVATAR_SIZE} round={true} />
+                }
               </div>
             </div>
-          </div>
+
+            <div className="header-section header-title">
+              <h3 className="header-title-text truncated">
+                { user.display_name }
+                {
+                  (!user.is_active) &&
+                  <Flag caseType="sentenceCase" labelStyle="danger" text="Alumni"/>
+                }
+              </h3>
+              <div className="body-3">
+                <ul className="header-bullets">
+                  {
+                    user.role_name &&
+                    <li id="user-role">{ user.role_name }</li>
+                  }
+                  {
+                    user.team_name &&
+                    <li id="team-name">{ user.team_name }</li>
+                  }
+                  {
+                    user.manager_fullname &&
+                    <li id="user-manager">{ `Manager: ${user.manager_fullname}` }</li>
+                  }
+                </ul>
+              </div>
+            </div>
+            <div className="header-section header-links">
+              {/*{*/}
+              {/*  // TODO - Implement deep links to open Slack *!/*/}
+              {/*  user.is_active && user.slack_id &&*/}
+              {/*  <a id="slack-link" href={user.slack_id} className='btn btn-flat-icon header-link' target='_blank'>*/}
+              {/*    <img className='icon icon-dark icon-slack'/>*/}
+              {/*    <span className="body-2">Slack</span>*/}
+              {/*  </a>*/}
+              {/*}*/}
+              {
+                user.is_active &&
+                <a id="email-link" href={`mailto:${user.email}`} className='btn btn-flat-icon header-link' target='_blank'>
+                  <img className='icon icon-dark icon-mail'/>
+                  <span className="body-2">{ user.email }</span>
+                </a>
+              }
+              {
+                user.is_active && user.profile_url &&
+                <a id="profile-link" href={user.profile_url} className='btn btn-flat-icon header-link' target='_blank'>
+                  <img className='icon icon-dark icon-users'/>
+                  <span className="body-2">Employee Profile</span>
+                </a>
+              }
+              {
+                user.github_username &&
+                <a id="github-link" href={`https://github.com/${user.github_username}`} className='btn btn-flat-icon header-link' target='_blank'>
+                  <img className='icon icon-dark icon-github'/>
+                  <span className="body-2">Github</span>
+                </a>
+              }
+            </div>
+          </header>
+          <main>
+            <div className="profile-tabs">
+              <Tabs tabs={ this.generateTabInfo() } defaultTab={ BOOKMARKED_TAB_KEY } />
+            </div>
+          </main>
         </div>
       </DocumentTitle>
     );

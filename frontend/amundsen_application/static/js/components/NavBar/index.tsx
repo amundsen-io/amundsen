@@ -8,7 +8,7 @@ import AppConfig from 'config/config';
 import { LinkConfig } from 'config/config-types';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { LoggedInUser } from 'interfaces';
 
@@ -85,11 +85,13 @@ export class NavBar extends React.Component<NavBarProps> {
                       <div className='title-2'>{this.props.loggedInUser.display_name}</div>
                       <div>{this.props.loggedInUser.email}</div>
                     </div>
-                    <li>
-                      <Link id="nav-bar-avatar-link" to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
+                    <MenuItem
+                      componentClass={Link}
+                      id="nav-bar-avatar-link"
+                      to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}
+                      href={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
                         My Profile
-                      </Link>
-                    </li>
+                    </MenuItem>
                   </Dropdown.Menu>
                 </Dropdown>
               }
