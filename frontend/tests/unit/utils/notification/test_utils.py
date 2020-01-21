@@ -372,11 +372,11 @@ class NotificationUtilsTest(unittest.TestCase):
                 sender=test_sender
             )
             mock_client.send_email.assert_called_with(
-                recipients=expected_recipients,
-                sender=test_sender,
-                subject=mock_subject,
                 html=mock_html,
+                subject=mock_subject,
                 optional_data={'email_type': test_notification_type},
+                recipients=expected_recipients,
+                sender=test_sender
             )
 
     def test_no_recipients_for_notification(self) -> None:

@@ -24,7 +24,6 @@ def feedback() -> Response:
     try:
         mail_client = get_mail_client()
         data = request.form.to_dict()
-        text_content = '\r\n'.join('{}:\r\n{}\r\n'.format(k, v) for k, v in data.items())
         html_content = ''.join('<div><strong>{}:</strong><br/>{}</div><br/>'.format(k, v) for k, v in data.items())
 
         # action logging
@@ -51,7 +50,7 @@ def feedback() -> Response:
             'form_data': data
         }
 
-        response = mail_client.send_email(subject=subject, text=text_content, html=html_content, optional_data=options)
+        response = mail_client.send_email(html=html_content, subject=subject, optional_data=options)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:

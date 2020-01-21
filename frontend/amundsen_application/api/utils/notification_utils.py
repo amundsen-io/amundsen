@@ -192,13 +192,13 @@ def send_notification(*, notification_type: str, options: Dict, recipients: List
         )
 
         response = mail_client.send_email(
-            recipients=recipients,
-            sender=sender,
-            subject=subject,
             html=html,
+            subject=subject,
             optional_data={
                 'email_type': notification_type,
             },
+            recipients=recipients,
+            sender=sender,
         )
         status_code = response.status_code
 
