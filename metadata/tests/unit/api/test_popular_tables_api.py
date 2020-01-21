@@ -17,7 +17,7 @@ CLIENT_RESPONSE = [{'database': 'ministry',
                     'description': 'all wizards'}]
 
 
-class TestColumnDescriptionAPI(BasicTestCase):
+class TestPopularTablesAPI(BasicTestCase):
     def setUp(self) -> None:
         super().setUp()
 

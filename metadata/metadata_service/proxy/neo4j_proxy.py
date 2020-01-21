@@ -710,7 +710,7 @@ class Neo4jProxy(BaseProxy):
         return popular_tables
 
     @timer_with_counter
-    def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
+    def get_user(self, *, user_id: str) -> Union[UserEntity, None]:
         """
         Retrieve user detail based on user_id(email).
 
@@ -738,17 +738,31 @@ class Neo4jProxy(BaseProxy):
             manager_name = manager_record.get('full_name', '')
         else:
             manager_name = ''
-        result = UserEntity(email=record['email'],
-                            first_name=record.get('first_name'),
-                            last_name=record.get('last_name'),
-                            full_name=record.get('full_name'),
-                            is_active=record.get('is_active'),
-                            github_username=record.get('github_username'),
-                            team_name=record.get('team_name'),
-                            slack_id=record.get('slack_id'),
-                            employee_type=record.get('employee_type'),
-                            manager_fullname=manager_name)
-        return result
+
+        return self._build_user_from_record(record=record, manager_name=manager_name)
+
+    def get_users(self) -> List[UserEntity]:
+        statement = "MATCH (usr:User) WHERE usr.is_active = true RETURN collect(usr) as users"
+
+        record = self._execute_cypher_query(statement=statement, param_dict={})
+        result = record.single()
+        if not result or not result.get('users'):
+            raise NotFoundException('Error getting users')
+
+        return [self._build_user_from_record(record=rec) for rec in result['users']]
+
+    @staticmethod
+    def _build_user_from_record(record: dict, manager_name: str = '') -> UserEntity:
+        return UserEntity(email=record['email'],
+                          first_name=record.get('first_name'),
+                          last_name=record.get('last_name'),
+                          full_name=record.get('full_name'),
+                          is_active=record.get('is_active', False),
+                          github_username=record.get('github_username'),
+                          team_name=record.get('team_name'),
+                          slack_id=record.get('slack_id'),
+                          employee_type=record.get('employee_type'),
+                          manager_fullname=manager_name)
 
     @staticmethod
     def _get_user_table_relationship_clause(relation_type: UserResourceRel, tbl_key: str = None,
