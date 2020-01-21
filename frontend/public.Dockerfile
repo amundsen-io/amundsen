@@ -1,4 +1,4 @@
-FROM node:8-slim as node-stage
+FROM node:12-slim as node-stage
 WORKDIR /app/amundsen_application/static
 
 COPY amundsen_application/static/package.json /app/amundsen_application/static/package.json
