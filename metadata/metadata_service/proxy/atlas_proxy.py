@@ -1,20 +1,21 @@
 import logging
 import re
-from typing import Union, List, Dict, Any, Tuple
+from random import randint
+from typing import Any, Dict, List, Tuple, Union
 
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User
+from amundsen_common.models.user import User as UserEntity
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import EntityUniqueAttribute
-from atlasclient.utils import parse_table_qualified_name, make_table_qualified_name
-from flask import current_app as app
+from atlasclient.utils import (make_table_qualified_name,
+                               parse_table_qualified_name)
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from random import randint
+from flask import current_app as app
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import Table, User, Tag, Column, Statistics
 from metadata_service.entity.tag_detail import TagDetail
-from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
 from metadata_service.util import UserResourceRel

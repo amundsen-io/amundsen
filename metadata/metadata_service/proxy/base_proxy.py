@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
+from typing import Any, Dict, List, Union
 
-from typing import Union, List, Dict, Any
+from amundsen_common.models.table import Table
+from amundsen_common.models.user import User as UserEntity
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.user_detail import User as UserEntity
-from metadata_service.entity.table_detail import Table
 from metadata_service.util import UserResourceRel
 
 
