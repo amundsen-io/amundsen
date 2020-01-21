@@ -1,15 +1,16 @@
+import logging
 from http import HTTPStatus
-from typing import Iterable, Mapping, Union
+from typing import Iterable, Mapping, Optional, Union
 
 from flask_restful import Resource, fields, marshal
 from flasgger import swag_from
-
+from amundsen_common.models.user import UserSchema
+from metadata_service.api import BaseAPI
 from metadata_service.api.popular_tables import popular_table_fields
+from metadata_service.entity.popular_table import PopularTableSchema
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.util import UserResourceRel
-
-import logging
 
 
 user_detail_fields = {
@@ -33,23 +34,18 @@ table_list_fields = {
 LOGGER = logging.getLogger(__name__)
 
 
-class UserDetailAPI(Resource):
+class UserDetailAPI(BaseAPI):
     """
     User detail API for people resources
     """
 
     def __init__(self) -> None:
-
         self.client = get_proxy_client()
+        super().__init__(UserSchema, 'user', self.client)
 
     @swag_from('swagger_doc/user/detail_get.yml')
-    def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
-        try:
-            table = self.client.get_user_detail(user_id=user_id)
-            return marshal(table, user_detail_fields), HTTPStatus.OK
-
-        except NotFoundException:
-            return {'message': 'User id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
+    def get(self, *, id: Optional[str] = None) -> Iterable[Union[Mapping, int, None]]:
+        return super().get(id=id)
 
 
 class UserFollowsAPI(Resource):
@@ -71,7 +67,9 @@ class UserFollowsAPI(Resource):
         try:
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.follow)
-            return marshal(resources, table_list_fields), HTTPStatus.OK
+            if len(resources['table']) > 0:
+                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
+            return {'table': []}, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -158,7 +156,9 @@ class UserOwnsAPI(Resource):
         try:
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.own)
-            return marshal(resources, table_list_fields), HTTPStatus.OK
+            if len(resources['table']) > 0:
+                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
+            return {'table': []}, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -237,5 +237,5 @@ class UserReadsAPI(Resource):
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
 
         except Exception:
-            LOGGER.exception('UserReadAPI GET Failed')
+            LOGGER.exception('UserReadsAPI GET Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR

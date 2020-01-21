@@ -3,7 +3,7 @@ Gets the user details
 tags:
   - 'user'
 parameters:
-  - name: user_id
+  - name: id
     in: path
     example: 'roald9@example.org'
     type: string
@@ -12,7 +12,7 @@ parameters:
     required: true
 responses:
   200:
-    description: 'Table description'
+    description: 'User description'
     content:
       application/json:
         schema:

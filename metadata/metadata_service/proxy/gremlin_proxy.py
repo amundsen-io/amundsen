@@ -85,7 +85,10 @@ class AbstractGremlinProxy(BaseProxy):
         """  # noqa: E501
         return self.remote_connection._client.submit(message=command, bindings=bindings).all().result()
 
-    def get_user_detail(self, *, user_id: str) -> Union[UserEntity, None]:
+    def get_user(self, *, user_id: str) -> Union[UserEntity, None]:
+        pass
+
+    def get_users(self) -> List[UserEntity]:
         pass
 
     def get_table(self, *, table_uri: str) -> Table:
