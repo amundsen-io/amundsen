@@ -1,19 +1,20 @@
 import logging
 import textwrap
-from random import randint
-from typing import Dict, Any, no_type_check, List, Tuple, Union, Optional  # noqa: F401
-
 import time
+from random import randint
+from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
+                    no_type_check)
+
+from amundsen_common.models.table import (Application, Column, Reader, Source,
+                                          Statistics, Table, Tag, User,
+                                          Watermark)
+from amundsen_common.models.user import User as UserEntity
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from neo4j.v1 import BoltStatementResult
-from neo4j.v1 import GraphDatabase, Driver  # noqa: F401
+from neo4j.v1 import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service.entity.popular_table import PopularTable
-from metadata_service.entity.table_detail import Application, Column, Reader, Source, \
-    Statistics, Table, Tag, User, Watermark
 from metadata_service.entity.tag_detail import TagDetail
-from metadata_service.entity.user_detail import User as UserEntity
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
