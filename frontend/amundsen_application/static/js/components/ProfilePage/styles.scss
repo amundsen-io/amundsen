@@ -1,56 +1,28 @@
 @import 'variables';
 
 .profile-page {
+  .profile-avatar {
+    display: inline-block;
+    margin: 6px 16px 0 0;
+  }
 
-  .profile-header {
-    display: flex;
-
-    .profile-avatar {
+  .header-title-text {
+    .flag {
       margin-left: 8px;
-      margin-right: 30px;
-    }
-
-    .profile-details {
-      display: flex;
-      flex-direction: column;
-
-      h1 {
-        margin-bottom: 0;
-        margin-top: 0;
-      }
-
-      .profile-icons {
-        margin-top: 12px;
-
-        a {
-          margin-left: 8px;
-          margin-right: 8px;
-
-          &:first-child {
-            margin-left: 0;
-          }
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-      }
-
-      .profile-title {
-        display: flex;
-        margin-bottom: 8px;
-
-        .flag {
-          height: min-content; // TODO: consider moving height into Flag component
-          font-size: 16px;
-          margin: auto auto 4px 12px;
-        }
-      }
-
     }
   }
 
   .profile-tabs {
-    margin-top: 64px;
+    margin-top: 24px;
+
+    .nav-tabs {
+      margin-left: 16px;
+    }
+
+    .list-group {
+      margin-top: 0;
+    }
+
 
     // TODO: consider moving logic for empty content into Tab component
     .empty-tab-message {

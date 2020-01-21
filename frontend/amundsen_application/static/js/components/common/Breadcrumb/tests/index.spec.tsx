@@ -3,8 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import { Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbProps, mapStateToProps, mapDispatchToProps } from '../';
-import globalState from '../../../../fixtures/globalState';
+import { Breadcrumb, BreadcrumbProps, mapDispatchToProps } from '../';
 
 describe('Breadcrumb', () => {
   let props: BreadcrumbProps;
@@ -15,7 +14,6 @@ describe('Breadcrumb', () => {
       props = {
         path: 'testPath',
         text: 'testText',
-        searchTerm: '',
         loadPreviousSearch: jest.fn(),
       };
       subject = shallow(<Breadcrumb {...props} />);
@@ -35,7 +33,6 @@ describe('Breadcrumb', () => {
   describe('render with existing searchTerm', () => {
     beforeEach(() => {
       props = {
-        searchTerm: 'testTerm',
         loadPreviousSearch: jest.fn(),
       };
       subject = shallow(<Breadcrumb {...props} />);
@@ -46,10 +43,6 @@ describe('Breadcrumb', () => {
         onClick: props.loadPreviousSearch,
       });
     });
-
-    it('renders Link with correct text', () => {
-      expect(subject.find('a').find('span').text()).toEqual('Search Results');
-    });
   });
 
   describe('render with existing searchTerm and prop overrides', () => {
@@ -57,7 +50,6 @@ describe('Breadcrumb', () => {
       props = {
         path: 'testPath',
         text: 'testText',
-        searchTerm: 'testTerm',
         loadPreviousSearch: jest.fn(),
       };
       subject = shallow(<Breadcrumb {...props} />);
@@ -71,17 +63,6 @@ describe('Breadcrumb', () => {
 
     it('renders Link with correct text', () => {
       expect(subject.find(Link).find('span').text()).toEqual('testText');
-    });
-  });
-
-  describe('mapStateToProps', () => {
-    let result;
-    beforeAll(() => {
-      result = mapStateToProps(globalState);
-    });
-
-    it('sets searchTerm on the props', () => {
-      expect(result.searchTerm).toEqual(globalState.search.search_term);
     });
   });
 

@@ -84,35 +84,11 @@
     }
 
     li {
-      padding: 16px;
       a {
         color: $text-primary;
-        padding: 0;
+        padding: 16px;
         width: 100%;
       }
-    }
-  }
-}
-
-.avatar-dropdown {
-  border-style: none;
-  padding: 0 !important;
-  border-radius: 50%;
-}
-
-.profile-menu {
-  $profile-menu-width: 200px;
-  width: $profile-menu-width;
-
-  .profile-menu-header {
-    padding: 16px 16px 0 16px;
-  }
-
-  li {
-    padding: 16px;
-
-    a {
-      padding: 0;
     }
   }
 }

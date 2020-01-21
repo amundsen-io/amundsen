@@ -105,13 +105,13 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     } else {
       const data = this.props.tableData;
       innerContent = (
-        <div className="resource-detail-layout table-detail-2">
+        <div className="resource-detail-layout table-detail">
           {
             notificationsEnabled() && <RequestMetadataForm />
           }
           <header className="resource-header">
             <div className="header-section">
-              {/* TODO - add Breadcrumb here */}
+              <Breadcrumb />
               <img className={"icon icon-header " + getDatabaseIconClass(data.database)} />
             </div>
             <div className="header-section header-title">
@@ -120,11 +120,11 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               </h3>
               <BookmarkIcon bookmarkKey={ this.props.tableData.key }/>
               <div className="body-2">
-                Datasets &bull;&nbsp;
-                { getDatabaseDisplayName(data.database) }
-                &nbsp;&bull;&nbsp;
-                { data.cluster }
-                &nbsp;
+                <ul className="header-bullets">
+                  <li>Datasets</li>
+                  <li>{ getDatabaseDisplayName(data.database) }</li>
+                  <li>{ data.cluster }</li>
+                </ul>
                 {
                   data.badges.length > 0 &&
                   <BadgeList badges={ data.badges } />

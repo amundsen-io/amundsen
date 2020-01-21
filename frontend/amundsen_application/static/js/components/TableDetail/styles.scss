@@ -1,16 +1,7 @@
 @import 'variables';
 
-.table-detail-2 {
+.table-detail {
   height: calc(100% - #{$nav-bar-height} - #{$footer-height});
-
-  .header-link {
-    display: inline-block;
-    margin: 13px 0;
-
-    .avatar-label {
-      font-weight: $font-weight-body-bold;
-    }
-  }
 
   .column-layout-1 .left-panel {
     .section-title {

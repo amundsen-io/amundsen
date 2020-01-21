@@ -1,11 +1,8 @@
 @import 'variables';
 
-// Margins values chosen for the breadcrumb to sort-of split the difference/center
-// itself in our 96px/64px/32px top margins.
 .amundsen-breadcrumb {
   height: 24px;
-  margin-top: -72px;
-  margin-bottom: 48px;
+  display: inline-block;
 
   img.icon-left {
     margin: -3px 0 -3px -8px;
@@ -15,19 +12,5 @@
     display: inline-block;
     height: 24px;
     line-height: 24px;
-  }
-}
-
-@media (max-width: $screen-md-max) {
-  .amundsen-breadcrumb {
-    margin-top: -40px;
-    margin-bottom: 16px;
-  }
-}
-
-@media (max-width: $screen-sm-max) {
-  .amundsen-breadcrumb {
-    margin-top: -10px;
-    margin-bottom: 10px;
   }
 }

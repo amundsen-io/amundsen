@@ -15,6 +15,10 @@
 
 // TODO - Move to separate files
 // Layout
+#main {
+  min-width: $body-min-width;
+}
+
 #main > .container {
   margin: 96px auto 48px;
 }

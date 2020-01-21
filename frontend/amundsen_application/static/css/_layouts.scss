@@ -1,12 +1,10 @@
 @import 'variables';
-$header-height: 84px;
+$resource-header-height: 84px;
 
 .resource-detail-layout {
-  min-width: 1048px;
-
   .resource-header {
     display: flex;
-    height: $header-height;
+    height: $resource-header-height;
     border-bottom: 2px solid $divider;
     padding: 16px 24px 0;
 
@@ -27,11 +25,33 @@ $header-height: 84px;
           max-width: calc(100% - 100px);
         }
       }
+
+      .header-bullets {
+        display: inline;
+        margin: 0;
+        padding: 0;
+
+        li {
+          display: inline;
+          &:after { content: "\00A0\2022\00A0"; }
+          &:last-child:after { content: ""; }
+        }
+      }
+
+
       &.header-links {
         flex-shrink: 0;
         > * {
           margin-right: 16px;
+        }
 
+        .header-link {
+          display: inline-block;
+          margin: 13px 16px 0 0;
+
+          .avatar-label {
+            font-weight: $font-weight-body-bold;
+          }
         }
       }
       &.header-buttons {
@@ -51,7 +71,7 @@ $header-height: 84px;
   // 630 | 414+ Flexible layout
   .column-layout-1 {
     display: flex;
-    height: calc(100% - #{$header-height});
+    height: calc(100% - #{$resource-header-height});
 
     > .left-panel {
       > .banner {

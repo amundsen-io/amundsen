@@ -3,7 +3,7 @@ import * as Avatar from 'react-avatar';
 import * as History from 'history';
 
 import { shallow } from 'enzyme';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Link, NavLink } from 'react-router-dom';
 import { NavBar, NavBarProps, mapStateToProps } from '../';
@@ -166,7 +166,7 @@ describe('NavBar', () => {
       });
 
       it('renders My Profile link correctly inside of user dropdown', () => {
-        element = wrapper.find(Dropdown).find(Dropdown.Menu).find(Link).at(0);
+        element = wrapper.find(Dropdown).find(Dropdown.Menu).find(MenuItem).at(0);
         expect(element.children().text()).toEqual('My Profile');
         expect(element.props().to).toEqual('/user/test0?source=navbar');
       });
