@@ -14,7 +14,7 @@ services:
       image: amundsendev/amundsen-search:1.4.2
       container_name: amundsensearch
       ports:
-        - 5001:5000
+        - 5001:5001
       environment:
         - CREDENTIALS_PROXY_USER=admin
         - CREDENTIALS_PROXY_PASSWORD=admin
@@ -28,7 +28,7 @@ services:
       depends_on:
         - atlas
       ports:
-        - 5002:5000
+        - 5002:5002
       networks:
         - amundsennet
       environment:

@@ -15,7 +15,7 @@ services:
       volumes:
           - ./example/docker/neo4j/conf:/conf
           - ./example/docker/neo4j/plugins:/plugins
-          - ./example/backup:/backup          
+          - ./example/backup:/backup
       networks:
         - amundsennet
   elasticsearch:
@@ -23,7 +23,7 @@ services:
       container_name: es_amundsen
       ports:
           - 9200:9200
-# TODO - tried mounting ES data outside the volume. 
+# TODO - tried mounting ES data outside the volume.
 # Not confident I did it right, I saw it acting up on restarts, plz halp!
 #      volumes:
 #          - ./example/docker/es_data:/usr/share/elasticsearch/data
@@ -33,26 +33,26 @@ services:
       image: amundsendev/amundsen-search:1.4.1
       container_name: amundsensearch
       ports:
-        - 5001:5000
+        - 5001:5001
       depends_on:
         - elasticsearch
       networks:
         - amundsennet
       environment:
         - PROXY_ENDPOINT=es_amundsen
-      command: gunicorn -w 2 --bind :5000 search_service.search_wsgi
+      command: gunicorn -w 2 --bind :5001 search_service.search_wsgi
   amundsenmetadata:
       image: amundsendev/amundsen-metadata:1.1.5
       container_name: amundsenmetadata
       depends_on:
         - neo4j
       ports:
-        - 5002:5000
+        - 5002:5002
       networks:
         - amundsennet
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
-      command: gunicorn -w 2 --bind :5000 metadata_service.metadata_wsgi
+      command: gunicorn -w 2 --bind :5002 metadata_service.metadata_wsgi
   amundsenfrontend:
       image: amundsendev/amundsen-frontend:1.2.0
       container_name: amundsenfrontend
