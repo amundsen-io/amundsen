@@ -62,7 +62,8 @@ class FSElasticsearchJSONLoader(Loader):
         close the file handler
         :return:
         """
-        self.file_handler.close()
+        if self.file_handler:
+            self.file_handler.close()
 
     def get_scope(self):
         # type: () -> str
