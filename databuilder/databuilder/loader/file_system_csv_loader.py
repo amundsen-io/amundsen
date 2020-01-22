@@ -48,7 +48,8 @@ class FileSystemCSVLoader(Loader):
         :return:
         """
         try:
-            self.file_handler.close()
+            if self.file_handler:
+                self.file_handler.close()
         except Exception as e:
             logging.warning("Failed trying to close a file handler! %s",
                             str(e))
