@@ -18,8 +18,8 @@ or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/blob/master
 
 ## Requirements
 - Python >= 3.4 (AmundsenDatabuilder: Python >= 2.7.x)
-- Node = v8.x.x or v10.x.x (v11.x.x has compatibility issues)
-- npm >= 6.x.x
+- Node = v10 or v12 (v14 may have compatibility issues)
+- npm >= 6
 
 ## User Interface
 
@@ -58,10 +58,12 @@ Currently **officially** using Amundsen:
 
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Cameo](https://www.cameo.com)
+1. [Cimpress Technology](https://cimpress.com)
 1. [Data Sprints](https://datasprints.com/)
 1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
 1. [ING](https://www.ing.com/Home.htm)
+1. [iRobot](https://www.irobot.com)
 1. [LMC](https://www.lmc.eu/cs/)
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)

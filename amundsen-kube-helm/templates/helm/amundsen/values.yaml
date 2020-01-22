@@ -3,6 +3,18 @@ provider: aws
 dnsZone: teamname.company.com
 dockerhubImagePath: amundsendev
 
+LONG_RANDOM_STRING: 1234
+
+# To enable auth via OIDC, set this to true. 
+oidcEnabled: false
+# OIDC needs some configuration. If you want the chart to make your secrets, set this to true and set the next four values. 
+# If you don't want to configure your secrets via helm, you can still use the oidc_config.yaml as a template
+createOidcSecret: false
+# OIDC_CLIENT_ID: 
+# OIDC_CLIENT_SECRET: 
+# OIDC_ORG_URL: 
+# OIDC_AUTH_SERVER_ID: 
+
 ## Support Node, affinity and tolerations for scheduler pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -27,7 +39,7 @@ search:
   tolerations: []
 
 metadataServiceName: metadata
-metadataImageVersion: 1.1.5
+metadataImageVersion: 1.1.6
 metadata:
   replicas: 1
   resources:
@@ -43,7 +55,7 @@ metadata:
   tolerations: []
 
 frontEndServiceName: frontend
-frontEndImageVersion: 1.1.1
+frontEndImageVersion: 1.2.0
 frontEndServicePort: 80
 frontEnd:
   replicas: 1
