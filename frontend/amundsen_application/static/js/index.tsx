@@ -38,7 +38,7 @@ ReactDOM.render(
           <Preloader/>
           <Route component={NavBar} />
           <Switch>
-            <Route path="/table_detail/:cluster/:db/:schema/:table" component={TableDetail} />
+            <Route path="/table_detail/:cluster/:database/:schema/:table" component={TableDetail} />
             <Route path="/announcements" component={AnnouncementPage} />
             <Route path="/browse" component={BrowsePage} />
             <Route path="/search" component={SearchPage} />
