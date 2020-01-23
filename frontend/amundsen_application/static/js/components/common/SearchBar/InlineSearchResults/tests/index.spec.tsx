@@ -152,7 +152,7 @@ describe('InlineSearchResults', () => {
       const givenResource = ResourceType.user;
       const output = wrapper.instance().getSuggestedResultsForResource(givenResource);
       output.forEach((result, index) => {
-        expect(getSuggestedResultHrefSpy).toHaveBeenCalledWith(givenResource, mockResourceResults[index]);
+        expect(getSuggestedResultHrefSpy).toHaveBeenCalledWith(givenResource, mockResourceResults[index], index);
         expect(getSuggestedResultIconClassSpy).toHaveBeenCalledWith(givenResource, mockResourceResults[index]);
         expect(getSuggestedResultSubTitleSpy).toHaveBeenCalledWith(givenResource, mockResourceResults[index]);
         expect(getSuggestedResultTitleSpy).toHaveBeenCalledWith(givenResource, mockResourceResults[index]);
@@ -181,15 +181,17 @@ describe('InlineSearchResults', () => {
       wrapper = setupResult.wrapper;
     });
     it('returns the correct href for ResourceType.table', () => {
-      const givenTable = props.tables.results[0];
+      const index = 0;
+      const givenTable = props.tables.results[index];
       const { cluster, database, schema_name, name } = givenTable;
-      const output = wrapper.instance().getSuggestedResultHref(ResourceType.table, givenTable);
-      expect(output).toEqual(`/table_detail/${cluster}/${database}/${schema_name}/${name}`);
+      const output = wrapper.instance().getSuggestedResultHref(ResourceType.table, givenTable, index);
+      expect(output).toEqual(`/table_detail/${cluster}/${database}/${schema_name}/${name}?source=inline_search&index=${index}`);
     });
     it('returns the correct href for ResourceType.user', () => {
-      const givenUser = props.users.results[0];
-      const output = wrapper.instance().getSuggestedResultHref(ResourceType.user, givenUser);
-      expect(output).toEqual(`/user/${givenUser.user_id}`);
+      const index = 0;
+      const givenUser = props.users.results[index];
+      const output = wrapper.instance().getSuggestedResultHref(ResourceType.user, givenUser, index);
+      expect(output).toEqual(`/user/${givenUser.user_id}?source=inline_search&index=${index}`);
     });
     it('returns empty string as the default', () => {
       const output = wrapper.instance().getSuggestedResultHref('unsupported');

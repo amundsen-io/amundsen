@@ -77,9 +77,9 @@ export class InlineSearchResults extends React.Component<InlineSearchResultsProp
 
   getSuggestedResultsForResource = (resourceType: ResourceType): SuggestedResult[] => {
     const results = this.getResultsForResource(resourceType);
-    return results.map((result) => {
+    return results.map((result, index) => {
       return {
-        href: this.getSuggestedResultHref(resourceType, result),
+        href: this.getSuggestedResultHref(resourceType, result, index),
         iconClass: this.getSuggestedResultIconClass(resourceType, result),
         subtitle: this.getSuggestedResultSubTitle(resourceType, result),
         title: this.getSuggestedResultTitle(resourceType, result),
@@ -88,14 +88,15 @@ export class InlineSearchResults extends React.Component<InlineSearchResultsProp
     });
   };
 
-  getSuggestedResultHref = (resourceType: ResourceType, result: Resource): string => {
+  getSuggestedResultHref = (resourceType: ResourceType, result: Resource, index: number): string => {
+    const logParams = `source=inline_search&index=${index}`;
     switch (resourceType) {
       case ResourceType.table:
         const table = result as TableResource;
-        return `/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}`;
+        return `/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}?${logParams}`;
       case ResourceType.user:
         const user = result as UserResource;
-        return `/user/${user.user_id}`;
+        return `/user/${user.user_id}?${logParams}`;
       default:
         return '';
     }

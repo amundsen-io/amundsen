@@ -45,49 +45,65 @@ export interface DispatchFromProps {
   getTableData: (key: string, searchIndex?: string, source?: string, ) => GetTableDataRequest;
 }
 
-type TableDetailProps = StateFromProps & DispatchFromProps;
+interface MatchProps {
+  cluster: string;
+  database: string;
+  schema: string;
+  table: string;
+}
+
+type TableDetailProps = StateFromProps & DispatchFromProps & RouteComponentProps<MatchProps>;
 
 class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>> {
-  private cluster: string;
-  private database: string;
-  private displayName: string;
   private key: string;
-  private schema: string;
-  private tableName: string;
   private didComponentMount: boolean = false;
 
   constructor(props) {
     super(props);
+  }
 
-    const { match } = props;
-    const params = match.params;
-    this.cluster = params ? params.cluster : '';
-    this.database = params ? params.db : '';
-    this.schema = params ? params.schema : '';
-    this.tableName = params ? params.table : '';
-    this.displayName = params ? `${this.schema}.${this.tableName}` : '';
+  componentDidMount() {
+    const { index, source } = this.getLoggingParams();
 
+    this.key = this.getTableKey();
+    this.props.getTableData(this.key, index, source);
+    this.didComponentMount = true;
+  }
+
+  componentDidUpdate(prevProps) {
+    const newKey = this.getTableKey();
+
+    if (this.key !== newKey) {
+      const { index, source } = this.getLoggingParams();
+      this.props.getTableData(this.key, index, source);
+      this.key = newKey;
+    }
+  }
+
+  getLoggingParams() {
+    const params = qs.parse(this.props.location.search);
+    const index = params['index'];
+    const source = params['source'];
+    /* update the url stored in the browser history to remove params used for logging purposes */
+    if (index !== undefined || source !== undefined) {
+      window.history.replaceState({}, '', `${window.location.origin}${window.location.pathname}`);
+    }
+    return { index, source };
+  }
+
+  getDisplayName() {
+    const params = this.props.match.params;
+    return `${params.schema}.${params.table}`;
+  }
+
+  getTableKey() {
     /*
     This 'key' is the `table_uri` format described in metadataservice. Because it contains the '/' character,
     we can't pass it as a single URL parameter without encodeURIComponent which makes ugly URLs.
     DO NOT CHANGE
     */
-    this.key = params ? `${this.database}://${this.cluster}.${this.schema}/${this.tableName}` : '';
-
-  }
-
-  componentDidMount() {
-    // TODO - Move into utility function
-    const params = qs.parse(this.props.location.search);
-    const searchIndex = params['index'];
-    const source = params['source'];
-    /* update the url stored in the browser history to remove params used for logging purposes */
-    if (searchIndex !== undefined || source !== undefined) {
-      window.history.replaceState({}, '', `${window.location.origin}${window.location.pathname}`);
-    }
-
-    this.props.getTableData(this.key, searchIndex, source);
-    this.didComponentMount = true;
+    const params = this.props.match.params;
+    return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 
   render() {
@@ -116,7 +132,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
             </div>
             <div className="header-section header-title">
               <h3 className="header-title-text truncated">
-                  { this.displayName }
+                  { this.getDisplayName() }
               </h3>
               <BookmarkIcon bookmarkKey={ this.props.tableData.key }/>
               <div className="body-2">
@@ -141,7 +157,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               <SourceLink tableSource={ data.source }/>
             </div>
             <div className="header-section header-buttons">
-              <DataPreviewButton modalTitle={ this.displayName }/>
+              <DataPreviewButton modalTitle={ this.getDisplayName() }/>
               <ExploreButton tableData={ data }/>
             </div>
           </header>
@@ -192,7 +208,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     }
 
     return (
-      <DocumentTitle title={ `${this.displayName} - Amundsen Table Details` }>
+      <DocumentTitle title={ `${ this.getDisplayName() } - Amundsen Table Details` }>
         { innerContent }
       </DocumentTitle>
     );
