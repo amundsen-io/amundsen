@@ -40,7 +40,7 @@ services:
         - amundsennet
       environment:
         - PROXY_ENDPOINT=es_amundsen
-      command: gunicorn -w 2 --bind :5001 search_service.search_wsgi
+      command: gunicorn -w 2 --bind :5000 search_service.search_wsgi
   amundsenmetadata:
       image: amundsendev/amundsen-metadata:1.1.5
       container_name: amundsenmetadata
@@ -52,7 +52,7 @@ services:
         - amundsennet
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
-      command: gunicorn -w 2 --bind :5002 metadata_service.metadata_wsgi
+      command: gunicorn -w 2 --bind :5000 metadata_service.metadata_wsgi
   amundsenfrontend:
       image: amundsendev/amundsen-frontend:1.2.0
       container_name: amundsenfrontend
