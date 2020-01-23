@@ -22,7 +22,7 @@ $ pip3 install amundsen-metadata
 $ python3 metadata_service/metadata_wsgi.py
 
 -- In a different terminal, verify getting HTTP/1.0 200 OK
-$ curl -v http://localhost:5000/healthcheck
+$ curl -v http://localhost:5002/healthcheck
 ```
 
 ## Instructions to start the Metadata service from the source
@@ -36,19 +36,19 @@ $ python3 setup.py install
 $ python3 metadata_service/metadata_wsgi.py
 
 -- In a different terminal, verify getting HTTP/1.0 200 OK
-$ curl -v http://localhost:5000/healthcheck
+$ curl -v http://localhost:5002/healthcheck
 ```
 
 ## Instructions to start the service from Docker
 
 ```bash
 $ docker pull amundsendev/amundsen-metadata:latest
-$ docker run -p 5000:5000 amundsendev/amundsen-metadata
+$ docker run -p 5002:5002 amundsendev/amundsen-metadata
 # - alternative, for production environment with Gunicorn (see its homepage link below)
-$ ## docker run -p 5000:5000 amundsendev/amundsen-metadata gunicorn --bind 0.0.0.0:5000 metadata_service.metadata_wsgi
+$ ## docker run -p 5002:5002 amundsendev/amundsen-metadata gunicorn --bind 0.0.0.0:5002 metadata_service.metadata_wsgi
 
 -- In a different terminal, verify getting HTTP/1.0 200 OK
-$ curl -v http://localhost:5000/healthcheck
+$ curl -v http://localhost:5002/healthcheck
 ```
 
 
@@ -86,7 +86,7 @@ PROXY_PASSWORD = 'password' # or env CREDENTIALS_PROXY_PASSWORD
 To start the service with Atlas from Docker. Make sure you have `atlasserver` configured in DNS (or docker-compose)
 
 ```bash
-$ docker run -p 5000:5000 --env PROXY_CLIENT=ATLAS --env PROXY_PORT=21000 --env PROXY_HOST=atlasserver --env CREDENTIALS_PROXY_USER=atlasuser --env CREDENTIALS_PROXY_PASSWORD=password amundsen-metadata:latest
+$ docker run -p 5002:5002 --env PROXY_CLIENT=ATLAS --env PROXY_PORT=21000 --env PROXY_HOST=atlasserver --env CREDENTIALS_PROXY_USER=atlasuser --env CREDENTIALS_PROXY_PASSWORD=password amundsen-metadata:latest
 ```
 
 ---
@@ -101,7 +101,7 @@ The support for Apache Atlas is work in progress. For example, while Apache Atla
 
 ## API documentation
 
-We have Swagger documentation setup with OpenApi 3.0.2. This documentation is generated via Flasgger. When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to localhost:5000/apidocs/. Currently the documentation only works with local configuration.
+We have Swagger documentation setup with OpenApi 3.0.2. This documentation is generated via Flasgger. When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to localhost:5002/apidocs/. Currently the documentation only works with local configuration.
 
 ## Code structure
 Please visit [Code Structure](docs/structure.md) to read how different modules are structured in Amundsen Metadata service.

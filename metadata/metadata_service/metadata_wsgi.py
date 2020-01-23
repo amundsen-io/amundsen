@@ -11,4 +11,4 @@ application = create_app(
     or 'metadata_service.config.LocalConfig')
 
 if __name__ == '__main__':
-    application.run(host='0.0.0.0')
+    application.run(host='0.0.0.0', port=5002)
