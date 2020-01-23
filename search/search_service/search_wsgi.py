@@ -12,4 +12,4 @@ config_module_class = (os.getenv('SEARCH_SVC_CONFIG_MODULE_CLASS') or
 application = create_app(config_module_class=config_module_class)
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0')
+    application.run(host='0.0.0.0', port=5001)

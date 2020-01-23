@@ -26,7 +26,7 @@ $ pip3 install amundsensearch
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running
-$ curl -v http://localhost:5000/healthcheck
+$ curl -v http://localhost:5001/healthcheck
 ```
 
 
@@ -43,19 +43,19 @@ $ python3 setup.py install
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running
-$ curl -v http://localhost:5000/healthcheck
+$ curl -v http://localhost:5001/healthcheck
 ```
 
 ## Instructions to start the service from Docker
 
 ```bash
 $ docker pull amundsendev/amundsen-search:latest
-$ docker run -p 5000:5000 amundsendev/amundsen-search
+$ docker run -p 5001:5001 amundsendev/amundsen-search
 # - alternative, for production environment with Gunicorn (see its homepage link below)
-$ ## docker run -p 5000:5000 amundsendev/amundsen-search gunicorn --bind 0.0.0.0:5000 search_service.search_wsgi
+$ ## docker run -p 5001:5001 amundsendev/amundsen-search gunicorn --bind 0.0.0.0:5001 search_service.search_wsgi
 
 # In a different terminal, verify the service is up by running
-$ curl -v http://localhost:5000/healthcheck
+$ curl -v http://localhost:5001/healthcheck
 ```
 
 
@@ -88,7 +88,7 @@ This way Search service will use production config in production environment. Fo
 
 ## API documentation
 We have Swagger documentation setup with OpenApi 3.0.2. This documentation is generated via [Flasgger](https://github.com/flasgger/flasgger). 
-When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to `localhost:5000/apidocs/`. 
+When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to `localhost:5001/apidocs/`. 
 Currently the documentation only works with local configuration. 
 
 ## Code structure
