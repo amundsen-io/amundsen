@@ -4,6 +4,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
 
+<img
+  src="docs/img/logos/amundsen_logo_on_light.svg"
+  alt="Amundsen"
+  width="500"
+/>
+
+
 Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover the South Pole.
 
 It includes three microservices, one data ingestion library and one common library.
@@ -32,7 +39,7 @@ Please note that the mock images only served as demonstration purpose.
 - **Search Preview**: See inline search results as you type
 
     ![](docs/img/search_preview.png)
-    
+
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
     ![](docs/img/table_detail_page.png)
@@ -84,7 +91,7 @@ Amundsen supports two kinds of "nodes" in its graph today:
 - Tables (from Databases)
 - People (from HR systems)
 
-Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide). 
+Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 The databases we see most frequently used in the community are:
 - Hive and anything that works with Hive metastore (Spark SQL, Presto, Athena, etc.)
 - BigQuery
