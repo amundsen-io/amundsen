@@ -1,4 +1,8 @@
-# Amundsen
+<img
+  src="docs/img/logos/amundsen_logo_on_light.svg"
+  alt="Amundsen"
+  width="500"
+/>
 
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
@@ -32,7 +36,7 @@ Please note that the mock images only served as demonstration purpose.
 - **Search Preview**: See inline search results as you type
 
     ![](docs/img/search_preview.png)
-    
+
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
     ![](docs/img/table_detail_page.png)
@@ -84,7 +88,7 @@ Amundsen supports two kinds of "nodes" in its graph today:
 - Tables (from Databases)
 - People (from HR systems)
 
-Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide). 
+Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 The databases we see most frequently used in the community are:
 - Hive and anything that works with Hive metastore (Spark SQL, Presto, Athena, etc.)
 - BigQuery
