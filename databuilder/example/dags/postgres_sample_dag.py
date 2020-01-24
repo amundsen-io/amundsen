@@ -75,7 +75,7 @@ def connection_string():
 def create_table_extract_job(**kwargs):
     where_clause_suffix = textwrap.dedent("""
         where table_schema in {schemas}
-    """)
+    """).format(schemas=SUPPORTED_SCHEMA_SQL_IN_CLAUSE)
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'
     node_files_folder = '{tmp_folder}/nodes/'.format(tmp_folder=tmp_folder)
