@@ -75,10 +75,11 @@ class ColumnSchema(AttrsSchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class Application:
-    application_url: str
-    description: str
+    application_url: Optional[str] = None
+    description: Optional[str] = None
     id: str
-    name: str
+    name: Optional[str] = None
+    kind: Optional[str] = None
 
 
 class ApplicationSchema(AttrsSchema):
