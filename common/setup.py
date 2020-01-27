@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='amundsen-common',
-    version='0.1.5',
+    version='0.1.6',
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     url='https://github.com/lyft/amundsencommon',
