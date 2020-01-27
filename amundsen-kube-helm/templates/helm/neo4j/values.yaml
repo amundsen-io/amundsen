@@ -1,9 +1,9 @@
 provider: aws
-# nodeSelector 
-# affinity 
-# tolerations 
+# nodeSelector
+# affinity
+# tolerations
 # resources
-# annotations 
+# annotations
 environment: staging
 dnsZone: teamname.company.com
 resources:
@@ -13,3 +13,8 @@ resources:
   requests:
     cpu: 1
     memory: 1Gi
+config:
+  dbms:
+    heap_initial_size: 23000m
+    heap_max_size: 23000m
+    pagecache_size: 26600m

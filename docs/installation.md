@@ -51,3 +51,6 @@ Atlas would be ready once you'll have the following output in the docker output 
       2. Make entry `vm.max_map_count=262144`. Save and exit.
       3. Reload settings `$ sysctl -p`
       4. Restart `docker-compose`
+2. If `docker-amundsen-local.yml` stops because of `org.elasticsearch.bootstrap.StartupException: java.lang.IllegalStateException: Failed to create node environment`, then `es_amundsen` [cannot write](https://discuss.elastic.co/t/elastic-elasticsearch-docker-not-assigning-permissions-to-data-directory-on-run/65812/4) to `.local/elasticsearch`. 
+   1. `chown -R 1000:1000 .local/elasticsearch`
+   2. Restart `docker-compose` 

@@ -37,11 +37,20 @@ spec:
             value: "/conf"
         volumeMounts:
         - name: conf
-          mountPath: /conf                 
+          mountPath: /conf
+        {{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
+        - name: data
+          mountPath: /var/lib/neo4j/data
+        {{- end}}
       volumes:
         - name: conf
           configMap:
             name: {{ .Chart.Name }}-configmap
+        {{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
+        - name: data
+          persistentVolumeClaim:
+            claimName: neo4j-pvc
+        {{- end}}
       {{- with .Values.resources }}
       resources:
 {{ toYaml . | indent 8 }}
