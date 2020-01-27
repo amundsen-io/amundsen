@@ -75,17 +75,5 @@ services:
         # and https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/configuration.md#authentication
         - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
       command: gunicorn -w 2 --bind :5000 amundsen_application.wsgi
-
-  db.amundsensession.dev:
-    container_name: db.amundsen-session.dev
-    image: postgres:9.6
-    environment:
-        - POSTGRES_USER=amundsen
-        - POSTGRES_PASSWORD=amundsen
-        - POSTGRES_DB=amundsen
-    ports:
-        - "5432:5432"
-    networks:
-        - amundsennet
 networks:
   amundsennet:
