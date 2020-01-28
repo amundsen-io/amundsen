@@ -28,6 +28,7 @@ class TestTableElasticsearchDocument(unittest.TestCase):
                                   "cluster": "test_cluster",
                                   "schema_name": "test_schema",
                                   "name": "test_table",
+                                  "display_name": "test_schema.test_table",
                                   "key": "test_table_key",
                                   "last_updated_epoch": 123456789,
                                   "description": "test_table_description",

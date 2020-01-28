@@ -20,12 +20,14 @@ class TableESDocument(ElasticsearchDocument):
                  total_usage,  # type: int
                  unique_usage,  # type: int
                  tags,  # type: List[str]
+                 display_name=None,  # type: Optional[str]
                  ):
         # type: (...) -> None
         self.database = database
         self.cluster = cluster
         self.schema_name = schema_name
         self.name = name
+        self.display_name = display_name if display_name else '{schema}.{table}'.format(schema=schema_name, table=name)
         self.key = key
         self.description = description
         # todo: use last_updated_timestamp to match the record in metadata
