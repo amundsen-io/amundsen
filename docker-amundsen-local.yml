@@ -32,7 +32,7 @@ services:
         dockerfile: public.Dockerfile
       container_name: amundsensearch
       ports:
-        - 5001:5000
+        - 5001:5001
       depends_on:
         - elasticsearch
       networks:
@@ -47,7 +47,7 @@ services:
       depends_on:
         - neo4j
       ports:
-        - 5002:5000
+        - 5002:5002
       networks:
         - amundsennet
       environment:
