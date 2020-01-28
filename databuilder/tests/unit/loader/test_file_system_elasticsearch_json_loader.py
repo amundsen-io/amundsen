@@ -108,7 +108,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
             ('{"key": "test_table_key", "column_descriptions": ["test_comment1", "test_comment2"], '
              '"schema_name": "test_schema", "database": "test_database", "cluster": "test_cluster", '
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
-             '"last_updated_epoch": 123456789,'
+             '"last_updated_epoch": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
              '"tags": ["test_tag1", "test_tag2"]}')
         ]
@@ -146,7 +146,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
             ('{"key": "test_table_key", "column_descriptions": ["test_comment1", "test_comment2"], '
              '"schema_name": "test_schema", "database": "test_database", "cluster": "test_cluster", '
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
-             '"last_updated_epoch": 123456789,'
+             '"last_updated_epoch": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
              '"tags": ["test_tag1", "test_tag2"]}')
         ] * 5

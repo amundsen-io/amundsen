@@ -104,6 +104,7 @@ class TestNeo4jExtractor(unittest.TestCase):
                                cluster='test_cluster',
                                schema_name='test_schema',
                                name='test_table_name',
+                               display_name='test_schema.test_table_name',
                                key='test_table_key',
                                description='test_table_description',
                                last_updated_epoch=123456789,
