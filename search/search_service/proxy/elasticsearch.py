@@ -295,7 +295,8 @@ class ElasticsearchProxy(BaseProxy):
                     "query": {
                         "multi_match": {
                             "query": query_term,
-                            "fields": ["name.raw^30",
+                            "fields": ["display_name^1000",
+                                       "name.raw^30",
                                        "name^5",
                                        "schema_name^3",
                                        "description^3",
@@ -355,7 +356,8 @@ class ElasticsearchProxy(BaseProxy):
                 "query": {
                     "multi_match": {
                         "query": query_term,
-                        "fields": ["name.raw^30",
+                        "fields": ["display_name^1000",
+                                   "name.raw^30",
                                    "name^5",
                                    "schema_name^3",
                                    "description^3",
