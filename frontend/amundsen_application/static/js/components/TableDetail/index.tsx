@@ -75,8 +75,8 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
 
     if (this.key !== newKey) {
       const { index, source } = this.getLoggingParams();
-      this.props.getTableData(this.key, index, source);
       this.key = newKey;
+      this.props.getTableData(this.key, index, source);
     }
   }
 
