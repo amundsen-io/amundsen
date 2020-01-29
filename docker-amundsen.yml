@@ -29,6 +29,10 @@ services:
 #          - ./example/docker/es_data:/usr/share/elasticsearch/data
       networks:
         - amundsennet
+      ulimits:
+        nofile:
+          soft: 65536
+          hard: 65536
   amundsensearch:
       image: amundsendev/amundsen-search:1.4.1
       container_name: amundsensearch
