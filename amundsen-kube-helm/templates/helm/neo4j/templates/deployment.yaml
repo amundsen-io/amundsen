@@ -24,6 +24,26 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      initContainers:
+        - name: init-neo4j-plugins
+          image: "appropriate/curl:latest"
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.3.0.4/apoc-3.3.0.4-all.jar -O
+              curl -L https://github.com/neo4j-contrib/neo4j-graph-algorithms/releases/download/3.3.5.0/graph-algorithms-algo-3.3.5.0.jar -O
+              curl -L https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-core/1.11.250/aws-java-sdk-core-1.11.250.jar -O
+              curl -L https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.250/aws-java-sdk-s3-1.11.250.jar -O
+              curl -L https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.4/httpclient-4.5.4.jar -O
+              curl -L https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.8/httpcore-4.4.8.jar -O
+              curl -L https://repo1.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar -O
+              chmod 755 *.jar
+              mv *.jar /var/lib/neo4j/plugins
+          volumeMounts:
+            - name: plugins
+              mountPath: /var/lib/neo4j/plugins
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Chart.Name }}:{{ .Chart.AppVersion }}
@@ -41,6 +61,8 @@ spec:
         {{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
         - name: data
           mountPath: /var/lib/neo4j/data
+        - name: plugins
+          mountPath: /var/lib/neo4j/plugins
         {{- end}}
       volumes:
         - name: conf
@@ -51,6 +73,10 @@ spec:
           persistentVolumeClaim:
             claimName: neo4j-pvc
         {{- end}}
+        - name: plugins
+          hostPath:
+            path: "/mnt/ephemeral/neo4j/plugins"
+            type: DirectoryOrCreate
       {{- with .Values.resources }}
       resources:
 {{ toYaml . | indent 8 }}

@@ -77,7 +77,6 @@ spec:
         {{- else }}
         image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}{{ if .Values.oidcEnabled }}-oidc{{ end }}:{{ .Values.metadataImageVersion }}
         {{- end }}
-        imagePullPolicy: Never
         ports:
         - containerPort: 5000
         env:
