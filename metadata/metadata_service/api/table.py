@@ -200,9 +200,10 @@ class TableTagAPI(Resource):
         args = self.parser.parse_args()
         # use tag_type to distinguish between tag and badge
         tag_type = args.get('tag_type', 'default')
+
+        whitelist_badges = app.config.get('WHITELIST_BADGES', [])
         if tag_type == 'badge':
             # need to check whether the badge is part of the whitelist:
-            whitelist_badges = app.config.get('WHITELIST_BADGES', [])
             if tag not in whitelist_badges:
                 return \
                     {'message': 'The tag {} for table_uri {} with type {} '
@@ -211,6 +212,15 @@ class TableTagAPI(Resource):
                                                                       table_uri,
                                                                       tag_type)}, \
                     HTTPStatus.NOT_FOUND
+        else:
+            if tag in whitelist_badges:
+                return \
+                    {'message': 'The tag {} for table_uri {} with type {} '
+                                'is not added successfully as tag '
+                                'for it is reserved for badge'.format(tag,
+                                                                      table_uri,
+                                                                      tag_type)}, \
+                    HTTPStatus.CONFLICT
 
         try:
             self.client.add_tag(table_uri=table_uri,
