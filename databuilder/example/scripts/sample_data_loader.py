@@ -86,6 +86,24 @@ def load_table_data_from_csv(file_name):
         conn.commit()
 
 
+def load_tag_data_from_csv(file_name):
+    conn = create_connection(DB_FILE)
+    if conn:
+        cur = conn.cursor()
+        cur.execute('drop table if exists test_tag_metadata')
+        cur.execute('create table if not exists test_tag_metadata '
+                    '(name VARCHAR(64) NOT NULL , '
+                    'tag_type VARCHAR(64) NOT NULL)')
+        file_loc = 'example/sample_data/' + file_name
+        with open(file_loc, 'r') as fin:
+            dr = csv.DictReader(fin)
+            to_db = [(i['name'],
+                      i['tag_type']) for i in dr]
+
+        cur.executemany("INSERT INTO test_tag_metadata (name, tag_type) VALUES (?, ?);", to_db)
+        conn.commit()
+
+
 def load_col_data_from_csv(file_name):
     conn = create_connection(DB_FILE)
     if conn:
@@ -428,7 +446,6 @@ def create_last_updated_job():
     job_config = ConfigFactory.from_dict({
         'extractor.neo4j_es_last_updated.model_class':
             'databuilder.models.neo4j_es_last_updated.Neo4jESLastUpdated',
-
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
             node_files_folder,
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
@@ -530,6 +547,7 @@ if __name__ == "__main__":
     load_user_data_from_csv('sample_user.csv')
     load_application_data_from_csv('sample_application.csv')
     load_source_data_from_csv('sample_source.csv')
+    load_tag_data_from_csv('sample_tags.csv')
     load_test_last_updated_data_from_csv('sample_table_last_updated.csv')
 
     if create_connection(DB_FILE):
@@ -577,6 +595,10 @@ if __name__ == "__main__":
         job_source = create_sample_job('test_source_metadata',
                                        'databuilder.models.table_source.TableSource')
         job_source.launch()
+
+        job_tag = create_sample_job('test_tag_metadata',
+                                    'databuilder.models.table_metadata.TagMetadata')
+        job_tag.launch()
 
         # start job_source job
         job_table_last_updated = create_sample_job('test_table_last_updated_metadata',

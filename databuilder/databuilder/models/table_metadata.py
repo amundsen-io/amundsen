@@ -11,10 +11,14 @@ from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 DESCRIPTION_NODE_LABEL = 'Description'
 
 
-class TagMetadata:
+class TagMetadata(Neo4jCsvSerializable):
     TAG_NODE_LABEL = 'Tag'
     TAG_KEY_FORMAT = '{tag}'
     TAG_TYPE = 'tag_type'
+    DEFAULT_TYPE = 'default'
+    BADGE_TYPE = 'badge'
+    DASHBOARD_TYPE = 'dashboard'
+    METRIC_TYPE = 'metric'
 
     def __init__(self,
                  name,  # type: str,
@@ -22,6 +26,8 @@ class TagMetadata:
                  ):
         self._name = name
         self._tag_type = tag_type
+        self._nodes = iter([self.create_tag_node(self._name, self._tag_type)])
+        self._relations = iter([])
 
     @staticmethod
     def get_tag_key(name):
@@ -29,6 +35,28 @@ class TagMetadata:
         if not name:
             return ''
         return TagMetadata.TAG_KEY_FORMAT.format(tag=name)
+
+    @staticmethod
+    def create_tag_node(name, tag_type=DEFAULT_TYPE):
+        return {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
+                NODE_KEY: TagMetadata.get_tag_key(name),
+                TagMetadata.TAG_TYPE: tag_type}
+
+    def create_next_node(self):
+        # type: (...) -> Union[Dict[str, Any], None]
+        # return the string representation of the data
+        try:
+            return next(self._nodes)
+        except StopIteration:
+            return None
+
+    def create_next_relation(self):
+        # type: () -> Union[Dict[str, Any], None]
+        # We don't emit any relations for Tag ingestion
+        try:
+            return next(self._relations)
+        except StopIteration:
+            return None
 
 
 class ColumnMetadata:
@@ -256,9 +284,7 @@ class TableMetadata(Neo4jCsvSerializable):
         # Create the table tag node
         if self.tags:
             for tag in self.tags:
-                yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
-                       NODE_KEY: TagMetadata.get_tag_key(tag),
-                       TagMetadata.TAG_TYPE: 'default'}
+                yield TagMetadata.create_tag_node(tag)
 
         for col in self.columns:
             yield {
