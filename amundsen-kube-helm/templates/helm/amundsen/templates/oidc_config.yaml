@@ -14,10 +14,11 @@ stringData:
         "auth_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/v1/authorize",
         "token_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/v1/token",
         "issuer": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}",
-        "userinfo_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/userinfo",
+        "userinfo_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/v1/userinfo",
         "redirect_uris": [
           "http://localhost/oidc_callback"
-        ]
+        ],
+        "token_introspection_uri": "{{ .Values.OIDC_ORG_URL }}/oauth2/{{ .Values.OIDC_AUTH_SERVER_ID }}/v1/introspect"
       }
     }
 {{- end }}
