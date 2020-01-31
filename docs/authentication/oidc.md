@@ -110,9 +110,10 @@ Assumptions:
 2. You need to register amundsen in okta as an app. More info [here](https://developer.okta.com/blog/2018/07/12/flask-tutorial-simple-user-registration-and-login). 
 But here are specific instructions for amundsen:
     - At this time, I have only succesfully tested integration after ALL grants were checked.
-    - Set the Login redirect URIs to: http://amundsen-frontend/oidc_callback
+    - Set the Login redirect URIs to: `http://amundsen-frontend/oidc_callback`
     - No need to set a logout redirect URI
-    - Set the Initiate login URI to: http://amundsen-frontend/oidc_callback
+    - Set the Initiate login URI to: `http://amundsen-frontend/`
+        (This is where okta will take you if users click on amundsen via okta landing page)
     - Copy the Client ID and Client secret as you will need this later.
 3. At present, there is no oidc build of the frontend. So you will need to build an oidc build yourself and upload it to, for example ECR, for use by k8s.
    You can then specify which image you want to use as a property override for your helm install like so:
