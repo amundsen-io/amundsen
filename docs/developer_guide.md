@@ -111,7 +111,7 @@ the amundsenfrontend image point to the hash of the image that you built
 ```yaml
   amundsenfrontend:
       #image: amundsendev/amundsen-frontend:1.0.9
-      #image: 095630616556.dkr.ecr.us-west-2.amazonaws.com/edmunds/amundsen-frontend:2020-01-21
+      #image: 1234.dkr.ecr.us-west-2.amazonaws.com/edmunds/amundsen-frontend:2020-01-21
       image: 0312d0ac3938
 ```
 
