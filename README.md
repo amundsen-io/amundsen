@@ -39,7 +39,7 @@ Please note that the mock images only served as demonstration purpose.
 
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
-    ![](docs/img/table_detail_page.png)
+    ![](docs/img/table_detail_page_with_badges.png)
 
 - **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
 
