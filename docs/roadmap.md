@@ -10,7 +10,7 @@ The following roadmap gives an overview of what we are currently working on and 
 #### Search Filtering
 *What*: Update the frontend application and introduce a new search endpoint that will allow for more flexible search filtering.
 *Status*: In Progress 
-*Links*: [Designs](https://drive.google.com/drive/folders/12oBrcXUsDtOsuU_QvO93LTvs4Dehx6az?usp=sharing) | [Technical RFC] (https://docs.google.com/document/d/1pruajPdiqMjG0qWbx6O5kbChxh_O7ZfMZm3N8i0CcPw/edit?usp=sharing)
+*Links*: [Designs](https://drive.google.com/drive/folders/12oBrcXUsDtOsuU_QvO93LTvs4Dehx6az?usp=sharing) | [Technical RFC](https://docs.google.com/document/d/1pruajPdiqMjG0qWbx6O5kbChxh_O7ZfMZm3N8i0CcPw/edit?usp=sharing)
 
 #### Index Dashboards
 *What*: We want to help with the discovery of existing analysis work, dashboards. This is going to help avoid reinventing the wheel, create value for less technical users and help give context on how tables are used.  
