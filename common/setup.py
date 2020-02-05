@@ -29,6 +29,6 @@ setup(
         # and less than 2.x installed.
         'flask>=1.0.2',
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.6",
     package_data={'amundsen_common': ['py.typed']},
 )
