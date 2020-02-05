@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='amundsen-common',
-    version='0.1.7',
+    version='0.1.7rc1',
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
