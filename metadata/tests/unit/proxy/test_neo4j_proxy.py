@@ -511,7 +511,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 }
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            neo4j_user = neo4j_proxy.get_user(user_id='test_email')
+            neo4j_user = neo4j_proxy.get_user(id='test_email')
             self.assertEquals(neo4j_user.email, 'test_email')
 
     def test_get_users(self) -> None:
@@ -606,7 +606,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            self.assertRaises(NotFoundException, neo4j_proxy.get_user, user_id='invalid_email')
+            self.assertRaises(NotFoundException, neo4j_proxy.get_user, id='invalid_email')
 
 
 if __name__ == '__main__':

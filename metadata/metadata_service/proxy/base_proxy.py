@@ -14,7 +14,7 @@ class BaseProxy(metaclass=ABCMeta):
     the proxy clients available in the amundsen metadata service
     """
     @abstractmethod
-    def get_user(self, *, user_id: str) -> Union[UserEntity, None]:
+    def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
 
     @abstractmethod

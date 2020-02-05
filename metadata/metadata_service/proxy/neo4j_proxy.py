@@ -710,7 +710,7 @@ class Neo4jProxy(BaseProxy):
         return popular_tables
 
     @timer_with_counter
-    def get_user(self, *, user_id: str) -> Union[UserEntity, None]:
+    def get_user(self, *, id: str) -> Union[UserEntity, None]:
         """
         Retrieve user detail based on user_id(email).
 
@@ -725,12 +725,12 @@ class Neo4jProxy(BaseProxy):
         """)
 
         record = self._execute_cypher_query(statement=query,
-                                            param_dict={'user_id': user_id})
+                                            param_dict={'user_id': id})
         single_result = record.single()
 
         if not single_result:
             raise NotFoundException('User {user_id} '
-                                    'not found in the graph'.format(user_id=user_id))
+                                    'not found in the graph'.format(user_id=id))
 
         record = single_result.get('user_record', {})
         manager_record = single_result.get('manager_record', {})
