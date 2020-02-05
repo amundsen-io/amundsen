@@ -282,7 +282,7 @@ class AtlasProxy(BaseProxy):
             )
         return sorted(columns, key=lambda item: item.sort_order)
 
-    def get_user(self, *, user_id: str) -> Union[UserEntity, None]:
+    def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
 
     def get_users(self) -> List[UserEntity]:

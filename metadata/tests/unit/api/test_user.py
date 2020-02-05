@@ -20,7 +20,7 @@ class UserDetailAPITest(unittest.TestCase):
         self.mock_client.get_user.return_value = {}
         response = self.api.get(id='username')
         self.assertEqual(list(response)[1], HTTPStatus.OK)
-        self.mock_client.get_user.assert_called_once()
+        self.mock_client.get_user.assert_called_once_with(id='username')
 
     def test_gets(self) -> None:
         self.mock_client.get_users.return_value = []
