@@ -41,7 +41,7 @@ pytest-mock==1.1
 typing==3.6.4
 
 
-amundsen-common==0.1.3
+amundsen-common==0.1.3rc0
 flasgger==0.9.3
 Flask-RESTful==0.3.6
 Flask==1.0.2
