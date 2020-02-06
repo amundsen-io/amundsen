@@ -67,9 +67,7 @@ class UserFollowsAPI(Resource):
         try:
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.follow)
-            if len(resources['table']) > 0:
-                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
-            return {'table': []}, HTTPStatus.OK
+            return marshal(resources, table_list_fields), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
