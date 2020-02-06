@@ -10,4 +10,4 @@ Amundsen Common library holds common codes among micro services in Amundsen.
 For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen). Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md).
 
 ## Requirements
-- Python >= 3.7
+- Python >= 3.6

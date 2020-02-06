@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='amundsen-common',
-    version='0.1.6',
+    version='0.1.7',
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -29,6 +29,6 @@ setup(
         # and less than 2.x installed.
         'flask>=1.0.2',
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.6",
     package_data={'amundsen_common': ['py.typed']},
 )
