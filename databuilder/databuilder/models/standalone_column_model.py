@@ -10,12 +10,15 @@ from databuilder.models.table_metadata import TableMetadata, DESCRIPTION_NODE_LA
 # This class is needed to handle csv based column loading, since the main column model
 # table_metadata.ColumnMetadata requires table_metadata.TableMetadata as well, and this cannot
 # be represented in csv form
+from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
+
+
 class StandaloneColumnMetadata(Neo4jCsvSerializable):
     COLUMN_NODE_LABEL = 'Column'
     COLUMN_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}'
     COLUMN_NAME = 'name'
     COLUMN_TYPE = 'type'
-    COLUMN_ORDER = 'sort_order'
+    COLUMN_ORDER = 'sort_order{}'.format(UNQUOTED_SUFFIX)  # int value needs to be unquoted when publish to neo4j
     COLUMN_DESCRIPTION = 'description'
     COLUMN_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}/_description'
 
