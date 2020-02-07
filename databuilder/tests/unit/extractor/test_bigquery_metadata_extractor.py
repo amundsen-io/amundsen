@@ -55,6 +55,16 @@ TABLE_DATA = {'kind': 'bigquery#table', 'etag': 'Hzc/56Rp9VR4Y6jhZApD/g==', 'id'
     'lastModifiedTime': '1557577756370',
     'type': 'TABLE',
     'location': 'EU'}  # noqa
+NO_SCHEMA = {'kind': 'bigquery#table', 'etag': 'Hzc/56Rp9VR4Y6jhZApD/g==', 'id': 'your-project-here:fdgdfgh.no_schema',
+    'selfLink': 'https://www.googleapis.com/bigquery/v2/projects/your-project-here/datasets/fdgdfgh/tables/no_schema',
+    'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'no_schema'},
+    'numBytes': '0',
+    'numLongTermBytes': '0',
+    'numRows': '0',
+    'creationTime': '1557577756303',
+    'lastModifiedTime': '1557577756370',
+    'type': 'TABLE',
+    'location': 'EU'}  # noqa
 NO_COLS = {'kind': 'bigquery#table', 'etag': 'Hzc/56Rp9VR4Y6jhZApD/g==', 'id': 'your-project-here:fdgdfgh.no_columns',
     'selfLink': 'https://www.googleapis.com/bigquery/v2/projects/your-project-here/datasets/fdgdfgh/tables/no_columns',
     'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'no_columns'},
@@ -166,6 +176,22 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
                                               scope=extractor.get_scope()))
         result = extractor.extract()
         self.assertIsInstance(result, TableMetadata)
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_table_without_schema(self, mock_build):
+        mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, NO_SCHEMA)
+        extractor = BigQueryMetadataExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+
+        self.assertEquals(result.database, 'bigquery')
+        self.assertEquals(result.cluster, 'your-project-here')
+        self.assertEquals(result.schema_name, 'fdgdfgh')
+        self.assertEquals(result.name, 'nested_recs')
+        self.assertEquals(result.description, '')
+        self.assertEquals(result.columns, [])
+        self.assertEquals(result.is_view, False)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_table_without_columns(self, mock_build):

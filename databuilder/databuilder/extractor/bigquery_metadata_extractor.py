@@ -63,12 +63,14 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
 
                 # BigQuery tables also have interesting metadata about partitioning
                 # data location (EU/US), mod/create time, etc... Extract that some other time?
-                schema = table['schema']
                 cols = []
-                if 'fields' in schema:
-                    total_cols = 0
-                    for column in schema['fields']:
-                        total_cols = self._iterate_over_cols('', column, cols, total_cols + 1)
+                # Not all tables have schemas
+                if 'schema' in table:
+                    schema = table['schema']
+                    if 'fields' in schema:
+                        total_cols = 0
+                        for column in schema['fields']:
+                            total_cols = self._iterate_over_cols('', column, cols, total_cols + 1)
 
                 table_meta = TableMetadata(
                     database='bigquery',
