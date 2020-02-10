@@ -97,3 +97,55 @@ AUTH_USER_METHOD = get_auth_user
 ```
 
 Once done, you'll have the end-to-end authentication in Amundsen without any proxy or code changes.
+
+
+## Using Okta with Amundsen on K8s
+Assumptions:
+- You have access to okta (you can create a developer account for free!)
+- You are using k8s to setup amundsen. See [amundsen-kube-helm](../../amundsen-kube-helm/README.md)
+
+1. You need to have a stable DNS entry for amundsen-frontend that can be registered in okta.
+    - for example in AWS you can setup route53
+    I will assume for the rest of this tutorial that your stable uri is "http://amundsen-frontend"
+2. You need to register amundsen in okta as an app. More info [here](https://developer.okta.com/blog/2018/07/12/flask-tutorial-simple-user-registration-and-login). 
+But here are specific instructions for amundsen:
+    - At this time, I have only succesfully tested integration after ALL grants were checked.
+    - Set the Login redirect URIs to: `http://amundsen-frontend/oidc_callback`
+    - No need to set a logout redirect URI
+    - Set the Initiate login URI to: `http://amundsen-frontend/`
+        (This is where okta will take you if users click on amundsen via okta landing page)
+    - Copy the Client ID and Client secret as you will need this later.
+3. At present, there is no oidc build of the frontend. So you will need to build an oidc build yourself and upload it to, for example ECR, for use by k8s.
+   You can then specify which image you want to use as a property override for your helm install like so:
+   ```yaml
+   frontEndServiceImage: 123.dkr.ecr.us-west-2.amazonaws.com/edmunds/amundsen-frontend:oidc-test
+   ```
+   Please see further down in this doc for more instructions on how to build frontend.
+4. When you start up helm you will need to provide some properties. Here are the properties that need to be overridden for oidc to work:
+    ```yaml
+    oidcEnabled: true
+    createOidcSecret: true
+    OIDC_CLIENT_ID: YOUR_CLIENT_ID
+    OIDC_CLIENT_SECRET: YOUR_SECRET_ID
+    OIDC_ORG_URL: https://edmunds.okta.com
+    OIDC_AUTH_SERVER_ID: default
+    # You also will need a custom oidc frontend build too
+    frontEndServiceImage: 123.dkr.ecr.us-west-2.amazonaws.com/edmunds/amundsen-frontend:oidc-test
+    ```
+
+
+## Building frontend with OIDC
+
+1. Please look at [this guide](../developer_guide.md) for instructions on how to build a custom frontend docker image.
+2. The only difference to above is that in your docker file you will want to add the following at the end. This will make sure its ready to go for oidc.
+You can take alook at the public.Dockerfile as a reference.
+```dockerfile
+RUN pip3 install .[oidc]
+ENV FRONTEND_SVC_CONFIG_MODULE_CLASS amundsen_application.oidc_config.OidcConfig
+ENV APP_WRAPPER flaskoidc
+ENV APP_WRAPPER_CLASS FlaskOIDC
+ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
+ENV FLASK_OIDC_SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
+```
+
+
