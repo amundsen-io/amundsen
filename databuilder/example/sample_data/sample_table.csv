@@ -1,3 +1,4 @@
-database,cluster,schema_name,name,description,tags
-hive,gold,test_schema,test_table1,"1st test table","tag1,tag2,pii,high_quality"
-dynamo,gold,test_schema,test_table2,"2nd test table","high_quality,recommended"
+database,cluster,schema_name,name,description,tags,is_view
+hive,gold,test_schema,test_table1,"1st test table","tag1,tag2,pii,high_quality",false
+dynamo,gold,test_schema,test_table2,"2nd test table","high_quality,recommended",false
+hive,gold,test_schema,test_view1,"1st test view","tag1",true
