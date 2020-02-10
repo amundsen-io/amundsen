@@ -11,8 +11,8 @@ class TestCsvExtractor(unittest.TestCase):
     def setUp(self):
         # type: () -> None
         config_dict = {
-            'extractor.csv.{}'.format(CsvExtractor.FILE_LOCATION): 'example/sample_data/sample_col.csv',
-            'extractor.csv.model_class': 'databuilder.models.standalone_column_model.StandaloneColumnMetadata',
+            'extractor.csv.{}'.format(CsvExtractor.FILE_LOCATION): 'example/sample_data/sample_table.csv',
+            'extractor.csv.model_class': 'databuilder.models.table_metadata.TableMetadata',
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -26,12 +26,8 @@ class TestCsvExtractor(unittest.TestCase):
                                               scope=extractor.get_scope()))
 
         result = extractor.extract()
-        self.assertEquals(result.name, 'col1')
-        self.assertEquals(result.description, 'col1 description')
-        self.assertEquals(result.type, 'string')
-        self.assertEquals(result.sort_order, '1')
+        self.assertEquals(result.name, 'test_table1')
+        self.assertEquals(result.description, '1st test table')
         self.assertEquals(result.database, 'hive')
         self.assertEquals(result.cluster, 'gold')
         self.assertEquals(result.schema_name, 'test_schema')
-        self.assertEquals(result.table_name, 'test_table1')
-        self.assertEquals(result.table_desc, '1st test table')

@@ -13,19 +13,23 @@ import sqlite3
 from sqlalchemy.ext.declarative import declarative_base
 import textwrap
 import uuid
+from collections import defaultdict
 
+from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpdatedExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 from databuilder.publisher import neo4j_csv_publisher
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
+
 
 es_host = None
 neo_host = None
@@ -534,12 +538,139 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     return job
 
 
+class CSVTableColumnExtractor(Extractor):
+    # Config keys
+    TABLE_FILE_LOCATION = 'table_file_location'
+    COLUMN_FILE_LOCATION = 'column_file_location'
+
+    """
+    An Extractor that combines Table and Column CSVs.
+    """
+    def init(self, conf):
+        # type: (ConfigTree) -> None
+        """
+        :param conf:
+        """
+        self.conf = conf
+        self.table_file_location = conf.get_string(CSVTableColumnExtractor.TABLE_FILE_LOCATION)
+        self.column_file_location = conf.get_string(CSVTableColumnExtractor.COLUMN_FILE_LOCATION)
+        self._load_csv()
+
+    def _get_key(self, db, cluster, schema, tbl):
+        return TableMetadata.TABLE_KEY_FORMAT.format(db=db,
+                                                     cluster=cluster,
+                                                     schema=schema,
+                                                     tbl=tbl)
+
+    def _load_csv(self):
+        # type: () -> None
+        """
+        Create an iterator to execute sql.
+        """
+
+        with open(self.column_file_location, 'r') as fin:
+            self.columns = [dict(i) for i in csv.DictReader(fin)]
+
+        parsed_columns = defaultdict(list)
+        for column_dict in self.columns:
+            db = column_dict['database']
+            cluster = column_dict['cluster']
+            schema = column_dict['schema_name']
+            table = column_dict['table_name']
+            id = self._get_key(db, cluster, schema, table)
+            column = ColumnMetadata(
+                name=column_dict['name'],
+                description=column_dict['description'],
+                col_type=column_dict['col_type'],
+                sort_order=int(column_dict['sort_order'])
+            )
+            parsed_columns[id].append(column)
+
+        # Create Table Dictionary
+        with open(self.table_file_location, 'r') as fin:
+            tables = [dict(i) for i in csv.DictReader(fin)]
+
+        results = []
+        for table_dict in tables:
+            db = table_dict['database']
+            cluster = table_dict['cluster']
+            schema = table_dict['schema_name']
+            table = table_dict['name']
+            id = self._get_key(db, cluster, schema, table)
+            columns = parsed_columns[id]
+            if columns is None:
+                columns = []
+            table = TableMetadata(database=table_dict['database'],
+                                  cluster=table_dict['cluster'],
+                                  schema_name=table_dict['schema_name'],
+                                  name=table_dict['name'],
+                                  description=table_dict['description'],
+                                  columns=columns,
+                                  is_view=table_dict['is_view'],
+                                  tags=table_dict['tags']
+                                  )
+            results.append(table)
+        self._iter = iter(results)
+
+    def extract(self):
+        # type: () -> Any
+        """
+        Yield the csv result one at a time.
+        convert the result to model if a model_class is provided
+        """
+        try:
+            return next(self._iter)
+        except StopIteration:
+            return None
+        except Exception as e:
+            raise e
+
+    def get_scope(self):
+        # type: () -> str
+        return 'extractor.csvtablecolumn'
+
+
+def create_table_column_job(table_path, column_path):
+    tmp_folder = '/var/tmp/amundsen/table_column'
+    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
+    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    extractor = CSVTableColumnExtractor()
+    csv_loader = FsNeo4jCSVLoader()
+    task = DefaultTask(extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job_config = ConfigFactory.from_dict({
+        'extractor.csvtablecolumn.{}'.format(CSVTableColumnExtractor.TABLE_FILE_LOCATION): table_path,
+        'extractor.csvtablecolumn.{}'.format(CSVTableColumnExtractor.COLUMN_FILE_LOCATION): column_path,
+        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
+            node_files_folder,
+        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
+            relationship_files_folder,
+        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR):
+            True,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
+            node_files_folder,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
+            relationship_files_folder,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
+            neo4j_endpoint,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
+            neo4j_user,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
+            neo4j_password,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
+            'unique_tag',  # should use unique tag here like {ds}
+    })
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=Neo4jCsvPublisher())
+    return job
+
+
 if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
     # logging.basicConfig(level=logging.INFO)
 
-    load_table_data_from_csv('sample_table.csv')
-    load_col_data_from_csv('sample_col.csv')
     load_table_column_stats_from_csv('sample_table_column_stats.csv')
     load_watermark_data_from_csv('sample_watermark.csv')
     load_table_owner_data_from_csv('sample_table_owner.csv')
@@ -551,15 +682,16 @@ if __name__ == "__main__":
     load_test_last_updated_data_from_csv('sample_table_last_updated.csv')
 
     if create_connection(DB_FILE):
-        # start table job
-        job1 = create_sample_job('test_table_metadata',
-                                 'databuilder.models.table_metadata.TableMetadata')
-        job1.launch()
 
-        # start col job
-        job2 = create_sample_job('test_col_metadata',
-                                 'databuilder.models.standalone_column_model.StandaloneColumnMetadata')
-        job2.launch()
+        # start table and column job
+        table_path = 'example/sample_data/sample_table.csv'
+        col_path = 'example/sample_data/sample_col.csv'
+        # start table and column job
+        table_and_col_job = create_table_column_job(
+            table_path,
+            col_path
+        )
+        table_and_col_job.launch()
 
         # start table stats job
         job_table_stats = create_sample_job('test_table_column_stats',
