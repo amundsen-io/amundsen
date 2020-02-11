@@ -18,3 +18,8 @@ config:
     heap_initial_size: 23000m
     heap_max_size: 23000m
     pagecache_size: 26600m
+neo4j:
+    backup:
+      enabled: false
+      s3Path: "s3://my-bucket/my-prefix"
+      schedule: "0 * * * *"

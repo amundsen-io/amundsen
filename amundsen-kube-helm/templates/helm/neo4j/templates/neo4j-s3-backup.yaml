@@ -1,0 +1,46 @@
+{{ if and (and .Values.neo4j.backup.enabled (eq .Values.provider "aws")) (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc) }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+    name: neo4j-s3-backup
+spec:
+    schedule: {{ .Values.neo4j.backup.schedule }}
+    jobTemplate:
+        spec:
+            template:
+                spec:
+                    containers:
+                        - name: backup-neo4j
+                          image: mesosphere/aws-cli:latest
+                          command:
+                              - "/bin/sh"
+                              - "-c"
+                              - |
+                                  apk -v --update add --no-cache --quiet curl
+                                  BACKUP_NAME="graph.db-backup-$(date "+%Y-%m-%d-%H:%M:%S").csv"
+                                  curl --user neo4j:test -H accept:application/json -H content-type:application/json \
+                                    -d '{"statements":[{"statement":"CALL apoc.export.csv.all(\"\/var\/lib\/neo4j\/data\/'$BACKUP_NAME'\", {})"}]}' \
+                                    http://neo4j:7474/db/data/transaction/commit
+                                  printf "\nWaiting for APOC export..."
+                                  while [ ! -f /var/lib/neo4j/data/$BACKUP_NAME ]; do echo "backup file does not exist, sleeping: /var/lib/neo4j/data/$BACKUP_NAME" && sleep 5; done
+                                  printf "\nTarring -> /var/lib/neo4j/data/$BACKUP_NAME to /var/lib/neo4j/data/$BACKUP_NAME.tar"
+                                  tar -cvf "/var/lib/neo4j/data/$BACKUP_NAME.tar" -C "/var/lib/neo4j/data/" $BACKUP_NAME
+                                  printf "Zipping -> /var/lib/neo4j/data/$BACKUP_NAME.tar.gz\n"
+                                  gzip -9 "/var/lib/neo4j/data/$BACKUP_NAME.tar"
+                                  printf "Zipped backup size:"
+                                  du -hs "/var/lib/neo4j/data/$BACKUP_NAME.tar.gz"
+                                  printf "Pushing /var/lib/neo4j/data/$BACKUP_NAME.tar.gz -> $BUCKET"
+                                  aws s3 cp "/var/lib/neo4j/data/$BACKUP_NAME.tar.gz" "$BUCKET"
+                                  printf "Cleaning up /var/lib/neo4j/data/graph.db-backup*"
+                                  rm /var/lib/neo4j/data/graph.db-backup*
+                          env:
+                              - name: BUCKET
+                                value: {{ .Values.neo4j.backup.s3Path }}
+                          volumeMounts:
+                              - name: data
+                                mountPath: /var/lib/neo4j/data
+                    volumes:
+                        - name: data
+                          persistentVolumeClaim:
+                              claimName: neo4j-pvc
+{{- end}}
