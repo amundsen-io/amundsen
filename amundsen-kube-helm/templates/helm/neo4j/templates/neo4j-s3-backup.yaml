@@ -39,6 +39,7 @@ spec:
                           volumeMounts:
                               - name: data
                                 mountPath: /var/lib/neo4j/data
+                    restartPolicy: Never
                     volumes:
                         - name: data
                           persistentVolumeClaim:
