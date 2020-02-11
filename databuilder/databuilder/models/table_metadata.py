@@ -8,8 +8,6 @@ from databuilder.models.neo4j_csv_serde import (
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
-DESCRIPTION_NODE_LABEL = 'Description'
-
 
 class TagMetadata(Neo4jCsvSerializable):
     TAG_NODE_LABEL = 'Tag'
@@ -59,6 +57,80 @@ class TagMetadata(Neo4jCsvSerializable):
             return None
 
 
+class DescriptionMetadata:
+    DESCRIPTION_NODE_LABEL = 'Description'
+    PROGRAMMATIC_DESCRIPTION_NODE_LABEL = 'Programmatic_Description'
+    DESCRIPTION_KEY_FORMAT = '{description}'
+    DESCRIPTION_TEXT = 'description'
+    DESCRIPTION_SOURCE = 'description_source'
+
+    DESCRIPTION_RELATION_TYPE = 'DESCRIPTION'
+    INVERSE_DESCRIPTION_RELATION_TYPE = 'DESCRIPTION_OF'
+
+    # The default editable source.
+    DEFAULT_SOURCE = "description"
+
+    def __init__(self,
+                 text,  # type: Union[None, str]
+                 source=DEFAULT_SOURCE  # type: str
+                 ):
+        """
+        :param source: The unique source of what is populating this description.
+        :param text: the description text. Markdown supported.
+        """
+        self._source = source
+        self._text = text
+        #  There are so many dependencies on Description node, that it is probably easier to just separate the rest out.
+        if (self._source == self.DEFAULT_SOURCE):
+            self._label = self.DESCRIPTION_NODE_LABEL
+        else:
+            self._label = self.PROGRAMMATIC_DESCRIPTION_NODE_LABEL
+
+    @staticmethod
+    def create_description_metadata(text, source=DEFAULT_SOURCE):
+        # type: (Union[None,str], str) -> ProgrammaticDescription
+
+        # We do not want to create a node if there is no description text!
+        if text is None:
+            return None
+        if not source:
+            description_node = DescriptionMetadata(text=text, source=DescriptionMetadata.DEFAULT_SOURCE)
+        else:
+            description_node = DescriptionMetadata(text=text, source=source)
+        return description_node
+
+    def get_description_id(self):
+        # type: () -> str
+        if self._source == self.DEFAULT_SOURCE:
+            return "_description"
+        else:
+            return "_" + self._source + "_description"
+
+    def __repr__(self):
+        # type: () -> str
+        return 'DescriptionMetadata({!r}, {!r})'.format(self._source, self._text)
+
+    def get_node_dict(self, node_key):
+        # (str) -> Dict
+        return {
+            NODE_LABEL: self._label,
+            NODE_KEY: node_key,
+            DescriptionMetadata.DESCRIPTION_SOURCE: self._source,
+            DescriptionMetadata.DESCRIPTION_TEXT: self._text,
+        }
+
+    def get_relation(self, start_node, start_key, end_key):
+        # (str, str) => Dict
+        return {
+            RELATION_START_LABEL: start_node,
+            RELATION_END_LABEL: self._label,
+            RELATION_START_KEY: start_key,
+            RELATION_END_KEY: end_key,
+            RELATION_TYPE: DescriptionMetadata.DESCRIPTION_RELATION_TYPE,
+            RELATION_REVERSE_TYPE: DescriptionMetadata.INVERSE_DESCRIPTION_RELATION_TYPE
+        }
+
+
 class ColumnMetadata:
     COLUMN_NODE_LABEL = 'Column'
     COLUMN_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}'
@@ -66,11 +138,7 @@ class ColumnMetadata:
     COLUMN_TYPE = 'type'
     COLUMN_ORDER = 'sort_order{}'.format(UNQUOTED_SUFFIX)  # int value needs to be unquoted when publish to neo4j
     COLUMN_DESCRIPTION = 'description'
-    COLUMN_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}/_description'
-
-    # pair of nodes makes relationship where name of variable represents order of relationship.
-    COL_DESCRIPTION_RELATION_TYPE = 'DESCRIPTION'
-    DESCRIPTION_COL_RELATION_TYPE = 'DESCRIPTION_OF'
+    COLUMN_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}/{description_id}'
 
     # Relation between column and tag
     COL_TAG_RELATION_TYPE = 'TAGGED_BY'
@@ -81,7 +149,7 @@ class ColumnMetadata:
                  description,  # type: Union[str, None]
                  col_type,  # type: str
                  sort_order,  # type: int
-                 tags=None,  # Union[List[str], None]
+                 tags=None  # type: Union[List[str], None]
                  ):
         # type: (...) -> None
         """
@@ -92,7 +160,8 @@ class ColumnMetadata:
         :param sort_order:
         """
         self.name = name
-        self.description = description
+        self.description = DescriptionMetadata.create_description_metadata(source=None,
+                                                                           text=description)
         self.type = col_type
         self.sort_order = sort_order
         self.tags = tags
@@ -126,10 +195,7 @@ class TableMetadata(Neo4jCsvSerializable):
     TABLE_NAME = 'name'
     IS_VIEW = 'is_view{}'.format(UNQUOTED_SUFFIX)  # bool value needs to be unquoted when publish to neo4j
 
-    TABLE_DESCRIPTION = 'description'
-    TABLE_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/_description'
-    TABLE_DESCRIPTION_RELATION_TYPE = 'DESCRIPTION'
-    DESCRIPTION_TABLE_RELATION_TYPE = 'DESCRIPTION_OF'
+    TABLE_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{description_id}'
 
     DATABASE_NODE_LABEL = 'Database'
     DATABASE_KEY_FORMAT = 'database://{db}'
@@ -165,6 +231,7 @@ class TableMetadata(Neo4jCsvSerializable):
                  columns=None,  # type: Iterable[ColumnMetadata]
                  is_view=False,  # type: bool
                  tags=None,  # type: Union[List, str]
+                 description_source=None,  # type: Union[str, None]
                  **kwargs  # type: Dict
                  ):
         # type: (...) -> None
@@ -177,13 +244,14 @@ class TableMetadata(Neo4jCsvSerializable):
         :param columns:
         :param is_view: Indicate whether the table is a view or not
         :param tags:
+        :param description_source: Optional. Where the description is coming from. Used to compose unique id.
         :param kwargs: Put additional attributes to the table model if there is any.
         """
         self.database = database
         self.cluster = cluster
         self.schema_name = schema_name
         self.name = name
-        self.description = description
+        self.description = DescriptionMetadata.create_description_metadata(text=description, source=description_source)
         self.columns = columns if columns else []
         self.is_view = is_view
         self.attrs = None
@@ -218,12 +286,13 @@ class TableMetadata(Neo4jCsvSerializable):
                                                      schema=self.schema_name,
                                                      tbl=self.name)
 
-    def _get_table_description_key(self):
-        # type: () -> str
+    def _get_table_description_key(self, description):
+        # type: (DescriptionMetadata) -> str
         return TableMetadata.TABLE_DESCRIPTION_FORMAT.format(db=self.database,
                                                              cluster=self.cluster,
                                                              schema=self.schema_name,
-                                                             tbl=self.name)
+                                                             tbl=self.name,
+                                                             description_id=description.get_description_id())
 
     def _get_database_key(self):
         # type: () -> str
@@ -248,13 +317,14 @@ class TableMetadata(Neo4jCsvSerializable):
                                                        tbl=self.name,
                                                        col=col.name)
 
-    def _get_col_description_key(self, col):
-        # type: (ColumnMetadata) -> str
+    def _get_col_description_key(self, col, description):
+        # type: (ColumnMetadata, DescriptionMetadata) -> str
         return ColumnMetadata.COLUMN_DESCRIPTION_FORMAT.format(db=self.database,
                                                                cluster=self.cluster,
                                                                schema=self.schema_name,
                                                                tbl=self.name,
-                                                               col=col.name)
+                                                               col=col.name,
+                                                               description_id=description.get_description_id())
 
     def create_next_node(self):
         # type: () -> Union[Dict[str, Any], None]
@@ -277,9 +347,8 @@ class TableMetadata(Neo4jCsvSerializable):
         yield table_node
 
         if self.description:
-            yield {NODE_LABEL: DESCRIPTION_NODE_LABEL,
-                   NODE_KEY: self._get_table_description_key(),
-                   TableMetadata.TABLE_DESCRIPTION: self.description}
+            node_key = self._get_table_description_key(self.description)
+            yield self.description.get_node_dict(node_key)
 
         # Create the table tag node
         if self.tags:
@@ -294,21 +363,15 @@ class TableMetadata(Neo4jCsvSerializable):
                 ColumnMetadata.COLUMN_TYPE: col.type,
                 ColumnMetadata.COLUMN_ORDER: col.sort_order}
 
-            if not col.description:
-                continue
+            if col.description:
+                node_key = self._get_col_description_key(col, col.description)
+                yield col.description.get_node_dict(node_key)
 
-            yield {
-                NODE_LABEL: DESCRIPTION_NODE_LABEL,
-                NODE_KEY: self._get_col_description_key(col),
-                ColumnMetadata.COLUMN_DESCRIPTION: col.description}
-
-            if not col.tags:
-                continue
-
-            for tag in col.tags:
-                yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
-                       NODE_KEY: TagMetadata.get_tag_key(tag),
-                       TagMetadata.TAG_TYPE: 'default'}
+            if col.tags:
+                for tag in col.tags:
+                    yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
+                           NODE_KEY: TagMetadata.get_tag_key(tag),
+                           TagMetadata.TAG_TYPE: 'default'}
 
         # Database, cluster, schema
         others = [NodeTuple(key=self._get_database_key(),
@@ -351,14 +414,9 @@ class TableMetadata(Neo4jCsvSerializable):
         }
 
         if self.description:
-            yield {
-                RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
-                RELATION_END_LABEL: DESCRIPTION_NODE_LABEL,
-                RELATION_START_KEY: self._get_table_key(),
-                RELATION_END_KEY: self._get_table_description_key(),
-                RELATION_TYPE: TableMetadata.TABLE_DESCRIPTION_RELATION_TYPE,
-                RELATION_REVERSE_TYPE: TableMetadata.DESCRIPTION_TABLE_RELATION_TYPE
-            }
+            yield self.description.get_relation(TableMetadata.TABLE_NODE_LABEL,
+                                                self._get_table_key(),
+                                                self._get_table_description_key(self.description))
 
         if self.tags:
             for tag in self.tags:
@@ -381,30 +439,21 @@ class TableMetadata(Neo4jCsvSerializable):
                 RELATION_REVERSE_TYPE: TableMetadata.COL_TABLE_RELATION_TYPE
             }
 
-            if not col.description:
-                continue
+            if col.description:
+                yield col.description.get_relation(ColumnMetadata.COLUMN_NODE_LABEL,
+                                                   self._get_col_key(col),
+                                                   self._get_col_description_key(col, col.description))
 
-            yield {
-                RELATION_START_LABEL: ColumnMetadata.COLUMN_NODE_LABEL,
-                RELATION_END_LABEL: DESCRIPTION_NODE_LABEL,
-                RELATION_START_KEY: self._get_col_key(col),
-                RELATION_END_KEY: self._get_col_description_key(col),
-                RELATION_TYPE: ColumnMetadata.COL_DESCRIPTION_RELATION_TYPE,
-                RELATION_REVERSE_TYPE: ColumnMetadata.DESCRIPTION_COL_RELATION_TYPE
-            }
-
-            if not col.tags:
-                continue
-
-            for tag in col.tags:
-                yield {
-                    RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
-                    RELATION_END_LABEL: TagMetadata.TAG_NODE_LABEL,
-                    RELATION_START_KEY: self._get_table_key(),
-                    RELATION_END_KEY: TagMetadata.get_tag_key(tag),
-                    RELATION_TYPE: ColumnMetadata.COL_TAG_RELATION_TYPE,
-                    RELATION_REVERSE_TYPE: ColumnMetadata.TAG_COL_RELATION_TYPE,
-                }
+            if col.tags:
+                for tag in col.tags:
+                    yield {
+                        RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
+                        RELATION_END_LABEL: TagMetadata.TAG_NODE_LABEL,
+                        RELATION_START_KEY: self._get_table_key(),
+                        RELATION_END_KEY: TagMetadata.get_tag_key(tag),
+                        RELATION_TYPE: ColumnMetadata.COL_TAG_RELATION_TYPE,
+                        RELATION_REVERSE_TYPE: ColumnMetadata.TAG_COL_RELATION_TYPE,
+                    }
 
         others = [
             RelTuple(start_label=TableMetadata.DATABASE_NODE_LABEL,

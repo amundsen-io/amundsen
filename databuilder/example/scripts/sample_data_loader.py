@@ -63,18 +63,19 @@ def create_connection(db_file):
     return None
 
 
-def load_table_data_from_csv(file_name):
+def load_table_data_from_csv(file_name, table_name):
     conn = create_connection(DB_FILE)
     if conn:
         cur = conn.cursor()
-        cur.execute('drop table if exists test_table_metadata')
-        cur.execute('create table if not exists test_table_metadata '
+        cur.execute('drop table if exists {}'.format(table_name))
+        cur.execute('create table if not exists {} '
                     '(database VARCHAR(64) NOT NULL , '
                     'cluster VARCHAR(64) NOT NULL, '
                     'schema_name VARCHAR(64) NOT NULL,'
                     'name VARCHAR(64) NOT NULL,'
                     'description VARCHAR(64) NOT NULL, '
-                    'tags VARCHAR(128) NOT NULL)')
+                    'tags VARCHAR(128) NOT NULL,'
+                    'description_source VARCHAR(32))'.format(table_name))
         file_loc = 'example/sample_data/' + file_name
         with open(file_loc, 'r') as fin:
             dr = csv.DictReader(fin)
@@ -83,10 +84,13 @@ def load_table_data_from_csv(file_name):
                       i['schema_name'],
                       i['name'],
                       i['description'],
-                      i['tags']) for i in dr]
+                      i['tags'],
+                      i['description_source']) for i in dr]
 
-        cur.executemany("INSERT INTO test_table_metadata (database, cluster, "
-                        "schema_name, name, description, tags) VALUES (?, ?, ?, ?, ?, ?);", to_db)
+        cur.executemany("INSERT INTO {} (database, cluster, "
+                        "schema_name, name, description, tags, "
+                        "description_source) "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?);".format(table_name), to_db)
         conn.commit()
 
 
@@ -105,42 +109,6 @@ def load_tag_data_from_csv(file_name):
                       i['tag_type']) for i in dr]
 
         cur.executemany("INSERT INTO test_tag_metadata (name, tag_type) VALUES (?, ?);", to_db)
-        conn.commit()
-
-
-def load_col_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_col_metadata')
-        cur.execute('create table if not exists test_col_metadata '
-                    '(name VARCHAR(64) NOT NULL , '
-                    'description VARCHAR(64) NOT NULL , '
-                    'col_type VARCHAR(64) NOT NULL , '
-                    'sort_order INTEGER NOT NULL , '
-                    'database VARCHAR(64) NOT NULL , '
-                    'cluster VARCHAR(64) NOT NULL, '
-                    'schema_name VARCHAR(64) NOT NULL,'
-                    'table_name VARCHAR(64) NOT NULL,'
-                    'table_description VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['name'],
-                      i['description'],
-                      i['col_type'],
-                      i['sort_order'],
-                      i['database'],
-                      i['cluster'],
-                      i['schema_name'],
-                      i['table_name'],
-                      i['table_description']) for i in dr]
-
-        cur.executemany("INSERT INTO test_col_metadata ("
-                        "name, description, col_type, sort_order,"
-                        "database, cluster, "
-                        "schema_name, table_name, table_description) VALUES "
-                        "(?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
 
@@ -671,6 +639,7 @@ if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
     # logging.basicConfig(level=logging.INFO)
 
+    load_table_data_from_csv('sample_table_programmatic_source.csv', 'programmatic')
     load_table_column_stats_from_csv('sample_table_column_stats.csv')
     load_watermark_data_from_csv('sample_watermark.csv')
     load_table_owner_data_from_csv('sample_table_owner.csv')
@@ -692,6 +661,11 @@ if __name__ == "__main__":
             col_path
         )
         table_and_col_job.launch()
+
+        # start programmatic table job
+        job2 = create_sample_job('programmatic',
+                                 'databuilder.models.table_metadata.TableMetadata')
+        job2.launch()
 
         # start table stats job
         job_table_stats = create_sample_job('test_table_column_stats',
