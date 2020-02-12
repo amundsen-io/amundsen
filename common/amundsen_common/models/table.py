@@ -107,6 +107,18 @@ def default_if_none(arg: Optional[bool]) -> bool:
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class ProgrammaticDescription:
+    source: str
+    text: str
+
+
+class ProgrammaticDescriptionSchema(AttrsSchema):
+    class Meta:
+        target = ProgrammaticDescription
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Table:
     database: str
     cluster: str
@@ -123,6 +135,7 @@ class Table:
     last_updated_timestamp: Optional[int] = None
     source: Optional[Source] = None
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
+    programmatic_descriptions: Optional[List[ProgrammaticDescription]] = None
 
 
 class TableSchema(AttrsSchema):
