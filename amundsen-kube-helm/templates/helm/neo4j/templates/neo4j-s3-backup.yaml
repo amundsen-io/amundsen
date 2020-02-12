@@ -17,14 +17,20 @@ spec:
                               - "-c"
                               - |
                                   apk -v --update add --no-cache --quiet curl
-                                  BACKUP_NAME="graph.db-backup-$(date "+%Y-%m-%d-%H:%M:%S").csv"
+                                  NOW="$(date "+%Y-%m-%d-%H:%M:%S")"
+                                  BACKUP_SCHEMA_NAME="graph.db-backup-$NOW.schema"
+                                  BACKUP_DATA_NAME="graph.db-backup-$NOW.data"
+                                  BACKUP_NAME="graph.db-backup-$NOW"
                                   curl --user neo4j:test -H accept:application/json -H content-type:application/json \
-                                    -d '{"statements":[{"statement":"CALL apoc.export.csv.all(\"\/var\/lib\/neo4j\/data\/'$BACKUP_NAME'\", {})"}]}' \
+                                    -d '{"statements":[{"statement":"CALL apoc.export.cypher.schema(\"\/var\/lib\/neo4j\/data\/'$BACKUP_SCHEMA_NAME'\", {})"}]}' \
+                                    http://neo4j:7474/db/data/transaction/commit
+                                  curl --user neo4j:test -H accept:application/json -H content-type:application/json \
+                                    -d '{"statements":[{"statement":"CALL apoc.export.graphml.all(\"\/var\/lib\/neo4j\/data\/'$BACKUP_DATA_NAME'\", {useTypes: true, readLabels: true})"}]}' \
                                     http://neo4j:7474/db/data/transaction/commit
                                   printf "\nWaiting for APOC export..."
-                                  while [ ! -f /var/lib/neo4j/data/$BACKUP_NAME ]; do echo "backup file does not exist, sleeping: /var/lib/neo4j/data/$BACKUP_NAME" && sleep 5; done
-                                  printf "\nTarring -> /var/lib/neo4j/data/$BACKUP_NAME to /var/lib/neo4j/data/$BACKUP_NAME.tar"
-                                  tar -cvf "/var/lib/neo4j/data/$BACKUP_NAME.tar" -C "/var/lib/neo4j/data/" $BACKUP_NAME
+                                  while [ ! -f /var/lib/neo4j/data/$BACKUP_DATA_NAME ]; do echo "backup data file does not exist, sleeping: /var/lib/neo4j/data/$BACKUP_DATA_NAME" && sleep 5; done
+                                  printf "\nTarring -> /var/lib/neo4j/data/$BACKUP_SCHEMA_NAME  and /var/lib/neo4j/data/$BACKUP_DATA_NAME to /var/lib/neo4j/data/$BACKUP_NAME.tar"
+                                  tar -cvf "/var/lib/neo4j/data/$BACKUP_NAME.tar" -C "/var/lib/neo4j/data/" $BACKUP_SCHEMA_NAME $BACKUP_DATA_NAME
                                   printf "Zipping -> /var/lib/neo4j/data/$BACKUP_NAME.tar.gz\n"
                                   gzip -9 "/var/lib/neo4j/data/$BACKUP_NAME.tar"
                                   printf "Zipped backup size:"
