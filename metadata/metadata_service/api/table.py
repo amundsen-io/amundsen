@@ -63,6 +63,11 @@ source_fields = {
     'source': fields.String
 }
 
+programmatic_description_fields = {
+    'source': fields.String,
+    'text': fields.String
+}
+
 table_detail_fields = {
     'database': fields.String,
     'cluster': fields.String,
@@ -82,7 +87,8 @@ table_detail_fields = {
     'table_writer': fields.Nested(table_writer_fields),  # Optional
     'last_updated_timestamp': fields.Integer,  # Optional
     'source': fields.Nested(source_fields),  # Optional
-    'is_view': fields.Boolean  # Optional
+    'is_view': fields.Boolean,  # Optional
+    'programmatic_descriptions': fields.List(fields.Nested(programmatic_description_fields))
 }
 
 
