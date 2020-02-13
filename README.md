@@ -21,7 +21,7 @@ or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/blob/master
 
 
 ## Requirements
-- Python >= 3.4 (AmundsenDatabuilder: Python >= 2.7.x)
+- Python = 3.6 or 3.7 (AmundsenDatabuilder: Python >= 2.7.x)
 - Node = v10 or v12 (v14 may have compatibility issues)
 - npm >= 6
 
