@@ -1,5 +1,8 @@
+attrs==19.1.0
 flake8==3.7.8
 Flask==1.1.1
+marshmallow==2.15.3
+marshmallow-annotations==2.4.0
 mypy==0.720
 pytest
 pytest-cov
