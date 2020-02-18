@@ -40,7 +40,7 @@ spec:
   ports:
     - port: 5002
       name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}-{{ .Values.environment }}-http
-      targetPort: 5000
+      targetPort: 5002
       nodePort: 30002
   selector:
     run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
