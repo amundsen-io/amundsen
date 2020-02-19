@@ -19,7 +19,13 @@ config:
     heap_max_size: 23000m
     pagecache_size: 26600m
 neo4j:
-    backup:
-      enabled: false
-      s3Path: "s3://my-bucket/my-prefix"
-      schedule: "0 * * * *"
+  persistence: {}
+#  persistence:
+#    storageClass: gp2
+#    size: 10Gi
+  backup:
+    enabled: false
+#  backup:
+#    enabled: true
+#    s3Path: "s3://my-bucket/my-prefix"
+#    schedule: "0 * * * *"
