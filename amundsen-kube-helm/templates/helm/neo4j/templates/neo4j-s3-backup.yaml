@@ -25,7 +25,7 @@ spec:
                                   echo "CALL apoc.export.cypher.schema('/var/lib/neo4j/data/$BACKUP_SCHEMA_NAME', {});" | /var/lib/neo4j/bin/cypher-shell -u neo4j -p test -a bolt://neo4j:7687 &&
                                   echo "CALL apoc.export.graphml.all('/var/lib/neo4j/data/$BACKUP_DATA_NAME', {useTypes: true, readLabels: true});" | /var/lib/neo4j/bin/cypher-shell -u neo4j -p test -a bolt://neo4j:7687 &&
                                   printf "\nTarring -> /data/$BACKUP_SCHEMA_NAME and /data/$BACKUP_DATA_NAME to /data/$BACKUP_NAME.tar" &&
-                                  while [ ! -f /data/$BACKUP_DATA_NAME ]; do echo "backup data file does not exist, sleeping: /data/$BACKUP_DATA_NAME" && ls "/data/" && sleep 5; done &&
+                                  while [ ! -f /data/$BACKUP_DATA_NAME ]; do echo "backup data file does not exist, sleeping: /data/$BACKUP_DATA_NAME" && ls "/data/" && sleep 30; done &&
                                   tar -cvf "/data/$BACKUP_NAME.tar" "/data/$BACKUP_SCHEMA_NAME" "/data/$BACKUP_DATA_NAME" &&
                                   printf "\nZipping -> /data/$BACKUP_NAME.tar.gz\n" &&
                                   gzip -9 "/data/$BACKUP_NAME.tar" &&
