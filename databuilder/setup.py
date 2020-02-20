@@ -31,7 +31,9 @@ bigquery = [
     'google-auth>=1.0.0, <2.0.0dev'
 ]
 
-all_deps = requirements + kafka + cassandra + glue + snowflake + athena + bigquery
+jsonpath = ['jsonpath_rw==1.4.0']
+
+all_deps = requirements + kafka + cassandra + glue + snowflake + athena + bigquery + jsonpath
 
 setup(
     name='amundsen-databuilder',
@@ -51,6 +53,7 @@ setup(
         'glue': glue,
         'snowflake': snowflake,
         'athena': athena,
-        'bigquery': bigquery
+        'bigquery': bigquery,
+        'jsonpath': jsonpath
     },
 )
