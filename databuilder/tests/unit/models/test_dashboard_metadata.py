@@ -13,7 +13,8 @@ class TestDashboardMetadata(unittest.TestCase):
                                                     'Agent dashboard description',
                                                     '2019-05-30T07:03:35.580Z',
                                                     'roald.amundsen@example.org',
-                                                    ['test_tag', 'tag2']
+                                                    ['test_tag', 'tag2'],
+                                                    dashboard_group_description='foo dashboard group description'
                                                     )
         # Without tags
         self.dashboard_metadata2 = DashboardMetadata('Product - Atmoskop',
@@ -43,12 +44,14 @@ class TestDashboardMetadata(unittest.TestCase):
                                                      )
 
         self.expected_nodes_deduped = [
-            {'name': 'Agent', 'KEY': 'Product - Jobs.cz://Agent', 'LABEL': 'Dashboard'},
-            {'name': 'Product - Jobs.cz', 'KEY': 'dashboardgroup://Product - Jobs.cz', 'LABEL': 'Dashboardgroup'},
-            {'description': 'Agent dashboard description', 'KEY': 'Product - Jobs.cz://Agent/_description',
-             'LABEL': 'Description'},
+            {'name': 'Agent', 'KEY': '_dashboard://gold.Product - Jobs.cz/Agent', 'LABEL': 'Dashboard'},
+            {'name': 'Product - Jobs.cz', 'KEY': '_dashboard://gold.Product - Jobs.cz', 'LABEL': 'Dashboardgroup'},
+            {'KEY': '_dashboard://gold.Product - Jobs.cz/_description', 'LABEL': 'Description',
+             'description': 'foo dashboard group description'},
+            {'description': 'Agent dashboard description',
+             'KEY': '_dashboard://gold.Product - Jobs.cz/Agent/_description', 'LABEL': 'Description'},
             {'value': '2019-05-30T07:03:35.580Z',
-             'KEY': 'Product - Jobs.cz://Agent/_lastreloadtime', 'LABEL': 'Lastreloadtime'},
+             'KEY': '_dashboard://gold.Product - Jobs.cz/Agent/_lastreloadtime', 'LABEL': 'Lastreloadtime'},
             {'tag_type': 'dashboard', 'KEY': 'test_tag', 'LABEL': 'Tag'},
             {'tag_type': 'dashboard', 'KEY': 'tag2', 'LABEL': 'Tag'}
         ]
@@ -56,57 +59,66 @@ class TestDashboardMetadata(unittest.TestCase):
         self.expected_nodes = copy.deepcopy(self.expected_nodes_deduped)
 
         self.expected_rels_deduped = [
-            {'END_KEY': 'dashboardgroup://Product - Jobs.cz', 'START_LABEL': 'Dashboard',
+            {'END_KEY': '_dashboard://gold.Product - Jobs.cz/_description', 'END_LABEL': 'Description',
+             'REVERSE_TYPE': 'DESCRIPTION_OF', 'START_KEY': '_dashboard://gold.Product - Jobs.cz',
+             'START_LABEL': 'Dashboardgroup', 'TYPE': 'DESCRIPTION'},
+            {'END_KEY': '_dashboard://gold.Product - Jobs.cz', 'START_LABEL': 'Dashboard',
              'END_LABEL': 'Dashboardgroup',
-             'START_KEY': 'Product - Jobs.cz://Agent', 'TYPE': 'DASHBOARD_OF', 'REVERSE_TYPE': 'DASHBOARD'},
-            {'END_KEY': 'Product - Jobs.cz://Agent/_description', 'START_LABEL': 'Dashboard',
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Agent', 'TYPE': 'DASHBOARD_OF',
+             'REVERSE_TYPE': 'DASHBOARD'},
+            {'END_KEY': '_dashboard://gold.Product - Jobs.cz/Agent/_description', 'START_LABEL': 'Dashboard',
              'END_LABEL': 'Description',
-             'START_KEY': 'Product - Jobs.cz://Agent', 'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
-            {'END_KEY': 'Product - Jobs.cz://Agent/_lastreloadtime', 'START_LABEL': 'Dashboard',
-             'END_LABEL': 'Lastreloadtime', 'START_KEY': 'Product - Jobs.cz://Agent',
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Agent', 'TYPE': 'DESCRIPTION',
+             'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': '_dashboard://gold.Product - Jobs.cz/Agent/_lastreloadtime', 'START_LABEL': 'Dashboard',
+             'END_LABEL': 'Lastreloadtime', 'START_KEY': '_dashboard://gold.Product - Jobs.cz/Agent',
              'TYPE': 'LAST_RELOAD_TIME', 'REVERSE_TYPE': 'LAST_RELOAD_TIME_OF'},
             {'END_KEY': 'test_tag', 'START_LABEL': 'Dashboard', 'END_LABEL': 'Tag',
-             'START_KEY': 'Product - Jobs.cz://Agent', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Agent', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
             {'END_KEY': 'tag2', 'START_LABEL': 'Dashboard', 'END_LABEL': 'Tag',
-             'START_KEY': 'Product - Jobs.cz://Agent', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Agent', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
             {'END_KEY': 'roald.amundsen@example.org', 'START_LABEL': 'Dashboard', 'END_LABEL': 'User',
-             'START_KEY': 'Product - Jobs.cz://Agent', 'TYPE': 'OWNER', 'REVERSE_TYPE': 'OWNER_OF'}
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Agent', 'TYPE': 'OWNER', 'REVERSE_TYPE': 'OWNER_OF'}
         ]
 
         self.expected_rels = copy.deepcopy(self.expected_rels_deduped)
 
         self.expected_nodes_deduped2 = [
-            {'name': 'Atmoskop', 'KEY': 'Product - Atmoskop://Atmoskop', 'LABEL': 'Dashboard'},
-            {'name': 'Product - Atmoskop', 'KEY': 'dashboardgroup://Product - Atmoskop', 'LABEL': 'Dashboardgroup'},
-            {'description': 'Atmoskop dashboard description', 'KEY': 'Product - Atmoskop://Atmoskop/_description',
+            {'name': 'Atmoskop', 'KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop', 'LABEL': 'Dashboard'},
+            {'name': 'Product - Atmoskop', 'KEY': '_dashboard://gold.Product - Atmoskop', 'LABEL': 'Dashboardgroup'},
+            {'description': 'Atmoskop dashboard description',
+             'KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop/_description',
              'LABEL': 'Description'},
-            {'value': '2019-05-30T07:07:42.326Z', 'KEY': 'Product - Atmoskop://Atmoskop/_lastreloadtime',
+            {'value': '2019-05-30T07:07:42.326Z',
+             'KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop/_lastreloadtime',
              'LABEL': 'Lastreloadtime'}
         ]
 
         self.expected_nodes2 = copy.deepcopy(self.expected_nodes_deduped2)
 
         self.expected_rels_deduped2 = [
-            {'END_KEY': 'dashboardgroup://Product - Atmoskop', 'START_LABEL': 'Dashboard',
+            {'END_KEY': '_dashboard://gold.Product - Atmoskop', 'START_LABEL': 'Dashboard',
              'END_LABEL': 'Dashboardgroup',
-             'START_KEY': 'Product - Atmoskop://Atmoskop', 'TYPE': 'DASHBOARD_OF', 'REVERSE_TYPE': 'DASHBOARD'},
-            {'END_KEY': 'Product - Atmoskop://Atmoskop/_description', 'START_LABEL': 'Dashboard',
+             'START_KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop', 'TYPE': 'DASHBOARD_OF',
+             'REVERSE_TYPE': 'DASHBOARD'},
+            {'END_KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop/_description', 'START_LABEL': 'Dashboard',
              'END_LABEL': 'Description',
-             'START_KEY': 'Product - Atmoskop://Atmoskop', 'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
-            {'END_KEY': 'Product - Atmoskop://Atmoskop/_lastreloadtime', 'START_LABEL': 'Dashboard',
-             'END_LABEL': 'Lastreloadtime', 'START_KEY': 'Product - Atmoskop://Atmoskop',
+             'START_KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop', 'TYPE': 'DESCRIPTION',
+             'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop/_lastreloadtime', 'START_LABEL': 'Dashboard',
+             'END_LABEL': 'Lastreloadtime', 'START_KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop',
              'TYPE': 'LAST_RELOAD_TIME', 'REVERSE_TYPE': 'LAST_RELOAD_TIME_OF'},
             {'END_KEY': 'buzz@example.org', 'START_LABEL': 'Dashboard', 'END_LABEL': 'User',
-             'START_KEY': 'Product - Atmoskop://Atmoskop', 'TYPE': 'OWNER', 'REVERSE_TYPE': 'OWNER_OF'}
+             'START_KEY': '_dashboard://gold.Product - Atmoskop/Atmoskop', 'TYPE': 'OWNER', 'REVERSE_TYPE': 'OWNER_OF'}
         ]
 
         self.expected_rels2 = copy.deepcopy(self.expected_rels_deduped2)
 
         self.expected_nodes_deduped3 = [
-            {'name': 'Dohazovac', 'KEY': 'Product - Jobs.cz://Dohazovac', 'LABEL': 'Dashboard'},
-            {'name': 'Product - Jobs.cz', 'KEY': 'dashboardgroup://Product - Jobs.cz', 'LABEL': 'Dashboardgroup'},
+            {'name': 'Dohazovac', 'KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'LABEL': 'Dashboard'},
+            {'name': 'Product - Jobs.cz', 'KEY': '_dashboard://gold.Product - Jobs.cz', 'LABEL': 'Dashboardgroup'},
             {'value': '2019-05-30T07:07:42.326Z',
-             'KEY': 'Product - Jobs.cz://Dohazovac/_lastreloadtime', 'LABEL': 'Lastreloadtime'},
+             'KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac/_lastreloadtime', 'LABEL': 'Lastreloadtime'},
             {'tag_type': 'dashboard', 'KEY': 'test_tag', 'LABEL': 'Tag'},
             {'tag_type': 'dashboard', 'KEY': 'tag3', 'LABEL': 'Tag'}
         ]
@@ -114,18 +126,19 @@ class TestDashboardMetadata(unittest.TestCase):
         self.expected_nodes3 = copy.deepcopy(self.expected_nodes_deduped3)
 
         self.expected_rels_deduped3 = [
-            {'END_KEY': 'dashboardgroup://Product - Jobs.cz', 'START_LABEL': 'Dashboard',
+            {'END_KEY': '_dashboard://gold.Product - Jobs.cz', 'START_LABEL': 'Dashboard',
              'END_LABEL': 'Dashboardgroup',
-             'START_KEY': 'Product - Jobs.cz://Dohazovac', 'TYPE': 'DASHBOARD_OF', 'REVERSE_TYPE': 'DASHBOARD'},
-            {'END_KEY': 'Product - Jobs.cz://Dohazovac/_lastreloadtime', 'START_LABEL': 'Dashboard',
-             'END_LABEL': 'Lastreloadtime', 'START_KEY': 'Product - Jobs.cz://Dohazovac',
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'TYPE': 'DASHBOARD_OF',
+             'REVERSE_TYPE': 'DASHBOARD'},
+            {'END_KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac/_lastreloadtime', 'START_LABEL': 'Dashboard',
+             'END_LABEL': 'Lastreloadtime', 'START_KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac',
              'TYPE': 'LAST_RELOAD_TIME', 'REVERSE_TYPE': 'LAST_RELOAD_TIME_OF'},
             {'END_KEY': 'test_tag', 'START_LABEL': 'Dashboard', 'END_LABEL': 'Tag',
-             'START_KEY': 'Product - Jobs.cz://Dohazovac', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
             {'END_KEY': 'tag3', 'START_LABEL': 'Dashboard', 'END_LABEL': 'Tag',
-             'START_KEY': 'Product - Jobs.cz://Dohazovac', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'TYPE': 'TAG', 'REVERSE_TYPE': 'TAG_OF'},
             {'END_KEY': 'buzz@example.org', 'START_LABEL': 'Dashboard', 'END_LABEL': 'User',
-             'START_KEY': 'Product - Jobs.cz://Dohazovac', 'TYPE': 'OWNER', 'REVERSE_TYPE': 'OWNER_OF'},
+             'START_KEY': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'TYPE': 'OWNER', 'REVERSE_TYPE': 'OWNER_OF'},
         ]
 
         self.expected_rels3 = copy.deepcopy(self.expected_rels_deduped3)
