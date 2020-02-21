@@ -80,8 +80,8 @@ describe('helpers', () => {
     beforeAll(() => {
       testData = globalState.tableMetadata.tableData;
       testId =  'testId@test.com';
-      expectedName = `${testData.schema}.${testData.table_name}`;
-      expectedPath = `/table_detail/${testData.cluster}/${testData.database}/${testData.schema}/${testData.table_name}`;
+      expectedName = `${testData.schema}.${testData.name}`;
+      expectedPath = `/table_detail/${testData.cluster}/${testData.database}/${testData.schema}/${testData.name}`;
     });
 
     it('creates correct request data for PUT', () => {

@@ -31,9 +31,9 @@ describe('TableListItem', () => {
         database: 'testdb',
         description: 'I am the description',
         key: '',
-        last_updated_epoch: 1553829681,
+        last_updated_timestamp: 1553829681,
         name: 'tableName',
-        schema_name: 'tableSchema',
+        schema: 'tableSchema',
       },
       ...propOverrides
     };
@@ -53,7 +53,7 @@ describe('TableListItem', () => {
     it('getLink returns correct string', () => {
       const { props, wrapper } = setup();
       const { table, logging } = props;
-      expect(wrapper.instance().getLink()).toEqual(`/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}?index=${logging.index}&source=${logging.source}`);
+      expect(wrapper.instance().getLink()).toEqual(`/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?index=${logging.index}&source=${logging.source}`);
     });
   });
 
@@ -133,7 +133,7 @@ describe('TableListItem', () => {
         expect(resourceBadges.exists()).toBe(true);
       });
 
-      describe('if props.table has last_updated_epoch', () => {
+      describe('if props.table has last_updated_timestamp', () => {
         it('renders Last Updated title', () => {
           expect(resourceBadges.children().at(0).children().at(0).text()).toEqual('Last Updated');
         });
@@ -143,7 +143,7 @@ describe('TableListItem', () => {
         });
       });
 
-      describe('if props.table does not have last_updated_epoch', () => {
+      describe('if props.table does not have last_updated_timestamp', () => {
         it('does not render Last Updated section', () => {
           const { props, wrapper } = setup({ table: {
             type: ResourceType.table,
@@ -151,9 +151,9 @@ describe('TableListItem', () => {
             database: '',
             description: 'I am the description',
             key: '',
-            last_updated_epoch: null,
+            last_updated_timestamp: null,
             name: 'tableName',
-            schema_name: 'tableSchema',
+            schema: 'tableSchema',
           }});
           expect(wrapper.find('.resource-badges').children()).toHaveLength(1);
         });

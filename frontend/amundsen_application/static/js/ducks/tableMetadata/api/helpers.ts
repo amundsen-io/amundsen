@@ -45,8 +45,8 @@ export function createOwnerNotificationData(payload: UpdateOwnerPayload, tableDa
   return {
     notificationType: payload.method === UpdateMethod.PUT ? NotificationType.OWNER_ADDED : NotificationType.OWNER_REMOVED,
     options: {
-      resource_name: `${tableData.schema}.${tableData.table_name}`,
-      resource_path: `/table_detail/${tableData.cluster}/${tableData.database}/${tableData.schema}/${tableData.table_name}`
+      resource_name: `${tableData.schema}.${tableData.name}`,
+      resource_path: `/table_detail/${tableData.cluster}/${tableData.database}/${tableData.schema}/${tableData.name}`
     },
     recipients: [payload.id],
   };

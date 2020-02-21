@@ -12,7 +12,7 @@ export interface FrequentUsersProps {
 }
 
 export function renderReader(reader: TableReader, index: number, readers: TableReader[]) {
-  const user = reader.reader;
+  const user = reader.user;
   let link = user.profile_url;
   let target = '_blank';
   if (AppConfig.indexUsers.enabled) {

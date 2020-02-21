@@ -102,15 +102,15 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
     const descriptionRequested = formData.get('table-description') === "on";
     const fieldsRequested = formData.get('column-description') === "on";
     const comment = formData.get('comment') as string;
-    const { cluster, database, schema, table_name } = this.props.tableMetadata;
+    const { cluster, database, schema, name } = this.props.tableMetadata;
     this.props.submitNotification(
       recipients,
       sender,
       NotificationType.METADATA_REQUESTED,
       {
         comment,
-        resource_name: `${schema}.${table_name}`,
-        resource_path: `/table_detail/${cluster}/${database}/${schema}/${table_name}`,
+        resource_name: `${schema}.${name}`,
+        resource_path: `/table_detail/${cluster}/${database}/${schema}/${name}`,
         description_requested: descriptionRequested,
         fields_requested: fieldsRequested,
       }

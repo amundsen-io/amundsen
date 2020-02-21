@@ -183,9 +183,9 @@ describe('InlineSearchResults', () => {
     it('returns the correct href for ResourceType.table', () => {
       const index = 0;
       const givenTable = props.tables.results[index];
-      const { cluster, database, schema_name, name } = givenTable;
+      const { cluster, database, schema, name } = givenTable;
       const output = wrapper.instance().getSuggestedResultHref(ResourceType.table, givenTable, index);
-      expect(output).toEqual(`/table_detail/${cluster}/${database}/${schema_name}/${name}?source=inline_search&index=${index}`);
+      expect(output).toEqual(`/table_detail/${cluster}/${database}/${schema}/${name}?source=inline_search&index=${index}`);
     });
     it('returns the correct href for ResourceType.user', () => {
       const index = 0;
@@ -258,10 +258,10 @@ describe('InlineSearchResults', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
-    it('returns the schema_name.name for ResourceType.table', () => {
+    it('returns the schema.name for ResourceType.table', () => {
       const givenTable = props.tables.results[0];
       const output = wrapper.instance().getSuggestedResultTitle(ResourceType.table, givenTable);
-      expect(output).toEqual(`${givenTable.schema_name}.${givenTable.name}`);
+      expect(output).toEqual(`${givenTable.schema}.${givenTable.name}`);
     });
     it('returns the display_name ResourceType.user', () => {
       const givenUser = props.users.results[0];

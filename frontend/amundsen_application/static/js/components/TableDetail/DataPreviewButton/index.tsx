@@ -77,7 +77,7 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
     this.props.getPreviewData({
       database: tableData.database,
       schema: tableData.schema,
-      tableName: tableData.table_name,
+      tableName: tableData.name,
     });
   }
 

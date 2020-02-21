@@ -58,7 +58,14 @@ requests==2.20.0
 # Upstream url: https://github.com/marshmallow-code/marshmallow
 marshmallow==2.15.3
 
+# Allows declaring marshmallow schema through type annotations
+# License: MIT
+# Upstream url: https://github.com/justanr/marshmallow-annotations
+marshmallow-annotations==2.4.0
+
 # A utility library for mocking out the requests Python library.
 # License: Apache 2.0
 # Upstream url: https://pypi.org/project/responses/
 responses==0.9.0
+
+amundsen-common==0.2.2

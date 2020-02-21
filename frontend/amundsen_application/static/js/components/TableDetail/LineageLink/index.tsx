@@ -13,8 +13,8 @@ const LineageLink: React.SFC<LineageLinkProps> = ({ tableData }) => {
   const config = AppConfig.tableLineage;
   if (!config.isEnabled) return null;
 
-  const { database, cluster, schema, table_name } = tableData;
-  const href = config.urlGenerator(database, cluster, schema, table_name);
+  const { database, cluster, schema, name } = tableData;
+  const href = config.urlGenerator(database, cluster, schema, name);
   const label = 'Lineage';
 
   return (

@@ -93,7 +93,7 @@ export class InlineSearchResults extends React.Component<InlineSearchResultsProp
     switch (resourceType) {
       case ResourceType.table:
         const table = result as TableResource;
-        return `/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}?${logParams}`;
+        return `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?${logParams}`;
       case ResourceType.user:
         const user = result as UserResource;
         return `/user/${user.user_id}?${logParams}`;
@@ -131,7 +131,7 @@ export class InlineSearchResults extends React.Component<InlineSearchResultsProp
     switch (resourceType) {
       case ResourceType.table:
         const table = result as TableResource;
-        return `${table.schema_name}.${table.name}`;
+        return `${table.schema}.${table.name}`;
       case ResourceType.user:
         const user = result as UserResource;
         return user.display_name;

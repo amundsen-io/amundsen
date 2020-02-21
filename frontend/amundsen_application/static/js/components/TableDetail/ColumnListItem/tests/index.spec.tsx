@@ -18,7 +18,7 @@ describe('ColumnListItem', () => {
         name: "test_column_name",
         description: "This is a test description of this table",
         is_editable: true,
-        type: "varchar(32)",
+        col_type: "varchar(32)",
         stats: [{ end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count", stat_val: "12345" }]
       },
       index: 0,
@@ -86,7 +86,7 @@ describe('ColumnListItem', () => {
 
     it('renders the correct resource type', () => {
       const resourceType = wrapper.find('.resource-type');
-      expect(resourceType.text()).toBe(props.data.type.toLowerCase());
+      expect(resourceType.text()).toBe(props.data.col_type.toLowerCase());
     });
 
     it('renders the dropdown when notifications is enabled', () => {

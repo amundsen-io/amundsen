@@ -121,7 +121,7 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
         return results_dict
 
     try:
-        table_data_raw = response.json()
+        table_data_raw: dict = response.json()
 
         # Ideally the response should include 'key' to begin with
         table_data_raw['key'] = table_key

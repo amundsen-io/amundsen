@@ -42,7 +42,7 @@ describe('bookmark ducks', () => {
         database: 'database',
         description: 'description',
         name: 'name',
-        schema_name: 'schema_name',
+        schema: 'schema',
       },
     ];
   });
@@ -142,7 +142,7 @@ describe('bookmark ducks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
         {
           key: 'bookmarked_key_1',
@@ -151,7 +151,7 @@ describe('bookmark ducks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
       ];
       testState = {
@@ -182,7 +182,7 @@ describe('bookmark ducks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         }],
       });
     });

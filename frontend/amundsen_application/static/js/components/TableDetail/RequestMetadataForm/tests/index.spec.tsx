@@ -114,7 +114,7 @@ describe('RequestMetadataForm', () => {
     it('calls submitNotification', () => {
       const { props, wrapper } = setup();
       const submitNotificationSpy = jest.spyOn(props, 'submitNotification');
-       const { cluster, database, schema, table_name } = props.tableMetadata;
+       const { cluster, database, schema, name } = props.tableMetadata;
       wrapper.instance().submitNotification({ preventDefault: jest.fn() });
       expect(submitNotificationSpy).toHaveBeenCalledWith(
         mockFormData['recipients'].split(','),
@@ -122,8 +122,8 @@ describe('RequestMetadataForm', () => {
         NotificationType.METADATA_REQUESTED,
         {
           comment: mockFormData['comment'],
-          resource_name: `${schema}.${table_name}`,
-          resource_path: `/table_detail/${cluster}/${database}/${schema}/${table_name}`,
+          resource_name: `${schema}.${name}`,
+          resource_path: `/table_detail/${cluster}/${database}/${schema}/${name}`,
           description_requested: true,
           fields_requested: false,
         }

@@ -8,6 +8,10 @@ from flask import current_app as app
 """
 TODO: Explore all internationalization use cases and
 redesign how User handles names
+
+TODO - Delete this file
+Once all of the upstream services provide a complete User object we will no
+longer need to supplement the User objects as done in `preprocess_data`
 """
 
 
@@ -81,8 +85,11 @@ class UserSchema(Schema):
             if app.config['GET_PROFILE_URL']:
                 data['profile_url'] = app.config['GET_PROFILE_URL'](data['user_id'])
 
-        # Fallback since search and metadata use a different key for 'full_name'
-        data['full_name'] = data.get('full_name', data.get('name'))
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+
+        if self._str_no_value(data.get('full_name')) and first_name and last_name:
+            data['full_name'] = f"{first_name} {last_name}"
 
         if self. _str_no_value(data.get('display_name')):
             if self._str_no_value(data.get('full_name')):
