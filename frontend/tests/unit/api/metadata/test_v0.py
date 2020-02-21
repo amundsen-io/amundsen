@@ -20,11 +20,10 @@ class MetadataTest(unittest.TestCase):
                 {
                     'cluster': 'test_cluster',
                     'database': 'test_db',
-                    'key': 'test_db://test_cluster.test_schema/test_table',
                     'schema': 'test_schema',
-                    'table_description': 'This is a test',
-                    'table_name': 'test_table',
-                    'type': 'table',
+                    'description': 'This is a test',
+                    'name': 'test_table',
+                    'key': 'test_db://test_cluster.test_schema/test_table',
                 }
             ]
         }
@@ -33,11 +32,11 @@ class MetadataTest(unittest.TestCase):
                 'cluster': 'test_cluster',
                 'database': 'test_db',
                 'description': 'This is a test',
-                'key': 'test_db://test_cluster.test_schema/test_table',
-                'schema_name': 'test_schema',
+                'schema': 'test_schema',
                 'type': 'table',
                 'name': 'test_table',
-                'last_updated_epoch': None,
+                'key': 'test_db://test_cluster.test_schema/test_table',
+                'last_updated_timestamp': None,
             }
         ]
         self.mock_metadata = {
@@ -46,7 +45,7 @@ class MetadataTest(unittest.TestCase):
                 {
                     'name': 'column_1',
                     'description': 'This is a test',
-                    'type': 'bigint',
+                    'col_type': 'bigint',
                     'sort_order': 0,
                     'stats': [
                         {'stat_type': 'count', 'stat_val': '100', 'start_epoch': 1538352000, 'end_epoch': 1538352000},
@@ -59,11 +58,12 @@ class MetadataTest(unittest.TestCase):
             'key': 'test_db://test_cluster.test_schema/test_table',
             'owners': [],
             'schema': 'test_schema',
-            'table_name': 'test_table',
-            'table_description': 'This is a test',
+            'name': 'test_table',
+            'description': 'This is a test',
+            'programmatic_descriptions': [],
             'tags': [],
             'table_readers': [
-                {'reader': {'email': 'test@test.com', 'first_name': None, 'last_name': None}, 'read_count': 100}
+                {'user': {'email': 'test@test.com', 'first_name': None, 'last_name': None}, 'read_count': 100}
             ],
             'watermarks': [
                 {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
@@ -77,17 +77,18 @@ class MetadataTest(unittest.TestCase):
             },
         }
         self.expected_parsed_metadata = {
-            'key': 'table_key',
             'badges': [],
             'cluster': 'test_cluster',
             'database': 'test_db',
             'schema': 'test_schema',
-            'table_name': 'test_table',
-            'table_description': 'This is a test',
+            'name': 'test_table',
+            'key': 'test_db://test_cluster.test_schema/test_table',
+            'description': 'This is a test',
+            'programmatic_descriptions': [],
             'tags': [],
             'table_readers': [
                 {
-                    'reader': {
+                    'user': {
                         'email': 'test@test.com',
                         'first_name': None,
                         'last_name': None,
@@ -108,7 +109,7 @@ class MetadataTest(unittest.TestCase):
                 {
                     'name': 'column_1',
                     'description': 'This is a test',
-                    'type': 'bigint',
+                    'col_type': 'bigint',
                     'sort_order': 0,
                     'stats': [
                         {'stat_type': 'count', 'stat_val': '100', 'start_epoch': 1538352000, 'end_epoch': 1538352000},
@@ -128,7 +129,8 @@ class MetadataTest(unittest.TestCase):
                 {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
             ],
             'source': '/source',
-            'is_editable': True
+            'is_editable': True,
+            'last_updated_timestamp': None,
         }
         self.mock_tags = {
             'tag_usages': [
@@ -209,15 +211,15 @@ class MetadataTest(unittest.TestCase):
                     'cluster': 'cluster',
                     'database': 'database',
                     'schema': 'schema',
-                    'table_name': 'table_name_0',
-                    'table_description': 'description',
+                    'name': 'table_name_0',
+                    'description': 'description',
                 },
                 {
                     'cluster': 'cluster',
                     'database': 'database',
                     'schema': 'schema',
-                    'table_name': 'table_name_1',
-                    'table_description': 'description',
+                    'name': 'table_name_1',
+                    'description': 'description',
                 },
             ]
         }
@@ -226,21 +228,21 @@ class MetadataTest(unittest.TestCase):
                 'cluster': 'cluster',
                 'database': 'database',
                 'description': 'description',
-                'key': 'database://cluster.schema/table_name_0',
-                'last_updated_epoch': None,
+                'last_updated_timestamp': None,
                 'name': 'table_name_0',
-                'schema_name': 'schema',
+                'schema': 'schema',
                 'type': 'table',
+                'key': 'database://cluster.schema/table_name_0',
             },
             {
                 'cluster': 'cluster',
                 'database': 'database',
                 'description': 'description',
-                'key': 'database://cluster.schema/table_name_1',
-                'last_updated_epoch': None,
+                'last_updated_timestamp': None,
                 'name': 'table_name_1',
-                'schema_name': 'schema',
+                'schema': 'schema',
                 'type': 'table',
+                'key': 'database://cluster.schema/table_name_1',
             },
         ]
 

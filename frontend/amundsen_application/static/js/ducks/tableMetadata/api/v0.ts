@@ -62,7 +62,7 @@ export function getTableDescription(tableData: TableMetadata) {
   const tableParams = getTableQueryParams(tableData.key);
   return axios.get(`${API_PATH}/get_table_description?${tableParams}`)
   .then((response: AxiosResponse<DescriptionAPI>) => {
-    tableData.table_description = response.data.description;
+    tableData.description = response.data.description;
     return tableData;
   });
 }

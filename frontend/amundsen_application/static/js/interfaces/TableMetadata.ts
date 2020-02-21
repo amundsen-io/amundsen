@@ -28,7 +28,7 @@ export interface TableColumnStats {
 
 export interface TableReader {
   read_count: number;
-  reader: User;
+  user: User;
 }
 
 export interface TableSource {
@@ -59,7 +59,7 @@ export interface TableColumn {
   name: string;
   description: string;
   is_editable: boolean;
-  type: string;
+  col_type: string;
   stats: TableColumnStats[];
 }
 
@@ -77,8 +77,8 @@ export interface TableMetadata {
   is_view: boolean;
   key: string;
   schema: string;
-  table_name: string;
-  table_description: string;
+  name: string;
+  description: string;
   table_writer: TableWriter;
   partition: PartitionData;
   table_readers: TableReader[];

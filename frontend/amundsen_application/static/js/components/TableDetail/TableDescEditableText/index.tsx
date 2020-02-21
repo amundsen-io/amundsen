@@ -8,7 +8,7 @@ import EditableText, { ComponentProps, DispatchFromProps, StateFromProps } from 
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    refreshValue: state.tableMetadata.tableData.table_description,
+    refreshValue: state.tableMetadata.tableData.description,
   };
 };
 

@@ -26,7 +26,7 @@ describe('MyBookmarks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
         {
           key: 'bookmark-2',
@@ -35,7 +35,7 @@ describe('MyBookmarks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
         {
           key: 'bookmark-3',
@@ -44,7 +44,7 @@ describe('MyBookmarks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
         {
           key: 'bookmark-4',
@@ -53,7 +53,7 @@ describe('MyBookmarks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
         {
           key: 'bookmark-5',
@@ -62,7 +62,7 @@ describe('MyBookmarks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
         {
           key: 'bookmark-6',
@@ -71,7 +71,7 @@ describe('MyBookmarks', () => {
           database: 'database',
           description: 'description',
           name: 'name',
-          schema_name: 'schema_name',
+          schema: 'schema',
         },
       ],
       isLoaded: true,

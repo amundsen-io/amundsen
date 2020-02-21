@@ -170,7 +170,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               <EditableSection title="Description">
                 <TableDescEditableText
                   maxLength={ AppConfig.editableText.tableDescLength }
-                  value={ data.table_description }
+                  value={ data.description }
                   editable={ data.is_editable }
                 />
               </EditableSection>

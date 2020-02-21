@@ -186,8 +186,8 @@ def _search_table(*, search_term: str, page_index: int) -> Dict[str, Any]:
             'cluster': result.get('cluster', None),
             'description': result.get('description', None),
             'database': result.get('database', None),
-            'schema_name': result.get('schema_name', None),
-            'last_updated_epoch': result.get('last_updated_epoch', None),
+            'schema': result.get('schema', None),
+            'last_updated_timestamp': result.get('last_updated_timestamp', None),
         }
 
     tables = {

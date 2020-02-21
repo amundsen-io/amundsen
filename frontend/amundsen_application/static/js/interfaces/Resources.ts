@@ -24,10 +24,10 @@ export interface TableResource extends Resource {
   database: string;
   description: string;
   key: string;
-  // 'popular_tables' currently does not support 'last_updated_epoch'
-  last_updated_epoch?: number;
+  // 'popular_tables' currently does not support 'last_updated_timestamp'
+  last_updated_timestamp?: number;
   name: string;
-  schema_name: string;
+  schema: string;
 };
 
 export interface UserResource extends Resource, PeopleUser {

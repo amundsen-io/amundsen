@@ -21,13 +21,13 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
 
   getDateLabel = () => {
     const { table } = this.props;
-    const dateTokens = new Date(table.last_updated_epoch * 1000).toDateString().split(' ');
+    const dateTokens = new Date(table.last_updated_timestamp * 1000).toDateString().split(' ');
     return `${dateTokens[1]} ${dateTokens[2]}, ${dateTokens[3]}`;
   };
 
   getLink = () => {
     const { table, logging } = this.props;
-    return `/table_detail/${table.cluster}/${table.database}/${table.schema_name}/${table.name}`
+    return `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}`
       + `?index=${logging.index}&source=${logging.source}`;
   };
 
@@ -37,7 +37,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
 
   render() {
     const { table } = this.props;
-    const hasLastUpdated = !!table.last_updated_epoch;
+    const hasLastUpdated = !!table.last_updated_timestamp;
 
     return (
       <li className="list-group-item">
@@ -47,7 +47,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
             <div className="resource-info-text">
               <div className="resource-name title-2">
                 <div className="truncated">
-                  { `${table.schema_name}.${table.name}`}
+                  { `${table.schema}.${table.name}`}
                 </div>
                 <BookmarkIcon bookmarkKey={ this.props.table.key }/>
               </div>

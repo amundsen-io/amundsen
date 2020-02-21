@@ -43,7 +43,7 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
       logClick(e, {
         target_id: `column::${metadata.name}`,
         target_type: 'column stats',
-        label: `${metadata.name} ${metadata.type}`,
+        label: `${metadata.name} ${metadata.col_type}`,
       });
     }
     this.setState({ isExpanded: !this.state.isExpanded });
@@ -122,7 +122,7 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
               }
             </div>
             <div className="resource-type">
-              { this.renderColumnType(this.props.index, metadata.type) }
+              { this.renderColumnType(this.props.index, metadata.col_type) }
             </div>
             <div className="badges">
               {/* Placeholder */}
