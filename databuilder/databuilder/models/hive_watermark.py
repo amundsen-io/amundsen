@@ -13,7 +13,7 @@ class HiveWatermark(Watermark):
 
     def __init__(self,
                  create_time,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  table_name,  # type: str
                  part_name,  # type: str
                  part_type='high_watermark',  # type: str
@@ -22,7 +22,7 @@ class HiveWatermark(Watermark):
         # type: (...) -> None
         super(HiveWatermark, self).__init__(create_time=create_time,
                                             database='hive',
-                                            schema_name=schema_name,
+                                            schema=schema,
                                             table_name=table_name,
                                             part_name=part_name,
                                             part_type=part_type,

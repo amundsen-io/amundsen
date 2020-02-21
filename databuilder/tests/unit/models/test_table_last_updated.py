@@ -14,7 +14,7 @@ class TestTableLastUpdated(unittest.TestCase):
 
         self.tableLastUpdated = TableLastUpdated(table_name='test_table',
                                                  last_updated_time_epoch=25195665,
-                                                 schema_name='default')
+                                                 schema='default')
 
         self.expected_node_result = {
             NODE_KEY: 'hive://gold.default/test_table/timestamp',

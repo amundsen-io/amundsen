@@ -1,4 +1,4 @@
-name,description,col_type,sort_order,database,cluster,schema_name,table_name
+name,description,col_type,sort_order,database,cluster,schema,table_name
 col1,"col1 description","string",1,hive,gold,test_schema,test_table1
 col2,"col2 description","string",2,hive,gold,test_schema,test_table1
 col3,"col3 description","string",3,hive,gold,test_schema,test_table1

@@ -229,7 +229,7 @@ class TableMetadata(Neo4jCsvSerializable):
     def __init__(self,
                  database,  # type: str
                  cluster,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  name,  # type: str
                  description,  # type: Union[str, None]
                  columns=None,  # type: Iterable[ColumnMetadata]
@@ -242,7 +242,7 @@ class TableMetadata(Neo4jCsvSerializable):
         """
         :param database:
         :param cluster:
-        :param schema_name:
+        :param schema:
         :param name:
         :param description:
         :param columns:
@@ -253,7 +253,7 @@ class TableMetadata(Neo4jCsvSerializable):
         """
         self.database = database
         self.cluster = cluster
-        self.schema_name = schema_name
+        self.schema = schema
         self.name = name
         self.description = DescriptionMetadata.create_description_metadata(text=description, source=description_source)
         self.columns = columns if columns else []
@@ -276,7 +276,7 @@ class TableMetadata(Neo4jCsvSerializable):
         return 'TableMetadata({!r}, {!r}, {!r}, {!r} ' \
             '{!r}, {!r}, {!r}, {!r})'.format(self.database,
                                              self.cluster,
-                                             self.schema_name,
+                                             self.schema,
                                              self.name,
                                              self.description,
                                              self.columns,
@@ -287,14 +287,14 @@ class TableMetadata(Neo4jCsvSerializable):
         # type: () -> str
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
                                                      cluster=self.cluster,
-                                                     schema=self.schema_name,
+                                                     schema=self.schema,
                                                      tbl=self.name)
 
     def _get_table_description_key(self, description):
         # type: (DescriptionMetadata) -> str
         return TableMetadata.TABLE_DESCRIPTION_FORMAT.format(db=self.database,
                                                              cluster=self.cluster,
-                                                             schema=self.schema_name,
+                                                             schema=self.schema,
                                                              tbl=self.name,
                                                              description_id=description.get_description_id())
 
@@ -311,13 +311,13 @@ class TableMetadata(Neo4jCsvSerializable):
         # type: () -> str
         return TableMetadata.SCHEMA_KEY_FORMAT.format(db=self.database,
                                                       cluster=self.cluster,
-                                                      schema=self.schema_name)
+                                                      schema=self.schema)
 
     def _get_col_key(self, col):
         # type: (ColumnMetadata) -> str
         return ColumnMetadata.COLUMN_KEY_FORMAT.format(db=self.database,
                                                        cluster=self.cluster,
-                                                       schema=self.schema_name,
+                                                       schema=self.schema,
                                                        tbl=self.name,
                                                        col=col.name)
 
@@ -325,7 +325,7 @@ class TableMetadata(Neo4jCsvSerializable):
         # type: (ColumnMetadata, DescriptionMetadata) -> str
         return ColumnMetadata.COLUMN_DESCRIPTION_FORMAT.format(db=self.database,
                                                                cluster=self.cluster,
-                                                               schema=self.schema_name,
+                                                               schema=self.schema,
                                                                tbl=self.name,
                                                                col=col.name,
                                                                description_id=description.get_description_id())
@@ -385,7 +385,7 @@ class TableMetadata(Neo4jCsvSerializable):
                             name=self.cluster,
                             label=TableMetadata.CLUSTER_NODE_LABEL),
                   NodeTuple(key=self._get_schema_key(),
-                            name=self.schema_name,
+                            name=self.schema,
                             label=TableMetadata.SCHEMA_NODE_LABEL)
                   ]
 

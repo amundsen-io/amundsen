@@ -22,7 +22,7 @@ class TestTableOwner(unittest.TestCase):
         # type: () -> None
         super(TestTableOwner, self).setUp()
         self.table_owner = TableOwner(db_name='hive',
-                                      schema_name=SCHEMA,
+                                      schema=SCHEMA,
                                       table_name=TABLE,
                                       cluster=CLUSTER,
                                       owners="user1@1, UsER2@2 ")
@@ -84,7 +84,7 @@ class TestTableOwner(unittest.TestCase):
     def test_create_nodes_with_owners_list(self):
         # type: () -> None
         self.table_owner_list = TableOwner(db_name='hive',
-                                           schema_name=SCHEMA,
+                                           schema=SCHEMA,
                                            table_name=TABLE,
                                            cluster=CLUSTER,
                                            owners=['user1@1', ' UsER2@2 '])

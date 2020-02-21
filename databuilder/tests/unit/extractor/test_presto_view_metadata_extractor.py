@@ -54,12 +54,12 @@ class TestPrestoViewMetadataExtractor(unittest.TestCase):
 
             sql_execute.return_value = [
                 {'tbl_id': 2,
-                 'schema_name': 'test_schema2',
+                 'schema': 'test_schema2',
                  'name': 'test_view2',
                  'tbl_type': 'virtual_view',
                  'view_original_text': base64.b64encode(json.dumps(columns2).encode()).decode("utf-8")},
                 {'tbl_id': 1,
-                 'schema_name': 'test_schema1',
+                 'schema': 'test_schema1',
                  'name': 'test_view1',
                  'tbl_type': 'virtual_view',
                  'view_original_text': base64.b64encode(json.dumps(columns1).encode()).decode("utf-8")},

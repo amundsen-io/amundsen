@@ -9,7 +9,7 @@ class UserESDocument(ElasticsearchDocument):
                  email,  # type: str
                  first_name,  # type: str
                  last_name,  # type: str
-                 name,  # type: str
+                 full_name,  # type: str
                  github_username,  # type: str
                  team_name,  # type: str
                  employee_type,  # type: str
@@ -24,7 +24,7 @@ class UserESDocument(ElasticsearchDocument):
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
-        self.name = name
+        self.full_name = full_name
         self.github_username = github_username
         self.team_name = team_name
         self.employee_type = employee_type

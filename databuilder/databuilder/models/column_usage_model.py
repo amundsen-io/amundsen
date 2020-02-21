@@ -27,7 +27,7 @@ class ColumnUsageModel(Neo4jCsvSerializable):
     def __init__(self,
                  database,     # type: str
                  cluster,      # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  table_name,   # type: str
                  column_name,  # type: str
                  user_email,   # type: str
@@ -36,7 +36,7 @@ class ColumnUsageModel(Neo4jCsvSerializable):
         # type: (...) -> None
         self.database = database
         self.cluster = cluster
-        self.schema_name = schema_name
+        self.schema = schema
         self.table_name = table_name
         self.column_name = column_name
         self.user_email = user_email
@@ -86,7 +86,7 @@ class ColumnUsageModel(Neo4jCsvSerializable):
         # type: (ColumnReader) -> str
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
                                                      cluster=self.cluster,
-                                                     schema=self.schema_name,
+                                                     schema=self.schema,
                                                      tbl=self.table_name)
 
     def _get_user_key(self, email):
@@ -97,7 +97,7 @@ class ColumnUsageModel(Neo4jCsvSerializable):
         # type: () -> str
         return 'TableColumnUsage({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.database,
                                                                                    self.cluster,
-                                                                                   self.schema_name,
+                                                                                   self.schema,
                                                                                    self.table_name,
                                                                                    self.column_name,
                                                                                    self.user_email,

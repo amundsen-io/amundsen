@@ -10,7 +10,7 @@ from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 from itertools import groupby
 
-TableKey = namedtuple('TableKey', ['schema_name', 'table_name'])
+TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
 LOGGER = logging.getLogger(__name__)
 
@@ -22,11 +22,11 @@ class AthenaMetadataExtractor(Extractor):
 
     SQL_STATEMENT = """
     SELECT
-        {catalog_source} as cluster, table_schema as schema_name, table_name as name, column_name as col_name,
+        {catalog_source} as cluster, table_schema as schema, table_name as name, column_name as col_name,
         data_type as col_type,ordinal_position as col_sort_order,
         comment as col_description, extra_info as extras from information_schema.columns
         {where_clause_suffix}
-        ORDER by cluster, schema_name, name, col_sort_order ;
+        ORDER by cluster, schema, name, col_sort_order ;
     """
 
     # CONFIG KEYS
@@ -89,7 +89,7 @@ class AthenaMetadataExtractor(Extractor):
                                               row['col_type'], row['col_sort_order']))
 
             yield TableMetadata('athena', last_row['cluster'],
-                                last_row['schema_name'],
+                                last_row['schema'],
                                 last_row['name'],
                                 '',
                                 columns)
@@ -113,6 +113,6 @@ class AthenaMetadataExtractor(Extractor):
         :return:
         """
         if row:
-            return TableKey(schema_name=row['schema_name'], table_name=row['name'])
+            return TableKey(schema=row['schema'], table_name=row['name'])
 
         return None

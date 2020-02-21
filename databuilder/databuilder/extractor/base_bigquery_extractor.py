@@ -13,7 +13,7 @@ from databuilder.extractor.base_extractor import Extractor
 
 
 DatasetRef = namedtuple('DatasetRef', ['datasetId', 'projectId'])
-TableKey = namedtuple('TableKey', ['schema_name', 'table_name'])
+TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
 LOGGER = logging.getLogger(__name__)
 

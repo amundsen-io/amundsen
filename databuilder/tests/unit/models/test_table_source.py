@@ -18,7 +18,7 @@ class TestTableSource(unittest.TestCase):
         # type: () -> None
         super(TestTableSource, self).setUp()
         self.table_source = TableSource(db_name='hive',
-                                        schema_name=SCHEMA,
+                                        schema=SCHEMA,
                                         table_name=TABLE,
                                         cluster=CLUSTER,
                                         source=SOURCE)

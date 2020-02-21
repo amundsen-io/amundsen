@@ -22,7 +22,7 @@ class PrestoViewMetadataExtractor(Extractor):
     # SQL statement to extract View metadata
     # {where_clause_suffix} could be used to filter schemas
     SQL_STATEMENT = """
-    SELECT t.TBL_ID, d.NAME as schema_name, t.TBL_NAME name, t.TBL_TYPE, t.VIEW_ORIGINAL_TEXT as view_original_text
+    SELECT t.TBL_ID, d.NAME as schema, t.TBL_NAME name, t.TBL_TYPE, t.VIEW_ORIGINAL_TEXT as view_original_text
     FROM TBLS t
     JOIN DBS d ON t.DB_ID = d.DB_ID
     WHERE t.VIEW_EXPANDED_TEXT = '/* Presto View */'
@@ -83,7 +83,7 @@ class PrestoViewMetadataExtractor(Extractor):
             columns = self._get_column_metadata(row['view_original_text'])
             yield TableMetadata(database='presto',
                                 cluster=self._cluster,
-                                schema_name=row['schema_name'],
+                                schema=row['schema'],
                                 name=row['name'],
                                 description=None,
                                 columns=columns,

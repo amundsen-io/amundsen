@@ -22,7 +22,7 @@ class TestWatermark(unittest.TestCase):
         super(TestWatermark, self).setUp()
         self.watermark = Watermark(create_time='2017-09-18T00:00:00',
                                    database=DATABASE,
-                                   schema_name=SCHEMA,
+                                   schema=SCHEMA,
                                    table_name=TABLE,
                                    cluster=CLUSTER,
                                    part_type=PART_TYPE,

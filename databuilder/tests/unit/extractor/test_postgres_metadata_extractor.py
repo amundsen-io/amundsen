@@ -46,7 +46,7 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
             mock_connection.return_value = connection
             sql_execute = MagicMock()
             connection.execute = sql_execute
-            table = {'schema_name': 'test_schema',
+            table = {'schema': 'test_schema',
                      'name': 'test_table',
                      'description': 'a table for testing',
                      'cluster':
@@ -107,21 +107,21 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
             mock_connection.return_value = connection
             sql_execute = MagicMock()
             connection.execute = sql_execute
-            table = {'schema_name': 'test_schema1',
+            table = {'schema': 'test_schema1',
                      'name': 'test_table1',
                      'description': 'test table 1',
                      'cluster':
                      self.conf['extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.CLUSTER_KEY)]
                      }
 
-            table1 = {'schema_name': 'test_schema1',
+            table1 = {'schema': 'test_schema1',
                       'name': 'test_table2',
                       'description': 'test table 2',
                       'cluster':
                       self.conf['extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.CLUSTER_KEY)]
                       }
 
-            table2 = {'schema_name': 'test_schema2',
+            table2 = {'schema': 'test_schema2',
                       'name': 'test_table3',
                       'description': 'test table 3',
                       'cluster':

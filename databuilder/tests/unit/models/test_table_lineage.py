@@ -17,7 +17,7 @@ class TestTableLineage(unittest.TestCase):
         # type: () -> None
         super(TestTableLineage, self).setUp()
         self.table_lineage = TableLineage(db_name='hive',
-                                          schema_name=SCHEMA,
+                                          schema=SCHEMA,
                                           table_name=TABLE,
                                           cluster=CLUSTER,
                                           downstream_deps=['hive://default.test_schema/test_table1',

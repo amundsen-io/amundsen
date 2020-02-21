@@ -9,7 +9,7 @@ from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 
 
 DatasetRef = namedtuple('DatasetRef', ['datasetId', 'projectId'])
-TableKey = namedtuple('TableKey', ['schema_name', 'table_name'])
+TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
 LOGGER = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                 table_meta = TableMetadata(
                     database='bigquery',
                     cluster=tableRef['projectId'],
-                    schema_name=tableRef['datasetId'],
+                    schema=tableRef['datasetId'],
                     name=table_id,
                     description=table.get('description', ''),
                     columns=cols,
