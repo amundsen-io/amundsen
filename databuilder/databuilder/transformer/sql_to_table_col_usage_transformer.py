@@ -197,7 +197,7 @@ class SqlToTblColUsageTransformer(Transformer):
         table_metadata = table_metadata_extractor.extract()
         while table_metadata:
             # TODO: deal with collision
-            table_to_schema[table_metadata.name.lower()] = table_metadata.schema_name.lower()
+            table_to_schema[table_metadata.name.lower()] = table_metadata.schema.lower()
             table_metadata = table_metadata_extractor.extract()
         return table_to_schema
 

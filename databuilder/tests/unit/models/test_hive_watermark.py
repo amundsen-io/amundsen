@@ -20,7 +20,7 @@ class TestHiveWatermark(unittest.TestCase):
         # type: () -> None
         super(TestHiveWatermark, self).setUp()
         self.watermark = HiveWatermark(create_time='2017-09-18T00:00:00',
-                                       schema_name=SCHEMA,
+                                       schema=SCHEMA,
                                        table_name=TABLE,
                                        cluster=CLUSTER,
                                        part_type=PART_TYPE,

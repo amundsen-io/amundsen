@@ -71,7 +71,7 @@ def load_table_data_from_csv(file_name, table_name):
         cur.execute('create table if not exists {} '
                     '(database VARCHAR(64) NOT NULL , '
                     'cluster VARCHAR(64) NOT NULL, '
-                    'schema_name VARCHAR(64) NOT NULL,'
+                    'schema VARCHAR(64) NOT NULL,'
                     'name VARCHAR(64) NOT NULL,'
                     'description VARCHAR(64) NOT NULL, '
                     'tags VARCHAR(128) NOT NULL,'
@@ -81,14 +81,14 @@ def load_table_data_from_csv(file_name, table_name):
             dr = csv.DictReader(fin)
             to_db = [(i['database'],
                       i['cluster'],
-                      i['schema_name'],
+                      i['schema'],
                       i['name'],
                       i['description'],
                       i['tags'],
                       i['description_source']) for i in dr]
 
         cur.executemany("INSERT INTO {} (database, cluster, "
-                        "schema_name, name, description, tags, "
+                        "schema, name, description, tags, "
                         "description_source) "
                         "VALUES (?, ?, ?, ?, ?, ?, ?);".format(table_name), to_db)
         conn.commit()
@@ -120,7 +120,7 @@ def load_table_column_stats_from_csv(file_name):
         cur.execute('create table if not exists test_table_column_stats '
                     '(cluster VARCHAR(64) NOT NULL , '
                     'db VARCHAR(64) NOT NULL , '
-                    'schema_name VARCHAR(64) NOT NULL , '
+                    'schema VARCHAR(64) NOT NULL , '
                     'table_name INTEGER NOT NULL , '
                     'col_name VARCHAR(64) NOT NULL , '
                     'stat_name VARCHAR(64) NOT NULL, '
@@ -132,7 +132,7 @@ def load_table_column_stats_from_csv(file_name):
             dr = csv.DictReader(fin)
             to_db = [(i['cluster'],
                       i['db'],
-                      i['schema_name'],
+                      i['schema'],
                       i['table_name'],
                       i['col_name'],
                       i['stat_name'],
@@ -141,7 +141,7 @@ def load_table_column_stats_from_csv(file_name):
                       i['end_epoch']) for i in dr]
 
         cur.executemany("INSERT INTO test_table_column_stats ("
-                        "cluster, db, schema_name, table_name,"
+                        "cluster, db, schema, table_name,"
                         "col_name, stat_name, "
                         "stat_val, start_epoch, end_epoch) VALUES "
                         "(?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
@@ -156,7 +156,7 @@ def load_watermark_data_from_csv(file_name):
         cur.execute('create table if not exists test_watermark_metadata '
                     '(create_time VARCHAR(64) NOT NULL , '
                     'database VARCHAR(64) NOT NULL , '
-                    'schema_name VARCHAR(64) NOT NULL , '
+                    'schema VARCHAR(64) NOT NULL , '
                     'table_name VARCHAR(64) NOT NULL , '
                     'part_name VARCHAR(64) NOT NULL , '
                     'part_type VARCHAR(64) NOT NULL , '
@@ -168,14 +168,14 @@ def load_watermark_data_from_csv(file_name):
             for i in dr:
                 to_db.append((i['create_time'],
                               i['database'],
-                              i['schema_name'],
+                              i['schema'],
                               i['table_name'],
                               i['part_name'],
                               i['part_type'],
                               i['cluster']))
 
         cur.executemany("INSERT INTO test_watermark_metadata ("
-                        "create_time, database, schema_name, table_name,"
+                        "create_time, database, schema, table_name,"
                         "part_name, part_type, cluster) VALUES "
                         "(?, ?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
@@ -228,7 +228,7 @@ def load_application_data_from_csv(file_name):
                     'exec_date VARCHAR(64) NOT NULL, '
                     'application_url_template VARCHAR(128) NOT NULL, '
                     'db_name VARCHAR(64) NOT NULL, '
-                    'schema_name VARCHAR(64) NOT NULL, '
+                    'schema VARCHAR(64) NOT NULL, '
                     'table_name VARCHAR(64) NOT NULL)')
         file_loc = 'example/sample_data/' + file_name
         with open(file_loc, 'r') as fin:
@@ -238,11 +238,11 @@ def load_application_data_from_csv(file_name):
                       i['exec_date'],
                       i['application_url_template'],
                       i['db_name'],
-                      i['schema_name'],
+                      i['schema'],
                       i['table_name'],) for i in dr]
 
         cur.executemany("INSERT INTO test_application_metadata (task_id, dag_id, "
-                        "exec_date, application_url_template, db_name, schema_name, table_name) "
+                        "exec_date, application_url_template, db_name, schema, table_name) "
                         "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
@@ -255,7 +255,7 @@ def load_source_data_from_csv(file_name):
         cur.execute('create table if not exists test_source_metadata '
                     '(db_name VARCHAR(64) NOT NULL , '
                     'cluster VARCHAR(64) NOT NULL , '
-                    'schema_name VARCHAR(64) NOT NULL, '
+                    'schema VARCHAR(64) NOT NULL, '
                     'table_name VARCHAR(64) NOT NULL, '
                     'source VARCHAR(64) NOT NULL , '
                     'source_type VARCHAR(32) NOT NULL)')
@@ -264,13 +264,13 @@ def load_source_data_from_csv(file_name):
             dr = csv.DictReader(fin)
             to_db = [(i['db_name'],
                       i['cluster'],
-                      i['schema_name'],
+                      i['schema'],
                       i['table_name'],
                       i['source'],
                       i['source_type']) for i in dr]
 
         cur.executemany("INSERT INTO test_source_metadata (db_name, cluster, "
-                        "schema_name, table_name, source, source_type) VALUES (?, ?, ?, ?, ?, ?);", to_db)
+                        "schema, table_name, source, source_type) VALUES (?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
 
@@ -282,7 +282,7 @@ def load_test_last_updated_data_from_csv(file_name):
         cur.execute('create table if not exists test_table_last_updated_metadata '
                     '(cluster VARCHAR(64) NOT NULL , '
                     'db VARCHAR(64) NOT NULL , '
-                    'schema_name VARCHAR(64) NOT NULL, '
+                    'schema VARCHAR(64) NOT NULL, '
                     'table_name VARCHAR(64) NOT NULL, '
                     'last_updated_time_epoch LONG NOT NULL)')
         file_loc = 'example/sample_data/' + file_name
@@ -290,12 +290,12 @@ def load_test_last_updated_data_from_csv(file_name):
             dr = csv.DictReader(fin)
             to_db = [(i['cluster'],
                       i['db'],
-                      i['schema_name'],
+                      i['schema'],
                       i['table_name'],
                       i['last_updated_time_epoch']) for i in dr]
 
         cur.executemany("INSERT INTO test_table_last_updated_metadata (cluster, db, "
-                        "schema_name, table_name, last_updated_time_epoch) VALUES (?, ?, ?, ?, ?);", to_db)
+                        "schema, table_name, last_updated_time_epoch) VALUES (?, ?, ?, ?, ?);", to_db)
 
         conn.commit()
 
@@ -355,7 +355,7 @@ def load_usage_data_from_csv(file_name):
         cur.execute('create table if not exists test_usage_metadata '
                     '(database VARCHAR(64) NOT NULL, '
                     'cluster VARCHAR(64) NOT NULL, '
-                    'schema_name VARCHAR(64) NOT NULL, '
+                    'schema VARCHAR(64) NOT NULL, '
                     'table_name VARCHAR(64) NOT NULL, '
                     'column_name VARCHAR(64) NOT NULL, '
                     'user_email VARCHAR(64) NOT NULL, '
@@ -365,7 +365,7 @@ def load_usage_data_from_csv(file_name):
             dr = csv.DictReader(fin)
             to_db = [(i['database'],
                       i['cluster'],
-                      i['schema_name'],
+                      i['schema'],
                       i['table_name'],
                       i['column_name'],
                       i['user_email'],
@@ -373,7 +373,7 @@ def load_usage_data_from_csv(file_name):
                       ) for i in dr]
 
         cur.executemany("INSERT INTO test_usage_metadata (database, cluster, "
-                        "schema_name, table_name, column_name, user_email, read_count) "
+                        "schema, table_name, column_name, user_email, read_count) "
                         "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
@@ -386,7 +386,7 @@ def load_table_owner_data_from_csv(file_name):
         cur.execute('drop table if exists test_table_owner_metadata')
         cur.execute('create table if not exists test_table_owner_metadata '
                     '(db_name VARCHAR(64) NOT NULL, '
-                    'schema_name VARCHAR(64) NOT NULL, '
+                    'schema VARCHAR(64) NOT NULL, '
                     'table_name VARCHAR(64) NOT NULL, '
                     'owners VARCHAR(128) NOT NULL, '
                     'cluster VARCHAR(64) NOT NULL)')
@@ -394,14 +394,14 @@ def load_table_owner_data_from_csv(file_name):
         with open(file_loc, 'r') as fin:
             dr = csv.DictReader(fin)
             to_db = [(i['db_name'],
-                      i['schema_name'],
+                      i['schema'],
                       i['cluster'],
                       i['table_name'],
                       i['owners']
                       ) for i in dr]
 
         cur.executemany("INSERT INTO test_table_owner_metadata "
-                        "(db_name, schema_name, cluster, table_name, owners) "
+                        "(db_name, schema, cluster, table_name, owners) "
                         "VALUES (?, ?, ?, ?, ?);", to_db)
         conn.commit()
 
@@ -774,7 +774,7 @@ if __name__ == "__main__":
                         }
                       }
                     },
-                    "name": {
+                    "full_name": {
                       "type":"text",
                       "analyzer": "simple",
                       "fields": {

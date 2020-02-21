@@ -1,2 +1,2 @@
-db_name,cluster,schema_name,table_name,source,source_type
+db_name,cluster,schema,table_name,source,source_type
 hive,gold,test_schema,test_table1,"https://github.com/lyft/amundsen/",github

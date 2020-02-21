@@ -19,7 +19,7 @@ class TableSource(Neo4jCsvSerializable):
 
     def __init__(self,
                  db_name,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  table_name,  # type: str
                  cluster,  # type: str
                  source,  # type: str
@@ -27,7 +27,7 @@ class TableSource(Neo4jCsvSerializable):
                  ):
         # type: (...) -> None
         self.db = db_name.lower()
-        self.schema = schema_name.lower()
+        self.schema = schema.lower()
         self.table = table_name.lower()
 
         self.cluster = cluster.lower() if cluster else 'gold'

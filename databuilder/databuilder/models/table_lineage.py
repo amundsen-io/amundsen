@@ -20,14 +20,14 @@ class TableLineage(Neo4jCsvSerializable):
 
     def __init__(self,
                  db_name,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  table_name,  # type: str
                  cluster,  # type: str
                  downstream_deps=None,  # type: List
                  ):
         # type: (...) -> None
         self.db = db_name.lower()
-        self.schema = schema_name.lower()
+        self.schema = schema.lower()
         self.table = table_name.lower()
 
         self.cluster = cluster.lower() if cluster else 'gold'

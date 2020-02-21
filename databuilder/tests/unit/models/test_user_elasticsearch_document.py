@@ -14,7 +14,7 @@ class TestUserElasticsearchDocument(unittest.TestCase):
         test_obj = UserESDocument(email='test@email.com',
                                   first_name='test_firstname',
                                   last_name='test_lastname',
-                                  name='full_name',
+                                  full_name='full_name',
                                   github_username='github_user',
                                   team_name='team',
                                   employee_type='fte',
@@ -27,7 +27,7 @@ class TestUserElasticsearchDocument(unittest.TestCase):
 
         expected_document_dict = {"first_name": "test_firstname",
                                   "last_name": "test_lastname",
-                                  "name": "full_name",
+                                  "full_name": "full_name",
                                   "team_name": "team",
                                   "total_follow": 1,
                                   "total_read": 2,

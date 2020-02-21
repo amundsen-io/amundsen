@@ -13,7 +13,7 @@ from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 from itertools import groupby
 
 
-TableKey = namedtuple('TableKey', ['schema_name', 'table_name'])
+TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
 LOGGER = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class SnowflakeMetadataExtractor(Extractor):
         lower(c.ordinal_position) AS col_sort_order,
         lower(c.table_catalog) AS database,
         lower({cluster_source}) AS cluster,
-        lower(c.table_schema) AS schema_name,
+        lower(c.table_schema) AS schema,
         lower(c.table_name) AS name,
         t.comment AS description,
         decode(lower(t.table_type), 'view', 'true', 'false') AS is_view
@@ -124,7 +124,7 @@ class SnowflakeMetadataExtractor(Extractor):
                                )
 
             yield TableMetadata(self._database, last_row['cluster'],
-                                last_row['schema_name'],
+                                last_row['schema'],
                                 last_row['name'],
                                 unidecode(last_row['description']) if last_row['description'] else None,
                                 columns,
@@ -149,6 +149,6 @@ class SnowflakeMetadataExtractor(Extractor):
         :return:
         """
         if row:
-            return TableKey(schema_name=row['schema_name'], table_name=row['name'])
+            return TableKey(schema=row['schema'], table_name=row['name'])
 
         return None

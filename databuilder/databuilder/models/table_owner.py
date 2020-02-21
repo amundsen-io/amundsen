@@ -17,14 +17,14 @@ class TableOwner(Neo4jCsvSerializable):
 
     def __init__(self,
                  db_name,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  table_name,  # type: str
                  owners,  # type: Union[List, str]
                  cluster='gold',  # type: str
                  ):
         # type: (...) -> None
         self.db = db_name.lower()
-        self.schema = schema_name.lower()
+        self.schema = schema.lower()
         self.table = table_name.lower()
         if isinstance(owners, str):
             owners = owners.split(',')

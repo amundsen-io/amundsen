@@ -20,14 +20,14 @@ class TableLastUpdated(Neo4jCsvSerializable):
     def __init__(self,
                  table_name,  # type: str
                  last_updated_time_epoch,  # type: int
-                 schema_name,  # type: str
+                 schema,  # type: str
                  db='hive',  # type: str
                  cluster='gold'  # type: str
                  ):
         # type: (...) -> None
         self.table_name = table_name
         self.last_updated_time = int(last_updated_time_epoch)
-        self.schema = schema_name
+        self.schema = schema
         self.db = db
         self.cluster = cluster
 
@@ -37,7 +37,7 @@ class TableLastUpdated(Neo4jCsvSerializable):
     def __repr__(self):
         # type: (...) -> str
         return \
-            """TableLastUpdated(table_name={!r}, last_updated_time={!r}, schema_name={!r}, db={!r}, cluster={!r})"""\
+            """TableLastUpdated(table_name={!r}, last_updated_time={!r}, schema={!r}, db={!r}, cluster={!r})"""\
             .format(self.table_name, self.last_updated_time, self.schema, self.db, self.cluster)
 
     def create_next_node(self):

@@ -63,10 +63,10 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         data = dict(database='test_database',
                     cluster='test_cluster',
-                    schema_name='test_schema',
+                    schema='test_schema',
                     name='test_table',
                     key='test_table_key',
-                    last_updated_epoch=123456789,
+                    last_updated_timestamp=123456789,
                     description='test_description',
                     column_names=['test_col1', 'test_col2'],
                     column_descriptions=['test_comment1', 'test_comment2'],
@@ -91,10 +91,10 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         data = TableESDocument(database='test_database',
                                cluster='test_cluster',
-                               schema_name='test_schema',
+                               schema='test_schema',
                                name='test_table',
                                key='test_table_key',
-                               last_updated_epoch=123456789,
+                               last_updated_timestamp=123456789,
                                description='test_description',
                                column_names=['test_col1', 'test_col2'],
                                column_descriptions=['test_comment1', 'test_comment2'],
@@ -106,9 +106,9 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         expected = [
             ('{"key": "test_table_key", "column_descriptions": ["test_comment1", "test_comment2"], '
-             '"schema_name": "test_schema", "database": "test_database", "cluster": "test_cluster", '
+             '"schema": "test_schema", "database": "test_database", "cluster": "test_cluster", '
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
-             '"last_updated_epoch": 123456789, "display_name": "test_schema.test_table", '
+             '"last_updated_timestamp": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
              '"tags": ["test_tag1", "test_tag2"]}')
         ]
@@ -127,10 +127,10 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         data = [TableESDocument(database='test_database',
                                 cluster='test_cluster',
-                                schema_name='test_schema',
+                                schema='test_schema',
                                 name='test_table',
                                 key='test_table_key',
-                                last_updated_epoch=123456789,
+                                last_updated_timestamp=123456789,
                                 description='test_description',
                                 column_names=['test_col1', 'test_col2'],
                                 column_descriptions=['test_comment1', 'test_comment2'],
@@ -144,9 +144,9 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         expected = [
             ('{"key": "test_table_key", "column_descriptions": ["test_comment1", "test_comment2"], '
-             '"schema_name": "test_schema", "database": "test_database", "cluster": "test_cluster", '
+             '"schema": "test_schema", "database": "test_database", "cluster": "test_cluster", '
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
-             '"last_updated_epoch": 123456789, "display_name": "test_schema.test_table", '
+             '"last_updated_timestamp": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
              '"tags": ["test_tag1", "test_tag2"]}')
         ] * 5

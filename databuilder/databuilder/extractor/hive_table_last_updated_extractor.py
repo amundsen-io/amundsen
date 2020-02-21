@@ -57,27 +57,27 @@ class HiveTableLastUpdatedExtractor(Extractor):
     """
     PARTITION_TABLE_SQL_STATEMENT = """
     SELECT
-    DBS.NAME as schema_name,
+    DBS.NAME as schema,
     TBL_NAME as table_name,
     MAX(PARTITIONS.CREATE_TIME) as last_updated_time
     FROM TBLS
     JOIN DBS ON TBLS.DB_ID = DBS.DB_ID
     JOIN PARTITIONS ON TBLS.TBL_ID = PARTITIONS.TBL_ID
     {where_clause_suffix}
-    GROUP BY schema_name, table_name
-    ORDER BY schema_name, table_name;
+    GROUP BY schema, table_name
+    ORDER BY schema, table_name;
     """
 
     NON_PARTITIONED_TABLE_SQL_STATEMENT = """
     SELECT
-    DBS.NAME as schema_name,
+    DBS.NAME as schema,
     TBL_NAME as table_name,
     SDS.LOCATION as location
     FROM TBLS
     JOIN DBS ON TBLS.DB_ID = DBS.DB_ID
     JOIN SDS ON TBLS.SD_ID = SDS.SD_ID
     {where_clause_suffix}
-    ORDER BY schema_name, table_name;
+    ORDER BY schema, table_name;
     """
 
     # Additional where clause for non partitioned table SQL
@@ -206,7 +206,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
         while partitioned_tbl_row:
             yield TableLastUpdated(table_name=partitioned_tbl_row['table_name'],
                                    last_updated_time_epoch=partitioned_tbl_row['last_updated_time'],
-                                   schema_name=partitioned_tbl_row['schema_name'],
+                                   schema=partitioned_tbl_row['schema'],
                                    db=HiveTableLastUpdatedExtractor.DATABASE,
                                    cluster=self._cluster)
             partitioned_tbl_row = self._partitioned_table_extractor.extract()
@@ -227,7 +227,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
             start = time.time()
             table_last_updated = self._get_last_updated_datetime_from_filesystem(
                 table=non_partitioned_tbl_row['table_name'],
-                schema=non_partitioned_tbl_row['schema_name'],
+                schema=non_partitioned_tbl_row['schema'],
                 storage_location=non_partitioned_tbl_row['location'])
             LOGGER.info('Elapsed: {} seconds'.format(time.time() - start))
 
@@ -293,7 +293,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
 
         result = TableLastUpdated(table_name=table,
                                   last_updated_time_epoch=int((last_updated - OLDEST_TIMESTAMP).total_seconds()),
-                                  schema_name=schema,
+                                  schema=schema,
                                   db=HiveTableLastUpdatedExtractor.DATABASE,
                                   cluster=self._cluster)
 

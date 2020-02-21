@@ -51,7 +51,7 @@ class ElasticsearchPublisher(Publisher):
                     }
                   }
                 },
-                "schema_name": {
+                "schema": {
                   "type":"text",
                   "analyzer": "simple",
                   "fields": {
@@ -63,7 +63,7 @@ class ElasticsearchPublisher(Publisher):
                 "display_name": {
                   "type": "keyword"
                 },
-                "last_updated_epoch": {
+                "last_updated_timestamp": {
                   "type": "date",
                   "format": "epoch_second"
                 },

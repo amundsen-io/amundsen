@@ -20,7 +20,7 @@ class Watermark(Neo4jCsvSerializable):
     def __init__(self,
                  create_time,  # type: str
                  database,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  table_name,  # type: str
                  part_name,  # type: str
                  part_type='high_watermark',  # type: str
@@ -29,7 +29,7 @@ class Watermark(Neo4jCsvSerializable):
         # type: (...) -> None
         self.create_time = create_time
         self.database = database.lower()
-        self.schema = schema_name.lower()
+        self.schema = schema.lower()
         self.table = table_name.lower()
         self.parts = []  # type: list
 

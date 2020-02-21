@@ -29,7 +29,7 @@ class Application(Neo4jCsvSerializable):
                  dag_id,  # type: str,
                  application_url_template,  # type: str
                  db_name='hive',  # type: str
-                 schema_name='',  # type: str
+                 schema='',  # type: str
                  table_name='',  # type: str
                  exec_date='',  # type: str
                  ):
@@ -38,7 +38,7 @@ class Application(Neo4jCsvSerializable):
 
         # todo: need to modify this hack
         self.application_url = application_url_template.format(dag_id=dag_id)
-        self.database, self.schema, self.table = db_name, schema_name, table_name
+        self.database, self.schema, self.table = db_name, schema, table_name
 
         self.dag = dag_id
 

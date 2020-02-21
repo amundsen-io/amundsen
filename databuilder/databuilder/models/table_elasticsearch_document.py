@@ -10,11 +10,11 @@ class TableESDocument(ElasticsearchDocument):
     def __init__(self,
                  database,  # type: str
                  cluster,  # type: str
-                 schema_name,  # type: str
+                 schema,  # type: str
                  name,  # type: str
                  key,  # type: str
                  description,  # type: str
-                 last_updated_epoch,  # type: Optional[int]
+                 last_updated_timestamp,  # type: Optional[int]
                  column_names,  # type: List[str]
                  column_descriptions,  # type: List[str]
                  total_usage,  # type: int
@@ -25,13 +25,13 @@ class TableESDocument(ElasticsearchDocument):
         # type: (...) -> None
         self.database = database
         self.cluster = cluster
-        self.schema_name = schema_name
+        self.schema = schema
         self.name = name
-        self.display_name = display_name if display_name else '{schema}.{table}'.format(schema=schema_name, table=name)
+        self.display_name = display_name if display_name else '{schema}.{table}'.format(schema=schema, table=name)
         self.key = key
         self.description = description
         # todo: use last_updated_timestamp to match the record in metadata
-        self.last_updated_epoch = int(last_updated_epoch) if last_updated_epoch else None
+        self.last_updated_timestamp = int(last_updated_timestamp) if last_updated_timestamp else None
         self.column_names = column_names
         self.column_descriptions = column_descriptions
         self.total_usage = total_usage

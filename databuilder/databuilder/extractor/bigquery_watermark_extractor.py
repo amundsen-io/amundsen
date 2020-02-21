@@ -11,7 +11,7 @@ from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor
 from databuilder.models.watermark import Watermark
 
 DatasetRef = namedtuple('DatasetRef', ['datasetId', 'projectId'])
-TableKey = namedtuple('TableKey', ['schema_name', 'table_name'])
+TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 PartitionInfo = namedtuple('PartitionInfo', ['partition_id', 'epoch_created'])
 
 LOGGER = logging.getLogger(__name__)

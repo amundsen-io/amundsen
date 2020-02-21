@@ -50,10 +50,10 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
             patch.object(HiveTableLastUpdatedExtractor, '_get_non_partitioned_table_sql_alchemy_extractor',
                          return_value=non_pt_alchemy_extractor_instance):
             pt_alchemy_extractor_instance.extract = MagicMock(side_effect=[
-                {'schema_name': 'foo_schema',
+                {'schema': 'foo_schema',
                  'table_name': 'table_1',
                  'last_updated_time': 1},
-                {'schema_name': 'foo_schema',
+                {'schema': 'foo_schema',
                  'table_name': 'table_2',
                  'last_updated_time': 2}
             ])
@@ -64,11 +64,11 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
             extractor.init(conf)
 
             result = extractor.extract()
-            expected = TableLastUpdated(schema_name='foo_schema', table_name='table_1', last_updated_time_epoch=1,
+            expected = TableLastUpdated(schema='foo_schema', table_name='table_1', last_updated_time_epoch=1,
                                         db='hive', cluster='gold')
             self.assertEqual(result.__repr__(), expected.__repr__())
             result = extractor.extract()
-            expected = TableLastUpdated(schema_name='foo_schema', table_name='table_2', last_updated_time_epoch=2,
+            expected = TableLastUpdated(schema='foo_schema', table_name='table_2', last_updated_time_epoch=2,
                                         db='hive', cluster='gold')
             self.assertEqual(result.__repr__(), expected.__repr__())
 
@@ -100,7 +100,7 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
             pt_alchemy_extractor_instance.extract = MagicMock(return_value=None)
 
             non_pt_alchemy_extractor_instance.extract = MagicMock(side_effect=[
-                {'schema_name': 'foo_schema',
+                {'schema': 'foo_schema',
                  'table_name': 'table_1',
                  'location': '/foo/bar'}
             ])
@@ -109,7 +109,7 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
             extractor.init(ConfigFactory.from_dict({}))
 
             result = extractor.extract()
-            expected = TableLastUpdated(schema_name='foo_schema', table_name='table_1',
+            expected = TableLastUpdated(schema='foo_schema', table_name='table_1',
                                         last_updated_time_epoch=1542168723,
                                         db='hive', cluster='gold')
             self.assertEqual(result.__repr__(), expected.__repr__())
