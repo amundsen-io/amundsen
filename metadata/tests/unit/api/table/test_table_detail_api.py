@@ -16,8 +16,8 @@ BASE = {
     'owners': [{'email': 'mmcgonagall@hogwarts.com', 'first_name': 'minerva', 'last_name': 'mcgonagall'}],
     'watermarks': [
         {'watermark_type': 'type', 'partition_key': 'key', 'partition_value': 'value', 'create_time': '1570581861'}],
-    'table_writer': [{'application_url': 'table_writer_rul', 'name': 'table_writer_name', 'id': 'table_writer_id',
-                      'description': 'table_writer_description'}],
+    'table_writer': {'application_url': 'table_writer_rul', 'name': 'table_writer_name', 'id': 'table_writer_id',
+                     'description': 'table_writer_description'},
     'last_updated_timestamp': 1570581861,
     'source': {'source_type': 'type', 'source': 'source'},
     'is_view': True
@@ -43,16 +43,16 @@ QUERY_RESPONSE = {
 
 API_RESPONSE = {
     **BASE,
-    'table_name': 'wizards',
-    'table_description': 'all wizards at hogwarts',
+    'name': 'wizards',
+    'description': 'all wizards at hogwarts',
     'table_readers': [{
-        'reader': READER,
+        'user': READER,
         'read_count': 10
     }],
     'columns': [{
         'name': 'wizard_name',
         'description': 'full name of wizard',
-        'type': 'String',
+        'col_type': 'String',
         'sort_order': 0,
         'stats': STATS
     }],

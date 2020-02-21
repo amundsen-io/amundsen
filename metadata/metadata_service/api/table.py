@@ -1,95 +1,15 @@
 import json
 from http import HTTPStatus
-from typing import Iterable, Mapping, Union, Any
+from typing import Any, Iterable, Mapping, Union
 
+from amundsen_common.models.table import TableSchema
+from flasgger import swag_from
 from flask import current_app as app
 from flask import request
-from flask_restful import Resource, fields, reqparse, marshal
-from flasgger import swag_from
+from flask_restful import Resource, reqparse
 
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
-
-
-user_fields = {
-    'email': fields.String,
-    'first_name': fields.String,  # Optional
-    'last_name': fields.String  # Optional
-}
-
-table_reader_fields = {
-    'reader': fields.Nested(user_fields, attribute='user'),
-    'read_count': fields.Integer
-}
-
-column_stat_fields = {
-    'stat_type': fields.String,
-    'stat_val': fields.String,  # Optional
-    'start_epoch': fields.Integer,  # Optional
-    'end_epoch': fields.Integer,  # Optional
-
-}
-
-column_fields = {
-    'name': fields.String,
-    'description': fields.String,
-    'type': fields.String(attribute='col_type'),
-    'sort_order': fields.Integer,
-    # Can be an empty list
-    'stats': fields.List(fields.Nested(column_stat_fields))
-}
-
-watermark_fields = {
-    'watermark_type': fields.String,
-    'partition_key': fields.String,
-    'partition_value': fields.String,
-    'create_time': fields.String
-}
-
-tag_fields = {
-    'tag_type': fields.String,
-    'tag_name': fields.String
-}
-
-table_writer_fields = {
-    'application_url': fields.String(attribute='application_url'),
-    'name': fields.String,
-    'id': fields.String,
-    'description': fields.String  # Optional
-}
-
-source_fields = {
-    'source_type': fields.String,
-    'source': fields.String
-}
-
-programmatic_description_fields = {
-    'source': fields.String,
-    'text': fields.String
-}
-
-table_detail_fields = {
-    'database': fields.String,
-    'cluster': fields.String,
-    'schema': fields.String,
-    'table_name': fields.String(attribute='name'),
-    'table_description': fields.String(attribute='description'),  # Optional
-    'tags': fields.List(fields.Nested(tag_fields)),  # Can be an empty list
-    'badges': fields.List(fields.Nested(tag_fields)),  # Can be an empty list
-    # Can be an empty list
-    'table_readers': fields.List(fields.Nested(table_reader_fields)),
-    # Can be an empty list
-    'owners': fields.List(fields.Nested(user_fields)),
-    # Can be an empty list
-    'columns': fields.List(fields.Nested(column_fields)),
-    # Can be an empty list
-    'watermarks': fields.List(fields.Nested(watermark_fields)),
-    'table_writer': fields.Nested(table_writer_fields),  # Optional
-    'last_updated_timestamp': fields.Integer,  # Optional
-    'source': fields.Nested(source_fields),  # Optional
-    'is_view': fields.Boolean,  # Optional
-    'programmatic_descriptions': fields.List(fields.Nested(programmatic_description_fields))
-}
 
 
 class TableDetailAPI(Resource):
@@ -104,7 +24,8 @@ class TableDetailAPI(Resource):
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             table = self.client.get_table(table_uri=table_uri)
-            return marshal(table, table_detail_fields), HTTPStatus.OK
+            schema = TableSchema(strict=True)
+            return schema.dump(table).data, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'table_uri {} does not exist'.format(table_uri)}, HTTPStatus.NOT_FOUND

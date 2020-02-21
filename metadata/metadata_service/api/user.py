@@ -2,34 +2,15 @@ import logging
 from http import HTTPStatus
 from typing import Iterable, Mapping, Optional, Union
 
-from flask_restful import Resource, fields, marshal
-from flasgger import swag_from
+from amundsen_common.models.popular_table import PopularTableSchema
 from amundsen_common.models.user import UserSchema
+from flasgger import swag_from
+from flask_restful import Resource
+
 from metadata_service.api import BaseAPI
-from metadata_service.api.popular_tables import popular_table_fields
-from metadata_service.entity.popular_table import PopularTableSchema
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.util import UserResourceRel
-
-
-user_detail_fields = {
-    'email': fields.String,
-    'first_name': fields.String,  # Optional
-    'last_name': fields.String,  # Optional
-    'full_name': fields.String,  # Optional
-    'is_active': fields.Boolean,  # Optional
-    'github_username': fields.String,  # Optional
-    'slack_id': fields.String,  # Optional
-    'team_name': fields.String,  # Optional
-    'employee_type': fields.String,  # Optional
-    'manager_fullname': fields.String,  # Optional
-}
-
-table_list_fields = {
-    'table': fields.List(fields.Nested(popular_table_fields))
-}
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -67,7 +48,9 @@ class UserFollowsAPI(Resource):
         try:
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.follow)
-            return marshal(resources, table_list_fields), HTTPStatus.OK
+            if len(resources['table']) > 0:
+                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
+            return {'table': []}, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
@@ -229,7 +212,9 @@ class UserReadsAPI(Resource):
         """
         try:
             resources = self.client.get_frequently_used_tables(user_email=user_id)
-            return marshal(resources, table_list_fields), HTTPStatus.OK
+            if len(resources['table']) > 0:
+                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
+            return {'table': []}, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND

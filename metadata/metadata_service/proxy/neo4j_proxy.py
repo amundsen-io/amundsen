@@ -5,6 +5,7 @@ from random import randint
 from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
                     no_type_check)
 
+from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Reader, Source,
                                           Statistics, Table, Tag, User,
                                           Watermark, ProgrammaticDescription)
@@ -13,7 +14,6 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from neo4j.v1 import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
-from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy

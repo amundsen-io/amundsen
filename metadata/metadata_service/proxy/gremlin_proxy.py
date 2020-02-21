@@ -3,6 +3,7 @@ import logging
 from typing import Any, Dict, List, Mapping, Optional, Union
 
 import gremlin_python
+from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User as UserEntity
 from gremlin_python.driver.driver_remote_connection import \
@@ -10,7 +11,6 @@ from gremlin_python.driver.driver_remote_connection import \
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.process.graph_traversal import GraphTraversalSource
 
-from metadata_service.entity.popular_table import PopularTable
 from metadata_service.proxy import BaseProxy
 from metadata_service.util import UserResourceRel
 

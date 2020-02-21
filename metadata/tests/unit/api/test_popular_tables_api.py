@@ -7,8 +7,8 @@ from tests.unit.test_basics import BasicTestCase
 API_RESPONSE = [{'database': 'ministry',
                  'cluster': 'postgres',
                  'schema': 'ministry',
-                 'table_name': 'wizards',
-                 'table_description': 'all wizards'}]
+                 'name': 'wizards',
+                 'description': 'all wizards'}]
 
 CLIENT_RESPONSE = [{'database': 'ministry',
                     'cluster': 'postgres',

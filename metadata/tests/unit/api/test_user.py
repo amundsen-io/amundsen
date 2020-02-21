@@ -102,7 +102,7 @@ class UserReadsAPITest(unittest.TestCase):
     def test_get(self, mock_get_proxy_client: MagicMock) -> None:
         mock_client = mock.Mock()
         mock_get_proxy_client.return_value = mock_client
-        mock_client.get_table_by_user_relation.return_value = {'table': []}
+        mock_client.get_frequently_used_tables.return_value = {'table': []}
         api = UserReadsAPI()
         response = api.get(user_id='username')
         self.assertEqual(list(response)[1], HTTPStatus.OK)

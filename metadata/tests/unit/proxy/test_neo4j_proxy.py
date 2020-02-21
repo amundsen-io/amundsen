@@ -3,6 +3,7 @@ import textwrap
 import unittest
 from typing import Any, Dict  # noqa: F401
 
+from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Source,
                                           Statistics, Table, Tag, User,
                                           Watermark, ProgrammaticDescription)
@@ -12,7 +13,6 @@ from mock import MagicMock, patch
 from neo4j.v1 import GraphDatabase
 
 from metadata_service import create_app
-from metadata_service.entity.popular_table import PopularTable
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
