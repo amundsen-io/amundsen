@@ -61,7 +61,7 @@ components:
           type: string
           description: 'table database'
           example: 'db'
-        schema_name:
+        schema:
           type: string
           description: 'table schema'
           example: 'schema'
@@ -77,7 +77,7 @@ components:
               type: string
           description: 'list of table tags'
           example: ['tag2', 'tag1']
-        last_updated_epoch:
+        last_updated_timestamp:
           type: integer
           description: 'table last updated time'
           example: 1568814420

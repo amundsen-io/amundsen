@@ -223,10 +223,10 @@ class TestAtlasProxy(unittest.TestCase):
                                                description=self.entity1_description,
                                                cluster=self.cluster,
                                                database=self.entity_type,
-                                               schema_name=self.db,
+                                               schema=self.db,
                                                column_names=[],
                                                tags=[],
-                                               last_updated_epoch=123)])
+                                               last_updated_timestamp=123)])
         entity1 = self.to_class(self.entity1)
         entity_collection = MagicMock()
         entity_collection.entities = [entity1]
@@ -273,10 +273,10 @@ class TestAtlasProxy(unittest.TestCase):
                                                    description=self.entity1_description,
                                                    cluster=self.cluster,
                                                    database=self.entity_type,
-                                                   schema_name=self.db,
+                                                   schema=self.db,
                                                    column_names=[],
                                                    tags=[],
-                                                   last_updated_epoch=123)])
+                                                   last_updated_timestamp=123)])
             entity1 = self.to_class(self.entity1)
             entity_collection = MagicMock()
             entity_collection.entities = [entity1]
@@ -307,10 +307,10 @@ class TestAtlasProxy(unittest.TestCase):
                                                    description=self.entity1_description,
                                                    cluster=self.cluster,
                                                    database=self.entity_type,
-                                                   schema_name=self.db,
+                                                   schema=self.db,
                                                    column_names=[],
                                                    tags=['PII_DATA'],
-                                                   last_updated_epoch=123)])
+                                                   last_updated_timestamp=123)])
             self.proxy.atlas.search_dsl = self.dsl_inject(
                 [
                     (lambda dsl: "select count()" in dsl,

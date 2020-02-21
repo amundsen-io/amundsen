@@ -98,10 +98,10 @@ class AtlasProxy(BaseProxy):
                           description=table_attrs.get('description'),
                           cluster=db_cluster,
                           database=table.typeName,
-                          schema_name=db_name,
+                          schema=db_name,
                           column_names=columns,
                           tags=tags,
-                          last_updated_epoch=table_attrs.get('updateTime'))
+                          last_updated_timestamp=table_attrs.get('updateTime'))
 
             table_results.append(table)
 
@@ -120,7 +120,7 @@ class AtlasProxy(BaseProxy):
         https://atlas.apache.org/Search-Advanced.html
 
         :param query_term: search query term
-        :param field_name: field name to do the searching(e.g schema_name, tag_names)
+        :param field_name: field name to do the searching(e.g schema, tag_names)
         :param field_value: value for the field for filtering
         :param page_index: index of search page user is currently on
         :param index: search index (different resource corresponding to different index
@@ -208,10 +208,10 @@ class AtlasProxy(BaseProxy):
                           description=table_attrs.get('description') or table_attrs.get('comment'),
                           cluster=db_cluster,
                           database=table.typeName,
-                          schema_name=db_name,
+                          schema=db_name,
                           column_names=[],
                           tags=[],
-                          last_updated_epoch=table_attrs.get('updateTime'))
+                          last_updated_timestamp=table_attrs.get('updateTime'))
 
             tables.append(table)
 

@@ -8,6 +8,17 @@ class Base(metaclass=ABCMeta):
     """
 
     @abstractmethod
+    def get_id(cls) -> str:
+        # return a document id in ES
+        pass
+
+    @abstractmethod
     def get_attrs(cls) -> Set:
         # return a set of attributes for the class
-        ...
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_type() -> str:
+        # return a type string for the class
+        pass

@@ -15,7 +15,7 @@ DEFAULT_INDEX_MAP = textwrap.dedent("""
             }
           }
         },
-        "schema_name": {
+        "schema": {
           "type":"text",
           "analyzer": "simple",
           "fields": {
@@ -24,7 +24,7 @@ DEFAULT_INDEX_MAP = textwrap.dedent("""
             }
           }
         },
-        "last_updated_epoch": {
+        "last_updated_timestamp": {
           "type": "date",
           "format": "epoch_second"
         },
