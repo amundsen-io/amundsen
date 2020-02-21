@@ -14,12 +14,12 @@ table_fields = {
     "description": fields.String,
     "cluster": fields.String,
     "database": fields.String,
-    "schema_name": fields.String,
+    "schema": fields.String,
     "column_names": fields.List(fields.String),
     # tags can be empty list
     "tags": fields.List(fields.String),
     # last etl timestamp as epoch
-    "last_updated_epoch": fields.Integer,
+    "last_updated_timestamp": fields.Integer,
     "display_name": fields.String
 }
 

@@ -155,7 +155,7 @@ class ElasticsearchProxy(BaseProxy):
         indices = self._fetch_old_index(index)
 
         # set the document type
-        type = User.TYPE if index is USER_INDEX else Table.TYPE
+        type = User.get_type() if index is USER_INDEX else Table.get_type()
 
         for i in indices:
             # build a list of elasticsearch actions for bulk deletion
@@ -169,7 +169,7 @@ class ElasticsearchProxy(BaseProxy):
     def _build_index_actions(self, data: List[Table], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
         for item in data:
-            index_action = {'index': {'_index': index_key, '_type': item.TYPE, '_id': item.get_id()}}
+            index_action = {'index': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}}
             actions.append(index_action)
             actions.append(item.__dict__)
         return actions
@@ -178,7 +178,7 @@ class ElasticsearchProxy(BaseProxy):
         actions = list()
 
         for item in data:
-            actions.append({'update': {'_index': index_key, '_type': item.TYPE, '_id': item.get_id()}})
+            actions.append({'update': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}})
             actions.append({'doc': item.__dict__})
         return actions
 
@@ -268,7 +268,7 @@ class ElasticsearchProxy(BaseProxy):
         https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html?highlight=filter#dotted-fields
 
         :param query_term: search query term
-        :param field_name: field name to do the searching(e.g schema_name, tag_names)
+        :param field_name: field name to do the searching(e.g schema, tag_names)
         :param field_value: value for the field for filtering
         :param page_index: index of search page user is currently on
         :param index: current index for search. Provide different index for different resource.
@@ -283,7 +283,7 @@ class ElasticsearchProxy(BaseProxy):
 
         mapping = {
             'tag': 'tags',
-            'schema': 'schema_name.raw',
+            'schema': 'schema.raw',
             'table': 'name.raw',
             'column': 'column_names.raw',
             'database': 'database.raw'
@@ -298,7 +298,7 @@ class ElasticsearchProxy(BaseProxy):
                             "fields": ["display_name^1000",
                                        "name.raw^30",
                                        "name^5",
-                                       "schema_name^3",
+                                       "schema^3",
                                        "description^3",
                                        "column_names^2",
                                        "column_descriptions", "tags"],
@@ -359,7 +359,7 @@ class ElasticsearchProxy(BaseProxy):
                         "fields": ["display_name^1000",
                                    "name.raw^30",
                                    "name^5",
-                                   "schema_name^3",
+                                   "schema^3",
                                    "description^3",
                                    "column_names^2",
                                    "column_descriptions", "tags"],

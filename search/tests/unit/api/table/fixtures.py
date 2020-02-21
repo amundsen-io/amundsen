@@ -8,10 +8,10 @@ def mock_proxy_results():
                  cluster='clust',
                  database='db',
                  display_name=None,
-                 schema_name='schema',
+                 schema='schema',
                  column_names=['col1', 'col2'],
                  tags=['tag'],
-                 last_updated_epoch=1568324871)
+                 last_updated_timestamp=1568324871)
 
 
 def mock_json_response():
@@ -22,10 +22,10 @@ def mock_json_response():
         "display_name": None,
         "cluster": "clust",
         "database": "db",
-        "schema_name": "schema",
+        "schema": "schema",
         "column_names": ["col1", "col2"],
         "tags": ['tag'],
-        "last_updated_epoch": 1568324871,
+        "last_updated_timestamp": 1568324871,
     }
 
 
@@ -37,8 +37,8 @@ def default_json_response():
         "cluster": None,
         "database": None,
         "display_name": None,
-        "schema_name": None,
+        "schema": None,
         "column_names": None,
         "tags": None,
-        "last_updated_epoch": 0,
+        "last_updated_timestamp": 0,
     }
