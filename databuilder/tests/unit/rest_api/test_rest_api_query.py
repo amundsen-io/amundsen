@@ -71,3 +71,64 @@ class TestRestApiQuery(unittest.TestCase):
 
             for actual in query.execute():
                 self.assertDictEqual(expected.pop(0), actual)
+
+    def test_compute_subresult_single_field(self):
+        sub_records = RestApiQuery._compute_sub_records(result_list=['1', '2', '3'], field_names=['foo'])
+
+        expected_records = [
+            ['1'], ['2'], ['3']
+        ]
+
+        assert expected_records == sub_records
+
+        sub_records = RestApiQuery._compute_sub_records(result_list=['1', '2', '3'], field_names=['foo'],
+                                                        json_path_contains_or=True)
+
+        assert expected_records == sub_records
+
+    def test_compute_subresult_multiple_fields_json_path_and_expression(self):
+        sub_records = RestApiQuery._compute_sub_records(
+            result_list=['1', 'a', '2', 'b', '3', 'c'], field_names=['foo', 'bar'])
+
+        expected_records = [
+            ['1', 'a'], ['2', 'b'], ['3', 'c']
+        ]
+
+        assert expected_records == sub_records
+
+        sub_records = RestApiQuery._compute_sub_records(
+            result_list=['1', 'a', 'x', '2', 'b', 'y', '3', 'c', 'z'], field_names=['foo', 'bar', 'baz'])
+
+        expected_records = [
+            ['1', 'a', 'x'], ['2', 'b', 'y'], ['3', 'c', 'z']
+        ]
+
+        assert expected_records == sub_records
+
+    def test_compute_subresult_multiple_fields_json_path_or_expression(self):
+        sub_records = RestApiQuery._compute_sub_records(
+            result_list=['1', '2', '3', 'a', 'b', 'c'],
+            field_names=['foo', 'bar'],
+            json_path_contains_or=True
+        )
+
+        expected_records = [
+            ['1', 'a'], ['2', 'b'], ['3', 'c']
+        ]
+
+        self.assertEqual(expected_records, sub_records)
+
+        sub_records = RestApiQuery._compute_sub_records(
+            result_list=['1', '2', '3', 'a', 'b', 'c', 'x', 'y', 'z'],
+            field_names=['foo', 'bar', 'baz'],
+            json_path_contains_or=True)
+
+        expected_records = [
+            ['1', 'a', 'x'], ['2', 'b', 'y'], ['3', 'c', 'z']
+        ]
+
+        self.assertEqual(expected_records, sub_records)
+
+
+if __name__ == '__main__':
+    unittest.main()

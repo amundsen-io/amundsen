@@ -1,14 +1,11 @@
 import logging
 
 from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
-from requests.auth import HTTPBasicAuth
 from typing import Any  # noqa: F401
 
-from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.extractor.restapi.rest_api_extractor import RestAPIExtractor, REST_API_QUERY, MODEL_CLASS, \
-    STATIC_RECORD_DICT
-from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
+from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
+from databuilder.extractor.restapi.rest_api_extractor import MODEL_CLASS
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
 # CONFIG KEYS
@@ -39,18 +36,14 @@ class ModeDashboardExtractor(Extractor):
         self._conf = conf
 
         restapi_query = self._build_restapi_query()
-        self._extractor = RestAPIExtractor()
-        rest_api_extractor_conf = Scoped.get_scoped_conf(conf, self._extractor.get_scope()).with_fallback(
-            ConfigFactory.from_dict(
-                {
-                    REST_API_QUERY: restapi_query,
-                    MODEL_CLASS: 'databuilder.models.dashboard_metadata.DashboardMetadata',
-                    STATIC_RECORD_DICT: {'product': 'mode'}
-                }
+        self._extractor = ModeDashboardUtils.create_mode_rest_api_extractor(
+            restapi_query=restapi_query,
+            conf=self._conf.with_fallback(
+                ConfigFactory.from_dict(
+                    {MODEL_CLASS: 'databuilder.models.dashboard_metadata.DashboardMetadata', }
+                )
             )
         )
-
-        self._extractor.init(conf=rest_api_extractor_conf)
 
     def extract(self):
         # type: () -> Any
@@ -70,23 +63,11 @@ class ModeDashboardExtractor(Extractor):
         """
         # type: () -> RestApiQuery
 
-        spaces_url_template = 'https://app.mode.com/api/{organization}/spaces?filter=all'
+        # https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace
         reports_url_template = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
 
-        # Seed query record for next query api to join with
-        seed_record = [{'organization': self._conf.get_string(ORGANIZATION)}]
-        seed_query = RestApiQuerySeed(seed_record=seed_record)
-
-        params = {'auth': HTTPBasicAuth(self._conf.get_string(MODE_ACCESS_TOKEN),
-                                        self._conf.get_string(MODE_PASSWORD_TOKEN))}
-
-        # Spaces
-        # JSONPATH expression. it goes into array which is located in _embedded.spaces and then extracts token, name,
-        # and description
-        json_path = '_embedded.spaces[*].[token,name,description]'
-        field_names = ['dashboard_group_id', 'dashboard_group', 'dashboard_group_description']
-        spaces_query = RestApiQuery(query_to_join=seed_query, url=spaces_url_template, params=params,
-                                    json_path=json_path, field_names=field_names)
+        spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
+        params = ModeDashboardUtils.get_auth_params(conf=self._conf)
 
         # Reports
         # JSONPATH expression. it goes into array which is located in _embedded.reports and then extracts token, name,
