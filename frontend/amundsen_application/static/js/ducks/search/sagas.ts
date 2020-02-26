@@ -40,7 +40,7 @@ import {
   setPageIndex, setResource,
 } from './reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
-import { BrowserHistory, updateSearchUrl } from 'utils/navigation-utils';
+import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
 
 export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
   const { term } = action.payload;

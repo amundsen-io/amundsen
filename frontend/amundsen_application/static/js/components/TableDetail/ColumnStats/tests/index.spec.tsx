@@ -25,14 +25,6 @@ describe('ColumnStats', () => {
   const { wrapper, props } = setup();
   const instance = wrapper.instance();
 
-  describe('formatDate', () => {
-    it('formats a date in the correct format', () => {
-      const epochTime = 1571616000;
-      const expectedDateString = "Oct 21, 2019";
-      expect(instance.formatDate(epochTime)).toBe(expectedDateString);
-    });
-  });
-
   describe('getStatsInfoText', () => {
     it('generates correct info text for a daily partition', () => {
       const startEpoch = 1568160000;

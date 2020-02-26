@@ -56,6 +56,7 @@ class MetadataTest(unittest.TestCase):
             'database': 'test_db',
             'is_view': False,
             'key': 'test_db://test_cluster.test_schema/test_table',
+            'last_updated_timestamp': 1563872712,
             'owners': [],
             'schema': 'test_schema',
             'name': 'test_table',

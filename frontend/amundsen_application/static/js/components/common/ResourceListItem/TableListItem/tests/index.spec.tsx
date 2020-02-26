@@ -8,6 +8,7 @@ import TableListItem, { TableListItemProps } from '../';
 import { ResourceType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
+import { formatDate } from 'utils/dateUtils';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
@@ -40,14 +41,6 @@ describe('TableListItem', () => {
     const wrapper = shallow<TableListItem>(<TableListItem {...props} />);
     return { props, wrapper };
   };
-
-  /* Note: Jest is configured to use UTC */
-  describe('getDateLabel', () => {
-    it('getDateLabel returns correct string', () => {
-      const { props, wrapper } = setup();
-      expect(wrapper.instance().getDateLabel()).toEqual('Mar 29, 2019');
-    });
-  });
 
   describe('getLink', () => {
     it('getLink returns correct string', () => {
@@ -139,7 +132,8 @@ describe('TableListItem', () => {
         });
 
         it('renders getDateLabel value', () => {
-          expect(resourceBadges.children().at(0).children().at(1).text()).toEqual(wrapper.instance().getDateLabel());
+          const expectedString = formatDate({ epochTimestamp: props.table.last_updated_timestamp });
+          expect(resourceBadges.children().at(0).children().at(1).text()).toEqual(expectedString);
         });
       });
 
@@ -160,7 +154,7 @@ describe('TableListItem', () => {
       });
 
       it('renders correct end icon', () => {
-        const expectedClassName = 'icon icon-right'
+        const expectedClassName = 'icon icon-right';
         expect(resourceBadges.find('img').props().className).toEqual(expectedClassName);
       });
     });

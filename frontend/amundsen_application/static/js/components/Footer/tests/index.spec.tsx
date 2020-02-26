@@ -1,5 +1,5 @@
 import * as React from 'react';
-import moment from 'moment-timezone';
+import * as moment from 'moment-timezone';
 import { mount } from 'enzyme';
 
 import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '../';
