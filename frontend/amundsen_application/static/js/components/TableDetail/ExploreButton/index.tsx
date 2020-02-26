@@ -1,39 +1,28 @@
 import * as React from 'react';
 
-import AppConfig from 'config/config';
 import { logClick } from 'ducks/utilMethods';
 import { TableMetadata } from 'interfaces';
+import { exploreEnabled, generateExploreUrl } from 'config/config-utils';
 
 export interface ExploreButtonProps {
   tableData: TableMetadata;
 }
 
-export class ExploreButton extends React.Component<ExploreButtonProps> {
+class ExploreButton extends React.Component<ExploreButtonProps> {
   constructor(props) {
     super(props);
   }
 
-  generateUrl() {
-    const tableData = this.props.tableData;
-    const partition = tableData.partition;
-
-    if (partition.is_partitioned) {
-      return AppConfig.tableProfile.exploreUrlGenerator(
-        tableData.database, tableData.cluster, tableData.schema, tableData.name, partition.key, partition.value);
-    }
-    return AppConfig.tableProfile.exploreUrlGenerator(
-      tableData.database, tableData.cluster, tableData.schema, tableData.name);
-  }
-
   render() {
-    if (!AppConfig.tableProfile.isExploreEnabled) {
+    const url = generateExploreUrl(this.props.tableData);
+    if (!url || !exploreEnabled()) {
       return null;
     }
 
     return (
       <a
         className="btn btn-default btn-lg"
-        href={ this.generateUrl() }
+        href={ url }
         role="button"
         target="_blank"
         id="explore-sql"

@@ -1,5 +1,6 @@
 import AppConfig from 'config/config';
 import { BadgeStyleConfig, BadgeStyle } from 'config/config-types';
+import { TableMetadata } from 'interfaces/TableMetadata';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 
@@ -80,4 +81,27 @@ export function showAllTags(): boolean {
  */
 export function getCuratedTags(): string[] {
   return AppConfig.browse.curatedTags;
+}
+
+/**
+ * Returns whether to enable the table `explore` feature
+ */
+export function exploreEnabled(): boolean {
+  return AppConfig.tableProfile.isExploreEnabled;
+}
+
+/**
+ * Generates the explore URL from a table metadata object
+ *
+ * @param tableData
+ */
+export function generateExploreUrl(tableData: TableMetadata): string {
+  const partition = tableData.partition;
+
+    if (partition.is_partitioned) {
+      return AppConfig.tableProfile.exploreUrlGenerator(
+        tableData.database, tableData.cluster, tableData.schema, tableData.name, partition.key, partition.value);
+    }
+    return AppConfig.tableProfile.exploreUrlGenerator(
+      tableData.database, tableData.cluster, tableData.schema, tableData.name);
 }
