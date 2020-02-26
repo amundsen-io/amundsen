@@ -22,7 +22,7 @@ import TableDetail from './components/TableDetail';
 
 import rootReducer from './ducks/rootReducer';
 import rootSaga from './ducks/rootSaga';
-import { BrowserHistory } from 'utils/navigation-utils';
+import { BrowserHistory } from 'utils/navigationUtils';
 
 const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise, sagaMiddleware)(createStore);

@@ -60,10 +60,10 @@ import {
   SubmitSearch,
   UrlDidUpdate,
 } from '../types';
-import * as NavigationUtils from '../../../utils/navigation-utils';
+import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
 
-import globalState from '../../../fixtures/globalState';
+import globalState from 'fixtures/globalState';
 
 const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;

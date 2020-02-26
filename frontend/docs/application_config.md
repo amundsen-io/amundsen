@@ -18,6 +18,16 @@ _TODO: Please add doc_
 1. Add your logo to the folder in `amundsen_application/static/images/`.
 2. Set the the `logoPath` key on the  to the location of your image.
 
+## Date
+This config allows you to specify various date formats across the app. There are three date formats in use shown below. These correspond to the `formatDate`, `formatDateTimeShort` and `formatDateTimeLong` utility functions. 
+
+    default: 'MMM DD, YYYY'
+    dateTimeShort: 'MMM DD, YYYY ha z'
+    dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a'
+
+Reference for formatting: https://devhints.io/datetime#momentjs-format
+
+
 ## Google Analytics
 
 _TODO: Please add doc_

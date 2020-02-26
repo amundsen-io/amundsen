@@ -8,6 +8,7 @@ import { TableResource } from 'interfaces';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getDatabaseDisplayName, getDatabaseIconClass } from 'config/config-utils';
+import { formatDate } from 'utils/dateUtils';
 
 export interface TableListItemProps {
   table: TableResource;
@@ -18,12 +19,6 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
   constructor(props) {
     super(props);
   }
-
-  getDateLabel = () => {
-    const { table } = this.props;
-    const dateTokens = new Date(table.last_updated_timestamp * 1000).toDateString().split(' ');
-    return `${dateTokens[1]} ${dateTokens[2]}, ${dateTokens[3]}`;
-  };
 
   getLink = () => {
     const { table, logging } = this.props;
@@ -37,7 +32,6 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
 
   render() {
     const { table } = this.props;
-    const hasLastUpdated = !!table.last_updated_timestamp;
 
     return (
       <li className="list-group-item">
@@ -59,11 +53,11 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
           </div>
           <div className="resource-badges">
             {
-              hasLastUpdated &&
+              !!table.last_updated_timestamp &&
               <div>
                 <div className="title-3">Last Updated</div>
                 <div className="body-secondary-3">
-                  { this.getDateLabel() }
+                  { formatDate({ epochTimestamp: table.last_updated_timestamp }) }
                 </div>
               </div>
             }

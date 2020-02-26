@@ -1,7 +1,7 @@
 import * as React from 'react';
-import * as moment from 'moment-timezone';
 
 import { TableColumnStats } from 'interfaces/index';
+import { formatDate } from 'utils/dateUtils';
 
 import './styles.scss';
 
@@ -14,13 +14,9 @@ export class ColumnStats extends React.Component<ColumnStatsProps> {
     super(props);
   }
 
-  formatDate = (unixEpochSeconds) => {
-    return moment(unixEpochSeconds * 1000).format("MMM DD, YYYY");
-  };
-
   getStatsInfoText = (startEpoch: number, endEpoch: number) => {
-    const startDate = startEpoch ? this.formatDate(startEpoch) : null;
-    const endDate = endEpoch ? this.formatDate(endEpoch) : null;
+    const startDate = startEpoch ? formatDate({ epochTimestamp: startEpoch }) : null;
+    const endDate = endEpoch ? formatDate({ epochTimestamp: endEpoch }) : null;
 
     let infoText = 'Stats reflect data collected';
     if (startDate && endDate) {
