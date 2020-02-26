@@ -50,6 +50,7 @@ spec:
         ports:
         - containerPort: 7474
         - containerPort: 7687
+        - containerPort: 1337
         env:
           - name: NEO4J_AUTH
             value: "neo4j/test"

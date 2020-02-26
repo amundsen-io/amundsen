@@ -11,6 +11,8 @@ data:
     dbms.connector.bolt.enabled=true
     dbms.connector.http.enabled=true
     dbms.connector.https.enabled=true
+    dbms.shell.enabled=true
+    dbms.shell.host=0.0.0.0
     dbms.connectors.default_listen_address=0.0.0.0
     dbms.directories.import=/mnt
     dbms.jvm.additional=-Djdk.tls.ephemeralDHKeySize=2048

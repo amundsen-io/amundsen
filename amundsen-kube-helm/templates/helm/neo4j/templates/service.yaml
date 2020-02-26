@@ -26,5 +26,9 @@ spec:
       name: {{ .Chart.Name }}-{{ .Values.environment }}-bolt
       targetPort: 7687
       nodePort: 30687
+    - port: 1337
+      name: {{ .Chart.Name }}-{{ .Values.environment }}-shell
+      targetPort: 1337
+      nodePort: 31337
   selector:
     run: {{ .Chart.Name }}
