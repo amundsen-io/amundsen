@@ -4,7 +4,7 @@ import logging
 import requests
 from jsonpath_rw import parse
 from retrying import retry
-from typing import List, Dict, Any, Union  # noqa: F401
+from typing import List, Dict, Any, Union, Iterator, Callable  # noqa: F401
 
 from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 
@@ -56,6 +56,7 @@ class RestApiQuery(BaseRestApiQuery):
                  fail_no_result=False,  # type: bool
                  skip_no_result=False,  # type: bool
                  json_path_contains_or=False,  # type: bool
+                 can_skip_failure=None,  # type: Callable
                  ):
         # type: (...) -> None
         """
@@ -107,6 +108,8 @@ class RestApiQuery(BaseRestApiQuery):
 
             ["1", "2", "baz", "box"]
 
+        :param can_skip_failure A function that can determine if it can skip the failure. See BaseFailureHandler for
+        the function interface
 
         """
         self._inner_rest_api_query = query_to_join
@@ -121,9 +124,10 @@ class RestApiQuery(BaseRestApiQuery):
         self._skip_no_result = skip_no_result
         self._field_names = field_names
         self._json_path_contains_or = json_path_contains_or
+        self._can_skip_failure = can_skip_failure
         self._more_pages = False
 
-    def execute(self):
+    def execute(self):  # noqa: C901
         # type: () -> Iterator[Dict[str, Any]]
         self._authenticate()
 
@@ -134,7 +138,13 @@ class RestApiQuery(BaseRestApiQuery):
                 first_try = False
 
                 url = self._preprocess_url(record=record_dict)
-                response = self._send_request(url=url)
+
+                try:
+                    response = self._send_request(url=url)
+                except Exception as e:
+                    if self._can_skip_failure and self._can_skip_failure(exception=e):
+                        continue
+                    raise e
 
                 response_json = response.json()  # type: Union[List[Any], Dict[str, Any]]
 
@@ -193,7 +203,7 @@ class RestApiQuery(BaseRestApiQuery):
         return response
 
     @classmethod
-    def _compute_sub_records(self,
+    def _compute_sub_records(cls,
                              result_list,  # type: List
                              field_names,  # type: List[str]
                              json_path_contains_or=False,  # type: bool
