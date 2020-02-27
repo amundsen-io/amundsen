@@ -57,27 +57,27 @@ class HiveTableLastUpdatedExtractor(Extractor):
     """
     PARTITION_TABLE_SQL_STATEMENT = """
     SELECT
-    DBS.NAME as schema,
+    DBS.NAME as `schema`,
     TBL_NAME as table_name,
     MAX(PARTITIONS.CREATE_TIME) as last_updated_time
     FROM TBLS
     JOIN DBS ON TBLS.DB_ID = DBS.DB_ID
     JOIN PARTITIONS ON TBLS.TBL_ID = PARTITIONS.TBL_ID
     {where_clause_suffix}
-    GROUP BY schema, table_name
-    ORDER BY schema, table_name;
+    GROUP BY `schema`, table_name
+    ORDER BY `schema`, table_name;
     """
 
     NON_PARTITIONED_TABLE_SQL_STATEMENT = """
     SELECT
-    DBS.NAME as schema,
+    DBS.NAME as `schema`,
     TBL_NAME as table_name,
     SDS.LOCATION as location
     FROM TBLS
     JOIN DBS ON TBLS.DB_ID = DBS.DB_ID
     JOIN SDS ON TBLS.SD_ID = SDS.SD_ID
     {where_clause_suffix}
-    ORDER BY schema, table_name;
+    ORDER BY `schema`, table_name;
     """
 
     # Additional where clause for non partitioned table SQL
