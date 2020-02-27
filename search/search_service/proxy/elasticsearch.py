@@ -396,8 +396,8 @@ class ElasticsearchProxy(BaseProxy):
                 "query": {
                     "multi_match": {
                         "query": query_term,
-                        "fields": ["name.raw^30",
-                                   "name^5",
+                        "fields": ["full_name.raw^30",
+                                   "full_name^5",
                                    "first_name.raw^5",
                                    "last_name.raw^5",
                                    "first_name^3",
