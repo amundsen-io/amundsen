@@ -20,3 +20,26 @@ def custom_route():
 Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications. For these features a custom implementation of [base_mail_client](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/base/base_mail_client.py) must be mapped to the `MAIL_CLIENT` configuration variable.
 
 To fully enable these features in the UI, the application configuration variables for these features must also be set to true. Please see this [entry](application_config.md#mail-client-features) in our application configuration doc for further information.
+
+## Issue Tracking Integration Features
+Amundsen has a feature to allow display of associated tickets within the table detail view. The feature both displays 
+open tickets and allows users to report new tickets associated with the table. These tickets must contain the 
+`table_uri` within the ticket text in order to be displayed; the `table_uri` is automatically added to tickets created 
+via the feature. Tickets are displayed from most recent to oldest, and currently only open tickets are displayed. Currently only
+ [JIRA](https://www.atlassian.com/software/jira) is supported. The UI must also be enabled to use this feature, please 
+ see configuration notes [here](application_config.md#issue-tracking-features). 
+
+There are several configuration 
+settings in `config.py` that should be set in order to use this feature. 
+
+Here are the settings and what they should be set to
+```python
+    ISSUE_TRACKER_URL = None  # type: str (Your JIRA environment, IE 'https://jira.net') 
+    ISSUE_TRACKER_USER = None  # type: str (Recommended to be a service account)
+    ISSUE_TRACKER_PASSWORD = None  # type: str 
+    ISSUE_TRACKER_PROJECT_ID = None  # type: int (Project ID for the project you would like JIRA tickets to be created in) 
+    ISSUE_TRACKER_CLIENT = None  # type: str (Fully qualified class name and path) 
+    ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool (Enabling the feature, must be set to True) 
+    ISSUE_TRACKER_MAX_RESULTS = None  # type: int (Max issues to display at a time)
+
+```
