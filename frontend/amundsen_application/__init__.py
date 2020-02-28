@@ -4,7 +4,8 @@ import logging
 import logging.config
 import os
 
-from flask import Flask
+from flask import Flask, Blueprint
+from flask_restful import Api
 
 from amundsen_application.api import init_routes
 from amundsen_application.api.v0 import blueprint
@@ -14,6 +15,8 @@ from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.search.v0 import search_blueprint
+from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
+
 
 app_wrapper_class = Flask
 
@@ -52,6 +55,14 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
     logging.info('Using metadata service at {}'.format(app.config.get('METADATASERVICE_BASE')))
     logging.info('Using search service at {}'.format(app.config.get('SEARCHSERVICE_BASE')))
 
+    api_bp = Blueprint('api', __name__)
+    api = Api(api_bp)
+
+    api.add_resource(IssuesAPI,
+                     '/api/issue/issues', endpoint='issues')
+    api.add_resource(IssueAPI,
+                     '/api/issue/issue', endpoint='issue')
+
     app.register_blueprint(blueprint)
     app.register_blueprint(announcements_blueprint)
     app.register_blueprint(log_blueprint)
@@ -59,6 +70,7 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
     app.register_blueprint(metadata_blueprint)
     app.register_blueprint(preview_blueprint)
     app.register_blueprint(search_blueprint)
+    app.register_blueprint(api_bp)
     init_routes(app)
 
     init_custom_routes = app.config.get('INIT_CUSTOM_ROUTES')

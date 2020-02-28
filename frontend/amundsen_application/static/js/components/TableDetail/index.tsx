@@ -21,15 +21,17 @@ import FrequentUsers from 'components/TableDetail/FrequentUsers';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import LineageLink from 'components/TableDetail/LineageLink';
 import OwnerEditor from 'components/TableDetail/OwnerEditor';
+import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import SourceLink from 'components/TableDetail/SourceLink';
 import TableDescEditableText from 'components/TableDetail/TableDescEditableText';
+import TableIssues from 'components/TableDetail/TableIssues';
 import WatermarkLabel from 'components/TableDetail/WatermarkLabel';
 import WriterLink from 'components/TableDetail/WriterLink';
 import TagInput from 'components/Tags/TagInput';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
 import { EditableSection } from 'components/TableDetail/EditableSection';
-import { getDatabaseDisplayName, getDatabaseIconClass, notificationsEnabled } from 'config/config-utils';
+import { getDatabaseDisplayName, getDatabaseIconClass, notificationsEnabled, issueTrackingEnabled } from 'config/config-utils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import './styles';
@@ -164,10 +166,9 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
           </header>
           <main className="column-layout-1">
             <section className="left-panel">
-              {/*
-                TODO - Add a banner here if necessary
-                <section className="banner">optional banner</section>
-              */}
+              {}
+              <TableIssues tableKey={ this.key }/>
+
               <EditableSection title="Description">
                 <TableDescEditableText
                   maxLength={ AppConfig.editableText.tableDescLength }
@@ -175,7 +176,10 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
                   editable={ data.is_editable }
                 />
               </EditableSection>
-              { notificationsEnabled() && <RequestDescriptionText/> }
+              <span>
+                { notificationsEnabled() && <RequestDescriptionText/> } 
+                { issueTrackingEnabled() && <ReportTableIssue tableKey={ this.key } tableName={ this.getDisplayName() } />}
+              </span>
               <section className="column-layout-2">
                 <section className="left-panel">
                   {

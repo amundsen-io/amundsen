@@ -63,6 +63,13 @@ export function indexUsersEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not the issue tracking feature should be shown
+ */
+export function issueTrackingEnabled(): boolean {
+  return AppConfig.issueTracking.enabled; 
+}
+
+/**
  * Returns whether or not notification features should be enabled
  */
 export function notificationsEnabled(): boolean {

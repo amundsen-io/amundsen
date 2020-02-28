@@ -32,6 +32,12 @@ const globalState: GlobalState = {
   feedback: {
     sendState: SendingState.IDLE,
   },
+  issue: {
+    issues: [], 
+    remainingIssuesUrl: null, 
+    remainingIssues: 0,
+    isLoading: true
+  }, 
   notification: {
     requestIsOpen: false,
     sendState: SendingState.IDLE,

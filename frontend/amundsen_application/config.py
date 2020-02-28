@@ -35,6 +35,17 @@ class Config:
     # Initialize custom routes
     INIT_CUSTOM_ROUTES = None  # type: Callable[[Flask], None]
 
+    # Settings for Issue tracker integration
+    ISSUE_TRACKER_URL = None  # type: str
+    ISSUE_TRACKER_USER = None  # type: str
+    ISSUE_TRACKER_PASSWORD = None  # type: str
+    ISSUE_TRACKER_PROJECT_ID = None  # type: int
+    # Maps to a class path and name
+    ISSUE_TRACKER_CLIENT = None  # type: str
+    ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool
+    # Max issues to display at a time
+    ISSUE_TRACKER_MAX_RESULTS = None  # type: int
+
 
 class LocalConfig(Config):
     DEBUG = False
@@ -85,6 +96,12 @@ class LocalConfig(Config):
 class TestConfig(LocalConfig):
     AUTH_USER_METHOD = get_test_user
     NOTIFICATIONS_ENABLED = True
+    ISSUE_TRACKER_URL = 'test_url'
+    ISSUE_TRACKER_USER = 'test_user'
+    ISSUE_TRACKER_PASSWORD = 'test_password'
+    ISSUE_TRACKER_PROJECT_ID = 1
+    ISSUE_TRACKER_CLIENT_ENABLED = True
+    ISSUE_TRACKER_MAX_RESULTS = 3
 
 
 class TestNotificationsDisabledConfig(LocalConfig):

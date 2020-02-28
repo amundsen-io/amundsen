@@ -6,3 +6,4 @@ export * from './Resources';
 export * from './TableMetadata';
 export * from './Tags';
 export * from './User';
+export * from './Issue'; 

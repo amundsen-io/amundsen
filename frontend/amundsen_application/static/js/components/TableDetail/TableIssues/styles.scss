@@ -1,0 +1,36 @@
+@import 'variables';
+
+.table-issues {
+
+  .issue-banner {
+    border-radius: 4px;
+    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.12), 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+    height: 40px;
+    margin: 8px 0;
+    padding: 8px 16px;
+
+    &:first-child {
+      margin-top: 24px;
+    }
+  }
+  .icon-red-triangle-warning  {
+    background: $red-triangle-warning;
+    margin: 0px 5px 0px 0px;
+  }
+  .table-issue-link {
+    margin: 0px 5px 0px 0px; 
+  }
+  .issue-title-name {
+    max-width: 390px; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display:inline-block;
+  }
+  .issue-title-display-text {
+    display: inline-flex; 
+  }
+  .table-issue-more-issues {
+    margin: 0px 2px 0px 2px; 
+  }
+}

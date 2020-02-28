@@ -23,6 +23,9 @@ const configDefault: AppConfig = {
   indexUsers: {
     enabled: false,
   },
+  issueTracking: {
+    enabled: false
+  },
   logoPath: null,
   mailClientFeatures: {
     feedbackEnabled: false,
