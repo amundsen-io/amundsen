@@ -1,0 +1,1 @@
+export const SEE_ADDITIONAL_ISSUES_TEXT = "See additional issues associated with this table"; 

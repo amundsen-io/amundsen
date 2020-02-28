@@ -69,3 +69,10 @@ marshmallow-annotations==2.4.0
 responses==0.9.0
 
 amundsen-common==0.2.2
+
+# Library for rest endpoints with Flask
+# Upstream url: https://github.com/flask-restful/flask-restful
+flask-restful==0.3.7
+
+# SDK for JIRA
+jira==2.0.0

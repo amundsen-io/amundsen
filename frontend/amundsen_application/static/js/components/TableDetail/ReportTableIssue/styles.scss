@@ -1,0 +1,37 @@
+@import 'variables';
+
+.report-table-issue-link {
+  font-size: 16px;
+  text-decoration: none;
+
+  &:hover,
+  &:visited,
+  &:active,
+  &:link {
+    text-decoration: none;
+  }
+}
+
+
+.report-table-issue-modal {
+  background-color: $white;
+  height: auto;
+  min-height: 300px;
+  padding: 32px;
+  width: 400px;
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
+  border-radius: 6px;
+  bottom: 100px;
+  display: block;
+  left: 25px;
+  position: fixed;
+  z-index: 6;
+
+
+  .btn-close {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+  }
+
+}

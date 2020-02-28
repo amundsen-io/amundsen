@@ -13,7 +13,7 @@ from amundsen_application.models.user import load_user, dump_user
 
 LOGGER = logging.getLogger(__name__)
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint('main', __name__, url_prefix='/api')
 
 
 @blueprint.route('/auth_user', methods=['GET'])
