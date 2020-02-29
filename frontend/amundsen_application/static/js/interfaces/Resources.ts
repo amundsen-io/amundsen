@@ -1,4 +1,4 @@
-import { PeopleUser } from 'interfaces/User';
+import { PeopleUser } from './User';
 
 export enum ResourceType {
   table = "table",

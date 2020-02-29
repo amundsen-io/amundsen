@@ -1,3 +1,5 @@
+import { FilterType, ResourceType } from '../interfaces';
+
 /**
  * AppConfig and AppConfigCustom should share the same definition, except each field in AppConfigCustom
  * is optional. If you choose to override one of the configs, you must provide the full type definition
@@ -31,6 +33,7 @@ export interface AppConfigCustom {
   logoPath?: string;
   mailClientFeatures?: MailClientFeaturesConfig;
   navLinks?: Array<LinkConfig>;
+  resourceConfig?: ResourceConfig;
   tableLineage?: TableLineageConfig;
   tableProfile?: TableProfileConfig;
 }
@@ -56,6 +59,72 @@ interface GoogleAnalyticsConfig {
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
+}
+
+/**
+ * The data shape of MultiSelectFilterCategory.options
+ *
+ * displaName - The display name of the multi-select filter option
+ * value - The value the option represents
+ */
+interface MultiSelectFilterOptions {
+  displayName?: string;
+  value: string;
+}
+
+/**
+ * Base interface for all possible FilterConfig objects
+ *
+ * categoryId - The filter category that this config represents, e.g. 'database' or 'badges'
+ * displayName - The displayName for the filter category
+ * helpText - An option string of text that will render in the filter UI for the filter category
+ * type - The FilterType for this filter category
+ */
+interface BaseFilterCategory {
+  categoryId: string;
+  displayName: string;
+  helpText?: string;
+  type: FilterType;
+}
+
+/**
+ * Interface for filter categories which allow multiple values to be selected by the user
+ */
+interface MultiSelectFilterCategory extends BaseFilterCategory {
+  type: FilterType.CHECKBOX_SELECT;
+  options: MultiSelectFilterOptions[];
+}
+
+/**
+ * Interface for filter categories which allow only one value to be entered by the user
+ */
+interface SingleFilterCategory extends BaseFilterCategory {
+  type: FilterType.INPUT_SELECT;
+}
+
+/**
+ * Configures filter categories for each resource
+ */
+export type FilterConfig = (MultiSelectFilterCategory|SingleFilterCategory)[];
+
+/**
+ * Base interface for all possible ResourceConfig objects
+ *
+ * displayName - The name displayed throughout the application to refer to this resource type
+ * filterCategories - Optional configuration for any filters that can be applied to this resource
+ */
+interface BaseResourceConfig {
+  displayName: string;
+  filterCategories?: FilterConfig;
+}
+
+/**
+ * Interface for table resource types
+ */
+interface TableResourceConfig extends BaseResourceConfig {
+  supportedDatabases: {
+    [id: string]: DatabaseConfig
+  };
 }
 
 export enum BadgeStyle {
@@ -94,20 +163,21 @@ interface DateFormatConfig {
 /** ResourceConfig - For customizing values related to how various resources
  *                   are displayed in the UI.
  *
- * datasets - A map of each dataset id to an optional display name or icon class
+ * A map of each resource type to its configuration
  */
 interface ResourceConfig {
-  datasets: { [id: string]: DatasetConfig }
+  [ResourceType.table]: TableResourceConfig;
+  [ResourceType.user]: BaseResourceConfig;
 }
 
-/** DatasetConfig - For customizing values related to how each dataset resource
+/** DatabaseConfig - For customizing values related to how each database resource
  *                  is displayed in the UI.
  *
- * displayName - An optional display name for this dataset source
- * iconClass - An option icon class to be used for this dataset source. This
+ * displayName - An optional display name for this database source
+ * iconClass - An option icon class to be used for this database source. This
  *             value should be defined in static/css/_icons.scss
  */
-interface DatasetConfig {
+interface DatabaseConfig {
   displayName?: string;
   iconClass?: string;
 }

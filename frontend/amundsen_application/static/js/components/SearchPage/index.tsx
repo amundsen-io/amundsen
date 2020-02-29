@@ -8,6 +8,7 @@ import { Search as UrlSearch } from 'history';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import ResourceList from 'components/common/ResourceList';
 import ResourceSelector from './ResourceSelector';
+import SearchFilter from './SearchFilter';
 import SearchPanel from './SearchPanel';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -30,7 +31,7 @@ import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
   RESULTS_PER_PAGE,
-  SEARCH_ERROR_MESSAGE_INFIX,
+  SEARCH_DEFAULT_MESSAGE,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
   SEARCH_SOURCE_NAME,
@@ -40,6 +41,7 @@ import {
 
 
 export interface StateFromProps {
+  hasFilters: boolean;
   searchTerm: string;
   selectedTab: ResourceType;
   isLoading: boolean;
@@ -97,18 +99,28 @@ export class SearchPage extends React.Component<SearchPageProps> {
   };
 
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
-    const { searchTerm } = this.props;
+    const { hasFilters, searchTerm } = this.props;
     const { page_index, total_results } = results;
     const startIndex = (RESULTS_PER_PAGE * page_index) + 1;
     const tabLabel = this.generateTabLabel(tab);
 
-    // TODO - Move error messages into Tab Component
-    // Check no results
-    if (total_results === 0 && searchTerm.length > 0) {
+    // No search input
+    if (searchTerm.length === 0 && !hasFilters) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
-            {SEARCH_ERROR_MESSAGE_PREFIX}<i>{ searchTerm }</i>{SEARCH_ERROR_MESSAGE_INFIX}{tabLabel.toLowerCase()}{SEARCH_ERROR_MESSAGE_SUFFIX}
+            {SEARCH_DEFAULT_MESSAGE}
+          </div>
+        </div>
+      )
+    }
+
+    // Check no results
+    if (total_results === 0 && (searchTerm.length > 0 || hasFilters)) {
+      return (
+        <div className="search-list-container">
+          <div className="search-error body-placeholder">
+            {SEARCH_ERROR_MESSAGE_PREFIX}<i>{tabLabel.toLowerCase()}</i>{SEARCH_ERROR_MESSAGE_SUFFIX}
           </div>
         </div>
       )
@@ -152,6 +164,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
       <div className="search-page">
         <SearchPanel>
           <ResourceSelector/>
+          <SearchFilter />
         </SearchPanel>
         <div className="search-results">
           { this.renderContent() }
@@ -170,7 +183,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
 }
 
 export const mapStateToProps = (state: GlobalState) => {
+  const resourceFilters = state.search.filters[state.search.selectedTab];
   return {
+    hasFilters: resourceFilters && Object.keys(resourceFilters).length > 0,
     searchTerm: state.search.search_term,
     selectedTab: state.search.selectedTab,
     isLoading: state.search.isLoading,

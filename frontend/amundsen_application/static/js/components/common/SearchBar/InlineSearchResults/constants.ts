@@ -1,9 +1,10 @@
-// TODO: Consolidate fter implementing filtering. The final resourceConfig can include
-// displayNames to avoid re-defining constants 'Datasets' & 'People' across components
-export const DATASETS = "Datasets";
+import { ResourceType } from 'interfaces/Resources';
+import { getDisplayNameByResource } from 'config/config-utils';
+
+export const DATASETS = getDisplayNameByResource(ResourceType.table);
 export const DATASETS_ITEM_TEXT = `in ${DATASETS}`;
 
-export const PEOPLE = "People";
+export const PEOPLE = getDisplayNameByResource(ResourceType.user);
 export const PEOPLE_ITEM_TEXT = `in ${PEOPLE}`;
 
 export const PEOPLE_USER_TYPE = "User";

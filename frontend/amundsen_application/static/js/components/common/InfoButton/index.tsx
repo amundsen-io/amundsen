@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
+// TODO - Consider an alternative to react-sanitized-html (large filesize)
+import SanitizedHTML from 'react-sanitized-html';
+
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
@@ -14,7 +17,7 @@ export interface InfoButtonProps {
 const InfoButton: React.SFC<InfoButtonProps> = ({ title, infoText, placement, size }) => {
   const popoverHoverFocus = (
    <Popover id="popover-trigger-hover-focus" title={ title }>
-     { infoText }
+      <SanitizedHTML html={infoText} />
    </Popover>
  );
 

@@ -6,44 +6,119 @@ import { ResourceType } from 'interfaces/Resources';
 
 describe('navigationUtils', () => {
   describe('updateSearchUrl', () => {
-
+    let mockUrl;
+    let generateSearchUrlSpy;
     let historyReplaceSpy;
     let historyPushSpy;
     let searchParams;
-    let expectedQueryString;
+
     beforeAll(() => {
+      mockUrl = 'testUrl';
+      generateSearchUrlSpy = jest.spyOn(NavigationUtils, 'generateSearchUrl').mockReturnValue(mockUrl);
       historyReplaceSpy = jest.spyOn(NavigationUtils.BrowserHistory, 'replace');
       historyPushSpy = jest.spyOn(NavigationUtils.BrowserHistory, 'push');
-
       searchParams = {
         term: 'test',
         resource: ResourceType.table,
         index: 0,
       };
-      expectedQueryString = `/search?${qs.stringify(searchParams)}`;
     });
 
     it('calls history.replace when replace is true', () => {
       historyReplaceSpy.mockClear();
       historyPushSpy.mockClear();
+      NavigationUtils.updateSearchUrl(searchParams, true);
 
-      const replace = true;
-      NavigationUtils.updateSearchUrl(searchParams, replace);
-
-      expect(historyReplaceSpy).toHaveBeenCalledWith(expectedQueryString);
+      expect(historyReplaceSpy).toHaveBeenCalledWith(mockUrl);
       expect(historyPushSpy).not.toHaveBeenCalled();
     });
-
 
     it('calls history.push when replace is false', () => {
       historyReplaceSpy.mockClear();
       historyPushSpy.mockClear();
-
-      const replace = false;
-      NavigationUtils.updateSearchUrl(searchParams, replace);
+      NavigationUtils.updateSearchUrl(searchParams, false);
 
       expect(historyReplaceSpy).not.toHaveBeenCalled();
-      expect(historyPushSpy).toHaveBeenCalledWith(expectedQueryString);
+      expect(historyPushSpy).toHaveBeenCalledWith(mockUrl);
+    });
+
+    it('calls history.push when default replace value is used', () => {
+      historyReplaceSpy.mockClear();
+      historyPushSpy.mockClear();
+      NavigationUtils.updateSearchUrl(searchParams);
+
+      expect(historyReplaceSpy).not.toHaveBeenCalled();
+      expect(historyPushSpy).toHaveBeenCalledWith(mockUrl);
+    });
+
+    it('calls generateSearchUrl with searchParams', () => {
+      generateSearchUrlSpy.mockClear();
+      NavigationUtils.updateSearchUrl(searchParams, true);
+
+      expect(generateSearchUrlSpy).toHaveBeenCalledTimes(1);
+      expect(generateSearchUrlSpy).toHaveBeenCalledWith(searchParams);
+    });
+
+    afterAll(() => {
+      generateSearchUrlSpy.mockRestore();
+    })
+  });
+
+  describe('generaSearchUrl', () => {
+    let testResource;
+    let searchParams;
+    let url;
+
+    it('returns default route if falsy search term and no filters', () => {
+      searchParams = {
+        term: '',
+        resource: ResourceType.table,
+        index: 0,
+      };
+      url = NavigationUtils.generateSearchUrl(searchParams);
+      expect(url).toBe(NavigationUtils.DEFAULT_SEARCH_ROUTE);
+    });
+
+    it('excludes term from the url if term is falsy', () => {
+      testResource = ResourceType.table;
+      searchParams = {
+        term: '',
+        resource: testResource,
+        index: 0,
+        filters: {
+          [testResource]: {'column': 'column_name' }
+        }
+      };
+      url = NavigationUtils.generateSearchUrl(searchParams);
+      expect(url.includes('term=')).toBe(false);
+    });
+
+    it('excludes filters from the url if no filters', () => {
+      searchParams = {
+        term: 'test',
+        resource: ResourceType.table,
+        index: 0,
+      };
+      url = NavigationUtils.generateSearchUrl(searchParams);
+      expect(url.includes('filters=')).toBe(false);
+    });
+
+    it('generates expected url for all valid searchParams', () => {
+      const testTerm = 'test';
+      const testIndex = 0;
+      testResource = ResourceType.table;
+      searchParams = {
+        term: testTerm,
+        resource: testResource,
+        index: 0,
+        filters: {
+          [testResource]: { 'column': 'column_name' }
+        }
+      };
+      url = NavigationUtils.generateSearchUrl(searchParams);
+      const expectedFilterString = `%7B%22column%22%3A%22column_name%22%7D`;
+      const expectedUrl = `/search?term=${testTerm}&resource=${testResource}&index=${testIndex}&filters=${expectedFilterString}`;
+      expect(url).toEqual(expectedUrl);
     });
   });
 });

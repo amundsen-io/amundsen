@@ -28,7 +28,13 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
         <input type="hidden" name="feedback-type" value="Feature Request"/>
         <div className="form-group">
           <label>{SUBJECT_LABEL}</label>
-          <input type="text" name="subject" className="form-control" required={ true } placeholder={SUBJECT_PLACEHOLDER} />
+          <input
+            type="text"
+            autoComplete="off"
+            name="subject"
+            className="form-control"
+            required={ true }
+            placeholder={SUBJECT_PLACEHOLDER} />
         </div>
         <div className="form-group">
           <label>{FEATURE_SUMMARY_LABEL}</label>

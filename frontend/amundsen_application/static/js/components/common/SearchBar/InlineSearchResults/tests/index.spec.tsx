@@ -14,6 +14,7 @@ import { ResourceType, TableResource, UserResource } from 'interfaces';
 import * as CONSTANTS from '../constants';
 
 jest.mock('config/config-utils', () => ({
+  getDisplayNameByResource: jest.fn(),
   getDatabaseDisplayName: jest.fn(),
   getDatabaseIconClass: jest.fn(),
   indexUsersEnabled: jest.fn(),

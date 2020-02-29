@@ -2,6 +2,10 @@ import AppConfig from 'config/config';
 import { BadgeStyleConfig, BadgeStyle } from 'config/config-types';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
+import { FilterConfig } from './config-types';
+
+import { ResourceType } from '../interfaces';
+
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 
 /**
@@ -10,7 +14,7 @@ export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
  * is returned.
  */
 export function getDatabaseDisplayName(databaseId: string): string {
-  const databaseConfig = AppConfig.resourceConfig.datasets[databaseId];
+  const databaseConfig = AppConfig.resourceConfig[ResourceType.table].supportedDatabases[databaseId];
   if (!databaseConfig || !databaseConfig.displayName) {
     return databaseId;
   }
@@ -25,7 +29,7 @@ export function getDatabaseDisplayName(databaseId: string): string {
  * database icon class is returned.
  */
 export function getDatabaseIconClass(databaseId: string): string {
-  const databaseConfig = AppConfig.resourceConfig.datasets[databaseId];
+  const databaseConfig = AppConfig.resourceConfig[ResourceType.table].supportedDatabases[databaseId];
   if (!databaseConfig || !databaseConfig.iconClass) {
     return DEFAULT_DATABASE_ICON_CLASS;
   }
@@ -34,6 +38,20 @@ export function getDatabaseIconClass(databaseId: string): string {
 }
 
 /**
+ * Returns the displayName for the given resourceType
+ */
+export function getDisplayNameByResource(resourceType: ResourceType): string {
+  return AppConfig.resourceConfig[resourceType].displayName;
+};
+
+/**
+ * Returns the filterCategories for the given resourceType
+ */
+export function getFilterConfigByResource(resourceType: ResourceType): FilterConfig {
+  return AppConfig.resourceConfig[resourceType].filterCategories;
+};
+
+/*
  * Given a badge name, this will return a badge style and a display name.
  * If these are not specified by config, it will default to some simple rules:
  * use BadgeStyle.DEFAULT and replace '-' and '_' with spaces for display name.

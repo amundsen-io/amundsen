@@ -17,7 +17,7 @@ describe('TagInfo', () => {
         tag_count: 45,
       },
       compact: false,
-      submitSearch: jest.fn(),
+      searchTag: jest.fn(),
       ...propOverrides,
     };
     const wrapper = shallow<TagInfo>(<TagInfo {...props} />);
@@ -46,9 +46,9 @@ describe('TagInfo', () => {
       expect(logClickSpy).toHaveBeenCalledWith(mockEvent, expectedData)
     });
 
-    it('it calls submitSearch', () => {
+    it('it calls searchTag', () => {
       wrapper.instance().onClick(mockEvent);
-      expect(props.submitSearch).toHaveBeenCalledWith(`tag:${props.data.tag_name}`);
+      expect(props.searchTag).toHaveBeenCalledWith(props.data.tag_name);
     });
   });
 
@@ -108,7 +108,7 @@ describe('mapDispatchToProps', () => {
     result = mapDispatchToProps(dispatch);
   });
 
-  it('sets submitSearch on the props', () => {
-    expect(result.submitSearch).toBeInstanceOf(Function);
+  it('sets searchTag on the props', () => {
+    expect(result.searchTag).toBeInstanceOf(Function);
   });
 });

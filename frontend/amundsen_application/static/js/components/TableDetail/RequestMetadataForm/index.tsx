@@ -142,11 +142,25 @@ export class RequestMetadataForm extends React.Component<RequestMetadataProps, R
         <form onSubmit={ this.submitNotification } id="RequestForm">
           <div id="sender-form-group" className="form-group">
             <label>{FROM_LABEL}</label>
-            <input type="email" name="sender" className="form-control" required={true} value={userEmail} readOnly={true}/>
+            <input
+              type="email"
+              autoComplete="off"
+              name="sender"
+              className="form-control"
+              required={true}
+              value={userEmail}
+              readOnly={true} />
           </div>
           <div id="recipients-form-group" className="form-group">
             <label>{TO_LABEL}</label>
-            <input type="text" name="recipients" className="form-control" required={true} multiple={true} defaultValue={tableOwners.join(RECIPIENT_LIST_DELIMETER)}/>
+            <input
+              type="text"
+              autoComplete="off"
+              name="recipients"
+              className="form-control"
+              required={true}
+              multiple={true}
+              defaultValue={tableOwners.join(RECIPIENT_LIST_DELIMETER)}/>
           </div>
           <div id="request-type-form-group" className="form-group">
             <label>{REQUEST_TYPE}</label>

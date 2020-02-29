@@ -4,6 +4,7 @@ import { shallow } from 'enzyme';
 
 import { mapDispatchToProps, HomePage, HomePageProps } from '../';
 
+import Breadcrumb from 'components/common/Breadcrumb';
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
 import SearchBar from 'components/common/SearchBar';
@@ -36,6 +37,12 @@ describe('HomePage', () => {
   describe('render', () => {
     it('contains Searchbar', () => {
       expect(wrapper.contains(<SearchBar />));
+    });
+
+    it('contains a Breadcrumb that directs to the /search', () => {
+      const element = wrapper.find(Breadcrumb);
+      expect(element.exists()).toBe(true);
+      expect(element.props().path).toEqual('/search');
     });
 
     it('contains TagsList', () => {

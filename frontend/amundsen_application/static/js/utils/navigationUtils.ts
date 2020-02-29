@@ -1,25 +1,49 @@
 import * as qs from 'simple-query-string';
 import { createBrowserHistory } from 'history';
 
+import { ResourceType } from 'interfaces/Resources';
+
 // https://github.com/ReactTraining/react-router/issues/3972#issuecomment-264805667
 export const BrowserHistory = createBrowserHistory();
 
-interface SearchParams {
+export interface SearchParams {
   term?: string;
-  resource?: string;
+  resource?: ResourceType;
   index?: number;
+  filters?: {};
 }
 
-export const updateSearchUrl = (searchParams: SearchParams, replace: boolean = false) => {
-  // Explicitly listing out parameters to ensure consistent URL format
-  const urlParams = qs.stringify({
-    term: searchParams.term,
+export const DEFAULT_SEARCH_ROUTE = '/search';
+
+export const generateSearchUrl = (searchParams: SearchParams) : string => {
+  const filtersForResource = searchParams.filters && searchParams.filters[searchParams.resource] || {};
+  const hasFilters = Object.keys(filtersForResource).length > 0;
+
+  // If there is no search input return the search route url
+  if (!searchParams.term && !hasFilters) {
+    return DEFAULT_SEARCH_ROUTE;
+  }
+
+  // Explicitly list out parameters to ensure consistent URL format
+  const queryStringValues = {
+    term: searchParams.term || undefined,
     resource: searchParams.resource,
     index: searchParams.index,
-  });
+  };
+  if (hasFilters) {
+    queryStringValues['filters'] = filtersForResource;
+  }
+
+  const urlParams = qs.stringify(queryStringValues);
+  return `${DEFAULT_SEARCH_ROUTE}?${urlParams}`;
+};
+
+export const updateSearchUrl = (searchParams: SearchParams, replace: boolean = false) => {
+  const newUrl = generateSearchUrl(searchParams);
+
   if (replace) {
-    BrowserHistory.replace(`/search?${urlParams}`);
+    BrowserHistory.replace(newUrl);
   } else {
-    BrowserHistory.push(`/search?${urlParams}`);
+    BrowserHistory.push(newUrl);
   }
 };

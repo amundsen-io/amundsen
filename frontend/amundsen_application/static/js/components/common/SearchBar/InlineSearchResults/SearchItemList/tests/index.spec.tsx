@@ -9,7 +9,10 @@ import { ResourceType } from 'interfaces';
 
 import * as CONSTANTS from '../../constants';
 
-jest.mock('config/config-utils', () => ({ indexUsersEnabled: jest.fn() }));
+jest.mock('config/config-utils', () => ({
+  getDisplayNameByResource: jest.fn(),
+  indexUsersEnabled: jest.fn()
+}));
 import { indexUsersEnabled } from 'config/config-utils';
 
 jest.mock("react-redux", () => {

@@ -1,154 +1,207 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { mapStateToProps, mapDispatchToProps, SearchFilter, SearchFilterProps} from '../';
+import * as ConfigUtils from 'config/config-utils';
+import { FilterConfig } from 'config/config-types';
 
-import CheckBoxItem from 'components/common/Inputs/CheckBoxItem';
+import { FilterType, ResourceType } from 'interfaces';
+
+import globalState from 'fixtures/globalState';
+import { GlobalState } from 'ducks/rootReducer';
+
+import { mapStateToProps, SearchFilter, SearchFilterProps, FilterSection, CheckboxFilterSection } from '../';
 
 describe('SearchFilter', () => {
-  const setup = (propOverrides?: Partial<SearchFilterProps>) => {
+    const setup = (propOverrides?: Partial<SearchFilterProps>) => {
     const props = {
-      checkBoxSections: [
+      filterSections: [
         {
-          title: 'Type',
-          categoryId: 'datasets',
-          inputProperties: [
-            {
-              value: 'bigquery',
-              labelText: 'BigQuery',
-              checked: true,
-              count: 100,
-            },
-            {
-              value: 'hive',
-              labelText: 'Hive',
-              checked: true,
-              count: 100,
-            },
-            {
-              value: 'druid',
-              labelText: 'Druid',
-              checked: true,
-              count: 0,
-            },
-            {
-              value: 's3',
-              labelText: 'S3 Buckets',
-              checked: false,
-              count: 100,
-            }
-          ]
+          categoryId: 'database',
+          helpText: 'This is what to do',
+          options: [
+            { value: 'bigquery', label: 'BigQuery'},
+            { value: 'hive', label: 'Hive'}
+          ],
+          title: 'Source',
+          type: FilterType.CHECKBOX_SELECT
+        },
+        {
+          categoryId: 'schema',
+          helpText: 'This is what to do',
+          title: 'Schema',
+          type: FilterType.INPUT_SELECT
         }
       ],
-      onFilterChange: jest.fn(),
       ...propOverrides
     };
     const wrapper = shallow<SearchFilter>(<SearchFilter {...props} />);
     return { props, wrapper };
   };
 
-  describe('createCheckBoxItem', () => {
+  describe('createFilterSection', () => {
     let props;
     let wrapper;
-
-    let itemData;
-    let categoryId;
     let content;
+    let mockCheckboxFilterData: CheckboxFilterSection;
+    let mockInputFilterData: FilterSection;
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-
-      itemData = props.checkBoxSections[0].inputProperties[0];
-      categoryId = 'testId'
-      content = shallow(wrapper.instance().createCheckBoxItem(itemData, categoryId, 'itemKey'));
-    });
-    /*
-    TODO: Enzyme might not allow this kind of check with shallow rendering.
-    Revisit on final implementation
-    it('returns CheckBoxItem with correct props', () => {
-      expect(content.type()).toEqual(CheckBoxItem);
-    });
-    */
-    it('renders labelText as first CheckBoxItem child', () => {
-      const child = content.find('span').at(0);
-      expect(child.hasClass('subtitle-2')).toBe(true);
-      expect(child.text()).toEqual(itemData.labelText);
+      mockCheckboxFilterData = props.filterSections[0];
+      mockInputFilterData = props.filterSections[1];
+      content = wrapper.instance().createFilterSection('sectionKey', mockCheckboxFilterData);
     });
 
-    it('renders count as second CheckBoxItem child', () => {
-      const child = content.find('span').at(1);
-      expect(child.hasClass('body-secondary-3 pull-right')).toBe(true);
-      expect(child.text()).toEqual(itemData.count.toString());
+    describe('renders a FilterSection', () => {
+      it('FilterSection exists', () => {
+        expect(content.type.displayName).toBe('Connect(FilterSection)');
+      });
+
+      it('with correct categoryId', () => {
+        expect(content.props.categoryId).toBe(mockCheckboxFilterData.categoryId);
+      });
+
+      it('with correct helpText', () => {
+        expect(content.props.helpText).toBe(mockCheckboxFilterData.helpText);
+      });
+
+      it('with correct title', () => {
+        expect(content.props.title).toBe(mockCheckboxFilterData.title);
+      });
+
+      it('with correct type', () => {
+        expect(content.props.type).toBe(mockCheckboxFilterData.type);
+      });
+
+      it('with options if not supported for the filter type ', () => {
+        expect(content.props.options).toBe(mockCheckboxFilterData.options);
+      });
+
+      it('without options if not supported for the filter type ', () => {
+        const content = wrapper.instance().createFilterSection('sectionKey', mockInputFilterData);
+        expect(content.props.options).toBe(undefined);
+      });
     });
   });
 
-  describe('createCheckBoxSection', () => {
+  describe('renderFilterSections', () => {
     let props;
     let wrapper;
-
-    let content;
-    let sectionData;
-    let createCheckBoxItemSpy;
+    let createFilterSectionSpy;
 
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-
-      createCheckBoxItemSpy = jest.spyOn(wrapper.instance(), 'createCheckBoxItem');
-      sectionData = props.checkBoxSections[0];
-      content = shallow(wrapper.instance().createCheckBoxSection(sectionData, 'sectionKey'));
-    });
-    it('render content with correct class', () => {
-      expect(content.hasClass('search-filter-section')).toBe(true);
+      createFilterSectionSpy = jest.spyOn(wrapper.instance(), 'createFilterSection');
+      wrapper.instance().renderFilterSections();
     });
 
-    it('renders correct title', () => {
-      const title = content.children().at(0);
-      expect(title.hasClass('title-2')).toBe(true);
-      expect(title.text()).toEqual(sectionData.title);
-    });
-
-    it('calls createCheckBoxItem for each section.inputProperties', () => {
-      createCheckBoxItemSpy.mockClear();
-      wrapper.instance().createCheckBoxSection(sectionData, 'sectionKey');
-      const { categoryId } = sectionData;
-      sectionData.inputProperties.forEach((item, index ) => {
-        expect(createCheckBoxItemSpy).toHaveBeenCalledWith(item, categoryId, `item:${categoryId}:${index}`);
-      });
-      expect(createCheckBoxItemSpy).toHaveBeenCalledTimes(sectionData.inputProperties.length);
+    it('calls createFilterSection with correct key and section for each props.filterSections', () => {
+      props.filterSections.forEach((section) => {
+        expect(createFilterSectionSpy).toHaveBeenCalledWith(`section:${section.categoryId}`, section);
+      })
     });
   });
 
   describe('render', () => {
     let props;
     let wrapper;
-    let createCheckBoxSectionSpy;
+    let renderFilterSectionsSpy;
 
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-
-      createCheckBoxSectionSpy = jest.spyOn(wrapper.instance(), 'createCheckBoxSection');
+      renderFilterSectionsSpy = jest.spyOn(wrapper.instance(), 'renderFilterSections');
+      wrapper.instance().render();
     });
 
-    it('calls createCheckBoxSection for each checkBoxSection', () => {
-      createCheckBoxSectionSpy.mockClear();
-      wrapper.instance().render();
-      props.checkBoxSections.forEach((section, index ) => {
-        expect(createCheckBoxSectionSpy).toHaveBeenCalledWith(section, `section:${index}`);
-      });
-      expect(createCheckBoxSectionSpy).toHaveBeenCalledTimes(props.checkBoxSections.length);
+    it('calls renderFilterSections', () => {
+      expect(renderFilterSectionsSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
 
 describe('mapStateToProps', () => {
-  // TODO
-});
+  const mockHelpText = 'Help me';
 
-describe('mapDispatchToProps', () => {
-  // TODO
+  const mockSchemaId = 'schema';
+  const mockSchemaValue = 'schema_name';
+  const mockSchemaTitle = 'Schema';
+
+  const mockDbId = 'database';
+  const mockDbTitle = 'Source';
+
+  const MOCK_CATEGORY_CONFIG: FilterConfig = [
+    {
+      categoryId: mockDbId,
+      displayName: mockDbTitle,
+      type: FilterType.CHECKBOX_SELECT,
+      helpText: mockHelpText,
+      options: [
+        { value: 'bigquery', displayName: 'BigQuery' },
+        { value: 'hive', displayName: 'Hive' },
+      ],
+    },
+    {
+      categoryId: mockSchemaId,
+      displayName: mockSchemaTitle,
+      helpText: mockHelpText,
+      type: FilterType.INPUT_SELECT,
+    },
+  ];
+  const mockStateWithFilters: GlobalState = {
+    ...globalState,
+    search: {
+      ...globalState.search,
+      selectedTab: ResourceType.table,
+      filters: {
+        [ResourceType.table]: {
+          [mockSchemaId]: mockSchemaValue,
+          [mockDbId]: {
+            'hive': true
+          }
+        }
+      }
+    },
+  };
+  let getFilterConfigByResourceSpy;
+  let result;
+
+  it('calls getFilterConfigByResource with selectedTab', () => {
+    getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(MOCK_CATEGORY_CONFIG);
+    mapStateToProps(mockStateWithFilters);
+    expect(getFilterConfigByResourceSpy).toHaveBeenCalledWith(mockStateWithFilters.search.selectedTab);
+  });
+
+  it('sets expected filterSections on the result', () => {
+    getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(MOCK_CATEGORY_CONFIG);
+    result = mapStateToProps(mockStateWithFilters);
+    expect(result.filterSections).toEqual([
+      {
+        categoryId: mockDbId,
+        helpText: mockHelpText,
+        options: [
+          { label: 'BigQuery', value: 'bigquery' },
+          { label: 'Hive', value: 'hive' }
+        ],
+        type: FilterType.CHECKBOX_SELECT,
+        title: mockDbTitle
+      },
+      {
+        categoryId: mockSchemaId,
+        helpText: mockHelpText,
+        title: mockSchemaTitle,
+        type: FilterType.INPUT_SELECT,
+      }
+    ])
+  });
+
+  it('sets empty array on filterSections if there are no configured filterCategories', () => {
+    getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(undefined);
+    result = mapStateToProps(globalState);
+    expect(result.filterSections).toEqual([])
+  });
 });
