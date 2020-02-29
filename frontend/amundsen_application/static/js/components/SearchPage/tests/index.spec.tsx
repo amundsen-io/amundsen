@@ -10,7 +10,7 @@ import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
   RESULTS_PER_PAGE,
-  SEARCH_ERROR_MESSAGE_INFIX,
+  SEARCH_DEFAULT_MESSAGE,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
   SEARCH_SOURCE_NAME,
@@ -19,10 +19,13 @@ import {
 } from '../constants';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import ResourceSelector from 'components/SearchPage/ResourceSelector';
+import SearchFilter from 'components/SearchPage/SearchFilter';
 import SearchPanel from 'components/SearchPage/SearchPanel';
 import ResourceList from 'components/common/ResourceList';
 
 import globalState from 'fixtures/globalState';
+import { defaultEmptyFilters, datasetFilterExample } from 'fixtures/search/filters';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 describe('SearchPage', () => {
@@ -30,6 +33,7 @@ describe('SearchPage', () => {
   const setup = (propOverrides?: Partial<SearchPageProps>, location?: Partial<History.Location>) => {
     const routerProps = getMockRouterProps<any>(null, location);
     const props: SearchPageProps = {
+      hasFilters: false,
       searchTerm: globalState.search.search_term,
       selectedTab: ResourceType.table,
       isLoading: false,
@@ -123,18 +127,38 @@ describe('SearchPage', () => {
 
   describe('getTabContent', () => {
     let content;
+    describe('if no search input (no term or filters)', () => {
+      it('renders default search page message', () => {
+        const { props, wrapper } = setup({ searchTerm: '', hasFilters: false });
+        content = shallow(wrapper.instance().getTabContent({
+          page_index: 0,
+          results: [],
+          total_results: 0,
+        }, ResourceType.table));
+        expect(content.children().at(0).text()).toEqual(SEARCH_DEFAULT_MESSAGE);
+      });
+    });
 
-    describe('if searchTerm but no results', () => {
-      it('renders expected search error message', () => {
-        const searchTerm = 'data';
-        const { props, wrapper } = setup({ searchTerm });
-        const testResults = {
+    describe('if no search results, renders expected search error message', () => {
+      let testResults;
+      beforeAll(() => {
+        testResults = {
           page_index: 0,
           results: [],
           total_results: 0,
         };
+      })
+      it('if there is a searchTerm ', () => {
+        const { props, wrapper } = setup({ searchTerm: 'data' });
         content = shallow(wrapper.instance().getTabContent(testResults, ResourceType.table));
-        const message = `${SEARCH_ERROR_MESSAGE_PREFIX}${searchTerm}${SEARCH_ERROR_MESSAGE_INFIX}${TABLE_RESOURCE_TITLE.toLowerCase()}${SEARCH_ERROR_MESSAGE_SUFFIX}`;
+        const message = `${SEARCH_ERROR_MESSAGE_PREFIX}${TABLE_RESOURCE_TITLE.toLowerCase()}${SEARCH_ERROR_MESSAGE_SUFFIX}`;
+        expect(content.children().at(0).text()).toEqual(message);
+      });
+
+      it('if no searchTerm but there are filters active', () => {
+        const { props, wrapper } = setup({ searchTerm: '', hasFilters: true });
+        content = shallow(wrapper.instance().getTabContent(testResults, ResourceType.table));
+        const message = `${SEARCH_ERROR_MESSAGE_PREFIX}${TABLE_RESOURCE_TITLE.toLowerCase()}${SEARCH_ERROR_MESSAGE_SUFFIX}`;
         expect(content.children().at(0).text()).toEqual(message);
       });
     });
@@ -258,10 +282,27 @@ describe('SearchPage', () => {
     });
   });
 
-  it('renders a search panel', () => {
-    const {props, wrapper} = setup();
-    expect(wrapper.find(SearchPanel).exists()).toBe(true);
-  });
+  describe('renders a SearchPanel', () => {
+    let props;
+    let wrapper;
+    let searchPanel;
+    beforeAll(() => {
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
+      searchPanel = wrapper.find(SearchPanel);
+    })
+    it('renders a search panel', () => {
+      expect(searchPanel.exists()).toBe(true);
+    });
+    it('renders ResourceSelector as SearchPanel child', () => {
+      expect(searchPanel.find(ResourceSelector).exists()).toBe(true);
+    });
+    it('renders SearchFilter as SearchPanel child', () => {
+      expect(searchPanel.find(SearchFilter).exists()).toBe(true);
+    });
+  })
+
 });
 
 describe('mapDispatchToProps', () => {
@@ -313,5 +354,27 @@ describe('mapStateToProps', () => {
 
   it('sets dashboards on the props', () => {
     expect(result.dashboards).toEqual(globalState.search.dashboards);
+  });
+
+  describe('sets hasFilters on the props', () => {
+    it('sets fo falsy value if selected resource has no filters', () => {
+      const testState = {
+        ...globalState
+      };
+      testState.search.selectedTab = ResourceType.user;
+      testState.search.filters = defaultEmptyFilters;
+      result = mapStateToProps(testState);
+      expect(result.hasFilters).toBeFalsy();
+    })
+
+    it('sets true if selected resource has filters', () => {
+      const testState = {
+        ...globalState
+      };
+      testState.search.selectedTab = ResourceType.table;
+      testState.search.filters = datasetFilterExample;
+      result = mapStateToProps(testState);
+      expect(result.hasFilters).toBe(true);
+    })
   });
 });

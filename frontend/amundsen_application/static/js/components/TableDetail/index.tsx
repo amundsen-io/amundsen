@@ -31,7 +31,10 @@ import TagInput from 'components/Tags/TagInput';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
 import { EditableSection } from 'components/TableDetail/EditableSection';
-import { getDatabaseDisplayName, getDatabaseIconClass, notificationsEnabled, issueTrackingEnabled } from 'config/config-utils';
+
+import { getDisplayNameByResource, getDatabaseDisplayName, getDatabaseIconClass, issueTrackingEnabled, notificationsEnabled } from 'config/config-utils';
+
+import { ResourceType } from 'interfaces/Resources';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import './styles';
@@ -140,7 +143,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               <BookmarkIcon bookmarkKey={ this.props.tableData.key }/>
               <div className="body-2">
                 <ul className="header-bullets">
-                  <li>Datasets</li>
+                  <li>{ getDisplayNameByResource(ResourceType.table) }</li>
                   <li>{ getDatabaseDisplayName(data.database) }</li>
                   <li>{ data.cluster }</li>
                 </ul>
@@ -177,7 +180,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
                 />
               </EditableSection>
               <span>
-                { notificationsEnabled() && <RequestDescriptionText/> } 
+                { notificationsEnabled() && <RequestDescriptionText/> }
                 { issueTrackingEnabled() && <ReportTableIssue tableKey={ this.key } tableName={ this.getDisplayName() } />}
               </span>
               <section className="column-layout-2">

@@ -2,6 +2,8 @@ import { ResourceType } from 'interfaces';
 
 import { Search as UrlSearch } from 'history';
 
+import filterReducer, { initialFilterState, UpdateSearchFilter, FilterReducerState } from './filters/reducer';
+
 import {
   DashboardSearchResults,
   SearchAll,
@@ -22,6 +24,8 @@ import {
   InlineSearchUpdate,
   TableSearchResults,
   UserSearchResults,
+  ClearSearch,
+  ClearSearchRequest,
   SubmitSearchRequest,
   SubmitSearch,
   SetResourceRequest,
@@ -40,16 +44,18 @@ export interface SearchReducerState {
     isLoading: boolean;
     tables: TableSearchResults;
     users: UserSearchResults;
-  }
+  },
+  filters: FilterReducerState;
 };
 
 /* ACTIONS */
-export function searchAll(term: string, resource?: ResourceType, pageIndex?: number): SearchAllRequest {
+export function searchAll(term: string, resource?: ResourceType, pageIndex?: number, useFilters: boolean = false): SearchAllRequest {
   return {
     payload: {
       resource,
       pageIndex,
       term,
+      useFilters,
     },
     type: SearchAll.REQUEST,
   };
@@ -123,10 +129,16 @@ export function searchReset(): SearchAllReset {
   };
 };
 
-export function submitSearch(searchTerm: string): SubmitSearchRequest {
+export function submitSearch(searchTerm: string, useFilters: boolean = false): SubmitSearchRequest {
   return {
-    payload: { searchTerm },
+    payload: { searchTerm, useFilters },
     type: SubmitSearch.REQUEST,
+  };
+};
+
+export function clearSearch(): ClearSearchRequest {
+  return {
+    type: ClearSearch.REQUEST,
   };
 };
 
@@ -191,11 +203,30 @@ export const initialState: SearchReducerState = {
     results: [],
     total_results: 0,
   },
+  filters: initialFilterState,
   inlineResults: initialInlineResultsState,
 };
 
 export default function reducer(state: SearchReducerState = initialState, action): SearchReducerState {
   switch (action.type) {
+    case UpdateSearchFilter.SET_BY_RESOURCE:
+      return {
+        ...state,
+        search_term: action.payload.term,
+        filters: filterReducer(state.filters, action, state.selectedTab),
+      }
+    case UpdateSearchFilter.CLEAR_ALL:
+      return {
+        ...state,
+        filters: filterReducer(state.filters, action, state.selectedTab),
+      }
+    case UpdateSearchFilter.CLEAR_CATEGORY:
+    case UpdateSearchFilter.UPDATE_CATEGORY:
+      return {
+        ...state,
+        isLoading: true,
+        filters: filterReducer(state.filters, action, state.selectedTab),
+      }
     case SearchAll.RESET:
       return initialState;
     case SearchAll.REQUEST:
@@ -219,6 +250,7 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...initialState,
         ...newState,
+        filters: state.filters,
         inlineResults: {
           tables: newState.tables,
           users: newState.users,
@@ -252,6 +284,7 @@ export default function reducer(state: SearchReducerState = initialState, action
         tables,
         users,
         search_term: searchTerm,
+        filters: initialFilterState,
       };
     case InlineSearch.SUCCESS:
       const inlineResults = (<InlineSearchResponse>action).payload;

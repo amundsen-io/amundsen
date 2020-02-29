@@ -52,6 +52,7 @@ export interface SearchAllRequest {
     resource: ResourceType;
     pageIndex: number;
     term: string;
+    useFilters?: boolean;
   };
   type: SearchAll.REQUEST;
 };
@@ -120,10 +121,17 @@ export enum SubmitSearch {
 export interface SubmitSearchRequest {
   payload: {
     searchTerm: string;
+    useFilters?: boolean;
   };
   type: SubmitSearch.REQUEST;
 };
 
+export enum ClearSearch {
+  REQUEST = 'amundsen/search/CLEAR_SEARCH_REQUEST',
+};
+export interface ClearSearchRequest {
+  type: ClearSearch.REQUEST;
+};
 
 export enum SetResource {
   REQUEST = 'amundsen/search/SET_RESOURCE_REQUEST',

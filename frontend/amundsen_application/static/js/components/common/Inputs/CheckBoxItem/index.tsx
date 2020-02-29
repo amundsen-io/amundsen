@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import './styles.scss';
+import 'components/common/Inputs/styles.scss';
 
 export interface CheckBoxItemProps {
   checked: boolean;

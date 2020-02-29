@@ -5,7 +5,7 @@ This document describes how to leverage the frontend service's application confi
 **NOTE: This document is a work in progress and does not include 100% of features. We welcome PRs to complete this document**
 
 ## Badge Config
-Badges are a special type of tag that cannot be edited through the UI. 
+Badges are a special type of tag that cannot be edited through the UI.
 
 `BadgeConfig` can be used to customize the text and color of badges. This config defines a mapping of badge name to a `BadgeStyle` and optional `displayName`. Badges that are not defined will default to use the `BadgeStyle.default` style and `displayName` use the badge name with any `_` or `-` characters replaced with a space.   
 
@@ -35,7 +35,7 @@ _TODO: Please add doc_
 ## Index Users
 In Amundsen, users themselves are data resources and user metadata helps to facilitate network based discovery. When users are indexed they will show up in search results, and selecting a user surfaces a profile page that displays that user's relationships with different data resources.
 
-After ingesting user metadata into the search and metadata services, set `IndexUsersConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features. 
+After ingesting user metadata into the search and metadata services, set `IndexUsersConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features.
 
 ## Mail Client Features
 Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications.
@@ -52,15 +52,24 @@ client, please see this [entry](flask_config.md#mail-client-features) in our fla
 _TODO: Please add doc_
 
 ## Resource Configurations
+This configuration drives resource specific aspects of the application's user interface. Each supported resource should be mapped to an object that matches or extends the `BaseResourceConfig`.
 
-### Datasets
-We provide a `datasets` option on our `ResourceConfig`. This can be used for the following customizations:
+### Base Configuration
+All resource configurations must match or extend the `BaseResourceConfig`. This configuration supports the following options:
+1. `displayName`: The name displayed throughout the application to refer to this resource type.
+2. `filterCategories`: An optional `FilterConfig` object. When set for a given resource, that resource will display filter options in the search page UI.
+
+#### Filter Categories
+The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `MultiSelectFilterCategory` and a `SingleFilterCategory`. See our [config-types](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-types.ts) for more information about each option.
+
+### Table Configuration
+`TableResourceConfig` extends `BaseResourceConfig` with a `supportedDatabases` option. This can be used for the following customizations:
 
 #### Custom Icons
-You can configure custom icons to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `iconClass`. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
+You can configure custom icons to be used throughout the UI when representing datasets from particular sources/databases. On the `TableResourceConfig.supportedDatabases` object, add an entry with the `id` used to reference that database and map to an object that specifies the `iconClass` for that database. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
 
 #### Display Names
-You can configure a specific display name to be used throughout the UI when representing datasets from particular sources/databases. On the `ResourceConfig.datasets` object, add an entry with the `id` used to reference that database and set the `displayName`.
+You can configure a specific display name to be used throughout the UI when representing datasets from particular sources/databases. On the `TableResourceConfig.supportedDatabases` object, add an entry with the `id` used to reference that database and map to an object that specified the `displayName` for that database.
 
 ## Table Lineage
 

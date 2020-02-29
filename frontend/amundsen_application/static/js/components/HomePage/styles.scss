@@ -9,6 +9,16 @@
     margin-bottom: 32px;
   }
 
+  .filter-breadcrumb {
+    margin-top: 4px;
+    .amundsen-breadcrumb {
+      margin-right: -$spacer-1;
+      img.icon {
+        margin-right: 0;
+      }
+    }
+  }
+
   @media (max-width: $screen-sm-max) {
     .home-element-container {
       margin-top: 32px;

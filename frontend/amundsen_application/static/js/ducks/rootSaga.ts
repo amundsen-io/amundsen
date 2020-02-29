@@ -23,6 +23,9 @@ import { createIssueWatcher, getIssuesWatcher } from './issue/sagas';
 import { getPopularTablesWatcher } from './popularTables/sagas';
 // Search
 import {
+  clearSearchWatcher,
+  filterWatcher,
+  filterWatcher2,
   inlineSearchWatcher,
   inlineSearchWatcherDebounce,
   loadPreviousSearchWatcher,
@@ -71,6 +74,9 @@ export default function* rootSaga() {
     getIssuesWatcher(), 
     createIssueWatcher(), 
     // Search
+    clearSearchWatcher(),
+    filterWatcher(),
+    filterWatcher2(),
     inlineSearchWatcher(),
     inlineSearchWatcherDebounce(),
     loadPreviousSearchWatcher(),

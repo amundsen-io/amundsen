@@ -5,8 +5,10 @@ import { RouteComponentProps } from 'react-router';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
+import { SEARCH_BREADCRUMB_TEXT } from './constants';
 
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
+import Breadcrumb from 'components/common/Breadcrumb';
 import PopularTables from 'components/common/PopularTables';
 import { SearchAllReset } from 'ducks/search/types';
 import { searchReset } from 'ducks/search/reducer';
@@ -35,6 +37,13 @@ export class HomePage extends React.Component<HomePageProps> {
         <div className="row">
           <div className="col-xs-12 col-md-offset-1 col-md-10">
             <SearchBar />
+            <div className="filter-breadcrumb pull-right">
+              <Breadcrumb
+                direction="right"
+                path="/search"
+                text={SEARCH_BREADCRUMB_TEXT}
+              />
+            </div>
             <div className="home-element-container">
               <div id="browse-tags-header" className="title-1 browse-tags-header">Browse Tags</div>
               <TagsList />

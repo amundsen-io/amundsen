@@ -1,25 +1,23 @@
 @import 'variables';
 
 .search-control-panel {
-  border-right: 4px solid $stroke;
-  flex: 0 0 270px;
+  border-right: $search-panel-border-width solid $stroke;
+  flex: 0 0 $search-panel-width;
   display: flex;
   flex-direction: column;
 
   .section {
     padding: 32px 24px 32px 32px;
+    width: $search-panel-width - $search-panel-border-width;
 
     &:not(:first-child) {
       border-top: 2px solid $stroke;
     }
   }
 
+  .checkbox,
   .radio {
-    margin-top: 16px;
-    margin-bottom: 16px;
-
-    .radio-label {
-      display: block;
-    }
+    margin-top: $spacer-1;
+    margin-bottom: $spacer-1;
   }
 }
