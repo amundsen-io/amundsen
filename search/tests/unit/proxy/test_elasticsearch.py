@@ -4,6 +4,8 @@ from unittest.mock import patch, MagicMock
 from typing import Any, Iterable
 
 from search_service import create_app
+from search_service.api.user import USER_INDEX
+from search_service.api.table import TABLE_INDEX
 from search_service.proxy import get_proxy_client
 from search_service.proxy.elasticsearch import ElasticsearchProxy
 from search_service.models.search_result import SearchResult
@@ -319,6 +321,149 @@ class TestElasticsearchProxy(unittest.TestCase):
         self.assertDictEqual(vars(resp.results[0]),
                              vars(expected.results[0]),
                              "Search result doesn't match with expected result!")
+
+    @patch('elasticsearch_dsl.Search.execute')
+    def test_search_table_filter(self, mock_search: MagicMock) -> None:
+        mock_results = MagicMock()
+        mock_results.hits.total = 1
+        mock_results.__iter__.return_value = [Response(result=vars(self.mock_result1))]
+        mock_search.return_value = mock_results
+
+        expected = SearchResult(total_results=1,
+                                results=[Table(name='test_table',
+                                               key='test_key',
+                                               description='test_description',
+                                               cluster='gold',
+                                               database='test_db',
+                                               schema='test_schema',
+                                               column_names=['test_col1', 'test_col2'],
+                                               tags=[],
+                                               last_updated_timestamp=1527283287)])
+        search_request = {
+            'type': 'AND',
+            'filters': {
+                'database': ['hive', 'bigquery'],
+                'schema': ['test-schema1', 'test-schema2'],
+                'table': ['*amundsen*'],
+                'column': ['*ds*'],
+                'tag': ['test-tag'],
+            }
+        }
+        resp = self.es_proxy.fetch_table_search_results_with_filter(search_request=search_request, query_term='test')
+
+        self.assertEquals(resp.total_results, expected.total_results)
+        self.assertIsInstance(resp.results[0], Table)
+        self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]))
+
+    def test_search_table_filter_return_no_results_if_no_search_request(self) -> None:
+        resp = self.es_proxy.fetch_table_search_results_with_filter(search_request=None, query_term='test')
+
+        self.assertEquals(resp.total_results, 0)
+        self.assertEquals(resp.results, [])
+
+    def test_search_table_filter_return_no_results_if_dsl_conversion_error(self) -> None:
+        search_request = {
+            'type': 'AND',
+            'filters': {}
+        }
+        with patch.object(self.es_proxy, 'convert_query_json_to_query_dsl') as mock:
+            mock.side_effect = MagicMock(side_effect=Exception('Test'))
+            resp = self.es_proxy.fetch_table_search_results_with_filter(search_request=search_request,
+                                                                        query_term='test')
+
+            self.assertEquals(resp.total_results, 0)
+            self.assertEquals(resp.results, [])
+
+    def test_get_model_by_index_table(self) -> None:
+        self.assertEquals(self.es_proxy.get_model_by_index(TABLE_INDEX), Table)
+
+    def test_get_model_by_index_user(self) -> None:
+        self.assertEquals(self.es_proxy.get_model_by_index(USER_INDEX), User)
+
+    def test_get_model_by_index_raise_exception(self) -> None:
+        self.assertRaises(Exception, self.es_proxy.convert_query_json_to_query_dsl, 'some_fake_index')
+
+    def test_parse_filters_return_results(self) -> None:
+        filter_list = {
+            'database': ['hive', 'bigquery'],
+            'schema': ['test-schema1', 'test-schema2'],
+            'table': ['*amundsen*'],
+            'column': ['*ds*'],
+            'tag': ['test-tag'],
+        }
+        expected_result = "database.raw:(hive OR bigquery) " \
+                          "AND schema.raw:(test-schema1 OR test-schema2) " \
+                          "AND name.raw:(*amundsen*) " \
+                          "AND column_names.raw:(*ds*) " \
+                          "AND tags:(test-tag)"
+        self.assertEquals(self.es_proxy.parse_filters(filter_list), expected_result)
+
+    def test_parse_filters_return_no_results(self) -> None:
+        filter_list = {
+            'unsupported_category': ['fake']
+        }
+        self.assertEquals(self.es_proxy.parse_filters(filter_list), '')
+
+    def test_parse_query_term(self) -> None:
+        term = 'test'
+        expected_result = "(name:(*test*) OR name:(test) OR schema:(*test*) OR " \
+                          "schema:(test) OR description:(*test*) OR description:(test) OR " \
+                          "column_names:(*test*) OR column_names:(test) OR " \
+                          "column_descriptions:(*test*) OR column_descriptions:(test))"
+        self.assertEquals(self.es_proxy.parse_query_term(term), expected_result)
+
+    def test_convert_query_json_to_query_dsl_term_and_filters(self) -> None:
+        term = 'test'
+        test_filters = {
+            'database': ['hive', 'bigquery'],
+            'schema': ['test-schema1', 'test-schema2'],
+            'table': ['*amundsen*'],
+            'column': ['*ds*'],
+            'tag': ['test-tag'],
+        }
+        search_request = {
+            'type': 'AND',
+            'filters': test_filters
+        }
+
+        expected_result = self.es_proxy.parse_filters(test_filters) + " AND " + \
+            self.es_proxy.parse_query_term(term)
+        ret_result = self.es_proxy.convert_query_json_to_query_dsl(search_request=search_request,
+                                                                   query_term=term)
+        self.assertEquals(ret_result, expected_result)
+
+    def test_convert_query_json_to_query_dsl_no_term(self) -> None:
+        term = ''
+        test_filters = {
+            'database': ['hive', 'bigquery'],
+        }
+        search_request = {
+            'type': 'AND',
+            'filters': test_filters
+        }
+        expected_result = self.es_proxy.parse_filters(test_filters)
+        ret_result = self.es_proxy.convert_query_json_to_query_dsl(search_request=search_request,
+                                                                   query_term=term)
+        self.assertEquals(ret_result, expected_result)
+
+    def test_convert_query_json_to_query_dsl_no_filters(self) -> None:
+        term = 'test'
+        search_request = {
+            'type': 'AND',
+            'filters': {}
+        }
+        expected_result = self.es_proxy.parse_query_term(term)
+        ret_result = self.es_proxy.convert_query_json_to_query_dsl(search_request=search_request,
+                                                                   query_term=term)
+        self.assertEquals(ret_result, expected_result)
+
+    def test_convert_query_json_to_query_dsl_raise_exception_no_term_or_filters(self) -> None:
+        term = ''
+        search_request = {
+            'type': 'AND',
+            'filters': {}
+        }
+        self.assertRaises(Exception, self.es_proxy.convert_query_json_to_query_dsl, search_request, term)
 
     @patch('elasticsearch_dsl.Search.execute')
     def test_search_with_one_user_result(self,

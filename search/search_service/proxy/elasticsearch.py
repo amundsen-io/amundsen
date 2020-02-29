@@ -23,6 +23,15 @@ DEFAULT_ES_INDEX = 'table_search_index'
 
 LOGGING = logging.getLogger(__name__)
 
+# mapping to translate request for table resources
+TABLE_MAPPING = {
+    'tag': 'tags',
+    'schema': 'schema.raw',
+    'table': 'name.raw',
+    'column': 'column_names.raw',
+    'database': 'database.raw'
+}
+
 
 class ElasticsearchProxy(BaseProxy):
     """
@@ -81,14 +90,12 @@ class ElasticsearchProxy(BaseProxy):
         response = client.execute()
 
         for hit in response:
-
             try:
                 # ES hit: {'_d_': {'key': xxx...}
                 es_payload = hit.__dict__.get('_d_', {})
                 if not es_payload:
                     raise Exception('The ES doc not contain required field')
                 result = {}
-
                 for attr, val in es_payload.items():
                     if attr in model.get_attrs():
                         result[attr] = val
@@ -281,14 +288,6 @@ class ElasticsearchProxy(BaseProxy):
 
         s = Search(using=self.elasticsearch, index=current_index)
 
-        mapping = {
-            'tag': 'tags',
-            'schema': 'schema.raw',
-            'table': 'name.raw',
-            'column': 'column_names.raw',
-            'database': 'database.raw'
-        }
-
         if query_term:
             query_name = {
                 "function_score": {
@@ -314,7 +313,7 @@ class ElasticsearchProxy(BaseProxy):
             query_name = {}
 
         # Convert field name to actual type in ES doc
-        new_field_name = mapping[field_name]
+        new_field_name = TABLE_MAPPING[field_name]
 
         # We allow user to use ? * for wildcard support
         m = re.search('[?*]', field_value)
@@ -376,6 +375,143 @@ class ElasticsearchProxy(BaseProxy):
                                    client=s,
                                    query_name=query_name,
                                    model=Table)
+
+    @staticmethod
+    def get_model_by_index(index: str) -> Any:
+        if index == TABLE_INDEX:
+            return Table
+        elif index == USER_INDEX:
+            return User
+
+        raise Exception('Unable to map given index to a valid model')
+
+    @staticmethod
+    def parse_filters(filter_list: Dict) -> str:
+        query_list = []  # type: List[str]
+        for category, item_list in filter_list.items():
+            mapped_category = TABLE_MAPPING.get(category)
+            if mapped_category is None:
+                LOGGING.warn(f'Unsupported filter category: {category} passed in list of filters')
+            else:
+                query_list.append(mapped_category + ':' + '(' + ' OR '.join(item_list) + ')')
+
+        if len(query_list) == 0:
+            return ''
+
+        return ' AND '.join(query_list)
+
+    @staticmethod
+    def parse_query_term(query_term: str) -> str:
+        # TODO: Might be some issue with using wildcard & underscore
+        # https://discuss.elastic.co/t/wildcard-search-with-underscore-is-giving-no-result/114010/8
+        return f'(name:(*{query_term}*) OR name:({query_term}) ' \
+               f'OR schema:(*{query_term}*) OR schema:({query_term}) ' \
+               f'OR description:(*{query_term}*) OR description:({query_term}) ' \
+               f'OR column_names:(*{query_term}*) OR column_names:({query_term}) ' \
+               f'OR column_descriptions:(*{query_term}*) OR column_descriptions:({query_term}))'
+
+    @classmethod
+    def convert_query_json_to_query_dsl(self, *,
+                                        search_request: dict,
+                                        query_term: str) -> str:
+        """
+        Convert the generic query json to query DSL
+        e.g
+        ```
+        {
+            'type': 'AND'
+            'filters': {
+                'database': ['hive', 'bigquery'],
+                'schema': ['test-schema1', 'test-schema2'],
+                'table': ['*amundsen*'],
+                'column': ['*ds*']
+                'tag': ['test-tag']
+            }
+        }
+
+        This generic JSON will convert into DSL depending on the backend engines.
+
+        E.g in Elasticsearch, it will become
+        'database':('hive' OR 'bigquery') AND
+        'schema':('test-schema1' OR 'test-schema2') AND
+        'table':('*amundsen*') AND
+        'column':('*ds*') AND
+        'tag':('test-tag')
+        ```
+
+        :param search_request:
+        :return: The search engine query DSL
+        """
+        filter_list = search_request.get('filters')
+        add_query = ''
+        query_dsl = ''
+
+        if filter_list:
+            query_dsl = self.parse_filters(filter_list)
+
+        if query_term:
+            add_query = self.parse_query_term(query_term)
+
+        if not query_dsl and not add_query:
+            raise Exception('Unable to convert parameters to valid query dsl')
+
+        result = ''
+        if query_dsl and add_query:
+            result = query_dsl + ' AND ' + add_query
+        elif add_query and not query_dsl:
+            result = add_query
+        elif query_dsl and not add_query:
+            result = query_dsl
+
+        return result
+
+    @timer_with_counter
+    def fetch_table_search_results_with_filter(self, *,
+                                               query_term: str,
+                                               search_request: dict,
+                                               page_index: int = 0,
+                                               index: str = '') -> SearchResult:
+        """
+        Query Elasticsearch and return results as list of Table objects
+        :param search_request: A json representation of search request
+        :param page_index: index of search page user is currently on
+        :param index: current index for search. Provide different index for different resource.
+        :return: SearchResult Object
+        """
+        current_index = index if index else \
+            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)  # type: str
+        if not search_request:
+            # return empty result for blank query term
+            return SearchResult(total_results=0, results=[])
+
+        try:
+            query_string = self.convert_query_json_to_query_dsl(search_request=search_request,
+                                                                query_term=query_term)  # type: str
+        except Exception as e:
+            LOGGING.exception(e)
+            # return nothing if any exception is thrown under the hood
+            return SearchResult(total_results=0, results=[])
+        s = Search(using=self.elasticsearch, index=current_index)
+
+        query_name = {
+            "function_score": {
+                "query": {
+                    "query_string": {
+                        "query": query_string
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+        model = self.get_model_by_index(current_index)
+        return self._search_helper(page_index=page_index,
+                                   client=s,
+                                   query_name=query_name,
+                                   model=model)
 
     @timer_with_counter
     def fetch_user_search_results(self, *,
