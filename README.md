@@ -45,7 +45,7 @@ Please note that the mock images only served as demonstration purpose.
 
     ![](docs/img/column_details.png)
 
-- **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset)
+- **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset) or other Data Visualization Tools 
 
     ![](docs/img/data_preview.png)
 
