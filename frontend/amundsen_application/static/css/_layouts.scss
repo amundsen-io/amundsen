@@ -67,49 +67,61 @@ $resource-header-height: 84px;
     }
   }
 
-
-  // 630 | 414+ Flexible layout
+  // Outer column layout
   .column-layout-1 {
     display: flex;
     height: calc(100% - #{$resource-header-height});
 
     > .left-panel {
+      border-right: 4px solid $divider;
+      flex-basis: 600px;
+      flex-shrink: 0;
+      overflow-y: scroll;
+      padding: 0 24px;
+
       > .banner {
         border: 1px solid $stroke;
         height: 40px;
         margin: 24px 24px 0 24px;
         padding: 8px;
       }
-
-      border-right: 4px solid $divider;
-      flex-basis: 634px; // 630 + 4px border
-      flex-shrink: 0;
-      overflow-y: scroll;
-      padding: 0 24px;
     }
 
     > .right-panel {
-      flex-basis: 414px;
+      flex-basis: 500px;
       flex-grow: 1;
       flex-shrink: 0;
       overflow-y: scroll;
       width: 0; // Required for text truncation
     }
+
+     @media(max-width: 1440px) {
+      > .left-panel {
+       flex-basis: 500px;
+      }
+    }
+
+    @media(max-width: 1200px) {
+      > .left-panel {
+       flex-basis: 415px;
+      }
+    }
   }
 
-  // 313 | 245 Fixed Layout
+  // Inner column layout
   .column-layout-2 {
     display: flex;
     flex-basis: 100%;
 
     > .left-panel {
-      flex-basis: 313px;
-      margin-right: 24px;
+      flex-basis: 262px;
+      margin-right: 12px;
       flex-direction: column;
     }
 
     > .right-panel {
-      flex-basis: 245px;
+      flex-basis: 262px;
+      margin-left: 12px;
     }
   }
 
