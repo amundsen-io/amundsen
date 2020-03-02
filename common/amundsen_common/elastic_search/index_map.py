@@ -7,7 +7,7 @@ import textwrap
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-simple-analyzer.html
 # Standard Analyzer is used for all text fields that don't explicitly specify an analyzer
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-analyzer.html
-DEFAULT_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
+TABLE_INDEX_MAP = textwrap.dedent(
     """
     {
     "mappings":{
@@ -88,3 +88,58 @@ DEFAULT_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
     }
     """
 )
+
+USER_INDEX_MAP = textwrap.dedent("""
+{
+"mappings":{
+    "user":{
+      "properties": {
+        "email": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "first_name": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "last_name": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "name": {
+          "type":"text",
+          "analyzer": "simple",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "total_read":{
+          "type": "long"
+        },
+        "total_own": {
+          "type": "long"
+        },
+        "total_follow": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}""")
