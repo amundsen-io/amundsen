@@ -1,4 +1,4 @@
-import csv
+import six
 import logging
 import os
 import shutil
@@ -13,6 +13,12 @@ from databuilder.models.neo4j_csv_serde import NODE_LABEL, \
     RELATION_START_LABEL, RELATION_END_LABEL, RELATION_TYPE
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable  # noqa: F401
 from databuilder.utils.closer import Closer
+
+if six.PY2:
+    import unicodecsv as csv
+else:
+    import csv
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -168,8 +174,13 @@ class FsNeo4jCSVLoader(Loader):
             file_out.close()
         self._closer.register(file_out_close)
 
-        writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
-                                quoting=csv.QUOTE_NONNUMERIC)
+        if six.PY2:
+            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
+                                    quoting=csv.QUOTE_NONNUMERIC, encoding='utf-8')
+        else:
+            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
+                                    quoting=csv.QUOTE_NONNUMERIC)
+
         writer.writeheader()
         file_mapping[key] = writer
 
