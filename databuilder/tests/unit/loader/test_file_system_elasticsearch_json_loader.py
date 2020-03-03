@@ -100,7 +100,8 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
                                column_descriptions=['test_comment1', 'test_comment2'],
                                total_usage=10,
                                unique_usage=5,
-                               tags=['test_tag1', 'test_tag2'])
+                               tags=['test_tag1', 'test_tag2'],
+                               badges=['badge1'])
         loader.load(data)
         loader.close()
 
@@ -110,7 +111,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
              '"last_updated_timestamp": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
-             '"tags": ["test_tag1", "test_tag2"]}')
+             '"tags": ["test_tag1", "test_tag2"], "badges": ["badge1"]}')
         ]
 
         self._check_results_helper(expected=expected)
@@ -136,7 +137,8 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
                                 column_descriptions=['test_comment1', 'test_comment2'],
                                 total_usage=10,
                                 unique_usage=5,
-                                tags=['test_tag1', 'test_tag2'])] * 5
+                                tags=['test_tag1', 'test_tag2'],
+                                badges=['badge1'])] * 5
 
         for d in data:
             loader.load(d)
@@ -148,7 +150,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
              '"last_updated_timestamp": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
-             '"tags": ["test_tag1", "test_tag2"]}')
+             '"tags": ["test_tag1", "test_tag2"], "badges": ["badge1"]}')
         ] * 5
 
         self._check_results_helper(expected=expected)

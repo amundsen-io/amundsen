@@ -19,7 +19,8 @@ class TableESDocument(ElasticsearchDocument):
                  column_descriptions,  # type: List[str]
                  total_usage,  # type: int
                  unique_usage,  # type: int
-                 tags,  # type: List[str]
+                 tags,  # type: List[str],
+                 badges=None,  # type: Optional[List[str]]
                  display_name=None,  # type: Optional[str]
                  ):
         # type: (...) -> None
@@ -38,3 +39,4 @@ class TableESDocument(ElasticsearchDocument):
         self.unique_usage = unique_usage
         # todo: will include tag_type once we have better understanding from UI flow.
         self.tags = tags
+        self.badges = badges
