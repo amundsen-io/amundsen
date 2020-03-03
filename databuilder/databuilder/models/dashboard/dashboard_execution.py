@@ -20,12 +20,15 @@ class DashboardExecution(Neo4jCsvSerializable):
     DASHBOARD_EXECUTION_RELATION_TYPE = 'LAST_EXECUTED'
     EXECUTION_DASHBOARD_RELATION_TYPE = 'LAST_EXECUTION_OF'
 
+    LAST_EXECUTION_ID = '_last_execution'
+    LAST_SUCCESSFUL_EXECUTION_ID = '_last_successful_execution'
+
     def __init__(self,
                  dashboard_group_id,  # type: Optional[str]
                  dashboard_id,  # type: Optional[str]
                  execution_timestamp,  # type: int
                  execution_state,  # type: str
-                 execution_id='_last_execution',  # type: str
+                 execution_id=LAST_EXECUTION_ID,  # type: str
                  product='',  # type: Optional[str]
                  cluster='gold',  # type: str
                  **kwargs
