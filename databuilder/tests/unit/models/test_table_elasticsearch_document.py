@@ -22,7 +22,8 @@ class TestTableElasticsearchDocument(unittest.TestCase):
                                    column_descriptions=['test_description1', 'test_description2'],
                                    total_usage=100,
                                    unique_usage=10,
-                                   tags=['test'])
+                                   tags=['test'],
+                                   badges=['badge1'])
 
         expected_document_dict = {"database": "test_database",
                                   "cluster": "test_cluster",
@@ -36,7 +37,8 @@ class TestTableElasticsearchDocument(unittest.TestCase):
                                   "column_descriptions": ["test_description1", "test_description2"],
                                   "total_usage": 100,
                                   "unique_usage": 10,
-                                  "tags": ["test"]
+                                  "tags": ["test"],
+                                  "badges": ["badge1"]
                                   }
 
         result = test_obj.to_json()

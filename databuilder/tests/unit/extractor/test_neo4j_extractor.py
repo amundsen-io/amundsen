@@ -112,7 +112,8 @@ class TestNeo4jExtractor(unittest.TestCase):
                                column_descriptions=['test_description1', 'test_description2', ''],
                                total_usage=100,
                                unique_usage=5,
-                               tags=['hive'])
+                               tags=['hive'],
+                               badges=['badge1'])
 
             extractor.results = [result_dict]
             result_obj = extractor.extract()
