@@ -53,6 +53,11 @@ describe('CheckBoxItem', () => {
       });
     });
 
+    it('renders input with default value for checked if not provided', () => {
+      const wrapper = setup({ checked: undefined }).wrapper;
+      expect(wrapper.find('input').props().checked).toEqual(false);
+    });
+
     it('renders input with default value for disabled if not provided', () => {
       const wrapper = setup({ disabled: undefined }).wrapper;
       expect(wrapper.find('input').props().disabled).toEqual(false);

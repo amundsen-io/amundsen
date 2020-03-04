@@ -67,7 +67,8 @@ export function* filterWatcher(): SagaIterator {
 export function* filterWorker(): SagaIterator {
   const state = yield select(getSearchState);
   const { search_term, selectedTab, filters } = state;
-  const pageIndex = getPageIndex(state)
+  /* filters must reset pageIndex to 0 as the number of results is expected to change */
+  const pageIndex = 0;
   yield put(searchResource(SearchType.FILTER, search_term, selectedTab, pageIndex));
   updateSearchUrl({ filters, resource: selectedTab, term: search_term, index: pageIndex }, true);
 };
