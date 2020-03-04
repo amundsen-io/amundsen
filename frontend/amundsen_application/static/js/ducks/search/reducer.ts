@@ -1,4 +1,4 @@
-import { ResourceType } from 'interfaces';
+import { ResourceType, SearchType} from 'interfaces';
 
 import { Search as UrlSearch } from 'history';
 
@@ -49,13 +49,14 @@ export interface SearchReducerState {
 };
 
 /* ACTIONS */
-export function searchAll(term: string, resource?: ResourceType, pageIndex?: number, useFilters: boolean = false): SearchAllRequest {
+export function searchAll(searchType: SearchType, term: string, resource?: ResourceType, pageIndex?: number, useFilters: boolean = false): SearchAllRequest {
   return {
     payload: {
       resource,
       pageIndex,
       term,
       useFilters,
+      searchType,
     },
     type: SearchAll.REQUEST,
   };
@@ -67,12 +68,13 @@ export function searchAllFailure(): SearchAllResponse {
   return { type: SearchAll.FAILURE };
 };
 
-export function searchResource(term: string, resource: ResourceType, pageIndex: number): SearchResourceRequest {
+export function searchResource(searchType: SearchType, term: string, resource: ResourceType, pageIndex: number): SearchResourceRequest {
   return {
     payload: {
       pageIndex,
       term,
       resource,
+      searchType
     },
     type: SearchResource.REQUEST,
   };

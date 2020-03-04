@@ -4,7 +4,7 @@ import { DashboardSearchResults, TableSearchResults, UserSearchResults } from 'd
 
 import globalState from 'fixtures/globalState';
 
-import { ResourceType } from 'interfaces';
+import { ResourceType, SearchType } from 'interfaces';
 
 import * as API from '../v0';
 
@@ -44,7 +44,7 @@ describe('searchResource', () => {
       const resourceType = ResourceType.dashboard;
       const term = 'test';
       expect.assertions(3);
-      await API.searchResource(pageIndex, resourceType, term).then(results => {
+      await API.searchResource(pageIndex, resourceType, term, undefined, SearchType.FILTER).then(results => {
         expect(results).toEqual({});
       });
       expect(axiosMockGet).not.toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe('searchResource', () => {
       const resourceType = ResourceType.user;
       const term = 'test';
       expect.assertions(3);
-      await API.searchResource(pageIndex, resourceType, term).then(results => {
+      await API.searchResource(pageIndex, resourceType, term, undefined, SearchType.FILTER).then(results => {
         expect(results).toEqual({});
       });
       expect(axiosMockGet).not.toHaveBeenCalled();
@@ -74,14 +74,15 @@ describe('searchResource', () => {
         const pageIndex = 0;
         const resourceType = ResourceType.user;
         const term = 'test';
-        await API.searchResource(pageIndex, resourceType, term);
-        expect(axiosMockGet).toHaveBeenCalledWith(`${API.BASE_URL}/${resourceType}?query=${term}&page_index=${pageIndex}`);
+        const searchType = SearchType.SUBMIT_TERM;
+        await API.searchResource(pageIndex, resourceType, term, undefined, searchType);
+        expect(axiosMockGet).toHaveBeenCalledWith(`${API.BASE_URL}/${resourceType}?query=${term}&page_index=${pageIndex}&search_type=${searchType}`);
         expect(axiosMockPost).not.toHaveBeenCalled();
       });
 
       it('calls searchResourceHelper with api call response', async () => {
         const searchResourceHelperSpy = jest.spyOn(API, 'searchResourceHelper');
-        await API.searchResource(0, ResourceType.user, 'test');
+        await API.searchResource(0, ResourceType.user, 'test', undefined, SearchType.FILTER);
         expect(searchResourceHelperSpy).toHaveBeenCalledWith(mockSearchResponse);
       });
     })
@@ -94,18 +95,20 @@ describe('searchResource', () => {
         const resourceType = ResourceType.table;
         const term = 'test';
         const filters = { 'schema': 'schema_name' }
-        await API.searchResource(pageIndex, resourceType, term, filters);
+        const searchType = SearchType.SUBMIT_TERM;
+        await API.searchResource(pageIndex, resourceType, term, filters, searchType);
         expect(axiosMockGet).not.toHaveBeenCalled();
-        expect(axiosMockPost).toHaveBeenCalledWith(`${API.BASE_URL}/${resourceType}_qs`, {
+        expect(axiosMockPost).toHaveBeenCalledWith(`${API.BASE_URL}/${resourceType}`, {
           filters,
           pageIndex,
           term,
+          searchType,
         });
       });
 
       it('calls searchResourceHelper with api call response', async () => {
         const searchResourceHelperSpy = jest.spyOn(API, 'searchResourceHelper');
-        await API.searchResource(0, ResourceType.table, 'test', { 'schema': 'schema_name' });
+        await API.searchResource(0, ResourceType.table, 'test', { 'schema': 'schema_name' }, SearchType.FILTER);
         expect(searchResourceHelperSpy).toHaveBeenCalledWith(mockSearchResponse);
       });
     })
