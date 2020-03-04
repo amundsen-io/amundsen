@@ -23,11 +23,11 @@ def map_table_result(result: Dict) -> Dict:
     }
 
 
-def generate_query_json(*, filters: Dict = {}, page_index: str, search_term: str) -> Dict:
+def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str) -> Dict:
     """
     Transforms the given paramaters to the query json for the search service according to
     the api defined at:
-    TODO (ttannis): Add link when amundsensearch PR is complete
+    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
     """
     # Generate the filter payload
     filter_payload = {}

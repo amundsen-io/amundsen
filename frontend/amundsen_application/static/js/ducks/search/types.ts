@@ -4,6 +4,7 @@ import {
   DashboardResource,
   Resource,
   ResourceType,
+  SearchType,
   TableResource,
   UserResource,
 } from 'interfaces';
@@ -53,6 +54,7 @@ export interface SearchAllRequest {
     pageIndex: number;
     term: string;
     useFilters?: boolean;
+    searchType: SearchType;
   };
   type: SearchAll.REQUEST;
 };
@@ -75,6 +77,7 @@ export interface SearchResourceRequest {
     pageIndex: number;
     resource: ResourceType;
     term: string;
+    searchType: SearchType;
   };
   type: SearchResource.REQUEST;
 };
