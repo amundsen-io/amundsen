@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import 'components/common/Inputs/styles.scss';
 
 export interface CheckBoxItemProps {
-  checked: boolean;
+  checked?: boolean;
   disabled?: boolean
   name: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => any;
   value: string;
 }
 
-const CheckBoxItem: React.SFC<CheckBoxItemProps> = ({ checked, disabled = false, name, onChange, value, children }) => {
+const CheckBoxItem: React.SFC<CheckBoxItemProps> = ({ checked = false, disabled = false, name, onChange, value, children }) => {
   return (
     <div className="checkbox">
       <label className="checkbox-label">

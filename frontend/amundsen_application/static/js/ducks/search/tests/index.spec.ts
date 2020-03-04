@@ -483,13 +483,9 @@ describe('search ducks', () => {
       });
 
       describe('filterWorker', () => {
-        let mockIndex;
-        let getPageIndexSpy;
         let mockSearchState;
         let saga;
         beforeAll(() => {
-          mockIndex = 1;
-          getPageIndexSpy = jest.spyOn(Utils, 'getPageIndex').mockImplementationOnce(() => mockIndex);
           mockSearchState = globalState.search;
           saga = testSaga(Sagas.filterWorker);
         })
@@ -500,14 +496,14 @@ describe('search ducks', () => {
             unsure if that's a good practice or what it means for writing robust unit tests
           */
           updateSearchUrlSpy.mockClear();
-          saga = saga.next().select(SearchUtils.getSearchState).next(mockSearchState);
-          expect(getPageIndexSpy).toHaveBeenCalledWith(mockSearchState);
-          saga = saga.put(searchResource(SearchType.FILTER, mockSearchState.search_term, mockSearchState.selectedTab, mockIndex)).next();
+          saga = saga.next()
+                  .select(SearchUtils.getSearchState).next(mockSearchState)
+                  .put(searchResource(SearchType.FILTER, mockSearchState.search_term, mockSearchState.selectedTab, 0)).next();
           expect(updateSearchUrlSpy).toHaveBeenCalledWith({
             filters: mockSearchState.filters,
             resource: mockSearchState.selectedTab,
             term: mockSearchState.search_term,
-            index: mockIndex,
+            index: 0,
           }, true);
           saga.isDone();
         });
