@@ -272,10 +272,6 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [TblColUsgAggExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/table_column_usage_aggregate_extractor.py "TblColUsgAggExtractor")
-An extractor that extracts table usage from SQL statements. It accept any extractor  that extracts row from source that has SQL audit log. Once SQL statement is extracted, it uses [ANTLR](https://www.antlr.org/ "ANTLR") to parse and get tables and columns that it reads from. Also, it aggregates usage based on table and user. (Column level aggregation is not there yet.)
-
-
 ## List of transformers
 #### [ChainedTransformer](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
 A chanined transformer that can take multiple transformer.
@@ -295,9 +291,6 @@ job = DefaultJob(
 		loader=AnyLoader()))
 job.launch()
 ```
-
-#### [SqlToTblColUsageTransformer](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/transformer/sql_to_table_col_usage_transformer.py "SqlToTblColUsageTransformer")
-A SQL to usage transformer where it transforms to ColumnReader that has column, user, count. Currently it's collects on table level that column on same table will be de-duped. In many cases, "from" clause does not contain schema and this will be fetched via table name -> schema name mapping which it gets from metadata extractor.
 
 ## List of loader
 #### [FsNeo4jCSVLoader](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
