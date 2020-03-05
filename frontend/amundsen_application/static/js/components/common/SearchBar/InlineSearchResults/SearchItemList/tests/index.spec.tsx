@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
 import SearchItemList, { SearchItemListProps } from '../';
@@ -82,8 +83,7 @@ describe('SearchItemList', () => {
 
     describe('renders ResourceType.user SearchItem based on config', () =>{
       it('when indexUsersEnabled = true, renders SearchItem', () => {
-        // @ts-ignore: Known issue but can't find solution: https://github.com/kulshekhar/ts-jest/issues/661
-        indexUsersEnabled.mockImplementation(() => true);
+        mocked(indexUsersEnabled).mockImplementation(() => true);
         setUpResult = setup();
         props = setUpResult.props;
         wrapper = setUpResult.wrapper;
@@ -101,8 +101,7 @@ describe('SearchItemList', () => {
       });
 
       it('when indexUsersEnabled = false, does not render SearchItem', () => {
-        // @ts-ignore: Known issue but can't find solution: https://github.com/kulshekhar/ts-jest/issues/661
-        indexUsersEnabled.mockImplementation(() => false);
+        mocked(indexUsersEnabled).mockImplementation(() => false);
         wrapper = setup().wrapper;
         const item = wrapper.find('SearchItem').findWhere(item => item.prop('resourceType') === ResourceType.user);
         expect(item.exists()).toBe(false)

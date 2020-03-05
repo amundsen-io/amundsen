@@ -24,6 +24,7 @@ import OwnerEditor from 'components/TableDetail/OwnerEditor';
 import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import SourceLink from 'components/TableDetail/SourceLink';
 import TableDescEditableText from 'components/TableDetail/TableDescEditableText';
+import TableHeaderBullets from 'components/TableDetail/TableHeaderBullets';
 import TableIssues from 'components/TableDetail/TableIssues';
 import WatermarkLabel from 'components/TableDetail/WatermarkLabel';
 import WriterLink from 'components/TableDetail/WriterLink';
@@ -32,7 +33,7 @@ import { TableMetadata } from 'interfaces/TableMetadata';
 
 import { EditableSection } from 'components/TableDetail/EditableSection';
 
-import { getDisplayNameByResource, getDatabaseDisplayName, getDatabaseIconClass, issueTrackingEnabled, notificationsEnabled } from 'config/config-utils';
+import { getDatabaseIconClass, issueTrackingEnabled, notificationsEnabled } from 'config/config-utils';
 
 import { ResourceType } from 'interfaces/Resources';
 import { formatDateTimeShort } from 'utils/dateUtils';
@@ -142,11 +143,10 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               </h3>
               <BookmarkIcon bookmarkKey={ this.props.tableData.key }/>
               <div className="body-2">
-                <ul className="header-bullets">
-                  <li>{ getDisplayNameByResource(ResourceType.table) }</li>
-                  <li>{ getDatabaseDisplayName(data.database) }</li>
-                  <li>{ data.cluster }</li>
-                </ul>
+                <TableHeaderBullets
+                  database={ data.database }
+                  cluster={ data.cluster }
+                />
                 {
                   data.badges.length > 0 &&
                   <BadgeList badges={ data.badges } />
