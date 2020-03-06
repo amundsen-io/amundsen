@@ -1,35 +1,33 @@
 """
 This is a example script which demo how to load data
 into Neo4j and Elasticsearch without using an Airflow DAG.
+
+It uses CSV extractor to extract metadata to load it into Neo4j & ES.
+For other available extractors, please take a look at
+https://github.com/lyft/amundsendatabuilder#list-of-extractors
 """
 
-import csv
-
-import sys
-from elasticsearch import Elasticsearch
 import logging
-from pyhocon import ConfigFactory
 import sqlite3
-from sqlalchemy.ext.declarative import declarative_base
+import sys
 import textwrap
 import uuid
-from collections import defaultdict
+from elasticsearch import Elasticsearch
+from pyhocon import ConfigFactory
+from sqlalchemy.ext.declarative import declarative_base
 
-from databuilder.extractor.base_extractor import Extractor
+from databuilder.extractor.csv_extractor import CsvTableColumnExtractor, CsvExtractor
 from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpdatedExtractor
-from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
-from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.job.job import DefaultJob
-from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
-from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.publisher import neo4j_csv_publisher
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
-from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
+from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
+from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.publisher import neo4j_csv_publisher
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
+from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
-
 
 es_host = None
 neo_host = None
@@ -63,264 +61,58 @@ def create_connection(db_file):
     return None
 
 
-def load_table_data_from_csv(file_name, table_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists {}'.format(table_name))
-        cur.execute('create table if not exists {} '
-                    '(database VARCHAR(64) NOT NULL , '
-                    'cluster VARCHAR(64) NOT NULL, '
-                    'schema VARCHAR(64) NOT NULL,'
-                    'name VARCHAR(64) NOT NULL,'
-                    'description VARCHAR(64) NOT NULL, '
-                    'tags VARCHAR(128) NOT NULL,'
-                    'description_source VARCHAR(32))'.format(table_name))
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['database'],
-                      i['cluster'],
-                      i['schema'],
-                      i['name'],
-                      i['description'],
-                      i['tags'],
-                      i['description_source']) for i in dr]
-
-        cur.executemany("INSERT INTO {} (database, cluster, "
-                        "schema, name, description, tags, "
-                        "description_source) "
-                        "VALUES (?, ?, ?, ?, ?, ?, ?);".format(table_name), to_db)
-        conn.commit()
-
-
-def load_tag_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_tag_metadata')
-        cur.execute('create table if not exists test_tag_metadata '
-                    '(name VARCHAR(64) NOT NULL , '
-                    'tag_type VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['name'],
-                      i['tag_type']) for i in dr]
-
-        cur.executemany("INSERT INTO test_tag_metadata (name, tag_type) VALUES (?, ?);", to_db)
-        conn.commit()
-
-
-def load_table_column_stats_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_table_column_stats')
-        cur.execute('create table if not exists test_table_column_stats '
-                    '(cluster VARCHAR(64) NOT NULL , '
-                    'db VARCHAR(64) NOT NULL , '
-                    'schema VARCHAR(64) NOT NULL , '
-                    'table_name INTEGER NOT NULL , '
-                    'col_name VARCHAR(64) NOT NULL , '
-                    'stat_name VARCHAR(64) NOT NULL, '
-                    'stat_val VARCHAR(64) NOT NULL,'
-                    'start_epoch VARCHAR(64) NOT NULL,'
-                    'end_epoch VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['cluster'],
-                      i['db'],
-                      i['schema'],
-                      i['table_name'],
-                      i['col_name'],
-                      i['stat_name'],
-                      i['stat_val'],
-                      i['start_epoch'],
-                      i['end_epoch']) for i in dr]
-
-        cur.executemany("INSERT INTO test_table_column_stats ("
-                        "cluster, db, schema, table_name,"
-                        "col_name, stat_name, "
-                        "stat_val, start_epoch, end_epoch) VALUES "
-                        "(?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
-        conn.commit()
-
-
-def load_watermark_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_watermark_metadata')
-        cur.execute('create table if not exists test_watermark_metadata '
-                    '(create_time VARCHAR(64) NOT NULL , '
-                    'database VARCHAR(64) NOT NULL , '
-                    'schema VARCHAR(64) NOT NULL , '
-                    'table_name VARCHAR(64) NOT NULL , '
-                    'part_name VARCHAR(64) NOT NULL , '
-                    'part_type VARCHAR(64) NOT NULL , '
-                    'cluster VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = []
-            for i in dr:
-                to_db.append((i['create_time'],
-                              i['database'],
-                              i['schema'],
-                              i['table_name'],
-                              i['part_name'],
-                              i['part_type'],
-                              i['cluster']))
-
-        cur.executemany("INSERT INTO test_watermark_metadata ("
-                        "create_time, database, schema, table_name,"
-                        "part_name, part_type, cluster) VALUES "
-                        "(?, ?, ?, ?, ?, ?, ?);", to_db)
-        conn.commit()
-
-
-def load_user_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_user_metadata')
-        cur.execute('create table if not exists test_user_metadata '
-                    '(email VARCHAR(64) NOT NULL , '
-                    'first_name VARCHAR(64) NOT NULL , '
-                    'last_name VARCHAR(64) NOT NULL , '
-                    'full_name VARCHAR(64) NOT NULL , '
-                    'github_username VARCHAR(64) NOT NULL , '
-                    'team_name VARCHAR(64) NOT NULL, '
-                    'employee_type VARCHAR(64) NOT NULL,'
-                    'manager_email VARCHAR(64) NOT NULL,'
-                    'slack_id VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['email'],
-                      i['first_name'],
-                      i['last_name'],
-                      i['full_name'],
-                      i['github_username'],
-                      i['team_name'],
-                      i['employee_type'],
-                      i['manager_email'],
-                      i['slack_id']) for i in dr]
-
-        cur.executemany("INSERT INTO test_user_metadata ("
-                        "email, first_name, last_name, full_name, github_username, "
-                        "team_name, employee_type, "
-                        "manager_email, slack_id ) VALUES "
-                        "(?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
-        conn.commit()
-
-
-def load_application_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_application_metadata')
-        cur.execute('create table if not exists test_application_metadata '
-                    '(task_id VARCHAR(64) NOT NULL , '
-                    'dag_id VARCHAR(64) NOT NULL , '
-                    'exec_date VARCHAR(64) NOT NULL, '
-                    'application_url_template VARCHAR(128) NOT NULL, '
-                    'db_name VARCHAR(64) NOT NULL, '
-                    'schema VARCHAR(64) NOT NULL, '
-                    'table_name VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['task_id'],
-                      i['dag_id'],
-                      i['exec_date'],
-                      i['application_url_template'],
-                      i['db_name'],
-                      i['schema'],
-                      i['table_name'],) for i in dr]
-
-        cur.executemany("INSERT INTO test_application_metadata (task_id, dag_id, "
-                        "exec_date, application_url_template, db_name, schema, table_name) "
-                        "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
-        conn.commit()
-
-
-def load_source_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_source_metadata')
-        cur.execute('create table if not exists test_source_metadata '
-                    '(db_name VARCHAR(64) NOT NULL , '
-                    'cluster VARCHAR(64) NOT NULL , '
-                    'schema VARCHAR(64) NOT NULL, '
-                    'table_name VARCHAR(64) NOT NULL, '
-                    'source VARCHAR(64) NOT NULL , '
-                    'source_type VARCHAR(32) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['db_name'],
-                      i['cluster'],
-                      i['schema'],
-                      i['table_name'],
-                      i['source'],
-                      i['source_type']) for i in dr]
-
-        cur.executemany("INSERT INTO test_source_metadata (db_name, cluster, "
-                        "schema, table_name, source, source_type) VALUES (?, ?, ?, ?, ?, ?);", to_db)
-        conn.commit()
-
-
-def load_test_last_updated_data_from_csv(file_name):
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_table_last_updated_metadata')
-        cur.execute('create table if not exists test_table_last_updated_metadata '
-                    '(cluster VARCHAR(64) NOT NULL , '
-                    'db VARCHAR(64) NOT NULL , '
-                    'schema VARCHAR(64) NOT NULL, '
-                    'table_name VARCHAR(64) NOT NULL, '
-                    'last_updated_time_epoch LONG NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['cluster'],
-                      i['db'],
-                      i['schema'],
-                      i['table_name'],
-                      i['last_updated_time_epoch']) for i in dr]
-
-        cur.executemany("INSERT INTO test_table_last_updated_metadata (cluster, db, "
-                        "schema, table_name, last_updated_time_epoch) VALUES (?, ?, ?, ?, ?);", to_db)
-
-        conn.commit()
-
-
-# todo: Add a second model
-def create_sample_job(table_name, model_name, transformer=NoopTransformer()):
-    sql = textwrap.dedent("""
-    select * from {table_name};
-    """).format(table_name=table_name)
-
+def run_csv_job(file_loc, table_name, model):
     tmp_folder = '/var/tmp/amundsen/{table_name}'.format(table_name=table_name)
     node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
     relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
 
-    sql_extractor = SQLAlchemyExtractor()
+    csv_extractor = CsvExtractor()
     csv_loader = FsNeo4jCSVLoader()
 
-    task = DefaultTask(extractor=sql_extractor,
+    task = DefaultTask(extractor=csv_extractor,
                        loader=csv_loader,
-                       transformer=transformer)
+                       transformer=NoopTransformer())
 
     job_config = ConfigFactory.from_dict({
-        'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): SQLITE_CONN_STRING,
-        'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.EXTRACT_SQL): sql,
-        'extractor.sqlalchemy.model_class': model_name,
+        'extractor.csv.{}'.format(CsvExtractor.FILE_LOCATION): file_loc,
+        'extractor.csv.model_class': model,
+        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
+            node_files_folder,
+        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
+            relationship_files_folder,
+        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR):
+            True,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
+            node_files_folder,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
+            relationship_files_folder,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
+            neo4j_endpoint,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
+            neo4j_user,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
+            neo4j_password,
+        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
+            'unique_tag',  # should use unique tag here like {ds}
+    })
+
+    DefaultJob(conf=job_config,
+               task=task,
+               publisher=Neo4jCsvPublisher()).launch()
+
+
+def run_table_column_job(table_path, column_path):
+    tmp_folder = '/var/tmp/amundsen/table_column'
+    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
+    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    extractor = CsvTableColumnExtractor()
+    csv_loader = FsNeo4jCSVLoader()
+    task = DefaultTask(extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job_config = ConfigFactory.from_dict({
+        'extractor.csvtablecolumn.{}'.format(CsvTableColumnExtractor.TABLE_FILE_LOCATION): table_path,
+        'extractor.csvtablecolumn.{}'.format(CsvTableColumnExtractor.COLUMN_FILE_LOCATION): column_path,
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
             node_files_folder,
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
@@ -343,67 +135,7 @@ def create_sample_job(table_name, model_name, transformer=NoopTransformer()):
     job = DefaultJob(conf=job_config,
                      task=task,
                      publisher=Neo4jCsvPublisher())
-    return job
-
-
-def load_usage_data_from_csv(file_name):
-    # Load usage data
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_usage_metadata')
-        cur.execute('create table if not exists test_usage_metadata '
-                    '(database VARCHAR(64) NOT NULL, '
-                    'cluster VARCHAR(64) NOT NULL, '
-                    'schema VARCHAR(64) NOT NULL, '
-                    'table_name VARCHAR(64) NOT NULL, '
-                    'column_name VARCHAR(64) NOT NULL, '
-                    'user_email VARCHAR(64) NOT NULL, '
-                    'read_count INTEGER NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['database'],
-                      i['cluster'],
-                      i['schema'],
-                      i['table_name'],
-                      i['column_name'],
-                      i['user_email'],
-                      i['read_count']
-                      ) for i in dr]
-
-        cur.executemany("INSERT INTO test_usage_metadata (database, cluster, "
-                        "schema, table_name, column_name, user_email, read_count) "
-                        "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
-        conn.commit()
-
-
-def load_table_owner_data_from_csv(file_name):
-    # Load usage data
-    conn = create_connection(DB_FILE)
-    if conn:
-        cur = conn.cursor()
-        cur.execute('drop table if exists test_table_owner_metadata')
-        cur.execute('create table if not exists test_table_owner_metadata '
-                    '(db_name VARCHAR(64) NOT NULL, '
-                    'schema VARCHAR(64) NOT NULL, '
-                    'table_name VARCHAR(64) NOT NULL, '
-                    'owners VARCHAR(128) NOT NULL, '
-                    'cluster VARCHAR(64) NOT NULL)')
-        file_loc = 'example/sample_data/' + file_name
-        with open(file_loc, 'r') as fin:
-            dr = csv.DictReader(fin)
-            to_db = [(i['db_name'],
-                      i['schema'],
-                      i['cluster'],
-                      i['table_name'],
-                      i['owners']
-                      ) for i in dr]
-
-        cur.executemany("INSERT INTO test_table_owner_metadata "
-                        "(db_name, schema, cluster, table_name, owners) "
-                        "VALUES (?, ?, ?, ?, ?);", to_db)
-        conn.commit()
+    job.launch()
 
 
 def create_last_updated_job():
@@ -418,6 +150,7 @@ def create_last_updated_job():
     job_config = ConfigFactory.from_dict({
         'extractor.neo4j_es_last_updated.model_class':
             'databuilder.models.neo4j_es_last_updated.Neo4jESLastUpdated',
+
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
             node_files_folder,
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
@@ -434,13 +167,12 @@ def create_last_updated_job():
         'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
             neo4j_password,
         'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_last_updated_tag',  # should use unique tag here like {ds}
+            'unique_lastupdated_tag',  # should use unique tag here like {ds}
     })
 
-    job = DefaultJob(conf=job_config,
-                     task=task,
-                     publisher=Neo4jCsvPublisher())
-    return job
+    return DefaultJob(conf=job_config,
+                      task=task,
+                      publisher=Neo4jCsvPublisher())
 
 
 def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index',
@@ -506,216 +238,35 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     return job
 
 
-class CSVTableColumnExtractor(Extractor):
-    # Config keys
-    TABLE_FILE_LOCATION = 'table_file_location'
-    COLUMN_FILE_LOCATION = 'column_file_location'
-
-    """
-    An Extractor that combines Table and Column CSVs.
-    """
-    def init(self, conf):
-        # type: (ConfigTree) -> None
-        """
-        :param conf:
-        """
-        self.conf = conf
-        self.table_file_location = conf.get_string(CSVTableColumnExtractor.TABLE_FILE_LOCATION)
-        self.column_file_location = conf.get_string(CSVTableColumnExtractor.COLUMN_FILE_LOCATION)
-        self._load_csv()
-
-    def _get_key(self, db, cluster, schema, tbl):
-        return TableMetadata.TABLE_KEY_FORMAT.format(db=db,
-                                                     cluster=cluster,
-                                                     schema=schema,
-                                                     tbl=tbl)
-
-    def _load_csv(self):
-        # type: () -> None
-        """
-        Create an iterator to execute sql.
-        """
-
-        with open(self.column_file_location, 'r') as fin:
-            self.columns = [dict(i) for i in csv.DictReader(fin)]
-
-        parsed_columns = defaultdict(list)
-        for column_dict in self.columns:
-            db = column_dict['database']
-            cluster = column_dict['cluster']
-            schema = column_dict['schema']
-            table = column_dict['table_name']
-            id = self._get_key(db, cluster, schema, table)
-            column = ColumnMetadata(
-                name=column_dict['name'],
-                description=column_dict['description'],
-                col_type=column_dict['col_type'],
-                sort_order=int(column_dict['sort_order'])
-            )
-            parsed_columns[id].append(column)
-
-        # Create Table Dictionary
-        with open(self.table_file_location, 'r') as fin:
-            tables = [dict(i) for i in csv.DictReader(fin)]
-
-        results = []
-        for table_dict in tables:
-            db = table_dict['database']
-            cluster = table_dict['cluster']
-            schema = table_dict['schema']
-            table = table_dict['name']
-            id = self._get_key(db, cluster, schema, table)
-            columns = parsed_columns[id]
-            if columns is None:
-                columns = []
-            table = TableMetadata(database=table_dict['database'],
-                                  cluster=table_dict['cluster'],
-                                  schema=table_dict['schema'],
-                                  name=table_dict['name'],
-                                  description=table_dict['description'],
-                                  columns=columns,
-                                  is_view=table_dict['is_view'],
-                                  tags=table_dict['tags']
-                                  )
-            results.append(table)
-        self._iter = iter(results)
-
-    def extract(self):
-        # type: () -> Any
-        """
-        Yield the csv result one at a time.
-        convert the result to model if a model_class is provided
-        """
-        try:
-            return next(self._iter)
-        except StopIteration:
-            return None
-        except Exception as e:
-            raise e
-
-    def get_scope(self):
-        # type: () -> str
-        return 'extractor.csvtablecolumn'
-
-
-def create_table_column_job(table_path, column_path):
-    tmp_folder = '/var/tmp/amundsen/table_column'
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
-    extractor = CSVTableColumnExtractor()
-    csv_loader = FsNeo4jCSVLoader()
-    task = DefaultTask(extractor,
-                       loader=csv_loader,
-                       transformer=NoopTransformer())
-    job_config = ConfigFactory.from_dict({
-        'extractor.csvtablecolumn.{}'.format(CSVTableColumnExtractor.TABLE_FILE_LOCATION): table_path,
-        'extractor.csvtablecolumn.{}'.format(CSVTableColumnExtractor.COLUMN_FILE_LOCATION): column_path,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR):
-            True,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_tag',  # should use unique tag here like {ds}
-    })
-    job = DefaultJob(conf=job_config,
-                     task=task,
-                     publisher=Neo4jCsvPublisher())
-    return job
-
-
 if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
     # logging.basicConfig(level=logging.INFO)
 
-    load_table_data_from_csv('sample_table_programmatic_source.csv', 'programmatic')
-    load_table_column_stats_from_csv('sample_table_column_stats.csv')
-    load_watermark_data_from_csv('sample_watermark.csv')
-    load_table_owner_data_from_csv('sample_table_owner.csv')
-    load_usage_data_from_csv('sample_column_usage.csv')
-    load_user_data_from_csv('sample_user.csv')
-    load_application_data_from_csv('sample_application.csv')
-    load_source_data_from_csv('sample_source.csv')
-    load_tag_data_from_csv('sample_tags.csv')
-    load_test_last_updated_data_from_csv('sample_table_last_updated.csv')
-
     if create_connection(DB_FILE):
+        run_table_column_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_col.csv')
+        run_csv_job('example/sample_data/sample_table_column_stats.csv', 'test_table_column_stats',
+                    'databuilder.models.table_stats.TableColumnStats')
+        run_csv_job('example/sample_data/sample_table_programmatic_source.csv', 'test_programmatic_source',
+                    'databuilder.models.table_metadata.TableMetadata')
+        run_csv_job('example/sample_data/sample_watermark.csv', 'test_watermark_metadata',
+                    'databuilder.models.watermark.Watermark')
+        run_csv_job('example/sample_data/sample_table_owner.csv', 'test_table_owner_metadata',
+                    'databuilder.models.table_owner.TableOwner')
+        run_csv_job('example/sample_data/sample_column_usage.csv', 'test_usage_metadata',
+                    'databuilder.models.column_usage_model.ColumnUsageModel')
+        run_csv_job('example/sample_data/sample_user.csv', 'test_user_metadata',
+                    'databuilder.models.user.User')
+        run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
+                    'databuilder.models.application.Application')
+        run_csv_job('example/sample_data/sample_source.csv', 'test_source_metadata',
+                    'databuilder.models.table_source.TableSource')
+        run_csv_job('example/sample_data/sample_tags.csv', 'test_tag_metadata',
+                    'databuilder.models.table_metadata.TagMetadata')
+        run_csv_job('example/sample_data/sample_table_last_updated.csv', 'test_table_last_updated_metadata',
+                    'databuilder.models.table_last_updated.TableLastUpdated')
 
-        # start table and column job
-        table_path = 'example/sample_data/sample_table.csv'
-        col_path = 'example/sample_data/sample_col.csv'
-        # start table and column job
-        table_and_col_job = create_table_column_job(
-            table_path,
-            col_path
-        )
-        table_and_col_job.launch()
+        create_last_updated_job().launch()
 
-        # start programmatic table job
-        job2 = create_sample_job('programmatic',
-                                 'databuilder.models.table_metadata.TableMetadata')
-        job2.launch()
-
-        # start table stats job
-        job_table_stats = create_sample_job('test_table_column_stats',
-                                            'databuilder.models.table_stats.TableColumnStats')
-        job_table_stats.launch()
-
-        # # start watermark job
-        job3 = create_sample_job('test_watermark_metadata',
-                                 'databuilder.models.watermark.Watermark')
-        job3.launch()
-
-        # start owner job
-        job_table_owner = create_sample_job('test_table_owner_metadata',
-                                            'databuilder.models.table_owner.TableOwner')
-        job_table_owner.launch()
-
-        # start usage job
-        job_col_usage = create_sample_job('test_usage_metadata',
-                                          'databuilder.models.column_usage_model.ColumnUsageModel')
-        job_col_usage.launch()
-
-        # start user job
-        job_user = create_sample_job('test_user_metadata',
-                                     'databuilder.models.user.User')
-        job_user.launch()
-
-        # start application job
-        job_app = create_sample_job('test_application_metadata',
-                                    'databuilder.models.application.Application')
-        job_app.launch()
-
-        # start job_source job
-        job_source = create_sample_job('test_source_metadata',
-                                       'databuilder.models.table_source.TableSource')
-        job_source.launch()
-
-        job_tag = create_sample_job('test_tag_metadata',
-                                    'databuilder.models.table_metadata.TagMetadata')
-        job_tag.launch()
-
-        # start job_source job
-        job_table_last_updated = create_sample_job('test_table_last_updated_metadata',
-                                                   'databuilder.models.table_last_updated.TableLastUpdated')
-        job_table_last_updated.launch()
-
-        # start last updated job
-        job_lastupdated = create_last_updated_job()
-        job_lastupdated.launch()
-
-        # start Elasticsearch publish jobs
         job_es_table = create_es_publisher_sample_job(
             elasticsearch_index_alias='table_search_index',
             elasticsearch_doc_type_key='table',
@@ -743,60 +294,60 @@ if __name__ == "__main__":
         )
 
         user_elasticsearch_mapping = """
-            {
-              "mappings":{
-                "user":{
-                  "properties": {
-                    "email": {
-                      "type":"text",
-                      "analyzer": "simple",
-                      "fields": {
-                        "raw": {
-                          "type": "keyword"
+                {
+                  "mappings":{
+                    "user":{
+                      "properties": {
+                        "email": {
+                          "type":"text",
+                          "analyzer": "simple",
+                          "fields": {
+                            "raw": {
+                              "type": "keyword"
+                            }
+                          }
+                        },
+                        "first_name": {
+                          "type":"text",
+                          "analyzer": "simple",
+                          "fields": {
+                            "raw": {
+                              "type": "keyword"
+                            }
+                          }
+                        },
+                        "last_name": {
+                          "type":"text",
+                          "analyzer": "simple",
+                          "fields": {
+                            "raw": {
+                              "type": "keyword"
+                            }
+                          }
+                        },
+                        "full_name": {
+                          "type":"text",
+                          "analyzer": "simple",
+                          "fields": {
+                            "raw": {
+                              "type": "keyword"
+                            }
+                          }
+                        },
+                        "total_read":{
+                          "type": "long"
+                        },
+                        "total_own": {
+                          "type": "long"
+                        },
+                        "total_follow": {
+                          "type": "long"
                         }
                       }
-                    },
-                    "first_name": {
-                      "type":"text",
-                      "analyzer": "simple",
-                      "fields": {
-                        "raw": {
-                          "type": "keyword"
-                        }
-                      }
-                    },
-                    "last_name": {
-                      "type":"text",
-                      "analyzer": "simple",
-                      "fields": {
-                        "raw": {
-                          "type": "keyword"
-                        }
-                      }
-                    },
-                    "full_name": {
-                      "type":"text",
-                      "analyzer": "simple",
-                      "fields": {
-                        "raw": {
-                          "type": "keyword"
-                        }
-                      }
-                    },
-                    "total_read":{
-                      "type": "long"
-                    },
-                    "total_own": {
-                      "type": "long"
-                    },
-                    "total_follow": {
-                      "type": "long"
                     }
                   }
                 }
-              }
-            }
-        """
+            """
 
         job_es_user = create_es_publisher_sample_job(
             elasticsearch_index_alias='user_search_index',
