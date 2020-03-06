@@ -11,7 +11,7 @@ from flask.blueprints import Blueprint
 
 from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
-from amundsen_application.api.utils.search_utils import generate_query_json, map_table_result
+from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, map_table_result
 from amundsen_application.models.user import load_user, dump_user
 
 LOGGER = logging.getLogger(__name__)
@@ -20,7 +20,8 @@ REQUEST_SESSION_TIMEOUT_SEC = 3
 
 search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v0')
 
-SEARCH_TABLE_ENDPOINT = '/search_table'
+SEARCH_TABLE_ENDPOINT = '/search'
+SEARCH_TABLE_FILTER_ENDPOINT = '/search_table'
 SEARCH_USER_ENDPOINT = '/search_user'
 
 
@@ -74,19 +75,25 @@ def _search_table(*, search_term: str, page_index: int, filters: Dict, search_ty
     }
 
     try:
-        query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
-    except Exception as e:
-        message = 'Encountered exception generating query json: ' + str(e)
-        results_dict['msg'] = message
-        logging.exception(message)
-        return results_dict
+        if has_filters(filters=filters):
+            try:
+                query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
+            except Exception as e:
+                message = 'Encountered exception generating query json: ' + str(e)
+                results_dict['msg'] = message
+                logging.exception(message)
+                return results_dict
 
-    try:
-        url = app.config['SEARCHSERVICE_BASE'] + SEARCH_TABLE_ENDPOINT
-        response = request_search(url=url,
-                                  headers={'Content-Type': 'application/json'},
-                                  method='POST',
-                                  data=json.dumps(query_json))
+            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_TABLE_FILTER_ENDPOINT
+            response = request_search(url=url_base,
+                                      headers={'Content-Type': 'application/json'},
+                                      method='POST',
+                                      data=json.dumps(query_json))
+        else:
+            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_TABLE_ENDPOINT
+            url = f'{url_base}?query_term={search_term}&page_index={page_index}'
+            response = request_search(url=url)
+
         status_code = response.status_code
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = 'Success'

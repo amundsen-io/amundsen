@@ -1,6 +1,6 @@
 import unittest
 
-from amundsen_application.api.utils.search_utils import generate_query_json
+from amundsen_application.api.utils.search_utils import generate_query_json, has_filters
 
 
 class SearchUtilsTest(unittest.TestCase):
@@ -41,3 +41,19 @@ class SearchUtilsTest(unittest.TestCase):
             'filters': self.expected_transformed_filters
         })
         self.assertEqual(query_json.get('query_term'), self.test_term)
+
+    def test_has_filters_return_true(self) -> None:
+        """
+        Returns true if called with a dictionary that has values for a valid filter category
+        :return:
+        """
+        self.assertTrue(has_filters(filters=self.test_filters))
+
+    def test_has_filters_return_false(self) -> None:
+        """
+        Returns false if called with a dictionary that has no values for a valid filter category
+        :return:
+        """
+        test_filters = {'fake_category': {'db1': True}}
+        self.assertFalse(has_filters(filters=test_filters))
+        self.assertFalse(has_filters())
