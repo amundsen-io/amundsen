@@ -3,11 +3,11 @@ from collections import namedtuple
 
 from typing import Iterable, Any, Union, Iterator, Dict, Set  # noqa: F401
 
+from databuilder.models.cluster import cluster_constants
 from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
-
 
 DESCRIPTION_NODE_LABEL_VAL = 'Description'
 DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
@@ -203,10 +203,10 @@ class TableMetadata(Neo4jCsvSerializable):
 
     DATABASE_NODE_LABEL = 'Database'
     DATABASE_KEY_FORMAT = 'database://{db}'
-    DATABASE_CLUSTER_RELATION_TYPE = 'CLUSTER'
-    CLUSTER_DATABASE_RELATION_TYPE = 'CLUSTER_OF'
+    DATABASE_CLUSTER_RELATION_TYPE = cluster_constants.CLUSTER_RELATION_TYPE
+    CLUSTER_DATABASE_RELATION_TYPE = cluster_constants.CLUSTER_REVERSE_RELATION_TYPE
 
-    CLUSTER_NODE_LABEL = 'Cluster'
+    CLUSTER_NODE_LABEL = cluster_constants.CLUSTER_NODE_LABEL
     CLUSTER_KEY_FORMAT = '{db}://{cluster}'
     CLUSTER_SCHEMA_RELATION_TYPE = 'SCHEMA'
     SCHEMA_CLUSTER_RELATION_TYPE = 'SCHEMA_OF'
@@ -274,14 +274,14 @@ class TableMetadata(Neo4jCsvSerializable):
     def __repr__(self):
         # type: () -> str
         return 'TableMetadata({!r}, {!r}, {!r}, {!r} ' \
-            '{!r}, {!r}, {!r}, {!r})'.format(self.database,
-                                             self.cluster,
-                                             self.schema,
-                                             self.name,
-                                             self.description,
-                                             self.columns,
-                                             self.is_view,
-                                             self.tags)
+               '{!r}, {!r}, {!r}, {!r})'.format(self.database,
+                                                self.cluster,
+                                                self.schema,
+                                                self.name,
+                                                self.description,
+                                                self.columns,
+                                                self.is_view,
+                                                self.tags)
 
     def _get_table_key(self):
         # type: () -> str

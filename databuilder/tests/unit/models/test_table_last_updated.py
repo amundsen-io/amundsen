@@ -4,6 +4,7 @@ from databuilder.models.neo4j_csv_serde import NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
 from databuilder.models.table_last_updated import TableLastUpdated
+from databuilder.models.timestamp import timestamp_constants
 
 
 class TestTableLastUpdated(unittest.TestCase):
@@ -20,6 +21,7 @@ class TestTableLastUpdated(unittest.TestCase):
             NODE_KEY: 'hive://gold.default/test_table/timestamp',
             NODE_LABEL: 'Timestamp',
             'last_updated_timestamp': 25195665,
+            timestamp_constants.TIMESTAMP_PROPERTY: 25195665,
             'name': 'last_updated_timestamp'
         }
 
@@ -35,12 +37,12 @@ class TestTableLastUpdated(unittest.TestCase):
     def test_create_next_node(self):
         # type: () -> None
         next_node = self.tableLastUpdated.create_next_node()
-        self.assertEquals(next_node, self.expected_node_result)
+        self.assertEqual(next_node, self.expected_node_result)
 
     def test_create_next_relation(self):
         # type: () -> None
         next_relation = self.tableLastUpdated.create_next_relation()
-        self.assertEquals(next_relation, self.expected_relation_result)
+        self.assertEqual(next_relation, self.expected_relation_result)
 
     def test_get_table_model_key(self):
         # type: () -> None

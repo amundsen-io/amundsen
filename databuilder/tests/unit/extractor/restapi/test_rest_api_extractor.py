@@ -4,7 +4,7 @@ from pyhocon import ConfigFactory  # noqa: F401
 
 from databuilder.extractor.restapi.rest_api_extractor import RestAPIExtractor, REST_API_QUERY, MODEL_CLASS, \
     STATIC_RECORD_DICT
-from databuilder.models.dashboard_metadata import DashboardMetadata
+from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 
 
@@ -35,7 +35,7 @@ class TestRestAPIExtractor(unittest.TestCase):
                                   'dashboard_name': 'bar',
                                   'description': 'john',
                                   'dashboard_group_description': 'doe'}]),
-                MODEL_CLASS: 'databuilder.models.dashboard_metadata.DashboardMetadata',
+                MODEL_CLASS: 'databuilder.models.dashboard.dashboard_metadata.DashboardMetadata',
             }
         )
         extractor = RestAPIExtractor()
