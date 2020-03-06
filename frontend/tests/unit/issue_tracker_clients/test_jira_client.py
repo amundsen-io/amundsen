@@ -157,4 +157,7 @@ class JiraClientTest(unittest.TestCase):
             }, issuetype={
                 'id': 1,
                 'name': 'Bug',
-            }, summary='title', description='desc' + ' \n Table Key: ' + 'key [PLEASE DO NOT REMOVE]'))
+            }, summary='title',
+                description='desc' + ' \n Reported By: test@email.com' +
+                            ' \n Table Key: ' + 'key [PLEASE DO NOT REMOVE]',
+                reporter={'name': 'test'}))

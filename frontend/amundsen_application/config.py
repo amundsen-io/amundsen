@@ -28,6 +28,19 @@ class Config:
     # Request Timeout Configurations in Seconds
     REQUEST_SESSION_TIMEOUT_SEC = 3
 
+    # Frontend Application
+    FRONTEND_BASE = ''
+
+    # Search Service
+    SEARCHSERVICE_REQUEST_CLIENT = None
+    SEARCHSERVICE_REQUEST_HEADERS = None
+    SEARCHSERVICE_BASE = ''
+
+    # Metadata Service
+    METADATASERVICE_REQUEST_CLIENT = None
+    METADATASERVICE_REQUEST_HEADERS = None
+    METADATASERVICE_BASE = ''
+
     # Mail Client Features
     MAIL_CLIENT = None
     NOTIFICATIONS_ENABLED = False
@@ -45,6 +58,15 @@ class Config:
     ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool
     # Max issues to display at a time
     ISSUE_TRACKER_MAX_RESULTS = None  # type: int
+
+    # If specified, will be used to generate headers for service-to-service communication
+    # Please note that if specified, this will ignore following config properties:
+    # 1. METADATASERVICE_REQUEST_HEADERS
+    # 2. SEARCHSERVICE_REQUEST_HEADERS
+    REQUEST_HEADERS_METHOD: Optional[Callable[[Flask], Optional[Dict]]] = None
+
+    AUTH_USER_METHOD: Optional[Callable[[Flask], User]] = None
+    GET_PROFILE_URL = None
 
 
 class LocalConfig(Config):
@@ -67,30 +89,17 @@ class LocalConfig(Config):
                                        PORT=FRONTEND_PORT)
                                    )
 
-    SEARCHSERVICE_REQUEST_CLIENT = None
-    SEARCHSERVICE_REQUEST_HEADERS = None
     SEARCHSERVICE_BASE = os.environ.get('SEARCHSERVICE_BASE',
                                         'http://{LOCAL_HOST}:{PORT}'.format(
                                             LOCAL_HOST=LOCAL_HOST,
                                             PORT=SEARCH_PORT)
                                         )
 
-    METADATASERVICE_REQUEST_CLIENT = None
-    METADATASERVICE_REQUEST_HEADERS = None
     METADATASERVICE_BASE = os.environ.get('METADATASERVICE_BASE',
                                           'http://{LOCAL_HOST}:{PORT}'.format(
                                               LOCAL_HOST=LOCAL_HOST,
                                               PORT=METADATA_PORT)
                                           )
-
-    # If specified, will be used to generate headers for service-to-service communication
-    # Please note that if specified, this will ignore following config properties:
-    # 1. METADATASERVICE_REQUEST_HEADERS
-    # 2. SEARCHSERVICE_REQUEST_HEADERS
-    REQUEST_HEADERS_METHOD: Optional[Callable[[Flask], Optional[Dict]]] = None
-
-    AUTH_USER_METHOD: Optional[Callable[[Flask], User]] = None
-    GET_PROFILE_URL = None
 
 
 class TestConfig(LocalConfig):

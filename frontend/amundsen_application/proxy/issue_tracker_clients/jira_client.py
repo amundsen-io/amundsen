@@ -1,5 +1,8 @@
 from jira import JIRA, JIRAError, Issue
 from typing import List
+
+from flask import current_app as app
+
 from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
 from amundsen_application.models.data_issue import DataIssue
@@ -67,12 +70,24 @@ class JiraClient(BaseIssueTrackerClient):
         :return: Metadata about the newly created issue
         """
         try:
+            if app.config['AUTH_USER_METHOD']:
+                user_email = app.config['AUTH_USER_METHOD'](app).email
+                # We currently cannot use the email directly because of the following issue:
+                # https://community.atlassian.com/t5/Answers-Developer-Questions/JIRA-Rest-API-find-JIRA-user-based-on-user-s-email-address/qaq-p/532715
+                jira_id = user_email.split('@')[0]
+            else:
+                raise Exception('AUTH_USER_METHOD must be configured to set the JIRA issue reporter')
+
             issue = self.jira_client.create_issue(fields=dict(project={
                 'id': self.jira_project_id
             }, issuetype={
                 'id': ISSUE_TYPE_ID,
                 'name': ISSUE_TYPE_NAME,
-            }, summary=title, description=f'{description} \n Table Key: {table_uri} [PLEASE DO NOT REMOVE]'))
+            }, summary=title,
+                description=(f'{description} '
+                             f'\n Reported By: {user_email} '
+                             f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE]'),
+                reporter={'name': jira_id}))
 
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
