@@ -2,7 +2,7 @@ import logging
 
 from typing import Optional, Dict, Any, Union, Iterator  # noqa: F401
 
-from databuilder.models.dashboard_metadata import DashboardMetadata
+from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)

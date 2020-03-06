@@ -1,0 +1,30 @@
+import unittest
+
+from pyhocon import ConfigFactory
+
+from databuilder.transformer.template_variable_substitution_transformer import \
+    TemplateVariableSubstitutionTransformer, FIELD_NAME, TEMPLATE
+
+
+class TestTemplateVariableSubstitutionTransformer(unittest.TestCase):
+
+    def test_conversion(self):
+        # type: () -> None
+
+        transformer = TemplateVariableSubstitutionTransformer()
+        config = ConfigFactory.from_dict({
+            FIELD_NAME: 'baz',
+            TEMPLATE: 'Hello {foo}'
+        })
+        transformer.init(conf=config)
+
+        actual = transformer.transform({'foo': 'bar'})
+        expected = {
+            'foo': 'bar',
+            'baz': 'Hello bar'
+        }
+        self.assertDictEqual(expected, actual)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -3,10 +3,15 @@ import logging
 from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
 from typing import Any  # noqa: F401
 
+from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
-from databuilder.extractor.restapi.rest_api_extractor import MODEL_CLASS
 from databuilder.rest_api.rest_api_query import RestApiQuery
+from databuilder.transformer.base_transformer import ChainedTransformer
+from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
+from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
+from databuilder.transformer.template_variable_substitution_transformer import \
+    TemplateVariableSubstitutionTransformer, TEMPLATE, FIELD_NAME as VAR_FIELD_NAME
 
 # CONFIG KEYS
 ORGANIZATION = 'organization'
@@ -36,19 +41,51 @@ class ModeDashboardExtractor(Extractor):
         self._conf = conf
 
         restapi_query = self._build_restapi_query()
-        self._extractor = ModeDashboardUtils.create_mode_rest_api_extractor(
-            restapi_query=restapi_query,
-            conf=self._conf.with_fallback(
+        self._extractor = ModeDashboardUtils.create_mode_rest_api_extractor(restapi_query=restapi_query,
+                                                                            conf=self._conf)
+
+        # Payload from RestApiQuery has timestamp which is ISO8601. Here we are using TimestampStringToEpoch to
+        # transform into epoch and then using DictToModel to convert Dictionary to Model
+        transformers = []
+        timestamp_str_to_epoch_transformer = TimestampStringToEpoch()
+        timestamp_str_to_epoch_transformer.init(
+            conf=Scoped.get_scoped_conf(self._conf, timestamp_str_to_epoch_transformer.get_scope()).with_fallback(
+                ConfigFactory.from_dict({FIELD_NAME: 'created_timestamp', })))
+
+        transformers.append(timestamp_str_to_epoch_transformer)
+
+        dashboard_group_url_transformer = TemplateVariableSubstitutionTransformer()
+        dashboard_group_url_transformer.init(
+            conf=Scoped.get_scoped_conf(self._conf, dashboard_group_url_transformer.get_scope()).with_fallback(
+                ConfigFactory.from_dict({VAR_FIELD_NAME: 'dashboard_group_url',
+                                         TEMPLATE: 'https://app.mode.com/lyft/spaces/{dashboard_group_id}'})))
+
+        transformers.append(dashboard_group_url_transformer)
+
+        dashboard_url_transformer = TemplateVariableSubstitutionTransformer()
+        dashboard_url_transformer.init(
+            conf=Scoped.get_scoped_conf(self._conf, dashboard_url_transformer.get_scope()).with_fallback(
+                ConfigFactory.from_dict({VAR_FIELD_NAME: 'dashboard_url',
+                                         TEMPLATE: 'https://app.mode.com/lyft/reports/{dashboard_id}'})))
+        transformers.append(dashboard_url_transformer)
+
+        dict_to_model_transformer = DictToModel()
+        dict_to_model_transformer.init(
+            conf=Scoped.get_scoped_conf(self._conf, dict_to_model_transformer.get_scope()).with_fallback(
                 ConfigFactory.from_dict(
-                    {MODEL_CLASS: 'databuilder.models.dashboard_metadata.DashboardMetadata', }
-                )
-            )
-        )
+                    {MODEL_CLASS: 'databuilder.models.dashboard.dashboard_metadata.DashboardMetadata'})))
+        transformers.append(dict_to_model_transformer)
+
+        self._transformer = ChainedTransformer(transformers=transformers)
 
     def extract(self):
         # type: () -> Any
 
-        return self._extractor.extract()
+        record = self._extractor.extract()
+        if not record:
+            return None
+
+        return self._transformer.transform(record=record)
 
     def get_scope(self):
         # type: () -> str
@@ -72,8 +109,8 @@ class ModeDashboardExtractor(Extractor):
         # Reports
         # JSONPATH expression. it goes into array which is located in _embedded.reports and then extracts token, name,
         # and description
-        json_path = '_embedded.reports[*].[token,name,description]'
-        field_names = ['dashboard_id', 'dashboard_name', 'description']
+        json_path = '_embedded.reports[*].[token,name,description,created_at]'
+        field_names = ['dashboard_id', 'dashboard_name', 'description', 'created_timestamp']
         reports_query = RestApiQuery(query_to_join=spaces_query, url=reports_url_template, params=params,
                                      json_path=json_path, field_names=field_names, skip_no_result=True)
         return reports_query

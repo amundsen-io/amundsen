@@ -6,38 +6,30 @@ from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
+from databuilder.models.timestamp import timestamp_constants
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardExecution(Neo4jCsvSerializable):
+class DashboardLastModifiedTimestamp(Neo4jCsvSerializable):
     """
-    A model that encapsulate Dashboard's execution timestamp in epoch and execution state
+    A model that encapsulate Dashboard's last modified timestamp in epoch
     """
-    DASHBOARD_EXECUTION_LABEL = 'Execution'
-    DASHBOARD_EXECUTION_KEY_FORMAT = '{product}_dashboard://{cluster}.{dashboard_group_id}/' \
-                                     '{dashboard_id}/execution/{execution_id}'
-    DASHBOARD_EXECUTION_RELATION_TYPE = 'EXECUTED'
-    EXECUTION_DASHBOARD_RELATION_TYPE = 'EXECUTION_OF'
 
-    LAST_EXECUTION_ID = '_last_execution'
-    LAST_SUCCESSFUL_EXECUTION_ID = '_last_successful_execution'
+    DASHBOARD_LAST_MODIFIED_KEY_FORMAT = '{product}_dashboard://{cluster}.{dashboard_group_id}/' \
+                                         '{dashboard_id}/_last_modified_timestamp'
 
     def __init__(self,
                  dashboard_group_id,  # type: Optional[str]
                  dashboard_id,  # type: Optional[str]
-                 execution_timestamp,  # type: int
-                 execution_state,  # type: str
-                 execution_id=LAST_EXECUTION_ID,  # type: str
+                 last_modified_timestamp,  # type: int
                  product='',  # type: Optional[str]
                  cluster='gold',  # type: str
                  **kwargs
                  ):
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
-        self._execution_timestamp = execution_timestamp
-        self._execution_state = execution_state
-        self._execution_id = execution_id
+        self._last_modified_timestamp = last_modified_timestamp
         self._product = product
         self._cluster = cluster
         self._node_iterator = self._create_node_iterator()
@@ -53,10 +45,10 @@ class DashboardExecution(Neo4jCsvSerializable):
     def _create_node_iterator(self):  # noqa: C901
         # type: () -> Iterator[[Dict[str, Any]]]
         yield {
-            NODE_LABEL: DashboardExecution.DASHBOARD_EXECUTION_LABEL,
-            NODE_KEY: self._get_last_execution_node_key(),
-            'timestamp': self._execution_timestamp,
-            'state': self._execution_state
+            NODE_LABEL: timestamp_constants.NODE_LABEL,
+            NODE_KEY: self._get_last_modified_node_key(),
+            timestamp_constants.TIMESTAMP_PROPERTY: self._last_modified_timestamp,
+            timestamp_constants.TIMESTAMP_NAME_PROPERTY: timestamp_constants.TimestampName.last_updated_timestamp.name,
         }
 
     def create_next_relation(self):
@@ -70,34 +62,31 @@ class DashboardExecution(Neo4jCsvSerializable):
         # type: () -> Iterator[[Dict[str, Any]]]
         yield {
             RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
-            RELATION_END_LABEL: DashboardExecution.DASHBOARD_EXECUTION_LABEL,
+            RELATION_END_LABEL: timestamp_constants.NODE_LABEL,
             RELATION_START_KEY: DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
                 product=self._product,
                 cluster=self._cluster,
                 dashboard_group=self._dashboard_group_id,
                 dashboard_name=self._dashboard_id
             ),
-            RELATION_END_KEY: self._get_last_execution_node_key(),
-            RELATION_TYPE: DashboardExecution.DASHBOARD_EXECUTION_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: DashboardExecution.EXECUTION_DASHBOARD_RELATION_TYPE
+            RELATION_END_KEY: self._get_last_modified_node_key(),
+            RELATION_TYPE: timestamp_constants.LASTUPDATED_RELATION_TYPE,
+            RELATION_REVERSE_TYPE: timestamp_constants.LASTUPDATED_REVERSE_RELATION_TYPE
         }
 
-    def _get_last_execution_node_key(self):
-        return DashboardExecution.DASHBOARD_EXECUTION_KEY_FORMAT.format(
+    def _get_last_modified_node_key(self):
+        return DashboardLastModifiedTimestamp.DASHBOARD_LAST_MODIFIED_KEY_FORMAT.format(
             product=self._product,
             cluster=self._cluster,
             dashboard_group_id=self._dashboard_group_id,
             dashboard_id=self._dashboard_id,
-            execution_id=self._execution_id
         )
 
     def __repr__(self):
-        return 'DashboardExecution({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
+        return 'DashboardLastModifiedTimestamp({!r}, {!r}, {!r}, {!r}, {!r})'.format(
             self._dashboard_group_id,
             self._dashboard_id,
-            self._execution_timestamp,
-            self._execution_state,
-            self._execution_id,
+            self._last_modified_timestamp,
             self._product,
             self._cluster
         )
