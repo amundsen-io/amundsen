@@ -51,3 +51,10 @@ def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str
         },
         'query_term': search_term
     }
+
+
+def has_filters(*, filters: Dict = {}) -> bool:
+    for category in valid_search_fields:
+        if filters.get(category) is not None:
+            return True
+    return False
