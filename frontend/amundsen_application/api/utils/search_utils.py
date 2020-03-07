@@ -23,13 +23,12 @@ def map_table_result(result: Dict) -> Dict:
     }
 
 
-def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str) -> Dict:
+def transform_filters(*, filters: Dict = {}) -> Dict:
     """
-    Transforms the given paramaters to the query json for the search service according to
-    the api defined at:
+    Transforms the data shape of filters from the application to the data
+    shape required by the search service according to the api defined at:
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
     """
-    # Generate the filter payload
     filter_payload = {}
     for category in valid_search_fields:
         values = filters.get(category)
@@ -42,19 +41,32 @@ def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str
         if len(value_list) > 0:
             filter_payload[category] = value_list
 
-    # Return the full query json
+    return filter_payload
+
+
+def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str) -> Dict:
+    """
+    Transforms the given paramaters to the query json for the search service according to
+    the api defined at:
+    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
+    """
     return {
         'page_index': int(page_index),
         'search_request': {
             'type': 'AND',
-            'filters': filter_payload
+            'filters': filters
         },
         'query_term': search_term
     }
 
 
 def has_filters(*, filters: Dict = {}) -> bool:
+    """
+    Returns whether or not the filter dictionary passed to the search service
+    has at least one filter value for a valid filter category
+    """
     for category in valid_search_fields:
-        if filters.get(category) is not None:
+        filter_list = filters.get(category, [])
+        if len(filter_list) > 0:
             return True
     return False
