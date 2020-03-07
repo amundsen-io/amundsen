@@ -1,6 +1,6 @@
 import unittest
 
-from amundsen_application.api.utils.search_utils import generate_query_json, has_filters
+from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, transform_filters
 
 
 class SearchUtilsTest(unittest.TestCase):
@@ -27,12 +27,19 @@ class SearchUtilsTest(unittest.TestCase):
         self.test_page_index = "1"
         self.test_term = 'hello'
 
+    def test_transform_filters(self) -> None:
+        """
+        Verify that the given filters are correctly transformed
+        :return:
+        """
+        self.assertEqual(transform_filters(filters=self.test_filters), self.expected_transformed_filters)
+
     def test_generate_query_json(self) -> None:
         """
         Verify that the returned diction correctly transforms the parameters
         :return:
         """
-        query_json = generate_query_json(filters=self.test_filters,
+        query_json = generate_query_json(filters=self.expected_transformed_filters,
                                          page_index=self.test_page_index,
                                          search_term=self.test_term)
         self.assertEqual(query_json.get('page_index'), int(self.test_page_index))
@@ -47,13 +54,13 @@ class SearchUtilsTest(unittest.TestCase):
         Returns true if called with a dictionary that has values for a valid filter category
         :return:
         """
-        self.assertTrue(has_filters(filters=self.test_filters))
+        self.assertTrue(has_filters(filters=self.expected_transformed_filters))
 
     def test_has_filters_return_false(self) -> None:
         """
         Returns false if called with a dictionary that has no values for a valid filter category
         :return:
         """
-        test_filters = {'fake_category': {'db1': True}}
-        self.assertFalse(has_filters(filters=test_filters))
+        self.assertFalse(has_filters(filters={'fake_category': ['db1']}))
+        self.assertFalse(has_filters(filters={'tag': []}))
         self.assertFalse(has_filters())

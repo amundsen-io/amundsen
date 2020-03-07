@@ -11,7 +11,8 @@ from flask.blueprints import Blueprint
 
 from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
-from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, map_table_result
+from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, \
+    map_table_result, transform_filters
 from amundsen_application.models.user import load_user, dump_user
 
 LOGGER = logging.getLogger(__name__)
@@ -39,9 +40,9 @@ def search_table() -> Response:
 
         search_type = request_json.get('searchType')
 
-        filters = request_json.get('filters', {})
+        transformed_filters = transform_filters(filters=request_json.get('filters', {}))
 
-        results_dict = _search_table(filters=filters,
+        results_dict = _search_table(filters=transformed_filters,
                                      search_term=search_term,
                                      page_index=page_index,
                                      search_type=search_type)
@@ -76,14 +77,7 @@ def _search_table(*, search_term: str, page_index: int, filters: Dict, search_ty
 
     try:
         if has_filters(filters=filters):
-            try:
-                query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
-            except Exception as e:
-                message = 'Encountered exception generating query json: ' + str(e)
-                results_dict['msg'] = message
-                logging.exception(message)
-                return results_dict
-
+            query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
             url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_TABLE_FILTER_ENDPOINT
             response = request_search(url=url_base,
                                       headers={'Content-Type': 'application/json'},
