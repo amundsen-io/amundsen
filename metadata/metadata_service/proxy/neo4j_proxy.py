@@ -7,13 +7,15 @@ from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
 
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Reader, Source,
-                                          Statistics, Table, Tag, User,
+                                          Statistics, Table, User,
                                           Watermark, ProgrammaticDescription)
+from amundsen_common.models.table import Tag
 from amundsen_common.models.user import User as UserEntity
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from neo4j.v1 import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
+from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy
@@ -965,3 +967,54 @@ class Neo4jProxy(BaseProxy):
             raise e
         finally:
             tx.close()
+
+    @timer_with_counter
+    def get_dashboard(self,
+                      id: str,
+                      ) -> DashboardDetailEntity:
+
+        get_dashboard_detail_query = textwrap.dedent(u"""
+        MATCH (d:Dashboard {key: $query_key})-[:DASHBOARD_OF]->(dg:Dashboardgroup)-[:DASHBOARD_GROUP_OF]->(c:Cluster)
+        OPTIONAL MATCH (d)-[:DESCRIPTION]->(description:Description)
+        OPTIONAL MATCH (d)-[:EXECUTED]->(last_exec:Execution) WHERE split(last_exec.key, '/')[5] = '_last_execution'
+        OPTIONAL MATCH (d)-[:LAST_UPDATED_AT]->(t:Timestamp)
+        OPTIONAL MATCH (d)-[:OWNER]->(owner:User)
+        OPTIONAL MATCH (d)-[:TAG]->(tag:Tag)
+        RETURN
+        c.name as cluster_name,
+        d.key as uri,
+        d.dashboard_url as url,
+        d.name as name,
+        toInteger(d.created_timestamp) as created_timestamp,
+        description.description as description,
+        dg.name as group_name,
+        dg.dashboard_group_url as group_url,
+        toInteger(last_exec.timestamp) as last_run_timestamp,
+        last_exec.state as last_run_state,
+        toInteger(t.timestamp) as updated_timestamp,
+        collect(owner) as owners,
+        collect(tag) as tags;
+        """
+                                                     )
+        record = self._execute_cypher_query(statement=get_dashboard_detail_query,
+                                            param_dict={'query_key': id}).single()
+
+        if not record:
+            raise NotFoundException('No dashboard exist with URI: {}'.format(id))
+
+        owners = [self._build_user_from_record(record=owner) for owner in record['owners']]
+        tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in record['tags']]
+
+        return DashboardDetailEntity(uri=record['uri'],
+                                     cluster=record['cluster_name'],
+                                     url=record['url'],
+                                     name=record['name'],
+                                     created_timestamp=record['created_timestamp'],
+                                     description=self._safe_get(record, 'description'),
+                                     group_name=self._safe_get(record, 'group_name'),
+                                     group_url=self._safe_get(record, 'group_url'),
+                                     last_run_timestamp=self._safe_get(record, 'last_run_timestamp'),
+                                     last_run_state=self._safe_get(record, 'last_run_state'),
+                                     updated_timestamp=self._safe_get(record, 'updated_timestamp'),
+                                     owners=owners,
+                                     tags=tags)

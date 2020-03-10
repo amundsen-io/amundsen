@@ -5,12 +5,13 @@ import logging.config
 import os
 import sys
 from typing import Dict, Any  # noqa: F401
-from flasgger import Swagger
 
+from flasgger import Swagger
 from flask import Flask, Blueprint
 from flask_restful import Api
 
 from metadata_service.api.column import ColumnDescriptionAPI
+from metadata_service.api.dashboard import DashboardDetailAPI
 from metadata_service.api.healthcheck import healthcheck
 from metadata_service.api.popular_tables import PopularTablesAPI
 from metadata_service.api.system import Neo4jDetailAPI
@@ -103,6 +104,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/user/<path:user_id>/own/<resource_type>/<path:table_uri>')
     api.add_resource(UserReadsAPI,
                      '/user/<path:user_id>/read/')
+    api.add_resource(DashboardDetailAPI,
+                     '/dashboard/<path:id>')
     app.register_blueprint(api_bp)
 
     if app.config.get('SWAGGER_ENABLED'):

@@ -2,7 +2,7 @@ import logging
 from threading import Lock
 from typing import Any, Dict, Callable  # noqa: F401
 
-from flask import current_app
+from flask import current_app, has_app_context
 from statsd import StatsClient
 
 from metadata_service import config
@@ -54,7 +54,7 @@ def _get_statsd_client(*, prefix: str) -> StatsClient:
     :param prefix:
     :return:
     """
-    if not current_app.config[config.IS_STATSD_ON]:
+    if not has_app_context() or not current_app.config[config.IS_STATSD_ON]:
         return None
     else:
         if prefix not in __STATSD_POOL:
