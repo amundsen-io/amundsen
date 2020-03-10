@@ -50,6 +50,7 @@ spec:
         ports:
         - containerPort: 7474
         - containerPort: 7687
+        - containerPort: 1337
         env:
           - name: NEO4J_AUTH
             value: "neo4j/test"
@@ -58,17 +59,17 @@ spec:
         volumeMounts:
         - name: conf
           mountPath: /conf
-        {{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
+        {{- if .Values.neo4j.persistence }}
         - name: data
           mountPath: /var/lib/neo4j/data
+        {{- end}}
         - name: plugins
           mountPath: /var/lib/neo4j/plugins
-        {{- end}}
       volumes:
         - name: conf
           configMap:
             name: {{ .Chart.Name }}-configmap
-        {{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
+        {{- if .Values.neo4j.persistence }}
         - name: data
           persistentVolumeClaim:
             claimName: neo4j-pvc
