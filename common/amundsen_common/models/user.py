@@ -6,7 +6,11 @@ from marshmallow_annotations.ext.attrs import AttrsSchema
 
 @attr.s(auto_attribs=True, kw_only=True)
 class User:
-    email: str
+    # ToDo (Verdan): Make ID a required field.
+    #  In case if there is only email, id could be email.
+    #  All the transactions and communication will be handled by ID
+    id: Optional[str] = None
+    email: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     full_name: Optional[str] = None
