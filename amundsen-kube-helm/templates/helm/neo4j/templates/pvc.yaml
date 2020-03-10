@@ -1,28 +1,13 @@
-{{- if (or (kindIs "invalid" .Values.neo4jpvc) .Values.neo4jpvc)}}
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-    name: neo4j-pv
-    labels:
-        type: local
-spec:
-    storageClassName: manual
-    capacity:
-        storage: {{ default "3Gi" .Values.neo4jpvcSize }}
-    accessModes:
-        - ReadWriteMany
-    hostPath:
-        path: "/mnt/ephemeral/neo4j/data"
----
+{{- if .Values.neo4j.persistence }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
     name: neo4j-pvc
 spec:
-    storageClassName: manual
     accessModes:
-        - ReadWriteMany
+        - ReadWriteOnce
+    storageClassName: "{{ default "" .Values.neo4j.persistence.storageClass }}"
     resources:
         requests:
-            storage: {{ default "3Gi" .Values.neo4jpvcSize }}
+            storage: {{ default "3Gi" .Values.neo4j.persistence.size }}
 {{- end -}}
