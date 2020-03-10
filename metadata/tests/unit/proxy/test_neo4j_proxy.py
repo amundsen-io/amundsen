@@ -8,11 +8,11 @@ from amundsen_common.models.table import (Application, Column, Source,
                                           Statistics, Table, Tag, User,
                                           Watermark, ProgrammaticDescription)
 from amundsen_common.models.user import UserSchema
-
 from mock import MagicMock, patch
 from neo4j.v1 import GraphDatabase
 
 from metadata_service import create_app
+from metadata_service.entity.dashboard_detail import DashboardDetail
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
@@ -444,7 +444,6 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_get_tags(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-
             mock_execute.return_value = [
                 {'tag_name': {'key': 'tag1'}, 'tag_count': 2},
                 {'tag_name': {'key': 'tag2'}, 'tag_count': 1}
@@ -557,7 +556,6 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_get_resources_by_user_relation(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-
             mock_execute.return_value = [
                 {
                     'tbl': {
@@ -629,6 +627,110 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.return_value = None
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             self.assertRaises(NotFoundException, neo4j_proxy.get_user, id='invalid_email')
+
+    def test_get_dashboard(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.side_effect = [
+                {
+                    'cluster_name': 'cluster_name',
+                    'uri': 'foo_dashboard://gold.bar/dashboard_id',
+                    'url': 'http://www.foo.bar/dashboard_id',
+                    'name': 'dashboard name',
+                    'created_timestamp': 123456789,
+                    'description': 'description',
+                    'group_name': 'group_name',
+                    'group_url': 'http://www.group_url.com',
+                    'last_run_timestamp': 987654321,
+                    'last_run_state': 'good_state',
+                    'updated_timestamp': 123456654321,
+                    'owners': [
+                        {
+                            'employee_type': 'teamMember',
+                            'full_name': 'test_full_name',
+                            'is_active': 'True',
+                            'github_username': 'test-github',
+                            'slack_id': 'test_id',
+                            'last_name': 'test_last_name',
+                            'first_name': 'test_first_name',
+                            'team_name': 'test_team',
+                            'email': 'test_email',
+                        },
+                        {
+                            'employee_type': 'teamMember',
+                            'full_name': 'test_full_name2',
+                            'is_active': 'True',
+                            'github_username': 'test-github2',
+                            'slack_id': 'test_id2',
+                            'last_name': 'test_last_name2',
+                            'first_name': 'test_first_name2',
+                            'team_name': 'test_team2',
+                            'email': 'test_email2',
+                        }
+
+                    ],
+                    'tags': [
+                        {
+                            'key': 'tag_key1',
+                            'tag_type': 'tag_type1'
+                        },
+                        {
+                            'key': 'tag_key2',
+                            'tag_type': 'tag_type2'
+
+                        }
+                    ]
+                },
+                {
+                    'cluster_name': 'cluster_name',
+                    'uri': 'foo_dashboard://gold.bar/dashboard_id',
+                    'url': 'http://www.foo.bar/dashboard_id',
+                    'name': 'dashboard name',
+                    'created_timestamp': 123456789,
+                    'description': None,
+                    'group_name': 'group_name',
+                    'group_url': 'http://www.group_url.com',
+                    'last_run_timestamp': None,
+                    'last_run_state': None,
+                    'updated_timestamp': None,
+                    'owners': [],
+                    'tags': []
+                }
+            ]
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            dashboard = neo4j_proxy.get_dashboard(id='dashboard_id')
+            expected = DashboardDetail(uri='foo_dashboard://gold.bar/dashboard_id', cluster='cluster_name',
+                                       group_name='group_name', group_url='http://www.group_url.com',
+                                       name='dashboard name', url='http://www.foo.bar/dashboard_id',
+                                       description='description', created_timestamp=123456789,
+                                       updated_timestamp=123456654321, last_run_timestamp=987654321,
+                                       last_run_state='good_state',
+                                       owners=[User(email='test_email', first_name='test_first_name',
+                                                    last_name='test_last_name',
+                                                    full_name='test_full_name', is_active='True',
+                                                    github_username='test-github',
+                                                    team_name='test_team', slack_id='test_id',
+                                                    employee_type='teamMember', manager_fullname=''),
+                                               User(email='test_email2', first_name='test_first_name2',
+                                                    last_name='test_last_name2',
+                                                    full_name='test_full_name2', is_active='True',
+                                                    github_username='test-github2',
+                                                    team_name='test_team2', slack_id='test_id2',
+                                                    employee_type='teamMember', manager_fullname='')],
+                                       frequent_users=[], chart_names=[], query_names=[], tables=[],
+                                       tags=[Tag(tag_type='tag_type1', tag_name='tag_key1'),
+                                             Tag(tag_type='tag_type2', tag_name='tag_key2')])
+
+            self.assertEqual(expected, dashboard)
+
+            dashboard2 = neo4j_proxy.get_dashboard(id='dashboard_id')
+            expected2 = DashboardDetail(uri='foo_dashboard://gold.bar/dashboard_id', cluster='cluster_name',
+                                        group_name='group_name', group_url='http://www.group_url.com',
+                                        name='dashboard name', url='http://www.foo.bar/dashboard_id', description=None,
+                                        created_timestamp=123456789, updated_timestamp=None, last_run_timestamp=None,
+                                        last_run_state=None, owners=[], frequent_users=[], chart_names=[],
+                                        query_names=[], tables=[], tags=[])
+
+            self.assertEqual(expected2, dashboard2)
 
 
 if __name__ == '__main__':

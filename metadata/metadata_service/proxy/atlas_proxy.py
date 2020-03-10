@@ -3,8 +3,7 @@ import re
 from random import randint
 from typing import Any, Dict, List, Tuple, Union
 
-from flask import current_app as app
-
+from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Statistics, Table, Tag, User
 from amundsen_common.models.user import User as UserEntity
 from atlasclient.client import Atlas
@@ -14,7 +13,9 @@ from atlasclient.utils import (make_table_qualified_name,
                                parse_table_qualified_name)
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from amundsen_common.models.popular_table import PopularTable
+from flask import current_app as app
+
+from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -577,3 +578,8 @@ class AtlasProxy(BaseProxy):
         entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
         entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = False
         entity.update()
+
+    def get_dashboard(self,
+                      dashboard_uri: str,
+                      ) -> DashboardDetailEntity:
+        pass
