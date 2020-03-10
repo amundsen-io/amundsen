@@ -14,17 +14,17 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
         test_obj = DashboardESDocument(dashboard_group='test_dashboard_group',
                                        dashboard_name='test_dashboard_name',
                                        description='test_description',
-                                       last_reload_time='test_last_reload_time',
-                                       user_id='test_user_id',
-                                       user_name='test_user_name',
+                                       product='mode',
+                                       dashboard_group_description='work space group',
+                                       total_usage=10,
                                        tags=['test'])
 
         expected_document_dict = {"dashboard_group": "test_dashboard_group",
                                   "dashboard_name": "test_dashboard_name",
                                   "description": "test_description",
-                                  "last_reload_time": "test_last_reload_time",
-                                  "user_id": "test_user_id",
-                                  "user_name": "test_user_name",
+                                  "product": "mode",
+                                  "dashboard_group_description": "work space group",
+                                  "total_usage": 10,
                                   "tags": ["test"]
                                   }
 
