@@ -1,6 +1,7 @@
 import logging
 from http import HTTPStatus
 from typing import Iterable, Mapping, Optional, Union
+from flask import current_app as app
 
 from amundsen_common.models.popular_table import PopularTableSchema
 from amundsen_common.models.user import UserSchema
@@ -26,7 +27,14 @@ class UserDetailAPI(BaseAPI):
 
     @swag_from('swagger_doc/user/detail_get.yml')
     def get(self, *, id: Optional[str] = None) -> Iterable[Union[Mapping, int, None]]:
-        return super().get(id=id)
+        if app.config['USER_DETAIL_METHOD']:
+            try:
+                return app.config['USER_DETAIL_METHOD'](id)
+            except Exception:
+                LOGGER.exception('UserDetailAPI GET Failed - Using "USER_DETAIL_METHOD" config variable')
+                return {'message': 'user_id {} fetch failed'.format(id)}, HTTPStatus.NOT_FOUND
+        else:
+            return super().get(id=id)
 
 
 class UserFollowsAPI(Resource):

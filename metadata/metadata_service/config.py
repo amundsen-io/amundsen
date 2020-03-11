@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional   # noqa: F401
 
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'
@@ -43,6 +43,8 @@ class Config:
     WHITELIST_BADGES: List[str] = []
 
     SWAGGER_ENABLED = False
+
+    USER_DETAIL_METHOD = None   # type: Optional[function]
 
 
 class LocalConfig(Config):
