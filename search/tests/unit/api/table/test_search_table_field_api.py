@@ -16,6 +16,7 @@ class TestSearchTableFieldAPI(TestCase):
 
         self.mock_client = patch('search_service.api.table.get_proxy_client')
         self.mock_proxy = self.mock_client.start().return_value = Mock()
+        self.maxDiff = None
 
     def tear_down(self):
         self.app_context.pop()
