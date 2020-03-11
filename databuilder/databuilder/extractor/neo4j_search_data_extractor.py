@@ -73,14 +73,14 @@ class Neo4jSearchDataExtractor(Extractor):
     #  2. add more fields once we have in the graph; 3. change mode to generic once add more support for dashboard
     DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
         """
-        MATCH (db:Dashboard)
-        OPTIONAL MATCH (db)-[:DASHBOARD_OF]->(dbg:Dashboardgroup)
-        OPTIONAL MATCH (db)-[:DESCRIPTION]->(db_descr:Description)
+        MATCH (dashboard:Dashboard)
+        OPTIONAL MATCH (dashboard)-[:DASHBOARD_OF]->(dbg:Dashboardgroup)
+        OPTIONAL MATCH (dashboard)-[:DESCRIPTION]->(db_descr:Description)
         OPTIONAL MATCH (dbg)-[:DESCRIPTION]->(dbg_descr:Description)
         {publish_tag_filter}
-        with db, dbg, db_descr, dbg_descr
-        where db.name is not null
-        return dbg.name as dashboard_group, db.name as dashboard_name,
+        with dashboard, dbg, db_descr, dbg_descr
+        where dashboard.name is not null
+        return dbg.name as dashboard_group, dashboard.name as dashboard_name,
         coalesce(db_descr.description, '') as description,
         coalesce(dbg.description, '') as dashboard_group_description,
         'mode' as product,
@@ -102,12 +102,12 @@ class Neo4jSearchDataExtractor(Extractor):
         Initialize Neo4jExtractor object from configuration and use that for extraction
         """
         self.conf = conf
+        self.entity = conf.get_string(Neo4jSearchDataExtractor.ENTITY_TYPE, default='table').lower()
         # extract cypher query from conf, if specified, else use default query
         if Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY in conf:
             self.cypher_query = conf.get_string(Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY)
         else:
-            entity_type = conf.get_string(Neo4jSearchDataExtractor.ENTITY_TYPE, default='table').lower()
-            default_query = Neo4jSearchDataExtractor.DEFAULT_QUERY_BY_ENTITY[entity_type]
+            default_query = Neo4jSearchDataExtractor.DEFAULT_QUERY_BY_ENTITY[self.entity]
             self.cypher_query = self._add_publish_tag_filter(conf.get_string(JOB_PUBLISH_TAG, ''),
                                                              cypher_query=default_query)
 
@@ -148,5 +148,8 @@ class Neo4jSearchDataExtractor(Extractor):
         if not publish_tag:
             publish_tag_filter = ''
         else:
-            publish_tag_filter = """WHERE table.published_tag = '{}'""".format(publish_tag)
+            if not hasattr(self, 'entity'):
+                self.entity = 'table'
+            publish_tag_filter = """WHERE {entity}.published_tag = '{tag}'""".format(entity=self.entity,
+                                                                                     tag=publish_tag)
         return cypher_query.format(publish_tag_filter=publish_tag_filter)
