@@ -1,4 +1,9 @@
 import unittest
+from mock import patch
+
+from pyhocon import ConfigFactory
+from databuilder import Scoped
+from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 
 
@@ -17,6 +22,25 @@ class TestNeo4jExtractor(unittest.TestCase):
         actual = extractor._add_publish_tag_filter('', 'MATCH (table:Table) {publish_tag_filter} RETURN table')
 
         self.assertEqual(actual, """MATCH (table:Table)  RETURN table""")
+
+    def test_default_search_query(self):
+        # type: (Any) -> None
+        with patch.object(Neo4jExtractor, '_get_driver'):
+            extractor = Neo4jSearchDataExtractor()
+            conf = ConfigFactory.from_dict({
+                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY):
+                    'test-endpoint',
+                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER):
+                    'test-user',
+                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW):
+                    'test-passwd',
+                'extractor.search_data.{}'.format(Neo4jSearchDataExtractor.ENTITY_TYPE):
+                    'dashboard',
+            })
+            extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                                  scope=extractor.get_scope()))
+            self.assertEqual(extractor.cypher_query, Neo4jSearchDataExtractor
+                             .DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY.format(publish_tag_filter=''))
 
 
 if __name__ == '__main__':
