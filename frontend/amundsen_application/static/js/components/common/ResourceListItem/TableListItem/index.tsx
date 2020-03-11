@@ -9,6 +9,7 @@ import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getDatabaseDisplayName, getDatabaseIconClass } from 'config/config-utils';
 import { formatDate } from 'utils/dateUtils';
+import BadgeList from 'components/common/BadgeList';
 
 export interface TableListItemProps {
   table: TableResource;
@@ -53,11 +54,10 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
           </div>
           <div className="resource-badges">
             {
-              !!table.last_updated_timestamp &&
+              !!table.badges && table.badges.length > 0 && 
               <div>
-                <div className="title-3">Last Updated</div>
                 <div className="body-secondary-3">
-                  { formatDate({ epochTimestamp: table.last_updated_timestamp }) }
+                <BadgeList badges={ table.badges } />
                 </div>
               </div>
             }

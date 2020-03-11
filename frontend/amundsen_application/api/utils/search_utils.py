@@ -1,5 +1,6 @@
 from typing import Dict, List  # noqa: F401
 
+
 # These can move to a configuration when we have custom use cases outside of these default values
 valid_search_fields = {
     'column',
@@ -19,6 +20,7 @@ def map_table_result(result: Dict) -> Dict:
         'description': result.get('description', None),
         'database': result.get('database', None),
         'schema': result.get('schema', None),
+        'badges': result.get('badges', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
     }
 

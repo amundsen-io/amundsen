@@ -5,10 +5,10 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import TableListItem, { TableListItemProps } from '../';
-import { ResourceType } from 'interfaces';
+import { ResourceType, Badge, TagType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
-import { formatDate } from 'utils/dateUtils';
+import BadgeList from 'components/common/BadgeList';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
@@ -33,6 +33,7 @@ describe('TableListItem', () => {
         description: 'I am the description',
         key: '',
         last_updated_timestamp: 1553829681,
+        badges: [ { tag_name: 'badgeName', tag_type: TagType.BADGE } ],
         name: 'tableName',
         schema: 'tableSchema',
       },
@@ -126,26 +127,35 @@ describe('TableListItem', () => {
         expect(resourceBadges.exists()).toBe(true);
       });
 
-      describe('if props.table has last_updated_timestamp', () => {
-        it('renders Last Updated title', () => {
-          expect(resourceBadges.children().at(0).children().at(0).text()).toEqual('Last Updated');
-        });
-
-        it('renders getDateLabel value', () => {
-          const expectedString = formatDate({ epochTimestamp: props.table.last_updated_timestamp });
-          expect(resourceBadges.children().at(0).children().at(1).text()).toEqual(expectedString);
+      describe('if props.table has badges', () => {
+        it('renders BadgeList for badges', () => {
+          expect(resourceBadges.find(BadgeList).props().badges).toEqual(props.table.badges);
         });
       });
 
-      describe('if props.table does not have last_updated_timestamp', () => {
-        it('does not render Last Updated section', () => {
+      describe('if props.table does not have badges', () => {
+        it('does not render badges section', () => {
           const { props, wrapper } = setup({ table: {
             type: ResourceType.table,
             cluster: '',
             database: '',
             description: 'I am the description',
             key: '',
-            last_updated_timestamp: null,
+            badges: null, 
+            name: 'tableName',
+            schema: 'tableSchema',
+          }});
+          expect(wrapper.find('.resource-badges').children()).toHaveLength(1);
+        });
+
+        it('or if they are empty does not render badges section', () => {
+          const { props, wrapper } = setup({ table: {
+            type: ResourceType.table,
+            cluster: '',
+            database: '',
+            description: 'I am the description',
+            key: '',
+            badges: [], 
             name: 'tableName',
             schema: 'tableSchema',
           }});

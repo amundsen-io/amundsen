@@ -27,6 +27,7 @@ MOCK_TABLE_RESULTS = {
             'name': 'test_table',
             'schema': 'test_schema',
             'tags': [],
+            'badges': []
         }
     ]
 }
@@ -41,6 +42,7 @@ MOCK_PARSED_TABLE_RESULTS = [
         'last_updated_timestamp': 1527283287,
         'name': 'test_table',
         'schema': 'test_schema',
+        'badges': []
     }
 ]
 
