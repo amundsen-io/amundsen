@@ -3,15 +3,19 @@ import unittest
 from http import HTTPStatus
 from unittest import mock
 from mock import MagicMock
+from metadata_service import create_app
 
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI, UserFollowsAPI,
                                        UserOwnsAPI, UserOwnAPI, UserReadsAPI)
 
 
 class UserDetailAPITest(unittest.TestCase):
-
     @mock.patch('metadata_service.api.user.get_proxy_client')
     def setUp(self, mock_get_proxy_client: MagicMock) -> None:
+        self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
         self.mock_client = mock.Mock()
         mock_get_proxy_client.return_value = self.mock_client
         self.api = UserDetailAPI()

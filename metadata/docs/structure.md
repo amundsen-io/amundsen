@@ -29,3 +29,7 @@ For specific configuration related to statsd, you can configure it through [envi
 
 ### [Entity package](https://github.com/lyft/amundsenmetadatalibrary/tree/master/metadata_service/entity "Entity package")
 Entity package contains many modules where each module has many Python classes in it. These Python classes are being used as a schema and a data holder. All data exchange within Amundsen Metadata service use classes in Entity to ensure validity of itself and improve readability and mainatability.
+
+
+## [Configurations](configurations.md)
+There are different settings you might want to change depending on the application environment like toggling the debug mode, setting the proxy, and other such environment-specific things.
