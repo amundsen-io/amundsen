@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List, Tuple
 from search_service import create_app, config
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
+from search_service.models.tag import Tag
 from search_service.proxy import get_proxy_client
 
 
@@ -226,6 +227,7 @@ class TestAtlasProxy(unittest.TestCase):
                                                schema=self.db,
                                                column_names=[],
                                                tags=[],
+                                               badges=[],
                                                last_updated_timestamp=123)])
         entity1 = self.to_class(self.entity1)
         entity_collection = MagicMock()
@@ -276,6 +278,7 @@ class TestAtlasProxy(unittest.TestCase):
                                                    schema=self.db,
                                                    column_names=[],
                                                    tags=[],
+                                                   badges=[],
                                                    last_updated_timestamp=123)])
             entity1 = self.to_class(self.entity1)
             entity_collection = MagicMock()
@@ -309,7 +312,8 @@ class TestAtlasProxy(unittest.TestCase):
                                                    database=self.entity_type,
                                                    schema=self.db,
                                                    column_names=[],
-                                                   tags=['PII_DATA'],
+                                                   tags=[Tag(tag_name='PII_DATA')],
+                                                   badges=[],
                                                    last_updated_timestamp=123)])
             self.proxy.atlas.search_dsl = self.dsl_inject(
                 [

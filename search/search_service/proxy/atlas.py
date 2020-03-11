@@ -10,6 +10,7 @@ from typing import Any, List, Dict, Tuple
 
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
+from search_service.models.tag import Tag
 from search_service.proxy import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
@@ -79,12 +80,14 @@ class AtlasProxy(BaseProxy):
             db_name = table_qn.get("db_name", '')
             db_cluster = table_qn.get("cluster_name", '')
 
-            tags = []
+            tags = []  # type: List[Tag]
             # Using or in case, if the key 'classifications' is there with attrs None
             for classification in table_attrs.get("classifications") or list():
-                tags.append(
-                    classification.get('typeName')
-                )
+                tags.append(Tag(
+                    tag_name=classification.get('typeName')))
+
+            # TODO need to populate these
+            badges = []  # type: List[Tag]
 
             # TODO: Implement columns: Not sure if we need this for the search results.
             columns: List[str] = []
@@ -101,6 +104,7 @@ class AtlasProxy(BaseProxy):
                           schema=db_name,
                           column_names=columns,
                           tags=tags,
+                          badges=badges,
                           last_updated_timestamp=table_attrs.get('updateTime'))
 
             table_results.append(table)
@@ -211,6 +215,7 @@ class AtlasProxy(BaseProxy):
                           schema=db_name,
                           column_names=[],
                           tags=[],
+                          badges=[],
                           last_updated_timestamp=table_attrs.get('updateTime'))
 
             tables.append(table)

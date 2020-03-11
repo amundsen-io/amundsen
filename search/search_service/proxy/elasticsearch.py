@@ -7,6 +7,8 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, query
 from elasticsearch.exceptions import NotFoundError
 from flask import current_app
+from amundsen_common.models.index_map import USER_INDEX_MAP
+from amundsen_common.models.index_map import TABLE_INDEX_MAP
 
 from search_service import config
 from search_service.api.user import USER_INDEX
@@ -14,7 +16,7 @@ from search_service.api.table import TABLE_INDEX
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.user import User
-from search_service.models.index_map import IndexMap, USER_INDEX_MAP
+from search_service.models.tag import Tag
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
@@ -30,6 +32,12 @@ TABLE_MAPPING = {
     'table': 'name.raw',
     'column': 'column_names.raw',
     'database': 'database.raw'
+}
+
+# Maps payload to a class
+TAG_MAPPING = {
+    'badges': Tag,
+    'tags': Tag
 }
 
 
@@ -98,13 +106,21 @@ class ElasticsearchProxy(BaseProxy):
                 result = {}
                 for attr, val in es_payload.items():
                     if attr in model.get_attrs():
-                        result[attr] = val
+                        result[attr] = self._get_instance(attr=attr, val=val)
+
                 results.append(model(**result))
             except Exception:
                 LOGGING.exception('The record doesnt contain specified field.')
 
         return SearchResult(total_results=response.hits.total,
                             results=results)
+
+    def _get_instance(self, attr: str, val: Any) -> Any:
+        if attr in TAG_MAPPING:
+            # maps a given badge or tag to a tag class
+            return [TAG_MAPPING[attr](tag_name=property_val) for property_val in val]  # type: ignore
+        else:
+            return val
 
     def _search_helper(self, page_index: int,
                        client: Search,
@@ -230,9 +246,9 @@ class ElasticsearchProxy(BaseProxy):
 
     def _get_mapping(self, alias: str) -> str:
         if alias is USER_INDEX:
-            return IndexMap(map=USER_INDEX_MAP).mapping
+            return USER_INDEX_MAP
         elif alias is TABLE_INDEX:
-            return IndexMap().mapping
+            return TABLE_INDEX_MAP
         return ''
 
     def _search_wildcard_helper(self, field_value: str,
@@ -300,7 +316,9 @@ class ElasticsearchProxy(BaseProxy):
                                        "schema^3",
                                        "description^3",
                                        "column_names^2",
-                                       "column_descriptions", "tags"],
+                                       "column_descriptions",
+                                       "tags",
+                                       "badges"],
                         }
                     },
                     "field_value_factor": {
@@ -361,7 +379,9 @@ class ElasticsearchProxy(BaseProxy):
                                    "schema^3",
                                    "description^3",
                                    "column_names^2",
-                                   "column_descriptions", "tags"],
+                                   "column_descriptions",
+                                   "tags",
+                                   "badges"],
                     }
                 },
                 "field_value_factor": {
