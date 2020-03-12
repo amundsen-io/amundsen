@@ -45,6 +45,8 @@ A publisher is an optional component. It's common usage is to support atomicity 
 ### [Job](https://github.com/lyft/amundsendatabuilder/tree/master/databuilder/job "Job")
 Job is the highest level component in Databuilder, and it orchestrates task, and publisher.
 
+## [Model](docs/models.md)
+Models are abstractions representing the domain.
 
 ## List of extractors
 #### [DBAPIExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/db_api_extractor.py "DBAPIExtractor")
