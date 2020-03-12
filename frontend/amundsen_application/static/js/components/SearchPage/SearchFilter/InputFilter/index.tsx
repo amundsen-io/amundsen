@@ -54,7 +54,7 @@ export class InputFilter extends React.Component<InputFilterProps, InputFilterSt
   };
 
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: e.target.value })
+    this.setState({ value: e.target.value.toLowerCase() })
   };
 
   render = () => {

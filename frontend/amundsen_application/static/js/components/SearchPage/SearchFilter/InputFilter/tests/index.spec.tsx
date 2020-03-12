@@ -115,9 +115,10 @@ describe('InputFilter', () => {
     it('sets the value state to e.target.value', () => {
       setStateSpy.mockClear()
       const mockValue = 'mockValue';
+      const expectedValue = 'mockvalue'
       const mockEvent = { target: { value: mockValue }};
       wrapper.instance().onInputChange(mockEvent)
-      expect(setStateSpy).toHaveBeenCalledWith({ value: mockValue });
+      expect(setStateSpy).toHaveBeenCalledWith({ value: expectedValue });
     });
   });
 
