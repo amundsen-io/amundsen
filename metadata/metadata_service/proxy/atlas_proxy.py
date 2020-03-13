@@ -16,6 +16,7 @@ from beaker.util import parse_cache_config_options
 from flask import current_app as app
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -582,4 +583,13 @@ class AtlasProxy(BaseProxy):
     def get_dashboard(self,
                       dashboard_uri: str,
                       ) -> DashboardDetailEntity:
+        pass
+
+    def get_dashboard_description(self, *,
+                                  id: str) -> Description:
+        pass
+
+    def put_dashboard_description(self, *,
+                                  id: str,
+                                  description: str) -> None:
         pass

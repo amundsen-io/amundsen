@@ -12,6 +12,7 @@ from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.process.graph_traversal import GraphTraversalSource
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.description import Description
 from metadata_service.proxy import BaseProxy
 from metadata_service.util import UserResourceRel
 
@@ -158,6 +159,15 @@ class AbstractGremlinProxy(BaseProxy):
     def get_dashboard(self,
                       dashboard_uri: str,
                       ) -> DashboardDetailEntity:
+        pass
+
+    def get_dashboard_description(self, *,
+                                  id: str) -> Description:
+        pass
+
+    def put_dashboard_description(self, *,
+                                  id: str,
+                                  description: str) -> None:
         pass
 
 
