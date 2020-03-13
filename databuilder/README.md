@@ -224,6 +224,36 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [BigQueryMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/bigquery_metadata_extractor.py "BigQuery Metdata Extractor")
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Bigquery database.
+
+The API calls driving the extraction is defined [here](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/bigquery_metadata_extractor.py)
+
+You will need to create a service account for reading metadata and grant it "BigQuery Metadata Viewer" access to all of your datasets. This can all be done via the bigquery ui.
+
+Download the creditials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs. 
+
+You can configure bigquery like this. You can optionally set a label filter if you only want to pull tables with a certain label.
+```python
+    job_config = {
+        'extractor.bigquery_table_metadata.{}'.format(
+            BigQueryMetadataExtractor.PROJECT_ID_KEY
+            ): gcloud_project
+    }
+    if label_filter:
+        job_config[
+            'extractor.bigquery_table_metadata.{}'
+            .format(BigQueryMetadataExtractor.FILTER_KEY)
+            ] = label_filter
+    task = DefaultTask(extractor=BigQueryMetadataExtractor(),
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job = DefaultJob(conf=ConfigFactory.from_dict(job_config),
+                     task=task,
+                     publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
 #### [Neo4jEsLastUpdatedExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/neo4j_es_last_updated_extractor.py "Neo4jEsLastUpdatedExtractor")
 An extractor that basically get current timestamp and passes it GenericExtractor. This extractor is basically being used to create timestamp for "Amundsen was last indexed on ..." in Amundsen web page's footer.
 
