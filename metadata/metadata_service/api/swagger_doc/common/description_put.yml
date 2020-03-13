@@ -1,9 +1,10 @@
-Upserts description of a table
+Upserts description of a resource
 ---
 tags:
   - 'table'
+  - 'dashboard'
 parameters:
-  - name: table_uri
+  - name: id
     in: path
     type: string
     schema:
@@ -15,7 +16,7 @@ requestBody:
     application/json:
       schema:
         $ref: '#/components/schemas/Description'
-        description: Table description
+        description: Resource description
         required: true
 responses:
   200:
@@ -25,7 +26,7 @@ responses:
         schema:
           $ref: '#/components/schemas/EmptyResponse'
   404:
-    description: 'Table not found'
+    description: 'Resource not found'
     content:
       application/json:
         schema:

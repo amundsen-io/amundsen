@@ -16,6 +16,8 @@ from beaker.util import parse_cache_config_options
 from neo4j.v1 import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.description import Description
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy
@@ -292,6 +294,29 @@ class Neo4jProxy(BaseProxy):
                 LOGGER.debug('Cypher query execution elapsed for {} seconds'.format(time.time() - start))
 
     @timer_with_counter
+    def _get_resource_description(self, *,
+                                  resource_type: ResourceType,
+                                  uri: str) -> Description:
+        """
+        Get the resource description based on the uri. Any exception will propagate back to api server.
+
+        :param resource_type:
+        :param id:
+        :return:
+        """
+
+        description_query = textwrap.dedent("""
+        MATCH (n:{node_label} {{key: $key}})-[:DESCRIPTION]->(d:Description)
+        RETURN d.description AS description;
+        """.format(node_label=resource_type.name))
+
+        result = self._execute_cypher_query(statement=description_query,
+                                            param_dict={'key': uri})
+
+        result = result.single()
+        return Description(description=result['description'] if result else None)
+
+    @timer_with_counter
     def get_table_description(self, *,
                               table_uri: str) -> Union[str, None]:
         """
@@ -301,43 +326,32 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
 
-        table_description_query = textwrap.dedent("""
-        MATCH (tbl:Table {key: $tbl_key})-[:DESCRIPTION]->(d:Description)
-        RETURN d.description AS description;
-        """)
-
-        result = self._execute_cypher_query(statement=table_description_query,
-                                            param_dict={'tbl_key': table_uri})
-
-        table_descrpt = result.single()
-
-        table_description = table_descrpt['description'] if table_descrpt else None
-
-        return table_description
+        return self._get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
 
     @timer_with_counter
-    def put_table_description(self, *,
-                              table_uri: str,
-                              description: str) -> None:
+    def _put_resource_description(self, *,
+                                  resource_type: ResourceType,
+                                  uri: str,
+                                  description: str) -> None:
         """
         Update table description with one from user
         :param table_uri: Table uri (key in Neo4j)
         :param description: new value for table description
         """
         # start neo4j transaction
-        desc_key = table_uri + '/_description'
+        desc_key = uri + '/_description'
 
         upsert_desc_query = textwrap.dedent("""
-            MERGE (u:Description {key: $desc_key})
-            on CREATE SET u={description: $description, key: $desc_key}
-            on MATCH SET u={description: $description, key: $desc_key}
-            """)
+        MERGE (u:Description {key: $desc_key})
+        on CREATE SET u={description: $description, key: $desc_key}
+        on MATCH SET u={description: $description, key: $desc_key}
+        """)
 
         upsert_desc_tab_relation_query = textwrap.dedent("""
-            MATCH (n1:Description {key: $desc_key}), (n2:Table {key: $tbl_key})
-            MERGE (n2)-[r2:DESCRIPTION]->(n1)
-            RETURN n1.key, n2.key
-            """)
+        MATCH (n1:Description {{key: $desc_key}}), (n2:{node_label} {{key: $key}})
+        MERGE (n2)-[r2:DESCRIPTION]->(n1)
+        RETURN n1.key, n2.key
+        """.format(node_label=resource_type.name))
 
         start = time.time()
 
@@ -348,18 +362,16 @@ class Neo4jProxy(BaseProxy):
                                        'desc_key': desc_key})
 
             result = tx.run(upsert_desc_tab_relation_query, {'desc_key': desc_key,
-                                                             'tbl_key': table_uri})
+                                                             'key': uri})
 
             if not result.single():
-                raise RuntimeError('Failed to update the table {tbl} description'.format(tbl=table_uri))
+                raise RuntimeError('Failed to update the resource {uri} description'.format(uri=uri))
 
             # end neo4j transaction
             tx.commit()
 
         except Exception as e:
-
             LOGGER.exception('Failed to execute update process')
-
             if not tx.closed():
                 tx.rollback()
 
@@ -367,11 +379,23 @@ class Neo4jProxy(BaseProxy):
             raise e
 
         finally:
-
             tx.close()
-
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
+
+    @timer_with_counter
+    def put_table_description(self, *,
+                              table_uri: str,
+                              description: str) -> None:
+        """
+        Update table description with one from user
+        :param table_uri: Table uri (key in Neo4j)
+        :param description: new value for table description
+        """
+
+        self._put_resource_description(resource_type=ResourceType.Table,
+                                       uri=table_uri,
+                                       description=description)
 
     @timer_with_counter
     def get_column_description(self, *,
@@ -1018,3 +1042,29 @@ class Neo4jProxy(BaseProxy):
                                      updated_timestamp=self._safe_get(record, 'updated_timestamp'),
                                      owners=owners,
                                      tags=tags)
+
+    @timer_with_counter
+    def get_dashboard_description(self, *,
+                                  id: str) -> Description:
+        """
+        Get the dashboard description based on dashboard uri. Any exception will propagate back to api server.
+
+        :param id:
+        :return:
+        """
+
+        return self._get_resource_description(resource_type=ResourceType.Dashboard, uri=id)
+
+    @timer_with_counter
+    def put_dashboard_description(self, *,
+                                  id: str,
+                                  description: str) -> None:
+        """
+        Update Dashboard description
+        :param id: Dashboard URI
+        :param description: new value for Dashboard description
+        """
+
+        self._put_resource_description(resource_type=ResourceType.Dashboard,
+                                       uri=id,
+                                       description=description)

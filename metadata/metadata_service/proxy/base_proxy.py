@@ -4,8 +4,9 @@ from typing import Any, Dict, List, Union
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User as UserEntity
-from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 
+from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.description import Description
 from metadata_service.util import UserResourceRel
 
 
@@ -14,6 +15,7 @@ class BaseProxy(metaclass=ABCMeta):
     Base Proxy, which behaves like an interface for all
     the proxy clients available in the amundsen metadata service
     """
+
     @abstractmethod
     def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
@@ -105,4 +107,15 @@ class BaseProxy(metaclass=ABCMeta):
     def get_dashboard(self,
                       dashboard_uri: str,
                       ) -> DashboardDetailEntity:
+        pass
+
+    @abstractmethod
+    def get_dashboard_description(self, *,
+                                  id: str) -> Description:
+        pass
+
+    @abstractmethod
+    def put_dashboard_description(self, *,
+                                  id: str,
+                                  description: str) -> None:
         pass

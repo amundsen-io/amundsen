@@ -11,7 +11,7 @@ from flask import Flask, Blueprint
 from flask_restful import Api
 
 from metadata_service.api.column import ColumnDescriptionAPI
-from metadata_service.api.dashboard import DashboardDetailAPI
+from metadata_service.api.dashboard import DashboardDetailAPI, DashboardDescriptionAPI
 from metadata_service.api.healthcheck import healthcheck
 from metadata_service.api.popular_tables import PopularTablesAPI
 from metadata_service.api.system import Neo4jDetailAPI
@@ -21,6 +21,7 @@ from metadata_service.api.tag import TagAPI
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnsAPI,
                                        UserOwnAPI, UserReadsAPI)
+
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -80,7 +81,7 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(PopularTablesAPI, '/popular_tables/')
     api.add_resource(TableDetailAPI, '/table/<path:table_uri>')
     api.add_resource(TableDescriptionAPI,
-                     '/table/<path:table_uri>/description')
+                     '/table/<path:id>/description')
     api.add_resource(TableTagAPI,
                      '/table/<path:table_uri>/tag/<tag>')
     api.add_resource(TableOwnerAPI,
@@ -106,6 +107,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/user/<path:user_id>/read/')
     api.add_resource(DashboardDetailAPI,
                      '/dashboard/<path:id>')
+    api.add_resource(DashboardDescriptionAPI,
+                     '/dashboard/<path:id>/description')
     app.register_blueprint(api_bp)
 
     if app.config.get('SWAGGER_ENABLED'):

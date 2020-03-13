@@ -241,11 +241,11 @@ class TestNeo4jProxy(unittest.TestCase):
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
-            MATCH (tbl:Table {key: $tbl_key})-[:DESCRIPTION]->(d:Description)
+            MATCH (n:Table {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=table_description_query,
-                                            param_dict={'tbl_key': 'test_table'})
+                                            param_dict={'key': 'test_table'})
 
             self.assertEquals(table_description, 'sample description')
 
@@ -261,11 +261,11 @@ class TestNeo4jProxy(unittest.TestCase):
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
-            MATCH (tbl:Table {key: $tbl_key})-[:DESCRIPTION]->(d:Description)
+            MATCH (n:Table {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=table_description_query,
-                                            param_dict={'tbl_key': 'test_table'})
+                                            param_dict={'key': 'test_table'})
 
             self.assertIsNone(table_description)
 
@@ -731,6 +731,78 @@ class TestNeo4jProxy(unittest.TestCase):
                                         query_names=[], tables=[], tags=[])
 
             self.assertEqual(expected2, dashboard2)
+
+    def test_get_dashboard_with_valid_description(self) -> None:
+        """
+        Test description is returned for dashboard
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = dict(description='sample description')
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
+
+            dashboard_description_query = textwrap.dedent("""
+            MATCH (n:Dashboard {key: $key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=dashboard_description_query,
+                                            param_dict={'key': 'test_dashboard'})
+
+            self.assertEquals(table_description.description, 'sample description')
+
+    def test_get_dashboard_with_no_description(self) -> None:
+        """
+        Test None is returned for table with no description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = None
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
+
+            dashboard_description_query = textwrap.dedent("""
+            MATCH (n:Dashboard {key: $key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=dashboard_description_query,
+                                            param_dict={'key': 'test_dashboard'})
+
+            self.assertIsNone(table_description.description)
+
+    def test_put_dashboard_description(self) -> None:
+        """
+        Test updating table description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.put_dashboard_description(id='test_dashboard',
+                                                  description='test_description')
+
+            self.assertEquals(mock_run.call_count, 2)
+            self.assertEquals(mock_commit.call_count, 1)
+
+            expected_stmt = textwrap.dedent("""
+            MATCH (n1:Description {key: $desc_key}), (n2:Dashboard {key: $key})
+            MERGE (n2)-[r2:DESCRIPTION]->(n1)
+            RETURN n1.key, n2.key
+            """)
+            mock_run.assert_called_with(expected_stmt, {'desc_key': 'test_dashboard/_description',
+                                                        'key': 'test_dashboard'})
 
 
 if __name__ == '__main__':

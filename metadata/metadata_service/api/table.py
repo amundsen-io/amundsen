@@ -72,23 +72,23 @@ class TableDescriptionAPI(Resource):
         self.client = get_proxy_client()
         super(TableDescriptionAPI, self).__init__()
 
-    @swag_from('swagger_doc/table/description_get.yml')
-    def get(self, table_uri: str) -> Iterable[Any]:
+    @swag_from('swagger_doc/common/description_get.yml')
+    def get(self, id: str) -> Iterable[Any]:
         """
         Returns description in Neo4j endpoint
         """
         try:
-            description = self.client.get_table_description(table_uri=table_uri)
+            description = self.client.get_table_description(table_uri=id)
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
-            return {'message': 'table_uri {} does not exist'.format(table_uri)}, HTTPStatus.NOT_FOUND
+            return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
 
         except Exception:
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    @swag_from('swagger_doc/table/description_put.yml')
-    def put(self, table_uri: str) -> Iterable[Any]:
+    @swag_from('swagger_doc/common/description_put.yml')
+    def put(self, id: str) -> Iterable[Any]:
         """
         Updates table description (passed as a request body)
         :param table_uri:
@@ -96,11 +96,11 @@ class TableDescriptionAPI(Resource):
         """
         try:
             description = json.loads(request.data).get('description')
-            self.client.put_table_description(table_uri=table_uri, description=description)
+            self.client.put_table_description(table_uri=id, description=description)
             return None, HTTPStatus.OK
 
         except NotFoundException:
-            return {'message': 'table_uri {} does not exist'.format(table_uri)}, HTTPStatus.NOT_FOUND
+            return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
 
 
 class TableTagAPI(Resource):
