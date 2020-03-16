@@ -9,6 +9,17 @@
       margin: 40px 0 8px;
     }
 
+    .programmatic-title {
+      color: $text-primary;
+      margin: 30px 0 10px;
+      font-weight: $font-weight-body-bold;
+    }
+
+    .programmatic-hr {
+      border: 1px solid $gray15;
+      margin: 10px 0 4px;
+    }
+
     .editable-text {
       font-size: 16px;
     }

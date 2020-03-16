@@ -6,7 +6,7 @@ import './styles.scss';
 export enum CaseType {
   LOWER_CASE = 'lowerCase',
   SENTENCE_CASE = 'sentenceCase',
-  UPPER_CASE = 'upperCase',
+  UPPER_CASE = 'upperCase'
 }
 
 export interface FlagProps {

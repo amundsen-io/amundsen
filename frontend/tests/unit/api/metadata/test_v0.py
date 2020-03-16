@@ -61,7 +61,11 @@ class MetadataTest(unittest.TestCase):
             'schema': 'test_schema',
             'name': 'test_table',
             'description': 'This is a test',
-            'programmatic_descriptions': [],
+            'programmatic_descriptions': [
+                {'source': 'c_1', 'text': 'description c'},
+                {'source': 'a_1', 'text': 'description a'},
+                {'source': 'b_1', 'text': 'description b'}
+            ],
             'tags': [],
             'table_readers': [
                 {'user': {'email': 'test@test.com', 'first_name': None, 'last_name': None}, 'read_count': 100}
@@ -75,7 +79,7 @@ class MetadataTest(unittest.TestCase):
                 'name': 'test_name',
                 'id': 'test_id',
                 'description': 'This is a test'
-            },
+            }
         }
         self.expected_parsed_metadata = {
             'badges': [],
@@ -85,7 +89,6 @@ class MetadataTest(unittest.TestCase):
             'name': 'test_table',
             'key': 'test_db://test_cluster.test_schema/test_table',
             'description': 'This is a test',
-            'programmatic_descriptions': [],
             'tags': [],
             'table_readers': [
                 {
@@ -119,6 +122,20 @@ class MetadataTest(unittest.TestCase):
                     'is_editable': True
                 }
             ],
+            "programmatic_descriptions": [
+                {
+                    'source': 'a',
+                    'text': 'description a'
+                },
+                {
+                    'source': 'b',
+                    'text': 'description b'
+                },
+                {
+                    'source': 'c',
+                    'text': 'description c'
+                },
+            ],
             'table_writer': {
                 'application_url': 'https://test-test.test.test',
                 'name': 'test_name',
@@ -131,7 +148,24 @@ class MetadataTest(unittest.TestCase):
             ],
             'source': '/source',
             'is_editable': True,
-            'last_updated_timestamp': None,
+            'last_updated_timestamp': None
+        }
+
+        self.expected_programmatic_descriptions_with_config = {
+            "programmatic_descriptions": [
+                {
+                    'source': 'a',
+                    'text': 'description a'
+                },
+                {
+                    'source': 'b',
+                    'text': 'description b'
+                },
+                {
+                    'source': 'c',
+                    'text': 'description c'
+                },
+            ]
         }
         self.mock_tags = {
             'tag_usages': [
