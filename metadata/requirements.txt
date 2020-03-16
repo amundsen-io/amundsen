@@ -54,7 +54,7 @@ Jinja2>=2.10.1
 jsonschema==2.6.0
 marshmallow==2.15.3
 marshmallow-annotations==2.4.0
-MarkupSafe==1.0
+MarkupSafe==1.1 
 pytz==2018.4
 six==1.11.0
 Werkzeug==0.15.3
