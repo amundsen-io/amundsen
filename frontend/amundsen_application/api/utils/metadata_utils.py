@@ -1,4 +1,6 @@
-from typing import Any, Dict
+import logging
+
+from typing import Any, Dict, List
 
 from amundsen_common.models.popular_table import PopularTable, PopularTableSchema
 from amundsen_common.models.table import Table, TableSchema
@@ -63,7 +65,34 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     results['key'] = f'{table.database}://{table.cluster}.{table.schema}/{ table.name}'
     # Temp code to make 'partition_key' and 'partition_value' part of the table
     results['partition'] = _get_partition_data(results['watermarks'])
+
+    # We follow same style as column stat order for arranging the programmatic descriptions
+    prog_descriptions = results['programmatic_descriptions']
+    if prog_descriptions:
+        _update_prog_descriptions(prog_descriptions)
+
     return results
+
+
+def _update_prog_descriptions(prog_descriptions: List) -> None:
+    # We want to make sure there is a display title that is just source
+    for desc in prog_descriptions:
+        source = desc.get('source')
+        if not source:
+            logging.warning("no source found in: " + str(desc))
+    prog_display_config = app.config['PROGRAMMATIC_DISPLAY']
+    if prog_display_config and prog_descriptions:
+        # If config is defined for programmatic disply we look to see what configuration is being used
+        prog_descriptions.sort(key=lambda x: _sort_prog_descriptions(prog_display_config, x))
+
+
+def _sort_prog_descriptions(base_config: Dict, prog_description: Dict) -> int:
+    default_order = len(base_config)
+    prog_description_source = prog_description.get('source')
+    config_dict = base_config.get(prog_description_source)
+    if config_dict:
+        return config_dict.get('display_order', default_order)
+    return default_order
 
 
 def _map_user_object_to_schema(u: Dict) -> Dict:

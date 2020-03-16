@@ -68,6 +68,11 @@ export interface TableOwners {
   owners: User[];
 }
 
+export interface ProgrammaticDescription {
+  source: string;
+  text: string;
+}
+
 export interface TableMetadata {
   badges: Badge[];
   cluster: string;
@@ -85,6 +90,7 @@ export interface TableMetadata {
   table_readers: TableReader[];
   source: TableSource;
   watermarks: Watermark[];
+  programmatic_descriptions: ProgrammaticDescription[];
 }
 
 export interface UpdateOwnerPayload {

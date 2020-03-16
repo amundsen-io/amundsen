@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { EditableSection, EditableSectionProps } from '../';
+import {EditableSection, EditableSectionProps} from '../';
 import TagInput from 'components/Tags/TagInput';
 
 
@@ -9,12 +9,13 @@ describe("EditableSection", () => {
   const setup = (propOverrides?: Partial<EditableSectionProps>, children?) => {
     const props = {
       title: "defaultTitle",
+      readOnly: false,
       ...propOverrides,
     };
     const wrapper = shallow<EditableSection>(<EditableSection {...props} >{ children }</EditableSection>)
     return { wrapper, props };
   };
-  
+
   describe("setEditMode", () => {
     const { wrapper, props } = setup();
 
@@ -49,7 +50,7 @@ describe("EditableSection", () => {
     const { wrapper, props } = setup({ title: customTitle }, <TagInput/>);
 
     it("sets the title from a prop", () => {
-      expect(wrapper.find(".section-title").text()).toBe(customTitle);
+      expect(wrapper.find(".section-title").text()).toBe("Custom Title");
     });
 
     it("renders children with additional props", () => {
@@ -65,5 +66,18 @@ describe("EditableSection", () => {
       const { wrapper } = setup(null, child);
       expect(wrapper.childAt(1).text()).toBe(child);
     });
+
+    it("renders button when readOnly=false", () => {
+      expect(wrapper.find(".edit-button").length).toEqual(1);
+    });
+
+    it("renders does not add button when readOnly=true", () => {
+      const { wrapper } = setup({readOnly: true}, <TagInput/>);
+      expect(wrapper.find(".edit-button").length).toEqual(0);
+    });
+
+    it('renders modifies title to have no underscores', () => {
+      expect(EditableSection.convertText("testing_a123_b456 c789")).toEqual("Testing A123 B456 C789")
+    })
   });
 });

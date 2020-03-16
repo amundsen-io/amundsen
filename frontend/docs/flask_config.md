@@ -43,3 +43,36 @@ Here are the settings and what they should be set to
     ISSUE_TRACKER_MAX_RESULTS = None  # type: int (Max issues to display at a time)
 
 ```
+
+## Programmatic Descriptions
+Amundsen supports configuring other mark down supported non-editable description boxes on the table page.
+This can be useful if you have multiple writers which want to write different pieces of information to amundsen
+that are either very company specific and thus would never be directly integrated into amundsen or require long form text
+to properly convey the information.
+
+What are some more specific examples of what could be used for this?
+- You have an existing process that generates quality reports for a dataset that you want to embed in the table page.
+- You have a process that detects pii information (also adding the appropriate tag/badge) but also generates a simple
+report to provide context.
+- You have extended table information that is applicable to your datastore which you want to scrape and provide in the
+table page
+
+Programmatic Descriptions are referred to by a "description source" which is a unique identifier.
+You can then configure the descriptions to have a custom order in the config.py file like so:
+```    
+PROGRAMMATIC_DISPLAY = {
+           "s3_crawler": {
+               "display_order": 0
+           },
+           "quality_service": {
+               "display_order": 1
+           },
+           "doesnt_exist": {
+               "display_order": 2
+           }
+       }
+```
+description sources not mentioned in the configuration will be alphabetically placed at the end of the above list. If `PROGRAMMATIC_DISPLAY` is left at `None` all added fields are still showing up, so that display is entirely dynamically data-driven without configuration. Meaning configuration merely adds the (nice) benefit of setting display order.
+
+Here is a screenshot of what it would look like in the bottom left here:
+![programmatic_description](img/programmatic_descriptions.png)

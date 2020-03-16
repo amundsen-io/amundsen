@@ -139,6 +139,7 @@ describe('generateExploreUrl', () => {
     table_readers: [],
     source: { source: '', source_type: '' },
     watermarks: [],
+    programmatic_descriptions: []
   };
 
 
