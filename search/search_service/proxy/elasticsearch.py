@@ -31,7 +31,8 @@ TABLE_MAPPING = {
     'schema': 'schema.raw',
     'table': 'name.raw',
     'column': 'column_names.raw',
-    'database': 'database.raw'
+    'database': 'database.raw',
+    'cluster': 'cluster.raw'
 }
 
 # Maps payload to a class
