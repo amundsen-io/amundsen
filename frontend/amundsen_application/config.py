@@ -115,12 +115,6 @@ class TestConfig(LocalConfig):
     ISSUE_TRACKER_CLIENT_ENABLED = True
     ISSUE_TRACKER_MAX_RESULTS = 3
 
-    PROGRAMMATIC_DISPLAY = {
-        "a_1": {
-            "display_order": 0
-        }
-    }
-
 
 class TestNotificationsDisabledConfig(LocalConfig):
     AUTH_USER_METHOD = get_test_user

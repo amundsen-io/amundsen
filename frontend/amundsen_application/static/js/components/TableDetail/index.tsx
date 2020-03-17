@@ -15,6 +15,7 @@ import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
 import DataPreviewButton from 'components/TableDetail/DataPreviewButton';
 import ColumnList from 'components/TableDetail/ColumnList';
+import EditableText from 'components/common/EditableText';
 import ExploreButton from 'components/TableDetail/ExploreButton';
 import Flag from 'components/common/Flag';
 import FrequentUsers from 'components/TableDetail/FrequentUsers';
@@ -40,7 +41,8 @@ import { formatDateTimeShort } from 'utils/dateUtils';
 import './styles';
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
-import EditableText from "components/common/EditableText";
+
+import { PROGRMMATIC_DESC_HEADER } from './constants';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -211,9 +213,10 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
                   </EditableSection>
                 </section>
               </section>
-              {data.programmatic_descriptions.length > 0 &&
+              {
+                data.programmatic_descriptions.length > 0 &&
                 <>
-                  <div className="programmatic-title title-4">Read-Only information, Auto-Generated.</div>
+                  <div className="programmatic-title title-4">{PROGRMMATIC_DESC_HEADER}</div>
                   <hr className="programmatic-hr hr1"/>
                 </>
               }

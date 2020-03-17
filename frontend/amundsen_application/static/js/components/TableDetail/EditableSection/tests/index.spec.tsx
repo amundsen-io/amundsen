@@ -46,11 +46,15 @@ describe("EditableSection", () => {
   });
 
   describe("render", () => {
-    const customTitle = "custom title";
-    const { wrapper, props } = setup({ title: customTitle }, <TagInput/>);
+    const mockTitle = 'Mock';
+    const convertTextSpy = jest.spyOn(EditableSection, 'convertText').mockImplementation(() => mockTitle);
+    const { wrapper, props } = setup({ title: 'custom title' }, <TagInput/>);
 
-    it("sets the title from a prop", () => {
-      expect(wrapper.find(".section-title").text()).toBe("Custom Title");
+    it("renders the converted props.title as the section title", () => {
+      convertTextSpy.mockClear();
+      wrapper.instance().render();
+      expect(convertTextSpy).toHaveBeenCalledWith(props.title);
+      expect(wrapper.find(".section-title").text()).toBe(mockTitle);
     });
 
     it("renders children with additional props", () => {
@@ -75,9 +79,5 @@ describe("EditableSection", () => {
       const { wrapper } = setup({readOnly: true}, <TagInput/>);
       expect(wrapper.find(".edit-button").length).toEqual(0);
     });
-
-    it('renders modifies title to have no underscores', () => {
-      expect(EditableSection.convertText("testing_a123_b456 c789")).toEqual("Testing A123 B456 C789")
-    })
   });
 });
