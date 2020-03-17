@@ -107,4 +107,6 @@ helm install templates/helm/amundsen --values impl/helm/dev/values.yaml
 
 ## Other Notes
 * For aws setup, you will also need to setup the [external-dns plugin](https://github.com/kubernetes-incubator/external-dns)
-* There is an existing helm chart for neo4j, but, it is missing some features necessary to for use for now. 
+* There is an existing helm chart for neo4j, but, it is missing some features necessary to for use such as:
+    * [\[stable/neo4j\] make neo4j service definition more extensible](https://github.com/helm/charts/issues/21441); without this, it is not possible to setup external load balancers, external-dns, etc
+    * [\[stable/neo4j\] allow custom configuration of neo4j](https://github.com/helm/charts/issues/21439); without this, custom configuration is not possible which includes setting configmap based settings, which also includes turning on apoc.
