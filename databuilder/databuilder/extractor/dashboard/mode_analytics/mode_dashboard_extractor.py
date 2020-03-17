@@ -13,10 +13,6 @@ from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToE
 from databuilder.transformer.template_variable_substitution_transformer import \
     TemplateVariableSubstitutionTransformer, TEMPLATE, FIELD_NAME as VAR_FIELD_NAME
 
-# CONFIG KEYS
-ORGANIZATION = 'organization'
-MODE_ACCESS_TOKEN = 'mode_user_token'
-MODE_PASSWORD_TOKEN = 'mode_password_token'
 
 LOGGER = logging.getLogger(__name__)
 
