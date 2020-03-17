@@ -52,7 +52,7 @@ search:
   ##
   ## search.elasticsearchEndpoint -- The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart. NOTE, this only works if ES is in the same namespace.
   ##
-  elasticsearchEndpoint: amundsen-elasticsearch-client
+  elasticsearchEndpoint:
   ##
   ## search.imageVersion -- The image version of the search container.
   ##

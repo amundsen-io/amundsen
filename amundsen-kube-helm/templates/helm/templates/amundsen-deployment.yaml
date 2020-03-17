@@ -32,7 +32,7 @@ spec:
         - containerPort: 5000  
         env:
         - name: PROXY_ENDPOINT
-          value: {{ .Values.search.elasticsearchEndpoint }}
+          value: {{ if .Values.search.elasticsearchEndpoint }}{{ .Values.search.elasticsearchEndpoint }}{{ else }}{{ .Release.Namespace }}-elasticsearch-client{{ end }}
         {{- with .Values.search.resources }}
         resources:
 {{ toYaml . | indent 10 }}
