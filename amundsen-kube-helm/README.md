@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | nodeSelector | object | `{}` | amundsen application wide configuration of nodeSelector. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) |
 | provider | string | `"aws"` | The cloud provider the app is running in. Used to construct dns hostnames (on aws only). |
 | search.affinity | object | `{}` | Search pod specific affinity. |
-| search.elasticsearchEndpoint | string | `"amundsen-elasticsearch-client"` | The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart. NOTE, this only works if ES is in the same namespace. |
+| search.elasticsearchEndpoint | string | `"amundsen-elasticsearch-client"` | The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart. |
 | search.imageVersion | string | `"2.0.0"` | The image version of the search container. |
 | search.nodeSelector | object | `{}` | Search pod specific nodeSelector. |
 | search.replicas | int | `1` | How many replicas of the search service to run. |
