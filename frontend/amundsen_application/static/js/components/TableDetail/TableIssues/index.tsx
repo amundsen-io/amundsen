@@ -44,9 +44,11 @@ export class TableIssues extends React.Component<TableIssueProps> {
       <div className="issue-banner" key={`issue-${index}`}>
         <a id={`table-issue-link-${index}`} className="table-issue-link" target="_blank" href={issue.url} onClick={logClick}>
           <img className="icon icon-red-triangle-warning "/>
-          { issue.issue_key }
+          <span>
+            { issue.issue_key }
+          </span>
         </a>
-        <span className="issue-title-display-text">
+        <span className="issue-title-display-text truncated">
           <span className="issue-title-name">
            "{ issue.title }
           </span>"
