@@ -8,6 +8,8 @@
     height: 40px;
     margin: 8px 0;
     padding: 8px 16px;
+    display: flex; 
+    overflow: hidden;
 
     &:first-child {
       margin-top: 24px;
@@ -19,16 +21,16 @@
   }
   .table-issue-link {
     margin: 0px 5px 0px 0px; 
+    min-width: fit-content;
   }
   .issue-title-name {
-    max-width: 390px; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    display:inline-block;
   }
   .issue-title-display-text {
-    display: inline-flex; 
+    display: flex;
+    max-width: fit-content;
   }
   .table-issue-more-issues {
     margin: 0px 2px 0px 2px; 
