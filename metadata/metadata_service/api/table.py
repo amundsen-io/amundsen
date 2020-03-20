@@ -4,10 +4,11 @@ from typing import Any, Iterable, Mapping, Union
 
 from amundsen_common.models.table import TableSchema
 from flasgger import swag_from
-from flask import current_app as app
 from flask import request
 from flask_restful import Resource, reqparse
 
+from metadata_service.api.tag import TagCommon
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 
@@ -115,8 +116,10 @@ class TableTagAPI(Resource):
         self.parser.add_argument('tag_type', type=str, required=False, default='default')
         super(TableTagAPI, self).__init__()
 
-    @swag_from('swagger_doc/table/tag_put.yml')
-    def put(self, table_uri: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
+        self._tag_common = TagCommon(client=self.client)
+
+    @swag_from('swagger_doc/tag/tag_put.yml')
+    def put(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
         """
         API to add a tag to existing table uri.
 
@@ -128,45 +131,13 @@ class TableTagAPI(Resource):
         # use tag_type to distinguish between tag and badge
         tag_type = args.get('tag_type', 'default')
 
-        whitelist_badges = app.config.get('WHITELIST_BADGES', [])
-        if tag_type == 'badge':
-            # need to check whether the badge is part of the whitelist:
-            if tag not in whitelist_badges:
-                return \
-                    {'message': 'The tag {} for table_uri {} with type {} '
-                                'is not added successfully as badge '
-                                'is not part of the whitelist'.format(tag,
-                                                                      table_uri,
-                                                                      tag_type)}, \
-                    HTTPStatus.NOT_FOUND
-        else:
-            if tag in whitelist_badges:
-                return \
-                    {'message': 'The tag {} for table_uri {} with type {} '
-                                'is not added successfully as tag '
-                                'for it is reserved for badge'.format(tag,
-                                                                      table_uri,
-                                                                      tag_type)}, \
-                    HTTPStatus.CONFLICT
+        return self._tag_common.put(id=id,
+                                    resource_type=ResourceType.Table,
+                                    tag=tag,
+                                    tag_type=tag_type)
 
-        try:
-            self.client.add_tag(table_uri=table_uri,
-                                tag=tag,
-                                tag_type=tag_type)
-            return {'message': 'The tag {} for table_uri {} with type {} '
-                               'is added successfully'.format(tag,
-                                                              table_uri,
-                                                              tag_type)}, HTTPStatus.OK
-        except NotFoundException:
-            return \
-                {'message': 'The tag {} for table_uri {} with type {} '
-                            'is not added successfully'.format(tag,
-                                                               table_uri,
-                                                               tag_type)}, \
-                HTTPStatus.NOT_FOUND
-
-    @swag_from('swagger_doc/table/tag_delete.yml')
-    def delete(self, table_uri: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
+    @swag_from('swagger_doc/tag/tag_delete.yml')
+    def delete(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
         """
         API to remove a association between a given tag and a table.
 
@@ -177,18 +148,7 @@ class TableTagAPI(Resource):
         args = self.parser.parse_args()
         tag_type = args.get('tag_type', 'default')
 
-        try:
-            self.client.delete_tag(table_uri=table_uri,
-                                   tag=tag,
-                                   tag_type=tag_type)
-            return {'message': 'The tag {} for table_uri {} with type {} '
-                               'is deleted successfully'.format(tag,
-                                                                table_uri,
-                                                                tag_type)}, HTTPStatus.OK
-        except NotFoundException:
-            return \
-                {'message': 'The tag {} for table_uri {} with type {} '
-                            'is not deleted successfully'.format(tag,
-                                                                 table_uri,
-                                                                 tag_type)}, \
-                HTTPStatus.NOT_FOUND
+        return self._tag_common.delete(id=id,
+                                       resource_type=ResourceType.Table,
+                                       tag=tag,
+                                       tag_type=tag_type)

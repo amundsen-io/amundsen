@@ -416,7 +416,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            neo4j_proxy.add_tag(table_uri='dummy_uri',
+            neo4j_proxy.add_tag(id='dummy_uri',
                                 tag='hive')
             # we call neo4j twice in add_tag call
             self.assertEquals(mock_run.call_count, 3)
@@ -436,7 +436,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            neo4j_proxy.delete_tag(table_uri='dummy_uri',
+            neo4j_proxy.delete_tag(id='dummy_uri',
                                    tag='hive')
             # we only call neo4j once in delete_tag call
             self.assertEquals(mock_run.call_count, 1)

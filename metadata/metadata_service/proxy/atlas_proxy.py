@@ -18,6 +18,7 @@ from flask import current_app as app
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
 from metadata_service.util import UserResourceRel
@@ -376,7 +377,8 @@ class AtlasProxy(BaseProxy):
         entity.entity[self.ATTRS_KEY]['description'] = description
         entity.update()
 
-    def add_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
+    def add_tag(self, *, id: str, tag: str, tag_type: str,
+                resource_type: ResourceType = ResourceType.Table) -> None:
         """
         Assign the tag/classification to the give table
         API Ref: /resource_EntityREST.html#resource_EntityREST_addClassification_POST
@@ -385,12 +387,13 @@ class AtlasProxy(BaseProxy):
         :param tag_type
         :return: None
         """
-        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity, _ = self._get_table_entity(table_uri=id)
         entity_bulk_tag = {"classification": {"typeName": tag},
                            "entityGuids": [entity.entity['guid']]}
         self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
 
-    def delete_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
+    def delete_tag(self, *, id: str, tag: str, tag_type: str,
+                   resource_type: ResourceType = ResourceType.Table) -> None:
         """
         Delete the assigned classfication/tag from the given table
         API Ref: /resource_EntityREST.html#resource_EntityREST_deleteClassification_DELETE
@@ -399,7 +402,7 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         try:
-            entity, _ = self._get_table_entity(table_uri=table_uri)
+            entity, _ = self._get_table_entity(table_uri=id)
             guid_entity = self._driver.entity_guid(entity.entity['guid'])
             guid_entity.classifications(tag).delete()
         except Exception as ex:

@@ -11,7 +11,7 @@ from flask import Flask, Blueprint
 from flask_restful import Api
 
 from metadata_service.api.column import ColumnDescriptionAPI
-from metadata_service.api.dashboard import DashboardDetailAPI, DashboardDescriptionAPI
+from metadata_service.api.dashboard import DashboardDetailAPI, DashboardDescriptionAPI, DashboardTagAPI
 from metadata_service.api.healthcheck import healthcheck
 from metadata_service.api.popular_tables import PopularTablesAPI
 from metadata_service.api.system import Neo4jDetailAPI
@@ -83,7 +83,7 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(TableDescriptionAPI,
                      '/table/<path:id>/description')
     api.add_resource(TableTagAPI,
-                     '/table/<path:table_uri>/tag/<tag>')
+                     '/table/<path:id>/tag/<tag>')
     api.add_resource(TableOwnerAPI,
                      '/table/<path:table_uri>/owner/<owner>')
     api.add_resource(ColumnDescriptionAPI,
@@ -109,6 +109,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/dashboard/<path:id>')
     api.add_resource(DashboardDescriptionAPI,
                      '/dashboard/<path:id>/description')
+    api.add_resource(DashboardTagAPI,
+                     '/dashboard/<path:id>/tag/<tag>')
     app.register_blueprint(api_bp)
 
     if app.config.get('SWAGGER_ENABLED'):

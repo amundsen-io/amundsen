@@ -1,14 +1,16 @@
+import json
 from http import HTTPStatus
 from typing import Iterable, Mapping, Optional, Union
 
 from flasgger import swag_from
-
 from flask import request
-import json
+from flask_restful import Resource, reqparse
 
 from metadata_service.api import BaseAPI
+from metadata_service.api.tag import TagCommon
 from metadata_service.entity.dashboard_detail import DashboardSchema
 from metadata_service.entity.description import DescriptionSchema
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 
@@ -34,6 +36,7 @@ class DashboardDescriptionAPI(BaseAPI):
     """
     DashboardDescriptionAPI supports PUT and GET operation to upsert table description
     """
+
     def __init__(self) -> None:
         self.client = get_proxy_client()
         super().__init__(DescriptionSchema, 'dashboard_description', self.client)
@@ -66,3 +69,52 @@ class DashboardDescriptionAPI(BaseAPI):
 
         except NotFoundException:
             return {'message': 'id {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+
+
+class DashboardTagAPI(Resource):
+    """
+    DashboardTagAPI that supports PUT and DELETE operation to add or delete tag
+    on Dashboard
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('tag_type', type=str, required=False, default='default')
+        super(DashboardTagAPI, self).__init__()
+
+        self._tag_common = TagCommon(client=self.client)
+
+    @swag_from('swagger_doc/tag/tag_put.yml')
+    def put(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
+        """
+        API to add a tag to existing Dashboard.
+
+        :param table_uri:
+        :param tag:
+        :return:
+        """
+        args = self.parser.parse_args()
+        tag_type = args.get('tag_type', 'default')
+
+        return self._tag_common.put(id=id,
+                                    resource_type=ResourceType.Dashboard,
+                                    tag=tag,
+                                    tag_type=tag_type)
+
+    @swag_from('swagger_doc/tag/tag_delete.yml')
+    def delete(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
+        """
+        API to remove a association between a given tag and a Dashboard.
+
+        :param table_uri:
+        :param tag:
+        :return:
+        """
+        args = self.parser.parse_args()
+        tag_type = args.get('tag_type', 'default')
+
+        return self._tag_common.delete(id=id,
+                                       resource_type=ResourceType.Dashboard,
+                                       tag=tag,
+                                       tag_type=tag_type)

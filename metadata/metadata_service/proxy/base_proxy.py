@@ -7,6 +7,7 @@ from amundsen_common.models.user import User as UserEntity
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.util import UserResourceRel
 
 
@@ -48,11 +49,11 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
+    def add_tag(self, *, id: str, tag: str, tag_type: str, resource_type: ResourceType) -> None:
         pass
 
     @abstractmethod
-    def delete_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
+    def delete_tag(self, *, id: str, tag: str, tag_type: str, resource_type: ResourceType) -> None:
         pass
 
     @abstractmethod
