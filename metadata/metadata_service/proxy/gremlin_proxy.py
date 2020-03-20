@@ -13,6 +13,7 @@ from gremlin_python.process.graph_traversal import GraphTraversalSource
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.proxy import BaseProxy
 from metadata_service.util import UserResourceRel
 
@@ -111,10 +112,12 @@ class AbstractGremlinProxy(BaseProxy):
                               description: str) -> None:
         pass
 
-    def add_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
+    def add_tag(self, *, id: str, tag: str, tag_type: str,
+                resource_type: ResourceType = ResourceType.Table) -> None:
         pass
 
-    def delete_tag(self, *, table_uri: str, tag: str, tag_type: str) -> None:
+    def delete_tag(self, *, id: str, tag: str, tag_type: str,
+                   resource_type: ResourceType = ResourceType.Table) -> None:
         pass
 
     def put_column_description(self, *,

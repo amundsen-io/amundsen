@@ -1,9 +1,10 @@
-Adds tags of a table
+Delete tags of a resource
 ---
 tags:
   - 'table'
+  - 'dashboard'
 parameters:
-  - name: table_uri
+  - name: id
     in: path
     type: string
     schema:
@@ -16,7 +17,7 @@ parameters:
     schema:
       type: string
     required: true
-    example: 'tag3'
+    example: 'tagw'
   - name: tag_type
     in: query
     type: string
@@ -27,13 +28,13 @@ parameters:
     example: 'badge'
 responses:
   200:
-    description: 'The tag was added successfully'
+    description: 'The tag was deleted successfully'
     content:
       application/json:
         schema:
           $ref: '#/components/schemas/MessageResponse'
   404:
-    description: 'Table not found, or tag has type badge and is not whitelisted'
+    description: 'Table or tag not found'
     content:
       application/json:
         schema:

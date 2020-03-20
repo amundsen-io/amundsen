@@ -560,22 +560,26 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def add_tag(self, *,
-                table_uri: str,
+                id: str,
                 tag: str,
-                tag_type: str = 'default') -> None:
+                tag_type: str = 'default',
+                resource_type: ResourceType = ResourceType.Table) -> None:
         """
         Add new tag
         1. Create the node with type Tag if the node doesn't exist.
         2. Create the relation between tag and table if the relation doesn't exist.
 
-        :param table_uri:
+        :param id:
         :param tag:
-        :param tag_type
+        :param tag_type:
+        :param resource_type:
         :return: None
         """
-        LOGGER.info('New tag {} for table_uri {} with type {}'.format(tag, table_uri, tag_type))
+        LOGGER.info('New tag {} for id {} with type {} and resource type {}'.format(tag, id, tag_type,
+                                                                                    resource_type.name))
 
-        table_validation_query = 'MATCH (t:Table {key: $tbl_key}) return t'
+        validation_query = \
+            'MATCH (n:{resource_type} {{key: $key}}) return n'.format(resource_type=resource_type.name)
 
         upsert_tag_query = textwrap.dedent("""
         MERGE (u:Tag {key: $tag})
@@ -584,27 +588,29 @@ class Neo4jProxy(BaseProxy):
         """)
 
         upsert_tag_relation_query = textwrap.dedent("""
-        MATCH (n1:Tag {key: $tag, tag_type: $tag_type}), (n2:Table {key: $tbl_key})
+        MATCH (n1:Tag {{key: $tag, tag_type: $tag_type}}), (n2:{resource_type} {{key: $key}})
         MERGE (n1)-[r1:TAG]->(n2)-[r2:TAGGED_BY]->(n1)
         RETURN n1.key, n2.key
-        """)
+        """.format(resource_type=resource_type.name))
 
         try:
             tx = self._driver.session().begin_transaction()
-            tbl_result = tx.run(table_validation_query, {'tbl_key': table_uri})
+            tbl_result = tx.run(validation_query, {'key': id})
             if not tbl_result.single():
-                raise NotFoundException('table_uri {} does not exist'.format(table_uri))
+                raise NotFoundException('id {} does not exist'.format(id))
 
             # upsert the node. Currently the type for all the tags is default. We could change it later per UI.
             tx.run(upsert_tag_query, {'tag': tag,
                                       'tag_type': tag_type})
             result = tx.run(upsert_tag_relation_query, {'tag': tag,
-                                                        'tbl_key': table_uri,
+                                                        'key': id,
                                                         'tag_type': tag_type})
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
-                                   'tag {tag} and table {tbl}'.format(tag=tag,
-                                                                      tbl=table_uri))
+                                   'tag {tag} and resource {resource} of resource type: {resource_type}'
+                                   .format(tag=tag,
+                                           resource=id,
+                                           resource_type=resource_type.name))
             tx.commit()
         except Exception as e:
             if not tx.closed():
@@ -616,30 +622,34 @@ class Neo4jProxy(BaseProxy):
                 tx.close()
 
     @timer_with_counter
-    def delete_tag(self, *, table_uri: str,
+    def delete_tag(self, *,
+                   id: str,
                    tag: str,
-                   tag_type: str = 'default') -> None:
+                   tag_type: str = 'default',
+                   resource_type: ResourceType = ResourceType.Table) -> None:
         """
         Deletes tag
-        1. Delete the relation between table and the tag
+        1. Delete the relation between resource and the tag
         2. todo(Tao): need to think about whether we should delete the tag if it is an orphan tag.
 
-        :param table_uri:
+        :param id:
         :param tag:
         :param tag_type: {default-> normal tag, badge->non writable tag from UI}
+        :param resource_type:
         :return:
         """
 
-        LOGGER.info('Delete tag {} for table_uri {} with type {}'.format(tag, table_uri, tag_type))
+        LOGGER.info('Delete tag {} for id {} with type {} and resource type: {}'.format(tag, id,
+                                                                                        tag_type, resource_type.name))
         delete_query = textwrap.dedent("""
-        MATCH (n1:Tag{key: $tag, tag_type: $tag_type})-
-        [r1:TAG]->(n2:Table {key: $tbl_key})-[r2:TAGGED_BY]->(n1) DELETE r1,r2
-        """)
+        MATCH (n1:Tag{{key: $tag, tag_type: $tag_type}})-
+        [r1:TAG]->(n2:{resource_type} {{key: $key}})-[r2:TAGGED_BY]->(n1) DELETE r1,r2
+        """.format(resource_type=resource_type.name))
 
         try:
             tx = self._driver.session().begin_transaction()
             tx.run(delete_query, {'tag': tag,
-                                  'tbl_key': table_uri,
+                                  'key': id,
                                   'tag_type': tag_type})
         except Exception as e:
             # propagate the exception back to api
