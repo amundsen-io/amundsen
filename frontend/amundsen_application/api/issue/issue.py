@@ -57,9 +57,9 @@ class IssueAPI(Resource):
                 return make_response(jsonify({'msg': message}), HTTPStatus.ACCEPTED)
             self.client = get_issue_tracker_client()
 
-            self.reqparse.add_argument('title', type=str, location='form')
-            self.reqparse.add_argument('key', type=str, location='form')
-            self.reqparse.add_argument('description', type=str, location='form')
+            self.reqparse.add_argument('title', type=str, location='json')
+            self.reqparse.add_argument('key', type=str, location='json')
+            self.reqparse.add_argument('description', type=str, location='json')
             args = self.reqparse.parse_args()
             response = self.client.create_issue(description=args['description'],
                                                 table_uri=args['key'],

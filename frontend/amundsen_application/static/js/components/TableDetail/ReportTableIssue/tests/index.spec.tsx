@@ -11,8 +11,36 @@ import {
   mapDispatchToProps,
   mapStateToProps, 
 } from '..';
+import { NotificationType } from 'interfaces';
 
-const mockFormData = { key1: 'val1', key2: 'val2' };
+const mockFormData = { 
+  'key': 'val1', 
+  'title': 'title', 
+  'description': 'description', 
+  'resource_name': 'resource name', 
+  'resource_path': 'path', 
+  'owners': 'test@test.com', 
+  get: (key: string) => {
+    return mockFormData[key]; 
+  }
+ };
+
+const mockCreateIssuePayload = {
+  key: 'key', 
+  title: 'title', 
+  description: 'description'
+}
+
+const mockNotificationPayload = {
+  notificationType: NotificationType.DATA_ISSUE_REPORTED,
+  options: {
+    resource_name: 'schema.table_name',
+    resource_path: '/table_detail/cluster/database/schema/table_name',
+  },
+  recipients: ['owner@email'],
+  sender: 'user@email'
+}
+  
 // @ts-ignore: How to mock FormData without TypeScript error?
 global.FormData = () => (mockFormData);
 
@@ -24,6 +52,13 @@ describe('ReportTableIssue', () => {
       createIssue: jest.fn(), 
       tableKey: 'key', 
       tableName: 'name',
+      tableOwners: ['owner@email'], 
+      tableMetadata: {...globalState.tableMetadata.tableData, 
+        schema: 'schema', 
+        name: 'table_name',
+        cluster: 'cluster', 
+        database: 'database'},
+      userEmail: 'user@email', 
       ...propOverrides
     };
     const wrapper = shallow<ReportTableIssue>(<ReportTableIssue {...props} />);
@@ -68,7 +103,9 @@ describe('ReportTableIssue', () => {
         // @ts-ignore: mocked events throw type errors
         wrapper.instance().submitForm({ preventDefault: jest.fn(), 
         currentTarget: {id: 'id', nodeName: 'button'} });
-        expect(props.createIssue).toHaveBeenCalledWith(mockFormData);
+        expect(props.createIssue).toHaveBeenCalledWith(
+          mockCreateIssuePayload,
+          mockNotificationPayload);
         expect(wrapper.state().isOpen).toBe(false); 
       });
 

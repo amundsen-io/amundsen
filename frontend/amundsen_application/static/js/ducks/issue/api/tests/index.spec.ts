@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import * as API from '../v0';
+import { NotificationType } from 'interfaces';
+import AppConfig from 'config/config';
+
 
 jest.mock('axios');
 
@@ -42,8 +45,10 @@ describe('getIssues', () => {
 describe('createIssue', () => {
   let mockGetResponse;
   let axiosMock;
-  let formData;
-  const issueResult = { issue_key: 'key' };
+  const issueResult = { issue_key: 'key',
+    data_issue_url: 'url' };
+  let createIssuePayload; 
+  let sendNotificationPayload; 
   beforeAll(() => {
     mockGetResponse = {
       data: {
@@ -55,25 +60,41 @@ describe('createIssue', () => {
       headers: {},
       config: {}
     };
-    formData = new FormData();
+    createIssuePayload = {
+      key: 'key', 
+      title: 'title', 
+      description: 'description'
+    }
+    sendNotificationPayload = {
+      owners: ['owner1'], 
+      sender: 'sender', 
+      notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+      options: {
+        resource_name: 'resource_name', 
+        resource_path: 'resource_path',
+        data_issue_url: 'url'
+      }
+    }
     axiosMock = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
-  it('calls expected endpoint with headers', async () => {
-    expect.assertions(1);
-    await API.createIssue(formData).then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(
-        `${API.API_PATH}/issue`,
-        formData, {
-        headers: {'Content-Type': 'multipart/form-data'}
-      });
+  it('returns response data', async () => {
+    AppConfig.mailClientFeatures.notificationsEnabled = false;
+    expect.assertions(3);
+    await API.createIssue(createIssuePayload, sendNotificationPayload).then(data => {
+      expect(data).toEqual(issueResult);
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/issue`, createIssuePayload);
+      expect(axiosMock).toHaveBeenCalledTimes(1);
     });
   });
 
-  it('returns response data', async () => {
-    expect.assertions(1);
-    await API.createIssue(formData).then(data => {
+  it('submits a notification if notifications are enabled', async () => {
+    AppConfig.mailClientFeatures.notificationsEnabled = true;
+    expect.assertions(3);
+    await API.createIssue(createIssuePayload, sendNotificationPayload).then(data => {
       expect(data).toEqual(issueResult);
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/issue`, createIssuePayload);
+      expect(axiosMock).toHaveBeenCalledWith(API.NOTIFICATION_API_PATH, sendNotificationPayload);
     });
   });
 

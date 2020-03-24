@@ -20,6 +20,7 @@ class NotificationType(str, Enum):
     OWNER_REMOVED = 'owner_removed'
     METADATA_EDITED = 'metadata_edited'
     METADATA_REQUESTED = 'metadata_requested'
+    DATA_ISSUE_REPORTED = 'data_issue_reported'
 
     @classmethod
     def has_value(cls, value: str) -> bool:
@@ -51,6 +52,12 @@ NOTIFICATION_STRINGS = {
         'comment': '',
         'end_note': '<br/>Please visit the provided link and improve descriptions on that resource.<br/>',
         'notification': '<br/>{sender} is trying to use <a href="{resource_url}">{resource_name}</a>, ',
+    },
+    NotificationType.DATA_ISSUE_REPORTED.value: {
+        'comment': '<br/>Link to the issue: {data_issue_url}<br/>',
+        'end_note': '<br/>Please visit the provided issue link for more information. You are getting this email '
+                    'because you are listed as an owner of the resource. Please do not reply to this email.<br/>',
+        'notification': '<br/>{sender} has reported a data issue for <a href="{resource_url}">{resource_name}</a>, ',
     }
 }
 
@@ -122,6 +129,11 @@ def get_notification_html(*, notification_type: str, options: Dict, sender: str)
             comment = ('<br/>{sender} has included the following information with their request:'
                        '<br/>{comment}<br/>').format(sender=sender, comment=options_comment)
 
+    if notification_type == NotificationType.DATA_ISSUE_REPORTED:
+        greeting = 'Hello data owner,<br>'
+        data_issue_url = options.get('data_issue_url')
+        comment = comment.format(data_issue_url=data_issue_url)
+
     return '{greeting}{notification}{comment}{end_note}{salutation}'.format(greeting=greeting,
                                                                             notification=notification,
                                                                             comment=comment,
@@ -142,6 +154,7 @@ def get_notification_subject(*, notification_type: str, options: Dict) -> str:
         NotificationType.OWNER_REMOVED.value: 'You have been removed as an owner of {}'.format(resource_name),
         NotificationType.METADATA_EDITED.value: 'Your dataset {}\'s metadata has been edited'.format(resource_name),
         NotificationType.METADATA_REQUESTED.value: 'Request for metadata on {}'.format(resource_name),
+        NotificationType.DATA_ISSUE_REPORTED.value: 'A data issue has been reported for {}'.format(resource_name)
     }
     subject = notification_subject_dict.get(notification_type)
     if subject is None:

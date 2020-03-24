@@ -3,3 +3,9 @@ export interface Issue {
     title: string;
     url: string;
 };
+
+export interface CreateIssuePayload {
+  key: string; 
+  title: string; 
+  description: string; 
+}

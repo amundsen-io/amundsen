@@ -1,7 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { Issue } from 'interfaces';
+import { Issue, CreateIssuePayload, NotificationPayload } from 'interfaces';
+import { notificationsEnabled } from 'config/config-utils';
 
 export const API_PATH = '/api/issue';
+export const NOTIFICATION_API_PATH = '/api/mail/v0/notification';
 
 export type IssuesAPI = {
   issues: {
@@ -22,11 +24,18 @@ export function getIssues(tableKey: string) {
   });
 }
 
-export function createIssue(data: FormData) {
-  const headers =  {'Content-Type': 'multipart/form-data' };
-  return axios.post(`${API_PATH}/issue`, data, { headers }
-    ).then((response: AxiosResponse<IssueApi>) => {
-      return response.data.issue; 
-    });
+export function createIssue(payload: CreateIssuePayload, notificationPayload: NotificationPayload) {
+  return axios.post(`${API_PATH}/issue`, {
+    key: payload.key, 
+    title: payload.title, 
+    description: payload.description
+  })
+  .then((response: AxiosResponse<IssueApi>) => {
+    if (notificationsEnabled()) {
+      notificationPayload.options.data_issue_url = response.data.issue.url; 
+      axios.post(NOTIFICATION_API_PATH, notificationPayload);
+    }
+    return response.data.issue;
+});
 }
 

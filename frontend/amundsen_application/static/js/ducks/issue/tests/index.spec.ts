@@ -21,27 +21,32 @@ import {
   GetIssuesRequest,
   CreateIssueRequest
 } from '../types'; 
-import { Issue } from 'interfaces';
+import { Issue, NotificationType } from 'interfaces';
 import { getIssuesWatcher, getIssuesWorker, createIssueWatcher, createIssueWorker } from '../sagas';
 import { throwError } from 'redux-saga-test-plan/providers';
 
 describe('issue ducks', () => {
-  let formData: FormData; 
   let tableKey: string; 
   let issue: Issue; 
   let issues: Issue[]; 
   let remaining: number; 
   let remainingUrl: string; 
+  let key; 
+  let title; 
+  let description; 
+  let resourceName; 
+  let resourcePath; 
+  let owners; 
+  let sender; 
   beforeAll(() => {
     tableKey = 'key'; 
-    const testData = { 
-      key: 'table', 
-      title: 'stuff', 
-      description: 'This is a test' 
-    };
-    formData = new FormData();
-    Object.keys(testData).forEach(key => formData.append(key, testData[key]));
-
+    key = 'table', 
+    title ='stuff';
+    description ='This is a test';
+    resourceName = 'resource_name'; 
+    resourcePath = 'resource_path'; 
+    owners = ['email@email']; 
+    sender = 'sender@email'; 
     issue =  {
       issue_key: 'issue_key', 
       title: 'title', 
@@ -72,10 +77,30 @@ describe('issue ducks', () => {
     });
 
     it('createIssue - returns the action to create items', () => {
-      const action = createIssue(formData);
+      const createIssuePayload = {
+        key, 
+        title, 
+        description
+      };
+      const notificationPayload = {
+        sender, 
+        recipients: owners, 
+        notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+        options: {
+          resource_name: resourceName, 
+          resource_path: resourcePath
+        }
+      }; 
+
+      const action = createIssue(createIssuePayload, notificationPayload);
       const { payload } = action;
       expect(action.type).toBe(CreateIssue.REQUEST);
-      expect(payload.data).toBe(formData);
+      expect(payload.createIssuePayload.key).toBe(key);
+      expect(payload.createIssuePayload.title).toBe(title); 
+      expect(payload.createIssuePayload.description).toBe(description); 
+      expect(payload.notificationPayload.options.resource_name).toBe(resourceName); 
+      expect(payload.notificationPayload.options.resource_path).toBe(resourcePath); 
+      expect(payload.notificationPayload.recipients).toBe(owners); 
     });
 
     it('createIssueFailure - returns the action to process failure', () => {
@@ -142,7 +167,21 @@ describe('issue ducks', () => {
     });
 
     it('should handle CreateIssue.REQUEST', () => {
-      expect(reducer(testState, createIssue(formData))).toEqual({ 
+      const createIssuePayload = {
+        key, 
+        title, 
+        description
+      };
+      const notificationPayload = {
+        sender, 
+        recipients: owners, 
+        notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+        options: {
+          resource_name: resourceName, 
+          resource_path: resourcePath
+        }
+      }; 
+      expect(reducer(testState, createIssue(createIssuePayload, notificationPayload))).toEqual({ 
         issues: [], 
         isLoading: true, 
         remainingIssuesUrl: remainingUrl,
@@ -214,7 +253,21 @@ describe('issue ducks', () => {
     describe('createIssuesWorker', () => {
       let action: CreateIssueRequest;
       beforeAll(() => {
-        action = createIssue(formData);
+        const createIssuePayload = {
+          key, 
+          title, 
+          description
+        };
+        const notificationPayload = {
+          sender, 
+          recipients: owners, 
+          notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+          options: {
+            resource_name: resourceName, 
+            resource_path: resourcePath
+          }
+        }; 
+        action = createIssue(createIssuePayload, notificationPayload);
         issues = [issue];
       });
 
