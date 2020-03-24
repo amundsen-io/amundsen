@@ -32,7 +32,7 @@ class TestTableColumnUsage(unittest.TestCase):
                      'github_username': '',
                      'team_name': '',
                      'email': 'john@example.com',
-                     'title': ''}]
+                     'role_name': ''}]
         self.assertEqual(expected, actual)
 
         rel_row = table_col_usage.next_relation()
