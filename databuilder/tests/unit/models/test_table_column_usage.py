@@ -31,7 +31,8 @@ class TestTableColumnUsage(unittest.TestCase):
                      'KEY': 'john@example.com',
                      'github_username': '',
                      'team_name': '',
-                     'email': 'john@example.com'}]
+                     'email': 'john@example.com',
+                     'title': ''}]
         self.assertEqual(expected, actual)
 
         rel_row = table_col_usage.next_relation()

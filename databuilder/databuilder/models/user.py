@@ -25,6 +25,7 @@ class User(Neo4jCsvSerializable):
     USER_NODE_SLACK_ID = 'slack_id'
     USER_NODE_IS_ACTIVE = 'is_active{}'.format(UNQUOTED_SUFFIX)  # bool value needs to be unquoted when publish to neo4j
     USER_NODE_UPDATED_AT = 'updated_at'
+    USER_NODE_TITLE = 'title'
 
     USER_MANAGER_RELATION_TYPE = 'MANAGE_BY'
     MANAGER_USER_RELATION_TYPE = 'MANAGE'
@@ -41,6 +42,7 @@ class User(Neo4jCsvSerializable):
                  slack_id='',  # type: str
                  is_active=True,  # type: bool
                  updated_at=0,  # type: int
+                 title='',  # type: str
                  **kwargs  # type: Dict
                  ):
         # type: (...) -> None
@@ -59,6 +61,7 @@ class User(Neo4jCsvSerializable):
         :param updated_at: everytime we update the node, we will push the timestamp.
                            then we will have a cron job to update the ex-employee nodes based on
                            the case if this timestamp hasn't been updated for two weeks.
+        :param title: the title of the user (e.g swe)
         :param kwargs: Any K/V attributes we want to update the
         """
         self.first_name = first_name
@@ -75,6 +78,7 @@ class User(Neo4jCsvSerializable):
         self.slack_id = slack_id
         self.is_active = is_active
         self.updated_at = updated_at
+        self.title = title
         self.attrs = None
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
@@ -129,6 +133,7 @@ class User(Neo4jCsvSerializable):
         result_node[User.USER_NODE_EMPLOYEE_TYPE] = self.employee_type if self.employee_type else ''
         result_node[User.USER_NODE_SLACK_ID] = self.slack_id if self.slack_id else ''
         result_node[User.USER_NODE_UPDATED_AT] = self.updated_at if self.updated_at else 0
+        result_node[User.USER_NODE_TITLE] = self.title if self.title else ''
 
         if self.attrs:
             for k, v in self.attrs.items():
@@ -154,14 +159,15 @@ class User(Neo4jCsvSerializable):
     def __repr__(self):
         # type: () -> str
         return 'User({!r}, {!r}, {!r}, {!r}, {!r}, ' \
-               '{!r}, {!r}, {!r}, {!r}, {!r}, {!r},)'.format(self.first_name,
-                                                             self.last_name,
-                                                             self.name,
-                                                             self.email,
-                                                             self.github_username,
-                                                             self.team_name,
-                                                             self.slack_id,
-                                                             self.manager_email,
-                                                             self.employee_type,
-                                                             self.is_active,
-                                                             self.updated_at)
+               '{!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.first_name,
+                                                                  self.last_name,
+                                                                  self.name,
+                                                                  self.email,
+                                                                  self.github_username,
+                                                                  self.team_name,
+                                                                  self.slack_id,
+                                                                  self.manager_email,
+                                                                  self.employee_type,
+                                                                  self.is_active,
+                                                                  self.updated_at,
+                                                                  self.title)
