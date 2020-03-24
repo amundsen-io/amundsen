@@ -7,9 +7,10 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 import { createIssue } from 'ducks/issue/reducer'; 
 import { CreateIssueRequest } from 'ducks/issue/types';
 import './styles.scss';
-import { REPORT_DATA_ISSUE_TEXT } from './constants'; 
+import { REPORT_DATA_ISSUE_TEXT, TABLE_OWNERS_NOTE } from './constants'; 
 import { logClick } from 'ducks/utilMethods';
 import { notificationsEnabled, issueTrackingEnabled } from 'config/config-utils';
+import { TableMetadata, CreateIssuePayload, NotificationPayload, NotificationType } from 'interfaces';
 
 export interface ComponentProps {
   tableKey: string;
@@ -17,11 +18,17 @@ export interface ComponentProps {
 }
 
 export interface DispatchFromProps {
-  createIssue: (data: FormData) => CreateIssueRequest; 
+  createIssue: (
+    createIssuePayload: CreateIssuePayload, 
+    notificationPayload: NotificationPayload
+    ) => CreateIssueRequest;
 }
 
 export interface StateFromProps {
   isLoading: boolean;
+  tableOwners: string[]; 
+  userEmail: string; 
+  tableMetadata: TableMetadata; 
 }
 
 interface ReportTableIssueState {
@@ -41,9 +48,40 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
     event.preventDefault();
     const form = document.getElementById("report-table-issue-form") as HTMLFormElement;
     const formData = new FormData(form);
-    this.props.createIssue(formData);
-    this.setState({isOpen: false}); 
+   
+    const createIssuePayload = this.getCreateIssuePayload(formData); 
+    const notificationPayload = this.getNotificationPayload(); 
+    this.props.createIssue(createIssuePayload, notificationPayload);
+    this.setState({isOpen: false }); 
   };
+
+  getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
+    const title = formData.get('title') as string;  
+    const description = formData.get('description') as string;
+
+    return {
+      title, 
+      description, 
+      key: this.props.tableKey, 
+    }
+  }
+
+  getNotificationPayload  = (): NotificationPayload => {
+    const { cluster, database, schema, name } = this.props.tableMetadata;
+    const owners = this.props.tableOwners;
+    const resourceName = `${schema}.${name}`;  
+    const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`; 
+     
+    return {
+      recipients: owners, 
+      sender: this.props.userEmail, 
+      notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+      options: {
+        resource_name: resourceName, 
+        resource_path: resourcePath, 
+      }
+    };
+  }
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -64,7 +102,6 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
     if (this.props.isLoading) {
       return <LoadingSpinner />;
     }
-
     return (
         <>
          {this.renderPipe()}
@@ -82,8 +119,6 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
               </h3>
               <button type="button" className="btn btn-close" aria-label={"close"} onClick={this.toggle} />
               <form id="report-table-issue-form" onSubmit={ this.submitForm }>
-                <input type="hidden" name="key" value={ this.props.tableKey }/>
-
                 <div className="form-group">
                   <label>Title</label>
                   <input name="title" className="form-control" required={true} maxLength={200} />
@@ -94,6 +129,9 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
                 </div>
                 <button className="btn btn-primary submit" type="submit" >Submit</button>
               </form>
+              <div className="data-owner-notification">
+                {TABLE_OWNERS_NOTE}
+              </div>
             </div>
           }
       </>
@@ -101,8 +139,14 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
   }
 }
 export const mapStateToProps = (state: GlobalState) => {
+  const ownerObj = state.tableMetadata.tableOwners.owners; 
+  const tableOwnersEmails = Object.keys(ownerObj); 
+  const userEmail = state.user.loggedInUser.email;
   return {
-    isLoading: state.issue.isLoading
+    userEmail,
+    isLoading: state.issue.isLoading, 
+    tableOwners: tableOwnersEmails, 
+    tableMetadata: state.tableMetadata.tableData
   };
 };
 

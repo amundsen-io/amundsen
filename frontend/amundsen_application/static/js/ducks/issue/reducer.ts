@@ -1,4 +1,4 @@
-import { Issue } from "interfaces";
+import { Issue, CreateIssuePayload, NotificationPayload } from "interfaces";
 import { 
   GetIssues, 
   CreateIssue, 
@@ -10,10 +10,14 @@ import {
 
 
 /* ACTIONS */
-export function createIssue(formData: FormData): CreateIssueRequest {
+export function createIssue(
+  createIssuePayload: CreateIssuePayload,
+  notificationPayload: NotificationPayload
+  ): CreateIssueRequest {
   return {
     payload: {
-      data: formData,
+      createIssuePayload, 
+      notificationPayload
     },
     type: CreateIssue.REQUEST,
     };

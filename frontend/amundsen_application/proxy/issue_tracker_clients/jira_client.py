@@ -88,7 +88,6 @@ class JiraClient(BaseIssueTrackerClient):
                              f'\n Reported By: {user_email} '
                              f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE]'),
                 reporter={'name': jira_id}))
-
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
             logging.exception(str(e))
