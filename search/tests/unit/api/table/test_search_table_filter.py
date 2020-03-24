@@ -48,3 +48,14 @@ class SearchTableFilterTest(unittest.TestCase):
 
         response = self.app.test_client().post(self.url)
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+
+    @patch('search_service.api.document.reqparse.RequestParser')
+    @patch('search_service.api.table.get_proxy_client')
+    def test_post_return_400_if_bad_query_term(self, get_proxy, RequestParser) -> None:
+        RequestParser().parse_args.return_value = dict(index=self.mock_index,
+                                                       page_index=self.mock_page_index,
+                                                       query_term='column:bad_syntax',
+                                                       search_request=self.mock_search_request)
+
+        response = self.app.test_client().post(self.url)
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
