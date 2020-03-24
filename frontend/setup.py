@@ -34,7 +34,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements = requirements_file.readlines()
 
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 
 
 setup(
