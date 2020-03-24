@@ -1,26 +1,27 @@
+{{ if .Values.neo4j.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  name: neo4j
 spec:
   selector:
     matchLabels:
-      run: {{ .Chart.Name }}
+      run: neo4j
   replicas: 1
   template:
     metadata:
       labels:
-        run: {{ .Chart.Name }}
+        run: neo4j
     spec:
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.neo4j.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.neo4j.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.neo4j.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
@@ -45,8 +46,8 @@ spec:
             - name: plugins
               mountPath: /var/lib/neo4j/plugins
       containers:
-      - name: {{ .Chart.Name }}
-        image: {{ .Chart.Name }}:{{ .Chart.AppVersion }}
+      - name: neo4j
+        image: neo4j:{{ .Values.neo4j.version }}
         ports:
         - containerPort: 7474
         - containerPort: 7687
@@ -65,10 +66,14 @@ spec:
         {{- end}}
         - name: plugins
           mountPath: /var/lib/neo4j/plugins
+        {{- with .Values.neo4j.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end}}
       volumes:
         - name: conf
           configMap:
-            name: {{ .Chart.Name }}-configmap
+            name: neo4j-configmap
         {{- if .Values.neo4j.persistence }}
         - name: data
           persistentVolumeClaim:
@@ -78,7 +83,4 @@ spec:
           hostPath:
             path: "/mnt/ephemeral/neo4j/plugins"
             type: DirectoryOrCreate
-      {{- with .Values.resources }}
-      resources:
-{{ toYaml . | indent 8 }}
-      {{- end }}
+{{ end }}

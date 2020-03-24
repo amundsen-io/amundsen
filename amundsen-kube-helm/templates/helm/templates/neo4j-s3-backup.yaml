@@ -1,10 +1,10 @@
-{{ if and .Values.neo4j.backup.enabled .Values.neo4j.backup.s3Path .Values.neo4j.persistence (eq .Values.provider "aws") }}
+{{ if and .Values.neo4j.enabled (and .Values.neo4j.backup.enabled .Values.neo4j.backup.s3Path .Values.neo4j.persistence (eq .Values.provider "aws")) }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
     name: neo4j-s3-backup
 spec:
-    schedule: {{ default "0 * * * *" (.Values.neo4j.backup.schedule | quote) }}
+    schedule: {{ .Values.neo4j.backup.schedule | quote }}
     jobTemplate:
         spec:
             template:
