@@ -160,10 +160,15 @@ class SearchTableFilterAPI(Resource):
             msg = 'The search request payload is not available in the request'
             return {'message': msg}, HTTPStatus.BAD_REQUEST
 
+        query_term = args.get('query_term')  # type: str
+        if ':' in query_term:
+            msg = 'The query term contains an invalid character'
+            return {'message': msg}, HTTPStatus.BAD_REQUEST
+
         try:
             results = self.proxy.fetch_table_search_results_with_filter(
                 search_request=search_request,
-                query_term=args.get('query_term'),
+                query_term=query_term,
                 page_index=page_index,
                 index=args['index']
             )
