@@ -3,7 +3,7 @@
 ## Bootstrap a default version of Amundsen using Docker
 The following instructions are for setting up a version of Amundsen using Docker.
 
-1. Install `docker` and  `docker-compose`.
+1. Make sure you have at least 3GB available to docker. Install `docker` and  `docker-compose`.
 2. Clone [this repo](https://github.com/lyft/amundsen) and its submodules by running:
    ```bash
    $ git clone --recursive git@github.com:lyft/amundsen.git
@@ -51,6 +51,15 @@ Atlas would be ready once you'll have the following output in the docker output 
       2. Make entry `vm.max_map_count=262144`. Save and exit.
       3. Reload settings `$ sysctl -p`
       4. Restart `docker-compose`
+      
 2. If `docker-amundsen-local.yml` stops because of `org.elasticsearch.bootstrap.StartupException: java.lang.IllegalStateException: Failed to create node environment`, then `es_amundsen` [cannot write](https://discuss.elastic.co/t/elastic-elasticsearch-docker-not-assigning-permissions-to-data-directory-on-run/65812/4) to `.local/elasticsearch`. 
    1. `chown -R 1000:1000 .local/elasticsearch`
    2. Restart `docker-compose` 
+2. If when running the sample data loader you recieve a connection error like e.g. this for Neo4j:
+```
+    Traceback (most recent call last):
+      File "/home/ubuntu/amundsen/amundsendatabuilder/venv/lib/python3.6/site-packages/neobolt/direct.py", line 831, in _connect
+        s.connect(resolved_address)
+    ConnectionRefusedError: [Errno 111] Connection refused
+```
+    Then check are all 5 amundsen related containers running with `docker ps`? Can you connect to the Neo4j UI at http://localhost:7474/browser/ and similarly the raw ES API at http://localhost:9200?
