@@ -1,4 +1,4 @@
-{{- if .Values.neo4j.persistence }}
+{{- if and .Values.neo4j.enabled .Values.neo4j.persistence }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

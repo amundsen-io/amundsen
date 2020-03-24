@@ -1,7 +1,8 @@
+{{ if .Values.neo4j.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-configmap
+  name: neo4j-configmap
   labels:
     app: "neo4j"
 data:
@@ -23,11 +24,12 @@ data:
     dbms.logs.query.enabled=true
     dbms.logs.query.rotation.keep_number=7
     dbms.logs.query.rotation.size=20m
-    dbms.memory.heap.initial_size={{ .Values.config.dbms.heap_initial_size }}
-    dbms.memory.heap.max_size={{ .Values.config.dbms.heap_max_size }}
-    dbms.memory.pagecache.size={{ .Values.config.dbms.pagecache_size }}
+    dbms.memory.heap.initial_size={{ .Values.neo4j.config.dbms.heap_initial_size }}
+    dbms.memory.heap.max_size={{ .Values.neo4j.config.dbms.heap_max_size }}
+    dbms.memory.pagecache.size={{ .Values.neo4j.config.dbms.pagecache_size }}
     dbms.security.allow_csv_import_from_file_urls=true
     dbms.security.procedures.unrestricted=algo.*,apoc.*
     dbms.windows_service_name=neo4j
     apoc.export.file.enabled=true
     apoc.import.file.enabled=true
+{{ end }}

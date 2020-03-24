@@ -1,12 +1,13 @@
+{{ if .Values.neo4j.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}
+  name: neo4j
   labels:
-    run: {{ .Chart.Name }}
+    run: neo4j
   annotations:
   {{- if (eq .Values.provider "aws") }}
-    external-dns.alpha.kubernetes.io/hostname: amundsen-{{ .Chart.Name }}-{{ .Values.environment }}.{{ .Values.dnsZone }}
+    external-dns.alpha.kubernetes.io/hostname: amundsen-neo4j-{{ .Values.environment }}.{{ .Values.dnsZone }}
     service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
     service.beta.kubernetes.io/aws-load-balancer-type: nlb 
   {{- end }}
@@ -15,20 +16,21 @@ spec:
   externalTrafficPolicy: Local
   ports:
     - port: 7473
-      name: {{ .Chart.Name }}-{{ .Values.environment }}-https
+      name: neo4j-{{ .Values.environment }}-https
       targetPort: 7473
       nodePort: 30473
     - port: 7474
-      name: {{ .Chart.Name }}-{{ .Values.environment }}-http
+      name: neo4j-{{ .Values.environment }}-http
       targetPort: 7474
       nodePort: 30474
     - port: 7687
-      name: {{ .Chart.Name }}-{{ .Values.environment }}-bolt
+      name: neo4j-{{ .Values.environment }}-bolt
       targetPort: 7687
       nodePort: 30687
     - port: 1337
-      name: {{ .Chart.Name }}-{{ .Values.environment }}-shell
+      name: neo4j-{{ .Values.environment }}-shell
       targetPort: 1337
       nodePort: 31337
   selector:
-    run: {{ .Chart.Name }}
+    run: neo4j
+{{ end }}

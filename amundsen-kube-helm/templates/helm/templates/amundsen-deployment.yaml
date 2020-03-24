@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+  name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
 spec:
   selector:
     matchLabels:
-      run: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+      run: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
   replicas: {{ default 1 .Values.search.replicas }}
   template:
     metadata:
       labels:
-        run: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
+        run: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
     spec:
       {{- with default .Values.nodeSelector .Values.search.nodeSelector }}
       nodeSelector:
@@ -26,13 +26,13 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}-{{ .Values.searchServiceName }}
-        image: {{- if .Values.searchServiceImage }} {{.Values.searchServiceImage}}{{- else }} {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.searchServiceName }}:{{ .Values.searchImageVersion }}{{- end }}
+      - name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.search.serviceName }}:{{ .Values.search.imageVersion }}
         ports:
         - containerPort: 5000  
         env:
         - name: PROXY_ENDPOINT
-          value: elasticsearch  
+          value: {{ if .Values.search.elasticsearchEndpoint }}{{ .Values.search.elasticsearchEndpoint }}{{ else }}{{ .Release.Namespace }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
         {{- with .Values.search.resources }}
         resources:
 {{ toYaml . | indent 10 }}
@@ -41,16 +41,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+  name: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
 spec:
   selector:
     matchLabels:
-      run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+      run: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
   replicas: {{ default 1 .Values.metadataReplicas }}
   template:
     metadata:
       labels:
-        run: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+        run: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
     spec:
       {{- with default .Values.nodeSelector .Values.metadata.nodeSelector }}
       nodeSelector:
@@ -65,24 +65,24 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       volumes:
-      {{- if .Values.oidcEnabled }}
+      {{- if .Values.frontEnd.oidcEnabled }}
         - name: oidc-config
           secret:
             secretName: oidc-config
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}-{{ .Values.metadataServiceName }}
+      - name: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
         {{- with .Values.metadataServiceImage }}
         image: {{ . }}
         {{- else }}
-        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadataServiceName }}{{ if .Values.oidcEnabled }}-oidc{{ end }}:{{ .Values.metadataImageVersion }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.metadata.serviceName }}{{ if .Values.frontEnd.oidcEnabled }}-oidc{{ end }}:{{ .Values.metadata.imageVersion }}
         {{- end }}
         ports:
         - containerPort: 5000
         env:
         - name: PROXY_HOST
           value: bolt://neo4j
-        {{- if .Values.oidcEnabled }}
+        {{- if .Values.frontEnd.oidcEnabled }}
         - name: FLASK_OIDC_CLIENT_SECRETS
           value: /etc/client_secrets.json
         - name: FLASK_OIDC_SECRET_KEY
@@ -92,7 +92,7 @@ spec:
               key: OIDC_CLIENT_SECRET
         {{- end }}
         volumeMounts:
-        {{- if .Values.oidcEnabled }}
+        {{- if .Values.frontEnd.oidcEnabled }}
           - name: oidc-config
             mountPath: /etc/client_secrets.json
             subPath: client_secrets.json
@@ -105,16 +105,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+  name: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}
 spec:
   selector:
     matchLabels:
-      run: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+      run: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}
   replicas: {{ default 1 .Values.frontEnd.replicas }}
   template:
     metadata:
       labels:
-        run: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
+        run: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}
     spec:
       {{- with default .Values.nodeSelector .Values.frontEnd.nodeSelector }}
       nodeSelector:
@@ -129,33 +129,33 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       volumes:
-      {{- if .Values.oidcEnabled }}
+      {{- if .Values.frontEnd.oidcEnabled }}
         - name: oidc-config
           secret:
             secretName: oidc-config
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}-{{ .Values.frontEndServiceName }}
-        {{- with .Values.frontEndServiceImage }}
+      - name: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}
+        {{- with .Values.frontEnd.serviceImage }}
         image: {{ . }}
         {{- else }}
-        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEndServiceName }}{{ if .Values.oidcEnabled }}-oidc{{ end }}:{{ .Values.frontEndImageVersion }}
+        image: {{ .Values.dockerhubImagePath }}/{{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}{{ if .Values.frontEnd.oidcEnabled }}-oidc{{ end }}:{{ .Values.frontEnd.imageVersion }}
         {{- end }}
         ports:
           - containerPort: 5000
         env:
           # FRONTEND_BASE is used by notifications util to provide links to amundsen pages in emails. If its not set, it will default to localhost.
-          {{ if .Values.FRONTEND_BASE }}
+          {{ if .Values.frontEnd.FRONTEND_BASE }}
           - name: FRONTEND_BASE
-            value: http://{{ .Values.FRONTEND_BASE }}
+            value: http://{{ .Values.frontEnd.FRONTEND_BASE }}
           {{ end }}
           - name: SEARCHSERVICE_BASE
-            value: http://{{ .Chart.Name }}-{{ .Values.searchServiceName }}:5001
+            value: http://{{ .Chart.Name }}-{{ .Values.search.serviceName }}:5001
           - name: METADATASERVICE_BASE
-            value: http://{{ .Chart.Name }}-{{ .Values.metadataServiceName }}:5002
+            value: http://{{ .Chart.Name }}-{{ .Values.metadata.serviceName }}:5002
           - name: LONG_RANDOM_STRING
             value: {{ quote .Values.LONG_RANDOM_STRING }}
-        {{- if .Values.oidcEnabled }}
+        {{- if .Values.frontEnd.oidcEnabled }}
           - name: FLASK_OIDC_CLIENT_SECRETS
             value: /etc/client_secrets.json
           - name: FLASK_OIDC_SECRET_KEY
@@ -165,7 +165,7 @@ spec:
                 key: OIDC_CLIENT_SECRET
         {{- end }}
         volumeMounts:
-        {{- if .Values.oidcEnabled }}
+        {{- if .Values.frontEnd.oidcEnabled }}
           - name: oidc-config
             mountPath: /etc/client_secrets.json
             subPath: client_secrets.json
