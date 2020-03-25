@@ -20,6 +20,7 @@ class User:
     slack_id: Optional[str] = None
     employee_type: Optional[str] = None
     manager_fullname: Optional[str] = None
+    role_name: Optional[str] = None
 
 
 class UserSchema(AttrsSchema):
