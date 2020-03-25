@@ -4,9 +4,11 @@ from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, RELATION_START_KEY, RELATION_END_KEY,
     RELATION_START_LABEL, RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
 )
+from databuilder.models.usage.usage_constants import (
+    READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE, READ_RELATION_COUNT_PROPERTY
+)
 from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.user import User
-from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 
 class ColumnUsageModel(Neo4jCsvSerializable):
@@ -18,11 +20,11 @@ class ColumnUsageModel(Neo4jCsvSerializable):
     TABLE_NODE_LABEL = TableMetadata.TABLE_NODE_LABEL
     TABLE_NODE_KEY_FORMAT = TableMetadata.TABLE_KEY_FORMAT
 
-    USER_TABLE_RELATION_TYPE = 'READ'
-    TABLE_USER_RELATION_TYPE = 'READ_BY'
+    USER_TABLE_RELATION_TYPE = READ_RELATION_TYPE
+    TABLE_USER_RELATION_TYPE = READ_REVERSE_RELATION_TYPE
 
     # Property key for relationship read, readby relationship
-    READ_RELATION_COUNT = 'read_count{}'.format(UNQUOTED_SUFFIX)
+    READ_RELATION_COUNT = READ_RELATION_COUNT_PROPERTY
 
     def __init__(self,
                  database,     # type: str
