@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup, find_packages
 
-__version__ = '2.3.0'
+__version__ = '2.3.1'
 
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
@@ -24,5 +24,9 @@ setup(
     extras_require={
         'oidc': ['flaskoidc==0.0.2']
     },
-    python_requires=">=3.6"
+    python_requires=">=3.6",
+    classifiers=[
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
 )

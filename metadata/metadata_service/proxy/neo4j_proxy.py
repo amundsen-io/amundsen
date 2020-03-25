@@ -818,6 +818,7 @@ class Neo4jProxy(BaseProxy):
                           team_name=record.get('team_name'),
                           slack_id=record.get('slack_id'),
                           employee_type=record.get('employee_type'),
+                          role_name=record.get('role_name'),
                           manager_fullname=manager_name)
 
     @staticmethod
