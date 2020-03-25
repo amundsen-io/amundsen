@@ -27,8 +27,7 @@ describe('CheckBoxFilter', () => {
       checkedValues: {
         'hive': true,
       },
-      clearFilterByCategory: jest.fn(),
-      updateFilterByCategory: jest.fn(),
+      updateFilter: jest.fn(),
       ...propOverrides
     };
     const wrapper = shallow<CheckBoxFilter>(<CheckBoxFilter {...props} />);
@@ -74,32 +73,30 @@ describe('CheckBoxFilter', () => {
     let wrapper;
     let mockEvent;
 
-    let clearCategorySpy;
-    let updateCategorySpy;
+    let updateFilterSpy;
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      clearCategorySpy = jest.spyOn(props, 'clearFilterByCategory');
-      updateCategorySpy = jest.spyOn(props, 'updateFilterByCategory');
+      updateFilterSpy = jest.spyOn(props, 'updateFilter');
     })
 
-    it('calls props.clearFilterByCategory if no items will be checked', () => {
-      clearCategorySpy.mockClear();
+    it('calls props.updateFilter if no items will be checked', () => {
+      updateFilterSpy.mockClear();
       mockEvent = { target: { name: mockCategoryId, value: 'hive', checked: false }};
       wrapper.instance().onCheckboxChange(mockEvent);
-      expect(clearCategorySpy).toHaveBeenCalledWith(mockCategoryId)
+      expect(updateFilterSpy).toHaveBeenCalledWith(mockCategoryId, undefined)
     });
 
-    it('calls props.updateFilterByCategory with expected parameters', () => {
-      updateCategorySpy.mockClear();
+    it('calls props.updateFilter with expected parameters', () => {
+      updateFilterSpy.mockClear();
       mockEvent = { target: { name: mockCategoryId, value: 'bigquery', checked: true}};
       const expectedCheckedValues = {
         ...props.checkedValues,
         'bigquery': true
       }
       wrapper.instance().onCheckboxChange(mockEvent);
-      expect(updateCategorySpy).toHaveBeenCalledWith(mockCategoryId, expectedCheckedValues)
+      expect(updateFilterSpy).toHaveBeenCalledWith(mockCategoryId, expectedCheckedValues)
     });
   });
 
@@ -133,7 +130,7 @@ describe('CheckBoxFilter', () => {
       ...globalState,
       search: {
         ...globalState.search,
-        selectedTab: ResourceType.table,
+        resource: ResourceType.table,
         filters: {
           [ResourceType.table]: {
             [mockCategoryId]: mockFilters
@@ -146,7 +143,7 @@ describe('CheckBoxFilter', () => {
       ...globalState,
       search: {
         ...globalState.search,
-        selectedTab: ResourceType.user,
+        resource: ResourceType.user,
         filters: {
           [ResourceType.table]: {}
         }
@@ -183,12 +180,8 @@ describe('CheckBoxFilter', () => {
       result = mapDispatchToProps(dispatch);
     });
 
-    it('sets clearFilterByCategory on the props', () => {
-      expect(result.clearFilterByCategory).toBeInstanceOf(Function);
-    });
-
-    it('sets updateFilterByCategory on the props', () => {
-      expect(result.updateFilterByCategory).toBeInstanceOf(Function);
+    it('sets updateFilter on the props', () => {
+      expect(result.updateFilter).toBeInstanceOf(Function);
     });
   });
 });

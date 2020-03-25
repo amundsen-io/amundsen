@@ -2,13 +2,12 @@ import { ResourceType, SearchType} from 'interfaces';
 
 import { Search as UrlSearch } from 'history';
 
-import filterReducer, { initialFilterState, UpdateSearchFilter, FilterReducerState } from './filters/reducer';
+import filterReducer, { initialFilterState, FilterReducerState } from './filters/reducer';
 
 import {
   DashboardSearchResults,
   SearchAll,
   SearchAllRequest,
-  SearchAllReset,
   SearchAllResponse,
   SearchAllResponsePayload,
   SearchResource,
@@ -24,18 +23,24 @@ import {
   InlineSearchUpdate,
   TableSearchResults,
   UserSearchResults,
-  ClearSearch,
-  ClearSearchRequest,
   SubmitSearchRequest,
   SubmitSearch,
-  SetResourceRequest,
-  SetResource,
-  SetPageIndexRequest, SetPageIndex, LoadPreviousSearchRequest, LoadPreviousSearch, UrlDidUpdateRequest, UrlDidUpdate,
+  SubmitSearchResourcePayload,
+  SubmitSearchResourceRequest,
+  SubmitSearchResource,
+  LoadPreviousSearchRequest,
+  LoadPreviousSearch,
+  UpdateSearchStateRequest,
+  UpdateSearchStateReset,
+  UpdateSearchStatePayload,
+  UpdateSearchState,
+  UrlDidUpdateRequest,
+  UrlDidUpdate
 } from './types';
 
 export interface SearchReducerState {
   search_term: string;
-  selectedTab: ResourceType;
+  resource: ResourceType;
   isLoading: boolean;
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
@@ -108,6 +113,7 @@ export function getInlineResultsSuccess(inlineResults: InlineSearchResponsePaylo
 export function getInlineResultsFailure(): InlineSearchResponse {
   return { type: InlineSearch.FAILURE };
 };
+
 export function selectInlineResult(resourceType: ResourceType, searchTerm: string, updateUrl: boolean = false): InlineSearchSelect {
   return {
     payload: {
@@ -118,6 +124,7 @@ export function selectInlineResult(resourceType: ResourceType, searchTerm: strin
     type: InlineSearch.SELECT
   };
 };
+
 export function updateFromInlineResult(data: InlineSearchUpdatePayload): InlineSearchUpdate {
   return {
     payload: data,
@@ -125,36 +132,33 @@ export function updateFromInlineResult(data: InlineSearchUpdatePayload): InlineS
   };
 };
 
-export function searchReset(): SearchAllReset {
-  return {
-    type: SearchAll.RESET,
-  };
-};
-
-export function submitSearch(searchTerm: string, useFilters: boolean = false): SubmitSearchRequest {
+export function submitSearch({ searchTerm, useFilters } : { searchTerm: string, useFilters: boolean }): SubmitSearchRequest {
   return {
     payload: { searchTerm, useFilters },
     type: SubmitSearch.REQUEST,
   };
 };
 
-export function clearSearch(): ClearSearchRequest {
+export function submitSearchResource({ resourceFilters, pageIndex, searchTerm, resource, searchType, updateUrl } : SubmitSearchResourcePayload): SubmitSearchResourceRequest {
   return {
-    type: ClearSearch.REQUEST,
+    payload: { resourceFilters, pageIndex, searchTerm, resource, searchType, updateUrl },
+    type: SubmitSearchResource.REQUEST,
   };
 };
 
-export function setResource(resource: ResourceType, updateUrl: boolean = true): SetResourceRequest {
+export function updateSearchState({ filters, resource, updateUrl }: UpdateSearchStatePayload): UpdateSearchStateRequest {
   return {
-    payload: { resource, updateUrl },
-    type: SetResource.REQUEST,
+    payload: {
+      filters,
+      resource,
+      updateUrl,
+    },
+    type: UpdateSearchState.REQUEST,
   };
 };
-
-export function setPageIndex(pageIndex: number, updateUrl: boolean = true): SetPageIndexRequest {
+export function resetSearchState(): UpdateSearchStateReset {
   return {
-    payload: { pageIndex, updateUrl },
-    type: SetPageIndex.REQUEST,
+    type: UpdateSearchState.RESET,
   };
 };
 
@@ -164,13 +168,12 @@ export function loadPreviousSearch(): LoadPreviousSearchRequest {
   };
 };
 
-export function urlDidUpdate(urlSearch: UrlSearch): UrlDidUpdateRequest{
+export function urlDidUpdate(urlSearch: UrlSearch): UrlDidUpdateRequest {
   return {
     payload: { urlSearch },
     type: UrlDidUpdate.REQUEST,
   };
 };
-
 
 /* REDUCER */
 export const initialInlineResultsState = {
@@ -189,7 +192,7 @@ export const initialInlineResultsState = {
 export const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
-  selectedTab: ResourceType.table,
+  resource: ResourceType.table,
   dashboards: {
     page_index: 0,
     results: [],
@@ -211,28 +214,29 @@ export const initialState: SearchReducerState = {
 
 export default function reducer(state: SearchReducerState = initialState, action): SearchReducerState {
   switch (action.type) {
-    case UpdateSearchFilter.SET_BY_RESOURCE:
-      return {
-        ...state,
-        search_term: action.payload.term,
-        filters: filterReducer(state.filters, action, state.selectedTab),
-      }
-    case UpdateSearchFilter.CLEAR_ALL:
-      return {
-        ...state,
-        filters: filterReducer(state.filters, action, state.selectedTab),
-      }
-    case UpdateSearchFilter.CLEAR_CATEGORY:
-    case UpdateSearchFilter.UPDATE_CATEGORY:
+    case SubmitSearch.REQUEST:
       return {
         ...state,
         isLoading: true,
-        filters: filterReducer(state.filters, action, state.selectedTab),
+        search_term: action.payload.searchTerm,
       }
-    case SearchAll.RESET:
-      return initialState;
+    case SubmitSearchResource.REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+        filters: filterReducer(state.filters, action),
+        search_term: action.payload.searchTerm || state.search_term,
+      }
+    case UpdateSearchState.REQUEST:
+      const payload = action.payload;
+      return {
+        ...state,
+        filters: payload.filters || state.filters,
+        resource: payload.resource || state.resource,
+      }
+    case UpdateSearchState.RESET:
+        return initialState;
     case SearchAll.REQUEST:
-      // updates search term to reflect action
       return {
         ...state,
         inlineResults: {
@@ -273,16 +277,11 @@ export default function reducer(state: SearchReducerState = initialState, action
         ...initialState,
         search_term: state.search_term,
       };
-    case SetResource.REQUEST:
-      return {
-        ...state,
-        selectedTab: (<SetResourceRequest>action).payload.resource
-      };
     case InlineSearch.UPDATE:
-      const { searchTerm, selectedTab, tables, users } = (<InlineSearchUpdate>action).payload;
+      const { searchTerm, resource, tables, users } = (<InlineSearchUpdate>action).payload;
       return {
         ...state,
-        selectedTab,
+        resource,
         tables,
         users,
         search_term: searchTerm,

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { clearFilterByCategory, ClearFilterRequest } from 'ducks/search/filters/reducer';
+import { updateFilterByCategory, UpdateFilterRequest } from 'ducks/search/filters/reducer';
 
 import { CLEAR_BTN_TEXT } from '../constants';
 
@@ -28,7 +28,7 @@ export interface StateFromProps {
 };
 
 export interface DispatchFromProps {
-  clearFilterByCategory: (categoryId: string) => ClearFilterRequest;
+  clearFilter: (categoryId: string) => UpdateFilterRequest;
 };
 
 export type FilterSectionProps = OwnProps & DispatchFromProps & StateFromProps;
@@ -39,7 +39,7 @@ export class FilterSection extends React.Component<FilterSectionProps> {
   }
 
   onClearFilter = () => {
-    this.props.clearFilterByCategory(this.props.categoryId);
+    this.props.clearFilter(this.props.categoryId);
   }
 
   renderFilterComponent = () => {
@@ -93,7 +93,7 @@ export class FilterSection extends React.Component<FilterSectionProps> {
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterState = state.search.filters;
-  const filterValue = filterState[state.search.selectedTab] ? filterState[state.search.selectedTab][ownProps.categoryId] : null;
+  const filterValue = filterState[state.search.resource] ? filterState[state.search.resource][ownProps.categoryId] : null;
   let hasValue = false;
   if (filterValue && ownProps.type === FilterType.CHECKBOX_SELECT) {
     Object.keys(filterValue).forEach(key => {
@@ -110,7 +110,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
 
 export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    clearFilterByCategory,
+    clearFilter: (categoryId: string) => updateFilterByCategory({ categoryId, value: undefined }),
   }, dispatch);
 };
 

@@ -156,7 +156,7 @@ describe('mapStateToProps', () => {
     ...globalState,
     search: {
       ...globalState.search,
-      selectedTab: ResourceType.table,
+      resource: ResourceType.table,
       filters: {
         [ResourceType.table]: {
           [mockSchemaId]: mockSchemaValue,
@@ -170,10 +170,10 @@ describe('mapStateToProps', () => {
   let getFilterConfigByResourceSpy;
   let result;
 
-  it('calls getFilterConfigByResource with selectedTab', () => {
+  it('calls getFilterConfigByResource with resource', () => {
     getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(MOCK_CATEGORY_CONFIG);
     mapStateToProps(mockStateWithFilters);
-    expect(getFilterConfigByResourceSpy).toHaveBeenCalledWith(mockStateWithFilters.search.selectedTab);
+    expect(getFilterConfigByResourceSpy).toHaveBeenCalledWith(mockStateWithFilters.search.resource);
   });
 
   it('sets expected filterSections on the result', () => {

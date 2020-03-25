@@ -6,7 +6,6 @@ import { InputFilter, InputFilterProps, mapDispatchToProps, mapStateToProps } fr
 import { APPLY_BTN_TEXT } from '../../constants';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { clearFilterByCategory, updateFilterByCategory } from 'ducks/search/filters/reducer';
 
 import globalState from 'fixtures/globalState';
 
@@ -19,8 +18,7 @@ describe('InputFilter', () => {
     const props: InputFilterProps = {
       categoryId: 'schema',
       value: 'schema_name',
-      clearFilterByCategory: jest.fn(),
-      updateFilterByCategory: jest.fn(),
+      updateFilter: jest.fn(),
       ...propOverrides
     };
     const wrapper = shallow<InputFilter>(<InputFilter {...props} />);
@@ -78,29 +76,27 @@ describe('InputFilter', () => {
     let props;
     let wrapper;
 
-    let clearCategorySpy;
-    let updateCategorySpy;
+    let updateFilterSpy;
     beforeAll(() => {
        const setupResult = setup();
        props = setupResult.props;
        wrapper = setupResult.wrapper;
-       clearCategorySpy = jest.spyOn(props, 'clearFilterByCategory');
-       updateCategorySpy = jest.spyOn(props, 'updateFilterByCategory');
+       updateFilterSpy = jest.spyOn(props, 'updateFilter');
     });
 
-    it('calls props.clearFilterByCategory if state.value is falsy', () => {
-      clearCategorySpy.mockClear();
+    it('calls props.updateFilter if state.value is falsy', () => {
+      updateFilterSpy.mockClear();
       wrapper.setState({ value: '' });
       wrapper.instance().onApplyChanges({ preventDefault: jest.fn() });
-      expect(clearCategorySpy).toHaveBeenCalledWith(props.categoryId);
+      expect(updateFilterSpy).toHaveBeenCalledWith(props.categoryId, undefined);
     });
 
-    it('calls props.updateFilterByCategory if state.value has a truthy value', () => {
-      updateCategorySpy.mockClear();
+    it('calls props.updateFilter if state.value has a truthy value', () => {
+      updateFilterSpy.mockClear();
       const mockValue = 'hello';
       wrapper.setState({ value: mockValue });
       wrapper.instance().onApplyChanges({ preventDefault: jest.fn() });
-      expect(updateCategorySpy).toHaveBeenCalledWith(props.categoryId, mockValue)
+      expect(updateFilterSpy).toHaveBeenCalledWith(props.categoryId, mockValue);
     });
   });
 
@@ -162,7 +158,7 @@ describe('InputFilter', () => {
       ...globalState,
       search: {
         ...globalState.search,
-        selectedTab: ResourceType.table,
+        resource: ResourceType.table,
         filters: {
           [ResourceType.table]: {
             [mockCategoryId]: mockFilters
@@ -175,7 +171,7 @@ describe('InputFilter', () => {
       ...globalState,
       search: {
         ...globalState.search,
-        selectedTab: ResourceType.user,
+        resource: ResourceType.user,
         filters: {
           [ResourceType.table]: {}
         }
@@ -212,12 +208,8 @@ describe('InputFilter', () => {
       result = mapDispatchToProps(dispatch);
     });
 
-    it('sets clearFilterByCategory on the props', () => {
-      expect(result.clearFilterByCategory).toBeInstanceOf(Function);
-    });
-
-    it('sets updateFilterByCategory on the props', () => {
-      expect(result.updateFilterByCategory).toBeInstanceOf(Function);
+    it('sets updateFilter on the props', () => {
+      expect(result.updateFilter).toBeInstanceOf(Function);
     });
   });
 });

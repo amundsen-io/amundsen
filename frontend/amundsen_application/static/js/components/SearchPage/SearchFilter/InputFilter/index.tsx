@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { clearFilterByCategory, updateFilterByCategory, ClearFilterRequest, UpdateFilterRequest } from 'ducks/search/filters/reducer';
+import { updateFilterByCategory, UpdateFilterRequest } from 'ducks/search/filters/reducer';
 
 import { APPLY_BTN_TEXT } from '../constants';
 
@@ -17,8 +17,7 @@ interface StateFromProps {
 }
 
 interface DispatchFromProps {
-  clearFilterByCategory: (categoryId: string) => ClearFilterRequest;
-  updateFilterByCategory: (categoryId: string, value: string) => UpdateFilterRequest;
+  updateFilter: (categoryId: string, value: string | undefined) => UpdateFilterRequest;
 }
 
 export type InputFilterProps = StateFromProps & DispatchFromProps & OwnProps;
@@ -46,10 +45,10 @@ export class InputFilter extends React.Component<InputFilterProps, InputFilterSt
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if(!!this.state.value) {
-      this.props.updateFilterByCategory(this.props.categoryId, this.state.value);
+      this.props.updateFilter(this.props.categoryId, this.state.value);
     }
     else {
-      this.props.clearFilterByCategory(this.props.categoryId);
+      this.props.updateFilter(this.props.categoryId, undefined);
     }
   };
 
@@ -82,7 +81,7 @@ export class InputFilter extends React.Component<InputFilterProps, InputFilterSt
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterState = state.search.filters;
-  const value = filterState[state.search.selectedTab] ? filterState[state.search.selectedTab][ownProps.categoryId] : '';
+  const value = filterState[state.search.resource] ? filterState[state.search.resource][ownProps.categoryId] : '';
   return {
     value: value || '',
   }
@@ -90,8 +89,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
 
 export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    clearFilterByCategory,
-    updateFilterByCategory,
+    updateFilter: (categoryId: string, value: string | undefined) => updateFilterByCategory({ categoryId, value }),
   }, dispatch);
 };
 

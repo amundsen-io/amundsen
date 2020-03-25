@@ -5,8 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { clearSearch, submitSearch, getInlineResultsDebounce, selectInlineResult } from 'ducks/search/reducer';
-import { ClearSearchRequest, SubmitSearchRequest, InlineSearchRequest, InlineSearchSelect } from 'ducks/search/types';
+import { submitSearch, getInlineResultsDebounce, selectInlineResult } from 'ducks/search/reducer';
+import { SubmitSearchRequest, InlineSearchRequest, InlineSearchSelect } from 'ducks/search/types';
 
 import { ResourceType } from 'interfaces';
 
@@ -25,7 +25,7 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  clearSearch?: () => ClearSearchRequest;
+  clearSearch?: () => SubmitSearchRequest;
   submitSearch: (searchTerm: string) => SubmitSearchRequest;
   onInputChange: (term: string) => InlineSearchRequest;
   onSelectInlineResult: (resourceType: ResourceType, searchTerm: string, updateUrl: boolean) => InlineSearchSelect;
@@ -190,8 +190,8 @@ export const mapDispatchToProps = (dispatch: any, ownProps) => {
   const updateStateOnClear = ownProps.history.location.pathname === '/search';
 
   return bindActionCreators({
-    clearSearch: updateStateOnClear ? clearSearch : null,
-    submitSearch: (searchTerm: string) => { return submitSearch(searchTerm, useFilters) },
+    clearSearch: updateStateOnClear ? () => submitSearch({ useFilters, searchTerm: '' }) : null,
+    submitSearch: (searchTerm: string) => submitSearch({ searchTerm, useFilters }),
     onInputChange: getInlineResultsDebounce,
     onSelectInlineResult: selectInlineResult
   }, dispatch);

@@ -15,7 +15,7 @@ import { getMockRouterProps } from 'fixtures/mockRouter';
 describe('HomePage', () => {
   const setup = (propOverrides?: Partial<HomePageProps>) => {
     const mockLocation = {
-      search: '/search?searchTerm=testName&selectedTab=table&pageIndex=1',
+      search: '/search?searchTerm=testName&resource=table&pageIndex=1',
     };
     const routerProps = getMockRouterProps<any>(null, mockLocation);
     const props: HomePageProps = {
