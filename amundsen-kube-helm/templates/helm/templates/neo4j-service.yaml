@@ -18,19 +18,15 @@ spec:
     - port: 7473
       name: neo4j-{{ .Values.environment }}-https
       targetPort: 7473
-      nodePort: 30473
     - port: 7474
       name: neo4j-{{ .Values.environment }}-http
       targetPort: 7474
-      nodePort: 30474
     - port: 7687
       name: neo4j-{{ .Values.environment }}-bolt
       targetPort: 7687
-      nodePort: 30687
     - port: 1337
       name: neo4j-{{ .Values.environment }}-shell
       targetPort: 1337
-      nodePort: 31337
   selector:
     run: neo4j
 {{ end }}
