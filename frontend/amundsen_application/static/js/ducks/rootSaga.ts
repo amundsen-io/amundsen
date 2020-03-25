@@ -23,20 +23,20 @@ import { createIssueWatcher, getIssuesWatcher } from './issue/sagas';
 import { getPopularTablesWatcher } from './popularTables/sagas';
 // Search
 import {
-  clearSearchWatcher,
-  filterWatcher,
-  filterWatcher2,
   inlineSearchWatcher,
   inlineSearchWatcherDebounce,
   loadPreviousSearchWatcher,
   searchAllWatcher,
   searchResourceWatcher,
-  setPageIndexWatcher,
-  setResourceWatcher,
   selectInlineResultsWatcher,
   submitSearchWatcher,
+  submitSearchResourceWatcher,
+  updateSearchStateWatcher,
   urlDidUpdateWatcher
 } from './search/sagas';
+import {
+  filterWatcher,
+} from './search/filters/sagas';
 
 // TableDetail
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
@@ -70,22 +70,20 @@ export default function* rootSaga() {
     submitNotificationWatcher(),
     // FeedbackForm
     submitFeedbackWatcher(),
-    // Issues 
-    getIssuesWatcher(), 
-    createIssueWatcher(), 
+    // Issues
+    getIssuesWatcher(),
+    createIssueWatcher(),
     // Search
-    clearSearchWatcher(),
     filterWatcher(),
-    filterWatcher2(),
     inlineSearchWatcher(),
     inlineSearchWatcherDebounce(),
     loadPreviousSearchWatcher(),
     searchAllWatcher(),
     searchResourceWatcher(),
     selectInlineResultsWatcher(),
-    setPageIndexWatcher(),
-    setResourceWatcher(),
     submitSearchWatcher(),
+    submitSearchResourceWatcher(),
+    updateSearchStateWatcher(),
     urlDidUpdateWatcher(),
     // PopularTables
     getPopularTablesWatcher(),

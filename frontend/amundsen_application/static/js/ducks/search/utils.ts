@@ -13,7 +13,7 @@ can be the combination of multiple responses.
 */
 
 export const getPageIndex = (state: Partial<SearchReducerState>, resource?: ResourceType) => {
-  resource = resource || state.selectedTab;
+  resource = resource || state.resource;
   switch(resource) {
     case ResourceType.table:
       return state.tables.page_index;

@@ -66,7 +66,7 @@ const globalState: GlobalState = {
   ],
   search: {
     search_term: 'testName',
-    selectedTab: ResourceType.table,
+    resource: ResourceType.table,
     isLoading: false,
     dashboards: {
       page_index: 0,

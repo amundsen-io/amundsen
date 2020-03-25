@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { clearFilterByCategory, updateFilterByCategory, ClearFilterRequest, UpdateFilterRequest, FilterOptions } from 'ducks/search/filters/reducer';
+import { updateFilterByCategory, UpdateFilterRequest, FilterOptions } from 'ducks/search/filters/reducer';
 
 import CheckBoxItem from 'components/common/Inputs/CheckBoxItem';
 
@@ -22,8 +22,7 @@ interface StateFromProps {
 }
 
 interface DispatchFromProps {
-  clearFilterByCategory: (categoryId: string) => ClearFilterRequest;
-  updateFilterByCategory: (categoryId: string, value: FilterOptions) => UpdateFilterRequest;
+  updateFilter: (categoryId: string, checkedValues: FilterOptions | undefined) => UpdateFilterRequest;
 }
 
 export type CheckBoxFilterProps = OwnProps & DispatchFromProps & StateFromProps;
@@ -64,10 +63,10 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
     }
 
     if (Object.keys(checkedValues).length === 0) {
-      this.props.clearFilterByCategory(categoryId);
+      this.props.updateFilter(categoryId, undefined);
     }
     else {
-      this.props.updateFilterByCategory(categoryId, checkedValues);
+      this.props.updateFilter(categoryId, checkedValues);
     }
   };
 
@@ -83,7 +82,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterState = state.search.filters;
-  let filterValues = filterState[state.search.selectedTab] ? filterState[state.search.selectedTab][ownProps.categoryId] : {};
+  let filterValues = filterState[state.search.resource] ? filterState[state.search.resource][ownProps.categoryId] : {};
   if (!filterValues) {
     filterValues = {};
   }
@@ -95,8 +94,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
 
 export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    clearFilterByCategory,
-    updateFilterByCategory,
+    updateFilter: (categoryId: string, checkedValues: FilterOptions | undefined) => updateFilterByCategory({ categoryId, value: checkedValues }),
   }, dispatch);
 };
 

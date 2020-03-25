@@ -2,7 +2,6 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { clearFilterByCategory } from 'ducks/search/filters/reducer';
 
 import { FilterSection, FilterSectionProps, mapDispatchToProps, mapStateToProps } from '../';
 
@@ -19,7 +18,7 @@ describe('FilterSection', () => {
       categoryId: 'testId',
       hasValue: true,
       title: 'Category',
-      clearFilterByCategory: jest.fn(),
+      clearFilter: jest.fn(),
       type: FilterType.INPUT_SELECT,
       ...propOverrides
     };
@@ -36,10 +35,10 @@ describe('FilterSection', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      clearFilterSpy = jest.spyOn(props, 'clearFilterByCategory');
+      clearFilterSpy = jest.spyOn(props, 'clearFilter');
     });
 
-    it('calls props.clearFilterByCategory with props.categoryId', () => {
+    it('calls props.clearFilter with props.categoryId', () => {
       wrapper.instance().onClearFilter();
       expect(clearFilterSpy).toHaveBeenCalledWith(props.categoryId);
     })
@@ -109,7 +108,7 @@ describe('FilterSection', () => {
       ...globalState,
       search: {
         ...globalState.search,
-        selectedTab: ResourceType.table,
+        resource: ResourceType.table,
         filters: {
           [ResourceType.table]: {
             'database': { 'hive': true },
@@ -123,7 +122,7 @@ describe('FilterSection', () => {
       ...globalState,
       search: {
         ...globalState.search,
-        selectedTab: ResourceType.user,
+        resource: ResourceType.user,
         filters: {
           [ResourceType.table]: {}
         }
@@ -175,8 +174,8 @@ describe('FilterSection', () => {
       result = mapDispatchToProps(dispatch);
     });
 
-    it('sets clearFilterByCategory on the props', () => {
-      expect(result.clearFilterByCategory).toBeInstanceOf(Function);
+    it('sets clearFilter on the props', () => {
+      expect(result.clearFilter).toBeInstanceOf(Function);
     });
   });
 });

@@ -63,7 +63,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
 };
 
 export const mapStateToProps = (state: GlobalState) => {
-  const resourceType = state.search.selectedTab;
+  const resourceType = state.search.resource;
   const filterCategories = getFilterConfigByResource(resourceType);
 
   const filterSections = [];

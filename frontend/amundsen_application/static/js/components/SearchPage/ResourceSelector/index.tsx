@@ -5,24 +5,24 @@ import { connect } from 'react-redux';
 import { TABLE_RESOURCE_TITLE, USER_RESOURCE_TITLE } from 'components/SearchPage/constants';
 import AppConfig from 'config/config';
 import { GlobalState } from 'ducks/rootReducer';
+import { updateSearchState } from 'ducks/search/reducer';
 import {
   DashboardSearchResults,
-  SetResourceRequest,
   TableSearchResults,
+  UpdateSearchStateRequest,
   UserSearchResults
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
-import { setResource } from 'ducks/search/reducer';
 
 export interface StateFromProps {
-  selectedTab: ResourceType,
+  resource: ResourceType,
   tables: TableSearchResults;
   dashboards: DashboardSearchResults;
   users: UserSearchResults;
 }
 
 export interface DispatchFromProps {
-  setResource: (resource: ResourceType) => SetResourceRequest;
+  setResource: (resource: ResourceType) => UpdateSearchStateRequest;
 }
 
 export type ResourceSelectorProps = StateFromProps & DispatchFromProps;
@@ -50,7 +50,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps > {
             type="radio"
             name="resource"
             value={ option.type }
-            checked={ this.props.selectedTab === option.type }
+            checked={ this.props.resource === option.type }
             onChange={ this.onChange }
           />
           <span className="subtitle-2">{ option.label }</span>
@@ -88,7 +88,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps > {
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    selectedTab: state.search.selectedTab,
+    resource: state.search.resource,
     tables: state.search.tables,
     users: state.search.users,
     dashboards: state.search.dashboards,
@@ -96,7 +96,9 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ setResource }, dispatch);
+  return bindActionCreators({
+    setResource: (resource: ResourceType) => updateSearchState({ resource, updateUrl: true }),
+  }, dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(ResourceSelector);

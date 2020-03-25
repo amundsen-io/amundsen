@@ -12,18 +12,17 @@ import SearchFilter from './SearchFilter';
 import SearchPanel from './SearchPanel';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { setPageIndex, setResource, urlDidUpdate } from 'ducks/search/reducer';
+import { submitSearchResource, urlDidUpdate } from 'ducks/search/reducer';
 import {
   DashboardSearchResults,
   SearchResults,
-  SetPageIndexRequest,
-  SetResourceRequest,
+  SubmitSearchResourceRequest,
   TableSearchResults,
   UrlDidUpdateRequest,
   UserSearchResults,
 } from 'ducks/search/types';
 
-import { Resource, ResourceType } from 'interfaces';
+import { Resource, ResourceType, SearchType } from 'interfaces';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
@@ -43,7 +42,7 @@ import {
 export interface StateFromProps {
   hasFilters: boolean;
   searchTerm: string;
-  selectedTab: ResourceType;
+  resource: ResourceType;
   isLoading: boolean;
   tables: TableSearchResults;
   dashboards: DashboardSearchResults;
@@ -51,8 +50,7 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  setResource: (resource: ResourceType) => SetResourceRequest;
-  setPageIndex: (pageIndex: number) => SetPageIndexRequest;
+  setPageIndex: (pageIndex: number) => SubmitSearchResourceRequest;
   urlDidUpdate: (urlSearch: UrlSearch) => UrlDidUpdateRequest;
 }
 
@@ -76,7 +74,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
   }
 
   renderSearchResults = () => {
-    switch(this.props.selectedTab) {
+    switch(this.props.resource) {
       case ResourceType.table:
         return this.getTabContent(this.props.tables, ResourceType.table);
       case ResourceType.user:
@@ -183,11 +181,11 @@ export class SearchPage extends React.Component<SearchPageProps> {
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const resourceFilters = state.search.filters[state.search.selectedTab];
+  const resourceFilters = state.search.filters[state.search.resource];
   return {
     hasFilters: resourceFilters && Object.keys(resourceFilters).length > 0,
     searchTerm: state.search.search_term,
-    selectedTab: state.search.selectedTab,
+    resource: state.search.resource,
     isLoading: state.search.isLoading,
     tables: state.search.tables,
     users: state.search.users,
@@ -196,7 +194,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ setResource, setPageIndex, urlDidUpdate }, dispatch);
+  return bindActionCreators({
+    urlDidUpdate,
+    setPageIndex: (pageIndex: number) => submitSearchResource({ pageIndex, searchType: SearchType.PAGINATION, updateUrl: true }),
+  }, dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(SearchPage);

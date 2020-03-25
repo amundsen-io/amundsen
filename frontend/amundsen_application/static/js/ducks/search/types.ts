@@ -9,6 +9,11 @@ import {
   UserResource,
 } from 'interfaces';
 
+import {
+  FilterReducerState,
+  ResourceFilterReducerState,
+} from 'ducks/search/filters/reducer';
+
 export interface SearchResults<T extends Resource> {
   page_index: number;
   total_results: number;
@@ -25,7 +30,7 @@ export interface SearchResponsePayload {
   users?: UserSearchResults;
 };
 export interface SearchAllResponsePayload extends SearchResponsePayload {
-  selectedTab: ResourceType;
+  resource: ResourceType;
   dashboards: DashboardSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
@@ -36,7 +41,7 @@ export interface InlineSearchResponsePayload {
 };
 export interface InlineSearchUpdatePayload {
   searchTerm: string;
-  selectedTab: ResourceType;
+  resource: ResourceType;
   tables: TableSearchResults;
   users: UserSearchResults;
 };
@@ -46,7 +51,6 @@ export enum SearchAll {
   REQUEST = 'amundsen/search/SEARCH_ALL_REQUEST',
   SUCCESS = 'amundsen/search/SEARCH_ALL_SUCCESS',
   FAILURE = 'amundsen/search/SEARCH_ALL_FAILURE',
-  RESET = 'amundsen/search/SEARCH_ALL_RESET',
 };
 export interface SearchAllRequest {
   payload: {
@@ -62,10 +66,6 @@ export interface SearchAllResponse {
   type: SearchAll.SUCCESS | SearchAll.FAILURE;
   payload?: SearchAllResponsePayload;
 };
-export interface SearchAllReset {
-  type: SearchAll.RESET;
-};
-
 
 export enum SearchResource {
   REQUEST = 'amundsen/search/SEARCH_RESOURCE_REQUEST',
@@ -124,41 +124,43 @@ export enum SubmitSearch {
 export interface SubmitSearchRequest {
   payload: {
     searchTerm: string;
-    useFilters?: boolean;
+    useFilters: boolean;
   };
   type: SubmitSearch.REQUEST;
 };
 
-export enum ClearSearch {
-  REQUEST = 'amundsen/search/CLEAR_SEARCH_REQUEST',
+export enum SubmitSearchResource {
+  REQUEST = 'amundsen/search/SUBMIT_SEARCH_RESOURCE_REQUEST',
 };
-export interface ClearSearchRequest {
-  type: ClearSearch.REQUEST;
-};
-
-export enum SetResource {
-  REQUEST = 'amundsen/search/SET_RESOURCE_REQUEST',
-};
-export interface SetResourceRequest {
-  payload: {
-    resource: ResourceType;
-    updateUrl: boolean;
-  };
-  type: SetResource.REQUEST;
+export type SubmitSearchResourcePayload = {
+  pageIndex: number;
+  searchType: SearchType;
+  updateUrl?: boolean;
+  resourceFilters?: ResourceFilterReducerState;
+  searchTerm?: string;
+  resource?: ResourceType;
+}
+export interface SubmitSearchResourceRequest {
+  payload: SubmitSearchResourcePayload;
+  type: SubmitSearchResource.REQUEST;
 };
 
-
-export enum SetPageIndex {
-  REQUEST = 'amundsen/search/SET_PAGE_INDEX_REQUEST',
+export enum UpdateSearchState {
+  REQUEST = 'amundsen/search/UPDATE_SEARCH_STATE',
+  RESET = 'amundsen/search/RESET_SEARCH_STATE',
 };
-export interface SetPageIndexRequest {
-  payload: {
-    pageIndex: number;
-    updateUrl: boolean;
-  };
-  type: SetPageIndex.REQUEST;
+export type UpdateSearchStatePayload = {
+  filters?: FilterReducerState;
+  resource?: ResourceType;
+  updateUrl?: boolean;
+}
+export interface UpdateSearchStateRequest {
+  payload?: UpdateSearchStatePayload;
+  type: UpdateSearchState.REQUEST;
 };
-
+export interface UpdateSearchStateReset {
+  type: UpdateSearchState.RESET;
+};
 
 export enum LoadPreviousSearch {
   REQUEST = 'amundsen/search/LOAD_PREVIOUS_SEARCH_REQUEST',
@@ -166,7 +168,6 @@ export enum LoadPreviousSearch {
 export interface LoadPreviousSearchRequest {
   type: LoadPreviousSearch.REQUEST;
 };
-
 
 export enum UrlDidUpdate {
   REQUEST = 'amundsen/search/URL_DID_UPDATE_REQUEST',

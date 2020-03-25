@@ -16,7 +16,7 @@ import { ResourceType } from 'interfaces/Resources';
 describe('ResourceSelector', () => {
   const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {
     const props = {
-      selectedTab: ResourceType.table,
+      resource: ResourceType.table,
       tables: globalState.search.tables,
       users: globalState.search.users,
       dashboards: globalState.search.dashboards,
@@ -42,7 +42,7 @@ describe('ResourceSelector', () => {
       expect(inputProps.type).toEqual("radio");
       expect(inputProps.name).toEqual("resource");
       expect(inputProps.value).toEqual(radioConfig.type);
-      expect(inputProps.checked).toEqual(props.selectedTab === radioConfig.type);
+      expect(inputProps.checked).toEqual(props.resource === radioConfig.type);
       expect(inputProps.onChange).toEqual(instance.onChange);
     });
 
@@ -121,8 +121,8 @@ describe('mapStateToProps', () => {
     result = mapStateToProps(globalState);
   });
 
-  it('sets selectedTab on the props', () => {
-    expect(result.selectedTab).toEqual(globalState.search.selectedTab);
+  it('sets resource on the props', () => {
+    expect(result.resource).toEqual(globalState.search.resource);
   });
 
   it('sets tables on the props', () => {

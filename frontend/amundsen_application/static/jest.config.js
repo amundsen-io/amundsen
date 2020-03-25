@@ -16,7 +16,7 @@ module.exports = {
           branches: 75,
           functions: 80,
           lines: 80,
-          statements: 80,
+          statements: 85,
       },
       './js/fixtures': {
           branches: 100,
