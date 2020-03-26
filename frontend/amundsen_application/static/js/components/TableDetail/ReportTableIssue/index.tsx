@@ -9,7 +9,6 @@ import { CreateIssueRequest } from 'ducks/issue/types';
 import './styles.scss';
 import { REPORT_DATA_ISSUE_TEXT, TABLE_OWNERS_NOTE } from './constants'; 
 import { logClick } from 'ducks/utilMethods';
-import { notificationsEnabled, issueTrackingEnabled } from 'config/config-utils';
 import { TableMetadata, CreateIssuePayload, NotificationPayload, NotificationType } from 'interfaces';
 
 export interface ComponentProps {
@@ -55,6 +54,7 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
     this.setState({isOpen: false }); 
   };
 
+
   getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
     const title = formData.get('title') as string;  
     const description = formData.get('description') as string;
@@ -83,28 +83,19 @@ export class ReportTableIssue extends React.Component<ReportTableIssueProps, Rep
     };
   }
 
-  toggle = () => {
+  toggle = (event) => {
+    if (!this.state.isOpen) {
+      logClick(event); 
+    }
     this.setState({ isOpen: !this.state.isOpen });
   };
-  
-  renderPipe = () => {
-    if (notificationsEnabled()) {
-      return ' | '; 
-    }
-    return ''; 
-  } 
 
   render() {
-    if (!issueTrackingEnabled()) {
-      return ''; 
-    }
-    
     if (this.props.isLoading) {
       return <LoadingSpinner />;
     }
     return (
         <>
-         {this.renderPipe()}
           <a href="javascript:void(0)"
              className="report-table-issue-link"
              onClick={this.toggle}

@@ -66,16 +66,6 @@ describe('ReportTableIssue', () => {
   }
 
   describe('render', () => {
-    beforeAll(() => {
-      AppConfig.issueTracking.enabled = true;
-    }); 
-
-    it('renders nothing if issueTracking not enabled', () => {
-      AppConfig.issueTracking.enabled = false;
-      const { props, wrapper } = setup({ isLoading: false });
-      expect(wrapper.html()).toBeFalsy(); 
-    }); 
-
     it('Renders loading spinner if not ready', () => {
       const { props, wrapper } = setup();
       expect(wrapper.find('.loading-spinner')).toBeTruthy();
@@ -92,7 +82,8 @@ describe('ReportTableIssue', () => {
         setStateSpy.mockClear();
         const { props, wrapper } = setup();
         const previsOpenState = wrapper.state().isOpen;
-        wrapper.instance().toggle();
+        wrapper.instance().toggle({currentTarget: {id: 'id',
+            nodeName: 'button' } });
         expect(setStateSpy).toHaveBeenCalledWith({ isOpen: !previsOpenState });
       });
     });

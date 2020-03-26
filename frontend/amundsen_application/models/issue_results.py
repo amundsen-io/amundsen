@@ -5,19 +5,19 @@ from typing import List, Dict
 class IssueResults:
     def __init__(self,
                  issues: List[DataIssue],
-                 remaining: int,
-                 remaining_url: str) -> None:
+                 total: int,
+                 all_issues_url: str) -> None:
         """
         Returns an object representing results from an issue tracker.
         :param issues: Issues in the issue tracker matching the requested table
-        :param remaining: How many issues remain in the issue tracker and are not displayed
-        :param remaining_url: url to the remaining issues in the issue tracker
+        :param total: How many issues in all are associated with this table
+        :param all_issues_url: url to the all issues in the issue tracker
         """
         self.issues = issues
-        self.remaining = remaining
-        self.remaining_url = remaining_url
+        self.total = total
+        self.all_issues_url = all_issues_url
 
     def serialize(self) -> Dict:
         return {'issues': [issue.serialize() for issue in self.issues],
-                'remaining': self.remaining,
-                'remaining_url': self.remaining_url}
+                'total': self.total,
+                'all_issues_url': self.all_issues_url}

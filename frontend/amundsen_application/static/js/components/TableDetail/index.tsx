@@ -22,7 +22,6 @@ import FrequentUsers from 'components/TableDetail/FrequentUsers';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import LineageLink from 'components/TableDetail/LineageLink';
 import OwnerEditor from 'components/TableDetail/OwnerEditor';
-import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import SourceLink from 'components/TableDetail/SourceLink';
 import TableDescEditableText from 'components/TableDetail/TableDescEditableText';
 import TableHeaderBullets from 'components/TableDetail/TableHeaderBullets';
@@ -172,8 +171,6 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
           <main className="column-layout-1">
             <section className="left-panel">
               {}
-              <TableIssues tableKey={ this.key }/>
-
               <EditableSection title="Description">
                 <TableDescEditableText
                   maxLength={ AppConfig.editableText.tableDescLength }
@@ -183,8 +180,8 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               </EditableSection>
               <span>
                 { notificationsEnabled() && <RequestDescriptionText/> }
-                { issueTrackingEnabled() && <ReportTableIssue tableKey={ this.key } tableName={ this.getDisplayName() } />}
               </span>
+              {issueTrackingEnabled() && <TableIssues tableKey={ this.key } tableName={ this.getDisplayName()}/>}
               <section className="column-layout-2">
                 <section className="left-panel">
                   {

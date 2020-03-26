@@ -11,7 +11,9 @@ import {
   mapStateToProps, 
   mapDispatchToProps
 } from '..';
-import { SEE_ADDITIONAL_ISSUES_TEXT } from '../constants';
+
+import { NO_DATA_ISSUES_TEXT } from "components/TableDetail/TableIssues/constants";
+import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 
 
 describe ('TableIssues', ()=> {
@@ -21,8 +23,9 @@ describe ('TableIssues', ()=> {
     const props: TableIssueProps = {
       issues: [], 
       tableKey: 'key',
-      remainingIssues: 0, 
-      remainingIssuesUrl: 'testUrl', 
+      tableName: 'tableName',
+      total: 0, 
+      allIssuesUrl: 'testUrl', 
       getIssues: jest.fn(),
       ...propOverrides
     };
@@ -35,15 +38,9 @@ describe ('TableIssues', ()=> {
       AppConfig.issueTracking.enabled = true;
     }); 
 
-    it('renders nothing if no issues', () => {
+    it('renders text if no issues', () => {
       const { props, wrapper } = setup({ issues: [] });
-      expect(wrapper.html()).toBeFalsy(); 
-    }); 
-
-    it('renders nothing if issueTracking not enabled', () => {
-      AppConfig.issueTracking.enabled = false;
-      const { props, wrapper } = setup({ issues: [] });
-      expect(wrapper.html()).toBeFalsy(); 
+      expect(wrapper.find('.issue-banner').text()).toEqual(NO_DATA_ISSUES_TEXT);
     }); 
 
     it('renders issues if they exist', () => {
@@ -51,33 +48,38 @@ describe ('TableIssues', ()=> {
       const { props, wrapper } = setup({ issues: [{
         issue_key: 'issue_key', 
         title: 'title',
-        url: 'http://url'
+        url: 'http://url', 
+        status: 'Open', 
+        priority_display_name: 'P2', 
+        priority_name: 'major'
       }]}); 
       expect(wrapper.find('.table-issue-link').text()).toEqual('issue_key'); 
       expect(wrapper.find('.issue-title-name').text()).toContain('title');
+      expect(wrapper.find('.table-issue-status').text()).toContain('Open');
+      expect(wrapper.find('.table-issue-priority').text()).toContain('P2');
     }); 
 
-    it('renders no extra notice if no remaining issues', () => {
-      const { props, wrapper } = setup({ issues: [{
-          issue_key: 'issue_key', 
-          title: 'title',
-          url: 'http://url'
-        }],
-        remainingIssues: 0, 
-        remainingIssuesUrl: null
+    it('renders no link to issues if no issues', () => {
+      const { props, wrapper } = setup({ issues: [],
+        total: 0, 
+        allIssuesUrl: null
       });
       expect(wrapper.find('.table-issue-more-issues').length).toEqual(0); 
     }); 
-    it('renders extra notice if remaining issues', () => {
+
+    it('renders link if there are issues', () => {
       const { props, wrapper } = setup({ issues: [{
           issue_key: 'issue_key', 
           title: 'title',
-          url: 'http://url'
+          url: 'http://url',
+          status: 'Open', 
+          priority_display_name: 'P2', 
+          priority_name: 'Major'
         }],
-        remainingIssues: 1, 
-        remainingIssuesUrl: 'url'
+        total: 1, 
+        allIssuesUrl: 'url'
       });
-      expect(wrapper.find('.table-issue-more-issues').text()).toEqual(SEE_ADDITIONAL_ISSUES_TEXT); 
+      expect(wrapper.find('.table-issue-more-issues').text()).toEqual('View all 1 issues'); 
     }); 
   });
 

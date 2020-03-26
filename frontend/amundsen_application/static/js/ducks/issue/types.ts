@@ -30,8 +30,8 @@ export interface GetIssuesResponse {
     type: GetIssues.SUCCESS | GetIssues.FAILURE; 
     payload: {
         issues: Issue[]; 
-        remainingIssues: number; 
-        remainingIssuesUrl: string; 
+        total: number; 
+        allIssuesUrl: string; 
     }
 }; 
 

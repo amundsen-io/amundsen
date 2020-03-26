@@ -9,30 +9,60 @@
     margin: 8px 0;
     padding: 8px 16px;
     display: flex; 
-    overflow: hidden;
-
-    &:first-child {
-      margin-top: 24px;
-    }
-  }
-  .icon-red-triangle-warning  {
-    background: $red-triangle-warning;
-    margin: 0px 5px 0px 0px;
+    flex-direction: row;
   }
   .table-issue-link {
-    margin: 0px 5px 0px 0px; 
+    margin-right: $spacer-1; 
     min-width: fit-content;
   }
   .issue-title-name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: fit-content;
   }
   .issue-title-display-text {
     display: flex;
     max-width: fit-content;
   }
-  .table-issue-more-issues {
-    margin: 0px 2px 0px 2px; 
+  .table-issue-status {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1.1;
+    min-width: fit-content;
+    margin-left: $spacer-2;
   }
+  .table-issue-priority {
+    margin-right: $spacer-1; 
+    border: 1px solid $rose80; 
+    border-radius: 5px;
+    padding: 1px 2px;
+    flex: none; 
+  }
+  .blocker {
+    color: $priority-text-blocker; 
+    // default is $rose80 
+    background-color: rgba($priority-bg-color, 1);
+  }
+  .critical {
+    background-color: rgba($priority-bg-color, .6);
+  }
+  .major {
+    background-color: rgba($priority-bg-color, .3);
+  }
+  .minor {
+    background-color: rgba($priority-bg-color, .1);
+  }
+}
+.table-issue-more-issues {
+  margin-bottom: $spacer-1; 
+  margin-right: $spacer-1; 
+}
+.table-more-issues {
+  display: flex; 
+  font-size: 16px; 
+}
+.table-report-new-issue {
+  margin-bottom: $spacer-1; 
+  margin-left: $spacer-1;
 }
