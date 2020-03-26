@@ -58,6 +58,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | frontEnd.tolerations | list | `[]` | Frontend pod specific tolerations. |
 | metadata.affinity | object | `{}` | Metadata pod specific affinity. |
 | metadata.imageVersion | string | `"2.0.0"` | The image version of the metadata container. |
+| metadata.neo4jEndpoint | string | `nil` | The name of the service hosting neo4j on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart. |
 | metadata.nodeSelector | object | `{}` | Metadata pod specific nodeSelector. |
 | metadata.replicas | int | `1` | How many replicas of the metadata service to run. |
 | metadata.resources | object | `{}` | See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) |
@@ -72,7 +73,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | neo4j.config.dbms.heap_initial_size | string | `"23000m"` | the initial java heap for neo4j |
 | neo4j.config.dbms.heap_max_size | string | `"23000m"` | the max java heap for neo4j |
 | neo4j.config.dbms.pagecache_size | string | `"26600m"` | the page cache size for neo4j |
-| neo4j.enabled | bool | `true` | If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version. However, note that your own version needs to be in the same namespace. |
+| neo4j.enabled | bool | `true` | If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version. |
 | neo4j.nodeSelector | object | `{}` | neo4j specific nodeSelector. |
 | neo4j.persistence | object | `{}` | Neo4j persistence. Turn this on to keep your data between pod crashes, etc. This is also needed for backups. |
 | neo4j.resources | object | `{}` | See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) |
@@ -81,7 +82,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | nodeSelector | object | `{}` | amundsen application wide configuration of nodeSelector. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) |
 | provider | string | `"aws"` | The cloud provider the app is running in. Used to construct dns hostnames (on aws only). |
 | search.affinity | object | `{}` | Search pod specific affinity. |
-| search.elasticsearchEndpoint | string | `"amundsen-elasticsearch-client"` | The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart. |
+| search.elasticsearchEndpoint | string | `nil` | The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart. |
 | search.imageVersion | string | `"2.0.0"` | The image version of the search container. |
 | search.nodeSelector | object | `{}` | Search pod specific nodeSelector. |
 | search.replicas | int | `1` | How many replicas of the search service to run. |
@@ -89,6 +90,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | search.serviceName | string | `"search"` | The search service name. |
 | search.tolerations | list | `[]` | Search pod specific tolerations. |
 | tolerations | list | `[]` | amundsen application wide configuration of tolerations. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature) |
+
 ## Neo4j DBMS Config?
 
 You may want to override the default memory usage for Neo4J. In particular, if you're just test-driving a deployment and your node exits with status 137, you should set the usage to smaller values:

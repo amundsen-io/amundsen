@@ -94,6 +94,10 @@ metadata:
   ##
   serviceName: metadata
   ##
+  ## metadata.neo4jEndpoint -- The name of the service hosting neo4j on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart.
+  ##
+  neo4jEndpoint:
+  ##
   ## metadata.imageVersion -- The image version of the metadata container.
   ##
   imageVersion: 2.0.0
@@ -201,7 +205,7 @@ frontEnd:
 ##
 neo4j:
   ##
-  ## neo4j.enabled -- If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version. However, note that your own version needs to be in the same namespace.
+  ## neo4j.enabled -- If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version.
   ##
   enabled: true
   ##
