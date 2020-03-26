@@ -103,7 +103,7 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(UserFollowsAPI,
                      '/user/<path:user_id>/follow/')
     api.add_resource(UserFollowAPI,
-                     '/user/<path:user_id>/follow/<resource_type>/<path:table_uri>')
+                     '/user/<path:user_id>/follow/<resource_type>/<path:resource_id>')
     api.add_resource(UserOwnsAPI,
                      '/user/<path:user_id>/own/')
     api.add_resource(UserOwnAPI,

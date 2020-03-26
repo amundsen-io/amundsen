@@ -147,16 +147,18 @@ class AbstractGremlinProxy(BaseProxy):
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
         pass
 
-    def add_table_relation_by_user(self, *,
-                                   table_uri: str,
-                                   user_email: str,
-                                   relation_type: UserResourceRel) -> None:
+    def add_resource_relation_by_user(self, *,
+                                      id: str,
+                                      user_id: str,
+                                      relation_type: UserResourceRel,
+                                      resource_type: ResourceType) -> None:
         pass
 
-    def delete_table_relation_by_user(self, *,
-                                      table_uri: str,
-                                      user_email: str,
-                                      relation_type: UserResourceRel) -> None:
+    def delete_resource_relation_by_user(self, *,
+                                         id: str,
+                                         user_id: str,
+                                         relation_type: UserResourceRel,
+                                         resource_type: ResourceType) -> None:
         pass
 
     def get_dashboard(self,

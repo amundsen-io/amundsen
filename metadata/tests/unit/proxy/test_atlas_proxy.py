@@ -12,6 +12,7 @@ from metadata_service import create_app
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.util import UserResourceRel
+from metadata_service.entity.resource_type import ResourceType
 
 
 class TestAtlasProxy(unittest.TestCase, Data):
@@ -365,17 +366,19 @@ class TestAtlasProxy(unittest.TestCase, Data):
     def test_add_resource_relation_by_user(self) -> None:
         reader_entity = self._mock_get_reader_entity()
         with patch.object(reader_entity, 'update') as mock_execute:
-            self.proxy.add_table_relation_by_user(table_uri=self.table_uri,
-                                                  user_email="test_user_id",
-                                                  relation_type=UserResourceRel.follow)
+            self.proxy.add_resource_relation_by_user(id=self.table_uri,
+                                                     user_id="test_user_id",
+                                                     relation_type=UserResourceRel.follow,
+                                                     resource_type=ResourceType.Table)
             mock_execute.assert_called_with()
 
     def test_delete_resource_relation_by_user(self) -> None:
         reader_entity = self._mock_get_reader_entity()
         with patch.object(reader_entity, 'update') as mock_execute:
-            self.proxy.delete_table_relation_by_user(table_uri=self.table_uri,
-                                                     user_email="test_user_id",
-                                                     relation_type=UserResourceRel.follow)
+            self.proxy.delete_resource_relation_by_user(id=self.table_uri,
+                                                        user_id="test_user_id",
+                                                        relation_type=UserResourceRel.follow,
+                                                        resource_type=ResourceType.Table)
             mock_execute.assert_called_with()
 
 
