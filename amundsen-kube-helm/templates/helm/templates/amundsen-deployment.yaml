@@ -81,7 +81,7 @@ spec:
         - containerPort: 5000
         env:
         - name: PROXY_HOST
-          value: bolt://neo4j
+          value: {{ if .Values.metadata.neo4jEndpoint }}{{ .Values.metadata.neo4jEndpoint }}{{ else }}bolt://neo4j.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
         {{- if .Values.frontEnd.oidcEnabled }}
         - name: FLASK_OIDC_CLIENT_SECRETS
           value: /etc/client_secrets.json

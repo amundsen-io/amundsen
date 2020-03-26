@@ -18,7 +18,6 @@ spec:
     - port: 5001
       name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}-{{ .Values.environment }}-http
       targetPort: 5001
-      nodePort: 30001
   selector:
     run: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
 ---  
@@ -41,7 +40,6 @@ spec:
     - port: 5002
       name: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}-{{ .Values.environment }}-http
       targetPort: 5002
-      nodePort: 30002
   selector:
     run: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
 ---         
@@ -64,7 +62,6 @@ spec:
     - port: {{ .Values.frontEnd.servicePort }}
       name: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}-{{ .Values.environment }}-http
       targetPort: 5000
-      nodePort: 30003
   selector:
     run: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}
 ---            
