@@ -8,6 +8,9 @@ from metadata_service import create_app
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI, UserFollowsAPI,
                                        UserOwnsAPI, UserOwnAPI, UserReadsAPI)
 
+from metadata_service.util import UserResourceRel
+from metadata_service.entity.resource_type import ResourceType
+
 
 class UserDetailAPITest(unittest.TestCase):
     @mock.patch('metadata_service.api.user.get_proxy_client')
@@ -56,15 +59,37 @@ class UserFollowAPITest(unittest.TestCase):
         mock_get_proxy_client.return_value = self.mock_client
         self.api = UserFollowAPI()
 
-    def test_put(self) -> None:
-        response = self.api.put(user_id='username', resource_type='2', table_uri='3')
+    def test_table_put(self) -> None:
+        response = self.api.put(user_id='username', resource_type='table', resource_id='3')
         self.assertEqual(list(response)[1], HTTPStatus.OK)
-        self.mock_client.add_table_relation_by_user.assert_called_once()
+        self.mock_client.add_resource_relation_by_user.assert_called_with(id='3',
+                                                                          user_id='username',
+                                                                          relation_type=UserResourceRel.follow,
+                                                                          resource_type=ResourceType.Table)
 
-    def test_delete(self) -> None:
-        response = self.api.delete(user_id='username', resource_type='2', table_uri='3')
+    def test_dashboard_put(self) -> None:
+        response = self.api.put(user_id='username', resource_type='dashboard', resource_id='3')
         self.assertEqual(list(response)[1], HTTPStatus.OK)
-        self.mock_client.delete_table_relation_by_user.assert_called_once()
+        self.mock_client.add_resource_relation_by_user.assert_called_with(id='3',
+                                                                          user_id='username',
+                                                                          relation_type=UserResourceRel.follow,
+                                                                          resource_type=ResourceType.Dashboard)
+
+    def test_table_delete(self) -> None:
+        response = self.api.delete(user_id='username', resource_type='table', resource_id='3')
+        self.assertEqual(list(response)[1], HTTPStatus.OK)
+        self.mock_client.delete_resource_relation_by_user.assert_called_with(id='3',
+                                                                             user_id='username',
+                                                                             relation_type=UserResourceRel.follow,
+                                                                             resource_type=ResourceType.Table)
+
+    def test_dashboard_delete(self) -> None:
+        response = self.api.delete(user_id='username', resource_type='dashboard', resource_id='3')
+        self.assertEqual(list(response)[1], HTTPStatus.OK)
+        self.mock_client.delete_resource_relation_by_user.assert_called_with(id='3',
+                                                                             user_id='username',
+                                                                             relation_type=UserResourceRel.follow,
+                                                                             resource_type=ResourceType.Dashboard)
 
 
 class UserOwnsAPITest(unittest.TestCase):

@@ -17,6 +17,7 @@ from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
 from metadata_service.util import UserResourceRel
+from metadata_service.entity.resource_type import ResourceType
 
 
 class TestNeo4jProxy(unittest.TestCase):
@@ -596,9 +597,10 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            neo4j_proxy.add_table_relation_by_user(table_uri='dummy_uri',
-                                                   user_email='tester',
-                                                   relation_type=UserResourceRel.follow)
+            neo4j_proxy.add_resource_relation_by_user(id='dummy_uri',
+                                                      user_id='tester',
+                                                      relation_type=UserResourceRel.follow,
+                                                      resource_type=ResourceType.Table)
             self.assertEquals(mock_run.call_count, 2)
             self.assertEquals(mock_commit.call_count, 1)
 
@@ -616,9 +618,10 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            neo4j_proxy.delete_table_relation_by_user(table_uri='dummy_uri',
-                                                      user_email='tester',
-                                                      relation_type=UserResourceRel.follow)
+            neo4j_proxy.delete_resource_relation_by_user(id='dummy_uri',
+                                                         user_id='tester',
+                                                         relation_type=UserResourceRel.follow,
+                                                         resource_type=ResourceType.Table)
             self.assertEquals(mock_run.call_count, 1)
             self.assertEquals(mock_commit.call_count, 1)
 
@@ -803,6 +806,37 @@ class TestNeo4jProxy(unittest.TestCase):
             """)
             mock_run.assert_called_with(expected_stmt, {'desc_key': 'test_dashboard/_description',
                                                         'key': 'test_dashboard'})
+
+    def test_user_resource_relation_clause(self) -> None:
+        with patch.object(GraphDatabase, 'driver'):
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy._get_user_resource_relationship_clause(UserResourceRel.follow,
+                                                                        id='foo',
+                                                                        user_key='bar',
+                                                                        resource_type=ResourceType.Table)
+            expected = '(usr:User {key: $user_key})-[rel:FOLLOW]->(resource:Table {key: $resource_key})'
+            self.assertEqual(expected, actual)
+
+            actual = neo4j_proxy._get_user_resource_relationship_clause(UserResourceRel.read,
+                                                                        id='foo',
+                                                                        user_key='bar',
+                                                                        resource_type=ResourceType.Table)
+            expected = '(usr:User {key: $user_key})-[rel:READ]->(resource:Table {key: $resource_key})'
+            self.assertEqual(expected, actual)
+
+            actual = neo4j_proxy._get_user_resource_relationship_clause(UserResourceRel.own,
+                                                                        id='foo',
+                                                                        user_key='bar',
+                                                                        resource_type=ResourceType.Table)
+            expected = '(usr:User {key: $user_key})<-[rel:OWNER]-(resource:Table {key: $resource_key})'
+            self.assertEqual(expected, actual)
+
+            actual = neo4j_proxy._get_user_resource_relationship_clause(UserResourceRel.follow,
+                                                                        id='foo',
+                                                                        user_key='bar',
+                                                                        resource_type=ResourceType.Dashboard)
+            expected = '(usr:User {key: $user_key})-[rel:FOLLOW]->(resource:Dashboard {key: $resource_key})'
+            self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':

@@ -91,17 +91,19 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_table_relation_by_user(self, *,
-                                   table_uri: str,
-                                   user_email: str,
-                                   relation_type: UserResourceRel) -> None:
+    def add_resource_relation_by_user(self, *,
+                                      id: str,
+                                      user_id: str,
+                                      relation_type: UserResourceRel,
+                                      resource_type: ResourceType) -> None:
         pass
 
     @abstractmethod
-    def delete_table_relation_by_user(self, *,
-                                      table_uri: str,
-                                      user_email: str,
-                                      relation_type: UserResourceRel) -> None:
+    def delete_resource_relation_by_user(self, *,
+                                         id: str,
+                                         user_id: str,
+                                         relation_type: UserResourceRel,
+                                         resource_type: ResourceType) -> None:
         pass
 
     @abstractmethod

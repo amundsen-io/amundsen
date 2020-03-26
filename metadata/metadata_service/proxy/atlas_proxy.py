@@ -566,19 +566,44 @@ class AtlasProxy(BaseProxy):
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
         pass
 
-    def add_table_relation_by_user(self, *,
-                                   table_uri: str,
-                                   user_email: str,
-                                   relation_type: UserResourceRel) -> None:
+    def add_resource_relation_by_user(self, *,
+                                      id: str,
+                                      user_id: str,
+                                      relation_type: UserResourceRel,
+                                      resource_type: ResourceType) -> None:
+
+        if resource_type is not ResourceType.Table:
+            raise NotImplemented('resource type {} is not supported'.format(resource_type))
+
+        self._add_table_relation_by_user(table_uri=id,
+                                         user_email=user_id,
+                                         relation_type=relation_type)
+
+    def _add_table_relation_by_user(self, *,
+                                    table_uri: str,
+                                    user_email: str,
+                                    relation_type: UserResourceRel) -> None:
 
         entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
         entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = True
         entity.update()
 
-    def delete_table_relation_by_user(self, *,
-                                      table_uri: str,
-                                      user_email: str,
-                                      relation_type: UserResourceRel) -> None:
+    def delete_resource_relation_by_user(self, *,
+                                         id: str,
+                                         user_id: str,
+                                         relation_type: UserResourceRel,
+                                         resource_type: ResourceType) -> None:
+        if resource_type is not ResourceType.Table:
+            raise NotImplemented('resource type {} is not supported'.format(resource_type))
+
+        self._delete_table_relation_by_user(table_uri=id,
+                                            user_email=user_id,
+                                            relation_type=relation_type)
+
+    def _delete_table_relation_by_user(self, *,
+                                       table_uri: str,
+                                       user_email: str,
+                                       relation_type: UserResourceRel) -> None:
         entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
         entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = False
         entity.update()
