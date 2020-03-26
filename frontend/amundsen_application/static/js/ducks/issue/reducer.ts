@@ -50,24 +50,24 @@ export function getIssues(tableKey: string): GetIssuesRequest {
   }; 
 }
 
-export function getIssuesSuccess(issues: Issue[], remainingIssues?: number, remainingIssuesUrl?: string): GetIssuesResponse {
+export function getIssuesSuccess(issues: Issue[], total?: number, allIssuesUrl?: string): GetIssuesResponse {
   return { 
     type: GetIssues.SUCCESS, 
     payload: {
       issues, 
-      remainingIssues, 
-      remainingIssuesUrl
+      total, 
+      allIssuesUrl
     }
   }
 }
 
-export function getIssuesFailure(issues: Issue[], remainingIssues?: number, remainingIssuesUrl?: string): GetIssuesResponse {
+export function getIssuesFailure(issues: Issue[], total?: number, allIssuesUrl?: string): GetIssuesResponse {
   return { 
     type: GetIssues.FAILURE, 
     payload: {
       issues, 
-      remainingIssues, 
-      remainingIssuesUrl
+      total, 
+      allIssuesUrl
     }
   }
 }
@@ -75,15 +75,15 @@ export function getIssuesFailure(issues: Issue[], remainingIssues?: number, rema
 /* REDUCER */
 export interface IssueReducerState {
   issues: Issue[], 
-  remainingIssuesUrl: string,
-  remainingIssues: number, 
+  allIssuesUrl: string,
+  total: number, 
   isLoading: boolean
 };
 
 export const initialIssuestate: IssueReducerState = {
   issues: [], 
-  remainingIssuesUrl: null, 
-  remainingIssues: 0, 
+  allIssuesUrl: null, 
+  total: 0, 
   isLoading: false, 
 };
 

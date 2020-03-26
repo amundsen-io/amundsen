@@ -8,8 +8,8 @@ export const NOTIFICATION_API_PATH = '/api/mail/v0/notification';
 export type IssuesAPI = {
   issues: {
     issues: Issue[]; 
-    remaining: number;  
-    remaining_url: string; 
+    total: number;  
+    all_issues_url: string; 
   }
 }
 

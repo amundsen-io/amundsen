@@ -27,13 +27,18 @@ class JiraClientTest(unittest.TestCase):
         self.mock_issue = {
             'issue_key': 'key',
             'title': 'some title',
-            'url': 'http://somewhere'
+            'url': 'http://somewhere',
+            'status': 'open',
+            'priority_name': 'Major',
+            'priority_display_name': 'P2'
         }
         result_list = MockJiraResultList(iterable=self.mock_issue, _total=0)
         self.mock_jira_issues = result_list
         self.mock_issue_instance = DataIssue(issue_key='key',
                                              title='some title',
-                                             url='http://somewhere')
+                                             url='http://somewhere',
+                                             status='open',
+                                             priority='Major')
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     def test_create_JiraClient_validates_config(self, mock_JIRA_client: Mock) -> None:
@@ -53,7 +58,7 @@ class JiraClientTest(unittest.TestCase):
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
-                         'JiraClient._get_remaining_issues')
+                         'JiraClient._generate_all_issues_url')
     def test_get_issues_returns_JIRAError(self, mock_remaining_issues: Mock, mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.get_issues.side_effect = JIRAError('Some exception')
         mock_remaining_issues.return_value = 0
@@ -73,14 +78,18 @@ class JiraClientTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
                          'JiraClient._get_issue_properties')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.'
-                         'jira_client.JiraClient._generate_remaining_issues_url')
+                         'jira_client.JiraClient._generate_all_issues_url')
+    @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.'
+                         'jira_client.JiraClient._sort_issues')
     def test_get_issues_returns_issues(self,
+                                       mock_sort_issues: Mock,
                                        mock_get_url: Mock,
                                        mock_get_issue_properties: Mock,
                                        mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.search_issues.return_value = self.mock_jira_issues
         mock_get_issue_properties.return_value = self.mock_issue
         mock_get_url.return_value = 'url'
+        mock_sort_issues.return_value = [self.mock_issue]
         with app.test_request_context():
             jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                      issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
@@ -90,14 +99,14 @@ class JiraClientTest(unittest.TestCase):
             results = jira_client.get_issues(table_uri='key')
             mock_JIRA_client.assert_called
             self.assertEqual(results.issues[0], self.mock_issue)
-            self.assertEqual(results.remaining, self.mock_jira_issues.total)
+            self.assertEqual(results.total, self.mock_jira_issues.total)
             mock_JIRA_client.return_value.search_issues.assert_called_with(
-                'text ~ "key" AND resolution = Unresolved order by createdDate DESC',
+                'text ~ "key" order by createdDate DESC',
                 maxResults=3)
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.urllib.parse.quote')
-    def test__generate_remaining_issues_url(self, mock_url_lib: Mock, mock_JIRA_client: Mock) -> None:
+    def test__generate_all_issues_url(self, mock_url_lib: Mock, mock_JIRA_client: Mock) -> None:
         mock_url_lib.return_value = 'test'
         with app.test_request_context():
             jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
@@ -105,12 +114,12 @@ class JiraClientTest(unittest.TestCase):
                                      issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
                                      issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
-            issues = [DataIssue(issue_key='key', title='title', url='url')]
-            url = jira_client._generate_remaining_issues_url(table_uri="table", issues=issues)
-            self.assertEqual(url, 'test_url/browse/key?jql=test')
+            issues = [DataIssue(issue_key='key', title='title', url='url', status='open', priority='Major')]
+            url = jira_client._generate_all_issues_url(table_uri="table", issues=issues)
+            self.assertEqual(url, 'test_url/issues/?jql=test')
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
-    def test__generate_remaining_issues_url_no_issues(self, mock_JIRA_client: Mock) -> None:
+    def test__generate_all_issues_url_no_issues(self, mock_JIRA_client: Mock) -> None:
         with app.test_request_context():
             jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                      issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
@@ -119,7 +128,7 @@ class JiraClientTest(unittest.TestCase):
                                      issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
             issues: List[DataIssue]
             issues = []
-            url = jira_client._generate_remaining_issues_url(table_uri="table", issues=issues)
+            url = jira_client._generate_all_issues_url(table_uri="table", issues=issues)
             self.assertEqual(url, '')
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')

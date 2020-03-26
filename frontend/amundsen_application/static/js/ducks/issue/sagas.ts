@@ -12,7 +12,7 @@ export function* getIssuesWorker(action: GetIssuesRequest): SagaIterator {
     let response;
     try {
         response = yield call(API.getIssues, key); 
-        yield put(getIssuesSuccess(response.issues, response.remaining, response.remaining_url)); 
+        yield put(getIssuesSuccess(response.issues, response.total, response.all_issues_url)); 
     } catch(e) {
         yield put(getIssuesFailure([], 0, null)); 
     }

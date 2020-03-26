@@ -18,16 +18,20 @@ class IssueTest(unittest.TestCase):
             'issue_key': 'key',
             'title': 'some title',
             'url': 'http://somewhere',
+            'priority_name': 'Major',
+            'priority_display_name': 'P2'
         }
         self.mock_issues = {
             'issues': [self.mock_issue]
         }
         self.mock_data_issue = DataIssue(issue_key='key',
                                          title='title',
-                                         url='http://somewhere')
+                                         url='http://somewhere',
+                                             status='open',
+                                             priority='Major')
         self.expected_issues = IssueResults(issues=[self.mock_data_issue],
-                                            remaining=0,
-                                            remaining_url="http://moredata")
+                                            total=0,
+                                            all_issues_url="http://moredata")
 
     # ----- Jira API Tests ---- #
 
@@ -76,10 +80,10 @@ class IssueTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertEqual(data['issues']['issues'][0]['issue_key'],
                              self.expected_issues.issues[0].issue_key)
-            self.assertEqual(data['issues']['remaining'],
-                             self.expected_issues.remaining)
-            self.assertEqual(data['issues']['remaining_url'],
-                             self.expected_issues.remaining_url)
+            self.assertEqual(data['issues']['total'],
+                             self.expected_issues.total)
+            self.assertEqual(data['issues']['all_issues_url'],
+                             self.expected_issues.all_issues_url)
             mock_issue_tracker_client.return_value.get_issues.assert_called_with('table_key')
 
     def test_create_issue_not_enabled(self) -> None:

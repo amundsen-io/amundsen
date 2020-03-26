@@ -11,7 +11,7 @@ from amundsen_application.models.issue_results import IssueResults
 import urllib.parse
 import logging
 
-SEARCH_STUB = 'text ~ "{table_key}" AND resolution = Unresolved order by createdDate DESC'
+SEARCH_STUB_ALL_ISSUES = 'text ~ "{table_key}" order by createdDate DESC'
 # this is provided by jira as the type of a bug
 ISSUE_TYPE_ID = 1
 ISSUE_TYPE_NAME = 'Bug'
@@ -50,13 +50,13 @@ class JiraClient(BaseIssueTrackerClient):
         :return: Metadata of matching issues
         """
         try:
-            issues = self.jira_client.search_issues(SEARCH_STUB.format(
+            issues = self.jira_client.search_issues(SEARCH_STUB_ALL_ISSUES.format(
                 table_key=table_uri),
                 maxResults=self.jira_max_results)
-            returned_issues = [self._get_issue_properties(issue=issue) for issue in issues]
+            returned_issues = self._sort_issues(issues)
             return IssueResults(issues=returned_issues,
-                                remaining=self._get_remaining_issues(total=issues.total),
-                                remaining_url=self._generate_remaining_issues_url(table_uri, returned_issues))
+                                total=issues.total,
+                                all_issues_url=self._generate_all_issues_url(table_uri, returned_issues))
         except JIRAError as e:
             logging.exception(str(e))
             raise e
@@ -124,18 +124,11 @@ class JiraClient(BaseIssueTrackerClient):
         """
         return DataIssue(issue_key=issue.key,
                          title=issue.fields.summary,
-                         url=issue.permalink())
+                         url=issue.permalink(),
+                         status=issue.fields.status.name,
+                         priority=issue.fields.priority.name)
 
-    def _get_remaining_issues(self, total: int) -> int:
-        """
-        Calculates how many issues are not being displayed, so the FE can determine whether to
-        display a message about issues remaining
-        :param total: number from the result set representing how many issues were found in all
-        :return: int - 0, or how many issues remain
-        """
-        return 0 if total < self.jira_max_results else total - self.jira_max_results
-
-    def _generate_remaining_issues_url(self, table_uri: str, issues: List[DataIssue]) -> str:
+    def _generate_all_issues_url(self, table_uri: str, issues: List[DataIssue]) -> str:
         """
         Way to get the full list of jira tickets
         SDK doesn't return a query
@@ -145,7 +138,22 @@ class JiraClient(BaseIssueTrackerClient):
         """
         if not issues or len(issues) == 0:
             return ''
-        # jira expects a ticket key in the query to default to, so pick the first one
-        first_issue_key = issues[0].issue_key
-        search_query = urllib.parse.quote(SEARCH_STUB.format(table_key=table_uri))
-        return f'{self.jira_url}/browse/{first_issue_key}?jql={search_query}'
+        search_query = urllib.parse.quote(SEARCH_STUB_ALL_ISSUES.format(table_key=table_uri))
+        return f'{self.jira_url}/issues/?jql={search_query}'
+
+    def _sort_issues(self, issues: List[Issue]) -> List[DataIssue]:
+        """
+        Sorts issues by resolution, first by unresolved and then by resolved. Also maps the issues to
+        the object used by the front end.
+        :param issues: Issues returned from the JIRA API
+        :return: List of data issues
+        """
+        open = []
+        closed = []
+        for issue in issues:
+            data_issue = self._get_issue_properties(issue)
+            if not issue.fields.resolution:
+                open.append(data_issue)
+            else:
+                closed.append(data_issue)
+        return open + closed
