@@ -90,39 +90,61 @@ describe('SearchBar', () => {
   describe('handleValueChange', () => {
     let props;
     let wrapper;
+    let isFormValidSpy;
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
+      isFormValidSpy = jest.spyOn(wrapper.instance(), 'isFormValid');
     });
 
-    describe('if searchTerm has length', () => {
-      const mockSearchTerm = 'I have Length';
-      const expectedSearchTerm = 'i have length';
-      it('calls setState with searchTerm as lowercase target value & showTypeAhead as true ', () => {
-        setStateSpy.mockClear();
-        // @ts-ignore: mocked events throw type errors
-        wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
-        expect(setStateSpy).toHaveBeenCalledWith({ searchTerm: expectedSearchTerm, showTypeAhead: true });
-      });
+    describe('when form is not valid', () => {
+      beforeAll(() => {
+        isFormValidSpy.mockImplementation(() => false)
+      })
 
-      it('calls onInputChange with searchTerm as lowercase target value', () => {
+      it('updates the searchTerm (for visual feedback) and hides type ahead', () => {
+        setStateSpy.mockClear();
+        const testTerm = 'hello';
         // @ts-ignore: mocked events throw type errors
-        props.onInputChange.mockClear();
-        wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
-        expect(props.onInputChange).toHaveBeenCalledWith(expectedSearchTerm);
-      });
+        wrapper.instance().handleValueChange({ target: { value: testTerm } });
+        expect(setStateSpy).toHaveBeenCalledWith({ searchTerm: testTerm, showTypeAhead: false });
+      })
     })
 
-    describe('if searchTerm has zero length', () => {
-      const mockSearchTerm = '';
-      it('calls clearSearchTerm', () => {
-        const clearSearchTermSpy = jest.spyOn(wrapper.instance(), 'clearSearchTerm');
-        // @ts-ignore: mocked events throw type errors
-        wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
-        expect(clearSearchTermSpy).toHaveBeenCalled();
+    describe('when form is valid', () => {
+      beforeAll(() => {
+        isFormValidSpy.mockImplementation(() => true)
+      })
+
+      describe('if searchTerm has length', () => {
+        const mockSearchTerm = 'I have Length';
+        const expectedSearchTerm = 'i have length';
+        it('calls setState with searchTerm as lowercase target value & showTypeAhead as true ', () => {
+          setStateSpy.mockClear();
+          // @ts-ignore: mocked events throw type errors
+          wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
+          expect(setStateSpy).toHaveBeenCalledWith({ searchTerm: expectedSearchTerm, showTypeAhead: true });
+        });
+
+        it('calls onInputChange with searchTerm as lowercase target value', () => {
+          // @ts-ignore: mocked events throw type errors
+          props.onInputChange.mockClear();
+          wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
+          expect(props.onInputChange).toHaveBeenCalledWith(expectedSearchTerm);
+        });
+      })
+
+      describe('if searchTerm has zero length', () => {
+        const mockSearchTerm = '';
+        it('calls clearSearchTerm', () => {
+          const clearSearchTermSpy = jest.spyOn(wrapper.instance(), 'clearSearchTerm');
+          // @ts-ignore: mocked events throw type errors
+          wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
+          expect(clearSearchTermSpy).toHaveBeenCalled();
+        });
       });
-    });
+    })
   });
 
   describe('handleValueSubmit', () => {
