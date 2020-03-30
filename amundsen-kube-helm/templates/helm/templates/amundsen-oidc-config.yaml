@@ -11,14 +11,33 @@ stringData:
       "web": {
         "client_id": "{{ .Values.frontEnd.OIDC_CLIENT_ID }}",
         "client_secret": "{{ .Values.frontEnd.OIDC_CLIENT_SECRET }}",
+
+        {{- if eq .Values.frontEnd.OIDC_PROVIDER "azure" }}
+        "auth_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/v2.0/authorize",
+        "token_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/v2.0/token",
+        "issuer": "{{ .Values.frontEnd.OIDC_ORG_URL }}/v2.0",
+        "userinfo_uri": "https://graph.microsoft.com/oidc/userinfo",
+
+        {{- else if eq .Values.frontEnd.OIDC_PROVIDER "google" }}
+        "auth_uri": "https://accounts.google.com/o/oauth2/v2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "issuer": "https://accounts.google.com",
+        "userinfo_uri": "https://openidconnect.googleapis.com/v1/userinfo",
+
+        {{- else }}
         "auth_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/{{ .Values.frontEnd.OIDC_AUTH_SERVER_ID }}/v1/authorize",
         "token_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/{{ .Values.frontEnd.OIDC_AUTH_SERVER_ID }}/v1/token",
         "issuer": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/{{ .Values.frontEnd.OIDC_AUTH_SERVER_ID }}",
         "userinfo_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/{{ .Values.frontEnd.OIDC_AUTH_SERVER_ID }}/v1/userinfo",
+        {{- end }}
         "redirect_uris": [
           "http://localhost/oidc_callback"
         ],
+        {{- if (eq .Values.frontEnd.OIDC_PROVIDER "azure") or (eq .Values.frontEnd.OIDC_PROVIDER "google") }}
+        "token_introspection_uri": ""
+        {{- else }}        
         "token_introspection_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/{{ .Values.frontEnd.OIDC_AUTH_SERVER_ID }}/v1/introspect"
+        {{- end }}
       }
     }
 {{- end }}
