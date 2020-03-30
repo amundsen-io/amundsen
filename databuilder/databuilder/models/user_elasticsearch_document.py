@@ -15,6 +15,7 @@ class UserESDocument(ElasticsearchDocument):
                  employee_type,  # type: str
                  manager_email,  # type: str
                  slack_id,  # type: str
+                 role_name,  # type: str
                  is_active,  # type: bool
                  total_read,  # type: int
                  total_own,  # type: int
@@ -30,6 +31,7 @@ class UserESDocument(ElasticsearchDocument):
         self.employee_type = employee_type
         self.manager_email = manager_email
         self.slack_id = slack_id
+        self.role_name = role_name
         self.is_active = is_active
         self.total_read = total_read
         self.total_own = total_own
