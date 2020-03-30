@@ -4,6 +4,7 @@
 [![Build Status](https://api.travis-ci.com/lyft/amundsendatabuilder.svg?branch=master)](https://travis-ci.com/lyft/amundsendatabuilder)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsendatabuilder/master.svg)](https://codecov.io/github/lyft/amundsendatabuilder?branch=master)
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/amundsen-databuilder.svg)](https://pypi.org/project/amundsen-databuilder/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://amundsenworkspace.slack.com/join/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
 
@@ -12,7 +13,7 @@ Amundsen Databuilder is a data ingestion library, which is inspired by [Apache G
 For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen#amundsen) `README.md` . Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture).
 
 ## Requirements
-- Python = 2.7.x or Python >= 3.6.x 
+- Python = 2.7.x or Python >= 3.6.x
 
 ## Concept
 ETL job consists of extraction of records from the source, transform records, if necessary, and load records into the sink. Amundsen Databuilder is a ETL framework for Amundsen and there are corresponding components for ETL called Extractor, Transformer, and Loader that deals with record level operation. A component called task controls all these three components.
@@ -149,7 +150,7 @@ Cluster([127.0.0.1], **kwargs)
 #### [GlueExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/glue_extractor.py "GlueExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from AWS Glue metastore.
 
-Before running make sure you have a working AWS profile configured and have access to search tables on Glue 
+Before running make sure you have a working AWS profile configured and have access to search tables on Glue
 ```python
 job_config = ConfigFactory.from_dict({
 	'extractor.glue.{}'.format(GlueExtractor.CLUSTER_KEY): cluster_identifier_string,
@@ -231,7 +232,7 @@ The API calls driving the extraction is defined [here](https://github.com/lyft/a
 
 You will need to create a service account for reading metadata and grant it "BigQuery Metadata Viewer" access to all of your datasets. This can all be done via the bigquery ui.
 
-Download the creditials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs. 
+Download the creditials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs.
 
 You can configure bigquery like this. You can optionally set a label filter if you only want to pull tables with a certain label.
 ```python
@@ -435,13 +436,12 @@ To solve this challenges, we introduce [RestApiQuery](https://github.com/lyft/am
 RestAPIQuery is:  
  1. Assuming that REST API is using HTTP(S) call with GET method -- RestAPIQuery intention's is **read**, not write -- where basic HTTP auth is supported out of the box. There's extension point on other authentication scheme such as Oauth, and pagination, etc.
  2. Usually, you want the subset of the response you get from the REST API call -- value extraction. To extract the value you want, RestApiQuery uses [JSONPath](https://goessner.net/articles/JsonPath/) which is similar product as XPATH of XML.
- 3. You can JOIN multiple RestApiQuery together. 
+ 3. You can JOIN multiple RestApiQuery together.
 
 More detail on JOIN operation in RestApiQuery:  
  1. It joins multiple RestApiQuery together by accepting prior RestApiQuery as a constructor -- a [Decorator pattern](https://en.wikipedia.org/wiki/Decorator_pattern)
- 2. In REST API, URL is the one that locates the resource we want. Here, JOIN simply means we need to find resource **based on the identifier that other query's result has**. In other words, when RestApiQuery forms URL, it uses previous query's result to compute the URL `e.g: Previous record: {"dashboard_id": "foo"}, URL before: http://foo.bar/dashboard/{dashboard_id} URL after compute: http://foo.bar/dashboard/foo` 
+ 2. In REST API, URL is the one that locates the resource we want. Here, JOIN simply means we need to find resource **based on the identifier that other query's result has**. In other words, when RestApiQuery forms URL, it uses previous query's result to compute the URL `e.g: Previous record: {"dashboard_id": "foo"}, URL before: http://foo.bar/dashboard/{dashboard_id} URL after compute: http://foo.bar/dashboard/foo`
 With this pattern RestApiQuery supports 1:1 and 1:N JOIN relationship.  
 (GROUP BY or any other aggregation, sub-query join is not supported)  
 
 To see in action, take a peek at [ModeDashboardExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/dashboard/mode_dashboard_extractor.py)
-
