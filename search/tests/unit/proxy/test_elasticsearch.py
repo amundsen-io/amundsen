@@ -49,6 +49,7 @@ class MockKVSearchResult:
                  github_username: str,
                  is_active: bool,
                  employee_type: str,
+                 role_name: str,
                  new_attr: str) -> None:
         self.full_name = full_name
         self.first_name = first_name
@@ -60,6 +61,7 @@ class MockKVSearchResult:
         self.is_active = is_active
         self.employee_type = employee_type
         self.new_attr = new_attr
+        self.role_name = role_name
 
 
 class Response:
@@ -123,6 +125,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                manager_email='manager@email.com',
                                                is_active=True,
                                                employee_type='FTE',
+                                               role_name='swe',
                                                new_attr='aaa')
 
     def test_setup_client(self) -> None:
@@ -498,6 +501,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                               github_username='ghub',
                                               manager_email='manager@email.com',
                                               is_active=True,
+                                              role_name='swe',
                                               employee_type='FTE')])
 
         resp = self.es_proxy.fetch_user_search_results(query_term='test_query_term',
