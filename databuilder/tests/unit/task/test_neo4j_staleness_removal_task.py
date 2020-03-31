@@ -1,4 +1,8 @@
+# Validation of Cypher statements causing Flake8 to fail. Disabling it on this file only
+# flake8: noqa
+
 import logging
+import textwrap
 import unittest
 
 from mock import patch
@@ -91,6 +95,322 @@ class TestRemoveStaleData(unittest.TestCase):
                              {'type': 'bar', 'count': 3}]
             targets = {'foo', 'bar'}
             task._validate_staleness_pct(total_records=total_records, stale_records=stale_records, types=targets)
+
+    def test_marker(self):
+        with patch.object(GraphDatabase, 'driver'):
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo'
+            })
+
+            task.init(job_config)
+            self.assertIsNone(task.ms_to_expire)
+            self.assertEqual(task.marker, 'foo')
+
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.MS_TO_EXPIRE):
+                    86400000,
+            })
+
+            task.init(job_config)
+            self.assertIsNotNone(task.ms_to_expire)
+            self.assertEqual(task.marker, '(timestamp() - 86400000)')
+
+    def test_validation_statement_publish_tag(self):
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_NODES):
+                    ['Foo'],
+                neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo',
+            })
+
+            task.init(job_config)
+            task._validate_node_staleness_pct()
+
+            mock_execute.assert_called()
+            mock_execute.assert_any_call(statement=textwrap.dedent("""
+            MATCH (n)
+            WITH DISTINCT labels(n) as node, count(*) as count
+            RETURN head(node) as type, count
+            """))
+
+            mock_execute.assert_any_call(param_dict={'marker': u'foo'},
+                                         statement=textwrap.dedent("""
+            MATCH (n)
+            WHERE 
+            n.published_tag <> $marker
+            OR NOT EXISTS(n.published_tag)
+            WITH DISTINCT labels(n) as node, count(*) as count
+            RETURN head(node) as type, count
+            """))
+
+            task._validate_relation_staleness_pct()
+            mock_execute.assert_any_call(param_dict={'marker': u'foo'},
+                                         statement=textwrap.dedent("""
+            MATCH ()-[n]-()
+            WHERE 
+            n.published_tag <> $marker
+            OR NOT EXISTS(n.published_tag)
+            RETURN type(n) as type, count(*) as count
+            """))
+
+    def test_validation_statement_ms_to_expire(self):
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.MS_TO_EXPIRE):
+                    9876543210
+            })
+
+            task.init(job_config)
+            task._validate_node_staleness_pct()
+
+            mock_execute.assert_called()
+            mock_execute.assert_any_call(statement=textwrap.dedent("""
+            MATCH (n)
+            WITH DISTINCT labels(n) as node, count(*) as count
+            RETURN head(node) as type, count
+            """))
+
+            mock_execute.assert_any_call(param_dict={'marker': '(timestamp() - 9876543210)'},
+                                         statement=textwrap.dedent("""
+            MATCH (n)
+            WHERE 
+            n.publisher_last_updated_epoch_ms < $marker
+            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
+            WITH DISTINCT labels(n) as node, count(*) as count
+            RETURN head(node) as type, count
+            """))
+
+            task._validate_relation_staleness_pct()
+            mock_execute.assert_any_call(param_dict={'marker': '(timestamp() - 9876543210)'},
+                                         statement=textwrap.dedent("""
+            MATCH ()-[n]-()
+            WHERE 
+            n.publisher_last_updated_epoch_ms < $marker
+            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
+            RETURN type(n) as type, count(*) as count
+            """))
+
+    def test_delete_statement_publish_tag(self):
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            mock_execute.return_value.single.return_value = {'count': 0}
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_NODES):
+                    ['Foo'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_RELATIONS):
+                    ['BAR'],
+                neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo',
+            })
+
+            task.init(job_config)
+            task._delete_stale_nodes()
+            task._delete_stale_relations()
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': u'foo', 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH (n:Foo)
+            WHERE 
+            n.published_tag <> $marker
+            OR NOT EXISTS(n.published_tag)
+            WITH n LIMIT $batch_size
+            DETACH DELETE (n)
+            RETURN COUNT(*) as count;
+            """))
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': u'foo', 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH ()-[n:BAR]-()
+            WHERE 
+            n.published_tag <> $marker
+            OR NOT EXISTS(n.published_tag)
+            WITH n LIMIT $batch_size
+            DELETE n
+            RETURN count(*) as count;
+                        """))
+
+    def test_delete_statement_ms_to_expire(self):
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            mock_execute.return_value.single.return_value = {'count': 0}
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_NODES):
+                    ['Foo'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_RELATIONS):
+                    ['BAR'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.MS_TO_EXPIRE):
+                    9876543210
+            })
+
+            task.init(job_config)
+            task._delete_stale_nodes()
+            task._delete_stale_relations()
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': '(timestamp() - 9876543210)', 'batch_size':  100},
+                                         statement=textwrap.dedent("""
+            MATCH (n:Foo)
+            WHERE 
+            n.publisher_last_updated_epoch_ms < $marker
+            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
+            WITH n LIMIT $batch_size
+            DETACH DELETE (n)
+            RETURN COUNT(*) as count;
+            """))
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': '(timestamp() - 9876543210)', 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH ()-[n:BAR]-()
+            WHERE 
+            n.publisher_last_updated_epoch_ms < $marker
+            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
+            WITH n LIMIT $batch_size
+            DELETE n
+            RETURN count(*) as count;
+                        """))
+
+    def test_ms_to_expire_too_small(self):
+        with patch.object(GraphDatabase, 'driver'):
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_NODES):
+                    ['Foo'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_RELATIONS):
+                    ['BAR'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.MS_TO_EXPIRE):
+                    24 * 60 * 60 * 100 - 10
+            })
+
+            try:
+                task.init(job_config)
+                self.assertTrue(False, 'Should have failed with small TTL   ')
+            except Exception:
+                pass
+
+        with patch.object(GraphDatabase, 'driver'):
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_NODES):
+                    ['Foo'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_RELATIONS):
+                    ['BAR'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.MS_TO_EXPIRE):
+                    24 * 60 * 60 * 1000,
+            })
+            task.init(job_config)
+
+
+    def test_delete_dry_run(self):
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            session_mock = mock_driver.return_value.session
+
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                'job.identifier': 'remove_stale_data_job',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_END_POINT_KEY):
+                    'foobar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_USER):
+                    'foo',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.NEO4J_PASSWORD):
+                    'bar',
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.STALENESS_MAX_PCT):
+                    5,
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_NODES):
+                    ['Foo'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.TARGET_RELATIONS):
+                    ['BAR'],
+                '{}.{}'.format(task.get_scope(), neo4j_staleness_removal_task.DRY_RUN):
+                    True,
+                neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo',
+            })
+
+            task.init(job_config)
+            task._delete_stale_nodes()
+            task._delete_stale_relations()
+
+            session_mock.assert_not_called()
 
 
 if __name__ == '__main__':
