@@ -8,11 +8,11 @@
     height: 40px;
     margin: 8px 0;
     padding: 8px 16px;
-    display: flex; 
+    display: flex;
     flex-direction: row;
   }
   .table-issue-link {
-    margin-right: $spacer-1; 
+    margin-right: $spacer-1;
     min-width: fit-content;
   }
   .issue-title-name {
@@ -33,15 +33,15 @@
     margin-left: $spacer-2;
   }
   .table-issue-priority {
-    margin-right: $spacer-1; 
-    border: 1px solid $rose80; 
+    margin-right: $spacer-1;
+    border: 1px solid $rose80;
     border-radius: 5px;
     padding: 1px 2px;
-    flex: none; 
+    flex: none;
   }
   .blocker {
-    color: $priority-text-blocker; 
-    // default is $rose80 
+    color: $priority-text-blocker;
+    // default is $rose80
     background-color: rgba($priority-bg-color, 1);
   }
   .critical {
@@ -53,16 +53,19 @@
   .minor {
     background-color: rgba($priority-bg-color, .1);
   }
+  .loading-spinner {
+    margin-top: auto;
+  }
 }
 .table-issue-more-issues {
-  margin-bottom: $spacer-1; 
-  margin-right: $spacer-1; 
+  margin-bottom: $spacer-1;
+  margin-right: $spacer-1;
 }
 .table-more-issues {
-  display: flex; 
-  font-size: 16px; 
+  display: flex;
+  font-size: 16px;
 }
 .table-report-new-issue {
-  margin-bottom: $spacer-1; 
+  margin-bottom: $spacer-1;
   margin-left: $spacer-1;
 }

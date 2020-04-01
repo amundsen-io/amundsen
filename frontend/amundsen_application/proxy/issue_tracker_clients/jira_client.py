@@ -11,7 +11,7 @@ from amundsen_application.models.issue_results import IssueResults
 import urllib.parse
 import logging
 
-SEARCH_STUB_ALL_ISSUES = 'text ~ "{table_key}" order by createdDate DESC'
+SEARCH_STUB_ALL_ISSUES = 'text ~ "\\"Table Key: {table_key} [PLEASE DO NOT REMOVE]\\"" order by createdDate DESC'
 # this is provided by jira as the type of a bug
 ISSUE_TYPE_ID = 1
 ISSUE_TYPE_NAME = 'Bug'

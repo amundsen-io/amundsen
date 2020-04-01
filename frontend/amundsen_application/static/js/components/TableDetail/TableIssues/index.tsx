@@ -3,30 +3,32 @@ import { GlobalState } from 'ducks/rootReducer';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Issue } from 'interfaces'; 
-import { getIssues } from 'ducks/issue/reducer'; 
+import { Issue } from 'interfaces';
+import { getIssues } from 'ducks/issue/reducer';
 import { logClick } from 'ducks/utilMethods';
 import { GetIssuesRequest } from 'ducks/issue/types';
+import LoadingSpinner from 'components/common/LoadingSpinner';
 import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import { NO_DATA_ISSUES_TEXT } from './constants';
 import './styles.scss';
 
 export interface StateFromProps {
-  issues: Issue[]; 
-  total: number; 
-  allIssuesUrl: string; 
+  issues: Issue[];
+  total: number;
+  allIssuesUrl: string;
+  isLoading: boolean;
 }
 
 export interface DispatchFromProps {
-  getIssues: (key: string) => GetIssuesRequest; 
+  getIssues: (key: string) => GetIssuesRequest;
 }
 
 export interface ComponentProps {
   tableKey: string;
-  tableName: string; 
+  tableName: string;
 }
 
-export type TableIssueProps = StateFromProps & DispatchFromProps & ComponentProps; 
+export type TableIssueProps = StateFromProps & DispatchFromProps & ComponentProps;
 
 export class TableIssues extends React.Component<TableIssueProps> {
   constructor(props) {
@@ -52,12 +54,12 @@ export class TableIssues extends React.Component<TableIssueProps> {
           <span className="issue-title-name">
             { issue.title }
           </span>
-        </span> 
+        </span>
         <span className="table-issue-status">
             {issue.status}
         </span>
       </div>
-    ); 
+    );
   }
 
   renderMoreIssuesMessage = (count: number, url: string) => {
@@ -65,21 +67,21 @@ export class TableIssues extends React.Component<TableIssueProps> {
       <span className="table-more-issues" key="more-issue-link">
         <a id="more-issues-link" className="table-issue-more-issues" target="_blank" href={url} onClick={logClick}>
          View all {count} issues
-        </a> 
-        | 
-        { this.renderReportIssueLink() } 
+        </a>
+        |
+        { this.renderReportIssueLink() }
       </span>
     );
   }
 
   renderReportIssueLink = () => {
     return (
-      <div className="table-report-new-issue"> 
+      <div className="table-report-new-issue">
         <ReportTableIssue tableKey={ this.props.tableKey } tableName={ this.props.tableName }/>
       </div>
-    ); 
+    );
   }
-  
+
   renderIssueTitle = () => {
     return (
       <div className="section-title title-3">
@@ -89,6 +91,17 @@ export class TableIssues extends React.Component<TableIssueProps> {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return (
+        <div>
+          {this.renderIssueTitle()}
+          <div className="table-issues">
+            <LoadingSpinner />
+          </div>
+        </div>
+      )
+    }
+
     if (this.props.issues.length === 0) {
       return (
         <div>
@@ -117,9 +130,10 @@ export class TableIssues extends React.Component<TableIssueProps> {
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    issues: state.issue.issues, 
-    total: state.issue.total, 
-    allIssuesUrl: state.issue.allIssuesUrl
+    issues: state.issue.issues,
+    total: state.issue.total,
+    allIssuesUrl: state.issue.allIssuesUrl,
+    isLoading: state.issue.isLoading,
   };
 };
 
