@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import flask
 import unittest
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
-from amundsen_application.proxy.issue_tracker_clients.jira_client import JiraClient
+from amundsen_application.proxy.issue_tracker_clients.jira_client import JiraClient, SEARCH_STUB_ALL_ISSUES
 from amundsen_application.models.data_issue import DataIssue
 from jira import JIRAError
 from typing import Dict, List
@@ -101,7 +101,7 @@ class JiraClientTest(unittest.TestCase):
             self.assertEqual(results.issues[0], self.mock_issue)
             self.assertEqual(results.total, self.mock_jira_issues.total)
             mock_JIRA_client.return_value.search_issues.assert_called_with(
-                'text ~ "key" order by createdDate DESC',
+                SEARCH_STUB_ALL_ISSUES.format(table_key="key"),
                 maxResults=3)
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')

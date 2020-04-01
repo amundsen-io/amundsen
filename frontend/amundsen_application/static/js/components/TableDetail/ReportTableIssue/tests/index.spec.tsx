@@ -4,30 +4,30 @@ import { shallow } from 'enzyme';
 
 import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
-import { 
+import {
   ComponentProps,
-  ReportTableIssue, 
-  ReportTableIssueProps, 
+  ReportTableIssue,
+  ReportTableIssueProps,
   mapDispatchToProps,
-  mapStateToProps, 
+  mapStateToProps,
 } from '..';
 import { NotificationType } from 'interfaces';
 
-const mockFormData = { 
-  'key': 'val1', 
-  'title': 'title', 
-  'description': 'description', 
-  'resource_name': 'resource name', 
-  'resource_path': 'path', 
-  'owners': 'test@test.com', 
+const mockFormData = {
+  'key': 'val1',
+  'title': 'title',
+  'description': 'description',
+  'resource_name': 'resource name',
+  'resource_path': 'path',
+  'owners': 'test@test.com',
   get: (key: string) => {
-    return mockFormData[key]; 
+    return mockFormData[key];
   }
  };
 
 const mockCreateIssuePayload = {
-  key: 'key', 
-  title: 'title', 
+  key: 'key',
+  title: 'title',
   description: 'description'
 }
 
@@ -40,7 +40,7 @@ const mockNotificationPayload = {
   recipients: ['owner@email'],
   sender: 'user@email'
 }
-  
+
 // @ts-ignore: How to mock FormData without TypeScript error?
 global.FormData = () => (mockFormData);
 
@@ -48,17 +48,16 @@ describe('ReportTableIssue', () => {
   const setStateSpy = jest.spyOn(ReportTableIssue.prototype, 'setState');
   const setup = (propOverrides?: Partial<ReportTableIssueProps>) => {
     const props: ReportTableIssueProps = {
-      isLoading: false,
-      createIssue: jest.fn(), 
-      tableKey: 'key', 
+      createIssue: jest.fn(),
+      tableKey: 'key',
       tableName: 'name',
-      tableOwners: ['owner@email'], 
-      tableMetadata: {...globalState.tableMetadata.tableData, 
-        schema: 'schema', 
+      tableOwners: ['owner@email'],
+      tableMetadata: {...globalState.tableMetadata.tableData,
+        schema: 'schema',
         name: 'table_name',
-        cluster: 'cluster', 
+        cluster: 'cluster',
         database: 'database'},
-      userEmail: 'user@email', 
+      userEmail: 'user@email',
       ...propOverrides
     };
     const wrapper = shallow<ReportTableIssue>(<ReportTableIssue {...props} />);
@@ -69,11 +68,11 @@ describe('ReportTableIssue', () => {
     it('Renders loading spinner if not ready', () => {
       const { props, wrapper } = setup();
       expect(wrapper.find('.loading-spinner')).toBeTruthy();
-    }); 
+    });
 
     it('Renders modal if open', () => {
-      const { props, wrapper } = setup({isLoading: false});
-      wrapper.setState({isOpen: true}); 
+      const { props, wrapper } = setup();
+      wrapper.setState({isOpen: true});
       expect(wrapper.find('.report-table-issue-modal')).toBeTruthy();
     });
 
@@ -87,37 +86,37 @@ describe('ReportTableIssue', () => {
         expect(setStateSpy).toHaveBeenCalledWith({ isOpen: !previsOpenState });
       });
     });
-    
+
     describe('submitForm', () => {
       it ('calls createIssue with mocked form data', () => {
         const { props, wrapper } = setup();
         // @ts-ignore: mocked events throw type errors
-        wrapper.instance().submitForm({ preventDefault: jest.fn(), 
+        wrapper.instance().submitForm({ preventDefault: jest.fn(),
         currentTarget: {id: 'id', nodeName: 'button'} });
         expect(props.createIssue).toHaveBeenCalledWith(
           mockCreateIssuePayload,
           mockNotificationPayload);
-        expect(wrapper.state().isOpen).toBe(false); 
+        expect(wrapper.state().isOpen).toBe(false);
       });
 
       it ('calls sets isOpen to false', () => {
         const { props, wrapper } = setup();
         // @ts-ignore: mocked events throw type errors
-        wrapper.instance().submitForm({ preventDefault: jest.fn(), 
+        wrapper.instance().submitForm({ preventDefault: jest.fn(),
         currentTarget: {id: 'id', nodeName: 'button'} });
-        expect(wrapper.state().isOpen).toBe(false); 
+        expect(wrapper.state().isOpen).toBe(false);
       });
-    }); 
+    });
 
     describe('mapDispatchToProps', () => {
       let dispatch;
       let props;
-    
+
       beforeAll(() => {
         dispatch = jest.fn(() => Promise.resolve());
         props = mapDispatchToProps(dispatch);
       });
-    
+
       it('sets getIssues on the props', () => {
         expect(props.createIssue).toBeInstanceOf(Function);
       });
@@ -128,10 +127,6 @@ describe('ReportTableIssue', () => {
       beforeAll(() => {
         result = mapStateToProps(globalState);
       });
-    
-      it('sets isLoading on the props', () => {
-        expect(result.isLoading).toEqual(globalState.issue.isLoading);
-      });
-    });  
-  }); 
-}); 
+    });
+  });
+});
