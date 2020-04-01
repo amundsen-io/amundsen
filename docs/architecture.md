@@ -21,6 +21,6 @@ The above diagram shows how metadata is modeled in Amundsen.
 
 ## Databuilder
 Amundsen provides a [data ingestion library](https://github.com/lyft/amundsendatabuilder) for building the metadata. At Lyft, we build the metadata once a day 
-using an Airflow DAG ([example](https://github.com/lyft/amundsendatabuilder/blob/master/example/dags/sample_dag.py)).
+using an Airflow DAG ([examples](https://github.com/lyft/amundsendatabuilder/tree/master/example/dags)).
 
 In addition to "real use" the databuilder is also employed as a handy tool to ingest some ["pre-cooked" demo data](https://github.com/lyft/amundsendatabuilder/blob/master/example/sample_data/) used in the Quickstart guide. This allows you to have a supersmall sample of data to explore so many of the features in Amundsen are lit up without you even having to setup any connections to databases etc. to ingest real data.
