@@ -444,7 +444,7 @@ More detail on JOIN operation in RestApiQuery:
 With this pattern RestApiQuery supports 1:1 and 1:N JOIN relationship.  
 (GROUP BY or any other aggregation, sub-query join is not supported)  
 
-To see in action, take a peek at [ModeDashboardExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/dashboard/mode_dashboard_extractor.py)
+To see in action, take a peek at [ModeDashboardExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/dashboard/mode_analytics/mode_dashboard_extractor.py)
 
 
 ### Removing stale data in Neo4j -- [Neo4jStalenessRemovalTask](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/task/neo4j_staleness_removal_task.py):
