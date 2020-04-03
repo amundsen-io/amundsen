@@ -6,6 +6,7 @@ import gremlin_python
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User as UserEntity
+from amundsen_common.models.dashboard import DashboardSummary
 from gremlin_python.driver.driver_remote_connection import \
     DriverRemoteConnection
 from gremlin_python.process.anonymous_traversal import traversal
@@ -138,6 +139,10 @@ class AbstractGremlinProxy(BaseProxy):
         pass
 
     def get_tags(self) -> List:
+        pass
+
+    def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
+            -> Dict[str, List[DashboardSummary]]:
         pass
 
     def get_table_by_user_relation(self, *, user_email: str,

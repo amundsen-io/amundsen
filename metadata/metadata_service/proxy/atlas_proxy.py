@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Tuple, Union
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Statistics, Table, Tag, User
 from amundsen_common.models.user import User as UserEntity
+from amundsen_common.models.dashboard import DashboardSummary
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import EntityUniqueAttribute
@@ -525,6 +526,10 @@ class AtlasProxy(BaseProxy):
                     )
                 )
         return tags
+
+    def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
+            -> Dict[str, List[DashboardSummary]]:
+        pass
 
     def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
         params = {

@@ -8,6 +8,7 @@ from amundsen_common.models.table import (Application, Column, Source,
                                           Statistics, Table, Tag, User,
                                           Watermark, ProgrammaticDescription)
 from amundsen_common.models.user import UserSchema
+from amundsen_common.models.dashboard import DashboardSummary
 from mock import MagicMock, patch
 from neo4j.v1 import GraphDatabase
 
@@ -555,11 +556,11 @@ class TestNeo4jProxy(unittest.TestCase):
             users = neo4j_proxy.get_users()
             self.assertEquals(users, UserSchema(many=True).load([test_user]).data)
 
-    def test_get_resources_by_user_relation(self) -> None:
+    def test_get_table_by_user_relation(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [
                 {
-                    'tbl': {
+                    'resource': {
                         'name': 'table_name'
                     },
                     'db': {
@@ -582,6 +583,37 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEqual(result['table'][0].database, 'db_name')
             self.assertEqual(result['table'][0].cluster, 'cluster')
             self.assertEqual(result['table'][0].schema, 'schema')
+
+    def test_get_dashboard_by_user_relation(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = [
+                {
+                    'uri': 'dashboard_uri',
+                    'cluster_name': 'cluster',
+                    'dg_name': 'dashboard_group',
+                    'dg_url': 'http://foo.bar/group',
+                    'name': 'dashboard',
+                    'url': 'http://foo.bar/dashboard',
+                    'description': 'description',
+                    'last_successful_run_timestamp': 1234567890
+                }
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            result = neo4j_proxy.get_dashboard_by_user_relation(user_email='test_user',
+                                                                relation_type=UserResourceRel.follow)
+
+            expected = DashboardSummary(uri='dashboard_uri',
+                                        cluster='cluster',
+                                        group_name='dashboard_group',
+                                        group_url='http://foo.bar/group',
+                                        name='dashboard',
+                                        url='http://foo.bar/dashboard',
+                                        description='description',
+                                        last_successful_run_timestamp=1234567890)
+
+            self.assertEqual(len(result['dashboard']), 1)
+            self.assertEqual(expected, result['dashboard'][0])
 
     def test_add_resource_relation_by_user(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -643,6 +675,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'description': 'description',
                     'group_name': 'group_name',
                     'group_url': 'http://www.group_url.com',
+                    'last_successful_run_timestamp': 9876543210,
                     'last_run_timestamp': 987654321,
                     'last_run_state': 'good_state',
                     'updated_timestamp': 123456654321,
@@ -705,6 +738,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                        group_name='group_name', group_url='http://www.group_url.com',
                                        name='dashboard name', url='http://www.foo.bar/dashboard_id',
                                        description='description', created_timestamp=123456789,
+                                       last_successful_run_timestamp=9876543210,
                                        updated_timestamp=123456654321, last_run_timestamp=987654321,
                                        last_run_state='good_state',
                                        owners=[User(email='test_email', first_name='test_first_name',
@@ -731,7 +765,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                         name='dashboard name', url='http://www.foo.bar/dashboard_id', description=None,
                                         created_timestamp=123456789, updated_timestamp=None, last_run_timestamp=None,
                                         last_run_state=None, owners=[], frequent_users=[], chart_names=[],
-                                        query_names=[], tables=[], tags=[])
+                                        query_names=[], tables=[], tags=[], last_successful_run_timestamp=None)
 
             self.assertEqual(expected2, dashboard2)
 
