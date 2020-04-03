@@ -20,6 +20,7 @@ class DashboardDetail:
     description: Optional[str] = attr.ib()
     created_timestamp: Optional[int] = attr.ib()
     updated_timestamp: Optional[int] = attr.ib()
+    last_successful_run_timestamp: Optional[int] = attr.ib()
     last_run_timestamp: Optional[int] = attr.ib()
     last_run_state: Optional[str] = attr.ib()
     owners: List[User] = attr.ib(factory=list)

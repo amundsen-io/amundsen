@@ -258,6 +258,9 @@ components:
         name:
           type: string
           description: 'Dashboard name'
+        url:
+          type: string
+          description: 'Dashboard URL'
         description:
           type: string
           description: 'Dashboard description'
@@ -305,6 +308,33 @@ components:
             description: 'Badges associated with the Dashboard'
             items:
               $ref: '#/components/schemas/TagFields'
+    DashboardSummary:
+      type: object
+      properties:
+        uri:
+          type: string
+          description: 'Unique identifier of the dashboard'
+        cluster:
+          type: string
+          description: 'Cluster name'
+        group_name:
+          type: string
+          description: 'Dashboard group name'
+        group_url:
+          type: string
+          description: 'Dashboard group URL'
+        name:
+          type: string
+          description: 'Dashboard name'
+        url:
+          type: string
+          description: 'Dashboard URL'
+        description:
+          type: string
+          description: 'Dashboard description'
+        last_successful_run_timestamp:
+          type: int
+          description: 'Dashboard last run timestamp in epoch'
     ErrorResponse:
       type: object
       properties:

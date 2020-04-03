@@ -5,6 +5,7 @@ from random import randint
 from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
                     no_type_check)
 
+from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Reader, Source,
                                           Statistics, Table, User,
@@ -853,57 +854,80 @@ class Neo4jProxy(BaseProxy):
             raise NotImplementedError(f'The relation type {relation_type} is not defined!')
         return relation
 
-    @staticmethod
-    def _get_user_table_relationship_clause(relation_type: UserResourceRel, tbl_key: str = None,
-                                            user_key: str = None) -> str:
-        """
-        Returns the relationship clause of a cypher query between users and tables
-        The User node is 'usr', the table node is 'tbl', and the relationship is 'rel'
-        e.g. (usr:User)-[rel:READ]->(tbl:Table), (usr)-[rel:READ]->(tbl)
-        """
-        tbl_matcher: str = ''
-        user_matcher: str = ''
-
-        if tbl_key is not None:
-            tbl_matcher += ':Table'
-            if tbl_key != '':
-                tbl_matcher += f' {{key: "{tbl_key}"}}'
-
-        if user_key is not None:
-            user_matcher += ':User'
-            if user_key != '':
-                user_matcher += f' {{key: "{user_key}"}}'
-
-        if relation_type == UserResourceRel.follow:
-            relation = f'(usr{user_matcher})-[rel:FOLLOW]->(tbl{tbl_matcher})'
-        elif relation_type == UserResourceRel.own:
-            relation = f'(usr{user_matcher})<-[rel:OWNER]-(tbl{tbl_matcher})'
-        elif relation_type == UserResourceRel.read:
-            relation = f'(usr{user_matcher})-[rel:READ]->(tbl{tbl_matcher})'
-        else:
-            raise NotImplementedError(f'The relation type {relation_type} is not defined!')
-        return relation
-
     @timer_with_counter
-    def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
+    def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
+            -> Dict[str, List[DashboardSummary]]:
         """
-        Retrive all follow the resources per user based on the relation.
-        We start with table resources only, then add dashboard.
+        Retrieve all follow the Dashboard per user based on the relation.
 
         :param user_email: the email of the user
         :param relation_type: the relation between the user and the resource
         :return:
         """
-        rel_clause: str = self._get_user_table_relationship_clause(relation_type=relation_type,
-                                                                   tbl_key='',
-                                                                   user_key=user_email)
-        query = textwrap.dedent(f"""
-        MATCH {rel_clause}<-[:TABLE]-(schema:Schema)<-[:SCHEMA]-(clstr:Cluster)<-[:CLUSTER]-(db:Database)
-        WITH db, clstr, schema, tbl
-        OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
-        RETURN db, clstr, schema, tbl, tbl_dscrpt""")
+        rel_clause: str = self._get_user_resource_relationship_clause(relation_type=relation_type,
+                                                                      id='',
+                                                                      resource_type=ResourceType.Dashboard,
+                                                                      user_key=user_email)
 
-        table_records = self._execute_cypher_query(statement=query, param_dict={'query_key': user_email})
+        # FYI, to extract last_successful_execution, it searches for its execution ID which is always
+        # _last_successful_execution
+        # https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/models/dashboard/dashboard_execution.py#L18
+        # https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/models/dashboard/dashboard_execution.py#L24
+
+        query = textwrap.dedent(f"""
+        MATCH {rel_clause}<-[:DASHBOARD]-(dg:Dashboardgroup)<-[:DASHBOARD_GROUP]-(clstr:Cluster)
+        OPTIONAL MATCH (resource)-[:DESCRIPTION]->(dscrpt:Description)
+        OPTIONAL MATCH (resource)-[:EXECUTED]->(last_exec:Execution)
+        WHERE split(last_exec.key, '/')[5] = '_last_successful_execution'
+        RETURN clstr.name as cluster_name, dg.name as dg_name, dg.dashboard_group_url as dg_url,
+        resource.key as uri, resource.name as name, resource.dashboard_url as url,
+        dscrpt.description as description, last_exec.timestamp as last_successful_run_timestamp""")
+
+        records = self._execute_cypher_query(statement=query, param_dict={'user_key': user_email})
+
+        if not records:
+            raise NotFoundException('User {user_id} does not {relation} on {resource_type} resources'.format(
+                user_id=user_email,
+                relation=relation_type,
+                resource_type=ResourceType.Dashboard.name))
+
+        results = []
+        for record in records:
+            results.append(DashboardSummary(
+                uri=record['uri'],
+                cluster=record['cluster_name'],
+                group_name=record['dg_name'],
+                group_url=record['dg_url'],
+                name=record['name'],
+                url=record['url'],
+                description=record['description'],
+                last_successful_run_timestamp=record['last_successful_run_timestamp'],
+            ))
+
+        return {ResourceType.Dashboard.name.lower(): results}
+
+    @timer_with_counter
+    def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
+            -> Dict[str, List[PopularTable]]:
+        """
+        Retrive all follow the Table per user based on the relation.
+
+        :param user_email: the email of the user
+        :param relation_type: the relation between the user and the resource
+        :return:
+        """
+        rel_clause: str = self._get_user_resource_relationship_clause(relation_type=relation_type,
+                                                                      id='',
+                                                                      resource_type=ResourceType.Table,
+                                                                      user_key=user_email)
+
+        query = textwrap.dedent(f"""
+            MATCH {rel_clause}<-[:TABLE]-(schema:Schema)<-[:SCHEMA]-(clstr:Cluster)<-[:CLUSTER]-(db:Database)
+            WITH db, clstr, schema, resource
+            OPTIONAL MATCH (resource)-[:DESCRIPTION]->(tbl_dscrpt:Description)
+            RETURN db, clstr, schema, resource, tbl_dscrpt""")
+
+        table_records = self._execute_cypher_query(statement=query, param_dict={'user_key': user_email})
 
         if not table_records:
             raise NotFoundException('User {user_id} does not {relation} any resources'.format(user_id=user_email,
@@ -914,9 +938,9 @@ class Neo4jProxy(BaseProxy):
                 database=record['db']['name'],
                 cluster=record['clstr']['name'],
                 schema=record['schema']['name'],
-                name=record['tbl']['name'],
+                name=record['resource']['name'],
                 description=self._safe_get(record, 'tbl_dscrpt', 'description')))
-        return {'table': results}
+        return {ResourceType.Table.name.lower(): results}
 
     @timer_with_counter
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
@@ -1048,6 +1072,8 @@ class Neo4jProxy(BaseProxy):
         MATCH (d:Dashboard {key: $query_key})-[:DASHBOARD_OF]->(dg:Dashboardgroup)-[:DASHBOARD_GROUP_OF]->(c:Cluster)
         OPTIONAL MATCH (d)-[:DESCRIPTION]->(description:Description)
         OPTIONAL MATCH (d)-[:EXECUTED]->(last_exec:Execution) WHERE split(last_exec.key, '/')[5] = '_last_execution'
+        OPTIONAL MATCH (d)-[:EXECUTED]->(last_success_exec:Execution)
+        WHERE split(last_success_exec.key, '/')[5] = '_last_successful_execution'
         OPTIONAL MATCH (d)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (d)-[:OWNER]->(owner:User)
         OPTIONAL MATCH (d)-[:TAG]->(tag:Tag)
@@ -1060,6 +1086,7 @@ class Neo4jProxy(BaseProxy):
         description.description as description,
         dg.name as group_name,
         dg.dashboard_group_url as group_url,
+        toInteger(last_success_exec.timestamp) as last_successful_run_timestamp,
         toInteger(last_exec.timestamp) as last_run_timestamp,
         last_exec.state as last_run_state,
         toInteger(t.timestamp) as updated_timestamp,
@@ -1084,6 +1111,8 @@ class Neo4jProxy(BaseProxy):
                                      description=self._safe_get(record, 'description'),
                                      group_name=self._safe_get(record, 'group_name'),
                                      group_url=self._safe_get(record, 'group_url'),
+                                     last_successful_run_timestamp=self._safe_get(record,
+                                                                                  'last_successful_run_timestamp'),
                                      last_run_timestamp=self._safe_get(record, 'last_run_timestamp'),
                                      last_run_state=self._safe_get(record, 'last_run_state'),
                                      updated_timestamp=self._safe_get(record, 'updated_timestamp'),

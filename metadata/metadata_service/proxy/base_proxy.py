@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Union
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User as UserEntity
+from amundsen_common.models.dashboard import DashboardSummary
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
@@ -79,6 +80,11 @@ class BaseProxy(metaclass=ABCMeta):
 
     @abstractmethod
     def get_tags(self) -> List:
+        pass
+
+    @abstractmethod
+    def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
+            -> Dict[str, List[DashboardSummary]]:
         pass
 
     @abstractmethod
