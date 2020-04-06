@@ -43,7 +43,7 @@ See the following [`example_superset_preview_client`](https://github.com/lyft/am
 
 ## Usage
 
-After implementing your custom Superset preview client class, point the `[preview_client]` entry point in your local `setup.py` to this class.
+Under the `[preview_client]` group, point the `table_preview_client_class` entry point in your local `setup.py` to your custom class.
 
 ```
 entry_points="""

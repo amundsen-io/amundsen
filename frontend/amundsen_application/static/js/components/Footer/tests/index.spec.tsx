@@ -1,12 +1,15 @@
 import * as React from 'react';
-import * as moment from 'moment-timezone';
-import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
 
 import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '../';
 
 import globalState from 'fixtures/globalState';
 
-/* TODO: Issues with mocking moment-timezone, all tests are failing
+import * as DateUtils from 'utils/dateUtils';
+
+const MOCK_DATE_STRING = 'Jan 1 2000 at 0:00:00 am';
+jest.spyOn(DateUtils, 'formatDateTimeLong').mockReturnValue(MOCK_DATE_STRING);
+
 describe('Footer', () => {
     let props: FooterProps;
     let subject;
@@ -16,7 +19,7 @@ describe('Footer', () => {
           lastIndexed: 1555632106,
           getLastIndexed: jest.fn(),
         };
-        subject = mount(<Footer {...props} />);
+        subject = shallow(<Footer {...props} />);
     });
 
     describe('componentDidMount', () => {
@@ -33,17 +36,22 @@ describe('Footer', () => {
         });
 
         it('renders correct content if this.state.lastIndexed', () => {
-            const expectedText = 'Amundsen was last indexed on April 18th 2019 at 5:01:46 pm';
+            const expectedText = `Amundsen was last indexed on ${MOCK_DATE_STRING}`;
             expect(subject.find('#footer').props().children).toBeTruthy();
-            // expect(subject.find('#footer').props().children().at(0).text()).toEqual(expectedText);
+            expect(subject.find('#footer').text()).toEqual(expectedText);
         });
 
-        it('renders no content if !this.state.lastIndexed', () => {
-            subject.setState({ lastIndexed: null });
+        it('renders no content if this.state.lastIndexed is null', () => {
+            subject.setProps({ lastIndexed: null });
+            expect(subject.find('#footer').props().children).toBeFalsy();
+        });
+
+        it('renders no content if this.state.lastIndexed is undefined', () => {
+            subject.setProps({ lastIndexed: undefined });
             expect(subject.find('#footer').props().children).toBeFalsy();
         });
     });
-});*/
+});
 
 describe('mapDispatchToProps', () => {
     let dispatch;

@@ -8,7 +8,6 @@ import { TableResource } from 'interfaces';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getDatabaseDisplayName, getDatabaseIconClass } from 'config/config-utils';
-import { formatDate } from 'utils/dateUtils';
 import BadgeList from 'components/common/BadgeList';
 
 export interface TableListItemProps {
@@ -54,7 +53,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
           </div>
           <div className="resource-badges">
             {
-              !!table.badges && table.badges.length > 0 && 
+              !!table.badges && table.badges.length > 0 &&
               <div>
                 <div className="body-secondary-3">
                 <BadgeList badges={ table.badges } />
