@@ -55,11 +55,18 @@ Atlas would be ready once you'll have the following output in the docker output 
 2. If `docker-amundsen-local.yml` stops because of `org.elasticsearch.bootstrap.StartupException: java.lang.IllegalStateException: Failed to create node environment`, then `es_amundsen` [cannot write](https://discuss.elastic.co/t/elastic-elasticsearch-docker-not-assigning-permissions-to-data-directory-on-run/65812/4) to `.local/elasticsearch`. 
    1. `chown -R 1000:1000 .local/elasticsearch`
    2. Restart `docker-compose` 
-2. If when running the sample data loader you recieve a connection error related to ElasticSearch or like this for Neo4j:
+3. If when running the sample data loader you recieve a connection error related to ElasticSearch or like this for Neo4j:
 ```
     Traceback (most recent call last):
       File "/home/ubuntu/amundsen/amundsendatabuilder/venv/lib/python3.6/site-packages/neobolt/direct.py", line 831, in _connect
         s.connect(resolved_address)
     ConnectionRefusedError: [Errno 111] Connection refused
 ```
+4. If `elastic search` container stops with an error `max file descriptors [4096] for elasticsearch process is too low, increase to at least [65535]`, then add the below code to the file `docker-amundsen-local.yml` in the `elasticsearch` definition.
+```
+ ulimits:
+   nofile:
+     soft: 65535
+     hard: 65535
+ ```
    Then check if all 5 Amundsen related containers are running with `docker ps`? Can you connect to the Neo4j UI at http://localhost:7474/browser/ and similarly the raw ES API at http://localhost:9200? Does Docker logs reveal any serious issues?
