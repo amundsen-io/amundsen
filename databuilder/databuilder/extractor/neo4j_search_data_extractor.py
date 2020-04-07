@@ -69,22 +69,26 @@ class Neo4jSearchDataExtractor(Extractor):
         """
     )
 
-    # todo: 1. change total_read once we have the usage;
-    #  2. add more fields once we have in the graph; 3. change mode to generic once add more support for dashboard
+    # todo: 1. change mode to generic once add more support for dashboard
     DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
         """
-        MATCH (dashboard:Dashboard)
-        OPTIONAL MATCH (dashboard)-[:DASHBOARD_OF]->(dbg:Dashboardgroup)
-        OPTIONAL MATCH (dashboard)-[:DESCRIPTION]->(db_descr:Description)
+        MATCH (db:Dashboard)
+        MATCH (db)-[:DASHBOARD_OF]->(dbg:Dashboardgroup)
+        MATCH (dbg)-[:DASHBOARD_GROUP_OF]->(cluster:Cluster)
+        OPTIONAL MATCH (db)-[:DESCRIPTION]->(db_descr:Description)
         OPTIONAL MATCH (dbg)-[:DESCRIPTION]->(dbg_descr:Description)
-        {publish_tag_filter}
-        with dashboard, dbg, db_descr, dbg_descr
-        where dashboard.name is not null
-        return dbg.name as dashboard_group, dashboard.name as dashboard_name,
+        OPTIONAL MATCH (db)-[:EXECUTED]->(last_exec:Execution)
+        WHERE split(last_exec.key, '/')[5] = '_last_successful_execution'
+        OPTIONAL MATCH (db)-[read:READ_BY]->(user:User)
+        OPTIONAL MATCH (db)-[:HAS_QUERY]->(query:Query)
+        with db, dbg, db_descr, dbg_descr, cluster, last_exec, query, SUM(read.read_count) AS total_usage
+        return dbg.name as dashboard_group, db.name as dashboard_name, cluster.name as cluster,
         coalesce(db_descr.description, '') as description,
-        coalesce(dbg.description, '') as dashboard_group_description,
-        'mode' as product,
-        1 AS total_usage
+        coalesce(dbg.description, '') as dashboard_group_description, dbg.dashboard_group_url as group_url,
+        db.dashboard_url as url, db.key as uri,
+        'mode' as product, last_exec.timestamp as last_successful_run_timestamp,
+        COLLECT(DISTINCT query.name) as query_names,
+        total_usage
         order by dbg.name
         """
     )
