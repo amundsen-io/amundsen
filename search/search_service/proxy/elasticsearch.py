@@ -27,6 +27,7 @@ LOGGING = logging.getLogger(__name__)
 
 # mapping to translate request for table resources
 TABLE_MAPPING = {
+    'badges': 'badges',
     'tag': 'tags',
     'schema': 'schema.raw',
     'table': 'name.raw',
