@@ -15,7 +15,13 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
                                        dashboard_name='test_dashboard_name',
                                        description='test_description',
                                        product='mode',
+                                       cluster='gold',
                                        dashboard_group_description='work space group',
+                                       query_names=['query1'],
+                                       group_url='mode_group_url',
+                                       url='mode_report_url',
+                                       uri='mode_dashboard://gold.cluster/dashboard_group/dashboard',
+                                       last_successful_run_timestamp=10,
                                        total_usage=10,
                                        tags=['test'])
 
@@ -23,6 +29,12 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
                                   "dashboard_name": "test_dashboard_name",
                                   "description": "test_description",
                                   "product": "mode",
+                                  "cluster": "gold",
+                                  "group_url": "mode_group_url",
+                                  "url": "mode_report_url",
+                                  "uri": "mode_dashboard://gold.cluster/dashboard_group/dashboard",
+                                  "query_names": ['query1'],
+                                  "last_successful_run_timestamp": 10,
                                   "dashboard_group_description": "work space group",
                                   "total_usage": 10,
                                   "tags": ["test"]
