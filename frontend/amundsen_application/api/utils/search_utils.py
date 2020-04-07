@@ -3,6 +3,7 @@ from typing import Dict, List  # noqa: F401
 
 # These can move to a configuration when we have custom use cases outside of these default values
 valid_search_fields = {
+    'badges',
     'column',
     'database',
     'schema',
