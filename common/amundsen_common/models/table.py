@@ -135,7 +135,7 @@ class Table:
     last_updated_timestamp: Optional[int] = None
     source: Optional[Source] = None
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
-    programmatic_descriptions: Optional[List[ProgrammaticDescription]] = None
+    programmatic_descriptions: List[ProgrammaticDescription] = []
 
 
 class TableSchema(AttrsSchema):
