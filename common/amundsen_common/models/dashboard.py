@@ -10,6 +10,7 @@ class DashboardSummary:
     cluster: str = attr.ib()
     group_name: str = attr.ib()
     group_url: str = attr.ib()
+    product: str = attr.ib()
     name: str = attr.ib()
     url: str = attr.ib()
     description: Optional[str] = None
