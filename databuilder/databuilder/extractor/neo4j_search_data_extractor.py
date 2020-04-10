@@ -82,9 +82,9 @@ class Neo4jSearchDataExtractor(Extractor):
         OPTIONAL MATCH (db)-[read:READ_BY]->(user:User)
         OPTIONAL MATCH (db)-[:HAS_QUERY]->(query:Query)
         with db, dbg, db_descr, dbg_descr, cluster, last_exec, query, SUM(read.read_count) AS total_usage
-        return dbg.name as dashboard_group, db.name as dashboard_name, cluster.name as cluster,
+        return dbg.name as group_name, db.name as name, cluster.name as cluster,
         coalesce(db_descr.description, '') as description,
-        coalesce(dbg.description, '') as dashboard_group_description, dbg.dashboard_group_url as group_url,
+        coalesce(dbg.description, '') as group_description, dbg.dashboard_group_url as group_url,
         db.dashboard_url as url, db.key as uri,
         'mode' as product, last_exec.timestamp as last_successful_run_timestamp,
         COLLECT(DISTINCT query.name) as query_names,
