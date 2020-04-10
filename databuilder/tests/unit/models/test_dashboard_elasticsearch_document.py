@@ -11,12 +11,12 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
         """
         Test string generated from to_json method
         """
-        test_obj = DashboardESDocument(dashboard_group='test_dashboard_group',
-                                       dashboard_name='test_dashboard_name',
+        test_obj = DashboardESDocument(group_name='test_dashboard_group',
+                                       name='test_dashboard_name',
                                        description='test_description',
                                        product='mode',
                                        cluster='gold',
-                                       dashboard_group_description='work space group',
+                                       group_description='work space group',
                                        query_names=['query1'],
                                        group_url='mode_group_url',
                                        url='mode_report_url',
@@ -25,8 +25,8 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
                                        total_usage=10,
                                        tags=['test'])
 
-        expected_document_dict = {"dashboard_group": "test_dashboard_group",
-                                  "dashboard_name": "test_dashboard_name",
+        expected_document_dict = {"group_name": "test_dashboard_group",
+                                  "name": "test_dashboard_name",
                                   "description": "test_description",
                                   "product": "mode",
                                   "cluster": "gold",
@@ -35,7 +35,7 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
                                   "uri": "mode_dashboard://gold.cluster/dashboard_group/dashboard",
                                   "query_names": ['query1'],
                                   "last_successful_run_timestamp": 10,
-                                  "dashboard_group_description": "work space group",
+                                  "group_description": "work space group",
                                   "total_usage": 10,
                                   "tags": ["test"]
                                   }
