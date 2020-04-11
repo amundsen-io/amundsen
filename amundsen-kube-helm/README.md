@@ -1,7 +1,5 @@
 # Amundsen k8s Helm Charts
 
-Current chart version is `1.0.0`
-
 Source code can be found [here](https://github.com/lyft/amundsen)
 
 ## What is this?
@@ -11,12 +9,11 @@ This is setup templates for deploying [amundsen](https://github.com/lyft/amundse
 1. Make sure you have the following command line clients setup:
     - k8s (kubectl)
     - helm
-    - tiller
-2. Build out a cloud based k8s cluster, such as [amazon eks.](https://aws.amazon.com/eks/)
+ 
 3. Ensure you can connect to your cluster with cli tools in step 1.
 
 ## Prerequisites
-1. 2.14 < Helm < 3
+1. Helm 2.14+
 2. Kubernetes 1.14+
 
 ## Chart Requirements
@@ -102,9 +99,14 @@ config:
     pagecache_size: 2Gi
 ```
 
-With this values file, you can then setup amundsen with these commands:
+With this values file, you can then install Amundsen using Helm 2 with:
+``` shell
+helm install ./templates/helm --values impl/helm/dev/values.yaml
 ```
-helm install templates/helm/amundsen --values impl/helm/dev/values.yaml
+
+For Helm 3 it's now mandatory to specify a [chart reference name](https://helm.sh/docs/intro/using_helm/#helm-install-installing-a-package) e.g. `my-amundsen`: 
+``` shell
+helm install my-amundsen ./templates/helm --values impl/helm/dev/values.yaml
 ```
 
 ## Other Notes
