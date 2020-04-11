@@ -9,7 +9,7 @@ This is setup templates for deploying [amundsen](https://github.com/lyft/amundse
 1. Make sure you have the following command line clients setup:
     - k8s (kubectl)
     - helm
- 
+2. Build out a cloud based k8s cluster, such as [Amazon EKS](https://aws.amazon.com/eks/)
 3. Ensure you can connect to your cluster with cli tools in step 1.
 
 ## Prerequisites
