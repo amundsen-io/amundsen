@@ -17,12 +17,12 @@ without developers needing to know the internals of the neo4j schema.
 
 ## The Models
 
-###TableMetadata
+### TableMetadata
 [python class](../databuilder/models/table_metadata.py)
 
 *What datasets does my org have?*
 
-####Description
+#### Description
 This corresponds to a dataset in amundsen and is the core building block.
 In addition to ColumnMetadata, tableMetadata is one of the first datasets you should extract as
 almost everything else depends on these being populated. 
@@ -32,13 +32,13 @@ In general, for Table and Column Metadata, you should be able to use one of the 
 in the [extractor package](../databuilder/extractor)
 
 
-### Watermark 
+### Watermark
 [python class](../databuilder/models/watermark.py)
 
 *What is the earliest data that this table has? What is the latest data?*
 This is NOT the same as when the data was last updated.
 
-####Description
+#### Description
 Corresponds to the earliest and latest date that a dataset has. Only makes
 sense if the dataset is timeseries data.
 For example, a given table may have data from 2019/01/01 -> 2020/01/01
@@ -55,14 +55,14 @@ Depending on the datastore of your dataset, you would extract this by:
 
 *How many queries is a given column getting? By which users?*
 
-####Description
 Has query counts per a given column per a user. This can help identify 
+#### Description
 who uses given datasets so people can contact them if they have questions
 on how to use a given dataset or if a dataset is changing. It is also used as a 
 search boost so that the most used tables are put to the top of the search results.
 
-####Extraction
 For more traditional databases, there should be system tables where you can obtain 
+#### Extraction
 these sorts of usage statistics.
 
 In other cases, you may need to use audit logs which could require a custom solution.
@@ -75,11 +75,11 @@ on a heuristic.
 
 *What users are there out there? Which team is this user on?*
 
-####Description
+#### Description
 Represents all of the metadata for a user at your company.
 This is required if you are going to be having authentication turned on.
 
-####Extraction
+#### Extraction
 TODO
 
 ### TableColumnStats
@@ -94,7 +94,7 @@ customizable.
 It also will probably require a distributed cluster in order to calculate these regularly and in general is
 probably the least accessible metrics to get at without a custom solution.
 
-####Extraction
+#### Extraction
 The idea here would be to implement something that does the following:
 For each table you care about:
 For each column you care about:
