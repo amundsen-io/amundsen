@@ -27,6 +27,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TableFields'
+    SearchDashboardResults:
+        type: object
+        properties:
+            total_results:
+                type: integer
+                description: 'number of results'
+                example: 10
+            results:
+                type: array
+                items:
+                    $ref: '#/components/schemas/DashboardFields'
     SearchUserResults:
       type: object
       properties:
@@ -81,6 +92,41 @@ components:
           type: integer
           description: 'table last updated time'
           example: 1568814420
+    DashboardFields:
+      type: object
+      properties:
+          uri:
+              type: string
+              description: 'dashboard uri'
+              example: 'mode:product/name'
+          cluster:
+              type: string
+              description: 'dashboard cluster'
+              example: 'gold'
+          group_name:
+              type: string
+              description: 'name of dashboard group'
+              example: 'Mode dashboard group'
+          group_url:
+              type: string
+              description: 'url of the dashboard group'
+              example: 'Mode dashboard group://'
+          product:
+              type: string
+              description: 'product of the dashboard group'
+              example: 'mode'
+          url:
+              type: string
+              description: 'url of the dashboard'
+              example: 'mode ://report'
+          description:
+              type: string
+              description: 'dashboard description'
+              example: 'this dashboard has info about that metric'
+          last_successful_run_timestamp:
+              type: integer
+              description: 'dashboard last successful run time'
+              example: 1568814420
     UserFields:
       type: object
       properties:
