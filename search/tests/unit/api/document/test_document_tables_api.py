@@ -1,7 +1,7 @@
 import unittest
 
 from http import HTTPStatus
-from mock import patch, Mock
+from mock import patch, Mock, MagicMock
 
 from search_service.api.document import DocumentTablesAPI
 from search_service import create_app
@@ -13,13 +13,13 @@ class TestDocumentTablesAPI(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
 
-    def tear_down(self):
+    def tear_down(self) -> None:
         self.app_context.pop()
 
     @patch('search_service.api.document.TableSchema')
     @patch('search_service.api.document.reqparse.RequestParser')
     @patch('search_service.api.document.get_proxy_client')
-    def test_post(self, get_proxy, RequestParser, TableSchema) -> None:
+    def test_post(self, get_proxy: MagicMock, RequestParser: MagicMock, TableSchema: MagicMock) -> None:
         mock_proxy = get_proxy.return_value = Mock()
         RequestParser().parse_args.return_value = dict(data='{}', index='fake_index')
         expected_value = TableSchema().loads.return_value = Mock()
@@ -31,7 +31,7 @@ class TestDocumentTablesAPI(unittest.TestCase):
     @patch('search_service.api.document.TableSchema')
     @patch('search_service.api.document.reqparse.RequestParser')
     @patch('search_service.api.document.get_proxy_client')
-    def test_put(self, get_proxy, RequestParser, TableSchema) -> None:
+    def test_put(self, get_proxy: MagicMock, RequestParser: MagicMock, TableSchema: MagicMock) -> None:
         mock_proxy = get_proxy.return_value = Mock()
         RequestParser().parse_args.return_value = dict(data='{}', index='fake_index')
         expected_value = TableSchema().loads.return_value = Mock()
@@ -40,12 +40,12 @@ class TestDocumentTablesAPI(unittest.TestCase):
         self.assertEqual(list(response)[1], HTTPStatus.OK)
         mock_proxy.update_document.assert_called_with(data=expected_value, index='fake_index')
 
-    def test_should_not_reach_create_with_id(self):
+    def test_should_not_reach_create_with_id(self) -> None:
         response = self.app.test_client().post('/document_table/1')
 
         self.assertEquals(response.status_code, 405)
 
-    def test_should_not_reach_update_with_id(self):
+    def test_should_not_reach_update_with_id(self) -> None:
         response = self.app.test_client().put('/document_table/1')
 
         self.assertEquals(response.status_code, 405)

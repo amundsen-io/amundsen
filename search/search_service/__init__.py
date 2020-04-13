@@ -11,6 +11,7 @@ from flask_cors import CORS
 from typing import Dict, Any  # noqa: F401
 from flasgger import Swagger
 
+from search_service.api.dashboard import SearchDashboardAPI
 from search_service.api.table import SearchTableAPI, SearchTableFieldAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
 from search_service.api.document import DocumentUserAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUsersAPI
@@ -88,6 +89,9 @@ def create_app(*, config_module_class: str) -> Flask:
 
     # User Search API
     api.add_resource(SearchUserAPI, '/search_user')
+
+    # Dashboard Search API
+    api.add_resource(SearchDashboardAPI, '/search_dashboard')
 
     # DocumentAPI
     api.add_resource(DocumentTablesAPI, '/document_table')

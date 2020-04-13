@@ -16,6 +16,7 @@ from search_service.api.table import TABLE_INDEX
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.user import User
+from search_service.models.dashboard import Dashboard
 from search_service.models.tag import Tag
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
@@ -614,3 +615,48 @@ class ElasticsearchProxy(BaseProxy):
             return ''
 
         return self._delete_document_helper(data=data, index=index)
+
+    @timer_with_counter
+    def fetch_dashboard_search_results(self, *,
+                                       query_term: str,
+                                       page_index: int = 0,
+                                       index: str = '') -> SearchResult:
+        """
+        Fetch dashboard search result with fuzzy search
+
+        :param query_term:
+        :param page_index:
+        :param index:
+        :return:
+        """
+        current_index = index if index else \
+            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
+
+        if not query_term:
+            # return empty result for blank query term
+            return SearchResult(total_results=0, results=[])
+        s = Search(using=self.elasticsearch, index=current_index)
+
+        query_name = {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["name.raw^75",
+                                   "name^5",
+                                   "group_name.raw^5",
+                                   "description^3",
+                                   "query_names^3"]
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+        return self._search_helper(page_index=page_index,
+                                   client=s,
+                                   query_name=query_name,
+                                   model=Dashboard)

@@ -9,6 +9,7 @@ from search_service.api.table import TABLE_INDEX
 from search_service.proxy import get_proxy_client
 from search_service.proxy.elasticsearch import ElasticsearchProxy
 from search_service.models.search_result import SearchResult
+from search_service.models.dashboard import Dashboard
 from search_service.models.table import Table
 from search_service.models.tag import Tag
 from search_service.models.user import User
@@ -38,7 +39,7 @@ class MockSearchResult:
         self.last_updated_timestamp = last_updated_timestamp
 
 
-class MockKVSearchResult:
+class MockUserSearchResult:
     def __init__(self, *,
                  first_name: str,
                  last_name: str,
@@ -116,17 +117,27 @@ class TestElasticsearchProxy(unittest.TestCase):
                                   badges=[self.mock_badge],
                                   last_updated_timestamp=1527283287)
 
-        self.mock_result4 = MockKVSearchResult(full_name='First Last',
-                                               first_name='First',
-                                               last_name='Last',
-                                               team_name='Test team',
-                                               email='test@email.com',
-                                               github_username='ghub',
-                                               manager_email='manager@email.com',
-                                               is_active=True,
-                                               employee_type='FTE',
-                                               role_name='swe',
-                                               new_attr='aaa')
+        self.mock_result4 = MockUserSearchResult(full_name='First Last',
+                                                 first_name='First',
+                                                 last_name='Last',
+                                                 team_name='Test team',
+                                                 email='test@email.com',
+                                                 github_username='ghub',
+                                                 manager_email='manager@email.com',
+                                                 is_active=True,
+                                                 employee_type='FTE',
+                                                 role_name='swe',
+                                                 new_attr='aaa')
+
+        self.mock_dashboard_result = Dashboard(uri='dashboard_uri',
+                                               cluster='gold',
+                                               group_name='mode_dashboard_group',
+                                               group_url='mode_dashboard_group_url',
+                                               product='mode',
+                                               name='mode_dashboard',
+                                               url='mode_dashboard_url',
+                                               description='test_dashboard',
+                                               last_successful_run_timestamp=1000)
 
     def test_setup_client(self) -> None:
         self.es_proxy = ElasticsearchProxy(
@@ -675,16 +686,53 @@ class TestElasticsearchProxy(unittest.TestCase):
         self.assertEquals(expected_alias, result)
         mock_elasticsearch.bulk.assert_called_with(expected_data)
 
-    def test__get_instance_string(self) -> None:
+    def test_get_instance_string(self) -> None:
         result = self.es_proxy._get_instance('column', 'value')
         self.assertEqual('value', result)
 
-    def test__get_instance_tag(self) -> None:
+    def test_get_instance_tag(self) -> None:
         result = self.es_proxy._get_instance('tags', ['value'])
         tags = [Tag(tag_name='value')]
         self.assertEqual(tags, result)
 
-    def test__get_instance_badge(self) -> None:
+    def test_get_instance_badge(self) -> None:
         result = self.es_proxy._get_instance('badges', ['badge1'])
         badges = [Tag(tag_name='badge1')]
         self.assertEqual(badges, result)
+
+    @patch('search_service.proxy.elasticsearch.ElasticsearchProxy._search_helper')
+    def test_fetch_dashboard_search_results(self,
+                                            mock_search: MagicMock) -> None:
+
+        self.mock_dashboard_result = Dashboard(uri='dashboard_uri',
+                                               cluster='gold',
+                                               group_name='mode_dashboard_group',
+                                               group_url='mode_dashboard_group_url',
+                                               product='mode',
+                                               name='mode_dashboard',
+                                               url='mode_dashboard_url',
+                                               description='test_dashboard',
+                                               last_successful_run_timestamp=1000)
+
+        mock_search.return_value = SearchResult(total_results=1,
+                                                results=[self.mock_dashboard_result])
+
+        expected = SearchResult(total_results=1,
+                                results=[Dashboard(uri='dashboard_uri',
+                                                   cluster='gold',
+                                                   group_name='mode_dashboard_group',
+                                                   group_url='mode_dashboard_group_url',
+                                                   product='mode',
+                                                   name='mode_dashboard',
+                                                   url='mode_dashboard_url',
+                                                   description='test_dashboard',
+                                                   last_successful_run_timestamp=1000)])
+
+        resp = self.es_proxy.fetch_dashboard_search_results(query_term='test_query_term',
+                                                            page_index=0,
+                                                            index='dashboard_search_index')
+        self.assertEquals(resp.total_results, expected.total_results)
+
+        self.assertDictEqual(vars(resp.results[0]),
+                             vars(expected.results[0]),
+                             "Search result doesn't match with expected result!")

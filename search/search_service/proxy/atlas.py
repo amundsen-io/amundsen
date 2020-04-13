@@ -271,3 +271,9 @@ class AtlasProxy(BaseProxy):
                                                page_index: int = 0,
                                                index: str = '') -> SearchResult:
         raise NotImplementedError()
+
+    def fetch_dashboard_search_results(self, *,
+                                       query_term: str,
+                                       page_index: int = 0,
+                                       index: str = '') -> SearchResult:
+        raise NotImplementedError()

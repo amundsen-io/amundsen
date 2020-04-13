@@ -1,0 +1,41 @@
+from search_service.models.dashboard import Dashboard
+
+
+def mock_proxy_results() -> Dashboard:
+    return Dashboard(uri='dashboard_uri',
+                     cluster='gold',
+                     group_name='mode_dashboard_group',
+                     group_url='mode_dashboard_group_url',
+                     product='mode',
+                     name='mode_dashboard',
+                     url='mode_dashboard_url',
+                     description='test_dashboard',
+                     last_successful_run_timestamp=1000)
+
+
+def mock_json_response() -> dict:
+    return {
+        "uri": 'dashboard_uri',
+        "cluster": 'gold',
+        "group_name": 'mode_dashboard_group',
+        "group_url": 'mode_dashboard_group_url',
+        "product": 'mode',
+        "name": 'mode_dashboard',
+        "url": 'mode_dashboard_url',
+        "description": 'test_dashboard',
+        "last_successful_run_timestamp": 1000,
+    }
+
+
+def default_json_response() -> dict:
+    return {
+        "uri": None,
+        "cluster": None,
+        "group_name": None,
+        "group_url": None,
+        "product": None,
+        "name": None,
+        "url": None,
+        "description": None,
+        "last_successful_run_timestamp": 0,
+    }
