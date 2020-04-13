@@ -28,6 +28,8 @@ node_modules/
 jest
 .coverage
 coverage
+**/coverage.xml
+**/htmlcov/**
 
 # IntelliJ
 *.iml
