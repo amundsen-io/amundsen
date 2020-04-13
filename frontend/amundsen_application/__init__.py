@@ -15,6 +15,7 @@ from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.search.v0 import search_blueprint
+from amundsen_application.api.preview.dashboard.v0 import dashboard_preview_blueprint
 from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
 
 
@@ -71,6 +72,7 @@ def create_app(config_module_class: str, template_folder: str = None) -> Flask:
     app.register_blueprint(preview_blueprint)
     app.register_blueprint(search_blueprint)
     app.register_blueprint(api_bp)
+    app.register_blueprint(dashboard_preview_blueprint)
     init_routes(app)
 
     init_custom_routes = app.config.get('INIT_CUSTOM_ROUTES')
