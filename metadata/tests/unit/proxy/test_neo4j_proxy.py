@@ -592,6 +592,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'cluster_name': 'cluster',
                     'dg_name': 'dashboard_group',
                     'dg_url': 'http://foo.bar/group',
+                    'product': 'foobar',
                     'name': 'dashboard',
                     'url': 'http://foo.bar/dashboard',
                     'description': 'description',
@@ -607,6 +608,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                         cluster='cluster',
                                         group_name='dashboard_group',
                                         group_url='http://foo.bar/group',
+                                        product='foobar',
                                         name='dashboard',
                                         url='http://foo.bar/dashboard',
                                         description='description',
@@ -670,6 +672,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'cluster_name': 'cluster_name',
                     'uri': 'foo_dashboard://gold.bar/dashboard_id',
                     'url': 'http://www.foo.bar/dashboard_id',
+                    'product': 'foobar',
                     'name': 'dashboard name',
                     'created_timestamp': 123456789,
                     'description': 'description',
@@ -679,6 +682,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'last_run_timestamp': 987654321,
                     'last_run_state': 'good_state',
                     'updated_timestamp': 123456654321,
+                    'recent_view_count': 100,
                     'owners': [
                         {
                             'employee_type': 'teamMember',
@@ -720,6 +724,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'cluster_name': 'cluster_name',
                     'uri': 'foo_dashboard://gold.bar/dashboard_id',
                     'url': 'http://www.foo.bar/dashboard_id',
+                    'product': 'foobar',
                     'name': 'dashboard name',
                     'created_timestamp': 123456789,
                     'description': None,
@@ -728,6 +733,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'last_run_timestamp': None,
                     'last_run_state': None,
                     'updated_timestamp': None,
+                    'recent_view_count': 0,
                     'owners': [],
                     'tags': []
                 }
@@ -736,6 +742,7 @@ class TestNeo4jProxy(unittest.TestCase):
             dashboard = neo4j_proxy.get_dashboard(id='dashboard_id')
             expected = DashboardDetail(uri='foo_dashboard://gold.bar/dashboard_id', cluster='cluster_name',
                                        group_name='group_name', group_url='http://www.group_url.com',
+                                       product='foobar',
                                        name='dashboard name', url='http://www.foo.bar/dashboard_id',
                                        description='description', created_timestamp=123456789,
                                        last_successful_run_timestamp=9876543210,
@@ -755,17 +762,20 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     employee_type='teamMember', manager_fullname='')],
                                        frequent_users=[], chart_names=[], query_names=[], tables=[],
                                        tags=[Tag(tag_type='tag_type1', tag_name='tag_key1'),
-                                             Tag(tag_type='tag_type2', tag_name='tag_key2')])
+                                             Tag(tag_type='tag_type2', tag_name='tag_key2')],
+                                       recent_view_count=100)
 
             self.assertEqual(expected, dashboard)
 
             dashboard2 = neo4j_proxy.get_dashboard(id='dashboard_id')
             expected2 = DashboardDetail(uri='foo_dashboard://gold.bar/dashboard_id', cluster='cluster_name',
                                         group_name='group_name', group_url='http://www.group_url.com',
-                                        name='dashboard name', url='http://www.foo.bar/dashboard_id', description=None,
+                                        product='foobar', name='dashboard name',
+                                        url='http://www.foo.bar/dashboard_id', description=None,
                                         created_timestamp=123456789, updated_timestamp=None, last_run_timestamp=None,
                                         last_run_state=None, owners=[], frequent_users=[], chart_names=[],
-                                        query_names=[], tables=[], tags=[], last_successful_run_timestamp=None)
+                                        query_names=[], tables=[], tags=[], last_successful_run_timestamp=None,
+                                        recent_view_count=0)
 
             self.assertEqual(expected2, dashboard2)
 

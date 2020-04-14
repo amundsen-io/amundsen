@@ -15,6 +15,7 @@ class DashboardDetail:
     cluster: str = attr.ib()
     group_name: str = attr.ib()
     group_url: str = attr.ib()
+    product: str = attr.ib()
     name: str = attr.ib()
     url: str = attr.ib()
     description: Optional[str] = attr.ib()
@@ -30,6 +31,7 @@ class DashboardDetail:
     tables: List[PopularTable] = attr.ib(factory=list)
     tags: List[Tag] = attr.ib(factory=list)
     badges: List[Tag] = attr.ib(factory=list)
+    recent_view_count: Optional[int] = attr.ib(default=0)
 
 
 class DashboardSchema(AttrsSchema):
