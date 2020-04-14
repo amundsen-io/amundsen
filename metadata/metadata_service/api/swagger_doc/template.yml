@@ -255,6 +255,10 @@ components:
         group_url:
           type: string
           description: 'Dashboard group URL'
+        product:
+          type: string
+          description: 'Dashboard product name'
+          example: 'mode'
         name:
           type: string
           description: 'Dashboard name'
@@ -308,6 +312,10 @@ components:
             description: 'Badges associated with the Dashboard'
             items:
               $ref: '#/components/schemas/TagFields'
+        recent_view_count:
+          type: int
+          description: 'Dashboard recent view count. Not using explicit duration, as it is up to timely ingestion and timely removal of stale data'
+          example: 1024
     DashboardSummary:
       type: object
       properties:
@@ -323,6 +331,10 @@ components:
         group_url:
           type: string
           description: 'Dashboard group URL'
+        product:
+          type: string
+          description: 'Dashboard product name'
+          example: 'mode'
         name:
           type: string
           description: 'Dashboard name'

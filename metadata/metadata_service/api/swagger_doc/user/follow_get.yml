@@ -22,6 +22,10 @@ responses:
               type: array
               items:
                 $ref: '#/components/schemas/PopularTables'
+            dashboard:
+              type: array
+              items:
+                $ref: '#/components/schemas/DashboardSummary'
   404:
     description: 'User not found'
     content:
