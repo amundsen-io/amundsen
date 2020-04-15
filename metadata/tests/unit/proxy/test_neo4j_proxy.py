@@ -3,22 +3,22 @@ import textwrap
 import unittest
 from typing import Any, Dict  # noqa: F401
 
+from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Source,
                                           Statistics, Table, Tag, User,
                                           Watermark, ProgrammaticDescription)
 from amundsen_common.models.user import UserSchema
-from amundsen_common.models.dashboard import DashboardSummary
 from mock import MagicMock, patch
 from neo4j.v1 import GraphDatabase
 
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
 from metadata_service.util import UserResourceRel
-from metadata_service.entity.resource_type import ResourceType
 
 
 class TestNeo4jProxy(unittest.TestCase):
@@ -718,6 +718,24 @@ class TestNeo4jProxy(unittest.TestCase):
                             'tag_type': 'tag_type2'
 
                         }
+                    ],
+                    'charts': [{'name': 'chart1'}, {'name': 'chart2'}],
+                    'queries': [{'name': 'query1'}, {'name': 'query2'}],
+                    'tables': [
+                        {
+                            'database': 'db1',
+                            'name': 'table1',
+                            'description': 'table description 1',
+                            'cluster': 'cluster1',
+                            'schema': 'schema1'
+                        },
+                        {
+                            'database': 'db2',
+                            'name': 'table2',
+                            'description': None,
+                            'cluster': 'cluster2',
+                            'schema': 'schema2'
+                        }
                     ]
                 },
                 {
@@ -735,7 +753,10 @@ class TestNeo4jProxy(unittest.TestCase):
                     'updated_timestamp': None,
                     'recent_view_count': 0,
                     'owners': [],
-                    'tags': []
+                    'tags': [],
+                    'charts': [],
+                    'queries': [],
+                    'tables': []
                 }
             ]
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
@@ -760,7 +781,19 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     github_username='test-github2',
                                                     team_name='test_team2', slack_id='test_id2',
                                                     employee_type='teamMember', manager_fullname='')],
-                                       frequent_users=[], chart_names=[], query_names=[], tables=[],
+                                       frequent_users=[], chart_names=['chart1', 'chart2'],
+                                       query_names=['query1', 'query2'],
+                                       tables=[
+                                           PopularTable(database='db1',
+                                                        name='table1',
+                                                        description='table description 1',
+                                                        cluster='cluster1',
+                                                        schema='schema1'),
+                                           PopularTable(database='db2',
+                                                        name='table2',
+                                                        cluster='cluster2',
+                                                        schema='schema2'),
+                                       ],
                                        tags=[Tag(tag_type='tag_type1', tag_name='tag_key1'),
                                              Tag(tag_type='tag_type2', tag_name='tag_key2')],
                                        recent_view_count=100)
