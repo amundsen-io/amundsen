@@ -56,7 +56,7 @@ search:
   ##
   ## search.imageVersion -- The image version of the search container.
   ##
-  imageVersion: 2.0.0
+  imageVersion: 2.1.3
   ##
   ## search.replicas -- How many replicas of the search service to run.
   ##
@@ -140,7 +140,7 @@ frontEnd:
   ##
   ## frontEnd.imageVersion -- The frontend version of the metadata container.
   ##
-  imageVersion: 2.0.0
+  imageVersion: 2.1.0
   ##
   ## frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   ##
@@ -234,11 +234,11 @@ neo4j:
     ##
     dbms:
       ## neo4j.config.dbms.heap_initial_size -- the initial java heap for neo4j
-      heap_initial_size: 23000m
+      heap_initial_size: 2G
       ## neo4j.config.dbms.heap_max_size -- the max java heap for neo4j
-      heap_max_size: 23000m
+      heap_max_size: 2G
       ## neo4j.config.dbms.pagecache_size -- the page cache size for neo4j
-      pagecache_size: 26600m
+      pagecache_size: 2G
 
   ##
   ## neo4j.persistence -- Neo4j persistence. Turn this on to keep your data between pod crashes, etc. This is also needed for backups.
