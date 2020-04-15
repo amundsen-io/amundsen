@@ -1084,6 +1084,16 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (d)-[read:READ_BY]->(:User)
         WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
         sum(read.read_count) as recent_view_count
+        OPTIONAL MATCH (d)-[:HAS_QUERY]->(query:Query)
+        OPTIONAL MATCH (query)-[:HAS_CHART]->(chart:Chart)
+        WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags, recent_view_count,
+        collect(query) as queries, collect(chart) as charts
+        OPTIONAL MATCH (d)-[:DASHBOARD_WITH_TABLE]->(table:Table)<-[:TABLE]-(schema:Schema)
+        <-[:SCHEMA]-(cluster:Cluster)<-[:CLUSTER]-(db:Database)
+        OPTIONAL MATCH (table)-[:DESCRIPTION]->(table_description:Description)
+        WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags, recent_view_count, queries, charts,
+        collect({name: table.name, schema: schema.name, cluster: cluster.name, database: db.name,
+        description: table_description.description}) as tables
         RETURN
         c.name as cluster_name,
         d.key as uri,
@@ -1100,7 +1110,10 @@ class Neo4jProxy(BaseProxy):
         toInteger(t.timestamp) as updated_timestamp,
         owners,
         tags,
-        recent_view_count;
+        recent_view_count,
+        queries,
+        charts,
+        tables;
         """
                                                      )
         record = self._execute_cypher_query(statement=get_dashboard_detail_query,
@@ -1111,6 +1124,9 @@ class Neo4jProxy(BaseProxy):
 
         owners = [self._build_user_from_record(record=owner) for owner in record['owners']]
         tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in record['tags']]
+        chart_names = [chart['name'] for chart in record['charts'] if 'name' in chart and chart['name']]
+        query_names = [query['name'] for query in record['queries'] if 'name' in query and query['name']]
+        tables = [PopularTable(**table) for table in record['tables'] if 'name' in table and table['name']]
 
         return DashboardDetailEntity(uri=record['uri'],
                                      cluster=record['cluster_name'],
@@ -1128,7 +1144,10 @@ class Neo4jProxy(BaseProxy):
                                      updated_timestamp=self._safe_get(record, 'updated_timestamp'),
                                      owners=owners,
                                      tags=tags,
-                                     recent_view_count=record['recent_view_count']
+                                     recent_view_count=record['recent_view_count'],
+                                     chart_names=chart_names,
+                                     query_names=query_names,
+                                     tables=tables
                                      )
 
     @timer_with_counter
