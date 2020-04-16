@@ -163,11 +163,25 @@ class UserOwnsAPI(Resource):
         :return:
         """
         try:
+            table_key = ResourceType.Table.name.lower()
+            dashboard_key = ResourceType.Dashboard.name.lower()
+            result = {
+                table_key: [],
+                dashboard_key: []
+            }  # type: Dict[str, List[Any]]
+
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.own)
-            if len(resources['table']) > 0:
-                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
-            return {'table': []}, HTTPStatus.OK
+            if resources and table_key in resources and len(resources[table_key]) > 0:
+                result[table_key] = PopularTableSchema(many=True).dump(resources[table_key]).data
+
+            resources = self.client.get_dashboard_by_user_relation(user_email=user_id,
+                                                                   relation_type=UserResourceRel.own)
+
+            if resources and dashboard_key in resources and len(resources[dashboard_key]) > 0:
+                result[dashboard_key] = DashboardSummarySchema(many=True).dump(resources[dashboard_key]).data
+
+            return result, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
