@@ -57,12 +57,49 @@ extra:
 nav:
   - 'Overview': index.md
   - 'Architecture': architecture.md
-  - 'Developer Guide': developer_guide.md
+  - 'Developer Guide':
+    - 'Overview': developer_guide.md
   - 'User Guide':
     - 'Quick Start': 'installation.md'
     - 'Deployment':
       - 'Authentication': 'authentication/oidc.md'
       - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
       - 'K8S Installation': 'k8s_install.md'
+  - 'Components':
+    - 'Frontend':
+        - 'Overview': 'frontend/README.md'
+        - 'Configuration':
+          - 'Application Config': 'frontend/docs/application_config.md'
+          - 'React Configuration': 'frontend/docs/configuration.md'
+          - 'Flask Configuration': 'frontend/docs/flask_config.md'
+          - 'Preview Client Setup': 'frontend/docs/examples/superset_preview_client.md'
+        - 'FE Developer Guide': 'frontend/docs/developer_guide.md'
+        - 'FE Installation Guide': 'frontend/docs/installation.md'
+        - 'Recommended Practices': 'frontend/docs/recommended_practices.md'
+        - 'Code Of Conduct': 'frontend/CODE_OF_CONDUCT.md'
+    - 'Search':
+      - 'Overview': 'search/README.md'
+      - 'Proxy':
+        - 'Atlas Backend': 'search/docs/atlas-search.md'
+      - 'Code Of Conduct': 'search/CODE_OF_CONDUCT.md'
+    - 'Metadata':
+      - 'Overview': 'metadata/README.md'
+      - 'Configuration':
+        - 'Overview': 'metadata/docs/configurations.md'
+      - 'Metadata API Structure': 'metadata/docs/structure.md'
+      - 'Proxy':
+        - 'Atlas Backend':
+            - 'Overview': 'metadata/docs/proxy/atlas_proxy.md'
+            - 'Popular Table': 'metadata/docs/proxy/atlas/popular_tables.md'
+        - 'Gremlin Backend': 'metadata/docs/proxy/gremlin.md'
+        - 'Neptune Backend': 'metadata/docs/proxy/neptune.md'
+      - 'Code Of Conduct': 'metadata/CODE_OF_CONDUCT.md'
+    - 'Databuilder':
+      - 'Overview': 'databuilder/README.md'
+      - 'Models': 'databuilder/docs/models.md'
+      - 'Code Of Conduct': 'databuilder/CODE_OF_CONDUCT.md'
+    - 'Common':
+      - 'Overview': 'common/README.md'
+      - 'Code Of Conduct': 'common/CODE_OF_CONDUCT.md'
   - 'FAQ': faq.md
   - 'Roadmap': roadmap.md
