@@ -1,5 +1,5 @@
 <img
-  src="docs/img/logos/amundsen_logo_on_light.svg"
+  src="img/logos/amundsen_logo_on_light.svg"
   alt="Amundsen"
   width="500"
 />
