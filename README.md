@@ -21,6 +21,8 @@ Users could either load the data with [a python script](https://github.com/lyft/
 or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/tree/master/example/dags) importing the library.
 - [amundsencommon](https://github.com/lyft/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen.
 
+## Doc
+- https://lyft.github.io/amundsen/
 
 ## Requirements
 - Python = 3.6 or 3.7 (AmundsenDatabuilder: Python >= 2.7.x)
