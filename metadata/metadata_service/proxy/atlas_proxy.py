@@ -1,7 +1,7 @@
 import logging
 import re
 from random import randint
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union
 
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Statistics, Table, Tag, User
@@ -41,7 +41,6 @@ class AtlasProxy(BaseProxy):
     READER_TYPE = 'Reader'
     QN_KEY = 'qualifiedName'
     BKMARKS_KEY = 'isFollowing'
-    METADATA_KEY = 'metadata'
     GUID_KEY = 'guid'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
@@ -122,7 +121,7 @@ class AtlasProxy(BaseProxy):
         pattern = re.compile(r"""
         ^(?P<db>[^.]*)
         \.
-        (?P<table>[^.]*)\.metadata
+        (?P<table>[^.]*)
         \.
         (?P<user_id>[^.]*)\.reader
         \@
@@ -132,7 +131,7 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(reader_qn)
         return result.groupdict() if result else dict()
 
-    def _get_table_entity(self, *, table_uri: str) -> Tuple[EntityUniqueAttribute, Dict]:
+    def _get_table_entity(self, *, table_uri: str) -> EntityUniqueAttribute:
         """
         Fetch information from table_uri and then find the appropriate entity
         The reason, we're not returning the entity_unique_attribute().entity
@@ -149,8 +148,7 @@ class AtlasProxy(BaseProxy):
                                              )
 
         try:
-            return self._driver.entity_unique_attribute(
-                table_info['entity'], qualifiedName=table_qn), table_info
+            return self._driver.entity_unique_attribute(table_info['entity'], qualifiedName=table_qn)
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException('Table URI( {table_uri} ) does not exist'
@@ -169,10 +167,9 @@ class AtlasProxy(BaseProxy):
             raise NotFoundException('(User {user_id}) does not exist'
                                     .format(user_id=user_id))
 
-    def _create_reader(self, metadata_guid: str, user_guid: str, reader_qn: str, table_uri: str) -> None:
+    def _create_reader(self, table_entity: EntityUniqueAttribute, user_guid: str, reader_qn: str) -> None:
         """
         Creates a reader entity for a specific user and table uri.
-        :param metadata_guid: Table's metadata guid
         :param user_guid: User's guid
         :param reader_qn: Reader qualifiedName
         :return:
@@ -182,11 +179,12 @@ class AtlasProxy(BaseProxy):
             'attributes': {'qualifiedName': reader_qn,
                            'isFollowing': True,
                            'count': 0,
-                           'entityMetadata': {'guid': metadata_guid},
-                           'user': {'guid': user_guid},
-                           'entityUri': table_uri}
+                           'user': {'guid': user_guid}}
         }
-        self._driver.entity_bulk.create(data={'entities': [reader_entity]})
+
+        self._driver.entity_post.create(data=reader_entity)
+        table_entity.entity[self.ATTRS_KEY]['readers'].append(reader_entity)
+        table_entity.update()
 
     def _get_reader_entity(self, table_uri: str, user_id: str) -> EntityUniqueAttribute:
         """
@@ -197,22 +195,21 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         table_info = self._extract_info_from_uri(table_uri=table_uri)
-        reader_qn = '{}.{}.metadata.{}.reader@{}'.format(table_info.get('db'),
-                                                         table_info.get('name'),
-                                                         user_id,
-                                                         table_info.get('cluster'))
+        reader_qn = '{}.{}.{}.reader@{}'.format(table_info.get('db'),
+                                                table_info.get('name'),
+                                                user_id,
+                                                table_info.get('cluster'))
 
         try:
             reader_entity = self._driver.entity_unique_attribute(
                 self.READER_TYPE, qualifiedName=reader_qn)
             if not reader_entity.entity:
-                # Fetch the table entity from the uri for obtaining metadata guid.
-                table_entity, table_info = self._get_table_entity(table_uri=table_uri)
+                table_entity = self._get_table_entity(table_uri=table_uri)
                 # Fetch user entity from user_id for relation
                 user_entity = self._get_user_entity(user_id)
-                # Create reader entity with the metadata and user relation.
-                self._create_reader(table_entity.entity[self.ATTRS_KEY][self.METADATA_KEY][self.GUID_KEY],
-                                    user_entity.entity[self.GUID_KEY], reader_qn, table_uri)
+                # Create reader entity with the user relation.
+                self._create_reader(table_entity.entity[self.ATTRS_KEY][self.GUID_KEY],
+                                    user_entity.entity[self.GUID_KEY], reader_qn)
                 # Fetch reader entity after creating it.
                 reader_entity = self._driver.entity_unique_attribute(self.READER_TYPE, qualifiedName=reader_qn)
             return reader_entity
@@ -230,7 +227,7 @@ class AtlasProxy(BaseProxy):
         :return: A dictionary containing the column details
         """
         try:
-            table_entity, _ = self._get_table_entity(table_uri=table_uri)
+            table_entity = self._get_table_entity(table_uri=table_uri)
             columns = table_entity.entity[self.REL_ATTRS_KEY].get('columns')
             for column in columns or list():
                 col_details = table_entity.referredEntities[column['guid']]
@@ -257,23 +254,18 @@ class AtlasProxy(BaseProxy):
         for column in entity.entity[self.REL_ATTRS_KEY].get('columns') or list():
             col_entity = entity.referredEntities[column['guid']]
             col_attrs = col_entity[self.ATTRS_KEY]
-            col_rel_attrs = col_entity[self.REL_ATTRS_KEY]
-            col_metadata = col_rel_attrs.get('metadata')
             statistics = list()
 
-            if col_metadata:
-                col_metadata = entity.referredEntities.get(col_metadata.get('guid'))
-
-                for stats in col_metadata['attributes'].get('statistics') or list():
-                    stats_attrs = stats['attributes']
-                    statistics.append(
-                        Statistics(
-                            stat_type=stats_attrs.get('stat_name'),
-                            stat_val=stats_attrs.get('stat_val'),
-                            start_epoch=stats_attrs.get('start_epoch'),
-                            end_epoch=stats_attrs.get('end_epoch'),
-                        )
+            for stats in col_attrs.get('statistics') or list():
+                stats_attrs = stats['attributes']
+                statistics.append(
+                    Statistics(
+                        stat_type=stats_attrs.get('stat_name'),
+                        stat_val=stats_attrs.get('stat_val'),
+                        start_epoch=stats_attrs.get('start_epoch'),
+                        end_epoch=stats_attrs.get('end_epoch'),
                     )
+                )
 
             columns.append(
                 Column(
@@ -299,7 +291,7 @@ class AtlasProxy(BaseProxy):
         :return: A Table object with all the information available
         or gathered from different entities.
         """
-        entity, table_info = self._get_table_entity(table_uri=table_uri)
+        entity = self._get_table_entity(table_uri=table_uri)
         table_details = entity.entity
 
         try:
@@ -352,7 +344,7 @@ class AtlasProxy(BaseProxy):
         :param owner: Email address of the owner
         :return: None, as it simply adds the owner.
         """
-        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity = self._get_table_entity(table_uri=table_uri)
         entity.entity[self.ATTRS_KEY]['owner'] = owner
         entity.update()
 
@@ -362,7 +354,7 @@ class AtlasProxy(BaseProxy):
         :param table_uri:
         :return: The description of the table as a string
         """
-        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity = self._get_table_entity(table_uri=table_uri)
         return entity.entity[self.ATTRS_KEY].get('description')
 
     def put_table_description(self, *,
@@ -374,7 +366,7 @@ class AtlasProxy(BaseProxy):
         :param description: Description string
         :return: None
         """
-        entity, _ = self._get_table_entity(table_uri=table_uri)
+        entity = self._get_table_entity(table_uri=table_uri)
         entity.entity[self.ATTRS_KEY]['description'] = description
         entity.update()
 
@@ -388,7 +380,7 @@ class AtlasProxy(BaseProxy):
         :param tag_type
         :return: None
         """
-        entity, _ = self._get_table_entity(table_uri=id)
+        entity = self._get_table_entity(table_uri=id)
         entity_bulk_tag = {"classification": {"typeName": tag},
                            "entityGuids": [entity.entity['guid']]}
         self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
@@ -403,7 +395,7 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         try:
-            entity, _ = self._get_table_entity(table_uri=id)
+            entity = self._get_table_entity(table_uri=id)
             guid_entity = self._driver.entity_guid(entity.entity['guid'])
             guid_entity.classifications(tag).delete()
         except Exception as ex:
@@ -444,48 +436,19 @@ class AtlasProxy(BaseProxy):
             column_name=column_name)
         return column_detail[self.ATTRS_KEY].get('description')
 
-    @_CACHE.region('atlas_proxy', '_get_metadata_entities')
-    def _get_metadata_entities(self, popular_query_params: dict) -> List:
-        try:
-            popular_tables_guids = list()
-
-            # Fetch the metadata entities based on popularity score
-            search_results = self._driver.search_basic.create(data=popular_query_params)
-            for metadata in search_results.entities:
-                table_guid = metadata.attributes.get("table").get("guid")
-                popular_tables_guids.append(table_guid)
-
-            # In order to get comments and other extra fields from table entity
-            table_collection = self._driver.entity_bulk(guid=popular_tables_guids,
-                                                        ignoreRelationships=True)
-
-            table_entities: List = list()
-            for _collection in table_collection:
-                table_entities.extend(_collection.entities)
-
-            return table_entities
-
-        except (KeyError, TypeError) as ex:
-            LOGGER.exception(f'_get_metadata_entities Failed : {ex}')
-            raise NotFoundException('Unable to fetch popular tables. '
-                                    'Please check your configurations.')
-
     def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
         """
         :param num_entries: Number of popular tables to fetch
         :return: A List of popular tables instances
         """
         popular_tables = list()
-        popular_query_params = {'typeName': 'table_metadata',
+        popular_query_params = {'typeName': 'Table',
                                 'sortBy': 'popularityScore',
                                 'sortOrder': 'DESCENDING',
                                 'excludeDeletedEntities': True,
-                                'limit': num_entries,
-                                'attributes': ['table']}
-
-        table_entities = self._get_metadata_entities(popular_query_params)
-
-        for table in table_entities:
+                                'limit': num_entries}
+        search_results = self._driver.search_basic.create(data=popular_query_params)
+        for table in search_results.entities:
             table_attrs = table.attributes
 
             table_qn = parse_table_qualified_name(

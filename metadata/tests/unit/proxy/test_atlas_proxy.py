@@ -41,24 +41,18 @@ class TestAtlasProxy(unittest.TestCase, Data):
         mocked_entity.entity = entity
         if mocked_entity.entity == self.entity1:
             mocked_entity.referredEntities = {
-                self.test_column['guid']: self.test_column,
-                self.column_metadata_entity['guid']: self.column_metadata_entity
+                self.test_column['guid']: self.test_column
             }
         else:
             mocked_entity.referredEntities = {}
-        self.proxy._get_table_entity = MagicMock(return_value=(mocked_entity, {    # type: ignore
-            'entity': self.entity_type,
-            'cluster': self.cluster,
-            'db': self.db,
-            'name': entity['attributes']['name']
-        }))
+        self.proxy._get_table_entity = MagicMock(return_value=mocked_entity)  # type: ignore
         return mocked_entity
 
     def _mock_get_reader_entity(self, entity: Optional[Any] = None) -> Any:
         entity = entity or self.entity1
         mocked_entity = MagicMock()
         mocked_entity.entity = entity
-        self.proxy._get_reader_entity = MagicMock(return_value=mocked_entity)    # type: ignore
+        self.proxy._get_reader_entity = MagicMock(return_value=mocked_entity)  # type: ignore
         return mocked_entity
 
     def test_extract_table_uri_info(self) -> None:
@@ -90,13 +84,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.proxy._driver.entity_unique_attribute = MagicMock(
             return_value=unique_attr_response)
-        ent, table_info = self.proxy._get_table_entity(table_uri=self.table_uri)
-        self.assertDictEqual(table_info, {
-            'entity': self.entity_type,
-            'cluster': self.cluster,
-            'db': self.db,
-            'name': self.name
-        })
+        ent = self.proxy._get_table_entity(table_uri=self.table_uri)
+
         self.assertEqual(ent.__repr__(), unique_attr_response.__repr__())
 
     def test_get_table(self) -> None:
@@ -107,10 +96,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
         ent_attrs = cast(dict, self.entity1['attributes'])
 
         col_attrs = cast(dict, self.test_column['attributes'])
-        col_metadata_attrs = cast(dict, self.column_metadata_entity['attributes'])
         exp_col_stats = list()
 
-        for stats in col_metadata_attrs['statistics']:
+        for stats in col_attrs['statistics']:
             exp_col_stats.append(
                 Statistics(
                     stat_type=stats['attributes']['stat_name'],
@@ -151,35 +139,17 @@ class TestAtlasProxy(unittest.TestCase, Data):
             self.proxy.get_table(table_uri=self.table_uri)
 
     def test_get_popular_tables(self) -> None:
-        meta1: Dict = copy.deepcopy(self.metadata1)
-        meta2: Dict = copy.deepcopy(self.metadata2)
+        ent1 = self.to_class(self.entity1)
+        ent2 = self.to_class(self.entity2)
 
-        meta1['attributes']['table'] = self.entity1
-        meta2['attributes']['table'] = self.entity2
+        table_collection = MagicMock()
 
-        metadata1 = self.to_class(meta1)
-        metadata2 = self.to_class(meta2)
+        table_collection.entities = [ent1, ent2]
 
-        metadata_collection = MagicMock()
-        metadata_collection.entities = [metadata1, metadata2]
-
-        result = MagicMock(return_value=metadata_collection)
+        result = MagicMock(return_value=table_collection)
 
         with patch.object(self.proxy._driver.search_basic, 'create', result):
-            entities_collection = MagicMock()
-            entities_collection.entities = [self.to_class(self.entity1), self.to_class(self.entity2)]
-
-            self.proxy._driver.entity_bulk = MagicMock(return_value=[entities_collection])
-
             response = self.proxy.get_popular_tables(num_entries=2)
-
-            # Call multiple times for cache test.
-            self.proxy.get_popular_tables(num_entries=2)
-            self.proxy.get_popular_tables(num_entries=2)
-            self.proxy.get_popular_tables(num_entries=2)
-            self.proxy.get_popular_tables(num_entries=2)
-
-            self.assertEqual(self.proxy._driver.entity_bulk.call_count, 1)
 
             ent1_attrs = cast(dict, self.entity1['attributes'])
             ent2_attrs = cast(dict, self.entity2['attributes'])
@@ -192,71 +162,6 @@ class TestAtlasProxy(unittest.TestCase, Data):
             ]
 
             self.assertEqual(expected.__repr__(), response.__repr__())
-
-    # noinspection PyTypeChecker
-    def test_get_popular_tables_without_db(self) -> None:
-        meta1: Dict = copy.deepcopy(self.metadata1)
-        meta2: Dict = copy.deepcopy(self.metadata2)
-
-        meta1['attributes']['table'] = self.entity1
-        meta2['attributes']['table'] = self.entity2
-
-        metadata1 = self.to_class(meta1)
-        metadata2 = self.to_class(meta2)
-
-        metadata_collection = MagicMock()
-        metadata_collection.entities = [metadata1, metadata2]
-
-        result = MagicMock(return_value=metadata_collection)
-
-        with patch.object(self.proxy._driver.search_basic, 'create', result):
-            entity1: Dict = copy.deepcopy(self.entity1)
-            entity2: Dict = copy.deepcopy(self.entity2)
-
-            for entity in [entity1, entity2]:
-                entity['attributes']['qualifiedName'] = entity['attributes']['name']
-
-            entities_collection = MagicMock()
-            entities_collection.entities = [self.to_class(entity1), self.to_class(entity2)]
-
-            # Invalidate the cache to test the cache functionality
-            popular_query_params = {'typeName': 'table_metadata',
-                                    'sortBy': 'popularityScore',
-                                    'sortOrder': 'DESCENDING',
-                                    'excludeDeletedEntities': True,
-                                    'limit': 2,
-                                    'attributes': ['table']}
-            self.proxy._CACHE.region_invalidate(self.proxy._get_metadata_entities,
-                                                None, '_get_metadata_entities',
-                                                popular_query_params)
-
-            self.proxy._driver.entity_bulk = MagicMock(return_value=[entities_collection])
-            response = self.proxy.get_popular_tables(num_entries=2)
-
-            # Call multiple times for cache test.
-            self.proxy.get_popular_tables(num_entries=2)
-            self.proxy.get_popular_tables(num_entries=2)
-            self.proxy.get_popular_tables(num_entries=2)
-            self.proxy.get_popular_tables(num_entries=2)
-
-            self.assertEqual(1, self.proxy._driver.entity_bulk.call_count)
-
-            ent1_attrs = cast(dict, self.entity1['attributes'])
-            ent2_attrs = cast(dict, self.entity2['attributes'])
-
-            expected = [
-                PopularTable(database=self.entity_type, cluster='default', schema='default',
-                             name=ent1_attrs['name'], description=ent1_attrs['description']),
-                PopularTable(database=self.entity_type, cluster='default', schema='default',
-                             name=ent2_attrs['name'], description=ent1_attrs['description']),
-            ]
-
-            self.assertEqual(expected.__repr__(), response.__repr__())
-
-    def test_get_popular_tables_search_exception(self) -> None:
-        with self.assertRaises(NotFoundException):
-            self.proxy._driver.entity_bulk = MagicMock(return_value=None)
-            self.proxy._get_metadata_entities({'query': 'test'})
 
     def test_get_table_description(self) -> None:
         self._mock_get_table_entity()
