@@ -1079,7 +1079,7 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (d)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (d)-[:OWNER]->(owner:User)
         WITH c, dg, d, description, last_exec, last_success_exec, t, collect(owner) as owners
-        OPTIONAL MATCH (d)-[:TAG]->(tag:Tag)
+        OPTIONAL MATCH (d)-[:TAGGED_BY]->(tag:Tag)
         WITH c, dg, d, description, last_exec, last_success_exec, t, owners, collect(tag) as tags
         OPTIONAL MATCH (d)-[read:READ_BY]->(:User)
         WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
