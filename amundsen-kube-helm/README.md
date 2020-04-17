@@ -25,8 +25,6 @@ This is setup templates for deploying [amundsen](https://github.com/lyft/amundse
 ## Chart Values
 The following table lists the configurable parameters of the Amundsen charts and their default values.
 
-## Chart Values
-
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | LONG_RANDOM_STRING | int | `1234` | A long random string. You should probably provide your own. This is needed for OIDC. |
