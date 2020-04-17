@@ -1,9 +1,9 @@
 site_name: Amundsen
 repo_name: Amundsen
-repo_url: https://github.com/feng-tao/Amundsen
+repo_url: https://github.com/lyft/Amundsen
 site_description: "Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data."
 site_author: Lyft, Inc.
-site_url: https://feng-tao.github.io/amundsen/
+site_url: https://lyft.github.io/amundsen/
 remote_branch: gh-pages
 
 copyright: 'Copyright &copy; 2020 Lyft, Inc.'

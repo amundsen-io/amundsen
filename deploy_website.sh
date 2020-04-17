@@ -1,6 +1,6 @@
 set -ex
 
-#REPO="git@github.com:feng-tao/amundsen.git"
+#REPO="git@github.com:lyft/amundsen.git"
 #DIR=temp-clone
 
 # Delete any existing temporary website clone.
