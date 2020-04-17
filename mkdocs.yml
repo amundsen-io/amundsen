@@ -1,0 +1,68 @@
+site_name: Amundsen
+repo_name: Amundsen
+repo_url: https://github.com/feng-tao/Amundsen
+site_description: "Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data."
+site_author: Lyft, Inc.
+site_url: https://feng-tao.github.io/amundsen/
+remote_branch: gh-pages
+
+copyright: 'Copyright &copy; 2020 Lyft, Inc.'
+
+theme:
+  name: 'material'
+  logo: img/logos/icon-square.png
+  favicon: 'img/logos/icon-square.png'
+  palette:
+    primary: 'red'
+    accent: 'pink'
+  feature:
+    tabs: true
+
+extra_css:
+  - 'css/app.css'
+
+markdown_extensions:
+  - admonition
+  - smarty
+  - codehilite:
+      guess_lang: false
+      linenums: True
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - tables
+
+
+extra:
+  # type is the name of the FontAwesome icon without the fa- prefix.
+  social:
+    - type: globe
+      link: https://lyft.github.io/
+    - type: github-alt
+      link: https://github.com/lyft
+    - type: twitter
+      link: https://twitter.com/lyfteng
+    - type: linkedin
+      link: https://www.linkedin.com/company/lyft/
+
+nav:
+  - 'Overview': index.md
+  - 'Architecture': architecture.md
+  - 'Developer Guide': developer_guide.md
+  - 'User Guide':
+    - 'Quick Start': 'installation.md'
+    - 'Deployment':
+      - 'Authentication': 'authentication/oidc.md'
+      - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
+      - 'K8S Installation': '../amundsen-kube-helm/README.md'
+  - 'FAQ': faq.md
+  - 'Roadmap': roadmap.md
