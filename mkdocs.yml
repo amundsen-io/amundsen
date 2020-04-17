@@ -10,10 +10,10 @@ copyright: 'Copyright &copy; 2020 Lyft, Inc.'
 
 theme:
   name: 'material'
-  logo: img/logos/icon-square.png
-  favicon: 'img/logos/icon-square.png'
+  logo: img/logos/amundsen_mark_orange.svg
+  favicon: 'img/logos/amundsen_mark_orange.svg'
   palette:
-    primary: 'red'
+    primary: 'blue'
     accent: 'pink'
   feature:
     tabs: true
@@ -63,6 +63,6 @@ nav:
     - 'Deployment':
       - 'Authentication': 'authentication/oidc.md'
       - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
-      - 'K8S Installation': '../amundsen-kube-helm/README.md'
+      - 'K8S Installation': 'k8s_install.md'
   - 'FAQ': faq.md
   - 'Roadmap': roadmap.md
