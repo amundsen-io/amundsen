@@ -1,5 +1,5 @@
 <img
-  src="img/logos/amundsen_logo_on_light.svg"
+  src="https://github.com/lyft/amundsen/blob/master/docs/img/logos/amundsen_logo_on_light.svg"
   alt="Amundsen"
   width="500"
 />
@@ -31,23 +31,23 @@ Please note that the mock images only served as demonstration purpose.
 
 - **Landing Page**: The landing page for Amundsen including 1. search bars; 2. popular used tables;
 
-    ![](docs/img/landing_page.png)
+    ![](https://github.com/lyft/amundsen/blob/master/docs/img/landing_page.png)
 
 - **Search Preview**: See inline search results as you type
 
-    ![](docs/img/search_preview.png)
+    ![](https://github.com/lyft/amundsen/blob/master/docs/img/search_preview.png)
 
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
-    ![](docs/img/table_detail_page_with_badges.png)
+    ![](https://github.com/lyft/amundsen/blob/master/docs/img/table_detail_page_with_badges.png)
 
 - **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
 
-    ![](docs/img/column_details.png)
+    ![](https://github.com/lyft/amundsen/blob/master/docs/img/column_details.png)
 
 - **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset) or other Data Visualization Tools.
 
-    ![](docs/img/data_preview.png)
+    ![](https://github.com/lyft/amundsen/blob/master/docs/img/data_preview.png)
 
 ## Get Involved in the Community
 
@@ -60,7 +60,7 @@ Please visit the Amundsen installation documentation for a [quick start](https:/
 
 ## Architecture Overview
 
-Please visit [Architecture](docs/architecture.md#architecture) for Amundsen architecture overview.
+Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
 
 ## Supported connectors
 Amundsen supports two kinds of "nodes" in its graph today:
@@ -77,11 +77,11 @@ The databases we see most frequently used in the community are:
 
 ## Installation
 
-Please visit [Installation guideline](docs/installation.md) on how to install Amundsen.
+Please visit [Installation guideline](https://github.com/lyft/amundsen/blob/master/docs/installation.md) on how to install Amundsen.
 
 ## Roadmap
 
-Please visit [Roadmap](docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
+Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
 
 ## Blog Posts and Interviews
 
