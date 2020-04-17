@@ -13,8 +13,8 @@ theme:
   logo: img/logos/amundsen_mark_orange.svg
   favicon: 'img/logos/amundsen_mark_orange.svg'
   palette:
-    primary: 'blue'
-    accent: 'pink'
+    primary: 'deep purple'
+    accent: 'deep orange'
   feature:
     tabs: true
 
