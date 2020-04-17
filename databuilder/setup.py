@@ -32,7 +32,12 @@ bigquery = [
 
 jsonpath = ['jsonpath_rw==1.4.0']
 
-all_deps = requirements + kafka + cassandra + glue + snowflake + athena + bigquery + jsonpath
+db2 = [
+    'ibm_db',
+    'ibm-db-sa-py3'
+]
+
+all_deps = requirements + kafka + cassandra + glue + snowflake + athena + bigquery + jsonpath + db2
 
 setup(
     name='amundsen-databuilder',
@@ -54,7 +59,8 @@ setup(
         'snowflake': snowflake,
         'athena': athena,
         'bigquery': bigquery,
-        'jsonpath': jsonpath
+        'jsonpath': jsonpath,
+        'db2': db2
     },
     classifiers=[
         'Programming Language :: Python :: 2.7',

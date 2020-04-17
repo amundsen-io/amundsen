@@ -198,6 +198,25 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [Db2MetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/db2_metadata_extractor.py "Db2MetadataExtractor")
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Unix, Windows or Linux Db2 database or BigSQL.
+
+The `where_clause_suffix` below should define which schemas you'd like to query or those that you would not (see [the sample data loader](https://github.com/lyft/amundsendatabuilder/blob/master/example/sample_db2_data_loader.py) for an example).
+
+The SQL query driving the extraction is defined [here](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/db2_metadata_extractor.py)
+
+```python
+job_config = ConfigFactory.from_dict({
+	'extractor.db2_metadata.{}'.format(Db2MetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
+	'extractor.db2_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=Db2MetadataExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
 #### [SnowflakeMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_metadata_extractor.py "SnowflakeMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Snowflake database.
 
