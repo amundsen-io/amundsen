@@ -1,4 +1,4 @@
-# Amundsen k8s Helm Charts
+# Amundsen K8S Helm Charts
 
 Source code can be found [here](https://github.com/lyft/amundsen)
 
