@@ -18,8 +18,9 @@ theme:
   feature:
     tabs: true
 
-extra_css:
+-extra_css:
   - 'css/app.css'
+
 
 markdown_extensions:
   - admonition

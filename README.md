@@ -1,5 +1,5 @@
 <img
-  src="https://github.com/lyft/amundsen/blob/master/docs/img/logos/amundsen_logo_on_light.svg"
+  src="https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
   alt="Amundsen"
   width="500"
 />
@@ -11,6 +11,7 @@
 Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover the South Pole.
 
 It includes three microservices, one data ingestion library and one common library.
+
 - [amundsenfrontendlibrary](https://github.com/lyft/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend.
 - [amundsensearchlibrary](https://github.com/lyft/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching.
 - [amundsenmetadatalibrary](https://github.com/lyft/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata.
@@ -31,23 +32,23 @@ Please note that the mock images only served as demonstration purpose.
 
 - **Landing Page**: The landing page for Amundsen including 1. search bars; 2. popular used tables;
 
-    ![](https://github.com/lyft/amundsen/blob/master/docs/img/landing_page.png)
+    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/landing_page.png)
 
 - **Search Preview**: See inline search results as you type
 
-    ![](https://github.com/lyft/amundsen/blob/master/docs/img/search_preview.png)
+    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/search_preview.png)
 
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
-    ![](https://github.com/lyft/amundsen/blob/master/docs/img/table_detail_page_with_badges.png)
+    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/table_detail_page_with_badges.png)
 
 - **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
 
-    ![](https://github.com/lyft/amundsen/blob/master/docs/img/column_details.png)
+    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/column_details.png)
 
 - **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset) or other Data Visualization Tools.
 
-    ![](https://github.com/lyft/amundsen/blob/master/docs/img/data_preview.png)
+    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/data_preview.png)
 
 ## Get Involved in the Community
 
