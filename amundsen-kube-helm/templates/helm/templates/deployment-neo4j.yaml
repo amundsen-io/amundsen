@@ -3,15 +3,29 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: neo4j
+  labels:
+    app: {{ template "amundsen.name" . }}
+    component: neo4j
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      run: neo4j
+      app: {{ template "amundsen.name" . }}
+      component: neo4j
+      release: {{ .Release.Name }}
   replicas: 1
   template:
     metadata:
+      {{- with default .Values.podAnnotations .Values.neo4j.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       labels:
-        run: neo4j
+        app: {{ template "amundsen.name" . }}
+        component: neo4j
+        release: {{ .Release.Name }}
     spec:
       {{- with .Values.neo4j.nodeSelector }}
       nodeSelector:
@@ -53,8 +67,6 @@ spec:
         - containerPort: 7687
         - containerPort: 1337
         env:
-          - name: NEO4J_AUTH
-            value: "neo4j/test"
           - name: NEO4J_CONF
             value: "/conf"
         volumeMounts:

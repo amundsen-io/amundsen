@@ -1,10 +1,15 @@
+  
 {{ if .Values.neo4j.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: neo4j-configmap
   labels:
-    app: "neo4j"
+    app: {{ template "amundsen.name" . }}
+    component: neo4j
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   neo4j.conf: |-
     apoc.import.file.enabled=true
