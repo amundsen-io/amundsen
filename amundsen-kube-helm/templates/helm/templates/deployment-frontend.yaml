@@ -55,9 +55,9 @@ spec:
           - name: FRONTEND_BASE
             value: {{ .Values.frontEnd.fqdn }}
           - name: SEARCHSERVICE_BASE
-            value: http://{{ .Chart.Name }}-{{ .Values.search.serviceName }}.amundsen:5001
+            value: http://{{ .Chart.Name }}-{{ .Values.search.serviceName }}:5001
           - name: METADATASERVICE_BASE
-            value: http://{{ .Chart.Name }}-{{ .Values.metadata.serviceName }}.amundsen:5002
+            value: http://{{ .Chart.Name }}-{{ .Values.metadata.serviceName }}:5002
           - name: LONG_RANDOM_STRING
             value: {{ quote .Values.LONG_RANDOM_STRING }}
         {{- if .Values.frontEnd.oidcEnabled }}

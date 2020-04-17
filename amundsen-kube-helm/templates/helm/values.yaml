@@ -298,6 +298,7 @@ neo4j:
   persistence: {}
   #  storageClass: gp2
   #  size: 10Gi
+  #  accessMode: ReadWriteMany
   #  efs:
   #    dns:
 
