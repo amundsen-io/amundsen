@@ -60,8 +60,8 @@ services:
       build:
         context: ./amundsenfrontendlibrary
         args:
-          SEARCHSERVICE_BASE: http://amundsensearch:5000
-          METADATASERVICE_BASE: http://amundsenmetadata:5000
+          SEARCHSERVICE_BASE: http://amundsensearch:5001
+          METADATASERVICE_BASE: http://amundsenmetadata:5002
         dockerfile: local.Dockerfile
       container_name: amundsenfrontend
       depends_on:
@@ -72,8 +72,8 @@ services:
       networks:
         - amundsennet
       environment:
-        - SEARCHSERVICE_BASE=http://amundsensearch:5000
-        - METADATASERVICE_BASE=http://amundsenmetadata:5000
+        - SEARCHSERVICE_BASE=http://amundsensearch:5001
+        - METADATASERVICE_BASE=http://amundsenmetadata:5002
 
 networks:
   amundsennet:
