@@ -130,6 +130,7 @@ Currently **officially** using Amundsen:
 1. [Cameo](https://www.cameo.com)
 1. [Cimpress Technology](https://cimpress.com)
 1. [Data Sprints](https://datasprints.com/)
+1. [Devoted Health](https://www.devoted.com/)
 1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
 1. [ING](https://www.ing.com/Home.htm)
