@@ -59,7 +59,7 @@ class BaseDocumentsAPI(Resource):
         args = self.parser.parse_args()
 
         try:
-            data = self.schema(many=True, unknown='EXCLUDE').loads(args.get('data'))
+            data = self.schema(many=True, strict=False).loads(args.get('data')).data
             results = self.proxy.create_document(data=data, index=args.get('index'))
             return results, HTTPStatus.OK
         except RuntimeError as e:
@@ -79,7 +79,7 @@ class BaseDocumentsAPI(Resource):
         args = self.parser.parse_args()
 
         try:
-            data = self.schema(many=True, unknown='EXCLUDE').loads(args.get('data'))
+            data = self.schema(many=True, strict=False).loads(args.get('data')).data
             results = self.proxy.update_document(data=data, index=args.get('index'))
             return results, HTTPStatus.OK
         except RuntimeError as e:
