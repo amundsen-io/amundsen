@@ -1,7 +1,7 @@
 import abc
 
 from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Iterable  # noqa: F401
+from typing import Any, Iterable, Optional  # noqa: F401
 
 from databuilder import Scoped
 
@@ -42,13 +42,18 @@ class ChainedTransformer(Transformer):
     """
     A chained transformer that iterates transformers and transforms a record
     """
-    def __init__(self, transformers):
-        # type: (Iterable[Transformer]) -> None
+    def __init__(self,
+                 transformers,
+                 is_init_transformers=False):
+        # type: (Iterable[Transformer], Optional[bool]) -> None
         self.transformers = transformers
+        self.is_init_transformers = is_init_transformers
 
     def init(self, conf):
         # type: (ConfigTree) -> None
-        pass
+        if self.is_init_transformers:
+            for transformer in self.transformers:
+                transformer.init(Scoped.get_scoped_conf(conf, transformer.get_scope()))
 
     def transform(self, record):
         # type: (Any) -> Any
@@ -62,7 +67,7 @@ class ChainedTransformer(Transformer):
 
     def get_scope(self):
         # type: () -> str
-        pass
+        return 'transformer.chained'
 
     def close(self):
         # type: () -> None

@@ -8,6 +8,7 @@ from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
+from databuilder.models.schema import schema_constant
 
 DESCRIPTION_NODE_LABEL_VAL = 'Description'
 DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
@@ -208,11 +209,11 @@ class TableMetadata(Neo4jCsvSerializable):
 
     CLUSTER_NODE_LABEL = cluster_constants.CLUSTER_NODE_LABEL
     CLUSTER_KEY_FORMAT = '{db}://{cluster}'
-    CLUSTER_SCHEMA_RELATION_TYPE = 'SCHEMA'
-    SCHEMA_CLUSTER_RELATION_TYPE = 'SCHEMA_OF'
+    CLUSTER_SCHEMA_RELATION_TYPE = schema_constant.SCHEMA_RELATION_TYPE
+    SCHEMA_CLUSTER_RELATION_TYPE = schema_constant.SCHEMA_REVERSE_RELATION_TYPE
 
-    SCHEMA_NODE_LABEL = 'Schema'
-    SCHEMA_KEY_FORMAT = '{db}://{cluster}.{schema}'
+    SCHEMA_NODE_LABEL = schema_constant.SCHEMA_NODE_LABEL
+    SCHEMA_KEY_FORMAT = schema_constant.DATABASE_SCHEMA_KEY_FORMAT
     SCHEMA_TABLE_RELATION_TYPE = 'TABLE'
     TABLE_SCHEMA_RELATION_TYPE = 'TABLE_OF'
 
