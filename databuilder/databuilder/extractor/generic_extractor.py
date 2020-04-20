@@ -32,7 +32,7 @@ class GenericExtractor(Extractor):
 
             self._iter = iter(results)
         else:
-            raise RuntimeError('model class needs to be provided!')
+            self._iter = iter(self.values)
 
     def extract(self):
         # type: () -> Any
