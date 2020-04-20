@@ -1085,9 +1085,11 @@ class Neo4jProxy(BaseProxy):
         WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
         sum(read.read_count) as recent_view_count
         OPTIONAL MATCH (d)-[:HAS_QUERY]->(query:Query)
-        OPTIONAL MATCH (query)-[:HAS_CHART]->(chart:Chart)
-        WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags, recent_view_count,
-        collect(query) as queries, collect(chart) as charts
+        WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
+        recent_view_count, collect(query) as queries
+        OPTIONAL MATCH (d)-[:HAS_QUERY]->(query:Query)-[:HAS_CHART]->(chart:Chart)
+        WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
+        recent_view_count, queries, collect(chart) as charts
         OPTIONAL MATCH (d)-[:DASHBOARD_WITH_TABLE]->(table:Table)<-[:TABLE]-(schema:Schema)
         <-[:SCHEMA]-(cluster:Cluster)<-[:CLUSTER]-(db:Database)
         OPTIONAL MATCH (table)-[:DESCRIPTION]->(table_description:Description)
