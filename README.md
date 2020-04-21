@@ -1,7 +1,7 @@
 <img
   src="https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
   alt="Amundsen"
-  width="500"
+  width="1000"
 />
 
 [![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
