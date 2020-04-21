@@ -6,7 +6,7 @@
 
 [![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-[![Commit activity](https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg?style=plastic)](https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg?style=plastic)
+[![Commit activity](https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg)](https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
 
 Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover the South Pole.
@@ -112,6 +112,8 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [Data Discovery in 2020](https://medium.com/@torokyle/data-discovery-in-2020-3c907383caa0)
 - [4 Data Trends to Watch in 2020](https://medium.com/memory-leak/4-data-trends-to-watch-in-2020-491707902c09)
 - [Work-Bench Snapshot: The Evolution of Data Discovery & Catalog](https://medium.com/work-bench/work-bench-snapshot-the-evolution-of-data-discovery-catalog-2f6c0425616b)
+- [Future of Data Engineering](https://www.infoq.com/presentations/data-engineering-pipelines-warehouses/)
+- [Governance and Discovery](https://www.oreilly.com/radar/governance-and-discovery/)
 
 ## Community meetings
 Join slack to find out about our next virtual community meetings. Notes:
