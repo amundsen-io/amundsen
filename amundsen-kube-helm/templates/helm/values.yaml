@@ -40,6 +40,10 @@ affinity: {}
 ## tolerations -- amundsen application wide configuration of tolerations. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature)
 ##
 tolerations: []
+##
+## podAnnotations -- amundsen application wide configuration of podAnnotations. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
+##
+podAnnotations: {}
 
 ##
 ## Configuration related to the search service.
@@ -50,13 +54,21 @@ search:
   ##
   serviceName: search
   ##
+  ## search.serviceType -- The search service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  ##
+  serviceType: ClusterIP
+  ##
   ## search.elasticsearchEndpoint -- The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart.
   ##
   elasticsearchEndpoint:
   ##
-  ## search.imageVersion -- The image version of the search container.
+  ## search.image -- The image of the search container.
   ##
-  imageVersion: 2.0.0
+  image: amundsendev/amundsen-search
+  ##
+  ## search.imageTag -- The image tag of the search container.
+  ##
+  imageTag: 2.0.0
   ##
   ## search.replicas -- How many replicas of the search service to run.
   ##
@@ -84,6 +96,14 @@ search:
   ## search.tolerations -- Search pod specific tolerations.
   ##
   tolerations: []
+  ##
+  ## search.annotations -- Search service specific tolerations.
+  ##
+  annotations: {}
+  ##
+  ## search.podAnnotations -- Search pod specific annotations.
+  ##
+  podAnnotations: {}
 
 ##
 ## Configuration related to the metadata service.
@@ -94,13 +114,21 @@ metadata:
   ##
   serviceName: metadata
   ##
+  ## metadata.serviceType -- The metadata service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  ##
+  serviceType: ClusterIP
+  ##
   ## metadata.neo4jEndpoint -- The name of the service hosting neo4j on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart.
   ##
   neo4jEndpoint:
   ##
-  ## metadata.imageVersion -- The image version of the metadata container.
+  ## metadata.image -- The image of the metadata container.
   ##
-  imageVersion: 2.0.0
+  image: amundsendev/amundsen-metadata
+  ##
+  ## metadata.imageTag -- The image tag of the metadata container.
+  ##
+  imageTag: 2.0.0
   ##
   ## metadata.replicas -- How many replicas of the metadata service to run.
   ##
@@ -128,6 +156,14 @@ metadata:
   ## metadata.tolerations -- Metadata pod specific tolerations.
   ##
   tolerations: []
+  ##
+  ## metadata.annotations -- Metadata service specific tolerations.
+  ##
+  annotations: {}
+  ##
+  ## metadata.podAnnotations -- Metadata pod specific annotations.
+  ##
+  podAnnotations: {}
 
 ##
 ## Configuration related to the frontEnd service.
@@ -138,9 +174,17 @@ frontEnd:
   ##
   serviceName: frontend
   ##
-  ## frontEnd.imageVersion -- The frontend version of the metadata container.
+  ## frontEnd.serviceType -- The frontend service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   ##
-  imageVersion: 2.0.0
+  serviceType: ClusterIP
+  ##
+  ## frontEnd.image -- The image of the frontend container.
+  ##
+  image: amundsendev/amundsen-frontend
+  ##
+  ## frontEnd.imageTag -- The image tag of the frontend container.
+  ##
+  imageTag: 2.0.0
   ##
   ## frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   ##
@@ -149,7 +193,10 @@ frontEnd:
   ## frontEnd.replicas -- How many replicas of the frontend service to run.
   ##
   replicas: 1
-
+  ##
+  ## frontEnd.baseUrl -- used by notifications util to provide links to amundsen pages in emails.
+  ##
+  baseUrl: http://localhost
   ##
   ## frontEnd.oidcEnabled -- To enable auth via OIDC, set this to true.
   ##
@@ -199,6 +246,14 @@ frontEnd:
   ## frontEnd.tolerations -- Frontend pod specific tolerations.
   ##
   tolerations: []
+  ##
+  ## frontEnd.annotations -- Frontend service specific tolerations.
+  ##
+  annotations: {}
+  ##
+  ## frontEnd.podAnnotations -- Frontend pod specific annotations.
+  ##
+  podAnnotations: {}
 
 ##
 ## Configuration related to neo4j.
@@ -246,6 +301,9 @@ neo4j:
   persistence: {}
   #  storageClass: gp2
   #  size: 10Gi
+  #  accessMode: ReadWriteMany
+  #  efs:
+  #    dns:
 
   ##
   ## neo4j.backup -- If enabled is set to true, make sure and set the s3 path as well.
@@ -274,6 +332,14 @@ neo4j:
   ## neo4j.tolerations -- neo4j specific tolerations.
   ##
   tolerations: []
+  ##
+  ## neo4j.annotations -- neo4j service specific tolerations.
+  ##
+  annotations: {}
+  ##
+  ## neo4j.podAnnotations -- neo4j pod specific annotations.
+  ##
+  podAnnotations: {}
 
 ##
 ## Configuration related to elasticsearch.

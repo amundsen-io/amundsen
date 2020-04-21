@@ -1,0 +1,19 @@
+{{- if and .Values.neo4j.enabled .Values.neo4j.persistence .Values.neo4j.persistence.efs }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: neo4j-pv
+  labels:
+    app: {{ template "amundsen.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: {{ default "3Gi" .Values.neo4j.persistence.size }}
+  nfs:
+    server: {{ .Values.neo4j.persistence.efs.dns }}
+    path: "/"
+{{- end }}

@@ -1,0 +1,63 @@
+{{ if and .Values.neo4j.enabled (and .Values.neo4j.backup.enabled .Values.neo4j.backup.s3Path .Values.neo4j.persistence) }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: neo4j-s3-backup
+  labels:
+    app: {{ template "amundsen.name" . }}
+    component: neo4j-s3-backup
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: {{ .Values.neo4j.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "amundsen.name" . }}
+            component: neo4j-s3-backup
+            release: {{ .Release.Name }}
+      {{- with .Values.neo4j.backup.podAnnotations }}
+          annotations:
+{{ toYaml . | indent 12 }}
+      {{- end }}
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: backup-neo4j
+            image: neo4j:{{ .Values.neo4j.version }}
+            command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              apk -v --update add --no-cache --quiet curl python py-pip &&
+              pip install awscli -q &&
+              NOW="$(date "+%Y-%m-%d-%H:%M:%S")" &&
+              BACKUP_SCHEMA_NAME="graph.db-backup-$NOW.schema" &&
+              BACKUP_DATA_NAME="graph.db-backup-$NOW.data" &&
+              BACKUP_NAME="graph.db-backup-$NOW" &&
+              echo "CALL apoc.export.cypher.schema('/var/lib/neo4j/data/$BACKUP_SCHEMA_NAME', {});" | /var/lib/neo4j/bin/neo4j-shell -host neo4j &&
+              echo "CALL apoc.export.graphml.all('/var/lib/neo4j/data/$BACKUP_DATA_NAME', {useTypes: true, readLabels: true});" | /var/lib/neo4j/bin/neo4j-shell -host neo4j &&
+              printf "\nTarring -> /data/$BACKUP_SCHEMA_NAME and /data/$BACKUP_DATA_NAME to /data/$BACKUP_NAME.tar" &&
+              while [ ! -f /data/$BACKUP_DATA_NAME ]; do echo "backup data file does not exist: [/data/$BACKUP_DATA_NAME] sleeping..." && ls "/data/" && sleep 30; done &&
+              tar -cvf "/data/$BACKUP_NAME.tar" "/data/$BACKUP_SCHEMA_NAME" "/data/$BACKUP_DATA_NAME" &&
+              printf "\nZipping -> /data/$BACKUP_NAME.tar.gz\n" &&
+              gzip -9 "/data/$BACKUP_NAME.tar" &&
+              printf "Pushing /data/$BACKUP_NAME.tar.gz -> $BUCKET" &&
+              aws s3 cp "/data/$BACKUP_NAME.tar.gz" "$BUCKET" &&
+              printf "Cleaning up /data/graph.db-backup*" &&
+              rm /data/graph.db-backup*
+            env:
+            - name: BUCKET
+              value: {{ .Values.neo4j.backup.s3Path }}
+            volumeMounts:
+                - name: data
+                  mountPath: /data
+          volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: neo4j-pvc
+{{- end}}
