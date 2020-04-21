@@ -1,4 +1,8 @@
-![Amundsen Logo](img/logos/amundsen_logo_on_light.svg "Amundsen Logo")
+<img
+  src="https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
+  alt="Amundsen"
+  width="1000"
+/>
 
 [![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
