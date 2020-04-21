@@ -53,7 +53,7 @@ spec:
           - containerPort: 5000
         env:
           - name: FRONTEND_BASE
-            value: {{ .Values.frontEnd.fqdn }}
+            value: {{ .Values.frontEnd.baseUrl }}
           - name: SEARCHSERVICE_BASE
             value: http://{{ .Chart.Name }}-{{ .Values.search.serviceName }}:5001
           - name: METADATASERVICE_BASE

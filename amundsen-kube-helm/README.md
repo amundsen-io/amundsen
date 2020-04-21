@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | frontEnd.OIDC_ORG_URL | string | `nil` | The organization URL for OIDC. |
 | frontEnd.affinity | object | `{}` | Frontend pod specific affinity. |
 | frontEnd.annotations | object | `{}` | Frontend service specific tolerations. |
+| frontEnd.baseUrl | string | `"http://localhost"` | used by notifications util to provide links to amundsen pages in emails. |
 | frontEnd.createOidcSecret | bool | `false` | OIDC needs some configuration. If you want the chart to make your secrets, set this to true and set the next four values. If you don't want to configure your secrets via helm, you can still use the amundsen-oidc-config.yaml as a template |
 | frontEnd.image | string | `"amundsendev/amundsen-frontend"` | The image of the frontend container. |
 | frontEnd.imageTag | string | `"2.0.0"` | The image tag of the frontend container. |

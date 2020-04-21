@@ -193,7 +193,10 @@ frontEnd:
   ## frontEnd.replicas -- How many replicas of the frontend service to run.
   ##
   replicas: 1
-
+  ##
+  ## frontEnd.baseUrl -- used by notifications util to provide links to amundsen pages in emails.
+  ##
+  baseUrl: http://localhost
   ##
   ## frontEnd.oidcEnabled -- To enable auth via OIDC, set this to true.
   ##
