@@ -142,3 +142,19 @@ class TableSchema(AttrsSchema):
     class Meta:
         target = Table
         register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class TableSummary:
+    database: str = attr.ib()
+    cluster: str = attr.ib()
+    schema: str = attr.ib()
+    name: str = attr.ib()
+    description: Optional[str] = attr.ib(default=None)
+    schema_description: Optional[str] = attr.ib(default=None)
+
+
+class TableSummarySchema(AttrsSchema):
+    class Meta:
+        target = TableSummary
+        register_as_scheme = True
