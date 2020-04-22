@@ -15,6 +15,9 @@ For information about Amundsen and our other services, visit the [main repositor
 - Python >= 3.6
 - elasticsearch 6.x (currently it doesn't support 7.x)
 
+## Doc
+- https://lyft.github.io/amundsen/
+
 
 ## Instructions to start the Search service from distribution
 
