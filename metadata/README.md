@@ -13,6 +13,9 @@ For information about Amundsen and our other services, visit the [main repositor
 ## Requirements
 - Python >= 3.7
 
+## Doc
+- https://lyft.github.io/amundsen/
+
 ## Instructions to start the Metadata service from distribution
 ```bash
 $ venv_path=[path_for_virtual_environment]
