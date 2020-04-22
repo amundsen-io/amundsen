@@ -19,6 +19,9 @@ For information about Amundsen and our other services, visit the [main repositor
 - Node = v10 or v12 
 - npm >= 6.x.x
 
+## Doc
+- https://lyft.github.io/amundsen/
+
 ## User Interface
 
 Please note that the mock images only served as demonstration purpose.
