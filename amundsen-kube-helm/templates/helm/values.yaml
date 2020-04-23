@@ -175,6 +175,10 @@ frontEnd:
   ## frontEnd.OIDC_AUTH_SERVER_ID -- The authorization server id for OIDC.
   ##
   OIDC_AUTH_SERVER_ID:
+  ##
+  ## frontEnd.OIDC_OVERWRITE_REDIRECT_URI -- The redirect URI/reply URL for OIDC.
+  ##
+  OIDC_OVERWRITE_REDIRECT_URI:
 
   ##
   ## frontEnd.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)

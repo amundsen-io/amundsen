@@ -149,6 +149,10 @@ spec:
           - name: FRONTEND_BASE
             value: http://{{ .Values.frontEnd.FRONTEND_BASE }}
           {{ end }}
+          {{- if .Values.frontEnd.OIDC_OVERWRITE_REDIRECT_URI }}
+          - name: FLASK_OIDC_REDIRECT_OVERRIDE
+            value: {{ .Values.frontEnd.OIDC_OVERWRITE_REDIRECT_URI }}
+          {{- end }}
           - name: SEARCHSERVICE_BASE
             value: http://{{ .Chart.Name }}-{{ .Values.search.serviceName }}:5001
           - name: METADATASERVICE_BASE

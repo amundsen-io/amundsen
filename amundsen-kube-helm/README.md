@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Amundsen charts and
 | frontEnd.OIDC_CLIENT_ID | string | `nil` | The client id for OIDC. |
 | frontEnd.OIDC_CLIENT_SECRET | string | `""` | The client secret for OIDC. |
 | frontEnd.OIDC_ORG_URL | string | `nil` | The organization URL for OIDC. |
+| frontEnd.OIDC_OVERWRITE_REDIRECT_URI | string | `nil` | The redirect URI/reply URL for OIDC. |
 | frontEnd.affinity | object | `{}` | Frontend pod specific affinity. |
 | frontEnd.createOidcSecret | bool | `false` | OIDC needs some configuration. If you want the chart to make your secrets, set this to true and set the next four values. If you don't want to configure your secrets via helm, you can still use the amundsen-oidc-config.yaml as a template |
 | frontEnd.imageVersion | string | `"2.0.0"` | The frontend version of the metadata container. |
