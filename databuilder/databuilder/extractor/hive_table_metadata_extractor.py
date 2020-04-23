@@ -29,7 +29,8 @@ class HiveTableMetadataExtractor(Extractor):
     SELECT source.* FROM
     (SELECT t.TBL_ID, d.NAME as `schema`, t.TBL_NAME name, t.TBL_TYPE, tp.PARAM_VALUE as description,
            p.PKEY_NAME as col_name, p.INTEGER_IDX as col_sort_order,
-           p.PKEY_TYPE as col_type, p.PKEY_COMMENT as col_description, 1 as "is_partition_col"
+           p.PKEY_TYPE as col_type, p.PKEY_COMMENT as col_description, 1 as "is_partition_col",
+           IF(t.TBL_TYPE = 'VIRTUAL_VIEW', 1, 0) "is_view"
     FROM TBLS t
     JOIN DBS d ON t.DB_ID = d.DB_ID
     JOIN PARTITION_KEYS p ON t.TBL_ID = p.TBL_ID
@@ -38,7 +39,8 @@ class HiveTableMetadataExtractor(Extractor):
     UNION
     SELECT t.TBL_ID, d.NAME as `schema`, t.TBL_NAME name, t.TBL_TYPE, tp.PARAM_VALUE as description,
            c.COLUMN_NAME as col_name, c.INTEGER_IDX as col_sort_order,
-           c.TYPE_NAME as col_type, c.COMMENT as col_description, 0 as "is_partition_col"
+           c.TYPE_NAME as col_type, c.COMMENT as col_description, 0 as "is_partition_col",
+           IF(t.TBL_TYPE = 'VIRTUAL_VIEW', 1, 0) "is_view"
     FROM TBLS t
     JOIN DBS d ON t.DB_ID = d.DB_ID
     JOIN SDS s ON t.SD_ID = s.SD_ID
@@ -99,12 +101,13 @@ class HiveTableMetadataExtractor(Extractor):
                 last_row = row
                 columns.append(ColumnMetadata(row['col_name'], row['col_description'],
                                               row['col_type'], row['col_sort_order']))
-
+            is_view = last_row['is_view'] == 1
             yield TableMetadata('hive', self._cluster,
                                 last_row['schema'],
                                 last_row['name'],
                                 last_row['description'],
-                                columns)
+                                columns,
+                                is_view=is_view)
 
     def _get_raw_extract_iter(self):
         # type: () -> Iterator[Dict[str, Any]]
