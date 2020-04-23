@@ -31,7 +31,7 @@ stringData:
         "userinfo_uri": "{{ .Values.frontEnd.OIDC_ORG_URL }}/oauth2/{{ .Values.frontEnd.OIDC_AUTH_SERVER_ID }}/v1/userinfo",
         {{- end }}
         "redirect_uris": [
-          "http://localhost/oidc_callback"
+          "{{ .Values.frontEnd.OIDC_OVERWRITE_REDIRECT_URI }}"
         ],
         {{- if (eq .Values.frontEnd.OIDC_PROVIDER "azure") or (eq .Values.frontEnd.OIDC_PROVIDER "google") }}
         "token_introspection_uri": ""
