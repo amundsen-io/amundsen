@@ -110,9 +110,9 @@ You may want to override the default memory usage for Neo4J. In particular, if y
 ```
 config:
   dbms:
-    heap_initial_size: 2Gi
-    heap_max_size: 2Gi
-    pagecache_size: 2Gi
+    heap_initial_size: 1G
+    heap_max_size: 2G
+    pagecache_size: 2G
 ```
 
 With this values file, you can then install Amundsen using Helm 2 with:
