@@ -23,19 +23,23 @@ class Neo4jSearchDataExtractor(Extractor):
         <-[:SCHEMA_OF]-(schema:Schema)<-[:TABLE_OF]-(table:Table)
         {publish_tag_filter}
         OPTIONAL MATCH (table)-[:DESCRIPTION]->(table_description:Description)
+        OPTIONAL MATCH (schema)-[:DESCRIPTION]->(schema_description:Description)
         OPTIONAL MATCH (table)-[:TAGGED_BY]->(tags:Tag) WHERE tags.tag_type='default'
-        WITH db, cluster, schema, table, table_description, COLLECT(DISTINCT tags.key) as tags
+        WITH db, cluster, schema, schema_description, table, table_description, COLLECT(DISTINCT tags.key) as tags
         OPTIONAL MATCH (table)-[:TAGGED_BY]->(badges:Tag) WHERE badges.tag_type='badge'
-        WITH db, cluster, schema, table, table_description, tags, COLLECT(DISTINCT badges.key) as badges
+        WITH db, cluster, schema, schema_description, table, table_description, tags, COLLECT(DISTINCT badges.key) AS
+        badges
         OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)
-        WITH db, cluster, schema, table, table_description, tags, badges, SUM(read.read_count) AS total_usage,
+        WITH db, cluster, schema, schema_description, table, table_description, tags, badges, SUM(read.read_count) AS
+        total_usage,
         COUNT(DISTINCT user.email) as unique_usage
         OPTIONAL MATCH (table)-[:COLUMN]->(col:Column)
         OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_description:Description)
-        WITH db, cluster, schema, table, table_description, tags, badges, total_usage, unique_usage,
+        WITH db, cluster, schema, schema_description, table, table_description, tags, badges, total_usage, unique_usage,
         COLLECT(col.name) AS column_names, COLLECT(col_description.description) AS column_descriptions
         OPTIONAL MATCH (table)-[:LAST_UPDATED_AT]->(time_stamp:Timestamp)
         RETURN db.name as database, cluster.name AS cluster, schema.name AS schema,
+        schema_description.description AS schema_description,
         table.name AS name, table.key AS key, table_description.description AS description,
         time_stamp.last_updated_timestamp AS last_updated_timestamp,
         column_names,

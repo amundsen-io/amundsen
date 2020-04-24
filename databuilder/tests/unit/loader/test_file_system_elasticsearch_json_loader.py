@@ -101,7 +101,8 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
                                total_usage=10,
                                unique_usage=5,
                                tags=['test_tag1', 'test_tag2'],
-                               badges=['badge1'])
+                               badges=['badge1'],
+                               schema_description='schema description')
         loader.load(data)
         loader.close()
 
@@ -111,7 +112,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
              '"last_updated_timestamp": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
-             '"tags": ["test_tag1", "test_tag2"], "badges": ["badge1"]}')
+             '"tags": ["test_tag1", "test_tag2"], "badges": ["badge1"], "schema_description": "schema description"}')
         ]
 
         self._check_results_helper(expected=expected)
@@ -138,7 +139,8 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
                                 total_usage=10,
                                 unique_usage=5,
                                 tags=['test_tag1', 'test_tag2'],
-                                badges=['badge1'])] * 5
+                                badges=['badge1'],
+                                schema_description='schema_description')] * 5
 
         for d in data:
             loader.load(d)
@@ -150,7 +152,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
              '"column_names": ["test_col1", "test_col2"], "name": "test_table", '
              '"last_updated_timestamp": 123456789, "display_name": "test_schema.test_table", '
              '"description": "test_description", "unique_usage": 5, "total_usage": 10, '
-             '"tags": ["test_tag1", "test_tag2"], "badges": ["badge1"]}')
+             '"tags": ["test_tag1", "test_tag2"], "badges": ["badge1"], "schema_description": "schema_description"}')
         ] * 5
 
         self._check_results_helper(expected=expected)
