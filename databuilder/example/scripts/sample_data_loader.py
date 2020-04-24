@@ -264,6 +264,8 @@ if __name__ == "__main__":
                     'databuilder.models.table_metadata.TagMetadata')
         run_csv_job('example/sample_data/sample_table_last_updated.csv', 'test_table_last_updated_metadata',
                     'databuilder.models.table_last_updated.TableLastUpdated')
+        run_csv_job('example/sample_data/sample_schema_description.csv', 'test_schema_description',
+                    'databuilder.models.schema.schema.SchemaModel')
 
         create_last_updated_job().launch()
 

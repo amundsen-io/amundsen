@@ -22,6 +22,7 @@ class TableESDocument(ElasticsearchDocument):
                  tags,  # type: List[str],
                  badges=None,  # type: Optional[List[str]]
                  display_name=None,  # type: Optional[str]
+                 schema_description=None,  # type: Optional[str]
                  ):
         # type: (...) -> None
         self.database = database
@@ -40,3 +41,4 @@ class TableESDocument(ElasticsearchDocument):
         # todo: will include tag_type once we have better understanding from UI flow.
         self.tags = tags
         self.badges = badges
+        self.schema_description = schema_description
