@@ -201,6 +201,27 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [MysqlMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mysql_metadata_extractor.py "PostgresMetadataExtractor")
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a MYSQL database.
+
+By default, the MYSQL database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
+to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
+
+The `where_clause_suffix` below should define which schemas you'd like to query.
+
+The SQL query driving the extraction is defined [here](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mysql_metadata_extractor.py)
+
+```python
+job_config = ConfigFactory.from_dict({
+	'extractor.mysql_metadata.{}'.format(MysqlMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
+  'extractor.mysql_metadata.{}'.format(MysqlMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME): True,
+	'extractor.postgres_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
+job = DefaultJob(conf=job_config,
+								 task=DefaultTask(extractor=MysqlMetadataExtractor(), loader=FsNeo4jCSVLoader()),
+								 publisher=Neo4jCsvPublisher())
+job.launch()
+
+
 #### [Db2MetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/db2_metadata_extractor.py "Db2MetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Unix, Windows or Linux Db2 database or BigSQL.
 
