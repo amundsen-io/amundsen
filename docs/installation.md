@@ -28,6 +28,11 @@ The following instructions are for setting up a version of Amundsen using Docker
     $ python3 example/scripts/sample_data_loader.py
    ```
 5. View UI at [`http://localhost:5000`](http://localhost:5000) and try to search `test`, it should return some result.
+![](img/search-page.png)
+
+6. We could also do an exact matched search for table entity. For example: search `test_table1` in table field and 
+it return the records that matched.
+![](img/search-exact-match.png)
 
 **Atlas Note:** Atlas takes some time to boot properly. So you may not be able to see the results immediately 
 after `docker-compose up` command. 
@@ -37,7 +42,8 @@ Atlas would be ready once you'll have the following output in the docker output 
 
 1. You can verify dummy data has been ingested into Neo4j by by visiting [`http://localhost:7474/browser/`](http://localhost:7474/browser/) and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see two tables:
    1. `hive.test_schema.test_table1`
-   2. `dynamo.test_schema.test_table2`
+   2. `hive.test_schema.test_table2`
+![](img/neo4j-debug.png)
 2. You can verify the data has been loaded into the metadataservice by visiting:
    1. [`http://localhost:5000/table_detail/gold/hive/test_schema/test_table1`](http://localhost:5000/table_detail/gold/hive/test_schema/test_table1)
    2. [`http://localhost:5000/table_detail/gold/dynamo/test_schema/test_table2`](http://localhost:5000/table_detail/gold/dynamo/test_schema/test_table2)

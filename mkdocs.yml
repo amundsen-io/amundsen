@@ -62,6 +62,9 @@ nav:
     - 'Overview': developer_guide.md
   - 'User Guide':
     - 'Quick Start': 'installation.md'
+    - 'Tutorials':
+        - 'How to index the postgres database metadata': 'tutorials/index-postgres.md'
+        - 'How to setup a preview client with Apache Superset': 'tutorials/data-preview-with-superset.md'
     - 'Deployment':
       - 'Authentication': 'authentication/oidc.md'
       - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
