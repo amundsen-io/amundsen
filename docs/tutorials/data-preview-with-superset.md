@@ -1,6 +1,6 @@
 # How to setup a preview client with Apache Superset
 
-In the previous [tutorial](docs/tutorials/index-postgres.md), we talked about how to index the table metadata
+In the previous [tutorial](./index-postgres.md), we talked about how to index the table metadata
 for a postgres database. In this tutorial, we will walk through how to configure data preview for this `films` table
 using Apache Superset.
 

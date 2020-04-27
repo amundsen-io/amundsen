@@ -1,6 +1,6 @@
 # How to index metadata for real life databases
 
-From previous [doc](docs/installation.md), we have indexed tables from a csv files. In real production cases, 
+From previous [doc](../installation.md), we have indexed tables from a csv files. In real production cases, 
 the table metadata is stored in data warehouses(e.g Hive, Postgres, Mysql, Snowflake, Bigquery etc.) which Amundsen has 
 the extractors for metadata extraction.
 
