@@ -29,6 +29,7 @@ class Application(Neo4jCsvSerializable):
                  dag_id,  # type: str,
                  application_url_template,  # type: str
                  db_name='hive',  # type: str
+                 cluster='gold', # type: str
                  schema='',  # type: str
                  table_name='',  # type: str
                  exec_date='',  # type: str
@@ -38,7 +39,7 @@ class Application(Neo4jCsvSerializable):
 
         # todo: need to modify this hack
         self.application_url = application_url_template.format(dag_id=dag_id)
-        self.database, self.schema, self.table = db_name, schema, table_name
+        self.database, self.cluster, self.schema, self.table = db_name, cluster, schema, table_name
 
         self.dag = dag_id
 
@@ -66,12 +67,12 @@ class Application(Neo4jCsvSerializable):
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
                                                      schema=self.schema,
                                                      tbl=self.table,
-                                                     cluster='gold')
+                                                     cluster=self.cluster)
 
     def get_application_model_key(self):
         # type: (...) -> str
         # returns formatting string for application of type dag
-        return Application.APPLICATION_KEY_FORMAT.format(cluster='gold',
+        return Application.APPLICATION_KEY_FORMAT.format(cluster=self.cluster,
                                                          dag=self.dag,
                                                          task=self.task)
 
