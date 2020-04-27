@@ -1,7 +1,7 @@
 # How to setup a preview client with Apache Superset
 
 In the previous [tutorial](docs/tutorials/index-postgres.md), we talked about how to index the table metadata
-for a postgres database. In this tutorial, we will walk through how to config data preview for this `films` table
+for a postgres database. In this tutorial, we will walk through how to configure data preview for this `films` table
 using Apache Superset.
 
 Amundsen provides an integration between Amundsen and BI Viz tool for data preview. It is not necessary to use Apache Superset
