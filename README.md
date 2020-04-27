@@ -62,7 +62,7 @@ Please note that the mock images only served as demonstration purpose.
 ## Get Involved in the Community
 
 Want help or want to help?
-Use the button in our [header](https://github.com/lyft/amundsen#amundsen) to join our slack channel. Please join our [mailing list](https://groups.google.com/forum/#!forum/amundsen-dev) as well.
+Use the button in our [header](https://github.com/lyft/amundsen#readme) to join our slack channel.
 
 ## Getting Started
 
