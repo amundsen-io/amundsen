@@ -146,3 +146,111 @@ Here you can see the tag is YYYY-MM-dd but you should choose whatever you like.
 
 5. When updating amundsen-frontend, make sure to do a hard refresh of amundsen with emptying the cache,
 otherwise you will see stale version of webpage.
+
+### Test search service in local using staging or production data
+To test in local, we need to stand up Elasticsearch, publish index data, and stand up Elastic search
+
+#### Standup Elasticsearch
+Running Elasticsearch via Docker. To install Docker, go [here](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
+Example:
+
+    docker run -p 9200:9200  -p 9300:9300  -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+
+##### (Optional) Standup Kibana
+
+
+    docker run --link ecstatic_edison:elasticsearch -p 5601:5601 docker.elastic.co/kibana/kibana:6.2.4
+
+*Note that `ecstatic_edison` is container_id of Elasticsearch container. Update it if it's different by looking at `docker ps`
+
+#### Publish Table index through Databuilder
+##### Install Databuilder
+
+    cd ~/src/
+    git clone git@github.com:lyft/amundsendatabuilder.git
+    cd ~/src/amundsendatabuilder
+    virtualenv venv
+    source venv/bin/activate
+    python setup.py install
+    pip install -r requirements.txt
+
+##### Publish Table index
+First fill this two environment variables: `NEO4J_ENDPOINT` , `CREDENTIALS_NEO4J_PASSWORD`
+
+	$ python
+	
+    import logging  
+    import os  
+    import uuid  
+      
+    from elasticsearch import Elasticsearch  
+    from pyhocon import ConfigFactory  
+      
+    from databuilder.extractor.neo4j_extractor import Neo4jExtractor  
+    from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor  
+    from databuilder.job.job import DefaultJob  
+    from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader  
+    from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher  
+    from databuilder.task.task import DefaultTask  
+      
+    logging.basicConfig(level=logging.INFO)  
+      
+    neo4j_user = 'neo4j'  
+    neo4j_password = os.getenv('CREDENTIALS_NEO4J_PASSWORD')  
+    neo4j_endpoint = os.getenv('NEO4J_ENDPOINT')   
+      
+    elasticsearch_client = Elasticsearch([  
+        {'host': 'localhost'},  
+    ])  
+      
+    data_file_path = '/var/tmp/amundsen/elasticsearch_upload/es_data.json'  
+      
+    elasticsearch_new_index = 'table_search_index_{hex_str}'.format(hex_str=uuid.uuid4().hex)
+    logging.info("Elasticsearch new index: " + elasticsearch_new_index)  
+      
+    elasticsearch_doc_type = 'table'  
+    elasticsearch_index_alias = 'table_search_index'  
+      
+    job_config = ConfigFactory.from_dict({  
+        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY):  
+            neo4j_endpoint,  
+      'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY):  
+            'databuilder.models.table_elasticsearch_document.TableESDocument',  
+      'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER):  
+            neo4j_user,  
+      'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW):  
+            neo4j_password,  
+      'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY):  
+            data_file_path,  
+      'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY):  
+            'w',  
+      'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY):  
+            data_file_path,  
+      'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY):  
+            'r',  
+      'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY):  
+            elasticsearch_client,  
+      'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY):  
+            elasticsearch_new_index,  
+      'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY):  
+            elasticsearch_doc_type,  
+      'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY):  
+            elasticsearch_index_alias,  
+    })  
+      
+    job = DefaultJob(conf=job_config,  
+      task=DefaultTask(extractor=Neo4jSearchDataExtractor(),  
+      loader=FSElasticsearchJSONLoader()),  
+      publisher=ElasticsearchPublisher())  
+    if neo4j_password:  
+        job.launch()  
+    else:  
+        raise ValueError('Add environment variable CREDENTIALS_NEO4J_PASSWORD')
+
+
+#### Standup Search service
+Follow this [instruction](https://github.com/lyft/amundsensearchlibrary#instructions-to-start-the-search-service-from-source)
+
+Test the search API with this command:
+
+    curl -vv "http://localhost:5001/search?query_term=test&page_index=0"
