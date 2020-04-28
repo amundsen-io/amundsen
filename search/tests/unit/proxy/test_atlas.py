@@ -2,6 +2,7 @@ import unittest
 
 from mock import MagicMock, patch
 from typing import Any, Callable, Dict, List, Tuple
+from atlasclient.utils import make_table_qualified_name
 
 from search_service import create_app, config
 from search_service.models.search_result import SearchResult
@@ -29,7 +30,7 @@ class TestAtlasProxy(unittest.TestCase):
             from search_service.proxy.atlas import AtlasProxy
             self.proxy = AtlasProxy(host='DOES_NOT_MATTER:0000')
             self.proxy.atlas = MagicMock()
-            self.qn = self.app.config['ATLAS_NAME_ATTRIBUTE'] == "qualifiedName"
+            self.qn = 'name' == "qualifiedName"
         self.entity_type = 'TEST_ENTITY'
         self.cluster = 'TEST_CLUSTER'
         self.db = 'TEST_DB'
@@ -154,6 +155,7 @@ class TestAtlasProxy(unittest.TestCase):
         :param checks:
         :return:
         """
+
         def search_dsl(query: str) -> Dict[str, Any]:
             for check, data in checks:
                 if check(query):
@@ -179,6 +181,7 @@ class TestAtlasProxy(unittest.TestCase):
         :param entities:
         :return:
         """
+
         # noinspection PyPep8Naming
         def guid_filter(guid: List, ignoreRelationships: bool = False) -> Any:
             return TestAtlasProxy.recursive_mock([{
@@ -210,24 +213,22 @@ class TestAtlasProxy(unittest.TestCase):
         self.app.config[config.SEARCH_PAGE_SIZE_KEY] = 1337
 
         client = get_proxy_client()
-        self.assertEqual(client.atlas.base_url, "http://localhost:21000")   # type: ignore
-        self.assertEqual(client.atlas.client.request_params['headers']['Authorization'],    # type: ignore
+        self.assertEqual(client.atlas.base_url, "http://localhost:21000")  # type: ignore
+        self.assertEqual(client.atlas.client.request_params['headers']['Authorization'],  # type: ignore
                          'Basic YWRtaW46YWRtaW4=')
-        self.assertEqual(client.page_size, 1337)    # type: ignore
+        self.assertEqual(client.page_size, 1337)  # type: ignore
 
     def test_search_normal(self) -> None:
         expected = SearchResult(total_results=2,
                                 results=[Table(name=self.entity1_name,
-                                               key=f"{self.entity_type}://"
-                                                   f"{self.cluster}.{self.db}/"
-                                                   f"{self.entity1_name}",
+                                               key=make_table_qualified_name(self.entity1_name, self.cluster, self.db),
                                                description=self.entity1_description,
                                                cluster=self.cluster,
                                                database=self.entity_type,
                                                schema=self.db,
                                                column_names=[],
-                                               tags=[],
-                                               badges=[],
+                                               tags=[Tag(tag_name='PII_DATA')],
+                                               badges=[Tag(tag_name='PII_DATA')],
                                                last_updated_timestamp=123)])
         entity1 = self.to_class(self.entity1)
         entity_collection = MagicMock()
@@ -266,19 +267,17 @@ class TestAtlasProxy(unittest.TestCase):
     def test_search_tag_table(self) -> None:
         fields = ['tag', 'table']
         for field in fields:
-
             expected = SearchResult(total_results=1,
                                     results=[Table(name=self.entity1_name,
-                                                   key=f"{self.entity_type}://"
-                                                       f"{self.cluster}.{self.db}/"
-                                                       f"{self.entity1_name}",
+                                                   key=make_table_qualified_name(self.entity1_name, self.cluster,
+                                                                                 self.db),
                                                    description=self.entity1_description,
                                                    cluster=self.cluster,
                                                    database=self.entity_type,
                                                    schema=self.db,
                                                    column_names=[],
-                                                   tags=[],
-                                                   badges=[],
+                                                   tags=[Tag(tag_name='PII_DATA')],
+                                                   badges=[Tag(tag_name='PII_DATA')],
                                                    last_updated_timestamp=123)])
             entity1 = self.to_class(self.entity1)
             entity_collection = MagicMock()
@@ -301,19 +300,17 @@ class TestAtlasProxy(unittest.TestCase):
     def test_search_schema_column(self) -> None:
         fields = ['schema', 'column']
         for field in fields:
-
             expected = SearchResult(total_results=1,
                                     results=[Table(name=self.entity1_name,
-                                                   key=f"{self.entity_type}://"
-                                                       f"{self.cluster}.{self.db}/"
-                                                       f"{self.entity1_name}",
+                                                   key=make_table_qualified_name(self.entity1_name, self.cluster,
+                                                                                 self.db),
                                                    description=self.entity1_description,
                                                    cluster=self.cluster,
                                                    database=self.entity_type,
                                                    schema=self.db,
                                                    column_names=[],
                                                    tags=[Tag(tag_name='PII_DATA')],
-                                                   badges=[],
+                                                   badges=[Tag(tag_name='PII_DATA')],
                                                    last_updated_timestamp=123)])
             self.proxy.atlas.search_dsl = self.dsl_inject(
                 [
