@@ -88,7 +88,12 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.assertEqual(ent.__repr__(), unique_attr_response.__repr__())
 
-    def test_get_table(self) -> None:
+    def _get_table(self, custom_stats_format: bool = False) -> None:
+        if custom_stats_format:
+            test_exp_col = self.test_exp_col_stats_formatted
+        else:
+            test_exp_col = self.test_exp_col_stats_raw
+
         self._mock_get_table_entity()
         response = self.proxy.get_table(table_uri=self.table_uri)
 
@@ -98,7 +103,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         col_attrs = cast(dict, self.test_column['attributes'])
         exp_col_stats = list()
 
-        for stats in col_attrs['statistics']:
+        for stats in test_exp_col:
             exp_col_stats.append(
                 Statistics(
                     stat_type=stats['attributes']['stat_name'],
@@ -107,6 +112,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                     end_epoch=stats['attributes']['end_epoch'],
                 )
             )
+
         exp_col = Column(name=col_attrs['name'],
                          description='column description',
                          col_type='Managed',
@@ -121,7 +127,18 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          owners=[User(email=ent_attrs['owner'])],
                          columns=[exp_col],
                          last_updated_timestamp=cast(int, self.entity1['updateTime']))
+
         self.assertEqual(str(expected), str(response))
+
+    def test_get_table_without_custom_stats_format(self) -> None:
+        self._get_table()
+
+    def test_get_table_with_custom_stats_format(self) -> None:
+        statistics_format_spec = {'min': {'new_name': 'minimum', 'format': '{:,.2f}'},
+                                  'max': {'drop': True}}
+
+        with patch.object(self.proxy, 'STATISTICS_FORMAT_SPEC', statistics_format_spec):
+            self._get_table(custom_stats_format=True)
 
     def test_get_table_not_found(self) -> None:
         with self.assertRaises(NotFoundException):
