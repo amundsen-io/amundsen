@@ -477,7 +477,7 @@ The challenges come with REST API is that:
 To solve this challenges, we introduce [RestApiQuery](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/rest_api/rest_api_query.py)
 
 RestAPIQuery is:  
- 1. Assuming that REST API is using HTTP(S) call with GET method -- RestAPIQuery intention's is **read**, not write -- where basic HTTP auth is supported out of the box. There's extension point on other authentication scheme such as Oauth, and pagination, etc.
+ 1. Assuming that REST API is using HTTP(S) call with GET method -- RestAPIQuery intention's is **read**, not write -- where basic HTTP auth is supported out of the box. There's extension point on other authentication scheme such as Oauth, and pagination, etc. (See [ModePaginatedRestApiQuery](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/rest_api/mode_analytics/mode_paginated_rest_api_query.py) for pagination)
  2. Usually, you want the subset of the response you get from the REST API call -- value extraction. To extract the value you want, RestApiQuery uses [JSONPath](https://goessner.net/articles/JsonPath/) which is similar product as XPATH of XML.
  3. You can JOIN multiple RestApiQuery together.
 

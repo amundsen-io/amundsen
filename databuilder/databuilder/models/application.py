@@ -29,7 +29,7 @@ class Application(Neo4jCsvSerializable):
                  dag_id,  # type: str,
                  application_url_template,  # type: str
                  db_name='hive',  # type: str
-                 cluster='gold', # type: str
+                 cluster='gold',  # type: str
                  schema='',  # type: str
                  table_name='',  # type: str
                  exec_date='',  # type: str

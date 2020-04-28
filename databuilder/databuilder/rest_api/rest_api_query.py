@@ -56,7 +56,8 @@ class RestApiQuery(BaseRestApiQuery):
                  fail_no_result=False,  # type: bool
                  skip_no_result=False,  # type: bool
                  json_path_contains_or=False,  # type: bool
-                 can_skip_failure=None,  # type: Callable
+                 can_skip_failure=None,  # type: Callable,
+                 **kwargs  # type: Any
                  ):
         # type: (...) -> None
         """
@@ -155,6 +156,8 @@ class RestApiQuery(BaseRestApiQuery):
                     log_msg = 'No result from URL: {url}  , JSONPATH: {json_path} , response payload: {response}' \
                         .format(url=self._url, json_path=self._json_path, response=response_json)
                     LOGGER.info(log_msg)
+
+                    self._post_process(response)
 
                     if self._fail_no_result:
                         raise Exception(log_msg)
