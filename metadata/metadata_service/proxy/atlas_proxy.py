@@ -38,6 +38,7 @@ class AtlasProxy(BaseProxy):
     """
     TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
     DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
+    STATISTICS_FORMAT_SPEC = app.config['STATISTICS_FORMAT_SPEC']
     READER_TYPE = 'Reader'
     QN_KEY = 'qualifiedName'
     BKMARKS_KEY = 'isFollowing'
@@ -258,14 +259,34 @@ class AtlasProxy(BaseProxy):
 
             for stats in col_attrs.get('statistics') or list():
                 stats_attrs = stats['attributes']
-                statistics.append(
-                    Statistics(
-                        stat_type=stats_attrs.get('stat_name'),
-                        stat_val=stats_attrs.get('stat_val'),
-                        start_epoch=stats_attrs.get('start_epoch'),
-                        end_epoch=stats_attrs.get('end_epoch'),
+
+                stat_type = stats_attrs.get('stat_name')
+
+                stat_format = self.STATISTICS_FORMAT_SPEC.get(stat_type, dict())
+
+                if not stat_format.get('drop', False):
+                    stat_type = stat_format.get('new_name', stat_type)
+
+                    stat_val = stats_attrs.get('stat_val')
+
+                    format_val = stat_format.get('format')
+
+                    if format_val:
+                        stat_val = format_val.format(stat_val)
+                    else:
+                        stat_val = str(stat_val)
+
+                    start_epoch = stats_attrs.get('start_epoch')
+                    end_epoch = stats_attrs.get('end_epoch')
+
+                    statistics.append(
+                        Statistics(
+                            stat_type=stat_type,
+                            stat_val=stat_val,
+                            start_epoch=start_epoch,
+                            end_epoch=end_epoch,
+                        )
                     )
-                )
 
             columns.append(
                 Column(
