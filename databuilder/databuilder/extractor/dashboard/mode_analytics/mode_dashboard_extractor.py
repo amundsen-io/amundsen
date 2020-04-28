@@ -6,13 +6,13 @@ from typing import Any  # noqa: F401
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
-from databuilder.rest_api.rest_api_query import RestApiQuery
+from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
+from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
 from databuilder.transformer.base_transformer import ChainedTransformer
 from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
 from databuilder.transformer.template_variable_substitution_transformer import \
     TemplateVariableSubstitutionTransformer, TEMPLATE, FIELD_NAME as VAR_FIELD_NAME
-
+from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
 
 LOGGER = logging.getLogger(__name__)
 
@@ -107,6 +107,7 @@ class ModeDashboardExtractor(Extractor):
         # and description
         json_path = '_embedded.reports[*].[token,name,description,created_at]'
         field_names = ['dashboard_id', 'dashboard_name', 'description', 'created_timestamp']
-        reports_query = RestApiQuery(query_to_join=spaces_query, url=reports_url_template, params=params,
-                                     json_path=json_path, field_names=field_names, skip_no_result=True)
+        reports_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=reports_url_template, params=params,
+                                                  json_path=json_path, field_names=field_names, skip_no_result=True,
+                                                  pagination_json_path='_embedded.reports[*]')
         return reports_query
