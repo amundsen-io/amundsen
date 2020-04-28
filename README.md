@@ -120,6 +120,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [Work-Bench Snapshot: The Evolution of Data Discovery & Catalog](https://medium.com/work-bench/work-bench-snapshot-the-evolution-of-data-discovery-catalog-2f6c0425616b)
 - [Future of Data Engineering](https://www.infoq.com/presentations/data-engineering-pipelines-warehouses/)
 - [Governance and Discovery](https://www.oreilly.com/radar/governance-and-discovery/)
+- [A Data Engineer’s Perspective On Data Democratization](https://towardsdatascience.com/a-data-engineers-perspective-on-data-democratization-a8aed10f4253?source=friends_link&sk=63638570d03e4145265932c12af33f9d)
 
 ## Community meetings
 Join slack to find out about our next virtual community meetings. Notes:
