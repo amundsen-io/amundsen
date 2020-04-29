@@ -1,5 +1,4 @@
 import logging
-import warnings
 
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
@@ -219,81 +218,6 @@ class AtlasProxy(BaseProxy):
         tables, approx_count = self._atlas_basic_search(query_params)
 
         return SearchResult(total_results=approx_count, results=tables)
-
-    @timer_with_counter
-    def fetch_table_search_results_with_field(self, *,
-                                              query_term: str,
-                                              field_name: str,
-                                              field_value: str,
-                                              page_index: int = 0,
-                                              index: str = '') -> SearchResult:
-        """
-        DEPRECATED
-
-        Query Atlas and return results as list of Table objects.
-        Per field name we have a count query and a query for the tables.
-        https://atlas.apache.org/Search-Advanced.html
-
-        :param query_term: search query term
-        :param field_name: field name to do the searching(e.g schema, tag_names)
-        :param field_value: value for the field for filtering
-        :param page_index: index of search page user is currently on
-        :param index: search index (different resource corresponding to different index
-        :return: SearchResult Object
-        :return:
-        """
-        warnings.warn('Function deprecated, please use "Advanced Search" with "fetch_table_search_results_with_filter"',
-                      DeprecationWarning)
-
-        # @todo maybe we're ready to delete this function completely ?
-        class EntityStatus:
-            ACTIVE = 'ACTIVE'
-
-        tables: List[Table] = []
-        if field_name in ['tag', 'table']:
-            query_params = {'typeName': 'Table',
-                            'excludeDeletedEntities': True,
-                            'limit': self.page_size,
-                            'offset': page_index * self.page_size,
-                            'attributes': ['description', 'comment']}
-            if field_name == 'tag':
-                query_params.update({'classification': field_value})
-            else:
-                query_params.update({'query': field_value})
-            tables, count_value = self._atlas_basic_search(query_params)
-        else:
-            # Need to use DSL for the advanced relationship operations
-            sql = f"Table from Table where false"
-            count_sql = f"{sql} select count()"
-
-            if field_name == 'schema':
-                sql = f"from Table where  __state = '{EntityStatus.ACTIVE}' and db.name like '{field_value}'"
-                count_sql = f"{sql} select count()"
-            elif field_name == 'column':
-                sql = f"hive_column where  __state = '{EntityStatus.ACTIVE}' and" \
-                      f" name like '{field_value}' select table"
-                # TODO nanne: count tables instead of columns
-                count_sql = f"hive_column where  __state = '{EntityStatus.ACTIVE}' " \
-                            f"and name like '{field_value}' select count()"
-
-            LOGGER.debug(f"Used following sql query: {sql}")
-            count_value = 0
-            try:
-                # count results
-                count_params = {'query': count_sql}
-                count_results = list(self.atlas.search_dsl(**count_params))[0]
-                count_value = count_results._data['attributes']['values'][0][0]
-
-                params = {'query': f"{sql} limit {self.page_size} offset {page_index * self.page_size}"}
-                search_results = self.atlas.search_dsl(**params)
-                if count_value > 0 and page_index * self.page_size <= count_value:
-                    # unpack all collections (usually just one collection though)
-                    for collection in search_results:
-                        if hasattr(collection, 'entities'):
-                            tables.extend(self._prepare_tables(collection.entities, enhance_metadata=True))
-            except BadRequest:
-                LOGGER.error("Atlas Search DSL error with the following query:", sql)
-        return SearchResult(total_results=count_value, results=tables)
 
     def fetch_table_search_results_with_filter(self, *,
                                                query_term: str,
