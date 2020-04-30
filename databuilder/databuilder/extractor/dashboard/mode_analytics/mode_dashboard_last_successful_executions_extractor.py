@@ -7,7 +7,8 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_executions_ex
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
 from databuilder.models.dashboard.dashboard_execution import DashboardExecution
-from databuilder.rest_api.rest_api_query import RestApiQuery
+from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
+from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +54,8 @@ class ModeDashboardLastSuccessfulExecutionExtractor(ModeDashboardExecutionsExtra
         url = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
         json_path = '_embedded.reports[*].[token,last_successfully_run_at]'
         field_names = ['dashboard_id', 'execution_timestamp']
-        last_successful_run_query = RestApiQuery(query_to_join=spaces_query, url=url, params=params,
-                                                 json_path=json_path, field_names=field_names, skip_no_result=True)
+        last_successful_run_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=url, params=params,
+                                                              json_path=json_path, field_names=field_names,
+                                                              skip_no_result=True)
 
         return last_successful_run_query

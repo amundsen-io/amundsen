@@ -6,6 +6,7 @@ from typing import Any  # noqa: F401
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
+from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer
 from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
@@ -79,8 +80,8 @@ class ModeDashboardChartsExtractor(Extractor):
         report_url_template = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
         json_path = '(_embedded.reports[*].token)'
         field_names = ['dashboard_id']
-        reports_query = RestApiQuery(query_to_join=spaces_query, url=report_url_template, params=params,
-                                     json_path=json_path, field_names=field_names, skip_no_result=True)
+        reports_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=report_url_template, params=params,
+                                                  json_path=json_path, field_names=field_names, skip_no_result=True)
 
         queries_url_template = 'https://app.mode.com/api/{organization}/reports/{dashboard_id}/queries'
         json_path = '_embedded.queries[*].[token,name]'

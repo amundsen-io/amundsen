@@ -6,6 +6,7 @@ from typing import Any  # noqa: F401
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.extractor.restapi.rest_api_extractor import MODEL_CLASS
+from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.rest_api_failure_handlers import HttpFailureSkipOnStatus
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
@@ -61,9 +62,11 @@ class ModeDashboardOwnerExtractor(Extractor):
         # Reports
         json_path = '(_embedded.reports[*].token) | (_embedded.reports[*]._links.creator.href)'
         field_names = ['dashboard_id', 'creator_resource_path']
-        creator_resource_path_query = RestApiQuery(query_to_join=spaces_query, url=report_url_template, params=params,
-                                                   json_path=json_path, field_names=field_names, skip_no_result=True,
-                                                   json_path_contains_or=True)
+        creator_resource_path_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=report_url_template,
+                                                                params=params,
+                                                                json_path=json_path, field_names=field_names,
+                                                                skip_no_result=True,
+                                                                json_path_contains_or=True)
 
         json_path = 'email'
         field_names = ['email']
