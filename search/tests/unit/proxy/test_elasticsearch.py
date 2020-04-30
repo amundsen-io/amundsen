@@ -463,6 +463,7 @@ class TestElasticsearchProxy(unittest.TestCase):
     def test_create_document_with_no_data(self) -> None:
         expected = ''
         result = self.es_proxy.create_document(data=None, index='table_search_index')
+        print('result: {}'.format(result))
         self.assertEquals(expected, result)
 
     @patch('uuid.uuid4')
@@ -476,11 +477,12 @@ class TestElasticsearchProxy(unittest.TestCase):
                   schema='test_schema', description='A table for something',
                   key='snowflake://blue.test_schema/bank_accounts',
                   last_updated_timestamp=0, name='bank_accounts', tags=[], badges=self.mock_empty_badge,
-                  column_descriptions=['desc']),
+                  column_descriptions=['desc'], schema_description='schema description 1'),
             Table(cluster='blue', column_names=['5', '6'], database='snowflake',
                   schema='test_schema', description='A table for lots of things!',
                   key='snowflake://blue.test_schema/bitcoin_wallets',
-                  last_updated_timestamp=0, name='bitcoin_wallets', tags=[], badges=self.mock_empty_badge)
+                  last_updated_timestamp=0, name='bitcoin_wallets', tags=[], badges=self.mock_empty_badge,
+                  schema_description='schema description 2')
         ]
         expected_data = [
             {
@@ -503,7 +505,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'name': 'bank_accounts',
                 'tags': [],
                 'badges': [],
-                'total_usage': 0
+                'total_usage': 0,
+                'schema_description': 'schema description 1',
             },
             {
                 'index': {
@@ -525,7 +528,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'name': 'bitcoin_wallets',
                 'tags': [],
                 'badges': [],
-                'total_usage': 0
+                'total_usage': 0,
+                'schema_description': 'schema description 2',
             }
         ]
         mock_elasticsearch.bulk.return_value = {'errors': False}
@@ -552,7 +556,8 @@ class TestElasticsearchProxy(unittest.TestCase):
             Table(cluster='blue', column_names=['5', '6'], database='snowflake',
                   schema='test_schema', description='A table for lots of things!',
                   key=table_key, last_updated_timestamp=0, name='bitcoin_wallets',
-                  tags=[], column_descriptions=['hello'], badges=self.mock_empty_badge)
+                  tags=[], column_descriptions=['hello'], badges=self.mock_empty_badge,
+                  schema_description='schema description 1')
         ]
         expected_data = [
             {
@@ -576,7 +581,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                     'name': 'bitcoin_wallets',
                     'tags': [],
                     'badges': [],
-                    'total_usage': 0
+                    'total_usage': 0,
+                    'schema_description': 'schema description 1',
                 }
             }
         ]
