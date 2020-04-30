@@ -181,7 +181,7 @@ If using the filters option here is the input format
 #### [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Postgres or Redshift database.
 
-By default, the Postgres/Redshift database name is used as the cluter name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
+By default, the Postgres/Redshift database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
 to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
 
 The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/lyft/amundsendatabuilder/blob/master/example/dags/postgres_sample_dag.py) for an example).
@@ -197,6 +197,30 @@ job = DefaultJob(
 	conf=job_config,
 	task=DefaultTask(
 		extractor=PostgresMetadataExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
+#### [MSSQLMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mssql_metadata_extractor.py "PostgresMetadataExtractor")
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Microsoft SQL database.
+
+By default, the Microsoft SQL Server Database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
+to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
+
+The `where_clause_suffix` below should define which schemas you'd like to query (`"('dbo','sys')"`).
+
+The SQL query driving the extraction is defined [here](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mssql_metadata_extractor.py)
+
+This extractor is highly derived from [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor"). 
+```python
+job_config = ConfigFactory.from_dict({
+	'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
+    'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME): True,
+	'extractor.mssql_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=MSSQLMetadataExtractor(),
 		loader=AnyLoader()))
 job.launch()
 ```
