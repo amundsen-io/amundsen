@@ -26,7 +26,8 @@ table_fields = {
     "badges": fields.List(fields.Nested(tag_fields)),
     # last etl timestamp as epoch
     "last_updated_timestamp": fields.Integer,
-    "display_name": fields.String
+    "display_name": fields.String,
+    "schema_description": fields.String
 }
 
 search_table_results = {
