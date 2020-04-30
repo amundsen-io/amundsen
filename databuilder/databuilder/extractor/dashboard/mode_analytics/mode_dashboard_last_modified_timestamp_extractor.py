@@ -6,7 +6,8 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_executions_ex
     ModeDashboardExecutionsExtractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
-from databuilder.rest_api.rest_api_query import RestApiQuery
+from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
+from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
 from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
 from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
 
@@ -56,7 +57,8 @@ class ModeDashboardLastModifiedTimestampExtractor(ModeDashboardExecutionsExtract
         url = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
         json_path = '_embedded.reports[*].[token,edited_at]'
         field_names = ['dashboard_id', 'last_modified_timestamp']
-        last_modified_query = RestApiQuery(query_to_join=spaces_query, url=url, params=params,
-                                           json_path=json_path, field_names=field_names, skip_no_result=True)
+        last_modified_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=url, params=params,
+                                                        json_path=json_path, field_names=field_names,
+                                                        skip_no_result=True)
 
         return last_modified_query

@@ -5,8 +5,8 @@ from typing import Any  # noqa: F401
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
-from databuilder.rest_api.rest_api_query import RestApiQuery
-
+from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
+from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,6 +54,6 @@ class ModeDashboardUsageExtractor(Extractor):
         # and view_count
         json_path = '_embedded.reports[*].[token,view_count]'
         field_names = ['dashboard_id', 'accumulated_view_count']
-        reports_query = RestApiQuery(query_to_join=spaces_query, url=reports_url_template, params=params,
-                                     json_path=json_path, field_names=field_names, skip_no_result=True)
+        reports_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=reports_url_template, params=params,
+                                                  json_path=json_path, field_names=field_names, skip_no_result=True)
         return reports_query
