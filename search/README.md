@@ -25,7 +25,7 @@ For information about Amundsen and our other services, visit the [main repositor
 $ venv_path=[path_for_virtual_environment]
 $ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
-$ pip3 install amundsensearch
+$ pip3 install amundsen-search
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running
