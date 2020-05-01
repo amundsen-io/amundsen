@@ -29,6 +29,9 @@ class ElasticsearchPublisher(Publisher):
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
     ELASTICSEARCH_MAPPING_CONFIG_KEY = 'mapping'
 
+    # config to control how many max documents to publish at a time
+    ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
+
     # Specifying default mapping for elasticsearch index
     # Documentation: https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
     # Setting type to "text" for all fields that would be used in search
@@ -137,7 +140,8 @@ class ElasticsearchPublisher(Publisher):
 
         self.elasticsearch_mapping = self.conf.get(ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY,
                                                    ElasticsearchPublisher.DEFAULT_ELASTICSEARCH_INDEX_MAPPING)
-
+        self.elasticsearch_batch_size = self.conf.get(ElasticsearchPublisher.ELASTICSEARCH_PUBLISHER_BATCH_SIZE,
+                                                      10000)
         self.file_handler = open(self.file_path, self.file_mode)
 
     def _fetch_old_index(self):
@@ -172,17 +176,25 @@ class ElasticsearchPublisher(Publisher):
         # Bulk load JSON format is defined here:
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/docs-bulk.html
         bulk_actions = []
+        cnt = 0
+
+        # create new index with mapping
+        self.elasticsearch_client.indices.create(index=self.elasticsearch_new_index, body=self.elasticsearch_mapping)
         for action in actions:
             index_row = dict(index=dict(_index=self.elasticsearch_new_index,
                                         _type=self.elasticsearch_type))
             bulk_actions.append(index_row)
             bulk_actions.append(action)
+            cnt += 1
+            if cnt == self.elasticsearch_batch_size:
+                self.elasticsearch_client.bulk(bulk_actions)
+                LOGGER.info('Publish {} of records to ES'.format(str(cnt)))
+                cnt = 0
+                bulk_actions = []
 
-        # create new index with mapping
-        self.elasticsearch_client.indices.create(index=self.elasticsearch_new_index, body=self.elasticsearch_mapping)
-
-        # bulk upload data
-        self.elasticsearch_client.bulk(bulk_actions)
+        # Do the final bulk actions
+        if bulk_actions:
+            self.elasticsearch_client.bulk(bulk_actions)
 
         # fetch indices that have {elasticsearch_alias} as alias
         elasticsearch_old_indices = self._fetch_old_index()
