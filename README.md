@@ -123,7 +123,13 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [A Data Engineer’s Perspective On Data Democratization](https://towardsdatascience.com/a-data-engineers-perspective-on-data-democratization-a8aed10f4253?source=friends_link&sk=63638570d03e4145265932c12af33f9d)
 
 ## Community meetings
-Join slack to find out about our next virtual community meetings. Notes:
+Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time [Link to join](https://meet.google.com/mqz-ndck-jmj)
+
+### Upcoming meetings
+- 2020/05/07 at 9 AM Pacific. [Notes](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis)
+
+### Past meetings
+All notes [here](https://meet.google.com/mqz-ndck-jmj).
 - [2020/01/23](https://docs.google.com/document/d/1MT3qd_YjFiA17en94IEZcWaEgjdcaLhhZb-mX1UyWF8/edit#) {[video](https://www.youtube.com/watch?v=HV6ChWv4-ZQ)}
 - [2019/11/05](https://docs.google.com/document/d/11CLWhyNHlNoOxs6Ee29UJz0m8yI3Xiw4tUNTFGx_vy4/edit#heading=h.8d2zgr1chrra)
 - [2019/09/05](https://docs.google.com/document/d/1l2yIpoMmTGY022yuDHWWkSJVSuK25dYlwX0GWff6eQg/edit#)
