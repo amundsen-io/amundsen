@@ -37,7 +37,11 @@ db2 = [
     'ibm-db-sa-py3'
 ]
 
-all_deps = requirements + kafka + cassandra + glue + snowflake + athena + bigquery + jsonpath + db2
+druid = [
+    'pydruid'
+]
+
+all_deps = requirements + kafka + cassandra + glue + snowflake + athena + bigquery + jsonpath + db2 + druid
 
 setup(
     name='amundsen-databuilder',
@@ -60,7 +64,8 @@ setup(
         'athena': athena,
         'bigquery': bigquery,
         'jsonpath': jsonpath,
-        'db2': db2
+        'db2': db2,
+        'druid': druid,
     },
     classifiers=[
         'Programming Language :: Python :: 2.7',

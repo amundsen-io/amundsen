@@ -178,6 +178,28 @@ If using the filters option here is the input format
 ]
 ```
 
+#### [DruidMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/druid_metadata_extractor.py)
+An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a [Druid](https://druid.apache.org/) DB.
+
+The `where_clause_suffix` could be defined, normally you would like to filter out the in `INFORMATION_SCHEMA`.
+
+You could specify the following job config
+```python
+conn_string = "druid+https://{host}:{port}/druid/v2/sql/".format(
+		host=druid_broker_host,
+		port=443
+)
+job_config = ConfigFactory.from_dict({
+	'extractor.druid_metadata.{}'.format(PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
+  'extractor.druid_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): conn_string()})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=DruidMetadataExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
 #### [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Postgres or Redshift database.
 
@@ -211,7 +233,7 @@ The `where_clause_suffix` below should define which schemas you'd like to query 
 
 The SQL query driving the extraction is defined [here](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mssql_metadata_extractor.py)
 
-This extractor is highly derived from [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor"). 
+This extractor is highly derived from [PostgresMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor").
 ```python
 job_config = ConfigFactory.from_dict({
 	'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
@@ -225,7 +247,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [MysqlMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mysql_metadata_extractor.py "PostgresMetadataExtractor")
+#### [MysqlMetadataExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/extractor/mysql_metadata_extractor.py "MysqlMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a MYSQL database.
 
 By default, the MYSQL database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
@@ -239,7 +261,7 @@ The SQL query driving the extraction is defined [here](https://github.com/lyft/a
 job_config = ConfigFactory.from_dict({
 	'extractor.mysql_metadata.{}'.format(MysqlMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
   'extractor.mysql_metadata.{}'.format(MysqlMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME): True,
-	'extractor.postgres_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
+	'extractor.mysql_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
 job = DefaultJob(conf=job_config,
 								 task=DefaultTask(extractor=MysqlMetadataExtractor(), loader=FsNeo4jCSVLoader()),
 								 publisher=Neo4jCsvPublisher())
