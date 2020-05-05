@@ -166,20 +166,22 @@ class FsNeo4jCSVLoader(Loader):
             return writer
 
         LOGGER.info('Creating file for {}'.format(key))
-        file_out = open('{}/{}.csv'.format(dir_path, file_suffix), 'w')
+
+        if six.PY2:
+
+            file_out = open('{}/{}.csv'.format(dir_path, file_suffix), 'w')
+            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
+                                    quoting=csv.QUOTE_NONNUMERIC, encoding='utf-8')
+        else:
+            file_out = open('{}/{}.csv'.format(dir_path, file_suffix), 'w', encoding='utf8')
+            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
+                                    quoting=csv.QUOTE_NONNUMERIC)
 
         def file_out_close():
             # type: () -> None
             LOGGER.info('Closing file IO {}'.format(file_out))
             file_out.close()
         self._closer.register(file_out_close)
-
-        if six.PY2:
-            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
-                                    quoting=csv.QUOTE_NONNUMERIC, encoding='utf-8')
-        else:
-            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
-                                    quoting=csv.QUOTE_NONNUMERIC)
 
         writer.writeheader()
         file_mapping[key] = writer
