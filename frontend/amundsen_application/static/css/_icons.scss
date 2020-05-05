@@ -86,6 +86,11 @@ img.icon {
     background-color: transparent;
   }
 
+  &.icon-druid {
+    content: url('/static/images/icons/logo-druid.svg');
+    background-color: transparent;
+  }
+
   &.icon-github {
     -webkit-mask-image: url('/static/images/icons/github.svg');
     mask-image: url('/static/images/icons/github.svg');
