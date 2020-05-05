@@ -55,6 +55,10 @@ const configDefault: AppConfig = {
           displayName: 'BigQuery',
           iconClass: 'icon-bigquery',
         },
+        'druid': {
+          displayName: 'Druid',
+          iconClass: 'icon-druid',
+        },
         'hive': {
           displayName: 'Hive',
           iconClass: 'icon-hive',
