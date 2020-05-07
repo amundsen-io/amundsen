@@ -4,7 +4,7 @@ from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import Entity, EntityCollection
 # default search page size
-from atlasclient.utils import parse_table_qualified_name, make_table_qualified_name
+from atlasclient.utils import parse_table_qualified_name
 from typing import Any, List, Dict, Tuple, Optional
 from re import sub
 
@@ -88,7 +88,7 @@ class AtlasProxy(BaseProxy):
             badges: List[Tag] = tags
 
             table = Table(name=entity_name,
-                          key=make_table_qualified_name(entity_name, db_cluster, db_name),
+                          key=f"{entity.typeName}://{db_cluster}.{db_name}/{entity_name}",
                           description=entity_attrs.get('description'),
                           cluster=db_cluster,
                           database=entity.typeName,
