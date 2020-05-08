@@ -130,7 +130,7 @@ class AtlasProxy(BaseProxy):
     def _prepare_basic_search_query(self, limit: int, page_index: int, query_term: Optional[str] = None,
                                     filters: Optional[List[Tuple[str, str, str]]] = None,
                                     operator: Optional[str] = None,
-                                    classifications: Optional[List[str]] = None,
+                                    classification: Optional[str] = None,
                                     entity_type: str = None) -> Dict[str, Any]:
         """
         Render a query for Atlas Basic Search API.
@@ -181,8 +181,8 @@ class AtlasProxy(BaseProxy):
                 query['entityFilters'] = {'condition': condition, 'criterion': criterion}
             elif len(criterion) == 1:
                 query['entityFilters'] = criterion[0]
-        elif classifications:
-            query['classification'] = classifications
+        elif classification:
+            query['classification'] = classification
 
         return query
 
@@ -241,8 +241,7 @@ class AtlasProxy(BaseProxy):
         db_filter_value = _filters.get('database')
         table_filter_value = _filters.get('table')
         cluster_filter_value = _filters.get('cluster')
-        badges_filter_value = _filters.get('badges', list())
-        tags_filter_value = _filters.get('tag', list())
+        tags_filter_value = _filters.get('tag')
 
         filters = list()
 
@@ -256,18 +255,13 @@ class AtlasProxy(BaseProxy):
         if table_filter_value:
             filters.append(('name', 'CONTAINS', table_filter_value[0]))
 
-        classifications: List[str] = list()  # noqa: E701
-
-        if badges_filter_value or tags_filter_value:
-            classifications = list(set(badges_filter_value + tags_filter_value))
-
         # Currently Atlas doesn't allow mixing search by filters and classifications
         if filters:
             query_params = self._prepare_basic_search_query(self.page_size, page_index,
                                                             filters=filters)
-        elif classifications:
+        elif tags_filter_value:
             query_params = self._prepare_basic_search_query(self.page_size, page_index,
-                                                            classifications=classifications)
+                                                            classification=tags_filter_value[0])
 
         tables, approx_count = self._atlas_basic_search(query_params)
 
