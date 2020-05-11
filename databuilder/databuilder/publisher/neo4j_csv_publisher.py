@@ -1,6 +1,7 @@
 import copy
 import csv
 import ctypes
+from io import open
 import logging
 import time
 from os import listdir
@@ -222,7 +223,7 @@ class Neo4jCsvPublisher(Publisher):
         # type: (str) -> None
         LOGGER.info('Creating indices. (Existing indices will be ignored)')
 
-        with open(node_file, 'r') as node_csv:
+        with open(node_file, 'r', encoding='utf8') as node_csv:
             for node_record in csv.DictReader(node_csv):
                 label = node_record[NODE_LABEL_KEY]
                 if label not in self.labels:
@@ -250,7 +251,7 @@ class Neo4jCsvPublisher(Publisher):
         :return:
         """
 
-        with open(node_file, 'r') as node_csv:
+        with open(node_file, 'r', encoding='utf8') as node_csv:
             for count, node_record in enumerate(csv.DictReader(node_csv)):
                 stmt = self.create_node_merge_statement(node_record=node_record)
                 tx = self._execute_statement(stmt, tx)
@@ -306,7 +307,7 @@ class Neo4jCsvPublisher(Publisher):
             LOGGER.info('Pre-processing relation with {}'.format(self._relation_preprocessor))
 
             count = 0
-            with open(relation_file, 'r') as relation_csv:
+            with open(relation_file, 'r', encoding='utf8') as relation_csv:
                 for rel_record in csv.DictReader(relation_csv):
                     stmt, params = self._relation_preprocessor.preprocess_cypher(
                         start_label=rel_record[RELATION_START_LABEL],
@@ -322,7 +323,7 @@ class Neo4jCsvPublisher(Publisher):
 
             LOGGER.info('Executed pre-processing Cypher statement {} times'.format(count))
 
-        with open(relation_file, 'r') as relation_csv:
+        with open(relation_file, 'r', encoding='utf8') as relation_csv:
             for count, rel_record in enumerate(csv.DictReader(relation_csv)):
                 stmt = self.create_relationship_merge_statement(rel_record=rel_record)
                 tx = self._execute_statement(stmt, tx,
