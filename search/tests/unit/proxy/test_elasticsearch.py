@@ -367,6 +367,30 @@ class TestElasticsearchProxy(unittest.TestCase):
         }
         self.assertEquals(self.es_proxy.parse_filters(filter_list), '')
 
+    def test_validate_wrong_filters_values(self) -> None:
+        search_request = {
+            "type": "AND",
+            "filters": {
+                "schema": ["test_schema:test_schema"],
+                "table": ["test/table"]
+            },
+            "query_term": "",
+            "page_index": 0
+        }
+        self.assertEquals(self.es_proxy.validate_filter_values(search_request), False)
+
+    def test_validate_accepted_filters_values(self) -> None:
+        search_request = {
+            "type": "AND",
+            "filters": {
+                "schema": ["test_schema"],
+                "table": ["test_table"]
+            },
+            "query_term": "a",
+            "page_index": 0
+        }
+        self.assertEquals(self.es_proxy.validate_filter_values(search_request), True)
+
     def test_parse_query_term(self) -> None:
         term = 'test'
         expected_result = "(name:(*test*) OR name:(test) OR schema:(*test*) OR " \

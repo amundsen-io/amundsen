@@ -1,5 +1,6 @@
 import logging
 import uuid
+import itertools
 from typing import Any, List, Dict
 
 from elasticsearch import Elasticsearch
@@ -346,7 +347,7 @@ class ElasticsearchProxy(BaseProxy):
             if mapped_category is None:
                 LOGGING.warn(f'Unsupported filter category: {category} passed in list of filters')
             elif item_list is '' or item_list == ['']:
-                LOGGING.warn(f'The filter value cannot be empty.In this case the filter {category} gets ignored')
+                LOGGING.warn(f'The filter value cannot be empty.In this case the filter {category} is ignored')
             else:
                 query_list.append(mapped_category + ':' + '(' + ' OR '.join(item_list) + ')')
 
@@ -354,6 +355,20 @@ class ElasticsearchProxy(BaseProxy):
             return ''
 
         return ' AND '.join(query_list)
+
+    @staticmethod
+    def validate_filter_values(search_request: dict) -> Any:
+        if 'filters' in search_request:
+            filter_values_list = search_request['filters'].values()
+            # Ensure all values are arrays
+            filter_values_list = list(
+                map(lambda x: x if type(x) == list else [x], filter_values_list))
+            # Flatten the array of arrays
+            filter_values_list = list(itertools.chain.from_iterable(filter_values_list))
+            # Check if / or : exist in any of the values
+            if any(("/" in str(item) or ":" in str(item)) for item in (filter_values_list)):
+                return False
+            return True
 
     @staticmethod
     def parse_query_term(query_term: str) -> str:
@@ -400,8 +415,11 @@ class ElasticsearchProxy(BaseProxy):
         filter_list = search_request.get('filters')
         add_query = ''
         query_dsl = ''
-
         if filter_list:
+            valid_filters = self.validate_filter_values(search_request)
+            if valid_filters is False:
+                raise Exception(
+                    'The search filters contain invalid characters and thus cannot be handled by ES')
             query_dsl = self.parse_filters(filter_list)
 
         if query_term:

@@ -4,7 +4,6 @@ from typing import Any, Dict, Iterable  # noqa: F401
 from flask_restful import Resource, fields, marshal_with, reqparse
 from flasgger import swag_from
 
-
 from search_service.proxy import get_proxy_client
 
 tag_fields = {
@@ -88,6 +87,7 @@ class SearchTableFilterAPI(Resource):
     This API should be generic enough to support every search filter use case.
     TODO: Deprecate the SearchTableFieldAPI for this more flexible API
     """
+
     def __init__(self) -> None:
         self.proxy = get_proxy_client()
 
