@@ -6,6 +6,8 @@ import { addBookmark, removeBookmark } from "ducks/bookmark/reducer";
 import { AddBookmarkRequest, RemoveBookmarkRequest } from "ducks/bookmark/types";
 import { GlobalState } from "ducks/rootReducer";
 
+import { ResourceType } from 'interfaces';
+
 import './styles.scss'
 
 
@@ -14,13 +16,14 @@ interface StateFromProps {
 }
 
 interface DispatchFromProps {
-  addBookmark: (key: string, type: string) => AddBookmarkRequest,
-  removeBookmark: (key: string, type: string) => RemoveBookmarkRequest,
+  addBookmark: (key: string, type: ResourceType) => AddBookmarkRequest,
+  removeBookmark: (key: string, type: ResourceType) => RemoveBookmarkRequest,
 }
 
 interface OwnProps {
   bookmarkKey: string;
   large?: boolean;
+  resourceType: ResourceType;
 }
 
 export type BookmarkIconProps = StateFromProps & DispatchFromProps & OwnProps;
@@ -39,9 +42,9 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
     event.preventDefault();
 
     if (this.props.isBookmarked) {
-      this.props.removeBookmark(this.props.bookmarkKey, 'table');
+      this.props.removeBookmark(this.props.bookmarkKey, this.props.resourceType);
     } else {
-      this.props.addBookmark(this.props.bookmarkKey, 'table');
+      this.props.addBookmark(this.props.bookmarkKey, this.props.resourceType);
     }
   };
 
@@ -58,7 +61,7 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   return {
     bookmarkKey: ownProps.bookmarkKey,
-    isBookmarked: state.bookmarks.myBookmarks.some((bookmark) => bookmark.key === ownProps.bookmarkKey),
+    isBookmarked: state.bookmarks.myBookmarks[ownProps.resourceType].some((bookmark) => bookmark.key === ownProps.bookmarkKey),
   };
 };
 

@@ -1,0 +1,26 @@
+@import 'variables';
+
+.resource-list {
+  ul {
+    margin-bottom: 0;
+  }
+
+  .resource-list-title {
+    margin: $spacer-3 0 $spacer-1 $spacer-4;
+  }
+
+  .resource-list-footer {
+    margin: $spacer-1 0 $spacer-1 $spacer-4;
+    height: $spacer-3;
+    a {
+      cursor: pointer;
+      font-weight: $font-weight-body-bold;
+    }
+  }
+
+  .empty-message {
+    margin-top: $spacer-4;
+    display: flex;
+    justify-content: center;
+  }
+}

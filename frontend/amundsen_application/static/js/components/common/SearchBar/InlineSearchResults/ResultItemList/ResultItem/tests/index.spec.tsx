@@ -16,7 +16,7 @@ describe('ResultItem', () => {
       iconClass: 'test-icon',
       onItemSelect: jest.fn(),
       subtitle: 'subtitle',
-      title: 'title',
+      titleNode: (<div>Hello</div>),
       type: 'User',
     };
     subject = shallow(<ResultItem {...props} />);
@@ -47,12 +47,12 @@ describe('ResultItem', () => {
 
       it('truncates the text accordingly', () => {
         expect(contentWrapper.props().className).toMatch(/truncated/);
-        expect(contentWrapper.children().at(0).props().className).toMatch(/truncated/);
         expect(contentWrapper.children().at(1).props().className).toMatch(/truncated/);
       });
 
       it('renders the title', () => {
-        expect(contentWrapper.find('.title-2').text()).toEqual(props.title);
+        // @ts-ignore: assertion passes but throws a TS error
+        expect(contentWrapper.children().at(0).text()).toEqual(shallow(props.titleNode).text());
       });
 
       it('renders the subtitle', () => {

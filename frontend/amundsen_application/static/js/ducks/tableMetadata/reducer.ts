@@ -3,18 +3,15 @@ import { OwnerDict, PreviewData, PreviewQueryParams, TableMetadata, Tag, User } 
 import {
   GetTableData, GetTableDataRequest, GetTableDataResponse,
   GetTableDescription, GetTableDescriptionRequest, GetTableDescriptionResponse,
-  UpdateTableDescription, UpdateTableDescriptionRequest, UpdateTableDescriptionResponse,
+  UpdateTableDescription, UpdateTableDescriptionRequest,
   GetColumnDescription, GetColumnDescriptionResponse, GetColumnDescriptionRequest,
-  UpdateColumnDescription, UpdateColumnDescriptionRequest, UpdateColumnDescriptionResponse,
+  UpdateColumnDescription, UpdateColumnDescriptionRequest,
   GetLastIndexed, GetLastIndexedRequest, GetLastIndexedResponse,
   GetPreviewData, GetPreviewDataRequest, GetPreviewDataResponse,
   UpdateTableOwner,
-  UpdateTags,
 } from './types';
 
 import tableOwnersReducer, { initialOwnersState, TableOwnerReducerState } from './owners/reducer';
-
-import tableTagsReducer, { initialTagsState,  TableTagsReducerState } from './tags/reducer';
 
 /* ACTIONS */
 export function getTableData(key: string, searchIndex?: string, source?: string): GetTableDataRequest {
@@ -170,7 +167,6 @@ export interface TableMetadataReducerState {
   statusCode: number;
   tableData: TableMetadata;
   tableOwners: TableOwnerReducerState;
-  tableTags: TableTagsReducerState;
 };
 
 export const initialPreviewState = {
@@ -205,7 +201,6 @@ export const initialState: TableMetadataReducerState = {
   statusCode: null,
   tableData: initialTableDataState,
   tableOwners: initialOwnersState,
-  tableTags: initialTagsState,
 };
 
 export default function reducer(state: TableMetadataReducerState = initialState, action): TableMetadataReducerState {
@@ -217,7 +212,6 @@ export default function reducer(state: TableMetadataReducerState = initialState,
         preview: initialPreviewState,
         tableData: initialTableDataState,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
-        tableTags: tableTagsReducer(state.tableTags, action),
       };
     case GetTableData.FAILURE:
       return {
@@ -227,7 +221,6 @@ export default function reducer(state: TableMetadataReducerState = initialState,
         statusCode: (<GetTableDataResponse>action).payload.statusCode,
         tableData: initialTableDataState,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
-        tableTags: tableTagsReducer(state.tableTags, action),
       };
     case GetTableData.SUCCESS:
       return {
@@ -236,7 +229,6 @@ export default function reducer(state: TableMetadataReducerState = initialState,
         statusCode: (<GetTableDataResponse>action).payload.statusCode,
         tableData: (<GetTableDataResponse>action).payload.data,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
-        tableTags: tableTagsReducer(state.tableTags, action),
       };
     case GetTableDescription.FAILURE:
     case GetTableDescription.SUCCESS:
@@ -255,10 +247,6 @@ export default function reducer(state: TableMetadataReducerState = initialState,
     case UpdateTableOwner.FAILURE:
     case UpdateTableOwner.SUCCESS:
       return { ...state, tableOwners: tableOwnersReducer(state.tableOwners, action) };
-    case UpdateTags.REQUEST:
-    case UpdateTags.FAILURE:
-    case UpdateTags.SUCCESS:
-      return { ...state, tableTags: tableTagsReducer(state.tableTags, action) };
     default:
       return state;
   }

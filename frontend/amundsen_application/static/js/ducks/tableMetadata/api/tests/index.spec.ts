@@ -65,13 +65,6 @@ describe('helpers', () => {
     });
   });
 
-  it('getTableTagsFromResponseData', () => {
-    expect(Helpers.getTableTagsFromResponseData(mockResponseData)).toEqual([
-      {tag_count: 1, tag_name: 'aname'},
-      {tag_count: 2, tag_name: 'zname'},
-    ]);
-  });
-
   describe('createOwnerNotificationData', () => {
     let testData;
     let testId;

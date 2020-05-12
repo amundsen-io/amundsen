@@ -2,7 +2,7 @@ import { expectSaga, testSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 
-import { Bookmark, ResourceType } from 'interfaces';
+import { Bookmark, ResourceType, ResourceDict } from 'interfaces';
 
 import * as API from '../api/v0';
 import reducer, {
@@ -10,7 +10,7 @@ import reducer, {
   getBookmarks, getBookmarksFailure, getBookmarksSuccess,
   getBookmarksForUser, getBookmarksForUserFailure, getBookmarksForUserSuccess,
   removeBookmark, removeBookmarkFailure, removeBookmarkSuccess,
-  initialState, BookmarkReducerState
+  initialState, initialBookmarkState, BookmarkReducerState
 } from '../reducer';
 import {
   addBookmarkWatcher, addBookmarkWorker,
@@ -26,7 +26,7 @@ import {
 } from '../types';
 
 describe('bookmark ducks', () => {
-  let bookmarks: Bookmark[];
+  let bookmarks: ResourceDict<Bookmark[]>;
   let testResourceKey: string;
   let testResourceType: ResourceType;
   let testUserId: string;
@@ -34,17 +34,19 @@ describe('bookmark ducks', () => {
     testResourceKey = 'key';
     testResourceType = ResourceType.table;
     testUserId = 'userId';
-    bookmarks = [
-      {
-        key: testResourceKey,
-        type: testResourceType,
-        cluster: 'cluster',
-        database: 'database',
-        description: 'description',
-        name: 'name',
-        schema: 'schema',
-      },
-    ];
+    bookmarks = {
+      [testResourceType]: [
+        {
+          key: testResourceKey,
+          type: testResourceType,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+      ]
+    }
   });
 
   describe('actions', () => {
@@ -77,7 +79,6 @@ describe('bookmark ducks', () => {
       const action = getBookmarksFailure();
       const { payload } = action;
       expect(action.type).toBe(GetBookmarks.FAILURE);
-      expect(payload.bookmarks).toEqual([]);
     });
 
     it('getBookmarksSuccess - returns the action to process success', () => {
@@ -98,7 +99,6 @@ describe('bookmark ducks', () => {
       const action = getBookmarksForUserFailure();
       const { payload } = action;
       expect(action.type).toBe(GetBookmarksForUser.FAILURE);
-      expect(payload.bookmarks).toEqual([]);
     });
 
     it('getBookmarksForUserSuccess - returns the action to process success', () => {
@@ -132,28 +132,30 @@ describe('bookmark ducks', () => {
 
   describe('reducer', () => {
     let testState: BookmarkReducerState;
-    let bookmarkList: Bookmark[];
+    let bookmarkList: ResourceDict<Bookmark[]>;
     beforeEach(() => {
-      bookmarkList = [
-        {
-          key: 'bookmarked_key_0',
-          type: ResourceType.table,
-          cluster: 'cluster',
-          database: 'database',
-          description: 'description',
-          name: 'name',
-          schema: 'schema',
-        },
-        {
-          key: 'bookmarked_key_1',
-          type: ResourceType.table,
-          cluster: 'cluster',
-          database: 'database',
-          description: 'description',
-          name: 'name',
-          schema: 'schema',
-        },
-      ];
+      bookmarkList = {
+        [ResourceType.table]: [
+          {
+            key: 'bookmarked_key_0',
+            type: ResourceType.table,
+            cluster: 'cluster',
+            database: 'database',
+            description: 'description',
+            name: 'name',
+            schema: 'schema',
+          },
+          {
+            key: 'bookmarked_key_1',
+            type: ResourceType.table,
+            cluster: 'cluster',
+            database: 'database',
+            description: 'description',
+            name: 'name',
+            schema: 'schema',
+          },
+        ]
+      };
       testState = {
         myBookmarks: bookmarkList,
         myBookmarksIsLoaded: false,
@@ -172,18 +174,20 @@ describe('bookmark ducks', () => {
       const bookmarkKey = 'bookmarked_key_1';
       const action = { type: RemoveBookmark.SUCCESS, payload: { resourceType: ResourceType.table, resourceKey: bookmarkKey }};
       const newState = reducer(testState, action);
-      expect(newState.myBookmarks.find((bookmark) => bookmark.key === bookmarkKey)).toEqual(undefined);
+      expect(newState.myBookmarks[ResourceType.table].find((bookmark) => bookmark.key === bookmarkKey)).toEqual(undefined);
       expect(newState).toEqual({
         ...testState,
-        myBookmarks: [{
-          key: 'bookmarked_key_0',
-          type: ResourceType.table,
-          cluster: 'cluster',
-          database: 'database',
-          description: 'description',
-          name: 'name',
-          schema: 'schema',
-        }],
+        myBookmarks: {
+          [ResourceType.table]: [{
+            key: 'bookmarked_key_0',
+            type: ResourceType.table,
+            cluster: 'cluster',
+            database: 'database',
+            description: 'description',
+            name: 'name',
+            schema: 'schema',
+          }]
+        }
       });
     });
 
@@ -213,7 +217,7 @@ describe('bookmark ducks', () => {
     it('should reset bookmarksForUser on GetBookmarksForUser.REQUEST', () => {
       expect(reducer(testState, { type: GetBookmarksForUser.REQUEST, payload: { userId: 'testUser' }})).toEqual({
         ...testState,
-        bookmarksForUser: [],
+        bookmarksForUser: initialBookmarkState,
       });
     });
   });

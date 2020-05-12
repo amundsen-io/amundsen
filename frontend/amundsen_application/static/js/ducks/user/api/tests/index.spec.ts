@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import globalState from 'fixtures/globalState';
 
-import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
+import { LoggedInUser, PeopleUser, Resource, ResourceDict } from 'interfaces';
 
 import * as API from '../v0';
 
@@ -90,7 +90,7 @@ describe('getUserOwn', () => {
   let axiosMock;
   let mockGetResponse: AxiosResponse<API.UserOwnAPI>;
   let testId: string;
-  let testResources: Resource[];
+  let testResources;
   beforeAll(() => {
     testId = 'testId';
     testResources = globalState.user.profile.own;

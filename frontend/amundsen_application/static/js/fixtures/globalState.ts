@@ -3,6 +3,8 @@ import { ResourceType, SendingState } from 'interfaces';
 
 import { defaultEmptyFilters } from './search/filters';
 
+import { dashboardMetadata } from './metadata/dashboard';
+
 const globalState: GlobalState = {
   announcements: {
       posts: [{
@@ -17,29 +19,54 @@ const globalState: GlobalState = {
       }],
   },
   bookmarks: {
-    myBookmarks: [
-      {
-        key: 'bookmarked_key',
-        type: ResourceType.table,
-        cluster: 'cluster',
-        database: 'database',
-        description: 'description',
-        name: 'name',
-        schema: 'schema',
-      },
-    ],
+    myBookmarks: {
+      [ResourceType.table]: [
+        {
+          key: 'bookmarked_key',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+      ],
+      [ResourceType.dashboard]: [
+        {
+          key: 'product_dashboard://cluster.group/name',
+          group_name: 'Amundsen Team',
+          group_url: 'product/group',
+          name: 'Amundsen Metrics Dashboard1',
+          product: 'mode',
+          type: ResourceType.dashboard,
+          description: 'I am a dashboard',
+          uri: 'product_dashboard://cluster.group/name',
+          url: 'product/name',
+          cluster: 'cluster',
+          last_successful_run_timestamp: 1585062593
+        },
+      ],
+    },
     myBookmarksIsLoaded: false,
-    bookmarksForUser: [],
+    bookmarksForUser: {
+      [ResourceType.table]: [],
+      [ResourceType.dashboard]: [],
+    },
+  },
+  dashboard: {
+    isLoading: false,
+    statusCode: 200,
+    dashboard: dashboardMetadata
   },
   feedback: {
     sendState: SendingState.IDLE,
   },
   issue: {
-    issues: [], 
-    allIssuesUrl: null, 
+    issues: [],
+    allIssuesUrl: null,
     total: 0,
     isLoading: true
-  }, 
+  },
   notification: {
     requestIsOpen: false,
     sendState: SendingState.IDLE,
@@ -96,6 +123,11 @@ const globalState: GlobalState = {
     },
     inlineResults: {
       isLoading: false,
+      dashboards: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
       tables: {
         page_index: 0,
         results: [],
@@ -140,23 +172,25 @@ const globalState: GlobalState = {
       isLoading: true,
       owners: {},
     },
-    tableTags: {
-      isLoading: true,
+  },
+  tags: {
+    allTags: {
+      isLoading: false,
+      tags: [
+        {
+          tag_name: 'curated_tag_1',
+          tag_count: 20,
+        },
+        {
+          tag_name: 'other_tag_1',
+          tag_count: 15,
+        }
+      ],
+    },
+    resourceTags: {
+      isLoading: false,
       tags: [],
     },
-  },
-  allTags: {
-    allTags: [
-      {
-        tag_name: 'curated_tag_1',
-        tag_count: 20,
-      },
-      {
-        tag_name: 'other_tag_1',
-        tag_count: 15,
-      }
-    ],
-    isLoading: false,
   },
   user:  {
     loggedInUser: {
@@ -176,11 +210,14 @@ const globalState: GlobalState = {
       user_id: 'test0',
     },
     profile: {
-      own: [
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-      ],
+      own: {
+        [ResourceType.table]: [
+          { type: ResourceType.table },
+          { type: ResourceType.table },
+          { type: ResourceType.table },
+        ],
+        [ResourceType.dashboard]: []
+      },
       read: [
         { type: ResourceType.table },
         { type: ResourceType.table },

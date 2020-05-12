@@ -5,6 +5,11 @@
   background-color: $badge-danger-color;
 }
 
+.label-default {
+  color: $badge-text-color;
+  background-color: $badge-default-color;
+}
+
 .label-primary {
   color: $badge-text-color;
   background-color: $badge-primary-color;

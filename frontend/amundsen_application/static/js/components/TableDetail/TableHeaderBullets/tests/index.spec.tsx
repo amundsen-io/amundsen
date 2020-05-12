@@ -12,9 +12,9 @@ const MOCK_DB_DISPLAY_NAME = 'AlsoTest';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(),
-  getDatabaseDisplayName: jest.fn()
+  getSourceDisplayName: jest.fn()
 }));
-import { getDatabaseDisplayName, getDisplayNameByResource } from 'config/config-utils';
+import { getSourceDisplayName, getDisplayNameByResource } from 'config/config-utils';
 
 describe('TableHeaderBullets', () => {
   const setup = (propOverrides?: Partial<TableHeaderBulletsProps>) => {
@@ -32,7 +32,7 @@ describe('TableHeaderBullets', () => {
     let wrapper;
     let listElement;
     beforeAll(() => {
-      mocked(getDatabaseDisplayName).mockImplementation(() => MOCK_DB_DISPLAY_NAME);
+      mocked(getSourceDisplayName).mockImplementation(() => MOCK_DB_DISPLAY_NAME);
       mocked(getDisplayNameByResource).mockImplementation(() => MOCK_RESOURCE_DISPLAY_NAME);
       const setupResult = setup();
       props = setupResult.props;
@@ -50,7 +50,7 @@ describe('TableHeaderBullets', () => {
     });
 
     it('renders a list with database display name', () => {
-      expect(getDatabaseDisplayName).toHaveBeenCalledWith(props.database);
+      expect(getSourceDisplayName).toHaveBeenCalledWith(props.database, ResourceType.table);
       expect(listElement.find('li').at(1).text()).toEqual(MOCK_DB_DISPLAY_NAME);
     });
 

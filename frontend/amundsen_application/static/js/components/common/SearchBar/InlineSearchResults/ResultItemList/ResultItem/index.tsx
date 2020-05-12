@@ -7,19 +7,19 @@ export interface ResultItemProps {
   iconClass: string;
   onItemSelect: (event: MouseEvent) => void;
   subtitle: string;
-  title: string;
+  titleNode: React.ReactNode;
   type: string;
 }
 
-const ResultItem: React.SFC<ResultItemProps> = ({ href, iconClass, id, onItemSelect, subtitle, title, type }) => {
+const ResultItem: React.SFC<ResultItemProps> = ({ href, iconClass, id, onItemSelect, subtitle, titleNode, type }) => {
   return (
     <li className="list-group-item">
       <Link id={id} className="result-item-link" onClick={onItemSelect} to={ href }>
         <img className={`result-icon ${iconClass}`} />
 
-        <div className="result-info">
+        <div className="result-info my-auto">
           <div className="truncated">
-            <div className="title-2 truncated">{ title }</div>
+            { titleNode }
             <div className="body-secondary-3 truncated">{ subtitle }</div>
           </div>
         </div>

@@ -4,13 +4,12 @@ import { connect } from 'react-redux'
 import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
 
+import Flag from 'components/common/Flag';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 
 import { GlobalState } from 'ducks/rootReducer'
 
-import {
-  SEARCH_ITEM_NO_RESULTS
-} from 'components/common/SearchBar/InlineSearchResults/constants';
+import { SEARCH_ITEM_NO_RESULTS } from 'components/common/SearchBar/InlineSearchResults/constants';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -64,6 +63,7 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           <div className="title-2 search-item-info">
             <div className="search-term">{`${searchTerm}\u00a0`}</div>
             <div className="search-item-text">{listItemText}</div>
+            { resourceType === ResourceType.dashboard && <Flag text="beta" labelStyle="default"/> }
           </div>
           { this.renderIndicator() }
         </a>
@@ -73,9 +73,12 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
 };
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  const { isLoading, tables, users } = state.search.inlineResults;
+  const { isLoading, dashboards, tables, users } = state.search.inlineResults;
   let hasResults = false;
   switch (ownProps.resourceType) {
+    case ResourceType.dashboard:
+      hasResults = dashboards.results.length > 0;
+      break;
     case ResourceType.table:
       hasResults = tables.results.length > 0;
       break;

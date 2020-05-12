@@ -3,10 +3,12 @@ import * as DocumentTitle from 'react-document-title';
 import * as Avatar from 'react-avatar';
 
 import { shallow } from 'enzyme';
+import { mocked } from 'ts-jest/utils';
 
 import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
-import Tabs from 'components/common/Tabs';
+import ResourceList from 'components/common/ResourceList';
+import TabsComponent from 'components/common/TabsComponent';
 import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from '../';
 
 import globalState from 'fixtures/globalState';
@@ -17,25 +19,43 @@ import {
   AVATAR_SIZE,
   BOOKMARKED_LABEL,
   BOOKMARKED_SOURCE,
-  BOOKMARKED_TAB_KEY,
-  OWNED_LABEL, OWNED_SOURCE,
-  OWNED_TAB_KEY, READ_LABEL,
-  READ_SOURCE, READ_TAB_KEY,
+  OWNED_LABEL,
+  OWNED_SOURCE,
+  READ_LABEL,
+  READ_SOURCE,
 } from '../constants';
+
+jest.mock('config/config-utils', () => ({
+  getDisplayNameByResource: jest.fn(() => 'Resource'),
+  indexDashboardsEnabled: jest.fn(),
+}));
+
+import * as LogUtils from 'utils/logUtils';
+
+import { indexDashboardsEnabled } from 'config/config-utils';
 
 describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
     const routerProps = getMockRouterProps<RouteProps>({userId: 'test0'}, null);
     const props: ProfilePageProps = {
       user: globalState.user.profile.user,
-      bookmarks: [
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        ],
-      read: [],
-      own: [],
+      resourceRelations: {
+        [ResourceType.table]: {
+          bookmarks: [
+            { type: ResourceType.table },
+            { type: ResourceType.table },
+            { type: ResourceType.table },
+            { type: ResourceType.table },
+            ],
+          read: [],
+          own: [],
+        },
+        [ResourceType.dashboard]: {
+          bookmarks: [],
+          read: [],
+          own: [],
+        }
+      },
       getUserById: jest.fn(),
       getUserOwn: jest.fn(),
       getUserRead: jest.fn(),
@@ -93,7 +113,7 @@ describe('ProfilePage', () => {
   describe('loadUserInfo', () => {
     it('calls getLoggingParams', () => {
       const { props, wrapper } = setup();
-      const getLoggingParamsSpy = jest.spyOn(wrapper.instance(), 'getLoggingParams');
+      const getLoggingParamsSpy = jest.spyOn(LogUtils, 'getLoggingParams');
       wrapper.instance().loadUserInfo('test')
       expect(getLoggingParamsSpy).toHaveBeenCalledWith(props.location.search);
     });
@@ -119,61 +139,55 @@ describe('ProfilePage', () => {
     });
   });
 
-  describe('getLoggingParams', () => {
-    let searchString;
+
+  describe('generateTabContent', () => {
     let props;
     let wrapper;
-    let replaceStateSpy;
-
+    let givenResource;
+    let content;
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      replaceStateSpy = jest.spyOn(window.history, 'replaceState');
+      givenResource = ResourceType.table;
+      content = shallow(<div>{wrapper.instance().generateTabContent(givenResource)}</div>);
     });
 
-    it('returns the parsed source and index in an object', () => {
-      searchString = 'source=test_source&index=10';
-      const params = wrapper.instance().getLoggingParams(searchString);
-      expect(params.source).toEqual('test_source');
-      expect(params.index).toEqual('10');
+    describe('for a resource', () => {
+      it('returns a ResourceList for the own resourceRelations', () => {
+        expect(content.find(ResourceList).at(0).props().allItems).toBe(props.resourceRelations[givenResource].own);
+      });
+
+      it('returns a ResourceList for the bookmarked resourceRelations', () => {
+        expect(content.find(ResourceList).at(1).props().allItems).toBe(props.resourceRelations[givenResource].bookmarks);
+      });
+
+      it('returns a ResourceList for the read resourceRelations', () => {
+        expect(content.find(ResourceList).at(2).props().allItems).toBe(props.resourceRelations[givenResource].read);
+      });
     });
 
-    it('clears the logging params from the URL, if present', () => {
-      searchString = 'source=test_source&index=10';
-      replaceStateSpy.mockClear();
-      wrapper.instance().getLoggingParams(searchString);
-      expect(replaceStateSpy).toHaveBeenCalledWith({}, '', `${window.location.origin}${window.location.pathname}`);
-    });
-
-    it('does not clear the logging params if they do not exist', () => {
-      searchString = '';
-      replaceStateSpy.mockClear();
-      wrapper.instance().getLoggingParams(searchString);
-      expect(replaceStateSpy).not.toHaveBeenCalled()
+    describe('for dashboard resource', () => {
+      it('does not return a ResourceList for the read resourceRelations', () => {
+        content = shallow(<div>{wrapper.instance().generateTabContent(ResourceType.dashboard)}</div>);
+        expect(content.find(ResourceList).at(2).exists()).toBe(false);
+      });
     });
   });
 
-  describe('getTabContent', () => {
-    let props;
-    let wrapper;
-    beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+  describe('generateTabKey', () => {
+    it('returns string used for the tab keys', () => {
+      const wrapper = setup().wrapper;
+      const givenResource = ResourceType.table;
+      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(`tab:${givenResource}`);
     });
+  });
 
-    it('returns an empty tab message when there are no items to render', () => {
-      const content = wrapper.instance().getTabContent([], 'source', 'label');
-      expect(shallow(content).find('.empty-tab-message').exists()).toBe(true)
-    });
-
-    it('renders a ResourceList with the correct props', () => {
-      const content = wrapper.instance().getTabContent(props.bookmarks, 'source', 'label');
-      // 'getTabContent' returns a <ResourceList> which shallow will actually render.
-      // The intent here is not to test the functionality of <ResourceList>
-      expect(content.props.allItems).toEqual(props.bookmarks);
-      expect(content.props.source).toEqual('source');
+  describe('generateTabTitle', () => {
+    it('returns string for tab title according to UI designs', () => {
+      const wrapper = setup().wrapper;
+      const givenResource = ResourceType.table;
+      expect(wrapper.instance().generateTabTitle(givenResource)).toEqual('Resource (4)');
     });
   });
 
@@ -181,39 +195,78 @@ describe('ProfilePage', () => {
     let tabInfoArray;
     let props;
     let wrapper;
-    let getTabContentSpy;
+    let generateTabContentSpy;
+    let generateTabKeySpy;
+    let generateTabTitleSpy;
 
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      getTabContentSpy = jest.spyOn(wrapper.instance(), 'getTabContent');
-      tabInfoArray = wrapper.instance().generateTabInfo();
+      generateTabContentSpy = jest.spyOn(wrapper.instance(), 'generateTabContent')
+        .mockImplementation((input) => `${input}Content`);
+      generateTabKeySpy = jest.spyOn(wrapper.instance(), 'generateTabKey')
+        .mockImplementation((input) => `${input}Key`);
+      generateTabTitleSpy = jest.spyOn(wrapper.instance(), 'generateTabTitle')
+        .mockImplementation((input) => `${input}Title`);
     });
 
-    it('returns a tab info array with 3 tabs', () => {
-      expect(tabInfoArray.length).toEqual(3);
+    describe('pushes tab info for tables', () => {
+      let tableTab;
+      beforeAll(() => {
+        tabInfoArray = wrapper.instance().generateTabInfo();
+        tableTab = tabInfoArray.find(tab => tab.key === 'tableKey');
+      });
+
+      it('generates content for table tab info', () => {
+        expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.table);
+        expect(tableTab.content).toBe('tableContent')
+      });
+
+      it('generates key for table tab info', () => {
+        expect(generateTabKeySpy).toHaveBeenCalledWith(ResourceType.table);
+        expect(tableTab.key).toBe('tableKey');
+      });
+
+      it('generates title for table tab info', () => {
+        expect(generateTabTitleSpy).toHaveBeenCalledWith(ResourceType.table);
+        expect(tableTab.title).toBe('tableTitle')
+      });
     });
 
-    it('tabInfo contains a tab for frequently used resources', () => {
-      expect(tabInfoArray.find(tab => tab.key === READ_TAB_KEY)).toBeDefined()
-    });
+    describe('handle tab info for dashboards', () => {
+      let dashboardTab;
+      describe('if dashboards are not enabled', () => {
+        it('does not render dashboard tab', () => {
+          mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
+          tabInfoArray = wrapper.instance().generateTabInfo();
+          expect(tabInfoArray.find(tab => tab.key === 'dashboardKey')).toBe(undefined);
+        });
+      })
 
-    it('tabInfo contains a tab for bookmarked resources', () => {
-      expect(tabInfoArray.find(tab => tab.key === BOOKMARKED_TAB_KEY)).toBeDefined()
-    });
+      describe('if dashboards are enabled', () => {
+        beforeAll(() => {
+          mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
+          tabInfoArray = wrapper.instance().generateTabInfo();
+          dashboardTab = tabInfoArray.find(tab => tab.key === 'dashboardKey');
+        });
 
-    it('tabInfo contains a tab for owned resources', () => {
-      expect(tabInfoArray.find(tab => tab.key === OWNED_TAB_KEY)).toBeDefined()
-    });
+        it('generates content for table tab info', () => {
+          expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.dashboard);
+          expect(dashboardTab.content).toBe('dashboardContent')
+        });
 
-    it ('calls getTabContent for each of 3 tabs', () => {
-      expect(getTabContentSpy).toHaveBeenCalledTimes(3);
-      expect(getTabContentSpy).toHaveBeenCalledWith(props.own, OWNED_SOURCE, OWNED_LABEL);
-      expect(getTabContentSpy).toHaveBeenCalledWith(props.read, READ_SOURCE, READ_LABEL);
-      expect(getTabContentSpy).toHaveBeenCalledWith(props.bookmarks, BOOKMARKED_SOURCE, BOOKMARKED_LABEL);
-    });
+        it('generates key for table tab info', () => {
+          expect(generateTabKeySpy).toHaveBeenCalledWith(ResourceType.dashboard);
+          expect(dashboardTab.key).toBe('dashboardKey');
+        });
 
+        it('generates title for table tab info', () => {
+          expect(generateTabTitleSpy).toHaveBeenCalledWith(ResourceType.dashboard);
+          expect(dashboardTab.title).toBe('dashboardTitle')
+        });
+      })
+    });
   });
 
   describe('render', () => {
@@ -293,9 +346,12 @@ describe('ProfilePage', () => {
     });
 
     it('renders Tabs w/ correct props', () => {
-      expect(wrapper.find('.profile-tabs').find(Tabs).props()).toMatchObject({
+      const mockKey = 'test';
+      const generateTabKeySpy = jest.spyOn(wrapper.instance(), 'generateTabKey').mockImplementation(() => mockKey)
+      wrapper.instance().forceUpdate();
+      expect(wrapper.find('.profile-body').find(TabsComponent).props()).toMatchObject({
         tabs: wrapper.instance().generateTabInfo(),
-        defaultTab: BOOKMARKED_TAB_KEY,
+        defaultTab: mockKey,
       });
     });
 
@@ -364,15 +420,18 @@ describe('mapStateToProps', () => {
     expect(result.user).toEqual(globalState.user.profile.user);
   });
 
-  it('sets bookmarks on the props', () => {
-    expect(result.bookmarks).toEqual(globalState.bookmarks.bookmarksForUser);
-  });
+  describe('sets resourceRelations on the props', () => {
+    it('sets relations for tables', () => {
+      const tables = result.resourceRelations[ResourceType.table];
+      expect(tables.bookmarks).toBe(globalState.bookmarks.bookmarksForUser[ResourceType.table]);
+      expect(tables.own).toBe(globalState.user.profile.own[ResourceType.table]);
+      expect(tables.read).toBe(globalState.user.profile.read);
+    });
 
-  it('sets own on the props', () => {
-    expect(result.own).toEqual(globalState.user.profile.own);
-  });
-
-  it('sets read on the props', () => {
-    expect(result.read).toEqual(globalState.user.profile.read);
+    it('sets relations for dashboards', () => {
+      const dashboards = result.resourceRelations[ResourceType.dashboard];
+      expect(dashboards.bookmarks).toBe(globalState.bookmarks.bookmarksForUser[ResourceType.dashboard]);
+      expect(dashboards.own).toBe(globalState.user.profile.own[ResourceType.dashboard]);
+    });
   });
 });

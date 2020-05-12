@@ -1,33 +1,24 @@
 @import 'variables';
 
 .profile-page {
+  // override height from resource-detail-layout
+  height: auto;
+
   .profile-avatar {
     display: inline-block;
     margin: 6px 16px 0 0;
   }
 
-  .header-title-text {
-    .flag {
-      margin-left: 8px;
-    }
-  }
-
-  .profile-tabs {
-    margin-top: 24px;
-
-    .nav-tabs {
-      margin-left: 16px;
-    }
-
-    .list-group {
-      margin-top: 0;
-    }
-
+  .profile-body {
 
     // TODO: consider moving logic for empty content into Tab component
     .empty-tab-message {
       margin-top: 32px;
       text-align: center;
     }
+  }
+
+  .resource-list:last-child {
+    margin-bottom: $spacer-3;
   }
 }

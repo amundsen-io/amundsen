@@ -107,10 +107,10 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
   render() {
     const metadata = this.props.data;
     return (
-      <li className="list-group-item" onClick={ this.toggleExpand }>
+      <li className="list-group-item clickable" onClick={ this.toggleExpand }>
         <div className="column-list-item">
           <section className="column-header">
-            <div className="column-details truncated">
+            <div className={`column-details truncated ${!this.state.isExpanded ? 'my-auto' : ''}`}>
               <div className="column-name">
                 { metadata.name }
               </div>

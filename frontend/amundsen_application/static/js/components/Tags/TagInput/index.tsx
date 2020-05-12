@@ -6,15 +6,12 @@ import { components } from 'react-select';
 import CreatableSelect from 'react-select/lib/Creatable';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getAllTags } from 'ducks/allTags/reducer';
-import { GetAllTagsRequest } from 'ducks/allTags/types';
-import { updateTags } from 'ducks/tableMetadata/tags/reducer';
-import { UpdateTagsRequest } from 'ducks/tableMetadata/types';
+import { getAllTags, updateTags} from 'ducks/tags/reducer';
+import { GetAllTagsRequest, UpdateTagsRequest} from 'ducks/tags/types';
 
 import TagInfo from "../TagInfo";
 import { EditableSectionChildProps } from 'components/TableDetail/EditableSection';
-import { Tag, UpdateMethod, UpdateTagData } from 'interfaces';
-
+import { ResourceType, Tag, UpdateMethod, UpdateTagData } from 'interfaces';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
@@ -36,12 +33,17 @@ export interface StateFromProps {
   tags: Tag[];
 }
 
+export interface OwnProps {
+  resourceType: ResourceType;
+  uriKey: string;
+}
+
 export interface DispatchFromProps {
   updateTags: (tagArray: UpdateTagData[]) => UpdateTagsRequest;
   getAllTags: () => GetAllTagsRequest;
 }
 
-type TagInputProps = StateFromProps & DispatchFromProps & EditableSectionChildProps;
+type TagInputProps = StateFromProps & OwnProps & DispatchFromProps & EditableSectionChildProps;
 
 interface TagInputState {
   showModal: boolean;
@@ -54,8 +56,10 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     allTags: [],
     getAllTags: () => void(0),
     isLoading: false,
+    resourceType: ResourceType.table,
     tags: undefined,
     updateTags: () => void(0),
+    uriKey: "",
   };
 
   constructor(props) {
@@ -295,14 +299,17 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    allTags: state.allTags.allTags,
-    isLoading: state.allTags.isLoading || state.tableMetadata.tableTags.isLoading,
-    tags: state.tableMetadata.tableTags.tags,
+    allTags: state.tags.allTags.tags,
+    isLoading: state.tags.allTags.isLoading || state.tags.resourceTags.isLoading,
+    tags: state.tags.resourceTags.tags,
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getAllTags, updateTags } , dispatch);
+export const mapDispatchToProps = (dispatch: any, ownProps: OwnProps) => {
+  return bindActionCreators({
+    getAllTags,
+    updateTags: (tags: UpdateTagData[]) => updateTags(tags, ownProps.resourceType, ownProps.uriKey)
+  }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(TagInput);
+export default connect<StateFromProps, DispatchFromProps, OwnProps>(mapStateToProps, mapDispatchToProps)(TagInput);

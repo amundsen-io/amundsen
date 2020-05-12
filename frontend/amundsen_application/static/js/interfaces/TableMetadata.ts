@@ -26,6 +26,7 @@ export interface TableColumnStats {
   end_epoch: number;
 }
 
+// TODO - Make this reusable for dashboards
 export interface TableReader {
   read_count: number;
   user: User;

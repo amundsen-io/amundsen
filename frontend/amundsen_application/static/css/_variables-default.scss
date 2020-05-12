@@ -54,10 +54,11 @@ $line-height-large:  1.5 !default;
 
 // Badges
 $badge-text-color: $text-primary;
-$badge-danger-color: $sunset10;
+$badge-danger-color: $sunset20;
+$badge-default-color: $gray20;
 $badge-primary-color: $cyan10;
-$badge-success-color: $mint10;
-$badge-warning-color: $yellow10;
+$badge-success-color: $mint20;
+$badge-warning-color: $amber30;
 
 
 // Buttons
@@ -104,8 +105,8 @@ $list-group-border-radius: 0 !default;
 $label-primary-bg: $brand-color-3 !default;
 
 //Priority
-$priority-text-blocker: $white; 
-$priority-bg-color: $rose80; 
+$priority-text-blocker: $white;
+$priority-bg-color: $rose80;
 
 // Tags
 $tag-bg: $gray5;
@@ -120,3 +121,4 @@ $spacer-size: 8px;
 $spacer-1: $spacer-size;
 $spacer-2: $spacer-size * 2;
 $spacer-3: $spacer-size * 3;
+$spacer-4: $spacer-size * 4;

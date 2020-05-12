@@ -14,6 +14,7 @@ import {
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
   SEARCH_SOURCE_NAME,
+  DASHBOARD_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
 } from '../constants';
@@ -118,8 +119,14 @@ describe('SearchPage', () => {
       expect(text).toEqual(USER_RESOURCE_TITLE);
     });
 
-    it('returns empty string for the default case', () => {
+    it('returns correct test for ResourceType.dashboard', () => {
       const text = wrapper.instance().generateTabLabel(ResourceType.dashboard);
+      expect(text).toEqual(DASHBOARD_RESOURCE_TITLE);
+    });
+
+    it('returns empty string for the default case', () => {
+      // @ts-ignore: cover default case
+      const text = wrapper.instance().generateTabLabel('fake resource');
       expect(text).toEqual('');
     });
   });

@@ -22,6 +22,9 @@ const configDefault: AppConfig = {
     key: 'default-key',
     sampleRate: 100,
   },
+  indexDashboards: {
+    enabled: false,
+  },
   indexUsers: {
     enabled: false,
   },
@@ -48,9 +51,18 @@ const configDefault: AppConfig = {
     }
   ],
   resourceConfig: {
+    [ResourceType.dashboard]: {
+      displayName: 'Dashboards',
+      supportedSources: {
+        'mode': {
+          displayName: 'Mode',
+          iconClass: 'icon-mode',
+        },
+      },
+    },
     [ResourceType.table]: {
       displayName: 'Datasets',
-      supportedDatabases: {
+      supportedSources: {
         'bigquery': {
           displayName: 'BigQuery',
           iconClass: 'icon-bigquery',

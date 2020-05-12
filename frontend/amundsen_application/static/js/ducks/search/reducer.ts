@@ -47,6 +47,7 @@ export interface SearchReducerState {
   users: UserSearchResults;
   inlineResults: {
     isLoading: boolean;
+    dashboards: DashboardSearchResults;
     tables: TableSearchResults;
     users: UserSearchResults;
   },
@@ -178,6 +179,11 @@ export function urlDidUpdate(urlSearch: UrlSearch): UrlDidUpdateRequest {
 /* REDUCER */
 export const initialInlineResultsState = {
   isLoading: false,
+  dashboards: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   tables: {
     page_index: 0,
     results: [],
@@ -258,6 +264,7 @@ export default function reducer(state: SearchReducerState = initialState, action
         ...newState,
         filters: state.filters,
         inlineResults: {
+          dashboards: newState.dashboards,
           tables: newState.tables,
           users: newState.users,
           isLoading: false,
@@ -278,10 +285,11 @@ export default function reducer(state: SearchReducerState = initialState, action
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, tables, users } = (<InlineSearchUpdate>action).payload;
+      const { searchTerm, resource, dashboards, tables, users } = (<InlineSearchUpdate>action).payload;
       return {
         ...state,
         resource,
+        dashboards,
         tables,
         users,
         search_term: searchTerm,
@@ -292,6 +300,7 @@ export default function reducer(state: SearchReducerState = initialState, action
       return {
         ...state,
         inlineResults: {
+          dashboards: inlineResults.dashboards,
           tables: inlineResults.tables,
           users: inlineResults.users,
           isLoading: false,

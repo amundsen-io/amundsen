@@ -28,7 +28,7 @@ class TestModePreview(unittest.TestCase):
             self.assertEqual(b'bar', actual)
             mock_get.assert_called_with('http://foo.bar/image.jpeg', allow_redirects=True)
 
-    def test_get_preview_image_url(self) -> None:
+    def test_get_preview_image_url_success(self) -> None:
         with patch.object(requests, 'get') as mock_get:
             mock_get.return_value.json.return_value = {'web_preview_image': 'http://foo.bar/image.jpeg'}
 
@@ -40,3 +40,19 @@ class TestModePreview(unittest.TestCase):
 
             expected_url = DEFAULT_REPORT_URL_TEMPLATE.format(organization=ORGANIZATION, dashboard_id='d_id')
             mock_get.assert_called_with(expected_url, auth=HTTPBasicAuth(ACCESS_TOKEN, PASSWORD))
+
+    def test_get_preview_image_url_failure_none_value(self) -> None:
+        with patch.object(requests, 'get') as mock_get:
+            mock_get.return_value.json.return_value = {'web_preview_image': None}
+
+            preview = ModePreview(access_token='token', password='password', organization='foo')
+            mode_dashboard_uri = 'mode_dashboard://gold.dg/d_id'
+            self.assertRaises(FileNotFoundError, preview._get_preview_image_url, uri=mode_dashboard_uri)
+
+    def test_get_preview_image_url_failure_missing_key(self) -> None:
+        with patch.object(requests, 'get') as mock_get:
+            mock_get.return_value.json.return_value = {}
+
+            preview = ModePreview(access_token='token', password='password', organization='foo')
+            mode_dashboard_uri = 'mode_dashboard://gold.dg/d_id'
+            self.assertRaises(FileNotFoundError, preview._get_preview_image_url, uri=mode_dashboard_uri)

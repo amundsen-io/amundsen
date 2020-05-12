@@ -11,6 +11,7 @@ import DocumentTitle from 'react-document-title';
 
 import AnnouncementPage from './components/AnnouncementPage';
 import BrowsePage from './components/BrowsePage';
+import DashboardPage from 'components/DashboardPage';
 import Footer from './components/Footer';
 import HomePage from './components/HomePage'
 import NavBar from './components/NavBar';
@@ -38,10 +39,11 @@ ReactDOM.render(
           <Preloader/>
           <Route component={NavBar} />
           <Switch>
-            <Route path="/table_detail/:cluster/:database/:schema/:table" component={TableDetail} />
             <Route path="/announcements" component={AnnouncementPage} />
             <Route path="/browse" component={BrowsePage} />
+            <Route path="/dashboard" component={DashboardPage} />
             <Route path="/search" component={SearchPage} />
+            <Route path="/table_detail/:cluster/:database/:schema/:table" component={TableDetail} />
             <Route path="/user/:userId" component={ProfilePage} />
             <Route path="/404" component={NotFoundPage} />
             <Route path="/" component={HomePage} />

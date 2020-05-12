@@ -176,5 +176,20 @@ describe('SearchItem', () => {
         expect(result.hasResults).toEqual(false);
       });
     });
+
+    describe('ownProps.resourceType is ResourceType.dashboard', () => {
+      beforeAll(() => {
+        ownProps = setup({resourceType: ResourceType.dashboard}).props;
+      })
+      it('sets hasResults to true if there are dashboard results', () => {
+        result = mapStateToProps(mockAllResultsState, ownProps);
+        expect(result.hasResults).toEqual(true);
+      });
+
+      it('sets hasResults to false if there are no dashboard results', () => {
+        result = mapStateToProps(mockNoResultsState, ownProps);
+        expect(result.hasResults).toEqual(false);
+      });
+    });
   });
 });

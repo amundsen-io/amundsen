@@ -4,29 +4,40 @@ import { BadgeStyle } from 'config/config-types';
 
 import { ResourceType } from 'interfaces';
 
-describe('getDatabaseDisplayName', () => {
+describe('getSourceDisplayName', () => {
   it('returns given id if no config for that id exists', () => {
     const testId = 'fakeName';
-    expect(ConfigUtils.getDatabaseDisplayName(testId)).toBe(testId);
+    expect(ConfigUtils.getSourceDisplayName(testId, ResourceType.table)).toBe(testId);
   });
 
-  it('returns given id for a configured database id', () => {
+  it('returns given id for a configured source id', () => {
     const testId = 'hive';
-    const expectedName = AppConfig.resourceConfig[ResourceType.table].supportedDatabases[testId].displayName;
-    expect(ConfigUtils.getDatabaseDisplayName(testId)).toBe(expectedName);
+    const expectedName = AppConfig.resourceConfig[ResourceType.table].supportedSources[testId].displayName;
+    expect(ConfigUtils.getSourceDisplayName(testId, ResourceType.table)).toBe(expectedName);
   })
 });
 
-describe('getDatabaseIconClass', () => {
-  it('returns default class no config for that id exists', () => {
-    const testId = 'fakeName';
-    expect(ConfigUtils.getDatabaseIconClass(testId)).toBe(ConfigUtils.DEFAULT_DATABASE_ICON_CLASS);
+describe('getSourceIconClass', () => {
+  describe('if not config for the given id exists', () => {
+    it('returns default class for dashboard', () => {
+      const testId = 'fakeName';
+      expect(ConfigUtils.getSourceIconClass(testId, ResourceType.dashboard)).toBe(ConfigUtils.DEFAULT_DASHBOARD_ICON_CLASS);
+    });
+
+    it('returns default class for tables', () => {
+      const testId = 'fakeName';
+      expect(ConfigUtils.getSourceIconClass(testId, ResourceType.table)).toBe(ConfigUtils.DEFAULT_DATABASE_ICON_CLASS);
+    });
+  })
+
+  it('returns empty string for unconfigured resource', () => {
+    expect(ConfigUtils.getSourceIconClass('fakeName', ResourceType.user)).toBe('');
   });
 
   it('returns given icon class for a configured database id', () => {
     const testId = 'hive';
-    const expectedClass = AppConfig.resourceConfig[ResourceType.table].supportedDatabases[testId].iconClass;
-    expect(ConfigUtils.getDatabaseIconClass(testId)).toBe(expectedClass);
+    const expectedClass = AppConfig.resourceConfig[ResourceType.table].supportedSources[testId].iconClass;
+    expect(ConfigUtils.getSourceIconClass(testId, ResourceType.table)).toBe(expectedClass);
   })
 });
 
@@ -79,8 +90,20 @@ describe('feedbackEnabled', () => {
   });
 });
 
+describe('issueTrackingEnabled', () => {
+  it('returns whether or not the issueTracking feature is enabled', () => {
+    expect(ConfigUtils.issueTrackingEnabled()).toBe(AppConfig.issueTracking.enabled);
+  });
+});
+
+describe('indexDashboardsEnabled', () => {
+  it('returns whether or not the indexDashboards feature is enabled', () => {
+    expect(ConfigUtils.indexDashboardsEnabled()).toBe(AppConfig.indexDashboards.enabled);
+  });
+});
+
 describe('indexUsersEnabled', () => {
-  it('returns whether or not the notifications feature is enabled', () => {
+  it('returns whether or not the indexUsers feature is enabled', () => {
     expect(ConfigUtils.indexUsersEnabled()).toBe(AppConfig.indexUsers.enabled);
   });
 });

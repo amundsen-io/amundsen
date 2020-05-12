@@ -109,13 +109,23 @@ describe('ColumnListItem', () => {
       expect(newWrapper.find(ColumnStats).exists()).toBe(true);
     });
 
-    it('does not render column stats when not expanded', () => {
-      instance.setState({ isExpanded: false });
-      const newWrapper = shallow(instance.render());
-      expect(newWrapper.find('.expanded-content').exists()).toBe(false);
-      expect(newWrapper.find(ColumnDescEditableText).exists()).toBe(false);
-      expect(newWrapper.find(ColumnStats).exists()).toBe(false);
-    });
+    describe('when not expanded', () => {
+      let newWrapper;
+      beforeAll(() => {
+        instance.setState({ isExpanded: false });
+        newWrapper = shallow(instance.render());
+      });
+
+      it('does not render column stats', () => {
+        expect(newWrapper.find('.expanded-content').exists()).toBe(false);
+        expect(newWrapper.find(ColumnDescEditableText).exists()).toBe(false);
+        expect(newWrapper.find(ColumnStats).exists()).toBe(false);
+      });
+
+      it('has appropriate css for column details', () => {
+        expect(newWrapper.find('.column-details').hasClass('my-auto')).toBe(true);
+      });
+    })
   });
 });
 

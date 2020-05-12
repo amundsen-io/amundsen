@@ -7,8 +7,14 @@
     margin-left: 8px;
     cursor: inherit;
     min-width: 0;
-    color: $text-secondary;
     vertical-align: middle;
+  }
+
+  .gray-avatar {
+    div {
+      background: $gray20 !important;
+      color: $gray20 !important;
+    }
   }
 }
 

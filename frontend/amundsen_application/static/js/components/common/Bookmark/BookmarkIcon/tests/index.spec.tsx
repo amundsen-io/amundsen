@@ -4,9 +4,9 @@ import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
 
+import { ResourceType } from 'interfaces';
 
 import { BookmarkIcon, BookmarkIconProps, mapDispatchToProps, mapStateToProps } from "../";
-
 
 describe('BookmarkIcon', () => {
 
@@ -17,6 +17,7 @@ describe('BookmarkIcon', () => {
       large: false,
       addBookmark: jest.fn(),
       removeBookmark: jest.fn(),
+      resourceType: ResourceType.table,
       ...propOverrides
     };
     const wrapper = shallow<BookmarkIcon>(<BookmarkIcon {...props} />);
@@ -41,7 +42,7 @@ describe('BookmarkIcon', () => {
       });
 
       wrapper.find('div').simulate('click', clickEvent);
-      expect(props.addBookmark).toHaveBeenCalled();
+      expect(props.addBookmark).toHaveBeenCalledWith(props.bookmarkKey, props.resourceType);
     });
 
     it('unbookmarks a bookmarked resource', () => {
@@ -49,7 +50,7 @@ describe('BookmarkIcon', () => {
         isBookmarked: true
       });
       wrapper.find('div').simulate('click', clickEvent);
-      expect(props.removeBookmark).toHaveBeenCalled();
+      expect(props.removeBookmark).toHaveBeenCalledWith(props.bookmarkKey, props.resourceType);
     });
   });
 
@@ -94,20 +95,20 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   it('sets the bookmarkKey on the props', () => {
-      const ownProps = { bookmarkKey: "test_bookmark_key" };
+      const ownProps = { bookmarkKey: "test_bookmark_key", resourceType: ResourceType.table };
       const result = mapStateToProps(globalState, ownProps);
       expect(result.bookmarkKey).toEqual(ownProps.bookmarkKey);
   });
 
   it('sets isBookmarked to false when the resource key is not bookmarked', () => {
-    const ownProps = { bookmarkKey: "not_bookmarked_key" };
+    const ownProps = { bookmarkKey: "not_bookmarked_key", resourceType: ResourceType.table };
     const result = mapStateToProps(globalState, ownProps);
     expect(result.isBookmarked).toBe(false);
   });
 
 
   it('sets isBookmarked to true when the resource key is bookmarked', () => {
-    const ownProps = { bookmarkKey: "bookmarked_key" };
+    const ownProps = { bookmarkKey: "bookmarked_key", resourceType: ResourceType.table };
     const result = mapStateToProps(globalState, ownProps);
     expect(result.isBookmarked).toBe(true);
   });

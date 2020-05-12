@@ -9,8 +9,8 @@ import TagInfo from 'components/Tags/TagInfo';
 import { Tag } from 'interfaces';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getAllTags } from 'ducks/allTags/reducer';
-import { GetAllTagsRequest } from 'ducks/allTags/types';
+import { getAllTags } from 'ducks/tags/reducer';
+import { GetAllTagsRequest } from 'ducks/tags/types';
 import { getCuratedTags, showAllTags } from 'config/config-utils';
 
 export interface StateFromProps {
@@ -61,14 +61,14 @@ export class TagsList extends React.Component<TagsListProps> {
 
 export const mapStateToProps = (state: GlobalState) => {
   const curatedTagsList = getCuratedTags();
-  const allTags = state.allTags.allTags;
+  const allTags = state.tags.allTags.tags;
   const curatedTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) !== -1);
   const otherTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) === -1);
 
   return {
     curatedTags,
     otherTags,
-    isLoading: state.allTags.isLoading,
+    isLoading: state.tags.allTags.isLoading,
   };
 };
 

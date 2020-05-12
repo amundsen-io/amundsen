@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
+import DashboardListItem from '../DashboardListItem';
 import TableListItem from '../TableListItem';
 import UserListItem from '../UserListItem';
 import ResourceListItem, { ListItemProps } from '../';
@@ -33,6 +34,15 @@ describe('ResourceListItem', () => {
           expect(subject.find(UserListItem).props()).toMatchObject({
             logging: props.logging,
             user: props.item,
+          });
+        });
+
+        it('renders DashboardListItem with correct props', () => {
+          props.item.type = ResourceType.dashboard;
+          subject.setProps(props);
+          expect(subject.find(DashboardListItem).props()).toMatchObject({
+            logging: props.logging,
+            dashboard: props.item,
           });
         });
 

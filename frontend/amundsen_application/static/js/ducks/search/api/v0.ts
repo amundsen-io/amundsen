@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { indexUsersEnabled } from 'config/config-utils';
+import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
 import { ResourceType, SearchType } from 'interfaces';
 
 import { DashboardSearchResults, TableSearchResults, UserSearchResults } from '../types';
@@ -21,7 +21,7 @@ export interface SearchAPI {
 export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
   const ret = { searchTerm: data.search_term };
-  ['tables', 'users'].forEach((key) => {
+  ['dashboards', 'tables', 'users'].forEach((key) => {
     if (data[key]) {
       ret[key] = data[key];
     }
@@ -30,8 +30,9 @@ export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
 };
 
 export function searchResource(pageIndex: number, resource: ResourceType, term: string, filters: ResourceFilterReducerState = {}, searchType: SearchType) {
-  if (resource === ResourceType.dashboard ||
-     (resource === ResourceType.user && !indexUsersEnabled())) {
+  /* If resource support is not configured or if there is no search term for non-filter supported resources */
+  if ((resource === ResourceType.dashboard && (!indexDashboardsEnabled() || term.length === 0)) ||
+     (resource === ResourceType.user && (!indexUsersEnabled() || term.length === 0))) {
     return Promise.resolve({});
   }
 
