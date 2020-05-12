@@ -120,40 +120,40 @@ class Data:
             entity2,
         ]
     }
-    reader_entity1 = {
-        "typeName": "Reader",
+
+    bookmark_entity1 = {
+        "typeName": "Bookmark",
         "attributes": {
-            "isFollowing": True,
-            "qualifiedName": '{}.{}.{}.reader@{}'.format(db, name, 'test_user_id', cluster),
-            "count": 96,
+            "active": True,
+            "qualifiedName": '{}.{}.{}.{}.bookmark@{}'.format(db, name, 'hive_table', 'test_user_id', cluster),
             "entityUri": table_uri,
         },
         "guid": "0fa40fd5-016c-472e-a72f-25a5013cc818",
         "status": "ACTIVE",
-        "displayText": '{}.{}.{}.reader@{}'.format(db, name, 'test_user_id', cluster),
+        "displayText": '{}.{}.{}.{}.bookmark@{}'.format(db, name, 'hive_table', 'test_user_id', cluster),
         "classificationNames": [],
         "meaningNames": [],
         "meanings": []
     }
 
-    reader_entity2 = {
-        "typeName": "Reader",
+    bookmark_entity2 = {
+        "typeName": "Bookmark",
         "attributes": {
-            "isFollowing": True,
-            "qualifiedName": '{}.{}.{}.reader@{}'.format(db, 'Table2', 'test_user_id', cluster),
-            "count": 96
+            "active": True,
+            "qualifiedName": '{}.{}.{}.{}.bookmark@{}'.format(db, 'Table2', 'hive_table', 'test_user_id', cluster),
+            "entityUri": table_uri,
         },
         "guid": "0fa40fd5-016c-472e-a72f-a72ffa40fd5",
         "status": "ACTIVE",
-        "displayText": '{}.{}.{}.reader@{}'.format(db, 'Table2', 'test_user_id', cluster),
+        "displayText": '{}.{}.{}.{}.bookmark@{}'.format(db, 'Table2', 'hive_table', 'test_user_id', cluster),
         "classificationNames": [],
         "meaningNames": [],
         "meanings": []
     }
 
-    reader_entities = {
+    bookmark_entities = {
         'entities': [
-            reader_entity1,
-            reader_entity2,
+            bookmark_entity1,
+            bookmark_entity2,
         ]
     }

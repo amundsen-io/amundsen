@@ -39,9 +39,10 @@ class AtlasProxy(BaseProxy):
     TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
     DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
     STATISTICS_FORMAT_SPEC = app.config['STATISTICS_FORMAT_SPEC']
-    READER_TYPE = 'Reader'
+    BOOKMARK_TYPE = 'Bookmark'
+    USER_TYPE = 'User'
     QN_KEY = 'qualifiedName'
-    BKMARKS_KEY = 'isFollowing'
+    BOOKMARK_ACTIVE_KEY = 'active'
     GUID_KEY = 'guid'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
@@ -132,6 +133,30 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(reader_qn)
         return result.groupdict() if result else dict()
 
+    def _parse_bookmark_qn(self, bookmark_qn: str) -> Dict:
+        """
+        Parse bookmark qualifiedName and extract the info
+        :param bookmark_qn: Qualified Name of Bookmark entity
+        :return: Dictionary object containing following information:
+        cluster: cluster information
+        db: Database name
+        name: Table name
+        """
+        pattern = re.compile(r"""
+        ^(?P<db>[^.]*)
+        \.
+        (?P<table>[^.]*)
+        \.
+        (?P<entity_type>[^.]*)
+        \.
+        (?P<user_id>[^.]*)\.bookmark
+        \@
+        (?P<cluster>.*)
+        $
+        """, re.X)
+        result = pattern.match(bookmark_qn)
+        return result.groupdict() if result else dict()
+
     def _get_table_entity(self, *, table_uri: str) -> EntityUniqueAttribute:
         """
         Fetch information from table_uri and then find the appropriate entity
@@ -168,57 +193,62 @@ class AtlasProxy(BaseProxy):
             raise NotFoundException('(User {user_id}) does not exist'
                                     .format(user_id=user_id))
 
-    def _create_reader(self, table_entity: EntityUniqueAttribute, user_guid: str, reader_qn: str) -> None:
+    def _create_bookmark(self, entity: EntityUniqueAttribute, user_guid: str, bookmark_qn: str,
+                         table_uri: str) -> None:
         """
-        Creates a reader entity for a specific user and table uri.
+        Creates a bookmark entity for a specific user and table uri.
         :param user_guid: User's guid
-        :param reader_qn: Reader qualifiedName
+        :param bookmark_qn: Bookmark qualifiedName
         :return:
         """
-        reader_entity = {
-            'typeName': self.READER_TYPE,
-            'attributes': {'qualifiedName': reader_qn,
-                           'isFollowing': True,
-                           'count': 0,
-                           'user': {'guid': user_guid}}
+
+        bookmark_entity = {
+            'entity': {
+                'typeName': self.BOOKMARK_TYPE,
+                'attributes': {'qualifiedName': bookmark_qn,
+                               self.BOOKMARK_ACTIVE_KEY: True,
+                               'entityUri': table_uri,
+                               'user': {'guid': user_guid},
+                               'entity': {'guid': entity.entity[self.GUID_KEY]}}
+            }
         }
 
-        self._driver.entity_post.create(data=reader_entity)
-        table_entity.entity[self.ATTRS_KEY]['readers'].append(reader_entity)
-        table_entity.update()
+        self._driver.entity_post.create(data=bookmark_entity)
 
-    def _get_reader_entity(self, table_uri: str, user_id: str) -> EntityUniqueAttribute:
+    def _get_bookmark_entity(self, entity_uri: str, user_id: str) -> EntityUniqueAttribute:
         """
-        Fetch a Reader entity from parsing table uri and user id.
-        If Reader is not present, create one for the user.
+        Fetch a Bookmark entity from parsing table uri and user id.
+        If Bookmark is not present, create one for the user.
         :param table_uri:
         :param user_id: Qualified Name of a user
         :return:
         """
-        table_info = self._extract_info_from_uri(table_uri=table_uri)
-        reader_qn = '{}.{}.{}.reader@{}'.format(table_info.get('db'),
-                                                table_info.get('name'),
-                                                user_id,
-                                                table_info.get('cluster'))
+        table_info = self._extract_info_from_uri(table_uri=entity_uri)
+        bookmark_qn = '{}.{}.{}.{}.bookmark@{}'.format(table_info.get('db'),
+                                                       table_info.get('name'),
+                                                       table_info.get('entity'),
+                                                       user_id,
+                                                       table_info.get('cluster'))
 
         try:
-            reader_entity = self._driver.entity_unique_attribute(
-                self.READER_TYPE, qualifiedName=reader_qn)
-            if not reader_entity.entity:
-                table_entity = self._get_table_entity(table_uri=table_uri)
+            bookmark_entity = self._driver.entity_unique_attribute(self.BOOKMARK_TYPE, qualifiedName=bookmark_qn)
+
+            if not bookmark_entity.entity:
+                table_entity = self._get_table_entity(table_uri=entity_uri)
                 # Fetch user entity from user_id for relation
                 user_entity = self._get_user_entity(user_id)
-                # Create reader entity with the user relation.
-                self._create_reader(table_entity.entity[self.ATTRS_KEY][self.GUID_KEY],
-                                    user_entity.entity[self.GUID_KEY], reader_qn)
-                # Fetch reader entity after creating it.
-                reader_entity = self._driver.entity_unique_attribute(self.READER_TYPE, qualifiedName=reader_qn)
-            return reader_entity
+                # Create bookmark entity with the user relation.
+                self._create_bookmark(table_entity,
+                                      user_entity.entity[self.GUID_KEY], bookmark_qn, entity_uri)
+                # Fetch bookmark entity after creating it.
+                bookmark_entity = self._driver.entity_unique_attribute(self.BOOKMARK_TYPE, qualifiedName=bookmark_qn)
+
+            return bookmark_entity
 
         except Exception as ex:
-            LOGGER.exception(f'Reader not found. {str(ex)}')
-            raise NotFoundException('Reader( {reader_qn} ) does not exist'
-                                    .format(reader_qn=reader_qn))
+            LOGGER.exception(f'Bookmark not found. {str(ex)}')
+            raise NotFoundException('Bookmark( {bookmark_qn} ) does not exist'
+                                    .format(bookmark_qn=bookmark_qn))
 
     def _get_column(self, *, table_uri: str, column_name: str) -> Dict:
         """
@@ -231,7 +261,7 @@ class AtlasProxy(BaseProxy):
             table_entity = self._get_table_entity(table_uri=table_uri)
             columns = table_entity.entity[self.REL_ATTRS_KEY].get('columns')
             for column in columns or list():
-                col_details = table_entity.referredEntities[column['guid']]
+                col_details = table_entity.referredEntities[column[self.GUID_KEY]]
                 if column_name == col_details[self.ATTRS_KEY]['name']:
                     return col_details
 
@@ -253,7 +283,7 @@ class AtlasProxy(BaseProxy):
         """
         columns = list()
         for column in entity.entity[self.REL_ATTRS_KEY].get('columns') or list():
-            col_entity = entity.referredEntities[column['guid']]
+            col_entity = entity.referredEntities[column[self.GUID_KEY]]
             col_attrs = col_entity[self.ATTRS_KEY]
             statistics = list()
 
@@ -403,7 +433,7 @@ class AtlasProxy(BaseProxy):
         """
         entity = self._get_table_entity(table_uri=id)
         entity_bulk_tag = {"classification": {"typeName": tag},
-                           "entityGuids": [entity.entity['guid']]}
+                           "entityGuids": [entity.entity[self.GUID_KEY]]}
         self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
 
     def delete_tag(self, *, id: str, tag: str, tag_type: str,
@@ -417,7 +447,7 @@ class AtlasProxy(BaseProxy):
         """
         try:
             entity = self._get_table_entity(table_uri=id)
-            guid_entity = self._driver.entity_guid(entity.entity['guid'])
+            guid_entity = self._driver.entity_guid(entity.entity[self.GUID_KEY])
             guid_entity.classifications(tag).delete()
         except Exception as ex:
             # FixMe (Verdan): Too broad exception. Please make it specific
@@ -437,7 +467,7 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        col_guid = column_detail['guid']
+        col_guid = column_detail[self.GUID_KEY]
 
         entity = self._driver.entity_guid(col_guid)
         entity.entity[self.ATTRS_KEY]['description'] = description
@@ -517,19 +547,20 @@ class AtlasProxy(BaseProxy):
 
     def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
         params = {
-            'typeName': self.READER_TYPE,
+            'typeName': self.BOOKMARK_TYPE,
             'offset': '0',
             'limit': '1000',
+            'excludeDeletedEntities': True,
             'entityFilters': {
                 'condition': 'AND',
                 'criterion': [
                     {
                         'attributeName': self.QN_KEY,
                         'operator': 'contains',
-                        'attributeValue': user_email
+                        'attributeValue': f'.{user_email}.bookmark'
                     },
                     {
-                        'attributeName': self.BKMARKS_KEY,
+                        'attributeName': self.BOOKMARK_ACTIVE_KEY,
                         'operator': 'eq',
                         'attributeValue': 'true'
                     }
@@ -537,13 +568,13 @@ class AtlasProxy(BaseProxy):
             },
             'attributes': ['count', self.QN_KEY, self.ENTITY_URI_KEY]
         }
-        # Fetches the reader entities based on filters
+        # Fetches the bookmark entities based on filters
         search_results = self._driver.search_basic.create(data=params)
 
         results = []
         for record in search_results.entities:
             table_info = self._extract_info_from_uri(table_uri=record.attributes[self.ENTITY_URI_KEY])
-            res = self._parse_reader_qn(record.attributes[self.QN_KEY])
+            res = self._parse_bookmark_qn(record.attributes[self.QN_KEY])
             results.append(PopularTable(
                 database=table_info['entity'],
                 cluster=res['cluster'],
@@ -573,8 +604,8 @@ class AtlasProxy(BaseProxy):
                                     user_email: str,
                                     relation_type: UserResourceRel) -> None:
 
-        entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
-        entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = True
+        entity = self._get_bookmark_entity(entity_uri=table_uri, user_id=user_email)
+        entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = True
         entity.update()
 
     def delete_resource_relation_by_user(self, *,
@@ -593,8 +624,8 @@ class AtlasProxy(BaseProxy):
                                        table_uri: str,
                                        user_email: str,
                                        relation_type: UserResourceRel) -> None:
-        entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
-        entity.entity[self.ATTRS_KEY][self.BKMARKS_KEY] = False
+        entity = self._get_bookmark_entity(entity_uri=table_uri, user_id=user_email)
+        entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = False
         entity.update()
 
     def get_dashboard(self,
