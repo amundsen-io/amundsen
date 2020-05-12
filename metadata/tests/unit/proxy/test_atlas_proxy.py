@@ -48,11 +48,11 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy._get_table_entity = MagicMock(return_value=mocked_entity)  # type: ignore
         return mocked_entity
 
-    def _mock_get_reader_entity(self, entity: Optional[Any] = None) -> Any:
+    def _mock_get_bookmark_entity(self, entity: Optional[Any] = None) -> Any:
         entity = entity or self.entity1
         mocked_entity = MagicMock()
         mocked_entity.entity = entity
-        self.proxy._get_reader_entity = MagicMock(return_value=mocked_entity)  # type: ignore
+        self.proxy._get_bookmark_entity = MagicMock(return_value=mocked_entity)  # type: ignore
         return mocked_entity
 
     def test_extract_table_uri_info(self) -> None:
@@ -271,12 +271,12 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                           description='DOESNT_MATTER')
 
     def test_get_table_by_user_relation(self) -> None:
-        reader1 = copy.deepcopy(self.reader_entity1)
-        reader1 = self.to_class(reader1)
-        reader_collection = MagicMock()
-        reader_collection.entities = [reader1]
+        bookmark1 = copy.deepcopy(self.bookmark_entity1)
+        bookmark1 = self.to_class(bookmark1)
+        bookmark_collection = MagicMock()
+        bookmark_collection.entities = [bookmark1]
 
-        self.proxy._driver.search_basic.create = MagicMock(return_value=reader_collection)
+        self.proxy._driver.search_basic.create = MagicMock(return_value=bookmark_collection)
         res = self.proxy.get_table_by_user_relation(user_email='test_user_id',
                                                     relation_type=UserResourceRel.follow)
 
@@ -286,8 +286,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.assertEqual(res, {'table': expected})
 
     def test_add_resource_relation_by_user(self) -> None:
-        reader_entity = self._mock_get_reader_entity()
-        with patch.object(reader_entity, 'update') as mock_execute:
+        bookmark_entity = self._mock_get_bookmark_entity()
+        with patch.object(bookmark_entity, 'update') as mock_execute:
             self.proxy.add_resource_relation_by_user(id=self.table_uri,
                                                      user_id="test_user_id",
                                                      relation_type=UserResourceRel.follow,
@@ -295,8 +295,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
             mock_execute.assert_called_with()
 
     def test_delete_resource_relation_by_user(self) -> None:
-        reader_entity = self._mock_get_reader_entity()
-        with patch.object(reader_entity, 'update') as mock_execute:
+        bookmark_entity = self._mock_get_bookmark_entity()
+        with patch.object(bookmark_entity, 'update') as mock_execute:
             self.proxy.delete_resource_relation_by_user(id=self.table_uri,
                                                         user_id="test_user_id",
                                                         relation_type=UserResourceRel.follow,
