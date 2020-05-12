@@ -63,7 +63,7 @@ nav:
   - 'User Guide':
     - 'Quick Start': 'installation.md'
     - 'Tutorials':
-        - 'How to index the postgres database metadata': 'tutorials/index-postgres.md'
+        - 'How to index metadata for real life databases': 'tutorials/index-postgres.md'
         - 'How to setup a preview client with Apache Superset': 'tutorials/data-preview-with-superset.md'
         - 'How to setup user profiles': 'tutorials/user-profiles.md'
     - 'Deployment':
