@@ -13,10 +13,19 @@ export interface Resource {
   type: ResourceType;
 };
 
-// Placeholder until the schema is defined.
 export interface DashboardResource extends Resource  {
   type: ResourceType.dashboard;
-  title: string;
+  cluster: string;
+  description: string;
+  group_name: string;
+  group_url: string;
+  last_successful_run_timestamp: number;
+  name: string;
+  product: string;
+  uri: string;
+  url: string;
+  // Bookmark logic is cleaner if all resources can settle on either "key" or "uri"
+  key?: string;
 }
 
 export interface TableResource extends Resource {
@@ -29,12 +38,17 @@ export interface TableResource extends Resource {
   last_updated_timestamp?: number;
   name: string;
   schema: string;
-  badges?: Badge[];  
+  badges?: Badge[];
 };
 
 export interface UserResource extends Resource, PeopleUser {
   type: ResourceType.user;
 }
 
+export interface ResourceDict<T> {
+  [ResourceType.table]: T;
+  [ResourceType.dashboard]?: T;
+}
+
 // TODO - Consider just using the 'Resource' type instead
-export type Bookmark = TableResource & {};
+export type Bookmark = TableResource | DashboardResource;

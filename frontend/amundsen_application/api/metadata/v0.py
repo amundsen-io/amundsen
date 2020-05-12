@@ -11,7 +11,8 @@ from amundsen_application.log.action_log import action_logging
 
 from amundsen_application.models.user import load_user, dump_user
 
-from amundsen_application.api.utils.metadata_utils import marshall_table_partial, marshall_table_full
+from amundsen_application.api.utils.metadata_utils import marshall_table_partial, marshall_table_full,\
+    marshall_dashboard_partial, marshall_dashboard_full
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 
@@ -25,6 +26,7 @@ LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
 POPULAR_TABLES_ENDPOINT = '/popular_tables/'
 TAGS_ENDPOINT = '/tags/'
 USER_ENDPOINT = '/user'
+DASHBOARD_ENDPOINT = '/dashboard'
 
 
 def _get_table_endpoint() -> str:
@@ -32,6 +34,13 @@ def _get_table_endpoint() -> str:
     if table_endpoint is None:
         raise Exception('An request endpoint for table resources must be configured')
     return table_endpoint
+
+
+def _get_dashboard_endpoint() -> str:
+    dashboard_endpoint = app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT
+    if dashboard_endpoint is None:
+        raise Exception('An request endpoint for dashboard resources must be configured')
+    return dashboard_endpoint
 
 
 @metadata_blueprint.route('/popular_tables', methods=['GET'])
@@ -366,7 +375,7 @@ def update_table_tags() -> Response:
 
         tag = get_query_param(args, 'tag')
 
-        url = '{0}/{1}/tag/{2}'.format(table_endpoint, table_key, tag)
+        url = f'{table_endpoint}/{table_key}/tag/{tag}'
 
         _log_update_table_tags(table_key=table_key, method=method, tag=tag)
 
@@ -376,7 +385,43 @@ def update_table_tags() -> Response:
         if status_code == HTTPStatus.OK:
             message = 'Success'
         else:
-            message = 'Encountered error: {0} tag failed'.format(method)
+            message = f'Encountered error: {method} table tag failed'
+            logging.error(message)
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        payload = jsonify({'msg': message})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/update_dashboard_tags', methods=['PUT', 'DELETE'])
+def update_dashboard_tags() -> Response:
+
+    @action_logging
+    def _log_update_dashboard_tags(*, uri_key: str, method: str, tag: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        args = request.get_json()
+        method = request.method
+
+        dashboard_endpoint = _get_dashboard_endpoint()
+        uri_key = get_query_param(args, 'key')
+        tag = get_query_param(args, 'tag')
+        url = f'{dashboard_endpoint}/{uri_key}/tag/{tag}'
+
+        _log_update_dashboard_tags(uri_key=uri_key, method=method, tag=tag)
+
+        response = request_metadata(url=url, method=method)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = f'Encountered error: {method} dashboard tag failed'
             logging.error(message)
 
         payload = jsonify({'msg': message})
@@ -449,12 +494,19 @@ def get_bookmark() -> Response:
             message = 'Success'
             tables = response.json().get('table')
             table_bookmarks = [marshall_table_partial(table) for table in tables]
+            dashboards = response.json().get('dashboard', [])
+            dashboard_bookmarks = [marshall_dashboard_partial(dashboard) for dashboard in dashboards]
         else:
             message = f'Encountered error: failed to get bookmark for user_id: {user_id}'
             logging.error(message)
             table_bookmarks = []
+            dashboard_bookmarks = []
 
-        return make_response(jsonify({'msg': message, 'bookmarks': table_bookmarks}), status_code)
+        all_bookmarks = {
+            'table': table_bookmarks,
+            'dashboard': dashboard_bookmarks
+        }
+        return make_response(jsonify({'msg': message, 'bookmarks': all_bookmarks}), status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
@@ -543,9 +595,42 @@ def get_user_own() -> Response:
         status_code = response.status_code
         owned_tables_raw = response.json().get('table')
         owned_tables = [marshall_table_partial(table) for table in owned_tables_raw]
-        return make_response(jsonify({'msg': 'success', 'own': owned_tables}), status_code)
-
+        dashboards = response.json().get('dashboard', [])
+        owned_dashboards = [marshall_dashboard_partial(dashboard) for dashboard in dashboards]
+        all_owned = {
+            'table': owned_tables,
+            'dashboard': owned_dashboards
+        }
+        return make_response(jsonify({'msg': 'success', 'own': all_owned}), status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
         return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/dashboard', methods=['GET'])
+def get_dashboard_metadata() -> Response:
+    """
+    Call metadata service endpoint to fetch specified dashboard metadata
+    :return:
+    """
+    @action_logging
+    def _get_dashboard_metadata(*, uri: str, index: int, source: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        uri = get_query_param(request.args, 'uri')
+        index = request.args.get('index', None)
+        source = request.args.get('source', None)
+        _get_dashboard_metadata(uri=uri, index=index, source=source)
+
+        url = f'{app.config["METADATASERVICE_BASE"]}{DASHBOARD_ENDPOINT}/{uri}'
+
+        response = request_metadata(url=url, method=request.method)
+        dashboard = marshall_dashboard_full(response.json())
+        status_code = response.status_code
+        return make_response(jsonify({'msg': 'success', 'dashboard': dashboard}), status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'dashboard': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)

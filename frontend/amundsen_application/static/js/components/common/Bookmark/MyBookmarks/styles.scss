@@ -7,8 +7,13 @@
     margin-bottom: 32px;
   }
 
-  .empty-message {
-    display: flex;
-    justify-content: center;
+  .tabs-component {
+    .nav.nav-tabs {
+      margin: 0;
+    }
+
+    .tab-content .list-group-item:first-child {
+      border-top: none;
+    }
   }
 }

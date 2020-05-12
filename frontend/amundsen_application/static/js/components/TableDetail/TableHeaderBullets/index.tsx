@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { getDisplayNameByResource, getDatabaseDisplayName } from 'config/config-utils';
+import { getDisplayNameByResource, getSourceDisplayName } from 'config/config-utils';
 
 import { ResourceType } from 'interfaces/Resources';
 
@@ -13,7 +13,7 @@ const TableHeaderBullets: React.SFC<TableHeaderBulletsProps> = ({ cluster, datab
   return (
     <ul className="header-bullets">
       <li>{ getDisplayNameByResource(ResourceType.table)}</li>
-      <li>{ getDatabaseDisplayName(database) }</li>
+      <li>{ getSourceDisplayName(database, ResourceType.table) }</li>
       <li>{ cluster }</li>
     </ul>
   );

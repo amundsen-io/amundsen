@@ -5,8 +5,8 @@ import unittest
 from http import HTTPStatus
 
 from amundsen_application import create_app
-from amundsen_application.api.metadata.v0 import \
-    TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT, POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT
+from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT,\
+    POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT
 
 from amundsen_application.tests.test_utils import TEST_USER_ID
 
@@ -256,30 +256,177 @@ class MetadataTest(unittest.TestCase):
                     'name': 'table_name_1',
                     'description': 'description',
                 },
-            ]
+            ],
+            'dashboard': [],
         }
-        self.expected_parsed_user_resources = [
-            {
-                'cluster': 'cluster',
-                'database': 'database',
-                'description': 'description',
-                'last_updated_timestamp': None,
-                'name': 'table_name_0',
-                'schema': 'schema',
-                'type': 'table',
-                'key': 'database://cluster.schema/table_name_0',
-            },
-            {
-                'cluster': 'cluster',
-                'database': 'database',
-                'description': 'description',
-                'last_updated_timestamp': None,
-                'name': 'table_name_1',
-                'schema': 'schema',
-                'type': 'table',
-                'key': 'database://cluster.schema/table_name_1',
-            },
-        ]
+        self.expected_parsed_user_resources = {
+            'table': [
+                {
+                    'cluster': 'cluster',
+                    'database': 'database',
+                    'description': 'description',
+                    'last_updated_timestamp': None,
+                    'name': 'table_name_0',
+                    'schema': 'schema',
+                    'type': 'table',
+                    'key': 'database://cluster.schema/table_name_0',
+                },
+                {
+                    'cluster': 'cluster',
+                    'database': 'database',
+                    'description': 'description',
+                    'last_updated_timestamp': None,
+                    'name': 'table_name_1',
+                    'schema': 'schema',
+                    'type': 'table',
+                    'key': 'database://cluster.schema/table_name_1',
+                },
+            ],
+            'dashboard': [],
+        }
+        self.mock_dashboard_metadata = {
+            "badges": [],
+            "chart_names": [],
+            "cluster": "gold",
+            "created_timestamp": 1558035206,
+            "description": "test description",
+            "frequent_users": [],
+            "group_name": "test group name",
+            "group_url": "test url",
+            "last_run_state": "failed",
+            "last_run_timestamp": 1587395014,
+            "last_successful_run_timestamp": 1578434241,
+            "name": "test report name",
+            "owners": [
+                {
+                    "display_name": "First Last",
+                    "email": "email@mail.com",
+                    "employee_type": "teamMember",
+                    "first_name": "First",
+                    "full_name": "First Last",
+                    "github_username": "",
+                    "is_active": True,
+                    "last_name": "Last",
+                    "manager_email": "",
+                    "manager_fullname": "",
+                    "profile_url": "",
+                    "role_name": "Test Role",
+                    "slack_id": "",
+                    "team_name": "Team Name",
+                    "user_id": "test_user_id"
+                }
+            ],
+            "product": "mode",
+            "query_names": [
+                "test query 1",
+                "test query 2",
+                "test query 3",
+            ],
+            "recent_view_count": 8,
+            "tables": [
+                {
+                    "cluster": "cluster",
+                    "database": "database",
+                    "description": "test description",
+                    "key": "database://cluster.schema/name",
+                    "last_updated_timestamp": None,
+                    "name": "name",
+                    "schema": "schema",
+                    "type": "table"
+                },
+                {
+                    "cluster": "cluster",
+                    "database": "database",
+                    "description": "test description",
+                    "key": "database://cluster.schema/name_2",
+                    "last_updated_timestamp": None,
+                    "name": "name_2",
+                    "schema": "schema",
+                    "type": "table"
+                },
+            ],
+            "tags": [
+                {
+                    "tag_name": "amundsen",
+                    "tag_type": "default"
+                },
+            ],
+            "updated_timestamp": 1578433917,
+            "uri": "test_dashboard_uri",
+            "url": "test_dashboard_url"
+        }
+
+        self.expected_parsed_dashboard = {
+            "badges": [],
+            "chart_names": [],
+            "cluster": "gold",
+            "created_timestamp": 1558035206,
+            "description": "test description",
+            "frequent_users": [],
+            "group_name": "test group name",
+            "group_url": "test url",
+            "last_run_state": "failed",
+            "last_run_timestamp": 1587395014,
+            "last_successful_run_timestamp": 1578434241,
+            "name": "test report name",
+            "owners": [
+                {
+                    "display_name": "First Last",
+                    "email": "email@mail.com",
+                    "employee_type": "teamMember",
+                    "first_name": "First",
+                    "full_name": "First Last",
+                    "github_username": "",
+                    "is_active": True,
+                    "last_name": "Last",
+                    "manager_email": "",
+                    "manager_fullname": "",
+                    "profile_url": "",
+                    "role_name": "Test Role",
+                    "slack_id": "",
+                    "team_name": "Team Name",
+                    "user_id": "test_user_id"
+                }
+            ],
+            "product": "mode",
+            "query_names": [
+                "test query 1",
+                "test query 2",
+                "test query 3",
+            ],
+            "recent_view_count": 8,
+            "tables": [
+                {
+                    "cluster": "cluster",
+                    "database": "database",
+                    "description": "test description",
+                    "key": "database://cluster.schema/name",
+                    "last_updated_timestamp": None,
+                    "name": "name",
+                    "schema": "schema",
+                    "type": "table"
+                },
+                {
+                    "cluster": "cluster",
+                    "database": "database",
+                    "description": "test description",
+                    "key": "database://cluster.schema/name_2",
+                    "last_updated_timestamp": None,
+                    "name": "name_2",
+                    "schema": "schema",
+                    "type": "table"
+                },
+            ],
+            "tags": [
+                {
+                    "tag_name": "amundsen",
+                    "tag_type": "default"
+                },
+            ],
+            "updated_timestamp": 1578433917,
+            "uri": "test_dashboard_uri",
+            "url": "test_dashboard_url"
+        }
 
     @responses.activate
     def test_popular_tables_success(self) -> None:
@@ -589,6 +736,44 @@ class MetadataTest(unittest.TestCase):
             self.assertEquals(response.status_code, HTTPStatus.OK)
 
     @responses.activate
+    def test_update_dashboard_tags_put(self) -> None:
+        """
+        Test adding a tag on a dashboard
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT + '/test_dashboard_uri/tag/test_tag'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/update_dashboard_tags',
+                json={
+                    'key': 'test_dashboard_uri',
+                    'tag': 'test_tag'
+                }
+            )
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    def test_update_dashboard_tags_delete(self) -> None:
+        """
+        Test deleting a tag on a dashboard
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT + '/test_dashboard_uri/tag/test_tag'
+        responses.add(responses.DELETE, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.delete(
+                '/api/metadata/v0/update_dashboard_tags',
+                json={
+                    'key': 'test_dashboard_uri',
+                    'tag': 'test_tag'
+                }
+            )
+            self.assertEquals(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
     def test_get_user_failure(self) -> None:
         """
         Test get_user fails when no user_id is specified
@@ -639,7 +824,10 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/bookmark')
             self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-            expected = {'bookmarks': [], 'msg': 'Encountered error: failed to get bookmark for user_id: test_user_id'}
+            expected = {
+                'bookmarks': {'table': [], 'dashboard': []},
+                'msg': 'Encountered error: failed to get bookmark for user_id: test_user_id',
+            }
             self.assertEqual(response.json, expected)
 
     @responses.activate
@@ -718,7 +906,7 @@ class MetadataTest(unittest.TestCase):
             response = test.get('/api/metadata/v0/user/read', query_string=dict(user_id=test_user))
             data = json.loads(response.data)
             self.assertEquals(response.status_code, HTTPStatus.OK)
-            self.assertCountEqual(data.get('read'), self.expected_parsed_user_resources)
+            self.assertCountEqual(data.get('read'), self.expected_parsed_user_resources.get('table'))
 
     @responses.activate
     def test_get_user_own(self) -> None:
@@ -734,3 +922,43 @@ class MetadataTest(unittest.TestCase):
             data = json.loads(response.data)
             self.assertEquals(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('own'), self.expected_parsed_user_resources)
+
+    @responses.activate
+    def test_get_dashboard_success(self) -> None:
+        """
+        Test get_dashboard API success
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT + '/test_dashboard_uri'
+        responses.add(responses.GET, url, json=self.mock_dashboard_metadata, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/dashboard',
+                query_string=dict(
+                    uri='test_dashboard_uri',
+                    index='0',
+                    source='test_source'
+                )
+            )
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('dashboard'), self.expected_parsed_dashboard)
+
+    @responses.activate
+    def test_get_dashboard_bad_parameters(self) -> None:
+        """
+        Test get_dashboard API failure with missing URI parameter
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT + '/test_dashboard_uri'
+        responses.add(responses.GET, url, json=self.mock_dashboard_metadata, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/dashboard',
+                query_string=dict()
+            )
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.assertCountEqual(data.get('dashboard'), {})

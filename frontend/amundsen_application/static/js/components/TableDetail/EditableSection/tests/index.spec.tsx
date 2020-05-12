@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import {EditableSection, EditableSectionProps} from '../';
+import { EditableSection, EditableSectionProps } from '../';
 import TagInput from 'components/Tags/TagInput';
+import { ResourceType } from 'interfaces/Resources';
 
 
 describe("EditableSection", () => {
@@ -48,7 +49,7 @@ describe("EditableSection", () => {
   describe("render", () => {
     const mockTitle = 'Mock';
     const convertTextSpy = jest.spyOn(EditableSection, 'convertText').mockImplementation(() => mockTitle);
-    const { wrapper, props } = setup({ title: 'custom title' }, <TagInput/>);
+    const { wrapper, props } = setup({ title: 'custom title' }, <TagInput resourceType={ResourceType.table} uriKey={"key"}/>);
 
     it("renders the converted props.title as the section title", () => {
       convertTextSpy.mockClear();
@@ -76,7 +77,7 @@ describe("EditableSection", () => {
     });
 
     it("renders does not add button when readOnly=true", () => {
-      const { wrapper } = setup({readOnly: true}, <TagInput/>);
+      const { wrapper } = setup({readOnly: true}, <TagInput resourceType={ResourceType.table} uriKey={"key"}/>);
       expect(wrapper.find(".edit-button").length).toEqual(0);
     });
   });

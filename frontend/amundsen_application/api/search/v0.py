@@ -10,6 +10,7 @@ from flask import current_app as app
 from flask.blueprints import Blueprint
 
 from amundsen_application.log.action_log import action_logging
+from amundsen_application.api.utils.metadata_utils import marshall_dashboard_partial
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
 from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, \
     map_table_result, transform_filters
@@ -21,6 +22,7 @@ REQUEST_SESSION_TIMEOUT_SEC = 3
 
 search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v0')
 
+SEARCH_DASHBOARD_ENDPOINT = '/search_dashboard'
 SEARCH_TABLE_ENDPOINT = '/search'
 SEARCH_TABLE_FILTER_ENDPOINT = '/search_table'
 SEARCH_USER_ENDPOINT = '/search_user'
@@ -119,7 +121,7 @@ def search_user() -> Response:
         page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
         search_type = request.args.get('search_type')
 
-        results_dict = _search_user(search_term=search_term, page_index=page_index, search_type=search_type)
+        results_dict = _search_user(search_term=search_term, page_index=int(page_index), search_type=search_type)
 
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
     except Exception as e:
@@ -144,7 +146,7 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
         return user_result
 
     users = {
-        'page_index': int(page_index),
+        'page_index': page_index,
         'results': [],
         'total_results': 0,
     }
@@ -157,9 +159,8 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
     }
 
     try:
-        url = '{0}?query_term={1}&page_index={2}'.format(app.config['SEARCHSERVICE_BASE'] + SEARCH_USER_ENDPOINT,
-                                                         search_term,
-                                                         page_index)
+        url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_USER_ENDPOINT
+        url = f'{url_base}?query_term={search_term}&page_index={page_index}'
 
         response = request_search(url=url)
         status_code = response.status_code
@@ -184,6 +185,68 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
         return results_dict
 
 
-# TODO - Implement
-def _search_dashboard(*, search_term: str, page_index: int, filters: Dict, search_type: str) -> Dict[str, Any]:
-    return {}
+@search_blueprint.route('/dashboard', methods=['GET'])
+def search_dashboard() -> Response:
+    """
+    Parse the request arguments and call the helper method to execute a dashboard search
+    :return: a Response created with the results from the helper method
+    """
+    try:
+        search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
+        page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
+        search_type = request.args.get('search_type')
+
+        results_dict = _search_dashboard(search_term=search_term, page_index=int(page_index), search_type=search_type)
+
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify(results_dict), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@action_logging
+def _search_dashboard(*, search_term: str, page_index: int, search_type: str) -> Dict[str, Any]:
+    """
+    Call the search service endpoint and return matching results
+    Search service logic defined here:
+    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/dashboard.py
+
+    :return: a json output containing search results array as 'results'
+    """
+    # Default results
+    dashboards = {
+        'page_index': page_index,
+        'results': [],
+        'total_results': 0,
+    }
+
+    results_dict = {
+        'search_term': search_term,
+        'msg': '',
+        'dashboards': dashboards,
+    }
+
+    try:
+        url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_DASHBOARD_ENDPOINT
+        url = f'{url_base}?query_term={search_term}&page_index={page_index}'
+        response = request_search(url=url)
+
+        status_code = response.status_code
+        if status_code == HTTPStatus.OK:
+            results_dict['msg'] = 'Success'
+            results = response.json().get('results')
+            dashboards['results'] = [marshall_dashboard_partial(result) for result in results]
+            dashboards['total_results'] = response.json().get('total_results')
+        else:
+            message = 'Encountered error: Search request failed'
+            results_dict['msg'] = message
+            logging.error(message)
+
+        results_dict['status_code'] = status_code
+        return results_dict
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
+        return results_dict

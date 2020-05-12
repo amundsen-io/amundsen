@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
 import {
@@ -6,12 +7,16 @@ import {
   mapStateToProps,
   ResourceSelector,
   ResourceSelectorProps } from '../';
-import { TABLE_RESOURCE_TITLE, USER_RESOURCE_TITLE } from 'components/SearchPage/constants';
 
-import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces/Resources';
 
+jest.mock('config/config-utils', () => ({
+  getDisplayNameByResource: jest.fn(() => 'Resource'),
+  indexUsersEnabled: jest.fn(),
+  indexDashboardsEnabled: jest.fn(),
+}));
+import { getDisplayNameByResource, indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
 
 describe('ResourceSelector', () => {
   const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {
@@ -32,7 +37,7 @@ describe('ResourceSelector', () => {
     const instance = wrapper.instance();
     const radioConfig = {
       type: ResourceType.table,
-      label: TABLE_RESOURCE_TITLE,
+      label: getDisplayNameByResource(ResourceType.table),
       count: 10,
     };
     const content = shallow(instance.renderRadioOption(radioConfig, 0));
@@ -50,7 +55,7 @@ describe('ResourceSelector', () => {
       expect(content.text()).toEqual(`${radioConfig.label}${radioConfig.count}`)
     });
   });
-  
+
   describe('onChange', () => {
     it('calls setResource with the appropriate resource type', () => {
       const mockEvent = {
@@ -69,6 +74,7 @@ describe('ResourceSelector', () => {
     let props;
     let wrapper;
 
+    let dashboardOptionConfig;
     let tableOptionConfig;
     let userOptionConfig;
     let renderRadioOptionSpy;
@@ -78,14 +84,19 @@ describe('ResourceSelector', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
 
+      dashboardOptionConfig = {
+        type: ResourceType.dashboard,
+        label: getDisplayNameByResource(ResourceType.dashboard),
+        count: props.dashboards.total_results,
+      };
       tableOptionConfig = {
         type: ResourceType.table,
-        label: TABLE_RESOURCE_TITLE,
+        label: getDisplayNameByResource(ResourceType.table),
         count: props.tables.total_results,
       };
       userOptionConfig = {
         type: ResourceType.user,
-        label: USER_RESOURCE_TITLE,
+        label: getDisplayNameByResource(ResourceType.user),
         count: props.users.total_results,
       };
 
@@ -98,18 +109,36 @@ describe('ResourceSelector', () => {
       expect(renderRadioOptionSpy).toHaveBeenCalledWith(tableOptionConfig, 0);
     });
 
-    it('renders the user resource option when enabled', () => {
-      AppConfig.indexUsers.enabled = true;
-      renderRadioOptionSpy.mockClear();
-      wrapper.instance().render();
-      expect(renderRadioOptionSpy).toHaveBeenCalledWith(userOptionConfig, 1);
+    describe('user resource', () => {
+      it('renders when enabled', () => {
+        mocked(indexUsersEnabled).mockImplementationOnce(() => true);
+        renderRadioOptionSpy.mockClear();
+        wrapper.instance().render();
+        expect(renderRadioOptionSpy).toHaveBeenCalledWith(userOptionConfig, 1);
+      });
+
+      it('does not render when disabled', () => {
+        mocked(indexUsersEnabled).mockImplementationOnce(() => false);
+        renderRadioOptionSpy.mockClear();
+        wrapper.instance().render();
+        expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(userOptionConfig, 1);
+      });
     });
 
-    it('does not render user resource option when disabled', () => {
-      AppConfig.indexUsers.enabled = false;
-      renderRadioOptionSpy.mockClear();
-      wrapper.instance().render();
-      expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(userOptionConfig);
+    describe('dashboard resource', () => {
+      it('renders when enabled', () => {
+        mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
+        renderRadioOptionSpy.mockClear();
+        wrapper.instance().render();
+        expect(renderRadioOptionSpy).toHaveBeenCalledWith(dashboardOptionConfig, 1);
+      });
+
+      it('does not render when disabled', () => {
+        mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
+        renderRadioOptionSpy.mockClear();
+        wrapper.instance().render();
+        expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(dashboardOptionConfig);
+      });
     });
   })
 });

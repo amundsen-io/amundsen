@@ -1,0 +1,16 @@
+@import 'variables';
+
+.image-preview {
+  text-align: center;
+  .loading-spinner {
+    margin-top: 0;
+  }
+
+  .loading-error-text {
+    text-align: center;
+  }
+
+  img.preview {
+    border: 1px solid $stroke;
+  }
+}

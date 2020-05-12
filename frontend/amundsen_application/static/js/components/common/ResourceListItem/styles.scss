@@ -39,6 +39,12 @@
 
     .resource-name {
       display: flex;
+
+      .dashboard-group {
+        color: $text-secondary;
+        margin-right: $spacer-2;
+        white-space: nowrap;
+      }
     }
 
     ul {

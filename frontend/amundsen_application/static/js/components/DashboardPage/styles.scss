@@ -1,0 +1,35 @@
+@import 'variables';
+
+.dashboard-page {
+
+  .header-section {
+    .flag {
+      margin: 0 $spacer-1;
+    }
+  }
+
+  .edit-link {
+    text-decoration: none;
+  }
+
+  .last-run-state {
+    .flag {
+      margin: $spacer-1 0 0 0;
+    }
+  }
+
+  .image-preview {
+    margin-top: $spacer-4;
+    min-height: -webkit-fill-available;
+
+    img {
+      margin-bottom: $spacer-4;
+    }
+  }
+
+  .tabs-component {
+    .tab-content .list-group-item:first-child {
+      border-top: none;
+    }
+  }
+}

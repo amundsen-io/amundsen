@@ -26,14 +26,14 @@ describe('ResultItemList', () => {
           href: '/test',
           iconClass: 'test-icon',
           subtitle: 'subtitle',
-          title: 'title',
+          titleNode: 'title',
           type: 'Hive',
         },
         {
           href: '/test2',
           iconClass: 'test-icon',
           subtitle: 'subtitle2',
-          title: 'title2',
+          titleNode: 'title2',
           type: 'Hive',
         }
       ],
@@ -68,12 +68,12 @@ describe('ResultItemList', () => {
       const listItems = wrapper.instance().renderResultItems(props.suggestedResults);
       const expectedOnItemSelect = props.onItemSelect(props.resourceType);
       listItems.forEach((item, index) => {
-        const { href, iconClass, subtitle, title, type } = props.suggestedResults[index];
+        const { href, iconClass, subtitle, titleNode, type } = props.suggestedResults[index];
         expect(item.props.href).toBe(href);
         expect(item.props.onItemSelect()).toBe(expectedOnItemSelect);
         expect(item.props.iconClass).toBe(`icon icon-dark ${iconClass}`);
         expect(item.props.subtitle).toBe(subtitle);
-        expect(item.props.title).toBe(title);
+        expect(item.props.titleNode).toBe(titleNode);
         expect(item.props.type).toBe(type);
       });
     })

@@ -1,5 +1,5 @@
 
-import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
+import { LoggedInUser, PeopleUser, Resource, ResourceDict } from 'interfaces';
 
 export enum GetLoggedInUser {
   REQUEST = 'amundsen/current_user/GET_REQUEST',
@@ -26,7 +26,7 @@ export interface GetUserRequest {
   payload: {
     userId: string;
     source?: string;
-    index?: number;
+    index?: string;
   };
 };
 export interface GetUserResponse {
@@ -50,7 +50,7 @@ export interface GetUserOwnRequest {
 export interface GetUserOwnResponse {
   type: GetUserOwn.SUCCESS | GetUserOwn.FAILURE;
   payload?: {
-    own: Resource[];
+    own: ResourceDict<Resource[]>;
   };
 };
 

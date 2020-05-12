@@ -19,7 +19,9 @@ describe('AvatarLabel', () => {
     let wrapper;
     beforeAll(() => {
       const setupResult = setup({
+        avatarClass: 'test',
         label: 'testLabel',
+        labelClass: 'test',
         src: 'testSrc',
       });
       props = setupResult.props;
@@ -27,6 +29,7 @@ describe('AvatarLabel', () => {
     });
     it('renders Avatar with correct props', () => {
       expect(wrapper.find(Avatar).props()).toMatchObject({
+        className: props.avatarClass,
         name: props.label,
         src: props.src,
         size: 24,
@@ -34,8 +37,18 @@ describe('AvatarLabel', () => {
       });
     });
 
-    it('renders label with correct text', () => {
-      expect(wrapper.find('.avatar-label').text()).toEqual(props.label);
+    describe('renders label', () => {
+      let element;
+      beforeAll(() => {
+        element = wrapper.find('.avatar-label');
+      })
+      it('with correct text', () => {
+        expect(element.text()).toEqual(props.label);
+      });
+
+      it('with correct style', () => {
+        expect(element.props().className).toBe(`avatar-label body-2 ${props.labelClass}`);
+      });
     });
   });
 });

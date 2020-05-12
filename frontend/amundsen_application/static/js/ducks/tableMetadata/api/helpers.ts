@@ -32,13 +32,6 @@ export function getTableOwnersFromResponseData(responseData: API.TableDataAPI): 
 }
 
 /**
- * Parses the response for table metadata to return an array of sorted table tags
- */
-export function getTableTagsFromResponseData(responseData: API.TableDataAPI): Tag[] {
-  return responseData.tableData.tags.sort(sortTagsAlphabetical);
-}
-
-/**
  * Creates post data for sending a notification to owners when they are added/removed
  */
 export function createOwnerNotificationData(payload: UpdateOwnerPayload, tableData: TableMetadata) {

@@ -1,4 +1,5 @@
 import * as DateUtils from 'utils/dateUtils';
+import * as LogUtils from 'utils/logUtils';
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as qs from 'simple-query-string';
 import { ResourceType } from 'interfaces/Resources';
@@ -171,4 +172,38 @@ describe('dateUtils', () => {
       const dateString = DateUtils.formatDateTimeLong(config);
       expect(dateString).toEqual('January 30th 2020 at 10:06:04 pm')
   })
+});
+
+describe('logUtils', () => {
+  describe('getLoggingParams', () => {
+    let searchString;
+    let replaceStateSpy;
+
+    beforeAll(() => {
+      replaceStateSpy = jest.spyOn(window.history, 'replaceState');
+    });
+
+    it('returns the parsed source and index in an object', () => {
+      searchString = 'source=test_source&index=10';
+      const params = LogUtils.getLoggingParams(searchString);
+      expect(params.source).toEqual('test_source');
+      expect(params.index).toEqual('10');
+    });
+
+    it('clears the logging params from the URL, if present', () => {
+      const uri = 'testUri';
+      const mockFilter = '{"tag":"tagName"}';
+      searchString = `uri=${uri}&filters=${mockFilter}&source=test_source&index=10`;
+      replaceStateSpy.mockClear();
+      LogUtils.getLoggingParams(searchString);
+      expect(replaceStateSpy).toHaveBeenCalledWith({}, '', `${window.location.origin}${window.location.pathname}?uri=${uri}&filters=${mockFilter}`);
+    });
+
+    it('does not clear the logging params if they do not exist', () => {
+      searchString = '';
+      replaceStateSpy.mockClear();
+      LogUtils.getLoggingParams(searchString);
+      expect(replaceStateSpy).not.toHaveBeenCalled()
+    });
+  });
 });

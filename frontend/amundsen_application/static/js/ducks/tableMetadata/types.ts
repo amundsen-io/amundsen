@@ -4,8 +4,6 @@ import {
   PreviewQueryParams,
   TableMetadata,
   UpdateOwnerPayload,
-  UpdateTagData,
-  User,
   Tag,
 } from 'interfaces';
 
@@ -158,23 +156,4 @@ export interface UpdateTableOwnerResponse {
   payload: {
     owners: OwnerDict;
   };
-};
-
-
-export enum UpdateTags {
-  REQUEST = 'amundsen/tags/UPDATE_TAGS_REQUEST',
-  SUCCESS = 'amundsen/tags/UPDATE_TAGS_SUCCESS',
-  FAILURE = 'amundsen/tags/UPDATE_TAGS_FAILURE',
-};
-export interface UpdateTagsRequest {
-  type: UpdateTags.REQUEST,
-  payload: {
-    tagArray: UpdateTagData[];
-  };
-};
-export interface UpdateTagsResponse {
-  type: UpdateTags.SUCCESS | UpdateTags.FAILURE,
-  payload: {
-    tags: Tag[];
-  }
 };

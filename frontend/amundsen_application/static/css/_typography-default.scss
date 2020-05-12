@@ -124,8 +124,10 @@ body {
 
 .column-name {
   color: $column-name-color;
-  font-size: 13px;
-  font-family: $font-family-monospace;
+  font-size: 14px;
+  font-family: $font-family-body;
+  font-weight: $font-weight-body-bold;
+  line-height: 18px;
 }
 
 .resource-type {
@@ -138,4 +140,12 @@ body {
   color: $text-secondary;
   font-size: 12px;
   font-family: $font-family-body;
+}
+
+.text-placeholder {
+  color: $text-placeholder;
+}
+
+.text-secondary {
+  color: $text-secondary;
 }

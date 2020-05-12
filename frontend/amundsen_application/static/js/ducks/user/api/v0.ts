@@ -15,7 +15,7 @@ export function getLoggedInUser() {
     });
 }
 
-export function getUser(userId: string, index?: number, source?: string) {
+export function getUser(userId: string, index?: string, source?: string) {
   const queryParams = qs.stringify({ index, source, user_id: userId });
 
   return axios.get(`/api/metadata/v0/user?${queryParams}`)

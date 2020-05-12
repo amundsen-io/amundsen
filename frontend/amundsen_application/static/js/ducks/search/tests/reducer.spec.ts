@@ -105,6 +105,11 @@ describe('search reducer', () => {
   };
 
   const expectedInlineResults: InlineSearchResponsePayload = {
+    dashboards: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     tables: {
       page_index: 0,
       results: [],
@@ -120,6 +125,11 @@ describe('search reducer', () => {
   const inlineUpdatePayload: InlineSearchUpdatePayload = {
     searchTerm: 'testName',
     resource: ResourceType.table,
+    dashboards: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     tables: {
       page_index: 0,
       results: [],
@@ -290,6 +300,7 @@ describe('search reducer', () => {
         ...expectedSearchAllResults,
         filters: testState.filters,
         inlineResults: {
+          dashboards: expectedSearchAllResults.dashboards,
           tables: expectedSearchAllResults.tables,
           users: expectedSearchAllResults.users,
           isLoading: false,
@@ -327,10 +338,11 @@ describe('search reducer', () => {
     });
 
     it('should handle InlineSearch.UPDATE', () => {
-      const { searchTerm, resource, tables, users } = inlineUpdatePayload;
+      const { searchTerm, resource, dashboards, tables, users } = inlineUpdatePayload;
       expect(reducer(testState, updateFromInlineResult(inlineUpdatePayload))).toEqual({
         ...testState,
         resource,
+        dashboards,
         tables,
         users,
         search_term: searchTerm,
@@ -340,10 +352,11 @@ describe('search reducer', () => {
 
     describe('InlineSearch', () => {
       it('should handle InlineSearch.SUCCESS', () => {
-        const { tables, users } = expectedInlineResults;
+        const { dashboards, tables, users } = expectedInlineResults;
         expect(reducer(testState, getInlineResultsSuccess(expectedInlineResults))).toEqual({
           ...testState,
           inlineResults: {
+            dashboards,
             tables,
             users,
             isLoading: false,
@@ -363,6 +376,7 @@ describe('search reducer', () => {
         expect(reducer(testState, getInlineResults(term))).toEqual({
           ...testState,
           inlineResults: {
+            dashboards: initialInlineResultsState.dashboards,
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
             isLoading: true,
@@ -375,6 +389,7 @@ describe('search reducer', () => {
         expect(reducer(testState, getInlineResultsDebounce(term))).toEqual({
           ...testState,
           inlineResults: {
+            dashboards: initialInlineResultsState.dashboards,
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
             isLoading: true,

@@ -1,10 +1,10 @@
 module.exports = {
   coverageThreshold: {
       './js/config': {
-          branches: 100,
-          functions: 75, // 100
-          lines: 90, // 100
-          statements: 90, // 100
+          branches: 90,
+          functions: 90,
+          lines: 90,
+          statements: 90,
       },
       './js/components': {
           branches: 60, // 75
@@ -35,7 +35,7 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.js$': 'babel-jest',
   },
-  testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.(j|t)sx?$',
+  testRegex: '(test|spec)\\.(j|t)sx?$',
   moduleDirectories: ['node_modules', 'js'],
   moduleFileExtensions: [
     'ts',

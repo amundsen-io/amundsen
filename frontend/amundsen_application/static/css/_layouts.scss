@@ -2,6 +2,8 @@
 $resource-header-height: 84px;
 
 .resource-detail-layout {
+  height: calc(100% - #{$nav-bar-height} - #{$footer-height});
+
   .resource-header {
     display: flex;
     height: $resource-header-height;
@@ -25,6 +27,13 @@ $resource-header-height: 84px;
           max-width: calc(100% - 100px);
         }
       }
+
+      .amundsen-breadcrumb {
+        // Vertically align the breadcrumb
+        // (84px header height - 18px breadcrumb height) / 2 for top & bottom - 16px resource-header padding = 17px
+        padding-top: 17px;
+      }
+
 
       .header-bullets {
         display: inline;
@@ -84,6 +93,15 @@ $resource-header-height: 84px;
         height: 40px;
         margin: 24px 24px 0 24px;
         padding: 8px;
+      }
+
+      .section-title {
+        color: $text-tertiary;
+        margin: 40px 0 8px;
+      }
+
+      .editable-text {
+        font-size: 16px;
       }
     }
 

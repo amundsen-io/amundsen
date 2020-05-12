@@ -4,6 +4,7 @@ import ResourceListItem from 'components/common/ResourceListItem';
 import { Resource } from 'interfaces';
 import { ITEMS_PER_PAGE, PAGINATION_PAGE_RANGE } from './constants';
 
+import './styles.scss';
 
 export interface ResourceListProps {
   source: string;
@@ -21,10 +22,15 @@ export interface ResourceListProps {
   // 'onPagination' and 'activePage' should be used together
   onPagination?: (pageNumber: number) => void;
   activePage?: number;
+
+  customEmptyText?: string;
+  customFooterText?: string;
+  title?: string;
 }
 
 interface ResourceListState {
   activePage: number;
+  isExpanded: boolean;
 }
 
 class ResourceList extends React.Component<ResourceListProps, ResourceListState> {
@@ -35,7 +41,10 @@ class ResourceList extends React.Component<ResourceListProps, ResourceListState>
 
   constructor(props) {
     super(props);
-    this.state = { activePage: 0 };
+    this.state = {
+      activePage: 0,
+      isExpanded: false,
+    };
   }
 
   onPagination = (rawPageNum: number) => {
@@ -49,40 +58,71 @@ class ResourceList extends React.Component<ResourceListProps, ResourceListState>
     }
   };
 
+  onViewAllToggle = () => {
+    this.setState({ isExpanded: !this.state.isExpanded })
+  };
 
   render() {
-    const { allItems, slicedItems, itemsPerPage, paginate, source } = this.props;
+    /* TODO ttannis: create render helpers */
+    const { allItems, customEmptyText, customFooterText, slicedItems, itemsPerPage, paginate, source, title } = this.props;
     const activePage = this.props.activePage !== undefined ? this.props.activePage : this.state.activePage;
     const itemsCount = this.props.slicedItemsCount || allItems.length;
     const startIndex = itemsPerPage * activePage;
 
     let itemsToRender = slicedItems || allItems;
-    if (paginate && allItems) {
+    if ((paginate && allItems) || (!this.state.isExpanded && allItems)) {
       itemsToRender = allItems.slice(startIndex, startIndex + itemsPerPage);
     }
 
     return (
-      <>
-        <ul className="list-group">
-          {
-            itemsToRender.map((item, idx) => {
-              const logging = { source, index: startIndex + idx };
-              return <ResourceListItem item={ item } logging={ logging } key={ idx } />;
-            })
-          }
-        </ul>
+      <div className="resource-list">
         {
-          paginate &&
-          itemsCount > itemsPerPage &&
-          <Pagination
-            activePage={ activePage + 1 }
-            itemsCountPerPage={ itemsPerPage }
-            totalItemsCount={ itemsCount }
-            pageRangeDisplayed={ PAGINATION_PAGE_RANGE }
-            onChange={ this.onPagination }
-          />
+          title &&
+          <div className="resource-list-title title-3">{title}</div>
         }
-      </>
+        {
+          itemsCount === 0 && customEmptyText &&
+          <div className="empty-message body-placeholder">
+            { customEmptyText }
+          </div>
+        }
+        {
+          itemsCount > 0 &&
+          <>
+            <ul className="list-group">
+              {
+                itemsToRender.map((item, idx) => {
+                  const logging = { source, index: startIndex + idx };
+                  return <ResourceListItem item={ item } logging={ logging } key={ idx } />;
+                })
+              }
+            </ul>
+            {
+              paginate &&
+              itemsCount > itemsPerPage &&
+              <Pagination
+                activePage={ activePage + 1 }
+                itemsCountPerPage={ itemsPerPage }
+                totalItemsCount={ itemsCount }
+                pageRangeDisplayed={ PAGINATION_PAGE_RANGE }
+                onChange={ this.onPagination }
+              />
+            }
+            <div className="resource-list-footer">
+              {
+                !paginate &&
+                itemsCount > itemsPerPage &&
+                <a
+                  onClick={this.onViewAllToggle}
+                  target='_blank'
+                >
+                  { this.state.isExpanded ? "View less" : (customFooterText ? customFooterText : "View all") }
+                </a>
+              }
+            </div>
+          </>
+        }
+      </div>
     );
   }
 }

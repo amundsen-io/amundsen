@@ -45,6 +45,7 @@ def get_preview_image(uri: str) -> Response:
                          mimetype='image/jpeg',
                          cache_timeout=app.config['DASHBOARD_PREVIEW_IMAGE_CACHE_MAX_AGE_SECONDS'])
     except FileNotFoundError as fne:
+        LOGGER.exception('FileNotFoundError on get_preview_image')
         return make_response(jsonify({'msg': fne.args[0]}), HTTPStatus.NOT_FOUND)
     except Exception as e:
         LOGGER.exception('Unexpected failure on get_preview_image')

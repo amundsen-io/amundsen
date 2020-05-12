@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { Bookmark } from 'interfaces';
+import { Bookmark, ResourceType } from 'interfaces';
 
 import * as API from '../v0';
 
@@ -25,14 +25,16 @@ describe('addBookmark', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.addBookmark('test', 'table').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { type: 'table', key: 'test' });
+    const givenResource = ResourceType.table;
+    await API.addBookmark('test', givenResource).then(data => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { type: givenResource, key: 'test' });
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await API.addBookmark('test', 'table').then(data => {
+    const givenResource = ResourceType.table;
+    await API.addBookmark('test', givenResource).then(data => {
       expect(data).toEqual(mockPutResponse.data);
     });
   });
@@ -105,14 +107,16 @@ describe('removeBookmark', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.removeBookmark('testKey', 'table').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { data: { type: 'table', key: 'testKey' }});
+    const givenResource = ResourceType.table;
+    await API.removeBookmark('testKey', givenResource).then(data => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { data: { type: givenResource, key: 'testKey' }});
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await API.removeBookmark('test', 'table').then(data => {
+    const givenResource = ResourceType.table;
+    await API.removeBookmark('test', givenResource).then(data => {
       expect(data).toEqual(mockDeleteResponse.data);
     });
   });

@@ -19,7 +19,7 @@ _TODO: Please add doc_
 2. Set the the `logoPath` key on the  to the location of your image.
 
 ## Date
-This config allows you to specify various date formats across the app. There are three date formats in use shown below. These correspond to the `formatDate`, `formatDateTimeShort` and `formatDateTimeLong` utility functions. 
+This config allows you to specify various date formats across the app. There are three date formats in use shown below. These correspond to the `formatDate`, `formatDateTimeShort` and `formatDateTimeLong` utility functions.
 
     default: 'MMM DD, YYYY'
     dateTimeShort: 'MMM DD, YYYY ha z'
@@ -32,10 +32,18 @@ Reference for formatting: https://devhints.io/datetime#momentjs-format
 
 _TODO: Please add doc_
 
-## Index Users
-In Amundsen, users themselves are data resources and user metadata helps to facilitate network based discovery. When users are indexed they will show up in search results, and selecting a user surfaces a profile page that displays that user's relationships with different data resources.
+## Indexing Optional Resources
+In Amundsen, we currently support indexing other optional resources beyond tables.
+
+### Index Users
+Users themselves are data resources and user metadata helps to facilitate network based discovery. When users are indexed they will show up in search results, and selecting a user surfaces a profile page that displays that user's relationships with different data resources.
 
 After ingesting user metadata into the search and metadata services, set `IndexUsersConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features.
+
+### Index Dashboards
+Introducing dashboards into Amundsen allows users to discovery data analysis that has been already done. When dashboards are indexed they will show up in search results, and selecting a dashboard surfaces a page where users can explore dashboard metadata.
+
+After ingesting dashboard metadata into the search and metadata services, set `IndexDashboardsConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features.
 
 ## Mail Client Features
 Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications.
@@ -58,18 +66,19 @@ This configuration drives resource specific aspects of the application's user in
 All resource configurations must match or extend the `BaseResourceConfig`. This configuration supports the following options:
 1. `displayName`: The name displayed throughout the application to refer to this resource type.
 2. `filterCategories`: An optional `FilterConfig` object. When set for a given resource, that resource will display filter options in the search page UI.
+3. `supportedSources`: An optional `SourcesConfig` object.
 
 #### Filter Categories
 The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `MultiSelectFilterCategory` and a `SingleFilterCategory`. See our [config-types](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-types.ts) for more information about each option.
 
-### Table Configuration
-`TableResourceConfig` extends `BaseResourceConfig` with a `supportedDatabases` option. This can be used for the following customizations:
+#### Supported Sources
+The `SourcesConfig` can be used for the customizations detailed below. See examples in [config-default.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts).
 
-#### Custom Icons
-You can configure custom icons to be used throughout the UI when representing datasets from particular sources/databases. On the `TableResourceConfig.supportedDatabases` object, add an entry with the `id` used to reference that database and map to an object that specifies the `iconClass` for that database. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
+##### Custom Icons
+You can configure custom icons to be used throughout the UI when representing entities from particular sources. On the `supportedSources` object, add an entry with the `id` used to reference that source and map to an object that specifies the `iconClass` for that database. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
 
-#### Display Names
-You can configure a specific display name to be used throughout the UI when representing datasets from particular sources/databases. On the `TableResourceConfig.supportedDatabases` object, add an entry with the `id` used to reference that database and map to an object that specified the `displayName` for that database.
+##### Display Names
+You can configure a specific display name to be used throughout the UI when representing entities from particular sources. On the `supportedSources` object, add an entry with the `id` used to reference that source and map to an object that specified the `displayName` for that source.
 
 ## Table Lineage
 
@@ -81,4 +90,4 @@ _TODO: Please add doc*_
 
 ## Issue Tracking Features
 In order to enable Issue Tracking set `IssueTrackingConfig.enabled` to `true` to see UI features. Further configuration
-is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features) 
+is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features)

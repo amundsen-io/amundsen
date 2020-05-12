@@ -18,32 +18,10 @@ export type TableDataAPI= { tableData: TableData; } & MessageAPI;
 
 /** HELPERS **/
 import {
-  getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData, getTableTagsFromResponseData,
+  getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData,
   createOwnerUpdatePayload, createOwnerNotificationData, shouldSendNotification
 } from './helpers';
 
-export function getTableTags(tableKey: string) {
-  const tableParams = getTableQueryParams(tableKey);
-  return axios.get(`${API_PATH}/table?${tableParams}`)
-  .then((response: AxiosResponse<TableDataAPI>) => {
-    return getTableTagsFromResponseData(response.data);
-  });
-}
-
-/* TODO: Typing this method generates redux-saga related type errors that needs more dedicated debugging */
-export function updateTableTags(tagArray, tableKey: string) {
-  const updatePayloads = tagArray.map((tagObject) => {
-    return {
-      method: tagObject.methodName,
-      url: `${API_PATH}/update_table_tags`,
-      data: {
-        key: tableKey,
-        tag: tagObject.tagName,
-      },
-    }
-  });
-  return updatePayloads.map(payload => { axios(payload) });
-}
 
 export function getTableData(tableKey: string, index?: string, source?: string ) {
   const queryParams = getTableQueryParams(tableKey, index, source);
@@ -52,7 +30,7 @@ export function getTableData(tableKey: string, index?: string, source?: string )
     return {
       data: getTableDataFromResponseData(response.data),
       owners: getTableOwnersFromResponseData(response.data),
-      tags: getTableTagsFromResponseData(response.data),
+      tags: response.data.tableData.tags,
       statusCode: response.status,
     };
   });
