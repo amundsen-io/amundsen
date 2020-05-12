@@ -76,6 +76,7 @@ Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/ar
 Amundsen supports two kinds of "nodes" in its graph today:
 - Tables (from Databases)
 - People (from HR systems)
+- Dashboard
 
 Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 The databases we see most frequently used in the community are:
