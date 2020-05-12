@@ -10,19 +10,22 @@
 
   .nav-bar-left {
     flex-basis: 234px;
+
     span.title-3 {
       color: $white;
+      line-height: $navbar-item-line-height;
     }
   }
 
   .nav-bar-right {
     margin-left: auto;
     display: flex;
+
     a {
       color: $white;
       display: inline-block;
       height: 100%;
-      line-height: 32px;
+      line-height: $navbar-item-line-height;
       padding: 0 8px;
 
       &.border-bottom-white:hover,
