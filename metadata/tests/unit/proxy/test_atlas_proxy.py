@@ -125,7 +125,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          tags=[Tag(tag_name=classif_name, tag_type="default")],
                          description=ent_attrs['description'],
                          owners=[User(email=ent_attrs['owner'])],
-                         columns=[exp_col],
+                         columns=[exp_col] * self.active_columns,
                          last_updated_timestamp=cast(int, self.entity1['updateTime']))
 
         self.assertEqual(str(expected), str(response))

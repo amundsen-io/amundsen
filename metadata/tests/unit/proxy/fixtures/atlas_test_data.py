@@ -1,3 +1,6 @@
+import copy
+
+
 class Data:
     entity_type = 'hive_table'
     column_type = 'hive_column'
@@ -5,6 +8,9 @@ class Data:
     db = 'TEST_DB'
     name = 'TEST_TABLE'
     table_uri = f'{entity_type}://{cluster}.{db}/{name}'
+
+    active_columns = 4
+    inactive_columns = 7
 
     classification_entity = {
         'classifications': [
@@ -15,6 +21,7 @@ class Data:
     test_column = {
         'guid': 'COLUMN_GUID',
         'typeName': 'COLUMN',
+        'entityStatus': 'ACTIVE',
         'attributes': {
             'name': 'column name',
             'qualifiedName': 'column@name',
@@ -36,8 +43,10 @@ class Data:
                 }},
             ]
         },
-
     }
+
+    test_column_inactive = copy.deepcopy(test_column)
+    test_column_inactive['entityStatus'] = 'INACTIVE'
 
     test_exp_col_stats_raw = [
         {'attributes': {
@@ -90,7 +99,7 @@ class Data:
         },
         'relationshipAttributes': {
             'db': db_entity,
-            'columns': [test_column]
+            'columns': ([test_column_inactive] * inactive_columns) + ([test_column] * active_columns)
         },
     }
     entity1.update(classification_entity)
