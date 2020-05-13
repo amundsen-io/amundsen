@@ -283,6 +283,11 @@ class AtlasProxy(BaseProxy):
         """
         columns = list()
         for column in entity.entity[self.REL_ATTRS_KEY].get('columns') or list():
+            column_status = column.get('entityStatus', 'inactive').lower()
+
+            if column_status != 'active':
+                continue
+
             col_entity = entity.referredEntities[column[self.GUID_KEY]]
             col_attrs = col_entity[self.ATTRS_KEY]
             statistics = list()
