@@ -35,7 +35,7 @@ ReactDOM.render(
   <DocumentTitle title="Amundsen - Data Discovery Portal">
     <Provider store={store}>
       <Router history={BrowserHistory}>
-        <div id="main">
+        <main id="main">
           <Preloader/>
           <Route component={NavBar} />
           <Switch>
@@ -49,7 +49,7 @@ ReactDOM.render(
             <Route path="/" component={HomePage} />
           </Switch>
           <Footer />
-        </div>
+        </main>
       </Router>
     </Provider>
   </DocumentTitle>

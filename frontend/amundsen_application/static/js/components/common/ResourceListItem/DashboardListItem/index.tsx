@@ -8,7 +8,7 @@ import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
-import { DashboardResource } from 'interfaces';
+import { ResourceType, DashboardResource } from 'interfaces';
 
 import { formatDate } from 'utils/dateUtils';
 
@@ -29,13 +29,17 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
     return `/dashboard?uri=${dashboard.uri}&index=${logging.index}&source=${logging.source}`;
   };
 
+  generateResourceIconClass = (dashboardId: string, dashboardType: ResourceType): string => {
+    return `icon resource-icon ${getSourceIconClass(dashboardId, dashboardType)}`;
+  };
+
   render() {
     const { dashboard } = this.props;
     return (
       <li className="list-group-item clickable">
         <Link className="resource-list-item table-list-item" to={ this.getLink() }>
           <div className="resource-info">
-            <img className={`icon resource-icon ${getSourceIconClass(dashboard.product, dashboard.type)}`} />
+            <span className={this.generateResourceIconClass(dashboard.product, dashboard.type)} />
             <div className="resource-info-text my-auto">
               <div className="resource-name title-2">
                 <div className="dashboard-group">

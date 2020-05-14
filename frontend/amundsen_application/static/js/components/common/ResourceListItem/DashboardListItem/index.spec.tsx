@@ -71,7 +71,8 @@ describe('DashboardListItem', () => {
       });
 
       it('renders start correct icon', () => {
-        const startIcon = resourceInfo.find('img');
+        const startIcon = resourceInfo.find('.resource-icon');
+
         expect(startIcon.exists()).toBe(true);
         expect(startIcon.props().className).toEqual(`icon resource-icon ${MOCK_ICON_CLASS}`);
         expect(ConfigUtils.getSourceIconClass).toHaveBeenCalledWith(props.dashboard.product, props.dashboard.type);
