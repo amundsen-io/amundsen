@@ -18,7 +18,7 @@ LOGGER = logging.getLogger(__name__)
 
 class ModeDashboardQueriesExtractor(Extractor):
     """
-    A Extractor that extracts run (execution) status and timestamp.
+    A Extractor that extracts Query information
 
     """
 
