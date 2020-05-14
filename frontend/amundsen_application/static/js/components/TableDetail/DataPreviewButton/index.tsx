@@ -257,4 +257,4 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({ getPreviewData }, dispatch);
 };
 
-export default connect<StateFromProps, {}, ComponentProps>(mapStateToProps, mapDispatchToProps)(DataPreviewButton);
+export default connect<StateFromProps, DispatchFromProps, ComponentProps>(mapStateToProps, mapDispatchToProps)(DataPreviewButton);

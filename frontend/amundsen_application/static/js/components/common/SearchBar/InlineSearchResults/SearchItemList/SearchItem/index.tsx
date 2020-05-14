@@ -93,4 +93,4 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   };
 };
 
-export default connect<{}, {}, OwnProps>(mapStateToProps)(SearchItem);
+export default connect<StateFromProps, {}, OwnProps>(mapStateToProps)(SearchItem);
