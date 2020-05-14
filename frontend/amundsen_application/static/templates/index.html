@@ -1,12 +1,18 @@
-<html>
+<!doctype html>
+<html lang="en-US">
   <head>
 {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
 {% include 'fragments/google-analytics-loader.html' %}
 {% endif %}
     <meta charset="utf-8">
-    <link rel="shortcut icon" href="/static/images/favicon.png">
-    <link href="/static/dist/main.css" type="text/css" rel="stylesheet"/>
     <title>Amundsen - Data Discovery Portal</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+
+    <link href="/static/dist/main.css" type="text/css" rel="stylesheet"/>
+
+    <meta name="theme-color" content="#2B1B81">
   </head>
   <body>
     <div id="content"/>

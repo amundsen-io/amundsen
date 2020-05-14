@@ -38,7 +38,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
       <li className="list-group-item clickable">
         <Link className="resource-list-item table-list-item" to={ this.getLink() }>
           <div className="resource-info">
-            <img className={this.generateResourceIconClass(table.database, table.type)} />
+            <span className={this.generateResourceIconClass(table.database, table.type)} />
             <div className="resource-info-text my-auto">
               <div className="resource-name title-2">
                 <div className="truncated">

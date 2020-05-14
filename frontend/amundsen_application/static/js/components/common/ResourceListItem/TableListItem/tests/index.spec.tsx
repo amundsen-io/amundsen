@@ -60,11 +60,13 @@ describe('TableListItem', () => {
       const testValue = 'noEffectOnTest';
       const givenResource = ResourceType.table;
       const iconClass = wrapper.instance().generateResourceIconClass(testValue, givenResource);
+
       expect(getDBIconClassSpy).toHaveBeenCalledWith(testValue, givenResource);
     });
 
     it('returns the default classes with the correct icon class appended', () => {
       const iconClass = wrapper.instance().generateResourceIconClass('noEffectOnTest');
+
       expect(iconClass).toEqual(`icon resource-icon test-class`);
     });
   });
@@ -78,6 +80,7 @@ describe('TableListItem', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('renders item as Link', () => {
       expect(wrapper.find(Link).exists()).toBeTruthy();
     });
@@ -89,7 +92,8 @@ describe('TableListItem', () => {
       });
 
       it('renders start correct icon', () => {
-        const startIcon = resourceInfo.find('img');
+        const startIcon = resourceInfo.find('.resource-icon');
+
         expect(startIcon.exists()).toBe(true);
         expect(startIcon.props().className).toEqual(wrapper.instance().generateResourceIconClass(props.table.database));
       });

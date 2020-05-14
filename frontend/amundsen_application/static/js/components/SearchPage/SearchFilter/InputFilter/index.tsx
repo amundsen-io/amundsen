@@ -64,6 +64,7 @@ export class InputFilter extends React.Component<InputFilterProps, InputFilterSt
           type="text"
           className="form-control"
           name={ categoryId }
+          id={ categoryId }
           onChange={ this.onInputChange }
           value={ this.state.value }
         />
