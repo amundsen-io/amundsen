@@ -99,7 +99,6 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
           <ResourceList
             allItems={ this.props.dashboard.tables }
             itemsPerPage={ TABLES_PER_PAGE }
-            paginate={ false }
             source={ DASHBOARD_SOURCE }
           />
         ),

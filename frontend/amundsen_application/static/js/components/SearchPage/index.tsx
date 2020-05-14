@@ -6,7 +6,7 @@ import { RouteComponentProps } from 'react-router';
 import { Search as UrlSearch } from 'history';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import ResourceList from 'components/common/ResourceList';
+import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
 import ResourceSelector from './ResourceSelector';
 import SearchFilter from './SearchFilter';
 import SearchPanel from './SearchPanel';
@@ -140,13 +140,13 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
     return (
       <div className="search-list-container">
-        <ResourceList
-          slicedItems={ results.results }
-          slicedItemsCount={ total_results }
-          source={ SEARCH_SOURCE_NAME }
-          itemsPerPage={ RESULTS_PER_PAGE }
+        <PaginatedApiResourceList
           activePage={ page_index }
           onPagination={ this.props.setPageIndex }
+          itemsPerPage={ RESULTS_PER_PAGE }
+          slicedItems={ results.results }
+          source={ SEARCH_SOURCE_NAME }
+          totalItemsCount={ total_results }
         />
       </div>
     );

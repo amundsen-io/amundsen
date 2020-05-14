@@ -9,7 +9,7 @@ import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
 import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
-import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from '.';
+import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from './';
 
 import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';

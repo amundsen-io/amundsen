@@ -5,15 +5,15 @@ import { mocked } from 'ts-jest/utils';
 
 import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces';
-import { MyBookmarks, MyBookmarksProps, mapStateToProps } from '../';
-import ResourceList from 'components/common/ResourceList';
+import { MyBookmarks, MyBookmarksProps, mapStateToProps } from './';
+import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
 import TabsComponent from 'components/common/TabsComponent';
 import {
   BOOKMARK_TITLE,
   BOOKMARKS_PER_PAGE,
   EMPTY_BOOKMARK_MESSAGE,
   MY_BOOKMARKS_SOURCE_NAME,
-} from '../constants';
+} from './constants';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
@@ -105,12 +105,12 @@ describe('MyBookmarks', () => {
       content = shallow(<div>{wrapper.instance().generateTabContent(givenResource)}</div>);
     });
 
-    it('returns a ResourceList with correct props', () => {
-      const element = content.find(ResourceList);
+    it('returns a PaginatedResourceList with correct props', () => {
+      const element = content.find(PaginatedResourceList);
       expect(element.props().allItems).toBe(props.myBookmarks[givenResource]);
       expect(element.props().itemsPerPage).toBe(BOOKMARKS_PER_PAGE);
       expect(element.props().source).toBe(MY_BOOKMARKS_SOURCE_NAME);
-      expect(element.props().customEmptyText).toBe(EMPTY_BOOKMARK_MESSAGE);
+      expect(element.props().emptyText).toBe(EMPTY_BOOKMARK_MESSAGE);
     });
 
     it('returns null if there are no bookmarks to render', () => {

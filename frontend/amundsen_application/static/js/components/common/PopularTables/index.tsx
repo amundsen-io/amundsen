@@ -12,7 +12,7 @@ import {
 import { TableResource } from 'interfaces';
 
 import InfoButton from 'components/common/InfoButton';
-import ResourceList from 'components/common/ResourceList';
+import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
 
 import { getPopularTables } from 'ducks/popularTables/reducer';
 import { GetPopularTablesRequest } from 'ducks/popularTables/types';
@@ -46,10 +46,10 @@ export class PopularTables extends React.Component<PopularTablesProps> {
           <label className="title-1">{POPULAR_TABLES_LABEL}</label>
           <InfoButton infoText={POPULAR_TABLES_INFO_TEXT} />
         </div>
-        <ResourceList
+        <PaginatedResourceList
           allItems={ this.props.popularTables }
-          source={ POPULAR_TABLES_SOURCE_NAME }
           itemsPerPage={ POPULAR_TABLES_PER_PAGE }
+          source={ POPULAR_TABLES_SOURCE_NAME }
         />
       </>
     );
