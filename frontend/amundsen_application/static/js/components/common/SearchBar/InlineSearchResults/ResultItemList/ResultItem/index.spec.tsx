@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { shallow } from 'enzyme';
 
-import ResultItem, { ResultItemProps } from '../';
+import ResultItem, { ResultItemProps } from '.';
 
 describe('ResultItem', () => {
   let props: ResultItemProps;
@@ -34,7 +34,7 @@ describe('ResultItem', () => {
     });
 
     it('renders icon with correct props', () => {
-      expect(link.find('img').props().className).toEqual(`result-icon ${props.iconClass}`);
+      expect(link.find('span').props().className).toEqual(`result-icon ${props.iconClass}`);
     });
 
     describe('renders result-info', () => {
