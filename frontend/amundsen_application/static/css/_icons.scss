@@ -20,6 +20,11 @@ $dashboards: (
   mode: "/static/images/icons/logo-mode.svg"
 );
 
+// Map of User names and icon paths
+$users: (
+  users: "/static/images/icons/users.svg",
+);
+
 // Given a Map of key/value pairs, generates a new class
 @mixin iconBackgrounds($map){
   @each $name, $url in $map {
@@ -42,6 +47,7 @@ span.icon {
   // Generate Icons
   @include iconBackgrounds($data-stores);
   @include iconBackgrounds($dashboards);
+  @include iconBackgrounds($users);
 }
 
 img.icon {
@@ -175,11 +181,6 @@ img.icon {
   &.icon-up {
     -webkit-mask-image: url("/static/images/icons/Up.svg");
     mask-image: url("/static/images/icons/Up.svg");
-  }
-
-  &.icon-users {
-    -webkit-mask-image: url("/static/images/icons/users.svg");
-    mask-image: url("/static/images/icons/users.svg");
   }
 
   &.icon-more {

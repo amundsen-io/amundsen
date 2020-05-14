@@ -9,7 +9,7 @@ import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
 import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
-import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from '../';
+import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from '.';
 
 import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
@@ -23,7 +23,7 @@ import {
   OWNED_SOURCE,
   READ_LABEL,
   READ_SOURCE,
-} from '../constants';
+} from './constants';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
@@ -370,7 +370,7 @@ describe('ProfilePage', () => {
       });
 
       it('renders email link with correct text', () => {
-        expect(wrapper.find('#email-link').find('span').text()).toEqual('test@test.com');
+        expect(wrapper.find('#email-link').find('.email-link-label').text()).toEqual('test@test.com');
       });
 
       it('renders profile link with correct href', () => {
@@ -378,7 +378,7 @@ describe('ProfilePage', () => {
       });
 
       it('renders profile link with correct text', () => {
-        expect(wrapper.find('#profile-link').find('span').text()).toEqual('Employee Profile');
+        expect(wrapper.find('#profile-link').find('.profile-link-label').text()).toEqual('Employee Profile');
       });
     });
   });
