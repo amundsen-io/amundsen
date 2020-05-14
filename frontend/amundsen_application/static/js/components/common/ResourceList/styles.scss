@@ -1,5 +1,6 @@
 @import 'variables';
 
+.paginated-resource-list,
 .resource-list {
   ul {
     margin-bottom: 0;
@@ -23,4 +24,8 @@
     display: flex;
     justify-content: center;
   }
+}
+
+.paginated-resource-list {
+  margin-bottom: $spacer-4
 }

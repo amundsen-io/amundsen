@@ -6,11 +6,11 @@ import {
   POPULAR_TABLES_LABEL,
   POPULAR_TABLES_PER_PAGE,
   POPULAR_TABLES_SOURCE_NAME,
-} from '../constants';
+} from './constants';
 import InfoButton from 'components/common/InfoButton';
-import ResourceList from 'components/common/ResourceList';
+import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
 import globalState from 'fixtures/globalState';
-import { PopularTables, PopularTablesProps, mapStateToProps, mapDispatchToProps } from '..';
+import { PopularTables, PopularTablesProps, mapStateToProps, mapDispatchToProps } from './';
 
 describe('PopularTables', () => {
   const setup = (propOverrides?: Partial<PopularTablesProps>) => {
@@ -25,7 +25,7 @@ describe('PopularTables', () => {
   };
   let wrapper;
   let props;
-  
+
   describe('componentDidMount', () => {
     let getPopularTablesSpy;
     beforeAll(() => {
@@ -46,7 +46,7 @@ describe('PopularTables', () => {
     beforeAll(() => {
       result = mapStateToProps(globalState);
     });
-  
+
     it('sets popularTables on the props', () => {
       expect(result.popularTables).toEqual(globalState.popularTables);
     });
@@ -81,8 +81,8 @@ describe('PopularTables', () => {
       });
     });
 
-    it('renders ResourceList with correct props', () => {
-      expect(wrapper.children().find(ResourceList).props()).toMatchObject({
+    it('renders PaginatedResourceList with correct props', () => {
+      expect(wrapper.children().find(PaginatedResourceList).props()).toMatchObject({
         allItems: props.popularTables,
         itemsPerPage: POPULAR_TABLES_PER_PAGE,
         source: POPULAR_TABLES_SOURCE_NAME,

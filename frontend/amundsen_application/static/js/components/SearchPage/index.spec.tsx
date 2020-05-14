@@ -5,7 +5,7 @@ import * as History from 'history';
 import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
-import { mapDispatchToProps, mapStateToProps, SearchPage, SearchPageProps } from '../';
+import { mapDispatchToProps, mapStateToProps, SearchPage, SearchPageProps } from './';
 import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
@@ -17,13 +17,13 @@ import {
   DASHBOARD_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
-} from '../constants';
+} from './constants';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import ResourceSelector from 'components/SearchPage/ResourceSelector';
 import SearchFilter from 'components/SearchPage/SearchFilter';
 import SearchPanel from 'components/SearchPage/SearchPanel';
-import ResourceList from 'components/common/ResourceList';
+import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
 
 import globalState from 'fixtures/globalState';
 import { defaultEmptyFilters, datasetFilterExample } from 'fixtures/search/filters';
@@ -194,7 +194,7 @@ describe('SearchPage', () => {
         content = shallow(wrapper.instance().getTabContent(props.tables, ResourceType.table));
       });
 
-      it('renders ResourceList with correct props', () => {
+      it('renders PaginatedApiResourceList with correct props', () => {
         const { props, wrapper } = setup();
         const testResults = {
           page_index: 0,
@@ -202,14 +202,13 @@ describe('SearchPage', () => {
           total_results: 11,
         };
         content = shallow(wrapper.instance().getTabContent(testResults, ResourceType.table));
-
-        expect(content.children().find(ResourceList).props()).toMatchObject({
+        expect(content.children().find(PaginatedApiResourceList).props()).toMatchObject({
           activePage: 0,
-          slicedItems: testResults.results,
-          slicedItemsCount: testResults.total_results,
           itemsPerPage: RESULTS_PER_PAGE,
           onPagination: props.setPageIndex,
+          slicedItems: testResults.results,
           source: SEARCH_SOURCE_NAME,
+          totalItemsCount: testResults.total_results,
         });
       });
     });

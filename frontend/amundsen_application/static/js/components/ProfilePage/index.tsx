@@ -100,33 +100,30 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
       <>
         <ResourceList
           allItems={ own }
+          emptyText={`${EMPTY_TEXT_PREFIX} ${OWNED_LABEL} ${resourceLabel}.`}
+          footerTextCollapsed={`${FOOTER_TEXT_PREFIX} ${own.length} ${OWNED_LABEL} ${resourceLabel}`}
           itemsPerPage={ ITEMS_PER_PAGE }
-          paginate={ false }
           source={ OWNED_SOURCE }
           title={`${OWNED_TITLE_PREFIX} (${own.length})`}
-          customFooterText={`${FOOTER_TEXT_PREFIX} ${own.length} ${OWNED_LABEL} ${resourceLabel}`}
-          customEmptyText={`${EMPTY_TEXT_PREFIX} ${OWNED_LABEL} ${resourceLabel}.`}
         />
         <ResourceList
           allItems={ bookmarks }
+          emptyText={`${EMPTY_TEXT_PREFIX} ${BOOKMARKED_LABEL} ${resourceLabel}.`}
+          footerTextCollapsed={`${FOOTER_TEXT_PREFIX} ${bookmarks.length} ${BOOKMARKED_LABEL} ${resourceLabel}`}
           itemsPerPage={ ITEMS_PER_PAGE }
-          paginate={ false }
           source={ BOOKMARKED_SOURCE }
           title={`${BOOKMARKED_TITLE_PREFIX} (${bookmarks.length})`}
-          customFooterText={`${FOOTER_TEXT_PREFIX} ${bookmarks.length} ${BOOKMARKED_LABEL} ${resourceLabel}`}
-          customEmptyText={`${EMPTY_TEXT_PREFIX} ${BOOKMARKED_LABEL} ${resourceLabel}.`}
         />
         {
           /* Frequently Used currently not supported for dashboards */
           resource === ResourceType.table &&
           <ResourceList
             allItems={ read }
+            emptyText={`${EMPTY_TEXT_PREFIX} ${READ_LABEL} ${resourceLabel}.`}
+            footerTextCollapsed={`${FOOTER_TEXT_PREFIX} ${read.length} ${READ_LABEL} ${resourceLabel}`}
             itemsPerPage={ ITEMS_PER_PAGE }
-            paginate={ false }
             source={ READ_SOURCE }
             title={`${READ_TITLE_PREFIX}  (${read.length})`}
-            customFooterText={`${FOOTER_TEXT_PREFIX} ${read.length} ${READ_LABEL} ${resourceLabel}`}
-            customEmptyText={`${EMPTY_TEXT_PREFIX} ${READ_LABEL} ${resourceLabel}.`}
           />
         }
       </>

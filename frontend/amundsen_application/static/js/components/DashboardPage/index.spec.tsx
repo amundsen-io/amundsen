@@ -10,6 +10,7 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Flag from 'components/common/Flag';
+import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
 import ChartList from './ChartList';
 import ImagePreview from './ImagePreview';
@@ -187,6 +188,13 @@ describe('DashboardPage', () => {
 
   describe('renderTabs', () => {
     const { props, wrapper } = setup();
+    it('returns a ResourceList', () => {
+      const result = shallow(wrapper.instance().renderTabs());
+      const element = result.find(ResourceList);
+      expect(element.exists()).toBe(true);
+      expect(element.props().allItems).toEqual(props.dashboard.tables);
+    });
+
     it('returns a Tabs component', () => {
       const result = wrapper.instance().renderTabs();
       expect(result.type).toEqual(TabsComponent);
