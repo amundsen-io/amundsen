@@ -11,15 +11,11 @@ export type PreferenceGroupProps = {
 }
 
 export class PreferenceGroup extends React.Component<PreferenceGroupProps> {
-    public static defaultProps: Partial<PreferenceGroupProps> = {
-      selected: false,
-      title: '',
-      subtitle: '',
-    };
-
-  constructor(props) {
-    super(props);
-  }
+  public static defaultProps: Partial<PreferenceGroupProps> = {
+    selected: false,
+    title: '',
+    subtitle: '',
+  };
 
   onClick = () => {
     this.props.onClick(this.props.preferenceValue)

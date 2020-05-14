@@ -23,10 +23,6 @@ export interface DispatchFromProps {
 export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
 
 export class HomePage extends React.Component<HomePageProps> {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.searchReset();
   }

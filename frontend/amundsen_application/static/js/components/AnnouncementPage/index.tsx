@@ -25,10 +25,6 @@ export interface DispatchFromProps {
 export type AnnouncementPageProps = StateFromProps & DispatchFromProps;
 
 export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.announcementsGet();
   }

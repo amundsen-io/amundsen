@@ -35,10 +35,6 @@ interface ResourceOptionConfig {
 }
 
 export class ResourceSelector extends React.Component<ResourceSelectorProps > {
-  constructor(props) {
-    super(props);
-  }
-
   onChange = (event) => {
     this.props.setResource(event.target.value);
   };

@@ -7,10 +7,6 @@ export interface ChartListProps {
 }
 
 class ChartList extends React.Component<ChartListProps> {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const charts = this.props.charts;
     if (charts.length === 0) {

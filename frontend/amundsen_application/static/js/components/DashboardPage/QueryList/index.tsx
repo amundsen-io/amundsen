@@ -7,10 +7,6 @@ export interface QueryListProps {
 }
 
 class QueryList extends React.Component<QueryListProps> {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const queries = this.props.queries;
     if (queries.length === 0) {

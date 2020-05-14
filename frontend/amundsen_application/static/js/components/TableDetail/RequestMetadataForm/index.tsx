@@ -57,10 +57,6 @@ interface RequestMetadataState {}
 export class RequestMetadataForm extends React.Component<RequestMetadataProps, RequestMetadataState> {
   public static defaultProps: Partial<RequestMetadataProps> = {};
 
-  constructor(props) {
-    super(props);
-  }
-
   componentWillUnmount = () => {
     this.props.closeRequestDescriptionDialog();
   }

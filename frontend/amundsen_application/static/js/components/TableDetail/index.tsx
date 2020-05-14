@@ -66,10 +66,6 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
   private key: string;
   private didComponentMount: boolean = false;
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const { index, source } = getLoggingParams(this.props.location.search);
 

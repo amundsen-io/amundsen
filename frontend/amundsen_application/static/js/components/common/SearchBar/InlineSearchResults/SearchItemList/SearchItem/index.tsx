@@ -26,10 +26,6 @@ export interface OwnProps {
 export type SearchItemProps = StateFromProps & OwnProps;
 
 export class SearchItem extends React.Component<SearchItemProps, {}> {
-  constructor(props) {
-    super(props);
-  }
-
   onViewAllResults = (e) => {
     logClick(e);
     this.props.onItemSelect(this.props.resourceType, true);

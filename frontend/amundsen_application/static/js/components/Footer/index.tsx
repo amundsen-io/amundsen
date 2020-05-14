@@ -21,10 +21,6 @@ interface DispatchFromProps {
 export type FooterProps = StateFromProps & DispatchFromProps;
 
 export class Footer extends React.Component<FooterProps> {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.getLastIndexed();
   }

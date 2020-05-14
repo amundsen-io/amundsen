@@ -27,10 +27,6 @@ interface StateFromProps {
 export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 
 export class NavBar extends React.Component<NavBarProps> {
-  constructor(props) {
-    super(props);
-  }
-
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
       if (link.use_router) {

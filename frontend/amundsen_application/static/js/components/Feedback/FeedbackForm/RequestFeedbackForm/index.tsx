@@ -18,10 +18,6 @@ import {
 } from '../../constants';
 
 export class RequestFeedbackForm extends AbstractFeedbackForm {
-  constructor(props) {
-    super(props);
-  }
-
   renderCustom() {
     return (
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={ this.submitForm }>

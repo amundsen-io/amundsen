@@ -26,10 +26,6 @@ export interface DispatchFromProps {
 export type TagsListProps = StateFromProps & DispatchFromProps;
 
 export class TagsList extends React.Component<TagsListProps> {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.getAllTags();
   }

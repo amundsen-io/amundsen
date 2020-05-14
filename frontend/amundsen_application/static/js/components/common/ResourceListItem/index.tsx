@@ -15,10 +15,6 @@ export interface ListItemProps {
 }
 
 export default class ResourceListItem extends React.Component<ListItemProps> {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     switch(this.props.item.type) {
       case ResourceType.dashboard:

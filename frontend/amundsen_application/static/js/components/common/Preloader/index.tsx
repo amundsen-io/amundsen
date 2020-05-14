@@ -16,10 +16,6 @@ interface DispatchFromProps {
 export type PreloaderProps = DispatchFromProps;
 
 export class Preloader extends React.Component<PreloaderProps>{
-  constructor(props) {
-    super(props)
-  }
-
   componentDidMount() {
     this.props.getLoggedInUser();
     this.props.getBookmarks();
