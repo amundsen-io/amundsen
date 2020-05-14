@@ -34,10 +34,6 @@ export interface DispatchFromProps {
 export type FilterSectionProps = OwnProps & DispatchFromProps & StateFromProps;
 
 export class FilterSection extends React.Component<FilterSectionProps> {
-  constructor(props) {
-    super(props);
-  }
-
   onClearFilter = () => {
     this.props.clearFilter(this.props.categoryId);
   }

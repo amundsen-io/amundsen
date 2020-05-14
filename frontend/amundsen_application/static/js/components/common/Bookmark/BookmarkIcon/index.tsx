@@ -33,10 +33,6 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
     large: false,
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     event.preventDefault();

@@ -13,10 +13,6 @@ export interface UserListItemProps {
 }
 
 class UserListItem extends React.Component<UserListItemProps, {}> {
-  constructor(props) {
-    super(props);
-  }
-
   getLink = () => {
     const { user, logging } = this.props;
     return `/user/${user.user_id}?index=${logging.index}&source=${logging.source}`;

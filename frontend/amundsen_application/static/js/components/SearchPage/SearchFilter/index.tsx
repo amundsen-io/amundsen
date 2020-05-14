@@ -30,10 +30,6 @@ export interface StateFromProps {
 export type SearchFilterProps = StateFromProps;
 
 export class SearchFilter extends React.Component<SearchFilterProps> {
-  constructor(props) {
-    super(props);
-  }
-
   createFilterSection = (key: string, section: FilterSection | CheckboxFilterSection) => {
     const { categoryId, helpText, title, type } = section;
     const options = (section as CheckboxFilterSection).options ? (section as CheckboxFilterSection).options : undefined;

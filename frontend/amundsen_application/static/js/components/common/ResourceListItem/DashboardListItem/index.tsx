@@ -20,10 +20,6 @@ export interface DashboardListItemProps {
 }
 
 class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
-  constructor(props) {
-    super(props);
-  }
-
   getLink = () => {
     const { dashboard, logging } = this.props;
     return `/dashboard?uri=${dashboard.uri}&index=${logging.index}&source=${logging.source}`;

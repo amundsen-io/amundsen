@@ -21,10 +21,6 @@ interface RequestDescriptionTextState {}
 export class RequestDescriptionText extends React.Component<RequestDescriptionTextProps, RequestDescriptionTextState> {
   public static defaultProps: Partial<RequestDescriptionTextProps> = {};
 
-  constructor(props) {
-    super(props);
-  }
-
   openRequest = () => {
     this.props.openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION);
   }

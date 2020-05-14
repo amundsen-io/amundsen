@@ -28,10 +28,6 @@ interface DispatchFromProps {
 export type CheckBoxFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 
 export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
-  constructor(props) {
-    super(props);
-  }
-
   createCheckBoxItem = (categoryId: string, key: string, item: CheckboxFilterProperties) => {
     const { label, value } = item;
     return (

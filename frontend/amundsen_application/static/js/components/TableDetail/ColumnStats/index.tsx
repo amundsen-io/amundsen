@@ -10,10 +10,6 @@ export interface ColumnStatsProps {
 }
 
 export class ColumnStats extends React.Component<ColumnStatsProps> {
-  constructor(props) {
-    super(props);
-  }
-
   getStatsInfoText = (startEpoch: number, endEpoch: number) => {
     const startDate = startEpoch ? formatDate({ epochTimestamp: startEpoch }) : null;
     const endDate = endEpoch ? formatDate({ epochTimestamp: endEpoch }) : null;

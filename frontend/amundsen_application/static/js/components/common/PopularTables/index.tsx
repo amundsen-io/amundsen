@@ -31,10 +31,6 @@ export interface DispatchFromProps {
 export type PopularTablesProps = StateFromProps & DispatchFromProps;
 
 export class PopularTables extends React.Component<PopularTablesProps> {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.getPopularTables();
   }

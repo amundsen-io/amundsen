@@ -22,10 +22,6 @@ interface StateFromProps {
 export type MyBookmarksProps = StateFromProps;
 
 export class MyBookmarks extends React.Component<MyBookmarksProps> {
-  constructor(props) {
-    super(props);
-  }
-
   generateTabContent = (resource: ResourceType) => {
     const bookmarks = this.props.myBookmarks[resource];
     if (!bookmarks) {

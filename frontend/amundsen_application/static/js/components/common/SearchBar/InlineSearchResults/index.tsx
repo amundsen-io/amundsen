@@ -39,10 +39,6 @@ export interface SuggestedResult {
 }
 
 export class InlineSearchResults extends React.Component<InlineSearchResultsProps, {}> {
-  constructor(props) {
-    super(props);
-  }
-
   getTitleForResource = (resourceType: ResourceType): string => {
     switch (resourceType) {
       case ResourceType.dashboard:

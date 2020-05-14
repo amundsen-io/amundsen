@@ -14,10 +14,6 @@ export interface SearchItemListProps {
 }
 
 class SearchItemList extends React.Component<SearchItemListProps, {}> {
-  constructor(props) {
-    super(props);
-  }
-
   getListItemText = (resourceType: ResourceType): string => {
     switch (resourceType) {
       case ResourceType.dashboard:

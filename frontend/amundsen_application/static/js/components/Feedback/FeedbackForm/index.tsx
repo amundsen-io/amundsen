@@ -28,10 +28,6 @@ abstract class AbstractFeedbackForm extends React.Component<FeedbackFormProps> {
 
   static FORM_ID = "feedback-form";
 
-  protected constructor(props) {
-    super(props);
-  }
-
   submitForm = (event) => {
     event.preventDefault();
     const form = document.getElementById(AbstractFeedbackForm.FORM_ID) as HTMLFormElement;

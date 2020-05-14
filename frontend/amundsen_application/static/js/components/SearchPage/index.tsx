@@ -60,10 +60,6 @@ export type SearchPageProps = StateFromProps & DispatchFromProps & RouteComponen
 export class SearchPage extends React.Component<SearchPageProps> {
   public static defaultProps: Partial<SearchPageProps> = {};
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.urlDidUpdate(this.props.location.search);
   }

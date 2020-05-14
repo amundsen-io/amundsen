@@ -26,10 +26,6 @@ export class TagInfo extends React.Component<TagInfoProps> {
     compact: true
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   onClick = (e) => {
     const name = this.props.data.tag_name;
     logClick(e, {

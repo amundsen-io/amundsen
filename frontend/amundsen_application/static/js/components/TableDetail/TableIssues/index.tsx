@@ -31,10 +31,6 @@ export interface ComponentProps {
 export type TableIssueProps = StateFromProps & DispatchFromProps & ComponentProps;
 
 export class TableIssues extends React.Component<TableIssueProps> {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.getIssues(this.props.tableKey);
   }
