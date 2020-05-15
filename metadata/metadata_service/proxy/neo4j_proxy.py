@@ -820,7 +820,7 @@ class Neo4jProxy(BaseProxy):
                           slack_id=record.get('slack_id'),
                           employee_type=record.get('employee_type'),
                           role_name=record.get('role_name'),
-                          manager_fullname=manager_name)
+                          manager_fullname=record.get('manager_fullname', manager_name))
 
     @staticmethod
     def _get_user_resource_relationship_clause(relation_type: UserResourceRel, id: str = None,

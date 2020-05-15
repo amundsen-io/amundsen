@@ -549,12 +549,24 @@ class TestNeo4jProxy(unittest.TestCase):
                 'first_name': 'test_first_name',
                 'team_name': 'test_team',
                 'email': 'test_email',
-                'manager_fullname': ''
+                'manager_fullname': 'test_manager',
             }
             mock_execute.return_value.single.return_value = {'users': [test_user]}
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             users = neo4j_proxy.get_users()
-            self.assertEquals(users, UserSchema(many=True).load([test_user]).data)
+            actual_data = UserSchema(many=True).load([test_user]).data
+            for attr in ['employee_type',
+                         'full_name',
+                         'is_active',
+                         'github_username',
+                         'slack_id',
+                         'last_name',
+                         'first_name',
+                         'team_name',
+                         'email',
+                         'manager_fullname']:
+                self.assertEquals(getattr(users[0], attr),
+                                  getattr(actual_data[0], attr))
 
     def test_get_table_by_user_relation(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
