@@ -66,6 +66,7 @@ nav:
         - 'How to index metadata for real life databases': 'tutorials/index-postgres.md'
         - 'How to setup a preview client with Apache Superset': 'tutorials/data-preview-with-superset.md'
         - 'How to setup user profiles': 'tutorials/user-profiles.md'
+        - 'How to ingest Dashboard': 'databuilder/docs/dashboard_ingestion_guide.md'
     - 'Deployment':
       - 'Authentication': 'authentication/oidc.md'
       - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
@@ -99,6 +100,7 @@ nav:
     - 'Databuilder':
       - 'Overview': 'databuilder/README.md'
       - 'Models': 'databuilder/docs/models.md'
+      - 'Dashboard Ingestion guide': 'databuilder/docs/dashboard_ingestion_guide.md'
     - 'Common':
       - 'Overview': 'common/README.md'
   - 'FAQ': faq.md
