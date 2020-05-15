@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { shallow, mount } from 'enzyme';
-import WatermarkLabel, { WatermarkLabelProps } from '../';
+import WatermarkLabel, { WatermarkLabelProps } from '.';
 import {
   NO_WATERMARK_LINE_1,
   NO_WATERMARK_LINE_2,

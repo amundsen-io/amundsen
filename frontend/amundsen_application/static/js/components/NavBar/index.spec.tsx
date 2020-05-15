@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Link, NavLink } from 'react-router-dom';
-import { NavBar, NavBarProps, mapStateToProps } from '../';
+import { NavBar, NavBarProps, mapStateToProps } from '.';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'components/Feedback';

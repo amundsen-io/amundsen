@@ -4,13 +4,13 @@ import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import { SendingState } from 'interfaces';
-import FeedbackForm, { FeedbackFormProps } from '../';
-import { RatingFeedbackForm } from '../RatingFeedbackForm';
+import FeedbackForm, { FeedbackFormProps } from '.';
+import { RatingFeedbackForm } from './RatingFeedbackForm';
 
 import {
   SUBMIT_FAILURE_MESSAGE,
   SUBMIT_SUCCESS_MESSAGE,
-} from '../../constants';
+} from '../constants';
 
 const mockFormData = { key1: 'val1', key2: 'val2' };
 // @ts-ignore: How to mock FormData without TypeScript error?

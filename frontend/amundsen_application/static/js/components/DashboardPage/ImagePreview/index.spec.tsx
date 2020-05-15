@@ -6,7 +6,7 @@ import Linkify from 'react-linkify'
 
 import { ImagePreview, ImagePreviewProps } from './';
 
-import LoadingSpinner from 'components/common/LoadingSpinner';
+import ShimmeringDashboardLoader from '../ShimmeringDashboardLoader';
 
 import * as Constants from './constants';
 
@@ -61,16 +61,13 @@ describe('ImagePreview', () => {
           wrapper = setup().wrapper;
           wrapper.instance().setState({ isLoading: true, hasError: false });
         });
-        it('renders the loading spinner', () => {
-          expect(wrapper.find(LoadingSpinner).exists()).toBeTruthy();
+
+        it('renders the loading dashboard', () => {
+          expect(wrapper.find(ShimmeringDashboardLoader).exists()).toBeTruthy();
         });
 
         it('renders hidden img', () => {
           expect(wrapper.find('img').props().style).toEqual({ visibility: 'hidden' });
-        });
-
-        it('renders loading text', () => {
-          expect(wrapper.text()).toContain(Constants.LOADING_TEXT);
         });
       });
 

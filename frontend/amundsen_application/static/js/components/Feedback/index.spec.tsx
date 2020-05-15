@@ -2,17 +2,17 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import BugReportFeedbackForm from '../FeedbackForm/BugReportFeedbackForm';
-import RatingFeedbackForm from '../FeedbackForm/RatingFeedbackForm';
-import RequestFeedbackForm from '../FeedbackForm/RequestFeedbackForm';
-import Feedback, { FeedbackProps, FeedbackType } from '../';
+import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
+import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
+import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
+import Feedback, { FeedbackProps, FeedbackType } from '.';
 import {
   BUG_REPORT_TEXT,
   BUTTON_CLOSE_TEXT,
   FEEDBACK_TYPE_TEXT,
   RATING_TEXT,
   REQUEST_TEXT,
-} from '../constants';
+} from './constants';
 
 describe('Feedback', () => {
   const setStateSpy = jest.spyOn(Feedback.prototype, 'setState');

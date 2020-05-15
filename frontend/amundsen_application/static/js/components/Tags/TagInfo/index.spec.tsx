@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { mapDispatchToProps, TagInfo, TagInfoProps } from '../';
+import { mapDispatchToProps, TagInfo, TagInfoProps } from '.';
 
 import * as UtilMethods from 'ducks/utilMethods';
 

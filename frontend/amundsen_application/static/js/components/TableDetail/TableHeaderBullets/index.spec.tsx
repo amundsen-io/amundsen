@@ -3,7 +3,7 @@ import * as React from 'react';
 import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
-import TableHeaderBullets, { TableHeaderBulletsProps } from '../';
+import TableHeaderBullets, { TableHeaderBulletsProps } from '.';
 
 import { ResourceType } from 'interfaces/Resources';
 

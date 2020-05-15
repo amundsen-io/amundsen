@@ -5,7 +5,7 @@ import * as History from 'history';
 import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
-import { mapDispatchToProps, mapStateToProps, SearchPage, SearchPageProps } from './';
+import { mapDispatchToProps, mapStateToProps, SearchPage, SearchPageProps } from '.';
 import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,

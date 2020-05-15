@@ -10,7 +10,7 @@ import {
   TableIssueProps,
   mapStateToProps,
   mapDispatchToProps
-} from '..';
+} from '.';
 
 import { NO_DATA_ISSUES_TEXT } from "components/TableDetail/TableIssues/constants";
 import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
