@@ -1,8 +1,18 @@
 """
-This is a example script which demo how to load data
-into Neo4j and Elasticsearch without using an Airflow DAG.
+This is a example script demonstrating how to load data into Neo4j and
+Elasticsearch without using an Airflow DAG.
 
-It uses CSV extractor to extract metadata to load it into Neo4j & ES.
+It contains several jobs:
+- `run_csv_job`: runs a job that extracts table data from a CSV, loads (writes)
+  this into a different local directory as a csv, then publishes this data to
+  neo4j.
+- `run_table_column_job`: does the same thing as `run_csv_job`, but with a csv
+  containing column data.
+- `create_last_updated_job`: creates a job that gets the current time, dumps it
+  into a predefined model schema, and publishes this to neo4j.
+- `create_es_publisher_sample_job`: creates a job that extracts data from neo4j
+  and pubishes it into elasticsearch.
+
 For other available extractors, please take a look at
 https://github.com/lyft/amundsendatabuilder#list-of-extractors
 """
@@ -18,12 +28,10 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from databuilder.extractor.csv_extractor import CsvTableColumnExtractor, CsvExtractor
 from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpdatedExtractor
-from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from databuilder.publisher import neo4j_csv_publisher
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
@@ -74,26 +82,17 @@ def run_csv_job(file_loc, table_name, model):
                        transformer=NoopTransformer())
 
     job_config = ConfigFactory.from_dict({
-        'extractor.csv.{}'.format(CsvExtractor.FILE_LOCATION): file_loc,
+        'extractor.csv.file_location': file_loc,
         'extractor.csv.model_class': model,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR):
-            True,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_tag',  # should use unique tag here like {ds}
+        'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
+        'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,
+        'loader.filesystem_csv_neo4j.delete_created_directories': True,
+        'publisher.neo4j.node_files_directory': node_files_folder,
+        'publisher.neo4j.relation_files_directory': relationship_files_folder,
+        'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
+        'publisher.neo4j.neo4j_user': neo4j_user,
+        'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.job_publish_tag': 'unique_tag',  # should use unique tag here like {ds}
     })
 
     DefaultJob(conf=job_config,
@@ -111,26 +110,17 @@ def run_table_column_job(table_path, column_path):
                        loader=csv_loader,
                        transformer=NoopTransformer())
     job_config = ConfigFactory.from_dict({
-        'extractor.csvtablecolumn.{}'.format(CsvTableColumnExtractor.TABLE_FILE_LOCATION): table_path,
-        'extractor.csvtablecolumn.{}'.format(CsvTableColumnExtractor.COLUMN_FILE_LOCATION): column_path,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR):
-            True,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_tag',  # should use unique tag here like {ds}
+        'extractor.csvtablecolumn.table_file_location': table_path,
+        'extractor.csvtablecolumn.column_file_location': column_path,
+        'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
+        'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,
+        'loader.filesystem_csv_neo4j.delete_created_directories': True,
+        'publisher.neo4j.node_files_directory': node_files_folder,
+        'publisher.neo4j.relation_files_directory': relationship_files_folder,
+        'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
+        'publisher.neo4j.neo4j_user': neo4j_user,
+        'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.job_publish_tag': 'unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -151,23 +141,14 @@ def create_last_updated_job():
         'extractor.neo4j_es_last_updated.model_class':
             'databuilder.models.neo4j_es_last_updated.Neo4jESLastUpdated',
 
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_lastupdated_tag',  # should use unique tag here like {ds}
+        'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
+        'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,
+        'publisher.neo4j.node_files_directory': node_files_folder,
+        'publisher.neo4j.relation_files_directory': relationship_files_folder,
+        'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
+        'publisher.neo4j.neo4j_user': neo4j_user,
+        'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.job_publish_tag': 'unique_lastupdated_tag',  # should use unique tag here like {ds}
     })
 
     return DefaultJob(conf=job_config,
@@ -204,24 +185,18 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     elasticsearch_new_index_key = 'tables' + str(uuid.uuid4())
 
     job_config = ConfigFactory.from_dict({
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): neo4j_endpoint,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY): model_name,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): neo4j_user,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): neo4j_password,
-        'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY):
-            extracted_search_data_path,
-        'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY): 'w',
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY):
-            extracted_search_data_path,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY): 'r',
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY):
-            elasticsearch_client,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY):
-            elasticsearch_new_index_key,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY):
-            elasticsearch_doc_type_key,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY):
-            elasticsearch_index_alias,
+        'extractor.search_data.extractor.neo4j.graph_url': neo4j_endpoint,
+        'extractor.search_data.extractor.neo4j.model_class': model_name,
+        'extractor.search_data.extractor.neo4j.neo4j_auth_user': neo4j_user,
+        'extractor.search_data.extractor.neo4j.neo4j_auth_pw': neo4j_password,
+        'loader.filesystem.elasticsearch.file_path': extracted_search_data_path,
+        'loader.filesystem.elasticsearch.mode': 'w',
+        'publisher.elasticsearch.file_path': extracted_search_data_path,
+        'publisher.elasticsearch.mode': 'r',
+        'publisher.elasticsearch.client': elasticsearch_client,
+        'publisher.elasticsearch.new_index': elasticsearch_new_index_key,
+        'publisher.elasticsearch.doc_type': elasticsearch_doc_type_key,
+        'publisher.elasticsearch.alias': elasticsearch_index_alias,
     })
 
     # only optionally add these keys, so need to dynamically `put` them
