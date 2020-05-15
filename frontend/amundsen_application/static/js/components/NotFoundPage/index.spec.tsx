@@ -4,7 +4,7 @@ import * as DocumentTitle from 'react-document-title';
 import { shallow } from 'enzyme';
 
 import Breadcrumb from 'components/common/Breadcrumb';
-import NotFoundPage from '../';
+import NotFoundPage from '.';
 
 describe('NotFoundPage', () => {
     let subject;

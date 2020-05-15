@@ -10,7 +10,7 @@ import {
   ReportTableIssueProps,
   mapDispatchToProps,
   mapStateToProps,
-} from '..';
+} from '.';
 import { NotificationType } from 'interfaces';
 
 const mockFormData = {

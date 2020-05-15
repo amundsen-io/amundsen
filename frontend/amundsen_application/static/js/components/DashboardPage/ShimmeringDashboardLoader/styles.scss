@@ -1,0 +1,60 @@
+@import 'variables';
+
+$loading-duration: 1s;
+$gradient-start-color: $gray5;
+$gradient-end-color: $gray15;
+$shimmer-border-radius: 4px;
+$shimmer-border-color: $gray20;
+$shimmer-height: 22vh;
+$shimmer-block-spacing: 16px;
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate {
+  animation : shimmer $loading-duration infinite;
+  background: linear-gradient(to right, $gradient-start-color 4%, $gradient-end-color 25%, $gradient-start-color 36%);
+  background-size: 1000px 100%;
+}
+
+.shimmer-loader {
+  width: 100%;
+  border: 1px solid $shimmer-border-color;
+  border-radius: $shimmer-border-radius;
+  height: $shimmer-height;
+  display: flex;
+  justify-content: space-around;
+  padding: $shimmer-block-spacing;
+}
+.shimmer-loader-row {
+  height: 100%;
+  flex-basis: 33%;
+  margin-right: $shimmer-block-spacing;
+  display: flex;
+  flex-direction: column;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+.shimmer-loader-cell {
+  border-radius: $shimmer-border-radius;
+  margin-bottom: $shimmer-block-spacing;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+  &.simple {
+    height: 40%;
+  }
+  &.double {
+    height: 60%;
+  }
+}
+

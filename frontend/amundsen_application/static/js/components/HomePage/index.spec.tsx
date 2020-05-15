@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { mapDispatchToProps, HomePage, HomePageProps } from '../';
+import { mapDispatchToProps, HomePage, HomePageProps } from '.';
 
 import Breadcrumb from 'components/common/Breadcrumb';
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';

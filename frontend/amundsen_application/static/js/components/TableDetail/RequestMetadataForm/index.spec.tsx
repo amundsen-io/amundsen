@@ -5,7 +5,7 @@ import FlashMessage from 'components/common/FlashMessage';
 
 import globalState from 'fixtures/globalState';
 import { NotificationType, RequestMetadataType, SendingState } from 'interfaces';
-import { RequestMetadataForm, mapDispatchToProps, mapStateToProps, RequestMetadataProps } from '../';
+import { RequestMetadataForm, mapDispatchToProps, mapStateToProps, RequestMetadataProps } from '.';
 import {
   TITLE_TEXT,
   FROM_LABEL,
@@ -21,7 +21,7 @@ import {
   SEND_FAILURE_MESSAGE,
   SEND_INPROGRESS_MESSAGE,
   SEND_SUCCESS_MESSAGE,
-} from '../constants'
+} from './constants'
 
 const mockFormData = {
   'recipients': 'test1@test.com,test2@test.com',

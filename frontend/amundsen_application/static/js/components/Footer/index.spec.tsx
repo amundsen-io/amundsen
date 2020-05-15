@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '../';
+import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '.';
 
 import globalState from 'fixtures/globalState';
 

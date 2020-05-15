@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { RequestDescriptionText, mapDispatchToProps, RequestDescriptionTextProps } from '../';
+import { RequestDescriptionText, mapDispatchToProps, RequestDescriptionTextProps } from '.';
 import globalState from 'fixtures/globalState';
-import { REQUEST_DESCRIPTION } from '../constants';
+import { REQUEST_DESCRIPTION } from './constants';
 import { RequestMetadataType } from 'interfaces';
 
 describe('RequestDescriptionText', () => {

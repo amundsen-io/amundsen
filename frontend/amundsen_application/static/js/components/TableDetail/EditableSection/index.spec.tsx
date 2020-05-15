@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { EditableSection, EditableSectionProps } from '../';
+import { EditableSection, EditableSectionProps } from '.';
 import TagInput from 'components/Tags/TagInput';
 import { ResourceType } from 'interfaces/Resources';
 
