@@ -5,11 +5,11 @@ set -ex
 # We use https://www.mkdocs.org/user-guide/deploying-your-docs/ to build/deploy docs
 # Currently the doc is built/deployed manually. We should first build and deploy locally and verify it.
 # Here are some basic steps:
-# 1. virtualenv env
+# 1. virtualenv venv
 # 2. source venv/bin/activate
 # 3. pip3 install -r requirements.txt
 # 4. brew install mkdocs
-# 5. mkdocs serve # build locally and serve it in localhost:8000
+# 5. mkdocs serve # build locally and serve it in localhost:8000 . On mac OS, you may face ImportError and you may need to downgrade openssl by $ brew switch openssl 1.0.2r
 # 6. mkdocs gh-deploy # deploy to gh page
 
 # Delete any existing temporary website clone.
