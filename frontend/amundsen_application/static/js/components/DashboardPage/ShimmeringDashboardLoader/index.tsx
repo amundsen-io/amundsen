@@ -5,16 +5,16 @@ import "./styles.scss";
 const ShimmeringDashboardLoader: React.FC = () => {
   return (<div className="shimmer-loader">
     <div className="shimmer-loader-row">
-      <div className="shimmer-loader-cell double animate" />
-      <div className="shimmer-loader-cell simple animate" />
+      <div className="shimmer-loader-cell double is-shimmer-animated" />
+      <div className="shimmer-loader-cell simple is-shimmer-animated" />
     </div>
     <div className="shimmer-loader-row">
-      <div className="shimmer-loader-cell simple animate" />
-      <div className="shimmer-loader-cell double animate" />
+      <div className="shimmer-loader-cell simple is-shimmer-animated" />
+      <div className="shimmer-loader-cell double is-shimmer-animated" />
     </div>
     <div className="shimmer-loader-row">
-      <div className="shimmer-loader-cell double animate" />
-      <div className="shimmer-loader-cell simple animate" />
+      <div className="shimmer-loader-cell double is-shimmer-animated" />
+      <div className="shimmer-loader-cell simple is-shimmer-animated" />
     </div>
   </div>);
 };

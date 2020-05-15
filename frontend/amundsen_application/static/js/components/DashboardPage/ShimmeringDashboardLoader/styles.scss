@@ -1,32 +1,37 @@
-@import 'variables';
+@import "variables";
 
 $loading-duration: 1s;
-$gradient-start-color: $gray5;
-$gradient-end-color: $gray15;
-$shimmer-border-radius: 4px;
+$loading-curve: cubic-bezier(0.45, 0, 0.15, 1);
 $shimmer-border-color: $gray20;
 $shimmer-height: 22vh;
 $shimmer-block-spacing: 16px;
 
 @keyframes shimmer {
   0% {
-    background-position: -1000px 0;
+    background-position: 100% 0;
   }
   100% {
-    background-position: 1000px 0;
+    background-position: 0 0;
   }
 }
 
-.animate {
-  animation : shimmer $loading-duration infinite;
-  background: linear-gradient(to right, $gradient-start-color 4%, $gradient-end-color 25%, $gradient-start-color 36%);
-  background-size: 1000px 100%;
+.is-shimmer-animated {
+  animation: $loading-duration shimmer $loading-curve infinite;
+  background-image: linear-gradient(
+    to right,
+    $gray10 0%,
+    $gray10 33%,
+    $gray5 50%,
+    $gray10 67%,
+    $gray10 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 300% 100%;
 }
 
 .shimmer-loader {
   width: 100%;
   border: 1px solid $shimmer-border-color;
-  border-radius: $shimmer-border-radius;
   height: $shimmer-height;
   display: flex;
   justify-content: space-around;
@@ -44,7 +49,6 @@ $shimmer-block-spacing: 16px;
   }
 }
 .shimmer-loader-cell {
-  border-radius: $shimmer-border-radius;
   margin-bottom: $shimmer-block-spacing;
 
   &:last-child {
@@ -57,4 +61,3 @@ $shimmer-block-spacing: 16px;
     height: 60%;
   }
 }
-
