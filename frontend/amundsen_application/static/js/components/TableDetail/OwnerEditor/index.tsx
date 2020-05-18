@@ -152,7 +152,7 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
           <input
             id='add-item-input'
             autoFocus={true}
-            placeholder='Enter an email address'
+            placeholder={`Please enter ${AppConfig.userIdLabel}`}
             ref={ this.inputRef }
           />
           <button className="btn btn-default add-button" type="submit" aria-label="Add Item">
