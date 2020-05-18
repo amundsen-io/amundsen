@@ -14,7 +14,7 @@ export interface AppConfig {
   google: GoogleAnalyticsConfig;
   indexDashboards: IndexDashboardsConfig;
   indexUsers: IndexUsersConfig;
-  userIdLabel: string;
+  userIdLabel?: string; /* Temporary configuration due to lacking string customization/translation support */
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   mailClientFeatures: MailClientFeaturesConfig;
@@ -32,7 +32,7 @@ export interface AppConfigCustom {
   google?: GoogleAnalyticsConfig;
   indexDashboards?: IndexDashboardsConfig;
   indexUsers?: IndexUsersConfig;
-  userIdLabel: string;
+  userIdLabel?: string; /* Temporary configuration due to lacking string customization/translation support */
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
   mailClientFeatures?: MailClientFeaturesConfig;
