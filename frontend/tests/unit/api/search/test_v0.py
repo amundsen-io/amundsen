@@ -245,6 +245,7 @@ class SearchUser(unittest.TestCase):
                 'is_active': True,
                 'last_name': 'Last',
                 'manager_email': 'manager@email.com',
+                'manager_id': None,
                 'manager_fullname': None,
                 'profile_url': '',
                 'role_name': 'SWE',
