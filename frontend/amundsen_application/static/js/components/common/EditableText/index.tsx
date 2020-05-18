@@ -10,7 +10,7 @@ import {
   REFRESH_MESSAGE,
   UPDATE_BUTTON_TEXT
 } from './constants';
-import { EditableSectionChildProps } from 'components/TableDetail/EditableSection';
+import { EditableSectionChildProps } from 'components/common/EditableSection';
 
 export interface StateFromProps {
   refreshValue?: string;

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { EditableSection, EditableSectionProps } from '.';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+
+import EditableSection, { EditableSectionProps } from '.';
 import TagInput from 'components/Tags/TagInput';
 import { ResourceType } from 'interfaces/Resources';
-
 
 describe("EditableSection", () => {
   const setup = (propOverrides?: Partial<EditableSectionProps>, children?) => {
@@ -72,13 +73,22 @@ describe("EditableSection", () => {
       expect(wrapper.childAt(1).text()).toBe(child);
     });
 
-    it("renders button when readOnly=false", () => {
-      expect(wrapper.find(".edit-button").length).toEqual(1);
+    it("renders edit button correctly when readOnly=false", () => {
+      expect(wrapper.find(".edit-button").props().onClick).toBe(wrapper.instance().toggleEdit);
     });
 
-    it("renders does not add button when readOnly=true", () => {
-      const { wrapper } = setup({readOnly: true}, <TagInput resourceType={ResourceType.table} uriKey={"key"}/>);
-      expect(wrapper.find(".edit-button").length).toEqual(0);
+    describe("renders edit link correctly when readOnly=true", () => {
+      let props;
+      let wrapper;
+      beforeAll(() => {
+        const setupResult = setup({ readOnly: true, editUrl: 'test', editText: 'hello' }, <div/>);
+        props = setupResult.props;
+        wrapper = setupResult.wrapper;
+      });
+
+      it("link links to editUrl", () => {
+        expect(wrapper.find(".edit-button").props().href).toBe(props.editUrl);
+      });
     });
   });
 });

@@ -87,7 +87,7 @@
     background-color: transparent;
     color: $text-secondary;
     box-shadow: none !important;
-    padding: 0px;
+    padding: 0;
     text-align: left;
 
     &:focus,
@@ -98,6 +98,26 @@
 
       .icon {
         background-color: $brand-color-4;
+      }
+    }
+  }
+
+  &.btn-flat-icon-dark {
+    border: none;
+    background-color: transparent;
+    color: $text-secondary;
+    box-shadow: none !important;
+    padding: 0;
+    text-align: left;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: transparent;
+      color: $text-primary;
+
+      .icon {
+        background-color: $text-primary;
       }
     }
   }
