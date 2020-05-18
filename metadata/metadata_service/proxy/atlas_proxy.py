@@ -1,7 +1,7 @@
 import logging
 import re
 from random import randint
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Statistics, Table, Tag, User
@@ -378,7 +378,7 @@ class AtlasProxy(BaseProxy):
                 description=attrs.get('description') or attrs.get('comment'),
                 owners=[User(email=attrs.get('owner'))],
                 columns=columns,
-                last_updated_timestamp=table_details.get('updateTime'))
+                last_updated_timestamp=self._parse_date(table_details.get('updateTime')))
 
             return table
         except KeyError as ex:
@@ -632,6 +632,17 @@ class AtlasProxy(BaseProxy):
         entity = self._get_bookmark_entity(entity_uri=table_uri, user_id=user_email)
         entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = False
         entity.update()
+
+    def _parse_date(self, date: int) -> Optional[int]:
+        try:
+            date_str = str(date)
+            date_trimmed = date_str[:10]
+
+            assert len(date_trimmed) == 10
+
+            return int(date_trimmed)
+        except Exception:
+            return None
 
     def get_dashboard(self,
                       dashboard_uri: str,
