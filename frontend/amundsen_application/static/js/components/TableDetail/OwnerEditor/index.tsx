@@ -16,7 +16,7 @@ const DEFAULT_ERROR_TEXT = 'There was a problem with the request, please reload 
 
 import { GlobalState } from 'ducks/rootReducer';
 import { updateTableOwner } from 'ducks/tableMetadata/owners/reducer';
-import { EditableSectionChildProps } from 'components/TableDetail/EditableSection';
+import { EditableSectionChildProps } from 'components/common/EditableSection';
 import { logClick } from 'ducks/utilMethods';
 
 export interface DispatchFromProps {

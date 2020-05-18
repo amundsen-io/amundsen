@@ -12,7 +12,7 @@ import { logClick } from 'ducks/utilMethods';
 import { RequestMetadataType, TableColumn } from 'interfaces';
 
 import './styles.scss';
-import { EditableSection } from 'components/TableDetail/EditableSection';
+import EditableSection from 'components/common/EditableSection';
 
 interface DispatchFromProps {
   openRequestDescriptionDialog: (requestMetadataType: RequestMetadataType, columnName: string) => OpenRequestAction;

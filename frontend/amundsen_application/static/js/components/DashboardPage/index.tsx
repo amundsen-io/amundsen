@@ -9,6 +9,7 @@ import AvatarLabel from 'components/common/AvatarLabel';
 import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Flag from 'components/common/Flag';
+import EditableSection from 'components/common/EditableSection';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import TabsComponent from 'components/common/TabsComponent';
 import { getDashboard } from 'ducks/dashboard/reducer';
@@ -23,6 +24,7 @@ import { formatDateTimeShort } from '../../utils/dateUtils';
 import ResourceList from 'components/common/ResourceList';
 import {
   ADD_DESC_TEXT,
+  EDIT_DESC_TEXT,
   DASHBOARD_OWNER_SOURCE,
   DASHBOARD_SOURCE,
   LAST_RUN_SUCCEEDED,
@@ -30,7 +32,6 @@ import {
   TABLES_PER_PAGE
 } from 'components/DashboardPage/constants';
 import TagInput from 'components/Tags/TagInput';
-import { EditableSection } from 'components/TableDetail/EditableSection';
 import { ResourceType } from 'interfaces';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
@@ -158,7 +159,11 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
               <a id="dashboard-group-link"
                  onClick={ logClick }
                  href={ dashboard.group_url }
-                 target="_blank">{ dashboard.group_name }</a>
+                 target="_blank"
+                 rel="noopener noreferrer"
+              >
+                 { dashboard.group_name }
+              </a>
             </div>
           </div>
           {/* <div className="header-section header-links">links here</div> */}
@@ -167,28 +172,39 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                target="_blank"
                href={ dashboard.url }
                onClick={ logClick }
-               className="btn btn-default btn-lg">Open Dashboard</a>
+               className="btn btn-default btn-lg"
+               rel="noopener noreferrer"
+            >
+              Open Dashboard
+            </a>
           </div>
         </header>
         <article className="column-layout-1">
           <section className="left-panel">
-            <div className="section-title title-3">Description</div>
-            {
-              hasDescription &&
-              <div>
-                { dashboard.description }
-              </div>
-            }
-            {
-              !hasDescription &&
-              <a
-               className="edit-link body-2"
-               target="_blank"
-               href={ dashboard.url }
-              >
-               {`${ADD_DESC_TEXT} ${getSourceDisplayName(dashboard.product, ResourceType.dashboard)}`}
-              </a>
-            }
+            <EditableSection
+              title="Description"
+              readOnly={ true }
+              editUrl={ dashboard.url }
+              editText={`${EDIT_DESC_TEXT} ${getSourceDisplayName(dashboard.product, ResourceType.dashboard)}`}
+            >
+              {
+                hasDescription &&
+                <div>
+                  { dashboard.description }
+                </div>
+              }
+              {
+                !hasDescription &&
+                <a
+                 className="edit-link body-2"
+                 target="_blank"
+                 href={ dashboard.url }
+                 rel="noopener noreferrer"
+                >
+                 {`${ADD_DESC_TEXT} ${getSourceDisplayName(dashboard.product, ResourceType.dashboard)}`}
+                </a>
+              }
+            </EditableSection>
             <section className="column-layout-2">
               <section className="left-panel">
                 <div className="section-title title-3">Owners</div>

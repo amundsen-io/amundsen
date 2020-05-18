@@ -30,7 +30,7 @@ import WriterLink from 'components/TableDetail/WriterLink';
 import TagInput from 'components/Tags/TagInput';
 import { ResourceType, TableMetadata} from 'interfaces';
 
-import { EditableSection } from 'components/TableDetail/EditableSection';
+import EditableSection from 'components/common/EditableSection';
 
 import { getSourceIconClass, issueTrackingEnabled, notificationsEnabled } from 'config/config-utils';
 

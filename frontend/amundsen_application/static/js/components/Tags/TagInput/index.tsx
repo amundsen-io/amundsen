@@ -10,7 +10,7 @@ import { getAllTags, updateTags} from 'ducks/tags/reducer';
 import { GetAllTagsRequest, UpdateTagsRequest} from 'ducks/tags/types';
 
 import TagInfo from "../TagInfo";
-import { EditableSectionChildProps } from 'components/TableDetail/EditableSection';
+import { EditableSectionChildProps } from 'components/common/EditableSection';
 import { ResourceType, Tag, UpdateMethod, UpdateTagData } from 'interfaces';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
