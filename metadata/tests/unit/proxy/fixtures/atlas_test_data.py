@@ -74,7 +74,7 @@ class Data:
 
     db_entity = {
         'guid': '-100',
-        'updateTime': 234,
+        'updateTime': 2345678901234,
         'typeName': entity_type,
         'attributes': {
             'qualifiedName': db,
@@ -87,7 +87,7 @@ class Data:
     entity1 = {
         'guid': '1',
         'typeName': entity_type,
-        'updateTime': 123,
+        'updateTime': 1234567890123,
         'attributes': {
             'qualifiedName': '{}.{}@{}'.format(db, 'Table1', cluster),
             'name': 'Table1',
