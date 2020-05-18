@@ -12,12 +12,12 @@ import { UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-const DEFAULT_ERROR_TEXT = 'There was a problem with the request, please reload the page.';
-
 import { GlobalState } from 'ducks/rootReducer';
 import { updateTableOwner } from 'ducks/tableMetadata/owners/reducer';
 import { EditableSectionChildProps } from 'components/common/EditableSection';
 import { logClick } from 'ducks/utilMethods';
+
+import * as Constants from './constants';
 
 export interface DispatchFromProps {
   onUpdateList: (updateArray: UpdateOwnerPayload[], onSuccess?: () => any, onFailure?: () => any) => void;
@@ -102,7 +102,7 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
       this.props.setEditMode(false);
     };
     const onFailureCallback = () => {
-      this.setState({ errorText: DEFAULT_ERROR_TEXT, readOnly: true });
+      this.setState({ errorText: Constants.DEFAULT_ERROR_TEXT, readOnly: true });
       this.props.setEditMode(false);
     };
     this.props.onUpdateList(updateArray, onSuccessCallback, onFailureCallback);
@@ -152,7 +152,7 @@ export class OwnerEditor extends React.Component<OwnerEditorProps, OwnerEditorSt
           <input
             id='add-item-input'
             autoFocus={true}
-            placeholder={`Please enter ${AppConfig.userIdLabel}`}
+            placeholder={`Please enter ${AppConfig.userIdLabel || Constants.USERID_LABEL}`}
             ref={ this.inputRef }
           />
           <button className="btn btn-default add-button" type="submit" aria-label="Add Item">
