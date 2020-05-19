@@ -2,7 +2,7 @@
 name: Feature Request
 about: Create a feature request
 title: Feature Proposal
-labels: enhancement
+labels: feature proposal
 assignees: ''
 
 ---
@@ -10,11 +10,11 @@ assignees: ''
 <!--- Provide a general summary of the feature request or improvement in the Title above -->
 <!--- Look through existing open and closed feature proposals to see if someone has asked for the feature before -->
 
-## Expected Behavior
+## Expected Behavior or Use Case
 <!--- Tell us how it should work -->
 
-## Difference from Current Behavior
-<!--- Explain the difference from current behavior -->
+## Service or Ingestion ETL
+<!--- Tell us to which service or component this request is related to -->
 
 ## Possible Implementation
 <!--- Not obligatory, suggest ideas of how to implement the addition or change -->

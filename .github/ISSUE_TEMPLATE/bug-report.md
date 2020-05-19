@@ -36,6 +36,6 @@ assignees: ''
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
 * Amunsen version used:
-* Browser Name and version:
-* Operating System and version:
-* Link to your project:
+* Data warehouse stores:
+* Deployment (k8s or native):
+* Link to your fork or repository:

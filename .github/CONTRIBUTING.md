@@ -13,6 +13,14 @@ If this is your first contribution to open source, you can [follow this tutorial
 
 We always have tickets labeled ['good first issue'][goodFirstIssues] and ['help wanted'][helpWantedIssues]. These are a great starting point if you want to contribute. Don't hesitate to ask questions about the issue if you are not sure about the strategy to follow.
 
+## Requesting a Feature
+We have created a [Roadmap][roadmap] document with our plans for next releases, however, we are open to hear your ideas for new features! 
+
+For that, you can create an issue and select the "Feature Proposal" template. Fill in as much information as possible, and if you can, add responses to the following questions:
+- We'll need to add a new model or change any existing model?
+- What would the Migration Plan look like? Will it be backwards-compatible?
+- Which alternatives did you consider?
+
 ## Setup
 To start contributing to Amundsen, you need to set up your machine to develop with the project. For that, we have prepareda a [Developer Guide][developerGuide] that will guide you to set up your environment to develop locally with Amundsen.
 
