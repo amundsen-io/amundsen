@@ -8,9 +8,9 @@
     padding: 8px;
     display: flex;
     flex-direction: row;
-    border-top: 2px solid $gray10;
-    border-bottom: 2px solid $gray10;
-    color: $gray60;
+    border-top: 1px solid $stroke-light;
+    border-bottom: 1px solid $stroke-light;
+    color: $text-secondary;
   }
   .table-issue-link {
     margin-right: $spacer-1;
