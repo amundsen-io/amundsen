@@ -72,19 +72,35 @@ Please visit the Amundsen installation documentation for a [quick start](https:/
 
 Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
 
-## Supported connectors
-Amundsen supports two kinds of "nodes" in its graph today:
+## Supported Entities
 - Tables (from Databases)
 - People (from HR systems)
 - Dashboards
 
-Amundsen can connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
-The databases we see most frequently used in the community are:
-- Hive and anything that works with Hive metastore (Spark SQL, Presto, Athena, etc.)
-- BigQuery
-- PostgreSQL and anything that uses the same interface (Redshift)
-- Snowflake
+## Supported Connectors
+
+### Table connectors
+- Amazon Athena
 - Amazon Glue and anything built over it (like Databricks Delta - which is a work in progress).
+- Amazon Redshift
+- Cassandra
+- CSV
+- DB2 by IBM
+- Druid
+- Google BigQuery
+- Hive
+- Microsoft SQL Server
+- MySQL
+- Oracle (through dbapi or sql_alchemy)
+- PostgreSQL
+- Presto
+- Snowflake
+
+Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
+
+### Dashboard connectors
+- Mode Analytics
+
 
 ## Installation
 
@@ -131,12 +147,13 @@ Community meetings are held on the first Thursday of every month at 9 AM Pacific
 - 2020/06/04 at 9 AM Pacific. [Notes](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis)
 
 ### Past meetings
-All notes [here](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis).
 - [2020/05/07](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis) {[recording](https://youtu.be/gs9KYxMjmGk)}
 - [2020/01/23](https://docs.google.com/document/d/1MT3qd_YjFiA17en94IEZcWaEgjdcaLhhZb-mX1UyWF8/edit#) {[recording](https://www.youtube.com/watch?v=HV6ChWv4-ZQ)}
 - [2019/11/05](https://docs.google.com/document/d/11CLWhyNHlNoOxs6Ee29UJz0m8yI3Xiw4tUNTFGx_vy4/edit#heading=h.8d2zgr1chrra)
 - [2019/09/05](https://docs.google.com/document/d/1l2yIpoMmTGY022yuDHWWkSJVSuK25dYlwX0GWff6eQg/edit#)
 - [2019/07/30](https://docs.google.com/document/d/1JzoLlXUGrwnGirlGUmNCHFhzMXYcR2KrUokLsRHKacs/edit#heading=h.3nxnevt7nz9)
+
+All notes [here](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis).
 
 ## Who uses Amundsen?
 
