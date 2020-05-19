@@ -1,0 +1,30 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "feng-tao",
+      "name": "Tao Feng",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3223098?v=4",
+      "profile": "https://www.linkedin.com/in/tao-f-17195814/",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "example",
+        "maintenance",
+        "review",
+        "test"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "amundsen",
+  "projectOwner": "lyft",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
