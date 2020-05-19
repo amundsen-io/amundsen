@@ -1,25 +1,32 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-{% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
-{% include 'fragments/google-analytics-loader.html' %}
-{% endif %}
+    {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
+      {% include 'fragments/google-analytics-loader.html' %}
+    {% endif %}
+
     <meta charset="utf-8">
     <title>Amundsen - Data Discovery Portal</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="/static/images/favicon.png">
+
+    {% if env == "development" %}
+      {% include 'fragments/icons-dev.html' %}
+    {% elif env == "staging" %}
+      {% include 'fragments/icons-staging.html' %}
+    {% else %}
+      {% include 'fragments/icons-prod.html' %}
+    {% endif %}
 
     <link href="/static/dist/main.css" type="text/css" rel="stylesheet"/>
-
-    <meta name="theme-color" content="#2B1B81">
   </head>
-  <body>
+  <body class="{{ env }}">
     <div id="content"/>
     <script src="/static/dist/vendors.js" type="text/javascript"></script>
     <script src="/static/dist/main.js" type="text/javascript"></script>
   </body>
-{% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
-{% include 'fragments/google-analytics-post-loader.html' %}
-{% endif %}
+
+  {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
+    {% include 'fragments/google-analytics-post-loader.html' %}
+  {% endif %}
 </html>
