@@ -17,6 +17,10 @@
 5. It has support for push based due to its many plugins
 6. The free version of Neo4j does not have authorization support(Enterprise version does). Your question should actually be why use "neo4j over janusgraph" cause that is the right level of comparison. Atlas adds a whole bunch on top of the graph database.
 
+##  What are the prerequisites to use Apache Atlas as backend for Amundsen?
+To run Amundsen with Atlas, latest versions of following components should be used:
+1. [Apache Atlas](https://github.com/apache/atlas/) - built from `master` branch. Ref [`103e867cc126ddb84e64bf262791a01a55bee6e5`](https://github.com/apache/atlas/commit/103e867cc126ddb84e64bf262791a01a55bee6e5) (or higher).
+2. [amundsenatlastypes](https://pypi.org/project/amundsenatlastypes/) - library for installing Atlas entity definitions specific to Amundsen integration. Version `1.1.0` (or higher).
 
 ## How to migrate from Amundsen 1.x -> 2.x?
 
