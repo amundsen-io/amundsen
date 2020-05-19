@@ -3,13 +3,14 @@
 .table-issues {
 
   .issue-banner {
-    border-radius: 4px;
-    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.12), 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
     height: 40px;
     margin: 8px 0;
-    padding: 8px 16px;
+    padding: 8px;
     display: flex;
     flex-direction: row;
+    border-top: 2px solid $gray10;
+    border-bottom: 2px solid $gray10;
+    color: $gray60;
   }
   .table-issue-link {
     margin-right: $spacer-1;
