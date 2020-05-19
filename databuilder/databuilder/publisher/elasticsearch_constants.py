@@ -16,6 +16,7 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
             "name": {
               "type":"text",
               "analyzer": "simple",
+              "search_analyzer": "whitespace",
               "fields": {
                 "raw": {
                   "type": "keyword"
@@ -25,6 +26,7 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
             "schema": {
               "type":"text",
               "analyzer": "simple",
+              "search_analyzer": "whitespace",
               "fields": {
                 "raw": {
                   "type": "keyword"
@@ -40,11 +42,12 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
             },
             "description": {
               "type": "text",
-              "analyzer": "simple"
+              "analyzer": "simple",
+              "search_analyzer": "whitespace",
             },
             "column_names": {
               "type":"text",
-              "analyzer": "simple",
+              "analyzer": "whitespace",
               "fields": {
                 "raw": {
                   "type": "keyword"
@@ -53,7 +56,8 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
             },
             "column_descriptions": {
               "type": "text",
-              "analyzer": "simple"
+              "analyzer": "simple",
+              "search_analyzer": "whitespace",
             },
             "tags": {
               "type": "keyword"
@@ -66,7 +70,7 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
             },
             "database": {
               "type": "text",
-              "analyzer": "simple",
+              "analyzer": "whitespace",
               "fields": {
                 "raw": {
                   "type": "keyword"
