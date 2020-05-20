@@ -1,3 +1,5 @@
+import "core-js/stable";
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ReduxPromise from 'redux-promise';

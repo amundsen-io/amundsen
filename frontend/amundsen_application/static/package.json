@@ -27,10 +27,24 @@
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
-    "@babel/polyfill": "^7.8.7",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-do-expressions": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-bind": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.0.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.9.4",
-    "@babel/preset-stage-0": "^7.8.3",
     "@types/enzyme": "^3.10.5",
     "@types/jasmine-matchers": "^0.2.32",
     "@types/jest": "^24.9.1",
@@ -41,9 +55,8 @@
     "@types/webpack": "^4.41.12",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.1.0",
-    "babel-preset-es2015": "^6.24.1",
     "bootstrap-sass": "^3.4.1",
-    "clean-webpack-plugin": "^0.1.19",
+    "clean-webpack-plugin": "3.0.0",
     "cross-env": "^5.2.1",
     "css-loader": "^3.5.3",
     "enzyme": "^3.11.0",
@@ -58,6 +71,7 @@
     "jest": "^25.5.4",
     "jest-css-modules": "^2.1.0",
     "mini-css-extract-plugin": "^0.4.5",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "node-sass": "^4.14.1",
     "postcss": "^7.0.30",
     "prettier": "^1.19.1",
@@ -78,6 +92,7 @@
     "tslint-react": "^3.6.0",
     "typescript": "^3.9.2",
     "webpack": "^4.43.0",
+    "webpack-bundle-analyzer": "^3.8.0",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
     "webpack-sources": "^1.4.3",
@@ -86,6 +101,7 @@
   "dependencies": {
     "autosize": "^4.0.2",
     "axios": "0.19.0",
+    "core-js": "^3.6.5",
     "form-serialize": "^0.7.2",
     "jquery": "^3.5.0",
     "moment-timezone": "^0.5.28",
@@ -110,6 +126,51 @@
   },
   "optionalDependencies": {
     "fsevents": "*"
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
+  "babel": {
+    "presets": [
+      "@babel/preset-react",
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage",
+          "corejs": 3,
+          "debug": true
+        }
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-syntax-dynamic-import",
+      "@babel/plugin-syntax-import-meta",
+      "@babel/plugin-proposal-class-properties",
+      "@babel/plugin-proposal-json-strings",
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      "@babel/plugin-proposal-function-sent",
+      "@babel/plugin-proposal-export-namespace-from",
+      "@babel/plugin-proposal-numeric-separator",
+      "@babel/plugin-proposal-throw-expressions",
+      "@babel/plugin-proposal-export-default-from",
+      "@babel/plugin-proposal-logical-assignment-operators",
+      "@babel/plugin-proposal-optional-chaining",
+      [
+        "@babel/plugin-proposal-pipeline-operator",
+        {
+          "proposal": "minimal"
+        }
+      ],
+      "@babel/plugin-proposal-nullish-coalescing-operator",
+      "@babel/plugin-proposal-do-expressions",
+      "@babel/plugin-proposal-function-bind"
+    ]
   },
   "jest": {
     "moduleFileExtensions": [
