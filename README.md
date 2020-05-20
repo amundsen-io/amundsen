@@ -77,9 +77,9 @@ Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/ar
 - People (from HR systems)
 - Dashboards
 
-## Supported Connectors
+## Supported Integrations
 
-### Table connectors
+### Table Connectors
 - [Amazon Athena](https://aws.amazon.com/athena/)
 - [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it (like Databricks Delta - which is a work in progress).
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
@@ -98,11 +98,14 @@ Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/ar
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 
-### Dashboard connectors
+### Dashboard Connectors
 - [Mode Analytics](https://mode.com/)
 
-### ETL Orchestration integrations
+### ETL Orchestration Integrations
 - [Apache Airflow](https://airflow.apache.org/)
+
+### BI Viz Tool Integrations
+- [Apache Superset](https://superset.incubator.apache.org/)
 
 
 ## Installation
