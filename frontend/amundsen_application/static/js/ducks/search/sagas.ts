@@ -1,6 +1,6 @@
 import { SagaIterator } from 'redux-saga';
 import { all, call, debounce, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
-import * as _ from 'lodash';
+import * as isEqual from 'lodash/isEqual'
 import * as qs from 'simple-query-string';
 
 import { ResourceType, SearchType } from 'interfaces';
@@ -140,7 +140,7 @@ export function* urlDidUpdateWorker(action: UrlDidUpdateRequest): SagaIterator {
       yield put(updateSearchState({ resource }))
     }
 
-    if (parsedFilters && !_.isEqual(state.filters[resource], parsedFilters)) {
+    if (parsedFilters && !isEqual(state.filters[resource], parsedFilters)) {
       yield put(submitSearchResource({
         resource,
         searchTerm: term,

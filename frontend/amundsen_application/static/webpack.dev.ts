@@ -1,4 +1,10 @@
 import merge from 'webpack-merge';
-import commonConfig from './webpack.common'
+import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 
-export default merge(commonConfig, {});
+import commonConfig from './webpack.common';
+
+export default merge(commonConfig, {
+  plugins: [
+    // new BundleAnalyzerPlugin()     // Uncomment to check the bundle size on dev
+  ],
+});
