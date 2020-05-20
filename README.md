@@ -77,29 +77,35 @@ Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/ar
 - People (from HR systems)
 - Dashboards
 
-## Supported Connectors
+## Supported Integrations
 
-### Table connectors
-- Amazon Athena
-- Amazon Glue and anything built over it (like Databricks Delta - which is a work in progress).
-- Amazon Redshift
-- Cassandra
+### Table Connectors
+- [Amazon Athena](https://aws.amazon.com/athena/)
+- [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it (like Databricks Delta - which is a work in progress).
+- [Amazon Redshift](https://aws.amazon.com/redshift/)
+- [Apache Cassandra](https://cassandra.apache.org/)
+- [Apache Druid](https://druid.apache.org/)
+- [Apache Hive](https://hive.apache.org/)
 - CSV
-- DB2 by IBM
-- Druid
-- Google BigQuery
-- Hive
-- Microsoft SQL Server
-- MySQL
-- Oracle (through dbapi or sql_alchemy)
-- PostgreSQL
-- Presto
-- Snowflake
+- [Google BigQuery](https://cloud.google.com/bigquery)
+- [IBM DB2](https://www.ibm.com/analytics/db2)
+- [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
+- [MySQL](https://www.mysql.com/)
+- [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Presto](https://prestosql.io/)
+- [Snowflake](https://www.snowflake.com/)
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 
-### Dashboard connectors
-- Mode Analytics
+### Dashboard Connectors
+- [Mode Analytics](https://mode.com/)
+
+### ETL Orchestration Integrations
+- [Apache Airflow](https://airflow.apache.org/)
+
+### BI Viz Tool Integrations
+- [Apache Superset](https://superset.incubator.apache.org/)
 
 
 ## Installation
