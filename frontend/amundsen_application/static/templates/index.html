@@ -18,12 +18,11 @@
       {% include 'fragments/icons-prod.html' %}
     {% endif %}
 
-    <link href="/static/dist/main.css" type="text/css" rel="stylesheet"/>
+    <%= htmlWebpackPlugin.tags.headTags %>
   </head>
   <body class="{{ env }}">
     <div id="content"/>
-    <script src="/static/dist/vendors.js" type="text/javascript"></script>
-    <script src="/static/dist/main.js" type="text/javascript"></script>
+    <%= htmlWebpackPlugin.tags.bodyTags %>
   </body>
 
   {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
