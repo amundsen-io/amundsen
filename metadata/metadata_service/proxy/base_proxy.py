@@ -128,3 +128,9 @@ class BaseProxy(metaclass=ABCMeta):
                                   id: str,
                                   description: str) -> None:
         pass
+
+    @abstractmethod
+    def get_resources_using_table(self, *,
+                                  id: str,
+                                  resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
+        pass
