@@ -4,5 +4,11 @@
       "pattern": "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|other)((.+))?:\\s.+",
       "message": "Your title needs to be prefixed with a topic."
     }
-  ]
+  ],
+  "body": [
+        {
+            "pattern": ".{1,}",
+            "message": "You need to have some content in the description."
+        }
+    ],
 }
