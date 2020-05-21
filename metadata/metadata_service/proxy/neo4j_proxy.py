@@ -1177,3 +1177,46 @@ class Neo4jProxy(BaseProxy):
         self._put_resource_description(resource_type=ResourceType.Dashboard,
                                        uri=id,
                                        description=description)
+
+    @timer_with_counter
+    def get_resources_using_table(self, *,
+                                  id: str,
+                                  resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
+        """
+
+        :param id:
+        :param resource_type:
+        :return:
+        """
+        if resource_type != ResourceType.Dashboard:
+            raise NotImplementedError('{} is not supported'.format(resource_type))
+
+        get_dashboards_using_table_query = textwrap.dedent(u"""
+        MATCH (d:Dashboard)-[:DASHBOARD_WITH_TABLE]->(table:Table {key: $query_key}),
+        (d)-[:DASHBOARD_OF]->(dg:Dashboardgroup)-[:DASHBOARD_GROUP_OF]->(c:Cluster)
+        OPTIONAL MATCH (d)-[:DESCRIPTION]->(description:Description)
+        OPTIONAL MATCH (d)-[:EXECUTED]->(last_success_exec:Execution)
+        WHERE split(last_success_exec.key, '/')[5] = '_last_successful_execution'
+        OPTIONAL MATCH (d)-[read:READ_BY]->(:User)
+        WITH c, dg, d, description, last_success_exec, sum(read.read_count) as recent_view_count
+        RETURN
+        d.key as uri,
+        c.name as cluster,
+        dg.name as group_name,
+        dg.dashboard_group_url as group_url,
+        d.name as name,
+        d.dashboard_url as url,
+        description.description as description,
+        split(d.key, '_')[0] as product,
+        toInteger(last_success_exec.timestamp) as last_successful_run_timestamp
+        ORDER BY recent_view_count DESC;
+        """)
+
+        records = self._execute_cypher_query(statement=get_dashboards_using_table_query,
+                                             param_dict={'query_key': id})
+
+        results = []
+
+        for record in records:
+            results.append(DashboardSummary(**record))
+        return {'dashboards': results}

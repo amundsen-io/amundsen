@@ -20,11 +20,15 @@ class BaseAPI(Resource):
         """
         Gets a single or multiple objects
         """
+        return self.get_with_kwargs(id=id)
+
+    def get_with_kwargs(self, *, id: Optional[str] = None, **kwargs: Optional[Any]) \
+            -> Iterable[Union[Mapping, int, None]]:
         if id is not None:
             get_object = getattr(self.client, f'get_{self.str_type}')
             try:
                 actual_id: Union[str, int] = int(id) if id.isdigit() else id
-                object = get_object(id=actual_id)
+                object = get_object(id=actual_id, **kwargs)
                 if object is not None:
                     return self.schema().dump(object).data, HTTPStatus.OK
                 return None, HTTPStatus.NOT_FOUND
