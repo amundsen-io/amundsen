@@ -1,14 +1,14 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Amundsen Dev",
+    "short_name": "Amundsen Dev",
     "icons": [
         {
-            "src": "/static/images/favicons/staging/android-chrome-192x192.png",
+            "src": "/static/images/favicons/dev/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/static/images/favicons/staging/android-chrome-256x256.png",
+            "src": "/static/images/favicons/dev/android-chrome-256x256.png",
             "sizes": "256x256",
             "type": "image/png"
         }
