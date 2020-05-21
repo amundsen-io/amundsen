@@ -2,7 +2,7 @@
   "title": [
     {
       "pattern": "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|other)((.+))?:\\s.+",
-      "message": "Your title needs to be prefixed with a topic. Available topic includes build/ci/docs/feat/fix/perf/refactor/style/test/chore/other."
+      "message": "Your title needs to be prefixed with a topic."
     }
   ]
 }
