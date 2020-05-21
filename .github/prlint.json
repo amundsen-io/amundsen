@@ -10,5 +10,5 @@
             "pattern": ".{1,}",
             "message": "You need to have some content in the description."
         }
-    ],
+  ]
 }
