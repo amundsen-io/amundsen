@@ -1,10 +1,11 @@
-import * as React from 'react';
-import Linkify from 'react-linkify'
+import * as React from "react";
+import Linkify from "react-linkify";
+import { Modal } from "react-bootstrap";
 
-import ShimmeringDashboardLoader from '../ShimmeringDashboardLoader';
+import ShimmeringDashboardLoader from "../ShimmeringDashboardLoader";
 
-import * as Constants from './constants';
-import './styles.scss';
+import * as Constants from "./constants";
+import "./styles.scss";
 
 export interface ImagePreviewProps {
   uri: string;
@@ -14,17 +15,43 @@ export interface ImagePreviewProps {
 interface ImagePreviewState {
   isLoading: boolean;
   hasError: boolean;
+  isModalVisible: boolean;
 }
 
-export class ImagePreview extends React.Component<ImagePreviewProps, ImagePreviewState> {
-  constructor(props) {
-    super(props);
+type PreviewModalProps = {
+  imageSrc: string,
+  onClose: () => void,
+}
 
-    this.state = {
-      isLoading: true,
-      hasError: false,
-    }
-  }
+const PreviewModal = ({ imageSrc, onClose }: PreviewModalProps) => {
+  const [show, setShow] = React.useState(true);
+  const handleClose = () => {
+    setShow(false);
+    onClose();
+  };
+
+  return (
+    <Modal show={show} onHide={handleClose} scrollable="true" className="dashboard-preview-modal">
+      <Modal.Header closeButton={true}>
+        <Modal.Title className="text-center">Constants.DASHBOARD_PREVIEW_MODAL_TITLE</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <img
+          src={imageSrc}
+          height="auto"
+          width="100%"
+        />
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export class ImagePreview extends React.Component< ImagePreviewProps, ImagePreviewState > {
+  state = {
+    isLoading: true,
+    hasError: false,
+    isModalVisible: false,
+  };
 
   onSuccess = () => {
     this.setState({ isLoading: false, hasError: false });
@@ -34,36 +61,56 @@ export class ImagePreview extends React.Component<ImagePreviewProps, ImagePrevie
     this.setState({ isLoading: false, hasError: true });
   }
 
-  render = () =>  {
+  handlePreviewButton = () => {
+    this.setState({ isModalVisible: true });
+  }
+
+  handlePreviewModalClose = () => {
+    this.setState({ isModalVisible: false });
+  }
+
+  render = () => {
     const { uri, redirectUrl } = this.props;
+    const { isLoading, hasError, isModalVisible } = this.state;
+    const imageSrc = `${Constants.PREVIEW_BASE}/${uri}/${Constants.PREVIEW_END}`;
+
     return (
-      <div className='image-preview'>
-        {
-          this.state.isLoading &&
-          <div className="text-placeholder">
-            <ShimmeringDashboardLoader />
-          </div>
-        }
-        {
-          !this.state.hasError &&
-          <img
-            className='preview'
-            style={this.state.isLoading ? { visibility: 'hidden' } : { visibility: 'visible' }}
-            src={`${Constants.PREVIEW_BASE}/${this.props.uri}/${Constants.PREVIEW_END}`}
-            onLoad={this.onSuccess}
-            onError={this.onError}
-            height="auto"
-            width="100%"
+      <div className="image-preview">
+        {isLoading && (
+          <ShimmeringDashboardLoader />
+        )}
+        {!hasError && (
+          <button className="preview-button" type="button" onClick={this.handlePreviewButton}>
+            <img
+              className="preview"
+              style={
+                isLoading
+                  ? { visibility: "hidden" }
+                  : { visibility: "visible" }
+              }
+              src={imageSrc}
+              onLoad={this.onSuccess}
+              onError={this.onError}
+              height="auto"
+              width="100%"
+            />
+          </button>
+        )}
+        {hasError && (
+          <Linkify
+            className="body-placeholder"
+            properties={{ target: "_blank", rel: "noopener noreferrer" }}
+          >{`${Constants.ERROR_MESSAGE} ${redirectUrl}`}</Linkify>
+        )}
+        {isModalVisible && (
+          <PreviewModal
+            imageSrc={imageSrc}
+            onClose={this.handlePreviewModalClose}
           />
-        }
-        {
-          this.state.hasError &&
-          <Linkify className='body-placeholder' properties={{ target: '_blank', rel:'noopener noreferrer' }}  >{`${Constants.ERROR_MESSAGE} ${redirectUrl}`}</Linkify>
-        }
+        )}
       </div>
     );
-  }
+  };
 }
 
 export default ImagePreview;
-

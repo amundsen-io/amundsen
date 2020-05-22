@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-
 import EditableSection, { EditableSectionProps } from '.';
 import TagInput from 'components/Tags/TagInput';
 import { ResourceType } from 'interfaces/Resources';

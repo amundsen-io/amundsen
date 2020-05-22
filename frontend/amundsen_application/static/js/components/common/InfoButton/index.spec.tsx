@@ -4,7 +4,7 @@ import SanitizedHTML from 'react-sanitized-html';
 import { shallow } from 'enzyme';
 
 import { OverlayTrigger, Popover } from 'react-bootstrap';
-import InfoButton, { InfoButtonProps } from '../';
+import InfoButton, { InfoButtonProps } from '.';
 
 describe('InfoButton', () => {
     let props: InfoButtonProps;

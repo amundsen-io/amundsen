@@ -1,5 +1,17 @@
 @import 'variables';
 
+$max-modal-height: 87vh;
+
+.preview-button {
+  border: none;
+  padding: 0;
+
+  &:hover img.preview {
+    cursor: zoom-in;
+    border: 1px solid $gray50;
+  }
+}
+
 .image-preview {
   text-align: center;
   .loading-spinner {
@@ -13,4 +25,8 @@
   img.preview {
     border: 1px solid $stroke;
   }
+}
+
+.dashboard-preview-modal .modal-body{
+  max-height: $max-modal-height;
 }
