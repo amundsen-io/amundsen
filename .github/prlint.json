@@ -6,9 +6,9 @@
     }
   ],
   "body": [
-        {
-            "pattern": ".{1,}",
-            "message": "You need to have some content in the description."
-        }
+    {
+      "pattern": ".{1,}",
+      "message": "You need literally some contents in your description"
+    }
   ]
 }
