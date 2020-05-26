@@ -8,7 +8,9 @@
 
 <p align="center">
   <img src="https://img.shields.io/:license-Apache%202-blue.svg" />
-  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
+  <a href="https://github.com/lyft/amundsen/blob/master/.github/CONTRIBUTING.md">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
+  </a>
   <img src="https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg" />
   <a href="https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk">
     <img src="https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social" alt="Slack" />
@@ -62,7 +64,7 @@ Please note that the mock images only served as demonstration purpose.
 ## Get Involved in the Community
 
 Want help or want to help?
-Use the button in our [header](https://github.com/lyft/amundsen#readme) to join our slack channel.
+Use the button in our [header](https://github.com/lyft/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/lyft/amundsen/blob/master/.github/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward.
 
 ## Getting Started
 
