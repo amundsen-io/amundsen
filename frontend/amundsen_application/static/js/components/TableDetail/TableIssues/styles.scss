@@ -1,16 +1,23 @@
 @import 'variables';
 
 .table-issues {
+  margin-bottom: $spacer-1;
 
   .issue-banner {
     height: 40px;
-    margin: 8px 0;
-    padding: 8px;
+    padding: $spacer-1;
     display: flex;
     flex-direction: row;
     border-top: 1px solid $stroke-light;
-    border-bottom: 1px solid $stroke-light;
     color: $text-secondary;
+
+    &:last-child {
+      border-bottom: 1px solid $stroke-light;
+    }
+
+    > :not(.table-issue-priority) {
+      line-height: 24px;
+    }
   }
   .table-issue-link {
     margin-right: $spacer-1;

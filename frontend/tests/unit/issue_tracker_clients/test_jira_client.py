@@ -45,7 +45,8 @@ class JiraClientTest(unittest.TestCase):
         with app.test_request_context():
             try:
 
-                JiraClient(issue_tracker_url='',
+                JiraClient(issue_labels=[],
+                           issue_tracker_url='',
                            issue_tracker_user='',
                            issue_tracker_password='',
                            issue_tracker_project_id=-1,
@@ -64,7 +65,8 @@ class JiraClientTest(unittest.TestCase):
         mock_remaining_issues.return_value = 0
         with app.test_request_context():
             try:
-                jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
+                jira_client = JiraClient(issue_labels=[],
+                                         issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                          issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
                                          issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                          issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
@@ -91,7 +93,8 @@ class JiraClientTest(unittest.TestCase):
         mock_get_url.return_value = 'url'
         mock_sort_issues.return_value = [self.mock_issue]
         with app.test_request_context():
-            jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
+            jira_client = JiraClient(issue_labels=[],
+                                     issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                      issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
                                      issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
@@ -109,7 +112,8 @@ class JiraClientTest(unittest.TestCase):
     def test__generate_all_issues_url(self, mock_url_lib: Mock, mock_JIRA_client: Mock) -> None:
         mock_url_lib.return_value = 'test'
         with app.test_request_context():
-            jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
+            jira_client = JiraClient(issue_labels=[],
+                                     issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                      issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
                                      issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
@@ -121,7 +125,8 @@ class JiraClientTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     def test__generate_all_issues_url_no_issues(self, mock_JIRA_client: Mock) -> None:
         with app.test_request_context():
-            jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
+            jira_client = JiraClient(issue_labels=[],
+                                     issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                      issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
                                      issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
@@ -136,7 +141,8 @@ class JiraClientTest(unittest.TestCase):
         mock_JIRA_client.return_value.create_issue.side_effect = JIRAError('Some exception')
         with app.test_request_context():
             try:
-                jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
+                jira_client = JiraClient(issue_labels=[],
+                                         issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                          issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
                                          issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                          issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
@@ -152,8 +158,10 @@ class JiraClientTest(unittest.TestCase):
     def test_create_issue(self, mock_get_issue_properties: Mock, mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.return_value = self.mock_issue
         mock_get_issue_properties.return_value = self.mock_issue_instance
+        mock_labels = ['mock-label']
         with app.test_request_context():
-            jira_client = JiraClient(issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
+            jira_client = JiraClient(issue_labels=mock_labels,
+                                     issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
                                      issue_tracker_user=app.config['ISSUE_TRACKER_USER'],
                                      issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
@@ -166,7 +174,8 @@ class JiraClientTest(unittest.TestCase):
             }, issuetype={
                 'id': 1,
                 'name': 'Bug',
-            }, summary='title',
+            }, labels=mock_labels,
+                summary='title',
                 description='desc' + ' \n Reported By: test@email.com' +
                             ' \n Table Key: ' + 'key [PLEASE DO NOT REMOVE]',
                 reporter={'name': 'test'}))
