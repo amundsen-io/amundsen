@@ -7,7 +7,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/:license-Apache%202-blue.svg" />
+  <a href="https://github.com/lyft/amundsen/blob/master/LICENSE">
+    <img src="https://img.shields.io/:license-Apache%202-blue.svg" />
+  </a>
   <a href="https://github.com/lyft/amundsen/blob/master/.github/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
   </a>
