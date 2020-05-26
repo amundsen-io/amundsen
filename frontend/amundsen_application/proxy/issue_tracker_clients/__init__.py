@@ -29,10 +29,12 @@ def get_issue_tracker_client() -> BaseIssueTrackerClient:
                 password = app.config['ISSUE_TRACKER_PASSWORD']
                 project_id = app.config['ISSUE_TRACKER_PROJECT_ID']
                 max_results = app.config['ISSUE_TRACKER_MAX_RESULTS']
+                issue_labels = app.config['ISSUE_LABELS']
 
                 if app.config['ISSUE_TRACKER_CLIENT']:
                     client = import_string(app.config['ISSUE_TRACKER_CLIENT'])
-                    _issue_tracker_client = client(issue_tracker_url=url,
+                    _issue_tracker_client = client(issue_labels=issue_labels,
+                                                   issue_tracker_url=url,
                                                    issue_tracker_user=user,
                                                    issue_tracker_password=password,
                                                    issue_tracker_project_id=project_id,

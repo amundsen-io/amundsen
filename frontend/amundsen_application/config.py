@@ -1,5 +1,5 @@
 import os
-from typing import Callable, Dict, Optional, Set  # noqa: F401
+from typing import Callable, Dict, List, Optional, Set  # noqa: F401
 from amundsen_application.models.user import User
 
 from flask import Flask  # noqa: F401
@@ -49,6 +49,7 @@ class Config:
     INIT_CUSTOM_ROUTES = None  # type: Callable[[Flask], None]
 
     # Settings for Issue tracker integration
+    ISSUE_LABELS = []  # type: List[str]
     ISSUE_TRACKER_URL = None  # type: str
     ISSUE_TRACKER_USER = None  # type: str
     ISSUE_TRACKER_PASSWORD = None  # type: str

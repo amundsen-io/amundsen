@@ -19,11 +19,13 @@ ISSUE_TYPE_NAME = 'Bug'
 
 class JiraClient(BaseIssueTrackerClient):
 
-    def __init__(self, issue_tracker_url: str,
+    def __init__(self, issue_labels: List[str],
+                 issue_tracker_url: str,
                  issue_tracker_user: str,
                  issue_tracker_password: str,
                  issue_tracker_project_id: int,
                  issue_tracker_max_results: int) -> None:
+        self.issue_labels = issue_labels
         self.jira_url = issue_tracker_url
         self.jira_user = issue_tracker_user
         self.jira_password = issue_tracker_password
@@ -83,7 +85,8 @@ class JiraClient(BaseIssueTrackerClient):
             }, issuetype={
                 'id': ISSUE_TYPE_ID,
                 'name': ISSUE_TYPE_NAME,
-            }, summary=title,
+            }, labels=self.issue_labels,
+                summary=title,
                 description=(f'{description} '
                              f'\n Reported By: {user_email} '
                              f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE]'),
