@@ -189,7 +189,7 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
             >
               {
                 hasDescription &&
-                <div>
+                <div className="body-2 and text-primary">
                   { dashboard.description }
                 </div>
               }
@@ -230,15 +230,15 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                   }
                 </div>
                 <div className="section-title title-3">Created</div>
-                <div>
+                <div className="body-2 text-primary">
                   { formatDateTimeShort({ epochTimestamp: dashboard.created_timestamp}) }
                 </div>
                 <div className="section-title title-3">Last Updated</div>
-                <div>
+                <div className="body-2 text-primary">
                   { formatDateTimeShort({ epochTimestamp: dashboard.updated_timestamp }) }
                 </div>
                 <div className="section-title title-3">Recent View Count</div>
-                <div>
+                <div className="body-2 text-primary">
                   { dashboard.recent_view_count }
                 </div>
               </section>
@@ -250,12 +250,14 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                   />
                 </EditableSection>
                 <div className="section-title title-3">Last Successful Run</div>
-                <div>
+                <div className="body-2 text-primary">
                   { formatDateTimeShort({ epochTimestamp: dashboard.last_successful_run_timestamp }) }
                 </div>
                 <div className="section-title title-3">Last Run</div>
                 <div>
-                  { formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) }
+                  <div className="body-2 text-primary">
+                    { formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) }
+                  </div>
                   <div className="last-run-state">
                     <Flag
                       caseType='sentenceCase'
