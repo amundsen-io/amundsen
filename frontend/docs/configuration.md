@@ -33,12 +33,12 @@ entry_points="""
     table_preview_client_class = amundsen_application.base.examples.example_superset_preview_client:SupersetPreviewClient
 
     [announcement_client]
-    announcement_client_class = path.to.file:CustomAnnouncementClient
+    announcement_client_class = amundsen_application.base.examples.example_announcement_client:SQLAlchemyAnnouncementClient
 """
 ```
 
 ### Action Logging
-Create a custom method to handle action logging. Under the `[action_log.post_exec.plugin]` group, point the `analytic_clients_action_log` entry point in your local `setup.py` to that method.
+Create a custom method to handle action logging. Under the `[ action_log.post_exec.plugin]` group, point the `analytic_clients_action_log` entry point in your local `setup.py` to that method.
 
 ### Preview Client
 Create a custom implementation of [base_preview_client](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/base/base_preview_client.py). Under the `[preview_client]` group, point the `table_preview_client_class` entry point in your local `setup.py` to that class.
