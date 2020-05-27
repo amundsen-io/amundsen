@@ -90,7 +90,7 @@ class Neo4jSearchDataExtractor(Extractor):
         coalesce(db_descr.description, '') as description,
         coalesce(dbg.description, '') as group_description, dbg.dashboard_group_url as group_url,
         db.dashboard_url as url, db.key as uri,
-        'mode' as product, last_exec.timestamp as last_successful_run_timestamp,
+        'mode' as product, toInt(last_exec.timestamp) as last_successful_run_timestamp,
         COLLECT(DISTINCT query.name) as query_names,
         total_usage
         order by dbg.name
