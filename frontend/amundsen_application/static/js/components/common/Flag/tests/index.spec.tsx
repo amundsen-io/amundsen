@@ -51,5 +51,9 @@ describe('Flag', () => {
         it('returns text in defauilt case', () => {
             expect(convertText(text, 'not a valid options')).toEqual(text);
         });
+
+        it('returns empty strings for null values', () => {
+            expect(convertText(null, CaseType.SENTENCE_CASE)).toEqual('');
+        });
     });
 });

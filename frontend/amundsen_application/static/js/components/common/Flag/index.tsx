@@ -16,6 +16,7 @@ export interface FlagProps {
 }
 
 export function convertText(str: string, caseType: string): string {
+  str = str || '';
   switch (caseType) {
     case CaseType.LOWER_CASE:
       return str.toLowerCase();
