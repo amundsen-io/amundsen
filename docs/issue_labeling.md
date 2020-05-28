@@ -1,7 +1,7 @@
 # Issue and Feature Labeling
-> On Amundsen, we aim to be methodical on using issue labels, offering our community a way to understand what are the issues about, their status within or development process.
+> On Amundsen, we aim to be methodical on using issue labels, offering our community a way to understand what are the issues about and their status within or development process.
 
-We use a bunch of Github labels. They are a mix of custom labels and the default Github labels for open-source projects. We base these labels on four main types: *status labels*, *issue type labels*, *project labels* and the *“other” category*. Read on to learn more about them.
+We use a bunch of Github labels. They are a mix of custom labels and the default Github labels for open-source projects. We base these labels on four main types: *status labels*, *issue type labels*, *project labels*, and the *“other” category*. Read on to learn more about them.
 
 ## Status Labels
 * They show at a glance the status and progress of each issue
@@ -53,7 +53,7 @@ Here is a diagram representing these states within the lifecycles:
 
 ## Labels
 - help wanted – Indicates we are looking for contributors on this issue
-- good first issue – Indicates the issue is a great one to tackle by newcomers to the project or to OSS in general
+- good first issue – Indicates the issue is a great one to tackle by newcomers to the project or OSS in general
 - keep fresh – Avoids getting the issue archived by our stale bot
 
 

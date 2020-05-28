@@ -60,6 +60,7 @@ nav:
   - 'Architecture': architecture.md
   - 'Developer Guide':
     - 'Overview': developer_guide.md
+    - 'Issue and Feature Labeling': issue_labeling.md
   - 'User Guide':
     - 'Quick Start': 'installation.md'
     - 'Tutorials':
