@@ -16,7 +16,7 @@ from search_service.api.table import TABLE_INDEX
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.user import User
-from search_service.models.dashboard import Dashboard
+from search_service.models.dashboard import Dashboard, SearchDashboardResult
 from search_service.models.tag import Tag
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
@@ -77,7 +77,8 @@ class ElasticsearchProxy(BaseProxy):
 
     def _get_search_result(self, page_index: int,
                            client: Search,
-                           model: Any) -> SearchResult:
+                           model: Any,
+                           search_result_model: Any=SearchResult) -> Any:
         """
         Common helper function to get result.
 
@@ -116,8 +117,8 @@ class ElasticsearchProxy(BaseProxy):
             except Exception:
                 LOGGING.exception('The record doesnt contain specified field.')
 
-        return SearchResult(total_results=response.hits.total,
-                            results=results)
+        return search_result_model(total_results=response.hits.total,
+                                   results=results)
 
     def _get_instance(self, attr: str, val: Any) -> Any:
         if attr in TAG_MAPPING:
@@ -129,7 +130,8 @@ class ElasticsearchProxy(BaseProxy):
     def _search_helper(self, page_index: int,
                        client: Search,
                        query_name: dict,
-                       model: Any) -> SearchResult:
+                       model: Any,
+                       search_result_model: Any =SearchResult) -> Any:
         """
         Constructs Elasticsearch Query DSL to:
           1. Use function score to customize scoring of search result. It currently uses "total_usage" field to score.
@@ -149,7 +151,8 @@ class ElasticsearchProxy(BaseProxy):
 
         return self._get_search_result(page_index=page_index,
                                        client=client,
-                                       model=model)
+                                       model=model,
+                                       search_result_model=search_result_model)
 
     def _create_document_helper(self, data: List[Table], index: str) -> str:
         # fetch indices that use our chosen alias (should only ever return one in a list)
@@ -567,7 +570,7 @@ class ElasticsearchProxy(BaseProxy):
     def fetch_dashboard_search_results(self, *,
                                        query_term: str,
                                        page_index: int = 0,
-                                       index: str = '') -> SearchResult:
+                                       index: str = '') -> SearchDashboardResult:
         """
         Fetch dashboard search result with fuzzy search
 
@@ -581,7 +584,7 @@ class ElasticsearchProxy(BaseProxy):
 
         if not query_term:
             # return empty result for blank query term
-            return SearchResult(total_results=0, results=[])
+            return SearchDashboardResult(total_results=0, results=[])
         s = Search(using=self.elasticsearch, index=current_index)
 
         query_name = {
@@ -607,4 +610,5 @@ class ElasticsearchProxy(BaseProxy):
         return self._search_helper(page_index=page_index,
                                    client=s,
                                    query_name=query_name,
-                                   model=Dashboard)
+                                   model=Dashboard,
+                                   search_result_model=SearchDashboardResult)

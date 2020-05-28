@@ -1,13 +1,14 @@
 import logging
+from re import sub
+from typing import Any, List, Dict, Tuple, Optional
 
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
 from atlasclient.models import Entity, EntityCollection
 # default search page size
 from atlasclient.utils import parse_table_qualified_name
-from typing import Any, List, Dict, Tuple, Optional
-from re import sub
 
+from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.tag import Tag
@@ -282,5 +283,8 @@ class AtlasProxy(BaseProxy):
     def delete_document(self, *, data: List[str], index: str = '') -> str:
         raise NotImplementedError()
 
-    def fetch_dashboard_search_results(self, *, query_term: str, page_index: int = 0, index: str = '') -> SearchResult:
+    def fetch_dashboard_search_results(self, *,
+                                       query_term: str,
+                                       page_index: int = 0,
+                                       index: str = '') -> SearchDashboardResult:
         pass
