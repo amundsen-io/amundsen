@@ -1,6 +1,8 @@
-from typing import Set
+from typing import Set, List
 
 import attr
+
+from marshmallow_annotations.ext.attrs import AttrsSchema
 from amundsen_common.models.dashboard import DashboardSummary, DashboardSummarySchema
 
 from search_service.models.base import Base
@@ -39,4 +41,16 @@ class Dashboard(Base,
 class DashboardSchema(DashboardSummarySchema):
     class Meta:
         target = Dashboard
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class SearchDashboardResult:
+        total_results: int = attr.ib()
+        results: List[Dashboard] = attr.ib(factory=list)
+
+
+class SearchDashboardResultSchema(AttrsSchema):
+    class Meta:
+        target = SearchDashboardResult
         register_as_scheme = True

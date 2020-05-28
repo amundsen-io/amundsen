@@ -5,7 +5,7 @@ from mock import patch, Mock
 
 from search_service import create_app
 from search_service.models.search_result import SearchResult
-from tests.unit.api.dashboard.fixtures import mock_json_response, mock_proxy_results, default_json_response
+from tests.unit.api.dashboard.fixtures import mock_json_response, mock_proxy_results
 
 
 class TestSearchDashboardAPI(TestCase):
@@ -45,18 +45,6 @@ class TestSearchDashboardAPI(TestCase):
         expected_response = {
             "total_results": 0,
             "results": []
-        }
-        self.assertEqual(response.json, expected_response)
-
-    def test_should_get_default_response_values_when_values_not_in_proxy_response(self) -> None:
-        self.mock_proxy.fetch_dashboard_search_results.return_value = \
-            SearchResult(total_results=1, results=[{}])
-
-        response = self.app.test_client().get('/search_dashboard?query_term=searchterm')
-
-        expected_response = {
-            "total_results": 1,
-            "results": [default_json_response()]
         }
         self.assertEqual(response.json, expected_response)
 
