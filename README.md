@@ -127,6 +127,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [How Lyft Drives Data Discovery](https://youtu.be/WVjss62XIG0) (July 2019)
 - [Data Engineering podcast on Solving Data Discovery At Lyft](https://www.dataengineeringpodcast.com/amundsen-data-discovery-episode-92/) (Aug 2019)
 - [Open Sourcing Amundsen: A Data Discovery And Metadata Platform](https://eng.lyft.com/open-sourcing-amundsen-a-data-discovery-and-metadata-platform-2282bb436234) (Oct 2019)
+- [Adding Data Quality into Amundsen with Programmatic Descriptions](https://technology.edmunds.com/2020/05/27/Adding-Data-Quality-into-Amundsen-with-Programmatic-Descriptions/) by [Sam Shuster](https://github.com/samshuster) from [Edmunds.com](https://www.edmunds.com/) (May 2020)
 
 ## Talks
 
