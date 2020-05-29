@@ -1,14 +1,18 @@
+<!--- 
+Provide a general summary of your changes in the Title above 
+Include a prefix to the title, one of build|ci|docs|feat|fix|perf|refactor|style|test|chore|other followed by a colon. 
+Example: docs: Improves the documentation on...
+-->
 ### Summary of Changes
-
-<!-- _Include a summary of changes then, optionally, remove this line_ -->
+<!-- Include a summary of changes -->
 
 
 ### Documentation
+<!-- What documentation did you add or modify and why? Add any relevant links -->
 
-<!-- _What documentation did you add or modify and why? Add any relevant links then optionally, remove this line_ -->
 
 ### CheckList
 Make sure you have checked **all** steps below to ensure a timely review.
-- [ ] PR title addresses the issue accurately and concisely.
+- [ ] PR title addresses the issue accurately and concisely, including a title prefix.
 - [ ] PR includes a summary of changes.
 - [ ] My commits follow the guidelines from "[How to write a good git commit message](http://chris.beams.io/posts/git-commit/)"
