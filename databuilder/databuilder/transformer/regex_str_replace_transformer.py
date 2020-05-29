@@ -28,7 +28,11 @@ class RegexStrReplaceTransformer(Transformer):
 
     def transform(self, record):
         # type: (Any) -> Any
-        val = getattr(record, self._attribute_name)
+
+        if isinstance(record, dict):
+            val = record.get(self._attribute_name)
+        else:
+            val = getattr(record, self._attribute_name)
 
         if val is None or not isinstance(val, six.string_types):
             return record
@@ -40,7 +44,11 @@ class RegexStrReplaceTransformer(Transformer):
         for regex_replace_tuple in self._regex_replace_tuples:
             val = val.replace(regex_replace_tuple[0], regex_replace_tuple[1])
 
-        setattr(record, self._attribute_name, val)
+        if isinstance(record, dict):
+            record[self._attribute_name] = val
+        else:
+            setattr(record, self._attribute_name, val)
+
         return record
 
     def get_scope(self):
