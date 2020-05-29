@@ -61,6 +61,7 @@ nav:
   - 'Developer Guide':
     - 'Overview': developer_guide.md
     - 'Issue and Feature Labeling': issue_labeling.md
+    - 'Contributing Guide': CONTRIBUTING.md
   - 'User Guide':
     - 'Quick Start': 'installation.md'
     - 'Tutorials':
