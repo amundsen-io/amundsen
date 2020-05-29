@@ -2,7 +2,8 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.regex_str_replace_transformer import RegexStrReplaceTransformer
+from databuilder.transformer.regex_str_replace_transformer import RegexStrReplaceTransformer, \
+    REGEX_REPLACE_TUPLE_LIST, ATTRIBUTE_NAME
 
 
 class TestRegexReplacement(unittest.TestCase):
@@ -37,14 +38,30 @@ class TestRegexReplacement(unittest.TestCase):
     def _default_test_transformer(self):
         # type: () -> RegexStrReplaceTransformer
         config = ConfigFactory.from_dict({
-            'regex_replace_tuple_list': [('a', 'b'), ('c', 'a')],
-            'attribute_name': 'val'
+            REGEX_REPLACE_TUPLE_LIST: [('a', 'b'), ('c', 'a')],
+            ATTRIBUTE_NAME: 'val'
         })
 
         transformer = RegexStrReplaceTransformer()
         transformer.init(config)
 
         return transformer
+
+    def test_dict_replace(self):
+        # type: () -> None
+        config = ConfigFactory.from_dict({
+            REGEX_REPLACE_TUPLE_LIST: [('\\', '\\\\')],
+            ATTRIBUTE_NAME: 'val'
+        })
+
+        transformer = RegexStrReplaceTransformer()
+        transformer.init(config)
+
+        d = {'val': '\\'}
+
+        actual = transformer.transform(d)
+
+        self.assertEqual({'val': '\\\\'}, actual)
 
 
 class Foo(object):

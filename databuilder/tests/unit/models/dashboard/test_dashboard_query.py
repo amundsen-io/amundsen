@@ -15,10 +15,12 @@ class TestDashboardQuery(unittest.TestCase):
                                          dashboard_id='d_id',
                                          query_id='q_id',
                                          query_name='q_name',
-                                         url='http://foo.bar/query/baz')
+                                         url='http://foo.bar/query/baz',
+                                         query_text='SELECT * FROM foo.bar')
 
         actual = dashboard_query.create_next_node()
         expected = {'url': 'http://foo.bar/query/baz', 'name': 'q_name', 'id': 'q_id',
+                    'query_text': 'SELECT * FROM foo.bar',
                     NODE_KEY: '_dashboard://gold.dg_id/d_id/query/q_id',
                     NODE_LABEL: DashboardQuery.DASHBOARD_QUERY_LABEL}
 

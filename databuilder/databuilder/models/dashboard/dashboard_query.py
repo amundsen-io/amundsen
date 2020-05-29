@@ -26,6 +26,7 @@ class DashboardQuery(Neo4jCsvSerializable):
                  query_name,  # type: str
                  query_id=None,  # type: Optional[str]
                  url='',  # type: Optional[str]
+                 query_text=None,  # type: Optional[str]
                  product='',  # type: Optional[str]
                  cluster='gold',  # type: str
                  **kwargs
@@ -35,6 +36,7 @@ class DashboardQuery(Neo4jCsvSerializable):
         self._query_name = query_name
         self._query_id = query_id if query_id else query_name
         self._url = url
+        self._query_text = query_text
         self._product = product
         self._cluster = cluster
         self._node_iterator = self._create_node_iterator()
@@ -58,6 +60,9 @@ class DashboardQuery(Neo4jCsvSerializable):
 
         if self._url:
             node['url'] = self._url
+
+        if self._query_text:
+            node['query_text'] = self._query_text
 
         yield node
 
@@ -94,12 +99,13 @@ class DashboardQuery(Neo4jCsvSerializable):
         )
 
     def __repr__(self):
-        return 'DashboardQuery({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
+        return 'DashboardQuery({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
             self._dashboard_group_id,
             self._dashboard_id,
             self._query_name,
             self._query_id,
             self._url,
+            self._query_text,
             self._product,
             self._cluster
         )
