@@ -208,13 +208,7 @@ class AtlasProxy(BaseProxy):
             # return empty result for blank query term
             return SearchResult(total_results=0, results=[])
 
-        # @todo switch to search with 'query' not 'filters' once Atlas FreeTextSearchProcessor is fixed
-        # https://reviews.apache.org/r/72440/
-        filters = [(self.ATLAS_QN_ATTRIBUTE, 'CONTAINS', query_term)]
-
-        # conduct search using filter on qualifiedName (it already contains both dbName and tableName)
-        # and table description
-        query_params = self._prepare_basic_search_query(self.page_size, page_index, filters=filters, operator='OR')
+        query_params = self._prepare_basic_search_query(self.page_size, page_index, query_term=query_term)
 
         tables, approx_count = self._atlas_basic_search(query_params)
 
