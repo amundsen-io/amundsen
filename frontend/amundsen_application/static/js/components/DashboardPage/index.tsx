@@ -207,40 +207,48 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
             </EditableSection>
             <section className="column-layout-2">
               <section className="left-panel">
-                <div className="section-title title-3">Owners</div>
-                <div>
-                  {
-                    dashboard.owners.length > 0 &&
-                    dashboard.owners.map(owner =>
-                      <Link
-                        key={owner.user_id}
-                        to={`/user/${owner.user_id}?source=${DASHBOARD_OWNER_SOURCE}`}>
-                        <AvatarLabel
-                          label={owner.display_name}/>
-                      </Link>
-                    )
-                  }
-                  {
-                    dashboard.owners.length === 0 &&
-                    <AvatarLabel
-                      avatarClass='gray-avatar'
-                      labelClass='text-placeholder'
-                      label={NO_OWNER_TEXT}
-                    />
-                  }
-                </div>
-                <div className="section-title title-3">Created</div>
-                <div className="body-2 text-primary">
-                  { formatDateTimeShort({ epochTimestamp: dashboard.created_timestamp}) }
-                </div>
-                <div className="section-title title-3">Last Updated</div>
-                <div className="body-2 text-primary">
-                  { formatDateTimeShort({ epochTimestamp: dashboard.updated_timestamp }) }
-                </div>
-                <div className="section-title title-3">Recent View Count</div>
-                <div className="body-2 text-primary">
-                  { dashboard.recent_view_count }
-                </div>
+                <section className="metadata-section">
+                  <div className="section-title title-3">Owners</div>
+                  <div>
+                    {
+                      dashboard.owners.length > 0 &&
+                      dashboard.owners.map(owner =>
+                        <Link
+                          key={owner.user_id}
+                          to={`/user/${owner.user_id}?source=${DASHBOARD_OWNER_SOURCE}`}>
+                          <AvatarLabel
+                            label={owner.display_name}/>
+                        </Link>
+                      )
+                    }
+                    {
+                      dashboard.owners.length === 0 &&
+                      <AvatarLabel
+                        avatarClass='gray-avatar'
+                        labelClass='text-placeholder'
+                        label={NO_OWNER_TEXT}
+                      />
+                    }
+                  </div>
+                </section>
+                <section className="metadata-section">
+                  <div className="section-title title-3">Created</div>
+                  <div className="body-2 text-primary">
+                    { formatDateTimeShort({ epochTimestamp: dashboard.created_timestamp}) }
+                  </div>
+                </section>
+                <section className="metadata-section">
+                  <div className="section-title title-3">Last Updated</div>
+                  <div className="body-2 text-primary">
+                    { formatDateTimeShort({ epochTimestamp: dashboard.updated_timestamp }) }
+                  </div>
+                </section>
+                <section className="metadata-section">
+                  <div className="section-title title-3">Recent View Count</div>
+                  <div className="body-2 text-primary">
+                    { dashboard.recent_view_count }
+                  </div>
+                </section>
               </section>
               <section className="right-panel">
                 <EditableSection title="Tags">
@@ -249,23 +257,27 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                     uriKey={ this.props.dashboard.uri }
                   />
                 </EditableSection>
-                <div className="section-title title-3">Last Successful Run</div>
-                <div className="body-2 text-primary">
-                  { formatDateTimeShort({ epochTimestamp: dashboard.last_successful_run_timestamp }) }
-                </div>
-                <div className="section-title title-3">Last Run</div>
-                <div>
+                <section className="metadata-section">
+                  <div className="section-title title-3">Last Successful Run</div>
                   <div className="body-2 text-primary">
-                    { formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) }
+                    { formatDateTimeShort({ epochTimestamp: dashboard.last_successful_run_timestamp }) }
                   </div>
-                  <div className="last-run-state">
-                    <Flag
-                      caseType='sentenceCase'
-                      text={ dashboard.last_run_state }
-                      labelStyle={this.mapStatusToStyle(dashboard.last_run_state)}
-                    />
+                </section>
+                <section className="metadata-section">
+                  <div className="section-title title-3">Last Run</div>
+                  <div>
+                    <div className="body-2 text-primary">
+                      { formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) }
+                    </div>
+                    <div className="last-run-state">
+                      <Flag
+                        caseType='sentenceCase'
+                        text={ dashboard.last_run_state }
+                        labelStyle={this.mapStatusToStyle(dashboard.last_run_state)}
+                      />
+                    </div>
                   </div>
-                </div>
+                </section>
               </section>
             </section>
             <ImagePreview uri={this.state.uri} redirectUrl={dashboard.url} />

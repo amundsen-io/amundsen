@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
+import * as Constants from './constants';
+
 import './styles.scss';
 
 export interface EditableSectionProps {
@@ -22,6 +24,10 @@ export interface EditableSectionChildProps {
 }
 
 export class EditableSection extends React.Component<EditableSectionProps, EditableSectionState> {
+  static defaultProps: Partial<EditableSectionProps> = {
+    editText: Constants.EDIT_TEXT,
+  };
+
   constructor(props) {
     super(props);
 
@@ -53,6 +59,10 @@ export class EditableSection extends React.Component<EditableSectionProps, Edita
   renderReadOnlyButton = (): React.ReactNode => {
     const { editText, editUrl } = this.props;
     const popoverHoverFocus = (<Popover id="popover-trigger-hover-focus">{ editText }</Popover>);
+
+    if (!editUrl) {
+      return null;
+    }
     return (
       <OverlayTrigger
        trigger={["hover", "focus"]}

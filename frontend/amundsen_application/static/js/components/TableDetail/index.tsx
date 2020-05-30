@@ -155,36 +155,42 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
           </header>
           <article className="column-layout-1">
             <section className="left-panel">
-              {}
               <EditableSection title="Description">
                 <TableDescEditableText
                   maxLength={ AppConfig.editableText.tableDescLength }
                   value={ data.description }
                   editable={ data.is_editable }
                 />
+                <span>
+                  { notificationsEnabled() && <RequestDescriptionText/> }
+                </span>
               </EditableSection>
-              <span>
-                { notificationsEnabled() && <RequestDescriptionText/> }
-              </span>
-              {issueTrackingEnabled() && <TableIssues tableKey={ this.key } tableName={ this.getDisplayName()}/>}
+              {
+                issueTrackingEnabled() &&
+                <section className="metadata-section">
+                  <TableIssues tableKey={ this.key } tableName={ this.getDisplayName()}/>
+                </section>
+              }
               <section className="column-layout-2">
                 <section className="left-panel">
                   {
                     !data.is_view &&
-                    <>
+                    <section className="metadata-section">
                       <div className="section-title title-3">Date Range</div>
                       <WatermarkLabel watermarks={ data.watermarks }/>
-                    </>
+                    </section>
                   }
                   {
                     !!data.last_updated_timestamp &&
-                    <>
+                    <section className="metadata-section">
                       <div className="section-title title-3">Last Updated</div>
                       <div className="body-2">{ formatDateTimeShort({ epochTimestamp: data.last_updated_timestamp }) }</div>
-                    </>
+                    </section>
                   }
-                  <div className="section-title title-3">Frequent Users</div>
-                  <FrequentUsers readers={ data.table_readers }/>
+                  <section className="metadata-section">
+                    <div className="section-title title-3">Frequent Users</div>
+                    <FrequentUsers readers={ data.table_readers }/>
+                  </section>
                 </section>
                 <section className="right-panel">
                   <EditableSection title="Tags">

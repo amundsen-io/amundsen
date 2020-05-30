@@ -88,5 +88,10 @@ describe("EditableSection", () => {
         expect(wrapper.find(".edit-button").props().href).toBe(props.editUrl);
       });
     });
+
+    it("does not render button if readOnly=true and there is no external editUrl", () => {
+      const wrapper = setup({ readOnly: true }, <div/>).wrapper;
+      expect(wrapper.find(".edit-button").exists()).toBeFalsy();
+    });
   });
 });
