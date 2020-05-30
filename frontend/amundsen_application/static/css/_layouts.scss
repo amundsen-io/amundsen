@@ -2,13 +2,13 @@
 $resource-header-height: 84px;
 
 .resource-detail-layout {
-  height: calc(100% - #{$nav-bar-height} - #{$footer-height});
+  height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
 
   .resource-header {
     display: flex;
     height: $resource-header-height;
     border-bottom: 2px solid $divider;
-    padding: 16px 24px 0;
+    padding: 16px 24px;
 
 
     .icon-header {
@@ -20,11 +20,13 @@ $resource-header-height: 84px;
     .header-section {
       &.header-title {
         flex-grow: 1;
-        overflow: hidden;
 
         .header-title-text {
           display: inline-block;
           max-width: calc(100% - 100px);
+          // Better align the header-title-text
+          // (84px header height - 32px vertical padding - 2px border - 20px subtitle line-height) = 30px
+          line-height: 30px;
         }
       }
 
@@ -97,13 +99,20 @@ $resource-header-height: 84px;
 
       .section-title {
         color: $text-tertiary;
-        margin: 40px 0 8px;
+        margin-bottom: 8px;
+      }
+
+      .editable-section,
+      .metadata-section {
+        margin-top: 40px;
+        min-height: 70px;
+        display: inline-table;
       }
 
       .editable-text {
         font-size: 16px;
 
-        .markdown-wrapper{
+        .markdown-wrapper {
           font-size: 16px;
         }
       }

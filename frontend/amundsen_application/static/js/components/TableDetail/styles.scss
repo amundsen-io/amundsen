@@ -1,8 +1,6 @@
 @import 'variables';
 
 .table-detail {
-  height: calc(100% - #{$nav-bar-height} - #{$footer-height});
-
   .column-layout-1 .left-panel {
     .programmatic-title {
       color: $text-primary;
@@ -13,6 +11,15 @@
     .programmatic-hr {
       border: 1px solid $gray15;
       margin: 10px 0 4px;
+    }
+  }
+
+  .header-links {
+    .avatar-label {
+      &:focus,
+      &:hover {
+        color: $link-hover-color;
+      }
     }
   }
 }

@@ -33,7 +33,7 @@ const PreviewModal = ({ imageSrc, onClose }: PreviewModalProps) => {
   return (
     <Modal show={show} onHide={handleClose} scrollable="true" className="dashboard-preview-modal">
       <Modal.Header closeButton={true}>
-        <Modal.Title className="text-center">Constants.DASHBOARD_PREVIEW_MODAL_TITLE</Modal.Title>
+        <Modal.Title className="text-center">{Constants.DASHBOARD_PREVIEW_MODAL_TITLE}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <img
