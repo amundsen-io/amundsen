@@ -152,6 +152,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [Graph Technology Landscape 2020](https://graphaware.com/graphaware/2020/02/17/graph-technology-landscape-2020.html)
 - [In-house Data Discovery platforms](https://datastrategy.substack.com/p/in-house-data-discovery-platforms)
 - [Linux Foundation AI Foundation Landscape](https://landscape.lfai.foundation/)
+- [Lyft’s Amundsen: Data-Discovery with Built-In Trust](https://thenewstack.io/lyfts-amundsen-data-discovery-with-built-in-trust/)
 
 ## Community meetings
 Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time [Link to join](https://meet.google.com/mqz-ndck-jmj)
