@@ -177,6 +177,7 @@ Currently **officially** using Amundsen:
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Cameo](https://www.cameo.com)
 1. [Cimpress Technology](https://cimpress.com)
+1. [Coles Group](https://www.colesgroup.com.au/home/)
 1. [Data Sprints](https://datasprints.com/)
 1. [Devoted Health](https://www.devoted.com/)
 1. [Edmunds](https://www.edmunds.com/)
