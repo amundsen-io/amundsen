@@ -25,6 +25,7 @@ describe('ExploreButton', () => {
         badges: [],
         cluster: 'cluster',
         columns: [],
+        dashboards: [],
         database: 'database',
         is_editable: false,
         is_view: false,

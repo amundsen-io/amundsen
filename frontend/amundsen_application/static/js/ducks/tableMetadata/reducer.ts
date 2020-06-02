@@ -178,6 +178,7 @@ export const initialTableDataState: TableMetadata = {
   badges: [],
   cluster: '',
   columns: [],
+  dashboards: [],
   database: '',
   is_editable: false,
   is_view: false,

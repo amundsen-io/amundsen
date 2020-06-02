@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
-import { PreviewData, PreviewQueryParams, TableMetadata, UpdateOwnerPayload, User, Tag } from 'interfaces';
+import { PreviewData, PreviewQueryParams, TableMetadata, DashboardResource, UpdateOwnerPayload, User, Tag } from 'interfaces';
 
 export const API_PATH = '/api/metadata/v0';
 
@@ -14,26 +14,45 @@ export type TableData = TableMetadata & {
 export type DescriptionAPI = { description: string; } & MessageAPI;
 export type LastIndexedAPI = { timestamp: string; } & MessageAPI;
 export type PreviewDataAPI = { previewData: PreviewData; } & MessageAPI;
-export type TableDataAPI= { tableData: TableData; } & MessageAPI;
+export type TableDataAPI = { tableData: TableData; } & MessageAPI;
+export type RelatedDashboardDataAPI = { dashboards: DashboardResource[]; };
 
 /** HELPERS **/
 import {
-  getTableQueryParams, getTableDataFromResponseData, getTableOwnersFromResponseData,
+  getTableQueryParams, getRelatedDashboardSlug, getTableDataFromResponseData, getTableOwnersFromResponseData,
   createOwnerUpdatePayload, createOwnerNotificationData, shouldSendNotification
 } from './helpers';
 
 
-export function getTableData(tableKey: string, index?: string, source?: string ) {
-  const queryParams = getTableQueryParams(tableKey, index, source);
-  return axios.get(`${API_PATH}/table?${queryParams}`)
-  .then((response: AxiosResponse<TableDataAPI>) => {
-    return {
-      data: getTableDataFromResponseData(response.data),
-      owners: getTableOwnersFromResponseData(response.data),
-      tags: response.data.tableData.tags,
-      statusCode: response.status,
-    };
-  });
+export function getTableData(
+  tableKey: string,
+  index?: string,
+  source?: string
+) {
+  const relatedDashboardsSlug: string = getRelatedDashboardSlug(tableKey);
+  const relatedDashboardsURL: string = `${API_PATH}/table/${relatedDashboardsSlug}/dashboards`;
+  const relatedDashboardsRequest = axios.get<RelatedDashboardDataAPI>(
+    relatedDashboardsURL
+  );
+
+  const tableQueryParams = getTableQueryParams(tableKey, index, source);
+  const tableURL = `${API_PATH}/table?${tableQueryParams}`;
+  const tableRequest = axios.get<TableDataAPI>(tableURL);
+
+  return Promise.all([tableRequest, relatedDashboardsRequest]).then(
+    ([tableResponse, relatedDashboardsResponse]: [
+      AxiosResponse<TableDataAPI>,
+      AxiosResponse<RelatedDashboardDataAPI>
+    ]) => ({
+      data: getTableDataFromResponseData(
+        tableResponse.data,
+        relatedDashboardsResponse.data
+      ),
+      owners: getTableOwnersFromResponseData(tableResponse.data),
+      tags: tableResponse.data.tableData.tags,
+      statusCode: tableResponse.status
+    })
+  );
 }
 
 export function getTableDescription(tableData: TableMetadata) {
