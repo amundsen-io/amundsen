@@ -12,13 +12,16 @@ import AppConfig from 'config/config';
 import BadgeList from 'components/common/BadgeList';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
+import TabsComponent from 'components/common/TabsComponent';
+import EditableText from 'components/common/EditableText';
+import LoadingSpinner from 'components/common/LoadingSpinner';
+import Flag from 'components/common/Flag';
+import ResourceList from 'components/common/ResourceList';
+
 import DataPreviewButton from 'components/TableDetail/DataPreviewButton';
 import ColumnList from 'components/TableDetail/ColumnList';
-import EditableText from 'components/common/EditableText';
 import ExploreButton from 'components/TableDetail/ExploreButton';
-import Flag from 'components/common/Flag';
 import FrequentUsers from 'components/TableDetail/FrequentUsers';
-import LoadingSpinner from 'components/common/LoadingSpinner';
 import LineageLink from 'components/TableDetail/LineageLink';
 import OwnerEditor from 'components/TableDetail/OwnerEditor';
 import SourceLink from 'components/TableDetail/SourceLink';
@@ -37,32 +40,43 @@ import { getSourceIconClass, issueTrackingEnabled, notificationsEnabled } from '
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
 
-import './styles';
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 
-import { PROGRMMATIC_DESC_HEADER } from './constants';
+import { PROGRMMATIC_DESC_HEADER, ERROR_MESSAGE } from './constants';
+
+import './styles.scss';
+
+const SERVER_ERROR_CODE = 500;
+const DASHBOARDS_PER_PAGE = 10;
+const TABLE_SOURCE = "table_page";
 
 export interface StateFromProps {
   isLoading: boolean;
   statusCode?: number;
   tableData: TableMetadata;
 }
-
 export interface DispatchFromProps {
   getTableData: (key: string, searchIndex?: string, source?: string, ) => GetTableDataRequest;
 }
-
-interface MatchProps {
+export interface MatchProps {
   cluster: string;
   database: string;
   schema: string;
   table: string;
 }
+export type TableDetailProps = StateFromProps & DispatchFromProps & RouteComponentProps<MatchProps>;
 
-type TableDetailProps = StateFromProps & DispatchFromProps & RouteComponentProps<MatchProps>;
+const ErrorMessage = () => {
+  return (
+    <div className="container error-label">
+      <Breadcrumb />
+      <label>{ERROR_MESSAGE}</label>
+    </div>
+  );
+};
 
-class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>> {
+export class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>> {
   private key: string;
   private didComponentMount: boolean = false;
 
@@ -86,6 +100,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
 
   getDisplayName() {
     const params = this.props.match.params;
+
     return `${params.schema}.${params.table}`;
   }
 
@@ -99,20 +114,47 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 
+  renderTabs() {
+    const tabInfo = [];
+
+    // Default Column content
+    tabInfo.push({
+      content:
+        (
+          <ColumnList columns={ this.props.tableData.columns }/>
+        ),
+      key: 'columns',
+      title: `Columns (${this.props.tableData.columns.length})`,
+    });
+
+    // Dashboard content
+    tabInfo.push({
+      content: (
+        <ResourceList
+          allItems={this.props.tableData.dashboards}
+          itemsPerPage={DASHBOARDS_PER_PAGE}
+          source={TABLE_SOURCE}
+        />
+      ),
+      key: "dashboards",
+      title: `Dashboards (${this.props.tableData.dashboards.length})`
+    });
+
+    return <TabsComponent tabs={ tabInfo } defaultTab={ "columns" } />;
+  }
+
   render() {
+    const {isLoading, statusCode, tableData} = this.props;
     let innerContent;
+
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
-    if (this.props.isLoading || !this.didComponentMount) {
+    if (isLoading || !this.didComponentMount) {
       innerContent = <LoadingSpinner/>;
-    } else if (this.props.statusCode === 500) {
-      innerContent = (
-        <div className="container error-label">
-          <Breadcrumb />
-          <label>Something went wrong...</label>
-        </div>
-      );
+    } else if (statusCode === SERVER_ERROR_CODE) {
+      innerContent = (<ErrorMessage />);
     } else {
-      const data = this.props.tableData;
+      const data = tableData;
+
       innerContent = (
         <div className="resource-detail-layout table-detail">
           {
@@ -228,7 +270,7 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
               }
             </section>
             <section className="right-panel">
-              <ColumnList columns={ data.columns }/>
+              { this.renderTabs() }
             </section>
           </article>
         </div>
@@ -242,7 +284,6 @@ class TableDetail extends React.Component<TableDetailProps & RouteComponentProps
     );
   }
 }
-
 
 export const mapStateToProps = (state: GlobalState) => {
   return {

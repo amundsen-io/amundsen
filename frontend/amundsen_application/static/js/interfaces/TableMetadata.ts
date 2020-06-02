@@ -1,6 +1,7 @@
 import { UpdateMethod } from './Enums';
 import { User } from './User';
 import { Badge } from './Tags';
+import { DashboardResource } from './Resources';
 
 interface PartitionData {
   is_partitioned: boolean;
@@ -78,6 +79,7 @@ export interface TableMetadata {
   badges: Badge[];
   cluster: string;
   columns: TableColumn[];
+  dashboards: DashboardResource[];
   database: string;
   is_editable: boolean;
   is_view: boolean;
