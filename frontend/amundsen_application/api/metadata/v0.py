@@ -634,3 +634,62 @@ def get_dashboard_metadata() -> Response:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
         return make_response(jsonify({'dashboard': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/table/<path:table_key>/dashboards', methods=['GET'])
+def get_related_dashboard_metadata(table_key: str) -> Response:
+    """
+    Call metadata service endpoint to fetch related dashboard metadata
+    :return:
+    """
+    try:
+        url = f'{app.config["METADATASERVICE_BASE"]}{TABLE_ENDPOINT}/{table_key}/dashboard/'
+        results_dict = _get_related_dashboards_metadata(url=url)
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'dashboards': [], 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@action_logging
+def _get_related_dashboards_metadata(*, url: str) -> Dict[str, Any]:
+
+    results_dict = {
+        'dashboards': {},
+        'msg': '',
+    }
+
+    try:
+        response = request_metadata(url=url)
+    except ValueError as e:
+        # envoy client BadResponse is a subclass of ValueError
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        logging.exception(message)
+        return results_dict
+
+    status_code = response.status_code
+    results_dict['status_code'] = status_code
+
+    if status_code != HTTPStatus.OK:
+        message = 'Encountered error: Related Dashboard Metadata request failed'
+        results_dict['msg'] = message
+        logging.error(message)
+        return results_dict
+
+    try:
+        dashboard_data_raw = response.json().get('dashboards', [])
+        return {
+            'dashboards': [marshall_dashboard_partial(dashboard) for dashboard in dashboard_data_raw],
+            'msg': 'Success',
+            'status_code': status_code
+        }
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
+        # explicitly raise the exception which will trigger 500 api response
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        return results_dict
