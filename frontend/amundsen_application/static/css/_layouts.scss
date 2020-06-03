@@ -116,6 +116,12 @@ $resource-header-height: 84px;
           font-size: 16px;
         }
       }
+
+      .avatar-label-component {
+        .avatar-label {
+          color: $text-primary;
+        }
+      }
     }
 
     > .right-panel {
