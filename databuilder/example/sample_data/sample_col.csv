@@ -9,4 +9,4 @@ col2,"col2 description","string",2,dynamo,gold,test_schema,test_table2
 col3,"col3 description","string",3,dynamo,gold,test_schema,test_table2
 col4,"col4 description","int",4,dynamo,gold,test_schema,test_table2
 col1,"view col description","int",1,hive,gold,test_schema,test_view1
-col1,"col1 description","int",1,hive,gold,test_schema,test_table3,""
+col1,"col1 description","int",1,hive,gold,test_schema,test_table3
