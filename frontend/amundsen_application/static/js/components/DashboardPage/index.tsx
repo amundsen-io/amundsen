@@ -20,7 +20,7 @@ import { DashboardMetadata } from 'interfaces/Dashboard';
 import ImagePreview from './ImagePreview';
 import QueryList from 'components/DashboardPage/QueryList';
 import ChartList from 'components/DashboardPage/ChartList';
-import { formatDateTimeShort } from '../../utils/dateUtils';
+import { formatDateTimeShort } from 'utils/dateUtils';
 import ResourceList from 'components/common/ResourceList';
 import {
   ADD_DESC_TEXT,
@@ -37,6 +37,8 @@ import { ResourceType } from 'interfaces';
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
 import { getLoggingParams } from 'utils/logUtils';
+
+import { NO_TIMESTAMP_TEXT } from 'components/constants';
 
 import './styles.scss';
 
@@ -259,15 +261,23 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                 </EditableSection>
                 <section className="metadata-section">
                   <div className="section-title title-3">Last Successful Run</div>
-                  <div className="body-2 text-primary">
-                    { formatDateTimeShort({ epochTimestamp: dashboard.last_successful_run_timestamp }) }
+                  <div className="last-successful-run-timestamp body-2 text-primary">
+                    {
+                      dashboard.last_successful_run_timestamp ?
+                      formatDateTimeShort({ epochTimestamp: dashboard.last_successful_run_timestamp }) :
+                      NO_TIMESTAMP_TEXT
+                    }
                   </div>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Last Run</div>
                   <div>
-                    <div className="body-2 text-primary">
-                      { formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) }
+                    <div className="last-run-timestamp body-2 text-primary">
+                      {
+                        dashboard.last_run_timestamp ?
+                        formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) :
+                        NO_TIMESTAMP_TEXT
+                      }
                     </div>
                     <div className="last-run-state">
                       <Flag

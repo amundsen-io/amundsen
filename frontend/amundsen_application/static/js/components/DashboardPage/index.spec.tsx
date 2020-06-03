@@ -23,6 +23,8 @@ import * as LogUtils from 'utils/logUtils';
 
 import { ResourceType } from 'interfaces';
 
+import { NO_TIMESTAMP_TEXT } from 'components/constants';
+
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'dashboard-icon';
 
@@ -184,6 +186,24 @@ describe('DashboardPage', () => {
     it('renders an ImagePreview with correct props', () => {
       expect(wrapper.find(ImagePreview).props().uri).toBe(wrapper.state().uri);
     })
+
+    describe('renders timestamps correctly when unavailable', () => {
+      const { wrapper } = setup({
+        dashboard: {
+          ...dashboardMetadata,
+          last_run_timestamp: null,
+          last_successful_run_timestamp: null
+        }
+      });
+
+      it('last_run_timestamp', () => {
+        expect(wrapper.find('.last-run-timestamp').text()).toEqual(NO_TIMESTAMP_TEXT)
+      });
+
+      it('last_successful_run_timestamp', () => {
+        expect(wrapper.find('.last-successful-run-timestamp').text()).toEqual(NO_TIMESTAMP_TEXT)
+      });
+    });
   });
 
   describe('renderTabs', () => {

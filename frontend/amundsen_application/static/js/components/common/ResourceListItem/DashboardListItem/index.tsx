@@ -13,6 +13,7 @@ import { ResourceType, DashboardResource } from 'interfaces';
 import { formatDate } from 'utils/dateUtils';
 
 import * as Constants from './constants';
+import { NO_TIMESTAMP_TEXT } from 'components/constants';
 
 export interface DashboardListItemProps {
   dashboard: DashboardResource;
@@ -53,15 +54,16 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
             { getSourceDisplayName(dashboard.product, dashboard.type) }
           </div>
           <div className="resource-badges">
-            {
-               dashboard.last_successful_run_timestamp &&
-               <div>
-                 <div className="title-3">{ Constants.LAST_RUN_TITLE }</div>
-                 <div className="body-secondary-3">
-                   { formatDate({ epochTimestamp: dashboard.last_successful_run_timestamp }) }
-                 </div>
+            <div>
+               <div className="title-3">{ Constants.LAST_RUN_TITLE }</div>
+               <div className="body-secondary-3">
+                 {
+                   dashboard.last_successful_run_timestamp ?
+                   formatDate({ epochTimestamp: dashboard.last_successful_run_timestamp }) :
+                   NO_TIMESTAMP_TEXT
+                 }
                </div>
-             }
+            </div>
             <img className="icon icon-right" />
           </div>
         </Link>
