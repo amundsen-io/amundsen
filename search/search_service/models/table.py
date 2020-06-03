@@ -25,6 +25,7 @@ class Table(Base):
     # The following properties are lightly-transformed properties from the normal table object:
     column_names: List[str]
     column_descriptions: List[str] = []
+    programmatic_descriptions: List[str] = []
     # The following are search-only properties:
     total_usage: int = 0
     schema_description: Optional[str] = attr.ib(default=None)
@@ -47,7 +48,8 @@ class Table(Base):
             'badges',
             'last_updated_timestamp',
             'display_name',
-            'schema_description'
+            'programmatic_descriptions',
+            'schema_description',
         }
 
     @staticmethod

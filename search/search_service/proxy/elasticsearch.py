@@ -318,7 +318,8 @@ class ElasticsearchProxy(BaseProxy):
                                    "column_names^2",
                                    "column_descriptions",
                                    "tags",
-                                   "badges"],
+                                   "badges",
+                                   "programmatic_descriptions"],
                     }
                 },
                 "field_value_factor": {

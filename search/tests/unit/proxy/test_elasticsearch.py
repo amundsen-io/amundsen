@@ -26,7 +26,8 @@ class MockSearchResult:
                  column_names: Iterable[str],
                  tags: Iterable[Tag],
                  badges: Iterable[Tag],
-                 last_updated_timestamp: int) -> None:
+                 last_updated_timestamp: int,
+                 programmatic_descriptions: List[str] = []) -> None:
         self.name = name
         self.key = key
         self.description = description
@@ -37,6 +38,7 @@ class MockSearchResult:
         self.tags = tags
         self.badges = badges
         self.last_updated_timestamp = last_updated_timestamp
+        self.programmatic_descriptions = programmatic_descriptions
 
 
 class MockUserSearchResult:
@@ -93,7 +95,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                              column_names=['test_col1', 'test_col2'],
                                              tags=self.mock_empty_tag,
                                              badges=self.mock_empty_badge,
-                                             last_updated_timestamp=1527283287)
+                                             last_updated_timestamp=1527283287,
+                                             programmatic_descriptions=[])
 
         self.mock_result2 = MockSearchResult(name='test_table2',
                                              key='test_key2',
@@ -506,7 +509,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                   schema='test_schema', description='A table for lots of things!',
                   key='snowflake://blue.test_schema/bitcoin_wallets',
                   last_updated_timestamp=0, name='bitcoin_wallets', tags=[], badges=self.mock_empty_badge,
-                  schema_description='schema description 2')
+                  schema_description='schema description 2', programmatic_descriptions=["test"])
         ]
         expected_data = [
             {
@@ -530,6 +533,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'tags': [],
                 'badges': [],
                 'total_usage': 0,
+                'programmatic_descriptions': [],
                 'schema_description': 'schema description 1',
             },
             {
@@ -554,6 +558,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'badges': [],
                 'total_usage': 0,
                 'schema_description': 'schema description 2',
+                'programmatic_descriptions': ["test"]
             }
         ]
         mock_elasticsearch.bulk.return_value = {'errors': False}
@@ -606,6 +611,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                     'tags': [],
                     'badges': [],
                     'total_usage': 0,
+                    'programmatic_descriptions': [],
                     'schema_description': 'schema description 1',
                 }
             }
