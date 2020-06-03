@@ -1,12 +1,13 @@
 from typing import List
+from typing import Optional
 
 import attr
 from amundsen_common.models.popular_table import PopularTable
+from amundsen_common.models.table import Tag
 from amundsen_common.models.user import User
 from marshmallow_annotations.ext.attrs import AttrsSchema
 
-from amundsen_common.models.table import Tag
-from typing import Optional
+from metadata_service.entity.dashboard_query import DashboardQuery
 
 
 @attr.s(auto_attribs=True, kw_only=True)
@@ -27,7 +28,8 @@ class DashboardDetail:
     owners: List[User] = attr.ib(factory=list)
     frequent_users: List[User] = attr.ib(factory=list)
     chart_names: List[str] = attr.ib(factory=list)
-    query_names: List[str] = attr.ib(factory=list)
+    query_names: List[str] = attr.ib(factory=list)  # DEPRECATED
+    queries: List[DashboardQuery] = attr.ib(factory=list)
     tables: List[PopularTable] = attr.ib(factory=list)
     tags: List[Tag] = attr.ib(factory=list)
     badges: List[Tag] = attr.ib(factory=list)

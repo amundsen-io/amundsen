@@ -14,6 +14,7 @@ from neo4j.v1 import GraphDatabase
 
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
+from metadata_service.entity.dashboard_query import DashboardQuery
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
@@ -732,7 +733,8 @@ class TestNeo4jProxy(unittest.TestCase):
                         }
                     ],
                     'charts': [{'name': 'chart1'}, {'name': 'chart2'}],
-                    'queries': [{'name': 'query1'}, {'name': 'query2'}],
+                    'queries': [{'name': 'query1'}, {'name': 'query2', 'url': 'http://foo.bar/query',
+                                                     'query_text': 'SELECT * FROM foo.bar'}],
                     'tables': [
                         {
                             'database': 'db1',
@@ -795,6 +797,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     employee_type='teamMember', manager_fullname='')],
                                        frequent_users=[], chart_names=['chart1', 'chart2'],
                                        query_names=['query1', 'query2'],
+                                       queries=[DashboardQuery(name='query1'),
+                                                DashboardQuery(name='query2', url='http://foo.bar/query',
+                                                               query_text='SELECT * FROM foo.bar')],
                                        tables=[
                                            PopularTable(database='db1',
                                                         name='table1',
