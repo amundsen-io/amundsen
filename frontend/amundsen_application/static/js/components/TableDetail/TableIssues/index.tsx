@@ -58,26 +58,6 @@ export class TableIssues extends React.Component<TableIssueProps> {
     );
   }
 
-  renderMoreIssuesMessage = (count: number, url: string) => {
-    return (
-      <span className="table-more-issues" key="more-issue-link">
-        <a id="more-issues-link" className="table-issue-more-issues" target="_blank" href={url} onClick={logClick}>
-         View all {count} issues
-        </a>
-        |
-        { this.renderReportIssueLink() }
-      </span>
-    );
-  }
-
-  renderReportIssueLink = () => {
-    return (
-      <div className="table-report-new-issue">
-        <ReportTableIssue tableKey={ this.props.tableKey } tableName={ this.props.tableName }/>
-      </div>
-    );
-  }
-
   renderIssueTitle = () => {
     return (
       <div className="section-title title-3">
@@ -86,40 +66,59 @@ export class TableIssues extends React.Component<TableIssueProps> {
     );
   }
 
+  renderIssueContent = () => {
+    if (this.props.issues.length === 0) {
+      return (
+        <div className="issue-banner">
+          { NO_DATA_ISSUES_TEXT }
+        </div>
+      )
+    };
+    return this.props.issues.map(this.renderIssue);
+  }
+
+  renderIssueFooter = () => {
+    const hasIssues = this.props.issues.length !== 0;
+    const reportIssueLink = (
+      <div className={`table-report-new-issue ${hasIssues ? 'ml-1' : ''}`}>
+        <ReportTableIssue tableKey={ this.props.tableKey } tableName={ this.props.tableName }/>
+      </div>
+    );
+
+    if (!hasIssues) {
+      return reportIssueLink;
+    }
+    return (
+      <span className="table-more-issues" key="more-issue-link">
+        <a id="more-issues-link" className="table-issue-more-issues" target="_blank" href={this.props.allIssuesUrl} onClick={logClick}>
+         View all { this.props.total } issues
+        </a>
+        |
+        { reportIssueLink }
+      </span>
+    );
+  }
+
   render() {
     if (this.props.isLoading) {
       return (
-        <div>
+        <>
           {this.renderIssueTitle()}
           <div className="table-issues">
             <LoadingSpinner />
           </div>
-        </div>
+        </>
       )
     }
 
-    if (this.props.issues.length === 0) {
-      return (
-        <div>
-          {this.renderIssueTitle()}
-          <div className="table-issues">
-            <div className="issue-banner">
-              {NO_DATA_ISSUES_TEXT}
-            </div>
-          </div>
-          { this.renderReportIssueLink()}
-        </div>
-      );
-    }
-
     return (
-      <div>
+      <>
         {this.renderIssueTitle()}
         <div className="table-issues">
-          { this.props.issues.map(this.renderIssue)}
+          {this.renderIssueContent()}
         </div>
-        { this.renderMoreIssuesMessage(this.props.total, this.props.allIssuesUrl)}
-      </div>
+        {this.renderIssueFooter()}
+      </>
     );
   }
 }

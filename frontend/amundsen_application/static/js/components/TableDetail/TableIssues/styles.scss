@@ -10,13 +10,14 @@
     flex-direction: row;
     border-top: 1px solid $stroke-light;
     color: $text-secondary;
+    line-height: 24px;
 
     &:last-child {
       border-bottom: 1px solid $stroke-light;
     }
 
-    > :not(.table-issue-priority) {
-      line-height: 24px;
+    .table-issue-priority {
+      line-height: 20px;
     }
   }
   .table-issue-link {
@@ -75,5 +76,8 @@
 }
 .table-report-new-issue {
   margin-bottom: $spacer-1;
-  margin-left: $spacer-1;
+
+  &.ml-1 {
+    margin-left: $spacer-1;
+  }
 }
