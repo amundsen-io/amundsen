@@ -294,14 +294,19 @@ components:
             type: string
         query_names:
           type: array
-          description: 'Chart names associated with the Dashboard'
+          description: '[DEPRECATED] Chart names associated with the Dashboard'
           items:
             type: string
+        frequent_users:
+          type: array
+          description: 'List of queries used by this Dashboard'
+          items:
+            $ref: '#/components/schemas/UserDetailFields'
         tables:
           type: array
           description: 'Tables that is used in Dashboard'
           items:
-            $ref: '#/components/schemas/PopularTables'
+            $ref: '#/components/schemas/DashboardQuery'
         tags:
           type: array
           description: 'Tags tagged on Dashboard'
@@ -347,6 +352,18 @@ components:
         last_successful_run_timestamp:
           type: int
           description: 'Dashboard last run timestamp in epoch'
+    DashboardQuery:
+      type: object
+      properties:
+        query_name:
+          type: string
+          description: 'Name of the query'
+        query_url:
+          type: string
+          description: 'URL of the query'
+        query_text:
+          type: string
+          description: 'Query statement text'
     ErrorResponse:
       type: object
       properties:

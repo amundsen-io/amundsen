@@ -17,6 +17,7 @@ from beaker.util import parse_cache_config_options
 from neo4j.v1 import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.dashboard_query import DashboardQuery as DashboardQueryEntity
 from metadata_service.entity.description import Description
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
@@ -1086,7 +1087,7 @@ class Neo4jProxy(BaseProxy):
         sum(read.read_count) as recent_view_count
         OPTIONAL MATCH (d)-[:HAS_QUERY]->(query:Query)
         WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
-        recent_view_count, collect(query) as queries
+        recent_view_count, collect({name: query.name, url: query.url, query_text: query.query_text}) as queries
         OPTIONAL MATCH (d)-[:HAS_QUERY]->(query:Query)-[:HAS_CHART]->(chart:Chart)
         WITH c, dg, d, description, last_exec, last_success_exec, t, owners, tags,
         recent_view_count, queries, collect(chart) as charts
@@ -1127,7 +1128,10 @@ class Neo4jProxy(BaseProxy):
         owners = [self._build_user_from_record(record=owner) for owner in record['owners']]
         tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in record['tags']]
         chart_names = [chart['name'] for chart in record['charts'] if 'name' in chart and chart['name']]
+        # TODO Deprecate query_names in favor of queries after several releases from v2.5.0
         query_names = [query['name'] for query in record['queries'] if 'name' in query and query['name']]
+        queries = [DashboardQueryEntity(**query) for query in record['queries']
+                   if query.get('name') or query.get('url') or query.get('text')]
         tables = [PopularTable(**table) for table in record['tables'] if 'name' in table and table['name']]
 
         return DashboardDetailEntity(uri=record['uri'],
@@ -1149,6 +1153,7 @@ class Neo4jProxy(BaseProxy):
                                      recent_view_count=record['recent_view_count'],
                                      chart_names=chart_names,
                                      query_names=query_names,
+                                     queries=queries,
                                      tables=tables
                                      )
 
