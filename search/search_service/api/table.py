@@ -26,7 +26,8 @@ table_fields = {
     # last etl timestamp as epoch
     "last_updated_timestamp": fields.Integer,
     "display_name": fields.String,
-    "schema_description": fields.String
+    "schema_description": fields.String,
+    "programmatic_descriptions": fields.List(fields.String)
 }
 
 search_table_results = {
