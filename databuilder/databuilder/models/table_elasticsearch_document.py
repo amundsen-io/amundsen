@@ -23,6 +23,7 @@ class TableESDocument(ElasticsearchDocument):
                  badges=None,  # type: Optional[List[str]]
                  display_name=None,  # type: Optional[str]
                  schema_description=None,  # type: Optional[str]
+                 programmatic_descriptions=[],  # type: List[str]
                  ):
         # type: (...) -> None
         self.database = database
@@ -42,3 +43,4 @@ class TableESDocument(ElasticsearchDocument):
         self.tags = tags
         self.badges = badges
         self.schema_description = schema_description
+        self.programmatic_descriptions = programmatic_descriptions

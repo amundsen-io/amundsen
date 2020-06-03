@@ -81,6 +81,10 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
             },
             "unique_usage": {
               "type": "long"
+            },
+            "programmatic_descriptions": {
+              "type": "text",
+              "analyzer": "simple"
             }
           }
         }

@@ -23,6 +23,7 @@ class TestTableElasticsearchDocument(unittest.TestCase):
                                    total_usage=100,
                                    unique_usage=10,
                                    tags=['test'],
+                                   programmatic_descriptions=['test'],
                                    badges=['badge1'],
                                    schema_description='schema description')
 
@@ -39,6 +40,7 @@ class TestTableElasticsearchDocument(unittest.TestCase):
                                   "total_usage": 100,
                                   "unique_usage": 10,
                                   "tags": ["test"],
+                                  "programmatic_descriptions": ['test'],
                                   "badges": ["badge1"],
                                   'schema_description': 'schema description'
                                   }
