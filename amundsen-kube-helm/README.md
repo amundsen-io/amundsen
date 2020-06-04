@@ -20,7 +20,7 @@ This is setup templates for deploying [amundsen](https://github.com/lyft/amundse
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://kubernetes-charts.storage.googleapis.com/ | elasticsearch | 1.24.0 |
+| https://kubernetes-charts.storage.googleapis.com/ | elasticsearch | 1.32.0 |
 
 ## Chart Values
 The following table lists the configurable parameters of the Amundsen charts and their default values.
