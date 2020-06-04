@@ -189,6 +189,7 @@ Currently **officially** using Amundsen:
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)
 1. [PUBG](https://careers.pubg.com/)
+1. [PicPay](https://picpay.com.br)
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
