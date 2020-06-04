@@ -62,8 +62,8 @@ pytz==2018.4
 six==1.11.0
 Werkzeug==0.15.3
 wheel==0.33.1
-neo4j-driver==1.6.0
-neotime==1.0.0
+neo4j==1.7.6
+neotime==1.7.1
 pytz==2018.4
 requests-aws4auth==0.9
 statsd==3.2.1

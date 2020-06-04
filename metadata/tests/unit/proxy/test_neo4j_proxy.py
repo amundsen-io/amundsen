@@ -10,7 +10,7 @@ from amundsen_common.models.table import (Application, Column, Source,
                                           Watermark, ProgrammaticDescription)
 from amundsen_common.models.user import UserSchema
 from mock import MagicMock, patch
-from neo4j.v1 import GraphDatabase
+from neo4j import GraphDatabase
 
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
