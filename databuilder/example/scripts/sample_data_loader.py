@@ -92,6 +92,7 @@ def run_csv_job(file_loc, table_name, model):
         'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
         'publisher.neo4j.neo4j_user': neo4j_user,
         'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.neo4j_encrypted': False,
         'publisher.neo4j.job_publish_tag': 'unique_tag',  # should use unique tag here like {ds}
     })
 
@@ -120,6 +121,7 @@ def run_table_column_job(table_path, column_path):
         'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
         'publisher.neo4j.neo4j_user': neo4j_user,
         'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.neo4j_encrypted': False,
         'publisher.neo4j.job_publish_tag': 'unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,
@@ -148,6 +150,7 @@ def create_last_updated_job():
         'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
         'publisher.neo4j.neo4j_user': neo4j_user,
         'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.neo4j_encrypted': False,
         'publisher.neo4j.job_publish_tag': 'unique_lastupdated_tag',  # should use unique tag here like {ds}
     })
 
@@ -189,6 +192,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
         'extractor.search_data.extractor.neo4j.model_class': model_name,
         'extractor.search_data.extractor.neo4j.neo4j_auth_user': neo4j_user,
         'extractor.search_data.extractor.neo4j.neo4j_auth_pw': neo4j_password,
+        'extractor.search_data.extractor.neo4j.neo4j_encrypted': False,
         'loader.filesystem.elasticsearch.file_path': extracted_search_data_path,
         'loader.filesystem.elasticsearch.mode': 'w',
         'publisher.elasticsearch.file_path': extracted_search_data_path,
