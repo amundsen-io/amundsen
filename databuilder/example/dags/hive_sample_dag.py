@@ -97,7 +97,7 @@ def create_table_wm_job(**kwargs):
     job_config = ConfigFactory.from_dict({
         'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string(),
         'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.EXTRACT_SQL): sql,
-        'extractor.sqlalchemy.model_class': 'databuilder.models.hive_watermark.HiveWatermark',
+        'extractor.sqlalchemy.model_class': 'databuilder.models.watermark.Watermark',
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
             node_files_folder,
         'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
