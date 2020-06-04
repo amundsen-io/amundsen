@@ -7,7 +7,7 @@ from metadata_service.proxy.statsd_utilities import _get_statsd_client
 from flask import current_app
 
 from metadata_service import create_app
-from neo4j.v1 import GraphDatabase
+from neo4j import GraphDatabase
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
 
 

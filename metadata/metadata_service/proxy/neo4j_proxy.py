@@ -14,7 +14,8 @@ from amundsen_common.models.table import Tag
 from amundsen_common.models.user import User as UserEntity
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from neo4j.v1 import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
+from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
+import neo4j
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.dashboard_query import DashboardQuery as DashboardQueryEntity
@@ -45,7 +46,9 @@ class Neo4jProxy(BaseProxy):
                  user: str = 'neo4j',
                  password: str = '',
                  num_conns: int = 50,
-                 max_connection_lifetime_sec: int = 100) -> None:
+                 max_connection_lifetime_sec: int = 100,
+                 encrypted: bool = True,
+                 validate_ssl: bool = False) -> None:
         """
         There's currently no request timeout from client side where server
         side can be enforced via "dbms.transaction.timeout"
@@ -57,10 +60,13 @@ class Neo4jProxy(BaseProxy):
         value needs to be smaller than surrounding network environment's timeout.
         """
         endpoint = f'{host}:{port}'
+        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl else neo4j.TRUST_ALL_CERTIFICATES
         self._driver = GraphDatabase.driver(endpoint, max_connection_pool_size=num_conns,
                                             connection_timeout=10,
                                             max_connection_lifetime=max_connection_lifetime_sec,
-                                            auth=(user, password))  # type: Driver
+                                            auth=(user, password),
+                                            encrypted=encrypted,
+                                            trust=trust)  # type: Driver
 
     @timer_with_counter
     def get_table(self, *, table_uri: str) -> Table:
