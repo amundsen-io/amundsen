@@ -6,7 +6,7 @@ import textwrap
 import unittest
 
 from mock import patch
-from neo4j.v1 import GraphDatabase
+from neo4j import GraphDatabase
 from pyhocon import ConfigFactory
 
 from databuilder.publisher import neo4j_csv_publisher

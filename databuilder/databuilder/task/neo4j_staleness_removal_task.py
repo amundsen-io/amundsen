@@ -3,6 +3,7 @@ import textwrap
 import time
 
 from neo4j import GraphDatabase  # noqa: F401
+import neo4j
 from pyhocon import ConfigFactory  # noqa: F401
 from pyhocon import ConfigTree  # noqa: F401
 from typing import Dict, Iterable, Any  # noqa: F401
@@ -16,6 +17,10 @@ NEO4J_END_POINT_KEY = 'neo4j_endpoint'
 NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
+NEO4J_ENCRYPTED = 'neo4j_encrypted'
+"""NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting."""
+NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
+"""NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS cert against system CAs."""
 
 TARGET_NODES = "target_nodes"
 TARGET_RELATIONS = "target_relations"
@@ -31,6 +36,8 @@ MIN_MS_TO_EXPIRE = "minimum_milliseconds_to_expire"
 
 DEFAULT_CONFIG = ConfigFactory.from_dict({BATCH_SIZE: 100,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
+                                          NEO4J_ENCRYPTED: True,
+                                          NEO4J_VALIDATE_SSL: False,
                                           STALENESS_MAX_PCT: 5,
                                           TARGET_NODES: [],
                                           TARGET_RELATIONS: [],
@@ -85,10 +92,14 @@ class Neo4jStalenessRemovalTask(Task):
         else:
             self.marker = conf.get_string(JOB_PUBLISH_TAG)
 
+        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
+            else neo4j.TRUST_ALL_CERTIFICATES
         self._driver = \
             GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
                                  max_connection_life_time=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
+                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+                                 encrypted=conf.get_bool(NEO4J_ENCRYPTED),
+                                 trust=trust)
 
     def run(self):
         # type: () -> None

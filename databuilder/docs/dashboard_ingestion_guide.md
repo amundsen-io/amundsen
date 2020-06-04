@@ -78,6 +78,8 @@ job_config = ConfigFactory.from_dict({
         neo4j_user,
     'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW):
         neo4j_password,
+    'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_ENCRYPTED):
+        False,
     'extractor.search_data.{}'.format(Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY):
         Neo4jSearchDataExtractor.DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY,
     'extractor.search_data.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
