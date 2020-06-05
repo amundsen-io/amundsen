@@ -1,193 +1,238 @@
-import * as React from 'react';
-import * as History from 'history';
+import * as React from "react";
+import * as History from "history";
 
-import { shallow } from 'enzyme';
+import { shallow } from "enzyme";
 
-import { DashboardPage, DashboardPageProps, RouteProps } from './';
-import { getMockRouterProps } from '../../fixtures/mockRouter';
-import AvatarLabel from 'components/common/AvatarLabel';
-import LoadingSpinner from 'components/common/LoadingSpinner';
-import Breadcrumb from 'components/common/Breadcrumb';
-import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
-import Flag from 'components/common/Flag';
-import ResourceList from 'components/common/ResourceList';
-import TabsComponent from 'components/common/TabsComponent';
-import ChartList from './ChartList';
-import ImagePreview from './ImagePreview';
+import AvatarLabel from "components/common/AvatarLabel";
+import LoadingSpinner from "components/common/LoadingSpinner";
+import Breadcrumb from "components/common/Breadcrumb";
+import BookmarkIcon from "components/common/Bookmark/BookmarkIcon";
+import Flag from "components/common/Flag";
+import ResourceList from "components/common/ResourceList";
+import TabsComponent from "components/common/TabsComponent";
+import ChartList from "./ChartList";
+import ImagePreview from "./ImagePreview";
 
-import * as Constants from './constants';
+import { DashboardPage, DashboardPageProps, MatchProps } from "./";
 
-import * as ConfigUtils from 'config/config-utils';
-import { dashboardMetadata } from 'fixtures/metadata/dashboard';
-import * as LogUtils from 'utils/logUtils';
+import { getMockRouterProps } from "../../fixtures/mockRouter";
+import { dashboardMetadata } from "fixtures/metadata/dashboard";
 
-import { ResourceType } from 'interfaces';
+import { NO_TIMESTAMP_TEXT } from "components/constants";
+import * as Constants from "./constants";
 
-import { NO_TIMESTAMP_TEXT } from 'components/constants';
+import * as LogUtils from "utils/logUtils";
 
-const MOCK_DISPLAY_NAME = 'displayName';
-const MOCK_ICON_CLASS = 'dashboard-icon';
+import { ResourceType } from "interfaces";
 
-jest.mock('config/config-utils', () => (
-  {
-    getSourceDisplayName: jest.fn(() => { return MOCK_DISPLAY_NAME }),
-    getSourceIconClass: jest.fn(() => { return MOCK_ICON_CLASS }),
-  }
-));
+const MOCK_DISPLAY_NAME = "displayName";
+const MOCK_ICON_CLASS = "dashboard-icon";
 
-describe('DashboardPage', () => {
-  const setStateSpy = jest.spyOn(DashboardPage.prototype, 'setState');
-  const setup = (propOverrides?: Partial<DashboardPageProps>, location?: Partial<History.Location>) => {
-    const routerProps = getMockRouterProps<RouteProps>(null, location);
-    const props = {
-      isLoading: false,
-      statusCode: 200,
-      dashboard: dashboardMetadata,
-      getDashboard: jest.fn(),
-      ...routerProps,
-      ...propOverrides,
-    };
+jest.mock("config/config-utils", () => ({
+  getSourceDisplayName: jest.fn(() => {
+    return MOCK_DISPLAY_NAME;
+  }),
+  getSourceIconClass: jest.fn(() => {
+    return MOCK_ICON_CLASS;
+  })
+}));
+const setStateSpy = jest.spyOn(DashboardPage.prototype, "setState");
 
-    const wrapper = shallow<DashboardPage>(<DashboardPage {...props} />)
-    return { props, wrapper };
+const TEST_CLUSTER = "gold";
+const TEST_PRODUCT = "mode";
+const TEST_GROUP = "234testGroupID";
+const TEST_DASHBOARD = "123DashboardID";
+
+const setup = (
+  propOverrides?: Partial<DashboardPageProps>,
+  location?: Partial<History.Location>
+) => {
+  const routerProps = getMockRouterProps<MatchProps>(
+    {
+      uri: "mode_dashboard://gold.234testGroupID/123DashboardID"
+    },
+    location
+  );
+  const props = {
+    isLoading: false,
+    statusCode: 200,
+    dashboard: dashboardMetadata,
+    getDashboard: jest.fn(),
+    ...routerProps,
+    ...propOverrides
   };
+  const wrapper = shallow<DashboardPage>(<DashboardPage {...props} />);
 
-  describe('componentDidMount', () => {
-    it('calls loadDashboard with uri from state', () => {
-      const wrapper = setup().wrapper;
-      const loadDashboardSpy = jest.spyOn(wrapper.instance(), 'loadDashboard');
+  return { props, wrapper };
+};
+
+describe("DashboardPage", () => {
+  describe("componentDidMount", () => {
+    it("calls getDashboard", () => {
+      const { props, wrapper } = setup();
+
       wrapper.instance().componentDidMount();
-      expect(loadDashboardSpy).toHaveBeenCalledWith(wrapper.state().uri);
-    });
-  });
 
-  describe('componentDidUpdate', () => {
-    let props;
-    let wrapper;
-    let loadDashboardSpy;
-
-    beforeEach(() => {
-      const setupResult = setup(null, {
-        search: '/dashboard?uri=testUri',
-      });
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      loadDashboardSpy = jest.spyOn(wrapper.instance(), 'loadDashboard');
-    });
-
-    it('calls loadDashboard when uri has changes', () => {
-      loadDashboardSpy.mockClear();
-      setStateSpy.mockClear();
-      wrapper.setProps({ location: { search: '/dashboard?uri=newUri'}});
-      expect(loadDashboardSpy).toHaveBeenCalledWith('newUri');
-      expect(setStateSpy).toHaveBeenCalledWith({ uri: 'newUri'});
-    });
-
-    it('does not call loadDashboard when uri has not changed', () => {
-      loadDashboardSpy.mockClear();
-      setStateSpy.mockClear();
-      wrapper.instance().componentDidUpdate();
-      expect(loadDashboardSpy).not.toHaveBeenCalled();
-      expect(setStateSpy).not.toHaveBeenCalled();
-    });
-  });
-
-
-  describe('loadDashboard', () => {
-    let getLoggingParamsSpy;
-    let props;
-    let wrapper;
-    beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      getLoggingParamsSpy = jest.spyOn(LogUtils, 'getLoggingParams');
-      wrapper.instance().loadDashboard('testUri');
-    })
-    it('calls getLoggingParams', () => {
-      expect(getLoggingParamsSpy).toHaveBeenCalledWith(props.location.search);
-    });
-    it('calls props.getDashboard', () => {
       expect(props.getDashboard).toHaveBeenCalled();
     });
+
+    it("calls getDashboard with the right parameters", () => {
+      const { props, wrapper } = setup();
+      const expectedURI = `${TEST_PRODUCT}_dashboard://${TEST_CLUSTER}.${TEST_GROUP}/${TEST_DASHBOARD}`;
+      const expectedArguments = {
+        source: undefined,
+        searchIndex: undefined,
+        uri: expectedURI
+      };
+
+      wrapper.instance().componentDidMount();
+
+      expect(props.getDashboard).toHaveBeenCalledWith(expectedArguments);
+    });
   });
 
-  describe('mapStatusToStyle', () => {
+  describe("componentDidUpdate", () => {
+    let props;
     let wrapper;
-    beforeAll(() => {
-      wrapper = setup().wrapper
+    let getDashboardSpy;
+
+    beforeEach(() => {
+      ({ props, wrapper } = setup());
+
+      getDashboardSpy = props.getDashboard;
     });
-    it('returns success if status === LAST_RUN_SUCCEEDED', () => {
-      expect(wrapper.instance().mapStatusToStyle(Constants.LAST_RUN_SUCCEEDED)).toBe('success');
+
+    describe('when params change', () => {
+      it("calls getDashboard", () => {
+        getDashboardSpy.mockClear();
+        setStateSpy.mockClear();
+        const newParams = {
+          uri: "testProduct_dashboard://testCluster.testGroupID/testDashboardID"
+        };
+        const expectedURI = `testProduct_dashboard://testCluster.testGroupID/testDashboardID`;
+        const expectedArguments = {
+          searchIndex: undefined,
+          source: undefined,
+          uri: expectedURI,
+        };
+
+        wrapper.setProps({ match: { params: newParams } });
+
+        expect(getDashboardSpy).toHaveBeenCalledWith(expectedArguments);
+        expect(setStateSpy).toHaveBeenCalledWith({ uri: expectedURI });
+      });
     });
-    it('returns danger if status !== LAST_RUN_SUCCEEDED', () => {
-      expect(wrapper.instance().mapStatusToStyle('anythingelse')).toBe('danger');
+
+    describe('when params do not change', () => {
+      it("does not call getDashboard", () => {
+        getDashboardSpy.mockClear();
+        setStateSpy.mockClear();
+
+        wrapper.instance().componentDidUpdate();
+
+        expect(getDashboardSpy).not.toHaveBeenCalled();
+        expect(setStateSpy).not.toHaveBeenCalled();
+      });
     });
   });
 
-  describe('render', () => {
+  describe("mapStatusToStyle", () => {
+    let wrapper;
+
+    beforeAll(() => {
+      ({ wrapper } = setup());
+    });
+
+    it("returns success if status === LAST_RUN_SUCCEEDED", () => {
+      expect(
+        wrapper.instance().mapStatusToStyle(Constants.LAST_RUN_SUCCEEDED)
+      ).toBe("success");
+    });
+
+    it("returns danger if status !== LAST_RUN_SUCCEEDED", () => {
+      expect(wrapper.instance().mapStatusToStyle("anythingelse")).toBe(
+        "danger"
+      );
+    });
+  });
+
+  describe("render", () => {
     const { props, wrapper } = setup();
 
-    it('renders the loading spinner when loading', () => {
-      const { props, wrapper } = setup({ isLoading: true })
+    it("renders the loading spinner when loading", () => {
+      const { wrapper } = setup({ isLoading: true });
+
       expect(wrapper.find(LoadingSpinner).exists()).toBeTruthy();
     });
 
-    it('renders a breadcrumb component', () => {
+    it("renders a breadcrumb component", () => {
       expect(wrapper.find(Breadcrumb).exists()).toBeTruthy();
     });
 
-    it('renders a the dashboard title', () => {
-      const headerText = wrapper.find('.header-title-text').text();
+    it("renders a the dashboard title", () => {
+      const headerText = wrapper.find(".header-title-text").text();
+
       expect(headerText).toEqual(props.dashboard.name);
     });
 
-    it('renders a bookmark icon with correct props', () => {
+    it("renders a bookmark icon with correct props", () => {
       const elementProps = wrapper.find(BookmarkIcon).props();
+
       expect(elementProps.bookmarkKey).toBe(props.dashboard.uri);
       expect(elementProps.resourceType).toBe(ResourceType.dashboard);
     });
 
-    describe('renders description', () => {
-      it('with link to add description if none exists', () => {
-        const wrapper = setup({
+    describe("renders description", () => {
+      it("with link to add description if none exists", () => {
+        const { wrapper } = setup({
           dashboard: {
             ...dashboardMetadata,
-            description: '',
+            description: ""
           }
-        }).wrapper;
-        const link = wrapper.find('a.edit-link');
+        });
+        const link = wrapper.find("a.edit-link");
+
         expect(link.props().href).toBe(props.dashboard.url);
-        expect(link.text()).toBe(`${Constants.ADD_DESC_TEXT} ${MOCK_DISPLAY_NAME}`);
+        expect(link.text()).toBe(
+          `${Constants.ADD_DESC_TEXT} ${MOCK_DISPLAY_NAME}`
+        );
       });
     });
 
-    describe('renders owners', () => {
-      it('with correct AvatarLabel if no owners exist', () => {
-        const wrapper = setup({
+    describe("renders owners", () => {
+      it("with correct AvatarLabel if no owners exist", () => {
+        const { wrapper } = setup({
           dashboard: {
             ...dashboardMetadata,
-            owners: [],
+            owners: []
           }
-        }).wrapper;
-        expect(wrapper.find(AvatarLabel).props().label).toBe(Constants.NO_OWNER_TEXT)
+        });
+
+        expect(wrapper.find(AvatarLabel).props().label).toBe(
+          Constants.NO_OWNER_TEXT
+        );
       });
     });
 
-    it('renders a Flag for last run state', () => {
-      const mapStatusToStyleSpy = jest.spyOn(wrapper.instance(), 'mapStatusToStyle').mockImplementationOnce(() => 'testStyle');
+    it("renders a Flag for last run state", () => {
+      const mapStatusToStyleSpy = jest
+        .spyOn(wrapper.instance(), "mapStatusToStyle")
+        .mockImplementationOnce(() => "testStyle");
       wrapper.instance().forceUpdate();
-      const element = wrapper.find('.last-run-state').find(Flag);
+      const element = wrapper.find(".last-run-state").find(Flag);
+
       expect(element.props().text).toBe(props.dashboard.last_run_state);
-      expect(mapStatusToStyleSpy).toHaveBeenCalledWith(props.dashboard.last_run_state);
-      expect(element.props().labelStyle).toBe('testStyle');
-    })
+      expect(mapStatusToStyleSpy).toHaveBeenCalledWith(
+        props.dashboard.last_run_state
+      );
+      expect(element.props().labelStyle).toBe("testStyle");
+    });
 
-    it('renders an ImagePreview with correct props', () => {
+    it("renders an ImagePreview with correct props", () => {
       expect(wrapper.find(ImagePreview).props().uri).toBe(wrapper.state().uri);
-    })
+    });
 
-    describe('renders timestamps correctly when unavailable', () => {
+    describe("renders timestamps correctly when unavailable", () => {
       const { wrapper } = setup({
         dashboard: {
           ...dashboardMetadata,
@@ -196,38 +241,46 @@ describe('DashboardPage', () => {
         }
       });
 
-      it('last_run_timestamp', () => {
-        expect(wrapper.find('.last-run-timestamp').text()).toEqual(NO_TIMESTAMP_TEXT)
+      it("last_run_timestamp", () => {
+        expect(wrapper.find(".last-run-timestamp").text()).toEqual(
+          NO_TIMESTAMP_TEXT
+        );
       });
 
-      it('last_successful_run_timestamp', () => {
-        expect(wrapper.find('.last-successful-run-timestamp').text()).toEqual(NO_TIMESTAMP_TEXT)
+      it("last_successful_run_timestamp", () => {
+        expect(wrapper.find(".last-successful-run-timestamp").text()).toEqual(
+          NO_TIMESTAMP_TEXT
+        );
       });
     });
   });
 
-  describe('renderTabs', () => {
+  describe("renderTabs", () => {
     const { props, wrapper } = setup();
-    it('returns a ResourceList', () => {
+
+    it("returns a ResourceList", () => {
       const result = shallow(wrapper.instance().renderTabs());
       const element = result.find(ResourceList);
+
       expect(element.exists()).toBe(true);
       expect(element.props().allItems).toEqual(props.dashboard.tables);
     });
 
-    it('returns a Tabs component', () => {
+    it("returns a Tabs component", () => {
       const result = wrapper.instance().renderTabs();
+
       expect(result.type).toEqual(TabsComponent);
     });
 
-    it('does not render ChartList if no charts', () => {
-      const wrapper = setup({
+    it("does not render ChartList if no charts", () => {
+      const { wrapper } = setup({
         dashboard: {
           ...dashboardMetadata,
-          chart_names: [],
+          chart_names: []
         }
-      }).wrapper;
+      });
       const result = shallow(wrapper.instance().renderTabs());
+
       expect(result.find(ChartList).exists()).toBe(false);
     });
   });

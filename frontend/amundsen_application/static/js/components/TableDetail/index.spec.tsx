@@ -10,27 +10,27 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import { TableDetail, TableDetailProps, MatchProps } from './';
 
 
-describe('TableDetail', () => {
-
-  const setup = (propOverrides?: Partial<TableDetailProps>, location?: Partial<History.Location>) => {
-    const routerProps = getMockRouterProps<MatchProps>({
-      "cluster":"gold",
-      "database":"hive",
-      "schema":"base",
-      "table":"rides"
-    }, location);
-    const props = {
-      isLoading: false,
-      statusCode: 200,
-      tableData: tableMetadata,
-      getTableData: jest.fn(),
-      ...routerProps,
-      ...propOverrides,
-    };
-    const wrapper = mount<TableDetail>(<TableDetail {...props} />);
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<TableDetailProps>, location?: Partial<History.Location>) => {
+  const routerProps = getMockRouterProps<MatchProps>({
+    "cluster":"gold",
+    "database":"hive",
+    "schema":"base",
+    "table":"rides"
+  }, location);
+  const props = {
+    isLoading: false,
+    statusCode: 200,
+    tableData: tableMetadata,
+    getTableData: jest.fn(),
+    ...routerProps,
+    ...propOverrides,
   };
+  const wrapper = mount<TableDetail>(<TableDetail {...props} />);
+
+  return { props, wrapper };
+};
+
+describe('TableDetail', () => {
 
   describe('render', () => {
 

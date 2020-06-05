@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import { Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbProps, mapDispatchToProps } from '../';
+import { Breadcrumb, BreadcrumbProps, mapDispatchToProps } from '.';
 
 describe('Breadcrumb', () => {
   const setup = (propOverrides?: Partial<BreadcrumbProps>) => {

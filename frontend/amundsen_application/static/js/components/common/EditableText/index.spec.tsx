@@ -3,7 +3,7 @@ import * as ReactMarkdown from 'react-markdown';
 import * as autosize from 'autosize';
 
 import { shallow } from 'enzyme';
-import EditableText, { EditableTextProps } from '../';
+import EditableText, { EditableTextProps } from '.';
 import {
   CANCEL_BUTTON_TEXT,
   REFRESH_BUTTON_TEXT,

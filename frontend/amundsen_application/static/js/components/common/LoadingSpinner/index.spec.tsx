@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import LoadingSpinner from '../';
+import LoadingSpinner from '.';
 
 describe('LoadingSpinner', () => {
     let subject;

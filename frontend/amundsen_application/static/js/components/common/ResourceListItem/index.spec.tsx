@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import DashboardListItem from '../DashboardListItem';
-import TableListItem from '../TableListItem';
-import UserListItem from '../UserListItem';
-import ResourceListItem, { ListItemProps } from '../';
+import DashboardListItem from './DashboardListItem';
+import TableListItem from './TableListItem';
+import UserListItem from './UserListItem';
+import ResourceListItem, { ListItemProps } from '.';
 import { ResourceType } from 'interfaces';
 
 describe('ResourceListItem', () => {

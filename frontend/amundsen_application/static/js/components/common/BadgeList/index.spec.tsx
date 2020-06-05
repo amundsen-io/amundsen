@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import BadgeList from '../'
+import BadgeList from '.'
 import Flag from 'components/common/Flag';
 import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';

@@ -1,7 +1,9 @@
-import * as DateUtils from 'utils/dateUtils';
-import * as LogUtils from 'utils/logUtils';
-import * as NavigationUtils from 'utils/navigationUtils';
 import * as qs from 'simple-query-string';
+
+import * as DateUtils from './dateUtils';
+import * as LogUtils from './logUtils';
+import * as NavigationUtils from './navigationUtils';
+
 import { ResourceType } from 'interfaces/Resources';
 
 
@@ -120,6 +122,16 @@ describe('navigationUtils', () => {
       const expectedFilterString = `%7B%22column%22%3A%22column_name%22%7D`;
       const expectedUrl = `/search?term=${testTerm}&resource=${testResource}&index=${testIndex}&filters=${expectedFilterString}`;
       expect(url).toEqual(expectedUrl);
+    });
+  });
+
+  describe('buildDashboardURL', () => {
+    it('encodes the passed URI for safe use on the URL bar', () => {
+      const testURI = 'product_dashboard://cluster.groupID/dashboardID';
+      const expected = '/dashboard/product_dashboard%3A%2F%2Fcluster.groupID%2FdashboardID';
+      const actual = NavigationUtils.buildDashboardURL(testURI);
+
+      expect(actual).toEqual(expected);
     });
   });
 });

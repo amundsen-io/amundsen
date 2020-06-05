@@ -5,6 +5,7 @@ import SearchItemList from './SearchItemList';
 import ResultItemList from './ResultItemList';
 
 import { getSourceDisplayName, getSourceIconClass, indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import { buildDashboardURL } from 'utils/navigationUtils';
 
 import { GlobalState } from 'ducks/rootReducer'
 import { DashboardSearchResults, TableSearchResults, UserSearchResults } from 'ducks/search/types';
@@ -93,15 +94,19 @@ export class InlineSearchResults extends React.Component<InlineSearchResultsProp
 
   getSuggestedResultHref = (resourceType: ResourceType, result: Resource, index: number): string => {
     const logParams = `source=inline_search&index=${index}`;
+
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
-        return `/dashboard?uri=${dashboard.uri}&${logParams}`;
+
+        return `${buildDashboardURL(dashboard.uri)}?${logParams}`;
       case ResourceType.table:
         const table = result as TableResource;
+
         return `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?${logParams}`;
       case ResourceType.user:
         const user = result as UserResource;
+
         return `/user/${user.user_id}?${logParams}`;
       default:
         return '';

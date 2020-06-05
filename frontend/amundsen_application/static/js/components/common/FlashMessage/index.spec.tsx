@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import FlashMessage, { FlashMessageProps } from '../';
+import FlashMessage, { FlashMessageProps } from '.';
 
 describe('FlashMessage', () => {
   const setup = (propOverrides?: Partial<FlashMessageProps>) => {

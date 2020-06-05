@@ -7,10 +7,10 @@ import { LoggingParams } from '../types';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
+import { buildDashboardURL } from 'utils/navigationUtils';
+import { formatDate } from 'utils/dateUtils';
 
 import { ResourceType, DashboardResource } from 'interfaces';
-
-import { formatDate } from 'utils/dateUtils';
 
 import * as Constants from './constants';
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
@@ -21,9 +21,11 @@ export interface DashboardListItemProps {
 }
 
 class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
+
   getLink = () => {
     const { dashboard, logging } = this.props;
-    return `/dashboard?uri=${dashboard.uri}&index=${logging.index}&source=${logging.source}`;
+
+    return `${buildDashboardURL(dashboard.uri)}?index=${logging.index}&source=${logging.source}`;
   };
 
   generateResourceIconClass = (dashboardId: string, dashboardType: ResourceType): string => {

@@ -3,7 +3,7 @@ import * as History from 'history';
 
 import { mount, shallow } from 'enzyme';
 
-import { mapStateToProps, mapDispatchToProps, SearchBar, SearchBarProps } from '../';
+import { mapStateToProps, mapDispatchToProps, SearchBar, SearchBarProps } from '.';
 import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 

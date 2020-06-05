@@ -7,7 +7,7 @@ export const dashboardSummary: DashboardResource = {
   product: 'mode',
   type: ResourceType.dashboard,
   description: 'I am a dashboard',
-  uri: 'product_dashboard://cluster.group/name',
+  uri: 'mode_dashboard://cluster.group/name',
   url: 'product/name',
   cluster: 'cluster',
   last_successful_run_timestamp: 1585062593

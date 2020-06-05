@@ -6,7 +6,7 @@ import * as Avatar from 'react-avatar';
 import Flag from 'components/common/Flag';
 import { Link } from 'react-router-dom';
 
-import UserListItem, { UserListItemProps } from '../';
+import UserListItem, { UserListItemProps } from '.';
 import { ResourceType } from 'interfaces';
 
 describe('UserListItem', () => {
