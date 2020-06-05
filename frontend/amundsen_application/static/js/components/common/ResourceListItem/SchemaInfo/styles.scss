@@ -1,0 +1,10 @@
+@import 'variables';
+
+.underline {
+  box-shadow: 0px 1px 0px $stroke-underline;
+
+  &:hover,
+  &:focus {
+    background: $btn-default-bg-hover;
+  }
+}

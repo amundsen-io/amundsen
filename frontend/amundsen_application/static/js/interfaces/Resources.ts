@@ -38,6 +38,7 @@ export interface TableResource extends Resource {
   last_updated_timestamp?: number;
   name: string;
   schema: string;
+  schema_description?: string;
   badges?: Badge[];
 };
 
