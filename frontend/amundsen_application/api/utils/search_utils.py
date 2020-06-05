@@ -21,6 +21,7 @@ def map_table_result(result: Dict) -> Dict:
         'description': result.get('description', None),
         'database': result.get('database', None),
         'schema': result.get('schema', None),
+        'schema_description': result.get('schema_description', None),
         'badges': result.get('badges', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
     }

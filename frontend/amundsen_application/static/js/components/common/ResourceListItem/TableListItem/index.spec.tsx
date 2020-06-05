@@ -4,6 +4,7 @@ import { shallow } from 'enzyme';
 
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
+import SchemaInfo from 'components/common/ResourceListItem/SchemaInfo';
 import TableListItem, { TableListItemProps } from '.';
 import { ResourceType, Badge, TagType } from 'interfaces';
 
@@ -36,6 +37,7 @@ describe('TableListItem', () => {
         badges: [ { tag_name: 'badgeName', tag_type: TagType.BADGE } ],
         name: 'tableName',
         schema: 'tableSchema',
+        schema_description: 'schemaDescription',
       },
       ...propOverrides
     };
@@ -93,13 +95,57 @@ describe('TableListItem', () => {
 
       it('renders start correct icon', () => {
         const startIcon = resourceInfo.find('.resource-icon');
-
         expect(startIcon.exists()).toBe(true);
         expect(startIcon.props().className).toEqual(wrapper.instance().generateResourceIconClass(props.table.database));
       });
 
-      it('renders table name', () => {
-        expect(resourceInfo.find('.resource-name').children().at(0).text()).toEqual('tableSchema.tableName');
+      describe('if props.table has schema description', () => {
+        let schemaInfo;
+        beforeAll(() => {
+          schemaInfo = resourceInfo.find(SchemaInfo);
+        });
+
+        it('renders table name schema and description', () => {
+          expect(schemaInfo.props()).toMatchObject({
+            schema: props.table.schema,
+            table: props.table.name,
+            desc: props.table.schema_description,
+          });
+        });
+      });
+
+      describe('if props.table not have schema description', () => {
+        it('if schema description is empty string', () => {
+          const { props, wrapper } = setup({ table: {
+            type: ResourceType.table,
+            cluster: '',
+            database: 'testdb',
+            description: 'I am the description',
+            key: '',
+            last_updated_timestamp: 1553829681,
+            badges: [ { tag_name: 'badgeName', tag_type: TagType.BADGE } ],
+            name: 'tableName',
+            schema: 'tableSchema',
+            schema_description: '',
+          }});
+          expect(wrapper.find('.resource-name').children().at(0).text()).toEqual('tableSchema.tableName');
+        });
+
+        it('if schema description is null', () => {
+          const { props, wrapper } = setup({ table: {
+            type: ResourceType.table,
+            cluster: '',
+            database: 'testdb',
+            description: 'I am the description',
+            key: '',
+            last_updated_timestamp: 1553829681,
+            badges: [ { tag_name: 'badgeName', tag_type: TagType.BADGE } ],
+            name: 'tableName',
+            schema: 'tableSchema',
+            schema_description: null,
+          }});
+          expect(wrapper.find('.resource-name').children().at(0).text()).toEqual('tableSchema.tableName');
+        });
       });
 
       it('renders a bookmark icon in the resource name with correct props', () => {
@@ -151,6 +197,7 @@ describe('TableListItem', () => {
             badges: null,
             name: 'tableName',
             schema: 'tableSchema',
+            schema_description: 'schemaDescription',
           }});
           expect(wrapper.find('.resource-badges').children()).toHaveLength(1);
         });
@@ -165,6 +212,7 @@ describe('TableListItem', () => {
             badges: [],
             name: 'tableName',
             schema: 'tableSchema',
+            schema_description: 'schemaDescription',
           }});
           expect(wrapper.find('.resource-badges').children()).toHaveLength(1);
         });
