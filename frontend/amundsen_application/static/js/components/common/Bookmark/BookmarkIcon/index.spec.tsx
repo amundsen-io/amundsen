@@ -6,7 +6,7 @@ import globalState from 'fixtures/globalState';
 
 import { ResourceType } from 'interfaces';
 
-import { BookmarkIcon, BookmarkIconProps, mapDispatchToProps, mapStateToProps } from "../";
+import { BookmarkIcon, BookmarkIconProps, mapDispatchToProps, mapStateToProps } from ".";
 
 describe('BookmarkIcon', () => {
 

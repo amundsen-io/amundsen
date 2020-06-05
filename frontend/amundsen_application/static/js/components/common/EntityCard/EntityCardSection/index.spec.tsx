@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import InfoButton from 'components/common/InfoButton';
-import EntityCardSection, { EntityCardSectionProps } from '../';
+import EntityCardSection, { EntityCardSectionProps } from '.';
 
 describe('EntityCardSection', () => {
     let props: EntityCardSectionProps;

@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
-import TableListItem, { TableListItemProps } from '../';
+import TableListItem, { TableListItemProps } from '.';
 import { ResourceType, Badge, TagType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';

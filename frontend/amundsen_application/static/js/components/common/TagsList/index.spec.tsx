@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import { TagsList, TagsListProps, mapDispatchToProps, mapStateToProps } from '../';
+import { TagsList, TagsListProps, mapDispatchToProps, mapStateToProps } from '.';
 
 import globalState from 'fixtures/globalState';
 

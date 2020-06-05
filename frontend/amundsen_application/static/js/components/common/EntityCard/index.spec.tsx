@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import EntityCard, { EntityCardProps } from '../';
-import EntityCardSection from '../EntityCardSection';
+import EntityCard, { EntityCardProps } from '.';
+import EntityCardSection from './EntityCardSection';
 
 describe('EntityCard', () => {
     let props: EntityCardProps;

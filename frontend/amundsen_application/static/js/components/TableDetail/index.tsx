@@ -88,7 +88,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     this.didComponentMount = true;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const newKey = this.getTableKey();
 
     if (this.key !== newKey) {
@@ -111,6 +111,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
     DO NOT CHANGE
     */
     const params = this.props.match.params;
+
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 

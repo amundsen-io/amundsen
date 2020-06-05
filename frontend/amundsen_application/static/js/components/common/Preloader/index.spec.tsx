@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { Preloader, PreloaderProps, mapDispatchToProps } from '../';
+import { Preloader, PreloaderProps, mapDispatchToProps } from '.';
 
 describe('Preloader', () => {
   const setup = (propOverrides?: Partial<PreloaderProps>) => {

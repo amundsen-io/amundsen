@@ -43,7 +43,7 @@ ReactDOM.render(
           <Switch>
             <Route path="/announcements" component={AnnouncementPage} />
             <Route path="/browse" component={BrowsePage} />
-            <Route path="/dashboard" component={DashboardPage} />
+            <Route path="/dashboard/:uri" component={DashboardPage} />
             <Route path="/search" component={SearchPage} />
             <Route path="/table_detail/:cluster/:database/:schema/:table" component={TableDetail} />
             <Route path="/user/:userId" component={ProfilePage} />

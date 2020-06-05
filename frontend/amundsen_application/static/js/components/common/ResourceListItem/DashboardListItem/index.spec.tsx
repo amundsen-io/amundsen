@@ -45,8 +45,10 @@ describe('DashboardListItem', () => {
   describe('getLink', () => {
     it('getLink returns correct string', () => {
       const { props, wrapper } = setup();
-      const { dashboard, logging } = props;
-      expect(wrapper.instance().getLink()).toEqual(`/dashboard?uri=${dashboard.uri}&index=${logging.index}&source=${logging.source}`);
+      const expectedURL = "/dashboard/mode_dashboard%3A%2F%2Fcluster.group%2Fname?index=0&source=src";
+      const actual = wrapper.instance().getLink();
+
+      expect(actual).toEqual(expectedURL);
     });
   });
 

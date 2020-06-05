@@ -3,7 +3,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import { Tab, Tabs } from 'react-bootstrap';
-import TabsComponent, { TabsProps } from '../';
+import TabsComponent, { TabsProps } from '.';
 
 describe('Tabs', () => {
     let props: TabsProps;

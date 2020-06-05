@@ -3,7 +3,7 @@ import * as Avatar from 'react-avatar';
 
 import { shallow } from 'enzyme';
 
-import AvatarLabel, { AvatarLabelProps } from '../';
+import AvatarLabel, { AvatarLabelProps } from '.';
 
 describe('AvatarLabel', () => {
   const setup = (propOverrides?: Partial<AvatarLabelProps>) => {

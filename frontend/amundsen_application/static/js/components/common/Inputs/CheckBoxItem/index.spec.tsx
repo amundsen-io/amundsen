@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { shallow } from 'enzyme';
-import CheckBoxItem, { CheckBoxItemProps } from '../';
+import CheckBoxItem, { CheckBoxItemProps } from '.';
 
 describe('CheckBoxItem', () => {
   const expectedChild = (<span>I am a child</span>);
