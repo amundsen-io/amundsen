@@ -46,7 +46,7 @@ spec:
         - containerPort: 5001
         env:
         - name: PROXY_ENDPOINT
-          value: {{ if .Values.search.elasticsearchEndpoint }}{{ .Values.search.elasticsearchEndpoint }}{{ else }}{{ .Release.Namespace }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
+          value: {{ if .Values.search.elasticsearchEndpoint }}{{ .Values.search.elasticsearchEndpoint }}{{ else }}{{ .Release.Name }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
         livenessProbe:
           httpGet:
             path: "/healthcheck"
