@@ -587,6 +587,27 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+#### [ModeDashboardUserExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_user_extractor.py)
+A Extractor that extracts Mode user_id and then update User node.
+
+You can create Databuilder job config like this. (configuration related to loader and publisher is omitted as it is mostly the same. Please take a look at this [example](#ModeDashboardExtractor) for the configuration that holds loader and publisher.
+
+```python
+extractor = ModeDashboardUserExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+   '{}.{}'.format(extractor.get_scope(), ORGANIZATION): organization,
+   '{}.{}'.format(extractor.get_scope(), MODE_ACCESS_TOKEN): mode_token,
+   '{}.{}'.format(extractor.get_scope(), MODE_PASSWORD_TOKEN): mode_password,
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
 #### [ModeDashboardUsageExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py)
 
 A Extractor that extracts Mode dashboard's accumulated view count.
@@ -624,6 +645,9 @@ Transforms dictionary into model
 
 #### [TimestampStringToEpoch](./databuilder/transformer/timestamp_string_to_epoch.py)
 Transforms string timestamp into int epoch
+
+#### [RemoveFieldTransformer](./databuilder/transformer/remove_field_transformer.py)
+Remove fields from the Dict.
 
 
 ## List of loader

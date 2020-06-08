@@ -57,3 +57,5 @@ unicodecsv==0.14.1,<1.0
 
 httplib2>=0.18.0
 unidecode
+
+requests==2.23.0,<3.0

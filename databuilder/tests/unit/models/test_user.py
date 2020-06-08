@@ -2,7 +2,6 @@ import unittest
 
 from databuilder.models.neo4j_csv_serde import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
-
 from databuilder.models.user import User
 
 
@@ -71,3 +70,22 @@ class TestUser(unittest.TestCase):
         }
 
         self.assertTrue(relation in relations)
+
+    def test_not_including_empty_attribute(self):
+        # type: () -> None
+        test_user = User(email='test@email.com',
+                         foo='bar')
+
+        self.assertDictEqual(test_user.create_next_node(),
+                             {'KEY': 'test@email.com', 'LABEL': 'User', 'email': 'test@email.com',
+                              'is_active:UNQUOTED': True, 'first_name': '', 'last_name': '', 'full_name': '',
+                              'github_username': '', 'team_name': '', 'employee_type': '', 'slack_id': '',
+                              'role_name': '', 'updated_at': 0, 'foo': 'bar'})
+
+        test_user2 = User(email='test@email.com',
+                          foo='bar',
+                          is_active=None,
+                          do_not_update_empty_attribute=True)
+
+        self.assertDictEqual(test_user2.create_next_node(),
+                             {'KEY': 'test@email.com', 'LABEL': 'User', 'email': 'test@email.com', 'foo': 'bar'})
