@@ -43,6 +43,7 @@ class User(Neo4jCsvSerializable):
                  is_active=True,  # type: bool
                  updated_at=0,  # type: int
                  role_name='',  # type: str
+                 do_not_update_empty_attribute=False,  # type: bool
                  **kwargs  # type: Dict
                  ):
         # type: (...) -> None
@@ -62,6 +63,8 @@ class User(Neo4jCsvSerializable):
                            then we will have a cron job to update the ex-employee nodes based on
                            the case if this timestamp hasn't been updated for two weeks.
         :param role_name: the role_name of the user (e.g swe)
+        :param do_not_update_empty_attribute: If False, all empty or not defined params will be overwritten with
+        empty string.
         :param kwargs: Any K/V attributes we want to update the
         """
         self.first_name = first_name
@@ -79,6 +82,7 @@ class User(Neo4jCsvSerializable):
         self.is_active = is_active
         self.updated_at = updated_at
         self.role_name = role_name
+        self.do_not_update_empty_attribute = do_not_update_empty_attribute
         self.attrs = None
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
@@ -132,13 +136,22 @@ class User(Neo4jCsvSerializable):
         result_node[User.USER_NODE_TEAM] = self.team_name if self.team_name else ''
         result_node[User.USER_NODE_EMPLOYEE_TYPE] = self.employee_type if self.employee_type else ''
         result_node[User.USER_NODE_SLACK_ID] = self.slack_id if self.slack_id else ''
-        result_node[User.USER_NODE_UPDATED_AT] = self.updated_at if self.updated_at else 0
         result_node[User.USER_NODE_ROLE_NAME] = self.role_name if self.role_name else ''
+
+        if self.updated_at:
+            result_node[User.USER_NODE_UPDATED_AT] = self.updated_at
+        elif not self.do_not_update_empty_attribute:
+            result_node[User.USER_NODE_UPDATED_AT] = 0
 
         if self.attrs:
             for k, v in self.attrs.items():
                 if k not in result_node:
                     result_node[k] = v
+
+        if self.do_not_update_empty_attribute:
+            for k, v in list(result_node.items()):
+                if not v:
+                    del result_node[k]
 
         return [result_node]
 
