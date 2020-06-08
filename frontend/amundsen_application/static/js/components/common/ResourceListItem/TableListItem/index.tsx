@@ -20,6 +20,7 @@ export interface TableListItemProps {
 class TableListItem extends React.Component<TableListItemProps, {}> {
   getLink = () => {
     const { table, logging } = this.props;
+
     return `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}`
       + `?index=${logging.index}&source=${logging.source}`;
   };

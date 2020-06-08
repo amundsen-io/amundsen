@@ -13,6 +13,8 @@ import {
 } from '.';
 import { NotificationType } from 'interfaces';
 
+const globalAny:any = global;
+
 const mockFormData = {
   'key': 'val1',
   'title': 'title',
@@ -20,10 +22,16 @@ const mockFormData = {
   'resource_name': 'resource name',
   'resource_path': 'path',
   'owners': 'test@test.com',
-  get: (key: string) => {
-    return mockFormData[key];
-  }
+  get: jest.fn(),
  };
+ mockFormData.get.mockImplementation((val) => {
+  return mockFormData[val];
+});
+function formDataMock() {
+  this.append = jest.fn();
+  return mockFormData;
+}
+globalAny.FormData = formDataMock;
 
 const mockCreateIssuePayload = {
   key: 'key',
@@ -40,9 +48,6 @@ const mockNotificationPayload = {
   recipients: ['owner@email'],
   sender: 'user@email'
 }
-
-// @ts-ignore: How to mock FormData without TypeScript error?
-global.FormData = () => (mockFormData);
 
 describe('ReportTableIssue', () => {
   const setStateSpy = jest.spyOn(ReportTableIssue.prototype, 'setState');
@@ -66,23 +71,28 @@ describe('ReportTableIssue', () => {
 
   describe('render', () => {
     it('Renders loading spinner if not ready', () => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
+
       expect(wrapper.find('.loading-spinner')).toBeTruthy();
     });
 
     it('Renders modal if open', () => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
+
       wrapper.setState({isOpen: true});
+
       expect(wrapper.find('.report-table-issue-modal')).toBeTruthy();
     });
 
     describe('toggle', () => {
       it('calls setState with negation of state.isOpen', () => {
         setStateSpy.mockClear();
-        const { props, wrapper } = setup();
+        const { wrapper } = setup();
         const previsOpenState = wrapper.state().isOpen;
+
         wrapper.instance().toggle({currentTarget: {id: 'id',
             nodeName: 'button' } });
+
         expect(setStateSpy).toHaveBeenCalledWith({ isOpen: !previsOpenState });
       });
     });
@@ -90,9 +100,11 @@ describe('ReportTableIssue', () => {
     describe('submitForm', () => {
       it ('calls createIssue with mocked form data', () => {
         const { props, wrapper } = setup();
+
         // @ts-ignore: mocked events throw type errors
         wrapper.instance().submitForm({ preventDefault: jest.fn(),
         currentTarget: {id: 'id', nodeName: 'button'} });
+
         expect(props.createIssue).toHaveBeenCalledWith(
           mockCreateIssuePayload,
           mockNotificationPayload);
@@ -100,10 +112,12 @@ describe('ReportTableIssue', () => {
       });
 
       it ('calls sets isOpen to false', () => {
-        const { props, wrapper } = setup();
+        const { wrapper } = setup();
+
         // @ts-ignore: mocked events throw type errors
         wrapper.instance().submitForm({ preventDefault: jest.fn(),
         currentTarget: {id: 'id', nodeName: 'button'} });
+
         expect(wrapper.state().isOpen).toBe(false);
       });
     });
@@ -119,13 +133,6 @@ describe('ReportTableIssue', () => {
 
       it('sets getIssues on the props', () => {
         expect(props.createIssue).toBeInstanceOf(Function);
-      });
-    });
-
-    describe('mapStateToProps', () => {
-      let result;
-      beforeAll(() => {
-        result = mapStateToProps(globalState);
       });
     });
   });

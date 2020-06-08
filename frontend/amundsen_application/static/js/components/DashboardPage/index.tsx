@@ -123,9 +123,9 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
     };
 
     tabInfo.push({
-      content: <QueryList queries={ this.props.dashboard.query_names }/>,
+      content: <QueryList queries={ this.props.dashboard.queries }/>,
       key: 'queries',
-      title: `Queries (${this.props.dashboard.query_names.length})`,
+      title: `Queries (${this.props.dashboard.queries.length})`,
     });
 
     return <TabsComponent tabs={ tabInfo } defaultTab={ "tables" } />;
