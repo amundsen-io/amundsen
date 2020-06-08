@@ -153,3 +153,9 @@ body {
 .text-primary{
   color: $text-primary;
 }
+
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

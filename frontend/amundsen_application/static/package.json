@@ -8,11 +8,11 @@
     "url": "https://github.com/lyft/amundsenfrontendlibrary"
   },
   "scripts": {
-    "build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -p --progress --config webpack.prod.ts",
-    "dev-build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts",
+    "build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.prod.ts",
+    "dev-build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.dev.ts",
     "test": "cross-env TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
     "test-nocov": "cross-env TZ=UTC jest",
-    "watch": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack -d --progress --config webpack.dev.ts --watch",
+    "watch": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.dev.ts --watch",
     "lint": "npm run eslint && npm run tslint",
     "lint-fix": "npm run eslint-fix && npm run tslint-fix",
     "eslint": "eslint --ignore-path=.eslintignore --ext .js,.jsx .",
@@ -108,6 +108,7 @@
     "react": "^16.13.1",
     "react-avatar": "^2.5.1",
     "react-bootstrap": "^0.32.4",
+    "react-code-blocks": "0.0.7",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.13.1",
     "react-js-pagination": "^3.0.3",

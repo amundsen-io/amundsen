@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-// import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import MomentLocalesPlugin from "moment-locales-webpack-plugin";
 import {CleanWebpackPlugin} from "clean-webpack-plugin";
 
@@ -52,7 +52,7 @@ const config: webpack.Configuration = {
     ]
   },
   output: {
-    publicPath: "/static/dist",
+    publicPath: "/static/dist/",
     path: PATHS.dist,
     filename: "[name].[contenthash].js"
   },
@@ -103,8 +103,8 @@ const config: webpack.Configuration = {
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css"
     }),
-    ...htmlWebpackPluginConfig
-    // new BundleAnalyzerPlugin()   // Uncomment to analyze the production bundle on local
+    ...htmlWebpackPluginConfig,
+    // new BundleAnalyzerPlugin(),   // Uncomment to analyze the production bundle on local
   ],
   optimization: {
     moduleIds: "hashed",

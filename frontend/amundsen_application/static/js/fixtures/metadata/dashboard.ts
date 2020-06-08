@@ -47,6 +47,7 @@ export const dashboardMetadata = {
   ],
   product: 'mode',
   query_names: ["query 1", "query 2"],
+  queries: [],
   recent_view_count: 10,
   tables: [],
   tags: [],

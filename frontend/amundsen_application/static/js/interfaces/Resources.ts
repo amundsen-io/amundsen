@@ -5,6 +5,7 @@ export enum ResourceType {
   table = "table",
   user = "user",
   dashboard = "dashboard",
+  query = "query",
 };
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -44,6 +45,13 @@ export interface TableResource extends Resource {
 
 export interface UserResource extends Resource, PeopleUser {
   type: ResourceType.user;
+}
+
+export interface QueryResource extends Resource {
+  type: ResourceType.query;
+  name: string;
+  query_text: string;
+  url: string;
 }
 
 export interface ResourceDict<T> {
