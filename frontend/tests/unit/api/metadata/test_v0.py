@@ -266,10 +266,10 @@ class MetadataTest(unittest.TestCase):
             'github_username': 'githubusername',
             'is_active': True,
             'last_name': 'Lastname',
-            'manager_email': 'manager@email.com',
+            'manager_email': None,
             'manager_fullname': 'Manager Fullname',
             'manager_id': 'managerid',
-            'profile_url': 'https://test-profile-url.com',
+            'profile_url': '',
             'role_name': 'SWE',
             'slack_id': 'slackuserid',
             'team_name': 'Amundsen',
@@ -832,7 +832,7 @@ class MetadataTest(unittest.TestCase):
             response = test.get('/api/metadata/v0/user', query_string=dict(user_id='testuser'))
             data = json.loads(response.data)
             self.assertEquals(response.status_code, HTTPStatus.OK)
-            self.assertCountEqual(data.get('user'), self.expected_parsed_user)
+            self.assertDictContainsSubset(self.expected_parsed_user, data.get('user'))
 
     @responses.activate
     def test_get_bookmark(self) -> None:
