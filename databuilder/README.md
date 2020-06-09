@@ -302,7 +302,7 @@ The SQL query driving the extraction is defined [here](https://github.com/lyft/a
 
 ```python
 job_config = ConfigFactory.from_dict({
-	'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.DATABASE_KEY): 'YourDbName',
+	'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.SNOWFLAKE_DATABASE_KEY): 'YourDbName',
 	'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
     'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME): True,
 	'extractor.postgres_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
