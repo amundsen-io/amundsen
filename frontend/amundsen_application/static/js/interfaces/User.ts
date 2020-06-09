@@ -3,7 +3,7 @@ export interface User {
   email: string;
   profile_url: string;
   user_id: string;
-};
+}
 
 // Not a good name, not sure if we can consolidate yet
 // TODO: Change to User when ready.
@@ -24,8 +24,8 @@ export interface PeopleUser {
   slack_id: string;
   team_name: string;
   user_id: string;
-};
+}
 
 export type LoggedInUser = PeopleUser & {};
 
-export type OwnerDict = { [id: string] : User };
+export type OwnerDict = { [id: string]: User };

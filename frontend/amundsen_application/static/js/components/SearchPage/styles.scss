@@ -5,7 +5,7 @@
   min-height: calc(100vh - #{$nav-bar-height + $footer-height});
 
   .list-group {
-     margin-top: 0px;
+    margin-top: 0;
   }
 
   .search-results {
@@ -20,7 +20,7 @@
   }
 
   .search-error {
-    text-align: center;
     margin-top: 32px;
+    text-align: center;
   }
 }

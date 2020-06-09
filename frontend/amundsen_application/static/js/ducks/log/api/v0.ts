@@ -14,4 +14,4 @@ export const BASE_URL = '/api/log/v0/log_event';
 /* TODO: Consider what we want to do on success/failure, if anything */
 export function postActionLog(params: ActionLogParams) {
   axios.post(BASE_URL, params);
-};
+}

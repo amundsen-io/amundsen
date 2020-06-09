@@ -4,7 +4,9 @@ import { shallow } from 'enzyme';
 
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-import SchemaInfo, { SchemaInfoProps } from "components/common/ResourceListItem/SchemaInfo";
+import SchemaInfo, {
+  SchemaInfoProps,
+} from 'components/common/ResourceListItem/SchemaInfo';
 
 describe('SchemaInfo', () => {
   const setup = (propOverrides?: Partial<SchemaInfoProps>) => {
@@ -13,7 +15,7 @@ describe('SchemaInfo', () => {
       table: 'tableName',
       desc: 'schemaDescription',
       placement: 'bottom',
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow(<SchemaInfo {...props} />);
     return { props, wrapper };
@@ -30,20 +32,26 @@ describe('SchemaInfo', () => {
     });
 
     it('renders OverlayTrigger with correct placement', () => {
-      expect(wrapper.find(OverlayTrigger).props().placement).toEqual(props.placement);
+      expect(wrapper.find(OverlayTrigger).props().placement).toEqual(
+        props.placement
+      );
     });
 
     it('renders OverlayTrigger with correct popover', () => {
       const expectedPopover = (
         <Popover id="popover-trigger-hover-focus">
-          <strong>{ props.schema }:</strong> { props.desc }
+          <strong>{props.schema}:</strong> {props.desc}
         </Popover>
       );
-      expect(wrapper.find(OverlayTrigger).props().overlay).toEqual(expectedPopover);
+      expect(wrapper.find(OverlayTrigger).props().overlay).toEqual(
+        expectedPopover
+      );
     });
 
     it('renders OverlayTrigger with correct schema name', () => {
-      expect(wrapper.find(OverlayTrigger).find('.underline').text()).toEqual(props.schema);
+      expect(wrapper.find(OverlayTrigger).find('.underline').text()).toEqual(
+        props.schema
+      );
     });
 
     it('renders correct table name', () => {

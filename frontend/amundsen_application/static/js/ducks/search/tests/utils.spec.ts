@@ -29,24 +29,32 @@ describe('search utils', () => {
       users: {
         ...searchState.users,
         page_index: 3,
-      }
+      },
     };
 
     it('given ResourceType.dashboard, returns page_index for dashboards', () => {
-      expect(SearchUtils.getPageIndex(mockState, ResourceType.dashboard)).toEqual(mockState.dashboards.page_index);
+      expect(
+        SearchUtils.getPageIndex(mockState, ResourceType.dashboard)
+      ).toEqual(mockState.dashboards.page_index);
     });
 
     it('given ResourceType.table, returns page_index for table', () => {
-      expect(SearchUtils.getPageIndex(mockState, ResourceType.table)).toEqual(mockState.tables.page_index);
+      expect(SearchUtils.getPageIndex(mockState, ResourceType.table)).toEqual(
+        mockState.tables.page_index
+      );
     });
 
     it('given ResourceType.user, returns page_index for users', () => {
-      expect(SearchUtils.getPageIndex(mockState, ResourceType.user)).toEqual(mockState.users.page_index);
+      expect(SearchUtils.getPageIndex(mockState, ResourceType.user)).toEqual(
+        mockState.users.page_index
+      );
     });
 
     it('given no resource, returns page_index for the selected resource', () => {
       const resourceToUse = mockState[mockState.resource + 's'];
-      expect(SearchUtils.getPageIndex(mockState)).toEqual(resourceToUse.page_index);
+      expect(SearchUtils.getPageIndex(mockState)).toEqual(
+        resourceToUse.page_index
+      );
     });
 
     it('returns 0 if not given a supported ResourceType', () => {
@@ -69,11 +77,13 @@ describe('search utils', () => {
       users: {
         ...searchState.users,
         total_results: 0,
-      }
+      },
     };
 
     it('returns the DEFAULT_RESOURCE_TYPE when search results are empty', () => {
-      expect(SearchUtils.autoSelectResource(emptyMockState)).toEqual(DEFAULT_RESOURCE_TYPE);
+      expect(SearchUtils.autoSelectResource(emptyMockState)).toEqual(
+        DEFAULT_RESOURCE_TYPE
+      );
     });
 
     it('prefers `table` over `user` and `dashboard`', () => {
@@ -81,7 +91,9 @@ describe('search utils', () => {
       mockState.tables.total_results = 10;
       mockState.users.total_results = 10;
       mockState.dashboards.total_results = 10;
-      expect(SearchUtils.autoSelectResource(mockState)).toEqual(ResourceType.table);
+      expect(SearchUtils.autoSelectResource(mockState)).toEqual(
+        ResourceType.table
+      );
     });
 
     it('prefers `user` over `dashboard`', () => {
@@ -89,7 +101,9 @@ describe('search utils', () => {
       mockState.tables.total_results = 0;
       mockState.users.total_results = 10;
       mockState.dashboards.total_results = 10;
-      expect(SearchUtils.autoSelectResource(mockState)).toEqual(ResourceType.user);
+      expect(SearchUtils.autoSelectResource(mockState)).toEqual(
+        ResourceType.user
+      );
     });
 
     it('returns `dashboard` if there are dashboards but no other results', () => {
@@ -97,7 +111,9 @@ describe('search utils', () => {
       mockState.tables.total_results = 0;
       mockState.users.total_results = 0;
       mockState.dashboards.total_results = 10;
-      expect(SearchUtils.autoSelectResource(mockState)).toEqual(ResourceType.dashboard);
+      expect(SearchUtils.autoSelectResource(mockState)).toEqual(
+        ResourceType.dashboard
+      );
     });
   });
 });

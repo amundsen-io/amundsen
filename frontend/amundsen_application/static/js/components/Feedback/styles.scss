@@ -1,22 +1,24 @@
 @import 'variables';
+
 .feedback-icon {
   height: 32px;
-  width: 32px;
   outline: 0 !important;
+  width: 32px;
 
   img {
-    margin: 4px;
     background-color: $white;
+    margin: 4px;
   }
 
   &:hover,
   &:focus,
   &.is-open {
-    border-radius: 50%;
     border: 6px solid $white;
+    border-radius: 50%;
 
     img {
       margin: -2px 0 0 -2px;
+
       &.icon.icon-help {
         background-color: white !important;
       }
@@ -25,24 +27,23 @@
 }
 
 .feedback-component {
-  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
-  top: $nav-bar-height + 4px;
-  position: fixed;
-  right: 76px;
-  z-index: 2;
-
   background-color: $white;
   border-radius: 6px;
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.2);
+  color: $text-primary;
   height: auto;
   min-height: 450px;
   padding: 32px;
+  position: fixed;
+  right: 76px;
+  top: $nav-bar-height + 4px;
   width: 400px;
-
-  color: $text-primary;
+  z-index: 2;
 
   .feedback-header {
     display: flex;
     margin-bottom: 8px;
+
     .title {
       flex-grow: 1;
     }
@@ -70,8 +71,8 @@
   }
 
   .radio-set-item label {
-    width: 100%;
     text-align: center;
+    width: 100%;
   }
 
   .nps-label {
@@ -82,32 +83,33 @@
   }
 
   .status-message {
-    font-family: $font-family-header;
-    font-weight: $font-weight-header-regular;
-    text-align: center;
-    position: absolute;
-    font-size: 20px;
     color: $text-secondary;
+    font-family: $font-family-header;
+    font-size: 20px;
+    font-weight: $font-weight-header-regular;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+
     /* for centering when parent has automatic height */
     top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
   }
 
-  input[type="radio"] {
+  input[type='radio'] {
     margin: 5px;
   }
 
-  input[type="text"] {
+  input[type='text'] {
     color: $text-secondary !important;
   }
 
   textarea {
-    width: 100%;
-    color: $text-secondary !important;
     border: 1px solid $gray-lighter;
     border-radius: 5px;
+    color: $text-secondary !important;
     padding: 10px;
+    width: 100%;
   }
 }

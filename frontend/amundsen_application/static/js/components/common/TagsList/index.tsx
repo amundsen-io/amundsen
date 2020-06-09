@@ -31,25 +31,24 @@ export class TagsList extends React.Component<TagsListProps> {
   }
 
   generateTagInfo(tagArray: Tag[]) {
-    return tagArray.map((tag, index) =>
-      <TagInfo data={ tag } compact={ false } key={ index }/>)
+    return tagArray.map((tag, index) => (
+      <TagInfo data={tag} compact={false} key={index} />
+    ));
   }
 
   render() {
     if (this.props.isLoading) {
-      return <LoadingSpinner/>;
+      return <LoadingSpinner />;
     }
     return (
       <div id="tags-list" className="tags-list">
-        { this.generateTagInfo(this.props.curatedTags) }
-        {
-          showAllTags() && this.props.curatedTags.length > 0 && this.props.otherTags.length > 0 &&
-            <hr />
-        }
-        {
-          showAllTags() && this.props.otherTags.length > 0 &&
-            this.generateTagInfo(this.props.otherTags)
-        }
+        {this.generateTagInfo(this.props.curatedTags)}
+        {showAllTags() &&
+          this.props.curatedTags.length > 0 &&
+          this.props.otherTags.length > 0 && <hr />}
+        {showAllTags() &&
+          this.props.otherTags.length > 0 &&
+          this.generateTagInfo(this.props.otherTags)}
       </div>
     );
   }
@@ -58,8 +57,12 @@ export class TagsList extends React.Component<TagsListProps> {
 export const mapStateToProps = (state: GlobalState) => {
   const curatedTagsList = getCuratedTags();
   const allTags = state.tags.allTags.tags;
-  const curatedTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) !== -1);
-  const otherTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) === -1);
+  const curatedTags = allTags.filter(
+    (tag) => curatedTagsList.indexOf(tag.tag_name) !== -1
+  );
+  const otherTags = allTags.filter(
+    (tag) => curatedTagsList.indexOf(tag.tag_name) === -1
+  );
 
   return {
     curatedTags,
@@ -69,7 +72,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getAllTags } , dispatch);
+  return bindActionCreators({ getAllTags }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(TagsList);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(TagsList);

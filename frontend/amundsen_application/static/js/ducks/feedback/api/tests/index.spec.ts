@@ -16,7 +16,7 @@ describe('submitFeedback', () => {
       data: formData,
       method: 'post',
       url: '/api/mail/v0/feedback',
-      headers: {'Content-Type': 'multipart/form-data' }
-    })
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   });
 });

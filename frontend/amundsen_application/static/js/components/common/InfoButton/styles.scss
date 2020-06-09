@@ -1,29 +1,28 @@
 @import 'variables';
 
 button.info-button {
-  height: 24px;
-  width: 24px;
-  margin: 0 0 0 8px;
-  padding: 0;
-
   background-color: $stroke;
   border: none;
-  mask-image: url('/static/images/icons/Info.svg');
+  height: 24px;
+  margin: 0 0 0 8px;
   -webkit-mask-image: url('/static/images/icons/Info.svg');
-  mask-size: contain;
-  -webkit-mask-size: contain;
-  mask-position: center;
+  mask-image: url('/static/images/icons/Info.svg');
   -webkit-mask-position: center;
-  mask-size: 110%;
+  mask-position: center;
+  -webkit-mask-size: contain;
   -webkit-mask-size: 110%;
+  mask-size: contain;
+  mask-size: 110%;
+  padding: 0;
+  width: 24px;
 }
 
 button.info-button.small {
   height: 18px;
-  width: 18px;
   margin: -4px 0 0 4px;
+  width: 18px;
 }
 
 button.info-button:hover {
-    background-color: $brand-color-4;
+  background-color: $brand-color-4;
 }

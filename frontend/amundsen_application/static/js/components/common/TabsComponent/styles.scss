@@ -15,7 +15,7 @@
           color: $brand-color-4;
         }
 
-        &:after {
+        &::after {
           opacity: 1;
         }
       }
@@ -33,10 +33,10 @@
         }
 
         // Active tab indicator
-        &:after {
+        &::after {
           border: 2px solid $brand-color-4;
           bottom: 0;
-          content: "";
+          content: '';
           left: 0;
           opacity: 0;
           position: absolute;

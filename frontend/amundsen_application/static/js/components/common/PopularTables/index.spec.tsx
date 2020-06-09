@@ -10,16 +10,21 @@ import {
 import InfoButton from 'components/common/InfoButton';
 import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
 import globalState from 'fixtures/globalState';
-import { PopularTables, PopularTablesProps, mapStateToProps, mapDispatchToProps } from './';
+import {
+  PopularTables,
+  PopularTablesProps,
+  mapStateToProps,
+  mapDispatchToProps,
+} from './';
 
 describe('PopularTables', () => {
   const setup = (propOverrides?: Partial<PopularTablesProps>) => {
     const props: PopularTablesProps = {
       popularTables: jest.fn() as any,
       getPopularTables: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
-    const wrapper = shallow<PopularTables>(<PopularTables {...props} />)
+    const wrapper = shallow<PopularTables>(<PopularTables {...props} />);
 
     return { props, wrapper };
   };
@@ -72,7 +77,9 @@ describe('PopularTables', () => {
       props = setupResult.props;
     });
     it('renders correct label for content', () => {
-      expect(wrapper.children().find('label').text()).toEqual(POPULAR_TABLES_LABEL);
+      expect(wrapper.children().find('label').text()).toEqual(
+        POPULAR_TABLES_LABEL
+      );
     });
 
     it('renders InfoButton with correct props', () => {
@@ -82,7 +89,9 @@ describe('PopularTables', () => {
     });
 
     it('renders PaginatedResourceList with correct props', () => {
-      expect(wrapper.children().find(PaginatedResourceList).props()).toMatchObject({
+      expect(
+        wrapper.children().find(PaginatedResourceList).props()
+      ).toMatchObject({
         allItems: props.popularTables,
         itemsPerPage: POPULAR_TABLES_PER_PAGE,
         source: POPULAR_TABLES_SOURCE_NAME,

@@ -8,9 +8,7 @@ import {
   getDashboardFailure,
   getDashboardSuccess,
 } from '../reducer';
-import {
-  GetDashboard
-} from '../types';
+import { GetDashboard } from '../types';
 
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 
@@ -18,8 +16,10 @@ describe('dashboard sagas', () => {
   describe('getDashboardWatcher', () => {
     it('takes every GetDashboard.REQUEST with getDashboardWorker', () => {
       testSaga(Sagas.getDashboardWatcher)
-        .next().takeEvery(GetDashboard.REQUEST, Sagas.getDashboardWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(GetDashboard.REQUEST, Sagas.getDashboardWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -29,22 +29,34 @@ describe('dashboard sagas', () => {
         dashboard: dashboardMetadata,
         statusCode: 200,
       };
-      testSaga(Sagas.getDashboardWorker, getDashboard({ uri: 'testUri', searchIndex: '0', source: 'blah' }))
-        .next().call(API.getDashboard, 'testUri', '0', 'blah')
-        .next(mockResponse).put(getDashboardSuccess(mockResponse))
-        .next().isDone();
+      testSaga(
+        Sagas.getDashboardWorker,
+        getDashboard({ uri: 'testUri', searchIndex: '0', source: 'blah' })
+      )
+        .next()
+        .call(API.getDashboard, 'testUri', '0', 'blah')
+        .next(mockResponse)
+        .put(getDashboardSuccess(mockResponse))
+        .next()
+        .isDone();
     });
 
     it('executes flow for a failed request dashboard', () => {
       const mockResponse = {
         statusCode: 200,
-        statusMessage: 'oops'
+        statusMessage: 'oops',
       };
-      testSaga(Sagas.getDashboardWorker, getDashboard({ uri: 'testUri', searchIndex: '0', source: 'blah' }))
-        .next().call(API.getDashboard, 'testUri', '0', 'blah')
-        // @ts-ignore 
-        .throw(mockResponse).put(getDashboardFailure(mockResponse))
-        .next().isDone();
+      testSaga(
+        Sagas.getDashboardWorker,
+        getDashboard({ uri: 'testUri', searchIndex: '0', source: 'blah' })
+      )
+        .next()
+        .call(API.getDashboard, 'testUri', '0', 'blah')
+        // @ts-ignore
+        .throw(mockResponse)
+        .put(getDashboardFailure(mockResponse))
+        .next()
+        .isDone();
     });
   });
 });

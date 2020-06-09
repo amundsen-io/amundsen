@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import CheckBoxItem, { CheckBoxItemProps } from '.';
 
 describe('CheckBoxItem', () => {
-  const expectedChild = (<span>I am a child</span>);
+  const expectedChild = <span>I am a child</span>;
   const setup = (propOverrides?: Partial<CheckBoxItemProps>) => {
     const props: CheckBoxItemProps = {
       checked: true,
@@ -12,12 +12,10 @@ describe('CheckBoxItem', () => {
       name: 'test',
       value: 'testMethod',
       onChange: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow(
-      <CheckBoxItem {...props}>
-        { expectedChild }
-      </CheckBoxItem>
+      <CheckBoxItem {...props}>{expectedChild}</CheckBoxItem>
     );
     return { props, wrapper };
   };
@@ -49,7 +47,7 @@ describe('CheckBoxItem', () => {
         disabled: props.disabled,
         name: props.name,
         onChange: props.onChange,
-        value: props.value
+        value: props.value,
       });
     });
 

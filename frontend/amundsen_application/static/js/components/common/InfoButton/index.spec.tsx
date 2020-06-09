@@ -7,35 +7,41 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import InfoButton, { InfoButtonProps } from '.';
 
 describe('InfoButton', () => {
-    let props: InfoButtonProps;
-    let subject;
+  let props: InfoButtonProps;
+  let subject;
 
-    beforeEach(() => {
-        props = {
-          infoText: 'Some info text to share',
-          title: 'Popover Title',
-          placement: 'left',
-          size: 'size',
-        };
-        subject = shallow(<InfoButton {...props} />);
+  beforeEach(() => {
+    props = {
+      infoText: 'Some info text to share',
+      title: 'Popover Title',
+      placement: 'left',
+      size: 'size',
+    };
+    subject = shallow(<InfoButton {...props} />);
+  });
+
+  describe('render', () => {
+    it('renders OverlayTrigger w/ correct placement', () => {
+      expect(subject.find(OverlayTrigger).props().placement).toEqual(
+        props.placement
+      );
     });
 
-    describe('render', () => {
-        it('renders OverlayTrigger w/ correct placement', () => {
-            expect(subject.find(OverlayTrigger).props().placement).toEqual(props.placement);
-        });
-
-        it('renders OverlayTrigger w/ correct Popover', () => {
-            const expectedPopover = (
-             <Popover id="popover-trigger-hover-focus" title={ props.title }>
-               <SanitizedHTML html={props.infoText} />
-             </Popover>
-           );
-            expect(subject.find(OverlayTrigger).props().overlay).toEqual(expectedPopover);
-        });
-
-        it('renders OverlayTrigger w/ correct placement', () => {
-            expect(subject.find(OverlayTrigger).find('button').props().className).toEqual(`btn icon info-button ${props.size}`);
-        });
+    it('renders OverlayTrigger w/ correct Popover', () => {
+      const expectedPopover = (
+        <Popover id="popover-trigger-hover-focus" title={props.title}>
+          <SanitizedHTML html={props.infoText} />
+        </Popover>
+      );
+      expect(subject.find(OverlayTrigger).props().overlay).toEqual(
+        expectedPopover
+      );
     });
+
+    it('renders OverlayTrigger w/ correct placement', () => {
+      expect(
+        subject.find(OverlayTrigger).find('button').props().className
+      ).toEqual(`btn icon info-button ${props.size}`);
+    });
+  });
 });

@@ -1,7 +1,6 @@
 @import 'variables';
 
 .btn {
-
   &.btn-primary,
   &.btn-default {
     border-width: 2px;
@@ -12,11 +11,11 @@
     img.icon {
       border: none;
       height: 18px;
+      margin: 0 4px 0 0;
       -webkit-mask-size: 18px;
       mask-size: 18px;
-      margin: 0 4px 0 0;
-      vertical-align: top;
       min-width: 18px;
+      vertical-align: top;
       width: 18px;
     }
 
@@ -27,9 +26,9 @@
 
       img.icon {
         height: 24px;
+        margin: 0 4px 0 0;
         -webkit-mask-size: 24px;
         mask-size: 24px;
-        margin: 0 4px 0 0;
         min-width: 24px;
         width: 24px;
       }
@@ -83,10 +82,10 @@
   }
 
   &.btn-flat-icon {
-    border: none;
     background-color: transparent;
-    color: $text-secondary;
+    border: none;
     box-shadow: none !important;
+    color: $text-secondary;
     padding: 0;
     text-align: left;
 
@@ -103,10 +102,10 @@
   }
 
   &.btn-flat-icon-dark {
-    border: none;
     background-color: transparent;
-    color: $text-secondary;
+    border: none;
     box-shadow: none !important;
+    color: $text-secondary;
     padding: 0;
     text-align: left;
 
@@ -123,21 +122,20 @@
   }
 
   &.btn-close {
-    height: 18px;
-    width: 18px;
-    margin: 4px 0 0 0;
-    padding: 0;
-
     background-color: $icon-bg;
     border: none;
-    mask-image: url('/static/images/icons/Close.svg');
+    height: 18px;
+    margin: 4px 0 0;
     -webkit-mask-image: url('/static/images/icons/Close.svg');
-    mask-size: contain;
-    -webkit-mask-size: contain;
-    mask-position: center;
+    mask-image: url('/static/images/icons/Close.svg');
     -webkit-mask-position: center;
-    mask-size: 110%;
+    mask-position: center;
+    -webkit-mask-size: contain;
     -webkit-mask-size: 110%;
+    mask-size: contain;
+    mask-size: 110%;
+    padding: 0;
+    width: 18px;
 
     &:focus,
     &:not(.disabled):hover,

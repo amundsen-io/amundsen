@@ -28,9 +28,9 @@ const configDefault: AppConfig = {
   indexUsers: {
     enabled: false,
   },
-  userIdLabel: "email address",
+  userIdLabel: 'email address',
   issueTracking: {
-    enabled: false
+    enabled: false,
   },
   logoPath: null,
   mailClientFeatures: {
@@ -39,23 +39,23 @@ const configDefault: AppConfig = {
   },
   navLinks: [
     {
-      label: "Announcements",
-      id: "nav::announcements",
-      href: "/announcements",
+      label: 'Announcements',
+      id: 'nav::announcements',
+      href: '/announcements',
       use_router: true,
     },
     {
-      label: "Browse",
-      id: "nav::browse",
-      href: "/browse",
+      label: 'Browse',
+      id: 'nav::browse',
+      href: '/browse',
       use_router: true,
-    }
+    },
   ],
   resourceConfig: {
     [ResourceType.dashboard]: {
       displayName: 'Dashboards',
       supportedSources: {
-        'mode': {
+        mode: {
           displayName: 'Mode',
           iconClass: 'icon-mode',
         },
@@ -64,27 +64,27 @@ const configDefault: AppConfig = {
     [ResourceType.table]: {
       displayName: 'Datasets',
       supportedSources: {
-        'bigquery': {
+        bigquery: {
           displayName: 'BigQuery',
           iconClass: 'icon-bigquery',
         },
-        'druid': {
+        druid: {
           displayName: 'Druid',
           iconClass: 'icon-druid',
         },
-        'hive': {
+        hive: {
           displayName: 'Hive',
           iconClass: 'icon-hive',
         },
-        'presto': {
+        presto: {
           displayName: 'Presto',
           iconClass: 'icon-presto',
         },
-        'postgres': {
+        postgres: {
           displayName: 'Postgres',
           iconClass: 'icon-postgres',
         },
-        'redshift': {
+        redshift: {
           displayName: 'Redshift',
           iconClass: 'icon-redshift',
         },
@@ -120,26 +120,38 @@ const configDefault: AppConfig = {
           helpText: 'Enter exact tag name or a regex wildcard pattern',
           type: FilterType.INPUT_SELECT,
         },
-      ]
+      ],
     },
     [ResourceType.user]: {
-      displayName: 'People'
+      displayName: 'People',
     },
   },
   tableLineage: {
     iconPath: 'PATH_TO_ICON',
     isBeta: false,
     isEnabled: false,
-    urlGenerator: (database: string, cluster: string, schema: string, table: string) => {
+    urlGenerator: (
+      database: string,
+      cluster: string,
+      schema: string,
+      table: string
+    ) => {
       return `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`;
     },
   },
   tableProfile: {
     isBeta: false,
     isExploreEnabled: false,
-    exploreUrlGenerator: (database: string, cluster: string, schema: string, table: string, partitionKey?: string, partitionValue?: string) => {
+    exploreUrlGenerator: (
+      database: string,
+      cluster: string,
+      schema: string,
+      table: string,
+      partitionKey?: string,
+      partitionValue?: string
+    ) => {
       return `https://DEFAULT_EXPLORE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`;
-    }
+    },
   },
 };
 

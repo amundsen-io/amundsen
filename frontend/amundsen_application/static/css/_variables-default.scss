@@ -10,9 +10,8 @@ $brand-color-5: $indigo80 !default;
 
 $brand-primary: $brand-color-4 !default;
 
-
 /* Scaffolding */
-$body-bg:           $white !default;
+$body-bg: $white !default;
 $body-bg-secondary: $gray0 !default;
 $body-bg-tertiary:  $gray5 !default;
 $body-bg-dark:      $gray100 !default;
@@ -22,37 +21,35 @@ $stroke-light:      $gray10 !default;
 $stroke-focus:      $gray60 !default;
 $stroke-underline:  $gray40 !default;
 
-
 // Typography
-$text-primary:     $gray100 !default;
-$text-secondary:   $gray60 !default;
-$text-secondary:   $gray60 !default;
-$text-tertiary:    $gray40 !default;
+$text-primary: $gray100 !default;
+$text-secondary: $gray60 !default;
+$text-secondary: $gray60 !default;
+$text-tertiary: $gray40 !default;
 $text-placeholder: $gray40 !default;
-$text-inverse:     $white !default;
+$text-inverse: $white !default;
 
 $column-name-color: $indigo70;
-$link-color:        $brand-color-4;
-$link-hover-color:  $brand-color-5;
+$link-color: $brand-color-4;
+$link-hover-color: $brand-color-5;
 
-$font-family-body:           "Open Sans", sans-serif !default;
-$font-weight-body-regular:   400 !default;
+$font-family-body: 'Open Sans', sans-serif !default;
+$font-weight-body-regular: 400 !default;
 $font-weight-body-semi-bold: 600 !default;
-$font-weight-body-bold:      700 !default;
+$font-weight-body-bold: 700 !default;
 
-$font-family-header:         "Roboto", sans-serif !default;
+$font-family-header: 'Roboto', sans-serif !default;
 $font-weight-header-regular: 500 !default;
-$font-weight-header-bold:    700 !default;
+$font-weight-header-bold: 700 !default;
 
-$font-family-monospace:       'Menlo-Bold', Menlo, monospace !default;
-$font-family-serif:           Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace: 'Menlo-Bold', menlo, monospace !default;
+$font-family-serif: georgia, 'Times New Roman', times, serif !default;
 
-$font-size-small:    12px !default;
-$font-size-base:     14px !default;
-$font-size-large:    16px !default;
-$line-height-small:  1.5 !default;
-$line-height-large:  1.5 !default;
-
+$font-size-small: 12px !default;
+$font-size-base: 14px !default;
+$font-size-large: 16px !default;
+$line-height-small: 1.5 !default;
+$line-height-large: 1.5 !default;
 
 // Badges
 $badge-text-color: $text-primary;
@@ -62,29 +59,27 @@ $badge-primary-color: $cyan10;
 $badge-success-color: $mint20;
 $badge-warning-color: $amber30;
 
-
 // Buttons
 $btn-border-radius-base: 4px;
 
-$btn-primary-bg:           $brand-color-4 !default;
-$btn-primary-bg-hover:     $brand-color-5 !default;
-$btn-primary-border:       transparent !default;
+$btn-primary-bg: $brand-color-4 !default;
+$btn-primary-bg-hover: $brand-color-5 !default;
+$btn-primary-border: transparent !default;
 $btn-primary-border-hover: transparent !default;
-$btn-primary-color:        $white !default;
-$btn-primary-color-hover:  $white !default;
+$btn-primary-color: $white !default;
+$btn-primary-color-hover: $white !default;
 
-$btn-default-bg:           $white !default;
-$btn-default-bg-hover:     $gray5 !default;
-$btn-default-border:       $gray20 !default;
+$btn-default-bg: $white !default;
+$btn-default-bg-hover: $gray5 !default;
+$btn-default-border: $gray20 !default;
 $btn-default-border-hover: $gray30 !default;
-$btn-default-color:        $gray100 !default;
-$btn-default-color-hover:  $gray90 !default;
-
+$btn-default-color: $gray100 !default;
+$btn-default-color-hover: $gray90 !default;
 
 // Icons
-$icon-bg:          $gray20 !default;
-$icon-bg-brand:    $brand-color-3 !default;
-$icon-bg-dark:     $gray60 !default;
+$icon-bg: $gray20 !default;
+$icon-bg-brand: $brand-color-3 !default;
+$icon-bg-dark: $gray60 !default;
 $icon-bg-disabled: $gray20 !default;
 $red-triangle-warning: $sunset60;
 
@@ -100,9 +95,8 @@ $search-panel-width: 270px;
 $search-panel-border-width: 4px;
 
 // List Group
-$list-group-border:        $stroke !default;
+$list-group-border: $stroke !default;
 $list-group-border-radius: 0 !default;
-
 
 // Labels
 $label-primary-bg: $brand-color-3 !default;
@@ -114,7 +108,6 @@ $priority-bg-color: $rose80;
 // Tags
 $tag-bg: $gray5;
 $tag-bg-hover: $gray10;
-
 
 // TODO Temp Colors
 $resource-title-color: $indigo60;

@@ -3,7 +3,11 @@ import axios, { AxiosResponse } from 'axios';
 import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
 import { ResourceType, SearchType } from 'interfaces';
 
-import { DashboardSearchResults, TableSearchResults, UserSearchResults } from '../types';
+import {
+  DashboardSearchResults,
+  TableSearchResults,
+  UserSearchResults,
+} from '../types';
 
 import { ResourceFilterReducerState } from '../filters/reducer';
 
@@ -16,7 +20,7 @@ export interface SearchAPI {
   dashboards?: DashboardSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
-};
+}
 
 export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
@@ -29,22 +33,37 @@ export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
   return ret;
 };
 
-export function searchResource(pageIndex: number, resource: ResourceType, term: string, filters: ResourceFilterReducerState = {}, searchType: SearchType) {
+export function searchResource(
+  pageIndex: number,
+  resource: ResourceType,
+  term: string,
+  filters: ResourceFilterReducerState = {},
+  searchType: SearchType
+) {
   /* If resource support is not configured or if there is no search term for non-filter supported resources */
-  if ((resource === ResourceType.dashboard && (!indexDashboardsEnabled() || term.length === 0)) ||
-     (resource === ResourceType.user && (!indexUsersEnabled() || term.length === 0))) {
+  if (
+    (resource === ResourceType.dashboard &&
+      (!indexDashboardsEnabled() || term.length === 0)) ||
+    (resource === ResourceType.user &&
+      (!indexUsersEnabled() || term.length === 0))
+  ) {
     return Promise.resolve({});
   }
 
   /* Note: This logic must exist until query string endpoints are created for all resources */
   if (resource === ResourceType.table) {
-    return axios.post(`${BASE_URL}/${resource}`, {
-      filters,
-      pageIndex,
-      term,
-      searchType,
-    }).then(searchResourceHelper);
+    return axios
+      .post(`${BASE_URL}/${resource}`, {
+        filters,
+        pageIndex,
+        term,
+        searchType,
+      })
+      .then(searchResourceHelper);
   }
-  return axios.get(`${BASE_URL}/${resource}?query=${term}&page_index=${pageIndex}&search_type=${searchType}`)
+  return axios
+    .get(
+      `${BASE_URL}/${resource}?query=${term}&page_index=${pageIndex}&search_type=${searchType}`
+    )
     .then(searchResourceHelper);
-};
+}

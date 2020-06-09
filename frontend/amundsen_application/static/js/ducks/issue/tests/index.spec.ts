@@ -2,64 +2,67 @@ import { testSaga, expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import globalState from 'fixtures/globalState';
 
-
 import * as API from '../api/v0';
 
-import reducer, { 
-  createIssue, 
-  createIssueSuccess, 
-  createIssueFailure, 
-  getIssues, 
-  getIssuesSuccess, 
+import reducer, {
+  createIssue,
+  createIssueSuccess,
+  createIssueFailure,
+  getIssues,
+  getIssuesSuccess,
   getIssuesFailure,
-  IssueReducerState
-} from '../reducer'; 
+  IssueReducerState,
+} from '../reducer';
 
 import {
-  CreateIssue, 
+  CreateIssue,
   GetIssues,
   GetIssuesRequest,
-  CreateIssueRequest
-} from '../types'; 
+  CreateIssueRequest,
+} from '../types';
 import { Issue, NotificationType } from 'interfaces';
-import { getIssuesWatcher, getIssuesWorker, createIssueWatcher, createIssueWorker } from '../sagas';
+import {
+  getIssuesWatcher,
+  getIssuesWorker,
+  createIssueWatcher,
+  createIssueWorker,
+} from '../sagas';
 import { throwError } from 'redux-saga-test-plan/providers';
 
 describe('issue ducks', () => {
-  let tableKey: string; 
-  let issue: Issue; 
-  let issues: Issue[]; 
-  let key; 
-  let title; 
-  let description; 
-  let resourceName; 
-  let resourcePath; 
-  let owners; 
-  let sender; 
-  let total; 
-  let allIssuesUrl; 
+  let tableKey: string;
+  let issue: Issue;
+  let issues: Issue[];
+  let key;
+  let title;
+  let description;
+  let resourceName;
+  let resourcePath;
+  let owners;
+  let sender;
+  let total;
+  let allIssuesUrl;
   beforeAll(() => {
-    tableKey = 'key'; 
-    key = 'table', 
-    title ='stuff';
-    description ='This is a test';
-    resourceName = 'resource_name'; 
-    resourcePath = 'resource_path'; 
-    owners = ['email@email']; 
-    sender = 'sender@email'; 
-    issue =  {
-      issue_key: 'issue_key', 
-      title: 'title', 
-      url: 'http://url', 
-      status: 'Open', 
-      priority_display_name: 'P2', 
-      priority_name: 'Major'
-    }; 
+    tableKey = 'key';
+    (key = 'table'), (title = 'stuff');
+    description = 'This is a test';
+    resourceName = 'resource_name';
+    resourcePath = 'resource_path';
+    owners = ['email@email'];
+    sender = 'sender@email';
+    issue = {
+      issue_key: 'issue_key',
+      title: 'title',
+      url: 'http://url',
+      status: 'Open',
+      priority_display_name: 'P2',
+      priority_name: 'Major',
+    };
 
     issues = [issue];
-    total = 0; 
-    allIssuesUrl = 'testurl'; 
-  }); 
+    total = 0;
+    allIssuesUrl = 'testurl';
+  });
 
   describe('actions', () => {
     it('getIssues - returns the action to submit feedback', () => {
@@ -81,29 +84,33 @@ describe('issue ducks', () => {
 
     it('createIssue - returns the action to create items', () => {
       const createIssuePayload = {
-        key, 
-        title, 
-        description
+        key,
+        title,
+        description,
       };
       const notificationPayload = {
-        sender, 
-        recipients: owners, 
-        notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+        sender,
+        recipients: owners,
+        notificationType: NotificationType.DATA_ISSUE_REPORTED,
         options: {
-          resource_name: resourceName, 
-          resource_path: resourcePath
-        }
-      }; 
+          resource_name: resourceName,
+          resource_path: resourcePath,
+        },
+      };
 
       const action = createIssue(createIssuePayload, notificationPayload);
       const { payload } = action;
       expect(action.type).toBe(CreateIssue.REQUEST);
       expect(payload.createIssuePayload.key).toBe(key);
-      expect(payload.createIssuePayload.title).toBe(title); 
-      expect(payload.createIssuePayload.description).toBe(description); 
-      expect(payload.notificationPayload.options.resource_name).toBe(resourceName); 
-      expect(payload.notificationPayload.options.resource_path).toBe(resourcePath); 
-      expect(payload.notificationPayload.recipients).toBe(owners); 
+      expect(payload.createIssuePayload.title).toBe(title);
+      expect(payload.createIssuePayload.description).toBe(description);
+      expect(payload.notificationPayload.options.resource_name).toBe(
+        resourceName
+      );
+      expect(payload.notificationPayload.options.resource_path).toBe(
+        resourcePath
+      );
+      expect(payload.notificationPayload.recipients).toBe(owners);
     });
 
     it('createIssueFailure - returns the action to process failure', () => {
@@ -123,19 +130,18 @@ describe('issue ducks', () => {
 
   describe('reducer', () => {
     let testState: IssueReducerState;
-    let allIssuesUrl: string; 
-    let total: number; 
+    let allIssuesUrl: string;
+    let total: number;
     beforeAll(() => {
-      const stateIssues: Issue[]=[];
-      total = 0; 
-      allIssuesUrl = 'testUrl'; 
-      testState = { 
+      const stateIssues: Issue[] = [];
+      total = 0;
+      allIssuesUrl = 'testUrl';
+      testState = {
         total,
         allIssuesUrl,
         isLoading: false,
-        issues: stateIssues
+        issues: stateIssues,
       };
-     
     });
 
     it('should return the existing state if action is not handled', () => {
@@ -143,58 +149,65 @@ describe('issue ducks', () => {
     });
 
     it('should handle GetIssues.REQUEST', () => {
-      expect(reducer(testState, getIssues(tableKey))).toEqual({ 
-        issues: [], 
-        isLoading: true, 
-        allIssuesUrl: null, 
-        total: 0
+      expect(reducer(testState, getIssues(tableKey))).toEqual({
+        issues: [],
+        isLoading: true,
+        allIssuesUrl: null,
+        total: 0,
       });
     });
 
     it('should handle GetIssues.SUCCESS', () => {
-      expect(reducer(testState, getIssuesSuccess(issues, total, allIssuesUrl))).toEqual({ 
+      expect(
+        reducer(testState, getIssuesSuccess(issues, total, allIssuesUrl))
+      ).toEqual({
         issues,
         total,
         allIssuesUrl,
-        isLoading: false
+        isLoading: false,
       });
     });
 
     it('should handle GetIssues.FAILURE', () => {
-      expect(reducer(testState, getIssuesFailure([], 0, null))).toEqual({ 
+      expect(reducer(testState, getIssuesFailure([], 0, null))).toEqual({
         total,
         issues: [],
-        isLoading: false, 
-        allIssuesUrl: null
+        isLoading: false,
+        allIssuesUrl: null,
       });
     });
 
     it('should handle CreateIssue.REQUEST', () => {
       const createIssuePayload = {
-        key, 
-        title, 
-        description
+        key,
+        title,
+        description,
       };
       const notificationPayload = {
-        sender, 
-        recipients: owners, 
-        notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+        sender,
+        recipients: owners,
+        notificationType: NotificationType.DATA_ISSUE_REPORTED,
         options: {
-          resource_name: resourceName, 
-          resource_path: resourcePath
-        }
-      }; 
-      expect(reducer(testState, createIssue(createIssuePayload, notificationPayload))).toEqual({ 
-        allIssuesUrl, 
+          resource_name: resourceName,
+          resource_path: resourcePath,
+        },
+      };
+      expect(
+        reducer(testState, createIssue(createIssuePayload, notificationPayload))
+      ).toEqual({
+        allIssuesUrl,
         total,
-        issues: [], 
-        isLoading: true, 
-       });
+        issues: [],
+        isLoading: true,
+      });
     });
 
     it('should handle CreateIssue.SUCCESS', () => {
       expect(reducer(testState, createIssueSuccess(issue))).toEqual({
-         ...testState, issues: [issue], isLoading: false });
+        ...testState,
+        issues: [issue],
+        isLoading: false,
+      });
     });
 
     it('should handle CreateIssue.FAILURE', () => {
@@ -202,7 +215,7 @@ describe('issue ducks', () => {
         total,
         allIssuesUrl,
         issues: [],
-        isLoading: false
+        isLoading: false,
       });
     });
   });
@@ -211,26 +224,28 @@ describe('issue ducks', () => {
     describe('getIssuesWatcher', () => {
       it('takes every getIssues.REQUEST with getIssuesWatcher', () => {
         testSaga(getIssuesWatcher)
-          .next().takeEvery(GetIssues.REQUEST, getIssuesWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(GetIssues.REQUEST, getIssuesWorker)
+          .next()
+          .isDone();
       });
     });
 
     describe('getIssuesWorker', () => {
       let action: GetIssuesRequest;
       let allIssuesUrl: string;
-      let total: number; 
+      let total: number;
       beforeAll(() => {
         action = getIssues(tableKey);
         issues = globalState.issue.issues;
-        total = globalState.issue.total; 
+        total = globalState.issue.total;
         allIssuesUrl = globalState.issue.allIssuesUrl;
       });
 
       it('gets issues', () => {
         return expectSaga(getIssuesWorker, action)
           .provide([
-            [matchers.call.fn(API.getIssues), {issues, total, allIssuesUrl}],
+            [matchers.call.fn(API.getIssues), { issues, total, allIssuesUrl }],
           ])
           .put(getIssuesSuccess(issues, total))
           .run();
@@ -238,9 +253,7 @@ describe('issue ducks', () => {
 
       it('handles request error', () => {
         return expectSaga(getIssuesWorker, action)
-          .provide([
-            [matchers.call.fn(API.getIssues), throwError(new Error())],
-          ])
+          .provide([[matchers.call.fn(API.getIssues), throwError(new Error())]])
           .put(getIssuesFailure([], 0, null))
           .run();
       });
@@ -249,8 +262,10 @@ describe('issue ducks', () => {
     describe('createIssueWatcher', () => {
       it('takes every createIssue.REQUEST with getIssuesWatcher', () => {
         testSaga(createIssueWatcher)
-          .next().takeEvery(CreateIssue.REQUEST, createIssueWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(CreateIssue.REQUEST, createIssueWorker)
+          .next()
+          .isDone();
       });
     });
 
@@ -258,28 +273,26 @@ describe('issue ducks', () => {
       let action: CreateIssueRequest;
       beforeAll(() => {
         const createIssuePayload = {
-          key, 
-          title, 
-          description
+          key,
+          title,
+          description,
         };
         const notificationPayload = {
-          sender, 
-          recipients: owners, 
-          notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+          sender,
+          recipients: owners,
+          notificationType: NotificationType.DATA_ISSUE_REPORTED,
           options: {
-            resource_name: resourceName, 
-            resource_path: resourcePath
-          }
-        }; 
+            resource_name: resourceName,
+            resource_path: resourcePath,
+          },
+        };
         action = createIssue(createIssuePayload, notificationPayload);
         issues = [issue];
       });
 
       it('creates a issue', () => {
         return expectSaga(createIssueWorker, action)
-          .provide([
-            [matchers.call.fn(API.createIssue), issue],
-          ])
+          .provide([[matchers.call.fn(API.createIssue), issue]])
           .put(createIssueSuccess(issue))
           .run();
       });
@@ -293,6 +306,5 @@ describe('issue ducks', () => {
           .run();
       });
     });
-
   });
-}); 
+});

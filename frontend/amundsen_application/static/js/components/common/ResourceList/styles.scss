@@ -11,8 +11,9 @@
   }
 
   .resource-list-footer {
-    margin: $spacer-1 0 $spacer-1 $spacer-4;
     height: $spacer-3;
+    margin: $spacer-1 0 $spacer-1 $spacer-4;
+
     a {
       cursor: pointer;
       font-weight: $font-weight-body-bold;
@@ -20,12 +21,12 @@
   }
 
   .empty-message {
-    margin-top: $spacer-4;
     display: flex;
     justify-content: center;
+    margin-top: $spacer-4;
   }
 }
 
 .paginated-resource-list {
-  margin-bottom: $spacer-4
+  margin-bottom: $spacer-4;
 }

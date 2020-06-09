@@ -10,8 +10,8 @@ export class BrowsePage extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-xs-12">
-              <h3 id="browse-header">Browse Tags</h3>	
-              <hr className="header-hr"/>	
+              <h3 id="browse-header">Browse Tags</h3>
+              <hr className="header-hr" />
               <TagsList />
             </div>
           </div>

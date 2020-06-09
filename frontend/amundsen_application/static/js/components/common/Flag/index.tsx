@@ -6,7 +6,7 @@ import './styles.scss';
 export enum CaseType {
   LOWER_CASE = 'lowerCase',
   SENTENCE_CASE = 'sentenceCase',
-  UPPER_CASE = 'upperCase'
+  UPPER_CASE = 'upperCase',
 }
 
 export interface FlagProps {
@@ -33,7 +33,9 @@ const Flag: React.SFC<FlagProps> = ({ caseType, text, labelStyle }) => {
   // TODO: After upgrading to Bootstrap 4, this component should leverage badges
   // https://getbootstrap.com/docs/4.1/components/badge/
   return (
-    <span className={`flag label label-${labelStyle}`}>{convertText(text, caseType)}</span>
+    <span className={`flag label label-${labelStyle}`}>
+      {convertText(text, caseType)}
+    </span>
   );
 };
 

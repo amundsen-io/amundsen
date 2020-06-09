@@ -12,7 +12,9 @@ const setup = () => {
 describe('ShimmeringDashboardLoader', () => {
   describe('render', () => {
     it('should render without errors', () => {
-      expect(() => {setup()}).not.toThrow();
+      expect(() => {
+        setup();
+      }).not.toThrow();
     });
 
     it('should render three rows', () => {

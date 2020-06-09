@@ -22,7 +22,7 @@ import {
   GetBookmarksForUser,
   GetBookmarksForUserRequest,
   RemoveBookmark,
-  RemoveBookmarkRequest
+  RemoveBookmarkRequest,
 } from './types';
 
 export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
@@ -35,54 +35,55 @@ export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
     // TODO - Consider adding the newly bookmarked resource directly to local store. This would save a round trip.
     response = yield call(API.getBookmarks);
     yield put(addBookmarkSuccess(response.bookmarks));
-  } catch(e) {
+  } catch (e) {
     yield put(addBookmarkFailure());
   }
 }
 export function* addBookmarkWatcher(): SagaIterator {
-  yield takeEvery(AddBookmark.REQUEST , addBookmarkWorker)
+  yield takeEvery(AddBookmark.REQUEST, addBookmarkWorker);
 }
 
-
-export function* removeBookmarkWorker(action: RemoveBookmarkRequest): SagaIterator {
+export function* removeBookmarkWorker(
+  action: RemoveBookmarkRequest
+): SagaIterator {
   let response;
   const { resourceKey, resourceType } = action.payload;
   try {
     response = yield call(API.removeBookmark, resourceKey, resourceType);
     yield put(removeBookmarkSuccess(resourceKey, resourceType));
-  } catch(e) {
+  } catch (e) {
     yield put(removeBookmarkFailure());
   }
 }
 export function* removeBookmarkWatcher(): SagaIterator {
-  yield takeEvery(RemoveBookmark.REQUEST , removeBookmarkWorker)
+  yield takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker);
 }
-
 
 export function* getBookmarksWorker(action: GetBookmarksRequest): SagaIterator {
   let response;
   try {
     response = yield call(API.getBookmarks);
     yield put(getBookmarksSuccess(response.bookmarks));
-  } catch(e) {
+  } catch (e) {
     yield put(getBookmarksFailure());
   }
 }
 export function* getBookmarksWatcher(): SagaIterator {
-  yield takeEvery(GetBookmarks.REQUEST, getBookmarksWorker)
+  yield takeEvery(GetBookmarks.REQUEST, getBookmarksWorker);
 }
 
-
-export function* getBookmarkForUserWorker(action: GetBookmarksForUserRequest): SagaIterator {
+export function* getBookmarkForUserWorker(
+  action: GetBookmarksForUserRequest
+): SagaIterator {
   let response;
   const { userId } = action.payload;
   try {
     response = yield call(API.getBookmarks, userId);
     yield put(getBookmarksForUserSuccess(response.bookmarks));
-  } catch(e) {
+  } catch (e) {
     yield put(getBookmarksForUserFailure());
   }
 }
 export function* getBookmarksForUserWatcher(): SagaIterator {
-  yield takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker)
+  yield takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker);
 }

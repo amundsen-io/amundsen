@@ -7,7 +7,7 @@ import {
   POPULAR_TABLES_LABEL,
   POPULAR_TABLES_INFO_TEXT,
   POPULAR_TABLES_SOURCE_NAME,
-  POPULAR_TABLES_PER_PAGE
+  POPULAR_TABLES_PER_PAGE,
 } from './constants';
 import { TableResource } from 'interfaces';
 
@@ -43,9 +43,9 @@ export class PopularTables extends React.Component<PopularTablesProps> {
           <InfoButton infoText={POPULAR_TABLES_INFO_TEXT} />
         </div>
         <PaginatedResourceList
-          allItems={ this.props.popularTables }
-          itemsPerPage={ POPULAR_TABLES_PER_PAGE }
-          source={ POPULAR_TABLES_SOURCE_NAME }
+          allItems={this.props.popularTables}
+          itemsPerPage={POPULAR_TABLES_PER_PAGE}
+          source={POPULAR_TABLES_SOURCE_NAME}
         />
       </>
     );
@@ -61,4 +61,7 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({ getPopularTables }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(PopularTables);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(PopularTables);

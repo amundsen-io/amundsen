@@ -12,7 +12,7 @@ import {
   MINIMUM_NOTIFICATIONS_SUBTITLE,
   MINIMUM_NOTIFICATIONS_TITLE,
   MINIMUM_PREFERENCE,
-  NOTIFICATION_PREFERENCES_TITLE
+  NOTIFICATION_PREFERENCES_TITLE,
 } from './constants';
 
 // TODO: Implement tests before component is exposed
@@ -21,44 +21,53 @@ interface PreferencesPageState {
   selectedPreference: string;
 }
 
-export interface DispatchFromProps {
-}
+export interface DispatchFromProps {}
 
 export type PreferencesPageProps = DispatchFromProps;
 
-export class PreferencesPage extends React.Component<PreferencesPageProps, PreferencesPageState> {
+export class PreferencesPage extends React.Component<
+  PreferencesPageProps,
+  PreferencesPageState
+> {
   constructor(props) {
     super(props);
     this.changePreference = this.changePreference.bind(this);
 
     this.state = {
       selectedPreference: ALL_PREFERENCE,
-    }
+    };
   }
   changePreference = (newPreference) => {
     this.setState({
       selectedPreference: newPreference,
-    })
-  }
-
+    });
+  };
 
   render() {
     return (
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-offset-1 col-md-10">
-            <h1 className="preferences-title">{NOTIFICATION_PREFERENCES_TITLE}</h1>
+            <h1 className="preferences-title">
+              {NOTIFICATION_PREFERENCES_TITLE}
+            </h1>
             <PreferenceGroup
-              onClick={this.changePreference} 
+              onClick={this.changePreference}
               preferenceValue={ALL_PREFERENCE}
-              selected={this.state.selectedPreference === ALL_PREFERENCE ? true : false}
+              selected={
+                this.state.selectedPreference === ALL_PREFERENCE ? true : false
+              }
               title={ALL_NOTIFICATIONS_TITLE}
               subtitle={ALL_NOTIFICATIONS_SUBTITLE}
             />
-            <PreferenceGroup 
+            <PreferenceGroup
               onClick={this.changePreference}
               preferenceValue={MINIMUM_PREFERENCE}
-              selected={this.state.selectedPreference === MINIMUM_PREFERENCE ? true : false}
+              selected={
+                this.state.selectedPreference === MINIMUM_PREFERENCE
+                  ? true
+                  : false
+              }
               title={MINIMUM_NOTIFICATIONS_TITLE}
               subtitle={MINIMUM_NOTIFICATIONS_SUBTITLE}
             />
@@ -73,4 +82,7 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({}, dispatch);
 };
 
-export default connect<DispatchFromProps>(null, mapDispatchToProps)(PreferencesPage);
+export default connect<DispatchFromProps>(
+  null,
+  mapDispatchToProps
+)(PreferencesPage);

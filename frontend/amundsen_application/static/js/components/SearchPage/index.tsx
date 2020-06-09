@@ -39,7 +39,6 @@ import {
   USER_RESOURCE_TITLE,
 } from './constants';
 
-
 export interface StateFromProps {
   hasFilters: boolean;
   searchTerm: string;
@@ -55,7 +54,9 @@ export interface DispatchFromProps {
   urlDidUpdate: (urlSearch: UrlSearch) => UrlDidUpdateRequest;
 }
 
-export type SearchPageProps = StateFromProps & DispatchFromProps & RouteComponentProps<any>;
+export type SearchPageProps = StateFromProps &
+  DispatchFromProps &
+  RouteComponentProps<any>;
 
 export class SearchPage extends React.Component<SearchPageProps> {
   public static defaultProps: Partial<SearchPageProps> = {};
@@ -71,13 +72,16 @@ export class SearchPage extends React.Component<SearchPageProps> {
   }
 
   renderSearchResults = () => {
-    switch(this.props.resource) {
+    switch (this.props.resource) {
       case ResourceType.table:
         return this.getTabContent(this.props.tables, ResourceType.table);
       case ResourceType.user:
         return this.getTabContent(this.props.users, ResourceType.user);
       case ResourceType.dashboard:
-        return this.getTabContent(this.props.dashboards, ResourceType.dashboard);
+        return this.getTabContent(
+          this.props.dashboards,
+          ResourceType.dashboard
+        );
     }
     return null;
   };
@@ -98,7 +102,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
     const { hasFilters, searchTerm } = this.props;
     const { page_index, total_results } = results;
-    const startIndex = (RESULTS_PER_PAGE * page_index) + 1;
+    const startIndex = RESULTS_PER_PAGE * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
     // No search input
@@ -109,7 +113,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
             {SEARCH_DEFAULT_MESSAGE}
           </div>
         </div>
-      )
+      );
     }
 
     // Check no results
@@ -117,10 +121,12 @@ export class SearchPage extends React.Component<SearchPageProps> {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
-            {SEARCH_ERROR_MESSAGE_PREFIX}<i>{tabLabel.toLowerCase()}</i>{SEARCH_ERROR_MESSAGE_SUFFIX}
+            {SEARCH_ERROR_MESSAGE_PREFIX}
+            <i>{tabLabel.toLowerCase()}</i>
+            {SEARCH_ERROR_MESSAGE_SUFFIX}
           </div>
         </div>
-      )
+      );
     }
 
     // Check page_index bounds
@@ -131,18 +137,18 @@ export class SearchPage extends React.Component<SearchPageProps> {
             {PAGE_INDEX_ERROR_MESSAGE}
           </div>
         </div>
-      )
+      );
     }
 
     return (
       <div className="search-list-container">
         <PaginatedApiResourceList
-          activePage={ page_index }
-          onPagination={ this.props.setPageIndex }
-          itemsPerPage={ RESULTS_PER_PAGE }
-          slicedItems={ results.results }
-          source={ SEARCH_SOURCE_NAME }
-          totalItemsCount={ total_results }
+          activePage={page_index}
+          onPagination={this.props.setPageIndex}
+          itemsPerPage={RESULTS_PER_PAGE}
+          slicedItems={results.results}
+          source={SEARCH_SOURCE_NAME}
+          totalItemsCount={total_results}
         />
       </div>
     );
@@ -150,7 +156,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   renderContent = () => {
     if (this.props.isLoading) {
-      return (<LoadingSpinner/>);
+      return <LoadingSpinner />;
     }
     return this.renderSearchResults();
   };
@@ -160,18 +166,16 @@ export class SearchPage extends React.Component<SearchPageProps> {
     const innerContent = (
       <div className="search-page">
         <SearchPanel>
-          <ResourceSelector/>
+          <ResourceSelector />
           <SearchFilter />
         </SearchPanel>
-        <div className="search-results">
-          { this.renderContent() }
-        </div>
+        <div className="search-results">{this.renderContent()}</div>
       </div>
     );
     if (searchTerm.length > 0) {
       return (
-        <DocumentTitle title={ `${searchTerm}${DOCUMENT_TITLE_SUFFIX}` }>
-          { innerContent }
+        <DocumentTitle title={`${searchTerm}${DOCUMENT_TITLE_SUFFIX}`}>
+          {innerContent}
         </DocumentTitle>
       );
     }
@@ -193,10 +197,21 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-    urlDidUpdate,
-    setPageIndex: (pageIndex: number) => submitSearchResource({ pageIndex, searchType: SearchType.PAGINATION, updateUrl: true }),
-  }, dispatch);
+  return bindActionCreators(
+    {
+      urlDidUpdate,
+      setPageIndex: (pageIndex: number) =>
+        submitSearchResource({
+          pageIndex,
+          searchType: SearchType.PAGINATION,
+          updateUrl: true,
+        }),
+    },
+    dispatch
+  );
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(SearchPage);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchPage);

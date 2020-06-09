@@ -4,13 +4,13 @@ import { shallow } from 'enzyme';
 import SearchPanel from '../';
 
 describe('SearchPanel', () => {
-  const resourceChild = (<div>I am a resource selector</div>);
-  const filterChild = (<div>I am a a set of filters</div>);
+  const resourceChild = <div>I am a resource selector</div>;
+  const filterChild = <div>I am a a set of filters</div>;
   const setup = () => {
     const wrapper = shallow(
       <SearchPanel>
-        { resourceChild }
-        { filterChild }
+        {resourceChild}
+        {filterChild}
       </SearchPanel>
     );
     return { wrapper };
@@ -24,13 +24,13 @@ describe('SearchPanel', () => {
     });
     it('renders itself with correct class', () => {
       expect(wrapper.hasClass('search-control-panel')).toBe(true);
-    })
+    });
 
     it('renders its children with correct class', () => {
       wrapper.children().forEach((child) => {
         expect(child.props().className).toEqual('section');
       });
-    })
+    });
 
     it('renders expected children', () => {
       const children = wrapper.children();

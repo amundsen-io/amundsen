@@ -4,12 +4,12 @@ import { TableReader } from 'interfaces/TableMetadata';
 import { TableResource, QueryResource } from 'interfaces/Resources';
 
 export interface DashboardMetadata {
-  badges: Tag[]
-  chart_names: string[]
+  badges: Tag[];
+  chart_names: string[];
   cluster: string;
   created_timestamp: number;
   description: string;
-  frequent_users: TableReader[]
+  frequent_users: TableReader[];
   group_name: string;
   group_url: string;
   last_run_state: string;

@@ -20,8 +20,8 @@
       }
 
       .column-stat-row {
-        display: flex;
         border-top: 1px solid $divider;
+        display: flex;
         line-height: 32px;
 
         &:nth-child(odd) {

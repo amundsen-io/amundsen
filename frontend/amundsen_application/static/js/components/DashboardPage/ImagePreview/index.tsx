@@ -1,11 +1,11 @@
-import * as React from "react";
-import Linkify from "react-linkify";
-import { Modal } from "react-bootstrap";
+import * as React from 'react';
+import Linkify from 'react-linkify';
+import { Modal } from 'react-bootstrap';
 
-import ShimmeringDashboardLoader from "../ShimmeringDashboardLoader";
+import ShimmeringDashboardLoader from '../ShimmeringDashboardLoader';
 
-import * as Constants from "./constants";
-import "./styles.scss";
+import * as Constants from './constants';
+import './styles.scss';
 
 export interface ImagePreviewProps {
   uri: string;
@@ -19,9 +19,9 @@ interface ImagePreviewState {
 }
 
 type PreviewModalProps = {
-  imageSrc: string,
-  onClose: () => void,
-}
+  imageSrc: string;
+  onClose: () => void;
+};
 
 const PreviewModal = ({ imageSrc, onClose }: PreviewModalProps) => {
   const [show, setShow] = React.useState(true);
@@ -31,22 +31,28 @@ const PreviewModal = ({ imageSrc, onClose }: PreviewModalProps) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} scrollable="true" className="dashboard-preview-modal">
+    <Modal
+      show={show}
+      onHide={handleClose}
+      scrollable="true"
+      className="dashboard-preview-modal"
+    >
       <Modal.Header closeButton={true}>
-        <Modal.Title className="text-center">{Constants.DASHBOARD_PREVIEW_MODAL_TITLE}</Modal.Title>
+        <Modal.Title className="text-center">
+          {Constants.DASHBOARD_PREVIEW_MODAL_TITLE}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <img
-          src={imageSrc}
-          height="auto"
-          width="100%"
-        />
+        <img src={imageSrc} height="auto" width="100%" />
       </Modal.Body>
     </Modal>
   );
 };
 
-export class ImagePreview extends React.Component< ImagePreviewProps, ImagePreviewState > {
+export class ImagePreview extends React.Component<
+  ImagePreviewProps,
+  ImagePreviewState
+> {
   state = {
     isLoading: true,
     hasError: false,
@@ -55,19 +61,19 @@ export class ImagePreview extends React.Component< ImagePreviewProps, ImagePrevi
 
   onSuccess = () => {
     this.setState({ isLoading: false, hasError: false });
-  }
+  };
 
   onError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     this.setState({ isLoading: false, hasError: true });
-  }
+  };
 
   handlePreviewButton = () => {
     this.setState({ isModalVisible: true });
-  }
+  };
 
   handlePreviewModalClose = () => {
     this.setState({ isModalVisible: false });
-  }
+  };
 
   render = () => {
     const { uri, redirectUrl } = this.props;
@@ -76,17 +82,17 @@ export class ImagePreview extends React.Component< ImagePreviewProps, ImagePrevi
 
     return (
       <div className="image-preview">
-        {isLoading && (
-          <ShimmeringDashboardLoader />
-        )}
+        {isLoading && <ShimmeringDashboardLoader />}
         {!hasError && (
-          <button className="preview-button" type="button" onClick={this.handlePreviewButton}>
+          <button
+            className="preview-button"
+            type="button"
+            onClick={this.handlePreviewButton}
+          >
             <img
               className="preview"
               style={
-                isLoading
-                  ? { visibility: "hidden" }
-                  : { visibility: "visible" }
+                isLoading ? { visibility: 'hidden' } : { visibility: 'visible' }
               }
               src={imageSrc}
               onLoad={this.onSuccess}
@@ -99,7 +105,7 @@ export class ImagePreview extends React.Component< ImagePreviewProps, ImagePrevi
         {hasError && (
           <Linkify
             className="body-placeholder"
-            properties={{ target: "_blank", rel: "noopener noreferrer" }}
+            properties={{ target: '_blank', rel: 'noopener noreferrer' }}
           >{`${Constants.ERROR_MESSAGE} ${redirectUrl}`}</Linkify>
         )}
         {isModalVisible && (

@@ -3,7 +3,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Flag from 'components/common/Flag';
-import { DASHBOARD_RESOURCE_TITLE, TABLE_RESOURCE_TITLE, USER_RESOURCE_TITLE } from 'components/SearchPage/constants';
+import {
+  DASHBOARD_RESOURCE_TITLE,
+  TABLE_RESOURCE_TITLE,
+  USER_RESOURCE_TITLE,
+} from 'components/SearchPage/constants';
 import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import { updateSearchState } from 'ducks/search/reducer';
@@ -11,12 +15,12 @@ import {
   DashboardSearchResults,
   TableSearchResults,
   UpdateSearchStateRequest,
-  UserSearchResults
+  UserSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
 
 export interface StateFromProps {
-  resource: ResourceType,
+  resource: ResourceType;
   tables: TableSearchResults;
   dashboards: DashboardSearchResults;
   users: UserSearchResults;
@@ -34,7 +38,7 @@ interface ResourceOptionConfig {
   count: number;
 }
 
-export class ResourceSelector extends React.Component<ResourceSelectorProps > {
+export class ResourceSelector extends React.Component<ResourceSelectorProps> {
   onChange = (event) => {
     this.props.setResource(event.target.value);
   };
@@ -46,24 +50,28 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps > {
           <input
             type="radio"
             name="resource"
-            value={ option.type }
-            checked={ this.props.resource === option.type }
-            onChange={ this.onChange }
+            value={option.type}
+            checked={this.props.resource === option.type}
+            onChange={this.onChange}
           />
-          <span className="subtitle-2">{ option.label }</span>
-          { option.type === ResourceType.dashboard && <Flag text="beta" labelStyle="default"/> }
-          <span className="body-secondary-3 pull-right">{ option.count }</span>
+          <span className="subtitle-2">{option.label}</span>
+          {option.type === ResourceType.dashboard && (
+            <Flag text="beta" labelStyle="default" />
+          )}
+          <span className="body-secondary-3 pull-right">{option.count}</span>
         </label>
       </div>
     );
   };
 
   render = () => {
-    const resourceOptions = [{
-      type: ResourceType.table,
-      label: TABLE_RESOURCE_TITLE,
-      count: this.props.tables.total_results,
-    }];
+    const resourceOptions = [
+      {
+        type: ResourceType.table,
+        label: TABLE_RESOURCE_TITLE,
+        count: this.props.tables.total_results,
+      },
+    ];
 
     if (indexDashboardsEnabled()) {
       resourceOptions.push({
@@ -84,12 +92,12 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps > {
     return (
       <>
         <div className="title-2">Resource</div>
-        {
-          resourceOptions.map((option, index) => this.renderRadioOption(option, index))
-        }
+        {resourceOptions.map((option, index) =>
+          this.renderRadioOption(option, index)
+        )}
       </>
     );
-  }
+  };
 }
 
 export const mapStateToProps = (state: GlobalState) => {
@@ -102,9 +110,16 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-    setResource: (resource: ResourceType) => updateSearchState({ resource, updateUrl: true }),
-  }, dispatch);
+  return bindActionCreators(
+    {
+      setResource: (resource: ResourceType) =>
+        updateSearchState({ resource, updateUrl: true }),
+    },
+    dispatch
+  );
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(ResourceSelector);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(ResourceSelector);

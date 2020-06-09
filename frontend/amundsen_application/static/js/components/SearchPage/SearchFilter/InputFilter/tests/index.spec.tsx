@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { InputFilter, InputFilterProps, mapDispatchToProps, mapStateToProps } from '../';
+import {
+  InputFilter,
+  InputFilterProps,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '../';
 
 import { APPLY_BTN_TEXT } from '../../constants';
 
@@ -19,7 +24,7 @@ describe('InputFilter', () => {
       categoryId: 'schema',
       value: 'schema_name',
       updateFilter: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<InputFilter>(<InputFilter {...props} />);
     return { props, wrapper };
@@ -40,12 +45,12 @@ describe('InputFilter', () => {
     let props;
     let wrapper;
     beforeAll(() => {
-       const setupResult = setup();
-       props = setupResult.props;
-       wrapper = setupResult.wrapper;
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
     });
     it('sets the value state to props.value if the property has changed', () => {
-      setStateSpy.mockClear()
+      setStateSpy.mockClear();
       const newProps = {
         ...props,
         value: 'Some new value',
@@ -55,7 +60,7 @@ describe('InputFilter', () => {
     });
 
     it('sets the value state to empty string if the property has change and is not truthy', () => {
-      setStateSpy.mockClear()
+      setStateSpy.mockClear();
       const newProps = {
         ...props,
         value: '',
@@ -78,10 +83,10 @@ describe('InputFilter', () => {
 
     let updateFilterSpy;
     beforeAll(() => {
-       const setupResult = setup();
-       props = setupResult.props;
-       wrapper = setupResult.wrapper;
-       updateFilterSpy = jest.spyOn(props, 'updateFilter');
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
+      updateFilterSpy = jest.spyOn(props, 'updateFilter');
     });
 
     it('calls props.updateFilter if state.value is falsy', () => {
@@ -104,16 +109,16 @@ describe('InputFilter', () => {
     let props;
     let wrapper;
     beforeAll(() => {
-       const setupResult = setup();
-       props = setupResult.props;
-       wrapper = setupResult.wrapper;
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
     });
     it('sets the value state to e.target.value', () => {
-      setStateSpy.mockClear()
+      setStateSpy.mockClear();
       const mockValue = 'mockValue';
-      const expectedValue = 'mockvalue'
-      const mockEvent = { target: { value: mockValue }};
-      wrapper.instance().onInputChange(mockEvent)
+      const expectedValue = 'mockvalue';
+      const mockEvent = { target: { value: mockValue } };
+      wrapper.instance().onInputChange(mockEvent);
       expect(setStateSpy).toHaveBeenCalledWith({ value: expectedValue });
     });
   });
@@ -128,7 +133,7 @@ describe('InputFilter', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       wrapper.instance().render();
-    })
+    });
 
     it('renders a form with correct onSubmit property', () => {
       element = wrapper.find('form');
@@ -161,9 +166,9 @@ describe('InputFilter', () => {
         resource: ResourceType.table,
         filters: {
           [ResourceType.table]: {
-            [mockCategoryId]: mockFilters
-          }
-        }
+            [mockCategoryId]: mockFilters,
+          },
+        },
       },
     };
 
@@ -173,8 +178,8 @@ describe('InputFilter', () => {
         ...globalState.search,
         resource: ResourceType.user,
         filters: {
-          [ResourceType.table]: {}
-        }
+          [ResourceType.table]: {},
+        },
       },
     };
 

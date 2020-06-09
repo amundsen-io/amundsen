@@ -2,7 +2,11 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
-import { ColumnListItem, ColumnListItemProps, mapDispatchToProps } from 'components/TableDetail/ColumnListItem';
+import {
+  ColumnListItem,
+  ColumnListItemProps,
+  mapDispatchToProps,
+} from 'components/TableDetail/ColumnListItem';
 import ColumnStats from 'components/TableDetail/ColumnStats';
 import AppConfig from 'config/config';
 import * as UtilMethods from 'ducks/utilMethods';
@@ -15,11 +19,18 @@ describe('ColumnListItem', () => {
   const setup = (propOverrides?: Partial<ColumnListItemProps>) => {
     const props = {
       data: {
-        name: "test_column_name",
-        description: "This is a test description of this table",
+        name: 'test_column_name',
+        description: 'This is a test description of this table',
         is_editable: true,
-        col_type: "varchar(32)",
-        stats: [{ end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count", stat_val: "12345" }]
+        col_type: 'varchar(32)',
+        stats: [
+          {
+            end_epoch: 1571616000,
+            start_epoch: 1571616000,
+            stat_type: 'count',
+            stat_val: '12345',
+          },
+        ],
       },
       index: 0,
       openRequestDescriptionDialog: jest.fn(),
@@ -59,23 +70,29 @@ describe('ColumnListItem', () => {
 
   describe('openRequest', () => {
     it('calls openRequestDescriptionDialog', () => {
-      const openRequestDescriptionDialogSpy = jest.spyOn(props, 'openRequestDescriptionDialog');
+      const openRequestDescriptionDialogSpy = jest.spyOn(
+        props,
+        'openRequestDescriptionDialog'
+      );
       instance.openRequest();
-      expect(openRequestDescriptionDialogSpy).toHaveBeenCalledWith(RequestMetadataType.COLUMN_DESCRIPTION, props.data.name);
+      expect(openRequestDescriptionDialogSpy).toHaveBeenCalledWith(
+        RequestMetadataType.COLUMN_DESCRIPTION,
+        props.data.name
+      );
     });
   });
 
   describe('render', () => {
     it('renders a list-group-item with toggle expand attached', () => {
-      const listGroupItem = wrapper.find(".list-group-item");
+      const listGroupItem = wrapper.find('.list-group-item');
       expect(listGroupItem.props()).toMatchObject({
-        onClick: instance.toggleExpand
+        onClick: instance.toggleExpand,
       });
     });
 
     it('renders the column name correctly', () => {
       const columnName = wrapper.find('.column-name');
-      expect(columnName.text()).toBe(props.data.name)
+      expect(columnName.text()).toBe(props.data.name);
     });
 
     it('renders the column description when not expanded', () => {
@@ -92,13 +109,13 @@ describe('ColumnListItem', () => {
     it('renders the dropdown when notifications is enabled', () => {
       AppConfig.mailClientFeatures.notificationsEnabled = true;
       const { wrapper, props } = setup();
-      expect(wrapper.find(".column-dropdown").exists()).toBe(true);
+      expect(wrapper.find('.column-dropdown').exists()).toBe(true);
     });
 
     it('does not render the dropdown when notifications is disabled', () => {
       AppConfig.mailClientFeatures.notificationsEnabled = false;
       const { wrapper, props } = setup();
-      expect(wrapper.find(".column-dropdown").exists()).toBe(false);
+      expect(wrapper.find('.column-dropdown').exists()).toBe(false);
     });
 
     it('renders column stats and editable text when expanded', () => {
@@ -123,9 +140,11 @@ describe('ColumnListItem', () => {
       });
 
       it('has appropriate css for column details', () => {
-        expect(newWrapper.find('.column-details').hasClass('my-auto')).toBe(true);
+        expect(newWrapper.find('.column-details').hasClass('my-auto')).toBe(
+          true
+        );
       });
-    })
+    });
   });
 });
 

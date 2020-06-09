@@ -8,7 +8,7 @@ import {
   CANCEL_BUTTON_TEXT,
   REFRESH_BUTTON_TEXT,
   REFRESH_MESSAGE,
-  UPDATE_BUTTON_TEXT
+  UPDATE_BUTTON_TEXT,
 } from './constants';
 import { EditableSectionChildProps } from 'components/common/EditableSection';
 
@@ -18,7 +18,11 @@ export interface StateFromProps {
 
 export interface DispatchFromProps {
   getLatestValue?: (onSuccess?: () => any, onFailure?: () => any) => void;
-  onSubmitValue: (newValue: string, onSuccess?: () => any, onFailure?: () => any) => void;
+  onSubmitValue: (
+    newValue: string,
+    onSuccess?: () => any,
+    onFailure?: () => any
+  ) => void;
 }
 
 export interface ComponentProps {
@@ -27,14 +31,20 @@ export interface ComponentProps {
   value?: string;
 }
 
-export type EditableTextProps = ComponentProps & DispatchFromProps & StateFromProps & EditableSectionChildProps;
+export type EditableTextProps = ComponentProps &
+  DispatchFromProps &
+  StateFromProps &
+  EditableSectionChildProps;
 
 interface EditableTextState {
   value?: string;
   isDisabled: boolean;
 }
 
-class EditableText extends React.Component<EditableTextProps, EditableTextState> {
+class EditableText extends React.Component<
+  EditableTextProps,
+  EditableTextState
+> {
   readonly textAreaRef;
 
   public static defaultProps: EditableTextProps = {
@@ -67,9 +77,12 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
       if (this.props.getLatestValue) {
         this.props.getLatestValue();
       }
-    } else if (this.props.refreshValue !== this.state.value && !this.state.isDisabled) {
+    } else if (
+      this.props.refreshValue !== this.state.value &&
+      !this.state.isDisabled
+    ) {
       // disable the component if a refresh is needed
-      this.setState({ isDisabled: true })
+      this.setState({ isDisabled: true });
     }
   }
 
@@ -96,7 +109,9 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
       this.props.setEditMode(false);
       this.setState({ value: newValue });
     };
-    const onFailureCallback = () => { this.exitEditMode(); };
+    const onFailureCallback = () => {
+      this.exitEditMode();
+    };
 
     this.props.onSubmitValue(newValue, onSuccessCallback, onFailureCallback);
   };
@@ -106,16 +121,18 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
       return (
         <div className="editable-text">
           <div className="markdown-wrapper">
-            <ReactMarkdown source={ this.state.value }/>
+            <ReactMarkdown source={this.state.value} />
           </div>
-          {
-            this.props.editable && !this.state.value &&
-            <a className="edit-link"
-               href="JavaScript:void(0)"
-               onClick={ this.enterEditMode }
-            >Add Description</a>
-          }
-          </div>
+          {this.props.editable && !this.state.value && (
+            <a
+              className="edit-link"
+              href="JavaScript:void(0)"
+              onClick={this.enterEditMode}
+            >
+              Add Description
+            </a>
+          )}
+        </div>
       );
     }
 
@@ -123,33 +140,40 @@ class EditableText extends React.Component<EditableTextProps, EditableTextState>
       <div className="editable-text">
         <textarea
           className="editable-textarea"
-          rows={ 2 }
-          maxLength={ this.props.maxLength }
-          ref={ this.textAreaRef }
-          defaultValue={ this.state.value }
-          disabled={ this.state.isDisabled }
+          rows={2}
+          maxLength={this.props.maxLength}
+          ref={this.textAreaRef}
+          defaultValue={this.state.value}
+          disabled={this.state.isDisabled}
         />
         <div className="editable-textarea-controls">
-          {
-            this.state.isDisabled &&
-             <>
-               <h2 className="label label-danger refresh-message">
-                 { REFRESH_MESSAGE }
-               </h2>
-               <button className="btn btn-primary refresh-button" onClick={ this.refreshText } >
-                 <img className="icon icon-refresh"/>
-                 { REFRESH_BUTTON_TEXT }
-               </button>
-             </>
-          }
-          {
-            !this.state.isDisabled &&
-            <button className="btn btn-primary update-button" onClick={ this.updateText }>
-              { UPDATE_BUTTON_TEXT }
+          {this.state.isDisabled && (
+            <>
+              <h2 className="label label-danger refresh-message">
+                {REFRESH_MESSAGE}
+              </h2>
+              <button
+                className="btn btn-primary refresh-button"
+                onClick={this.refreshText}
+              >
+                <img className="icon icon-refresh" />
+                {REFRESH_BUTTON_TEXT}
+              </button>
+            </>
+          )}
+          {!this.state.isDisabled && (
+            <button
+              className="btn btn-primary update-button"
+              onClick={this.updateText}
+            >
+              {UPDATE_BUTTON_TEXT}
             </button>
-          }
-          <button className="btn btn-default cancel-button" onClick={ this.exitEditMode }>
-            { CANCEL_BUTTON_TEXT }
+          )}
+          <button
+            className="btn btn-default cancel-button"
+            onClick={this.exitEditMode}
+          >
+            {CANCEL_BUTTON_TEXT}
           </button>
         </div>
       </div>

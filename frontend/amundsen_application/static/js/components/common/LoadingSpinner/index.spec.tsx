@@ -5,19 +5,19 @@ import { shallow } from 'enzyme';
 import LoadingSpinner from '.';
 
 describe('LoadingSpinner', () => {
-    let subject;
+  let subject;
 
-    beforeEach(() => {
-        subject = shallow(<LoadingSpinner />);
-    });
+  beforeEach(() => {
+    subject = shallow(<LoadingSpinner />);
+  });
 
-    describe('render', () => {
-        it('renders img with props', () => {
-          expect(subject.find('img').props()).toMatchObject({
-            alt: 'loading...',
-            className: 'loading-spinner',
-            src: '/static/images/loading_spinner.gif',
-          });
-        });
+  describe('render', () => {
+    it('renders img with props', () => {
+      expect(subject.find('img').props()).toMatchObject({
+        alt: 'loading...',
+        className: 'loading-spinner',
+        src: '/static/images/loading_spinner.gif',
+      });
     });
+  });
 });

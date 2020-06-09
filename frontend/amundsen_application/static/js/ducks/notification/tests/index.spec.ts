@@ -1,6 +1,10 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { NotificationType, RequestMetadataType, SendingState } from 'interfaces';
+import {
+  NotificationType,
+  RequestMetadataType,
+  SendingState,
+} from 'interfaces';
 
 import * as API from '../api/v0';
 import reducer, {
@@ -11,12 +15,8 @@ import reducer, {
   openRequestDescriptionDialog,
   NotificationReducerState,
 } from '../reducer';
-import {
-  submitNotificationWatcher, submitNotificationWorker
-} from '../sagas';
-import {
-  SubmitNotification, ToggleRequest
-} from '../types';
+import { submitNotificationWatcher, submitNotificationWorker } from '../sagas';
+import { SubmitNotification, ToggleRequest } from '../types';
 
 const testRecipients = ['user1@test.com'];
 const testSender = 'user2@test.com';
@@ -31,7 +31,12 @@ const testOptions = {
 describe('notifications ducks', () => {
   describe('actions', () => {
     it('submitNotification - returns the action to submit a notification', () => {
-      const action = submitNotification(testRecipients, testSender, testNotificationType, testOptions);
+      const action = submitNotification(
+        testRecipients,
+        testSender,
+        testNotificationType,
+        testOptions
+      );
       const { payload } = action;
       expect(action.type).toBe(SubmitNotification.REQUEST);
       expect(payload.recipients).toBe(testRecipients);
@@ -88,7 +93,12 @@ describe('notifications ducks', () => {
     });
 
     it('should handle ToggleRequest.OPEN without columnName', () => {
-      expect(reducer(testState, openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION))).toEqual({
+      expect(
+        reducer(
+          testState,
+          openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION)
+        )
+      ).toEqual({
         requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION,
         requestIsOpen: true,
         sendState: SendingState.IDLE,
@@ -96,7 +106,15 @@ describe('notifications ducks', () => {
     });
 
     it('should handle ToggleRequest.OPEN with columnName', () => {
-      expect(reducer(testState, openRequestDescriptionDialog(RequestMetadataType.TABLE_DESCRIPTION, 'col'))).toEqual({
+      expect(
+        reducer(
+          testState,
+          openRequestDescriptionDialog(
+            RequestMetadataType.TABLE_DESCRIPTION,
+            'col'
+          )
+        )
+      ).toEqual({
         columnName: 'col',
         requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION,
         requestIsOpen: true,
@@ -119,7 +137,12 @@ describe('notifications ducks', () => {
     });
 
     it('should handle SubmitNotification.REQUEST', () => {
-      const action = submitNotification(testRecipients, testSender, testNotificationType, testOptions);
+      const action = submitNotification(
+        testRecipients,
+        testSender,
+        testNotificationType,
+        testOptions
+      );
       expect(reducer(testState, action)).toEqual({
         ...testState,
         requestIsOpen: false,
@@ -139,23 +162,44 @@ describe('notifications ducks', () => {
     describe('submitNotificationWatcher', () => {
       it('takes every SubmitNotification.REQUEST with submitNotificationWorker', () => {
         testSaga(submitNotificationWatcher)
-          .next().takeEvery(SubmitNotification.REQUEST, submitNotificationWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(SubmitNotification.REQUEST, submitNotificationWorker)
+          .next()
+          .isDone();
       });
     });
 
     describe('submitNotificationWorker', () => {
       it('executes flow for submitting notification', () => {
-        testSaga(submitNotificationWorker, submitNotification(testRecipients, testSender, testNotificationType, testOptions))
-          .next().call(API.sendNotification, testRecipients, testSender, testNotificationType, testOptions)
-          .next().put(submitNotificationSuccess())
-          .next().isDone();
+        testSaga(
+          submitNotificationWorker,
+          submitNotification(
+            testRecipients,
+            testSender,
+            testNotificationType,
+            testOptions
+          )
+        )
+          .next()
+          .call(
+            API.sendNotification,
+            testRecipients,
+            testSender,
+            testNotificationType,
+            testOptions
+          )
+          .next()
+          .put(submitNotificationSuccess())
+          .next()
+          .isDone();
       });
 
       it('handles request error', () => {
         testSaga(submitNotificationWorker, null)
-          .next().put(submitNotificationFailure())
-          .next().isDone();
+          .next()
+          .put(submitNotificationFailure())
+          .next()
+          .isDone();
       });
     });
   });

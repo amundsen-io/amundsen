@@ -14,9 +14,16 @@ export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
  * If a configuration or display name does not exist for the given id, the id
  * is returned.
  */
-export function getSourceDisplayName(sourceId: string, resource: ResourceType): string {
+export function getSourceDisplayName(
+  sourceId: string,
+  resource: ResourceType
+): string {
   const config = AppConfig.resourceConfig[resource];
-  if (!config || !config.supportedSources || !config.supportedSources[sourceId]) {
+  if (
+    !config ||
+    !config.supportedSources ||
+    !config.supportedSources[sourceId]
+  ) {
     return sourceId;
   }
 
@@ -29,9 +36,16 @@ export function getSourceDisplayName(sourceId: string, resource: ResourceType): 
  * If a configuration or icon class does not exist for the given id, the default
  * icon class for the given resource type is returned.
  */
-export function getSourceIconClass(sourceId: string, resource: ResourceType): string {
+export function getSourceIconClass(
+  sourceId: string,
+  resource: ResourceType
+): string {
   const config = AppConfig.resourceConfig[resource];
-  if (!config || !config.supportedSources || !config.supportedSources[sourceId]) {
+  if (
+    !config ||
+    !config.supportedSources ||
+    !config.supportedSources[sourceId]
+  ) {
     if (resource === ResourceType.dashboard) {
       return DEFAULT_DASHBOARD_ICON_CLASS;
     }
@@ -49,14 +63,16 @@ export function getSourceIconClass(sourceId: string, resource: ResourceType): st
  */
 export function getDisplayNameByResource(resourceType: ResourceType): string {
   return AppConfig.resourceConfig[resourceType].displayName;
-};
+}
 
 /**
  * Returns the filterCategories for the given resourceType
  */
-export function getFilterConfigByResource(resourceType: ResourceType): FilterConfig {
+export function getFilterConfigByResource(
+  resourceType: ResourceType
+): FilterConfig {
   return AppConfig.resourceConfig[resourceType].filterCategories;
-};
+}
 
 /*
  * Given a badge name, this will return a badge style and a display name.
@@ -137,10 +153,20 @@ export function exploreEnabled(): boolean {
 export function generateExploreUrl(tableData: TableMetadata): string {
   const partition = tableData.partition;
 
-    if (partition.is_partitioned) {
-      return AppConfig.tableProfile.exploreUrlGenerator(
-        tableData.database, tableData.cluster, tableData.schema, tableData.name, partition.key, partition.value);
-    }
+  if (partition.is_partitioned) {
     return AppConfig.tableProfile.exploreUrlGenerator(
-      tableData.database, tableData.cluster, tableData.schema, tableData.name);
+      tableData.database,
+      tableData.cluster,
+      tableData.schema,
+      tableData.name,
+      partition.key,
+      partition.value
+    );
+  }
+  return AppConfig.tableProfile.exploreUrlGenerator(
+    tableData.database,
+    tableData.cluster,
+    tableData.schema,
+    tableData.name
+  );
 }

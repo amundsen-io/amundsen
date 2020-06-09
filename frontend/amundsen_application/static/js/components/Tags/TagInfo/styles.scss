@@ -12,14 +12,14 @@
   white-space: nowrap;
 
   &.compact {
-    line-height: 14px;
     height: 30px;
+    line-height: 14px;
   }
 
   &:hover,
   &:focus {
-    color: $text-primary;
     background-color: $tag-bg-hover;
+    color: $text-primary;
   }
 
   .tag-count {

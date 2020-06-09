@@ -2,12 +2,13 @@ import * as React from 'react';
 import './styles.scss';
 
 class LoadingSpinner extends React.Component {
-
   render() {
     return (
-      <img src='/static/images/loading_spinner.gif'
-           alt="loading..."
-           className="loading-spinner"/>
+      <img
+        src="/static/images/loading_spinner.gif"
+        alt="loading..."
+        className="loading-spinner"
+      />
     );
   }
 }

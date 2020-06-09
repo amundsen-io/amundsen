@@ -22,7 +22,7 @@ describe('ResourceList', () => {
       ],
       itemsPerPage: 4,
       source: 'testSource',
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<ResourceList>(<ResourceList {...props} />);
     return { props, wrapper };
@@ -36,8 +36,8 @@ describe('ResourceList', () => {
       expect(wrapper.state().isExpanded).toEqual(!initialState);
       wrapper.instance().onViewAllToggle();
       expect(wrapper.state().isExpanded).toEqual(initialState);
-    })
-  })
+    });
+  });
 
   describe('render', () => {
     let props;
@@ -49,12 +49,15 @@ describe('ResourceList', () => {
     });
 
     it('renders title if it exists', () => {
-      const { props, wrapper } = setup({ title: 'I am a title'});
+      const { props, wrapper } = setup({ title: 'I am a title' });
       expect(wrapper.find('.resource-list-title').text()).toBe(props.title);
     });
 
     it('renders empty messages if it exists and there are no items', () => {
-      const { props, wrapper } = setup({ allItems: [], emptyText: 'Nothing Here'});
+      const { props, wrapper } = setup({
+        allItems: [],
+        emptyText: 'Nothing Here',
+      });
       expect(wrapper.find('.empty-message').text()).toBe(props.emptyText);
     });
 
@@ -78,8 +81,8 @@ describe('ResourceList', () => {
           logging: {
             source: props.source,
             index: idx,
-          }
-        })
+          },
+        });
       });
     });
 
@@ -90,22 +93,30 @@ describe('ResourceList', () => {
       });
 
       it('renders a link to toggle viewing items', () => {
-        expect(footerLink.props().onClick).toEqual(wrapper.instance().onViewAllToggle)
+        expect(footerLink.props().onClick).toEqual(
+          wrapper.instance().onViewAllToggle
+        );
       });
 
       it('renders correct default text if not expanded', () => {
         wrapper.setState({ isExpanded: false });
-        expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual(CONSTANTS.FOOTER_TEXT_COLLAPSED);
+        expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual(
+          CONSTANTS.FOOTER_TEXT_COLLAPSED
+        );
       });
 
       it('renders props.footerTextCollapsed if it exists and not expanded', () => {
         const wrapper = setup({ footerTextCollapsed: 'Hello' }).wrapper;
-        expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual('Hello');
-      })
+        expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual(
+          'Hello'
+        );
+      });
 
       it('renders correct default text if expanded', () => {
         wrapper.setState({ isExpanded: true });
-        expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual(CONSTANTS.FOOTER_TEXT_EXPANDED);
+        expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual(
+          CONSTANTS.FOOTER_TEXT_EXPANDED
+        );
       });
     });
   });

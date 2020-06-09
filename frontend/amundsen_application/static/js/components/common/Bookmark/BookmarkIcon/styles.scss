@@ -22,16 +22,15 @@
     }
   }
 
-
   &:hover,
   &:focus {
     background-color: $body-bg-tertiary;
   }
 
-   .icon {
+  .icon {
     margin: 0;
 
-     &.icon-bookmark {
+    &.icon-bookmark {
       &,
       &:hover,
       &:focus {
@@ -39,7 +38,7 @@
       }
     }
 
-     &.icon-bookmark-filled {
+    &.icon-bookmark-filled {
       &,
       &:hover,
       &:focus {

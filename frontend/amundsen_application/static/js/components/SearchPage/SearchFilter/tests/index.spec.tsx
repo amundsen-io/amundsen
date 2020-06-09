@@ -9,30 +9,36 @@ import { FilterType, ResourceType } from 'interfaces';
 import globalState from 'fixtures/globalState';
 import { GlobalState } from 'ducks/rootReducer';
 
-import { mapStateToProps, SearchFilter, SearchFilterProps, FilterSection, CheckboxFilterSection } from '../';
+import {
+  mapStateToProps,
+  SearchFilter,
+  SearchFilterProps,
+  FilterSection,
+  CheckboxFilterSection,
+} from '../';
 
 describe('SearchFilter', () => {
-    const setup = (propOverrides?: Partial<SearchFilterProps>) => {
+  const setup = (propOverrides?: Partial<SearchFilterProps>) => {
     const props = {
       filterSections: [
         {
           categoryId: 'database',
           helpText: 'This is what to do',
           options: [
-            { value: 'bigquery', label: 'BigQuery'},
-            { value: 'hive', label: 'Hive'}
+            { value: 'bigquery', label: 'BigQuery' },
+            { value: 'hive', label: 'Hive' },
           ],
           title: 'Source',
-          type: FilterType.CHECKBOX_SELECT
+          type: FilterType.CHECKBOX_SELECT,
         },
         {
           categoryId: 'schema',
           helpText: 'This is what to do',
           title: 'Schema',
-          type: FilterType.INPUT_SELECT
-        }
+          type: FilterType.INPUT_SELECT,
+        },
       ],
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<SearchFilter>(<SearchFilter {...props} />);
     return { props, wrapper };
@@ -50,7 +56,9 @@ describe('SearchFilter', () => {
       wrapper = setupResult.wrapper;
       mockCheckboxFilterData = props.filterSections[0];
       mockInputFilterData = props.filterSections[1];
-      content = wrapper.instance().createFilterSection('sectionKey', mockCheckboxFilterData);
+      content = wrapper
+        .instance()
+        .createFilterSection('sectionKey', mockCheckboxFilterData);
     });
 
     describe('renders a FilterSection', () => {
@@ -59,7 +67,9 @@ describe('SearchFilter', () => {
       });
 
       it('with correct categoryId', () => {
-        expect(content.props.categoryId).toBe(mockCheckboxFilterData.categoryId);
+        expect(content.props.categoryId).toBe(
+          mockCheckboxFilterData.categoryId
+        );
       });
 
       it('with correct helpText', () => {
@@ -79,7 +89,9 @@ describe('SearchFilter', () => {
       });
 
       it('without options if not supported for the filter type ', () => {
-        const content = wrapper.instance().createFilterSection('sectionKey', mockInputFilterData);
+        const content = wrapper
+          .instance()
+          .createFilterSection('sectionKey', mockInputFilterData);
         expect(content.props.options).toBe(undefined);
       });
     });
@@ -94,14 +106,20 @@ describe('SearchFilter', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      createFilterSectionSpy = jest.spyOn(wrapper.instance(), 'createFilterSection');
+      createFilterSectionSpy = jest.spyOn(
+        wrapper.instance(),
+        'createFilterSection'
+      );
       wrapper.instance().renderFilterSections();
     });
 
     it('calls createFilterSection with correct key and section for each props.filterSections', () => {
       props.filterSections.forEach((section) => {
-        expect(createFilterSectionSpy).toHaveBeenCalledWith(`section:${section.categoryId}`, section);
-      })
+        expect(createFilterSectionSpy).toHaveBeenCalledWith(
+          `section:${section.categoryId}`,
+          section
+        );
+      });
     });
   });
 
@@ -114,7 +132,10 @@ describe('SearchFilter', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      renderFilterSectionsSpy = jest.spyOn(wrapper.instance(), 'renderFilterSections');
+      renderFilterSectionsSpy = jest.spyOn(
+        wrapper.instance(),
+        'renderFilterSections'
+      );
       wrapper.instance().render();
     });
 
@@ -161,23 +182,29 @@ describe('mapStateToProps', () => {
         [ResourceType.table]: {
           [mockSchemaId]: mockSchemaValue,
           [mockDbId]: {
-            'hive': true
-          }
-        }
-      }
+            hive: true,
+          },
+        },
+      },
     },
   };
   let getFilterConfigByResourceSpy;
   let result;
 
   it('calls getFilterConfigByResource with resource', () => {
-    getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(MOCK_CATEGORY_CONFIG);
+    getFilterConfigByResourceSpy = jest
+      .spyOn(ConfigUtils, 'getFilterConfigByResource')
+      .mockReturnValue(MOCK_CATEGORY_CONFIG);
     mapStateToProps(mockStateWithFilters);
-    expect(getFilterConfigByResourceSpy).toHaveBeenCalledWith(mockStateWithFilters.search.resource);
+    expect(getFilterConfigByResourceSpy).toHaveBeenCalledWith(
+      mockStateWithFilters.search.resource
+    );
   });
 
   it('sets expected filterSections on the result', () => {
-    getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(MOCK_CATEGORY_CONFIG);
+    getFilterConfigByResourceSpy = jest
+      .spyOn(ConfigUtils, 'getFilterConfigByResource')
+      .mockReturnValue(MOCK_CATEGORY_CONFIG);
     result = mapStateToProps(mockStateWithFilters);
     expect(result.filterSections).toEqual([
       {
@@ -185,23 +212,25 @@ describe('mapStateToProps', () => {
         helpText: mockHelpText,
         options: [
           { label: 'BigQuery', value: 'bigquery' },
-          { label: 'Hive', value: 'hive' }
+          { label: 'Hive', value: 'hive' },
         ],
         type: FilterType.CHECKBOX_SELECT,
-        title: mockDbTitle
+        title: mockDbTitle,
       },
       {
         categoryId: mockSchemaId,
         helpText: mockHelpText,
         title: mockSchemaTitle,
         type: FilterType.INPUT_SELECT,
-      }
-    ])
+      },
+    ]);
   });
 
   it('sets empty array on filterSections if there are no configured filterCategories', () => {
-    getFilterConfigByResourceSpy = jest.spyOn(ConfigUtils, 'getFilterConfigByResource').mockReturnValue(undefined);
+    getFilterConfigByResourceSpy = jest
+      .spyOn(ConfigUtils, 'getFilterConfigByResource')
+      .mockReturnValue(undefined);
     result = mapStateToProps(globalState);
-    expect(result.filterSections).toEqual([])
+    expect(result.filterSections).toEqual([]);
   });
 });

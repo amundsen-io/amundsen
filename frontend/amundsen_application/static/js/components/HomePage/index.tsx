@@ -15,7 +15,6 @@ import { UpdateSearchStateReset } from 'ducks/search/types';
 import SearchBar from 'components/common/SearchBar';
 import TagsList from 'components/common/TagsList';
 
-
 export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
 }
@@ -41,7 +40,12 @@ export class HomePage extends React.Component<HomePageProps> {
               />
             </div>
             <div className="home-element-container">
-              <div id="browse-tags-header" className="title-1 browse-tags-header">Browse Tags</div>
+              <div
+                id="browse-tags-header"
+                className="title-1 browse-tags-header"
+              >
+                Browse Tags
+              </div>
               <TagsList />
             </div>
             <div className="home-element-container">
@@ -58,9 +62,12 @@ export class HomePage extends React.Component<HomePageProps> {
 }
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-    searchReset: () => resetSearchState(),
-  }, dispatch);
+  return bindActionCreators(
+    {
+      searchReset: () => resetSearchState(),
+    },
+    dispatch
+  );
 };
 
 export default connect<DispatchFromProps>(null, mapDispatchToProps)(HomePage);

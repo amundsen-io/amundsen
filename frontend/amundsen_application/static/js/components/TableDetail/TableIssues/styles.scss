@@ -4,13 +4,13 @@
   margin-bottom: $spacer-1;
 
   .issue-banner {
-    height: 40px;
-    padding: $spacer-1;
-    display: flex;
-    flex-direction: row;
     border-top: 1px solid $stroke-light;
     color: $text-secondary;
+    display: flex;
+    flex-direction: row;
+    height: 40px;
     line-height: 24px;
+    padding: $spacer-1;
 
     &:last-child {
       border-bottom: 1px solid $stroke-light;
@@ -20,60 +20,73 @@
       line-height: 20px;
     }
   }
+
   .table-issue-link {
     margin-right: $spacer-1;
     min-width: fit-content;
   }
+
   .issue-title-name {
-    white-space: nowrap;
+    max-width: fit-content;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: fit-content;
+    white-space: nowrap;
   }
+
   .issue-title-display-text {
     display: flex;
     max-width: fit-content;
   }
+
   .table-issue-status {
     display: flex;
-    justify-content: flex-end;
     flex-grow: 1.1;
-    min-width: fit-content;
+    justify-content: flex-end;
     margin-left: $spacer-2;
+    min-width: fit-content;
   }
+
   .table-issue-priority {
-    margin-right: $spacer-1;
     border: 1px solid $rose80;
     border-radius: 5px;
-    padding: 1px 2px;
     flex: none;
+    margin-right: $spacer-1;
+    padding: 1px 2px;
   }
+
   .blocker {
-    color: $priority-text-blocker;
     // default is $rose80
     background-color: rgba($priority-bg-color, 1);
+    color: $priority-text-blocker;
   }
+
   .critical {
-    background-color: rgba($priority-bg-color, .6);
+    background-color: rgba($priority-bg-color, 0.6);
   }
+
   .major {
-    background-color: rgba($priority-bg-color, .3);
+    background-color: rgba($priority-bg-color, 0.3);
   }
+
   .minor {
-    background-color: rgba($priority-bg-color, .1);
+    background-color: rgba($priority-bg-color, 0.1);
   }
+
   .loading-spinner {
     margin-top: auto;
   }
 }
+
 .table-issue-more-issues {
   margin-bottom: $spacer-1;
   margin-right: $spacer-1;
 }
+
 .table-more-issues {
   display: flex;
   font-size: 16px;
 }
+
 .table-report-new-issue {
   margin-bottom: $spacer-1;
 

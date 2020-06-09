@@ -3,14 +3,14 @@
 .flash-message {
   background-color: $body-bg-dark;
   border-radius: 6px;
-  display: flex;
   color: $white;
+  display: flex;
   height: 56px;
   padding: $spacer-2 $spacer-1;
 
   .message {
-    margin-right: $spacer-2;
     line-height: 24px;
+    margin-right: $spacer-2;
   }
 
   .icon,

@@ -4,12 +4,21 @@
 .text-left { text-align: left; }
 .text-right { text-align: right; }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
-h1, h2, h3,
-.h1, .h2, .h3 {
+h1,
+h2,
+h3,
+.h1,
+.h2,
+.h3 {
   color: $text-primary;
   font-family: $font-family-header;
 }
@@ -37,15 +46,24 @@ h3,
 
 body {
   color: $text-primary;
-  font-size: 14px;
   font-family: $font-family-body;
+  font-size: 14px;
   font-weight: $font-weight-body-regular;
 }
 
-.title-1, .title-2, .title-3,
-.subtitle-1, .subtitle-2, .subtitle-3,
-.body-1, .body-2, .body-3,
-.body-secondary-3, .body-placeholder , .body-link, .caption {
+.title-1,
+.title-2,
+.title-3,
+.subtitle-1,
+.subtitle-2,
+.subtitle-3,
+.body-1,
+.body-2,
+.body-3,
+.body-secondary-3,
+.body-placeholder,
+.body-link,
+.caption {
   font-family: $font-family-body;
 }
 
@@ -124,22 +142,22 @@ body {
 
 .column-name {
   color: $column-name-color;
-  font-size: 14px;
   font-family: $font-family-body;
+  font-size: 14px;
   font-weight: $font-weight-body-bold;
   line-height: 18px;
 }
 
 .resource-type {
   color: $text-placeholder;
-  font-size: 13px;
   font-family: $font-family-monospace;
+  font-size: 13px;
 }
 
 .helper-text {
   color: $text-secondary;
-  font-size: 12px;
   font-family: $font-family-body;
+  font-size: 12px;
 }
 
 .text-placeholder {
@@ -150,7 +168,7 @@ body {
   color: $text-secondary;
 }
 
-.text-primary{
+.text-primary {
   color: $text-primary;
 }
 

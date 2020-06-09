@@ -2,9 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GlobalState } from 'ducks/rootReducer';
 
-import './styles.scss'
+import './styles.scss';
 import { Bookmark, ResourceType, ResourceDict } from 'interfaces';
-import { getDisplayNameByResource, indexDashboardsEnabled } from 'config/config-utils';
+import {
+  getDisplayNameByResource,
+  indexDashboardsEnabled,
+} from 'config/config-utils';
 import {
   BOOKMARK_TITLE,
   BOOKMARKS_PER_PAGE,
@@ -29,19 +32,19 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
     }
     return (
       <PaginatedResourceList
-        allItems={ bookmarks }
-        emptyText={ EMPTY_BOOKMARK_MESSAGE }
-        itemsPerPage={ BOOKMARKS_PER_PAGE }
-        source={ MY_BOOKMARKS_SOURCE_NAME }
+        allItems={bookmarks}
+        emptyText={EMPTY_BOOKMARK_MESSAGE}
+        itemsPerPage={BOOKMARKS_PER_PAGE}
+        source={MY_BOOKMARKS_SOURCE_NAME}
       />
-    )
+    );
   };
 
   generateTabKey = (resource: ResourceType) => {
     return `bookmarktab:${resource}`;
   };
 
-  generateTabTitle = (resource: ResourceType): string  => {
+  generateTabTitle = (resource: ResourceType): string => {
     const bookmarks = this.props.myBookmarks[resource];
     if (!bookmarks) {
       return '';
@@ -55,15 +58,15 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
     tabInfo.push({
       content: this.generateTabContent(ResourceType.table),
       key: this.generateTabKey(ResourceType.table),
-      title: this.generateTabTitle(ResourceType.table)
-    })
+      title: this.generateTabTitle(ResourceType.table),
+    });
 
     if (indexDashboardsEnabled()) {
       tabInfo.push({
         content: this.generateTabContent(ResourceType.dashboard),
         key: this.generateTabKey(ResourceType.dashboard),
-        title: this.generateTabTitle(ResourceType.dashboard)
-      })
+        title: this.generateTabTitle(ResourceType.dashboard),
+      });
     }
 
     return tabInfo;
@@ -76,13 +79,15 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
 
     return (
       <div className="bookmark-list">
-        <div className="title-1">{ BOOKMARK_TITLE }</div>
-        <TabsComponent tabs={ this.generateTabInfo() } defaultTab={ this.generateTabKey(ResourceType.table) } />
+        <div className="title-1">{BOOKMARK_TITLE}</div>
+        <TabsComponent
+          tabs={this.generateTabInfo()}
+          defaultTab={this.generateTabKey(ResourceType.table)}
+        />
       </div>
     );
   }
 }
-
 
 export const mapStateToProps = (state: GlobalState) => {
   return {

@@ -2,9 +2,15 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import AbstractFeedbackForm, { FeedbackFormProps } from 'components/Feedback/FeedbackForm';
+import AbstractFeedbackForm, {
+  FeedbackFormProps,
+} from 'components/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
-import { BugReportFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
+import {
+  BugReportFeedbackForm,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '../';
 import {
   BUG_SUMMARY_LABEL,
   BUG_SUMMARY_PLACEHOLDER,
@@ -24,7 +30,7 @@ describe('BugReportFeedbackForm', () => {
       submitFeedback: jest.fn(),
       resetFeedback: jest.fn(),
     };
-    return shallow<BugReportFeedbackForm>(<BugReportFeedbackForm {...props} />)
+    return shallow<BugReportFeedbackForm>(<BugReportFeedbackForm {...props} />);
   };
 
   it('is instance of AbstractFeedbackForm', () => {
@@ -50,13 +56,15 @@ describe('BugReportFeedbackForm', () => {
       expect(form.children().at(0).find('input').props()).toMatchObject({
         type: 'hidden',
         name: 'feedback-type',
-        value: 'Bug Report'
+        value: 'Bug Report',
       });
     });
 
     describe('renders subject input as second child', () => {
       it('renders correct label', () => {
-        expect(form.children().at(1).find('label').text()).toEqual(SUBJECT_LABEL);
+        expect(form.children().at(1).find('label').text()).toEqual(
+          SUBJECT_LABEL
+        );
       });
 
       it('renders input with correct props', () => {
@@ -72,7 +80,9 @@ describe('BugReportFeedbackForm', () => {
 
     describe('renders bug-summary input as third child', () => {
       it('renders correct label', () => {
-        expect(form.children().at(2).find('label').text()).toEqual(BUG_SUMMARY_LABEL);
+        expect(form.children().at(2).find('label').text()).toEqual(
+          BUG_SUMMARY_LABEL
+        );
       });
 
       it('renders textarea with correct props', () => {
@@ -89,7 +99,9 @@ describe('BugReportFeedbackForm', () => {
 
     describe('renders repro-steps input as fourth child', () => {
       it('renders correct label', () => {
-        expect(form.children().at(3).find('label').text()).toEqual(REPRO_STEPS_LABEL);
+        expect(form.children().at(3).find('label').text()).toEqual(
+          REPRO_STEPS_LABEL
+        );
       });
 
       it('renders textarea with correct props', () => {
@@ -112,7 +124,7 @@ describe('BugReportFeedbackForm', () => {
     });
 
     it('renders submit button with correct text', () => {
-      expect(form.find('button').text()).toEqual(SUBMIT_TEXT)
+      expect(form.find('button').text()).toEqual(SUBMIT_TEXT);
     });
   });
 });

@@ -1,4 +1,4 @@
-import "core-js/stable";
+import 'core-js/stable';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -15,7 +15,7 @@ import AnnouncementPage from './components/AnnouncementPage';
 import BrowsePage from './components/BrowsePage';
 import DashboardPage from 'components/DashboardPage';
 import Footer from './components/Footer';
-import HomePage from './components/HomePage'
+import HomePage from './components/HomePage';
 import NavBar from './components/NavBar';
 import NotFoundPage from './components/NotFoundPage';
 import Preloader from 'components/common/Preloader';
@@ -28,7 +28,10 @@ import rootSaga from './ducks/rootSaga';
 import { BrowserHistory } from 'utils/navigationUtils';
 
 const sagaMiddleware = createSagaMiddleware();
-const createStoreWithMiddleware = applyMiddleware(ReduxPromise, sagaMiddleware)(createStore);
+const createStoreWithMiddleware = applyMiddleware(
+  ReduxPromise,
+  sagaMiddleware
+)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
 
 sagaMiddleware.run(rootSaga);
@@ -38,14 +41,17 @@ ReactDOM.render(
     <Provider store={store}>
       <Router history={BrowserHistory}>
         <main id="main">
-          <Preloader/>
+          <Preloader />
           <Route component={NavBar} />
           <Switch>
             <Route path="/announcements" component={AnnouncementPage} />
             <Route path="/browse" component={BrowsePage} />
             <Route path="/dashboard/:uri" component={DashboardPage} />
             <Route path="/search" component={SearchPage} />
-            <Route path="/table_detail/:cluster/:database/:schema/:table" component={TableDetail} />
+            <Route
+              path="/table_detail/:cluster/:database/:schema/:table"
+              component={TableDetail}
+            />
             <Route path="/user/:userId" component={ProfilePage} />
             <Route path="/404" component={NotFoundPage} />
             <Route path="/" component={HomePage} />
@@ -54,6 +60,6 @@ ReactDOM.render(
         </main>
       </Router>
     </Provider>
-  </DocumentTitle>
-  , document.getElementById('content') || document.createElement('div'),
+  </DocumentTitle>,
+  document.getElementById('content') || document.createElement('div')
 );

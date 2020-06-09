@@ -2,7 +2,11 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { RequestDescriptionText, mapDispatchToProps, RequestDescriptionTextProps } from '.';
+import {
+  RequestDescriptionText,
+  mapDispatchToProps,
+  RequestDescriptionTextProps,
+} from '.';
 import globalState from 'fixtures/globalState';
 import { REQUEST_DESCRIPTION } from './constants';
 import { RequestMetadataType } from 'interfaces';
@@ -13,16 +17,23 @@ describe('RequestDescriptionText', () => {
       openRequestDescriptionDialog: jest.fn(),
       ...propOverrides,
     };
-    const wrapper = shallow<RequestDescriptionText>(<RequestDescriptionText {...props} />)
-    return {props, wrapper}
+    const wrapper = shallow<RequestDescriptionText>(
+      <RequestDescriptionText {...props} />
+    );
+    return { props, wrapper };
   };
 
   describe('openRequest', () => {
     it('calls openRequestDescriptionDialog', () => {
       const { props, wrapper } = setup();
-      const openRequestDescriptionDialogSpy = jest.spyOn(props, 'openRequestDescriptionDialog');
+      const openRequestDescriptionDialogSpy = jest.spyOn(
+        props,
+        'openRequestDescriptionDialog'
+      );
       wrapper.instance().openRequest();
-      expect(openRequestDescriptionDialogSpy).toHaveBeenCalledWith(RequestMetadataType.TABLE_DESCRIPTION);
+      expect(openRequestDescriptionDialogSpy).toHaveBeenCalledWith(
+        RequestMetadataType.TABLE_DESCRIPTION
+      );
     });
   });
 
@@ -30,7 +41,9 @@ describe('RequestDescriptionText', () => {
     it('renders Request Description button with correct text', () => {
       const { props, wrapper } = setup();
       wrapper.instance().render();
-      expect(wrapper.find('.request-description').text()).toEqual(REQUEST_DESCRIPTION);
+      expect(wrapper.find('.request-description').text()).toEqual(
+        REQUEST_DESCRIPTION
+      );
     });
   });
 

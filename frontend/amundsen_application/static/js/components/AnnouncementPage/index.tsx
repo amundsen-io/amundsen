@@ -31,12 +31,12 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
 
   createPost(post: AnnouncementPost, postIndex: number) {
     return (
-      <div key={`post:${postIndex}`} className='post-container'>
-        <div className='post-header'>
-          <div className='post-title title-2'>{post.title}</div>
-          <div className='body-secondary-3'>{post.date}</div>
+      <div key={`post:${postIndex}`} className="post-container">
+        <div className="post-header">
+          <div className="post-title title-2">{post.title}</div>
+          <div className="body-secondary-3">{post.date}</div>
         </div>
-        <div className='post-content'>
+        <div className="post-content">
           <SanitizedHTML html={post.html_content} />
         </div>
       </div>
@@ -45,7 +45,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
 
   createPosts() {
     return this.props.posts.map((post, index) => {
-      return this.createPost(post, index)
+      return this.createPost(post, index);
     });
   }
 
@@ -57,7 +57,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
             <div className="col-xs-12">
               <h3 id="announcement-header">Announcements</h3>
               <hr />
-              <div id="announcement-content" className='announcement-content'>
+              <div id="announcement-content" className="announcement-content">
                 {this.createPosts()}
               </div>
             </div>
@@ -75,7 +75,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ announcementsGet: getAnnouncements } , dispatch);
+  return bindActionCreators({ announcementsGet: getAnnouncements }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(AnnouncementPage);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(AnnouncementPage);

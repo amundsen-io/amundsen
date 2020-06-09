@@ -18,16 +18,16 @@ class ExploreButton extends React.Component<ExploreButtonProps> {
     return (
       <a
         className="btn btn-default btn-lg"
-        href={ url }
+        href={url}
         role="button"
         target="_blank"
         id="explore-sql"
-        onClick={ logClick }
+        onClick={logClick}
       >
         Explore
       </a>
     );
   }
-};
+}
 
 export default ExploreButton;

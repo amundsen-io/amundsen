@@ -1,4 +1,4 @@
-import { TableResource } from 'interfaces'
+import { TableResource } from 'interfaces';
 
 import {
   GetPopularTables,
@@ -13,7 +13,9 @@ export function getPopularTables(): GetPopularTablesRequest {
 export function getPopularTablesFailure(): GetPopularTablesResponse {
   return { type: GetPopularTables.FAILURE, payload: { tables: [] } };
 }
-export function getPopularTablesSuccess(tables: TableResource[]): GetPopularTablesResponse {
+export function getPopularTablesSuccess(
+  tables: TableResource[]
+): GetPopularTablesResponse {
   return { type: GetPopularTables.SUCCESS, payload: { tables } };
 }
 
@@ -22,7 +24,10 @@ export type PopularTablesReducerState = TableResource[];
 
 const initialState: PopularTablesReducerState = [];
 
-export default function reducer(state: PopularTablesReducerState = initialState, action): PopularTablesReducerState {
+export default function reducer(
+  state: PopularTablesReducerState = initialState,
+  action
+): PopularTablesReducerState {
   switch (action.type) {
     case GetPopularTables.SUCCESS:
     case GetPopularTables.FAILURE:

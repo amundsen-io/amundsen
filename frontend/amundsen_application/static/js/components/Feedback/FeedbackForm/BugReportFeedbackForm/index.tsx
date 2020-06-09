@@ -2,7 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '../../FeedbackForm';
+import AbstractFeedbackForm, {
+  DispatchFromProps,
+  StateFromProps,
+} from '../../FeedbackForm';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
@@ -20,8 +23,8 @@ import {
 export class BugReportFeedbackForm extends AbstractFeedbackForm {
   renderCustom() {
     return (
-      <form id={AbstractFeedbackForm.FORM_ID} onSubmit={ this.submitForm }>
-        <input type="hidden" name="feedback-type" value="Bug Report"/>
+      <form id={AbstractFeedbackForm.FORM_ID} onSubmit={this.submitForm}>
+        <input type="hidden" name="feedback-type" value="Bug Report" />
         <div className="form-group">
           <label>{SUBJECT_LABEL}</label>
           <input
@@ -29,20 +32,35 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
             autoComplete="off"
             name="subject"
             className="form-control"
-            required={ true }
-            placeholder={SUBJECT_PLACEHOLDER} />
+            required={true}
+            placeholder={SUBJECT_PLACEHOLDER}
+          />
         </div>
         <div className="form-group">
           <label>{BUG_SUMMARY_LABEL}</label>
-          <textarea name="bug-summary" className="form-control" required={ true }
-                    rows={3} maxLength={ 2000 } placeholder={BUG_SUMMARY_PLACEHOLDER}/>
+          <textarea
+            name="bug-summary"
+            className="form-control"
+            required={true}
+            rows={3}
+            maxLength={2000}
+            placeholder={BUG_SUMMARY_PLACEHOLDER}
+          />
         </div>
         <div className="form-group">
           <label>{REPRO_STEPS_LABEL}</label>
-          <textarea name="repro-steps" className="form-control" rows={5} required={ true }
-                    maxLength={ 2000 } placeholder={REPRO_STEPS_PLACEHOLDER}/>
+          <textarea
+            name="repro-steps"
+            className="form-control"
+            rows={5}
+            required={true}
+            maxLength={2000}
+            placeholder={REPRO_STEPS_PLACEHOLDER}
+          />
         </div>
-        <button className="btn btn-primary" type="submit">{SUBMIT_TEXT}</button>
+        <button className="btn btn-primary" type="submit">
+          {SUBMIT_TEXT}
+        </button>
       </form>
     );
   }
@@ -55,7 +73,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ submitFeedback, resetFeedback } , dispatch);
+  return bindActionCreators({ submitFeedback, resetFeedback }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(BugReportFeedbackForm);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(BugReportFeedbackForm);

@@ -1,26 +1,25 @@
-
 import { LoggedInUser, PeopleUser, Resource, ResourceDict } from 'interfaces';
 
 export enum GetLoggedInUser {
   REQUEST = 'amundsen/current_user/GET_REQUEST',
   SUCCESS = 'amundsen/current_user/GET_SUCCESS',
   FAILURE = 'amundsen/current_user/GET_FAILURE',
-};
+}
 export interface GetLoggedInUserRequest {
   type: GetLoggedInUser.REQUEST;
-};
+}
 export interface GetLoggedInUserResponse {
   type: GetLoggedInUser.SUCCESS | GetLoggedInUser.FAILURE;
   payload?: {
     user: LoggedInUser;
   };
-};
+}
 
 export enum GetUser {
   REQUEST = 'amundsen/user/GET_REQUEST',
   SUCCESS = 'amundsen/user/GET_SUCCESS',
   FAILURE = 'amundsen/user/GET_FAILURE',
-};
+}
 export interface GetUserRequest {
   type: GetUser.REQUEST;
   payload: {
@@ -28,13 +27,13 @@ export interface GetUserRequest {
     source?: string;
     index?: string;
   };
-};
+}
 export interface GetUserResponse {
   type: GetUser.SUCCESS | GetUser.FAILURE;
   payload?: {
     user: PeopleUser;
   };
-};
+}
 
 export enum GetUserOwn {
   REQUEST = 'amundsen/user/own/GET_REQUEST',
@@ -46,13 +45,13 @@ export interface GetUserOwnRequest {
   payload: {
     userId: string;
   };
-};
+}
 export interface GetUserOwnResponse {
   type: GetUserOwn.SUCCESS | GetUserOwn.FAILURE;
   payload?: {
     own: ResourceDict<Resource[]>;
   };
-};
+}
 
 export enum GetUserRead {
   REQUEST = 'amundsen/user/read/GET_REQUEST',
@@ -64,10 +63,10 @@ export interface GetUserReadRequest {
   payload: {
     userId: string;
   };
-};
+}
 export interface GetUserReadResponse {
   type: GetUserRead.SUCCESS | GetUserRead.FAILURE;
   payload?: {
     read: Resource[];
   };
-};
+}

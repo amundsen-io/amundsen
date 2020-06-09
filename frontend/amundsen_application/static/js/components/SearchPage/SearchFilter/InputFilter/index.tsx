@@ -2,7 +2,10 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { updateFilterByCategory, UpdateFilterRequest } from 'ducks/search/filters/reducer';
+import {
+  updateFilterByCategory,
+  UpdateFilterRequest,
+} from 'ducks/search/filters/reducer';
 
 import { APPLY_BTN_TEXT } from '../constants';
 
@@ -17,7 +20,10 @@ interface StateFromProps {
 }
 
 interface DispatchFromProps {
-  updateFilter: (categoryId: string, value: string | undefined) => UpdateFilterRequest;
+  updateFilter: (
+    categoryId: string,
+    value: string | undefined
+  ) => UpdateFilterRequest;
 }
 
 export type InputFilterProps = StateFromProps & DispatchFromProps & OwnProps;
@@ -26,7 +32,10 @@ export interface InputFilterState {
   value: string;
 }
 
-export class InputFilter extends React.Component<InputFilterProps, InputFilterState> {
+export class InputFilter extends React.Component<
+  InputFilterProps,
+  InputFilterState
+> {
   constructor(props) {
     super(props);
 
@@ -44,54 +53,61 @@ export class InputFilter extends React.Component<InputFilterProps, InputFilterSt
 
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(!!this.state.value) {
+    if (!!this.state.value) {
       this.props.updateFilter(this.props.categoryId, this.state.value);
-    }
-    else {
+    } else {
       this.props.updateFilter(this.props.categoryId, undefined);
     }
   };
 
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: e.target.value.toLowerCase() })
+    this.setState({ value: e.target.value.toLowerCase() });
   };
 
   render = () => {
     const { categoryId } = this.props;
     return (
-      <form className="input-section-content form-group" onSubmit={ this.onApplyChanges }>
+      <form
+        className="input-section-content form-group"
+        onSubmit={this.onApplyChanges}
+      >
         <input
           type="text"
           className="form-control"
-          name={ categoryId }
-          id={ categoryId }
-          onChange={ this.onInputChange }
-          value={ this.state.value }
+          name={categoryId}
+          id={categoryId}
+          onChange={this.onInputChange}
+          value={this.state.value}
         />
-        <button
-          name={ categoryId }
-          className="btn btn-default"
-          type="submit"
-        >
-          { APPLY_BTN_TEXT }
+        <button name={categoryId} className="btn btn-default" type="submit">
+          {APPLY_BTN_TEXT}
         </button>
       </form>
     );
-  }
-};
+  };
+}
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterState = state.search.filters;
-  const value = filterState[state.search.resource] ? filterState[state.search.resource][ownProps.categoryId] : '';
+  const value = filterState[state.search.resource]
+    ? filterState[state.search.resource][ownProps.categoryId]
+    : '';
   return {
     value: value || '',
-  }
+  };
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-    updateFilter: (categoryId: string, value: string | undefined) => updateFilterByCategory({ categoryId, value }),
-  }, dispatch);
+  return bindActionCreators(
+    {
+      updateFilter: (categoryId: string, value: string | undefined) =>
+        updateFilterByCategory({ categoryId, value }),
+    },
+    dispatch
+  );
 };
 
-export default connect<StateFromProps, DispatchFromProps, OwnProps>(mapStateToProps, mapDispatchToProps)(InputFilter);
+export default connect<StateFromProps, DispatchFromProps, OwnProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(InputFilter);

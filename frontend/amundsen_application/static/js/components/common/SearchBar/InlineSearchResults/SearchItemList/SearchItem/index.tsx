@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
@@ -7,7 +7,7 @@ import { ResourceType } from 'interfaces';
 import Flag from 'components/common/Flag';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 
-import { GlobalState } from 'ducks/rootReducer'
+import { GlobalState } from 'ducks/rootReducer';
 
 import { SEARCH_ITEM_NO_RESULTS } from 'components/common/SearchBar/InlineSearchResults/constants';
 
@@ -29,21 +29,21 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
     this.props.onItemSelect(this.props.resourceType, true);
-  }
+  };
 
   renderIndicator = () => {
     if (this.props.isLoading) {
-      return (<LoadingSpinner/>)
+      return <LoadingSpinner />;
     }
     if (!this.props.hasResults) {
       return (
         <div className="search-item-indicator body-placeholder">
-          { SEARCH_ITEM_NO_RESULTS }
+          {SEARCH_ITEM_NO_RESULTS}
         </div>
-      )
+      );
     }
     return null;
-  }
+  };
 
   render = () => {
     const { searchTerm, listItemText, resourceType } = this.props;
@@ -53,20 +53,22 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           id={`inline-searchitem-viewall:${resourceType}`}
           className="search-item-link"
           onClick={this.onViewAllResults}
-          target='_blank'
+          target="_blank"
         >
           <img className="icon icon-search" />
           <div className="title-2 search-item-info">
             <div className="search-term">{`${searchTerm}\u00a0`}</div>
             <div className="search-item-text">{listItemText}</div>
-            { resourceType === ResourceType.dashboard && <Flag text="beta" labelStyle="default"/> }
+            {resourceType === ResourceType.dashboard && (
+              <Flag text="beta" labelStyle="default" />
+            )}
           </div>
-          { this.renderIndicator() }
+          {this.renderIndicator()}
         </a>
       </li>
     );
-  }
-};
+  };
+}
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const { isLoading, dashboards, tables, users } = state.search.inlineResults;
@@ -85,8 +87,10 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   }
   return {
     isLoading,
-    hasResults
+    hasResults,
   };
 };
 
-export default connect<StateFromProps, {}, OwnProps>(mapStateToProps)(SearchItem);
+export default connect<StateFromProps, {}, OwnProps>(mapStateToProps)(
+  SearchItem
+);

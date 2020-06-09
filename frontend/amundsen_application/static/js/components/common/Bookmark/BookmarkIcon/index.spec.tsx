@@ -6,10 +6,14 @@ import globalState from 'fixtures/globalState';
 
 import { ResourceType } from 'interfaces';
 
-import { BookmarkIcon, BookmarkIconProps, mapDispatchToProps, mapStateToProps } from ".";
+import {
+  BookmarkIcon,
+  BookmarkIconProps,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '.';
 
 describe('BookmarkIcon', () => {
-
   const setup = (propOverrides?: Partial<BookmarkIconProps>) => {
     const props: BookmarkIconProps = {
       bookmarkKey: 'someKey',
@@ -18,7 +22,7 @@ describe('BookmarkIcon', () => {
       addBookmark: jest.fn(),
       removeBookmark: jest.fn(),
       resourceType: ResourceType.table,
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<BookmarkIcon>(<BookmarkIcon {...props} />);
     return { props, wrapper };
@@ -29,7 +33,7 @@ describe('BookmarkIcon', () => {
       preventDefault: jest.fn(),
       stopPropagation: jest.fn(),
     };
-    it ('stops propagation and prevents default', () => {
+    it('stops propagation and prevents default', () => {
       const { props, wrapper } = setup();
       wrapper.find('div').simulate('click', clickEvent);
       expect(clickEvent.preventDefault).toHaveBeenCalled();
@@ -42,18 +46,23 @@ describe('BookmarkIcon', () => {
       });
 
       wrapper.find('div').simulate('click', clickEvent);
-      expect(props.addBookmark).toHaveBeenCalledWith(props.bookmarkKey, props.resourceType);
+      expect(props.addBookmark).toHaveBeenCalledWith(
+        props.bookmarkKey,
+        props.resourceType
+      );
     });
 
     it('unbookmarks a bookmarked resource', () => {
       const { props, wrapper } = setup({
-        isBookmarked: true
+        isBookmarked: true,
       });
       wrapper.find('div').simulate('click', clickEvent);
-      expect(props.removeBookmark).toHaveBeenCalledWith(props.bookmarkKey, props.resourceType);
+      expect(props.removeBookmark).toHaveBeenCalledWith(
+        props.bookmarkKey,
+        props.resourceType
+      );
     });
   });
-
 
   describe('render', () => {
     it('renders an empty bookmark when not bookmarked', () => {
@@ -62,17 +71,16 @@ describe('BookmarkIcon', () => {
     });
 
     it('renders a filled star when bookmarked', () => {
-      const { props, wrapper } = setup({ isBookmarked: true});
+      const { props, wrapper } = setup({ isBookmarked: true });
       expect(wrapper.find('.icon-bookmark-filled').exists()).toBe(true);
     });
 
     it('renders a large star when specified', () => {
-      const { props, wrapper } = setup({ large: true});
+      const { props, wrapper } = setup({ large: true });
       expect(wrapper.find('.bookmark-large').exists()).toBe(true);
     });
   });
 });
-
 
 describe('mapDispatchToProps', () => {
   let dispatch;
@@ -92,23 +100,30 @@ describe('mapDispatchToProps', () => {
   });
 });
 
-
 describe('mapStateToProps', () => {
   it('sets the bookmarkKey on the props', () => {
-      const ownProps = { bookmarkKey: "test_bookmark_key", resourceType: ResourceType.table };
-      const result = mapStateToProps(globalState, ownProps);
-      expect(result.bookmarkKey).toEqual(ownProps.bookmarkKey);
+    const ownProps = {
+      bookmarkKey: 'test_bookmark_key',
+      resourceType: ResourceType.table,
+    };
+    const result = mapStateToProps(globalState, ownProps);
+    expect(result.bookmarkKey).toEqual(ownProps.bookmarkKey);
   });
 
   it('sets isBookmarked to false when the resource key is not bookmarked', () => {
-    const ownProps = { bookmarkKey: "not_bookmarked_key", resourceType: ResourceType.table };
+    const ownProps = {
+      bookmarkKey: 'not_bookmarked_key',
+      resourceType: ResourceType.table,
+    };
     const result = mapStateToProps(globalState, ownProps);
     expect(result.isBookmarked).toBe(false);
   });
 
-
   it('sets isBookmarked to true when the resource key is bookmarked', () => {
-    const ownProps = { bookmarkKey: "bookmarked_key", resourceType: ResourceType.table };
+    const ownProps = {
+      bookmarkKey: 'bookmarked_key',
+      resourceType: ResourceType.table,
+    };
     const result = mapStateToProps(globalState, ownProps);
     expect(result.isBookmarked).toBe(true);
   });

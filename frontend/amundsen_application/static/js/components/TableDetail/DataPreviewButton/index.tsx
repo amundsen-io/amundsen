@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal, OverlayTrigger, Popover } from 'react-bootstrap';
-import Linkify from 'react-linkify'
+import Linkify from 'react-linkify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -13,12 +13,12 @@ import { PreviewData, PreviewQueryParams, TableMetadata } from 'interfaces';
 import './styles.scss';
 
 enum LoadingStatus {
-  ERROR = "error",
-  FORBIDDEN = "forbidden",
-  LOADING = "loading",
-  SUCCESS = "success",
-  UNAUTHORIZED = "unauthorized",
-  UNAVAILABLE = "unavailable",
+  ERROR = 'error',
+  FORBIDDEN = 'forbidden',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  UNAUTHORIZED = 'unauthorized',
+  UNAVAILABLE = 'unavailable',
 }
 
 export interface StateFromProps {
@@ -35,7 +35,9 @@ export interface ComponentProps {
   modalTitle: string;
 }
 
-type DataPreviewButtonProps = StateFromProps & DispatchFromProps & ComponentProps;
+type DataPreviewButtonProps = StateFromProps &
+  DispatchFromProps &
+  ComponentProps;
 
 interface DataPreviewButtonState {
   showModal: boolean;
@@ -63,7 +65,10 @@ export function getStatusFromCode(httpErrorCode: number) {
   }
 }
 
-export class DataPreviewButton extends React.Component<DataPreviewButtonProps, DataPreviewButtonState> {
+export class DataPreviewButton extends React.Component<
+  DataPreviewButtonProps,
+  DataPreviewButtonState
+> {
   constructor(props) {
     super(props);
 
@@ -82,7 +87,7 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
   }
 
   handleClose = () => {
-   this.setState({ showModal: false });
+    this.setState({ showModal: false });
   };
 
   handleClick = (e) => {
@@ -92,10 +97,10 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
 
   getSanitizedValue(value) {
     // Display the string interpretation of the following "false-y" values
-    if (value === 0 || typeof value === "boolean") {
+    if (value === 0 || typeof value === 'boolean') {
       return value.toString();
     }
-    if (typeof value === "object") {
+    if (typeof value === 'object') {
       return JSON.stringify(value);
     }
 
@@ -106,42 +111,38 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
     const previewData = this.props.previewData;
 
     if (this.props.status === LoadingStatus.SUCCESS) {
-      if (!previewData.columns || !previewData.data || previewData.columns.length === 0 || previewData.data.length === 0) {
-        return (
-          <div>
-            No data available for preview
-          </div>
-        )
+      if (
+        !previewData.columns ||
+        !previewData.data ||
+        previewData.columns.length === 0 ||
+        previewData.data.length === 0
+      ) {
+        return <div>No data available for preview</div>;
       }
 
       return (
-        <div className='grid'>
-          {
-            previewData.columns.map((col, colId) => {
-              const fieldName = col.column_name;
-              return (
-                <div key={fieldName} id={fieldName} className='grid-column'>
-                  <div className='grid-cell grid-header subtitle-3'>
-                    {fieldName.toUpperCase()}
-                  </div>
-                  {
-                    previewData.data.map((row, rowId) => {
-                      const cellId = `${colId}:${rowId}`;
-                      const dataItemValue = this.getSanitizedValue(row[fieldName]);
-                      return (
-                        <div key={cellId} className='grid-cell'>
-                          {dataItemValue}
-                        </div>
-                      );
-                    })
-                  }
+        <div className="grid">
+          {previewData.columns.map((col, colId) => {
+            const fieldName = col.column_name;
+            return (
+              <div key={fieldName} id={fieldName} className="grid-column">
+                <div className="grid-cell grid-header subtitle-3">
+                  {fieldName.toUpperCase()}
                 </div>
-              )
-            })
-          }
+                {previewData.data.map((row, rowId) => {
+                  const cellId = `${colId}:${rowId}`;
+                  const dataItemValue = this.getSanitizedValue(row[fieldName]);
+                  return (
+                    <div key={cellId} className="grid-cell">
+                      {dataItemValue}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
-      )
-
+      );
     }
 
     if (this.props.status === LoadingStatus.UNAUTHORIZED) {
@@ -149,7 +150,7 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
         <div>
           <Linkify>{previewData.error_text}</Linkify>
         </div>
-      )
+      );
     }
 
     return null;
@@ -175,7 +176,8 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
       case LoadingStatus.FORBIDDEN:
         buttonText = 'Preview';
         iconClass = 'icon-preview';
-        popoverText = previewData.error_text || 'User is forbidden to preview this data';
+        popoverText =
+          previewData.error_text || 'User is forbidden to preview this data';
         break;
       case LoadingStatus.UNAVAILABLE:
         buttonText = 'Preview';
@@ -185,7 +187,9 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
       case LoadingStatus.ERROR:
         buttonText = 'Preview';
         iconClass = 'icon-preview';
-        popoverText = previewData.error_text || 'An internal server error has occurred, please contact service admin';
+        popoverText =
+          previewData.error_text ||
+          'An internal server error has occurred, please contact service admin';
         break;
       default:
         break;
@@ -195,10 +199,10 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
       <button
         id="data-preview-button"
         className="btn btn-default btn-lg"
-        disabled={ disabled }
-        onClick={ this.handleClick }
+        disabled={disabled}
+        onClick={this.handleClick}
       >
-        { buttonText }
+        {buttonText}
       </button>
     );
 
@@ -208,40 +212,33 @@ export class DataPreviewButton extends React.Component<DataPreviewButtonProps, D
 
     // when button is disabled, render button with Popover
     const popoverHover = (
-      <Popover id="popover-trigger-hover">
-        {popoverText}
-      </Popover>
+      <Popover id="popover-trigger-hover">{popoverText}</Popover>
     );
     return (
       <OverlayTrigger
         trigger={['hover', 'focus']}
-        placement='top'
-        delayHide={ 200 }
-        overlay={ popoverHover }>
+        placement="top"
+        delayHide={200}
+        overlay={popoverHover}
+      >
         {/* Disabled buttons don't trigger hover/focus events so we need a wrapper */}
-        <div className="overlay-trigger">
-          { previewButton }
-        </div>
+        <div className="overlay-trigger">{previewButton}</div>
       </OverlayTrigger>
-    )
+    );
   }
 
   render() {
     return (
       <>
-        { this.renderPreviewButton() }
-        <Modal show={ this.state.showModal } onHide={ this.handleClose }>
-          <Modal.Header className="text-center" closeButton={ true }>
-            <Modal.Title>
-              { this.props.modalTitle }
-            </Modal.Title>
+        {this.renderPreviewButton()}
+        <Modal show={this.state.showModal} onHide={this.handleClose}>
+          <Modal.Header className="text-center" closeButton={true}>
+            <Modal.Title>{this.props.modalTitle}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            { this.renderModalBody() }
-          </Modal.Body>
+          <Modal.Body>{this.renderModalBody()}</Modal.Body>
         </Modal>
       </>
-    )
+    );
   }
 }
 
@@ -257,4 +254,7 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({ getPreviewData }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps, ComponentProps>(mapStateToProps, mapDispatchToProps)(DataPreviewButton);
+export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(DataPreviewButton);

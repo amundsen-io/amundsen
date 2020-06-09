@@ -1,29 +1,34 @@
 import { UpdateTagData, Tag, ResourceType } from 'interfaces';
 
-import {
-  GetTableData, GetTableDataResponse,
-} from 'ducks/tableMetadata/types';
+import { GetTableData, GetTableDataResponse } from 'ducks/tableMetadata/types';
+
+import { GetDashboard, GetDashboardResponse } from 'ducks/dashboard/types';
 
 import {
-  GetDashboard, GetDashboardResponse
-} from 'ducks/dashboard/types';
-
-import { GetAllTags, GetAllTagsRequest, GetAllTagsResponse,
-  UpdateTags, UpdateTagsRequest, UpdateTagsResponse, } from './types';
+  GetAllTags,
+  GetAllTagsRequest,
+  GetAllTagsResponse,
+  UpdateTags,
+  UpdateTagsRequest,
+  UpdateTagsResponse,
+} from './types';
 
 /* ACTIONS */
 export function getAllTags(): GetAllTagsRequest {
   return { type: GetAllTags.REQUEST };
-};
+}
 export function getAllTagsFailure(): GetAllTagsResponse {
   return { type: GetAllTags.FAILURE, payload: { allTags: [] } };
-};
+}
 export function getAllTagsSuccess(allTags: Tag[]): GetAllTagsResponse {
   return { type: GetAllTags.SUCCESS, payload: { allTags } };
-};
+}
 
-
-export function updateTags(tagArray: UpdateTagData[], resourceType: ResourceType, uriKey: string): UpdateTagsRequest  {
+export function updateTags(
+  tagArray: UpdateTagData[],
+  resourceType: ResourceType,
+  uriKey: string
+): UpdateTagsRequest {
   return {
     payload: {
       tagArray,
@@ -32,29 +37,29 @@ export function updateTags(tagArray: UpdateTagData[], resourceType: ResourceType
     },
     type: UpdateTags.REQUEST,
   };
-};
-export function updateTagsFailure(): UpdateTagsResponse  {
+}
+export function updateTagsFailure(): UpdateTagsResponse {
   return {
     type: UpdateTags.FAILURE,
     payload: {
       tags: [],
-    }
+    },
   };
-};
-export function updateTagsSuccess(tags: Tag[]): UpdateTagsResponse  {
+}
+export function updateTagsSuccess(tags: Tag[]): UpdateTagsResponse {
   return {
     type: UpdateTags.SUCCESS,
     payload: {
-      tags
-    }
+      tags,
+    },
   };
-};
+}
 
 /* REDUCER */
 export interface TagsReducerState {
   allTags: TagState;
   resourceTags: TagState;
-};
+}
 
 interface TagState {
   isLoading: boolean;
@@ -72,7 +77,10 @@ export const initialState: TagsReducerState = {
   },
 };
 
-export default function reducer(state: TagsReducerState = initialState, action): TagsReducerState {
+export default function reducer(
+  state: TagsReducerState = initialState,
+  action
+): TagsReducerState {
   switch (action.type) {
     case GetAllTags.REQUEST:
       return {
@@ -81,7 +89,7 @@ export default function reducer(state: TagsReducerState = initialState, action):
           ...state.allTags,
           isLoading: true,
           tags: [],
-        }
+        },
       };
     case GetAllTags.FAILURE:
       return initialState;
@@ -92,7 +100,7 @@ export default function reducer(state: TagsReducerState = initialState, action):
           ...state.allTags,
           isLoading: false,
           tags: (<GetAllTagsResponse>action).payload.allTags,
-        }
+        },
       };
 
     case GetTableData.REQUEST:
@@ -103,7 +111,7 @@ export default function reducer(state: TagsReducerState = initialState, action):
           ...state.resourceTags,
           isLoading: true,
           tags: [],
-        }
+        },
       };
     case GetTableData.SUCCESS:
       return {
@@ -121,7 +129,7 @@ export default function reducer(state: TagsReducerState = initialState, action):
           ...state.resourceTags,
           isLoading: false,
           tags: (<GetDashboardResponse>action).payload.dashboard.tags,
-        }
+        },
       };
     case GetTableData.FAILURE:
     case GetDashboard.FAILURE:
@@ -131,7 +139,7 @@ export default function reducer(state: TagsReducerState = initialState, action):
           ...state.resourceTags,
           isLoading: false,
           tags: [],
-        }
+        },
       };
 
     case UpdateTags.REQUEST:
@@ -140,14 +148,14 @@ export default function reducer(state: TagsReducerState = initialState, action):
         resourceTags: {
           ...state.resourceTags,
           isLoading: true,
-        }
+        },
       };
     case UpdateTags.FAILURE:
       return {
         ...state,
         resourceTags: {
           ...state.resourceTags,
-          isLoading: false
+          isLoading: false,
         },
       };
     case UpdateTags.SUCCESS:
@@ -162,6 +170,4 @@ export default function reducer(state: TagsReducerState = initialState, action):
     default:
       return state;
   }
-};
-
-
+}

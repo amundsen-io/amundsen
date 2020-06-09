@@ -20,8 +20,8 @@ describe('sendNotification', () => {
       testRecipients,
       testSender,
       testNotificationType,
-      testOptions,
-    )
+      testOptions
+    );
     expect(axios).toHaveBeenCalledWith({
       data: {
         notificationType: testNotificationType,
@@ -32,6 +32,5 @@ describe('sendNotification', () => {
       method: 'post',
       url: `/api/mail/v0/notification`,
     });
-
   });
 });

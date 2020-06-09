@@ -3,7 +3,7 @@
 .entity-card {
   border-radius: 0 0 6px 6px;
   border-top: 4px solid $brand-color-4;
-  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.2);
   padding: 32px;
 }
 
@@ -11,7 +11,7 @@
   .entity-card {
     border: 0;
     box-shadow: none;
-    padding: 0;
     margin-bottom: 32px;
+    padding: 0;
   }
 }

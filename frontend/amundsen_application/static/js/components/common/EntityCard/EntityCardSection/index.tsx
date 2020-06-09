@@ -15,7 +15,10 @@ interface EntityCardSectionState {
   readOnly: boolean;
 }
 
-class EntityCardSection extends React.Component<EntityCardSectionProps, EntityCardSectionState> {
+class EntityCardSection extends React.Component<
+  EntityCardSectionProps,
+  EntityCardSectionState
+> {
   private editButton: React.RefObject<HTMLButtonElement>;
 
   constructor(props) {
@@ -36,26 +39,32 @@ class EntityCardSection extends React.Component<EntityCardSectionProps, EntityCa
   }
 
   render() {
-    const activeButtonClass = this.state.readOnly ? 'icon edit-button' : 'active-edit-button';
+    const activeButtonClass = this.state.readOnly
+      ? 'icon edit-button'
+      : 'active-edit-button';
     return (
       <div className="entity-card-section">
         <div className="content-header">
           <div id="section-title" className="caption">
-              { this.props.title.toUpperCase() }
-              {
-                this.props.infoText &&
-                <InfoButton infoText={this.props.infoText} placement="top" size="small"/>
-              }
-              {
-                this.props.isEditable &&
-                <button className={`btn ${activeButtonClass}`} onClick={ this.toggleEditMode } ref={this.editButton} />
-              }
+            {this.props.title.toUpperCase()}
+            {this.props.infoText && (
+              <InfoButton
+                infoText={this.props.infoText}
+                placement="top"
+                size="small"
+              />
+            )}
+            {this.props.isEditable && (
+              <button
+                className={`btn ${activeButtonClass}`}
+                onClick={this.toggleEditMode}
+                ref={this.editButton}
+              />
+            )}
           </div>
         </div>
         <div id="section-content" className="content">
-          {
-            this.props.contentRenderer(this.state.readOnly)
-          }
+          {this.props.contentRenderer(this.state.readOnly)}
         </div>
       </div>
     );

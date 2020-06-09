@@ -2,8 +2,10 @@
 /* Form */
 export const BUTTON_CLOSE_TEXT = 'Close';
 export const FEEDBACK_TITLE = 'Product Feedback';
-export const SUBMIT_FAILURE_MESSAGE = 'Your feedback was not submitted, please try again';
-export const SUBMIT_SUCCESS_MESSAGE = 'Your feedback has been successfully submitted';
+export const SUBMIT_FAILURE_MESSAGE =
+  'Your feedback was not submitted, please try again';
+export const SUBMIT_SUCCESS_MESSAGE =
+  'Your feedback has been successfully submitted';
 
 /* Button Set */
 export const BUG_REPORT_TEXT = 'Bug Report';
@@ -23,10 +25,11 @@ export const FEATURE_SUMMARY_PLACEHOLDER = 'What feature are you requesting?';
 export const PROPOSITION_LABEL = 'Value Proposition';
 export const PROPOSITION_PLACEHOLDER = 'How does this feature add value?';
 
-export const RATING_LABEL = 'How likely are you to recommend this tool to a friend or co-worker?';
+export const RATING_LABEL =
+  'How likely are you to recommend this tool to a friend or co-worker?';
 
 export const RATING_LOW_TEXT = 'Not Very Likely';
-export const RATING_HIGH_TEXT = 'Very Likely'
+export const RATING_HIGH_TEXT = 'Very Likely';
 
 export const REPRO_STEPS_LABEL = 'Reproduction Steps';
 export const REPRO_STEPS_PLACEHOLDER = 'What did you do to encounter this bug?';

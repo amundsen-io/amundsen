@@ -10,7 +10,7 @@ describe('ChartList', () => {
       charts: [],
       ...propOverrides,
     };
-    const wrapper = shallow<ChartList>(<ChartList {...props} />)
+    const wrapper = shallow<ChartList>(<ChartList {...props} />);
     return { props, wrapper };
   };
 

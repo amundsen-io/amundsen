@@ -6,30 +6,34 @@ import {
 } from 'ducks/dashboard/types';
 import { DashboardMetadata } from 'interfaces/Dashboard';
 
-
 /* Actions */
 
-export function getDashboard(payload: { uri: string, searchIndex?: string, source?: string }): GetDashboardRequest {
+export function getDashboard(payload: {
+  uri: string;
+  searchIndex?: string;
+  source?: string;
+}): GetDashboardRequest {
   return {
     payload,
     type: GetDashboard.REQUEST,
-  }
+  };
 }
 
 export function getDashboardSuccess(payload: GetDashboardPayload) {
   return {
     payload,
     type: GetDashboard.SUCCESS,
-  }
+  };
 }
 
-export function getDashboardFailure(payload: GetDashboardPayload): GetDashboardResponse {
+export function getDashboardFailure(
+  payload: GetDashboardPayload
+): GetDashboardResponse {
   return {
     payload,
     type: GetDashboard.FAILURE,
-  }
+  };
 }
-
 
 /* Reducer */
 
@@ -42,16 +46,16 @@ export interface DashboardReducerState {
 export const initialDashboardState: DashboardMetadata = {
   badges: [],
   chart_names: [],
-  cluster: "",
+  cluster: '',
   created_timestamp: null,
-  description: "",
+  description: '',
   frequent_users: [],
-  group_name: "",
-  group_url: "",
-  last_run_state: "",
+  group_name: '',
+  group_url: '',
+  last_run_state: '',
   last_run_timestamp: null,
   last_successful_run_timestamp: null,
-  name: "",
+  name: '',
   owners: [],
   product: '',
   queries: [],
@@ -59,8 +63,8 @@ export const initialDashboardState: DashboardMetadata = {
   tables: [],
   tags: [],
   updated_timestamp: null,
-  uri: "",
-  url: "",
+  uri: '',
+  url: '',
 };
 
 export const initialState: DashboardReducerState = {
@@ -69,7 +73,10 @@ export const initialState: DashboardReducerState = {
   dashboard: initialDashboardState,
 };
 
-export default function reducer(state: DashboardReducerState = initialState, action): DashboardReducerState {
+export default function reducer(
+  state: DashboardReducerState = initialState,
+  action
+): DashboardReducerState {
   switch (action.type) {
     case GetDashboard.REQUEST:
       return {
@@ -93,5 +100,5 @@ export default function reducer(state: DashboardReducerState = initialState, act
       };
     default:
       return state;
-  };
+  }
 }

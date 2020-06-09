@@ -32,28 +32,32 @@ export class Footer extends React.Component<FooterProps> {
   render() {
     let content;
     if (!!this.props.lastIndexed) {
-      content = <div>{`Amundsen was last indexed on ${this.generateDateTimeString()}`}</div>;
+      content = (
+        <div>{`Amundsen was last indexed on ${this.generateDateTimeString()}`}</div>
+      );
     }
     return (
       <div>
         <div className="phantom-div" />
         <div id="footer" className="footer">
-          { content }
+          {content}
         </div>
       </div>
     );
   }
 }
 
-
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    lastIndexed: state.tableMetadata.lastIndexed
-  }
+    lastIndexed: state.tableMetadata.lastIndexed,
+  };
 };
 
 export const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ getLastIndexed }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(Footer);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(Footer);

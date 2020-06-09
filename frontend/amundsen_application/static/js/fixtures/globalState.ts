@@ -7,7 +7,8 @@ import { dashboardMetadata } from './metadata/dashboard';
 
 const globalState: GlobalState = {
   announcements: {
-      posts: [{
+    posts: [
+      {
         date: '12/31/1999',
         title: 'Y2K',
         html_content: '<div>The end of the world</div>',
@@ -16,7 +17,8 @@ const globalState: GlobalState = {
         date: '01/01/2000',
         title: 'False Alarm',
         html_content: '<div>Just kidding</div>',
-      }],
+      },
+    ],
   },
   bookmarks: {
     myBookmarks: {
@@ -43,7 +45,7 @@ const globalState: GlobalState = {
           uri: 'product_dashboard://cluster.group/name',
           url: 'product/name',
           cluster: 'cluster',
-          last_successful_run_timestamp: 1585062593
+          last_successful_run_timestamp: 1585062593,
         },
       ],
     },
@@ -56,7 +58,7 @@ const globalState: GlobalState = {
   dashboard: {
     isLoading: false,
     statusCode: 200,
-    dashboard: dashboardMetadata
+    dashboard: dashboardMetadata,
   },
   feedback: {
     sendState: SendingState.IDLE,
@@ -65,7 +67,7 @@ const globalState: GlobalState = {
     issues: [],
     allIssuesUrl: null,
     total: 0,
-    isLoading: true
+    isLoading: true,
   },
   notification: {
     requestIsOpen: false,
@@ -89,7 +91,7 @@ const globalState: GlobalState = {
       name: 'otherName',
       schema: 'testSchema',
       type: ResourceType.table,
-    }
+    },
   ],
   search: {
     search_term: 'testName',
@@ -167,7 +169,7 @@ const globalState: GlobalState = {
       table_readers: [],
       source: { source: '', source_type: '' },
       watermarks: [],
-      programmatic_descriptions: []
+      programmatic_descriptions: [],
     },
     tableOwners: {
       isLoading: true,
@@ -185,7 +187,7 @@ const globalState: GlobalState = {
         {
           tag_name: 'other_tag_1',
           tag_count: 15,
-        }
+        },
       ],
     },
     resourceTags: {
@@ -193,7 +195,7 @@ const globalState: GlobalState = {
       tags: [],
     },
   },
-  user:  {
+  user: {
     loggedInUser: {
       display_name: 'firstname lastname',
       email: 'test@test.com',
@@ -217,12 +219,9 @@ const globalState: GlobalState = {
           { type: ResourceType.table },
           { type: ResourceType.table },
         ],
-        [ResourceType.dashboard]: []
+        [ResourceType.dashboard]: [],
       },
-      read: [
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-      ],
+      read: [{ type: ResourceType.table }, { type: ResourceType.table }],
       user: {
         display_name: 'firstname lastname',
         email: 'test@test.com',

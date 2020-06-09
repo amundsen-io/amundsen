@@ -2,22 +2,24 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { addBookmark, removeBookmark } from "ducks/bookmark/reducer";
-import { AddBookmarkRequest, RemoveBookmarkRequest } from "ducks/bookmark/types";
-import { GlobalState } from "ducks/rootReducer";
+import { addBookmark, removeBookmark } from 'ducks/bookmark/reducer';
+import {
+  AddBookmarkRequest,
+  RemoveBookmarkRequest,
+} from 'ducks/bookmark/types';
+import { GlobalState } from 'ducks/rootReducer';
 
 import { ResourceType } from 'interfaces';
 
-import './styles.scss'
-
+import './styles.scss';
 
 interface StateFromProps {
   isBookmarked: boolean;
 }
 
 interface DispatchFromProps {
-  addBookmark: (key: string, type: ResourceType) => AddBookmarkRequest,
-  removeBookmark: (key: string, type: ResourceType) => RemoveBookmarkRequest,
+  addBookmark: (key: string, type: ResourceType) => AddBookmarkRequest;
+  removeBookmark: (key: string, type: ResourceType) => RemoveBookmarkRequest;
 }
 
 interface OwnProps {
@@ -38,7 +40,10 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
     event.preventDefault();
 
     if (this.props.isBookmarked) {
-      this.props.removeBookmark(this.props.bookmarkKey, this.props.resourceType);
+      this.props.removeBookmark(
+        this.props.bookmarkKey,
+        this.props.resourceType
+      );
     } else {
       this.props.addBookmark(this.props.bookmarkKey, this.props.resourceType);
     }
@@ -46,23 +51,37 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
 
   render() {
     return (
-      <div className={"bookmark-icon " + (this.props.large ? "bookmark-large" : "")} onClick={ this.handleClick }>
-        <img className={"icon " + (this.props.isBookmarked ? "icon-bookmark-filled" : "icon-bookmark")}/>
+      <div
+        className={
+          'bookmark-icon ' + (this.props.large ? 'bookmark-large' : '')
+        }
+        onClick={this.handleClick}
+      >
+        <img
+          className={
+            'icon ' +
+            (this.props.isBookmarked ? 'icon-bookmark-filled' : 'icon-bookmark')
+          }
+        />
       </div>
-    )
+    );
   }
 }
-
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   return {
     bookmarkKey: ownProps.bookmarkKey,
-    isBookmarked: state.bookmarks.myBookmarks[ownProps.resourceType].some((bookmark) => bookmark.key === ownProps.bookmarkKey),
+    isBookmarked: state.bookmarks.myBookmarks[ownProps.resourceType].some(
+      (bookmark) => bookmark.key === ownProps.bookmarkKey
+    ),
   };
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ addBookmark, removeBookmark } , dispatch);
+  return bindActionCreators({ addBookmark, removeBookmark }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps, OwnProps>(mapStateToProps, mapDispatchToProps)(BookmarkIcon);
+export default connect<StateFromProps, DispatchFromProps, OwnProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(BookmarkIcon);

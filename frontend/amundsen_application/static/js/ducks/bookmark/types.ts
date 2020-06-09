@@ -16,7 +16,7 @@ export interface AddBookmarkResponse {
   type: AddBookmark.SUCCESS | AddBookmark.FAILURE;
   payload?: {
     bookmarks: ResourceDict<Bookmark[]>;
-  }
+  };
 }
 
 export enum RemoveBookmark {

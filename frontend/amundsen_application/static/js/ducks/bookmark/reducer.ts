@@ -16,62 +16,82 @@ import {
 } from './types';
 
 /* ACTIONS */
-export function addBookmark(resourceKey: string, resourceType: ResourceType): AddBookmarkRequest {
+export function addBookmark(
+  resourceKey: string,
+  resourceType: ResourceType
+): AddBookmarkRequest {
   return {
     payload: {
       resourceKey,
       resourceType,
     },
     type: AddBookmark.REQUEST,
-  }
+  };
 }
 export function addBookmarkFailure(): AddBookmarkResponse {
   return { type: AddBookmark.FAILURE };
 }
-export function addBookmarkSuccess(bookmarks: ResourceDict<Bookmark[]>): AddBookmarkResponse {
+export function addBookmarkSuccess(
+  bookmarks: ResourceDict<Bookmark[]>
+): AddBookmarkResponse {
   return { type: AddBookmark.SUCCESS, payload: { bookmarks } };
 }
 
-export function removeBookmark(resourceKey: string, resourceType: ResourceType): RemoveBookmarkRequest {
+export function removeBookmark(
+  resourceKey: string,
+  resourceType: ResourceType
+): RemoveBookmarkRequest {
   return {
     payload: {
       resourceKey,
       resourceType,
     },
     type: RemoveBookmark.REQUEST,
-  }
+  };
 }
 export function removeBookmarkFailure(): RemoveBookmarkResponse {
   return { type: RemoveBookmark.FAILURE };
 }
-export function removeBookmarkSuccess(resourceKey: string, resourceType: ResourceType): RemoveBookmarkResponse {
-  return { type: RemoveBookmark.SUCCESS, payload: { resourceKey, resourceType } };
+export function removeBookmarkSuccess(
+  resourceKey: string,
+  resourceType: ResourceType
+): RemoveBookmarkResponse {
+  return {
+    type: RemoveBookmark.SUCCESS,
+    payload: { resourceKey, resourceType },
+  };
 }
 
 export function getBookmarks(): GetBookmarksRequest {
   return {
     type: GetBookmarks.REQUEST,
-  }
+  };
 }
 export function getBookmarksFailure(): GetBookmarksResponse {
   return { type: GetBookmarks.FAILURE };
 }
-export function getBookmarksSuccess(bookmarks: ResourceDict<Bookmark[]>): GetBookmarksResponse {
+export function getBookmarksSuccess(
+  bookmarks: ResourceDict<Bookmark[]>
+): GetBookmarksResponse {
   return { type: GetBookmarks.SUCCESS, payload: { bookmarks } };
 }
 
-export function getBookmarksForUser(userId: string): GetBookmarksForUserRequest {
+export function getBookmarksForUser(
+  userId: string
+): GetBookmarksForUserRequest {
   return {
     payload: {
       userId,
     },
     type: GetBookmarksForUser.REQUEST,
-  }
+  };
 }
 export function getBookmarksForUserFailure(): GetBookmarksForUserResponse {
   return { type: GetBookmarksForUser.FAILURE };
 }
-export function getBookmarksForUserSuccess(bookmarks: ResourceDict<Bookmark[]>): GetBookmarksForUserResponse {
+export function getBookmarksForUserSuccess(
+  bookmarks: ResourceDict<Bookmark[]>
+): GetBookmarksForUserResponse {
   return { type: GetBookmarksForUser.SUCCESS, payload: { bookmarks } };
 }
 
@@ -84,10 +104,10 @@ export interface BookmarkReducerState {
 export const initialBookmarkState = {
   [ResourceType.table]: [],
   [ResourceType.dashboard]: [],
-}
+};
 export const initialState: BookmarkReducerState = {
   myBookmarks: {
-    ...initialBookmarkState
+    ...initialBookmarkState,
   },
   myBookmarksIsLoaded: false,
   bookmarksForUser: {
@@ -95,8 +115,11 @@ export const initialState: BookmarkReducerState = {
   },
 };
 
-export default function reducer(state: BookmarkReducerState = initialState, action): BookmarkReducerState {
-  switch(action.type) {
+export default function reducer(
+  state: BookmarkReducerState = initialState,
+  action
+): BookmarkReducerState {
+  switch (action.type) {
     case AddBookmark.SUCCESS:
     case GetBookmarks.SUCCESS:
       return {
@@ -108,22 +131,27 @@ export default function reducer(state: BookmarkReducerState = initialState, acti
       return {
         ...state,
         bookmarksForUser: {
-          ...initialBookmarkState
-        }
+          ...initialBookmarkState,
+        },
       };
     case GetBookmarksForUser.SUCCESS:
       return {
         ...state,
-        bookmarksForUser: (<GetBookmarksForUserResponse>action).payload.bookmarks,
+        bookmarksForUser: (<GetBookmarksForUserResponse>action).payload
+          .bookmarks,
       };
     case RemoveBookmark.SUCCESS:
-      const { resourceKey, resourceType } = (<RemoveBookmarkResponse>action).payload;
+      const { resourceKey, resourceType } = (<RemoveBookmarkResponse>(
+        action
+      )).payload;
       return {
         ...state,
         myBookmarks: {
           ...state.myBookmarks,
-          [resourceType]: state.myBookmarks[resourceType].filter((bookmark) => bookmark.key !== resourceKey)
-        }
+          [resourceType]: state.myBookmarks[resourceType].filter(
+            (bookmark) => bookmark.key !== resourceKey
+          ),
+        },
       };
     case AddBookmark.FAILURE:
     case GetBookmarks.FAILURE:

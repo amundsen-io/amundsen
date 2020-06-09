@@ -7,16 +7,25 @@ import globalState from 'fixtures/globalState';
 import * as API from '../../api/v0';
 
 import reducer, {
-  updateTableOwner, updateTableOwnerFailure, updateTableOwnerSuccess,
-  initialOwnersState, TableOwnerReducerState
+  updateTableOwner,
+  updateTableOwnerFailure,
+  updateTableOwnerSuccess,
+  initialOwnersState,
+  TableOwnerReducerState,
 } from '../reducer';
-import { getTableData, getTableDataFailure, getTableDataSuccess } from '../../reducer';
+import {
+  getTableData,
+  getTableDataFailure,
+  getTableDataSuccess,
+} from '../../reducer';
 
 import { updateTableOwnerWorker, updateTableOwnerWatcher } from '../sagas';
 
 import { GetTableData, UpdateTableOwner } from '../../types';
 
-const generateOwnerUpdateRequestsSpy = jest.spyOn(API, 'generateOwnerUpdateRequests').mockImplementation((payload, key) => []);
+const generateOwnerUpdateRequestsSpy = jest
+  .spyOn(API, 'generateOwnerUpdateRequests')
+  .mockImplementation((payload, key) => []);
 
 describe('tableMetadata:owners ducks', () => {
   let expectedOwners: OwnerDict;
@@ -25,9 +34,14 @@ describe('tableMetadata:owners ducks', () => {
   let mockFailure;
   beforeAll(() => {
     expectedOwners = {
-      'testId': {display_name: 'test', profile_url: 'test.io', email: 'test@test.com', user_id: 'testId'}
+      testId: {
+        display_name: 'test',
+        profile_url: 'test.io',
+        email: 'test@test.com',
+        user_id: 'testId',
+      },
     };
-    updatePayload = [{method: UpdateMethod.PUT, id: 'testId'}];
+    updatePayload = [{ method: UpdateMethod.PUT, id: 'testId' }];
     mockSuccess = jest.fn();
     mockFailure = jest.fn();
   });
@@ -67,14 +81,21 @@ describe('tableMetadata:owners ducks', () => {
     });
 
     it('should handle UpdateTableOwner.REQUEST', () => {
-      expect(reducer(testState, updateTableOwner(updatePayload, mockSuccess, mockFailure))).toEqual({
+      expect(
+        reducer(
+          testState,
+          updateTableOwner(updatePayload, mockSuccess, mockFailure)
+        )
+      ).toEqual({
         ...testState,
         isLoading: true,
       });
     });
 
     it('should handle UpdateTableOwner.FAILURE', () => {
-      expect(reducer(testState, updateTableOwnerFailure(expectedOwners))).toEqual({
+      expect(
+        reducer(testState, updateTableOwnerFailure(expectedOwners))
+      ).toEqual({
         ...testState,
         isLoading: false,
         owners: expectedOwners,
@@ -82,7 +103,9 @@ describe('tableMetadata:owners ducks', () => {
     });
 
     it('should handle UpdateTableOwner.SUCCESS', () => {
-      expect(reducer(testState, updateTableOwnerSuccess(expectedOwners))).toEqual({
+      expect(
+        reducer(testState, updateTableOwnerSuccess(expectedOwners))
+      ).toEqual({
         ...testState,
         isLoading: false,
         owners: expectedOwners,
@@ -108,7 +131,12 @@ describe('tableMetadata:owners ducks', () => {
 
     it('should handle GetTableData.SUCCESS', () => {
       const mockTableData = globalState.tableMetadata.tableData;
-      expect(reducer(testState, getTableDataSuccess(mockTableData, expectedOwners, 200, []))).toEqual({
+      expect(
+        reducer(
+          testState,
+          getTableDataSuccess(mockTableData, expectedOwners, 200, [])
+        )
+      ).toEqual({
         ...testState,
         isLoading: false,
         owners: expectedOwners,
@@ -120,7 +148,8 @@ describe('tableMetadata:owners ducks', () => {
     describe('updateTableOwnerWatcher', () => {
       it('takes every UpdateTableOwner.REQUEST with updateTableOwnerWorker', () => {
         testSaga(updateTableOwnerWatcher)
-          .next().takeEvery(UpdateTableOwner.REQUEST, updateTableOwnerWorker);
+          .next()
+          .takeEvery(UpdateTableOwner.REQUEST, updateTableOwnerWorker);
       });
     });
 
@@ -130,21 +159,31 @@ describe('tableMetadata:owners ducks', () => {
         beforeAll(() => {
           sagaTest = (action) => {
             return testSaga(updateTableOwnerWorker, action)
-                .next().select()
-                .next(globalState).all(API.generateOwnerUpdateRequests(updatePayload, globalState.tableMetadata.tableData))
-                .next().call(API.getTableOwners, globalState.tableMetadata.tableData.key)
-                .next(expectedOwners).put(updateTableOwnerSuccess(expectedOwners));
+              .next()
+              .select()
+              .next(globalState)
+              .all(
+                API.generateOwnerUpdateRequests(
+                  updatePayload,
+                  globalState.tableMetadata.tableData
+                )
+              )
+              .next()
+              .call(API.getTableOwners, globalState.tableMetadata.tableData.key)
+              .next(expectedOwners)
+              .put(updateTableOwnerSuccess(expectedOwners));
           };
         });
         it('without success callback', () => {
-          sagaTest(updateTableOwner(updatePayload))
-            .next().isDone();
+          sagaTest(updateTableOwner(updatePayload)).next().isDone();
         });
 
         it('with success callback', () => {
           sagaTest(updateTableOwner(updatePayload, mockSuccess, mockFailure))
-            .next().call(mockSuccess)
-            .next().isDone();
+            .next()
+            .call(mockSuccess)
+            .next()
+            .isDone();
         });
       });
 
@@ -153,19 +192,27 @@ describe('tableMetadata:owners ducks', () => {
         beforeAll(() => {
           sagaTest = (action) => {
             return testSaga(updateTableOwnerWorker, action)
-              .next().select()
-              .next(globalState).throw(new Error()).put(updateTableOwnerFailure(globalState.tableMetadata.tableOwners.owners))
+              .next()
+              .select()
+              .next(globalState)
+              .throw(new Error())
+              .put(
+                updateTableOwnerFailure(
+                  globalState.tableMetadata.tableOwners.owners
+                )
+              );
           };
         });
         it('without failure callback', () => {
-          sagaTest(updateTableOwner(updatePayload))
-            .next().isDone();
+          sagaTest(updateTableOwner(updatePayload)).next().isDone();
         });
 
         it('with failure callback', () => {
           sagaTest(updateTableOwner(updatePayload, mockSuccess, mockFailure))
-            .next().call(mockFailure)
-            .next().isDone();
+            .next()
+            .call(mockFailure)
+            .next()
+            .isDone();
         });
       });
     });

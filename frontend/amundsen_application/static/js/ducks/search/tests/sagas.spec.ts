@@ -71,8 +71,10 @@ describe('search sagas', () => {
   describe('searchAllWatcher', () => {
     it('takes every SearchAll.REQUEST with searchAllWorker', () => {
       testSaga(Sagas.searchAllWatcher)
-        .next().takeEvery(SearchAll.REQUEST, Sagas.searchAllWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(SearchAll.REQUEST, Sagas.searchAllWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -88,18 +90,27 @@ describe('search sagas', () => {
     */
 
     it('handles request error', () => {
-      testSaga(Sagas.searchAllWorker, searchAll(SearchType.SUBMIT_TERM, 'test', ResourceType.table, 0, true))
-        .next().select(SearchUtils.getSearchState)
-        .next(globalState.search).throw(new Error()).put(searchAllFailure())
-        .next().isDone();
+      testSaga(
+        Sagas.searchAllWorker,
+        searchAll(SearchType.SUBMIT_TERM, 'test', ResourceType.table, 0, true)
+      )
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(globalState.search)
+        .throw(new Error())
+        .put(searchAllFailure())
+        .next()
+        .isDone();
     });
   });
 
   describe('searchResourceWatcher', () => {
     it('takes every SearchResource.REQUEST with searchResourceWorker', () => {
       testSaga(Sagas.searchResourceWatcher)
-        .next().takeEvery(SearchResource.REQUEST, Sagas.searchResourceWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(SearchResource.REQUEST, Sagas.searchResourceWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -110,41 +121,74 @@ describe('search sagas', () => {
       const term = 'test';
       const mockSearchState = globalState.search;
       const searchType = SearchType.PAGINATION;
-      testSaga(Sagas.searchResourceWorker, searchResource(searchType, term, resource, pageIndex))
-        .next().select(SearchUtils.getSearchState)
-        .next(mockSearchState).call(API.searchResource, pageIndex, resource, term, mockSearchState.filters[resource], searchType)
-        .next(expectedSearchResults).put(searchResourceSuccess(expectedSearchResults))
-        .next().isDone();
+      testSaga(
+        Sagas.searchResourceWorker,
+        searchResource(searchType, term, resource, pageIndex)
+      )
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(mockSearchState)
+        .call(
+          API.searchResource,
+          pageIndex,
+          resource,
+          term,
+          mockSearchState.filters[resource],
+          searchType
+        )
+        .next(expectedSearchResults)
+        .put(searchResourceSuccess(expectedSearchResults))
+        .next()
+        .isDone();
     });
 
     it('handles request error', () => {
-      testSaga(Sagas.searchResourceWorker, searchResource(SearchType.PAGINATION, 'test', ResourceType.table, 0))
-        .next().select(SearchUtils.getSearchState)
-        .next(globalState.search).throw(new Error()).put(searchResourceFailure())
-        .next().isDone();
+      testSaga(
+        Sagas.searchResourceWorker,
+        searchResource(SearchType.PAGINATION, 'test', ResourceType.table, 0)
+      )
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(globalState.search)
+        .throw(new Error())
+        .put(searchResourceFailure())
+        .next()
+        .isDone();
     });
   });
 
   describe('submitSearchWorker', () => {
     it('initiates flow to search with a term and optional filters', () => {
       const term = 'test';
-      testSaga(Sagas.submitSearchWorker, submitSearch({ searchTerm: term, useFilters: true }))
-        .next().put(searchAll(SearchType.SUBMIT_TERM, term, undefined, 0, true))
-        .next().isDone();
+      testSaga(
+        Sagas.submitSearchWorker,
+        submitSearch({ searchTerm: term, useFilters: true })
+      )
+        .next()
+        .put(searchAll(SearchType.SUBMIT_TERM, term, undefined, 0, true))
+        .next()
+        .isDone();
     });
 
     it('initiates flow to search with empty term and existing filters', () => {
-      testSaga(Sagas.submitSearchWorker, submitSearch({ searchTerm: '', useFilters: false }))
-        .next().put(searchAll(SearchType.CLEAR_TERM, '', undefined, 0, false))
-        .next().isDone();
+      testSaga(
+        Sagas.submitSearchWorker,
+        submitSearch({ searchTerm: '', useFilters: false })
+      )
+        .next()
+        .put(searchAll(SearchType.CLEAR_TERM, '', undefined, 0, false))
+        .next()
+        .isDone();
     });
   });
 
   describe('submitSearchWatcher', () => {
     it('takes latest SubmitSearch.REQUEST with submitSearchWorker', () => {
       testSaga(Sagas.submitSearchWatcher)
-        .next().takeLatest(SubmitSearch.REQUEST, Sagas.submitSearchWorker)
-        .next().isDone();
+        .next()
+        .takeLatest(SubmitSearch.REQUEST, Sagas.submitSearchWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -152,12 +196,19 @@ describe('search sagas', () => {
     describe('when no new search state input is passed', () => {
       it('it updates url if necessary + calls searchResource with given pageIndex and existing search input', () => {
         updateSearchUrlSpy.mockClear();
-        const paginationAction = submitSearchResource({ pageIndex: 1, searchType: SearchType.PAGINATION, updateUrl: true });
+        const paginationAction = submitSearchResource({
+          pageIndex: 1,
+          searchType: SearchType.PAGINATION,
+          updateUrl: true,
+        });
         const { search_term, resource } = searchState;
         testSaga(Sagas.submitSearchResourceWorker, paginationAction)
-          .next().select(SearchUtils.getSearchState)
-          .next(searchState).put(searchResource(SearchType.PAGINATION, search_term, resource, 1))
-          .next().isDone();
+          .next()
+          .select(SearchUtils.getSearchState)
+          .next(searchState)
+          .put(searchResource(SearchType.PAGINATION, search_term, resource, 1))
+          .next()
+          .isDone();
 
         expect(updateSearchUrlSpy).toHaveBeenCalledWith({
           term: searchState.search_term,
@@ -166,20 +217,23 @@ describe('search sagas', () => {
           filters: searchState.filters,
         });
       });
-    })
+    });
 
     it('calls searchResource with given term', () => {
       const filterAction = submitSearchResource({
         pageIndex: 0,
         searchTerm: '',
         searchType: SearchType.FILTER,
-        resourceFilters: {'database': {'hive': true}},
+        resourceFilters: { database: { hive: true } },
       });
       const { search_term, resource } = searchState;
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
-        .next().select(SearchUtils.getSearchState)
-        .next(searchState).put(searchResource(SearchType.FILTER, '', resource, 0))
-        .next().isDone();
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(searchState)
+        .put(searchResource(SearchType.FILTER, '', resource, 0))
+        .next()
+        .isDone();
     });
 
     it('calls searchResource with given resource', () => {
@@ -187,22 +241,30 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: 'hello',
         searchType: SearchType.FILTER,
-        resourceFilters: {'database': {'hive': true}},
+        resourceFilters: { database: { hive: true } },
         resource: ResourceType.table,
       });
       const { search_term, resource } = searchState;
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
-        .next().select(SearchUtils.getSearchState)
-        .next(searchState).put(searchResource(SearchType.FILTER, 'hello', ResourceType.table, 0))
-        .next().isDone();
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(searchState)
+        .put(searchResource(SearchType.FILTER, 'hello', ResourceType.table, 0))
+        .next()
+        .isDone();
     });
   });
 
   describe('submitSearchResourceWatcher', () => {
     it('takes every SubmitSearchResource.REQUEST with submitSearchResourceWorker', () => {
       testSaga(Sagas.submitSearchResourceWatcher)
-        .next().takeEvery(SubmitSearchResource.REQUEST, Sagas.submitSearchResourceWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(
+          SubmitSearchResource.REQUEST,
+          Sagas.submitSearchResourceWorker
+        )
+        .next()
+        .isDone();
     });
   });
 
@@ -212,8 +274,10 @@ describe('search sagas', () => {
       const action = updateSearchState({ updateUrl: true });
       const { search_term, resource } = searchState;
       testSaga(Sagas.updateSearchStateWorker, action)
-        .next().select(SearchUtils.getSearchState)
-        .next(searchState).isDone();
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(searchState)
+        .isDone();
 
       expect(updateSearchUrlSpy).toHaveBeenCalledWith({
         term: searchState.search_term,
@@ -227,8 +291,10 @@ describe('search sagas', () => {
   describe('updateSearchStateWatcher', () => {
     it('takes every UpdateSearchState.REQUEST with updateSearchStateWorker', () => {
       testSaga(Sagas.updateSearchStateWatcher)
-        .next().takeEvery(UpdateSearchState.REQUEST, Sagas.updateSearchStateWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(UpdateSearchState.REQUEST, Sagas.updateSearchStateWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -245,7 +311,8 @@ describe('search sagas', () => {
 
       sagaTest = (action) => {
         return testSaga(Sagas.urlDidUpdateWorker, action)
-          .next().select(SearchUtils.getSearchState)
+          .next()
+          .select(SearchUtils.getSearchState)
           .next(searchState);
       };
     });
@@ -254,54 +321,79 @@ describe('search sagas', () => {
       term = 'new search';
       sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}`))
         .put(searchAll(SearchType.LOAD_URL, term, resource, index, false))
-        .next().isDone();
+        .next()
+        .isDone();
     });
 
     it('calls updateSearchState & searchAll when filter & search term changes', () => {
       term = 'new search';
-      sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"hive"%3Atrue%7D%7D`))
-        .put(updateSearchState({
-          // @ts-ignore: Has trouble with resource = 'table' vs explicityly being ResourceType.table
-          filters: {
-            [resource]: {'database': {'hive': true}},
-          }
-        }))
-        .next().put(searchAll(SearchType.LOAD_URL, term, resource, index, true))
-        .next().isDone();
+      sagaTest(
+        urlDidUpdate(
+          `term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"hive"%3Atrue%7D%7D`
+        )
+      )
+        .put(
+          updateSearchState({
+            // @ts-ignore: Has trouble with resource = 'table' vs explicityly being ResourceType.table
+            filters: {
+              [resource]: { database: { hive: true } },
+            },
+          })
+        )
+        .next()
+        .put(searchAll(SearchType.LOAD_URL, term, resource, index, true))
+        .next()
+        .isDone();
     });
 
     it('calls updateSearchState when the resource has changed', () => {
       resource = ResourceType.user;
       sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}`))
         .put(updateSearchState({ resource }))
-        .next().isDone();
+        .next()
+        .isDone();
     });
 
     it('calls submitSearchResource when the filters changes', () => {
-      sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"bigquery"%3Atrue%7D%7D`))
-        .put(submitSearchResource({
-          resource,
-          searchTerm: term,
-          resourceFilters: { 'database': { 'bigquery' : true }},
-          pageIndex: index,
-          searchType: SearchType.LOAD_URL
-        }))
-        .next().isDone();
+      sagaTest(
+        urlDidUpdate(
+          `term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"bigquery"%3Atrue%7D%7D`
+        )
+      )
+        .put(
+          submitSearchResource({
+            resource,
+            searchTerm: term,
+            resourceFilters: { database: { bigquery: true } },
+            pageIndex: index,
+            searchType: SearchType.LOAD_URL,
+          })
+        )
+        .next()
+        .isDone();
     });
 
     it('calls submitSearchResource when the index changes', () => {
       index = 10;
       sagaTest(urlDidUpdate(`term=${term}&resource=${resource}&index=${index}`))
-        .put(submitSearchResource({ pageIndex: index, searchType: SearchType.LOAD_URL }))
-        .next().isDone();
+        .put(
+          submitSearchResource({
+            pageIndex: index,
+            searchType: SearchType.LOAD_URL,
+          })
+        )
+        .next()
+        .isDone();
     });
   });
 
   describe('urlDidUpdateWatcher', () => {
     it('takes every UrlDidUpdate.REQUEST with urlDidUpdateWorker', () => {
       testSaga(Sagas.urlDidUpdateWatcher)
-        .next().takeEvery(UrlDidUpdate.REQUEST, Sagas.urlDidUpdateWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(UrlDidUpdate.REQUEST, Sagas.urlDidUpdateWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -312,8 +404,10 @@ describe('search sagas', () => {
       updateSearchUrlSpy.mockClear();
 
       testSaga(Sagas.loadPreviousSearchWorker, loadPreviousSearch())
-        .next().select(SearchUtils.getSearchState)
-        .next(searchState).isDone();
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(searchState)
+        .isDone();
 
       expect(updateSearchUrlSpy).toHaveBeenCalledWith({
         term: searchState.search_term,
@@ -327,8 +421,10 @@ describe('search sagas', () => {
   describe('loadPreviousSearchWatcher', () => {
     it('takes every LoadPreviousSearch.REQUEST with loadPreviousSearchWorker', () => {
       testSaga(Sagas.loadPreviousSearchWatcher)
-        .next().takeEvery(LoadPreviousSearch.REQUEST, Sagas.loadPreviousSearchWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(LoadPreviousSearch.REQUEST, Sagas.loadPreviousSearchWorker)
+        .next()
+        .isDone();
     });
   });
 
@@ -350,8 +446,10 @@ describe('search sagas', () => {
   describe('selectInlineResultsWatcher', () => {
     it('takes every InlineSearch.REQUEST with selectInlineResultWorker', () => {
       testSaga(Sagas.selectInlineResultsWatcher)
-        .next().takeEvery(InlineSearch.SELECT, Sagas.selectInlineResultWorker)
-        .next().isDone();
+        .next()
+        .takeEvery(InlineSearch.SELECT, Sagas.selectInlineResultWorker)
+        .next()
+        .isDone();
     });
   });
 });

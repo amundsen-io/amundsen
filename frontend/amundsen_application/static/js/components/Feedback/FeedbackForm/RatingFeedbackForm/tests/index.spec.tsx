@@ -2,7 +2,9 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import AbstractFeedbackForm, { FeedbackFormProps } from 'components/Feedback/FeedbackForm';
+import AbstractFeedbackForm, {
+  FeedbackFormProps,
+} from 'components/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
 import { RatingFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
 import {
@@ -22,7 +24,7 @@ describe('RatingFeedbackForm', () => {
       submitFeedback: jest.fn(),
       resetFeedback: jest.fn(),
     };
-    return shallow(<RatingFeedbackForm {...props}/>);
+    return shallow(<RatingFeedbackForm {...props} />);
   };
 
   it('is instance of AbstractFeedbackForm', () => {
@@ -48,7 +50,7 @@ describe('RatingFeedbackForm', () => {
       expect(form.children().at(0).find('input').props()).toMatchObject({
         type: 'hidden',
         name: 'feedback-type',
-        value: 'NPS Rating'
+        value: 'NPS Rating',
       });
     });
 
@@ -58,9 +60,11 @@ describe('RatingFeedbackForm', () => {
       beforeAll(() => {
         ratingGroup = form.children().at(1);
         ratingComponent = ratingGroup.children().at(1);
-      })
+      });
       it('renders correct label', () => {
-        expect(ratingGroup.children().at(0).find('label').text()).toEqual(RATING_LABEL);
+        expect(ratingGroup.children().at(0).find('label').text()).toEqual(
+          RATING_LABEL
+        );
       });
 
       describe('correctly renders radioButtonSet', () => {
@@ -89,11 +93,23 @@ describe('RatingFeedbackForm', () => {
       });
 
       it('renders left nps label', () => {
-        expect(ratingComponent.children().at(1).find('.nps-label.pull-left.text-left').text()).toEqual(RATING_LOW_TEXT);
+        expect(
+          ratingComponent
+            .children()
+            .at(1)
+            .find('.nps-label.pull-left.text-left')
+            .text()
+        ).toEqual(RATING_LOW_TEXT);
       });
 
       it('renders right nps label', () => {
-        expect(ratingComponent.children().at(1).find('.nps-label.pull-right.text-right').text()).toEqual(RATING_HIGH_TEXT);
+        expect(
+          ratingComponent
+            .children()
+            .at(1)
+            .find('.nps-label.pull-right.text-right')
+            .text()
+        ).toEqual(RATING_HIGH_TEXT);
       });
     });
 
@@ -116,7 +132,7 @@ describe('RatingFeedbackForm', () => {
     });
 
     it('renders submit button with correct text', () => {
-      expect(form.children().at(3).find('button').text()).toEqual(SUBMIT_TEXT)
+      expect(form.children().at(3).find('button').text()).toEqual(SUBMIT_TEXT);
     });
   });
 });

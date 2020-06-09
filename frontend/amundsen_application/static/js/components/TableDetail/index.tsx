@@ -31,11 +31,15 @@ import TableIssues from 'components/TableDetail/TableIssues';
 import WatermarkLabel from 'components/TableDetail/WatermarkLabel';
 import WriterLink from 'components/TableDetail/WriterLink';
 import TagInput from 'components/Tags/TagInput';
-import { ResourceType, TableMetadata} from 'interfaces';
+import { ResourceType, TableMetadata } from 'interfaces';
 
 import EditableSection from 'components/common/EditableSection';
 
-import { getSourceIconClass, issueTrackingEnabled, notificationsEnabled } from 'config/config-utils';
+import {
+  getSourceIconClass,
+  issueTrackingEnabled,
+  notificationsEnabled,
+} from 'config/config-utils';
 
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
@@ -49,7 +53,7 @@ import './styles.scss';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
-const TABLE_SOURCE = "table_page";
+const TABLE_SOURCE = 'table_page';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -57,7 +61,11 @@ export interface StateFromProps {
   tableData: TableMetadata;
 }
 export interface DispatchFromProps {
-  getTableData: (key: string, searchIndex?: string, source?: string, ) => GetTableDataRequest;
+  getTableData: (
+    key: string,
+    searchIndex?: string,
+    source?: string
+  ) => GetTableDataRequest;
 }
 export interface MatchProps {
   cluster: string;
@@ -65,7 +73,9 @@ export interface MatchProps {
   schema: string;
   table: string;
 }
-export type TableDetailProps = StateFromProps & DispatchFromProps & RouteComponentProps<MatchProps>;
+export type TableDetailProps = StateFromProps &
+  DispatchFromProps &
+  RouteComponentProps<MatchProps>;
 
 const ErrorMessage = () => {
   return (
@@ -76,7 +86,9 @@ const ErrorMessage = () => {
   );
 };
 
-export class TableDetail extends React.Component<TableDetailProps & RouteComponentProps<any>> {
+export class TableDetail extends React.Component<
+  TableDetailProps & RouteComponentProps<any>
+> {
   private key: string;
   private didComponentMount: boolean = false;
 
@@ -120,10 +132,7 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
 
     // Default Column content
     tabInfo.push({
-      content:
-        (
-          <ColumnList columns={ this.props.tableData.columns }/>
-        ),
+      content: <ColumnList columns={this.props.tableData.columns} />,
       key: 'columns',
       title: `Columns (${this.props.tableData.columns.length})`,
     });
@@ -137,109 +146,115 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
           source={TABLE_SOURCE}
         />
       ),
-      key: "dashboards",
-      title: `Dashboards (${this.props.tableData.dashboards.length})`
+      key: 'dashboards',
+      title: `Dashboards (${this.props.tableData.dashboards.length})`,
     });
 
-    return <TabsComponent tabs={ tabInfo } defaultTab={ "columns" } />;
+    return <TabsComponent tabs={tabInfo} defaultTab={'columns'} />;
   }
 
   render() {
-    const {isLoading, statusCode, tableData} = this.props;
+    const { isLoading, statusCode, tableData } = this.props;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
-      innerContent = <LoadingSpinner/>;
+      innerContent = <LoadingSpinner />;
     } else if (statusCode === SERVER_ERROR_CODE) {
-      innerContent = (<ErrorMessage />);
+      innerContent = <ErrorMessage />;
     } else {
       const data = tableData;
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
-          {
-            notificationsEnabled() && <RequestMetadataForm />
-          }
+          {notificationsEnabled() && <RequestMetadataForm />}
           <header className="resource-header">
             <div className="header-section">
               <Breadcrumb />
-              <span className={"icon icon-header " + getSourceIconClass(data.database, ResourceType.table)} />
+              <span
+                className={
+                  'icon icon-header ' +
+                  getSourceIconClass(data.database, ResourceType.table)
+                }
+              />
             </div>
             <div className="header-section header-title">
               <h3 className="header-title-text truncated">
-                  { this.getDisplayName() }
+                {this.getDisplayName()}
               </h3>
-              <BookmarkIcon bookmarkKey={ data.key } resourceType={ ResourceType.table } />
+              <BookmarkIcon
+                bookmarkKey={data.key}
+                resourceType={ResourceType.table}
+              />
               <div className="body-2">
                 <TableHeaderBullets
-                  database={ data.database }
-                  cluster={ data.cluster }
+                  database={data.database}
+                  cluster={data.cluster}
                 />
-                {
-                  data.badges.length > 0 &&
-                  <BadgeList badges={ data.badges } />
-                }
-                {
-                  data.is_view &&
-                  <Flag text="table view" labelStyle="warning"/>
-                }
+                {data.badges.length > 0 && <BadgeList badges={data.badges} />}
+                {data.is_view && (
+                  <Flag text="table view" labelStyle="warning" />
+                )}
               </div>
             </div>
             <div className="header-section header-links">
-              <WriterLink tableWriter={ data.table_writer }/>
-              <LineageLink tableData={ data }/>
-              <SourceLink tableSource={ data.source }/>
+              <WriterLink tableWriter={data.table_writer} />
+              <LineageLink tableData={data} />
+              <SourceLink tableSource={data.source} />
             </div>
             <div className="header-section header-buttons">
-              <DataPreviewButton modalTitle={ this.getDisplayName() }/>
-              <ExploreButton tableData={ data }/>
+              <DataPreviewButton modalTitle={this.getDisplayName()} />
+              <ExploreButton tableData={data} />
             </div>
           </header>
           <article className="column-layout-1">
             <section className="left-panel">
               <EditableSection title="Description">
                 <TableDescEditableText
-                  maxLength={ AppConfig.editableText.tableDescLength }
-                  value={ data.description }
-                  editable={ data.is_editable }
+                  maxLength={AppConfig.editableText.tableDescLength}
+                  value={data.description}
+                  editable={data.is_editable}
                 />
                 <span>
-                  { notificationsEnabled() && <RequestDescriptionText/> }
+                  {notificationsEnabled() && <RequestDescriptionText />}
                 </span>
               </EditableSection>
-              {
-                issueTrackingEnabled() &&
+              {issueTrackingEnabled() && (
                 <section className="metadata-section">
-                  <TableIssues tableKey={ this.key } tableName={ this.getDisplayName()}/>
+                  <TableIssues
+                    tableKey={this.key}
+                    tableName={this.getDisplayName()}
+                  />
                 </section>
-              }
+              )}
               <section className="column-layout-2">
                 <section className="left-panel">
-                  {
-                    !data.is_view &&
+                  {!data.is_view && (
                     <section className="metadata-section">
                       <div className="section-title title-3">Date Range</div>
-                      <WatermarkLabel watermarks={ data.watermarks }/>
+                      <WatermarkLabel watermarks={data.watermarks} />
                     </section>
-                  }
-                  {
-                    !!data.last_updated_timestamp &&
+                  )}
+                  {!!data.last_updated_timestamp && (
                     <section className="metadata-section">
                       <div className="section-title title-3">Last Updated</div>
-                      <div className="body-2">{ formatDateTimeShort({ epochTimestamp: data.last_updated_timestamp }) }</div>
+                      <div className="body-2">
+                        {formatDateTimeShort({
+                          epochTimestamp: data.last_updated_timestamp,
+                        })}
+                      </div>
                     </section>
-                  }
+                  )}
                   <section className="metadata-section">
                     <div className="section-title title-3">Frequent Users</div>
-                    <FrequentUsers readers={ data.table_readers }/>
+                    <FrequentUsers readers={data.table_readers} />
                   </section>
                 </section>
                 <section className="right-panel">
                   <EditableSection title="Tags">
                     <TagInput
-                      resourceType={ ResourceType.table }
-                      uriKey={ this.props.tableData.key }
+                      resourceType={ResourceType.table}
+                      uriKey={this.props.tableData.key}
                     />
                   </EditableSection>
                   <EditableSection title="Owners">
@@ -247,40 +262,38 @@ export class TableDetail extends React.Component<TableDetailProps & RouteCompone
                   </EditableSection>
                 </section>
               </section>
-              {
-                data.programmatic_descriptions.length > 0 &&
+              {data.programmatic_descriptions.length > 0 && (
                 <>
-                  <div className="programmatic-title title-4">{PROGRMMATIC_DESC_HEADER}</div>
-                  <hr className="programmatic-hr hr1"/>
+                  <div className="programmatic-title title-4">
+                    {PROGRMMATIC_DESC_HEADER}
+                  </div>
+                  <hr className="programmatic-hr hr1" />
                 </>
-              }
-              {
-                data.programmatic_descriptions
-                  .map(d =>
-                    <section key={d.source} className="column-layout-2">
-                    <EditableSection title={d.source} readOnly={true}>
-                      <EditableText
-                        maxLength={999999}
-                        value={d.text}
-                        editable={false}
-                        onSubmitValue={null}
-                      />
-                    </EditableSection>
-                    </section>
-                  )
-              }
+              )}
+              {data.programmatic_descriptions.map((d) => (
+                <section key={d.source} className="column-layout-2">
+                  <EditableSection title={d.source} readOnly={true}>
+                    <EditableText
+                      maxLength={999999}
+                      value={d.text}
+                      editable={false}
+                      onSubmitValue={null}
+                    />
+                  </EditableSection>
+                </section>
+              ))}
             </section>
-            <section className="right-panel">
-              { this.renderTabs() }
-            </section>
+            <section className="right-panel">{this.renderTabs()}</section>
           </article>
         </div>
       );
     }
 
     return (
-      <DocumentTitle title={ `${ this.getDisplayName() } - Amundsen Table Details` }>
-        { innerContent }
+      <DocumentTitle
+        title={`${this.getDisplayName()} - Amundsen Table Details`}
+      >
+        {innerContent}
       </DocumentTitle>
     );
   }
@@ -295,7 +308,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getTableData } , dispatch);
+  return bindActionCreators({ getTableData }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(TableDetail);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(TableDetail);

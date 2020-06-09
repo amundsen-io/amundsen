@@ -3,8 +3,7 @@ import ColumnListItem from '../ColumnListItem';
 
 import { TableColumn } from 'interfaces';
 
-import "./styles.scss";
-
+import './styles.scss';
 
 interface ColumnListProps {
   columns?: TableColumn[];
@@ -13,22 +12,15 @@ interface ColumnListProps {
 // TODO - convert into a component for easier testing
 const ColumnList: React.SFC<ColumnListProps> = ({ columns }) => {
   if (columns.length < 1) {
-    return (<div />);
+    return <div />;
     // ToDo: return No Results Message
   }
 
-  const columnList = columns.map((entry, index) =>
-    <ColumnListItem
-      key={`column:${index}`}
-      data={ entry }
-      index={ index }
-    />);
+  const columnList = columns.map((entry, index) => (
+    <ColumnListItem key={`column:${index}`} data={entry} index={index} />
+  ));
 
-  return (
-    <ul className="column-list list-group">
-      { columnList }
-    </ul>
-  );
+  return <ul className="column-list list-group">{columnList}</ul>;
 };
 
 ColumnList.defaultProps = {

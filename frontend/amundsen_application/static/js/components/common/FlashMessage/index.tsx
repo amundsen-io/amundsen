@@ -8,17 +8,21 @@ export interface FlashMessageProps {
   onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const FlashMessage: React.SFC<FlashMessageProps> = ({ iconClass, message, onClose }) => {
+const FlashMessage: React.SFC<FlashMessageProps> = ({
+  iconClass,
+  message,
+  onClose,
+}) => {
   return (
     <div className="flash-message">
-      {
-        iconClass &&
-        <img className={`icon ${iconClass}`}/>
-      }
-      <div className="message">
-        { message }
-      </div>
-      <button type="button" className="btn btn-close" aria-label={"Close"} onClick={onClose}/>
+      {iconClass && <img className={`icon ${iconClass}`} />}
+      <div className="message">{message}</div>
+      <button
+        type="button"
+        className="btn btn-close"
+        aria-label={'Close'}
+        onClick={onClose}
+      />
     </div>
   );
 };
