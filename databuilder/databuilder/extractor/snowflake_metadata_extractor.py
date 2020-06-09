@@ -1,3 +1,4 @@
+
 import logging
 import six
 from collections import namedtuple
@@ -51,7 +52,10 @@ class SnowflakeMetadataExtractor(Extractor):
     WHERE_CLAUSE_SUFFIX_KEY = 'where_clause_suffix'
     CLUSTER_KEY = 'cluster_key'
     USE_CATALOG_AS_CLUSTER_NAME = 'use_catalog_as_cluster_name'
+    # Database Key, used to identify the database type in the UI.
     DATABASE_KEY = 'database_key'
+    # Snowflake Database Key, used to determine which Snowflake database to connect to.
+    SNOWFLAKE_DATABASE_KEY = 'snowflake_database'
 
     # Default values
     DEFAULT_CLUSTER_NAME = 'master'
@@ -60,7 +64,8 @@ class SnowflakeMetadataExtractor(Extractor):
         {WHERE_CLAUSE_SUFFIX_KEY: ' ',
          CLUSTER_KEY: DEFAULT_CLUSTER_NAME,
          USE_CATALOG_AS_CLUSTER_NAME: True,
-         DATABASE_KEY: 'prod'}
+         DATABASE_KEY: 'snowflake',
+         SNOWFLAKE_DATABASE_KEY: 'prod'}
     )
 
     def init(self, conf):
@@ -74,13 +79,16 @@ class SnowflakeMetadataExtractor(Extractor):
             cluster_source = "'{}'".format(self._cluster)
 
         self._database = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY)
+        self._snowflake_database = conf.get_string(SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY)
+
         if six.PY2:
             self._database = self._database.encode('utf-8', 'ignore')
+            self._snowflake_database = self._snowflake_database.encode('utf-8', 'ignore')
 
         self.sql_stmt = SnowflakeMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(SnowflakeMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
             cluster_source=cluster_source,
-            database=self._database
+            database=self._snowflake_database
         )
 
         LOGGER.info('SQL for snowflake metadata: {}'.format(self.sql_stmt))

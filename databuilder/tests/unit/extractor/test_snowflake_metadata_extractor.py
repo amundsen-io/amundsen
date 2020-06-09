@@ -22,7 +22,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
             'MY_CLUSTER',
             'extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
             False,
-            'extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.DATABASE_KEY):
+            'extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY):
             'prod'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -90,7 +90,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
             extractor = SnowflakeMetadataExtractor()
             extractor.init(self.conf)
             actual = extractor.extract()
-            expected = TableMetadata('prod', 'MY_CLUSTER', 'test_schema', 'test_table', 'a table for testing',
+            expected = TableMetadata('snowflake', 'MY_CLUSTER', 'test_schema', 'test_table', 'a table for testing',
                                      [ColumnMetadata('col_id1', 'description of id1', 'number', 0),
                                       ColumnMetadata('col_id2', 'description of id2', 'number', 1),
                                       ColumnMetadata('is_active', None, 'boolean', 2),
@@ -189,7 +189,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
             extractor = SnowflakeMetadataExtractor()
             extractor.init(self.conf)
 
-            expected = TableMetadata('prod',
+            expected = TableMetadata('snowflake',
                                      self.conf['extractor.snowflake_metadata.{}'.format(
                                          SnowflakeMetadataExtractor.CLUSTER_KEY)],
                                      'test_schema1', 'test_table1', 'test table 1',
@@ -202,7 +202,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                                       ColumnMetadata('ds', None, 'varchar', 5)])
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
-            expected = TableMetadata('prod',
+            expected = TableMetadata('snowflake',
                                      self.conf['extractor.snowflake_metadata.{}'.format(
                                          SnowflakeMetadataExtractor.CLUSTER_KEY)],
                                      'test_schema1', 'test_table2', 'test table 2',
@@ -210,7 +210,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                                       ColumnMetadata('col_name2', 'description of col_name2', 'varchar', 1)])
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
-            expected = TableMetadata('prod',
+            expected = TableMetadata('snowflake',
                                      self.conf['extractor.snowflake_metadata.{}'.format(
                                          SnowflakeMetadataExtractor.CLUSTER_KEY)],
                                      'test_schema2', 'test_table3', 'test table 3',
@@ -281,12 +281,37 @@ class TestSnowflakeMetadataExtractorClusterKeyNoTableCatalog(unittest.TestCase):
             self.assertTrue(self.cluster_key in extractor.sql_stmt)
 
 
+class TestSnowflakeMetadataExtractorDefaultSnowflakeDatabaseKey(unittest.TestCase):
+    # test when SNOWFLAKE_DATABASE_KEY is specified
+    def setUp(self):
+        # type: () -> None
+        logging.basicConfig(level=logging.INFO)
+        self.snowflake_database_key = "not_prod"
+
+        config_dict = {
+            SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY: self.snowflake_database_key,
+            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+                'TEST_CONNECTION'
+        }
+        self.conf = ConfigFactory.from_dict(config_dict)
+
+    def test_sql_statement(self):
+        # type: () -> None
+        """
+        Test Extraction with empty result from query
+        """
+        with patch.object(SQLAlchemyExtractor, '_get_connection'):
+            extractor = SnowflakeMetadataExtractor()
+            extractor.init(self.conf)
+            self.assertTrue(self.snowflake_database_key in extractor.sql_stmt)
+
+
 class TestSnowflakeMetadataExtractorDefaultDatabaseKey(unittest.TestCase):
     # test when DATABASE_KEY is specified
     def setUp(self):
         # type: () -> None
         logging.basicConfig(level=logging.INFO)
-        self.database_key = "not_prod"
+        self.database_key = 'not_snowflake'
 
         config_dict = {
             SnowflakeMetadataExtractor.DATABASE_KEY: self.database_key,
@@ -303,7 +328,38 @@ class TestSnowflakeMetadataExtractorDefaultDatabaseKey(unittest.TestCase):
         with patch.object(SQLAlchemyExtractor, '_get_connection'):
             extractor = SnowflakeMetadataExtractor()
             extractor.init(self.conf)
-            self.assertTrue(self.database_key in extractor.sql_stmt)
+            self.assertFalse(self.database_key in extractor.sql_stmt)
+
+    def test_extraction_with_database_specified(self):
+        # type: () -> None
+        with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection:
+            connection = MagicMock()
+            mock_connection.return_value = connection
+            sql_execute = MagicMock()
+            connection.execute = sql_execute
+
+            sql_execute.return_value = [
+                {'schema': 'test_schema',
+                 'name': 'test_table',
+                 'description': 'a table for testing',
+                 'cluster': 'MY_CLUSTER',
+                 'is_view': 'false',
+                 'col_name': 'ds',
+                 'col_type': 'varchar',
+                 'col_description': None,
+                 'col_sort_order': 0}
+            ]
+
+            extractor = SnowflakeMetadataExtractor()
+            extractor.init(self.conf)
+            actual = extractor.extract()
+            expected = TableMetadata(
+                self.database_key, 'MY_CLUSTER', 'test_schema', 'test_table', 'a table for testing',
+                [ColumnMetadata('ds', None, 'varchar', 0)]
+            )
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
+            self.assertIsNone(extractor.extract())
 
 
 class TestSnowflakeMetadataExtractorNoClusterKeyNoTableCatalog(unittest.TestCase):

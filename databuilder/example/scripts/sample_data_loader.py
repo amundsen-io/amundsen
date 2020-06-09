@@ -18,6 +18,7 @@ https://github.com/lyft/amundsendatabuilder#list-of-extractors
 """
 
 import logging
+import os
 import sqlite3
 import sys
 import textwrap
@@ -37,22 +38,25 @@ from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
 
-es_host = None
-neo_host = None
+es_host = os.getenv('CREDENTIALS_ELASTICSEARCH_PROXY_HOST', 'localhost')
+neo_host = os.getenv('CREDENTIALS_NEO4J_PROXY_HOST', 'localhost')
+
+es_port = os.getenv('CREDENTIALS_ELASTICSEARCH_PROXY_PORT', 9200)
+neo_port = os.getenv('CREDENTIALS_NEO4J_PROXY_PORT', 7687)
 if len(sys.argv) > 1:
     es_host = sys.argv[1]
 if len(sys.argv) > 2:
     neo_host = sys.argv[2]
 
 es = Elasticsearch([
-    {'host': es_host if es_host else 'localhost'},
+    {'host': es_host, 'port': es_port},
 ])
 
 DB_FILE = '/tmp/test.db'
 SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
 Base = declarative_base()
 
-NEO4J_ENDPOINT = 'bolt://{}:7687'.format(neo_host if neo_host else 'localhost')
+NEO4J_ENDPOINT = 'bolt://{}:{}'.format(neo_host, neo_port)
 
 neo4j_endpoint = NEO4J_ENDPOINT
 
