@@ -11,7 +11,12 @@ export interface AvatarLabelProps {
   src?: string;
 }
 
-const AvatarLabel: React.SFC<AvatarLabelProps> = ({ avatarClass, labelClass, label, src }) => {
+const AvatarLabel: React.SFC<AvatarLabelProps> = ({
+  avatarClass,
+  labelClass,
+  label,
+  src,
+}) => {
   return (
     <div className="avatar-label-component">
       <Avatar
@@ -21,7 +26,7 @@ const AvatarLabel: React.SFC<AvatarLabelProps> = ({ avatarClass, labelClass, lab
         size={24}
         round={true}
       />
-      <span className={`avatar-label body-2 ${labelClass}`}>{ label }</span>
+      <span className={`avatar-label body-2 ${labelClass}`}>{label}</span>
     </div>
   );
 };
@@ -29,7 +34,7 @@ const AvatarLabel: React.SFC<AvatarLabelProps> = ({ avatarClass, labelClass, lab
 AvatarLabel.defaultProps = {
   labelClass: 'text-secondary',
   label: '',
-  src: ''
+  src: '',
 };
 
 export default AvatarLabel;

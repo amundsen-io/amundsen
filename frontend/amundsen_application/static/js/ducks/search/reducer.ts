@@ -1,8 +1,11 @@
-import { ResourceType, SearchType} from 'interfaces';
+import { ResourceType, SearchType } from 'interfaces';
 
 import { Search as UrlSearch } from 'history';
 
-import filterReducer, { initialFilterState, FilterReducerState } from './filters/reducer';
+import filterReducer, {
+  initialFilterState,
+  FilterReducerState,
+} from './filters/reducer';
 
 import {
   DashboardSearchResults,
@@ -35,7 +38,7 @@ import {
   UpdateSearchStatePayload,
   UpdateSearchState,
   UrlDidUpdateRequest,
-  UrlDidUpdate
+  UrlDidUpdate,
 } from './types';
 
 export interface SearchReducerState {
@@ -50,12 +53,18 @@ export interface SearchReducerState {
     dashboards: DashboardSearchResults;
     tables: TableSearchResults;
     users: UserSearchResults;
-  },
+  };
   filters: FilterReducerState;
-};
+}
 
 /* ACTIONS */
-export function searchAll(searchType: SearchType, term: string, resource?: ResourceType, pageIndex?: number, useFilters: boolean = false): SearchAllRequest {
+export function searchAll(
+  searchType: SearchType,
+  term: string,
+  resource?: ResourceType,
+  pageIndex?: number,
+  useFilters: boolean = false
+): SearchAllRequest {
   return {
     payload: {
       resource,
@@ -66,31 +75,40 @@ export function searchAll(searchType: SearchType, term: string, resource?: Resou
     },
     type: SearchAll.REQUEST,
   };
-};
-export function searchAllSuccess(searchResults: SearchAllResponsePayload): SearchAllResponse {
+}
+export function searchAllSuccess(
+  searchResults: SearchAllResponsePayload
+): SearchAllResponse {
   return { type: SearchAll.SUCCESS, payload: searchResults };
-};
+}
 export function searchAllFailure(): SearchAllResponse {
   return { type: SearchAll.FAILURE };
-};
+}
 
-export function searchResource(searchType: SearchType, term: string, resource: ResourceType, pageIndex: number): SearchResourceRequest {
+export function searchResource(
+  searchType: SearchType,
+  term: string,
+  resource: ResourceType,
+  pageIndex: number
+): SearchResourceRequest {
   return {
     payload: {
       pageIndex,
       term,
       resource,
-      searchType
+      searchType,
     },
     type: SearchResource.REQUEST,
   };
-};
-export function searchResourceSuccess(searchResults: SearchResponsePayload): SearchResourceResponse {
+}
+export function searchResourceSuccess(
+  searchResults: SearchResponsePayload
+): SearchResourceResponse {
   return { type: SearchResource.SUCCESS, payload: searchResults };
-};
+}
 export function searchResourceFailure(): SearchResourceResponse {
   return { type: SearchResource.FAILURE };
-};
+}
 
 export function getInlineResultsDebounce(term: string): InlineSearchRequest {
   return {
@@ -99,7 +117,7 @@ export function getInlineResultsDebounce(term: string): InlineSearchRequest {
     },
     type: InlineSearch.REQUEST_DEBOUNCE,
   };
-};
+}
 export function getInlineResults(term: string): InlineSearchRequest {
   return {
     payload: {
@@ -107,47 +125,79 @@ export function getInlineResults(term: string): InlineSearchRequest {
     },
     type: InlineSearch.REQUEST,
   };
-};
-export function getInlineResultsSuccess(inlineResults: InlineSearchResponsePayload): InlineSearchResponse {
+}
+export function getInlineResultsSuccess(
+  inlineResults: InlineSearchResponsePayload
+): InlineSearchResponse {
   return { type: InlineSearch.SUCCESS, payload: inlineResults };
-};
+}
 export function getInlineResultsFailure(): InlineSearchResponse {
   return { type: InlineSearch.FAILURE };
-};
+}
 
-export function selectInlineResult(resourceType: ResourceType, searchTerm: string, updateUrl: boolean = false): InlineSearchSelect {
+export function selectInlineResult(
+  resourceType: ResourceType,
+  searchTerm: string,
+  updateUrl: boolean = false
+): InlineSearchSelect {
   return {
     payload: {
       resourceType,
       searchTerm,
       updateUrl,
     },
-    type: InlineSearch.SELECT
+    type: InlineSearch.SELECT,
   };
-};
+}
 
-export function updateFromInlineResult(data: InlineSearchUpdatePayload): InlineSearchUpdate {
+export function updateFromInlineResult(
+  data: InlineSearchUpdatePayload
+): InlineSearchUpdate {
   return {
     payload: data,
-    type: InlineSearch.UPDATE
+    type: InlineSearch.UPDATE,
   };
-};
+}
 
-export function submitSearch({ searchTerm, useFilters } : { searchTerm: string, useFilters: boolean }): SubmitSearchRequest {
+export function submitSearch({
+  searchTerm,
+  useFilters,
+}: {
+  searchTerm: string;
+  useFilters: boolean;
+}): SubmitSearchRequest {
   return {
     payload: { searchTerm, useFilters },
     type: SubmitSearch.REQUEST,
   };
-};
+}
 
-export function submitSearchResource({ resourceFilters, pageIndex, searchTerm, resource, searchType, updateUrl } : SubmitSearchResourcePayload): SubmitSearchResourceRequest {
+export function submitSearchResource({
+  resourceFilters,
+  pageIndex,
+  searchTerm,
+  resource,
+  searchType,
+  updateUrl,
+}: SubmitSearchResourcePayload): SubmitSearchResourceRequest {
   return {
-    payload: { resourceFilters, pageIndex, searchTerm, resource, searchType, updateUrl },
+    payload: {
+      resourceFilters,
+      pageIndex,
+      searchTerm,
+      resource,
+      searchType,
+      updateUrl,
+    },
     type: SubmitSearchResource.REQUEST,
   };
-};
+}
 
-export function updateSearchState({ filters, resource, updateUrl }: UpdateSearchStatePayload): UpdateSearchStateRequest {
+export function updateSearchState({
+  filters,
+  resource,
+  updateUrl,
+}: UpdateSearchStatePayload): UpdateSearchStateRequest {
   return {
     payload: {
       filters,
@@ -156,25 +206,25 @@ export function updateSearchState({ filters, resource, updateUrl }: UpdateSearch
     },
     type: UpdateSearchState.REQUEST,
   };
-};
+}
 export function resetSearchState(): UpdateSearchStateReset {
   return {
     type: UpdateSearchState.RESET,
   };
-};
+}
 
 export function loadPreviousSearch(): LoadPreviousSearchRequest {
   return {
     type: LoadPreviousSearch.REQUEST,
   };
-};
+}
 
 export function urlDidUpdate(urlSearch: UrlSearch): UrlDidUpdateRequest {
   return {
     payload: { urlSearch },
     type: UrlDidUpdate.REQUEST,
   };
-};
+}
 
 /* REDUCER */
 export const initialInlineResultsState = {
@@ -194,7 +244,7 @@ export const initialInlineResultsState = {
     results: [],
     total_results: 0,
   },
-}
+};
 export const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
@@ -218,30 +268,33 @@ export const initialState: SearchReducerState = {
   inlineResults: initialInlineResultsState,
 };
 
-export default function reducer(state: SearchReducerState = initialState, action): SearchReducerState {
+export default function reducer(
+  state: SearchReducerState = initialState,
+  action
+): SearchReducerState {
   switch (action.type) {
     case SubmitSearch.REQUEST:
       return {
         ...state,
         isLoading: true,
         search_term: action.payload.searchTerm,
-      }
+      };
     case SubmitSearchResource.REQUEST:
       return {
         ...state,
         isLoading: true,
         filters: filterReducer(state.filters, action),
         search_term: action.payload.searchTerm || state.search_term,
-      }
+      };
     case UpdateSearchState.REQUEST:
       const payload = action.payload;
       return {
         ...state,
         filters: payload.filters || state.filters,
         resource: payload.resource || state.resource,
-      }
+      };
     case UpdateSearchState.RESET:
-        return initialState;
+      return initialState;
     case SearchAll.REQUEST:
       return {
         ...state,
@@ -285,7 +338,9 @@ export default function reducer(state: SearchReducerState = initialState, action
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, dashboards, tables, users } = (<InlineSearchUpdate>action).payload;
+      const { searchTerm, resource, dashboards, tables, users } = (<
+        InlineSearchUpdate
+      >action).payload;
       return {
         ...state,
         resource,
@@ -320,9 +375,9 @@ export default function reducer(state: SearchReducerState = initialState, action
         inlineResults: {
           ...initialInlineResultsState,
           isLoading: true,
-        }
+        },
       };
     default:
       return state;
-  };
-};
+  }
+}

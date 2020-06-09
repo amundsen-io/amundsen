@@ -6,14 +6,15 @@ import ResultItemList, { ResultItemListProps } from '../';
 
 import { ResourceType } from 'interfaces';
 
-import { RESULT_LIST_FOOTER_PREFIX, RESULT_LIST_FOOTER_SUFFIX } from '../../constants';
+import {
+  RESULT_LIST_FOOTER_PREFIX,
+  RESULT_LIST_FOOTER_SUFFIX,
+} from '../../constants';
 
 import { logClick } from 'ducks/utilMethods';
-jest.mock('ducks/utilMethods', () => (
-  {
-    logClick: jest.fn(() => {}),
-  }
-));
+jest.mock('ducks/utilMethods', () => ({
+  logClick: jest.fn(() => {}),
+}));
 
 describe('ResultItemList', () => {
   const setup = (propOverrides?: Partial<ResultItemListProps>) => {
@@ -35,11 +36,11 @@ describe('ResultItemList', () => {
           subtitle: 'subtitle2',
           titleNode: 'title2',
           type: 'Hive',
-        }
+        },
       ],
       title: 'Datasets',
       totalResults: 10,
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<ResultItemList>(<ResultItemList {...props} />);
     return { props, wrapper };
@@ -49,8 +50,10 @@ describe('ResultItemList', () => {
     it('returns the expected text', () => {
       const { props, wrapper } = setup();
       const output = wrapper.instance().generateFooterLinkText();
-      expect(output).toEqual(`${RESULT_LIST_FOOTER_PREFIX} ${props.totalResults} ${props.title} ${RESULT_LIST_FOOTER_SUFFIX}`);
-    })
+      expect(output).toEqual(
+        `${RESULT_LIST_FOOTER_PREFIX} ${props.totalResults} ${props.title} ${RESULT_LIST_FOOTER_SUFFIX}`
+      );
+    });
   });
 
   describe('onViewAllResults', () => {
@@ -59,16 +62,24 @@ describe('ResultItemList', () => {
       const onItemSelectSpy = jest.spyOn(props, 'onItemSelect');
       wrapper.instance().onViewAllResults({});
       expect(onItemSelectSpy).toHaveBeenCalledWith(props.resourceType, true);
-    })
+    });
   });
 
   describe('renderResultItems', () => {
     it('renders a ResultItem for item in the given results list', () => {
       const { props, wrapper } = setup();
-      const listItems = wrapper.instance().renderResultItems(props.suggestedResults);
+      const listItems = wrapper
+        .instance()
+        .renderResultItems(props.suggestedResults);
       const expectedOnItemSelect = props.onItemSelect(props.resourceType);
       listItems.forEach((item, index) => {
-        const { href, iconClass, subtitle, titleNode, type } = props.suggestedResults[index];
+        const {
+          href,
+          iconClass,
+          subtitle,
+          titleNode,
+          type,
+        } = props.suggestedResults[index];
         expect(item.props.href).toBe(href);
         expect(item.props.onItemSelect()).toBe(expectedOnItemSelect);
         expect(item.props.iconClass).toBe(`icon icon-dark ${iconClass}`);
@@ -76,7 +87,7 @@ describe('ResultItemList', () => {
         expect(item.props.titleNode).toBe(titleNode);
         expect(item.props.type).toBe(type);
       });
-    })
+    });
   });
 
   describe('render', () => {
@@ -89,15 +100,19 @@ describe('ResultItemList', () => {
       const setUpResult = setup();
       props = setUpResult.props;
       wrapper = setUpResult.wrapper;
-      generateFooterLinkTextSpy = jest.spyOn(wrapper.instance(), 'generateFooterLinkText').mockImplementation(() => 'I am footer');
-      renderResultItemsSpy = jest.spyOn(wrapper.instance(), 'renderResultItems').mockImplementation(() => (<li key='test'>Hello</li>));
+      generateFooterLinkTextSpy = jest
+        .spyOn(wrapper.instance(), 'generateFooterLinkText')
+        .mockImplementation(() => 'I am footer');
+      renderResultItemsSpy = jest
+        .spyOn(wrapper.instance(), 'renderResultItems')
+        .mockImplementation(() => <li key="test">Hello</li>);
       wrapper.instance().forceUpdate();
     });
 
     describe('renders the title', () => {
       let title;
       beforeAll(() => {
-        title = wrapper.find('.section-title')
+        title = wrapper.find('.section-title');
       });
       it('with correct text', () => {
         expect(title.text()).toEqual(props.title);
@@ -124,7 +139,9 @@ describe('ResultItemList', () => {
         expect(footer.hasClass('title-3')).toBe(true);
       });
       it('with correct onClick interaction', () => {
-        expect(footer.props().onClick).toEqual(wrapper.instance().onViewAllResults)
+        expect(footer.props().onClick).toEqual(
+          wrapper.instance().onViewAllResults
+        );
       });
     });
   });

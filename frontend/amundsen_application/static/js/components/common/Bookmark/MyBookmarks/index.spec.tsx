@@ -27,7 +27,7 @@ describe('MyBookmarks', () => {
   const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
     const props: MyBookmarksProps = {
       myBookmarks: {
-        [ResourceType.table] : [
+        [ResourceType.table]: [
           {
             key: 'bookmark-1',
             type: ResourceType.table,
@@ -86,7 +86,7 @@ describe('MyBookmarks', () => {
         [ResourceType.dashboard]: [],
       },
       isLoaded: true,
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
     return { props, wrapper };
@@ -102,7 +102,9 @@ describe('MyBookmarks', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       givenResource = ResourceType.table;
-      content = shallow(<div>{wrapper.instance().generateTabContent(givenResource)}</div>);
+      content = shallow(
+        <div>{wrapper.instance().generateTabContent(givenResource)}</div>
+      );
     });
 
     it('returns a PaginatedResourceList with correct props', () => {
@@ -123,7 +125,9 @@ describe('MyBookmarks', () => {
     it('returns string used for the tab keys', () => {
       const wrapper = setup().wrapper;
       const givenResource = ResourceType.table;
-      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(`bookmarktab:${givenResource}`);
+      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
+        `bookmarktab:${givenResource}`
+      );
     });
   });
 
@@ -131,14 +135,18 @@ describe('MyBookmarks', () => {
     let wrapper;
     beforeAll(() => {
       wrapper = setup().wrapper;
-    })
+    });
     it('returns string for tab title according to UI designs', () => {
       const givenResource = ResourceType.table;
-      expect(wrapper.instance().generateTabTitle(givenResource)).toEqual('Resource (6)');
+      expect(wrapper.instance().generateTabTitle(givenResource)).toEqual(
+        'Resource (6)'
+      );
     });
 
     it('returns empty string if there are no bookmarks', () => {
-      expect(wrapper.instance().generateTabTitle(ResourceType.user)).toEqual('');
+      expect(wrapper.instance().generateTabTitle(ResourceType.user)).toEqual(
+        ''
+      );
     });
   });
 
@@ -154,11 +162,14 @@ describe('MyBookmarks', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      generateTabContentSpy = jest.spyOn(wrapper.instance(), 'generateTabContent')
+      generateTabContentSpy = jest
+        .spyOn(wrapper.instance(), 'generateTabContent')
         .mockImplementation((input) => `${input}Content`);
-      generateTabKeySpy = jest.spyOn(wrapper.instance(), 'generateTabKey')
+      generateTabKeySpy = jest
+        .spyOn(wrapper.instance(), 'generateTabKey')
         .mockImplementation((input) => `${input}Key`);
-      generateTabTitleSpy = jest.spyOn(wrapper.instance(), 'generateTabTitle')
+      generateTabTitleSpy = jest
+        .spyOn(wrapper.instance(), 'generateTabTitle')
         .mockImplementation((input) => `${input}Title`);
     });
 
@@ -166,12 +177,12 @@ describe('MyBookmarks', () => {
       let tableTab;
       beforeAll(() => {
         tabInfoArray = wrapper.instance().generateTabInfo();
-        tableTab = tabInfoArray.find(tab => tab.key === 'tableKey');
+        tableTab = tabInfoArray.find((tab) => tab.key === 'tableKey');
       });
 
       it('generates content for table tab info', () => {
         expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.table);
-        expect(tableTab.content).toBe('tableContent')
+        expect(tableTab.content).toBe('tableContent');
       });
 
       it('generates key for table tab info', () => {
@@ -181,7 +192,7 @@ describe('MyBookmarks', () => {
 
       it('generates title for table tab info', () => {
         expect(generateTabTitleSpy).toHaveBeenCalledWith(ResourceType.table);
-        expect(tableTab.title).toBe('tableTitle')
+        expect(tableTab.title).toBe('tableTitle');
       });
     });
 
@@ -191,32 +202,40 @@ describe('MyBookmarks', () => {
         it('does not render dashboard tab', () => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
           tabInfoArray = wrapper.instance().generateTabInfo();
-          expect(tabInfoArray.find(tab => tab.key === 'dashboardKey')).toBe(undefined);
+          expect(tabInfoArray.find((tab) => tab.key === 'dashboardKey')).toBe(
+            undefined
+          );
         });
-      })
+      });
 
       describe('if dashboards are enabled', () => {
         beforeAll(() => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
           tabInfoArray = wrapper.instance().generateTabInfo();
-          dashboardTab = tabInfoArray.find(tab => tab.key === 'dashboardKey');
+          dashboardTab = tabInfoArray.find((tab) => tab.key === 'dashboardKey');
         });
 
         it('generates content for table tab info', () => {
-          expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.dashboard);
-          expect(dashboardTab.content).toBe('dashboardContent')
+          expect(generateTabContentSpy).toHaveBeenCalledWith(
+            ResourceType.dashboard
+          );
+          expect(dashboardTab.content).toBe('dashboardContent');
         });
 
         it('generates key for table tab info', () => {
-          expect(generateTabKeySpy).toHaveBeenCalledWith(ResourceType.dashboard);
+          expect(generateTabKeySpy).toHaveBeenCalledWith(
+            ResourceType.dashboard
+          );
           expect(dashboardTab.key).toBe('dashboardKey');
         });
 
         it('generates title for table tab info', () => {
-          expect(generateTabTitleSpy).toHaveBeenCalledWith(ResourceType.dashboard);
-          expect(dashboardTab.title).toBe('dashboardTitle')
+          expect(generateTabTitleSpy).toHaveBeenCalledWith(
+            ResourceType.dashboard
+          );
+          expect(dashboardTab.title).toBe('dashboardTitle');
         });
-      })
+      });
     });
   });
 
@@ -234,18 +253,20 @@ describe('MyBookmarks', () => {
       expect(wrapper.html()).toBeFalsy();
     });
 
-    it('renders the correct title', () => {;
+    it('renders the correct title', () => {
       expect(wrapper.find('.title-1').text()).toEqual(BOOKMARK_TITLE);
     });
 
     it('renders a TabsComponent with correct props', () => {
-      const generateTabKeySpy = jest.spyOn(wrapper.instance(), 'generateTabKey').mockImplementation((input) => `${input}Key`)
+      const generateTabKeySpy = jest
+        .spyOn(wrapper.instance(), 'generateTabKey')
+        .mockImplementation((input) => `${input}Key`);
       wrapper.instance().forceUpdate();
       expect(wrapper.find(TabsComponent).props()).toMatchObject({
         tabs: wrapper.instance().generateTabInfo(),
         defaultTab: 'tableKey',
       });
-    })
+    });
   });
 });
 

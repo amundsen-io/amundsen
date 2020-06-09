@@ -9,7 +9,13 @@ import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
 import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
-import { mapDispatchToProps, mapStateToProps, ProfilePage, ProfilePageProps, RouteProps } from './';
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+  ProfilePage,
+  ProfilePageProps,
+  RouteProps,
+} from './';
 
 import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
@@ -36,7 +42,10 @@ import { indexDashboardsEnabled } from 'config/config-utils';
 
 describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
-    const routerProps = getMockRouterProps<RouteProps>({userId: 'test0'}, null);
+    const routerProps = getMockRouterProps<RouteProps>(
+      { userId: 'test0' },
+      null
+    );
     const props: ProfilePageProps = {
       user: globalState.user.profile.user,
       resourceRelations: {
@@ -46,7 +55,7 @@ describe('ProfilePage', () => {
             { type: ResourceType.table },
             { type: ResourceType.table },
             { type: ResourceType.table },
-            ],
+          ],
           read: [],
           own: [],
         },
@@ -54,14 +63,14 @@ describe('ProfilePage', () => {
           bookmarks: [],
           read: [],
           own: [],
-        }
+        },
       },
       getUserById: jest.fn(),
       getUserOwn: jest.fn(),
       getUserRead: jest.fn(),
       getBookmarksForUser: jest.fn(),
       ...routerProps,
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<ProfilePage>(<ProfilePage {...props} />);
     return { props, wrapper };
@@ -99,7 +108,7 @@ describe('ProfilePage', () => {
     });
 
     it('calls loadUserInfo when userId has changes', () => {
-      wrapper.setProps({ match: { params: { userId: 'newUserId' }}});
+      wrapper.setProps({ match: { params: { userId: 'newUserId' } } });
       expect(loadUserInfoSpy).toHaveBeenCalled();
     });
 
@@ -109,12 +118,11 @@ describe('ProfilePage', () => {
     });
   });
 
-
   describe('loadUserInfo', () => {
     it('calls getLoggingParams', () => {
       const { props, wrapper } = setup();
       const getLoggingParamsSpy = jest.spyOn(LogUtils, 'getLoggingParams');
-      wrapper.instance().loadUserInfo('test')
+      wrapper.instance().loadUserInfo('test');
       expect(getLoggingParamsSpy).toHaveBeenCalledWith(props.location.search);
     });
 
@@ -139,7 +147,6 @@ describe('ProfilePage', () => {
     });
   });
 
-
   describe('generateTabContent', () => {
     let props;
     let wrapper;
@@ -150,26 +157,38 @@ describe('ProfilePage', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       givenResource = ResourceType.table;
-      content = shallow(<div>{wrapper.instance().generateTabContent(givenResource)}</div>);
+      content = shallow(
+        <div>{wrapper.instance().generateTabContent(givenResource)}</div>
+      );
     });
 
     describe('for a resource', () => {
       it('returns a ResourceList for the own resourceRelations', () => {
-        expect(content.find(ResourceList).at(0).props().allItems).toBe(props.resourceRelations[givenResource].own);
+        expect(content.find(ResourceList).at(0).props().allItems).toBe(
+          props.resourceRelations[givenResource].own
+        );
       });
 
       it('returns a ResourceList for the bookmarked resourceRelations', () => {
-        expect(content.find(ResourceList).at(1).props().allItems).toBe(props.resourceRelations[givenResource].bookmarks);
+        expect(content.find(ResourceList).at(1).props().allItems).toBe(
+          props.resourceRelations[givenResource].bookmarks
+        );
       });
 
       it('returns a ResourceList for the read resourceRelations', () => {
-        expect(content.find(ResourceList).at(2).props().allItems).toBe(props.resourceRelations[givenResource].read);
+        expect(content.find(ResourceList).at(2).props().allItems).toBe(
+          props.resourceRelations[givenResource].read
+        );
       });
     });
 
     describe('for dashboard resource', () => {
       it('does not return a ResourceList for the read resourceRelations', () => {
-        content = shallow(<div>{wrapper.instance().generateTabContent(ResourceType.dashboard)}</div>);
+        content = shallow(
+          <div>
+            {wrapper.instance().generateTabContent(ResourceType.dashboard)}
+          </div>
+        );
         expect(content.find(ResourceList).at(2).exists()).toBe(false);
       });
     });
@@ -179,7 +198,9 @@ describe('ProfilePage', () => {
     it('returns string used for the tab keys', () => {
       const wrapper = setup().wrapper;
       const givenResource = ResourceType.table;
-      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(`tab:${givenResource}`);
+      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
+        `tab:${givenResource}`
+      );
     });
   });
 
@@ -187,7 +208,9 @@ describe('ProfilePage', () => {
     it('returns string for tab title according to UI designs', () => {
       const wrapper = setup().wrapper;
       const givenResource = ResourceType.table;
-      expect(wrapper.instance().generateTabTitle(givenResource)).toEqual('Resource (4)');
+      expect(wrapper.instance().generateTabTitle(givenResource)).toEqual(
+        'Resource (4)'
+      );
     });
   });
 
@@ -203,11 +226,14 @@ describe('ProfilePage', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      generateTabContentSpy = jest.spyOn(wrapper.instance(), 'generateTabContent')
+      generateTabContentSpy = jest
+        .spyOn(wrapper.instance(), 'generateTabContent')
         .mockImplementation((input) => `${input}Content`);
-      generateTabKeySpy = jest.spyOn(wrapper.instance(), 'generateTabKey')
+      generateTabKeySpy = jest
+        .spyOn(wrapper.instance(), 'generateTabKey')
         .mockImplementation((input) => `${input}Key`);
-      generateTabTitleSpy = jest.spyOn(wrapper.instance(), 'generateTabTitle')
+      generateTabTitleSpy = jest
+        .spyOn(wrapper.instance(), 'generateTabTitle')
         .mockImplementation((input) => `${input}Title`);
     });
 
@@ -215,12 +241,12 @@ describe('ProfilePage', () => {
       let tableTab;
       beforeAll(() => {
         tabInfoArray = wrapper.instance().generateTabInfo();
-        tableTab = tabInfoArray.find(tab => tab.key === 'tableKey');
+        tableTab = tabInfoArray.find((tab) => tab.key === 'tableKey');
       });
 
       it('generates content for table tab info', () => {
         expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.table);
-        expect(tableTab.content).toBe('tableContent')
+        expect(tableTab.content).toBe('tableContent');
       });
 
       it('generates key for table tab info', () => {
@@ -230,7 +256,7 @@ describe('ProfilePage', () => {
 
       it('generates title for table tab info', () => {
         expect(generateTabTitleSpy).toHaveBeenCalledWith(ResourceType.table);
-        expect(tableTab.title).toBe('tableTitle')
+        expect(tableTab.title).toBe('tableTitle');
       });
     });
 
@@ -240,32 +266,40 @@ describe('ProfilePage', () => {
         it('does not render dashboard tab', () => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
           tabInfoArray = wrapper.instance().generateTabInfo();
-          expect(tabInfoArray.find(tab => tab.key === 'dashboardKey')).toBe(undefined);
+          expect(tabInfoArray.find((tab) => tab.key === 'dashboardKey')).toBe(
+            undefined
+          );
         });
-      })
+      });
 
       describe('if dashboards are enabled', () => {
         beforeAll(() => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
           tabInfoArray = wrapper.instance().generateTabInfo();
-          dashboardTab = tabInfoArray.find(tab => tab.key === 'dashboardKey');
+          dashboardTab = tabInfoArray.find((tab) => tab.key === 'dashboardKey');
         });
 
         it('generates content for table tab info', () => {
-          expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.dashboard);
-          expect(dashboardTab.content).toBe('dashboardContent')
+          expect(generateTabContentSpy).toHaveBeenCalledWith(
+            ResourceType.dashboard
+          );
+          expect(dashboardTab.content).toBe('dashboardContent');
         });
 
         it('generates key for table tab info', () => {
-          expect(generateTabKeySpy).toHaveBeenCalledWith(ResourceType.dashboard);
+          expect(generateTabKeySpy).toHaveBeenCalledWith(
+            ResourceType.dashboard
+          );
           expect(dashboardTab.key).toBe('dashboardKey');
         });
 
         it('generates title for table tab info', () => {
-          expect(generateTabTitleSpy).toHaveBeenCalledWith(ResourceType.dashboard);
-          expect(dashboardTab.title).toBe('dashboardTitle')
+          expect(generateTabTitleSpy).toHaveBeenCalledWith(
+            ResourceType.dashboard
+          );
+          expect(dashboardTab.title).toBe('dashboardTitle');
         });
-      })
+      });
     });
   });
 
@@ -279,11 +313,13 @@ describe('ProfilePage', () => {
     });
 
     it('renders DocumentTitle w/ correct title', () => {
-      expect(wrapper.find(DocumentTitle).props().title).toEqual(`${props.user.display_name} - Amundsen Profile`);
+      expect(wrapper.find(DocumentTitle).props().title).toEqual(
+        `${props.user.display_name} - Amundsen Profile`
+      );
     });
 
     it('renders Breadcrumb', () => {
-      expect(wrapper.find(Breadcrumb).exists()).toBe(true)
+      expect(wrapper.find(Breadcrumb).exists()).toBe(true);
     });
 
     it('renders Avatar for user.display_name', () => {
@@ -295,11 +331,10 @@ describe('ProfilePage', () => {
     });
 
     it('does not render Avatar if user.display_name is empty string', () => {
-
       const userCopy = {
         ...globalState.user.profile.user,
-        display_name: "",
-      } ;
+        display_name: '',
+      };
       const wrapper = setup({
         user: userCopy,
       }).wrapper;
@@ -307,7 +342,9 @@ describe('ProfilePage', () => {
     });
 
     it('renders header with display_name', () => {
-      expect(wrapper.find('.header-title-text').text()).toContain(props.user.display_name);
+      expect(wrapper.find('.header-title-text').text()).toContain(
+        props.user.display_name
+      );
     });
 
     it('renders Flag with correct props if user not active', () => {
@@ -318,7 +355,9 @@ describe('ProfilePage', () => {
       const wrapper = setup({
         user: userCopy,
       }).wrapper;
-      expect(wrapper.find('.header-title-text').find(Flag).props()).toMatchObject({
+      expect(
+        wrapper.find('.header-title-text').find(Flag).props()
+      ).toMatchObject({
         caseType: 'sentenceCase',
         labelStyle: 'danger',
         text: 'Alumni',
@@ -334,22 +373,32 @@ describe('ProfilePage', () => {
     });
 
     it('renders user manager', () => {
-      expect(wrapper.find('#user-manager').text()).toEqual('Manager: Test Manager');
+      expect(wrapper.find('#user-manager').text()).toEqual(
+        'Manager: Test Manager'
+      );
     });
 
     it('renders github link with correct href', () => {
-      expect(wrapper.find('#github-link').props().href).toEqual('https://github.com/githubName');
+      expect(wrapper.find('#github-link').props().href).toEqual(
+        'https://github.com/githubName'
+      );
     });
 
     it('renders github link with correct text', () => {
-      expect(wrapper.find('#github-link').find('span').text()).toEqual('Github');
+      expect(wrapper.find('#github-link').find('span').text()).toEqual(
+        'Github'
+      );
     });
 
     it('renders Tabs w/ correct props', () => {
       const mockKey = 'test';
-      const generateTabKeySpy = jest.spyOn(wrapper.instance(), 'generateTabKey').mockImplementation(() => mockKey)
+      const generateTabKeySpy = jest
+        .spyOn(wrapper.instance(), 'generateTabKey')
+        .mockImplementation(() => mockKey);
       wrapper.instance().forceUpdate();
-      expect(wrapper.find('.profile-body').find(TabsComponent).props()).toMatchObject({
+      expect(
+        wrapper.find('.profile-body').find(TabsComponent).props()
+      ).toMatchObject({
         tabs: wrapper.instance().generateTabInfo(),
         defaultTab: mockKey,
       });
@@ -366,19 +415,27 @@ describe('ProfilePage', () => {
       // });
 
       it('renders email link with correct href', () => {
-        expect(wrapper.find('#email-link').props().href).toEqual('mailto:test@test.com');
+        expect(wrapper.find('#email-link').props().href).toEqual(
+          'mailto:test@test.com'
+        );
       });
 
       it('renders email link with correct text', () => {
-        expect(wrapper.find('#email-link').find('.email-link-label').text()).toEqual('test@test.com');
+        expect(
+          wrapper.find('#email-link').find('.email-link-label').text()
+        ).toEqual('test@test.com');
       });
 
       it('renders profile link with correct href', () => {
-        expect(wrapper.find('#profile-link').props().href).toEqual('www.test.com');
+        expect(wrapper.find('#profile-link').props().href).toEqual(
+          'www.test.com'
+        );
       });
 
       it('renders profile link with correct text', () => {
-        expect(wrapper.find('#profile-link').find('.profile-link-label').text()).toEqual('Employee Profile');
+        expect(
+          wrapper.find('#profile-link').find('.profile-link-label').text()
+        ).toEqual('Employee Profile');
       });
     });
   });
@@ -423,15 +480,21 @@ describe('mapStateToProps', () => {
   describe('sets resourceRelations on the props', () => {
     it('sets relations for tables', () => {
       const tables = result.resourceRelations[ResourceType.table];
-      expect(tables.bookmarks).toBe(globalState.bookmarks.bookmarksForUser[ResourceType.table]);
+      expect(tables.bookmarks).toBe(
+        globalState.bookmarks.bookmarksForUser[ResourceType.table]
+      );
       expect(tables.own).toBe(globalState.user.profile.own[ResourceType.table]);
       expect(tables.read).toBe(globalState.user.profile.read);
     });
 
     it('sets relations for dashboards', () => {
       const dashboards = result.resourceRelations[ResourceType.dashboard];
-      expect(dashboards.bookmarks).toBe(globalState.bookmarks.bookmarksForUser[ResourceType.dashboard]);
-      expect(dashboards.own).toBe(globalState.user.profile.own[ResourceType.dashboard]);
+      expect(dashboards.bookmarks).toBe(
+        globalState.bookmarks.bookmarksForUser[ResourceType.dashboard]
+      );
+      expect(dashboards.own).toBe(
+        globalState.user.profile.own[ResourceType.dashboard]
+      );
     });
   });
 });

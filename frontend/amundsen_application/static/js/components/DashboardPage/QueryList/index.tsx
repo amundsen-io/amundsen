@@ -3,15 +3,13 @@ import QueryListItem from '../QueryListItem';
 
 import { QueryResource } from 'interfaces';
 
-import "./styles.scss";
-
+import './styles.scss';
 
 export interface QueryListProps {
   queries: QueryResource[];
 }
 
 class QueryList extends React.Component<QueryListProps> {
-
   render() {
     const { queries } = this.props;
 
@@ -19,7 +17,7 @@ class QueryList extends React.Component<QueryListProps> {
       return null;
     }
 
-    const queryList = queries.map(({name, query_text, url}) => (
+    const queryList = queries.map(({ name, query_text, url }) => (
       <QueryListItem
         key={`key:${name}`}
         text={query_text}
@@ -28,11 +26,7 @@ class QueryList extends React.Component<QueryListProps> {
       />
     ));
 
-    return (
-      <ul className="query-list list-group">
-        { queryList }
-      </ul>
-    );
+    return <ul className="query-list list-group">{queryList}</ul>;
   }
 }
 

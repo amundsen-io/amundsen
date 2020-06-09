@@ -29,7 +29,7 @@ import {
   DASHBOARD_SOURCE,
   LAST_RUN_SUCCEEDED,
   NO_OWNER_TEXT,
-  TABLES_PER_PAGE
+  TABLES_PER_PAGE,
 } from 'components/DashboardPage/constants';
 import TagInput from 'components/Tags/TagInput';
 import { ResourceType } from 'interfaces';
@@ -60,13 +60,21 @@ export interface MatchProps {
 }
 
 export interface DispatchFromProps {
-  getDashboard: (payload: { uri: string, searchIndex?: string, source?: string }) => GetDashboardRequest;
+  getDashboard: (payload: {
+    uri: string;
+    searchIndex?: string;
+    source?: string;
+  }) => GetDashboardRequest;
 }
 
-export type DashboardPageProps = RouteComponentProps<MatchProps> & StateFromProps & DispatchFromProps;
+export type DashboardPageProps = RouteComponentProps<MatchProps> &
+  StateFromProps &
+  DispatchFromProps;
 
-export class DashboardPage extends React.Component<DashboardPageProps, DashboardPageState> {
-
+export class DashboardPage extends React.Component<
+  DashboardPageProps,
+  DashboardPageState
+> {
   constructor(props) {
     super(props);
     const { uri } = this.props.match.params;
@@ -90,7 +98,7 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
       this.setState({ uri });
       this.props.getDashboard({ source, uri, searchIndex: index });
     }
-  };
+  }
 
   mapStatusToStyle = (status: string): string => {
     if (status === LAST_RUN_SUCCEEDED) {
@@ -102,41 +110,41 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
   renderTabs() {
     const tabInfo = [];
     tabInfo.push({
-      content:
-        (
-          <ResourceList
-            allItems={ this.props.dashboard.tables }
-            itemsPerPage={ TABLES_PER_PAGE }
-            source={ DASHBOARD_SOURCE }
-          />
-        ),
+      content: (
+        <ResourceList
+          allItems={this.props.dashboard.tables}
+          itemsPerPage={TABLES_PER_PAGE}
+          source={DASHBOARD_SOURCE}
+        />
+      ),
       key: 'tables',
       title: `Tables (${this.props.dashboard.tables.length})`,
     });
 
-    if (this.props.dashboard.chart_names.length > 0 ) {
+    if (this.props.dashboard.chart_names.length > 0) {
       tabInfo.push({
-        content: <ChartList charts={ this.props.dashboard.chart_names }/>,
+        content: <ChartList charts={this.props.dashboard.chart_names} />,
         key: 'charts',
         title: `Charts (${this.props.dashboard.chart_names.length})`,
       });
-    };
+    }
 
     tabInfo.push({
-      content: <QueryList queries={ this.props.dashboard.queries }/>,
+      content: <QueryList queries={this.props.dashboard.queries} />,
       key: 'queries',
       title: `Queries (${this.props.dashboard.queries.length})`,
     });
 
-    return <TabsComponent tabs={ tabInfo } defaultTab={ "tables" } />;
+    return <TabsComponent tabs={tabInfo} defaultTab={'tables'} />;
   }
 
   render() {
     const { dashboard, isLoading } = this.props;
-    const hasDescription = dashboard.description && dashboard.description.length > 0;
+    const hasDescription =
+      dashboard.description && dashboard.description.length > 0;
 
     if (isLoading) {
-      return <LoadingSpinner/>;
+      return <LoadingSpinner />;
     }
     if (this.props.statusCode === 500) {
       return (
@@ -152,35 +160,43 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
         <header className="resource-header">
           <div className="header-section">
             <Breadcrumb />
-            <span className={`icon icon-header ${getSourceIconClass(dashboard.product, ResourceType.dashboard)}`}/>
+            <span
+              className={`icon icon-header ${getSourceIconClass(
+                dashboard.product,
+                ResourceType.dashboard
+              )}`}
+            />
           </div>
           <div className="header-section header-title">
-            <h3 className="header-title-text truncated">
-              { dashboard.name }
-            </h3>
-            <BookmarkIcon bookmarkKey={ dashboard.uri } resourceType={ ResourceType.dashboard } />
+            <h3 className="header-title-text truncated">{dashboard.name}</h3>
+            <BookmarkIcon
+              bookmarkKey={dashboard.uri}
+              resourceType={ResourceType.dashboard}
+            />
             <div className="body-2">
               Dashboard
-              <Flag text="beta" labelStyle="default"/>
+              <Flag text="beta" labelStyle="default" />
               in&nbsp;
-              <a id="dashboard-group-link"
-                 onClick={ logClick }
-                 href={ dashboard.group_url }
-                 target="_blank"
-                 rel="noopener noreferrer"
+              <a
+                id="dashboard-group-link"
+                onClick={logClick}
+                href={dashboard.group_url}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                 { dashboard.group_name }
+                {dashboard.group_name}
               </a>
             </div>
           </div>
           {/* <div className="header-section header-links">links here</div> */}
           <div className="header-section header-buttons">
-            <a id="dashboard-link"
-               target="_blank"
-               href={ dashboard.url }
-               onClick={ logClick }
-               className="btn btn-default btn-lg"
-               rel="noopener noreferrer"
+            <a
+              id="dashboard-link"
+              target="_blank"
+              href={dashboard.url}
+              onClick={logClick}
+              className="btn btn-default btn-lg"
+              rel="noopener noreferrer"
             >
               Open Dashboard
             </a>
@@ -190,105 +206,115 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
           <section className="left-panel">
             <EditableSection
               title="Description"
-              readOnly={ true }
-              editUrl={ dashboard.url }
-              editText={`${EDIT_DESC_TEXT} ${getSourceDisplayName(dashboard.product, ResourceType.dashboard)}`}
+              readOnly={true}
+              editUrl={dashboard.url}
+              editText={`${EDIT_DESC_TEXT} ${getSourceDisplayName(
+                dashboard.product,
+                ResourceType.dashboard
+              )}`}
             >
-              {
-                hasDescription &&
+              {hasDescription && (
                 <div className="body-2 and text-primary">
-                  { dashboard.description }
+                  {dashboard.description}
                 </div>
-              }
-              {
-                !hasDescription &&
+              )}
+              {!hasDescription && (
                 <a
-                 className="edit-link body-2"
-                 target="_blank"
-                 href={ dashboard.url }
-                 rel="noopener noreferrer"
+                  className="edit-link body-2"
+                  target="_blank"
+                  href={dashboard.url}
+                  rel="noopener noreferrer"
                 >
-                 {`${ADD_DESC_TEXT} ${getSourceDisplayName(dashboard.product, ResourceType.dashboard)}`}
+                  {`${ADD_DESC_TEXT} ${getSourceDisplayName(
+                    dashboard.product,
+                    ResourceType.dashboard
+                  )}`}
                 </a>
-              }
+              )}
             </EditableSection>
             <section className="column-layout-2">
               <section className="left-panel">
                 <section className="metadata-section">
                   <div className="section-title title-3">Owners</div>
                   <div>
-                    {
-                      dashboard.owners.length > 0 &&
-                      dashboard.owners.map(owner =>
+                    {dashboard.owners.length > 0 &&
+                      dashboard.owners.map((owner) => (
                         <Link
                           key={owner.user_id}
-                          to={`/user/${owner.user_id}?source=${DASHBOARD_OWNER_SOURCE}`}>
-                          <AvatarLabel
-                            label={owner.display_name}/>
+                          to={`/user/${owner.user_id}?source=${DASHBOARD_OWNER_SOURCE}`}
+                        >
+                          <AvatarLabel label={owner.display_name} />
                         </Link>
-                      )
-                    }
-                    {
-                      dashboard.owners.length === 0 &&
+                      ))}
+                    {dashboard.owners.length === 0 && (
                       <AvatarLabel
-                        avatarClass='gray-avatar'
-                        labelClass='text-placeholder'
+                        avatarClass="gray-avatar"
+                        labelClass="text-placeholder"
                         label={NO_OWNER_TEXT}
                       />
-                    }
+                    )}
                   </div>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Created</div>
                   <div className="body-2 text-primary">
-                    { formatDateTimeShort({ epochTimestamp: dashboard.created_timestamp}) }
+                    {formatDateTimeShort({
+                      epochTimestamp: dashboard.created_timestamp,
+                    })}
                   </div>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Last Updated</div>
                   <div className="body-2 text-primary">
-                    { formatDateTimeShort({ epochTimestamp: dashboard.updated_timestamp }) }
+                    {formatDateTimeShort({
+                      epochTimestamp: dashboard.updated_timestamp,
+                    })}
                   </div>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Recent View Count</div>
                   <div className="body-2 text-primary">
-                    { dashboard.recent_view_count }
+                    {dashboard.recent_view_count}
                   </div>
                 </section>
               </section>
               <section className="right-panel">
                 <EditableSection title="Tags">
                   <TagInput
-                    resourceType={ ResourceType.dashboard }
-                    uriKey={ this.props.dashboard.uri }
+                    resourceType={ResourceType.dashboard}
+                    uriKey={this.props.dashboard.uri}
                   />
                 </EditableSection>
                 <section className="metadata-section">
-                  <div className="section-title title-3">Last Successful Run</div>
+                  <div className="section-title title-3">
+                    Last Successful Run
+                  </div>
                   <div className="last-successful-run-timestamp body-2 text-primary">
-                    {
-                      dashboard.last_successful_run_timestamp ?
-                      formatDateTimeShort({ epochTimestamp: dashboard.last_successful_run_timestamp }) :
-                      NO_TIMESTAMP_TEXT
-                    }
+                    {dashboard.last_successful_run_timestamp
+                      ? formatDateTimeShort({
+                          epochTimestamp:
+                            dashboard.last_successful_run_timestamp,
+                        })
+                      : NO_TIMESTAMP_TEXT}
                   </div>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Last Run</div>
                   <div>
                     <div className="last-run-timestamp body-2 text-primary">
-                      {
-                        dashboard.last_run_timestamp ?
-                        formatDateTimeShort({ epochTimestamp: dashboard.last_run_timestamp }) :
-                        NO_TIMESTAMP_TEXT
-                      }
+                      {dashboard.last_run_timestamp
+                        ? formatDateTimeShort({
+                            epochTimestamp: dashboard.last_run_timestamp,
+                          })
+                        : NO_TIMESTAMP_TEXT}
                     </div>
                     <div className="last-run-state">
                       <Flag
-                        caseType='sentenceCase'
-                        text={ dashboard.last_run_state }
-                        labelStyle={this.mapStatusToStyle(dashboard.last_run_state)}
+                        caseType="sentenceCase"
+                        text={dashboard.last_run_state}
+                        labelStyle={this.mapStatusToStyle(
+                          dashboard.last_run_state
+                        )}
                       />
                     </div>
                   </div>
@@ -297,12 +323,10 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
             </section>
             <ImagePreview uri={this.state.uri} redirectUrl={dashboard.url} />
           </section>
-          <section className="right-panel">
-            { this.renderTabs() }
-          </section>
+          <section className="right-panel">{this.renderTabs()}</section>
         </article>
       </div>
-   );
+    );
   }
 }
 
@@ -315,7 +339,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getDashboard } , dispatch);
+  return bindActionCreators({ getDashboard }, dispatch);
 };
 
-export default connect<StateFromProps, DispatchFromProps>(mapStateToProps, mapDispatchToProps)(DashboardPage);
+export default connect<StateFromProps, DispatchFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(DashboardPage);

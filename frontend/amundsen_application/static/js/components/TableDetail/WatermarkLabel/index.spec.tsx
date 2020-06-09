@@ -5,27 +5,26 @@ import WatermarkLabel, { WatermarkLabelProps } from '.';
 import {
   NO_WATERMARK_LINE_1,
   NO_WATERMARK_LINE_2,
-  WatermarkType
+  WatermarkType,
 } from 'components/TableDetail/WatermarkLabel/constants';
-
 
 describe('WatermarkLabel', () => {
   const setup = (propOverrides?: Partial<WatermarkLabelProps>) => {
     const props = {
       watermarks: [
         {
-          create_time: "2018-10-16 11:03:17",
-          partition_key: "ds",
-          partition_value: "2018-08-03",
-          watermark_type: "low_watermark",
+          create_time: '2018-10-16 11:03:17',
+          partition_key: 'ds',
+          partition_value: '2018-08-03',
+          watermark_type: 'low_watermark',
         },
         {
-          create_time: "2019-10-15 11:03:17",
-          partition_key: "ds",
-          partition_value: "2019-10-15",
-          watermark_type: "high_watermark",
-        }
-        ],
+          create_time: '2019-10-15 11:03:17',
+          partition_key: 'ds',
+          partition_value: '2019-10-15',
+          watermark_type: 'high_watermark',
+        },
+      ],
       ...propOverrides,
     };
 
@@ -33,35 +32,39 @@ describe('WatermarkLabel', () => {
     return { wrapper, props };
   };
 
-
   describe('formatWatermarkDate', () => {
     it('Parses a date string and converts it to a new format', () => {
       const { wrapper } = setup();
-      const dateString = "2019-10-15";
+      const dateString = '2019-10-15';
       const formattedDate = wrapper.instance().formatWatermarkDate(dateString);
-      expect(formattedDate).toBe("Oct 15, 2019");
+      expect(formattedDate).toBe('Oct 15, 2019');
     });
   });
 
   describe('getWatermarkValue', () => {
     const { wrapper } = setup();
 
-    it ('Gets the high watermark value', () => {
-      const highWatermark = wrapper.instance().getWatermarkValue(WatermarkType.HIGH);
-      expect(highWatermark).toBe("2019-10-15")
+    it('Gets the high watermark value', () => {
+      const highWatermark = wrapper
+        .instance()
+        .getWatermarkValue(WatermarkType.HIGH);
+      expect(highWatermark).toBe('2019-10-15');
     });
 
-    it ('Gets the low watermark value', () => {
-      const highWatermark = wrapper.instance().getWatermarkValue(WatermarkType.LOW);
-      expect(highWatermark).toBe("2018-08-03")
+    it('Gets the low watermark value', () => {
+      const highWatermark = wrapper
+        .instance()
+        .getWatermarkValue(WatermarkType.LOW);
+      expect(highWatermark).toBe('2018-08-03');
     });
 
-    it ('Returns null if no partition is found', () => {
+    it('Returns null if no partition is found', () => {
       const { wrapper } = setup({ watermarks: [] });
-      const nullWatermark = wrapper.instance().getWatermarkValue(WatermarkType.LOW);
+      const nullWatermark = wrapper
+        .instance()
+        .getWatermarkValue(WatermarkType.LOW);
       expect(nullWatermark).toBe(null);
     });
-
   });
 
   describe('renderWatermarkInfo', () => {
@@ -70,13 +73,19 @@ describe('WatermarkLabel', () => {
 
     it('renders a no-watermark message if there are no watermarks', () => {
       const watermarkInfo = instance.renderWatermarkInfo(null, null);
-      expect(shallow(watermarkInfo).text()).toBe(`${NO_WATERMARK_LINE_1}${NO_WATERMARK_LINE_2}`)
+      expect(shallow(watermarkInfo).text()).toBe(
+        `${NO_WATERMARK_LINE_1}${NO_WATERMARK_LINE_2}`
+      );
     });
 
-
     it('renders the date when present', () => {
-      const watermarkInfo = instance.renderWatermarkInfo('2018-08-03', '2019-10-15');
-      expect(mount(watermarkInfo).find('.range-dates').text()).toBe('Aug 03, 2018Oct 15, 2019')
+      const watermarkInfo = instance.renderWatermarkInfo(
+        '2018-08-03',
+        '2019-10-15'
+      );
+      expect(mount(watermarkInfo).find('.range-dates').text()).toBe(
+        'Aug 03, 2018Oct 15, 2019'
+      );
     });
   });
 

@@ -17,61 +17,41 @@
 
   .content-header button.edit-button,
   .content-header button.active-edit-button {
-    margin-top: -4px;
     margin-left: 4px;
+    margin-top: -4px;
   }
 
+  button.edit-button {
+    background-color: $icon-bg;
+    border: none;
+    border-radius: 5px;
+    height: 24px;
+    -webkit-mask-image: url('/static/images/icons/Edit.svg');
+    mask-image: url('/static/images/icons/Edit.svg');
+    width: 24px;
+  }
 
-button.edit-button {
-  height: 24px;
-  width: 24px;
-  border: none;
-  border-radius: 5px;
-  background-color: $icon-bg;
-  -webkit-mask-image: url('/static/images/icons/Edit.svg');
-  mask-image: url('/static/images/icons/Edit.svg');
-}
-button.edit-button:hover {
-  background-color: $icon-bg-brand;
-}
-button.active-edit-button {
-  height: 24px;
-  width: 24px;
-  border: none;
-  border-radius: 5px;
-  background-color: $brand-color-1;
-  background-image: url('/static/images/icons/Edit_Inverted.svg');
-  -moz-box-shadow: inset 1px 1px 2px $brand-color-4;
-  -webkit-box-shadow: inset 1px 1px 2px $brand-color-4;
-  box-shadow: inset 1px 1px 2px $brand-color-4;
-}
-button.edit-button:focus,
-button.active-edit-button:focus {
-  outline: none;
-  box-shadow: 0 0 1pt 1pt $brand-color-4
-}
   button.edit-button:hover {
     background-color: $brand-color-4;
   }
 
   button.active-edit-button {
-    height: 24px;
-    width: 24px;
-    border: none;
-    border-radius: 5px;
     background-color: $brand-color-1;
     background-image: url('/static/images/icons/Edit_Inverted.svg');
+    border: none;
+    border-radius: 5px;
     -moz-box-shadow: inset 1px 1px 2px $brand-color-4;
     -webkit-box-shadow: inset 1px 1px 2px $brand-color-4;
     box-shadow: inset 1px 1px 2px $brand-color-4;
+    height: 24px;
+    width: 24px;
   }
 
   button.edit-button:focus,
   button.active-edit-button:focus {
+    box-shadow: 0 0 1pt 1pt $brand-color-4;
     outline: none;
-    box-shadow: 0 0 1pt 1pt $brand-color-4
   }
-
 
   @media (min-width: $screen-md-min) {
     button.edit-button,

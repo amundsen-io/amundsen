@@ -11,16 +11,17 @@ export interface SourceLinkProps {
 const SourceLink: React.SFC<SourceLinkProps> = ({ tableSource }) => {
   if (tableSource === null || tableSource.source === null) return null;
 
-  const image = (tableSource.source_type === 'github')? '/static/images/github.png': '';
+  const image =
+    tableSource.source_type === 'github' ? '/static/images/github.png' : '';
   return (
     <a
       className="header-link"
-      href={ tableSource.source }
+      href={tableSource.source}
       id="explore-source"
-      onClick={ logClick }
-      target='_blank'
+      onClick={logClick}
+      target="_blank"
     >
-      <AvatarLabel label={ tableSource.source_type } src={ image }/>
+      <AvatarLabel label={tableSource.source_type} src={image} />
     </a>
   );
 };

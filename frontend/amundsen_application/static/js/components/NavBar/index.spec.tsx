@@ -12,10 +12,10 @@ import { getMockRouterProps } from 'fixtures/mockRouter';
 import Feedback from 'components/Feedback';
 import SearchBar from 'components/common/SearchBar';
 
-import { logClick } from "ducks/utilMethods";
+import { logClick } from 'ducks/utilMethods';
 jest.mock('ducks/utilMethods', () => {
   return jest.fn().mockImplementation(() => {
-    return {logClick: jest.fn()};
+    return { logClick: jest.fn() };
   });
 });
 
@@ -35,7 +35,7 @@ AppConfig.navLinks = [
     id: 'link2',
     target: '_blank',
     use_router: false,
-  }
+  },
 ];
 AppConfig.indexUsers.enabled = true;
 AppConfig.mailClientFeatures.feedbackEnabled = true;
@@ -43,12 +43,15 @@ AppConfig.mailClientFeatures.feedbackEnabled = true;
 import globalState from 'fixtures/globalState';
 
 describe('NavBar', () => {
-  const setup = (propOverrides?: Partial<NavBarProps>, location?: Partial<History.Location>) => {
+  const setup = (
+    propOverrides?: Partial<NavBarProps>,
+    location?: Partial<History.Location>
+  ) => {
     const routerProps = getMockRouterProps<any>(null, location);
     const props: NavBarProps = {
       loggedInUser: globalState.user.loggedInUser,
       ...routerProps,
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<NavBar>(<NavBar {...props} />);
     return { props, wrapper };
@@ -63,8 +66,15 @@ describe('NavBar', () => {
 
     it('returns a NavLink w/ correct props if user_router is true', () => {
       const expectedContent = JSON.stringify(
-        <NavLink className="title-3 border-bottom-white" key={0} to='/announcements' target='_blank'
-                 onClick={logClick}>Announcements</NavLink>
+        <NavLink
+          className="title-3 border-bottom-white"
+          key={0}
+          to="/announcements"
+          target="_blank"
+          onClick={logClick}
+        >
+          Announcements
+        </NavLink>
       );
       expect(JSON.stringify(content[0])).toEqual(expectedContent);
     });
@@ -83,16 +93,18 @@ describe('NavBar', () => {
 
   describe('renderSearchBar', () => {
     it('returns small SearchBar when not on home page', () => {
-      const { props, wrapper } = setup(null, { pathname: "/search" });
-      const searchBar = shallow(wrapper.instance().renderSearchBar()).find(SearchBar);
+      const { props, wrapper } = setup(null, { pathname: '/search' });
+      const searchBar = shallow(wrapper.instance().renderSearchBar()).find(
+        SearchBar
+      );
       expect(searchBar.exists()).toBe(true);
       expect(searchBar.props()).toMatchObject({
-        size: "small",
+        size: 'small',
       });
     });
 
     it('returns null if conditions to render search bar are not met', () => {
-      const { props, wrapper } = setup(null, { pathname: "/" });
+      const { props, wrapper } = setup(null, { pathname: '/' });
       expect(wrapper.instance().renderSearchBar()).toBe(null);
     });
   });
@@ -147,26 +159,39 @@ describe('NavBar', () => {
         name: props.loggedInUser.display_name,
         size: 32,
         round: true,
-      })
+      });
     });
 
     describe('if indexUsers is enabled', () => {
       it('renders Avatar for loggedInUser inside of user dropdown', () => {
-        expect(wrapper.find(Dropdown).find(Dropdown.Toggle).find(Avatar).props()).toMatchObject({
+        expect(
+          wrapper.find(Dropdown).find(Dropdown.Toggle).find(Avatar).props()
+        ).toMatchObject({
           name: props.loggedInUser.display_name,
           size: 32,
           round: true,
-        })
+        });
       });
 
       it('renders user dropdown header', () => {
-        element = wrapper.find(Dropdown).find(Dropdown.Menu).find('.profile-menu-header');
-        expect(element.children().at(0).text()).toEqual(props.loggedInUser.display_name);
-        expect(element.children().at(1).text()).toEqual(props.loggedInUser.email);
+        element = wrapper
+          .find(Dropdown)
+          .find(Dropdown.Menu)
+          .find('.profile-menu-header');
+        expect(element.children().at(0).text()).toEqual(
+          props.loggedInUser.display_name
+        );
+        expect(element.children().at(1).text()).toEqual(
+          props.loggedInUser.email
+        );
       });
 
       it('renders My Profile link correctly inside of user dropdown', () => {
-        element = wrapper.find(Dropdown).find(Dropdown.Menu).find(MenuItem).at(0);
+        element = wrapper
+          .find(Dropdown)
+          .find(Dropdown.Menu)
+          .find(MenuItem)
+          .at(0);
         expect(element.children().text()).toEqual('My Profile');
         expect(element.props().to).toEqual('/user/test0?source=navbar');
       });
@@ -176,12 +201,11 @@ describe('NavBar', () => {
       it('does not render a Link to the user profile', () => {
         AppConfig.indexUsers.enabled = false;
         const { wrapper } = setup();
-        expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false)
+        expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false);
       });
-    })
+    });
   });
 });
-
 
 describe('mapStateToProps', () => {
   let result;

@@ -1,62 +1,84 @@
-import { LoggedInUser, PeopleUser, Resource, ResourceType, ResourceDict } from 'interfaces';
+import {
+  LoggedInUser,
+  PeopleUser,
+  Resource,
+  ResourceType,
+  ResourceDict,
+} from 'interfaces';
 
 import {
-  GetLoggedInUser, GetLoggedInUserRequest, GetLoggedInUserResponse,
-  GetUser, GetUserRequest, GetUserResponse,
-  GetUserOwn, GetUserOwnRequest, GetUserOwnResponse,
-  GetUserRead, GetUserReadRequest, GetUserReadResponse,
+  GetLoggedInUser,
+  GetLoggedInUserRequest,
+  GetLoggedInUserResponse,
+  GetUser,
+  GetUserRequest,
+  GetUserResponse,
+  GetUserOwn,
+  GetUserOwnRequest,
+  GetUserOwnResponse,
+  GetUserRead,
+  GetUserReadRequest,
+  GetUserReadResponse,
 } from './types';
 
 /* ACTIONS */
 export function getLoggedInUser(): GetLoggedInUserRequest {
   return { type: GetLoggedInUser.REQUEST };
-};
+}
 export function getLoggedInUserFailure(): GetLoggedInUserResponse {
   return { type: GetLoggedInUser.FAILURE };
-};
-export function getLoggedInUserSuccess(user: LoggedInUser): GetLoggedInUserResponse {
+}
+export function getLoggedInUserSuccess(
+  user: LoggedInUser
+): GetLoggedInUserResponse {
   return { type: GetLoggedInUser.SUCCESS, payload: { user } };
-};
+}
 
-export function getUser(userId: string, index?: string, source?: string): GetUserRequest {
+export function getUser(
+  userId: string,
+  index?: string,
+  source?: string
+): GetUserRequest {
   return { type: GetUser.REQUEST, payload: { userId, index, source } };
-};
+}
 export function getUserFailure(): GetUserResponse {
   return { type: GetUser.FAILURE };
-};
+}
 export function getUserSuccess(user: PeopleUser): GetUserResponse {
   return { type: GetUser.SUCCESS, payload: { user } };
-};
+}
 
 export function getUserOwn(userId: string): GetUserOwnRequest {
-  return { type: GetUserOwn.REQUEST, payload: { userId }};
-};
+  return { type: GetUserOwn.REQUEST, payload: { userId } };
+}
 export function getUserOwnFailure(): GetUserOwnResponse {
   return { type: GetUserOwn.FAILURE };
-};
-export function getUserOwnSuccess(own: ResourceDict<Resource[]>): GetUserOwnResponse {
+}
+export function getUserOwnSuccess(
+  own: ResourceDict<Resource[]>
+): GetUserOwnResponse {
   return { type: GetUserOwn.SUCCESS, payload: { own } };
-};
+}
 
 export function getUserRead(userId: string): GetUserReadRequest {
-  return { type: GetUserRead.REQUEST, payload: { userId }};
-};
+  return { type: GetUserRead.REQUEST, payload: { userId } };
+}
 export function getUserReadFailure(): GetUserReadResponse {
   return { type: GetUserRead.FAILURE };
-};
+}
 export function getUserReadSuccess(read: Resource[]): GetUserReadResponse {
   return { type: GetUserRead.SUCCESS, payload: { read } };
-};
+}
 
 /* REDUCER */
 export interface UserReducerState {
   loggedInUser: LoggedInUser;
   profile: {
-    own: ResourceDict<Resource[]>,
-    read: Resource[],
-    user: PeopleUser,
+    own: ResourceDict<Resource[]>;
+    read: Resource[];
+    user: PeopleUser;
   };
-};
+}
 
 export const defaultUser = {
   display_name: '',
@@ -87,7 +109,10 @@ export const initialState: UserReducerState = {
   },
 };
 
-export default function reducer(state: UserReducerState = initialState, action): UserReducerState {
+export default function reducer(
+  state: UserReducerState = initialState,
+  action
+): UserReducerState {
   switch (action.type) {
     case GetLoggedInUser.SUCCESS:
       return {
@@ -118,9 +143,9 @@ export default function reducer(state: UserReducerState = initialState, action):
         profile: {
           ...state.profile,
           own: {
-            ...initialOwnState
+            ...initialOwnState,
           },
-        }
+        },
       };
     case GetUserOwn.SUCCESS:
       return {
@@ -128,7 +153,7 @@ export default function reducer(state: UserReducerState = initialState, action):
         profile: {
           ...state.profile,
           own: (<GetUserOwnResponse>action).payload.own,
-        }
+        },
       };
     case GetUserRead.REQUEST:
     case GetUserRead.FAILURE:
@@ -137,7 +162,7 @@ export default function reducer(state: UserReducerState = initialState, action):
         profile: {
           ...state.profile,
           read: [],
-        }
+        },
       };
     case GetUserRead.SUCCESS:
       return {
@@ -145,7 +170,7 @@ export default function reducer(state: UserReducerState = initialState, action):
         profile: {
           ...state.profile,
           read: (<GetUserReadResponse>action).payload.read,
-        }
+        },
       };
     default:
       return state;

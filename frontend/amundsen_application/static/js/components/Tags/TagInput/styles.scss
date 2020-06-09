@@ -1,7 +1,6 @@
 @import 'variables';
 
 .tag-input {
-
   /*
    override default react-select style classes.
    using !important as a temporary workaround in places where a compiled class
@@ -49,7 +48,6 @@
     }
   }
 
-
   .amundsen__value-container {
     padding: 0 !important;
   }
@@ -83,8 +81,8 @@
     width: 50% !important;
 
     p {
-      text-align: start;
       margin-left: 4px;
+      text-align: start;
     }
   }
 
@@ -94,12 +92,12 @@
   }
 
   .multi-value-container {
-    border-radius: 4px;
     border: 1px solid hsl(0, 0%, 90%);
+    border-radius: 4px;
+    box-sizing: border-box;
     display: flex;
     margin: 4px;
     min-width: 0;
-    box-sizing: border-box;
   }
 
   .multi-value-container.selected {
@@ -107,20 +105,18 @@
   }
 
   .multi-value-label {
+    box-sizing: border-box;
     color: hsl(0, 0%, 20%);
     overflow: hidden;
     padding: 3px;
     padding-left: 6px;
+    padding-right: 6px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    box-sizing: border-box;
     width: 100%;
-    padding-right: 6px;
   }
 
   .multi-value-label:hover {
     cursor: pointer;
   }
-
-
 }

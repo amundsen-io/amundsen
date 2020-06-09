@@ -6,31 +6,41 @@ import globalState from 'fixtures/globalState';
 
 import * as API from '../api/v0';
 import reducer, {
-  getLoggedInUser, getLoggedInUserFailure, getLoggedInUserSuccess,
-  getUser, getUserFailure, getUserSuccess,
-  getUserOwn, getUserOwnFailure, getUserOwnSuccess,
-  getUserRead, getUserReadFailure, getUserReadSuccess,
-  defaultUser, initialState, initialOwnState, UserReducerState,
+  getLoggedInUser,
+  getLoggedInUserFailure,
+  getLoggedInUserSuccess,
+  getUser,
+  getUserFailure,
+  getUserSuccess,
+  getUserOwn,
+  getUserOwnFailure,
+  getUserOwnSuccess,
+  getUserRead,
+  getUserReadFailure,
+  getUserReadSuccess,
+  defaultUser,
+  initialState,
+  initialOwnState,
+  UserReducerState,
 } from '../reducer';
 import {
-  getLoggedInUserWorker, getLoggedInUserWatcher,
-  getUserWorker, getUserWatcher,
-  getUserOwnWorker, getUserOwnWatcher,
-  getUserReadWorker, getUserReadWatcher,
+  getLoggedInUserWorker,
+  getLoggedInUserWatcher,
+  getUserWorker,
+  getUserWatcher,
+  getUserOwnWorker,
+  getUserOwnWatcher,
+  getUserReadWorker,
+  getUserReadWatcher,
 } from '../sagas';
-import {
-  GetLoggedInUser,
-  GetUser,
-  GetUserOwn,
-  GetUserRead,
-} from '../types';
+import { GetLoggedInUser, GetUser, GetUserOwn, GetUserRead } from '../types';
 
 describe('user ducks', () => {
   let currentUser: LoggedInUser;
   let otherUser: {
-    own: ResourceDict<Resource[]>,
-    read: Resource[],
-    user: PeopleUser,
+    own: ResourceDict<Resource[]>;
+    read: Resource[];
+    user: PeopleUser;
   };
   let userId: string;
   let source: string;
@@ -230,88 +240,116 @@ describe('user ducks', () => {
     describe('getLoggedInUserWatcher', () => {
       it('takes every GetLoggedInUser.REQUEST with getLoggedInUserWorker', () => {
         testSaga(getLoggedInUserWatcher)
-          .next().takeEvery(GetLoggedInUser.REQUEST, getLoggedInUserWorker);
+          .next()
+          .takeEvery(GetLoggedInUser.REQUEST, getLoggedInUserWorker);
       });
     });
 
     describe('getLoggedInUserWorker', () => {
       it('executes flow for returning the currentUser', () => {
         testSaga(getLoggedInUserWorker, getLoggedInUser())
-          .next().call(API.getLoggedInUser)
-          .next(currentUser).put(getLoggedInUserSuccess(currentUser))
-          .next().isDone();
+          .next()
+          .call(API.getLoggedInUser)
+          .next(currentUser)
+          .put(getLoggedInUserSuccess(currentUser))
+          .next()
+          .isDone();
       });
 
       it('handles request error', () => {
         testSaga(getLoggedInUserWorker, getLoggedInUser())
-          .next().throw(new Error()).put(getLoggedInUserFailure())
-          .next().isDone();
+          .next()
+          .throw(new Error())
+          .put(getLoggedInUserFailure())
+          .next()
+          .isDone();
       });
     });
 
     describe('getUserWatcher', () => {
       it('takes every GetUser.REQUEST with getUserWorker', () => {
         testSaga(getUserWatcher)
-          .next().takeEvery(GetUser.REQUEST, getUserWorker);
+          .next()
+          .takeEvery(GetUser.REQUEST, getUserWorker);
       });
     });
 
     describe('getUserWorker', () => {
       it('executes flow for returning a user given an id', () => {
         testSaga(getUserWorker, getUser(userId, index, source))
-          .next().call(API.getUser, userId, index, source)
-          .next(otherUser.user).put(getUserSuccess(otherUser.user))
-          .next().isDone();
+          .next()
+          .call(API.getUser, userId, index, source)
+          .next(otherUser.user)
+          .put(getUserSuccess(otherUser.user))
+          .next()
+          .isDone();
       });
 
       it('handles request error', () => {
         testSaga(getUserWorker, getUser(userId))
-          .next().throw(new Error()).put(getUserFailure())
-          .next().isDone();
+          .next()
+          .throw(new Error())
+          .put(getUserFailure())
+          .next()
+          .isDone();
       });
     });
 
     describe('getUserOwnWatcher', () => {
       it('takes every GetUserOwn.REQUEST with getUserOwnWorker', () => {
         testSaga(getUserOwnWatcher)
-          .next().takeEvery(GetUserOwn.REQUEST, getUserOwnWorker);
+          .next()
+          .takeEvery(GetUserOwn.REQUEST, getUserOwnWorker);
       });
     });
 
     describe('getUserOwnWorker', () => {
       it('executes flow for returning a users owned resources given an id', () => {
         testSaga(getUserOwnWorker, getUserOwn(userId))
-          .next().call(API.getUserOwn, userId)
-          .next(otherUser).put(getUserOwnSuccess(otherUser.own))
-          .next().isDone();
+          .next()
+          .call(API.getUserOwn, userId)
+          .next(otherUser)
+          .put(getUserOwnSuccess(otherUser.own))
+          .next()
+          .isDone();
       });
 
       it('handles request error', () => {
         testSaga(getUserOwnWorker, getUserOwn(userId))
-          .next().throw(new Error()).put(getUserOwnFailure())
-          .next().isDone();
+          .next()
+          .throw(new Error())
+          .put(getUserOwnFailure())
+          .next()
+          .isDone();
       });
     });
 
     describe('getUserReadWatcher', () => {
       it('takes every GetUserRead.REQUEST with getUserReadWorker', () => {
         testSaga(getUserReadWatcher)
-          .next().takeEvery(GetUserRead.REQUEST, getUserReadWorker);
+          .next()
+          .takeEvery(GetUserRead.REQUEST, getUserReadWorker);
       });
     });
 
     describe('getUserReadWorker', () => {
       it('executes flow for returning a users frequently used resources given an id', () => {
         testSaga(getUserReadWorker, getUserRead(userId))
-          .next().call(API.getUserRead, userId)
-          .next(otherUser).put(getUserReadSuccess(otherUser.read))
-          .next().isDone();
+          .next()
+          .call(API.getUserRead, userId)
+          .next(otherUser)
+          .put(getUserReadSuccess(otherUser.read))
+          .next()
+          .isDone();
       });
 
       it('handles request error', () => {
         testSaga(getUserReadWorker, getUserRead(userId))
-          .next().throw(new Error()).put(getUserReadFailure())
-          .next().isDone();
+          .next()
+          .throw(new Error())
+          .put(getUserReadFailure())
+          .next()
+          .isDone();
       });
     });
   });

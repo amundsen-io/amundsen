@@ -1,14 +1,14 @@
 import { ResourceType } from 'interfaces';
 
 export const defaultEmptyFilters = {
-  [ResourceType.table]: {}
+  [ResourceType.table]: {},
 };
 
 export const datasetFilterExample = {
   [ResourceType.table]: {
-    'schema': 'schema_name',
-    'database': {
-      'hive': true
-    }
-  }
+    schema: 'schema_name',
+    database: {
+      hive: true,
+    },
+  },
 };

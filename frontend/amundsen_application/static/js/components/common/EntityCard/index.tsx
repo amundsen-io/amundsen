@@ -11,16 +11,17 @@ export interface EntityCardProps {
 const EntityCard: React.SFC<EntityCardProps> = ({ sections }) => {
   const cardItems = sections.map((entry, index) => {
     return (
-      <EntityCardSection key={`section:${index}`} title={ entry.title } infoText={ entry.infoText }
-        contentRenderer={ entry.contentRenderer } isEditable={ entry.isEditable }/>
+      <EntityCardSection
+        key={`section:${index}`}
+        title={entry.title}
+        infoText={entry.infoText}
+        contentRenderer={entry.contentRenderer}
+        isEditable={entry.isEditable}
+      />
     );
   });
 
-  return (
-    <div className="entity-card">
-      { cardItems }
-    </div>
-  );
+  return <div className="entity-card">{cardItems}</div>;
 };
 
 EntityCard.defaultProps = {

@@ -52,8 +52,8 @@ export const allResourcesExample = {
         uri: 'product_dashboard://cluster.group/name',
         url: 'product/name',
         cluster: 'cluster',
-        last_successful_run_timestamp: 1585062593
-      }
+        last_successful_run_timestamp: 1585062593,
+      },
     ],
     total_results: 1,
   },
@@ -89,7 +89,7 @@ export const allResourcesExample = {
         name: 'testName3',
         schema: 'testSchema',
         type: ResourceType.table,
-      }
+      },
     ],
     total_results: 3,
   },
@@ -112,7 +112,7 @@ export const allResourcesExample = {
         slack_id: null,
         team_name: 'Amundsen Team',
         type: 'user',
-        user_id: 'tuser@test.com'
+        user_id: 'tuser@test.com',
       },
       {
         display_name: 'Test User2',
@@ -130,8 +130,8 @@ export const allResourcesExample = {
         slack_id: null,
         team_name: 'Amundsen Team',
         type: 'user',
-        user_id: 'tuser2@test.com'
-      }
+        user_id: 'tuser2@test.com',
+      },
     ],
     total_results: 2,
   },

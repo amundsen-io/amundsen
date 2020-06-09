@@ -1,7 +1,12 @@
 import axios from 'axios';
-import { NotificationType, SendNotificationOptions } from 'interfaces'
+import { NotificationType, SendNotificationOptions } from 'interfaces';
 
-export function sendNotification(recipients: Array<string>, sender: string, notificationType: NotificationType, options?: SendNotificationOptions) {
+export function sendNotification(
+  recipients: Array<string>,
+  sender: string,
+  notificationType: NotificationType,
+  options?: SendNotificationOptions
+) {
   return axios({
     data: {
       notificationType,
@@ -12,4 +17,4 @@ export function sendNotification(recipients: Array<string>, sender: string, noti
     method: 'post',
     url: `/api/mail/v0/notification`,
   });
-};
+}

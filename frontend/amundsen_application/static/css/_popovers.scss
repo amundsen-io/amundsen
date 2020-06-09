@@ -8,46 +8,53 @@
   font-size: 12px;
   padding: 5px;
 }
+
 .popover-title {
   border-bottom: 1px solid $stroke;
   color: $text-inverse;
   font-size: 14px;
   padding: 5px;
 }
+
 .popover-content {
   padding: 2px 5px;
   word-break: break-word;
 }
-.popover.right .arrow:after {
+
+.popover.right .arrow::after {
   border-right-color: $body-bg-dark;
 }
-.popover.bottom .arrow:after {
+
+.popover.bottom .arrow::after {
   border-bottom-color: $body-bg-dark;
 }
-.popover.top .arrow:after {
+
+.popover.top .arrow::after {
   border-top-color: $body-bg-dark;
 }
-.popover.left .arrow:after {
+
+.popover.left .arrow::after {
   border-left-color: $body-bg-dark;
 }
 
 .tooltip-inner {
-  padding: 0;
-  border-radius: 3px;
   background-color: $body-bg-dark;
+  border-radius: 3px;
+  padding: 0;
 }
 
 .tooltip-inner button {
-  height: 36px;
-  width: 96px;
-  font-size: 14px;
-  border-radius: 3px;
-  border: none;
   background-color: $body-bg-dark;
+  border: none;
+  border-radius: 3px;
   color: $body-bg;
+  font-size: 14px;
   font-weight: $font-weight-body-bold;
+  height: 36px;
   outline: none;
+  width: 96px;
 }
+
 .tooltip-inner button:hover {
   color: $text-secondary;
 }
@@ -56,10 +63,11 @@
   display: flex;
   padding: 5px;
 }
+
 .error-tooltip button {
   height: 24px;
-  width: 24px;
   margin: auto;
+  width: 24px;
 }
 
 .column-type-popover {

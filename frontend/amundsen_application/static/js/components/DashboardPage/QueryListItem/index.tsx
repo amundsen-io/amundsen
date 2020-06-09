@@ -1,7 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-import "./styles.scss";
+import './styles.scss';
 
 export interface QueryListItemProps {
   text: string;
@@ -13,18 +13,20 @@ type GoToDashboardLinkProps = {
   url: string;
 };
 
-const QUERY_LABEL = "Query";
-const MODE_LINK_TOOLTIP_TEXT = "View in Mode";
-const LOADING_QUERY_MESSAGE = "Loading Query Component, please wait...";
+const QUERY_LABEL = 'Query';
+const MODE_LINK_TOOLTIP_TEXT = 'View in Mode';
+const LOADING_QUERY_MESSAGE = 'Loading Query Component, please wait...';
 
-const LazyComponent = React.lazy(() => import("./CodeBlock"));
+const LazyComponent = React.lazy(() => import('./CodeBlock'));
 
 const GoToDashboardLink = ({ url }: GoToDashboardLinkProps) => {
-  const popoverHoverFocus = (<Popover id="popover-trigger-hover-focus">{MODE_LINK_TOOLTIP_TEXT}</Popover>);
+  const popoverHoverFocus = (
+    <Popover id="popover-trigger-hover-focus">{MODE_LINK_TOOLTIP_TEXT}</Popover>
+  );
 
   return (
     <OverlayTrigger
-      trigger={["hover", "focus"]}
+      trigger={['hover', 'focus']}
       placement="top"
       overlay={popoverHoverFocus}
     >
@@ -57,7 +59,7 @@ const QueryBlockShimmer = () => {
       <div className="shimmer-line shimmer-line--6 is-shimmer-animated" />
     </div>
   );
-}
+};
 
 const QueryListItem = ({ name, text, url }: QueryListItemProps) => {
   const [isExpanded, setExpanded] = React.useState(false);
@@ -88,7 +90,7 @@ const QueryListItem = ({ name, text, url }: QueryListItemProps) => {
             {QUERY_LABEL}:
             <div className="query-list-query-content">
               <GoToDashboardLink url={url} />
-              <React.Suspense fallback={<QueryBlockShimmer />} >
+              <React.Suspense fallback={<QueryBlockShimmer />}>
                 <LazyComponent text={text} />
               </React.Suspense>
             </div>

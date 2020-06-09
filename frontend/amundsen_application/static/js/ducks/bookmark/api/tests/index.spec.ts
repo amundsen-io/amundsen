@@ -12,36 +12,41 @@ describe('addBookmark', () => {
   beforeAll(() => {
     mockPutResponse = {
       data: {
-       bookmarks: [],
-       msg: 'Success'
+        bookmarks: [],
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'put').mockImplementation(() => Promise.resolve(mockPutResponse));
+    axiosMock = jest
+      .spyOn(axios, 'put')
+      .mockImplementation(() => Promise.resolve(mockPutResponse));
   });
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.addBookmark('test', givenResource).then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { type: givenResource, key: 'test' });
+    await API.addBookmark('test', givenResource).then((data) => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
+        type: givenResource,
+        key: 'test',
+      });
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.addBookmark('test', givenResource).then(data => {
+    await API.addBookmark('test', givenResource).then((data) => {
       expect(data).toEqual(mockPutResponse.data);
     });
   });
 
   afterAll(() => {
     axiosMock.mockClear();
-  })
+  });
 });
 
 describe('getBookmarks', () => {
@@ -50,34 +55,38 @@ describe('getBookmarks', () => {
   beforeAll(() => {
     mockGetResponse = {
       data: {
-       bookmarks: [],
-       msg: 'Success'
+        bookmarks: [],
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockGetResponse));
+    axiosMock = jest
+      .spyOn(axios, 'get')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('calls axios with correct parameters if userId provided', async () => {
     expect.assertions(1);
-    await API.getBookmarks('testUserId').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark?user_id=testUserId`);
+    await API.getBookmarks('testUserId').then((data) => {
+      expect(axiosMock).toHaveBeenCalledWith(
+        `${API.API_PATH}/user/bookmark?user_id=testUserId`
+      );
     });
   });
 
   it('calls axios with correct parameters if userId not provided', async () => {
     expect.assertions(1);
-    await API.getBookmarks().then(data => {
+    await API.getBookmarks().then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`);
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await API.getBookmarks('testUserId').then(data => {
+    await API.getBookmarks('testUserId').then((data) => {
       expect(data).toEqual(mockGetResponse.data);
     });
   });
@@ -93,30 +102,34 @@ describe('removeBookmark', () => {
   beforeAll(() => {
     mockDeleteResponse = {
       data: {
-       resourceKey: 'test',
-       resourceType: 'table',
-       msg: 'Success'
+        resourceKey: 'test',
+        resourceType: 'table',
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'delete').mockImplementation(() => Promise.resolve(mockDeleteResponse));
+    axiosMock = jest
+      .spyOn(axios, 'delete')
+      .mockImplementation(() => Promise.resolve(mockDeleteResponse));
   });
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.removeBookmark('testKey', givenResource).then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, { data: { type: givenResource, key: 'testKey' }});
+    await API.removeBookmark('testKey', givenResource).then((data) => {
+      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
+        data: { type: givenResource, key: 'testKey' },
+      });
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.removeBookmark('test', givenResource).then(data => {
+    await API.removeBookmark('test', givenResource).then((data) => {
       expect(data).toEqual(mockDeleteResponse.data);
     });
   });

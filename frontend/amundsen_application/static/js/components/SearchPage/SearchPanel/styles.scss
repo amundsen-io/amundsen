@@ -2,8 +2,8 @@
 
 .search-control-panel {
   border-right: $search-panel-border-width solid $stroke;
-  flex: 0 0 $search-panel-width;
   display: flex;
+  flex: 0 0 $search-panel-width;
   flex-direction: column;
 
   .section {
@@ -17,7 +17,7 @@
 
   .checkbox,
   .radio {
-    margin-top: $spacer-1;
     margin-bottom: $spacer-1;
+    margin-top: $spacer-1;
   }
 }

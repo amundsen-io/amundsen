@@ -1,19 +1,17 @@
 import { all } from 'redux-saga/effects';
 
 // AnnouncementPage
-import { getAnnouncementsWatcher } from "./announcements/sagas";
+import { getAnnouncementsWatcher } from './announcements/sagas';
 
 import {
   addBookmarkWatcher,
   getBookmarksForUserWatcher,
   getBookmarksWatcher,
-  removeBookmarkWatcher
-} from "ducks/bookmark/sagas";
+  removeBookmarkWatcher,
+} from 'ducks/bookmark/sagas';
 
 // Dashboard
-import {
-  getDashboardWatcher,
-} from "ducks/dashboard/sagas";
+import { getDashboardWatcher } from 'ducks/dashboard/sagas';
 
 // Notifications
 import { submitNotificationWatcher } from './notification/sagas';
@@ -37,11 +35,9 @@ import {
   submitSearchWatcher,
   submitSearchResourceWatcher,
   updateSearchStateWatcher,
-  urlDidUpdateWatcher
+  urlDidUpdateWatcher,
 } from './search/sagas';
-import {
-  filterWatcher,
-} from './search/filters/sagas';
+import { filterWatcher } from './search/filters/sagas';
 
 // TableDetail
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
@@ -59,7 +55,12 @@ import {
 import { getAllTagsWatcher, updateResourceTagsWatcher } from './tags/sagas';
 
 // User
-import { getLoggedInUserWatcher, getUserOwnWatcher, getUserReadWatcher, getUserWatcher } from "./user/sagas";
+import {
+  getLoggedInUserWatcher,
+  getUserOwnWatcher,
+  getUserReadWatcher,
+  getUserWatcher,
+} from './user/sagas';
 
 export default function* rootSaga() {
   yield all([

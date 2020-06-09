@@ -1,12 +1,12 @@
 @import 'variables';
 
 .nav-bar {
-  height: $nav-bar-height;
+  align-items: center;
   background: $nav-bar-color;
-  padding: 0px 32px 1px 32px;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  height: $nav-bar-height;
+  padding: 0 32px 1px;
 
   .nav-bar-left {
     flex-basis: 234px;
@@ -18,8 +18,8 @@
   }
 
   .nav-bar-right {
-    margin-left: auto;
     display: flex;
+    margin-left: auto;
 
     a {
       color: $white;
@@ -32,21 +32,22 @@
       &.border-bottom-white.active {
         border-bottom: 4px solid $white;
       }
-   }
+    }
 
     .nav-bar-avatar {
+      background-color: $nav-bar-color;
+      border-radius: 50%;
+      border-style: none;
+      height: 40px;
+      margin-top: -4px;
+      padding: 0;
+      width: 40px;
+
       &:not(.avatar-dropdown) {
         .sb-avatar {
           margin: 4px 0 0 4px;
         }
       }
-      background-color: $nav-bar-color;
-      border-style: none;
-      border-radius: 50%;
-      margin-top: -4px;
-      padding: 0;
-      height: 40px;
-      width: 40px;
 
       &:hover {
         background-color: $white;
@@ -58,6 +59,7 @@
   .nav-bar-right {
     height: 100%;
     padding-top: 12px;
+
     a {
       text-decoration: none;
     }
@@ -73,17 +75,18 @@
   }
 
   .logo-icon {
+    margin-right: 16px;
     max-height: 32px;
     max-width: 144px;
-    margin-right: 16px;
   }
 
   .profile-menu {
     $profile-menu-width: 200px;
+
     width: $profile-menu-width;
 
     .profile-menu-header {
-      padding: 16px 16px 0 16px;
+      padding: 16px 16px 0;
     }
 
     li {

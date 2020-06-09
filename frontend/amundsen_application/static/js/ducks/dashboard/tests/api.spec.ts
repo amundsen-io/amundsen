@@ -17,12 +17,14 @@ describe('getDashboard', () => {
       },
       status: mockStatus,
     };
-    axiosMockGet = jest.spyOn(axios, 'get').mockImplementationOnce(() => Promise.resolve(mockResponse));
+    axiosMockGet = jest
+      .spyOn(axios, 'get')
+      .mockImplementationOnce(() => Promise.resolve(mockResponse));
     expect.assertions(2);
-    await API.getDashboard('testUri').then(processedResponse => {
+    await API.getDashboard('testUri').then((processedResponse) => {
       expect(processedResponse).toEqual({
         dashboard: dashboardMetadata,
-        statusCode: mockStatus
+        statusCode: mockStatus,
       });
     });
     expect(axiosMockGet).toHaveBeenCalled();
@@ -34,20 +36,21 @@ describe('getDashboard', () => {
     const mockResponse = {
       response: {
         data: {
-          msg: mockMessage
+          msg: mockMessage,
         },
         status: mockStatus,
       },
     };
-    axiosMockGet = jest.spyOn(axios, 'get').mockImplementationOnce(() => Promise.reject(mockResponse));
+    axiosMockGet = jest
+      .spyOn(axios, 'get')
+      .mockImplementationOnce(() => Promise.reject(mockResponse));
     expect.assertions(2);
-    await API.getDashboard('testUri').catch(processedResponse => {
+    await API.getDashboard('testUri').catch((processedResponse) => {
       expect(processedResponse).toEqual({
         statusMessage: mockMessage,
-        statusCode: mockStatus
+        statusCode: mockStatus,
       });
     });
     expect(axiosMockGet).toHaveBeenCalled();
   });
-
 });

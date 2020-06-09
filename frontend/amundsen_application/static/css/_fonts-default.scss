@@ -3,34 +3,36 @@
 // Roboto
 @font-face {
   font-family: 'Roboto';
-  src: url('/static/fonts/Roboto-Medium.ttf') format('truetype');
+  font-style: normal;
   font-weight: $font-weight-header-regular;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Roboto';
-  src: url('/static/fonts/Roboto-Bold.ttf') format('truetype');
-  font-weight: $font-weight-header-bold;
-  font-style: normal;
+  src: url('/static/fonts/Roboto-Medium.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: $font-weight-header-bold;
+  src: url('/static/fonts/Roboto-Bold.ttf') format('truetype');
+}
 
 // Open Sans
 @font-face {
   font-family: 'Open Sans';
-  src: url('/static/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-style: normal;
   font-weight: $font-weight-body-regular;
-  font-style: normal;
+  src: url('/static/fonts/OpenSans-Regular.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Open Sans';
-  src: url('/static/fonts/OpenSans-SemiBold.ttf') format('truetype');
+  font-style: normal;
   font-weight: $font-weight-body-semi-bold;
-  font-style: normal;
+  src: url('/static/fonts/OpenSans-SemiBold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Open Sans';
-  src: url('/static/fonts/OpenSans-Bold.ttf') format('truetype');
-  font-weight: $font-weight-body-bold;
   font-style: normal;
+  font-weight: $font-weight-body-bold;
+  src: url('/static/fonts/OpenSans-Bold.ttf') format('truetype');
 }

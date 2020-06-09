@@ -3,7 +3,10 @@ import { RouteComponentProps } from 'react-router';
 import * as History from 'history';
 
 // Mock React-Router
-export function getMockRouterProps<P>(data: P, location: Partial<History.Location>): RouteComponentProps<P> {
+export function getMockRouterProps<P>(
+  data: P,
+  location: Partial<History.Location>
+): RouteComponentProps<P> {
   const mockLocation: History.Location = {
     hash: '',
     key: '',
@@ -34,9 +37,8 @@ export function getMockRouterProps<P>(data: P, location: Partial<History.Locatio
       createHref: null,
       listen: null,
     },
-    staticContext: {
-    }
+    staticContext: {},
   };
 
   return props;
-};
+}

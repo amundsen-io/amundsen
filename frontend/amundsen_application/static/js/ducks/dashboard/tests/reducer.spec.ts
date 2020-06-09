@@ -15,14 +15,14 @@ describe('dashboard reducer', () => {
       isLoading: false,
       statusCode: 200,
       dashboard: initialDashboardState,
-    }
+    };
   });
 
   it('should return the existing state if action is not handled', () => {
     expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
   });
 
- it('should handle GetDashboard.REQUEST', () => {
+  it('should handle GetDashboard.REQUEST', () => {
     const term = 'testSearch';
     expect(reducer(testState, getDashboard({ uri: 'testUri' }))).toEqual({
       ...testState,
@@ -32,23 +32,33 @@ describe('dashboard reducer', () => {
   });
 
   it('should handle GetDashboard.SUCCESS', () => {
-    expect(reducer(testState, getDashboardSuccess({
-      dashboard: dashboardMetadata,
-      statusCode: 202,
-    }))).toEqual({
+    expect(
+      reducer(
+        testState,
+        getDashboardSuccess({
+          dashboard: dashboardMetadata,
+          statusCode: 202,
+        })
+      )
+    ).toEqual({
       isLoading: false,
       statusCode: 202,
-      dashboard: dashboardMetadata
+      dashboard: dashboardMetadata,
     });
   });
 
   it('should handle GetDashboard.FAILURE', () => {
-    expect(reducer(testState, getDashboardFailure({
-      statusCode: 500,
-    }))).toEqual({
+    expect(
+      reducer(
+        testState,
+        getDashboardFailure({
+          statusCode: 500,
+        })
+      )
+    ).toEqual({
       isLoading: false,
       statusCode: 500,
-      dashboard: initialDashboardState
+      dashboard: initialDashboardState,
     });
   });
 });

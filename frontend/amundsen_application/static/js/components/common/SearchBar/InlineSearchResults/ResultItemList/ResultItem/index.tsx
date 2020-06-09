@@ -11,20 +11,33 @@ export interface ResultItemProps {
   type: string;
 }
 
-const ResultItem: React.SFC<ResultItemProps> = ({ href, iconClass, id, onItemSelect, subtitle, titleNode, type }) => {
+const ResultItem: React.SFC<ResultItemProps> = ({
+  href,
+  iconClass,
+  id,
+  onItemSelect,
+  subtitle,
+  titleNode,
+  type,
+}) => {
   return (
     <li className="list-group-item">
-      <Link id={id} className="result-item-link" onClick={onItemSelect} to={ href }>
+      <Link
+        id={id}
+        className="result-item-link"
+        onClick={onItemSelect}
+        to={href}
+      >
         <span className={`result-icon ${iconClass}`} />
 
         <div className="result-info my-auto">
           <div className="truncated">
-            { titleNode }
-            <div className="body-secondary-3 truncated">{ subtitle }</div>
+            {titleNode}
+            <div className="body-secondary-3 truncated">{subtitle}</div>
           </div>
         </div>
 
-        <div className="resource-type">{ type }</div>
+        <div className="resource-type">{type}</div>
       </Link>
     </li>
   );

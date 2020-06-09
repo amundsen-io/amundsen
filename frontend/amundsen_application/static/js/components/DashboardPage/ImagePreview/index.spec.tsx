@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 
 import { mount } from 'enzyme';
 
-import Linkify from 'react-linkify'
+import Linkify from 'react-linkify';
 
 import { ImagePreview, ImagePreviewProps } from './';
 
@@ -19,7 +19,7 @@ describe('ImagePreview', () => {
       ...propOverrides,
     };
 
-    const wrapper = mount<ImagePreview>(<ImagePreview {...props} />)
+    const wrapper = mount<ImagePreview>(<ImagePreview {...props} />);
     return { props, wrapper };
   };
 
@@ -35,7 +35,7 @@ describe('ImagePreview', () => {
     });
     it('sets the hasError state to false', () => {
       expect(currentState.hasError).toBe(false);
-    })
+    });
   });
 
   describe('onError', () => {
@@ -51,7 +51,7 @@ describe('ImagePreview', () => {
     });
     it('sets the hasError state to false', () => {
       expect(currentState.hasError).toBe(true);
-    })
+    });
   });
 
   describe('render', () => {
@@ -68,7 +68,9 @@ describe('ImagePreview', () => {
         });
 
         it('renders hidden img', () => {
-          expect(wrapper.find('img').props().style).toEqual({ visibility: 'hidden' });
+          expect(wrapper.find('img').props().style).toEqual({
+            visibility: 'hidden',
+          });
         });
       });
 
@@ -78,7 +80,7 @@ describe('ImagePreview', () => {
 
         beforeAll(() => {
           const setupResult = setup();
-          props = setupResult.props
+          props = setupResult.props;
           wrapper = setupResult.wrapper;
           wrapper.instance().setState({ isLoading: false, hasError: false });
           wrapper.update();
@@ -88,7 +90,9 @@ describe('ImagePreview', () => {
           const elementProps = wrapper.find('img').props();
 
           expect(elementProps.style).toEqual({ visibility: 'visible' });
-          expect(elementProps.src).toEqual(`${Constants.PREVIEW_BASE}/${props.uri}/${Constants.PREVIEW_END}`);
+          expect(elementProps.src).toEqual(
+            `${Constants.PREVIEW_BASE}/${props.uri}/${Constants.PREVIEW_END}`
+          );
           expect(elementProps.onLoad).toBe(wrapper.instance().onSuccess);
           expect(elementProps.onError).toBe(wrapper.instance().onError);
         });
@@ -99,7 +103,7 @@ describe('ImagePreview', () => {
 
           expect(actual).toEqual(expected);
         });
-      })
+      });
     });
 
     describe('when there is an error', () => {
@@ -118,12 +122,11 @@ describe('ImagePreview', () => {
     let wrapper;
 
     describe('when clicking on the dashboard preview button', () => {
-
       beforeAll(() => {
         const setupResult = setup();
 
         wrapper = setupResult.wrapper;
-        wrapper.instance().setState({ isLoading: false, hasError:false });
+        wrapper.instance().setState({ isLoading: false, hasError: false });
       });
 
       it('should open a modal', () => {

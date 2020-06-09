@@ -7,11 +7,13 @@
   }
 
   .edit-button {
-    opacity: 0;
     margin-left: 4px;
+    opacity: 0;
+
     img {
       margin-bottom: auto;
     }
+
     &.active {
       opacity: 1;
     }

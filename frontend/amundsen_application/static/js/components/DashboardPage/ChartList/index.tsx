@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import "./styles.scss";
+import './styles.scss';
 
 export interface ChartListProps {
   charts: string[];
@@ -15,19 +15,13 @@ class ChartList extends React.Component<ChartListProps> {
 
     return (
       <ul className="chart-list list-group">
-        {
-          charts.map((chart, index) =>
-            (
-              <li key={index} className="chart-list-item list-group-item">
-                <div className="title-2 truncated">
-                  { chart }
-                </div>
-              </li>
-            )
-          )
-        }
+        {charts.map((chart, index) => (
+          <li key={index} className="chart-list-item list-group-item">
+            <div className="title-2 truncated">{chart}</div>
+          </li>
+        ))}
       </ul>
-    )
+    );
   }
 }
 

@@ -4,12 +4,11 @@ import { mount } from 'enzyme';
 
 import QueryListItem, { QueryListItemProps } from './';
 
-
 const setup = (propOverrides?: Partial<QueryListItemProps>) => {
   const props: QueryListItemProps = {
-    text: "testQuery",
-    url: "http://test.url",
-    name: "testName",
+    text: 'testQuery',
+    url: 'http://test.url',
+    name: 'testName',
     ...propOverrides,
   };
   const wrapper = mount(<QueryListItem {...props} />);
@@ -18,72 +17,70 @@ const setup = (propOverrides?: Partial<QueryListItemProps>) => {
 };
 
 describe('QueryListItem', () => {
-
   describe('render', () => {
-      it('should render without errors', () => {
-        expect(() => {
-          setup();
-        }).not.toThrow();
+    it('should render without errors', () => {
+      expect(() => {
+        setup();
+      }).not.toThrow();
+    });
+
+    it('should render one query list item', () => {
+      const { wrapper } = setup();
+      const expected = 1;
+      const actual = wrapper.find('.query-list-item').length;
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should render the query name', () => {
+      const { wrapper, props } = setup();
+      const expected = props.name;
+      const actual = wrapper.find('.query-list-item-name').text();
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('should not render the expanded content', () => {
+      const { wrapper } = setup();
+      const expected = 0;
+      const actual = wrapper.find('.query-list-expanded-content').length;
+
+      expect(actual).toEqual(expected);
+    });
+
+    describe('when item is expanded', () => {
+      let wrapper;
+
+      beforeAll(() => {
+        ({ wrapper } = setup());
+
+        wrapper.find('.query-list-header').simulate('click');
       });
 
-      it('should render one query list item', () => {
-        const { wrapper} = setup();
+      it('should show the query label', () => {
         const expected = 1;
-        const actual = wrapper.find('.query-list-item').length;
+        const actual = wrapper.find('.query-list-query-label').length;
 
         expect(actual).toEqual(expected);
       });
 
-      it('should render the query name', () => {
-        const { wrapper, props } = setup();
-        const expected = props.name;
-        const actual = wrapper.find('.query-list-item-name').text();
+      it('should show the query content', () => {
+        const expected = 1;
+        const actual = wrapper.find('.query-list-query-content').length;
 
         expect(actual).toEqual(expected);
       });
 
-      it('should not render the expanded content', () => {
-        const { wrapper } = setup();
-        const expected = 0;
-        const actual = wrapper.find('.query-list-expanded-content').length;
+      it('should show the go to dashboard button', () => {
+        const expected = 1;
+        const actual = wrapper.find('.query-list-query-link').length;
 
         expect(actual).toEqual(expected);
       });
-
-      describe('when item is expanded', () => {
-        let wrapper;
-
-        beforeAll(() => {
-          ({ wrapper } = setup());
-
-          wrapper.find('.query-list-header').simulate('click');
-        });
-
-        it('should show the query label', () => {
-          const expected = 1;
-          const actual = wrapper.find('.query-list-query-label').length;
-
-          expect(actual).toEqual(expected);
-        });
-
-        it('should show the query content', () => {
-          const expected = 1;
-          const actual = wrapper.find('.query-list-query-content').length;
-
-          expect(actual).toEqual(expected);
-        });
-
-        it('should show the go to dashboard button', () => {
-          const expected = 1;
-          const actual = wrapper.find('.query-list-query-link').length;
-
-          expect(actual).toEqual(expected);
-        });
-      });
+    });
   });
 
   describe('lifetime', () => {
-
     describe('when clicked on the item', () => {
       it('should render the expanded content', () => {
         const { wrapper, props } = setup();
@@ -111,5 +108,4 @@ describe('QueryListItem', () => {
       });
     });
   });
-
 });

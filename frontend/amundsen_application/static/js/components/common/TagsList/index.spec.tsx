@@ -3,25 +3,28 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import { TagsList, TagsListProps, mapDispatchToProps, mapStateToProps } from '.';
+import {
+  TagsList,
+  TagsListProps,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '.';
 
 import globalState from 'fixtures/globalState';
 
 import AppConfig from 'config/config';
 AppConfig.browse.curatedTags = ['test1'];
 
-jest.mock('config/config-utils', () => (
-  {
-    showAllTags: jest.fn(),
-    getCuratedTags: () => { return ['curated_tag_1']; },
-  }
-));
+jest.mock('config/config-utils', () => ({
+  showAllTags: jest.fn(),
+  getCuratedTags: () => {
+    return ['curated_tag_1'];
+  },
+}));
 
 import { getCuratedTags, showAllTags } from 'config/config-utils';
 
-
 describe('TagsList', () => {
-
   const setup = (propOverrides?: Partial<TagsListProps>) => {
     const props: TagsListProps = {
       curatedTags: [
@@ -81,15 +84,21 @@ describe('TagsList', () => {
     });
 
     it('calls generateTagInfo with curatedTags', () => {
-      const generateTagInfoSpy = jest.spyOn(TagsList.prototype, 'generateTagInfo');
+      const generateTagInfoSpy = jest.spyOn(
+        TagsList.prototype,
+        'generateTagInfo'
+      );
       const { props, wrapper } = setup();
-      expect(generateTagInfoSpy).toHaveBeenCalledWith(props.curatedTags)
+      expect(generateTagInfoSpy).toHaveBeenCalledWith(props.curatedTags);
     });
 
     it('call generateTagInfo with otherTags', () => {
-      const generateTagInfoSpy = jest.spyOn(TagsList.prototype, 'generateTagInfo');
+      const generateTagInfoSpy = jest.spyOn(
+        TagsList.prototype,
+        'generateTagInfo'
+      );
       const { props, wrapper } = setup();
-      expect(generateTagInfoSpy).toHaveBeenCalledWith(props.otherTags)
+      expect(generateTagInfoSpy).toHaveBeenCalledWith(props.otherTags);
     });
   });
 });
@@ -116,8 +125,12 @@ describe('mapStateToProps', () => {
     result = mapStateToProps(globalState);
     const allTags = globalState.tags.allTags.tags;
     const curatedTagsList = getCuratedTags();
-    expectedCuratedTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) !== -1);
-    expectedOtherTags = allTags.filter((tag) => curatedTagsList.indexOf(tag.tag_name) === -1);
+    expectedCuratedTags = allTags.filter(
+      (tag) => curatedTagsList.indexOf(tag.tag_name) !== -1
+    );
+    expectedOtherTags = allTags.filter(
+      (tag) => curatedTagsList.indexOf(tag.tag_name) === -1
+    );
   });
 
   it('sets curatedTags on the props', () => {
@@ -129,7 +142,9 @@ describe('mapStateToProps', () => {
   });
 
   it('sets isLoading on the props', () => {
-    const expectedResult = globalState.tags.allTags.isLoading || globalState.tags.resourceTags.isLoading;
+    const expectedResult =
+      globalState.tags.allTags.isLoading ||
+      globalState.tags.resourceTags.isLoading;
     expect(result.isLoading).toEqual(expectedResult);
   });
 });

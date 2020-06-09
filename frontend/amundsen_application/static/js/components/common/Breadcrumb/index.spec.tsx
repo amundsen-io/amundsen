@@ -9,7 +9,7 @@ describe('Breadcrumb', () => {
   const setup = (propOverrides?: Partial<BreadcrumbProps>) => {
     const props: BreadcrumbProps = {
       loadPreviousSearch: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow(<Breadcrumb {...props} />);
     return { props, wrapper };
@@ -21,7 +21,7 @@ describe('Breadcrumb', () => {
 
     describe('when given path & text', () => {
       beforeAll(() => {
-        const setupResult = setup({path: 'testPath', text: 'testText'});
+        const setupResult = setup({ path: 'testPath', text: 'testText' });
         props = setupResult.props;
         subject = setupResult.wrapper;
       });
@@ -37,19 +37,33 @@ describe('Breadcrumb', () => {
       });
 
       it('renders left icon by default', () => {
-        expect(subject.find(Link).find('img').props().className).toEqual('icon icon-left');
+        expect(subject.find(Link).find('img').props().className).toEqual(
+          'icon icon-left'
+        );
       });
 
       it('renders left icon when props.direction = "left"', () => {
-        subject = setup({path: 'testPath', text: 'testText', direction: 'left'}).wrapper;
-        expect(subject.find(Link).find('img').props().className).toEqual('icon icon-left');
+        subject = setup({
+          path: 'testPath',
+          text: 'testText',
+          direction: 'left',
+        }).wrapper;
+        expect(subject.find(Link).find('img').props().className).toEqual(
+          'icon icon-left'
+        );
       });
 
       it('renders right icon when props.direction = "right"', () => {
-        subject = setup({path: 'testPath', text: 'testText', direction: 'right'}).wrapper;
-        expect(subject.find(Link).find('img').props().className).toEqual('icon icon-right');
+        subject = setup({
+          path: 'testPath',
+          text: 'testText',
+          direction: 'right',
+        }).wrapper;
+        expect(subject.find(Link).find('img').props().className).toEqual(
+          'icon icon-right'
+        );
       });
-    })
+    });
 
     describe('when not given path or text', () => {
       beforeAll(() => {
@@ -65,17 +79,23 @@ describe('Breadcrumb', () => {
       });
 
       it('renders left icon by default', () => {
-        expect(subject.find('a').find('img').props().className).toEqual('icon icon-left');
+        expect(subject.find('a').find('img').props().className).toEqual(
+          'icon icon-left'
+        );
       });
 
       it('renders left icon when props.direction = "left"', () => {
-        subject = setup({direction: 'left'}).wrapper;
-        expect(subject.find('a').find('img').props().className).toEqual('icon icon-left');
+        subject = setup({ direction: 'left' }).wrapper;
+        expect(subject.find('a').find('img').props().className).toEqual(
+          'icon icon-left'
+        );
       });
 
       it('renders right icon when props.direction = "right"', () => {
-        subject = setup({direction: 'right'}).wrapper;
-        expect(subject.find('a').find('img').props().className).toEqual('icon icon-right');
+        subject = setup({ direction: 'right' }).wrapper;
+        expect(subject.find('a').find('img').props().className).toEqual(
+          'icon icon-right'
+        );
       });
     });
   });

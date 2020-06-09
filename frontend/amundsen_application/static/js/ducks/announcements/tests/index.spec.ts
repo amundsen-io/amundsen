@@ -4,8 +4,11 @@ import { throwError } from 'redux-saga-test-plan/providers';
 
 import * as API from '../api/v0';
 import reducer, {
-  getAnnouncements, getAnnouncementsFailure, getAnnouncementsSuccess,
-  initialState, AnnouncementsReducerState
+  getAnnouncements,
+  getAnnouncementsFailure,
+  getAnnouncementsSuccess,
+  initialState,
+  AnnouncementsReducerState,
 } from '../reducer';
 import { getAnnouncementsWatcher, getAnnouncementsWorker } from '../sagas';
 import { GetAnnouncements } from '../types';
@@ -25,7 +28,13 @@ describe('announcements ducks', () => {
     });
 
     it('getAllTagsSuccess - returns the action to process success', () => {
-      const expectedPosts = [{ date: '12/31/1999', title: 'Test', html_content: '<div>Test content</div>' }];
+      const expectedPosts = [
+        {
+          date: '12/31/1999',
+          title: 'Test',
+          html_content: '<div>Test content</div>',
+        },
+      ];
       const action = getAnnouncementsSuccess(expectedPosts);
       const { payload } = action;
       expect(action.type).toBe(GetAnnouncements.SUCCESS);
@@ -45,14 +54,24 @@ describe('announcements ducks', () => {
     });
 
     it('should handle GetAnnouncements.SUCCESS', () => {
-      const expectedPosts = [{ date: '12/31/1999', title: 'Test', html_content: '<div>Test content</div>' }];
-      expect(reducer(testState, getAnnouncementsSuccess(expectedPosts))).toEqual({
+      const expectedPosts = [
+        {
+          date: '12/31/1999',
+          title: 'Test',
+          html_content: '<div>Test content</div>',
+        },
+      ];
+      expect(
+        reducer(testState, getAnnouncementsSuccess(expectedPosts))
+      ).toEqual({
         posts: expectedPosts,
       });
     });
 
     it('should return the initialState if GetAnnouncements.FAILURE', () => {
-      expect(reducer(testState, getAnnouncementsFailure())).toEqual(initialState);
+      expect(reducer(testState, getAnnouncementsFailure())).toEqual(
+        initialState
+      );
     });
   });
 
@@ -60,18 +79,24 @@ describe('announcements ducks', () => {
     describe('getAnnouncementsWatcher', () => {
       it('takes GetAnnouncements.REQUEST with getAnnouncementsWorker', () => {
         testSaga(getAnnouncementsWatcher)
-          .next().takeEvery(GetAnnouncements.REQUEST, getAnnouncementsWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(GetAnnouncements.REQUEST, getAnnouncementsWorker)
+          .next()
+          .isDone();
       });
     });
 
     describe('getAnnouncementsWorker', () => {
       it('gets posts', () => {
-        const mockPosts = [{ date: '12/31/1999', title: 'Test', html_content: '<div>Test content</div>' }];
+        const mockPosts = [
+          {
+            date: '12/31/1999',
+            title: 'Test',
+            html_content: '<div>Test content</div>',
+          },
+        ];
         return expectSaga(getAnnouncementsWorker)
-          .provide([
-            [matchers.call.fn(API.getAnnouncements), mockPosts],
-          ])
+          .provide([[matchers.call.fn(API.getAnnouncements), mockPosts]])
           .put(getAnnouncementsSuccess(mockPosts))
           .run();
       });

@@ -2,19 +2,58 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import { ColumnStats, ColumnStatsProps } from '.';
 
-
 describe('ColumnStats', () => {
   const setup = (propOverrides?: Partial<ColumnStatsProps>) => {
     const props = {
       stats: [
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count", stat_val: "12345" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count_null", stat_val: "123" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count_distinct", stat_val: "22" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count_zero", stat_val: "44" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "max", stat_val: "1237466454" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "min", stat_val: "856" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "avg", stat_val: "2356575" },
-        { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "stddev", stat_val: "1234563" },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'count',
+          stat_val: '12345',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'count_null',
+          stat_val: '123',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'count_distinct',
+          stat_val: '22',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'count_zero',
+          stat_val: '44',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'max',
+          stat_val: '1237466454',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'min',
+          stat_val: '856',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'avg',
+          stat_val: '2356575',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'stddev',
+          stat_val: '1234563',
+        },
       ],
       ...propOverrides,
     };
@@ -30,14 +69,18 @@ describe('ColumnStats', () => {
       const startEpoch = 1568160000;
       const endEpoch = 1568160000;
       const expectedInfoText = `Stats reflect data collected on Sep 11, 2019 only. (daily partition)`;
-      expect(instance.getStatsInfoText(startEpoch, endEpoch)).toBe(expectedInfoText);
+      expect(instance.getStatsInfoText(startEpoch, endEpoch)).toBe(
+        expectedInfoText
+      );
     });
 
     it('generates correct info text for a date range', () => {
       const startEpoch = 1568160000;
       const endEpoch = 1571616000;
       const expectedInfoText = `Stats reflect data collected between Sep 11, 2019 and Oct 21, 2019.`;
-      expect(instance.getStatsInfoText(startEpoch, endEpoch)).toBe(expectedInfoText);
+      expect(instance.getStatsInfoText(startEpoch, endEpoch)).toBe(
+        expectedInfoText
+      );
     });
 
     it('generates correct when no dates are given', () => {
@@ -48,12 +91,17 @@ describe('ColumnStats', () => {
 
   describe('renderColumnStat', () => {
     it('renders a single column stat', () => {
-      const columnStat = { end_epoch: 1571616000, start_epoch: 1571616000, stat_type: "count", stat_val: "12345" };
+      const columnStat = {
+        end_epoch: 1571616000,
+        start_epoch: 1571616000,
+        stat_type: 'count',
+        stat_val: '12345',
+      };
       const expectedStatType = columnStat.stat_type.toUpperCase();
       const expectedStatValue = columnStat.stat_val;
       const result = shallow(instance.renderColumnStat(columnStat));
-      expect(result.find('.stat-name').text()).toBe(expectedStatType)
-      expect(result.find('.stat-value').text()).toBe(expectedStatValue)
+      expect(result.find('.stat-name').text()).toBe(expectedStatType);
+      expect(result.find('.stat-value').text()).toBe(expectedStatValue);
     });
   });
 

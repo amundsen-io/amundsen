@@ -6,7 +6,7 @@ import * as Helpers from './helpers';
 import * as Utils from 'ducks/utilMethods';
 
 import globalState from 'fixtures/globalState';
-import {relatedDashboards} from 'fixtures/metadata/table';
+import { relatedDashboards } from 'fixtures/metadata/table';
 
 import { NotificationType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 
@@ -23,16 +23,26 @@ describe('helpers', () => {
   beforeAll(() => {
     tableResponseData = {
       ...globalState.tableMetadata.tableData,
-      owners: [{display_name: 'test', profile_url: 'test.io', email: 'test@test.com', user_id: 'test'}],
-      tags: [{tag_count: 2, tag_name: 'zname'}, {tag_count: 1, tag_name: 'aname'}],
+      owners: [
+        {
+          display_name: 'test',
+          profile_url: 'test.io',
+          email: 'test@test.com',
+          user_id: 'test',
+        },
+      ],
+      tags: [
+        { tag_count: 2, tag_name: 'zname' },
+        { tag_count: 1, tag_name: 'aname' },
+      ],
     };
     mockRelatedDashboardsResponseData = {
-      dashboards: relatedDashboards
+      dashboards: relatedDashboards,
     };
     mockResponseData = {
-     tableData: tableResponseData,
-     msg: 'Success',
-   };
+      tableData: tableResponseData,
+      msg: 'Success',
+    };
   });
 
   describe('getTableQueryParams', () => {
@@ -71,32 +81,48 @@ describe('helpers', () => {
 
   describe('getTableDataFromResponseData', () => {
     it('uses the filterFromObj method', () => {
-      Helpers.getTableDataFromResponseData(mockResponseData, mockRelatedDashboardsResponseData);
+      Helpers.getTableDataFromResponseData(
+        mockResponseData,
+        mockRelatedDashboardsResponseData
+      );
 
-      expect(filterFromObjSpy).toHaveBeenCalledWith(tableResponseData, ['owners', 'tags']);
+      expect(filterFromObjSpy).toHaveBeenCalledWith(tableResponseData, [
+        'owners',
+        'tags',
+      ]);
     });
 
     describe('produces the final TableMetadata information', () => {
       it('contains the columns key', () => {
         const expected = 0;
-        const actual = Helpers.getTableDataFromResponseData(mockResponseData, mockRelatedDashboardsResponseData).columns.length;
+        const actual = Helpers.getTableDataFromResponseData(
+          mockResponseData,
+          mockRelatedDashboardsResponseData
+        ).columns.length;
 
         expect(actual).toEqual(expected);
       });
 
       it('contains the dashboards key', () => {
         const expected = 3;
-        const actual = Helpers.getTableDataFromResponseData(mockResponseData, mockRelatedDashboardsResponseData).dashboards.length;
+        const actual = Helpers.getTableDataFromResponseData(
+          mockResponseData,
+          mockRelatedDashboardsResponseData
+        ).dashboards.length;
 
         expect(actual).toEqual(expected);
       });
     });
   });
 
-
   it('getTableOwnersFromResponseData', () => {
     expect(Helpers.getTableOwnersFromResponseData(mockResponseData)).toEqual({
-      'test': {display_name: 'test', profile_url: 'test.io', email: 'test@test.com', user_id: 'test'}
+      test: {
+        display_name: 'test',
+        profile_url: 'test.io',
+        email: 'test@test.com',
+        user_id: 'test',
+      },
     });
   });
 
@@ -107,13 +133,18 @@ describe('helpers', () => {
     let expectedPath;
     beforeAll(() => {
       testData = globalState.tableMetadata.tableData;
-      testId =  'testId@test.com';
+      testId = 'testId@test.com';
       expectedName = `${testData.schema}.${testData.name}`;
       expectedPath = `/table_detail/${testData.cluster}/${testData.database}/${testData.schema}/${testData.name}`;
     });
 
     it('creates correct request data for PUT', () => {
-      expect(Helpers.createOwnerNotificationData({ method: UpdateMethod.PUT, id: testId }, testData)).toMatchObject({
+      expect(
+        Helpers.createOwnerNotificationData(
+          { method: UpdateMethod.PUT, id: testId },
+          testData
+        )
+      ).toMatchObject({
         notificationType: NotificationType.OWNER_ADDED,
         options: {
           resource_name: expectedName,
@@ -124,7 +155,12 @@ describe('helpers', () => {
     });
 
     it('creates correct request data for DELETE', () => {
-      expect(Helpers.createOwnerNotificationData({ method: UpdateMethod.DELETE, id: testId }, testData)).toMatchObject({
+      expect(
+        Helpers.createOwnerNotificationData(
+          { method: UpdateMethod.DELETE, id: testId },
+          testData
+        )
+      ).toMatchObject({
         notificationType: NotificationType.OWNER_REMOVED,
         options: {
           resource_name: expectedName,
@@ -136,10 +172,15 @@ describe('helpers', () => {
   });
 
   it('createOwnerUpdatePayload', () => {
-    const testId =  'testId@test.com';
+    const testId = 'testId@test.com';
     const testKey = 'testKey';
     const testMethod = UpdateMethod.PUT;
-    expect(Helpers.createOwnerUpdatePayload({ method: testMethod, id: testId }, testKey)).toMatchObject({
+    expect(
+      Helpers.createOwnerUpdatePayload(
+        { method: testMethod, id: testId },
+        testKey
+      )
+    ).toMatchObject({
       method: testMethod,
       url: `${API.API_PATH}/update_table_owner`,
       data: {
@@ -152,22 +193,22 @@ describe('helpers', () => {
   describe('shouldSendNotification', () => {
     it('returns false if alumni', () => {
       const testUser = {
-        ... globalState.user.loggedInUser,
+        ...globalState.user.loggedInUser,
         is_active: false,
-      }
+      };
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });
 
     it('returns false if not a user with display_name', () => {
       const testUser = {
-        ... globalState.user.loggedInUser,
+        ...globalState.user.loggedInUser,
         display_name: null,
-      }
+      };
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });
 
     it('returns true if user is_active and has a display_name', () => {
-      const testUser = { ... globalState.user.loggedInUser }
+      const testUser = { ...globalState.user.loggedInUser };
       expect(Helpers.shouldSendNotification(testUser)).toBe(true);
     });
   });

@@ -9,10 +9,9 @@ export type AnnouncementsAPI = {
 
 export function getAnnouncements() {
   return axios({
-      method: 'get',
-      url: '/api/announcements/v0/',
-    })
-    .then((response: AxiosResponse<AnnouncementsAPI>) => {
-      return response.data.posts;
-    })
-};
+    method: 'get',
+    url: '/api/announcements/v0/',
+  }).then((response: AxiosResponse<AnnouncementsAPI>) => {
+    return response.data.posts;
+  });
+}

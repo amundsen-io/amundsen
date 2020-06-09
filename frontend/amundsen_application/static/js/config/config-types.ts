@@ -14,7 +14,7 @@ export interface AppConfig {
   google: GoogleAnalyticsConfig;
   indexDashboards: IndexDashboardsConfig;
   indexUsers: IndexUsersConfig;
-  userIdLabel?: string; /* Temporary configuration due to lacking string customization/translation support */
+  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   mailClientFeatures: MailClientFeaturesConfig;
@@ -32,7 +32,7 @@ export interface AppConfigCustom {
   google?: GoogleAnalyticsConfig;
   indexDashboards?: IndexDashboardsConfig;
   indexUsers?: IndexUsersConfig;
-  userIdLabel?: string; /* Temporary configuration due to lacking string customization/translation support */
+  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
   mailClientFeatures?: MailClientFeaturesConfig;
@@ -109,7 +109,7 @@ interface SingleFilterCategory extends BaseFilterCategory {
 /**
  * Configures filter categories for each resource
  */
-export type FilterConfig = (MultiSelectFilterCategory|SingleFilterCategory)[];
+export type FilterConfig = (MultiSelectFilterCategory | SingleFilterCategory)[];
 
 /**
  * Configures the UI for a given entity source
@@ -118,8 +118,8 @@ type SourcesConfig = {
   [id: string]: {
     displayName?: string;
     iconClass?: string;
-  }
-}
+  };
+};
 
 /**
  * Base interface for all possible ResourceConfig objects
@@ -134,12 +134,12 @@ interface BaseResourceConfig {
 }
 
 export enum BadgeStyle {
-  DANGER = "danger",
-  DEFAULT = "default",
-  INFO = "info",
-  PRIMARY = "primary",
-  SUCCESS = "success",
-  WARNING = "warning",
+  DANGER = 'danger',
+  DEFAULT = 'default',
+  INFO = 'info',
+  PRIMARY = 'primary',
+  SUCCESS = 'success',
+  WARNING = 'warning',
 }
 
 export interface BadgeStyleConfig {
@@ -198,7 +198,14 @@ interface MailClientFeaturesConfig {
 interface TableProfileConfig {
   isBeta: boolean;
   isExploreEnabled: boolean;
-  exploreUrlGenerator: (database: string, cluster: string, schema: string, table: string, partitionKey?: string, partitionValue?: string) => string;
+  exploreUrlGenerator: (
+    database: string,
+    cluster: string,
+    schema: string,
+    table: string,
+    partitionKey?: string,
+    partitionValue?: string
+  ) => string;
 }
 
 /**
@@ -213,7 +220,12 @@ interface TableLineageConfig {
   iconPath: string;
   isBeta: boolean;
   isEnabled: boolean;
-  urlGenerator: (database: string, cluster: string, schema: string , table: string) => string;
+  urlGenerator: (
+    database: string,
+    cluster: string,
+    schema: string,
+    table: string
+  ) => string;
 }
 
 export interface LinkConfig {

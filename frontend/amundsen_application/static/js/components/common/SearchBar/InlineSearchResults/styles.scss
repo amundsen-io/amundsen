@@ -2,13 +2,12 @@
 
 .inline-results {
   background: white;
+  border: 1px solid $stroke;
+  border-radius: 4px;
+  box-shadow: 0 3px 12px 0 rgba(17, 17, 31, 0.04);
+  position: absolute;
   width: 100%;
   z-index: 10; // TODO: Establish levels for cases where we can't avoid z-index. This is a topmost element.
-  position: absolute;
-
-  border-radius: 4px;
-  border: 1px solid $stroke;
-  box-shadow: 0 3px 12px 0 rgba(17, 17, 31, 0.04);
 
   &.small {
     .search-item-link {
@@ -27,8 +26,8 @@
   }
 
   .search-item-section {
-    padding-top: $spacer-1;
     padding-bottom: $spacer-1;
+    padding-top: $spacer-1;
   }
 
   .inline-results-section {
@@ -44,6 +43,7 @@
     a.section-footer {
       color: $brand-color-4 !important;
       display: block;
+
       &:hover {
         cursor: pointer;
       }
@@ -55,10 +55,12 @@
       .list-group-item {
         /* Override some shared list-group-item styles */
         border: none;
+
         &:hover {
-          box-shadow: none !important;
           background-color: $indigo5;
+          box-shadow: none !important;
         }
+
         &:hover + .list-group-item {
           box-shadow: none !important;
         }
@@ -73,38 +75,38 @@
           img.icon.icon-search,
           span.icon.result-icon,
           .sb-avatar {
-            margin: auto 8px auto 0px;
+            margin: auto 8px auto 0;
           }
         }
 
         /* SEARCH ITEM */
         .search-item-link {
           height: 32px;
-          padding: 4px 4px 4px 24px;
           line-height: inherit;
+          padding: 4px 4px 4px 24px;
+
           &:hover {
             .search-item-info .search-item-text {
-              text-shadow: 0 0 .6px $text-primary, 0 0 .6px $text-primary;
+              text-shadow: 0 0 0.6px $text-primary, 0 0 0.6px $text-primary;
             }
           }
+
           .search-item-info {
             display: flex;
+
             .search-item-text {
               font-weight: $font-weight-body-regular;
             }
           }
 
           .loading-spinner {
-            width: 24px;
             height: 24px;
             margin: auto 0;
+            width: 24px;
           }
 
           .search-item-indicator {
             margin: auto 0 auto $spacer-1;
-          }
-
-          .search-item-indicator {
             font-style: italic;
           }
         }
@@ -113,11 +115,13 @@
         .result-item-link {
           height: 56px;
           padding: 8px 32px;
+
           .result-info {
             display: flex;
             flex: 1;
-            min-width: 0px;
             margin-right: 8px;
+            min-width: 0;
+
             .dashboard-title {
               display: flex;
 
@@ -128,6 +132,7 @@
               }
             }
           }
+
           .resource-type {
             margin: auto;
           }

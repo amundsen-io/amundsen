@@ -7,13 +7,14 @@ $max-modal-height: 87vh;
   padding: 0;
 
   &:hover img.preview {
-    cursor: zoom-in;
     border: 1px solid $gray50;
+    cursor: zoom-in;
   }
 }
 
 .image-preview {
   text-align: center;
+
   .loading-spinner {
     margin-top: 0;
   }
@@ -27,6 +28,6 @@ $max-modal-height: 87vh;
   }
 }
 
-.dashboard-preview-modal .modal-body{
+.dashboard-preview-modal .modal-body {
   max-height: $max-modal-height;
 }

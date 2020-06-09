@@ -6,7 +6,8 @@ import {
   mapDispatchToProps,
   mapStateToProps,
   ResourceSelector,
-  ResourceSelectorProps } from '../';
+  ResourceSelectorProps,
+} from '../';
 
 import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces/Resources';
@@ -16,7 +17,11 @@ jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
 }));
-import { getDisplayNameByResource, indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import {
+  getDisplayNameByResource,
+  indexDashboardsEnabled,
+  indexUsersEnabled,
+} from 'config/config-utils';
 
 describe('ResourceSelector', () => {
   const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {
@@ -26,7 +31,7 @@ describe('ResourceSelector', () => {
       users: globalState.search.users,
       dashboards: globalState.search.dashboards,
       setResource: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<ResourceSelector>(<ResourceSelector {...props} />);
     return { props, wrapper };
@@ -44,15 +49,17 @@ describe('ResourceSelector', () => {
 
     it('renders an input with correct properties', () => {
       const inputProps = content.find('input').props();
-      expect(inputProps.type).toEqual("radio");
-      expect(inputProps.name).toEqual("resource");
+      expect(inputProps.type).toEqual('radio');
+      expect(inputProps.name).toEqual('resource');
       expect(inputProps.value).toEqual(radioConfig.type);
       expect(inputProps.checked).toEqual(props.resource === radioConfig.type);
       expect(inputProps.onChange).toEqual(instance.onChange);
     });
 
     it('renders with the correct labels', () => {
-      expect(content.text()).toEqual(`${radioConfig.label}${radioConfig.count}`)
+      expect(content.text()).toEqual(
+        `${radioConfig.label}${radioConfig.count}`
+      );
     });
   });
 
@@ -61,12 +68,12 @@ describe('ResourceSelector', () => {
       const mockEvent = {
         target: {
           value: ResourceType.table,
-        }
+        },
       };
       const { wrapper, props } = setup();
-      const setResourceSpy = jest.spyOn(props, "setResource")
+      const setResourceSpy = jest.spyOn(props, 'setResource');
       wrapper.instance().onChange(mockEvent);
-      expect(setResourceSpy).toHaveBeenCalledWith(mockEvent.target.value)
+      expect(setResourceSpy).toHaveBeenCalledWith(mockEvent.target.value);
     });
   });
 
@@ -100,7 +107,10 @@ describe('ResourceSelector', () => {
         count: props.users.total_results,
       };
 
-      renderRadioOptionSpy = jest.spyOn(wrapper.instance(), 'renderRadioOption');
+      renderRadioOptionSpy = jest.spyOn(
+        wrapper.instance(),
+        'renderRadioOption'
+      );
     });
 
     it('renders the table resource option', () => {
@@ -121,7 +131,10 @@ describe('ResourceSelector', () => {
         mocked(indexUsersEnabled).mockImplementationOnce(() => false);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
-        expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(userOptionConfig, 1);
+        expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(
+          userOptionConfig,
+          1
+        );
       });
     });
 
@@ -130,17 +143,22 @@ describe('ResourceSelector', () => {
         mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
-        expect(renderRadioOptionSpy).toHaveBeenCalledWith(dashboardOptionConfig, 1);
+        expect(renderRadioOptionSpy).toHaveBeenCalledWith(
+          dashboardOptionConfig,
+          1
+        );
       });
 
       it('does not render when disabled', () => {
         mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
-        expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(dashboardOptionConfig);
+        expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(
+          dashboardOptionConfig
+        );
       });
     });
-  })
+  });
 });
 
 describe('mapStateToProps', () => {

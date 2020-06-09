@@ -12,7 +12,7 @@ export interface GetDashboardRequest {
     uri: string;
     searchIndex?: string;
     source?: string;
-  }
+  };
 }
 
 export interface GetDashboardResponse {

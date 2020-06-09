@@ -8,7 +8,7 @@ export type PreferenceGroupProps = {
   selected: boolean;
   title: string;
   subtitle: string;
-}
+};
 
 export class PreferenceGroup extends React.Component<PreferenceGroupProps> {
   public static defaultProps: Partial<PreferenceGroupProps> = {
@@ -18,17 +18,22 @@ export class PreferenceGroup extends React.Component<PreferenceGroupProps> {
   };
 
   onClick = () => {
-    this.props.onClick(this.props.preferenceValue)
-  }
+    this.props.onClick(this.props.preferenceValue);
+  };
 
   // TODO: Consolidate with future common RadioButton component.
   render() {
     return (
       <label className="preference-group" onClick={this.onClick}>
-        <input defaultChecked={ this.props.selected } type="radio" className="preference-radio" name="notification-preference"/>
+        <input
+          defaultChecked={this.props.selected}
+          type="radio"
+          className="preference-radio"
+          name="notification-preference"
+        />
         <div className="preference-text">
-          <div className="title-2">{ this.props.title }</div>
-          <div className="body-secondary-3">{ this.props.subtitle }</div>
+          <div className="title-2">{this.props.title}</div>
+          <div className="body-secondary-3">{this.props.subtitle}</div>
         </div>
       </label>
     );

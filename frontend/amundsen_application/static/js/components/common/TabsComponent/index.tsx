@@ -16,26 +16,29 @@ interface TabInfo {
   title: string;
 }
 
-const TabsComponent: React.SFC<TabsProps> = ({tabs, activeKey, defaultTab, onSelect}) => {
+const TabsComponent: React.SFC<TabsProps> = ({
+  tabs,
+  activeKey,
+  defaultTab,
+  onSelect,
+}) => {
   return (
-      <Tabs
-        id="tab"
-        className="tabs-component"
-        defaultActiveKey={ defaultTab }
-        activeKey={ activeKey }
-        onSelect={ onSelect }
-      >
-        {
-          tabs.map((tab) => {
-            return (
-              <Tab title={ tab.title } eventKey={ tab.key } key={ tab.key }>
-                { tab.content }
-              </Tab>
-            )
-          })
-        }
-      </Tabs>
-    )
+    <Tabs
+      id="tab"
+      className="tabs-component"
+      defaultActiveKey={defaultTab}
+      activeKey={activeKey}
+      onSelect={onSelect}
+    >
+      {tabs.map((tab) => {
+        return (
+          <Tab title={tab.title} eventKey={tab.key} key={tab.key}>
+            {tab.content}
+          </Tab>
+        );
+      })}
+    </Tabs>
+  );
 };
 
 export default TabsComponent;

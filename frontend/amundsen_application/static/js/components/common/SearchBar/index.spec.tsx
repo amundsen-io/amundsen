@@ -3,7 +3,12 @@ import * as History from 'history';
 
 import { mount, shallow } from 'enzyme';
 
-import { mapStateToProps, mapDispatchToProps, SearchBar, SearchBarProps } from '.';
+import {
+  mapStateToProps,
+  mapDispatchToProps,
+  SearchBar,
+  SearchBarProps,
+} from '.';
 import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
@@ -15,7 +20,11 @@ document.removeEventListener = jest.fn(() => {});
 describe('SearchBar', () => {
   const submitMockEvent = { preventDefault: jest.fn() };
   const setStateSpy = jest.spyOn(SearchBar.prototype, 'setState');
-  const setup = (propOverrides?: Partial<SearchBarProps>, useMount?: boolean, location?: Partial<History.Location>) => {
+  const setup = (
+    propOverrides?: Partial<SearchBarProps>,
+    useMount?: boolean,
+    location?: Partial<History.Location>
+  ) => {
     const routerProps = getMockRouterProps<any>(null, location);
     const props: SearchBarProps = {
       onInputChange: jest.fn(),
@@ -23,9 +32,11 @@ describe('SearchBar', () => {
       searchTerm: '',
       submitSearch: jest.fn(),
       ...routerProps,
-      ...propOverrides
+      ...propOverrides,
     };
-    const wrapper = useMount ? mount<SearchBar>(<SearchBar {...props} />) : shallow<SearchBar>(<SearchBar {...props} />);
+    const wrapper = useMount
+      ? mount<SearchBar>(<SearchBar {...props} />)
+      : shallow<SearchBar>(<SearchBar {...props} />);
     return { props, wrapper };
   };
 
@@ -44,14 +55,20 @@ describe('SearchBar', () => {
     it('sets the searchTerm to an empty string', () => {
       setStateSpy.mockClear();
       const initialSearchTerm = 'non empty search term';
-      const { wrapper } = setup({ searchTerm: initialSearchTerm});
+      const { wrapper } = setup({ searchTerm: initialSearchTerm });
       expect(wrapper.state().searchTerm).toBe(initialSearchTerm);
       wrapper.instance().clearSearchTerm();
-      expect(setStateSpy).toHaveBeenCalledWith({ searchTerm: '', showTypeAhead: false });
+      expect(setStateSpy).toHaveBeenCalledWith({
+        searchTerm: '',
+        showTypeAhead: false,
+      });
     });
 
     it('calls props.clearSearch if it is defined', () => {
-      const { props, wrapper } = setup({ searchTerm: 'test', clearSearch: jest.fn() });
+      const { props, wrapper } = setup({
+        searchTerm: 'test',
+        clearSearch: jest.fn(),
+      });
       const clearSearchSpy = jest.spyOn(props, 'clearSearch');
       wrapper.instance().clearSearchTerm();
       expect(clearSearchSpy).toHaveBeenCalled();
@@ -61,7 +78,11 @@ describe('SearchBar', () => {
   describe('componentDidMount', () => {
     it('adds an event listener for updateTypeAhead to be called on mousedown', () => {
       const { wrapper } = setup({}, true);
-      expect(document.addEventListener).toHaveBeenCalledWith('mousedown', wrapper.instance().updateTypeAhead, false);
+      expect(document.addEventListener).toHaveBeenCalledWith(
+        'mousedown',
+        wrapper.instance().updateTypeAhead,
+        false
+      );
     });
   });
 
@@ -69,7 +90,11 @@ describe('SearchBar', () => {
     it('removes the event listener for updateTypeAhead', () => {
       const { wrapper } = setup({}, true);
       wrapper.instance().componentWillUnmount();
-      expect(document.removeEventListener).toHaveBeenCalledWith('mousedown', wrapper.instance().updateTypeAhead, false);
+      expect(document.removeEventListener).toHaveBeenCalledWith(
+        'mousedown',
+        wrapper.instance().updateTypeAhead,
+        false
+      );
     });
   });
 
@@ -100,22 +125,25 @@ describe('SearchBar', () => {
 
     describe('when form is not valid', () => {
       beforeAll(() => {
-        isFormValidSpy.mockImplementation(() => false)
-      })
+        isFormValidSpy.mockImplementation(() => false);
+      });
 
       it('updates the searchTerm (for visual feedback) and hides type ahead', () => {
         setStateSpy.mockClear();
         const testTerm = 'hello';
         // @ts-ignore: mocked events throw type errors
         wrapper.instance().handleValueChange({ target: { value: testTerm } });
-        expect(setStateSpy).toHaveBeenCalledWith({ searchTerm: testTerm, showTypeAhead: false });
-      })
-    })
+        expect(setStateSpy).toHaveBeenCalledWith({
+          searchTerm: testTerm,
+          showTypeAhead: false,
+        });
+      });
+    });
 
     describe('when form is valid', () => {
       beforeAll(() => {
-        isFormValidSpy.mockImplementation(() => true)
-      })
+        isFormValidSpy.mockImplementation(() => true);
+      });
 
       describe('if searchTerm has length', () => {
         const mockSearchTerm = 'I have Length';
@@ -123,28 +151,40 @@ describe('SearchBar', () => {
         it('calls setState with searchTerm as lowercase target value & showTypeAhead as true ', () => {
           setStateSpy.mockClear();
           // @ts-ignore: mocked events throw type errors
-          wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
-          expect(setStateSpy).toHaveBeenCalledWith({ searchTerm: expectedSearchTerm, showTypeAhead: true });
+          wrapper
+            .instance()
+            .handleValueChange({ target: { value: mockSearchTerm } });
+          expect(setStateSpy).toHaveBeenCalledWith({
+            searchTerm: expectedSearchTerm,
+            showTypeAhead: true,
+          });
         });
 
         it('calls onInputChange with searchTerm as lowercase target value', () => {
           // @ts-ignore: mocked events throw type errors
           props.onInputChange.mockClear();
-          wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
+          wrapper
+            .instance()
+            .handleValueChange({ target: { value: mockSearchTerm } });
           expect(props.onInputChange).toHaveBeenCalledWith(expectedSearchTerm);
         });
-      })
+      });
 
       describe('if searchTerm has zero length', () => {
         const mockSearchTerm = '';
         it('calls clearSearchTerm', () => {
-          const clearSearchTermSpy = jest.spyOn(wrapper.instance(), 'clearSearchTerm');
+          const clearSearchTermSpy = jest.spyOn(
+            wrapper.instance(),
+            'clearSearchTerm'
+          );
           // @ts-ignore: mocked events throw type errors
-          wrapper.instance().handleValueChange({ target: { value: mockSearchTerm } });
+          wrapper
+            .instance()
+            .handleValueChange({ target: { value: mockSearchTerm } });
           expect(clearSearchTermSpy).toHaveBeenCalled();
         });
       });
-    })
+    });
   });
 
   describe('handleValueSubmit', () => {
@@ -186,7 +226,7 @@ describe('SearchBar', () => {
         wrapper.instance().handleValueSubmit(submitMockEvent);
         expect(hideTypeAheadSpy).toHaveBeenCalled();
       });
-    })
+    });
 
     describe('if !isFormValid', () => {
       it('does not submit if !isFormValid()', () => {
@@ -204,7 +244,7 @@ describe('SearchBar', () => {
         wrapper.instance().handleValueSubmit(submitMockEvent);
         expect(hideTypeAheadSpy).not.toHaveBeenCalled();
       });
-    })
+    });
   });
 
   describe('hideTypeAhead', () => {
@@ -247,10 +287,13 @@ describe('SearchBar', () => {
       const givenResource = ResourceType.user;
       const givenBoolean = true;
       wrapper.instance().onSelectInlineResult(givenResource, givenBoolean);
-      expect(props.onSelectInlineResult).toHaveBeenCalledWith(givenResource, wrapper.state().searchTerm, givenBoolean);
+      expect(props.onSelectInlineResult).toHaveBeenCalledWith(
+        givenResource,
+        wrapper.state().searchTerm,
+        givenBoolean
+      );
     });
   });
-
 
   describe('updateTypeAhead', () => {
     /* TODO: How to test logic that leverages refs */
@@ -292,7 +335,10 @@ describe('SearchBar', () => {
       });
 
       it('renders input with correct given props', () => {
-        const { props, wrapper } = setup({ placeholder: 'Type something to search', searchTerm: 'data' });
+        const { props, wrapper } = setup({
+          placeholder: 'Type something to search',
+          searchTerm: 'data',
+        });
         expect(wrapper.find('form').find('input').props()).toMatchObject({
           'aria-label': props.placeholder,
           autoFocus: true,
@@ -314,7 +360,9 @@ describe('SearchBar', () => {
         });
 
         it('renders button img with correct props', () => {
-          expect(wrapper.find('form').find('button').find('img').props()).toMatchObject({
+          expect(
+            wrapper.find('form').find('button').find('img').props()
+          ).toMatchObject({
             className: 'icon icon-search',
           });
         });
@@ -322,7 +370,7 @@ describe('SearchBar', () => {
     });
 
     describe('render with small mode', () => {
-      const { wrapper, props } = setup({ size: "small" });
+      const { wrapper, props } = setup({ size: 'small' });
       it('renders a close button', () => {
         const closeButton = wrapper.find('button.clear-button');
         expect(closeButton.exists()).toBe(true);
@@ -352,7 +400,7 @@ describe('SearchBar', () => {
       expect(result.onSelectInlineResult).toBeInstanceOf(Function);
     });
     it('sets clearSearch on the props if on search route', () => {
-      const props = setup(null, null, { pathname: "/search" }).props;
+      const props = setup(null, null, { pathname: '/search' }).props;
       result = mapDispatchToProps(dispatch, props);
       expect(result.clearSearch).toBeInstanceOf(Function);
     });

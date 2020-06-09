@@ -1,9 +1,9 @@
 @import 'variables';
 
 .request-component {
-  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
   border-radius: 6px;
   bottom: 75px;
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.2);
   display: block;
   left: 25px;
   position: fixed;
@@ -44,7 +44,8 @@
     textarea {
       color: $text-secondary;
     }
-    input[type="checkbox"] {
+
+    input[type='checkbox'] {
       margin-right: 8px;
     }
   }

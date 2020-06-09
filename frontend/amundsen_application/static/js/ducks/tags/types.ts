@@ -15,23 +15,22 @@ export interface GetAllTagsResponse {
   };
 }
 
-
 export enum UpdateTags {
   REQUEST = 'amundsen/tags/UPDATE_TAGS_REQUEST',
   SUCCESS = 'amundsen/tags/UPDATE_TAGS_SUCCESS',
   FAILURE = 'amundsen/tags/UPDATE_TAGS_FAILURE',
-};
+}
 export interface UpdateTagsRequest {
-  type: UpdateTags.REQUEST,
+  type: UpdateTags.REQUEST;
   payload: {
     tagArray: UpdateTagData[];
     resourceType: ResourceType;
     uriKey: string;
   };
-};
+}
 export interface UpdateTagsResponse {
-  type: UpdateTags.SUCCESS | UpdateTags.FAILURE,
+  type: UpdateTags.SUCCESS | UpdateTags.FAILURE;
   payload: {
     tags: Tag[];
-  }
-};
+  };
+}

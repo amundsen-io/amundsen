@@ -7,18 +7,15 @@ import { SendingState } from 'interfaces';
 import FeedbackForm, { FeedbackFormProps } from '.';
 import { RatingFeedbackForm } from './RatingFeedbackForm';
 
-import {
-  SUBMIT_FAILURE_MESSAGE,
-  SUBMIT_SUCCESS_MESSAGE,
-} from '../constants';
+import { SUBMIT_FAILURE_MESSAGE, SUBMIT_SUCCESS_MESSAGE } from '../constants';
 
-const globalAny:any = global;
+const globalAny: any = global;
 
 const mockFormData = {
   key1: 'val1',
   key2: 'val2',
   get: jest.fn(),
-}
+};
 mockFormData.get.mockImplementation((val) => {
   return mockFormData[val];
 });
@@ -33,14 +30,15 @@ const setup = (propOverrides?: Partial<FeedbackFormProps>) => {
     sendState: SendingState.IDLE,
     submitFeedback: jest.fn(),
     resetFeedback: jest.fn(),
-    ...propOverrides
+    ...propOverrides,
   };
-  const wrapper = shallow<RatingFeedbackForm>(<RatingFeedbackForm {...props} />);
+  const wrapper = shallow<RatingFeedbackForm>(
+    <RatingFeedbackForm {...props} />
+  );
   return { props, wrapper };
 };
 
 describe('FeedbackForm', () => {
-
   describe('submitForm', () => {
     it('calls submitFeedback with formData', () => {
       const { props, wrapper } = setup();
@@ -63,21 +61,25 @@ describe('FeedbackForm', () => {
     });
 
     it('renders LoadingSpinner if sendState is WAITING', () => {
-      const { wrapper } = setup({sendState: SendingState.WAITING});
+      const { wrapper } = setup({ sendState: SendingState.WAITING });
 
       expect(wrapper.find(LoadingSpinner).exists()).toBeTruthy();
     });
 
     it('renders confirmation status message if sendState is COMPLETE', () => {
-      const { wrapper } = setup({sendState: SendingState.COMPLETE});
+      const { wrapper } = setup({ sendState: SendingState.COMPLETE });
 
-      expect(wrapper.find('div.status-message').text()).toEqual(SUBMIT_SUCCESS_MESSAGE);
+      expect(wrapper.find('div.status-message').text()).toEqual(
+        SUBMIT_SUCCESS_MESSAGE
+      );
     });
 
     it('renders failure status message if sendState is ERROR', () => {
-      const { wrapper } = setup({sendState: SendingState.ERROR});
+      const { wrapper } = setup({ sendState: SendingState.ERROR });
 
-      expect(wrapper.find('div.status-message').text()).toEqual(SUBMIT_FAILURE_MESSAGE);
+      expect(wrapper.find('div.status-message').text()).toEqual(
+        SUBMIT_FAILURE_MESSAGE
+      );
     });
   });
 });

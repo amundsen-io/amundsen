@@ -30,21 +30,39 @@ export class NavBar extends React.Component<NavBarProps> {
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
       if (link.use_router) {
-        return <NavLink className="title-3 border-bottom-white" key={index} to={link.href} target={link.target}
-                        onClick={logClick}>{link.label}</NavLink>
+        return (
+          <NavLink
+            className="title-3 border-bottom-white"
+            key={index}
+            to={link.href}
+            target={link.target}
+            onClick={logClick}
+          >
+            {link.label}
+          </NavLink>
+        );
       }
-      return <a className="title-3 border-bottom-white" key={index} href={link.href} target={link.target}
-                onClick={logClick}>{link.label}</a>
+      return (
+        <a
+          className="title-3 border-bottom-white"
+          key={index}
+          href={link.href}
+          target={link.target}
+          onClick={logClick}
+        >
+          {link.label}
+        </a>
+      );
     });
   }
 
   renderSearchBar = () => {
-    if (this.props.location.pathname !== "/") {
+    if (this.props.location.pathname !== '/') {
       return (
         <div className="search-bar">
           <SearchBar size="small" />
         </div>
-      )
+      );
     }
     return null;
   };
@@ -56,47 +74,59 @@ export class NavBar extends React.Component<NavBarProps> {
           <div className="nav-bar">
             <div id="nav-bar-left" className="nav-bar-left">
               <Link to={`/`}>
-                {
-                  AppConfig.logoPath &&
-                  <img id="logo-icon" className="logo-icon" src={AppConfig.logoPath} />
-                }
+                {AppConfig.logoPath && (
+                  <img
+                    id="logo-icon"
+                    className="logo-icon"
+                    src={AppConfig.logoPath}
+                  />
+                )}
                 <span className="title-3">AMUNDSEN</span>
               </Link>
             </div>
-            { this.renderSearchBar() }
+            {this.renderSearchBar()}
             <div id="nav-bar-right" className="ml-auto nav-bar-right">
               {this.generateNavLinks(AppConfig.navLinks)}
-              {
-                feedbackEnabled() &&
-                <Feedback />
-              }
-              {
-                this.props.loggedInUser && indexUsersEnabled() &&
-                <Dropdown id='user-dropdown' pullRight={true}>
-                  <Dropdown.Toggle noCaret={true} className="nav-bar-avatar avatar-dropdown">
-                    <Avatar name={this.props.loggedInUser.display_name} size={32} round={true} />
+              {feedbackEnabled() && <Feedback />}
+              {this.props.loggedInUser && indexUsersEnabled() && (
+                <Dropdown id="user-dropdown" pullRight={true}>
+                  <Dropdown.Toggle
+                    noCaret={true}
+                    className="nav-bar-avatar avatar-dropdown"
+                  >
+                    <Avatar
+                      name={this.props.loggedInUser.display_name}
+                      size={32}
+                      round={true}
+                    />
                   </Dropdown.Toggle>
-                  <Dropdown.Menu className='profile-menu'>
-                    <div className='profile-menu-header'>
-                      <div className='title-2'>{this.props.loggedInUser.display_name}</div>
+                  <Dropdown.Menu className="profile-menu">
+                    <div className="profile-menu-header">
+                      <div className="title-2">
+                        {this.props.loggedInUser.display_name}
+                      </div>
                       <div>{this.props.loggedInUser.email}</div>
                     </div>
                     <MenuItem
                       componentClass={Link}
                       id="nav-bar-avatar-link"
                       to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}
-                      href={`/user/${this.props.loggedInUser.user_id}?source=navbar`}>
-                        My Profile
+                      href={`/user/${this.props.loggedInUser.user_id}?source=navbar`}
+                    >
+                      My Profile
                     </MenuItem>
                   </Dropdown.Menu>
                 </Dropdown>
-              }
-              {
-                this.props.loggedInUser && !indexUsersEnabled() &&
+              )}
+              {this.props.loggedInUser && !indexUsersEnabled() && (
                 <div className="nav-bar-avatar">
-                  <Avatar name={this.props.loggedInUser.display_name} size={32} round={true} />
+                  <Avatar
+                    name={this.props.loggedInUser.display_name}
+                    size={32}
+                    round={true}
+                  />
                 </div>
-              }
+              )}
             </div>
           </div>
         </div>
@@ -108,7 +138,7 @@ export class NavBar extends React.Component<NavBarProps> {
 export const mapStateToProps = (state: GlobalState) => {
   return {
     loggedInUser: state.user.loggedInUser,
-  }
+  };
 };
 
 export default connect<StateFromProps>(mapStateToProps)(withRouter(NavBar));

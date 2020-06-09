@@ -10,7 +10,10 @@ import PaginatedApiResourceList, { PaginatedApiResourceListProps } from './';
 import * as CONSTANTS from '../constants';
 
 describe('PaginatedApiResourceList', () => {
-  const setStateSpy = jest.spyOn(PaginatedApiResourceList.prototype, 'setState');
+  const setStateSpy = jest.spyOn(
+    PaginatedApiResourceList.prototype,
+    'setState'
+  );
   const setup = (propOverrides?: Partial<PaginatedApiResourceListProps>) => {
     const props: PaginatedApiResourceListProps = {
       activePage: 3,
@@ -24,9 +27,11 @@ describe('PaginatedApiResourceList', () => {
       ],
       totalItemsCount: 40,
       source: 'testSource',
-      ...propOverrides
+      ...propOverrides,
     };
-    const wrapper = shallow<PaginatedApiResourceList>(<PaginatedApiResourceList {...props} />);
+    const wrapper = shallow<PaginatedApiResourceList>(
+      <PaginatedApiResourceList {...props} />
+    );
     return { props, wrapper };
   };
 
@@ -51,7 +56,10 @@ describe('PaginatedApiResourceList', () => {
     });
 
     it('renders empty messages if it exists and there are no items', () => {
-      const { props, wrapper } = setup({ totalItemsCount: 0, emptyText: 'Nothing Here'});
+      const { props, wrapper } = setup({
+        totalItemsCount: 0,
+        emptyText: 'Nothing Here',
+      });
       expect(wrapper.find('.empty-message').text()).toBe(props.emptyText);
     });
 

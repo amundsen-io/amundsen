@@ -4,9 +4,11 @@ import './styles.scss';
 import { Watermark } from 'interfaces';
 import {
   HIGH_WATERMARK_LABEL,
-  NO_WATERMARK_LINE_1, NO_WATERMARK_LINE_2, LOW_WATERMARK_LABEL,
+  NO_WATERMARK_LINE_1,
+  NO_WATERMARK_LINE_2,
+  LOW_WATERMARK_LABEL,
   WATERMARK_INPUT_FORMAT,
-  WatermarkType
+  WatermarkType,
 } from './constants';
 import { formatDate } from 'utils/dateUtils';
 
@@ -23,17 +25,19 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
   };
 
   getWatermarkValue = (type: WatermarkType) => {
-    const watermark = this.props.watermarks.find((watermark: Watermark) => watermark.watermark_type === type);
-    return watermark && watermark.partition_value || null;
+    const watermark = this.props.watermarks.find(
+      (watermark: Watermark) => watermark.watermark_type === type
+    );
+    return (watermark && watermark.partition_value) || null;
   };
 
   renderWatermarkInfo = (low: string, high: string) => {
     if (low === null && high === null) {
       return (
         <div className="body-2">
-          { NO_WATERMARK_LINE_1 }
-          <br/>
-          { NO_WATERMARK_LINE_2 }
+          {NO_WATERMARK_LINE_1}
+          <br />
+          {NO_WATERMARK_LINE_2}
         </div>
       );
     }
@@ -41,14 +45,14 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     return (
       <>
         <div className="range-labels body-2">
-          { LOW_WATERMARK_LABEL }
-          <br/>
-          { HIGH_WATERMARK_LABEL }
+          {LOW_WATERMARK_LABEL}
+          <br />
+          {HIGH_WATERMARK_LABEL}
         </div>
         <div className="range-dates body-2">
-          { low && this.formatWatermarkDate(low) }
-          <br/>
-          { high && this.formatWatermarkDate(high) }
+          {low && this.formatWatermarkDate(low)}
+          <br />
+          {high && this.formatWatermarkDate(high)}
         </div>
       </>
     );
@@ -60,8 +64,8 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
 
     return (
       <div className="watermark-label">
-        <img className="range-icon" src="/static/images/watermark-range.png"/>
-        { this.renderWatermarkInfo(low, high) }
+        <img className="range-icon" src="/static/images/watermark-range.png" />
+        {this.renderWatermarkInfo(low, high)}
       </div>
     );
   }

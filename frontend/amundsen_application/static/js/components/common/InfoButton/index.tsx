@@ -14,20 +14,25 @@ export interface InfoButtonProps {
   size?: string;
 }
 
-const InfoButton: React.SFC<InfoButtonProps> = ({ title, infoText, placement, size }) => {
+const InfoButton: React.SFC<InfoButtonProps> = ({
+  title,
+  infoText,
+  placement,
+  size,
+}) => {
   const popoverHoverFocus = (
-   <Popover id="popover-trigger-hover-focus" title={ title }>
+    <Popover id="popover-trigger-hover-focus" title={title}>
       <SanitizedHTML html={infoText} />
-   </Popover>
- );
+    </Popover>
+  );
 
   return (
     <OverlayTrigger
-     trigger={['hover', 'focus']}
-     placement={ placement }
-     overlay={popoverHoverFocus}
-     >
-      <button className={"btn icon info-button " + size}/>
+      trigger={['hover', 'focus']}
+      placement={placement}
+      overlay={popoverHoverFocus}
+    >
+      <button className={'btn icon info-button ' + size} />
     </OverlayTrigger>
   );
 };

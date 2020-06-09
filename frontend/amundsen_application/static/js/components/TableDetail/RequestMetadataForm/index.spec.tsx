@@ -4,8 +4,17 @@ import { shallow } from 'enzyme';
 import FlashMessage from 'components/common/FlashMessage';
 
 import globalState from 'fixtures/globalState';
-import { NotificationType, RequestMetadataType, SendingState } from 'interfaces';
-import { RequestMetadataForm, mapDispatchToProps, mapStateToProps, RequestMetadataProps } from '.';
+import {
+  NotificationType,
+  RequestMetadataType,
+  SendingState,
+} from 'interfaces';
+import {
+  RequestMetadataForm,
+  mapDispatchToProps,
+  mapStateToProps,
+  RequestMetadataProps,
+} from '.';
 import {
   TITLE_TEXT,
   FROM_LABEL,
@@ -21,20 +30,20 @@ import {
   SEND_FAILURE_MESSAGE,
   SEND_INPROGRESS_MESSAGE,
   SEND_SUCCESS_MESSAGE,
-} from './constants'
+} from './constants';
 
-const globalAny:any = global;
+const globalAny: any = global;
 const mockFormData = {
-  'recipients': 'test1@test.com,test2@test.com',
-  'sender': 'test@test.com',
+  recipients: 'test1@test.com,test2@test.com',
+  sender: 'test@test.com',
   'table-description': 'on',
   'fields-requested': 'off',
-  'comment': 'test',
+  comment: 'test',
   get: jest.fn(),
-}
+};
 mockFormData.get.mockImplementation((val) => {
   return mockFormData[val];
-})
+});
 function formDataMock() {
   this.append = jest.fn();
 
@@ -54,14 +63,19 @@ describe('RequestMetadataForm', () => {
       closeRequestDescriptionDialog: jest.fn(),
       ...propOverrides,
     };
-    const wrapper = shallow<RequestMetadataForm>(<RequestMetadataForm {...props} />);
-    return {props, wrapper}
+    const wrapper = shallow<RequestMetadataForm>(
+      <RequestMetadataForm {...props} />
+    );
+    return { props, wrapper };
   };
 
   describe('componentWillUnmount', () => {
     it('calls closeRequestDescriptionDialog', () => {
       const { props, wrapper } = setup();
-      const closeRequestDescriptionDialogSpy = jest.spyOn(props, 'closeRequestDescriptionDialog');
+      const closeRequestDescriptionDialogSpy = jest.spyOn(
+        props,
+        'closeRequestDescriptionDialog'
+      );
       wrapper.instance().componentWillUnmount();
       expect(closeRequestDescriptionDialogSpy).toHaveBeenCalled();
     });
@@ -70,7 +84,10 @@ describe('RequestMetadataForm', () => {
   describe('closeDialog', () => {
     it('calls closeRequestDescriptionDialog', () => {
       const { props, wrapper } = setup();
-      const closeRequestDescriptionDialogSpy = jest.spyOn(props, 'closeRequestDescriptionDialog');
+      const closeRequestDescriptionDialogSpy = jest.spyOn(
+        props,
+        'closeRequestDescriptionDialog'
+      );
       wrapper.instance().closeDialog();
       expect(closeRequestDescriptionDialogSpy).toHaveBeenCalled();
     });
@@ -79,15 +96,21 @@ describe('RequestMetadataForm', () => {
   describe('getFlashMessageString', () => {
     it('returns SEND_SUCCESS_MESSAGE if SendingState.COMPLETE', () => {
       const wrapper = setup({ sendState: SendingState.COMPLETE }).wrapper;
-      expect(wrapper.instance().getFlashMessageString()).toEqual(SEND_SUCCESS_MESSAGE);
+      expect(wrapper.instance().getFlashMessageString()).toEqual(
+        SEND_SUCCESS_MESSAGE
+      );
     });
     it('returns SEND_FAILURE_MESSAGE if SendingState.ERROR', () => {
       const wrapper = setup({ sendState: SendingState.ERROR }).wrapper;
-      expect(wrapper.instance().getFlashMessageString()).toEqual(SEND_FAILURE_MESSAGE);
+      expect(wrapper.instance().getFlashMessageString()).toEqual(
+        SEND_FAILURE_MESSAGE
+      );
     });
     it('returns SEND_INPROGRESS_MESSAGE if SendingState.WAITING', () => {
       const wrapper = setup({ sendState: SendingState.WAITING }).wrapper;
-      expect(wrapper.instance().getFlashMessageString()).toEqual(SEND_INPROGRESS_MESSAGE);
+      expect(wrapper.instance().getFlashMessageString()).toEqual(
+        SEND_INPROGRESS_MESSAGE
+      );
     });
     it('returns empty striong if sending state not handled', () => {
       const wrapper = setup({ sendState: SendingState.IDLE }).wrapper;
@@ -101,10 +124,12 @@ describe('RequestMetadataForm', () => {
 
     beforeAll(() => {
       wrapper = setup().wrapper;
-      mockString = 'I am the message'
-      jest.spyOn(wrapper.instance(), 'getFlashMessageString').mockImplementation(() => {
-        return mockString;
-      });
+      mockString = 'I am the message';
+      jest
+        .spyOn(wrapper.instance(), 'getFlashMessageString')
+        .mockImplementation(() => {
+          return mockString;
+        });
     });
 
     it('renders a FlashMessage with correct props', () => {
@@ -120,7 +145,7 @@ describe('RequestMetadataForm', () => {
     it('calls submitNotification', () => {
       const { props, wrapper } = setup();
       const submitNotificationSpy = jest.spyOn(props, 'submitNotification');
-       const { cluster, database, schema, name } = props.tableMetadata;
+      const { cluster, database, schema, name } = props.tableMetadata;
 
       wrapper.instance().submitNotification({ preventDefault: jest.fn() });
 
@@ -179,7 +204,9 @@ describe('RequestMetadataForm', () => {
         });
         it('renders to input with correct recipients', () => {
           element = wrapper.find('#recipients-form-group');
-          expect(element.find('input').props().defaultValue).toEqual('test1@lyft.com, test2@lyft.com');
+          expect(element.find('input').props().defaultValue).toEqual(
+            'test1@lyft.com, test2@lyft.com'
+          );
         });
 
         it('renders request type label', () => {
@@ -208,20 +235,25 @@ describe('RequestMetadataForm', () => {
           const textArea = element.find('textarea');
           expect(textArea.text()).toEqual('');
           expect(textArea.props().required).toBe(false);
-          expect(textArea.props().placeholder).toBe(COMMENT_PLACEHOLDER_DEFAULT);
+          expect(textArea.props().placeholder).toBe(
+            COMMENT_PLACEHOLDER_DEFAULT
+          );
         });
 
         it('renders submit button with correct text and icon', () => {
           element = wrapper.find('#submit-request-button');
           expect(element.text()).toEqual(SEND_BUTTON);
-          expect(element.find('img').props().className).toEqual('icon icon-send');
+          expect(element.find('img').props().className).toEqual(
+            'icon icon-send'
+          );
         });
       });
 
-
       describe('table description requested', () => {
         beforeAll(() => {
-          const setupResult = setup({ requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION });
+          const setupResult = setup({
+            requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION,
+          });
           wrapper = setupResult.wrapper;
         });
         it('renders checked table description checkbox', () => {
@@ -234,7 +266,10 @@ describe('RequestMetadataForm', () => {
 
       describe('column description requested', () => {
         beforeAll(() => {
-          const setupResult = setup({ requestMetadataType: RequestMetadataType.COLUMN_DESCRIPTION, columnName: 'Test' });
+          const setupResult = setup({
+            requestMetadataType: RequestMetadataType.COLUMN_DESCRIPTION,
+            columnName: 'Test',
+          });
           wrapper = setupResult.wrapper;
         });
         it('renders checked column description checkbox', () => {
@@ -248,7 +283,9 @@ describe('RequestMetadataForm', () => {
           element = wrapper.find('#additional-comments-form-group');
           const textArea = element.find('textarea');
 
-          expect(textArea.text()).toEqual(`${COLUMN_REQUESTED_COMMENT_PREFIX}Test`);
+          expect(textArea.text()).toEqual(
+            `${COLUMN_REQUESTED_COMMENT_PREFIX}Test`
+          );
           expect(textArea.props().required).toBe(true);
           expect(textArea.props().placeholder).toBe(COMMENT_PLACEHOLDER_COLUMN);
         });
@@ -271,8 +308,14 @@ describe('RequestMetadataForm', () => {
       let renderFlashMessageMock;
 
       beforeAll(() => {
-        wrapper = setup({ sendState: SendingState.WAITING, requestIsOpen: false }).wrapper;
-        renderFlashMessageMock = jest.spyOn(wrapper.instance(), 'renderFlashMessage');
+        wrapper = setup({
+          sendState: SendingState.WAITING,
+          requestIsOpen: false,
+        }).wrapper;
+        renderFlashMessageMock = jest.spyOn(
+          wrapper.instance(),
+          'renderFlashMessage'
+        );
       });
 
       it('renders results of renderFlashMessage() within component', () => {
@@ -293,10 +336,14 @@ describe('RequestMetadataForm', () => {
       expect(result.userEmail).toEqual(globalState.user.loggedInUser.email);
     });
     it('sets ownerObj on the props', () => {
-      expect(result.tableOwners).toEqual(Object.keys(globalState.tableMetadata.tableOwners.owners));
+      expect(result.tableOwners).toEqual(
+        Object.keys(globalState.tableMetadata.tableOwners.owners)
+      );
     });
     it('sets requestIsOpen on the props', () => {
-      expect(result.requestIsOpen).toEqual(globalState.notification.requestIsOpen);
+      expect(result.requestIsOpen).toEqual(
+        globalState.notification.requestIsOpen
+      );
     });
     it('sets sendState on the props', () => {
       expect(result.sendState).toEqual(globalState.notification.sendState);
@@ -309,9 +356,12 @@ describe('RequestMetadataForm', () => {
     });
     it('sets requestMetadataType on the props if it exists in globalState', () => {
       const newState = { ...globalState };
-      newState.notification.requestMetadataType = RequestMetadataType.TABLE_DESCRIPTION;
+      newState.notification.requestMetadataType =
+        RequestMetadataType.TABLE_DESCRIPTION;
       result = mapStateToProps(newState);
-      expect(result.requestMetadataType).toEqual(newState.notification.requestMetadataType);
+      expect(result.requestMetadataType).toEqual(
+        newState.notification.requestMetadataType
+      );
     });
   });
 

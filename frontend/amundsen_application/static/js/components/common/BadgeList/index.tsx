@@ -11,15 +11,17 @@ export interface BadgeListProps {
 const BadgeList: React.SFC<BadgeListProps> = ({ badges }) => {
   return (
     <span className="badge-list">
-      {
-        badges.map((badge, index) => {
-          const badgeConfig = getBadgeConfig(badge.tag_name);
+      {badges.map((badge, index) => {
+        const badgeConfig = getBadgeConfig(badge.tag_name);
 
-          return <Flag text={ badgeConfig.displayName }
-                       labelStyle={ badgeConfig.style }
-                       key={`badge-${index}`}/>;
-        })
-      }
+        return (
+          <Flag
+            text={badgeConfig.displayName}
+            labelStyle={badgeConfig.style}
+            key={`badge-${index}`}
+          />
+        );
+      })}
     </span>
   );
 };

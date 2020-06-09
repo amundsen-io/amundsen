@@ -12,30 +12,28 @@
   }
 }
 
-
 .report-table-issue-modal {
   background-color: $white;
-  height: auto;
-  min-height: 300px;
-  padding: 32px;
-  width: 400px;
-  box-shadow: 0 0 24px -2px rgba(0, 0, 0, .2);
   border-radius: 6px;
   bottom: 100px;
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.2);
   display: block;
+  height: auto;
   left: 25px;
+  min-height: 300px;
+  padding: 32px;
   position: fixed;
+  width: 400px;
   z-index: 6;
-
 
   .btn-close {
     position: absolute;
-    top: 32px;
     right: 32px;
+    top: 32px;
   }
 
   .data-owner-notification {
-    font-size: 10px; 
-    margin: 5px 0px 0px 0px; 
+    font-size: 10px;
+    margin: 5px 0 0;
   }
 }

@@ -1,5 +1,5 @@
 import merge from 'webpack-merge';
-import commonConfig from './webpack.common'
+import commonConfig from './webpack.common';
 import TerserPlugin from 'terser-webpack-plugin';
 
 export default merge(commonConfig, {
@@ -15,4 +15,3 @@ export default merge(commonConfig, {
     ],
   },
 });
-

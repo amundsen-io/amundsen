@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { CopyBlock, atomOneLight } from 'react-code-blocks';
 
-const LANGUAGE = "sql";
+const LANGUAGE = 'sql';
 
-const CodeBlock = ({text}) => {
+const CodeBlock = ({ text }) => {
   return (
     <CopyBlock
       text={text}
@@ -14,6 +14,6 @@ const CodeBlock = ({text}) => {
       codeBlock={true}
     />
   );
-}
+};
 
 export default CodeBlock;

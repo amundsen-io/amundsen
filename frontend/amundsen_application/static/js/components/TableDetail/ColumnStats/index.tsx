@@ -11,7 +11,9 @@ export interface ColumnStatsProps {
 
 export class ColumnStats extends React.Component<ColumnStatsProps> {
   getStatsInfoText = (startEpoch: number, endEpoch: number) => {
-    const startDate = startEpoch ? formatDate({ epochTimestamp: startEpoch }) : null;
+    const startDate = startEpoch
+      ? formatDate({ epochTimestamp: startEpoch })
+      : null;
     const endDate = endEpoch ? formatDate({ epochTimestamp: endEpoch }) : null;
 
     let infoText = 'Stats reflect data collected';
@@ -30,14 +32,10 @@ export class ColumnStats extends React.Component<ColumnStatsProps> {
   renderColumnStat = (entry: TableColumnStats) => {
     return (
       <div className="column-stat-row" key={entry.stat_type}>
-        <div className="stat-name body-3">
-          { entry.stat_type.toUpperCase() }
-        </div>
-        <div className="stat-value">
-          { entry.stat_val }
-        </div>
+        <div className="stat-name body-3">{entry.stat_type.toUpperCase()}</div>
+        <div className="stat-value">{entry.stat_val}</div>
       </div>
-    )
+    );
   };
 
   render = () => {
@@ -47,33 +45,29 @@ export class ColumnStats extends React.Component<ColumnStatsProps> {
     }
 
     // TODO - Move map statements to separate functions for better testing
-    const startEpoch = Math.min(...stats.map(s => s.start_epoch));
-    const endEpoch = Math.max(...stats.map(s => s.end_epoch));
+    const startEpoch = Math.min(...stats.map((s) => s.start_epoch));
+    const endEpoch = Math.max(...stats.map((s) => s.end_epoch));
 
     return (
       <section className="column-stats">
         <div className="stat-collection-info">
           <span className="title-3">Column Statistics&nbsp;</span>
-          { this.getStatsInfoText(startEpoch, endEpoch) }
+          {this.getStatsInfoText(startEpoch, endEpoch)}
         </div>
         <div className="column-stats-table">
           <div className="column-stats-column">
-            {
-              stats.map((stat, index) => {
-                if (index % 2 === 0) {
-                  return this.renderColumnStat(stat);
-                }
-              })
-            }
+            {stats.map((stat, index) => {
+              if (index % 2 === 0) {
+                return this.renderColumnStat(stat);
+              }
+            })}
           </div>
           <div className="column-stats-column">
-            {
-              this.props.stats.map((stat, index) => {
-                if (index % 2 === 1) {
-                  return this.renderColumnStat(stat);
-                }
-              })
-            }
+            {this.props.stats.map((stat, index) => {
+              if (index % 2 === 1) {
+                return this.renderColumnStat(stat);
+              }
+            })}
           </div>
         </div>
       </section>

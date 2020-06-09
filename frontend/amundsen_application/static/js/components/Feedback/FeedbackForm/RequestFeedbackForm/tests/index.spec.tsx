@@ -2,7 +2,9 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import AbstractFeedbackForm, { FeedbackFormProps } from 'components/Feedback/FeedbackForm';
+import AbstractFeedbackForm, {
+  FeedbackFormProps,
+} from 'components/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
 import { RequestFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
 import {
@@ -24,7 +26,7 @@ describe('RequestFeedbackForm', () => {
       submitFeedback: jest.fn(),
       resetFeedback: jest.fn(),
     };
-    return shallow(<RequestFeedbackForm {...props}/>)
+    return shallow(<RequestFeedbackForm {...props} />);
   };
 
   it('is instance of AbstractFeedbackForm', () => {
@@ -50,13 +52,15 @@ describe('RequestFeedbackForm', () => {
       expect(form.children().at(0).find('input').props()).toMatchObject({
         type: 'hidden',
         name: 'feedback-type',
-        value: 'Feature Request'
+        value: 'Feature Request',
       });
     });
 
     describe('renders subject input as second child', () => {
       it('renders correct label', () => {
-        expect(form.children().at(1).find('label').text()).toEqual(SUBJECT_LABEL);
+        expect(form.children().at(1).find('label').text()).toEqual(
+          SUBJECT_LABEL
+        );
       });
 
       it('renders input with correct props', () => {
@@ -72,7 +76,9 @@ describe('RequestFeedbackForm', () => {
 
     describe('renders feature-summary input as third child', () => {
       it('renders correct label', () => {
-        expect(form.children().at(2).find('label').text()).toEqual(FEATURE_SUMMARY_LABEL);
+        expect(form.children().at(2).find('label').text()).toEqual(
+          FEATURE_SUMMARY_LABEL
+        );
       });
 
       it('renders textarea with correct props', () => {
@@ -89,7 +95,9 @@ describe('RequestFeedbackForm', () => {
 
     describe('renders value-prop input as fourth child', () => {
       it('renders correct label', () => {
-        expect(form.children().at(3).find('label').text()).toEqual(PROPOSITION_LABEL);
+        expect(form.children().at(3).find('label').text()).toEqual(
+          PROPOSITION_LABEL
+        );
       });
 
       it('renders textarea with correct props', () => {
@@ -112,7 +120,7 @@ describe('RequestFeedbackForm', () => {
     });
 
     it('renders submit button with correct text', () => {
-      expect(form.find('button').text()).toEqual(SUBMIT_TEXT)
+      expect(form.find('button').text()).toEqual(SUBMIT_TEXT);
     });
   });
 });

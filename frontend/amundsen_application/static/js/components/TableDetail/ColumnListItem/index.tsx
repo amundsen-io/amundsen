@@ -15,7 +15,10 @@ import './styles.scss';
 import EditableSection from 'components/common/EditableSection';
 
 interface DispatchFromProps {
-  openRequestDescriptionDialog: (requestMetadataType: RequestMetadataType, columnName: string) => OpenRequestAction;
+  openRequestDescriptionDialog: (
+    requestMetadataType: RequestMetadataType,
+    columnName: string
+  ) => OpenRequestAction;
 }
 
 interface OwnProps {
@@ -29,11 +32,14 @@ interface ColumnListItemState {
 
 export type ColumnListItemProps = DispatchFromProps & OwnProps;
 
-export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnListItemState> {
+export class ColumnListItem extends React.Component<
+  ColumnListItemProps,
+  ColumnListItemState
+> {
   constructor(props) {
     super(props);
     this.state = {
-      isExpanded: false
+      isExpanded: false,
     };
   }
 
@@ -50,7 +56,10 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
   };
 
   openRequest = () => {
-    this.props.openRequestDescriptionDialog(RequestMetadataType.COLUMN_DESCRIPTION, this.props.data.name);
+    this.props.openRequestDescriptionDialog(
+      RequestMetadataType.COLUMN_DESCRIPTION,
+      this.props.data.name
+    );
   };
 
   stopPropagation = (e) => {
@@ -68,7 +77,7 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
       if (type.startsWith(truncatedType) && type !== truncatedType) {
         shouldTrucate = true;
         const lastChar = type.charAt(type.length - 1);
-        if (lastChar === '>'){
+        if (lastChar === '>') {
           text = `${truncatedType}<...>`;
         } else if (lastChar === ')') {
           text = `${truncatedType}(...)`;
@@ -76,92 +85,97 @@ export class ColumnListItem extends React.Component<ColumnListItemProps, ColumnL
           text = `${truncatedType}...`;
         }
         return;
-      };
+      }
     });
 
     if (shouldTrucate) {
       const popoverHover = (
-        <Popover className='column-type-popover' id={`column-type-popover:${columnIndex}`}>
+        <Popover
+          className="column-type-popover"
+          id={`column-type-popover:${columnIndex}`}
+        >
           {fullText}
         </Popover>
       );
       return (
         <OverlayTrigger
           trigger={['click']}
-          placement='left'
+          placement="left"
           overlay={popoverHover}
-          rootClose={true}>
-            <a className='column-type'
-               href="JavaScript:void(0)"
-               onClick={ this.stopPropagation }
-            >
-              {text}
-            </a>
+          rootClose={true}
+        >
+          <a
+            className="column-type"
+            href="JavaScript:void(0)"
+            onClick={this.stopPropagation}
+          >
+            {text}
+          </a>
         </OverlayTrigger>
-      )
+      );
     }
-    return (<div className='column-type'>{text}</div>);
+    return <div className="column-type">{text}</div>;
   };
-
 
   render() {
     const metadata = this.props.data;
     return (
-      <li className="list-group-item clickable" onClick={ this.toggleExpand }>
+      <li className="list-group-item clickable" onClick={this.toggleExpand}>
         <div className="column-list-item">
           <section className="column-header">
-            <div className={`column-details truncated ${!this.state.isExpanded ? 'my-auto' : ''}`}>
-              <div className="column-name">
-                { metadata.name }
-              </div>
-              {
-                !this.state.isExpanded &&
+            <div
+              className={`column-details truncated ${
+                !this.state.isExpanded ? 'my-auto' : ''
+              }`}
+            >
+              <div className="column-name">{metadata.name}</div>
+              {!this.state.isExpanded && (
                 <div className="column-desc body-3 truncated">
-                  { metadata.description }
+                  {metadata.description}
                 </div>
-              }
+              )}
             </div>
             <div className="resource-type">
-              { this.renderColumnType(this.props.index, metadata.col_type) }
+              {this.renderColumnType(this.props.index, metadata.col_type)}
             </div>
-            <div className="badges">
-              {/* Placeholder */}
-            </div>
+            <div className="badges">{/* Placeholder */}</div>
             <div className="actions">
               {
                 // TODO - Make this dropdown into a separate component
-                notificationsEnabled() &&
-                <Dropdown id={`detail-list-item-dropdown:${this.props.index}`}
-                          onClick={ this.stopPropagation }
-                          pullRight={ true }
-                          className="column-dropdown">
-                  <Dropdown.Toggle noCaret={ true }>
-                    <img className="icon icon-more"/>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <MenuItem onClick={ this.openRequest }>
-                      Request Column Description
-                    </MenuItem>
-                  </Dropdown.Menu>
-                </Dropdown>
+                notificationsEnabled() && (
+                  <Dropdown
+                    id={`detail-list-item-dropdown:${this.props.index}`}
+                    onClick={this.stopPropagation}
+                    pullRight={true}
+                    className="column-dropdown"
+                  >
+                    <Dropdown.Toggle noCaret={true}>
+                      <img className="icon icon-more" />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <MenuItem onClick={this.openRequest}>
+                        Request Column Description
+                      </MenuItem>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )
               }
             </div>
           </section>
-          {
-            this.state.isExpanded &&
+          {this.state.isExpanded && (
             <section className="expanded-content">
-              <div className="stop-propagation" onClick={ this.stopPropagation }>
+              <div className="stop-propagation" onClick={this.stopPropagation}>
                 <EditableSection title="Description">
                   <ColumnDescEditableText
-                    columnIndex={ this.props.index }
-                    editable={ metadata.is_editable }
-                    value={ metadata.description }
+                    columnIndex={this.props.index}
+                    editable={metadata.is_editable}
+                    value={metadata.description}
                   />
                 </EditableSection>
               </div>
-              <ColumnStats stats={ metadata.stats } />
+              <ColumnStats stats={metadata.stats} />
             </section>
-          }
+          )}
         </div>
       </li>
     );
@@ -172,4 +186,7 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({ openRequestDescriptionDialog }, dispatch);
 };
 
-export default connect<{}, DispatchFromProps, OwnProps>(null, mapDispatchToProps)(ColumnListItem);
+export default connect<{}, DispatchFromProps, OwnProps>(
+  null,
+  mapDispatchToProps
+)(ColumnListItem);

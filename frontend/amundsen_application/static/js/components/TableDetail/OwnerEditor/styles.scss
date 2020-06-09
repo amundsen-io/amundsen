@@ -14,7 +14,7 @@
 
   .btn.add-item-button {
     height: 24px;
-    padding: 0px 1px;
+    padding: 0 1px;
   }
 
   label {
@@ -28,11 +28,11 @@
 
 .owner-editor-modal {
   .component-list li {
-    margin: 0px;
-    padding-top: 4px;
+    margin: 0;
     padding-bottom: 4px;
-    padding-right: 16px;
     padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 4px;
 
     &:focus,
     &:hover {
@@ -40,14 +40,14 @@
 
       .btn.delete-button {
         background-color: $body-bg-tertiary;
-        display: block
+        display: block;
       }
     }
 
     .btn.delete-button {
-      margin: auto;
-      margin-right: 0px;
       display: none;
+      margin: auto;
+      margin-right: 0;
     }
   }
 
@@ -61,28 +61,31 @@
 
   .modal-body {
     height: calc(100% - 150px);
-    margin: 15px 0px !important;
+    margin: 15px 0 !important;
   }
+
   .modal-content {
     height: fit-content;
   }
+
   .modal-dialog {
-    min-width: 400px;
     height: fit-content;
+    min-width: 400px;
     width: fit-content;
 
     p {
-      text-align: start;
       margin-left: 4px;
+      text-align: start;
     }
   }
 
   form {
     display: flex;
+    margin-bottom: 16px;
     margin-left: 16px;
     margin-right: 16px;
-    margin-bottom: 16px;
   }
+
   input {
     border: 1px solid $stroke;
     border-radius: 4px;
@@ -94,12 +97,13 @@
 
 .component-list {
   list-style-type: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 
   li {
     display: flex;
     margin: 1px;
+
     &:first-child {
       flex-grow: 1;
     }

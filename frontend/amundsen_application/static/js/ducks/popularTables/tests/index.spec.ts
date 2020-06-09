@@ -9,13 +9,13 @@ import reducer, {
   getPopularTables,
   getPopularTablesFailure,
   getPopularTablesSuccess,
-  PopularTablesReducerState
+  PopularTablesReducerState,
 } from '../reducer';
+import { getPopularTablesWorker, getPopularTablesWatcher } from '../sagas';
 import {
-  getPopularTablesWorker, getPopularTablesWatcher
-} from '../sagas';
-import {
-  GetPopularTables, GetPopularTablesRequest, GetPopularTablesResponse,
+  GetPopularTables,
+  GetPopularTablesRequest,
+  GetPopularTablesResponse,
 } from '../types';
 
 describe('popularTables ducks', () => {
@@ -54,7 +54,9 @@ describe('popularTables ducks', () => {
     });
 
     it('should handle GetPopularTables.SUCCESS', () => {
-      expect(reducer(testState, getPopularTablesSuccess(expectedTables))).toEqual(expectedTables);
+      expect(
+        reducer(testState, getPopularTablesSuccess(expectedTables))
+      ).toEqual(expectedTables);
     });
 
     it('should handle GetPopularTables.FAILURE', () => {
@@ -66,23 +68,31 @@ describe('popularTables ducks', () => {
     describe('getPopularTablesWatcher', () => {
       it('takes every GetPopularTables.REQUEST with getPopularTablesWorker', () => {
         testSaga(getPopularTablesWatcher)
-          .next().takeEvery(GetPopularTables.REQUEST, getPopularTablesWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(GetPopularTables.REQUEST, getPopularTablesWorker)
+          .next()
+          .isDone();
       });
     });
 
     describe('getPopularTablesWorker', () => {
       it('executes flow for returning tables', () => {
         testSaga(getPopularTablesWorker)
-          .next().call(API.getPopularTables)
-          .next(expectedTables).put(getPopularTablesSuccess(expectedTables))
-          .next().isDone();
+          .next()
+          .call(API.getPopularTables)
+          .next(expectedTables)
+          .put(getPopularTablesSuccess(expectedTables))
+          .next()
+          .isDone();
       });
 
       it('handles request error', () => {
         testSaga(getPopularTablesWorker)
-          .next().throw(new Error()).put(getPopularTablesFailure())
-          .next().isDone();
+          .next()
+          .throw(new Error())
+          .put(getPopularTablesFailure())
+          .next()
+          .isDone();
       });
     });
   });

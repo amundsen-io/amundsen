@@ -6,7 +6,7 @@ import { logClick } from 'ducks/utilMethods';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
 export interface LineageLinkProps {
-  tableData: TableMetadata
+  tableData: TableMetadata;
 }
 
 const LineageLink: React.SFC<LineageLinkProps> = ({ tableData }) => {
@@ -16,21 +16,18 @@ const LineageLink: React.SFC<LineageLinkProps> = ({ tableData }) => {
   const { database, cluster, schema, name } = tableData;
   const href = config.urlGenerator(database, cluster, schema, name);
   if (!href) return null;
-  
+
   const label = 'Lineage';
 
   return (
     <a
       className="header-link"
-      href={ href }
+      href={href}
       target="_blank"
       id="explore-lineage"
-      onClick={ logClick }
+      onClick={logClick}
     >
-      <AvatarLabel
-        label={ label }
-        src={ config.iconPath }
-      />
+      <AvatarLabel label={label} src={config.iconPath} />
     </a>
   );
 };

@@ -16,34 +16,36 @@ describe('getLoggedInUser', () => {
     testUser = globalState.user.loggedInUser;
     mockGetResponse = {
       data: {
-       user: testUser,
-       msg: 'Success'
+        user: testUser,
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockGetResponse));
+    axiosMock = jest
+      .spyOn(axios, 'get')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getLoggedInUser().then(user => {
+    await API.getLoggedInUser().then((user) => {
       expect(axiosMock).toHaveBeenCalledWith(`/api/auth_user`);
     });
   });
 
   it('returns user from response data', async () => {
     expect.assertions(1);
-    await API.getLoggedInUser().then(user => {
+    await API.getLoggedInUser().then((user) => {
       expect(user).toBe(testUser);
     });
   });
 
   afterAll(() => {
     axiosMock.mockClear();
-  })
+  });
 });
 
 describe('getUser', () => {
@@ -56,34 +58,38 @@ describe('getUser', () => {
     testUser = globalState.user.profile.user;
     mockGetResponse = {
       data: {
-       user: testUser,
-       msg: 'Success'
+        user: testUser,
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockGetResponse));
+    axiosMock = jest
+      .spyOn(axios, 'get')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getUser(testId).then(user => {
-      expect(axiosMock).toHaveBeenCalledWith(`/api/metadata/v0/user?user_id=${testId}`);
+    await API.getUser(testId).then((user) => {
+      expect(axiosMock).toHaveBeenCalledWith(
+        `/api/metadata/v0/user?user_id=${testId}`
+      );
     });
   });
 
   it('returns user from response data', async () => {
     expect.assertions(1);
-    await API.getUser(testId).then(user => {
+    await API.getUser(testId).then((user) => {
       expect(user).toBe(testUser);
     });
   });
 
   afterAll(() => {
     axiosMock.mockClear();
-  })
+  });
 });
 
 describe('getUserOwn', () => {
@@ -96,34 +102,38 @@ describe('getUserOwn', () => {
     testResources = globalState.user.profile.own;
     mockGetResponse = {
       data: {
-       own: testResources,
-       msg: 'Success'
+        own: testResources,
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockGetResponse));
+    axiosMock = jest
+      .spyOn(axios, 'get')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getUserOwn(testId).then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`/api/metadata/v0/user/own?user_id=${testId}`);
+    await API.getUserOwn(testId).then((data) => {
+      expect(axiosMock).toHaveBeenCalledWith(
+        `/api/metadata/v0/user/own?user_id=${testId}`
+      );
     });
   });
 
   it('returns response data with owned resources', async () => {
     expect.assertions(1);
-    await API.getUserOwn(testId).then(data => {
+    await API.getUserOwn(testId).then((data) => {
       expect(data.own).toBe(testResources);
     });
   });
 
   afterAll(() => {
     axiosMock.mockClear();
-  })
+  });
 });
 
 describe('getUserRead', () => {
@@ -136,32 +146,36 @@ describe('getUserRead', () => {
     testResources = globalState.user.profile.read;
     mockGetResponse = {
       data: {
-       read: testResources,
-       msg: 'Success'
+        read: testResources,
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockGetResponse));
+    axiosMock = jest
+      .spyOn(axios, 'get')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getUserRead(testId).then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`/api/metadata/v0/user/read?user_id=${testId}`);
+    await API.getUserRead(testId).then((data) => {
+      expect(axiosMock).toHaveBeenCalledWith(
+        `/api/metadata/v0/user/read?user_id=${testId}`
+      );
     });
   });
 
   it('returns response data with frequently read resources', async () => {
     expect.assertions(1);
-    await API.getUserRead(testId).then(data => {
+    await API.getUserRead(testId).then((data) => {
       expect(data.read).toBe(testResources);
     });
   });
 
   afterAll(() => {
     axiosMock.mockClear();
-  })
+  });
 });

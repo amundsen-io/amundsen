@@ -21,9 +21,9 @@ describe('HomePage', () => {
     const props: HomePageProps = {
       searchReset: jest.fn(),
       ...routerProps,
-      ...propOverrides
+      ...propOverrides,
     };
-    const wrapper = shallow<HomePage>(<HomePage {...props} />)
+    const wrapper = shallow<HomePage>(<HomePage {...props} />);
     return { props, wrapper };
   };
   let props;

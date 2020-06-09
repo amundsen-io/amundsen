@@ -8,12 +8,11 @@ describe('Preloader', () => {
     const props: PreloaderProps = {
       getLoggedInUser: jest.fn(),
       getBookmarks: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
-    const wrapper = shallow<Preloader>(<Preloader { ...props } />);
+    const wrapper = shallow<Preloader>(<Preloader {...props} />);
     return { props, wrapper };
   };
-
 
   describe('componentDidMount', () => {
     it('calls props.getLoggedInUser', () => {
@@ -22,14 +21,12 @@ describe('Preloader', () => {
       expect(props.getLoggedInUser).toHaveBeenCalled();
     });
 
-
     it('calls props.getLoggedInUser', () => {
       const { props, wrapper } = setup();
       wrapper.instance().componentDidMount();
       expect(props.getBookmarks).toHaveBeenCalled();
     });
   });
-
 
   describe('render', () => {
     it('does not render any elements', () => {
@@ -38,7 +35,6 @@ describe('Preloader', () => {
     });
   });
 });
-
 
 describe('mapDispatchToProps', () => {
   let dispatch;

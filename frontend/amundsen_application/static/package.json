@@ -11,6 +11,7 @@
     "build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.prod.ts",
     "dev-build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.dev.ts",
     "test": "cross-env TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
+    "posttest": "npm run format",
     "test-nocov": "cross-env TZ=UTC jest",
     "watch": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.dev.ts --watch",
     "lint": "npm run eslint && npm run tslint",
@@ -20,7 +21,10 @@
     "test:watch": "cross-env TZ=UTC jest --watch",
     "tsc": "tsc",
     "tslint": "tslint --project .",
-    "tslint-fix": "tslint --fix --project ."
+    "tslint-fix": "tslint --fix --project .",
+    "stylelint": "stylelint '**/*.scss'",
+    "stylelint-fix": "stylelint --fix '**/*.scss'",
+    "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\""
   },
   "author": "",
   "license": "ISC",
@@ -68,18 +72,23 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.20.0",
     "html-webpack-plugin": "4.3.0",
+    "husky": "^4.2.5",
     "jest": "^25.5.4",
     "jest-css-modules": "^2.1.0",
+    "lint-staged": "^10.2.9",
     "mini-css-extract-plugin": "^0.4.5",
     "moment-locales-webpack-plugin": "^1.2.0",
     "node-sass": "^4.14.1",
     "postcss": "^7.0.30",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.5",
     "redux-mock-store": "^1.5.4",
     "redux-saga": "^1.1.3",
     "redux-saga-test-plan": "4.0.0-beta.3",
     "sass-loader": "^7.3.1",
     "style-loader": "^0.20.3",
+    "stylelint": "^13.6.0",
+    "stylelint-scss": "^3.17.2",
+    "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^2.3.6",
     "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.2",
@@ -182,5 +191,49 @@
     "testMatch": [
       "**/__tests__/*.(ts|tsx|js)"
     ]
+  },
+  "prettier": {
+    "endOfLine": "lf",
+    "tabWidth": 2,
+    "semi": true,
+    "bracketSpacing": true,
+    "singleQuote": true,
+    "jsxBracketSameLine": false,
+    "arrowParens": "always",
+    "overrides": [
+      {
+        "files": "*.md",
+        "options": {
+          "printWidth": 70,
+          "useTabs": false,
+          "trailingComma": "none",
+          "arrowParens": "avoid",
+          "proseWrap": "never"
+        }
+      }
+    ]
+  },
+  "stylelint": {
+    "plugins": [
+      "stylelint-scss"
+    ],
+    "rules": {
+      "scss/dollar-variable-colon-space-after": "always",
+      "no-descending-specificity": null,
+      "at-rule-no-unknown": [true, {
+        "ignoreAtRules": ["function", "if", "each", "include", "mixin"]
+      }]
+    },
+    "extends": "stylelint-config-standard"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.scss": "stylelint --fix",
+    "*.{ts,tsx,css,md}": "prettier --write"
   }
 }

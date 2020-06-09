@@ -3,7 +3,6 @@ import * as API from '../v0';
 import { NotificationType } from 'interfaces';
 import AppConfig from 'config/config';
 
-
 jest.mock('axios');
 
 describe('getIssues', () => {
@@ -12,27 +11,31 @@ describe('getIssues', () => {
   beforeAll(() => {
     mockGetResponse = {
       data: {
-       issues: [],
-       msg: 'Success'
+        issues: [],
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
-    axiosMock = jest.spyOn(axios, 'get').mockImplementation(() => Promise.resolve(mockGetResponse));
+    axiosMock = jest
+      .spyOn(axios, 'get')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('calls axios with correct parameters if tableKey provided', async () => {
     expect.assertions(1);
-    await API.getIssues('tableKey').then(data => {
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/issues?key=tableKey`);
+    await API.getIssues('tableKey').then((data) => {
+      expect(axiosMock).toHaveBeenCalledWith(
+        `${API.API_PATH}/issues?key=tableKey`
+      );
     });
   });
 
   it('returns response data', async () => {
     expect.assertions(1);
-    await API.getIssues('tableKey').then(data => {
+    await API.getIssues('tableKey').then((data) => {
       expect(data).toEqual(mockGetResponse.data.issues);
     });
   });
@@ -45,57 +48,71 @@ describe('getIssues', () => {
 describe('createIssue', () => {
   let mockGetResponse;
   let axiosMock;
-  const issueResult = { issue_key: 'key',
-    data_issue_url: 'url' };
-  let createIssuePayload; 
-  let sendNotificationPayload; 
+  const issueResult = { issue_key: 'key', data_issue_url: 'url' };
+  let createIssuePayload;
+  let sendNotificationPayload;
   beforeAll(() => {
     mockGetResponse = {
       data: {
-       issue: issueResult,
-       msg: 'Success'
+        issue: issueResult,
+        msg: 'Success',
       },
       status: 200,
       statusText: '',
       headers: {},
-      config: {}
+      config: {},
     };
     createIssuePayload = {
-      key: 'key', 
-      title: 'title', 
-      description: 'description'
-    }
+      key: 'key',
+      title: 'title',
+      description: 'description',
+    };
     sendNotificationPayload = {
-      owners: ['owner1'], 
-      sender: 'sender', 
-      notificationType: NotificationType.DATA_ISSUE_REPORTED, 
+      owners: ['owner1'],
+      sender: 'sender',
+      notificationType: NotificationType.DATA_ISSUE_REPORTED,
       options: {
-        resource_name: 'resource_name', 
+        resource_name: 'resource_name',
         resource_path: 'resource_path',
-        data_issue_url: 'url'
-      }
-    }
-    axiosMock = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve(mockGetResponse));
+        data_issue_url: 'url',
+      },
+    };
+    axiosMock = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve(mockGetResponse));
   });
 
   it('returns response data', async () => {
     AppConfig.mailClientFeatures.notificationsEnabled = false;
     expect.assertions(3);
-    await API.createIssue(createIssuePayload, sendNotificationPayload).then(data => {
-      expect(data).toEqual(issueResult);
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/issue`, createIssuePayload);
-      expect(axiosMock).toHaveBeenCalledTimes(1);
-    });
+    await API.createIssue(createIssuePayload, sendNotificationPayload).then(
+      (data) => {
+        expect(data).toEqual(issueResult);
+        expect(axiosMock).toHaveBeenCalledWith(
+          `${API.API_PATH}/issue`,
+          createIssuePayload
+        );
+        expect(axiosMock).toHaveBeenCalledTimes(1);
+      }
+    );
   });
 
   it('submits a notification if notifications are enabled', async () => {
     AppConfig.mailClientFeatures.notificationsEnabled = true;
     expect.assertions(3);
-    await API.createIssue(createIssuePayload, sendNotificationPayload).then(data => {
-      expect(data).toEqual(issueResult);
-      expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/issue`, createIssuePayload);
-      expect(axiosMock).toHaveBeenCalledWith(API.NOTIFICATION_API_PATH, sendNotificationPayload);
-    });
+    await API.createIssue(createIssuePayload, sendNotificationPayload).then(
+      (data) => {
+        expect(data).toEqual(issueResult);
+        expect(axiosMock).toHaveBeenCalledWith(
+          `${API.API_PATH}/issue`,
+          createIssuePayload
+        );
+        expect(axiosMock).toHaveBeenCalledWith(
+          API.NOTIFICATION_API_PATH,
+          sendNotificationPayload
+        );
+      }
+    );
   });
 
   afterAll(() => {

@@ -5,22 +5,22 @@ import { shallow } from 'enzyme';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import { SearchItem, SearchItemProps, mapStateToProps } from '../';
 
-import {
-  SEARCH_ITEM_NO_RESULTS
-} from 'components/common/SearchBar/InlineSearchResults/constants';
+import { SEARCH_ITEM_NO_RESULTS } from 'components/common/SearchBar/InlineSearchResults/constants';
 
 import { ResourceType } from 'interfaces';
 
-import { GlobalState } from 'ducks/rootReducer'
+import { GlobalState } from 'ducks/rootReducer';
 import globalState from 'fixtures/globalState';
-import { allResourcesExample, isLoadingExample, noResultsExample } from 'fixtures/search/inlineResults';
+import {
+  allResourcesExample,
+  isLoadingExample,
+  noResultsExample,
+} from 'fixtures/search/inlineResults';
 
 import { logClick } from 'ducks/utilMethods';
-jest.mock('ducks/utilMethods', () => (
-  {
-    logClick: jest.fn(() => {}),
-  }
-));
+jest.mock('ducks/utilMethods', () => ({
+  logClick: jest.fn(() => {}),
+}));
 
 describe('SearchItem', () => {
   const setup = (propOverrides?: Partial<SearchItemProps>) => {
@@ -31,7 +31,7 @@ describe('SearchItem', () => {
       resourceType: ResourceType.table,
       isLoading: false,
       hasResults: true,
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<SearchItem>(<SearchItem {...props} />);
     return { props, wrapper };
@@ -43,13 +43,15 @@ describe('SearchItem', () => {
       const onItemSelectSpy = jest.spyOn(props, 'onItemSelect');
       wrapper.instance().onViewAllResults({});
       expect(onItemSelectSpy).toHaveBeenCalledWith(props.resourceType, true);
-    })
+    });
   });
 
   describe('renderIndicator', () => {
     it('renders LoadingSpinner if props.isLoading', () => {
       const { props, wrapper } = setup({ isLoading: true });
-      const content = shallow(<div>{wrapper.instance().renderIndicator()}</div>);
+      const content = shallow(
+        <div>{wrapper.instance().renderIndicator()}</div>
+      );
       expect(content.find(LoadingSpinner).exists()).toBe(true);
     });
 
@@ -60,7 +62,7 @@ describe('SearchItem', () => {
     });
 
     it('renders nothing if !props.Loading and props.hasResults', () => {
-      const { props, wrapper } = setup({ isLoading: false, hasResults: true});
+      const { props, wrapper } = setup({ isLoading: false, hasResults: true });
       expect(wrapper.instance().renderIndicator()).toBe(null);
     });
   });
@@ -74,8 +76,10 @@ describe('SearchItem', () => {
       const setUpResult = setup();
       props = setUpResult.props;
       wrapper = setUpResult.wrapper;
-      mockContent = (<div>Hello</div>);
-      renderIndicatorSpy = jest.spyOn(wrapper.instance(), 'renderIndicator').mockImplementation(() => mockContent);
+      mockContent = <div>Hello</div>;
+      renderIndicatorSpy = jest
+        .spyOn(wrapper.instance(), 'renderIndicator')
+        .mockImplementation(() => mockContent);
       wrapper.instance().forceUpdate();
     });
 
@@ -86,7 +90,9 @@ describe('SearchItem', () => {
       });
 
       it('with correct onClick interaction', () => {
-        expect(listItemLink.props().onClick).toBe(wrapper.instance().onViewAllResults);
+        expect(listItemLink.props().onClick).toBe(
+          wrapper.instance().onViewAllResults
+        );
       });
 
       it('with correct class', () => {
@@ -95,15 +101,21 @@ describe('SearchItem', () => {
 
       describe('with correct content', () => {
         it('renders an img with correct class', () => {
-          expect(listItemLink.find('img').props().className).toEqual('icon icon-search');
+          expect(listItemLink.find('img').props().className).toEqual(
+            'icon icon-search'
+          );
         });
 
         it('renders correct text', () => {
-          expect(listItemLink.find('.search-item-info').text()).toEqual(`${props.searchTerm}\u00a0${props.listItemText}`);
+          expect(listItemLink.find('.search-item-info').text()).toEqual(
+            `${props.searchTerm}\u00a0${props.listItemText}`
+          );
         });
 
         it('renders results of renderIndicator', () => {
-          expect(listItemLink.children().at(2).html()).toEqual("<div>Hello</div>");
+          expect(listItemLink.children().at(2).html()).toEqual(
+            '<div>Hello</div>'
+          );
         });
       });
     });
@@ -123,7 +135,7 @@ describe('SearchItem', () => {
       search: {
         ...globalState.search,
         inlineResults: isLoadingExample,
-      }
+      },
     };
     const mockAllResultsState: GlobalState = {
       ...globalState,
@@ -131,14 +143,14 @@ describe('SearchItem', () => {
         ...globalState.search,
         // @ts-ignore: https://github.com/microsoft/TypeScript/issues/10570
         inlineResults: allResourcesExample,
-      }
+      },
     };
     const mockNoResultsState: GlobalState = {
       ...globalState,
       search: {
         ...globalState.search,
         inlineResults: noResultsExample,
-      }
+      },
     };
 
     it('sets isLoading on the props', () => {
@@ -149,7 +161,7 @@ describe('SearchItem', () => {
 
     describe('ownProps.resourceType is ResourceType.table', () => {
       beforeAll(() => {
-        ownProps = setup({resourceType: ResourceType.table}).props;
+        ownProps = setup({ resourceType: ResourceType.table }).props;
       });
       it('sets hasResults to true if there are table results', () => {
         result = mapStateToProps(mockAllResultsState, ownProps);
@@ -164,8 +176,8 @@ describe('SearchItem', () => {
 
     describe('ownProps.resourceType is ResourceType.user', () => {
       beforeAll(() => {
-        ownProps = setup({resourceType: ResourceType.user}).props;
-      })
+        ownProps = setup({ resourceType: ResourceType.user }).props;
+      });
       it('sets hasResults to true if there are user results', () => {
         result = mapStateToProps(mockAllResultsState, ownProps);
         expect(result.hasResults).toEqual(true);
@@ -179,8 +191,8 @@ describe('SearchItem', () => {
 
     describe('ownProps.resourceType is ResourceType.dashboard', () => {
       beforeAll(() => {
-        ownProps = setup({resourceType: ResourceType.dashboard}).props;
-      })
+        ownProps = setup({ resourceType: ResourceType.dashboard }).props;
+      });
       it('sets hasResults to true if there are dashboard results', () => {
         result = mapStateToProps(mockAllResultsState, ownProps);
         expect(result.hasResults).toEqual(true);

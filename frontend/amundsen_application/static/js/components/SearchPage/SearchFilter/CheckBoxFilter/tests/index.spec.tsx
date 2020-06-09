@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { CheckBoxFilter, CheckBoxFilterProps, mapDispatchToProps, mapStateToProps } from '../';
+import {
+  CheckBoxFilter,
+  CheckBoxFilterProps,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '../';
 import CheckBoxItem from 'components/common/Inputs/CheckBoxItem';
 
 import globalState from 'fixtures/globalState';
@@ -17,18 +22,18 @@ describe('CheckBoxFilter', () => {
       checkboxProperties: [
         {
           label: 'BigQuery',
-          value: 'bigquery'
+          value: 'bigquery',
         },
         {
           label: 'Hive',
-          value: 'hive'
-        }
+          value: 'hive',
+        },
       ],
       checkedValues: {
-        'hive': true,
+        hive: true,
       },
       updateFilter: jest.fn(),
-      ...propOverrides
+      ...propOverrides,
     };
     const wrapper = shallow<CheckBoxFilter>(<CheckBoxFilter {...props} />);
     return { props, wrapper };
@@ -46,24 +51,26 @@ describe('CheckBoxFilter', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       mockProperties = props.checkboxProperties[0];
-      const content = wrapper.instance().createCheckBoxItem(mockCategoryId, 'testKey', mockProperties);
+      const content = wrapper
+        .instance()
+        .createCheckBoxItem(mockCategoryId, 'testKey', mockProperties);
       checkBoxItem = shallow(<div>{content}</div>).find(CheckBoxItem);
-    })
+    });
 
     it('returns a CheckBoxItem', () => {
       expect(checkBoxItem.exists()).toBe(true);
     });
 
     it('returns a CheckBoxItem with correct props', () => {
-      const itemProps = checkBoxItem.props()
+      const itemProps = checkBoxItem.props();
       expect(itemProps.checked).toBe(props.checkedValues[mockProperties.value]);
       expect(itemProps.name).toBe(mockCategoryId);
       expect(itemProps.value).toBe(mockProperties.value);
-      expect(itemProps.onChange).toBe(wrapper.instance().onCheckboxChange)
+      expect(itemProps.onChange).toBe(wrapper.instance().onCheckboxChange);
     });
 
     it('returns a CheckBoxItem with correct labelText as child', () => {
-      expect(checkBoxItem.children().text()).toBe(mockProperties.label)
+      expect(checkBoxItem.children().text()).toBe(mockProperties.label);
     });
   });
 
@@ -79,24 +86,31 @@ describe('CheckBoxFilter', () => {
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       updateFilterSpy = jest.spyOn(props, 'updateFilter');
-    })
+    });
 
     it('calls props.updateFilter if no items will be checked', () => {
       updateFilterSpy.mockClear();
-      mockEvent = { target: { name: mockCategoryId, value: 'hive', checked: false }};
+      mockEvent = {
+        target: { name: mockCategoryId, value: 'hive', checked: false },
+      };
       wrapper.instance().onCheckboxChange(mockEvent);
-      expect(updateFilterSpy).toHaveBeenCalledWith(mockCategoryId, undefined)
+      expect(updateFilterSpy).toHaveBeenCalledWith(mockCategoryId, undefined);
     });
 
     it('calls props.updateFilter with expected parameters', () => {
       updateFilterSpy.mockClear();
-      mockEvent = { target: { name: mockCategoryId, value: 'bigquery', checked: true}};
+      mockEvent = {
+        target: { name: mockCategoryId, value: 'bigquery', checked: true },
+      };
       const expectedCheckedValues = {
         ...props.checkedValues,
-        'bigquery': true
-      }
+        bigquery: true,
+      };
       wrapper.instance().onCheckboxChange(mockEvent);
-      expect(updateFilterSpy).toHaveBeenCalledWith(mockCategoryId, expectedCheckedValues)
+      expect(updateFilterSpy).toHaveBeenCalledWith(
+        mockCategoryId,
+        expectedCheckedValues
+      );
     });
   });
 
@@ -109,21 +123,28 @@ describe('CheckBoxFilter', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      createCheckBoxItemSpy = jest.spyOn(wrapper.instance(), 'createCheckBoxItem');
+      createCheckBoxItemSpy = jest.spyOn(
+        wrapper.instance(),
+        'createCheckBoxItem'
+      );
       wrapper.instance().render();
-    })
+    });
     it('calls createCheckBoxItem with correct parameters for each props.checkboxProperties', () => {
       props.checkboxProperties.forEach((item, index) => {
-        expect(createCheckBoxItemSpy).toHaveBeenCalledWith(props.categoryId, `item:${props.categoryId}:${index}`,item)
-      })
-    })
+        expect(createCheckBoxItemSpy).toHaveBeenCalledWith(
+          props.categoryId,
+          `item:${props.categoryId}:${index}`,
+          item
+        );
+      });
+    });
   });
 
   describe('mapStateToProps', () => {
     const mockCategoryId = 'database';
     const props = setup({ categoryId: mockCategoryId }).props;
     const mockFilters = {
-      'hive': true
+      hive: true,
     };
 
     const mockStateWithFilters: GlobalState = {
@@ -133,9 +154,9 @@ describe('CheckBoxFilter', () => {
         resource: ResourceType.table,
         filters: {
           [ResourceType.table]: {
-            [mockCategoryId]: mockFilters
-          }
-        }
+            [mockCategoryId]: mockFilters,
+          },
+        },
       },
     };
 
@@ -145,8 +166,8 @@ describe('CheckBoxFilter', () => {
         ...globalState.search,
         resource: ResourceType.user,
         filters: {
-          [ResourceType.table]: {}
-        }
+          [ResourceType.table]: {},
+        },
       },
     };
 

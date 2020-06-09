@@ -5,16 +5,15 @@ $resource-header-height: 84px;
   height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
 
   .resource-header {
+    border-bottom: 2px solid $divider;
     display: flex;
     height: $resource-header-height;
-    border-bottom: 2px solid $divider;
     padding: 16px 24px;
-
 
     .icon-header {
       height: 32px;
-      width: 32px;
       margin: 10px;
+      width: 32px;
     }
 
     .header-section {
@@ -23,10 +22,10 @@ $resource-header-height: 84px;
 
         .header-title-text {
           display: inline-block;
-          max-width: calc(100% - 100px);
           // Better align the header-title-text
           // (84px header height - 32px vertical padding - 2px border - 20px subtitle line-height) = 30px
           line-height: 30px;
+          max-width: calc(100% - 100px);
         }
       }
 
@@ -36,7 +35,6 @@ $resource-header-height: 84px;
         padding-top: 17px;
       }
 
-
       .header-bullets {
         display: inline;
         margin: 0;
@@ -44,14 +42,14 @@ $resource-header-height: 84px;
 
         li {
           display: inline;
-          &:after { content: "\00A0\2022\00A0"; }
-          &:last-child:after { content: ""; }
+          &::after { content: '\00A0\2022\00A0'; }
+          &:last-child::after { content: ''; }
         }
       }
 
-
       &.header-links {
         flex-shrink: 0;
+
         > * {
           margin-right: 16px;
         }
@@ -65,16 +63,18 @@ $resource-header-height: 84px;
           }
         }
       }
+
       &.header-buttons {
         flex-shrink: 0;
+
         > * {
           margin-right: 8px;
+
           &:last-child {
             margin-right: 0;
           }
         }
       }
-
     }
   }
 
@@ -93,7 +93,7 @@ $resource-header-height: 84px;
       > .banner {
         border: 1px solid $stroke;
         height: 40px;
-        margin: 24px 24px 0 24px;
+        margin: 24px 24px 0;
         padding: 8px;
       }
 
@@ -104,9 +104,9 @@ $resource-header-height: 84px;
 
       .editable-section,
       .metadata-section {
+        display: inline-table;
         margin-top: 40px;
         min-height: 70px;
-        display: inline-table;
       }
 
       .editable-text {
@@ -132,15 +132,15 @@ $resource-header-height: 84px;
       width: 0; // Required for text truncation
     }
 
-     @media(max-width: 1440px) {
+    @media (max-width: 1440px) {
       > .left-panel {
-       flex-basis: 500px;
+        flex-basis: 500px;
       }
     }
 
-    @media(max-width: 1200px) {
+    @media (max-width: 1200px) {
       > .left-panel {
-       flex-basis: 415px;
+        flex-basis: 415px;
       }
     }
   }
@@ -152,8 +152,8 @@ $resource-header-height: 84px;
 
     > .left-panel {
       flex-basis: 262px;
-      margin-right: 12px;
       flex-direction: column;
+      margin-right: 12px;
     }
 
     > .right-panel {

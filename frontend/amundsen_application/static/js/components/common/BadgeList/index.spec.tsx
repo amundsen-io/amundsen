@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import BadgeList from '.'
+import BadgeList from '.';
 import Flag from 'components/common/Flag';
 import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
@@ -11,7 +11,7 @@ describe('BadgeList', () => {
   const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
   getBadgeConfigSpy.mockImplementation((badgeName: string) => {
     return {
-      displayName: badgeName + " test name",
+      displayName: badgeName + ' test name',
       style: BadgeStyle.PRIMARY,
     };
   });
@@ -28,10 +28,10 @@ describe('BadgeList', () => {
       },
     ];
 
-    const badgeList = shallow(<BadgeList badges={ badges } />);
+    const badgeList = shallow(<BadgeList badges={badges} />);
 
     it('renders a badge-list element', () => {
-      const container = badgeList.find('.badge-list')
+      const container = badgeList.find('.badge-list');
       expect(container.exists()).toBe(true);
     });
 

@@ -6,23 +6,40 @@ import { Bookmark, ResourceType, ResourceDict } from 'interfaces';
 
 import * as API from '../api/v0';
 import reducer, {
-  addBookmark, addBookmarkFailure, addBookmarkSuccess,
-  getBookmarks, getBookmarksFailure, getBookmarksSuccess,
-  getBookmarksForUser, getBookmarksForUserFailure, getBookmarksForUserSuccess,
-  removeBookmark, removeBookmarkFailure, removeBookmarkSuccess,
-  initialState, initialBookmarkState, BookmarkReducerState
+  addBookmark,
+  addBookmarkFailure,
+  addBookmarkSuccess,
+  getBookmarks,
+  getBookmarksFailure,
+  getBookmarksSuccess,
+  getBookmarksForUser,
+  getBookmarksForUserFailure,
+  getBookmarksForUserSuccess,
+  removeBookmark,
+  removeBookmarkFailure,
+  removeBookmarkSuccess,
+  initialState,
+  initialBookmarkState,
+  BookmarkReducerState,
 } from '../reducer';
 import {
-  addBookmarkWatcher, addBookmarkWorker,
-  getBookmarksWatcher, getBookmarksWorker,
-  getBookmarksForUserWatcher, getBookmarkForUserWorker,
-  removeBookmarkWatcher, removeBookmarkWorker,
+  addBookmarkWatcher,
+  addBookmarkWorker,
+  getBookmarksWatcher,
+  getBookmarksWorker,
+  getBookmarksForUserWatcher,
+  getBookmarkForUserWorker,
+  removeBookmarkWatcher,
+  removeBookmarkWorker,
 } from '../sagas';
 import {
-  AddBookmark, AddBookmarkRequest,
+  AddBookmark,
+  AddBookmarkRequest,
   GetBookmarks,
-  GetBookmarksForUser, GetBookmarksForUserRequest,
-  RemoveBookmark, RemoveBookmarkRequest,
+  GetBookmarksForUser,
+  GetBookmarksForUserRequest,
+  RemoveBookmark,
+  RemoveBookmarkRequest,
 } from '../types';
 
 describe('bookmark ducks', () => {
@@ -45,8 +62,8 @@ describe('bookmark ducks', () => {
           name: 'name',
           schema: 'schema',
         },
-      ]
-    }
+      ],
+    };
   });
 
   describe('actions', () => {
@@ -59,7 +76,7 @@ describe('bookmark ducks', () => {
     });
 
     it('addBookmarkFailure - returns the action to process failure', () => {
-      const action = addBookmarkFailure()
+      const action = addBookmarkFailure();
       expect(action.type).toBe(AddBookmark.FAILURE);
     });
 
@@ -71,7 +88,7 @@ describe('bookmark ducks', () => {
     });
 
     it('getBookmarks - returns the action to get bookmarks', () => {
-      const action = getBookmarks()
+      const action = getBookmarks();
       expect(action.type).toBe(GetBookmarks.REQUEST);
     });
 
@@ -122,7 +139,7 @@ describe('bookmark ducks', () => {
     });
 
     it('removeBookmarkSuccess - returns the action to process success', () => {
-      const action = removeBookmarkSuccess(testResourceKey, testResourceType)
+      const action = removeBookmarkSuccess(testResourceKey, testResourceType);
       const { payload } = action;
       expect(action.type).toBe(RemoveBookmark.SUCCESS);
       expect(payload.resourceKey).toBe(testResourceKey);
@@ -154,7 +171,7 @@ describe('bookmark ducks', () => {
             name: 'name',
             schema: 'schema',
           },
-        ]
+        ],
       };
       testState = {
         myBookmarks: bookmarkList,
@@ -166,28 +183,39 @@ describe('bookmark ducks', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
       expect(reducer(testState, addBookmarkFailure())).toEqual(testState);
       expect(reducer(testState, getBookmarksFailure())).toEqual(testState);
-      expect(reducer(testState, getBookmarksForUserFailure())).toEqual(testState);
+      expect(reducer(testState, getBookmarksForUserFailure())).toEqual(
+        testState
+      );
       expect(reducer(testState, removeBookmarkFailure())).toEqual(testState);
     });
 
     it('should handle RemoveBookmark.SUCCESS', () => {
       const bookmarkKey = 'bookmarked_key_1';
-      const action = { type: RemoveBookmark.SUCCESS, payload: { resourceType: ResourceType.table, resourceKey: bookmarkKey }};
+      const action = {
+        type: RemoveBookmark.SUCCESS,
+        payload: { resourceType: ResourceType.table, resourceKey: bookmarkKey },
+      };
       const newState = reducer(testState, action);
-      expect(newState.myBookmarks[ResourceType.table].find((bookmark) => bookmark.key === bookmarkKey)).toEqual(undefined);
+      expect(
+        newState.myBookmarks[ResourceType.table].find(
+          (bookmark) => bookmark.key === bookmarkKey
+        )
+      ).toEqual(undefined);
       expect(newState).toEqual({
         ...testState,
         myBookmarks: {
-          [ResourceType.table]: [{
-            key: 'bookmarked_key_0',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          }]
-        }
+          [ResourceType.table]: [
+            {
+              key: 'bookmarked_key_0',
+              type: ResourceType.table,
+              cluster: 'cluster',
+              database: 'database',
+              description: 'description',
+              name: 'name',
+              schema: 'schema',
+            },
+          ],
+        },
       });
     });
 
@@ -208,14 +236,21 @@ describe('bookmark ducks', () => {
     });
 
     it('should handle GetBookmarksForUser.SUCCESS', () => {
-      expect(reducer(initialState, getBookmarksForUserSuccess(bookmarks))).toEqual({
+      expect(
+        reducer(initialState, getBookmarksForUserSuccess(bookmarks))
+      ).toEqual({
         ...initialState,
         bookmarksForUser: bookmarks,
       });
     });
 
     it('should reset bookmarksForUser on GetBookmarksForUser.REQUEST', () => {
-      expect(reducer(testState, { type: GetBookmarksForUser.REQUEST, payload: { userId: 'testUser' }})).toEqual({
+      expect(
+        reducer(testState, {
+          type: GetBookmarksForUser.REQUEST,
+          payload: { userId: 'testUser' },
+        })
+      ).toEqual({
         ...testState,
         bookmarksForUser: initialBookmarkState,
       });
@@ -226,8 +261,10 @@ describe('bookmark ducks', () => {
     describe('addBookmarkWatcher', () => {
       it('takes AddBookmark.REQUEST with addBookmarkWorker', () => {
         testSaga(addBookmarkWatcher)
-          .next().takeEvery(AddBookmark.REQUEST, addBookmarkWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(AddBookmark.REQUEST, addBookmarkWorker)
+          .next()
+          .isDone();
       });
     });
 
@@ -235,7 +272,7 @@ describe('bookmark ducks', () => {
       let action: AddBookmarkRequest;
       beforeAll(() => {
         action = addBookmark(testResourceKey, testResourceType);
-      })
+      });
 
       it('adds a bookmark', () => {
         return expectSaga(addBookmarkWorker, action)
@@ -261,17 +298,17 @@ describe('bookmark ducks', () => {
     describe('getBookmarksWatcher', () => {
       it('takes GetBookmark.REQUEST with getBookmarksWorker', () => {
         testSaga(getBookmarksWatcher)
-          .next().takeEvery(GetBookmarks.REQUEST, getBookmarksWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(GetBookmarks.REQUEST, getBookmarksWorker)
+          .next()
+          .isDone();
       });
     });
 
     describe('getBookmarksWorker', () => {
       it('gets bookmarks', () => {
         return expectSaga(getBookmarksWorker)
-          .provide([
-            [matchers.call.fn(API.getBookmarks), { bookmarks }],
-          ])
+          .provide([[matchers.call.fn(API.getBookmarks), { bookmarks }]])
           .put(getBookmarksSuccess(bookmarks))
           .run();
       });
@@ -289,8 +326,10 @@ describe('bookmark ducks', () => {
     describe('getBookmarksForUserWatcher', () => {
       it('takes GetBookmarksForUser.REQUEST with getBookmarkForUserWorker', () => {
         testSaga(getBookmarksForUserWatcher)
-          .next().takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(GetBookmarksForUser.REQUEST, getBookmarkForUserWorker)
+          .next()
+          .isDone();
       });
     });
 
@@ -302,9 +341,7 @@ describe('bookmark ducks', () => {
 
       it('gets bookmarks', () => {
         return expectSaga(getBookmarkForUserWorker, action)
-          .provide([
-            [matchers.call.fn(API.getBookmarks), { bookmarks }],
-          ])
+          .provide([[matchers.call.fn(API.getBookmarks), { bookmarks }]])
           .put(getBookmarksForUserSuccess(bookmarks))
           .run();
       });
@@ -322,8 +359,10 @@ describe('bookmark ducks', () => {
     describe('removeBookmarkWatcher', () => {
       it('takes RemoveBookmark.REQUEST with removeBookmarkWorker', () => {
         testSaga(removeBookmarkWatcher)
-          .next().takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker)
-          .next().isDone();
+          .next()
+          .takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker)
+          .next()
+          .isDone();
       });
     });
 
@@ -335,9 +374,7 @@ describe('bookmark ducks', () => {
 
       it('removes a bookmark', () => {
         return expectSaga(removeBookmarkWorker, action)
-          .provide([
-            [matchers.call.fn(API.removeBookmark), {}],
-          ])
+          .provide([[matchers.call.fn(API.removeBookmark), {}]])
           .put(removeBookmarkSuccess(testResourceKey, testResourceType))
           .run();
       });

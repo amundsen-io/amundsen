@@ -16,19 +16,20 @@
     .resource-type,
     .badges,
     .actions {
-      display: flex;
       align-items: center;
+      display: flex;
     }
 
     .resource-type {
       flex-basis: 100px;
       overflow: hidden;
     }
+
     .badges {
       // placeholder
     }
-    .actions {
 
+    .actions {
       .column-dropdown {
         &.open {
           background-color: $body-bg-tertiary;
@@ -42,16 +43,16 @@
           border: none;
           border-radius: 4px;
           height: 32px;
-          width: 32px;
           padding: 4px;
+          width: 32px;
 
           .icon {
             background-color: $icon-bg;
             height: 22px;
+            margin: 0;
             -webkit-mask-size: 22px;
             mask-size: 22px;
             width: 22px;
-            margin: 0;
           }
 
           &:hover,
