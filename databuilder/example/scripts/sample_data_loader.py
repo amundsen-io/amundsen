@@ -21,7 +21,6 @@ import logging
 import os
 import sqlite3
 import sys
-import textwrap
 import uuid
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
@@ -166,7 +165,7 @@ def create_last_updated_job():
 def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index',
                                    elasticsearch_doc_type_key='table',
                                    model_name='databuilder.models.table_elasticsearch_document.TableESDocument',
-                                   cypher_query=None,
+                                   entity_type='table',
                                    elasticsearch_mapping=None):
     """
     :param elasticsearch_index_alias:  alias for Elasticsearch used in
@@ -174,8 +173,8 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     :param elasticsearch_doc_type_key: name the ElasticSearch index is prepended with. Defaults to `table` resulting in
                                        `table_search_index`
     :param model_name:                 the Databuilder model class used in transporting between Extractor and Loader
-    :param cypher_query:               Query handed to the `Neo4jSearchDataExtractor` class, if None is given (default)
-                                       it uses the `Table` query baked into the Extractor
+    :param entity_type:                Entity type handed to the `Neo4jSearchDataExtractor` class, used to determine
+                                       Cypher query to extract data from Neo4j. Defaults to `table`.
     :param elasticsearch_mapping:      Elasticsearch field mapping "DDL" handed to the `ElasticsearchPublisher` class,
                                        if None is given (default) it uses the `Table` query baked into the Publisher
     """
@@ -192,6 +191,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     elasticsearch_new_index_key = 'tables' + str(uuid.uuid4())
 
     job_config = ConfigFactory.from_dict({
+        'extractor.search_data.entity_type': entity_type,
         'extractor.search_data.extractor.neo4j.graph_url': neo4j_endpoint,
         'extractor.search_data.extractor.neo4j.model_class': model_name,
         'extractor.search_data.extractor.neo4j.neo4j_auth_user': neo4j_user,
@@ -208,9 +208,6 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     })
 
     # only optionally add these keys, so need to dynamically `put` them
-    if cypher_query:
-        job_config.put('extractor.search_data.{}'.format(Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY),
-                       cypher_query)
     if elasticsearch_mapping:
         job_config.put('publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY),
                        elasticsearch_mapping)
@@ -255,28 +252,9 @@ if __name__ == "__main__":
         job_es_table = create_es_publisher_sample_job(
             elasticsearch_index_alias='table_search_index',
             elasticsearch_doc_type_key='table',
+            entity_type='table',
             model_name='databuilder.models.table_elasticsearch_document.TableESDocument')
         job_es_table.launch()
-
-        user_cypher_query = textwrap.dedent(
-            """
-            MATCH (user:User)
-            OPTIONAL MATCH (user)-[read:READ]->(a)
-            OPTIONAL MATCH (user)-[own:OWNER_OF]->(b)
-            OPTIONAL MATCH (user)-[follow:FOLLOWED_BY]->(c)
-            OPTIONAL MATCH (user)-[manage_by:MANAGE_BY]->(manager)
-            with user, a, b, c, read, own, follow, manager
-            where user.full_name is not null
-            return user.email as email, user.first_name as first_name, user.last_name as last_name,
-            user.full_name as full_name, user.github_username as github_username, user.team_name as team_name,
-            user.employee_type as employee_type, manager.email as manager_email, user.slack_id as slack_id,
-            user.role_name as role_name, user.is_active as is_active,
-            REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count) AS total_read,
-            count(distinct b) as total_own,
-            count(distinct c) AS total_follow
-            order by user.email
-            """
-        )
 
         user_elasticsearch_mapping = """
                 {
@@ -338,6 +316,6 @@ if __name__ == "__main__":
             elasticsearch_index_alias='user_search_index',
             elasticsearch_doc_type_key='user',
             model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
-            cypher_query=user_cypher_query,
+            entity_type='user',
             elasticsearch_mapping=user_elasticsearch_mapping)
         job_es_user.launch()
