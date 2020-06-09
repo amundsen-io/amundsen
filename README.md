@@ -153,6 +153,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [In-house Data Discovery platforms](https://datastrategy.substack.com/p/in-house-data-discovery-platforms)
 - [Linux Foundation AI Foundation Landscape](https://landscape.lfai.foundation/)
 - [Lyft’s Amundsen: Data-Discovery with Built-In Trust](https://thenewstack.io/lyfts-amundsen-data-discovery-with-built-in-trust/)
+- [How to find and organize your data from the command-line](https://towardsdatascience.com/how-to-find-and-organize-your-data-from-the-command-line-852a4042b2be)
 
 ## Community meetings
 Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time [Link to join](https://meet.google.com/mqz-ndck-jmj)
