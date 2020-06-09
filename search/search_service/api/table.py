@@ -1,39 +1,12 @@
 from http import HTTPStatus
 from typing import Any, Dict, Iterable  # noqa: F401
 
-from flask_restful import Resource, fields, marshal_with, reqparse
+from flask_restful import Resource, reqparse
 from flasgger import swag_from
 
+from search_service.models.table import SearchTableResultSchema
 from search_service.proxy import get_proxy_client
 
-tag_fields = {
-    "tag_name": fields.String
-}
-
-table_fields = {
-    "name": fields.String,
-    "key": fields.String,
-    # description can be empty, if no description is present in DB
-    "description": fields.String,
-    "cluster": fields.String,
-    "database": fields.String,
-    "schema": fields.String,
-    "column_names": fields.List(fields.String),
-    # tags can be empty list
-    "tags": fields.List(fields.Nested(tag_fields)),
-    # badges can be an empty list
-    "badges": fields.List(fields.Nested(tag_fields)),
-    # last etl timestamp as epoch
-    "last_updated_timestamp": fields.Integer,
-    "display_name": fields.String,
-    "schema_description": fields.String,
-    "programmatic_descriptions": fields.List(fields.String)
-}
-
-search_table_results = {
-    "total_results": fields.Integer,
-    "results": fields.Nested(table_fields, default=[])
-}
 
 TABLE_INDEX = 'table_search_index'
 
@@ -54,7 +27,6 @@ class SearchTableAPI(Resource):
 
         super(SearchTableAPI, self).__init__()
 
-    @marshal_with(search_table_results)
     @swag_from('swagger_doc/table/search_table.yml')
     def get(self) -> Iterable[Any]:
         """
@@ -73,7 +45,7 @@ class SearchTableAPI(Resource):
                 index=args.get('index')
             )
 
-            return results, HTTPStatus.OK
+            return SearchTableResultSchema().dump(results).data, HTTPStatus.OK
 
         except RuntimeError:
 
@@ -101,7 +73,6 @@ class SearchTableFilterAPI(Resource):
 
         super(SearchTableFilterAPI, self).__init__()
 
-    @marshal_with(search_table_results)
     @swag_from('swagger_doc/table/search_table_filter.yml')
     def post(self) -> Iterable[Any]:
         """
@@ -130,7 +101,7 @@ class SearchTableFilterAPI(Resource):
                 page_index=page_index,
                 index=args['index']
             )
-            return results, HTTPStatus.OK
+            return SearchTableResultSchema().dump(results).data, HTTPStatus.OK
         except RuntimeError:
             err_msg = 'Exception encountered while processing search request'
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR

@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Dict, List
 
 from search_service.models.dashboard import SearchDashboardResult
+from search_service.models.table import SearchTableResult
 from search_service.models.search_result import SearchResult
 
 
@@ -15,7 +16,7 @@ class BaseProxy(metaclass=ABCMeta):
     def fetch_table_search_results(self, *,
                                    query_term: str,
                                    page_index: int = 0,
-                                   index: str = '') -> SearchResult:
+                                   index: str = '') -> SearchTableResult:
         pass
 
     @abstractmethod
@@ -48,7 +49,7 @@ class BaseProxy(metaclass=ABCMeta):
                                                query_term: str,
                                                search_request: dict,
                                                page_index: int = 0,
-                                               index: str = '') -> SearchResult:
+                                               index: str = '') -> SearchTableResult:
         pass
 
     @abstractmethod

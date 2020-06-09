@@ -61,3 +61,15 @@ class TableSchema(AttrsSchema):
     class Meta:
         target = Table
         register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class SearchTableResult:
+        total_results: int = attr.ib()
+        results: List[Table] = attr.ib(factory=list)
+
+
+class SearchTableResultSchema(AttrsSchema):
+    class Meta:
+        target = SearchTableResult
+        register_as_scheme = True
