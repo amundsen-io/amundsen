@@ -5,6 +5,7 @@ from random import randint
 from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
                     no_type_check)
 
+import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Reader, Source,
@@ -14,9 +15,10 @@ from amundsen_common.models.table import Tag
 from amundsen_common.models.user import User as UserEntity
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from flask import current_app, has_app_context
 from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
-import neo4j
 
+from metadata_service import config
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.dashboard_query import DashboardQuery as DashboardQueryEntity
 from metadata_service.entity.description import Description
@@ -60,6 +62,7 @@ class Neo4jProxy(BaseProxy):
         value needs to be smaller than surrounding network environment's timeout.
         """
         endpoint = f'{host}:{port}'
+        LOGGER.info('NEO4J endpoint: {}'.format(endpoint))
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl else neo4j.TRUST_ALL_CERTIFICATES
         self._driver = GraphDatabase.driver(endpoint, max_connection_pool_size=num_conns,
                                             connection_timeout=10,
@@ -817,6 +820,19 @@ class Neo4jProxy(BaseProxy):
 
     @staticmethod
     def _build_user_from_record(record: dict, manager_name: str = '') -> UserEntity:
+        """
+        Builds user record from Cypher query result. Other than the one defined in amundsen_common.models.user.User,
+        you could add more fields from User node into the User model by specifying keys in config.USER_OTHER_KEYS
+        :param record:
+        :param manager_name:
+        :return:
+        """
+        other_key_values = {}
+        if has_app_context() and current_app.config[config.USER_OTHER_KEYS]:
+            for k in current_app.config[config.USER_OTHER_KEYS]:
+                if k in record:
+                    other_key_values[k] = record[k]
+
         return UserEntity(email=record['email'],
                           first_name=record.get('first_name'),
                           last_name=record.get('last_name'),
@@ -827,7 +843,8 @@ class Neo4jProxy(BaseProxy):
                           slack_id=record.get('slack_id'),
                           employee_type=record.get('employee_type'),
                           role_name=record.get('role_name'),
-                          manager_fullname=record.get('manager_fullname', manager_name))
+                          manager_fullname=record.get('manager_fullname', manager_name),
+                          other_key_values=other_key_values)
 
     @staticmethod
     def _get_user_resource_relationship_clause(relation_type: UserResourceRel, id: str = None,

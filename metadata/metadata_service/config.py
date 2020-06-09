@@ -1,6 +1,6 @@
 import distutils.util
 import os
-from typing import List, Dict, Optional  # noqa: F401
+from typing import List, Dict, Optional, Set  # noqa: F401
 
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'
@@ -17,6 +17,7 @@ PROXY_CLIENTS = {
 }
 
 IS_STATSD_ON = 'IS_STATSD_ON'
+USER_OTHER_KEYS = 'USER_OTHER_KEYS'
 
 
 class Config:
@@ -56,9 +57,12 @@ class Config:
 
     USER_DETAIL_METHOD = None   # type: Optional[function]
 
+    # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
+    USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
+
 
 class LocalConfig(Config):
-    DEBUG = False
+    DEBUG = True
     TESTING = False
     LOG_LEVEL = 'DEBUG'
     LOCAL_HOST = '0.0.0.0'

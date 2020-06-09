@@ -100,6 +100,11 @@ components:
         manager_fullname:
           type: string
           description: 'User manager full name'
+        other_key_values:
+          type: object
+          additionalProperties:
+            type: string
+            description: 'Additional key value properties'
     ColumnFields:
       type: object
       properties:
