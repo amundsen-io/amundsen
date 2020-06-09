@@ -14,7 +14,7 @@ from search_service import config
 from search_service.api.user import USER_INDEX
 from search_service.api.table import TABLE_INDEX
 from search_service.models.search_result import SearchResult
-from search_service.models.table import Table
+from search_service.models.table import Table, SearchTableResult
 from search_service.models.user import User
 from search_service.models.dashboard import Dashboard, SearchDashboardResult
 from search_service.models.tag import Tag
@@ -289,7 +289,7 @@ class ElasticsearchProxy(BaseProxy):
     def fetch_table_search_results(self, *,
                                    query_term: str,
                                    page_index: int = 0,
-                                   index: str = '') -> SearchResult:
+                                   index: str = '') -> SearchTableResult:
         """
         Query Elasticsearch and return results as list of Table objects
 
@@ -302,7 +302,7 @@ class ElasticsearchProxy(BaseProxy):
             current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
         if not query_term:
             # return empty result for blank query term
-            return SearchResult(total_results=0, results=[])
+            return SearchTableResult(total_results=0, results=[])
 
         s = Search(using=self.elasticsearch, index=current_index)
         query_name = {
@@ -332,7 +332,8 @@ class ElasticsearchProxy(BaseProxy):
         return self._search_helper(page_index=page_index,
                                    client=s,
                                    query_name=query_name,
-                                   model=Table)
+                                   model=Table,
+                                   search_result_model=SearchTableResult)
 
     @staticmethod
     def get_model_by_index(index: str) -> Any:
@@ -447,7 +448,7 @@ class ElasticsearchProxy(BaseProxy):
                                                query_term: str,
                                                search_request: dict,
                                                page_index: int = 0,
-                                               index: str = '') -> SearchResult:
+                                               index: str = '') -> SearchTableResult:
         """
         Query Elasticsearch and return results as list of Table objects
         :param search_request: A json representation of search request
@@ -459,7 +460,7 @@ class ElasticsearchProxy(BaseProxy):
             current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)  # type: str
         if not search_request:
             # return empty result for blank query term
-            return SearchResult(total_results=0, results=[])
+            return SearchTableResult(total_results=0, results=[])
 
         try:
             query_string = self.convert_query_json_to_query_dsl(search_request=search_request,
@@ -467,7 +468,7 @@ class ElasticsearchProxy(BaseProxy):
         except Exception as e:
             LOGGING.exception(e)
             # return nothing if any exception is thrown under the hood
-            return SearchResult(total_results=0, results=[])
+            return SearchTableResult(total_results=0, results=[])
         s = Search(using=self.elasticsearch, index=current_index)
 
         query_name = {
@@ -488,7 +489,8 @@ class ElasticsearchProxy(BaseProxy):
         return self._search_helper(page_index=page_index,
                                    client=s,
                                    query_name=query_name,
-                                   model=model)
+                                   model=model,
+                                   search_result_model=SearchTableResult)
 
     @timer_with_counter
     def fetch_user_search_results(self, *,
