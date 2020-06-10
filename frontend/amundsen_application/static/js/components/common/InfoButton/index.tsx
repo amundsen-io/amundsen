@@ -19,7 +19,7 @@ const InfoButton: React.SFC<InfoButtonProps> = ({
   infoText,
   placement,
   size,
-}) => {
+}: InfoButtonProps) => {
   const popoverHoverFocus = (
     <Popover id="popover-trigger-hover-focus" title={title}>
       <SanitizedHTML html={infoText} />

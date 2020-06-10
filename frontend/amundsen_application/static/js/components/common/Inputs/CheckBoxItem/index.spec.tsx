@@ -12,6 +12,7 @@ describe('CheckBoxItem', () => {
       name: 'test',
       value: 'testMethod',
       onChange: jest.fn(),
+      children: <div />,
       ...propOverrides,
     };
     const wrapper = shallow(
@@ -52,12 +53,12 @@ describe('CheckBoxItem', () => {
     });
 
     it('renders input with default value for checked if not provided', () => {
-      const wrapper = setup({ checked: undefined }).wrapper;
+      const { wrapper } = setup({ checked: undefined });
       expect(wrapper.find('input').props().checked).toEqual(false);
     });
 
     it('renders input with default value for disabled if not provided', () => {
-      const wrapper = setup({ disabled: undefined }).wrapper;
+      const { wrapper } = setup({ disabled: undefined });
       expect(wrapper.find('input').props().disabled).toEqual(false);
     });
 

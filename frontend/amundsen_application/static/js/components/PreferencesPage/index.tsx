@@ -37,6 +37,7 @@ export class PreferencesPage extends React.Component<
       selectedPreference: ALL_PREFERENCE,
     };
   }
+
   changePreference = (newPreference) => {
     this.setState({
       selectedPreference: newPreference,
@@ -54,20 +55,14 @@ export class PreferencesPage extends React.Component<
             <PreferenceGroup
               onClick={this.changePreference}
               preferenceValue={ALL_PREFERENCE}
-              selected={
-                this.state.selectedPreference === ALL_PREFERENCE ? true : false
-              }
+              selected={this.state.selectedPreference === ALL_PREFERENCE}
               title={ALL_NOTIFICATIONS_TITLE}
               subtitle={ALL_NOTIFICATIONS_SUBTITLE}
             />
             <PreferenceGroup
               onClick={this.changePreference}
               preferenceValue={MINIMUM_PREFERENCE}
-              selected={
-                this.state.selectedPreference === MINIMUM_PREFERENCE
-                  ? true
-                  : false
-              }
+              selected={this.state.selectedPreference === MINIMUM_PREFERENCE}
               title={MINIMUM_NOTIFICATIONS_TITLE}
               subtitle={MINIMUM_NOTIFICATIONS_SUBTITLE}
             />

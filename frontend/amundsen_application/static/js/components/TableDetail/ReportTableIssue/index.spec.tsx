@@ -4,6 +4,7 @@ import { shallow } from 'enzyme';
 
 import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
+import { NotificationType } from 'interfaces';
 import {
   ComponentProps,
   ReportTableIssue,
@@ -11,7 +12,6 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from '.';
-import { NotificationType } from 'interfaces';
 
 const globalAny: any = global;
 

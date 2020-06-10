@@ -1,3 +1,4 @@
+import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 import reducer, {
   getDashboard,
   getDashboardFailure,
@@ -5,8 +6,6 @@ import reducer, {
   initialDashboardState,
   DashboardReducerState,
 } from '../reducer';
-
-import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 
 describe('dashboard reducer', () => {
   let testState: DashboardReducerState;

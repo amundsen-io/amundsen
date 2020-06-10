@@ -84,7 +84,6 @@ export class ColumnListItem extends React.Component<
         } else {
           text = `${truncatedType}...`;
         }
-        return;
       }
     });
 
@@ -102,7 +101,7 @@ export class ColumnListItem extends React.Component<
           trigger={['click']}
           placement="left"
           overlay={popoverHover}
-          rootClose={true}
+          rootClose
         >
           <a
             className="column-type"
@@ -146,10 +145,10 @@ export class ColumnListItem extends React.Component<
                   <Dropdown
                     id={`detail-list-item-dropdown:${this.props.index}`}
                     onClick={this.stopPropagation}
-                    pullRight={true}
+                    pullRight
                     className="column-dropdown"
                   >
-                    <Dropdown.Toggle noCaret={true}>
+                    <Dropdown.Toggle noCaret>
                       <img className="icon icon-more" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>

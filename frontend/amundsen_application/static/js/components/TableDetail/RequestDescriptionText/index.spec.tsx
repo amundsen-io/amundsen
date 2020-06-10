@@ -2,14 +2,14 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
+import globalState from 'fixtures/globalState';
+import { RequestMetadataType } from 'interfaces';
 import {
   RequestDescriptionText,
   mapDispatchToProps,
   RequestDescriptionTextProps,
 } from '.';
-import globalState from 'fixtures/globalState';
 import { REQUEST_DESCRIPTION } from './constants';
-import { RequestMetadataType } from 'interfaces';
 
 describe('RequestDescriptionText', () => {
   const setup = (propOverrides?: Partial<RequestDescriptionTextProps>) => {

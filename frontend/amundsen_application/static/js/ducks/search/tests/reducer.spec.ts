@@ -3,16 +3,10 @@ import { ResourceType, SearchType } from 'interfaces';
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
 
+import globalState from 'fixtures/globalState';
 import * as API from '../api/v0';
 
 import * as filterReducer from '../filters/reducer';
-const MOCK_TABLE_FILTER_STATE = { database: { hive: true } };
-const MOCK_FILTER_STATE = {
-  [ResourceType.table]: MOCK_TABLE_FILTER_STATE,
-};
-const filterReducerSpy = jest
-  .spyOn(filterReducer, 'default')
-  .mockImplementation(() => MOCK_FILTER_STATE);
 
 import reducer, {
   getInlineResults,
@@ -50,7 +44,13 @@ import {
   UrlDidUpdate,
 } from '../types';
 
-import globalState from 'fixtures/globalState';
+const MOCK_TABLE_FILTER_STATE = { database: { hive: true } };
+const MOCK_FILTER_STATE = {
+  [ResourceType.table]: MOCK_TABLE_FILTER_STATE,
+};
+const filterReducerSpy = jest
+  .spyOn(filterReducer, 'default')
+  .mockImplementation(() => MOCK_FILTER_STATE);
 
 const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;

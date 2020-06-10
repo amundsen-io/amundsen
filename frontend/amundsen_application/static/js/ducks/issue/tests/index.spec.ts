@@ -2,6 +2,8 @@ import { testSaga, expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import globalState from 'fixtures/globalState';
 
+import { Issue, NotificationType } from 'interfaces';
+import { throwError } from 'redux-saga-test-plan/providers';
 import * as API from '../api/v0';
 
 import reducer, {
@@ -20,14 +22,12 @@ import {
   GetIssuesRequest,
   CreateIssueRequest,
 } from '../types';
-import { Issue, NotificationType } from 'interfaces';
 import {
   getIssuesWatcher,
   getIssuesWorker,
   createIssueWatcher,
   createIssueWorker,
 } from '../sagas';
-import { throwError } from 'redux-saga-test-plan/providers';
 
 describe('issue ducks', () => {
   let tableKey: string;
@@ -42,9 +42,11 @@ describe('issue ducks', () => {
   let sender;
   let total;
   let allIssuesUrl;
+
   beforeAll(() => {
     tableKey = 'key';
-    (key = 'table'), (title = 'stuff');
+    key = 'table';
+    title = 'stuff';
     description = 'This is a test';
     resourceName = 'resource_name';
     resourcePath = 'resource_path';

@@ -6,7 +6,6 @@ import { GlobalState } from 'ducks/rootReducer';
 import { createIssue } from 'ducks/issue/reducer';
 import { CreateIssueRequest } from 'ducks/issue/types';
 import './styles.scss';
-import { REPORT_DATA_ISSUE_TEXT, TABLE_OWNERS_NOTE } from './constants';
 import { logClick } from 'ducks/utilMethods';
 import {
   TableMetadata,
@@ -14,6 +13,7 @@ import {
   NotificationPayload,
   NotificationType,
 } from 'interfaces';
+import { REPORT_DATA_ISSUE_TEXT, TABLE_OWNERS_NOTE } from './constants';
 
 export interface ComponentProps {
   tableKey: string;
@@ -103,6 +103,7 @@ export class ReportTableIssue extends React.Component<
   render() {
     return (
       <>
+        {/* eslint-disable jsx-a11y/anchor-is-valid */}
         <a
           href="javascript:void(0)"
           className="report-table-issue-link"
@@ -116,7 +117,7 @@ export class ReportTableIssue extends React.Component<
             <button
               type="button"
               className="btn btn-close"
-              aria-label={'close'}
+              aria-label="close"
               onClick={this.toggle}
             />
             <form id="report-table-issue-form" onSubmit={this.submitForm}>
@@ -125,7 +126,7 @@ export class ReportTableIssue extends React.Component<
                 <input
                   name="title"
                   className="form-control"
-                  required={true}
+                  required
                   maxLength={200}
                 />
               </div>
@@ -135,7 +136,7 @@ export class ReportTableIssue extends React.Component<
                   name="description"
                   className="form-control"
                   rows={5}
-                  required={true}
+                  required
                   maxLength={2000}
                 />
               </div>

@@ -3,15 +3,7 @@ import * as React from 'react';
 import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
-import {
-  InlineSearchResults,
-  InlineSearchResultsProps,
-  mapStateToProps,
-} from '../';
-
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import ResultItemList from '../ResultItemList';
-import SearchItemList from '../SearchItemList';
 
 import { SearchResults } from 'ducks/search/types';
 import {
@@ -21,15 +13,6 @@ import {
   UserResource,
 } from 'interfaces';
 
-import * as CONSTANTS from '../constants';
-
-jest.mock('config/config-utils', () => ({
-  getDisplayNameByResource: jest.fn(),
-  getSourceDisplayName: jest.fn(),
-  getSourceIconClass: jest.fn(),
-  indexUsersEnabled: jest.fn(),
-  indexDashboardsEnabled: jest.fn(),
-}));
 import {
   getSourceDisplayName,
   getSourceIconClass,
@@ -38,6 +21,22 @@ import {
 
 import globalState from 'fixtures/globalState';
 import { allResourcesExample } from 'fixtures/search/inlineResults';
+import * as CONSTANTS from '../constants';
+import SearchItemList from '../SearchItemList';
+import ResultItemList from '../ResultItemList';
+import {
+  InlineSearchResults,
+  InlineSearchResultsProps,
+  mapStateToProps,
+} from '..';
+
+jest.mock('config/config-utils', () => ({
+  getDisplayNameByResource: jest.fn(),
+  getSourceDisplayName: jest.fn(),
+  getSourceIconClass: jest.fn(),
+  indexUsersEnabled: jest.fn(),
+  indexDashboardsEnabled: jest.fn(),
+}));
 
 describe('InlineSearchResults', () => {
   const setup = (propOverrides?: Partial<InlineSearchResultsProps>) => {
@@ -577,7 +576,7 @@ describe('InlineSearchResults', () => {
     });
 
     it('does not render anything when props.isLoading', () => {
-      const wrapper = setup({ isLoading: true }).wrapper;
+      const { wrapper } = setup({ isLoading: true });
       expect(wrapper.instance().renderResults()).toBe(null);
     });
 

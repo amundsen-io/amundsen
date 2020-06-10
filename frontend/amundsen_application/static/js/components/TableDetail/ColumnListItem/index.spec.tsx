@@ -62,7 +62,7 @@ describe('ColumnListItem', () => {
 
     it('turns expanded state to the opposite state', () => {
       setStateSpy.mockClear();
-      const isExpanded = instance.state.isExpanded;
+      const { isExpanded } = instance.state;
       instance.toggleExpand(null);
       expect(setStateSpy).toHaveBeenCalledWith({ isExpanded: !isExpanded });
     });

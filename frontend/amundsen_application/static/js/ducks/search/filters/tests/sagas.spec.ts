@@ -33,7 +33,7 @@ describe('filter sagas', () => {
     });
 
     /* TODO: Library has issue rectifying {} vs [Object] */
-    /*it('puts expected actions for clearing a filter', () => {
+    /* it('puts expected actions for clearing a filter', () => {
       testSaga(Sagas.filterWorker, updateFilterByCategory({ categoryId: 'database', value: undefined }))
         .next().select(SearchUtils.getSearchState).next(mockSearchStateWithFilters)
         .put(submitSearchResource({
@@ -45,7 +45,7 @@ describe('filter sagas', () => {
           updateUrl: true,
         }))
         .next().isDone();
-    });*/
+    }); */
 
     it('puts expected actions for updating a filter', () => {
       const testCategoryId = 'database';

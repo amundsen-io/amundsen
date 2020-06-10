@@ -2,13 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import AbstractFeedbackForm, {
-  DispatchFromProps,
-  StateFromProps,
-} from '../../FeedbackForm';
-
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
+import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '..';
 
 import {
   COMMENTS_PLACEHOLDER,

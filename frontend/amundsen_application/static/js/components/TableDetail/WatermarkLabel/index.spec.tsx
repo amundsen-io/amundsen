@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import { shallow, mount } from 'enzyme';
-import WatermarkLabel, { WatermarkLabelProps } from '.';
 import {
   NO_WATERMARK_LINE_1,
   NO_WATERMARK_LINE_2,
   WatermarkType,
 } from 'components/TableDetail/WatermarkLabel/constants';
+import WatermarkLabel, { WatermarkLabelProps } from '.';
 
 describe('WatermarkLabel', () => {
   const setup = (propOverrides?: Partial<WatermarkLabelProps>) => {

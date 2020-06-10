@@ -21,7 +21,7 @@ type DateConfig = TimestampDateConfig | EpochDateConfig | StringDateConfig;
 // This function is only exported for testing
 export function getMomentDate(config: DateConfig): Moment {
   let moment;
-  const timestamp = (config as TimestampDateConfig).timestamp;
+  const { timestamp } = config as TimestampDateConfig;
   const epoch = (config as EpochDateConfig).epochTimestamp;
   const { dateString, dateStringFormat } = config as StringDateConfig;
   if (timestamp !== undefined) {

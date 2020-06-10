@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import * as API from '../v0';
 import { NotificationType } from 'interfaces';
+import * as API from '../v0';
 
 jest.mock('axios');
 

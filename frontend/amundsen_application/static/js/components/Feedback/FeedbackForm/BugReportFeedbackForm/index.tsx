@@ -2,13 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import AbstractFeedbackForm, {
-  DispatchFromProps,
-  StateFromProps,
-} from '../../FeedbackForm';
-
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
+import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '..';
 
 import {
   BUG_SUMMARY_LABEL,
@@ -32,7 +28,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
             autoComplete="off"
             name="subject"
             className="form-control"
-            required={true}
+            required
             placeholder={SUBJECT_PLACEHOLDER}
           />
         </div>
@@ -41,7 +37,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
           <textarea
             name="bug-summary"
             className="form-control"
-            required={true}
+            required
             rows={3}
             maxLength={2000}
             placeholder={BUG_SUMMARY_PLACEHOLDER}
@@ -53,7 +49,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
             name="repro-steps"
             className="form-control"
             rows={5}
-            required={true}
+            required
             maxLength={2000}
             placeholder={REPRO_STEPS_PLACEHOLDER}
           />

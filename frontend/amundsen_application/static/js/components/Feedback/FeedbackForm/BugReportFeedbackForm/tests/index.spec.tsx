@@ -7,11 +7,6 @@ import AbstractFeedbackForm, {
 } from 'components/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
 import {
-  BugReportFeedbackForm,
-  mapDispatchToProps,
-  mapStateToProps,
-} from '../';
-import {
   BUG_SUMMARY_LABEL,
   BUG_SUMMARY_PLACEHOLDER,
   REPRO_STEPS_LABEL,
@@ -22,6 +17,7 @@ import {
 } from 'components/Feedback/constants';
 
 import globalState from 'fixtures/globalState';
+import { BugReportFeedbackForm, mapDispatchToProps, mapStateToProps } from '..';
 
 describe('BugReportFeedbackForm', () => {
   const setup = () => {

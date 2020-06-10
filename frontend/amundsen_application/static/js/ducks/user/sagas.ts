@@ -38,7 +38,7 @@ export function* getLoggedInUserWatcher(): SagaIterator {
 
 export function* getUserWorker(action: GetUserRequest): SagaIterator {
   try {
-    const payload = action.payload;
+    const { payload } = action;
     const user = yield call(
       API.getUser,
       payload.userId,

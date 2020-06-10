@@ -5,15 +5,14 @@ import { shallow } from 'enzyme';
 import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
 
+import { NO_DATA_ISSUES_TEXT } from 'components/TableDetail/TableIssues/constants';
+import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import {
   TableIssues,
   TableIssueProps,
   mapStateToProps,
   mapDispatchToProps,
 } from '.';
-
-import { NO_DATA_ISSUES_TEXT } from 'components/TableDetail/TableIssues/constants';
-import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 
 describe('TableIssues', () => {
   const setStateSpy = jest.spyOn(TableIssues.prototype, 'setState');

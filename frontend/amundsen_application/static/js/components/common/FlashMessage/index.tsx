@@ -12,7 +12,7 @@ const FlashMessage: React.SFC<FlashMessageProps> = ({
   iconClass,
   message,
   onClose,
-}) => {
+}: FlashMessageProps) => {
   return (
     <div className="flash-message">
       {iconClass && <img className={`icon ${iconClass}`} />}
@@ -20,7 +20,7 @@ const FlashMessage: React.SFC<FlashMessageProps> = ({
       <button
         type="button"
         className="btn btn-close"
-        aria-label={'Close'}
+        aria-label="Close"
         onClick={onClose}
       />
     </div>

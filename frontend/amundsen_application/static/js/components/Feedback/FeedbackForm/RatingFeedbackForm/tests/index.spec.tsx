@@ -6,7 +6,6 @@ import AbstractFeedbackForm, {
   FeedbackFormProps,
 } from 'components/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
-import { RatingFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
 import {
   COMMENTS_PLACEHOLDER,
   RATING_LABEL,
@@ -16,6 +15,7 @@ import {
 } from 'components/Feedback/constants';
 
 import globalState from 'fixtures/globalState';
+import { RatingFeedbackForm, mapDispatchToProps, mapStateToProps } from '..';
 
 describe('RatingFeedbackForm', () => {
   const setup = () => {

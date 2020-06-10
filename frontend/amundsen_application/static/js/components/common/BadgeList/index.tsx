@@ -8,7 +8,7 @@ export interface BadgeListProps {
   badges: Badge[];
 }
 
-const BadgeList: React.SFC<BadgeListProps> = ({ badges }) => {
+const BadgeList: React.SFC<BadgeListProps> = ({ badges }: BadgeListProps) => {
   return (
     <span className="badge-list">
       {badges.map((badge, index) => {

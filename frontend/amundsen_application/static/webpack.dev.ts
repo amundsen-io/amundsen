@@ -1,5 +1,5 @@
 import merge from 'webpack-merge';
-// import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import commonConfig from './webpack.common';
 

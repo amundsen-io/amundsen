@@ -3,9 +3,12 @@ import * as React from 'react';
 import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
-import TableHeaderBullets, { TableHeaderBulletsProps } from '.';
-
 import { ResourceType } from 'interfaces/Resources';
+import {
+  getSourceDisplayName,
+  getDisplayNameByResource,
+} from 'config/config-utils';
+import TableHeaderBullets, { TableHeaderBulletsProps } from '.';
 
 const MOCK_RESOURCE_DISPLAY_NAME = 'Test';
 const MOCK_DB_DISPLAY_NAME = 'AlsoTest';
@@ -14,10 +17,6 @@ jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(),
   getSourceDisplayName: jest.fn(),
 }));
-import {
-  getSourceDisplayName,
-  getDisplayNameByResource,
-} from 'config/config-utils';
 
 describe('TableHeaderBullets', () => {
   const setup = (propOverrides?: Partial<TableHeaderBulletsProps>) => {

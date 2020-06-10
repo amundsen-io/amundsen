@@ -6,7 +6,6 @@ import AbstractFeedbackForm, {
   FeedbackFormProps,
 } from 'components/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
-import { RequestFeedbackForm, mapDispatchToProps, mapStateToProps } from '../';
 import {
   FEATURE_SUMMARY_LABEL,
   FEATURE_SUMMARY_PLACEHOLDER,
@@ -18,6 +17,7 @@ import {
 } from 'components/Feedback/constants';
 
 import globalState from 'fixtures/globalState';
+import { RequestFeedbackForm, mapDispatchToProps, mapStateToProps } from '..';
 
 describe('RequestFeedbackForm', () => {
   const setup = () => {

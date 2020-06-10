@@ -19,7 +19,7 @@ const ResultItem: React.SFC<ResultItemProps> = ({
   subtitle,
   titleNode,
   type,
-}) => {
+}: ResultItemProps) => {
   return (
     <li className="list-group-item">
       <Link

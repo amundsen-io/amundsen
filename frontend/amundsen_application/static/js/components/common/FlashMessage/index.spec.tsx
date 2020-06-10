@@ -32,7 +32,7 @@ describe('FlashMessage', () => {
 
       it('if iconClass, renders img with correct className', () => {
         const testClass = 'icon-mail';
-        const wrapper = setup({ iconClass: testClass }).wrapper;
+        const { wrapper } = setup({ iconClass: testClass });
         expect(wrapper.find('img').props()).toMatchObject({
           className: `icon ${testClass}`,
         });

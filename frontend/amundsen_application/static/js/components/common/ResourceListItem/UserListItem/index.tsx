@@ -2,10 +2,9 @@ import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
-import { LoggingParams } from '../types';
-
 import { UserResource } from 'interfaces';
 import Flag from 'components/common/Flag';
+import { LoggingParams } from '../types';
 
 export interface UserListItemProps {
   user: UserResource;
@@ -25,10 +24,10 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
     }
 
     const listItems = [];
-    if (!!role_name) {
+    if (role_name) {
       listItems.push(<li key={`${user_id}:role_name`}>{role_name}</li>);
     }
-    if (!!team_name) {
+    if (team_name) {
       listItems.push(<li key={`${user_id}:team_name`}>{team_name}</li>);
     }
     return listItems;
@@ -41,7 +40,7 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
       <li className="list-group-item clickable">
         <Link className="resource-list-item user-list-item" to={this.getLink()}>
           <div className="resource-info">
-            <Avatar name={user.display_name} size={24} round={true} />
+            <Avatar name={user.display_name} size={24} round />
             <div className="resource-info-text my-auto">
               <div className="resource-name title-2">{user.display_name}</div>
               {userInfo && (

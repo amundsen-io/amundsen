@@ -2,13 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import AbstractFeedbackForm, {
-  DispatchFromProps,
-  StateFromProps,
-} from '../../FeedbackForm';
-
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
+import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '..';
 
 import {
   FEATURE_SUMMARY_LABEL,
@@ -32,7 +28,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
             autoComplete="off"
             name="subject"
             className="form-control"
-            required={true}
+            required
             placeholder={SUBJECT_PLACEHOLDER}
           />
         </div>
@@ -42,7 +38,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
             name="feature-summary"
             className="form-control"
             rows={3}
-            required={true}
+            required
             maxLength={2000}
             placeholder={FEATURE_SUMMARY_PLACEHOLDER}
           />
@@ -53,7 +49,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
             name="value-prop"
             className="form-control"
             rows={5}
-            required={true}
+            required
             maxLength={2000}
             placeholder={PROPOSITION_PLACEHOLDER}
           />

@@ -5,21 +5,21 @@ import { mocked } from 'ts-jest/utils';
 
 import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces';
-import { MyBookmarks, MyBookmarksProps, mapStateToProps } from './';
 import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
 import TabsComponent from 'components/common/TabsComponent';
+import { indexDashboardsEnabled } from 'config/config-utils';
 import {
   BOOKMARK_TITLE,
   BOOKMARKS_PER_PAGE,
   EMPTY_BOOKMARK_MESSAGE,
   MY_BOOKMARKS_SOURCE_NAME,
 } from './constants';
+import { MyBookmarks, MyBookmarksProps, mapStateToProps } from '.';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexDashboardsEnabled: jest.fn(),
 }));
-import { indexDashboardsEnabled } from 'config/config-utils';
 
 describe('MyBookmarks', () => {
   const setStateSpy = jest.spyOn(MyBookmarks.prototype, 'setState');
@@ -123,7 +123,7 @@ describe('MyBookmarks', () => {
 
   describe('generateTabKey', () => {
     it('returns string used for the tab keys', () => {
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       const givenResource = ResourceType.table;
       expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
         `bookmarktab:${givenResource}`

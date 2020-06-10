@@ -73,7 +73,7 @@ export class NavBar extends React.Component<NavBarProps> {
         <div className="row">
           <div className="nav-bar">
             <div id="nav-bar-left" className="nav-bar-left">
-              <Link to={`/`}>
+              <Link to="/">
                 {AppConfig.logoPath && (
                   <img
                     id="logo-icon"
@@ -89,15 +89,15 @@ export class NavBar extends React.Component<NavBarProps> {
               {this.generateNavLinks(AppConfig.navLinks)}
               {feedbackEnabled() && <Feedback />}
               {this.props.loggedInUser && indexUsersEnabled() && (
-                <Dropdown id="user-dropdown" pullRight={true}>
+                <Dropdown id="user-dropdown" pullRight>
                   <Dropdown.Toggle
-                    noCaret={true}
+                    noCaret
                     className="nav-bar-avatar avatar-dropdown"
                   >
                     <Avatar
                       name={this.props.loggedInUser.display_name}
                       size={32}
-                      round={true}
+                      round
                     />
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="profile-menu">
@@ -123,7 +123,7 @@ export class NavBar extends React.Component<NavBarProps> {
                   <Avatar
                     name={this.props.loggedInUser.display_name}
                     size={32}
-                    round={true}
+                    round
                   />
                 </div>
               )}

@@ -15,7 +15,7 @@ export interface TableHeaderBulletsProps {
 const TableHeaderBullets: React.SFC<TableHeaderBulletsProps> = ({
   cluster,
   database,
-}) => {
+}: TableHeaderBulletsProps) => {
   return (
     <ul className="header-bullets">
       <li>{getDisplayNameByResource(ResourceType.table)}</li>

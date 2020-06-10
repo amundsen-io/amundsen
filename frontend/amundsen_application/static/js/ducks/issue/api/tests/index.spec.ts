@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
-import * as API from '../v0';
 import { NotificationType } from 'interfaces';
 import AppConfig from 'config/config';
+import * as API from '../v0';
 
 jest.mock('axios');
 

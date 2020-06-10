@@ -115,7 +115,7 @@ export default function reducer(
         requestIsOpen: true,
         sendState: SendingState.IDLE,
       };
-      const columnName = (<OpenRequestAction>action).payload.columnName;
+      const { columnName } = (<OpenRequestAction>action).payload;
       if (columnName) {
         newState['columnName'] = columnName;
       }

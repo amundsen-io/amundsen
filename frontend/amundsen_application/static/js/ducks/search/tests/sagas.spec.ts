@@ -6,6 +6,7 @@ import { DEFAULT_RESOURCE_TYPE, ResourceType, SearchType } from 'interfaces';
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
 
+import globalState from 'fixtures/globalState';
 import * as API from '../api/v0';
 import * as Sagas from '../sagas';
 
@@ -41,8 +42,6 @@ import {
   UpdateSearchState,
   UrlDidUpdate,
 } from '../types';
-
-import globalState from 'fixtures/globalState';
 
 const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;

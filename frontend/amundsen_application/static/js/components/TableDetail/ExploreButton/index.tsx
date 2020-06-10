@@ -23,6 +23,7 @@ class ExploreButton extends React.Component<ExploreButtonProps> {
         target="_blank"
         id="explore-sql"
         onClick={logClick}
+        rel="noreferrer"
       >
         Explore
       </a>

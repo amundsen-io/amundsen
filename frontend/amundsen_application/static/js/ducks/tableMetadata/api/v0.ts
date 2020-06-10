@@ -10,6 +10,17 @@ import {
   Tag,
 } from 'interfaces';
 
+/** HELPERS **/
+import {
+  getTableQueryParams,
+  getRelatedDashboardSlug,
+  getTableDataFromResponseData,
+  getTableOwnersFromResponseData,
+  createOwnerUpdatePayload,
+  createOwnerNotificationData,
+  shouldSendNotification,
+} from './helpers';
+
 export const API_PATH = '/api/metadata/v0';
 
 // TODO: Consider created shared interfaces for ducks so we can reuse MessageAPI everywhere else
@@ -24,17 +35,6 @@ export type LastIndexedAPI = { timestamp: string } & MessageAPI;
 export type PreviewDataAPI = { previewData: PreviewData } & MessageAPI;
 export type TableDataAPI = { tableData: TableData } & MessageAPI;
 export type RelatedDashboardDataAPI = { dashboards: DashboardResource[] };
-
-/** HELPERS **/
-import {
-  getTableQueryParams,
-  getRelatedDashboardSlug,
-  getTableDataFromResponseData,
-  getTableOwnersFromResponseData,
-  createOwnerUpdatePayload,
-  createOwnerNotificationData,
-  shouldSendNotification,
-} from './helpers';
 
 export function getTableData(
   tableKey: string,
@@ -175,7 +175,7 @@ export function getPreviewData(queryParams: PreviewQueryParams) {
       return { data: response.data.previewData, status: response.status };
     })
     .catch((e: AxiosError<PreviewDataAPI>) => {
-      const response = e.response;
+      const { response } = e;
       let data = {};
       if (response && response.data && response.data.previewData) {
         data = response.data.previewData;

@@ -1,10 +1,9 @@
 import * as React from 'react';
 
+import { Button, Panel } from 'react-bootstrap';
 import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
 import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
 import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
-
-import { Button, Panel } from 'react-bootstrap';
 
 import {
   BUG_REPORT_TEXT,

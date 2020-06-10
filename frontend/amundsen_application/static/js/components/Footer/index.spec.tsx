@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '.';
-
 import globalState from 'fixtures/globalState';
 
 import * as DateUtils from 'utils/dateUtils';
+import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '.';
 
 const MOCK_DATE_STRING = 'Jan 1 2000 at 0:00:00 am';
 jest.spyOn(DateUtils, 'formatDateTimeLong').mockReturnValue(MOCK_DATE_STRING);

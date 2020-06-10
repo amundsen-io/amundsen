@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { mapDispatchToProps, HomePage, HomePageProps } from '.';
-
 import Breadcrumb from 'components/common/Breadcrumb';
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import PopularTables from 'components/common/PopularTables';
@@ -11,6 +9,7 @@ import SearchBar from 'components/common/SearchBar';
 import TagsList from 'components/common/TagsList';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
+import { mapDispatchToProps, HomePage, HomePageProps } from '.';
 
 describe('HomePage', () => {
   const setup = (propOverrides?: Partial<HomePageProps>) => {

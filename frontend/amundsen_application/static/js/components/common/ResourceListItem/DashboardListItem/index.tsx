@@ -2,8 +2,6 @@ import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
-import { LoggingParams } from '../types';
-
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
@@ -12,8 +10,9 @@ import { formatDate } from 'utils/dateUtils';
 
 import { ResourceType, DashboardResource } from 'interfaces';
 
-import * as Constants from './constants';
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
+import * as Constants from './constants';
+import { LoggingParams } from '../types';
 
 export interface DashboardListItemProps {
   dashboard: DashboardResource;

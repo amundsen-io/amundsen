@@ -4,20 +4,20 @@ import { shallow } from 'enzyme';
 
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
-import DashboardListItem, { DashboardListItemProps } from './index';
 import { ResourceType, DashboardResource } from 'interfaces';
 
-import * as Constants from './constants';
 import * as ConfigUtils from 'config/config-utils';
 import * as DateUtils from 'utils/dateUtils';
-
-const MOCK_DISPLAY_NAME = 'displayName';
-const MOCK_ICON_CLASS = 'test-class';
-const MOCK_DATE = 'Jan 1, 2000';
 
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
 
 import { dashboardSummary } from 'fixtures/metadata/dashboard';
+import * as Constants from './constants';
+import DashboardListItem, { DashboardListItemProps } from './index';
+
+const MOCK_DISPLAY_NAME = 'displayName';
+const MOCK_ICON_CLASS = 'test-class';
+const MOCK_DATE = 'Jan 1, 2000';
 
 jest.mock('config/config-utils', () => ({
   getSourceDisplayName: jest.fn(() => {

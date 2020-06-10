@@ -14,7 +14,7 @@ const SchemaInfo: React.SFC<SchemaInfoProps> = ({
   table,
   desc,
   placement,
-}) => {
+}: SchemaInfoProps) => {
   const popoverHoverFocus = (
     <Popover id="popover-trigger-hover-focus">
       <strong>{schema}:</strong> {desc}

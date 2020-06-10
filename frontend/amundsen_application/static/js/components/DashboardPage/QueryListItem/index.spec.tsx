@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { mount } from 'enzyme';
 
-import QueryListItem, { QueryListItemProps } from './';
+import QueryListItem, { QueryListItemProps } from '.';
 
 const setup = (propOverrides?: Partial<QueryListItemProps>) => {
   const props: QueryListItemProps = {
@@ -85,10 +85,9 @@ describe('QueryListItem', () => {
       it('should render the expanded content', () => {
         const { wrapper, props } = setup();
         const expected = 1;
-        let actual;
 
         wrapper.find('.query-list-header').simulate('click');
-        actual = wrapper.find('.query-list-expanded-content').length;
+        const actual = wrapper.find('.query-list-expanded-content').length;
 
         expect(actual).toEqual(expected);
       });
@@ -97,11 +96,10 @@ describe('QueryListItem', () => {
         it('should hide the expanded content', () => {
           const { wrapper, props } = setup();
           const expected = 0;
-          let actual;
 
           wrapper.find('.query-list-header').simulate('click');
           wrapper.find('.query-list-header').simulate('click');
-          actual = wrapper.find('.query-list-expanded-content').length;
+          const actual = wrapper.find('.query-list-expanded-content').length;
 
           expect(actual).toEqual(expected);
         });

@@ -90,6 +90,7 @@ export class TableDetail extends React.Component<
   TableDetailProps & RouteComponentProps<any>
 > {
   private key: string;
+
   private didComponentMount: boolean = false;
 
   componentDidMount() {
@@ -111,7 +112,7 @@ export class TableDetail extends React.Component<
   }
 
   getDisplayName() {
-    const params = this.props.match.params;
+    const { params } = this.props.match;
 
     return `${params.schema}.${params.table}`;
   }
@@ -122,7 +123,7 @@ export class TableDetail extends React.Component<
     we can't pass it as a single URL parameter without encodeURIComponent which makes ugly URLs.
     DO NOT CHANGE
     */
-    const params = this.props.match.params;
+    const { params } = this.props.match;
 
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
@@ -150,7 +151,7 @@ export class TableDetail extends React.Component<
       title: `Dashboards (${this.props.tableData.dashboards.length})`,
     });
 
-    return <TabsComponent tabs={tabInfo} defaultTab={'columns'} />;
+    return <TabsComponent tabs={tabInfo} defaultTab="columns" />;
   }
 
   render() {
@@ -272,7 +273,7 @@ export class TableDetail extends React.Component<
               )}
               {data.programmatic_descriptions.map((d) => (
                 <section key={d.source} className="column-layout-2">
-                  <EditableSection title={d.source} readOnly={true}>
+                  <EditableSection title={d.source} readOnly>
                     <EditableText
                       maxLength={999999}
                       value={d.text}

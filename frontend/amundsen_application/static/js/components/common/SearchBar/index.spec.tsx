@@ -3,16 +3,16 @@ import * as History from 'history';
 
 import { mount, shallow } from 'enzyme';
 
+import globalState from 'fixtures/globalState';
+import { getMockRouterProps } from 'fixtures/mockRouter';
+
+import { ResourceType } from 'interfaces';
 import {
   mapStateToProps,
   mapDispatchToProps,
   SearchBar,
   SearchBarProps,
 } from '.';
-import globalState from 'fixtures/globalState';
-import { getMockRouterProps } from 'fixtures/mockRouter';
-
-import { ResourceType } from 'interfaces';
 
 document.addEventListener = jest.fn(() => {});
 document.removeEventListener = jest.fn(() => {});
@@ -250,7 +250,7 @@ describe('SearchBar', () => {
   describe('hideTypeAhead', () => {
     it('sets shouldShowTypeAhead to false', () => {
       setStateSpy.mockClear();
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       wrapper.instance().hideTypeAhead();
       expect(setStateSpy).toHaveBeenCalledWith({ showTypeAhead: false });
     });
@@ -258,12 +258,12 @@ describe('SearchBar', () => {
 
   describe('shouldShowTypeAhead', () => {
     it('returns true for non-zero length string', () => {
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       expect(wrapper.instance().shouldShowTypeAhead('test')).toEqual(true);
     });
 
     it('returns false for empty string', () => {
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       expect(wrapper.instance().shouldShowTypeAhead('')).toEqual(false);
     });
   });
@@ -384,7 +384,7 @@ describe('SearchBar', () => {
     let dispatch;
     let result;
     beforeAll(() => {
-      const props = setup().props;
+      const { props } = setup();
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch, props);
     });
@@ -400,12 +400,12 @@ describe('SearchBar', () => {
       expect(result.onSelectInlineResult).toBeInstanceOf(Function);
     });
     it('sets clearSearch on the props if on search route', () => {
-      const props = setup(null, null, { pathname: '/search' }).props;
+      const { props } = setup(null, null, { pathname: '/search' });
       result = mapDispatchToProps(dispatch, props);
       expect(result.clearSearch).toBeInstanceOf(Function);
     });
     it('does not seat clearSearch on the props if not on search route', () => {
-      const props = setup().props;
+      const { props } = setup();
       result = mapDispatchToProps(dispatch, props);
       expect(result.clearSearch).toBe(undefined);
     });

@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import globalState from 'fixtures/globalState';
 
-import { LoggedInUser, PeopleUser, Resource, ResourceDict } from 'interfaces';
+import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
 
 import * as API from '../v0';
 
@@ -31,7 +31,7 @@ describe('getLoggedInUser', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getLoggedInUser().then((user) => {
+    await API.getLoggedInUser().then(() => {
       expect(axiosMock).toHaveBeenCalledWith(`/api/auth_user`);
     });
   });
@@ -73,7 +73,7 @@ describe('getUser', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getUser(testId).then((user) => {
+    await API.getUser(testId).then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
         `/api/metadata/v0/user?user_id=${testId}`
       );
@@ -117,7 +117,7 @@ describe('getUserOwn', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getUserOwn(testId).then((data) => {
+    await API.getUserOwn(testId).then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
         `/api/metadata/v0/user/own?user_id=${testId}`
       );
@@ -161,7 +161,7 @@ describe('getUserRead', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
-    await API.getUserRead(testId).then((data) => {
+    await API.getUserRead(testId).then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
         `/api/metadata/v0/user/read?user_id=${testId}`
       );

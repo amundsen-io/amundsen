@@ -3,6 +3,12 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
+
+import globalState from 'fixtures/globalState';
+
+import AppConfig from 'config/config';
+
+import { getCuratedTags, showAllTags } from 'config/config-utils';
 import {
   TagsList,
   TagsListProps,
@@ -10,9 +16,6 @@ import {
   mapStateToProps,
 } from '.';
 
-import globalState from 'fixtures/globalState';
-
-import AppConfig from 'config/config';
 AppConfig.browse.curatedTags = ['test1'];
 
 jest.mock('config/config-utils', () => ({
@@ -21,8 +24,6 @@ jest.mock('config/config-utils', () => ({
     return ['curated_tag_1'];
   },
 }));
-
-import { getCuratedTags, showAllTags } from 'config/config-utils';
 
 describe('TagsList', () => {
   const setup = (propOverrides?: Partial<TagsListProps>) => {

@@ -197,13 +197,13 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         >
           <input
             id="search-input"
-            required={true}
+            required
             className={inputClass}
             value={this.state.searchTerm}
             onChange={this.handleValueChange}
             aria-label={this.props.placeholder}
             placeholder={this.props.placeholder}
-            autoFocus={true}
+            autoFocus
             autoComplete="off"
           />
           <button className={searchButtonClass} type="submit">

@@ -3,15 +3,19 @@ import { CopyBlock, atomOneLight } from 'react-code-blocks';
 
 const LANGUAGE = 'sql';
 
-const CodeBlock = ({ text }) => {
+type CodeBlockProps = {
+  text: string;
+};
+
+const CodeBlock: React.SFC<CodeBlockProps> = ({ text }: CodeBlockProps) => {
   return (
     <CopyBlock
       text={text}
       language={LANGUAGE}
       theme={atomOneLight}
       showLineNumbers={false}
-      wrapLines={true}
-      codeBlock={true}
+      wrapLines
+      codeBlock
     />
   );
 };

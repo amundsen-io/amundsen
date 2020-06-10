@@ -12,7 +12,7 @@ export function* updateTableOwnerWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
-  const tableData = state.tableMetadata.tableData;
+  const { tableData } = state.tableMetadata;
   try {
     const requestList = API.generateOwnerUpdateRequests(
       payload.updateArray,

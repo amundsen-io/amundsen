@@ -37,7 +37,7 @@ const PreviewModal = ({ imageSrc, onClose }: PreviewModalProps) => {
       scrollable="true"
       className="dashboard-preview-modal"
     >
-      <Modal.Header closeButton={true}>
+      <Modal.Header closeButton>
         <Modal.Title className="text-center">
           {Constants.DASHBOARD_PREVIEW_MODAL_TITLE}
         </Modal.Title>
@@ -106,7 +106,9 @@ export class ImagePreview extends React.Component<
           <Linkify
             className="body-placeholder"
             properties={{ target: '_blank', rel: 'noopener noreferrer' }}
-          >{`${Constants.ERROR_MESSAGE} ${redirectUrl}`}</Linkify>
+          >
+            {`${Constants.ERROR_MESSAGE} ${redirectUrl}`}
+          </Linkify>
         )}
         {isModalVisible && (
           <PreviewModal

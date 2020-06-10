@@ -6,9 +6,8 @@ import { connect } from 'react-redux';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { bindActionCreators } from 'redux';
-import { REQUEST_DESCRIPTION } from './constants';
-
 import { RequestMetadataType } from 'interfaces';
+import { REQUEST_DESCRIPTION } from './constants';
 
 export interface DispatchFromProps {
   openRequestDescriptionDialog: (

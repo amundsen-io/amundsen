@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 
 import Linkify from 'react-linkify';
 
-import { ImagePreview, ImagePreviewProps } from './';
+import { ImagePreview, ImagePreviewProps } from '.';
 
 import ShimmeringDashboardLoader from '../ShimmeringDashboardLoader';
 
@@ -131,23 +131,21 @@ describe('ImagePreview', () => {
 
       it('should open a modal', () => {
         const expected = 1;
-        let actual;
 
         wrapper.find('.preview-button').simulate('click');
 
-        actual = wrapper.find(Modal).length;
+        const actual = wrapper.find(Modal).length;
         expect(actual).toEqual(expected);
       });
 
       describe('when closing the modal', () => {
         it('should remove the modal markup', () => {
           const expected = 0;
-          let actual;
 
           wrapper.find('.preview-button').simulate('click');
           wrapper.find('.modal-header .close').simulate('click');
 
-          actual = wrapper.find(Modal).length;
+          const actual = wrapper.find(Modal).length;
           expect(actual).toEqual(expected);
         });
       });

@@ -5,7 +5,6 @@ import { RouteComponentProps } from 'react-router';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
-import { SEARCH_BREADCRUMB_TEXT } from './constants';
 
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import Breadcrumb from 'components/common/Breadcrumb';
@@ -14,6 +13,7 @@ import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 import SearchBar from 'components/common/SearchBar';
 import TagsList from 'components/common/TagsList';
+import { SEARCH_BREADCRUMB_TEXT } from './constants';
 
 export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;

@@ -56,7 +56,7 @@ export function* getTableDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
-  let tableData = state.tableMetadata.tableData;
+  let { tableData } = state.tableMetadata;
   try {
     tableData = yield call(
       API.getTableDescription,
@@ -106,7 +106,7 @@ export function* getColumnDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
-  let tableData = state.tableMetadata.tableData;
+  let { tableData } = state.tableMetadata;
   try {
     tableData = yield call(
       API.getColumnDescription,
