@@ -2,7 +2,9 @@
     kind: Pod
     metadata:
       name: restore-neo4j-from-latest
-    spec:        
+      annotations:
+        fill_in_here_with_correct_key: fill_in_here_with_correct_value
+    spec:
       containers:
       - name: restore-neo4j-from-latest
         image: neo4j:3.3.0
@@ -23,7 +25,7 @@
             value: s3://dev/null
         volumeMounts:
           - name: data
-            mountPath: /data        
+            mountPath: /data
       restartPolicy: OnFailure
       volumes:
         - name: data
