@@ -33,9 +33,13 @@ class Config:
 
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'neo4j')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'test')
+
     PROXY_ENCRYPTED = True
     """Whether the connection to the proxy should use SSL/TLS encryption."""
-    PROXY_VALIDATE_SSL = True
+
+    # Prior to enable PROXY_VALIDATE_SSL, you need to configure SSL.
+    # https://neo4j.com/docs/operations-manual/current/security/ssl-framework/
+    PROXY_VALIDATE_SSL = False
     """Whether the SSL/TLS certificate presented by the user should be validated against the system's trusted CAs."""
 
     IS_STATSD_ON = False
