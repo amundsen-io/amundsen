@@ -2,7 +2,8 @@
     kind: Pod
     metadata:
       name: restore-neo4j-from-latest
-      annotations: fill_in_here_with_correct_annotation
+      annotations:
+        fill_in_here_with_correct_key: fill_in_here_with_correct_value
     spec:        
       containers:
       - name: restore-neo4j-from-latest
