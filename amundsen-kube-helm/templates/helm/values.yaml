@@ -319,6 +319,7 @@ neo4j:
     ## neo4j.backup.schedule -- The schedule to run backups on. Defaults to hourly.
     ##
     schedule: "0 * * * *"
+    podAnnotations: {}
 
   ##
   ## neo4j.nodeSelector -- neo4j specific nodeSelector.
