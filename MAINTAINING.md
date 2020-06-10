@@ -12,7 +12,6 @@ be too low-level for contributors.
 - [Managing the community](#managing-the-community)
 - [Workflow](#workflow)
 - [Architecture](#architecture)
-- [Running tests](#running-tests)
 - [Updating the changelog](#updating-the-changelog)
 - [Documentation](#documentation)
 - [Versioning](#versioning)
@@ -58,11 +57,7 @@ workflow is as follows:
 
 ## Architecture
 
-TODO
-
-## Running tests
-
-TODO
+We have cover Amundsen's architecture in our [docs](https://lyft.github.io/amundsen/architecture/).
 
 ## Updating the changelog
 
@@ -118,8 +113,6 @@ release candidates prior to an actual release.
 
 ### Preparing and releasing a new version
 
-**TO REVIEW**
-
 Assuming you have permission to publish a new version of Amundsen, then this is
 how you release a version:
 
@@ -129,9 +122,10 @@ how you release a version:
 2. Next, [generate the documentation locally](#documentation) and do
    a quick spot-check to ensure that nothing looks awry.
 
-3. Next, you'll want to update the `VERSION` constant in \*\*.
+3. Next, you'll want to update the `__version__` constant in the `setup.py` file of the corresponding repository.
 
-4. ...
+4. After merging the commit with the update version, you would use the github UI in each repository to draft a new release (e.g., https://github.com/lyft/amundsenfrontendlibrary/releases).
+
 
 ## Labels
 
