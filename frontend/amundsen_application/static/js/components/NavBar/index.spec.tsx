@@ -6,20 +6,23 @@ import { shallow } from 'enzyme';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Link, NavLink } from 'react-router-dom';
-import { NavBar, NavBarProps, mapStateToProps } from '.';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'components/Feedback';
 import SearchBar from 'components/common/SearchBar';
 
 import { logClick } from 'ducks/utilMethods';
+import AppConfig from 'config/config';
+
+import globalState from 'fixtures/globalState';
+import { NavBar, NavBarProps, mapStateToProps } from '.';
+
 jest.mock('ducks/utilMethods', () => {
   return jest.fn().mockImplementation(() => {
     return { logClick: jest.fn() };
   });
 });
 
-import AppConfig from 'config/config';
 AppConfig.logoPath = '/test';
 AppConfig.navLinks = [
   {
@@ -39,8 +42,6 @@ AppConfig.navLinks = [
 ];
 AppConfig.indexUsers.enabled = true;
 AppConfig.mailClientFeatures.feedbackEnabled = true;
-
-import globalState from 'fixtures/globalState';
 
 describe('NavBar', () => {
   const setup = (

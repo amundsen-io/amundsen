@@ -5,24 +5,6 @@ import * as History from 'history';
 import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
-import {
-  mapDispatchToProps,
-  mapStateToProps,
-  SearchPage,
-  SearchPageProps,
-} from '.';
-import {
-  DOCUMENT_TITLE_SUFFIX,
-  PAGE_INDEX_ERROR_MESSAGE,
-  RESULTS_PER_PAGE,
-  SEARCH_DEFAULT_MESSAGE,
-  SEARCH_ERROR_MESSAGE_PREFIX,
-  SEARCH_ERROR_MESSAGE_SUFFIX,
-  SEARCH_SOURCE_NAME,
-  DASHBOARD_RESOURCE_TITLE,
-  TABLE_RESOURCE_TITLE,
-  USER_RESOURCE_TITLE,
-} from './constants';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import ResourceSelector from 'components/SearchPage/ResourceSelector';
@@ -36,6 +18,24 @@ import {
   datasetFilterExample,
 } from 'fixtures/search/filters';
 import { getMockRouterProps } from 'fixtures/mockRouter';
+import {
+  DOCUMENT_TITLE_SUFFIX,
+  PAGE_INDEX_ERROR_MESSAGE,
+  RESULTS_PER_PAGE,
+  SEARCH_DEFAULT_MESSAGE,
+  SEARCH_ERROR_MESSAGE_PREFIX,
+  SEARCH_ERROR_MESSAGE_SUFFIX,
+  SEARCH_SOURCE_NAME,
+  DASHBOARD_RESOURCE_TITLE,
+  TABLE_RESOURCE_TITLE,
+  USER_RESOURCE_TITLE,
+} from './constants';
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+  SearchPage,
+  SearchPageProps,
+} from '.';
 
 describe('SearchPage', () => {
   const setStateSpy = jest.spyOn(SearchPage.prototype, 'setState');

@@ -78,7 +78,7 @@ export class DataPreviewButton extends React.Component<
   }
 
   componentDidMount() {
-    const tableData = this.props.tableData;
+    const { tableData } = this.props;
     this.props.getPreviewData({
       database: tableData.database,
       schema: tableData.schema,
@@ -108,7 +108,7 @@ export class DataPreviewButton extends React.Component<
   }
 
   renderModalBody() {
-    const previewData = this.props.previewData;
+    const { previewData } = this.props;
 
     if (this.props.status === LoadingStatus.SUCCESS) {
       if (
@@ -157,7 +157,7 @@ export class DataPreviewButton extends React.Component<
   }
 
   renderPreviewButton() {
-    const previewData = this.props.previewData;
+    const { previewData } = this.props;
 
     // Based on the state, the preview button will show different things.
     let buttonText = 'Loading...';
@@ -232,7 +232,7 @@ export class DataPreviewButton extends React.Component<
       <>
         {this.renderPreviewButton()}
         <Modal show={this.state.showModal} onHide={this.handleClose}>
-          <Modal.Header className="text-center" closeButton={true}>
+          <Modal.Header className="text-center" closeButton>
             <Modal.Title>{this.props.modalTitle}</Modal.Title>
           </Modal.Header>
           <Modal.Body>{this.renderModalBody()}</Modal.Body>

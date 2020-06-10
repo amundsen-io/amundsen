@@ -49,6 +49,7 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
     const { searchTerm, listItemText, resourceType } = this.props;
     return (
       <li className="list-group-item">
+        {/* eslint-disable jsx-a11y/anchor-is-valid */}
         <a
           id={`inline-searchitem-viewall:${resourceType}`}
           className="search-item-link"
@@ -82,6 +83,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
       break;
     case ResourceType.user:
       hasResults = users.results.length > 0;
+      break;
     default:
       break;
   }

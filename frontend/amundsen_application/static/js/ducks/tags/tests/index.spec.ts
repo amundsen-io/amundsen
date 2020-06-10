@@ -2,6 +2,13 @@ import { expectSaga, testSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 
+import { ResourceType, Tag, UpdateMethod, UpdateTagData } from 'interfaces';
+import globalState from 'fixtures/globalState';
+import {
+  getTableData,
+  getTableDataFailure,
+  getTableDataSuccess,
+} from 'ducks/tableMetadata/reducer';
 import * as API from '../api/v0';
 import reducer, {
   getAllTags,
@@ -21,20 +28,6 @@ import {
   updateResourceTagsWorker,
 } from '../sagas';
 import { GetAllTags, UpdateTags } from '../types';
-
-import { ResourceType, Tag, UpdateMethod, UpdateTagData } from 'interfaces';
-
-import globalState from 'fixtures/globalState';
-
-import {
-  getTableData,
-  getTableDataFailure,
-  getTableDataSuccess,
-} from 'ducks/tableMetadata/reducer';
-
-const updateTableTagSpy = jest
-  .spyOn(API, 'updateTableTag')
-  .mockImplementation((payload, type, key) => null);
 
 describe('allTags ducks', () => {
   describe('actions', () => {

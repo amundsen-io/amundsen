@@ -7,7 +7,7 @@ import { tableMetadata } from '../../fixtures/metadata/table';
 
 import LoadingSpinner from '../common/LoadingSpinner';
 
-import { TableDetail, TableDetailProps, MatchProps } from './';
+import { TableDetail, TableDetailProps, MatchProps } from '.';
 
 const setup = (
   propOverrides?: Partial<TableDetailProps>,

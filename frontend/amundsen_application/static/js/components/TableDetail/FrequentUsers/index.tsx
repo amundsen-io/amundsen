@@ -16,7 +16,7 @@ export function renderReader(
   index: number,
   readers: TableReader[]
 ) {
-  const user = reader.user;
+  const { user } = reader;
   let link = user.profile_url;
   let target = '_blank';
   if (AppConfig.indexUsers.enabled) {
@@ -42,7 +42,7 @@ export function renderReader(
       >
         <Avatar
           name={user.display_name}
-          round={true}
+          round
           size={25}
           style={{ zIndex: readers.length - index, position: 'relative' }}
         />
@@ -51,7 +51,9 @@ export function renderReader(
   );
 }
 
-const FrequentUsers: React.SFC<FrequentUsersProps> = ({ readers }) => {
+const FrequentUsers: React.SFC<FrequentUsersProps> = ({
+  readers,
+}: FrequentUsersProps) => {
   if (readers.length === 0) {
     return <label className="body-3">No frequent users exist</label>;
   }

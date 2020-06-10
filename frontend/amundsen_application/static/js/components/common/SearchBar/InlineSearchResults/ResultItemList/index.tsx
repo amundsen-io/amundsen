@@ -2,8 +2,8 @@ import * as React from 'react';
 import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
 
-import { SuggestedResult } from '../../InlineSearchResults';
 import Flag from 'components/common/Flag';
+import { SuggestedResult } from '..';
 import ResultItem from './ResultItem';
 
 import {
@@ -68,6 +68,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
         <ul className="list-group">
           {this.renderResultItems(suggestedResults)}
         </ul>
+        {/* eslint-disable jsx-a11y/anchor-is-valid */}
         <a
           id={`inline-resultitem-viewall:${resourceType}`}
           className="section-footer title-3"

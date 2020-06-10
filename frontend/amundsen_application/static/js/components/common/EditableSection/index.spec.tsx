@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import EditableSection, { EditableSectionProps } from '.';
 import TagInput from 'components/Tags/TagInput';
 import { ResourceType } from 'interfaces/Resources';
+import EditableSection, { EditableSectionProps } from '.';
 
 describe('EditableSection', () => {
   const setup = (propOverrides?: Partial<EditableSectionProps>, children?) => {
@@ -54,7 +54,7 @@ describe('EditableSection', () => {
       .mockImplementation(() => mockTitle);
     const { wrapper, props } = setup(
       { title: 'custom title' },
-      <TagInput resourceType={ResourceType.table} uriKey={'key'} />
+      <TagInput resourceType={ResourceType.table} uriKey="key" />
     );
 
     it('renders the converted props.title as the section title', () => {
@@ -102,7 +102,7 @@ describe('EditableSection', () => {
     });
 
     it('does not render button if readOnly=true and there is no external editUrl', () => {
-      const wrapper = setup({ readOnly: true }, <div />).wrapper;
+      const { wrapper } = setup({ readOnly: true }, <div />);
       expect(wrapper.find('.edit-button').exists()).toBeFalsy();
     });
   });

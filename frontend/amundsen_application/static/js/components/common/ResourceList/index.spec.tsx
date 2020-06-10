@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
 import ResourceListItem from 'components/common/ResourceListItem/index';
-import ResourceList, { ResourceListProps } from './';
+import ResourceList, { ResourceListProps } from '.';
 
 import * as CONSTANTS from './constants';
 
@@ -30,7 +30,7 @@ describe('ResourceList', () => {
 
   describe('onViewAllToggle', () => {
     it('negates state.Expanded', () => {
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       const initialState = wrapper.state().isExpanded;
       wrapper.instance().onViewAllToggle();
       expect(wrapper.state().isExpanded).toEqual(!initialState);
@@ -106,7 +106,7 @@ describe('ResourceList', () => {
       });
 
       it('renders props.footerTextCollapsed if it exists and not expanded', () => {
-        const wrapper = setup({ footerTextCollapsed: 'Hello' }).wrapper;
+        const { wrapper } = setup({ footerTextCollapsed: 'Hello' });
         expect(wrapper.find('.resource-list-footer').find('a').text()).toEqual(
           'Hello'
         );

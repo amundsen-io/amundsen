@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import QueryList, { QueryListProps } from './';
+import QueryList, { QueryListProps } from '.';
 import QueryListItem from '../QueryListItem';
 
 import { ResourceType } from 'interfaces';

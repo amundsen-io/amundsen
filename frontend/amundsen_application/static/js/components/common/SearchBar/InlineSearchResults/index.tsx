@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import SearchItemList from './SearchItemList';
-import ResultItemList from './ResultItemList';
-
 import {
   getSourceDisplayName,
   getSourceIconClass,
@@ -26,6 +23,8 @@ import {
   TableResource,
   UserResource,
 } from 'interfaces';
+import ResultItemList from './ResultItemList';
+import SearchItemList from './SearchItemList';
 
 import './styles.scss';
 

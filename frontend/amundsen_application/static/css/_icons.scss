@@ -11,13 +11,13 @@ $data-stores: (
   druid: '/static/images/icons/logo-druid.svg',
   presto: '/static/images/icons/logo-presto.svg',
   postgres: '/static/images/icons/logo-postgres.svg',
-  redshift: '/static/images/icons/logo-redshift.svg'
+  redshift: '/static/images/icons/logo-redshift.svg',
 );
 
 // Map of Dashboard names and icon paths
 $dashboards: (
   dashboard: '/static/images/icons/dashboard.svg',
-  mode: '/static/images/icons/logo-mode.svg'
+  mode: '/static/images/icons/logo-mode.svg',
 );
 
 // Map of User names and icon paths
@@ -35,7 +35,6 @@ $users: (
 }
 
 span.icon {
-
   // Generate Icons
   @include iconBackgrounds($data-stores);
   @include iconBackgrounds($dashboards);

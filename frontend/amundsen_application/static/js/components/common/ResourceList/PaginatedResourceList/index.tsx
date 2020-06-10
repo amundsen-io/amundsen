@@ -52,7 +52,7 @@ class PaginatedResourceList extends React.Component<
 
   render() {
     const { allItems, emptyText, itemsPerPage, source } = this.props;
-    const activePage = this.state.activePage;
+    const { activePage } = this.state;
     const allItemsCount = allItems.length;
 
     const startIndex = itemsPerPage * activePage;

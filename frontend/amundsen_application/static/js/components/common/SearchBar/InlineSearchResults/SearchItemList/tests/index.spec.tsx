@@ -3,10 +3,10 @@ import * as React from 'react';
 import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
-import SearchItemList, { SearchItemListProps } from '../';
-import SearchItem from '../SearchItem';
-
 import { ResourceType } from 'interfaces';
+import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import SearchItemList, { SearchItemListProps } from '..';
+import SearchItem from '../SearchItem';
 
 import * as CONSTANTS from '../../constants';
 
@@ -15,7 +15,6 @@ jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
 }));
-import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
 
 jest.mock('react-redux', () => {
   return {

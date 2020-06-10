@@ -92,7 +92,7 @@ describe('getBadgeConfig', () => {
 
   it('Returns the badge config for a given badge', () => {
     const config = ConfigUtils.getBadgeConfig('test_1');
-    const expectedConfig = AppConfig.badges['test_1'];
+    const expectedConfig = AppConfig.badges.test_1;
     expect(config.style).toEqual(expectedConfig.style);
     expect(config.displayName).toEqual(expectedConfig.displayName);
   });

@@ -3,18 +3,17 @@ import { shallow } from 'enzyme';
 
 import { GlobalState } from 'ducks/rootReducer';
 
-import {
-  FilterSection,
-  FilterSectionProps,
-  mapDispatchToProps,
-  mapStateToProps,
-} from '../';
-
 import globalState from 'fixtures/globalState';
 
 import { FilterType, ResourceType } from 'interfaces';
 
 import InfoButton from 'components/common/InfoButton';
+import {
+  FilterSection,
+  FilterSectionProps,
+  mapDispatchToProps,
+  mapStateToProps,
+} from '..';
 import { CLEAR_BTN_TEXT } from '../../constants';
 
 describe('FilterSection', () => {
@@ -93,7 +92,7 @@ describe('FilterSection', () => {
 
     it('renders InfoButton with correct props if props.helpText exists', () => {
       const mockHelpText = 'Help me';
-      const wrapper = setup({ helpText: mockHelpText }).wrapper;
+      const { wrapper } = setup({ helpText: mockHelpText });
       const infoButton = wrapper.find(InfoButton);
       expect(infoButton.exists()).toBe(true);
       expect(infoButton.props().infoText).toBe(mockHelpText);
@@ -143,19 +142,19 @@ describe('FilterSection', () => {
     let result;
     describe('sets hasValue as true', () => {
       it('when CHECKBOX_SELECT filter has value', () => {
-        const props = setup({
+        const { props } = setup({
           categoryId: 'database',
           type: FilterType.CHECKBOX_SELECT,
-        }).props;
+        });
         result = mapStateToProps(mockStateWithFilters, props);
         expect(result.hasValue).toBe(true);
       });
 
       it('when INPUT_SELECT filter has value', () => {
-        const props = setup({
+        const { props } = setup({
           categoryId: 'schema',
           type: FilterType.INPUT_SELECT,
-        }).props;
+        });
         result = mapStateToProps(mockStateWithFilters, props);
         expect(result.hasValue).toBe(true);
       });
@@ -163,25 +162,25 @@ describe('FilterSection', () => {
 
     describe('sets hasValue as false', () => {
       it('when CHECKBOX_SELECT filter has no value', () => {
-        const props = setup({
+        const { props } = setup({
           categoryId: 'database',
           type: FilterType.CHECKBOX_SELECT,
-        }).props;
+        });
         result = mapStateToProps(mockStateWithOutFilters, props);
         expect(result.hasValue).toBe(false);
       });
 
       it('when INPUT_SELECT filter has no value', () => {
-        const props = setup({
+        const { props } = setup({
           categoryId: 'schema',
           type: FilterType.INPUT_SELECT,
-        }).props;
+        });
         result = mapStateToProps(mockStateWithOutFilters, props);
         expect(result.hasValue).toBe(false);
       });
 
       it('when no filters exist for the given category', () => {
-        const props = setup({ categoryId: 'fakeCategory' }).props;
+        const { props } = setup({ categoryId: 'fakeCategory' });
         result = mapStateToProps(mockStateWithFilters, props);
         expect(result.hasValue).toEqual(false);
       });
@@ -192,7 +191,7 @@ describe('FilterSection', () => {
     let dispatch;
     let result;
     beforeAll(() => {
-      const props = setup().props;
+      const { props } = setup();
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);
     });

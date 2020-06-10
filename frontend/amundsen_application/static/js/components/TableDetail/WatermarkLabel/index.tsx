@@ -2,6 +2,7 @@ import * as React from 'react';
 import './styles.scss';
 
 import { Watermark } from 'interfaces';
+import { formatDate } from 'utils/dateUtils';
 import {
   HIGH_WATERMARK_LABEL,
   NO_WATERMARK_LINE_1,
@@ -10,7 +11,6 @@ import {
   WATERMARK_INPUT_FORMAT,
   WatermarkType,
 } from './constants';
-import { formatDate } from 'utils/dateUtils';
 
 export interface WatermarkLabelProps {
   watermarks: Watermark[];

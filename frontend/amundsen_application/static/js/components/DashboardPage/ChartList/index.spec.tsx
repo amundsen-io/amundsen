@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import ChartList, { ChartListProps } from './';
+import ChartList, { ChartListProps } from '.';
 
 describe('ChartList', () => {
   const setup = (propOverrides?: Partial<ChartListProps>) => {

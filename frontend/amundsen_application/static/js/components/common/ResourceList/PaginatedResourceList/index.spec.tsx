@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import { ResourceType } from 'interfaces';
 import ResourceListItem from 'components/common/ResourceListItem/index';
 
-import PaginatedResourceList, { PaginatedResourceListProps } from './';
+import PaginatedResourceList, { PaginatedResourceListProps } from '.';
 import * as CONSTANTS from '../constants';
 
 describe('PaginatedResourceList', () => {
@@ -33,7 +33,7 @@ describe('PaginatedResourceList', () => {
 
   describe('componentDidUpdate', () => {
     it('updates activePage state if the activePage is out of bounds by multiple pages', () => {
-      const wrapper = setup({ itemsPerPage: 2 }).wrapper;
+      const { wrapper } = setup({ itemsPerPage: 2 });
       wrapper.setState({ activePage: 2 });
       wrapper.setProps({
         allItems: [{ type: ResourceType.table }, { type: ResourceType.table }],
@@ -42,7 +42,7 @@ describe('PaginatedResourceList', () => {
     });
 
     it('updates activePage state if the activePage is out of bounds by one page', () => {
-      const wrapper = setup({ itemsPerPage: 2 }).wrapper;
+      const { wrapper } = setup({ itemsPerPage: 2 });
       wrapper.setState({ activePage: 2 });
       wrapper.setProps({
         allItems: [
@@ -55,7 +55,7 @@ describe('PaginatedResourceList', () => {
     });
 
     it('does not update activePage if new values are not out of bounds', () => {
-      const wrapper = setup({ itemsPerPage: 2 }).wrapper;
+      const { wrapper } = setup({ itemsPerPage: 2 });
       wrapper.setState({ activePage: 2 });
       wrapper.setProps({
         allItems: [
@@ -73,7 +73,7 @@ describe('PaginatedResourceList', () => {
   describe('onPagination', () => {
     it('calls setState to update the activePage', () => {
       setStateSpy.mockClear();
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       wrapper.instance().onPagination(3);
       expect(setStateSpy).toHaveBeenCalledWith({ activePage: 2 });
     });

@@ -69,21 +69,16 @@ const QueryListItem = ({ name, text, url }: QueryListItemProps) => {
   const key = `key:${name}`;
 
   return (
-    <li
-      className="list-group-item query-list-item clickable"
-      role="tab"
-      id={key}
-    >
-      <a
+    <li className="list-group-item query-list-item" role="tab" id={key}>
+      <button
         className="query-list-header"
         aria-expanded={isExpanded}
         aria-controls={key}
-        role="button"
-        href="#"
+        type="button"
         onClick={toggleExpand}
       >
         <p className="query-list-item-name column-name">{name}</p>
-      </a>
+      </button>
       {isExpanded && (
         <div className="query-list-expanded-content">
           <label className="query-list-query-label section-title">

@@ -9,9 +9,9 @@ import { GlobalState } from 'ducks/rootReducer';
 import { getAllTags, updateTags } from 'ducks/tags/reducer';
 import { GetAllTagsRequest, UpdateTagsRequest } from 'ducks/tags/types';
 
-import TagInfo from '../TagInfo';
 import { EditableSectionChildProps } from 'components/common/EditableSection';
 import { ResourceType, Tag, UpdateMethod, UpdateTagData } from 'interfaces';
+import TagInfo from '../TagInfo';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
@@ -150,7 +150,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
       tag =
         actionType === 'select-option'
           ? actionPayload.option.value
-          : currentTags[currentTags.length - 1]['value'];
+          : currentTags[currentTags.length - 1].value;
       if (tag === BATCH_EDIT_TAG_OPTION) {
         currentTags.pop();
         this.handleShow();
@@ -287,14 +287,14 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     } else {
       tagBody = (
         <CreatableSelect
-          autoFocus={true}
+          autoFocus
           className="basic-multi-select"
           classNamePrefix="amundsen"
           components={componentOverides}
           isClearable={false}
           isDisabled={this.props.isLoading}
           isLoading={this.props.isLoading}
-          isMulti={true}
+          isMulti
           isValidNewOption={this.isValidNewOption}
           name="tags"
           noOptionsMessage={this.noOptionsMessage}

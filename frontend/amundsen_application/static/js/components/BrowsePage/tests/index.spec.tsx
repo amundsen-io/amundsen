@@ -3,8 +3,8 @@ import * as DocumentTitle from 'react-document-title';
 
 import { shallow } from 'enzyme';
 
-import { BrowsePage } from '../';
 import TagsList from 'components/common/TagsList';
+import { BrowsePage } from '..';
 
 describe('BrowsePage', () => {
   const setup = () => {

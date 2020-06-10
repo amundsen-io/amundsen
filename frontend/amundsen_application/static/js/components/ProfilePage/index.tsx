@@ -93,7 +93,7 @@ export class ProfilePage extends React.Component<
   }
 
   componentDidUpdate() {
-    const userId = this.props.match.params.userId;
+    const { userId } = this.props.match.params;
     if (userId !== this.state.userId) {
       this.setState({ userId });
       this.loadUserInfo(userId);
@@ -184,10 +184,12 @@ export class ProfilePage extends React.Component<
     return tabInfo;
   };
 
-  /* TODO: Add support to direct to 404 page for edgecase of someone typing in
-     or pasting in a bad url. This would be consistent with TableDetail page behavior */
+  /*
+    TODO: Add support to direct to 404 page for edgecase of someone typing in
+    or pasting in a bad url. This would be consistent with TableDetail page behavior
+  */
   render() {
-    const user = this.props.user;
+    const { user } = this.props;
     return (
       <DocumentTitle title={`${user.display_name} - Amundsen Profile`}>
         <div className="resource-detail-layout profile-page">
@@ -196,11 +198,7 @@ export class ProfilePage extends React.Component<
               <Breadcrumb />
               <div id="profile-avatar" className="profile-avatar">
                 {user.display_name && user.display_name.length > 0 && (
-                  <Avatar
-                    name={user.display_name}
-                    size={AVATAR_SIZE}
-                    round={true}
-                  />
+                  <Avatar name={user.display_name} size={AVATAR_SIZE} round />
                 )}
               </div>
             </div>
@@ -227,20 +225,21 @@ export class ProfilePage extends React.Component<
               </div>
             </div>
             <div className="header-section header-links">
-              {/*{*/}
+              {/* { */}
               {/*  // TODO - Implement deep links to open Slack *!/*/}
               {/*  user.is_active && user.slack_id &&*/}
               {/*  <a id="slack-link" href={user.slack_id} className='btn btn-flat-icon header-link' target='_blank'>*/}
               {/*    <img className='icon icon-dark icon-slack'/>*/}
               {/*    <span className="body-2">Slack</span>*/}
               {/*  </a>*/}
-              {/*}*/}
+              {/* } */}
               {user.is_active && (
                 <a
                   id="email-link"
                   href={`mailto:${user.email}`}
                   className="btn btn-flat-icon header-link"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   <img className="icon icon-dark icon-mail" />
                   <span className="email-link-label body-2">{user.email}</span>
@@ -252,6 +251,7 @@ export class ProfilePage extends React.Component<
                   href={user.profile_url}
                   className="btn btn-flat-icon header-link"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   <span className="icon icon-dark icon-users" />
                   <span className="profile-link-label body-2">
@@ -265,6 +265,7 @@ export class ProfilePage extends React.Component<
                   href={`https://github.com/${user.github_username}`}
                   className="btn btn-flat-icon header-link"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   <img className="icon icon-dark icon-github" />
                   <span className="github-link-label body-2">Github</span>

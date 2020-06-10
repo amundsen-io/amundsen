@@ -1,7 +1,6 @@
 import * as React from 'react';
-import ColumnListItem from '../ColumnListItem';
-
 import { TableColumn } from 'interfaces';
+import ColumnListItem from '../ColumnListItem';
 
 import './styles.scss';
 
@@ -9,8 +8,9 @@ interface ColumnListProps {
   columns?: TableColumn[];
 }
 
-// TODO - convert into a component for easier testing
-const ColumnList: React.SFC<ColumnListProps> = ({ columns }) => {
+const ColumnList: React.SFC<ColumnListProps> = ({
+  columns,
+}: ColumnListProps) => {
   if (columns.length < 1) {
     return <div />;
     // ToDo: return No Results Message

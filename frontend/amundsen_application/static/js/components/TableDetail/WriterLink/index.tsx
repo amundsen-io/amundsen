@@ -9,7 +9,9 @@ export interface WriterLinkProps {
   tableWriter: TableWriter;
 }
 
-const WriterLink: React.SFC<WriterLinkProps> = ({ tableWriter }) => {
+const WriterLink: React.SFC<WriterLinkProps> = ({
+  tableWriter,
+}: WriterLinkProps) => {
   if (tableWriter === null || tableWriter.application_url === null) {
     return null;
   }
@@ -31,6 +33,7 @@ const WriterLink: React.SFC<WriterLinkProps> = ({ tableWriter }) => {
         href={tableWriter.application_url}
         onClick={logClick}
         target="_blank"
+        rel="noreferrer"
       >
         <AvatarLabel label={tableWriter.name} src={image} />
       </a>

@@ -2,16 +2,15 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import ResultItemList, { ResultItemListProps } from '../';
-
 import { ResourceType } from 'interfaces';
+import { logClick } from 'ducks/utilMethods';
+import ResultItemList, { ResultItemListProps } from '..';
 
 import {
   RESULT_LIST_FOOTER_PREFIX,
   RESULT_LIST_FOOTER_SUFFIX,
 } from '../../constants';
 
-import { logClick } from 'ducks/utilMethods';
 jest.mock('ducks/utilMethods', () => ({
   logClick: jest.fn(() => {}),
 }));

@@ -9,6 +9,7 @@ export interface CheckBoxItemProps {
   name: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => any;
   value: string;
+  children: React.ReactNode;
 }
 
 const CheckBoxItem: React.SFC<CheckBoxItemProps> = ({
@@ -18,7 +19,7 @@ const CheckBoxItem: React.SFC<CheckBoxItemProps> = ({
   onChange,
   value,
   children,
-}) => {
+}: CheckBoxItemProps) => {
   return (
     <div className="checkbox">
       <label className="checkbox-label">

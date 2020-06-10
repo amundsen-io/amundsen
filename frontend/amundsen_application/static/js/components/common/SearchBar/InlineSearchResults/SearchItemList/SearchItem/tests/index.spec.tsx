@@ -3,7 +3,6 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import { SearchItem, SearchItemProps, mapStateToProps } from '../';
 
 import { SEARCH_ITEM_NO_RESULTS } from 'components/common/SearchBar/InlineSearchResults/constants';
 
@@ -18,6 +17,8 @@ import {
 } from 'fixtures/search/inlineResults';
 
 import { logClick } from 'ducks/utilMethods';
+import { SearchItem, SearchItemProps, mapStateToProps } from '..';
+
 jest.mock('ducks/utilMethods', () => ({
   logClick: jest.fn(() => {}),
 }));

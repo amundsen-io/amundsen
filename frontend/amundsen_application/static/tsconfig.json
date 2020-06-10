@@ -29,6 +29,9 @@
     "**/__tests__",
   ],
   "include": [
-    "js"
+    "*.ts",
+    "*.js",
+    ".eslintrc.js",
+    "js/"
   ]
 }

@@ -17,7 +17,6 @@ import { GetDashboardRequest } from 'ducks/dashboard/types';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
 import { DashboardMetadata } from 'interfaces/Dashboard';
-import ImagePreview from './ImagePreview';
 import QueryList from 'components/DashboardPage/QueryList';
 import ChartList from 'components/DashboardPage/ChartList';
 import { formatDateTimeShort } from 'utils/dateUtils';
@@ -39,6 +38,7 @@ import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 import { getLoggingParams } from 'utils/logUtils';
 
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
+import ImagePreview from './ImagePreview';
 
 import './styles.scss';
 
@@ -135,7 +135,7 @@ export class DashboardPage extends React.Component<
       title: `Queries (${this.props.dashboard.queries.length})`,
     });
 
-    return <TabsComponent tabs={tabInfo} defaultTab={'tables'} />;
+    return <TabsComponent tabs={tabInfo} defaultTab="tables" />;
   }
 
   render() {
@@ -206,7 +206,7 @@ export class DashboardPage extends React.Component<
           <section className="left-panel">
             <EditableSection
               title="Description"
-              readOnly={true}
+              readOnly
               editUrl={dashboard.url}
               editText={`${EDIT_DESC_TEXT} ${getSourceDisplayName(
                 dashboard.product,

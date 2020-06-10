@@ -3,12 +3,6 @@ import * as React from 'react';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import {
-  POPULAR_TABLES_LABEL,
-  POPULAR_TABLES_INFO_TEXT,
-  POPULAR_TABLES_SOURCE_NAME,
-  POPULAR_TABLES_PER_PAGE,
-} from './constants';
 import { TableResource } from 'interfaces';
 
 import InfoButton from 'components/common/InfoButton';
@@ -19,6 +13,12 @@ import { GetPopularTablesRequest } from 'ducks/popularTables/types';
 import { GlobalState } from 'ducks/rootReducer';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import {
+  POPULAR_TABLES_LABEL,
+  POPULAR_TABLES_INFO_TEXT,
+  POPULAR_TABLES_SOURCE_NAME,
+  POPULAR_TABLES_PER_PAGE,
+} from './constants';
 
 export interface StateFromProps {
   popularTables: TableResource[];

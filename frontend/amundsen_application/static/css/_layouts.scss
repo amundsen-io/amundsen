@@ -42,8 +42,14 @@ $resource-header-height: 84px;
 
         li {
           display: inline;
-          &::after { content: '\00A0\2022\00A0'; }
-          &:last-child::after { content: ''; }
+
+          &::after {
+            content: '\00A0\2022\00A0';
+          }
+
+          &:last-child::after {
+            content: '';
+          }
         }
       }
 

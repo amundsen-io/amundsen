@@ -13,6 +13,7 @@ import * as qs from 'simple-query-string';
 
 import { ResourceType, SearchType } from 'interfaces';
 
+import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
 import * as API from './api/v0';
 
 import {
@@ -53,12 +54,9 @@ import {
 } from './reducer';
 import { initialFilterState, UpdateSearchFilter } from './filters/reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
-import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
 
-//////////////////////////////////////////////////////////////////////////////
 //  SEARCH SAGAS
 //  The actions that trigger these sagas are fired directly from components.
-//////////////////////////////////////////////////////////////////////////////
 
 /**
  * Handles workflow for any user action that causes an update to the searchTerm,
@@ -68,7 +66,7 @@ export function* submitSearchWorker(action: SubmitSearchRequest): SagaIterator {
   const { searchTerm, useFilters } = action.payload;
   yield put(
     searchAll(
-      !!searchTerm ? SearchType.SUBMIT_TERM : SearchType.CLEAR_TERM,
+      searchTerm ? SearchType.SUBMIT_TERM : SearchType.CLEAR_TERM,
       searchTerm,
       undefined,
       0,
@@ -158,7 +156,7 @@ export function* urlDidUpdateWorker(action: UrlDidUpdateRequest): SagaIterator {
     yield put(
       searchAll(SearchType.LOAD_URL, term, resource, parsedIndex, updateUrl)
     );
-  } else if (!!resource) {
+  } else if (resource) {
     if (resource !== state.resource) {
       yield put(updateSearchState({ resource }));
     }
@@ -213,12 +211,10 @@ export function* loadPreviousSearchWatcher(): SagaIterator {
   yield takeEvery(LoadPreviousSearch.REQUEST, loadPreviousSearchWorker);
 }
 
-//////////////////////////////////////////////////////////////////////////////
 //  CORE SEARCH SAGAS
 //  These sagas are not called directly by any components. They should be
 //  called by other sagas as the final step for all use cases that will update
 //  search results.
-//////////////////////////////////////////////////////////////////////////////
 
 export function* searchResourceWorker(
   action: SearchResourceRequest
@@ -305,11 +301,9 @@ export function* searchAllWatcher(): SagaIterator {
   yield takeEvery(SearchAll.REQUEST, searchAllWorker);
 }
 
-//////////////////////////////////////////////////////////////////////////////
 //  INLINE SEARCH RESULTS SAGAS
 //  These sagas support the inline search results feature.
 //  TODO: Consider moving into nested directory similar to how filter logic.
-//////////////////////////////////////////////////////////////////////////////
 
 export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
   const { term } = action.payload;

@@ -21,7 +21,9 @@ type BreadcrumbDirection = 'left' | 'right';
 
 export type BreadcrumbProps = OwnProps & MapDispatchToProps;
 
-export const Breadcrumb: React.SFC<BreadcrumbProps> = (props) => {
+export const Breadcrumb: React.SFC<BreadcrumbProps> = (
+  props: BreadcrumbProps
+) => {
   const { direction = 'left', path, text } = props;
   if (path !== undefined && text !== undefined) {
     return (
@@ -36,6 +38,7 @@ export const Breadcrumb: React.SFC<BreadcrumbProps> = (props) => {
   }
   return (
     <div className="amundsen-breadcrumb">
+      {/* eslint-disable jsx-a11y/anchor-is-valid */}
       <a
         onClick={props.loadPreviousSearch}
         className="btn btn-flat-icon title-3"

@@ -71,6 +71,7 @@ class ResourceList extends React.Component<
             </ul>
             <div className="resource-list-footer">
               {allItemsCount > itemsPerPage && (
+                /* eslint-disable jsx-a11y/anchor-is-valid */
                 <a onClick={this.onViewAllToggle} target="_blank">
                   {this.state.isExpanded
                     ? Constants.FOOTER_TEXT_EXPANDED

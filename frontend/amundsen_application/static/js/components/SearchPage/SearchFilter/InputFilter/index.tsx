@@ -7,9 +7,8 @@ import {
   UpdateFilterRequest,
 } from 'ducks/search/filters/reducer';
 
-import { APPLY_BTN_TEXT } from '../constants';
-
 import { GlobalState } from 'ducks/rootReducer';
+import { APPLY_BTN_TEXT } from '../constants';
 
 interface OwnProps {
   categoryId: string;
@@ -53,7 +52,7 @@ export class InputFilter extends React.Component<
 
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!!this.state.value) {
+    if (this.state.value) {
       this.props.updateFilter(this.props.categoryId, this.state.value);
     } else {
       this.props.updateFilter(this.props.categoryId, undefined);

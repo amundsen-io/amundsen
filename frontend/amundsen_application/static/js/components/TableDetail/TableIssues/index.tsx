@@ -49,6 +49,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
           target="_blank"
           href={issue.url}
           onClick={logClick}
+          rel="noreferrer"
         >
           <span>{issue.issue_key}</span>
         </a>
@@ -91,6 +92,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
           id="more-issues-link"
           className="table-issue-more-issues"
           target="_blank"
+          rel="noreferrer"
           href={this.props.allIssuesUrl}
           onClick={logClick}
         >

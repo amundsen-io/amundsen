@@ -7,9 +7,6 @@ import { Search as UrlSearch } from 'history';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
-import ResourceSelector from './ResourceSelector';
-import SearchFilter from './SearchFilter';
-import SearchPanel from './SearchPanel';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { submitSearchResource, urlDidUpdate } from 'ducks/search/reducer';
@@ -23,6 +20,9 @@ import {
 } from 'ducks/search/types';
 
 import { Resource, ResourceType, SearchType } from 'interfaces';
+import SearchPanel from './SearchPanel';
+import SearchFilter from './SearchFilter';
+import ResourceSelector from './ResourceSelector';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { shallow } from 'enzyme';
-import SearchPanel from '../';
+import SearchPanel from '..';
 
 describe('SearchPanel', () => {
   const resourceChild = <div>I am a resource selector</div>;

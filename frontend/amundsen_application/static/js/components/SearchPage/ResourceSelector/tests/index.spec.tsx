@@ -2,26 +2,25 @@ import * as React from 'react';
 import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
+import globalState from 'fixtures/globalState';
+import { ResourceType } from 'interfaces/Resources';
+import {
+  getDisplayNameByResource,
+  indexDashboardsEnabled,
+  indexUsersEnabled,
+} from 'config/config-utils';
 import {
   mapDispatchToProps,
   mapStateToProps,
   ResourceSelector,
   ResourceSelectorProps,
-} from '../';
-
-import globalState from 'fixtures/globalState';
-import { ResourceType } from 'interfaces/Resources';
+} from '..';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
 }));
-import {
-  getDisplayNameByResource,
-  indexDashboardsEnabled,
-  indexUsersEnabled,
-} from 'config/config-utils';
 
 describe('ResourceSelector', () => {
   const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {

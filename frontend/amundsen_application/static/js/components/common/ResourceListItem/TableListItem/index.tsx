@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { LoggingParams } from '../types';
-
 import { ResourceType, TableResource } from 'interfaces';
 
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
@@ -11,6 +9,7 @@ import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
 import BadgeList from 'components/common/BadgeList';
 import SchemaInfo from 'components/common/ResourceListItem/SchemaInfo';
+import { LoggingParams } from '../types';
 
 export interface TableListItemProps {
   table: TableResource;

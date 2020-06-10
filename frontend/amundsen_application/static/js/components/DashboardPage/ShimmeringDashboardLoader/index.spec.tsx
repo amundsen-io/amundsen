@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import ShimmeringDashboardLoader from './';
+import ShimmeringDashboardLoader from '.';
 
 const setup = () => {
   const wrapper = shallow(<ShimmeringDashboardLoader />);

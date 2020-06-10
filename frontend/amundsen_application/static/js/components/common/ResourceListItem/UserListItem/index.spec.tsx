@@ -6,8 +6,8 @@ import * as Avatar from 'react-avatar';
 import Flag from 'components/common/Flag';
 import { Link } from 'react-router-dom';
 
-import UserListItem, { UserListItemProps } from '.';
 import { ResourceType } from 'interfaces';
+import UserListItem, { UserListItemProps } from '.';
 
 describe('UserListItem', () => {
   const setup = (propOverrides?: Partial<UserListItemProps>) => {
@@ -183,7 +183,7 @@ describe('UserListItem', () => {
       });
 
       it('renders Alumni flag if user not active', () => {
-        const wrapper = setup({
+        const { wrapper } = setup({
           user: {
             type: ResourceType.user,
             display_name: 'firstname lastname',
@@ -201,7 +201,7 @@ describe('UserListItem', () => {
             team_name: 'QA',
             user_id: 'test0',
           },
-        }).wrapper;
+        });
         const flagComponent = wrapper.find('.resource-badges').find(Flag);
         expect(flagComponent.exists()).toBe(true);
         expect(flagComponent.props()).toMatchObject({

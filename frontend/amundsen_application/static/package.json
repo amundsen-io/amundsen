@@ -8,23 +8,21 @@
     "url": "https://github.com/lyft/amundsenfrontendlibrary"
   },
   "scripts": {
-    "build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.prod.ts",
-    "dev-build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.dev.ts",
+    "build": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.prod.ts",
+    "dev-build": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.dev.ts",
     "test": "cross-env TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
     "posttest": "npm run format",
     "test-nocov": "cross-env TZ=UTC jest",
-    "watch": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack.json' webpack --progress --config webpack.dev.ts --watch",
-    "lint": "npm run eslint && npm run tslint",
-    "lint-fix": "npm run eslint-fix && npm run tslint-fix",
-    "eslint": "eslint --ignore-path=.eslintignore --ext .js,.jsx .",
-    "eslint-fix": "eslint --fix --ignore-path=.eslintignore --ext .js,.jsx .",
+    "watch": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.dev.ts --watch",
+    "lint": "npm run eslint",
+    "lint-fix": "npm run eslint-fix",
+    "eslint": "eslint --ignore-path=.eslintignore --ext .js,.jsx,.ts,.tsx .",
+    "eslint-fix": "eslint --fix --ignore-path=.eslintignore --ext .js,.jsx,.ts,.tsx .",
     "test:watch": "cross-env TZ=UTC jest --watch",
     "tsc": "tsc",
-    "tslint": "tslint --project .",
-    "tslint-fix": "tslint --fix --project .",
     "stylelint": "stylelint '**/*.scss'",
     "stylelint-fix": "stylelint --fix '**/*.scss'",
-    "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\""
+    "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,scss}\""
   },
   "author": "",
   "license": "ISC",
@@ -57,6 +55,9 @@
     "@types/react-router": "^4.4.5",
     "@types/react-tagsinput": "^3.19.7",
     "@types/webpack": "^4.41.12",
+    "@typescript-eslint/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^3.1.0",
+    "@typescript-eslint/parser": "^3.1.0",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.1.0",
     "bootstrap-sass": "^3.4.1",
@@ -66,11 +67,15 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-typescript": "^8.0.2",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.4",
     "html-webpack-plugin": "4.3.0",
     "husky": "^4.2.5",
     "jest": "^25.5.4",
@@ -87,18 +92,14 @@
     "sass-loader": "^7.3.1",
     "style-loader": "^0.20.3",
     "stylelint": "^13.6.0",
-    "stylelint-scss": "^3.17.2",
     "stylelint-config-standard": "^20.0.0",
+    "stylelint-scss": "^3.17.2",
     "terser-webpack-plugin": "^2.3.6",
     "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.2",
     "ts-node": "^8.10.1",
     "tsconfig-paths": "^3.9.0",
-    "tslint": "^5.20.1",
-    "tslint-config-airbnb": "^5.8.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.2.0",
-    "tslint-react": "^3.6.0",
+    "tslint": "^6.1.2",
     "typescript": "^3.9.2",
     "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^3.8.0",
@@ -192,6 +193,284 @@
       "**/__tests__/*.(ts|tsx|js)"
     ]
   },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "extends": [
+      "plugin:react/recommended",
+      "airbnb-typescript",
+      "prettier",
+      "prettier/@typescript-eslint"
+    ],
+    "ignorePatterns": [
+      "**/*{.,-}min.js",
+      "**/*.sh",
+      "coverage/**",
+      "dist/*",
+      "images/*",
+      "node_modules/*",
+      "node_modules*/*",
+      "stylesheets/*",
+      "vendor/*",
+      "docs/*",
+      "appbuilder/*",
+      "**/*{.,-}min.js",
+      "**/*.sh",
+      "coverage/**",
+      "dist/*",
+      "images/*",
+      "node_modules/*",
+      "node_modules*/*",
+      "stylesheets/*",
+      "vendor/*",
+      "docs/*",
+      "appbuilder/*"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "tsconfig.json",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "prettier",
+      "@typescript-eslint",
+      "@typescript-eslint/tslint",
+      "jsx-a11y"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error"
+      ],
+      "@typescript-eslint/member-delimiter-style": [
+        "off",
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ],
+      "@typescript-eslint/no-param-reassign": "off",
+      "@typescript-eslint/no-this-alias": "error",
+      "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+      "@typescript-eslint/semi": [
+        "off",
+        null
+      ],
+      "@typescript-eslint/tslint/config": [
+        "error",
+        {
+          "lintFile": "./tslint.json",
+          "rules": {
+            "function-name": true,
+            "jsx-boolean-value": true,
+            "jsx-key": true,
+            "jsx-no-bind": true,
+            "jsx-no-lambda": true,
+            "jsx-no-string-ref": true,
+            "jsx-self-close": true,
+            "no-else-after-return": true,
+            "no-function-constructor-with-string-args": true,
+            "no-increment-decrement": true,
+            "object-shorthand-properties-first": true,
+            "ter-prefer-arrow-callback": true
+          }
+        }
+      ],
+      "arrow-parens": [
+        "off",
+        "always"
+      ],
+      "brace-style": [
+        "off",
+        "off"
+      ],
+      "camelcase": "off",
+      "curly": [
+        "error",
+        "multi-line"
+      ],
+      "eqeqeq": [
+        "error",
+        "smart"
+      ],
+      "id-blacklist": [
+        "error",
+        "any",
+        "Number",
+        "number",
+        "String",
+        "string",
+        "Boolean",
+        "boolean",
+        "Undefined",
+        "undefined"
+      ],
+      "id-match": "error",
+      "no-duplicate-imports": "error",
+      "no-eval": "error",
+      "no-irregular-whitespace": "off",
+      "no-new-wrappers": "error",
+      "no-underscore-dangle": "error",
+      "no-var": "error",
+      "object-shorthand": "error",
+      "one-var": [
+        "error",
+        "never"
+      ],
+      "prefer-const": "error",
+      "prefer-template": "off",
+      "radix": "error",
+      "space-in-parens": [
+        "off",
+        "never"
+      ],
+      "spaced-comment": [
+        "error",
+        "always",
+        {
+          "markers": [
+            "/"
+          ]
+        }
+      ],
+      "new-cap": 0,
+      "no-restricted-syntax": 0,
+      "guard-for-in": 0,
+      "prefer-arrow-callback": 0,
+      "func-names": 0,
+      "react/jsx-no-bind": 0,
+      "no-confusing-arrow": 0,
+      "jsx-a11y/no-static-element-interactions": 0,
+      "jsx-a11y/anchor-has-content": 0,
+      "jsx-a11y/anchor-is-valid": [
+        "error",
+        {
+          "components": [
+            "Link"
+          ],
+          "specialLink": [
+            "to",
+            "hrefLeft",
+            "hrefRight"
+          ],
+          "aspects": [
+            "noHref",
+            "invalidHref",
+            "preferButton"
+          ]
+        }
+      ],
+      "react/require-default-props": 0,
+      "react/state-in-constructor": 0,
+      "no-plusplus": 0,
+      "no-mixed-operators": 0,
+      "no-continue": 0,
+      "no-bitwise": 0,
+      "no-undef": 0,
+      "no-multi-assign": 0,
+      "react/no-array-index-key": 0,
+      "no-restricted-properties": 0,
+      "no-prototype-builtins": 0,
+      "jsx-a11y/href-no-hash": 0,
+      "react/forbid-prop-types": 0,
+      "class-methods-use-this": 0,
+      "import/extensions": 0,
+      "import/no-named-as-default": 0,
+      "import/no-extraneous-dependencies": 0,
+      "import/no-unresolved": 0,
+      "import/prefer-default-export": 0,
+      "react/no-unescaped-entities": 0,
+      "react/no-unused-prop-types": 0,
+      "react/no-string-refs": 0,
+      "indent": 0,
+      "no-multi-spaces": 0,
+      "padded-blocks": 0,
+      "import/no-cycle": "warn",
+      "import/order": "warn",
+      "import/first": "warn",
+      "no-param-reassign": "warn",
+      "prefer-destructuring": "warn",
+      "consistent-return": "warn",
+      "no-shadow": "warn",
+      "no-extra-boolean-cast": "warn",
+      "no-restricted-globals": "warn",
+      "no-case-declarations": "warn",
+      "prefer-promise-reject-errors": "warn",
+      "default-case": "warn",
+      "no-nested-ternary": "warn",
+      "no-script-url": "warn",
+      "array-callback-return": "warn",
+      "no-void": "warn",
+      "no-multi-str": "warn",
+      "no-unneeded-ternary": "warn",
+      "no-useless-return": "warn",
+      "jsx-a11y/no-autofocus": "warn",
+      "jsx-a11y/alt-text": "warn",
+      "jsx-a11y/label-has-associated-control": "warn",
+      "jsx-a11y/click-events-have-key-events": "warn",
+      "jsx-a11y/no-redundant-roles": "warn",
+      "jsx-a11y/no-noninteractive-element-interactions": "warn",
+      "jsx-a11y/control-has-associated-label": "warn",
+      "@typescript-eslint/no-use-before-define": "warn",
+      "@typescript-eslint/dot-notation": "warn",
+      "@typescript-eslint/lines-between-class-members": "warn",
+      "@typescript-eslint/naming-convention": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "react/static-property-placement": "warn",
+      "react/jsx-closing-tag-location": "warn",
+      "react/no-did-update-set-state": "warn",
+      "react/no-access-state-in-setstate": "warn",
+      "react/jsx-one-expression-per-line": "warn",
+      "react/sort-comp": "warn",
+      "react/jsx-props-no-spreading": "warn",
+      "react/prefer-stateless-function": "warn",
+      "react/jsx-boolean-value": "warn",
+      "react/button-has-type": "warn",
+      "react/destructuring-assignment": "warn"
+    },
+    "globals": {
+      "document": true
+    },
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".json",
+            ".tsx"
+          ]
+        }
+      },
+      "react": {
+        "pragma": "React",
+        "version": "detect"
+      },
+      "propWrapperFunctions": [
+        "forbidExtraProps",
+        "exact",
+        "Object.freeze"
+      ],
+      "import/extensions": [
+        ".js",
+        ".mjs",
+        ".jsx"
+      ],
+      "import/core-modules": [],
+      "import/ignore": [
+        "node_modules",
+        "\\.(coffee|scss|css|less|hbs|svg|json)$"
+      ]
+    }
+  },
   "prettier": {
     "endOfLine": "lf",
     "tabWidth": 2,
@@ -220,9 +499,18 @@
     "rules": {
       "scss/dollar-variable-colon-space-after": "always",
       "no-descending-specificity": null,
-      "at-rule-no-unknown": [true, {
-        "ignoreAtRules": ["function", "if", "each", "include", "mixin"]
-      }]
+      "at-rule-no-unknown": [
+        true,
+        {
+          "ignoreAtRules": [
+            "function",
+            "if",
+            "each",
+            "include",
+            "mixin"
+          ]
+        }
+      ]
     },
     "extends": "stylelint-config-standard"
   },
@@ -232,8 +520,10 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.scss": "stylelint --fix",
-    "*.{ts,tsx,css,md}": "prettier --write"
+    "*.js": "eslint --fix",
+    "*.ts": "eslint --fix",
+    "*.tsx": "eslint --fix",
+    "*.scss": "npm run stylelint-fix",
+    "*.{ts,tsx,css,scss}": "prettier --write"
   }
 }

@@ -35,7 +35,7 @@ export function getDashboard(uri: string, index?: string, source?: string) {
       };
     })
     .catch((e) => {
-      const response = e.response;
+      const { response } = e;
       const statusMessage = response
         ? response.data
           ? response.data.msg

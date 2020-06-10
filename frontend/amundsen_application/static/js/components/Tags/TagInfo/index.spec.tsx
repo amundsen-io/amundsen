@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import { mapDispatchToProps, TagInfo, TagInfoProps } from '.';
-
 import * as UtilMethods from 'ducks/utilMethods';
+import { mapDispatchToProps, TagInfo, TagInfoProps } from '.';
 
 const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
 logClickSpy.mockImplementation(() => null);

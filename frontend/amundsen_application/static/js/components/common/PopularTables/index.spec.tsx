@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
+import InfoButton from 'components/common/InfoButton';
+import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
+import globalState from 'fixtures/globalState';
 import {
   POPULAR_TABLES_INFO_TEXT,
   POPULAR_TABLES_LABEL,
   POPULAR_TABLES_PER_PAGE,
   POPULAR_TABLES_SOURCE_NAME,
 } from './constants';
-import InfoButton from 'components/common/InfoButton';
-import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
-import globalState from 'fixtures/globalState';
 import {
   PopularTables,
   PopularTablesProps,
   mapStateToProps,
   mapDispatchToProps,
-} from './';
+} from '.';
 
 describe('PopularTables', () => {
   const setup = (propOverrides?: Partial<PopularTablesProps>) => {

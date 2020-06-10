@@ -31,7 +31,7 @@ export class Footer extends React.Component<FooterProps> {
 
   render() {
     let content;
-    if (!!this.props.lastIndexed) {
+    if (this.props.lastIndexed) {
       content = (
         <div>{`Amundsen was last indexed on ${this.generateDateTimeString()}`}</div>
       );

@@ -55,8 +55,8 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
   };
 
   onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let checkedValues = this.props.checkedValues;
-    const value = e.target.value;
+    let { checkedValues } = this.props;
+    const { value } = e.target;
     const categoryId = e.target.name;
 
     if (e.target.checked) {

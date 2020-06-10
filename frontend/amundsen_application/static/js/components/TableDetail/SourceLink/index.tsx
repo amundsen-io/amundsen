@@ -8,7 +8,9 @@ export interface SourceLinkProps {
   tableSource: TableSource;
 }
 
-const SourceLink: React.SFC<SourceLinkProps> = ({ tableSource }) => {
+const SourceLink: React.SFC<SourceLinkProps> = ({
+  tableSource,
+}: SourceLinkProps) => {
   if (tableSource === null || tableSource.source === null) return null;
 
   const image =
@@ -20,6 +22,7 @@ const SourceLink: React.SFC<SourceLinkProps> = ({ tableSource }) => {
       id="explore-source"
       onClick={logClick}
       target="_blank"
+      rel="noreferrer"
     >
       <AvatarLabel label={tableSource.source_type} src={image} />
     </a>

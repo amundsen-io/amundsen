@@ -4,8 +4,8 @@ export function getLoggingParams(
   search: string
 ): { index: string; source: string } {
   const params = qs.parse(search);
-  const index = params['index'];
-  const source = params['source'];
+  const { index } = params;
+  const { source } = params;
 
   let queryString = '';
   let isInitialParam = true;

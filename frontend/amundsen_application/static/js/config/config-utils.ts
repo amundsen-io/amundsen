@@ -151,7 +151,7 @@ export function exploreEnabled(): boolean {
  * @param tableData
  */
 export function generateExploreUrl(tableData: TableMetadata): string {
-  const partition = tableData.partition;
+  const { partition } = tableData;
 
   if (partition.is_partitioned) {
     return AppConfig.tableProfile.exploreUrlGenerator(

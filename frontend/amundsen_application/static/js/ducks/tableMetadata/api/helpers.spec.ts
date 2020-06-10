@@ -1,14 +1,13 @@
 import axios from 'axios';
 import * as qs from 'simple-query-string';
 
-import * as Helpers from './helpers';
-
 import * as Utils from 'ducks/utilMethods';
 
 import globalState from 'fixtures/globalState';
 import { relatedDashboards } from 'fixtures/metadata/table';
 
 import { NotificationType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
+import * as Helpers from './helpers';
 
 import * as API from './v0';
 

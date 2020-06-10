@@ -10,11 +10,10 @@ import globalState from 'fixtures/globalState';
 
 import { ResourceType, SearchType } from 'interfaces';
 
+import * as ConfigUtils from 'config/config-utils';
 import * as API from '../v0';
 
 jest.mock('axios');
-
-import * as ConfigUtils from 'config/config-utils';
 
 describe('searchResource', () => {
   let axiosMockGet;

@@ -17,6 +17,15 @@ import FlashMessage from 'components/common/FlashMessage';
 import { GlobalState } from 'ducks/rootReducer';
 
 import {
+  CloseRequestAction,
+  OpenRequestAction,
+  SubmitNotificationRequest,
+} from 'ducks/notification/types';
+import {
+  closeRequestDescriptionDialog,
+  submitNotification,
+} from 'ducks/notification/reducer';
+import {
   TITLE_TEXT,
   FROM_LABEL,
   TO_LABEL,
@@ -33,15 +42,6 @@ import {
   SEND_INPROGRESS_MESSAGE,
   SEND_SUCCESS_MESSAGE,
 } from './constants';
-import {
-  CloseRequestAction,
-  OpenRequestAction,
-  SubmitNotificationRequest,
-} from 'ducks/notification/types';
-import {
-  closeRequestDescriptionDialog,
-  submitNotification,
-} from 'ducks/notification/reducer';
 
 interface StateFromProps {
   columnName?: string;
@@ -162,7 +162,7 @@ export class RequestMetadataForm extends React.Component<
           <button
             type="button"
             className="btn btn-close"
-            aria-label={'Close'}
+            aria-label="Close"
             onClick={this.closeDialog}
           />
         </div>
@@ -174,9 +174,9 @@ export class RequestMetadataForm extends React.Component<
               autoComplete="off"
               name="sender"
               className="form-control"
-              required={true}
+              required
               value={userEmail}
-              readOnly={true}
+              readOnly
             />
           </div>
           <div id="recipients-form-group" className="form-group">
@@ -186,8 +186,8 @@ export class RequestMetadataForm extends React.Component<
               autoComplete="off"
               name="recipients"
               className="form-control"
-              required={true}
-              multiple={true}
+              required
+              multiple
               defaultValue={tableOwners.join(RECIPIENT_LIST_DELIMETER)}
             />
           </div>

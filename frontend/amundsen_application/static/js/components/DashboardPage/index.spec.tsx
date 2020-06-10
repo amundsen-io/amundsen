@@ -10,20 +10,18 @@ import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Flag from 'components/common/Flag';
 import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
+import { dashboardMetadata } from 'fixtures/metadata/dashboard';
+import { NO_TIMESTAMP_TEXT } from 'components/constants';
+import * as LogUtils from 'utils/logUtils';
+import { ResourceType } from 'interfaces';
 import ChartList from './ChartList';
 import ImagePreview from './ImagePreview';
 
-import { DashboardPage, DashboardPageProps, MatchProps } from './';
+import { DashboardPage, DashboardPageProps, MatchProps } from '.';
 
 import { getMockRouterProps } from '../../fixtures/mockRouter';
-import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 
-import { NO_TIMESTAMP_TEXT } from 'components/constants';
 import * as Constants from './constants';
-
-import * as LogUtils from 'utils/logUtils';
-
-import { ResourceType } from 'interfaces';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'dashboard-icon';

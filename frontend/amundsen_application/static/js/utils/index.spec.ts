@@ -1,10 +1,7 @@
-import * as qs from 'simple-query-string';
-
+import { ResourceType } from 'interfaces/Resources';
 import * as DateUtils from './dateUtils';
 import * as LogUtils from './logUtils';
 import * as NavigationUtils from './navigationUtils';
-
-import { ResourceType } from 'interfaces/Resources';
 
 describe('navigationUtils', () => {
   describe('updateSearchUrl', () => {

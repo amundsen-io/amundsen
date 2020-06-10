@@ -9,18 +9,14 @@ import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
 import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
-import {
-  mapDispatchToProps,
-  mapStateToProps,
-  ProfilePage,
-  ProfilePageProps,
-  RouteProps,
-} from './';
 
 import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { ResourceType } from 'interfaces/Resources';
 
+import * as LogUtils from 'utils/logUtils';
+
+import { indexDashboardsEnabled } from 'config/config-utils';
 import {
   AVATAR_SIZE,
   BOOKMARKED_LABEL,
@@ -30,15 +26,18 @@ import {
   READ_LABEL,
   READ_SOURCE,
 } from './constants';
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+  ProfilePage,
+  ProfilePageProps,
+  RouteProps,
+} from '.';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexDashboardsEnabled: jest.fn(),
 }));
-
-import * as LogUtils from 'utils/logUtils';
-
-import { indexDashboardsEnabled } from 'config/config-utils';
 
 describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
@@ -196,7 +195,7 @@ describe('ProfilePage', () => {
 
   describe('generateTabKey', () => {
     it('returns string used for the tab keys', () => {
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       const givenResource = ResourceType.table;
       expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
         `tab:${givenResource}`
@@ -206,7 +205,7 @@ describe('ProfilePage', () => {
 
   describe('generateTabTitle', () => {
     it('returns string for tab title according to UI designs', () => {
-      const wrapper = setup().wrapper;
+      const { wrapper } = setup();
       const givenResource = ResourceType.table;
       expect(wrapper.instance().generateTabTitle(givenResource)).toEqual(
         'Resource (4)'
@@ -335,9 +334,9 @@ describe('ProfilePage', () => {
         ...globalState.user.profile.user,
         display_name: '',
       };
-      const wrapper = setup({
+      const { wrapper } = setup({
         user: userCopy,
-      }).wrapper;
+      });
       expect(wrapper.find('#profile-avatar').children().exists()).toBeFalsy();
     });
 
@@ -352,9 +351,9 @@ describe('ProfilePage', () => {
         ...globalState.user.profile.user,
         is_active: false,
       };
-      const wrapper = setup({
+      const { wrapper } = setup({
         user: userCopy,
-      }).wrapper;
+      });
       expect(
         wrapper.find('.header-title-text').find(Flag).props()
       ).toMatchObject({

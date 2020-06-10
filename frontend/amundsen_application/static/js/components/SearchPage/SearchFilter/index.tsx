@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
 
+import { getFilterConfigByResource } from 'config/config-utils';
+import { FilterType, ResourceType } from 'interfaces';
 import { CheckboxFilterProperties } from './CheckBoxFilter';
 import FilterSection from './FilterSection';
-
-import { getFilterConfigByResource } from 'config/config-utils';
-
-import { FilterType, ResourceType } from 'interfaces';
 
 import './styles.scss';
 

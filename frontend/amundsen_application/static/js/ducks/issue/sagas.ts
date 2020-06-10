@@ -19,9 +19,10 @@ import * as API from './api/v0';
 
 export function* getIssuesWorker(action: GetIssuesRequest): SagaIterator {
   const { key } = action.payload;
-  let response;
+
   try {
-    response = yield call(API.getIssues, key);
+    const response = yield call(API.getIssues, key);
+
     yield put(
       getIssuesSuccess(response.issues, response.total, response.all_issues_url)
     );
@@ -36,12 +37,12 @@ export function* getIssuesWatcher(): SagaIterator {
 
 export function* createIssueWorker(action: CreateIssueRequest): SagaIterator {
   try {
-    let response;
-    response = yield call(
+    const response = yield call(
       API.createIssue,
       action.payload.createIssuePayload,
       action.payload.notificationPayload
     );
+
     yield put(createIssueSuccess(response));
   } catch (error) {
     yield put(createIssueFailure(null));

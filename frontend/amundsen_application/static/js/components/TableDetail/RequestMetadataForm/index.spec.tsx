@@ -95,25 +95,25 @@ describe('RequestMetadataForm', () => {
 
   describe('getFlashMessageString', () => {
     it('returns SEND_SUCCESS_MESSAGE if SendingState.COMPLETE', () => {
-      const wrapper = setup({ sendState: SendingState.COMPLETE }).wrapper;
+      const { wrapper } = setup({ sendState: SendingState.COMPLETE });
       expect(wrapper.instance().getFlashMessageString()).toEqual(
         SEND_SUCCESS_MESSAGE
       );
     });
     it('returns SEND_FAILURE_MESSAGE if SendingState.ERROR', () => {
-      const wrapper = setup({ sendState: SendingState.ERROR }).wrapper;
+      const { wrapper } = setup({ sendState: SendingState.ERROR });
       expect(wrapper.instance().getFlashMessageString()).toEqual(
         SEND_FAILURE_MESSAGE
       );
     });
     it('returns SEND_INPROGRESS_MESSAGE if SendingState.WAITING', () => {
-      const wrapper = setup({ sendState: SendingState.WAITING }).wrapper;
+      const { wrapper } = setup({ sendState: SendingState.WAITING });
       expect(wrapper.instance().getFlashMessageString()).toEqual(
         SEND_INPROGRESS_MESSAGE
       );
     });
     it('returns empty striong if sending state not handled', () => {
-      const wrapper = setup({ sendState: SendingState.IDLE }).wrapper;
+      const { wrapper } = setup({ sendState: SendingState.IDLE });
       expect(wrapper.instance().getFlashMessageString()).toEqual('');
     });
   });
@@ -150,11 +150,11 @@ describe('RequestMetadataForm', () => {
       wrapper.instance().submitNotification({ preventDefault: jest.fn() });
 
       expect(submitNotificationSpy).toHaveBeenCalledWith(
-        mockFormData['recipients'].split(','),
-        mockFormData['sender'],
+        mockFormData.recipients.split(','),
+        mockFormData.sender,
         NotificationType.METADATA_REQUESTED,
         {
-          comment: mockFormData['comment'],
+          comment: mockFormData.comment,
           resource_name: `${schema}.${name}`,
           resource_path: `/table_detail/${cluster}/${database}/${schema}/${name}`,
           description_requested: true,

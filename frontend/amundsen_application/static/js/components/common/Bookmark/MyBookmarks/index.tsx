@@ -8,14 +8,14 @@ import {
   getDisplayNameByResource,
   indexDashboardsEnabled,
 } from 'config/config-utils';
+import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
+import TabsComponent from 'components/common/TabsComponent';
 import {
   BOOKMARK_TITLE,
   BOOKMARKS_PER_PAGE,
   EMPTY_BOOKMARK_MESSAGE,
   MY_BOOKMARKS_SOURCE_NAME,
 } from './constants';
-import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
-import TabsComponent from 'components/common/TabsComponent';
 
 interface StateFromProps {
   myBookmarks: ResourceDict<Bookmark[]>;

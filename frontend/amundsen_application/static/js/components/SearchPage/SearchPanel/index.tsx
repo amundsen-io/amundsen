@@ -2,7 +2,11 @@ import * as React from 'react';
 
 import './styles.scss';
 
-const SearchPanel: React.SFC = ({ children }) => {
+type SearchPanelProps = {
+  children: React.ReactNode;
+};
+
+const SearchPanel: React.SFC = ({ children }: SearchPanelProps) => {
   return (
     <div className="search-control-panel">
       {React.Children.map(children, (child, index) => {

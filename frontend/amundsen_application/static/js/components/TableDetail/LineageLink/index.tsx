@@ -9,7 +9,9 @@ export interface LineageLinkProps {
   tableData: TableMetadata;
 }
 
-const LineageLink: React.SFC<LineageLinkProps> = ({ tableData }) => {
+const LineageLink: React.SFC<LineageLinkProps> = ({
+  tableData,
+}: LineageLinkProps) => {
   const config = AppConfig.tableLineage;
   if (!config.isEnabled) return null;
 
@@ -26,6 +28,7 @@ const LineageLink: React.SFC<LineageLinkProps> = ({ tableData }) => {
       target="_blank"
       id="explore-lineage"
       onClick={logClick}
+      rel="noreferrer"
     >
       <AvatarLabel label={label} src={config.iconPath} />
     </a>

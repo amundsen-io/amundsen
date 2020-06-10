@@ -1,6 +1,6 @@
 import merge from 'webpack-merge';
-import commonConfig from './webpack.common';
 import TerserPlugin from 'terser-webpack-plugin';
+import commonConfig from './webpack.common';
 
 export default merge(commonConfig, {
   mode: 'production',

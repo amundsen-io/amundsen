@@ -1,17 +1,16 @@
 import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 import SanitizedHTML from 'react-sanitized-html';
-
 import { shallow } from 'enzyme';
+
+import globalState from 'fixtures/globalState';
 
 import {
   AnnouncementPage,
   AnnouncementPageProps,
   mapDispatchToProps,
   mapStateToProps,
-} from '../';
-
-import globalState from 'fixtures/globalState';
+} from '..';
 
 describe('AnnouncementPage', () => {
   let props: AnnouncementPageProps;

@@ -5,11 +5,11 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import SchemaInfo from 'components/common/ResourceListItem/SchemaInfo';
-import TableListItem, { TableListItemProps } from '.';
 import { ResourceType, Badge, TagType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import BadgeList from 'components/common/BadgeList';
+import TableListItem, { TableListItemProps } from '.';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';

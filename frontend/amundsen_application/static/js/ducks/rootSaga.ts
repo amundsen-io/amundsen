@@ -1,7 +1,6 @@
 import { all } from 'redux-saga/effects';
 
 // AnnouncementPage
-import { getAnnouncementsWatcher } from './announcements/sagas';
 
 import {
   addBookmarkWatcher,
@@ -12,6 +11,7 @@ import {
 
 // Dashboard
 import { getDashboardWatcher } from 'ducks/dashboard/sagas';
+import { getAnnouncementsWatcher } from './announcements/sagas';
 
 // Notifications
 import { submitNotificationWatcher } from './notification/sagas';

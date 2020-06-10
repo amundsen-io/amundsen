@@ -126,7 +126,7 @@ export class OwnerEditor extends React.Component<
 
   recordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const value = this.inputRef.current.value;
+    const { value } = this.inputRef.current;
     if (value) {
       this.inputRef.current.value = '';
       const newTempItemProps = {
@@ -167,7 +167,7 @@ export class OwnerEditor extends React.Component<
         <form className="component-form" onSubmit={this.recordAddItem}>
           <input
             id="add-item-input"
-            autoFocus={true}
+            autoFocus
             placeholder={`Please enter ${
               AppConfig.userIdLabel || Constants.USERID_LABEL
             }`}
@@ -236,6 +236,7 @@ export class OwnerEditor extends React.Component<
                   target="_blank"
                   id={`table-owners:${key}`}
                   onClick={logClick}
+                  rel="noreferrer"
                 >
                   {avatarLabel}
                 </a>

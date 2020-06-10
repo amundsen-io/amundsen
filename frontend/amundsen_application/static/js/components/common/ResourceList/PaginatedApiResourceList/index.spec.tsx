@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import { ResourceType } from 'interfaces';
 import ResourceListItem from 'components/common/ResourceListItem/index';
 
-import PaginatedApiResourceList, { PaginatedApiResourceListProps } from './';
+import PaginatedApiResourceList, { PaginatedApiResourceListProps } from '.';
 import * as CONSTANTS from '../constants';
 
 describe('PaginatedApiResourceList', () => {
@@ -38,8 +38,8 @@ describe('PaginatedApiResourceList', () => {
   describe('onPagination', () => {
     it('calls the onPagination prop', () => {
       const setupResult = setup();
-      const wrapper = setupResult.wrapper;
-      const props = setupResult.props;
+      const { wrapper } = setupResult;
+      const { props } = setupResult;
       const onPaginationSpy = jest.spyOn(props, 'onPagination');
       wrapper.instance().onPagination(3);
       expect(onPaginationSpy).toHaveBeenCalledWith(2);

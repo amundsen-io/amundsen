@@ -8,7 +8,9 @@ export interface EntityCardProps {
   sections: EntityCardSectionProps[];
 }
 
-const EntityCard: React.SFC<EntityCardProps> = ({ sections }) => {
+const EntityCard: React.SFC<EntityCardProps> = ({
+  sections,
+}: EntityCardProps) => {
   const cardItems = sections.map((entry, index) => {
     return (
       <EntityCardSection

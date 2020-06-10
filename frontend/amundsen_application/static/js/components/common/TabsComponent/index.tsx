@@ -21,7 +21,7 @@ const TabsComponent: React.SFC<TabsProps> = ({
   activeKey,
   defaultTab,
   onSelect,
-}) => {
+}: TabsProps) => {
   return (
     <Tabs
       id="tab"

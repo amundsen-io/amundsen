@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 
+import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
 import announcements, {
   AnnouncementsReducerState,
 } from './announcements/reducer';
@@ -16,7 +17,6 @@ import user, { UserReducerState } from './user/reducer';
 import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
 import notification, { NotificationReducerState } from './notification/reducer';
 import issue, { IssueReducerState } from './issue/reducer';
-import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;

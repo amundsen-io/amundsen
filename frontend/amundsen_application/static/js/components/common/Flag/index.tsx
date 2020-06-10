@@ -29,7 +29,11 @@ export function convertText(str: string, caseType: string): string {
   }
 }
 
-const Flag: React.SFC<FlagProps> = ({ caseType, text, labelStyle }) => {
+const Flag: React.SFC<FlagProps> = ({
+  caseType,
+  text,
+  labelStyle,
+}: FlagProps) => {
   // TODO: After upgrading to Bootstrap 4, this component should leverage badges
   // https://getbootstrap.com/docs/4.1/components/badge/
   return (

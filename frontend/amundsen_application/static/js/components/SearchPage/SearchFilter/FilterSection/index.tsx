@@ -7,16 +7,13 @@ import {
   UpdateFilterRequest,
 } from 'ducks/search/filters/reducer';
 
-import { CLEAR_BTN_TEXT } from '../constants';
-
 import { GlobalState } from 'ducks/rootReducer';
+import { FilterType } from 'interfaces';
+import InfoButton from 'components/common/InfoButton';
+import { CLEAR_BTN_TEXT } from '../constants';
 
 import CheckBoxFilter, { CheckboxFilterProperties } from '../CheckBoxFilter';
 import InputFilter from '../InputFilter';
-
-import { FilterType } from 'interfaces';
-
-import InfoButton from 'components/common/InfoButton';
 
 export interface OwnProps {
   categoryId: string;
@@ -69,6 +66,7 @@ export class FilterSection extends React.Component<FilterSectionProps> {
             )}
           </div>
           {hasValue && (
+            /* eslint-disable jsx-a11y/anchor-is-valid */
             <a onClick={this.onClearFilter} className="btn btn-flat-icon">
               <img className="icon icon-left" />
               <span>{CLEAR_BTN_TEXT}</span>
