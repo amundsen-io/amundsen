@@ -49,7 +49,7 @@ class Neo4jProxy(BaseProxy):
                  password: str = '',
                  num_conns: int = 50,
                  max_connection_lifetime_sec: int = 100,
-                 encrypted: bool = True,
+                 encrypted: bool = False,
                  validate_ssl: bool = False) -> None:
         """
         There's currently no request timeout from client side where server
