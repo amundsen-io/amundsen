@@ -23,7 +23,8 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
                                        uri='mode_dashboard://gold.cluster/dashboard_group/dashboard',
                                        last_successful_run_timestamp=10,
                                        total_usage=10,
-                                       tags=['test'])
+                                       tags=['test'],
+                                       badges=['test_badge'])
 
         expected_document_dict = {"group_name": "test_dashboard_group",
                                   "name": "test_dashboard_name",
@@ -37,7 +38,9 @@ class TestDashboardElasticsearchDocument(unittest.TestCase):
                                   "last_successful_run_timestamp": 10,
                                   "group_description": "work space group",
                                   "total_usage": 10,
-                                  "tags": ["test"]
+                                  "tags": ["test"],
+                                  "badges": ["test_badge"],
+
                                   }
 
         result = test_obj.to_json()

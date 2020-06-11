@@ -96,6 +96,17 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
 DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
     """
     {
+        "settings": {
+          "analysis": {
+            "normalizer": {
+              "lowercase_normalizer": {
+                "type": "custom",
+                "char_filter": [],
+                "filter": ["lowercase", "asciifolding"]
+              }
+            }
+          }
+        },
         "mappings":{
             "dashboard":{
               "properties": {
@@ -104,7 +115,8 @@ DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
                   "analyzer": "simple",
                   "fields": {
                     "raw": {
-                      "type": "keyword"
+                      "type": "keyword",
+                      "normalizer": "lowercase_normalizer"
                     }
                   }
                 },
@@ -113,7 +125,8 @@ DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
                   "analyzer": "simple",
                   "fields": {
                     "raw": {
-                      "type": "keyword"
+                      "type": "keyword",
+                      "normalizer": "lowercase_normalizer"
                     }
                   }
                 },
@@ -143,12 +156,17 @@ DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
                       "type": "keyword"
                     }
                   }
+                },
+                "tags": {
+                  "type": "keyword"
+                },
+                "badges": {
+                  "type": "keyword"
                 }
               }
             }
           }
         }
-
     """
 )
 
