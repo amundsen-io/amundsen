@@ -390,7 +390,6 @@ class Neo4jProxy(BaseProxy):
             raise e
 
         finally:
-            tx.close()
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
 
@@ -491,9 +490,6 @@ class Neo4jProxy(BaseProxy):
             raise e
 
         finally:
-
-            tx.close()
-
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
 
@@ -532,14 +528,12 @@ class Neo4jProxy(BaseProxy):
                 raise RuntimeError('Failed to create relation between '
                                    'owner {owner} and table {tbl}'.format(owner=owner,
                                                                           tbl=table_uri))
+            tx.commit()
         except Exception as e:
             if not tx.closed():
                 tx.rollback()
             # propagate the exception back to api
             raise e
-        finally:
-            tx.commit()
-            tx.close()
 
     @timer_with_counter
     def delete_owner(self, *,
@@ -567,7 +561,6 @@ class Neo4jProxy(BaseProxy):
             raise e
         finally:
             tx.commit()
-            tx.close()
 
     @timer_with_counter
     def add_tag(self, *,
@@ -628,9 +621,6 @@ class Neo4jProxy(BaseProxy):
                 tx.rollback()
             # propagate the exception back to api
             raise e
-        finally:
-            if not tx.closed():
-                tx.close()
 
     @timer_with_counter
     def delete_tag(self, *,
@@ -662,14 +652,12 @@ class Neo4jProxy(BaseProxy):
             tx.run(delete_query, {'tag': tag,
                                   'key': id,
                                   'tag_type': tag_type})
+            tx.commit()
         except Exception as e:
             # propagate the exception back to api
             if not tx.closed():
                 tx.rollback()
             raise e
-        finally:
-            tx.commit()
-            tx.close()
 
     @timer_with_counter
     def get_tags(self) -> List:
@@ -1049,8 +1037,6 @@ class Neo4jProxy(BaseProxy):
                 tx.rollback()
             # propagate the exception back to api
             raise e
-        finally:
-            tx.close()
 
     @timer_with_counter
     def delete_resource_relation_by_user(self, *,
@@ -1086,8 +1072,6 @@ class Neo4jProxy(BaseProxy):
             if not tx.closed():
                 tx.rollback()
             raise e
-        finally:
-            tx.close()
 
     @timer_with_counter
     def get_dashboard(self,
