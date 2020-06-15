@@ -81,6 +81,9 @@ class Config:
     CREDENTIALS_MODE_ADMIN_PASSWORD = os.getenv('CREDENTIALS_MODE_ADMIN_PASSWORD', None)
     MODE_ORGANIZATION = None
     MODE_REPORT_URL_TEMPLATE = None
+    # Add Preview class name below to enable ACL, assuming it is supported by the Preview class
+    # e.g: ACL_ENABLED_DASHBOARD_PREVIEW = {'ModePreview'}
+    ACL_ENABLED_DASHBOARD_PREVIEW = set()  # type: Set[Optional[str]]
 
 
 class LocalConfig(Config):
