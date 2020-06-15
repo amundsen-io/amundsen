@@ -47,6 +47,9 @@ def get_preview_image(uri: str) -> Response:
     except FileNotFoundError as fne:
         LOGGER.exception('FileNotFoundError on get_preview_image')
         return make_response(jsonify({'msg': fne.args[0]}), HTTPStatus.NOT_FOUND)
+    except PermissionError as pe:
+        LOGGER.exception('PermissionError on get_preview_image')
+        return make_response(jsonify({'msg': pe.args[0]}), HTTPStatus.UNAUTHORIZED)
     except Exception as e:
         LOGGER.exception('Unexpected failure on get_preview_image')
         return make_response(jsonify({'msg': 'Encountered exception: ' + str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR)
