@@ -109,7 +109,7 @@ class TestModePreview(unittest.TestCase):
             }
 
             preview = ModePreview(access_token='token', password='password', organization='foo')
-            preview._authorize_access(user_email='test_email')
+            preview._authorize_access(user_id='test_email')
 
 
         with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
@@ -129,7 +129,7 @@ class TestModePreview(unittest.TestCase):
             }
 
             preview = ModePreview(access_token='token', password='password', organization='foo')
-            self.assertRaises(PermissionError, preview._authorize_access, user_email='test_email')
+            self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
         with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
@@ -146,7 +146,7 @@ class TestModePreview(unittest.TestCase):
             }
 
             preview = ModePreview(access_token='token', password='password', organization='foo')
-            self.assertRaises(PermissionError, preview._authorize_access, user_email='test_email')
+            self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
         with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
@@ -165,7 +165,7 @@ class TestModePreview(unittest.TestCase):
             }
 
             preview = ModePreview(access_token='token', password='password', organization='foo')
-            self.assertRaises(PermissionError, preview._authorize_access, user_email='test_email')
+            self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
         with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
@@ -182,7 +182,7 @@ class TestModePreview(unittest.TestCase):
             }
 
             preview = ModePreview(access_token='token', password='password', organization='foo')
-            self.assertRaises(PermissionError, preview._authorize_access, user_email='test_email')
+            self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
         with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
@@ -198,7 +198,7 @@ class TestModePreview(unittest.TestCase):
             }
 
             preview = ModePreview(access_token='token', password='password', organization='foo')
-            self.assertRaises(PermissionError, preview._authorize_access, user_email='test_email')
+            self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
 
 if __name__ == '__main__':

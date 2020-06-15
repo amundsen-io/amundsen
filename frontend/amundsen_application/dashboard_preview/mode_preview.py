@@ -63,9 +63,8 @@ class ModePreview(BasePreview):
         :return: image bytes
         :raise: PermissionError when user is not allowed to access the dashboard
         """
-
         if self._is_auth_enabled:
-            self._authorize_access(user_email=self._auth_user_method(app).email)
+            self._authorize_access(user_id=self._auth_user_method(app).user_id)
 
         url = self._get_preview_image_url(uri=uri)
         r = requests.get(url, allow_redirects=True)
@@ -95,18 +94,18 @@ class ModePreview(BasePreview):
 
         return image_url
 
-    def _authorize_access(self, user_email: str) -> None:
+    def _authorize_access(self, user_id: str) -> None:
         """
         Get Mode user ID via metadata service. Note that metadata service needs to be at least v2.5.2 and
         Databuilder should also have ingested Mode user.
         https://github.com/lyft/amundsendatabuilder#modedashboarduserextractor
 
-        :param user_email:
+        :param user_id:
         :return:
         :raise: PermissionError when user is not allowed to access the dashboard
         """
 
-        metadata_svc_url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_email)
+        metadata_svc_url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
         response = request_metadata(url=metadata_svc_url)
         response.raise_for_status()
 
@@ -114,4 +113,4 @@ class ModePreview(BasePreview):
         if user.is_active and user.other_key_values and user.other_key_values.get('mode_user_id'):
             return
 
-        raise PermissionError('User {} is not authorized to preview Mode Dashboard'.format(user_email))
+        raise PermissionError('User {} is not authorized to preview Mode Dashboard'.format(user_id))
