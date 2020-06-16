@@ -2,7 +2,7 @@
 
 .search-page {
   display: flex;
-  min-height: calc(100vh - #{$nav-bar-height + $footer-height});
+  height: calc(100vh - #{$nav-bar-height + $footer-height});
 
   .list-group {
     margin-top: 0;
@@ -11,6 +11,7 @@
   .search-results {
     flex-grow: 1;
     width: 0; // Temporary hack since list-items use width %
+    overflow-y: scroll;
   }
 
   @media (max-width: $screen-sm-max) {
