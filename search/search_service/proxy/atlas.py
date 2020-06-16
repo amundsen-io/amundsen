@@ -10,7 +10,7 @@ from atlasclient.utils import parse_table_qualified_name
 
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.table import SearchTableResult
-from search_service.models.search_result import SearchResult
+from search_service.models.user import SearchUserResult
 from search_service.models.table import Table
 from search_service.models.tag import Tag
 from search_service.proxy import BaseProxy
@@ -266,7 +266,7 @@ class AtlasProxy(BaseProxy):
     def fetch_user_search_results(self, *,
                                   query_term: str,
                                   page_index: int = 0,
-                                  index: str = '') -> SearchResult:
+                                  index: str = '') -> SearchUserResult:
         pass
 
     def update_document(self, *, data: List[Dict[str, Any]], index: str = '') -> str:

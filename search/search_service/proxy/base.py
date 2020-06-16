@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.table import SearchTableResult
-from search_service.models.search_result import SearchResult
+from search_service.models.user import SearchUserResult
 
 
 class BaseProxy(metaclass=ABCMeta):
@@ -23,7 +23,7 @@ class BaseProxy(metaclass=ABCMeta):
     def fetch_user_search_results(self, *,
                                   query_term: str,
                                   page_index: int = 0,
-                                  index: str = '') -> SearchResult:
+                                  index: str = '') -> SearchUserResult:
         pass
 
     @abstractmethod
