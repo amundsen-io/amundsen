@@ -153,6 +153,7 @@ export type UpdateSearchStatePayload = {
   filters?: FilterReducerState;
   resource?: ResourceType;
   updateUrl?: boolean;
+  submitSearch?: boolean;
 };
 export interface UpdateSearchStateRequest {
   payload?: UpdateSearchStatePayload;

@@ -23,6 +23,7 @@ REQUEST_SESSION_TIMEOUT_SEC = 3
 search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v0')
 
 SEARCH_DASHBOARD_ENDPOINT = '/search_dashboard'
+SEARCH_DASHBOARD_FILTER_ENDPOINT = '/search_dashboard_filter'
 SEARCH_TABLE_ENDPOINT = '/search'
 SEARCH_TABLE_FILTER_ENDPOINT = '/search_table'
 SEARCH_USER_ENDPOINT = '/search_user'
@@ -42,7 +43,7 @@ def search_table() -> Response:
 
         search_type = request_json.get('searchType')
 
-        transformed_filters = transform_filters(filters=request_json.get('filters', {}))
+        transformed_filters = transform_filters(filters=request_json.get('filters', {}), resource='table')
 
         results_dict = _search_table(filters=transformed_filters,
                                      search_term=search_term,
@@ -78,7 +79,7 @@ def _search_table(*, search_term: str, page_index: int, filters: Dict, search_ty
     }
 
     try:
-        if has_filters(filters=filters):
+        if has_filters(filters=filters, resource='table'):
             query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
             url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_TABLE_FILTER_ENDPOINT
             response = request_search(url=url_base,
@@ -185,18 +186,24 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
         return results_dict
 
 
-@search_blueprint.route('/dashboard', methods=['GET'])
+@search_blueprint.route('/dashboard', methods=['POST'])
 def search_dashboard() -> Response:
     """
     Parse the request arguments and call the helper method to execute a dashboard search
     :return: a Response created with the results from the helper method
     """
     try:
-        search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
-        page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
-        search_type = request.args.get('search_type')
+        request_json = request.get_json()
 
-        results_dict = _search_dashboard(search_term=search_term, page_index=int(page_index), search_type=search_type)
+        search_term = get_query_param(request_json, 'term', '"term" parameter expected in request data')
+        page_index = get_query_param(request_json, 'pageIndex', '"pageIndex" parameter expected in request data')
+        search_type = request_json.get('searchType')
+        transformed_filters = transform_filters(filters=request_json.get('filters', {}), resource='dashboard')
+
+        results_dict = _search_dashboard(filters=transformed_filters,
+                                         search_term=search_term,
+                                         page_index=page_index,
+                                         search_type=search_type)
 
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
     except Exception as e:
@@ -206,7 +213,7 @@ def search_dashboard() -> Response:
 
 
 @action_logging
-def _search_dashboard(*, search_term: str, page_index: int, search_type: str) -> Dict[str, Any]:
+def _search_dashboard(*, search_term: str, page_index: int, filters: Dict, search_type: str) -> Dict[str, Any]:
     """
     Call the search service endpoint and return matching results
     Search service logic defined here:
@@ -228,9 +235,17 @@ def _search_dashboard(*, search_term: str, page_index: int, search_type: str) ->
     }
 
     try:
-        url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_DASHBOARD_ENDPOINT
-        url = f'{url_base}?query_term={search_term}&page_index={page_index}'
-        response = request_search(url=url)
+        if has_filters(filters=filters, resource='dashboard'):
+            query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
+            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_DASHBOARD_FILTER_ENDPOINT
+            response = request_search(url=url_base,
+                                      headers={'Content-Type': 'application/json'},
+                                      method='POST',
+                                      data=json.dumps(query_json))
+        else:
+            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_DASHBOARD_ENDPOINT
+            url = f'{url_base}?query_term={search_term}&page_index={page_index}'
+            response = request_search(url=url)
 
         status_code = response.status_code
         if status_code == HTTPStatus.OK:

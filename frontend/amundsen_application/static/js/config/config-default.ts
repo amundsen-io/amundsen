@@ -60,6 +60,32 @@ const configDefault: AppConfig = {
           iconClass: 'icon-mode',
         },
       },
+      filterCategories: [
+        {
+          categoryId: 'product',
+          displayName: 'Product',
+          helpText: 'Enter exact product name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'group_name',
+          displayName: 'Groups',
+          helpText: 'Enter exact group name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'name',
+          displayName: 'Name',
+          helpText: 'Enter exact dashboard name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
     },
     [ResourceType.table]: {
       displayName: 'Datasets',

@@ -285,6 +285,21 @@ describe('search sagas', () => {
         filters: searchState.filters,
       });
     });
+
+    it('it updates filters and executes search', () => {
+      const action = updateSearchState({
+        filters: { [ResourceType.table]: { database: { bigquery: true } } },
+        submitSearch: true,
+      });
+      const { search_term, resource } = searchState;
+      testSaga(Sagas.updateSearchStateWorker, action)
+        .next()
+        .select(SearchUtils.getSearchState)
+        .next(searchState)
+        .put(searchAll(SearchType.FILTER, '', undefined, 0, true))
+        .next()
+        .isDone();
+    });
   });
 
   describe('updateSearchStateWatcher', () => {

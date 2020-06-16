@@ -6,13 +6,13 @@ import { GlobalState } from 'ducks/rootReducer';
 import globalState from 'fixtures/globalState';
 
 import { FilterType, ResourceType } from 'interfaces';
-import { APPLY_BTN_TEXT } from '../../constants';
+import { APPLY_BTN_TEXT } from '../constants';
 import {
   InputFilter,
   InputFilterProps,
   mapDispatchToProps,
   mapStateToProps,
-} from '..';
+} from '.';
 
 describe('InputFilter', () => {
   const setStateSpy = jest.spyOn(InputFilter.prototype, 'setState');

@@ -3,8 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { ResourceType, Tag, SearchType } from 'interfaces';
 
-import { submitSearchResource } from 'ducks/search/reducer';
-import { SubmitSearchResourceRequest } from 'ducks/search/types';
+import { updateSearchState } from 'ducks/search/reducer';
+import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { logClick } from 'ducks/utilMethods';
 
 import './styles.scss';
@@ -15,7 +15,7 @@ interface OwnProps {
 }
 
 export interface DispatchFromProps {
-  searchTag: (tagName: string) => SubmitSearchResourceRequest;
+  searchTag: (tagName: string) => UpdateSearchStateRequest;
 }
 
 export type TagInfoProps = OwnProps & DispatchFromProps;
@@ -57,13 +57,12 @@ export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       searchTag: (tagName: string) =>
-        submitSearchResource({
-          resourceFilters: { tag: tagName },
-          resource: ResourceType.table,
-          pageIndex: 0,
-          searchTerm: '',
-          searchType: SearchType.FILTER,
-          updateUrl: true,
+        updateSearchState({
+          filters: {
+            [ResourceType.dashboard]: { tag: tagName },
+            [ResourceType.table]: { tag: tagName },
+          },
+          submitSearch: true,
         }),
     },
     dispatch

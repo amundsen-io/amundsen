@@ -42,8 +42,7 @@ export function searchResource(
 ) {
   /* If resource support is not configured or if there is no search term for non-filter supported resources */
   if (
-    (resource === ResourceType.dashboard &&
-      (!indexDashboardsEnabled() || term.length === 0)) ||
+    (resource === ResourceType.dashboard && !indexDashboardsEnabled()) ||
     (resource === ResourceType.user &&
       (!indexUsersEnabled() || term.length === 0))
   ) {
@@ -51,7 +50,7 @@ export function searchResource(
   }
 
   /* Note: This logic must exist until query string endpoints are created for all resources */
-  if (resource === ResourceType.table) {
+  if (resource === ResourceType.table || resource === ResourceType.dashboard) {
     return axios
       .post(`${BASE_URL}/${resource}`, {
         filters,

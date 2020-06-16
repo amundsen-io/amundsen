@@ -6,8 +6,8 @@ from http import HTTPStatus
 from unittest.mock import patch
 
 from amundsen_application import create_app
-from amundsen_application.api.search.v0 import SEARCH_DASHBOARD_ENDPOINT, SEARCH_TABLE_ENDPOINT, \
-    SEARCH_TABLE_FILTER_ENDPOINT, SEARCH_USER_ENDPOINT
+from amundsen_application.api.search.v0 import SEARCH_DASHBOARD_ENDPOINT, SEARCH_DASHBOARD_FILTER_ENDPOINT, \
+    SEARCH_TABLE_ENDPOINT, SEARCH_TABLE_FILTER_ENDPOINT, SEARCH_USER_ENDPOINT
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
@@ -97,7 +97,7 @@ class SearchTable(unittest.TestCase):
                           'pageIndex': 1,
                           'filters': test_filters,
                           'searchType': 'test'})
-            transform_filter_mock.assert_called_with(filters=test_filters)
+            transform_filter_mock.assert_called_with(filters=test_filters, resource='table')
 
     @responses.activate
     @patch('amundsen_application.api.search.v0.transform_filters')
@@ -375,6 +375,7 @@ class SearchDashboard(unittest.TestCase):
             },
         ]
         self.search_service_url = local_app.config['SEARCHSERVICE_BASE'] + SEARCH_DASHBOARD_ENDPOINT
+        self.search_service_filter_url = local_app.config['SEARCHSERVICE_BASE'] + SEARCH_DASHBOARD_FILTER_ENDPOINT
         self.fe_flask_endpoint = '/api/search/v0/dashboard'
 
     def test_fail_if_term_is_none(self) -> None:
@@ -383,7 +384,7 @@ class SearchDashboard(unittest.TestCase):
         :return:
         """
         with local_app.test_client() as test:
-            response = test.get(self.fe_flask_endpoint, query_string=dict(page_index='0'))
+            response = test.post(self.fe_flask_endpoint, json={'pageIndex': '0'})
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def test_fail_if_page_index_is_none(self) -> None:
@@ -392,31 +393,104 @@ class SearchDashboard(unittest.TestCase):
         :return:
         """
         with local_app.test_client() as test:
-            response = test.get(self.fe_flask_endpoint, query_string=dict(query='test'))
+            response = test.post(self.fe_flask_endpoint, json={'term': 'test'})
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    @responses.activate
+    @patch('amundsen_application.api.search.v0.transform_filters')
+    def test_calls_transform_filters(self, transform_filter_mock) -> None:
+        """
+        Test transform_filters is called with the filters from the request json
+        from the request_json
+        :return:
+        """
+        test_filters = {}
+        responses.add(responses.POST,
+                      self.search_service_url,
+                      json=self.mock_results,
+                      status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            test.post(self.fe_flask_endpoint,
+                      json={
+                          'term': 'hello',
+                          'pageIndex': 1,
+                          'filters': test_filters,
+                          'searchType': 'test'})
+            transform_filter_mock.assert_called_with(filters=test_filters, resource='dashboard')
 
     @responses.activate
     @patch('amundsen_application.api.search.v0._search_dashboard')
     def test_calls_search_dashboard_log_helper(self, search_dashboard_mock) -> None:
         """
-        Test _search_table helper method is called with correct arguments
+        Test _search_dashboard helper method is called wwith correct arguments for logging
+        from the request_json
         :return:
         """
         test_term = 'hello'
         test_index = 1
         test_search_type = 'test'
+        mock_filters = {}
         responses.add(responses.GET,
                       self.search_service_url,
                       body=self.mock_results,
                       status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
-            test.get(self.fe_flask_endpoint, query_string=dict(query=test_term,
-                                                               page_index=test_index,
-                                                               search_type=test_search_type))
-            search_dashboard_mock.assert_called_with(page_index=test_index,
+            test.post(self.fe_flask_endpoint,
+                      json={
+                          'term': test_term,
+                          'pageIndex': test_index,
+                          'filters': mock_filters,
+                          'searchType': test_search_type})
+            search_dashboard_mock.assert_called_with(filters=mock_filters,
+                                                     page_index=test_index,
                                                      search_term=test_term,
                                                      search_type=test_search_type)
+
+    @responses.activate
+    @patch('amundsen_application.api.search.v0.transform_filters')
+    @patch('amundsen_application.api.search.v0.has_filters')
+    @patch('amundsen_application.api.search.v0.generate_query_json')
+    def test_calls_generate_query_json(self, mock_generate_query_json, has_filters_mock, transform_filter_mock) -> None:
+        """
+        Test generate_query_json helper method is called with correct arguments
+        from the request_json if filters exist
+        :return:
+        """
+        test_term = 'hello'
+        test_index = 1
+        responses.add(responses.POST,
+                      self.search_service_filter_url,
+                      json=self.mock_results,
+                      status=HTTPStatus.OK)
+        has_filters_mock.return_value = True
+        mock_filters = {'group_name': 'test'}
+        transform_filter_mock.return_value = mock_filters
+
+        with local_app.test_client() as test:
+            test.post(self.fe_flask_endpoint,
+                      json={'term': test_term, 'pageIndex': test_index, 'filters': {}})
+            mock_generate_query_json.assert_called_with(filters=mock_filters,
+                                                        page_index=test_index,
+                                                        search_term=test_term)
+
+    @responses.activate
+    @patch('amundsen_application.api.search.v0.has_filters')
+    @patch('amundsen_application.api.search.v0.generate_query_json')
+    def test_does_not_calls_generate_query_json(self, mock_generate_query_json, has_filters_mock) -> None:
+        """
+        Test generate_query_json helper method is not called if filters do not exist
+        :return:
+        """
+        test_term = 'hello'
+        test_index = 1
+        responses.add(responses.GET, self.search_service_url, json=self.mock_results, status=HTTPStatus.OK)
+        has_filters_mock.return_value = False
+
+        with local_app.test_client() as test:
+            test.post(self.fe_flask_endpoint, json={'term': test_term, 'pageIndex': test_index, 'filters': {}})
+            mock_generate_query_json.assert_not_called()
 
     @responses.activate
     def test_request_success(self) -> None:
@@ -430,7 +504,8 @@ class SearchDashboard(unittest.TestCase):
                       status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
-            response = test.get(self.fe_flask_endpoint, query_string=dict(query='hello', page_index='0'))
+            response = test.post(self.fe_flask_endpoint,
+                                 json={'term': 'hello', 'pageIndex': '0'})
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
@@ -451,7 +526,8 @@ class SearchDashboard(unittest.TestCase):
                       status=HTTPStatus.BAD_REQUEST)
 
         with local_app.test_client() as test:
-            response = test.get(self.fe_flask_endpoint, query_string=dict(query='hello', page_index='1'))
+            response = test.post(self.fe_flask_endpoint,
+                                 json={'term': 'hello', 'pageIndex': '1'})
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
             self.assertEqual(data.get('msg'), 'Encountered error: Search request failed')

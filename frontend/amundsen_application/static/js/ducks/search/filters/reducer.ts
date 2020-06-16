@@ -35,6 +35,7 @@ export function updateFilterByCategory({
 export type FilterOptions = { [id: string]: boolean };
 
 export interface FilterReducerState {
+  [ResourceType.dashboard]?: ResourceFilterReducerState;
   [ResourceType.table]: ResourceFilterReducerState;
 }
 
@@ -44,8 +45,10 @@ export interface ResourceFilterReducerState {
 
 /* REDUCER */
 export const initialTableFilterState = {};
+export const initialDashboardFilterState = {};
 
 export const initialFilterState: FilterReducerState = {
+  [ResourceType.dashboard]: initialDashboardFilterState,
   [ResourceType.table]: initialTableFilterState,
 };
 

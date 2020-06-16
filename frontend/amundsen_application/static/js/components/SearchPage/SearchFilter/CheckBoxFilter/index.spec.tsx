@@ -13,7 +13,7 @@ import {
   CheckBoxFilterProps,
   mapDispatchToProps,
   mapStateToProps,
-} from '..';
+} from '.';
 
 describe('CheckBoxFilter', () => {
   const setup = (propOverrides?: Partial<CheckBoxFilterProps>) => {
