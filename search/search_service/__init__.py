@@ -11,7 +11,7 @@ from flask_cors import CORS
 from typing import Dict, Any  # noqa: F401
 from flasgger import Swagger
 
-from search_service.api.dashboard import SearchDashboardAPI
+from search_service.api.dashboard import SearchDashboardAPI, SearchDashboardFilterAPI
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
 from search_service.api.document import DocumentUserAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUsersAPI
@@ -81,8 +81,9 @@ def create_app(*, config_module_class: str) -> Flask:
     api_bp.add_url_rule('/healthcheck', 'healthcheck', healthcheck)
     api = Api(api_bp)
     # Table Search API
-    # TODO: Rename endpoint to be more generic and accept a resource type so that logic can be re-used
+
     api.add_resource(SearchTableFilterAPI, '/search_table')
+    # TODO: Rename endpoint to be more generic and accept a resource type so that logic can be re-used
     api.add_resource(SearchTableAPI, '/search')
 
     # User Search API
@@ -90,8 +91,10 @@ def create_app(*, config_module_class: str) -> Flask:
 
     # Dashboard Search API
     api.add_resource(SearchDashboardAPI, '/search_dashboard')
+    api.add_resource(SearchDashboardFilterAPI, '/search_dashboard_filter')
 
     # DocumentAPI
+    # todo: needs to update to handle dashboard/user or other entities use cases.
     api.add_resource(DocumentTablesAPI, '/document_table')
     api.add_resource(DocumentTableAPI, '/document_table/<document_id>')
 
