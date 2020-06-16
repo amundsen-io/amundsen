@@ -1,12 +1,12 @@
-Table search
-This is used by the frontend API to search table information.
+Dashboard search
+This is used by the frontend API to search dashboard information.
 ---
 tags:
-  - 'search_table'
+  - 'search_dashboard_filter'
 paths:
-  /search_table:
+  /search_dashboard:
     post:
-      summary: This is used by the frontend API to search table information.
+      summary: This is used by the frontend API to search dashboard information.
       requestBody:
         description: The json data passed from the frontend API to execute a search.
         required: true
@@ -25,11 +25,11 @@ paths:
                   type: object
       responses:
         200:
-          description: table result information with query string
+          description: dashboard result information with query string
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchTableResults'
+                $ref: '#/components/schemas/SearchDashboardResults'
         500:
           description: Exception encountered while searching
           content:

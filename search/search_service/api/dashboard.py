@@ -5,6 +5,7 @@ from typing import Iterable, Any
 from flasgger import swag_from
 from flask_restful import Resource, reqparse  # noqa: I201
 
+from search_service.api.base import BaseFilterAPI
 from search_service.exception import NotFoundException
 from search_service.models.dashboard import SearchDashboardResultSchema
 from search_service.proxy import get_proxy_client
@@ -56,4 +57,21 @@ class SearchDashboardAPI(Resource):
 
             err_msg = 'Exception encountered while processing search request'
             LOGGING.exception(err_msg)
+            return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+class SearchDashboardFilterAPI(BaseFilterAPI):
+    """
+    Search Filter for Dashboard
+    """
+    def __init__(self) -> None:
+        super().__init__(schema=SearchDashboardResultSchema,
+                         index=DASHBOARD_INDEX)
+
+    @swag_from('swagger_doc/dashboard/search_dashboard_filter.yml')
+    def post(self) -> Iterable[Any]:
+        try:
+            return super().post()
+        except RuntimeError:
+            err_msg = 'Exception encountered while processing search request'
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
