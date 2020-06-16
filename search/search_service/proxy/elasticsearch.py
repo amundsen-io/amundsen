@@ -15,6 +15,7 @@ from search_service.api.user import USER_INDEX
 from search_service.api.table import TABLE_INDEX
 from search_service.models.search_result import SearchResult
 from search_service.models.table import Table, SearchTableResult
+from search_service.models.user import SearchUserResult
 from search_service.models.user import User
 from search_service.models.dashboard import Dashboard, SearchDashboardResult
 from search_service.models.tag import Tag
@@ -409,12 +410,12 @@ class ElasticsearchProxy(BaseProxy):
     def fetch_user_search_results(self, *,
                                   query_term: str,
                                   page_index: int = 0,
-                                  index: str = '') -> SearchResult:
+                                  index: str = '') -> SearchUserResult:
         if not index:
             raise Exception('Index cant be empty for user search')
         if not query_term:
             # return empty result for blank query term
-            return SearchResult(total_results=0, results=[])
+            return SearchUserResult(total_results=0, results=[])
 
         s = Search(using=self.elasticsearch, index=index)
 
@@ -440,7 +441,8 @@ class ElasticsearchProxy(BaseProxy):
         return self._search_helper(page_index=page_index,
                                    client=s,
                                    query_name=query_name,
-                                   model=User)
+                                   model=User,
+                                   search_result_model=SearchUserResult)
 
     @timer_with_counter
     def fetch_dashboard_search_results(self, *,

@@ -1,5 +1,5 @@
 
-from typing import Optional, Set
+from typing import Optional, Set, List
 
 import attr
 from amundsen_common.models.user import User as CommonUser
@@ -42,4 +42,16 @@ class User(Base, CommonUser):
 class UserSchema(AttrsSchema):
     class Meta:
         target = User
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class SearchUserResult:
+        total_results: int = attr.ib()
+        results: List[User] = attr.ib(factory=list)
+
+
+class SearchUserResultSchema(AttrsSchema):
+    class Meta:
+        target = SearchUserResult
         register_as_scheme = True

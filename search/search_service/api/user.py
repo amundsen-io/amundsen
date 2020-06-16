@@ -2,28 +2,11 @@ from http import HTTPStatus
 from typing import Iterable, Any
 
 from flasgger import swag_from
-from flask_restful import Resource, fields, marshal_with, reqparse
+from flask_restful import Resource, reqparse
 
 from search_service.proxy import get_proxy_client
+from search_service.models.user import SearchUserResultSchema
 
-
-user_fields = {
-    "name": fields.String,
-    "first_name": fields.String,
-    "last_name": fields.String,
-    "team_name": fields.String,
-    "email": fields.String,
-    "manager_email": fields.String,
-    "github_username": fields.String,
-    "is_active": fields.Boolean,
-    "employee_type": fields.String,
-    "role_name": fields.String
-}
-
-search_user_results = {
-    "total_results": fields.Integer,
-    "results": fields.Nested(user_fields, default=[])
-}
 
 USER_INDEX = 'user_search_index'
 
@@ -45,7 +28,6 @@ class SearchUserAPI(Resource):
 
         super(SearchUserAPI, self).__init__()
 
-    @marshal_with(search_user_results)
     @swag_from('swagger_doc/user.yml')
     def get(self) -> Iterable[Any]:
         """
@@ -63,7 +45,7 @@ class SearchUserAPI(Resource):
                 index=args.get('index')
             )
 
-            return results, HTTPStatus.OK
+            return SearchUserResultSchema().dump(results).data, HTTPStatus.OK
 
         except RuntimeError:
 
