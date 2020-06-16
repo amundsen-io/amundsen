@@ -13,8 +13,8 @@ import {
   FilterSectionProps,
   mapDispatchToProps,
   mapStateToProps,
-} from '..';
-import { CLEAR_BTN_TEXT } from '../../constants';
+} from '.';
+import { CLEAR_BTN_TEXT } from '../constants';
 
 describe('FilterSection', () => {
   const setup = (propOverrides?: Partial<FilterSectionProps>) => {

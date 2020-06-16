@@ -15,7 +15,7 @@ import {
   SearchFilterProps,
   FilterSection,
   CheckboxFilterSection,
-} from '..';
+} from '.';
 
 describe('SearchFilter', () => {
   const setup = (propOverrides?: Partial<SearchFilterProps>) => {

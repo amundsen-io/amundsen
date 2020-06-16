@@ -18,6 +18,7 @@ jest.mock('axios');
 describe('searchResource', () => {
   let axiosMockGet;
   let axiosMockPost;
+  let dashboardEnabledMock;
   let userEnabledMock;
   let mockSearchResponse: AxiosResponse<API.SearchAPI>;
   beforeAll(() => {
@@ -43,6 +44,7 @@ describe('searchResource', () => {
     userEnabledMock = jest
       .spyOn(ConfigUtils, 'indexUsersEnabled')
       .mockImplementation(() => true);
+    dashboardEnabledMock = jest.spyOn(ConfigUtils, 'indexDashboardsEnabled');
   });
 
   describe('searchResource', () => {
@@ -87,7 +89,7 @@ describe('searchResource', () => {
       expect(axiosMockPost).not.toHaveBeenCalled();
     });
 
-    describe('if not searching a table resource', () => {
+    describe('if searching a user resource', () => {
       it('calls axios get with request for a resource', async () => {
         axiosMockGet.mockClear();
         axiosMockPost.mockClear();
@@ -124,14 +126,42 @@ describe('searchResource', () => {
       });
     });
 
-    describe('if searching a table resource', () => {
-      it('calls axios post with request for a resource', async () => {
+    describe('if not searching a user resource', () => {
+      it('calls axios post with request for a table resource', async () => {
         axiosMockGet.mockClear();
         axiosMockPost.mockClear();
         const pageIndex = 0;
         const resourceType = ResourceType.table;
         const term = 'test';
         const filters = { schema: 'schema_name' };
+        const searchType = SearchType.SUBMIT_TERM;
+        await API.searchResource(
+          pageIndex,
+          resourceType,
+          term,
+          filters,
+          searchType
+        );
+        expect(axiosMockGet).not.toHaveBeenCalled();
+        expect(axiosMockPost).toHaveBeenCalledWith(
+          `${API.BASE_URL}/${resourceType}`,
+          {
+            filters,
+            pageIndex,
+            term,
+            searchType,
+          }
+        );
+      });
+
+      it('calls axios post with request for a dashboard resource', async () => {
+        axiosMockGet.mockClear();
+        axiosMockPost.mockClear();
+        dashboardEnabledMock.mockImplementationOnce(() => true);
+        const pageIndex = 0;
+        const resourceType = ResourceType.dashboard;
+        const term = 'test';
+        const filters = { name: 'test' };
         const searchType = SearchType.SUBMIT_TERM;
         await API.searchResource(
           pageIndex,

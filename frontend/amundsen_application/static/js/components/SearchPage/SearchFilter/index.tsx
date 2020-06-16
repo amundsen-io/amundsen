@@ -73,9 +73,11 @@ export const mapStateToProps = (state: GlobalState) => {
         type: categoryConfig.type,
       };
       if (categoryConfig.type === FilterType.CHECKBOX_SELECT) {
-        section['options'] = categoryConfig.options.map((option) => {
-          return { value: option.value, label: option.displayName };
-        });
+        (section as CheckboxFilterSection).options = categoryConfig.options.map(
+          ({ value, displayName }) => {
+            return { value, label: displayName };
+          }
+        );
       }
       filterSections.push(section);
     });

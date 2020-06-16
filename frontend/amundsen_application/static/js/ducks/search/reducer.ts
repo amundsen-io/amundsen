@@ -197,12 +197,14 @@ export function updateSearchState({
   filters,
   resource,
   updateUrl,
+  submitSearch,
 }: UpdateSearchStatePayload): UpdateSearchStateRequest {
   return {
     payload: {
       filters,
       resource,
       updateUrl,
+      submitSearch,
     },
     type: UpdateSearchState.REQUEST,
   };
