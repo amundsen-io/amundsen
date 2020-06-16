@@ -15,14 +15,15 @@ $loading-curve: cubic-bezier(0.45, 0, 0.15, 1);
 
 .is-shimmer-animated {
   animation: $loading-duration shimmer $loading-curve infinite;
-  background-image: linear-gradient(
-    to right,
-    $gray10 0%,
-    $gray10 33%,
-    $gray5 50%,
-    $gray10 67%,
-    $gray10 100%
-  );
+  background-image:
+    linear-gradient(
+      to right,
+      $gray10 0%,
+      $gray10 33%,
+      $gray5 50%,
+      $gray10 67%,
+      $gray10 100%
+    );
   background-repeat: no-repeat;
   background-size: 300% 100%;
 }
