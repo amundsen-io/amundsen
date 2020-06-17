@@ -37,10 +37,12 @@ import {
   BOOKMARKED_TITLE_PREFIX,
   EMPTY_TEXT_PREFIX,
   FOOTER_TEXT_PREFIX,
+  GITHUB_LINK_TEXT,
   ITEMS_PER_PAGE,
   OWNED_LABEL,
   OWNED_SOURCE,
   OWNED_TITLE_PREFIX,
+  PROFILE_TEXT,
   READ_LABEL,
   READ_SOURCE,
   READ_TITLE_PREFIX,
@@ -94,6 +96,7 @@ export class ProfilePage extends React.Component<
 
   componentDidUpdate() {
     const { userId } = this.props.match.params;
+
     if (userId !== this.state.userId) {
       this.setState({ userId });
       this.loadUserInfo(userId);
@@ -190,87 +193,126 @@ export class ProfilePage extends React.Component<
   */
   render() {
     const { user } = this.props;
+    const isLoading = !user.display_name && !user.email && !user.employee_type;
+
+    let avatar = null;
+    if (isLoading) {
+      avatar = <div className="shimmering-circle is-shimmer-animated" />;
+    } else if (user.display_name && user.display_name.length > 0) {
+      avatar = <Avatar name={user.display_name} size={AVATAR_SIZE} round />;
+    }
+
+    let userName = null;
+    if (isLoading) {
+      userName = (
+        <div className="shimmering-text title-text is-shimmer-animated" />
+      );
+    } else {
+      userName = (
+        <h1 className="h3 header-title-text truncated">
+          {user.display_name}
+          {!user.is_active && (
+            <Flag caseType="sentenceCase" labelStyle="danger" text="Alumni" />
+          )}
+        </h1>
+      );
+    }
+
+    let bullets = null;
+    if (isLoading) {
+      bullets = <div className="shimmering-text bullets is-shimmer-animated" />;
+    } else {
+      bullets = (
+        <div className="body-3">
+          <ul className="header-bullets">
+            {user.role_name && <li id="user-role">{user.role_name}</li>}
+            {user.team_name && <li id="team-name">{user.team_name}</li>}
+            {user.manager_fullname && (
+              <li id="user-manager">{`Manager: ${user.manager_fullname}`}</li>
+            )}
+          </ul>
+        </div>
+      );
+    }
+
+    let emailLink = null;
+    if (isLoading) {
+      emailLink = (
+        <div className="shimmering-text header-link is-shimmer-animated" />
+      );
+    } else if (user.is_active) {
+      emailLink = (
+        <a
+          id="email-link"
+          href={`mailto:${user.email}`}
+          className="btn btn-flat-icon header-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img className="icon icon-dark icon-mail" />
+          <span className="email-link-label body-2">{user.email}</span>
+        </a>
+      );
+    }
+
+    let profileLink = null;
+    if (isLoading) {
+      profileLink = (
+        <div className="shimmering-text header-link is-shimmer-animated" />
+      );
+    } else if (user.is_active && user.profile_url) {
+      profileLink = (
+        <a
+          id="profile-link"
+          href={user.profile_url}
+          className="btn btn-flat-icon header-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span className="icon icon-dark icon-users" />
+          <span className="profile-link-label body-2">{PROFILE_TEXT}</span>
+        </a>
+      );
+    }
+
+    let githubLink = null;
+    if (isLoading) {
+      githubLink = (
+        <div className="shimmering-text header-link is-shimmer-animated" />
+      );
+    } else if (user.github_username) {
+      githubLink = (
+        <a
+          id="github-link"
+          href={`https://github.com/${user.github_username}`}
+          className="btn btn-flat-icon header-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img className="icon icon-dark icon-github" />
+          <span className="github-link-label body-2">{GITHUB_LINK_TEXT}</span>
+        </a>
+      );
+    }
+
     return (
       <DocumentTitle title={`${user.display_name} - Amundsen Profile`}>
         <main className="resource-detail-layout profile-page">
           <header className="resource-header">
             <div className="header-section">
-              <Breadcrumb />
+              {!isLoading && <Breadcrumb />}
               <div id="profile-avatar" className="profile-avatar">
-                {user.display_name && user.display_name.length > 0 && (
-                  <Avatar name={user.display_name} size={AVATAR_SIZE} round />
-                )}
+                {avatar}
               </div>
             </div>
-
             <div className="header-section header-title">
-              <h1 className="h3 header-title-text truncated">
-                {user.display_name}
-                {!user.is_active && (
-                  <Flag
-                    caseType="sentenceCase"
-                    labelStyle="danger"
-                    text="Alumni"
-                  />
-                )}
-              </h1>
-              <div className="body-3">
-                <ul className="header-bullets">
-                  {user.role_name && <li id="user-role">{user.role_name}</li>}
-                  {user.team_name && <li id="team-name">{user.team_name}</li>}
-                  {user.manager_fullname && (
-                    <li id="user-manager">{`Manager: ${user.manager_fullname}`}</li>
-                  )}
-                </ul>
-              </div>
+              {userName}
+              {bullets}
             </div>
             <div className="header-section header-links">
-              {/* { */}
-              {/*  // TODO - Implement deep links to open Slack *!/*/}
-              {/*  user.is_active && user.slack_id &&*/}
-              {/*  <a id="slack-link" href={user.slack_id} className='btn btn-flat-icon header-link' target='_blank'>*/}
-              {/*    <img className='icon icon-dark icon-slack'/>*/}
-              {/*    <span className="body-2">Slack</span>*/}
-              {/*  </a>*/}
-              {/* } */}
-              {user.is_active && (
-                <a
-                  id="email-link"
-                  href={`mailto:${user.email}`}
-                  className="btn btn-flat-icon header-link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img className="icon icon-dark icon-mail" alt="" />
-                  <span className="email-link-label body-2">{user.email}</span>
-                </a>
-              )}
-              {user.is_active && user.profile_url && (
-                <a
-                  id="profile-link"
-                  href={user.profile_url}
-                  className="btn btn-flat-icon header-link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <span className="icon icon-dark icon-users" />
-                  <span className="profile-link-label body-2">
-                    Employee Profile
-                  </span>
-                </a>
-              )}
-              {user.github_username && (
-                <a
-                  id="github-link"
-                  href={`https://github.com/${user.github_username}`}
-                  className="btn btn-flat-icon header-link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img className="icon icon-dark icon-github" alt="" />
-                  <span className="github-link-label body-2">Github</span>
-                </a>
-              )}
+              {emailLink}
+              {profileLink}
+              {githubLink}
             </div>
           </header>
           <div className="profile-body">

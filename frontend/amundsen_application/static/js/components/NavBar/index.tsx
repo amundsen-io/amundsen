@@ -19,6 +19,9 @@ import SearchBar from 'components/common/SearchBar';
 
 import './styles.scss';
 
+const LOGO_TITLE = 'AMUNDSEN';
+const PROFILE_LINK_TEXT = 'My Profile';
+
 // Props
 interface StateFromProps {
   loggedInUser: LoggedInUser;
@@ -68,6 +71,14 @@ export class NavBar extends React.Component<NavBarProps> {
   };
 
   render() {
+    const { loggedInUser } = this.props;
+    const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
+    let avatar = <div className="shimmering-circle is-shimmer-animated" />;
+
+    if (loggedInUser.display_name) {
+      avatar = <Avatar name={loggedInUser.display_name} size={32} round />;
+    }
+
     return (
       <nav className="container-fluid">
         <div className="row">
@@ -82,51 +93,39 @@ export class NavBar extends React.Component<NavBarProps> {
                     alt=""
                   />
                 )}
-                <span className="title-3">AMUNDSEN</span>
+                <span className="title-3">{LOGO_TITLE}</span>
               </Link>
             </div>
             {this.renderSearchBar()}
             <div id="nav-bar-right" className="ml-auto nav-bar-right">
               {this.generateNavLinks(AppConfig.navLinks)}
               {feedbackEnabled() && <Feedback />}
-              {this.props.loggedInUser && indexUsersEnabled() && (
+              {loggedInUser && indexUsersEnabled() && (
                 <Dropdown id="user-dropdown" pullRight>
                   <Dropdown.Toggle
                     noCaret
                     className="nav-bar-avatar avatar-dropdown"
                   >
-                    <Avatar
-                      name={this.props.loggedInUser.display_name}
-                      size={32}
-                      round
-                    />
+                    {avatar}
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="profile-menu">
                     <div className="profile-menu-header">
-                      <div className="title-2">
-                        {this.props.loggedInUser.display_name}
-                      </div>
-                      <div>{this.props.loggedInUser.email}</div>
+                      <div className="title-2">{loggedInUser.display_name}</div>
+                      <div>{loggedInUser.email}</div>
                     </div>
                     <MenuItem
                       componentClass={Link}
                       id="nav-bar-avatar-link"
-                      to={`/user/${this.props.loggedInUser.user_id}?source=navbar`}
-                      href={`/user/${this.props.loggedInUser.user_id}?source=navbar`}
+                      to={userLink}
+                      href={userLink}
                     >
-                      My Profile
+                      {PROFILE_LINK_TEXT}
                     </MenuItem>
                   </Dropdown.Menu>
                 </Dropdown>
               )}
-              {this.props.loggedInUser && !indexUsersEnabled() && (
-                <div className="nav-bar-avatar">
-                  <Avatar
-                    name={this.props.loggedInUser.display_name}
-                    size={32}
-                    round
-                  />
-                </div>
+              {loggedInUser && !indexUsersEnabled() && (
+                <div className="nav-bar-avatar">{avatar}</div>
               )}
             </div>
           </div>

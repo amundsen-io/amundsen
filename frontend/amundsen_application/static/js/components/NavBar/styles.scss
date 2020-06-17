@@ -1,5 +1,8 @@
 @import 'variables';
 
+$shimmer-loader-circle-size: 32px;
+$avatar-container-size: 40px;
+
 .nav-bar {
   align-items: center;
   background: $nav-bar-color;
@@ -26,7 +29,7 @@
       display: inline-block;
       height: 100%;
       line-height: $navbar-item-line-height;
-      padding: 0 8px;
+      padding: 0 $spacer-1;
 
       &.border-bottom-white:hover,
       &.border-bottom-white.active {
@@ -38,14 +41,18 @@
       background-color: $nav-bar-color;
       border-radius: 50%;
       border-style: none;
-      height: 40px;
+      height: $avatar-container-size;
       margin-top: -4px;
       padding: 0;
-      width: 40px;
+      width: $avatar-container-size;
 
       &:not(.avatar-dropdown) {
         .sb-avatar {
           margin: 4px 0 0 4px;
+
+          div {
+            border: 0 !important;
+          }
         }
       }
 
@@ -62,6 +69,7 @@
 
     a {
       text-decoration: none;
+      display: inline-block;
     }
   }
 
@@ -71,11 +79,11 @@
 
   .search-bar {
     flex-grow: 1;
-    margin: auto 16px auto auto;
+    margin: auto $spacer-2 auto auto;
   }
 
   .logo-icon {
-    margin-right: 16px;
+    margin-right: $spacer-2;
     max-height: 32px;
     max-width: 144px;
   }
@@ -86,15 +94,21 @@
     width: $profile-menu-width;
 
     .profile-menu-header {
-      padding: 16px 16px 0;
+      padding: $spacer-2 $spacer-2 0;
     }
 
     li {
       a {
         color: $text-primary;
-        padding: 16px;
+        padding: $spacer-2;
         width: 100%;
       }
     }
+  }
+
+  .shimmering-circle {
+    height: $shimmer-loader-circle-size;
+    width: $shimmer-loader-circle-size;
+    border-radius: $shimmer-loader-circle-size;
   }
 }

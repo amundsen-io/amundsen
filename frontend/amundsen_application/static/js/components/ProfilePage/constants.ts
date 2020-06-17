@@ -13,6 +13,8 @@ export const OWNED_TITLE_PREFIX = 'Owned';
 export const READ_LABEL = 'frequently used';
 export const READ_SOURCE = 'profile_read';
 export const READ_TITLE_PREFIX = 'Frequently Used';
+export const PROFILE_TEXT = 'Employee Profile';
+export const GITHUB_LINK_TEXT = 'Github';
 
 export const EMPTY_TEXT_PREFIX = 'User has no';
 export const FOOTER_TEXT_PREFIX = 'View all';

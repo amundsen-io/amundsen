@@ -7,6 +7,8 @@ import { TableReader } from 'interfaces';
 import AppConfig from 'config/config';
 import { logClick } from 'ducks/utilMethods';
 
+import './styles.scss';
+
 export interface FrequentUsersProps {
   readers: TableReader[];
 }
