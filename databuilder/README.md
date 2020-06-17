@@ -649,6 +649,9 @@ Transforms string timestamp into int epoch
 #### [RemoveFieldTransformer](./databuilder/transformer/remove_field_transformer.py)
 Remove fields from the Dict.
 
+#### [GenericTransformer](./databuilder/transformer/generic_transformer.py)
+Transforms dictionary based on callback function that user provides.
+
 
 ## List of loader
 #### [FsNeo4jCSVLoader](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
