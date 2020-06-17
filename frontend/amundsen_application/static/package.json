@@ -93,6 +93,7 @@
     "style-loader": "^0.20.3",
     "stylelint": "^13.6.0",
     "stylelint-config-standard": "^20.0.0",
+    "stylelint-prettier": "^1.1.2",
     "stylelint-scss": "^3.17.2",
     "terser-webpack-plugin": "^2.3.6",
     "ts-jest": "^24.3.0",
@@ -492,11 +493,14 @@
   },
   "stylelint": {
     "plugins": [
-      "stylelint-scss"
+      "stylelint-scss",
+      "stylelint-prettier"
     ],
     "rules": {
+      "prettier/prettier": true,
       "scss/dollar-variable-colon-space-after": "always",
       "no-descending-specificity": null,
+      "block-no-empty": null,
       "at-rule-no-unknown": [
         true,
         {

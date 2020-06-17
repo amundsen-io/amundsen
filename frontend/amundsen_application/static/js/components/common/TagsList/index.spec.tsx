@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import LoadingSpinner from 'components/common/LoadingSpinner';
+import ShimmeringTagListLoader from 'components/common/ShimmeringTagListLoader';
 
 import globalState from 'fixtures/globalState';
 
@@ -25,61 +25,63 @@ jest.mock('config/config-utils', () => ({
   },
 }));
 
-describe('TagsList', () => {
-  const setup = (propOverrides?: Partial<TagsListProps>) => {
-    const props: TagsListProps = {
-      curatedTags: [
-        {
-          tag_count: 2,
-          tag_name: 'test1',
-        },
-      ],
-      otherTags: [
-        {
-          tag_count: 1,
-          tag_name: 'test2',
-        },
-      ],
-      isLoading: false,
-      getAllTags: jest.fn(),
-      ...propOverrides,
-    };
-
-    const wrapper = shallow(<TagsList {...props} />);
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<TagsListProps>) => {
+  const props: TagsListProps = {
+    curatedTags: [
+      {
+        tag_count: 2,
+        tag_name: 'test1',
+      },
+    ],
+    otherTags: [
+      {
+        tag_count: 1,
+        tag_name: 'test2',
+      },
+    ],
+    isLoading: false,
+    getAllTags: jest.fn(),
+    ...propOverrides,
   };
 
+  const wrapper = shallow(<TagsList {...props} />);
+  return { props, wrapper };
+};
+
+describe('TagsList', () => {
   describe('componentDidMount', () => {
     it('calls props.getAllTags', () => {
-      const { props, wrapper } = setup();
+      const { props } = setup();
+
       expect(props.getAllTags).toHaveBeenCalled();
     });
   });
 
   describe('render', () => {
-    it('renders LoadingSpinner if props.isLoading is true', () => {
-      const { props, wrapper } = setup({ isLoading: true });
-      expect(wrapper.find(LoadingSpinner).exists()).toBe(true);
+    it('renders a shimmering loader if props.isLoading is true', () => {
+      const { wrapper } = setup({ isLoading: true });
+
+      expect(wrapper.find(ShimmeringTagListLoader).exists()).toBe(true);
     });
 
     it('renders <hr> if curatedTags.length > 0 & otherTags.length > 0 & showAllTags == true', () => {
       // @ts-ignore
       showAllTags.mockImplementation(() => true);
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       expect(wrapper.find('hr').exists()).toBe(true);
     });
 
     it('does not render <hr> if showAllTags is false', () => {
       // @ts-ignore
       showAllTags.mockImplementation(() => false);
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       expect(wrapper.find('hr').exists()).toBe(false);
     });
 
     it('does not render an <hr> if otherTags is empty', () => {
       // @ts-ignore
       showAllTags.mockImplementation(() => true);
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
 
       expect(wrapper.find('#tags-list').find('hr').exists()).toBe(true);
     });

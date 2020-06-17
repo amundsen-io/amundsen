@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import './styles.scss';
 
-import LoadingSpinner from 'components/common/LoadingSpinner';
+import ShimmeringTagListLoader from 'components/common/ShimmeringTagListLoader';
+
 import TagInfo from 'components/Tags/TagInfo';
 import { Tag } from 'interfaces';
 
@@ -37,24 +38,28 @@ export class TagsList extends React.Component<TagsListProps> {
   }
 
   render() {
-    if (this.props.isLoading) {
-      return <LoadingSpinner />;
+    const { isLoading, curatedTags, otherTags } = this.props;
+
+    if (isLoading) {
+      return <ShimmeringTagListLoader />;
     }
+
     return (
       <div id="tags-list" className="tags-list">
-        {this.generateTagInfo(this.props.curatedTags)}
+        {this.generateTagInfo(curatedTags)}
+        {showAllTags() && curatedTags.length > 0 && otherTags.length > 0 && (
+          <hr />
+        )}
         {showAllTags() &&
-          this.props.curatedTags.length > 0 &&
-          this.props.otherTags.length > 0 && <hr />}
-        {showAllTags() &&
-          this.props.otherTags.length > 0 &&
-          this.generateTagInfo(this.props.otherTags)}
+          otherTags.length > 0 &&
+          this.generateTagInfo(otherTags)}
       </div>
     );
   }
 }
 
 export const mapStateToProps = (state: GlobalState) => {
+  // TODO: These functions are selectors, consider moving them into the ducks
   const curatedTagsList = getCuratedTags();
   const allTags = state.tags.allTags.tags;
   const curatedTags = allTags.filter(
