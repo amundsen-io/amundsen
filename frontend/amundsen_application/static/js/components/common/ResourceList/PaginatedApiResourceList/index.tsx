@@ -26,6 +26,7 @@ class PaginatedApiResourceList extends React.Component<
 
   onPagination = (rawPageNum: number) => {
     const activePage = rawPageNum - 1;
+
     this.props.onPagination(activePage);
   };
 

@@ -4,25 +4,23 @@ import { TableResource } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
-import * as API from '../api/v0';
+import * as API from './api/v0';
 import reducer, {
   getPopularTables,
   getPopularTablesFailure,
   getPopularTablesSuccess,
   PopularTablesReducerState,
-} from '../reducer';
-import { getPopularTablesWorker, getPopularTablesWatcher } from '../sagas';
-import {
-  GetPopularTables,
-  GetPopularTablesRequest,
-  GetPopularTablesResponse,
-} from '../types';
+} from './reducer';
+import { getPopularTablesWorker, getPopularTablesWatcher } from './sagas';
+import { GetPopularTables } from './types';
 
 describe('popularTables ducks', () => {
   let expectedTables: TableResource[];
+
   beforeAll(() => {
-    expectedTables = globalState.popularTables;
+    expectedTables = globalState.popularTables.popularTables;
   });
+
   describe('actions', () => {
     it('getPopularTables - returns the action to get popular tables', () => {
       const action = getPopularTables();
@@ -46,21 +44,34 @@ describe('popularTables ducks', () => {
 
   describe('reducer', () => {
     let testState: PopularTablesReducerState;
+
     beforeAll(() => {
-      testState = [];
+      testState = {
+        popularTablesIsLoaded: false,
+        popularTables: [],
+      };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
 
     it('should handle GetPopularTables.SUCCESS', () => {
-      expect(
-        reducer(testState, getPopularTablesSuccess(expectedTables))
-      ).toEqual(expectedTables);
+      const expected = expectedTables;
+      const actual = reducer(testState, getPopularTablesSuccess(expectedTables))
+        .popularTables;
+
+      expect(actual).toEqual(expected);
     });
 
     it('should handle GetPopularTables.FAILURE', () => {
-      expect(reducer(testState, getPopularTablesFailure())).toEqual([]);
+      const expected = {
+        popularTables: [],
+        popularTablesIsLoaded: true,
+      };
+      const actual = reducer(testState, getPopularTablesFailure());
+
+      expect(actual).toEqual(expected);
     });
   });
 

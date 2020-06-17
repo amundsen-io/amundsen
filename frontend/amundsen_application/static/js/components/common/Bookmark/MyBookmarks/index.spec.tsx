@@ -152,7 +152,6 @@ describe('MyBookmarks', () => {
 
   describe('generateTabInfo', () => {
     let tabInfoArray;
-    let props;
     let wrapper;
     let generateTabContentSpy;
     let generateTabKeySpy;
@@ -160,8 +159,8 @@ describe('MyBookmarks', () => {
 
     beforeAll(() => {
       const setupResult = setup();
-      props = setupResult.props;
       wrapper = setupResult.wrapper;
+
       generateTabContentSpy = jest
         .spyOn(wrapper.instance(), 'generateTabContent')
         .mockImplementation((input) => `${input}Content`);
@@ -240,17 +239,20 @@ describe('MyBookmarks', () => {
   });
 
   describe('render', () => {
-    let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
-      props = setupResult.props;
+
       wrapper = setupResult.wrapper;
     });
 
-    it('renders nothing until ready', () => {
-      const { props, wrapper } = setup({ isLoaded: false });
-      expect(wrapper.html()).toBeFalsy();
+    it('renders a shimmer loader until ready', () => {
+      const { wrapper } = setup({ isLoaded: false });
+      const expected = 1;
+      const actual = wrapper.find('ShimmeringResourceLoader').length;
+
+      expect(actual).toEqual(expected);
     });
 
     it('renders the correct title', () => {
@@ -258,10 +260,12 @@ describe('MyBookmarks', () => {
     });
 
     it('renders a TabsComponent with correct props', () => {
-      const generateTabKeySpy = jest
+      jest
         .spyOn(wrapper.instance(), 'generateTabKey')
         .mockImplementation((input) => `${input}Key`);
+
       wrapper.instance().forceUpdate();
+
       expect(wrapper.find(TabsComponent).props()).toMatchObject({
         tabs: wrapper.instance().generateTabInfo(),
         defaultTab: 'tableKey',

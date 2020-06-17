@@ -9,11 +9,11 @@ import * as API from '../v0';
 jest.mock('axios');
 
 describe('getPopularTables', () => {
-  let axiosMock;
   let expectedTables: TableResource[];
   let mockGetResponse: AxiosResponse<API.PopularTablesAPI>;
+
   beforeAll(() => {
-    expectedTables = globalState.popularTables;
+    expectedTables = globalState.popularTables.popularTables;
     mockGetResponse = {
       data: {
         results: expectedTables,
@@ -24,7 +24,7 @@ describe('getPopularTables', () => {
       headers: {},
       config: {},
     };
-    axiosMock = jest
+    jest
       .spyOn(axios, 'get')
       .mockImplementation(() => Promise.resolve(mockGetResponse));
   });

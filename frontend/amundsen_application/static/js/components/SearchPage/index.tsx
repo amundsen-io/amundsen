@@ -7,6 +7,7 @@ import { Search as UrlSearch } from 'history';
 
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
+import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { submitSearchResource, urlDidUpdate } from 'ducks/search/reducer';
@@ -157,8 +158,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   renderContent = () => {
     if (this.props.isLoading) {
-      return <LoadingSpinner />;
+      return <ShimmeringResourceLoader numItems={RESULTS_PER_PAGE} />;
     }
+
     return this.renderSearchResults();
   };
 

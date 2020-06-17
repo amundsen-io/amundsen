@@ -1,12 +1,10 @@
 import * as React from 'react';
 
-// TODO: Use css-modules instead of 'import'
-import './styles.scss';
-
 import { TableResource } from 'interfaces';
 
 import InfoButton from 'components/common/InfoButton';
 import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
+import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
 
 import { getPopularTables } from 'ducks/popularTables/reducer';
 import { GetPopularTablesRequest } from 'ducks/popularTables/types';
@@ -20,8 +18,11 @@ import {
   POPULAR_TABLES_PER_PAGE,
 } from './constants';
 
+import './styles.scss';
+
 export interface StateFromProps {
   popularTables: TableResource[];
+  isLoaded: boolean;
 }
 
 export interface DispatchFromProps {
@@ -36,24 +37,36 @@ export class PopularTables extends React.Component<PopularTablesProps> {
   }
 
   render() {
+    const { popularTables, isLoaded } = this.props;
+    let content = (
+      <ShimmeringResourceLoader numItems={POPULAR_TABLES_PER_PAGE} />
+    );
+
+    if (isLoaded) {
+      content = (
+        <PaginatedResourceList
+          allItems={popularTables}
+          itemsPerPage={POPULAR_TABLES_PER_PAGE}
+          source={POPULAR_TABLES_SOURCE_NAME}
+        />
+      );
+    }
+
     return (
       <>
         <div className="popular-tables-header">
           <label className="title-1">{POPULAR_TABLES_LABEL}</label>
           <InfoButton infoText={POPULAR_TABLES_INFO_TEXT} />
         </div>
-        <PaginatedResourceList
-          allItems={this.props.popularTables}
-          itemsPerPage={POPULAR_TABLES_PER_PAGE}
-          source={POPULAR_TABLES_SOURCE_NAME}
-        />
+        {content}
       </>
     );
   }
 }
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    popularTables: state.popularTables,
+    popularTables: state.popularTables.popularTables,
+    isLoaded: state.popularTables.popularTablesIsLoaded,
   };
 };
 
