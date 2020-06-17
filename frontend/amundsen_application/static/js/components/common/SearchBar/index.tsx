@@ -196,6 +196,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
           className="search-bar-form"
           onSubmit={this.handleValueSubmit}
         >
+          {/* eslint-disable jsx-a11y/no-autofocus */}
           <input
             id="search-input"
             required
@@ -207,6 +208,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             autoFocus
             autoComplete="off"
           />
+          {/* eslint-enable jsx-a11y/no-autofocus */}
           <button className={searchButtonClass} type="submit">
             <span className="sr-only">{SEARCH_BUTTON_TEXT}</span>
             <img className="icon icon-search" alt="" />

@@ -165,6 +165,7 @@ export class OwnerEditor extends React.Component<
     return (
       <Modal.Body>
         <form className="component-form" onSubmit={this.recordAddItem}>
+          {/* eslint-disable jsx-a11y/no-autofocus */}
           <input
             id="add-item-input"
             autoFocus
@@ -173,6 +174,7 @@ export class OwnerEditor extends React.Component<
             }`}
             ref={this.inputRef}
           />
+          {/* eslint-enable jsx-a11y/no-autofocus */}
           <button
             className="btn btn-default add-button"
             type="submit"
