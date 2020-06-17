@@ -17,15 +17,7 @@ import { ResourceType } from 'interfaces/Resources';
 import * as LogUtils from 'utils/logUtils';
 
 import { indexDashboardsEnabled } from 'config/config-utils';
-import {
-  AVATAR_SIZE,
-  BOOKMARKED_LABEL,
-  BOOKMARKED_SOURCE,
-  OWNED_LABEL,
-  OWNED_SOURCE,
-  READ_LABEL,
-  READ_SOURCE,
-} from './constants';
+import { AVATAR_SIZE } from './constants';
 import {
   mapDispatchToProps,
   mapStateToProps,
@@ -75,19 +67,9 @@ describe('ProfilePage', () => {
     return { props, wrapper };
   };
 
-  describe('constructor', () => {
-    let props;
-    let wrapper;
-    beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-    });
-  });
-
   describe('componentDidMount', () => {
     it('calls loadUserInfo', () => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       const loadUserInfoSpy = jest.spyOn(wrapper.instance(), 'loadUserInfo');
       wrapper.instance().componentDidMount();
       expect(loadUserInfoSpy).toHaveBeenCalled();
@@ -95,14 +77,11 @@ describe('ProfilePage', () => {
   });
 
   describe('componentDidUpdate', () => {
-    let props;
     let wrapper;
     let loadUserInfoSpy;
 
     beforeEach(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
       loadUserInfoSpy = jest.spyOn(wrapper.instance(), 'loadUserInfo');
     });
 
@@ -121,27 +100,33 @@ describe('ProfilePage', () => {
     it('calls getLoggingParams', () => {
       const { props, wrapper } = setup();
       const getLoggingParamsSpy = jest.spyOn(LogUtils, 'getLoggingParams');
+
       wrapper.instance().loadUserInfo('test');
+
       expect(getLoggingParamsSpy).toHaveBeenCalledWith(props.location.search);
     });
 
     it('calls props.getUserById', () => {
-      const { props, wrapper } = setup();
+      const { props } = setup();
+
       expect(props.getUserById).toHaveBeenCalled();
     });
 
     it('calls props.getUserOwn', () => {
-      const { props, wrapper } = setup();
+      const { props } = setup();
+
       expect(props.getUserOwn).toHaveBeenCalled();
     });
 
     it('calls props.getUserRead', () => {
-      const { props, wrapper } = setup();
+      const { props } = setup();
+
       expect(props.getUserRead).toHaveBeenCalled();
     });
 
     it('calls props.getBookmarksForUser', () => {
-      const { props, wrapper } = setup();
+      const { props } = setup();
+
       expect(props.getBookmarksForUser).toHaveBeenCalled();
     });
   });
@@ -151,10 +136,9 @@ describe('ProfilePage', () => {
     let wrapper;
     let givenResource;
     let content;
+
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       givenResource = ResourceType.table;
       content = shallow(
         <div>{wrapper.instance().generateTabContent(givenResource)}</div>
@@ -207,6 +191,7 @@ describe('ProfilePage', () => {
     it('returns string for tab title according to UI designs', () => {
       const { wrapper } = setup();
       const givenResource = ResourceType.table;
+
       expect(wrapper.instance().generateTabTitle(givenResource)).toEqual(
         'Resource (4)'
       );
@@ -222,9 +207,8 @@ describe('ProfilePage', () => {
     let generateTabTitleSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
+
       generateTabContentSpy = jest
         .spyOn(wrapper.instance(), 'generateTabContent')
         .mockImplementation((input) => `${input}Content`);
@@ -238,6 +222,7 @@ describe('ProfilePage', () => {
 
     describe('pushes tab info for tables', () => {
       let tableTab;
+
       beforeAll(() => {
         tabInfoArray = wrapper.instance().generateTabInfo();
         tableTab = tabInfoArray.find((tab) => tab.key === 'tableKey');
@@ -261,6 +246,7 @@ describe('ProfilePage', () => {
 
     describe('handle tab info for dashboards', () => {
       let dashboardTab;
+
       describe('if dashboards are not enabled', () => {
         it('does not render dashboard tab', () => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
@@ -305,10 +291,9 @@ describe('ProfilePage', () => {
   describe('render', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
     });
 
     it('renders DocumentTitle w/ correct title', () => {
