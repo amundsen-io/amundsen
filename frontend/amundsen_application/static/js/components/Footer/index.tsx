@@ -37,12 +37,12 @@ export class Footer extends React.Component<FooterProps> {
       );
     }
     return (
-      <div>
+      <footer>
         <div className="phantom-div" />
         <div id="footer" className="footer">
           {content}
         </div>
-      </div>
+      </footer>
     );
   }
 }

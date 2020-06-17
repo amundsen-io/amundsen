@@ -192,7 +192,7 @@ export class ProfilePage extends React.Component<
     const { user } = this.props;
     return (
       <DocumentTitle title={`${user.display_name} - Amundsen Profile`}>
-        <div className="resource-detail-layout profile-page">
+        <main className="resource-detail-layout profile-page">
           <header className="resource-header">
             <div className="header-section">
               <Breadcrumb />
@@ -204,7 +204,7 @@ export class ProfilePage extends React.Component<
             </div>
 
             <div className="header-section header-title">
-              <h3 className="header-title-text truncated">
+              <h1 className="h3 header-title-text truncated">
                 {user.display_name}
                 {!user.is_active && (
                   <Flag
@@ -213,7 +213,7 @@ export class ProfilePage extends React.Component<
                     text="Alumni"
                   />
                 )}
-              </h3>
+              </h1>
               <div className="body-3">
                 <ul className="header-bullets">
                   {user.role_name && <li id="user-role">{user.role_name}</li>}
@@ -241,7 +241,7 @@ export class ProfilePage extends React.Component<
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <img className="icon icon-dark icon-mail" />
+                  <img className="icon icon-dark icon-mail" alt="" />
                   <span className="email-link-label body-2">{user.email}</span>
                 </a>
               )}
@@ -267,19 +267,19 @@ export class ProfilePage extends React.Component<
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <img className="icon icon-dark icon-github" />
+                  <img className="icon icon-dark icon-github" alt="" />
                   <span className="github-link-label body-2">Github</span>
                 </a>
               )}
             </div>
           </header>
-          <main className="profile-body">
+          <div className="profile-body">
             <TabsComponent
               tabs={this.generateTabInfo()}
               defaultTab={this.generateTabKey(ResourceType.table)}
             />
-          </main>
-        </div>
+          </div>
+        </main>
       </DocumentTitle>
     );
   }

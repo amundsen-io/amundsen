@@ -1,13 +1,24 @@
 @import 'variables';
 
 .editable-section {
+  .editable-section-label {
+    display: block;
+    font-weight: 400;
+    margin-bottom: 0;
+  }
+
+  .editable-section-label-wrapper {
+    margin-bottom: $spacer-1;
+  }
+
   .section-title {
     color: $text-tertiary;
-    margin-bottom: 4px;
+    margin-bottom: $spacer-1/2;
+    font-weight: 700;
   }
 
   .edit-button {
-    margin-left: 4px;
+    margin-left: $spacer-1/2;
     opacity: 0;
 
     img {

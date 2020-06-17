@@ -7,15 +7,17 @@ export class BrowsePage extends React.Component {
   render() {
     return (
       <DocumentTitle title="Browse - Amundsen">
-        <div className="container">
+        <main className="container">
           <div className="row">
             <div className="col-xs-12">
-              <h3 id="browse-header">Browse Tags</h3>
+              <h1 className="h3" id="browse-header">
+                Browse Tags
+              </h1>
               <hr className="header-hr" />
               <TagsList />
             </div>
           </div>
-        </div>
+        </main>
       </DocumentTitle>
     );
   }

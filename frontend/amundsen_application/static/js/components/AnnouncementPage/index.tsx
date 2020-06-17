@@ -52,17 +52,19 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
   render() {
     return (
       <DocumentTitle title="Announcements - Amundsen">
-        <div className="container announcement-container">
+        <main className="container announcement-container">
           <div className="row">
             <div className="col-xs-12">
-              <h3 id="announcement-header">Announcements</h3>
+              <h1 id="announcement-header" className="h3">
+                Announcements
+              </h1>
               <hr />
               <div id="announcement-content" className="announcement-content">
                 {this.createPosts()}
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </DocumentTitle>
     );
   }

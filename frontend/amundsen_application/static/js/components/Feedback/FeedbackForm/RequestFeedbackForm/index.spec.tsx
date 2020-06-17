@@ -17,7 +17,7 @@ import {
 } from 'components/Feedback/constants';
 
 import globalState from 'fixtures/globalState';
-import { RequestFeedbackForm, mapDispatchToProps, mapStateToProps } from '..';
+import { RequestFeedbackForm, mapDispatchToProps, mapStateToProps } from '.';
 
 describe('RequestFeedbackForm', () => {
   const setup = () => {

@@ -6,6 +6,7 @@ export const RESULTS_PER_PAGE = 10;
 
 // TODO: Hard-coded text strings should be translatable/customizable
 export const DOCUMENT_TITLE_SUFFIX = ' - Amundsen Search';
+export const SEARCHPAGE_TITLE = 'Amundsen Search';
 
 export const PAGE_INDEX_ERROR_MESSAGE =
   'Page index out of bounds for available matches';

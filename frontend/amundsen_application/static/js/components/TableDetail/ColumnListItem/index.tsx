@@ -14,6 +14,8 @@ import { RequestMetadataType, TableColumn } from 'interfaces';
 import './styles.scss';
 import EditableSection from 'components/common/EditableSection';
 
+const MORE_BUTTON_TEXT = 'More options';
+
 interface DispatchFromProps {
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
@@ -149,7 +151,8 @@ export class ColumnListItem extends React.Component<
                     className="column-dropdown"
                   >
                     <Dropdown.Toggle noCaret>
-                      <img className="icon icon-more" />
+                      <span className="sr-only">{MORE_BUTTON_TEXT}</span>
+                      <img className="icon icon-more" alt="" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <MenuItem onClick={this.openRequest}>

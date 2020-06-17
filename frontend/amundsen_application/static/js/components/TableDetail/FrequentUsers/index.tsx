@@ -35,8 +35,8 @@ export function renderReader(
     >
       <Link
         className="avatar-overlap"
-        id="frequent-users"
         onClick={logClick}
+        data-type="frequent-users"
         to={link}
         target={target}
       >

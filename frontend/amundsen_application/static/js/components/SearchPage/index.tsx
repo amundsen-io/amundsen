@@ -37,6 +37,7 @@ import {
   DASHBOARD_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
+  SEARCHPAGE_TITLE,
 } from './constants';
 
 export interface StateFromProps {
@@ -169,7 +170,10 @@ export class SearchPage extends React.Component<SearchPageProps> {
           <ResourceSelector />
           <SearchFilter />
         </SearchPanel>
-        <div className="search-results">{this.renderContent()}</div>
+        <main className="search-results">
+          <h1 className="sr-only">{SEARCHPAGE_TITLE}</h1>
+          {this.renderContent()}
+        </main>
       </div>
     );
     if (searchTerm.length > 0) {

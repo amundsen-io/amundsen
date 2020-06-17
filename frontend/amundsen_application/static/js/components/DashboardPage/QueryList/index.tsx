@@ -1,7 +1,6 @@
 import * as React from 'react';
-import QueryListItem from '../QueryListItem';
-
 import { QueryResource } from 'interfaces';
+import QueryListItem from '../QueryListItem';
 
 import './styles.scss';
 
@@ -26,7 +25,11 @@ class QueryList extends React.Component<QueryListProps> {
       />
     ));
 
-    return <ul className="query-list list-group">{queryList}</ul>;
+    return (
+      <ul className="query-list list-group" role="tablist">
+        {queryList}
+      </ul>
+    );
   }
 }
 

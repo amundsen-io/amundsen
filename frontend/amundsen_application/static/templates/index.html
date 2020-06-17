@@ -1,21 +1,20 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
-      {% include 'fragments/google-analytics-loader.html' %}
-    {% endif %}
-
     <meta charset="utf-8">
     <title>Amundsen - Data Discovery Portal</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     {% if env == "development" %}
       {% include 'fragments/icons-dev.html' %}
     {% elif env == "staging" %}
       {% include 'fragments/icons-staging.html' %}
     {% else %}
       {% include 'fragments/icons-prod.html' %}
+    {% endif %}
+
+    {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
+      {% include 'fragments/google-analytics-loader.html' %}
     {% endif %}
 
     <%= htmlWebpackPlugin.tags.headTags %>

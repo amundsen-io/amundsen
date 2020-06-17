@@ -40,7 +40,6 @@ export class TagInfo extends React.Component<TagInfoProps> {
     return (
       <button
         id={`tag::${name}`}
-        role="button"
         className={'btn tag-button' + (this.props.compact ? ' compact' : '')}
         onClick={this.onClick}
       >

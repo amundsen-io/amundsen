@@ -56,7 +56,7 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           onClick={this.onViewAllResults}
           target="_blank"
         >
-          <img className="icon icon-search" />
+          <img className="icon icon-search" alt="" />
           <div className="title-2 search-item-info">
             <div className="search-term">{`${searchTerm}\u00a0`}</div>
             <div className="search-item-text">{listItemText}</div>

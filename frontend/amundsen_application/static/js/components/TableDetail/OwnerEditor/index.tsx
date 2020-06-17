@@ -196,7 +196,7 @@ export class OwnerEditor extends React.Component<
                   onClick={() => this.recordDeleteItem(key)}
                   /* tslint:enable */
                 >
-                  <img className="icon icon-delete" />
+                  <img className="icon icon-delete" alt="" />
                 </button>
               </li>
             );
@@ -268,7 +268,7 @@ export class OwnerEditor extends React.Component<
               className="btn btn-flat-icon add-item-button"
               onClick={this.handleShow}
             >
-              <img className="icon icon-plus-circle" />
+              <img className="icon icon-plus-circle" alt="" />
               <span>Add Owner</span>
             </button>
           )}

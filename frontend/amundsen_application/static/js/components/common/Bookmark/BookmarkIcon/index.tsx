@@ -62,6 +62,7 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
             'icon ' +
             (this.props.isBookmarked ? 'icon-bookmark-filled' : 'icon-bookmark')
           }
+          alt=""
         />
       </div>
     );

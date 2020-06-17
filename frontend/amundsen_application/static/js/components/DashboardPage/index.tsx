@@ -168,7 +168,7 @@ export class DashboardPage extends React.Component<
             />
           </div>
           <div className="header-section header-title">
-            <h3 className="header-title-text truncated">{dashboard.name}</h3>
+            <h1 className="h3 header-title-text truncated">{dashboard.name}</h1>
             <BookmarkIcon
               bookmarkKey={dashboard.uri}
               resourceType={ResourceType.dashboard}
@@ -203,7 +203,7 @@ export class DashboardPage extends React.Component<
           </div>
         </header>
         <article className="column-layout-1">
-          <section className="left-panel">
+          <aside className="left-panel">
             <EditableSection
               title="Description"
               readOnly
@@ -257,19 +257,19 @@ export class DashboardPage extends React.Component<
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Created</div>
-                  <div className="body-2 text-primary">
+                  <time className="body-2 text-primary">
                     {formatDateTimeShort({
                       epochTimestamp: dashboard.created_timestamp,
                     })}
-                  </div>
+                  </time>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Last Updated</div>
-                  <div className="body-2 text-primary">
+                  <time className="body-2 text-primary">
                     {formatDateTimeShort({
                       epochTimestamp: dashboard.updated_timestamp,
                     })}
-                  </div>
+                  </time>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Recent View Count</div>
@@ -289,25 +289,25 @@ export class DashboardPage extends React.Component<
                   <div className="section-title title-3">
                     Last Successful Run
                   </div>
-                  <div className="last-successful-run-timestamp body-2 text-primary">
+                  <time className="last-successful-run-timestamp body-2 text-primary">
                     {dashboard.last_successful_run_timestamp
                       ? formatDateTimeShort({
                           epochTimestamp:
                             dashboard.last_successful_run_timestamp,
                         })
                       : NO_TIMESTAMP_TEXT}
-                  </div>
+                  </time>
                 </section>
                 <section className="metadata-section">
                   <div className="section-title title-3">Last Run</div>
                   <div>
-                    <div className="last-run-timestamp body-2 text-primary">
+                    <time className="last-run-timestamp body-2 text-primary">
                       {dashboard.last_run_timestamp
                         ? formatDateTimeShort({
                             epochTimestamp: dashboard.last_run_timestamp,
                           })
                         : NO_TIMESTAMP_TEXT}
-                    </div>
+                    </time>
                     <div className="last-run-state">
                       <Flag
                         caseType="sentenceCase"
@@ -322,8 +322,8 @@ export class DashboardPage extends React.Component<
               </section>
             </section>
             <ImagePreview uri={this.state.uri} redirectUrl={dashboard.url} />
-          </section>
-          <section className="right-panel">{this.renderTabs()}</section>
+          </aside>
+          <main className="right-panel">{this.renderTabs()}</main>
         </article>
       </div>
     );
