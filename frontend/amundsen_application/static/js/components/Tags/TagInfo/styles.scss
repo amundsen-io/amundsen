@@ -3,7 +3,7 @@
 .btn.tag-button {
   background-color: $tag-bg;
   border: 0;
-  border-radius: 4px;
+  border-radius: $tag-border-radius;
   color: $text-primary;
   margin: 0 8px 8px 0;
   overflow: hidden;
