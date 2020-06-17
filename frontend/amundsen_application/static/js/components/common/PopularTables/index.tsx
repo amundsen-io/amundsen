@@ -55,7 +55,7 @@ export class PopularTables extends React.Component<PopularTablesProps> {
     return (
       <>
         <div className="popular-tables-header">
-          <label className="title-1">{POPULAR_TABLES_LABEL}</label>
+          <h2 className="title-1">{POPULAR_TABLES_LABEL}</h2>
           <InfoButton infoText={POPULAR_TABLES_INFO_TEXT} />
         </div>
         {content}

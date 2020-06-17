@@ -33,7 +33,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
     return (
       <div key={`post:${postIndex}`} className="post-container">
         <div className="post-header">
-          <div className="post-title title-2">{post.title}</div>
+          <h2 className="post-title title-2">{post.title}</h2>
           <div className="body-secondary-3">{post.date}</div>
         </div>
         <div className="post-content">
