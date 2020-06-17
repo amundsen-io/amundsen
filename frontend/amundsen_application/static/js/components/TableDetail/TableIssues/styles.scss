@@ -1,5 +1,9 @@
 @import 'variables';
 
+$issue-banner-height: 40px;
+$shimmer-line-height: 16px;
+$shimmer-loader-lines: 1, 2;
+
 .table-issues {
   margin-bottom: $spacer-1;
 
@@ -8,7 +12,7 @@
     color: $text-secondary;
     display: flex;
     flex-direction: row;
-    height: 40px;
+    height: $issue-banner-height;
     line-height: 24px;
     padding: $spacer-1;
 
@@ -17,7 +21,7 @@
     }
 
     .table-issue-priority {
-      line-height: 20px;
+      line-height: $issue-banner-height / 2;
     }
   }
 
@@ -72,8 +76,19 @@
     background-color: rgba($priority-bg-color, 0.1);
   }
 
-  .loading-spinner {
-    margin-top: auto;
+  .shimmer-issues {
+    width: 100%;
+  }
+
+  .shimmer-issues-row {
+    margin-bottom: $spacer-1;
+    height: $shimmer-line-height;
+  }
+
+  @each $line in $shimmer-loader-lines {
+    .shimmer-issues-line--#{$line} {
+      width: percentage(random(100) / 100);
+    }
   }
 }
 

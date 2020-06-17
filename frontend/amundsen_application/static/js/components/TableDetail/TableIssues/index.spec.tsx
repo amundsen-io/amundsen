@@ -6,7 +6,6 @@ import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
 
 import { NO_DATA_ISSUES_TEXT } from 'components/TableDetail/TableIssues/constants';
-import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import {
   TableIssues,
   TableIssueProps,
@@ -15,8 +14,6 @@ import {
 } from '.';
 
 describe('TableIssues', () => {
-  const setStateSpy = jest.spyOn(TableIssues.prototype, 'setState');
-
   const setup = (propOverrides?: Partial<TableIssueProps>) => {
     const props: TableIssueProps = {
       isLoading: false,
@@ -37,19 +34,22 @@ describe('TableIssues', () => {
       AppConfig.issueTracking.enabled = true;
     });
 
-    it('renders LoadingSpinner if loading', () => {
-      const { props, wrapper } = setup({ isLoading: true });
-      expect(wrapper.find('LoadingSpinner').exists()).toBe(true);
+    it('renders Shimmer loader if loading', () => {
+      const { wrapper } = setup({ isLoading: true });
+      const expected = 1;
+      const actual = wrapper.find('ShimmeringIssuesLoader').length;
+
+      expect(actual).toEqual(expected);
     });
 
     it('renders text if no issues', () => {
-      const { props, wrapper } = setup({ issues: [] });
+      const { wrapper } = setup({ issues: [] });
       expect(wrapper.find('.issue-banner').text()).toEqual(NO_DATA_ISSUES_TEXT);
     });
 
     it('renders issues if they exist', () => {
       AppConfig.issueTracking.enabled = true;
-      const { props, wrapper } = setup({
+      const { wrapper } = setup({
         issues: [
           {
             issue_key: 'issue_key',
@@ -68,7 +68,7 @@ describe('TableIssues', () => {
     });
 
     it('renders no link to issues if no issues', () => {
-      const { props, wrapper } = setup({
+      const { wrapper } = setup({
         issues: [],
         total: 0,
         allIssuesUrl: null,
@@ -77,7 +77,7 @@ describe('TableIssues', () => {
     });
 
     it('renders link if there are issues', () => {
-      const { props, wrapper } = setup({
+      const { wrapper } = setup({
         issues: [
           {
             issue_key: 'issue_key',
