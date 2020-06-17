@@ -638,20 +638,22 @@ job.launch()
 ```
 
 #### [TemplateVariableSubstitutionTransformer](./databuilder/transformer/template_variable_substitution_transformer.py)
-Adds or replaces field in Dict by string.format based on given template and provide record Dict as a template parameter
+Adds or replaces field in Dict by string.format based on given template and provide record Dict as a template parameter.
 
 #### [DictToModel](./databuilder/transformer/dict_to_model.py)
-Transforms dictionary into model
+Transforms dictionary into model.
 
 #### [TimestampStringToEpoch](./databuilder/transformer/timestamp_string_to_epoch.py)
-Transforms string timestamp into int epoch
+Transforms string timestamp into int epoch.
 
 #### [RemoveFieldTransformer](./databuilder/transformer/remove_field_transformer.py)
 Remove fields from the Dict.
 
+#### [TableTagTransformer](./databuilder/transformer/table_tag_transformer.py)
+Adds the same set of tags to all tables produced by the job.
+
 #### [GenericTransformer](./databuilder/transformer/generic_transformer.py)
 Transforms dictionary based on callback function that user provides.
-
 
 ## List of loader
 #### [FsNeo4jCSVLoader](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
