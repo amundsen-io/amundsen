@@ -68,7 +68,7 @@ export class FilterSection extends React.Component<FilterSectionProps> {
           {hasValue && (
             /* eslint-disable jsx-a11y/anchor-is-valid */
             <a onClick={this.onClearFilter} className="btn btn-flat-icon">
-              <img className="icon icon-left" />
+              <img className="icon icon-left" alt="" />
               <span>{CLEAR_BTN_TEXT}</span>
             </a>
           )}

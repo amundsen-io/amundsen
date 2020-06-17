@@ -43,7 +43,7 @@ const PreviewModal = ({ imageSrc, onClose }: PreviewModalProps) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <img src={imageSrc} height="auto" width="100%" />
+        <img src={imageSrc} height="auto" width="100%" alt="" />
       </Modal.Body>
     </Modal>
   );
@@ -89,6 +89,7 @@ export class ImagePreview extends React.Component<
             type="button"
             onClick={this.handlePreviewButton}
           >
+            <span className="sr-only">{Constants.PREVIEW_BUTTON_TEXT}</span>
             <img
               className="preview"
               style={
@@ -99,6 +100,7 @@ export class ImagePreview extends React.Component<
               onError={this.onError}
               height="auto"
               width="100%"
+              alt=""
             />
           </button>
         )}

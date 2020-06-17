@@ -82,7 +82,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
                 </div>
               </div>
             )}
-            <img className="icon icon-right" />
+            <img className="icon icon-right" alt="" />
           </div>
         </Link>
       </li>

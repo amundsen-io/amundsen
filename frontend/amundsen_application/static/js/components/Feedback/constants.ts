@@ -9,6 +9,7 @@ export const SUBMIT_SUCCESS_MESSAGE =
 
 /* Button Set */
 export const BUG_REPORT_TEXT = 'Bug Report';
+export const FEEDBACK_BUTTON_TEXT = 'Give us Feedback';
 export const FEEDBACK_TYPE_TEXT = 'Feedback Type Selector';
 export const RATING_TEXT = 'Rating';
 export const REQUEST_TEXT = 'Request';

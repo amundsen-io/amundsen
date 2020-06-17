@@ -73,15 +73,15 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
           <div className="resource-badges">
             <div>
               <div className="title-3">{Constants.LAST_RUN_TITLE}</div>
-              <div className="body-secondary-3">
+              <time className="body-secondary-3">
                 {dashboard.last_successful_run_timestamp
                   ? formatDate({
                       epochTimestamp: dashboard.last_successful_run_timestamp,
                     })
                   : NO_TIMESTAMP_TEXT}
-              </div>
+              </time>
             </div>
-            <img className="icon icon-right" />
+            <img className="icon icon-right" alt="" />
           </div>
         </Link>
       </li>

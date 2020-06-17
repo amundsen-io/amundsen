@@ -63,7 +63,6 @@ describe('TagInfo', () => {
       it('renders a button with correct props', () => {
         expect(wrapper.find('button').props()).toMatchObject({
           id: `tag::${props.data.tag_name}`,
-          role: 'button',
           onClick: wrapper.instance().onClick,
           className: 'btn tag-button',
         });

@@ -275,7 +275,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
             className="btn btn-default muted add-btn"
             onClick={this.startEditing}
           >
-            <img className="icon icon-plus" />
+            <img className="icon icon-plus" alt="" />
             New
           </button>
         );

@@ -34,8 +34,8 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
     return (
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={this.submitForm}>
         <input type="hidden" name="feedback-type" value="NPS Rating" />
-        <div className="form-group">
-          <label>{RATING_LABEL}</label>
+        <div className="form-group clearfix">
+          <label htmlFor="rating">{RATING_LABEL}</label>
           <div>
             <div className="radio-set">{radioButtonSet}</div>
             <div>
@@ -48,14 +48,19 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
             </div>
           </div>
         </div>
-        <textarea
-          className="form-control form-group"
-          name="comment"
-          form={AbstractFeedbackForm.FORM_ID}
-          rows={8}
-          maxLength={2000}
-          placeholder={COMMENTS_PLACEHOLDER}
-        />
+        <div className="form-group">
+          <label htmlFor="comment">{COMMENTS_PLACEHOLDER}</label>
+          <textarea
+            className="form-control form-group"
+            name="comment"
+            id="comment"
+            form={AbstractFeedbackForm.FORM_ID}
+            rows={8}
+            maxLength={2000}
+            placeholder={COMMENTS_PLACEHOLDER}
+          />
+        </div>
+
         <button className="btn btn-primary" type="submit">
           {SUBMIT_TEXT}
         </button>

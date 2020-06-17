@@ -32,6 +32,7 @@ export const generateSearchUrl = (searchParams: SearchParams): string => {
     index: searchParams.index,
   };
   if (hasFilters) {
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     queryStringValues['filters'] = filtersForResource;
   }
 

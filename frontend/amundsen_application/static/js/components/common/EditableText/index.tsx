@@ -156,7 +156,7 @@ class EditableText extends React.Component<
                 className="btn btn-primary refresh-button"
                 onClick={this.refreshText}
               >
-                <img className="icon icon-refresh" />
+                <img className="icon icon-refresh" alt="" />
                 {REFRESH_BUTTON_TEXT}
               </button>
             </>

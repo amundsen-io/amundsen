@@ -62,10 +62,12 @@ export class EditableSection extends React.Component<
         }`}
         onClick={this.toggleEdit}
       >
+        <span className="sr-only">{Constants.EDIT_TEXT}</span>
         <img
           className={`icon icon-small icon-edit ${
             this.state.isEditing ? 'icon-color' : ''
           }`}
+          alt=""
         />
       </button>
     );
@@ -92,7 +94,8 @@ export class EditableSection extends React.Component<
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img className="icon icon-small icon-edit" />
+          <span className="sr-only">{Constants.EDIT_TEXT}</span>
+          <img className="icon icon-small icon-edit" alt="" />
         </a>
       </OverlayTrigger>
     );
@@ -105,6 +108,7 @@ export class EditableSection extends React.Component<
           if (!React.isValidElement(child)) {
             return child;
           }
+
           return React.cloneElement(child, {
             isEditing: this.state.isEditing,
             setEditMode: this.setEditMode,
@@ -114,11 +118,15 @@ export class EditableSection extends React.Component<
 
     return (
       <section className="editable-section">
-        <div className="section-title title-3">
-          {EditableSection.convertText(title)}
-          {!readOnly ? this.renderButton() : this.renderReadOnlyButton()}
-        </div>
-        {childrenWithProps}
+        <label className="editable-section-label">
+          <div className="editable-section-label-wrapper">
+            <span className="section-title title-3">
+              {EditableSection.convertText(title)}
+            </span>
+            {!readOnly ? this.renderButton() : this.renderReadOnlyButton()}
+          </div>
+          <div className="editable-section-content">{childrenWithProps}</div>
+        </label>
       </section>
     );
   }

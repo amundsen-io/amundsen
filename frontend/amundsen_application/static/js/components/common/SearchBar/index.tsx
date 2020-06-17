@@ -24,6 +24,7 @@ import './styles.scss';
 
 import {
   BUTTON_CLOSE_TEXT,
+  SEARCH_BUTTON_TEXT,
   INVALID_SYNTAX_MESSAGE,
   PLACEHOLDER_DEFAULT,
   SIZE_SMALL,
@@ -207,7 +208,8 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             autoComplete="off"
           />
           <button className={searchButtonClass} type="submit">
-            <img className="icon icon-search" />
+            <span className="sr-only">{SEARCH_BUTTON_TEXT}</span>
+            <img className="icon icon-search" alt="" />
           </button>
           {this.props.size === SIZE_SMALL && (
             <button

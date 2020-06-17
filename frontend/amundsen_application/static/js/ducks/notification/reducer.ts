@@ -117,6 +117,7 @@ export default function reducer(
       };
       const { columnName } = (<OpenRequestAction>action).payload;
       if (columnName) {
+        // eslint-disable-next-line @typescript-eslint/dot-notation
         newState['columnName'] = columnName;
       }
       return newState;

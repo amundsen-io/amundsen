@@ -15,7 +15,7 @@ const FlashMessage: React.SFC<FlashMessageProps> = ({
 }: FlashMessageProps) => {
   return (
     <div className="flash-message">
-      {iconClass && <img className={`icon ${iconClass}`} />}
+      {iconClass && <img className={`icon ${iconClass}`} alt="" />}
       <div className="message">{message}</div>
       <button
         type="button"

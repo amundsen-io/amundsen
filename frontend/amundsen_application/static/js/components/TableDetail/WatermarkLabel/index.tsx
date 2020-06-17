@@ -43,18 +43,24 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     }
 
     return (
-      <>
-        <div className="range-labels body-2">
-          {LOW_WATERMARK_LABEL}
-          <br />
-          {HIGH_WATERMARK_LABEL}
-        </div>
-        <div className="range-dates body-2">
-          {low && this.formatWatermarkDate(low)}
-          <br />
-          {high && this.formatWatermarkDate(high)}
-        </div>
-      </>
+      <div className="date-ranges">
+        {low && (
+          <p className="date-range body-2">
+            <span className="date-range-label">{LOW_WATERMARK_LABEL}</span>
+            <time className="date-range-value">
+              {this.formatWatermarkDate(low)}
+            </time>
+          </p>
+        )}
+        {high && (
+          <p className="date-range body-2">
+            <span className="date-range-label">{HIGH_WATERMARK_LABEL}</span>
+            <time className="date-range-value">
+              {this.formatWatermarkDate(high)}
+            </time>
+          </p>
+        )}
+      </div>
     );
   };
 
@@ -64,7 +70,11 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
 
     return (
       <div className="watermark-label">
-        <img className="range-icon" src="/static/images/watermark-range.png" />
+        <img
+          className="range-icon"
+          src="/static/images/watermark-range.png"
+          alt=""
+        />
         {this.renderWatermarkInfo(low, high)}
       </div>
     );

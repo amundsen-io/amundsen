@@ -68,7 +68,6 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
     "eslint": "^7.2.0",
-    "eslint-config-airbnb": "^18.1.0",
     "eslint-config-airbnb-typescript": "^8.0.2",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.1",
@@ -201,8 +200,9 @@
     "extends": [
       "plugin:react/recommended",
       "airbnb-typescript",
-      "prettier",
-      "prettier/@typescript-eslint"
+      "prettier/@typescript-eslint",
+      "plugin:prettier/recommended",
+      "prettier/react"
     ],
     "ignorePatterns": [
       "**/*{.,-}min.js",
@@ -283,6 +283,7 @@
           }
         }
       ],
+      "@typescript-eslint/indent": "off",
       "arrow-parens": [
         "off",
         "always"
@@ -389,6 +390,7 @@
       "react/no-unescaped-entities": 0,
       "react/no-unused-prop-types": 0,
       "react/no-string-refs": 0,
+      "react/jsx-indent": 0,
       "indent": 0,
       "no-multi-spaces": 0,
       "padded-blocks": 0,
@@ -428,7 +430,7 @@
       "react/jsx-closing-tag-location": "warn",
       "react/no-did-update-set-state": "warn",
       "react/no-access-state-in-setstate": "warn",
-      "react/jsx-one-expression-per-line": "warn",
+      "react/jsx-one-expression-per-line": "off",
       "react/sort-comp": "warn",
       "react/jsx-props-no-spreading": "warn",
       "react/prefer-stateless-function": "warn",
@@ -520,10 +522,25 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --fix",
-    "*.ts": "eslint --fix",
-    "*.tsx": "eslint --fix",
-    "*.scss": "npm run stylelint-fix",
-    "*.{ts,tsx,css,scss}": "prettier --write"
+    "*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.jsx": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.tsx": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "npm run stylelint-fix"
+    ]
   }
 }

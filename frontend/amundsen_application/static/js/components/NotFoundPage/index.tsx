@@ -12,7 +12,7 @@ const NotFoundPage: React.SFC<any> = () => {
       <div className="container not-found-page">
         <Breadcrumb path="/" text="Home" />
         <h1>404 Page Not Found</h1>
-        <img className="icon icon-alert" />
+        <img className="icon icon-alert" alt="" />
       </div>
     </DocumentTitle>
   );

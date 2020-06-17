@@ -7,6 +7,8 @@ import SanitizedHTML from 'react-sanitized-html';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
+const INFO_BUTTON_TEXT = 'More info';
+
 export interface InfoButtonProps {
   infoText?: string;
   title?: string;
@@ -32,7 +34,9 @@ const InfoButton: React.SFC<InfoButtonProps> = ({
       placement={placement}
       overlay={popoverHoverFocus}
     >
-      <button className={'btn icon info-button ' + size} />
+      <button className={'btn icon info-button ' + size} type="button">
+        <span className="sr-only">{INFO_BUTTON_TEXT}</span>
+      </button>
     </OverlayTrigger>
   );
 };

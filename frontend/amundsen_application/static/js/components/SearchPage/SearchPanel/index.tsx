@@ -8,7 +8,7 @@ type SearchPanelProps = {
 
 const SearchPanel: React.SFC = ({ children }: SearchPanelProps) => {
   return (
-    <div className="search-control-panel">
+    <aside className="search-control-panel">
       {React.Children.map(children, (child, index) => {
         return (
           <div key={`search-panel-child:${index}`} className="section">
@@ -16,7 +16,7 @@ const SearchPanel: React.SFC = ({ children }: SearchPanelProps) => {
           </div>
         );
       })}
-    </div>
+    </aside>
   );
 };
 

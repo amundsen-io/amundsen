@@ -69,7 +69,7 @@ export class NavBar extends React.Component<NavBarProps> {
 
   render() {
     return (
-      <div className="container-fluid">
+      <nav className="container-fluid">
         <div className="row">
           <div className="nav-bar">
             <div id="nav-bar-left" className="nav-bar-left">
@@ -79,6 +79,7 @@ export class NavBar extends React.Component<NavBarProps> {
                     id="logo-icon"
                     className="logo-icon"
                     src={AppConfig.logoPath}
+                    alt=""
                   />
                 )}
                 <span className="title-3">AMUNDSEN</span>
@@ -130,7 +131,7 @@ export class NavBar extends React.Component<NavBarProps> {
             </div>
           </div>
         </div>
-      </div>
+      </nav>
     );
   }
 }

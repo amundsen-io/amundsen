@@ -29,9 +29,9 @@ export const Breadcrumb: React.SFC<BreadcrumbProps> = (
     return (
       <div className="amundsen-breadcrumb">
         <Link to={path} className="btn btn-flat-icon title-3">
-          {direction === 'left' && <img className="icon icon-left" />}
+          {direction === 'left' && <img className="icon icon-left" alt="" />}
           <span>{text}</span>
-          {direction === 'right' && <img className="icon icon-right" />}
+          {direction === 'right' && <img className="icon icon-right" alt="" />}
         </Link>
       </div>
     );
@@ -43,8 +43,8 @@ export const Breadcrumb: React.SFC<BreadcrumbProps> = (
         onClick={props.loadPreviousSearch}
         className="btn btn-flat-icon title-3"
       >
-        {direction === 'left' && <img className="icon icon-left" />}
-        {direction === 'right' && <img className="icon icon-right" />}
+        {direction === 'left' && <img className="icon icon-left" alt="" />}
+        {direction === 'right' && <img className="icon icon-right" alt="" />}
       </a>
     </div>
   );

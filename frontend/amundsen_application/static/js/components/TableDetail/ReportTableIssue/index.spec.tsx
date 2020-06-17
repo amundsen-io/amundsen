@@ -92,9 +92,9 @@ describe('ReportTableIssue', () => {
         const { wrapper } = setup();
         const previsOpenState = wrapper.state().isOpen;
 
-        wrapper
-          .instance()
-          .toggle({ currentTarget: { id: 'id', nodeName: 'button' } });
+        wrapper.instance().toggle({
+          currentTarget: { id: 'id', nodeName: 'button' },
+        });
 
         expect(setStateSpy).toHaveBeenCalledWith({ isOpen: !previsOpenState });
       });

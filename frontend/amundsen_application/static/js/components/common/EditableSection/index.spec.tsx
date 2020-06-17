@@ -75,7 +75,8 @@ describe('EditableSection', () => {
     it('renders children as-is for non-react elements', () => {
       const child = 'non-react-child';
       const { wrapper } = setup(null, child);
-      expect(wrapper.childAt(1).text()).toBe(child);
+
+      expect(wrapper.find('.editable-section-content').text()).toBe(child);
     });
 
     it('renders edit button correctly when readOnly=false', () => {
