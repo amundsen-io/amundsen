@@ -11,14 +11,14 @@ jest.spyOn(DateUtils, 'formatDateTimeLong').mockReturnValue(MOCK_DATE_STRING);
 
 describe('Footer', () => {
   let props: FooterProps;
-  let subject;
+  let wrapper;
 
   beforeEach(() => {
     props = {
       lastIndexed: 1555632106,
       getLastIndexed: jest.fn(),
     };
-    subject = shallow(<Footer {...props} />);
+    wrapper = shallow(<Footer {...props} />);
   });
 
   describe('componentDidMount', () => {
@@ -29,25 +29,34 @@ describe('Footer', () => {
 
   describe('render', () => {
     it('calls generateDateTimeString if this.state.lastIndexed', () => {
-      jest.spyOn(subject.instance(), 'generateDateTimeString');
-      subject.instance().render();
-      expect(subject.instance().generateDateTimeString).toHaveBeenCalled();
+      jest.spyOn(wrapper.instance(), 'generateDateTimeString');
+      wrapper.instance().render();
+      expect(wrapper.instance().generateDateTimeString).toHaveBeenCalled();
     });
 
     it('renders correct content if this.state.lastIndexed', () => {
       const expectedText = `Amundsen was last indexed on ${MOCK_DATE_STRING}`;
-      expect(subject.find('#footer').props().children).toBeTruthy();
-      expect(subject.find('#footer').text()).toEqual(expectedText);
+
+      expect(wrapper.find('#footer').props().children).toBeTruthy();
+      expect(wrapper.find('#footer').text()).toEqual(expectedText);
     });
 
-    it('renders no content if this.state.lastIndexed is null', () => {
-      subject.setProps({ lastIndexed: null });
-      expect(subject.find('#footer').props().children).toBeFalsy();
-    });
+    describe('when state.lastIndexed is falsy', () => {
+      it('renders the shimmering loader if this.state.lastIndexed is null', () => {
+        const expected = 1;
 
-    it('renders no content if this.state.lastIndexed is undefined', () => {
-      subject.setProps({ lastIndexed: undefined });
-      expect(subject.find('#footer').props().children).toBeFalsy();
+        wrapper.setProps({ lastIndexed: null });
+
+        expect(wrapper.find('ShimmeringFooterLoader').length).toEqual(expected);
+      });
+
+      it('renders the shimmering loader if this.state.lastIndexed is undefined', () => {
+        const expected = 1;
+
+        wrapper.setProps({ lastIndexed: undefined });
+
+        expect(wrapper.find('ShimmeringFooterLoader').length).toEqual(expected);
+      });
     });
   });
 });

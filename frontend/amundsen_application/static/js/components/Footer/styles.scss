@@ -1,5 +1,7 @@
 @import 'variables';
 
+$shimmer-loader-height: 20px;
+
 /* TODO: Not the greatest sticky footer implementation */
 .footer {
   background-color: $white;
@@ -21,4 +23,17 @@
   height: 48px;
   padding: 20px;
   width: 100%;
+}
+
+.shimmer-footer {
+  height: $shimmer-loader-height;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.shimmer-footer-row {
+  height: $shimmer-loader-height - $spacer-1;
+  display: inline-block;
+  width: 33%;
 }

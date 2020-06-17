@@ -32,6 +32,15 @@ export type TableIssueProps = StateFromProps &
   DispatchFromProps &
   ComponentProps;
 
+const ShimmeringIssuesLoader: React.FC = () => {
+  return (
+    <div className="shimmer-issues">
+      <div className="shimmer-issues-row shimmer-issues-line--1 is-shimmer-animated" />
+      <div className="shimmer-issues-row shimmer-issues-line--2 is-shimmer-animated" />
+    </div>
+  );
+};
+
 export class TableIssues extends React.Component<TableIssueProps> {
   componentDidMount() {
     this.props.getIssues(this.props.tableKey);
@@ -109,7 +118,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
         <>
           {this.renderIssueTitle()}
           <div className="table-issues">
-            <LoadingSpinner />
+            <ShimmeringIssuesLoader />
           </div>
         </>
       );
