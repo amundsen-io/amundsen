@@ -10,6 +10,7 @@ import {
 } from 'config/config-utils';
 import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
 import TabsComponent from 'components/common/TabsComponent';
+import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
 import {
   BOOKMARK_TITLE,
   BOOKMARKS_PER_PAGE,
@@ -27,9 +28,11 @@ export type MyBookmarksProps = StateFromProps;
 export class MyBookmarks extends React.Component<MyBookmarksProps> {
   generateTabContent = (resource: ResourceType) => {
     const bookmarks = this.props.myBookmarks[resource];
+
     if (!bookmarks) {
       return null;
     }
+
     return (
       <PaginatedResourceList
         allItems={bookmarks}
@@ -46,9 +49,11 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
 
   generateTabTitle = (resource: ResourceType): string => {
     const bookmarks = this.props.myBookmarks[resource];
+
     if (!bookmarks) {
       return '';
     }
+
     return `${getDisplayNameByResource(resource)} (${bookmarks.length})`;
   };
 
@@ -73,17 +78,21 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
   };
 
   render() {
-    if (!this.props.isLoaded) {
-      return null;
+    let content = <ShimmeringResourceLoader numItems={BOOKMARKS_PER_PAGE} />;
+
+    if (this.props.isLoaded) {
+      content = (
+        <TabsComponent
+          tabs={this.generateTabInfo()}
+          defaultTab={this.generateTabKey(ResourceType.table)}
+        />
+      );
     }
 
     return (
       <div className="bookmark-list">
         <div className="title-1">{BOOKMARK_TITLE}</div>
-        <TabsComponent
-          tabs={this.generateTabInfo()}
-          defaultTab={this.generateTabKey(ResourceType.table)}
-        />
+        {content}
       </div>
     );
   }

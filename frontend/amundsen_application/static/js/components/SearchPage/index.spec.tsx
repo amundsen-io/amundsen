@@ -6,7 +6,6 @@ import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
 
-import LoadingSpinner from 'components/common/LoadingSpinner';
 import ResourceSelector from 'components/SearchPage/ResourceSelector';
 import SearchFilter from 'components/SearchPage/SearchFilter';
 import SearchPanel from 'components/SearchPage/SearchPanel';
@@ -37,39 +36,37 @@ import {
   SearchPageProps,
 } from '.';
 
-describe('SearchPage', () => {
-  const setStateSpy = jest.spyOn(SearchPage.prototype, 'setState');
-  const setup = (
-    propOverrides?: Partial<SearchPageProps>,
-    location?: Partial<History.Location>
-  ) => {
-    const routerProps = getMockRouterProps<any>(null, location);
-    const props: SearchPageProps = {
-      hasFilters: false,
-      searchTerm: globalState.search.search_term,
-      resource: ResourceType.table,
-      isLoading: false,
-      dashboards: globalState.search.dashboards,
-      tables: globalState.search.tables,
-      users: globalState.search.users,
-      setPageIndex: jest.fn(),
-      urlDidUpdate: jest.fn(),
-      ...routerProps,
-      ...propOverrides,
-    };
-    const wrapper = shallow<SearchPage>(<SearchPage {...props} />);
-    return { props, wrapper };
+const setup = (
+  propOverrides?: Partial<SearchPageProps>,
+  location?: Partial<History.Location>
+) => {
+  const routerProps = getMockRouterProps<any>(null, location);
+  const props: SearchPageProps = {
+    hasFilters: false,
+    searchTerm: globalState.search.search_term,
+    resource: ResourceType.table,
+    isLoading: false,
+    dashboards: globalState.search.dashboards,
+    tables: globalState.search.tables,
+    users: globalState.search.users,
+    setPageIndex: jest.fn(),
+    urlDidUpdate: jest.fn(),
+    ...routerProps,
+    ...propOverrides,
   };
+  const wrapper = shallow<SearchPage>(<SearchPage {...props} />);
+  return { props, wrapper };
+};
 
+describe('SearchPage', () => {
   describe('componentDidMount', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
-      const setupResult = setup(null, {
+      ({ props, wrapper } = setup(null, {
         search: '/search?searchTerm=testName&resource=table&pageIndex=1',
-      });
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      }));
     });
 
     it('calls getUrlParams and getGlobalStateParams', () => {
@@ -81,15 +78,12 @@ describe('SearchPage', () => {
   describe('componentDidUpdate', () => {
     let props;
     let wrapper;
-
     let mockPrevProps;
-    beforeAll(() => {
-      const setupResult = setup(null, {
-        search: '/search?searchTerm=testName&resource=table&pageIndex=1',
-      });
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
 
+    beforeAll(() => {
+      ({ props, wrapper } = setup(null, {
+        search: '/search?searchTerm=testName&resource=table&pageIndex=1',
+      }));
       mockPrevProps = {
         searchTerm: 'previous',
         location: {
@@ -116,8 +110,9 @@ describe('SearchPage', () => {
 
   describe('generateTabLabel', () => {
     let wrapper;
+
     beforeAll(() => {
-      wrapper = setup().wrapper;
+      ({ wrapper } = setup());
     });
 
     it('returns correct text for ResourceType.table', () => {
@@ -171,7 +166,7 @@ describe('SearchPage', () => {
         };
       });
       it('if there is a searchTerm ', () => {
-        const { props, wrapper } = setup({ searchTerm: 'data' });
+        const { wrapper } = setup({ searchTerm: 'data' });
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
@@ -180,7 +175,7 @@ describe('SearchPage', () => {
       });
 
       it('if no searchTerm but there are filters active', () => {
-        const { props, wrapper } = setup({ searchTerm: '', hasFilters: true });
+        const { wrapper } = setup({ searchTerm: '', hasFilters: true });
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
@@ -191,7 +186,7 @@ describe('SearchPage', () => {
 
     describe('if page index is out of bounds', () => {
       it('renders expected page index error message', () => {
-        const { props, wrapper } = setup();
+        const { wrapper } = setup();
         const testResults = {
           page_index: 2,
           results: [],
@@ -210,6 +205,7 @@ describe('SearchPage', () => {
       let props;
       let wrapper;
       let generateInfoTextMockResults;
+
       beforeAll(() => {
         const setupResult = setup({ searchTerm: '' });
         props = setupResult.props;
@@ -246,15 +242,19 @@ describe('SearchPage', () => {
 
   describe('renderContent', () => {
     it('renders search results when given search term', () => {
-      const { props, wrapper } = setup({ searchTerm: 'test' });
+      const { wrapper } = setup({ searchTerm: 'test' });
+
       expect(wrapper.instance().renderContent()).toEqual(
         wrapper.instance().renderSearchResults()
       );
     });
 
-    it('renders loading spinner when in loading state', () => {
-      const { props, wrapper } = setup({ isLoading: true });
-      expect(wrapper.instance().renderContent()).toEqual(<LoadingSpinner />);
+    it('renders shimmering loader when in loading state', () => {
+      const { wrapper } = setup({ isLoading: true });
+      const expected = 1;
+      const actual = wrapper.find('ShimmeringResourceLoader').length;
+
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -296,7 +296,7 @@ describe('SearchPage', () => {
     });
 
     it('renders null for an invalid resource', () => {
-      const { props, wrapper } = setup({
+      const { wrapper } = setup({
         resource: null,
       });
       const renderedSearchResults = wrapper.instance().renderSearchResults();
@@ -307,14 +307,14 @@ describe('SearchPage', () => {
   describe('render', () => {
     describe('DocumentTitle', () => {
       it('renders correct title if there is a search term', () => {
-        const { props, wrapper } = setup({ searchTerm: 'test search' });
+        const { wrapper } = setup({ searchTerm: 'test search' });
         expect(wrapper.find(DocumentTitle).props()).toMatchObject({
           title: `test search${DOCUMENT_TITLE_SUFFIX}`,
         });
       });
 
       it('does not render DocumentTitle if searchTerm is empty string', () => {
-        const { props, wrapper } = setup({ searchTerm: '' });
+        const { wrapper } = setup({ searchTerm: '' });
         expect(wrapper.find(DocumentTitle).exists()).toBeFalsy();
       });
     });
@@ -331,13 +331,11 @@ describe('SearchPage', () => {
   });
 
   describe('renders a SearchPanel', () => {
-    let props;
     let wrapper;
     let searchPanel;
+
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
       searchPanel = wrapper.find(SearchPanel);
     });
     it('renders a search panel', () => {

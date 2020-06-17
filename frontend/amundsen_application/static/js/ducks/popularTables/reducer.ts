@@ -20,18 +20,33 @@ export function getPopularTablesSuccess(
 }
 
 /* REDUCER */
-export type PopularTablesReducerState = TableResource[];
+export interface PopularTablesReducerState {
+  popularTables: TableResource[];
+  popularTablesIsLoaded: boolean;
+}
 
-const initialState: PopularTablesReducerState = [];
+const initialState: PopularTablesReducerState = {
+  popularTables: [],
+  popularTablesIsLoaded: false,
+};
 
 export default function reducer(
   state: PopularTablesReducerState = initialState,
   action
 ): PopularTablesReducerState {
   switch (action.type) {
+    case GetPopularTables.REQUEST:
+      return {
+        ...state,
+        ...initialState,
+      };
     case GetPopularTables.SUCCESS:
     case GetPopularTables.FAILURE:
-      return (<GetPopularTablesResponse>action).payload.tables;
+      return {
+        ...state,
+        popularTables: (<GetPopularTablesResponse>action).payload.tables,
+        popularTablesIsLoaded: true,
+      };
     default:
       return state;
   }

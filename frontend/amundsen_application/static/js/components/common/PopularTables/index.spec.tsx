@@ -17,26 +17,28 @@ import {
   mapDispatchToProps,
 } from '.';
 
-describe('PopularTables', () => {
-  const setup = (propOverrides?: Partial<PopularTablesProps>) => {
-    const props: PopularTablesProps = {
-      popularTables: jest.fn() as any,
-      getPopularTables: jest.fn(),
-      ...propOverrides,
-    };
-    const wrapper = shallow<PopularTables>(<PopularTables {...props} />);
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<PopularTablesProps>) => {
+  const props: PopularTablesProps = {
+    isLoaded: false,
+    popularTables: jest.fn() as any,
+    getPopularTables: jest.fn(),
+    ...propOverrides,
   };
+  const wrapper = shallow<PopularTables>(<PopularTables {...props} />);
+
+  return { props, wrapper };
+};
+
+describe('PopularTables', () => {
   let wrapper;
   let props;
 
   describe('componentDidMount', () => {
     let getPopularTablesSpy;
+
     beforeAll(() => {
-      const setupResult = setup();
-      wrapper = setupResult.wrapper;
-      props = setupResult.props;
+      ({ wrapper, props } = setup());
+
       getPopularTablesSpy = jest.spyOn(props, 'getPopularTables');
     });
 
@@ -46,14 +48,11 @@ describe('PopularTables', () => {
   });
 
   describe('mapStateToProps', () => {
-    let result;
-
-    beforeAll(() => {
-      result = mapStateToProps(globalState);
-    });
-
     it('sets popularTables on the props', () => {
-      expect(result.popularTables).toEqual(globalState.popularTables);
+      const actual = mapStateToProps(globalState).popularTables;
+      const expected = globalState.popularTables.popularTables;
+
+      expect(actual).toEqual(expected);
     });
   });
 
@@ -72,14 +71,14 @@ describe('PopularTables', () => {
 
   describe('render', () => {
     beforeAll(() => {
-      const setupResult = setup();
-      wrapper = setupResult.wrapper;
-      props = setupResult.props;
+      ({ wrapper, props } = setup());
     });
+
     it('renders correct label for content', () => {
-      expect(wrapper.children().find('label').text()).toEqual(
-        POPULAR_TABLES_LABEL
-      );
+      const actual = wrapper.children().find('label').text();
+      const expected = POPULAR_TABLES_LABEL;
+
+      expect(actual).toEqual(expected);
     });
 
     it('renders InfoButton with correct props', () => {
@@ -88,13 +87,32 @@ describe('PopularTables', () => {
       });
     });
 
-    it('renders PaginatedResourceList with correct props', () => {
-      expect(
-        wrapper.children().find(PaginatedResourceList).props()
-      ).toMatchObject({
-        allItems: props.popularTables,
-        itemsPerPage: POPULAR_TABLES_PER_PAGE,
-        source: POPULAR_TABLES_SOURCE_NAME,
+    describe('when loading', () => {
+      it('renders loading state', () => {
+        const actual = wrapper.find('ShimmeringResourceLoader').length;
+        const expected = 1;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when loaded', () => {
+      beforeAll(() => {
+        ({ wrapper, props } = setup({
+          isLoaded: true,
+          popularTables: globalState.popularTables.popularTables,
+        }));
+      });
+
+      it('renders PaginatedResourceList with correct props', () => {
+        const actual = wrapper.children().find(PaginatedResourceList).props();
+        const expected = {
+          allItems: props.popularTables,
+          itemsPerPage: POPULAR_TABLES_PER_PAGE,
+          source: POPULAR_TABLES_SOURCE_NAME,
+        };
+
+        expect(actual).toMatchObject(expected);
       });
     });
   });
