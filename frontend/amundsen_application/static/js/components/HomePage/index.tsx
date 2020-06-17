@@ -45,12 +45,12 @@ export class HomePage extends React.Component<HomePageProps> {
               />
             </div>
             <div className="home-element-container">
-              <div
+              <h2
                 id="browse-tags-header"
                 className="title-1 browse-tags-header"
               >
                 {TAGS_TITLE}
-              </div>
+              </h2>
               <TagsList />
             </div>
             <div className="home-element-container">

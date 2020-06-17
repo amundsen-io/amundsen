@@ -75,7 +75,7 @@ describe('PopularTables', () => {
     });
 
     it('renders correct label for content', () => {
-      const actual = wrapper.children().find('label').text();
+      const actual = wrapper.children().find('.title-1').text();
       const expected = POPULAR_TABLES_LABEL;
 
       expect(actual).toEqual(expected);

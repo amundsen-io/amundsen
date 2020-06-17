@@ -40,6 +40,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
     return results.map((item, index) => {
       const { href, iconClass, subtitle, titleNode, type } = item;
       const id = `inline-resultitem-${this.props.resourceType}:${index}`;
+
       return (
         <ResultItem
           key={id}
@@ -59,12 +60,12 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
     const { resourceType, suggestedResults, title } = this.props;
     return (
       <>
-        <div className="section-title title-3">
+        <h3 className="section-title title-3">
           {title}
           {resourceType === ResourceType.dashboard && (
             <Flag text="beta" labelStyle="default" />
           )}
-        </div>
+        </h3>
         <ul className="list-group">
           {this.renderResultItems(suggestedResults)}
         </ul>

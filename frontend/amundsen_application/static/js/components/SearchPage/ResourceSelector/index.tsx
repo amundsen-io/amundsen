@@ -19,6 +19,8 @@ import {
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
 
+const RESOURCE_SELECTOR_TITLE = 'Resource';
+
 export interface StateFromProps {
   resource: ResourceType;
   tables: TableSearchResults;
@@ -91,7 +93,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
 
     return (
       <>
-        <div className="title-2">Resource</div>
+        <h2 className="title-2">{RESOURCE_SELECTOR_TITLE}</h2>
         {resourceOptions.map((option, index) =>
           this.renderRadioOption(option, index)
         )}

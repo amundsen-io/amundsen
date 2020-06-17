@@ -14,7 +14,7 @@ import {
   mapStateToProps,
   ResourceSelector,
   ResourceSelectorProps,
-} from '..';
+} from '.';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),

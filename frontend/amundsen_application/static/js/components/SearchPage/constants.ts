@@ -19,6 +19,7 @@ export const SEARCH_SOURCE_NAME = 'search_results';
 export const SEARCH_ERROR_MESSAGE_PREFIX = 'Your search did not match any ';
 export const SEARCH_ERROR_MESSAGE_SUFFIX = ' results';
 
+export const RESOURCE_SELECTOR_TITLE = 'Resource';
 export const DASHBOARD_RESOURCE_TITLE = getDisplayNameByResource(
   ResourceType.dashboard
 );
