@@ -7,19 +7,19 @@
 
   .search-filter-section-header {
     display: flex;
+  }
 
-    .search-filter-section-title {
-      display: flex;
-      flex-grow: 1;
+  .search-filter-section-title {
+    display: flex;
+    flex-grow: 1;
+  }
 
-      button {
-        margin: auto 4px;
-      }
+  .info-button {
+    margin: auto 4px !important;
+  }
 
-      label {
-        margin-bottom: 0;
-      }
-    }
+  .search-filter-section-label {
+    margin-bottom: 0;
   }
 
   .input-section-content {

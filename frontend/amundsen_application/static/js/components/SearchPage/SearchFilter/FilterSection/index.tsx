@@ -58,7 +58,10 @@ export class FilterSection extends React.Component<FilterSectionProps> {
       <div className="search-filter-section">
         <div className="search-filter-section-header">
           <div className="search-filter-section-title">
-            <label className="title-2" htmlFor={categoryId}>
+            <label
+              className="search-filter-section-label title-2"
+              htmlFor={categoryId}
+            >
               {title}
             </label>
             {helpText && (
@@ -66,11 +69,13 @@ export class FilterSection extends React.Component<FilterSectionProps> {
             )}
           </div>
           {hasValue && (
-            /* eslint-disable jsx-a11y/anchor-is-valid */
-            <a onClick={this.onClearFilter} className="btn btn-flat-icon">
-              <img className="icon icon-left" alt="" />
-              <span>{CLEAR_BTN_TEXT}</span>
-            </a>
+            <button
+              onClick={this.onClearFilter}
+              className="btn btn-link clear-button"
+              type="button"
+            >
+              {CLEAR_BTN_TEXT}
+            </button>
           )}
         </div>
         {this.renderFilterComponent()}
