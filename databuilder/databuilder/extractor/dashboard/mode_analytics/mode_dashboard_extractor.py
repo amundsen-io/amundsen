@@ -54,7 +54,7 @@ class ModeDashboardExtractor(Extractor):
         dashboard_group_url_transformer.init(
             conf=Scoped.get_scoped_conf(self._conf, dashboard_group_url_transformer.get_scope()).with_fallback(
                 ConfigFactory.from_dict({VAR_FIELD_NAME: 'dashboard_group_url',
-                                         TEMPLATE: 'https://app.mode.com/lyft/spaces/{dashboard_group_id}'})))
+                                         TEMPLATE: 'https://app.mode.com/{organization}/spaces/{dashboard_group_id}'})))
 
         transformers.append(dashboard_group_url_transformer)
 
@@ -62,7 +62,7 @@ class ModeDashboardExtractor(Extractor):
         dashboard_url_transformer.init(
             conf=Scoped.get_scoped_conf(self._conf, dashboard_url_transformer.get_scope()).with_fallback(
                 ConfigFactory.from_dict({VAR_FIELD_NAME: 'dashboard_url',
-                                         TEMPLATE: 'https://app.mode.com/lyft/reports/{dashboard_id}'})))
+                                         TEMPLATE: 'https://app.mode.com/{organization}/reports/{dashboard_id}'})))
         transformers.append(dashboard_url_transformer)
 
         dict_to_model_transformer = DictToModel()
