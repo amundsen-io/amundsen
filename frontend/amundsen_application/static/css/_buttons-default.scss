@@ -144,6 +144,22 @@
     }
   }
 
+  &.btn-link {
+    color: $link-color;
+    text-decoration: none;
+    padding: 0 4px 0 4px;
+
+    &:hover,
+    &:focus {
+      color: $link-hover-color;
+    }
+
+    &:focus {
+      outline: 5px auto $link-hover-color;
+      outline-offset: -2px;
+    }
+  }
+
   &.disabled,
   &:disabled {
     -webkit-box-shadow: none;

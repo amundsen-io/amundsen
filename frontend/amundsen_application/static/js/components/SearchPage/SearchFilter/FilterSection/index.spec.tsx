@@ -16,34 +16,33 @@ import {
 } from '.';
 import { CLEAR_BTN_TEXT } from '../constants';
 
-describe('FilterSection', () => {
-  const setup = (propOverrides?: Partial<FilterSectionProps>) => {
-    const props: FilterSectionProps = {
-      categoryId: 'testId',
-      hasValue: true,
-      title: 'Category',
-      clearFilter: jest.fn(),
-      type: FilterType.INPUT_SELECT,
-      ...propOverrides,
-    };
-    const wrapper = shallow<FilterSection>(<FilterSection {...props} />);
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<FilterSectionProps>) => {
+  const props: FilterSectionProps = {
+    categoryId: 'testId',
+    hasValue: true,
+    title: 'Category',
+    clearFilter: jest.fn(),
+    type: FilterType.INPUT_SELECT,
+    ...propOverrides,
   };
+  const wrapper = shallow<FilterSection>(<FilterSection {...props} />);
+  return { props, wrapper };
+};
 
+describe('FilterSection', () => {
   describe('onClearFilter', () => {
     let props;
     let wrapper;
-
     let clearFilterSpy;
+
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       clearFilterSpy = jest.spyOn(props, 'clearFilter');
     });
 
     it('calls props.clearFilter with props.categoryId', () => {
       wrapper.instance().onClearFilter();
+
       expect(clearFilterSpy).toHaveBeenCalledWith(props.categoryId);
     });
   });
@@ -52,6 +51,7 @@ describe('FilterSection', () => {
     it('returns an InputFilter w/ correct props if props.type == FilterType.INPUT_SELECT', () => {
       const { props, wrapper } = setup({ type: FilterType.INPUT_SELECT });
       const content = wrapper.instance().renderFilterComponent();
+
       // @ts-ignore: This check works but TypeScript complains
       expect(content.type.displayName).toBe('Connect(InputFilter)');
       expect(content.props.categoryId).toBe(props.categoryId);
@@ -64,6 +64,7 @@ describe('FilterSection', () => {
         options: mockOptions,
       });
       const content = wrapper.instance().renderFilterComponent();
+
       // @ts-ignore: This check works but TypeScript complains
       expect(content.type.displayName).toBe('Connect(CheckBoxFilter)');
       expect(content.props.categoryId).toBe(props.categoryId);
@@ -74,12 +75,10 @@ describe('FilterSection', () => {
   describe('render', () => {
     let props;
     let wrapper;
-
     let renderFilterComponentSpy;
+
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       renderFilterComponentSpy = jest.spyOn(
         wrapper.instance(),
         'renderFilterComponent'
@@ -94,16 +93,20 @@ describe('FilterSection', () => {
       const mockHelpText = 'Help me';
       const { wrapper } = setup({ helpText: mockHelpText });
       const infoButton = wrapper.find(InfoButton);
+
       expect(infoButton.exists()).toBe(true);
       expect(infoButton.props().infoText).toBe(mockHelpText);
     });
 
-    it('renders link to clear category if props.hasValue', () => {
-      const { props, wrapper } = setup({ hasValue: true });
-      const clearLink = wrapper.find('a');
-      expect(clearLink.exists()).toBe(true);
-      expect(clearLink.props().onClick).toBe(wrapper.instance().onClearFilter);
-      expect(clearLink.text()).toEqual(CLEAR_BTN_TEXT);
+    it('renders button to clear category if props.hasValue', () => {
+      const { wrapper } = setup({ hasValue: true });
+      const clearButton = wrapper.find('button');
+
+      expect(clearButton.exists()).toBe(true);
+      expect(clearButton.props().onClick).toBe(
+        wrapper.instance().onClearFilter
+      );
+      expect(clearButton.text()).toEqual(CLEAR_BTN_TEXT);
     });
 
     it('calls renderFilterComponent()', () => {
@@ -190,8 +193,9 @@ describe('FilterSection', () => {
   describe('mapDispatchToProps', () => {
     let dispatch;
     let result;
+
     beforeAll(() => {
-      const { props } = setup();
+      setup();
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);
     });
