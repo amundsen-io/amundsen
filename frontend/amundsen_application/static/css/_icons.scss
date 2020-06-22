@@ -183,6 +183,11 @@ img.icon {
     mask-image: url('/static/images/icons/Up.svg');
   }
 
+  &.icon-user {
+    -webkit-mask-image: url('/static/images/icons/users.svg');
+    mask-image: url('/static/images/icons/users.svg');
+  }
+
   &.icon-more {
     -webkit-mask-image: url('/static/images/icons/More.svg');
     mask-image: url('/static/images/icons/More.svg');
