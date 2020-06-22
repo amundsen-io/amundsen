@@ -269,7 +269,7 @@ export class ProfilePage extends React.Component<
           target="_blank"
           rel="noreferrer"
         >
-          <span className="icon icon-dark icon-users" />
+          <img className="icon icon-dark icon-user" alt="" />
           <span className="profile-link-label body-2">{PROFILE_TEXT}</span>
         </a>
       );
