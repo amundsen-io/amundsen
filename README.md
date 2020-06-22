@@ -160,7 +160,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time [Link to join](https://meet.google.com/mqz-ndck-jmj)
 
 ### Upcoming meetings
-- 2020/07/02 at 9 AM Pacific. [Notes](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis)
+- 2020/07/09 at 9 AM Pacific. [Notes](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis)
 
 ### Past meetings
 - [2020/06/04](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis/edit#heading=h.vu9oyxihyt4b) {[recording](https://youtu.be/M7wMefOfJCM)}
