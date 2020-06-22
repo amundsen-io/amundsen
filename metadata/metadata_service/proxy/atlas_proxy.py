@@ -336,7 +336,7 @@ class AtlasProxy(BaseProxy):
                     name=col_attrs.get('name'),
                     description=col_attrs.get('description') or col_attrs.get('comment'),
                     col_type=col_attrs.get('type') or col_attrs.get('dataType'),
-                    sort_order=col_attrs.get('position'),
+                    sort_order=col_attrs.get('position') or 9999,
                     stats=statistics,
                 )
             )
@@ -669,4 +669,4 @@ class AtlasProxy(BaseProxy):
     def get_resources_using_table(self, *,
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
-        pass
+        return {}
