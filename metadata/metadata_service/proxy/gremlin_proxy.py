@@ -183,7 +183,7 @@ class AbstractGremlinProxy(BaseProxy):
     def get_resources_using_table(self, *,
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
-        pass
+        return {}
 
 
 class GenericGremlinProxy(AbstractGremlinProxy):
