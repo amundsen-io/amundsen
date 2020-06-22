@@ -18,10 +18,9 @@ $shimmer-loader-tag-min-width: 50;
 
 @each $item in $shimmer-loader-items {
   .shimmer-tag-loader-item--#{$item} {
-    width:
-      (
+    width: (
         random($shimmer-loader-tag-max-width - $shimmer-loader-tag-min-width) +
-        $shimmer-loader-tag-min-width
+          $shimmer-loader-tag-min-width
       ) +
       px;
   }

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
 
-import Flag from 'components/common/Flag';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -60,9 +59,6 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           <div className="title-2 search-item-info">
             <div className="search-term">{`${searchTerm}\u00a0`}</div>
             <div className="search-item-text">{listItemText}</div>
-            {resourceType === ResourceType.dashboard && (
-              <Flag text="beta" labelStyle="default" />
-            )}
           </div>
           {this.renderIndicator()}
         </a>
