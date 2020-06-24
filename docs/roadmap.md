@@ -8,7 +8,7 @@ The following roadmap gives an overview of what we are currently working on and 
 ## Current focus
 
 #### Provide Rich metadata to make data trust worthy
-*What*: Enrich table detail page with additional structure metadata / programmatic description (MVP)
+*What*: Enrich table detail page with additional structure metadata / programmatic description
 *Status*: tech spec WIP
 
 #### Native lineage integration
