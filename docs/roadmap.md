@@ -8,12 +8,17 @@ The following roadmap gives an overview of what we are currently working on and 
 ## Current focus
 
 #### Provide Rich metadata to make data trust worthy
-*What*: Enrich table detail page with additional structure metadata / programmatic description (MVP); Integrate with data quality system to provide quality score (Post MVP).
+*What*: Enrich table detail page with additional structure metadata / programmatic description (MVP)
 *Status*: tech spec WIP
 
 #### Native lineage integration
 *What*: We want to create a native lineage integration in Amundsen, to better surface how data assets interact with each other  
 *Status*: tech spec out
+
+
+#### Integrate with data quality system
+*What*: Integrate with different data quality systems to provide quality score
+*Status*: not yet start
 
 
 ## Next steps
@@ -51,12 +56,6 @@ The following roadmap gives an overview of what we are currently working on and 
 
 #### “Order by” for columns
 *What*: we want to help users make sense of what are the columns people use in the tables we index. Within a frequently used table, a column might not be used anymore because it is know to be deprecated  
-*Status*: implementation has not started  
-
-
-
-#### Index online datastores
-*What*: We want to make our DynamoDB and other online datastores discoverable by indexing them. For this purpose, we will probably leverage the fact that we have a centralized IDL (interface definition language)  
 *Status*: implementation has not started  
 
 
