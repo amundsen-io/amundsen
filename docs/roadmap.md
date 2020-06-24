@@ -18,7 +18,7 @@ The following roadmap gives an overview of what we are currently working on and 
 
 #### Integrate with data quality system
 *What*: Integrate with different data quality systems to provide quality score
-*Status*: not yet start
+*Status*: planning
 
 
 ## Next steps
