@@ -7,20 +7,16 @@ The following roadmap gives an overview of what we are currently working on and 
 
 ## Current focus
 
-#### Index Dashboards
-*What*: We want to help with the discovery of existing analysis work, dashboards. This is going to help avoid reinventing the wheel, create value for less technical users and help give context on how tables are used.  
-*Status*: MVP Done
-*Links*: [Designs](https://drive.google.com/drive/folders/12oBrcXUsDtOsuU_QvO93LTvs4Dehx6az?usp=sharing) | [Product Specifications](https://docs.google.com/document/d/16cSKgM2sCYvhKq54yfwaHKwslJEGtdS2g5dcPV4p5qo/edit?usp=sharing) | [Technical RFC](https://docs.google.com/document/d/1PHk8OjcIULJ7hG0ckeMrRfTk3vXqnq5asEykgQUw-Ow/edit?usp=sharing)
-
-## Next steps
+#### Provide Rich metadata to make data trust worthy
+*What*: Enrich table detail page with additional structure metadata / programmatic description (MVP); Integrate with data quality system to provide quality score (Post MVP).
+*Status*: tech spec WIP
 
 #### Native lineage integration
 *What*: We want to create a native lineage integration in Amundsen, to better surface how data assets interact with each other  
-*Status*: implementation has not started
+*Status*: tech spec out
 
-#### Landing page
-*What*: We are creating a proper landing page to provide more value, with an emphasis on helping users finding data when then don’t really know what to search for (exploration)  
-*Status*: being spec’d out
+
+## Next steps
 
 
 #### Push ingest API
@@ -35,7 +31,7 @@ The following roadmap gives an overview of what we are currently working on and 
 
 
 
-#### Index Druid tables and S3 buckets
+#### Index S3 buckets
 *What*: add these new resource types to our data map and create resource pages for them  
 *Status*:  implementation has not started
 
@@ -62,13 +58,6 @@ The following roadmap gives an overview of what we are currently working on and 
 #### Index online datastores
 *What*: We want to make our DynamoDB and other online datastores discoverable by indexing them. For this purpose, we will probably leverage the fact that we have a centralized IDL (interface definition language)  
 *Status*: implementation has not started  
-
-
-
-#### Integration with BI Tools
-*What*: get the richness of Amundsen’s metadata to where the data is used: in Bi tools such as Mode, Superset and Tableau  
-*Status*: implementation has not started  
-
 
 
 #### Index Processes
