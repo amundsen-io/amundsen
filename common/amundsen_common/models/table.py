@@ -100,14 +100,14 @@ class SourceSchema(AttrsSchema):
         register_as_scheme = True
 
 @attr.s(auto_attribs=True, kw_only=True)
-class TableReport:
+class ResourceReport:
     name: str
     url: str
 
 
-class TableReportSchema(AttrsSchema):
+class ResourceReportSchema(AttrsSchema):
     class Meta:
-        target = TableReport
+        target = ResourceReport
         register_as_scheme = True
 
 
@@ -143,7 +143,7 @@ class Table:
     owners: List[User] = []
     watermarks: List[Watermark] = []
     table_writer: Optional[Application] = None
-    table_reports: Optional[List[TableReport]] = None
+    resource_reports: Optional[List[ResourceReport]] = None
     last_updated_timestamp: Optional[int] = None
     source: Optional[Source] = None
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
