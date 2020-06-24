@@ -99,6 +99,17 @@ class SourceSchema(AttrsSchema):
         target = Source
         register_as_scheme = True
 
+@attr.s(auto_attribs=True, kw_only=True)
+class ResourceReport:
+    name: str
+    url: str
+
+
+class ResourceReportSchema(AttrsSchema):
+    class Meta:
+        target = ResourceReport
+        register_as_scheme = True
+
 
 # this is a temporary hack to satisfy mypy. Once https://github.com/python/mypy/issues/6136 is resolved, use
 # `attr.converters.default_if_none(default=False)`
@@ -132,6 +143,7 @@ class Table:
     owners: List[User] = []
     watermarks: List[Watermark] = []
     table_writer: Optional[Application] = None
+    resource_reports: Optional[List[ResourceReport]] = None
     last_updated_timestamp: Optional[int] = None
     source: Optional[Source] = None
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
