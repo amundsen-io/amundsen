@@ -33,18 +33,15 @@ export function getRelatedDashboardSlug(key: string): string {
 }
 
 /**
- * Parses the response for table metadata and the related dashboard information to create a TableMetadata object
+ * Parses the response for table metadata information to create a TableMetadata object
  */
 export function getTableDataFromResponseData(
-  responseData: API.TableDataAPI,
-  relatedDashboardsData: API.RelatedDashboardDataAPI
+  responseData: API.TableDataAPI
 ): TableMetadata {
-  const mergedTableData = {
-    ...filterFromObj(responseData.tableData, ['owners', 'tags']),
-    ...filterFromObj(relatedDashboardsData, ['msg', 'status_code']),
-  };
-
-  return mergedTableData as TableMetadata;
+  return filterFromObj(responseData.tableData, [
+    'owners',
+    'tags',
+  ]) as TableMetadata;
 }
 
 /**

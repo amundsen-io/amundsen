@@ -11,6 +11,7 @@ import {
 } from 'interfaces';
 
 /** HELPERS **/
+import { indexDashboardsEnabled } from 'config/config-utils';
 import {
   getTableQueryParams,
   getRelatedDashboardSlug,
@@ -23,7 +24,6 @@ import {
 
 export const API_PATH = '/api/metadata/v0';
 
-// TODO: Consider created shared interfaces for ducks so we can reuse MessageAPI everywhere else
 type MessageAPI = { msg: string };
 
 export type TableData = TableMetadata & {
@@ -34,37 +34,53 @@ export type DescriptionAPI = { description: string } & MessageAPI;
 export type LastIndexedAPI = { timestamp: string } & MessageAPI;
 export type PreviewDataAPI = { previewData: PreviewData } & MessageAPI;
 export type TableDataAPI = { tableData: TableData } & MessageAPI;
-export type RelatedDashboardDataAPI = { dashboards: DashboardResource[] };
+export type RelatedDashboardDataAPI = {
+  dashboards: DashboardResource[];
+} & MessageAPI;
 
 export function getTableData(
   tableKey: string,
   index?: string,
   source?: string
 ) {
+  const tableQueryParams = getTableQueryParams(tableKey, index, source);
+  const tableURL = `${API_PATH}/table?${tableQueryParams}`;
+  const tableRequest = axios.get<TableDataAPI>(tableURL);
+
+  return tableRequest.then((tableResponse: AxiosResponse<TableDataAPI>) => ({
+    data: getTableDataFromResponseData(tableResponse.data),
+    owners: getTableOwnersFromResponseData(tableResponse.data),
+    tags: tableResponse.data.tableData.tags,
+    statusCode: tableResponse.status,
+  }));
+}
+
+export function getTableDashboards(tableKey: string) {
+  if (!indexDashboardsEnabled()) {
+    return Promise.resolve({ dashboards: [] });
+  }
+
   const relatedDashboardsSlug: string = getRelatedDashboardSlug(tableKey);
   const relatedDashboardsURL: string = `${API_PATH}/table/${relatedDashboardsSlug}/dashboards`;
   const relatedDashboardsRequest = axios.get<RelatedDashboardDataAPI>(
     relatedDashboardsURL
   );
 
-  const tableQueryParams = getTableQueryParams(tableKey, index, source);
-  const tableURL = `${API_PATH}/table?${tableQueryParams}`;
-  const tableRequest = axios.get<TableDataAPI>(tableURL);
-
-  return Promise.all([tableRequest, relatedDashboardsRequest]).then(
-    ([tableResponse, relatedDashboardsResponse]: [
-      AxiosResponse<TableDataAPI>,
-      AxiosResponse<RelatedDashboardDataAPI>
-    ]) => ({
-      data: getTableDataFromResponseData(
-        tableResponse.data,
-        relatedDashboardsResponse.data
-      ),
-      owners: getTableOwnersFromResponseData(tableResponse.data),
-      tags: tableResponse.data.tableData.tags,
-      statusCode: tableResponse.status,
-    })
-  );
+  return relatedDashboardsRequest
+    .then(
+      (relatedDashboardsResponse: AxiosResponse<RelatedDashboardDataAPI>) => ({
+        dashboards: relatedDashboardsResponse.data.dashboards,
+      })
+    )
+    .catch((e: AxiosError<RelatedDashboardDataAPI>) => {
+      const { response } = e;
+      let msg = '';
+      if (response && response.data && response.data.msg) {
+        msg = response.data.msg;
+      }
+      const status = response ? response.status : null;
+      return Promise.reject({ msg, dashboards: [] });
+    });
 }
 
 export function getTableDescription(tableData: TableMetadata) {

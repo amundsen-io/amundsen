@@ -1,4 +1,5 @@
 import {
+  DashboardResource,
   OwnerDict,
   PreviewData,
   PreviewQueryParams,
@@ -11,6 +12,8 @@ import {
   GetTableData,
   GetTableDataRequest,
   GetTableDataResponse,
+  GetTableDashboards,
+  GetTableDashboardsResponse,
   GetTableDescription,
   GetTableDescriptionRequest,
   GetTableDescriptionResponse,
@@ -74,6 +77,19 @@ export function getTableDataSuccess(
       owners,
       statusCode,
       tags,
+    },
+  };
+}
+
+export function getTableDashboardsResponse(
+  dashboards: DashboardResource[],
+  errorMessage: string = ''
+): GetTableDashboardsResponse {
+  return {
+    type: GetTableDashboards.RESPONSE,
+    payload: {
+      dashboards,
+      errorMessage,
     },
   };
 }
@@ -227,6 +243,11 @@ export function getPreviewDataSuccess(
 
 /* REDUCER */
 export interface TableMetadataReducerState {
+  dashboards?: {
+    isLoading: boolean;
+    dashboards: DashboardResource[];
+    errorMessage?: string;
+  };
   isLoading: boolean;
   lastIndexed: number;
   preview: {
@@ -247,7 +268,6 @@ export const initialTableDataState: TableMetadata = {
   badges: [],
   cluster: '',
   columns: [],
-  dashboards: [],
   database: '',
   is_editable: false,
   is_view: false,
@@ -278,14 +298,17 @@ export default function reducer(
   action
 ): TableMetadataReducerState {
   switch (action.type) {
-    case GetTableData.REQUEST:
+    case GetTableDashboards.RESPONSE:
       return {
         ...state,
-        isLoading: true,
-        preview: initialPreviewState,
-        tableData: initialTableDataState,
-        tableOwners: tableOwnersReducer(state.tableOwners, action),
+        dashboards: {
+          isLoading: false,
+          dashboards: action.payload.dashboards,
+          errorMessage: action.payload.errorMessage,
+        },
       };
+    case GetTableData.REQUEST:
+      return initialState;
     case GetTableData.FAILURE:
       return {
         ...state,
