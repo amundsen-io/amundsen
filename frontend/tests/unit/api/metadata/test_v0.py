@@ -1036,8 +1036,8 @@ class MetadataTest(unittest.TestCase):
             )
             self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
             expected = {
-                'dashboards': {},
-                'msg': 'Encountered error: Related Dashboard Metadata request failed',
+                'dashboards': [],
+                'msg': 'Encountered 400 Error: Related dashboard metadata request failed',
                 'status_code': 400
             }
             self.assertEqual(response.json, expected)

@@ -1,4 +1,5 @@
 import {
+  DashboardResource,
   OwnerDict,
   PreviewData,
   PreviewQueryParams,
@@ -27,6 +28,17 @@ export interface GetTableDataResponse {
     data: TableMetadata;
     owners: OwnerDict;
     tags: Tag[];
+  };
+}
+
+export enum GetTableDashboards {
+  RESPONSE = 'amundsen/tableMetadata/GET_TABLE_DASHBOARDS_RESPONSE',
+}
+export interface GetTableDashboardsResponse {
+  type: GetTableDashboards.RESPONSE;
+  payload: {
+    dashboards: DashboardResource[];
+    errorMessage: string;
   };
 }
 

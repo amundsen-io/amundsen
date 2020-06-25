@@ -22,4 +22,14 @@
       }
     }
   }
+
+  .tab-title {
+    display: flex;
+
+    .loading-spinner {
+      height: 20px;
+      margin: 0 0 0 $spacer-1/2;
+      width: 20px;
+    }
+  }
 }

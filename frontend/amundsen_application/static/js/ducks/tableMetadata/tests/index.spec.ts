@@ -10,6 +10,7 @@ import {
   User,
 } from 'interfaces';
 
+import { dashboardSummary } from 'fixtures/metadata/dashboard';
 import globalState from 'fixtures/globalState';
 
 import * as API from '../api/v0';
@@ -18,6 +19,7 @@ import reducer, {
   getTableData,
   getTableDataFailure,
   getTableDataSuccess,
+  getTableDashboardsResponse,
   getTableDescription,
   getTableDescriptionFailure,
   getTableDescriptionSuccess,
@@ -296,6 +298,24 @@ describe('tableMetadata ducks', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
 
+    it('should handle GetTableDashboards.RESPONSE', () => {
+      const mockDashboards = [dashboardSummary];
+      const mockMessage = 'test';
+      expect(
+        reducer(
+          testState,
+          getTableDashboardsResponse(mockDashboards, mockMessage)
+        )
+      ).toEqual({
+        ...testState,
+        dashboards: {
+          isLoading: false,
+          dashboards: mockDashboards,
+          errorMessage: mockMessage,
+        },
+      });
+    });
+
     it('should handle GetTableDescription.FAILURE', () => {
       expect(
         reducer(testState, getTableDescriptionFailure(expectedData))
@@ -382,6 +402,9 @@ describe('tableMetadata ducks', () => {
           statusCode: expectedStatus,
           tags: expectedTags,
         };
+        const mockDashboardsResult = {
+          dashboards: [dashboardSummary],
+        };
         testSaga(
           getTableDataWorker,
           getTableData(testKey, testIndex, testSource)
@@ -398,10 +421,14 @@ describe('tableMetadata ducks', () => {
             )
           )
           .next()
+          .call(API.getTableDashboards, testKey)
+          .next(mockDashboardsResult)
+          .put(getTableDashboardsResponse(mockDashboardsResult.dashboards))
+          .next()
           .isDone();
       });
 
-      it('handles request error', () => {
+      it('handles request error on getTableData', () => {
         testSaga(getTableDataWorker, getTableData(testKey))
           .next()
           .throw(new Error())
