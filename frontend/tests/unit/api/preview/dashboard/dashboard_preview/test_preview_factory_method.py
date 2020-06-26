@@ -4,8 +4,8 @@ import unittest
 from flask import current_app
 
 from amundsen_application import create_app
-from amundsen_application.dashboard_preview.mode_preview import ModePreview
-from amundsen_application.dashboard_preview.preview_factory_method import DefaultPreviewMethodFactory
+from amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview import ModePreview
+from amundsen_application.api.preview.dashboard.dashboard_preview.preview_factory_method import DefaultPreviewMethodFactory
 
 
 class TestDefaultPreviewFactory(unittest.TestCase):

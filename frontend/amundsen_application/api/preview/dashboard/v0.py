@@ -5,8 +5,8 @@ from http import HTTPStatus
 from flask import send_file, jsonify, make_response, Response, current_app as app
 from flask.blueprints import Blueprint
 
-from amundsen_application.dashboard_preview.preview_factory_method import DefaultPreviewMethodFactory, \
-    BasePreviewMethodFactory
+from amundsen_application.api.preview.dashboard.dashboard_preview.preview_factory_method import \
+    DefaultPreviewMethodFactory, BasePreviewMethodFactory
 
 LOGGER = logging.getLogger(__name__)
 PREVIEW_FACTORY: BasePreviewMethodFactory = None  # type: ignore

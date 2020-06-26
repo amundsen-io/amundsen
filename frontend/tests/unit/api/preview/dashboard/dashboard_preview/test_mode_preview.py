@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 from unittest.mock import MagicMock
 
 from amundsen_application import create_app
-from amundsen_application.dashboard_preview.mode_preview import ModePreview, DEFAULT_REPORT_URL_TEMPLATE
+from amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview import ModePreview, DEFAULT_REPORT_URL_TEMPLATE
 from amundsen_application.api.utils import request_utils
 
 ACCESS_TOKEN = 'token'
@@ -92,7 +92,7 @@ class TestModePreview(unittest.TestCase):
         self.app.config['ACL_ENABLED_DASHBOARD_PREVIEW'] = {'ModePreview'}
         self.app.config['AUTH_USER_METHOD'] = MagicMock()
 
-        with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
+        with patch('amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
@@ -112,7 +112,7 @@ class TestModePreview(unittest.TestCase):
             preview._authorize_access(user_id='test_email')
 
 
-        with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
+        with patch('amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
@@ -131,7 +131,7 @@ class TestModePreview(unittest.TestCase):
             preview = ModePreview(access_token='token', password='password', organization='foo')
             self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
-        with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
+        with patch('amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
@@ -148,7 +148,7 @@ class TestModePreview(unittest.TestCase):
             preview = ModePreview(access_token='token', password='password', organization='foo')
             self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
-        with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
+        with patch('amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
@@ -167,7 +167,7 @@ class TestModePreview(unittest.TestCase):
             preview = ModePreview(access_token='token', password='password', organization='foo')
             self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
-        with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
+        with patch('amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
@@ -184,7 +184,7 @@ class TestModePreview(unittest.TestCase):
             preview = ModePreview(access_token='token', password='password', organization='foo')
             self.assertRaises(PermissionError, preview._authorize_access, user_id='test_email')
 
-        with patch('amundsen_application.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
+        with patch('amundsen_application.api.preview.dashboard.dashboard_preview.mode_preview.request_metadata') as mock_request_metadata:
             mock_request_metadata.return_value.json.return_value = {
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
