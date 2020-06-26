@@ -7,8 +7,8 @@ from http import HTTPStatus
 from amundsen_application import create_app
 from amundsen_application.api.preview.dashboard import v0
 from amundsen_application.base.base_preview import BasePreview
-from amundsen_application.dashboard_preview.preview_factory_method import DefaultPreviewMethodFactory,\
-    BasePreviewMethodFactory
+from amundsen_application.api.preview.dashboard.dashboard_preview.preview_factory_method import \
+    DefaultPreviewMethodFactory, BasePreviewMethodFactory
 
 from unittest.mock import MagicMock
 

@@ -15,6 +15,29 @@ def init_custom_routes(app: Flask) -> None:
 def custom_route():
   pass
 ```
+## Dashboard Preview
+This service provides an API to download preview image of dashboard resources, which currently only supports [Mode](https://app.mode.com/).
+
+The dashboard preview image is cached in user's browser up to a day. In order to adjust this you can change the value of `DASHBOARD_PREVIEW_IMAGE_CACHE_MAX_AGE_SECONDS`
+
+### How to configure Mode dashboard preview
+Add the following environment variables:
+```bash
+    CREDENTIALS_MODE_ADMIN_TOKEN
+    CREDENTIALS_MODE_ADMIN_PASSWORD
+    MODE_ORGANIZATION
+```
+
+#### How to enable authorization on Mode dashboard
+By default, Amundsen does not do any authorization on showing preview. By registering name of the Mode preview class in configuration, you can enable authorization.
+```bash
+    ACL_ENABLED_DASHBOARD_PREVIEW = {'ModePreview'}
+```
+Amundsen ingests Mode dashboards only from the shared space, which all registered Mode users are able to view. Therefore our authorization first validates if the current user is registered in Mode. This feature is dependent on Amundsen also ingesting Mode user information via the [ModeDashboardUserExtractor](https://github.com/lyft/amundsendatabuilder/blob/master/README.md#modedashboarduserextractor) and the metadata service version must be at least [v2.5.2](https://github.com/lyft/amundsenmetadatalibrary/releases/tag/v2.5.2).
+
+### How to support preview of different product?
+You can add preview support for different products by adding its preview class to [DefaultPreviewMethodFactory](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/api/preview/dashboard/dashboard_preview/preview_factory_method.py#L27)
+In order to develop new preview class, you need to implement the class that inherits [BasePreview](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/base/base_preview.py#L4) class and [ModePreview](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/api/preview/dashboard/dashboard_preview/mode_preview.py#L28) would be a great example.
 
 ## Mail Client Features
 Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications. For these features a custom implementation of [base_mail_client](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/base/base_mail_client.py) must be mapped to the `MAIL_CLIENT` configuration variable.
@@ -22,25 +45,25 @@ Amundsen has two features that leverage the custom mail client -- the feedback t
 To fully enable these features in the UI, the application configuration variables for these features must also be set to true. Please see this [entry](application_config.md#mail-client-features) in our application configuration doc for further information.
 
 ## Issue Tracking Integration Features
-Amundsen has a feature to allow display of associated tickets within the table detail view. The feature both displays 
-open tickets and allows users to report new tickets associated with the table. These tickets must contain the 
-`table_uri` within the ticket text in order to be displayed; the `table_uri` is automatically added to tickets created 
+Amundsen has a feature to allow display of associated tickets within the table detail view. The feature both displays
+open tickets and allows users to report new tickets associated with the table. These tickets must contain the
+`table_uri` within the ticket text in order to be displayed; the `table_uri` is automatically added to tickets created
 via the feature. Tickets are displayed from most recent to oldest, and currently only open tickets are displayed. Currently only
- [JIRA](https://www.atlassian.com/software/jira) is supported. The UI must also be enabled to use this feature, please 
- see configuration notes [here](application_config.md#issue-tracking-features). 
+ [JIRA](https://www.atlassian.com/software/jira) is supported. The UI must also be enabled to use this feature, please
+ see configuration notes [here](application_config.md#issue-tracking-features).
 
-There are several configuration 
-settings in `config.py` that should be set in order to use this feature. 
+There are several configuration
+settings in `config.py` that should be set in order to use this feature.
 
 Here are the settings and what they should be set to
 ```python
     ISSUE_LABELS = []  # type: List[str] (Optional labels to be set on the created tickets)
     ISSUE_TRACKER_URL = None  # type: str (Your JIRA environment, IE 'https://jira.net') 
     ISSUE_TRACKER_USER = None  # type: str (Recommended to be a service account)
-    ISSUE_TRACKER_PASSWORD = None  # type: str 
-    ISSUE_TRACKER_PROJECT_ID = None  # type: int (Project ID for the project you would like JIRA tickets to be created in) 
-    ISSUE_TRACKER_CLIENT = None  # type: str (Fully qualified class name and path) 
-    ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool (Enabling the feature, must be set to True) 
+    ISSUE_TRACKER_PASSWORD = None  # type: str
+    ISSUE_TRACKER_PROJECT_ID = None  # type: int (Project ID for the project you would like JIRA tickets to be created in)
+    ISSUE_TRACKER_CLIENT = None  # type: str (Fully qualified class name and path)
+    ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool (Enabling the feature, must be set to True)
     ISSUE_TRACKER_MAX_RESULTS = None  # type: int (Max issues to display at a time)
 
 ```
