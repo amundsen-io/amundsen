@@ -1,3 +1,4 @@
+{{- if .Values.elasticsearch.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -24,3 +25,4 @@ spec:
     - name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}-{{ .Values.environment }}-http
       port: 5001
       targetPort: 5001
+{{-end }}
