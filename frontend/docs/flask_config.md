@@ -34,6 +34,7 @@ settings in `config.py` that should be set in order to use this feature.
 
 Here are the settings and what they should be set to
 ```python
+    ISSUE_LABELS = []  # type: List[str] (Optional labels to be set on the created tickets)
     ISSUE_TRACKER_URL = None  # type: str (Your JIRA environment, IE 'https://jira.net') 
     ISSUE_TRACKER_USER = None  # type: str (Recommended to be a service account)
     ISSUE_TRACKER_PASSWORD = None  # type: str 
