@@ -18,6 +18,7 @@ matrix:
     env:
     - IS_DEPLOYABLE=false
     before_install:
+    - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
     - cd amundsen_application/static
     install:
     - npm install
