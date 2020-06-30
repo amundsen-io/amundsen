@@ -30,6 +30,8 @@ matrix:
     - npm run test
     after_success:
     - codecov
+before_deploy:
+- python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"  
 deploy:
 - provider: pypi
   user: amundsen-dev
