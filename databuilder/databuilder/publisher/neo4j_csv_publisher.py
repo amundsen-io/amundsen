@@ -391,11 +391,11 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
                 template_params[k] = v
                 continue
 
-            # escape quote for Cypher query
             # if isinstance(str, v):
-            v = v.replace('\'', "\\'")
             # escape backslash for Cypher query
             v = v.replace('\\', '\\\\')
+            # escape quote for Cypher query
+            v = v.replace('\'', "\\'")
 
             if k.endswith(UNQUOTED_SUFFIX):
                 k = k[:-len(UNQUOTED_SUFFIX)]
