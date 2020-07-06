@@ -284,6 +284,24 @@ class SearchUser(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @responses.activate
+    def test_search_user_success_if_no_response_from_search(self) -> None:
+        """
+        Test request success
+        :return:
+        """
+        responses.add(responses.GET, local_app.config['SEARCHSERVICE_BASE'] + SEARCH_USER_ENDPOINT,
+                      json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(self.fe_flask_endpoint, query_string=dict(query='test', page_index='0'))
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+            users = data.get('users')
+            self.assertEqual(len(users.get('results')), 0)
+            self.assertEqual(users.get('total_results'), 0)
+
+    @responses.activate
     def test_search_user_success(self) -> None:
         """
         Test request success
