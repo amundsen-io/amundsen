@@ -59,6 +59,10 @@ const configDefault: AppConfig = {
           displayName: 'Mode',
           iconClass: 'icon-mode',
         },
+        redash: {
+          displayName: 'Redash',
+          iconClass: 'icon-redash',
+        },
       },
       filterCategories: [
         {
