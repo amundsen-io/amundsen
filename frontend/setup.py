@@ -43,7 +43,7 @@ setup(
     description='Web UI for Amundsen',
     url='https://www.github.com/lyft/amundsenfrontendlibrary',
     maintainer='Lyft',
-    maintainer_email='dev@lyft.com',
+    maintainer_email='amundsen-dev@lyft.com',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     dependency_links=[],
