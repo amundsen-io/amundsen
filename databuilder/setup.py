@@ -49,7 +49,7 @@ setup(
     description='Amundsen Data builder',
     url='https://www.github.com/lyft/amundsendatabuilder',
     maintainer='Lyft',
-    maintainer_email='dev@lyft.com',
+    maintainer_email='amundsen-dev@lyft.com',
     packages=find_packages(exclude=['tests*']),
     dependency_links=[],
     install_requires=requirements,
