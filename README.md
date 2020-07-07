@@ -105,10 +105,10 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 ### Dashboard Connectors
 - [Mode Analytics](https://mode.com/)
 
-### ETL Orchestration Integrations
+### ETL Orchestration
 - [Apache Airflow](https://airflow.apache.org/)
 
-### BI Viz Tool Integrations
+### BI Viz Tool
 - [Apache Superset](https://superset.incubator.apache.org/)
 
 
