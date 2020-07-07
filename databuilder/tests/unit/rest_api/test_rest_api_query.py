@@ -2,7 +2,7 @@ import unittest
 
 from mock import patch
 
-from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
+from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed, EmptyRestApiQuerySeed
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
 
@@ -21,6 +21,12 @@ class TestRestApiQuery(unittest.TestCase):
         ]
 
         self.assertListEqual(expected, result)
+
+    def test_empty_rest_api_query_seed(self):
+        rest_api_query = EmptyRestApiQuerySeed()
+
+        result = [v for v in rest_api_query.execute()]
+        assert len(result) == 1
 
     def test_rest_api_query(self):
 

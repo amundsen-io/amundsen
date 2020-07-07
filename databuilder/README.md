@@ -616,6 +616,47 @@ Note that this provides accumulated view count which does [not effectively show 
 
 If you are fine with `accumulated usage`, you could use TemplateVariableSubstitutionTransformer to transform Dict payload from [ModeDashboardUsageExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) to fit [DashboardUsage](./docs/models.md#dashboardusage) and transform Dict to  [DashboardUsage](./docs/models.md#dashboardusage) by [TemplateVariableSubstitutionTransformer](./databuilder/transformer/template_variable_substitution_transformer.py), and [DictToModel](./databuilder/transformer/dict_to_model.py) transformers. ([Example](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_queries_extractor.py#L36) on how to combining these two transformers)
 
+### [RedashDashboardExtractor](./databuilder/extractor/dashboard/redash/redash_dashboard_extractor.py)
+
+The included `RedashDashboardExtractor` provides support for extracting basic metadata for Redash dashboards (dashboard name, owner, URL, created/updated timestamps, and a generated description) and their associated queries (query name, URL, and raw query). It can be extended with a configurable table parser function to also support extraction of `DashboardTable` metadata. (See below for example usage.)
+
+Note: `DashboardUsage` and `DashboardExecution` metadata are not supported in this extractor, as these concepts are not supported by the Redash API.
+
+The `RedashDashboardExtractor` depends on the following Redash API endpoints: `GET /api/dashboards`, `GET /api/dashboards/<dashboard-slug>`. It has been tested against Redash 8 and is also expected to work with Redash 9.
+
+```python
+extractor = RedashDashboardExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+	'extractor.redash_dashboard.redash_base_url': redash_base_url, # ex: https://redash.example.org
+	'extractor.redash_dashboard.api_base_url': api_base_url, # ex: https://redash.example.org/api
+	'extractor.redash_dashboard.api_key': api_key, # ex: abc1234
+	'extractor.redash_dashboard.table_parser': table_parser # ex: my_library.module.parse_tables
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+#### RedashDashboardExtractor: table_parser
+
+The `RedashDashboardExtractor` extracts raw queries from each dashboard. You may optionally use these queries to parse out relations to tables in Amundsen. A table parser can be provided in the configuration for the `RedashDashboardExtractor`, as seen above. This function should have type signature `(RedashVisualizationWidget) -> Iterator[TableRelationData]`. For example:
+
+```python
+def parse_tables(viz_widget):
+	# type: (RedashVisualiationWidget) -> Iterator[TableRelationData]
+	# Each viz_widget corresponds to one query.
+	# viz_widget.data_source_id is the ID of the target DB in Redash.
+	# viz_widget.raw_query is the raw query (e.g., SQL).
+	if viz_widget.data_source_id == 123:
+		table_names = some_sql_parser(viz_widget.raw_query)
+		return [TableRelationData('some_db', 'prod', 'some_schema', tbl) for tbl in table_names]
+	return []
+```
+
 
 ## List of transformers
 #### [ChainedTransformer](https://github.com/lyft/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
