@@ -14,7 +14,7 @@ setup(
     description='Search Service for Amundsen',
     url='https://github.com/lyft/amundsensearchlibrary.git',
     maintainer='Lyft',
-    maintainer_email='dp-tools@lyft.com',
+    maintainer_email='amundsen-dev@lyft.com',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     zip_safe=False,
