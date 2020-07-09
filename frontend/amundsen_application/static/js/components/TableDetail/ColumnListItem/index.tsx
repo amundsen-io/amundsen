@@ -167,7 +167,10 @@ export class ColumnListItem extends React.Component<
           {this.state.isExpanded && (
             <section className="expanded-content">
               <div className="stop-propagation" onClick={this.stopPropagation}>
-                <EditableSection title="Description">
+                <EditableSection
+                  title="Description"
+                  readOnly={!metadata.is_editable}
+                >
                   <ColumnDescEditableText
                     columnIndex={this.props.index}
                     editable={metadata.is_editable}

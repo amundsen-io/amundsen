@@ -48,7 +48,11 @@ import { getLoggingParams } from 'utils/logUtils';
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 
-import { PROGRMMATIC_DESC_HEADER, ERROR_MESSAGE } from './constants';
+import {
+  PROGRMMATIC_DESC_HEADER,
+  ERROR_MESSAGE,
+  EDIT_DESC_TEXT,
+} from './constants';
 
 import './styles.scss';
 
@@ -175,6 +179,10 @@ export class TableDetail extends React.Component<
       innerContent = <ErrorMessage />;
     } else {
       const data = tableData;
+      const editText = data.source
+        ? `${EDIT_DESC_TEXT} ${data.source.source_type}`
+        : '';
+      const editUrl = data.source ? data.source.source : '';
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
@@ -220,7 +228,12 @@ export class TableDetail extends React.Component<
           </header>
           <div className="column-layout-1">
             <aside className="left-panel">
-              <EditableSection title="Description">
+              <EditableSection
+                title="Description"
+                readOnly={!data.is_editable}
+                editText={editText}
+                editUrl={editUrl}
+              >
                 <TableDescEditableText
                   maxLength={AppConfig.editableText.tableDescLength}
                   value={data.description}
