@@ -7,6 +7,15 @@ from flask import Flask  # noqa: F401
 from amundsen_application.tests.test_utils import get_test_user
 
 
+class MatchRuleObject:
+    def __init__(self,
+                 schema_regex=None,  # type: str
+                 table_name_regex=None,   # type: str
+                 ) -> None:
+        self.schema_regex = schema_regex
+        self.table_name_regex = table_name_regex
+
+
 class Config:
     LOG_FORMAT = '%(asctime)s.%(msecs)03d [%(levelname)s] %(module)s.%(funcName)s:%(lineno)d (%(process)d:' \
                  + '%(threadName)s) - %(message)s'
@@ -21,6 +30,8 @@ class Config:
     COLUMN_STAT_ORDER = None  # type: Dict[str, int]
 
     UNEDITABLE_SCHEMAS = set()  # type: Set[str]
+
+    UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES = []  # type: List[MatchRuleObject]
 
     # Number of popular tables to be displayed on the index/search page
     POPULAR_TABLE_COUNT = 4  # type: int
