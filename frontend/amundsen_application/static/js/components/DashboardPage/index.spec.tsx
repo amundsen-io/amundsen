@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactMarkdown from 'react-markdown';
 import * as History from 'history';
 
 import { shallow } from 'enzyme';
@@ -182,6 +183,14 @@ describe('DashboardPage', () => {
     });
 
     describe('renders description', () => {
+      it('using a ReactMarkdown component', () => {
+        const markdown = wrapper.find(ReactMarkdown);
+        expect(markdown.exists()).toBe(true);
+        expect(markdown.props()).toMatchObject({
+          source: props.dashboard.description,
+        });
+      });
+
       it('with link to add description if none exists', () => {
         const { wrapper } = setup({
           dashboard: {

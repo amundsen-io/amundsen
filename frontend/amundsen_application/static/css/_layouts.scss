@@ -119,15 +119,18 @@ $aside-separation-space: 40px;
 
       .editable-text {
         font-size: 16px;
-
-        .markdown-wrapper {
-          font-size: 16px;
-        }
       }
 
       .avatar-label-component {
         .avatar-label {
           color: $text-primary;
+        }
+      }
+
+      .markdown-wrapper {
+        font-size: 16px;
+        > p {
+          margin: 0;
         }
       }
     }
