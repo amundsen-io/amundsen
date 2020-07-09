@@ -64,6 +64,9 @@ class Config:
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
 
+    # Number of minimum reader count to qualify for popular table
+    POPULAR_TABLE_MINIMUM_READER_COUNT = 10  # type: int
+
 
 class LocalConfig(Config):
     DEBUG = True
