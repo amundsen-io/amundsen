@@ -181,6 +181,7 @@ Here is the list of organizations that are using Amundsen today. If your organiz
 
 Currently **officially** using Amundsen:
 
+1. [Asana](https://asana.com/)
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Cameo](https://www.cameo.com)
 1. [Cimpress Technology](https://cimpress.com)
