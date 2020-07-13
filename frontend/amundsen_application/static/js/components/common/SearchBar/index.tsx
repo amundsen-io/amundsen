@@ -190,7 +190,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     }`;
 
     return (
-      <div id="search-bar" ref={this.refToSelf}>
+      <div id="search-bar" className="search-bar" ref={this.refToSelf}>
         <form
           id="search-bar-form"
           className="search-bar-form"

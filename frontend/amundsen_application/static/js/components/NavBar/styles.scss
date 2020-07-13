@@ -77,10 +77,16 @@ $avatar-container-size: 40px;
     margin-right: 12px;
   }
 
-  .search-bar {
+  .nav-search-bar {
     flex-grow: 1;
     margin: auto $spacer-2 auto auto;
+    .search-bar {
+      max-width: 560px;
+      margin: auto 0px auto auto;
+    }
   }
+
+
 
   .logo-icon {
     margin-right: $spacer-2;

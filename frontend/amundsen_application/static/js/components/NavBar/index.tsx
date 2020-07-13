@@ -62,7 +62,7 @@ export class NavBar extends React.Component<NavBarProps> {
   renderSearchBar = () => {
     if (this.props.location.pathname !== '/') {
       return (
-        <div className="search-bar">
+        <div className="nav-search-bar">
           <SearchBar size="small" />
         </div>
       );
