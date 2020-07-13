@@ -1,12 +1,12 @@
 import copy
 import unittest
-from typing import Any, Dict, Optional, cast
+from typing import Any, Dict, Optional, cast, List
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader
 from atlasclient.exceptions import BadRequest
 from mock import MagicMock, patch
-from tests.unit.proxy.fixtures.atlas_test_data import Data
+from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
 
 from metadata_service import create_app
 from metadata_service.entity.tag_detail import TagDetail
@@ -302,6 +302,43 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                         relation_type=UserResourceRel.follow,
                                                         resource_type=ResourceType.Table)
             mock_execute.assert_called_with()
+
+    def test_get_readers(self) -> None:
+        basic_search_result = MagicMock()
+        basic_search_result.entities = self.reader_entities
+
+        self.proxy._driver.search_basic.create = MagicMock(return_value=basic_search_result)
+
+        entity_bulk_result = MagicMock()
+        entity_bulk_result.entities = self.reader_entities
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[entity_bulk_result])
+
+        res = self.proxy._get_readers('dummy', 1)
+
+        expected: List[Reader] = []
+
+        expected += [Reader(user=User(email='test_user_1', user_id='test_user_1'), read_count=5)]
+        expected += [Reader(user=User(email='test_user_2', user_id='test_user_2'), read_count=150)]
+
+        self.assertEqual(res, expected)
+
+    def test_get_frequently_used_tables(self) -> None:
+        entity_unique_attribute_result = MagicMock()
+        entity_unique_attribute_result.entity = DottedDict(self.user_entity_2)
+        self.proxy._driver.entity_unique_attribute = MagicMock(return_value=entity_unique_attribute_result)
+
+        entity_bulk_result = MagicMock()
+        entity_bulk_result.entities = [DottedDict(self.reader_entity_1)]
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[entity_bulk_result])
+
+        expected = {'table': [PopularTable(cluster=self.cluster,
+                                           name='Table1',
+                                           schema=self.db,
+                                           database=self.entity_type)]}
+
+        res = self.proxy.get_frequently_used_tables(user_email='dummy')
+
+        self.assertEqual(expected, res)
 
 
 if __name__ == '__main__':
