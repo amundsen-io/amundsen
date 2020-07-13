@@ -67,7 +67,7 @@ neotime==1.7.1
 pytz==2018.4
 requests-aws4auth==0.9
 statsd==3.2.1
-pyatlasclient==1.0.3
+pyatlasclient==1.0.4
 beaker>=1.10.0
 mocket==3.7.3
 overrides==2.5
