@@ -158,6 +158,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [Linux Foundation AI Foundation Landscape](https://landscape.lfai.foundation/)
 - [Lyft’s Amundsen: Data-Discovery with Built-In Trust](https://thenewstack.io/lyfts-amundsen-data-discovery-with-built-in-trust/)
 - [How to find and organize your data from the command-line](https://towardsdatascience.com/how-to-find-and-organize-your-data-from-the-command-line-852a4042b2be)
+- [Data Discovery Platform at Bagelcode](https://medium.com/bagelcode/data-discovery-platform-at-bagelcode-b58a622d17fd)
 
 ## Community meetings
 Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time [Link to join](https://meet.google.com/mqz-ndck-jmj)
@@ -182,6 +183,7 @@ Here is the list of organizations that are using Amundsen today. If your organiz
 Currently **officially** using Amundsen:
 
 1. [Asana](https://asana.com/)
+1. [Bagelcode](https://site.bagelcode.com/)
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Cameo](https://www.cameo.com)
 1. [Cimpress Technology](https://cimpress.com)
