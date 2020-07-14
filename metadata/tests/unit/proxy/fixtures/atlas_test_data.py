@@ -102,7 +102,12 @@ class Data:
             'owner': 'dummy@email.com',
             'db': db_entity,
             'popularityScore': 100,
-            'partitions': list()
+            'partitions': list(),
+            'parameters': {
+                'testParameterKeyB': 'testParameterValueB',
+                'testParameterKeyA': 'testParameterValueA',
+                'spark.sql.param': 1
+            }
         },
         'relationshipAttributes': {
             'db': db_entity,

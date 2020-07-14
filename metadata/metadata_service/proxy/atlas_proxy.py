@@ -4,7 +4,7 @@ from random import randint
 from typing import Any, Dict, List, Union, Optional
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader, ProgrammaticDescription
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.dashboard import DashboardSummary
 from atlasclient.client import Atlas
@@ -363,6 +363,8 @@ class AtlasProxy(BaseProxy):
         try:
             attrs = table_details[self.ATTRS_KEY]
 
+            programmatic_descriptions = self._get_programmatic_descriptions(attrs.get('parameters'))
+
             table_qn = parse_table_qualified_name(
                 qualified_name=attrs.get(self.QN_KEY)
             )
@@ -389,7 +391,8 @@ class AtlasProxy(BaseProxy):
                 owners=[User(email=attrs.get('owner'))],
                 columns=columns,
                 table_readers=self._get_readers(attrs.get(self.QN_KEY)),
-                last_updated_timestamp=self._parse_date(table_details.get('updateTime')))
+                last_updated_timestamp=self._parse_date(table_details.get('updateTime')),
+                programmatic_descriptions=programmatic_descriptions)
 
             return table
         except KeyError as ex:
@@ -735,6 +738,27 @@ class AtlasProxy(BaseProxy):
                 results.append(reader)
 
         return results
+
+    def _get_programmatic_descriptions(self, parameters: dict) -> List[ProgrammaticDescription]:
+        programmatic_descriptions: Dict[str, ProgrammaticDescription] = {}
+
+        for source, text in parameters.items():
+            use_parameter = True
+
+            for regex_filter in app.config['PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS']:
+                pattern = re.compile(regex_filter)
+
+                if pattern.match(source):
+                    use_parameter = False
+                    break
+
+            if use_parameter:
+                source = re.sub("([a-z])([A-Z])", "\g<1> \g<2>", source).lower()
+                programmatic_descriptions[source] = ProgrammaticDescription(source=source, text=text)
+
+        result = dict(sorted(programmatic_descriptions.items()))
+
+        return list(result.values())
 
     def get_dashboard(self,
                       dashboard_uri: str,

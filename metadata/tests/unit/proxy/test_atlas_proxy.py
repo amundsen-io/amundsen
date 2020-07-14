@@ -3,7 +3,7 @@ import unittest
 from typing import Any, Dict, Optional, cast, List
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader, ProgrammaticDescription
 from atlasclient.exceptions import BadRequest
 from mock import MagicMock, patch
 from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
@@ -18,6 +18,7 @@ from metadata_service.entity.resource_type import ResourceType
 class TestAtlasProxy(unittest.TestCase, Data):
     def setUp(self) -> None:
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
+        self.app.config['PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS'] = ['spark.*']
         self.app_context = self.app.app_context()
         self.app_context.push()
 
@@ -126,7 +127,12 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          description=ent_attrs['description'],
                          owners=[User(email=ent_attrs['owner'])],
                          last_updated_timestamp=int(str(self.entity1['updateTime'])[:10]),
-                         columns=[exp_col] * self.active_columns)
+                         columns=[exp_col] * self.active_columns,
+                         programmatic_descriptions=[ProgrammaticDescription(source='test parameter key a',
+                                                                            text='testParameterValueA'),
+                                                    ProgrammaticDescription(source='test parameter key b',
+                                                                            text='testParameterValueB')
+                                                    ])
 
         self.assertEqual(str(expected), str(response))
 
