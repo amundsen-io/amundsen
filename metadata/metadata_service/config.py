@@ -67,6 +67,9 @@ class Config:
     # Number of minimum reader count to qualify for popular table
     POPULAR_TABLE_MINIMUM_READER_COUNT = 10  # type: int
 
+    # List of regexes which will exclude certain parameters from appearing as Programmatic Descriptions
+    PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS = []  # type: list
+
 
 class LocalConfig(Config):
     DEBUG = True
