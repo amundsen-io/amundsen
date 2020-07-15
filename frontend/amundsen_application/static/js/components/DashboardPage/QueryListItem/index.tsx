@@ -1,27 +1,34 @@
 import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
+import { ResourceType } from 'interfaces';
+
+import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
+
 import './styles.scss';
 
 export interface QueryListItemProps {
+  name: string;
+  product: string;
   text: string;
   url: string;
-  name: string;
 }
 
 type GoToDashboardLinkProps = {
+  product: string;
   url: string;
 };
 
 const QUERY_LABEL = 'Query';
-const MODE_LINK_TOOLTIP_TEXT = 'View in Mode';
+const LINK_TOOLTIP_TEXT = 'View in';
 const LOADING_QUERY_MESSAGE = 'Loading Query Component, please wait...';
 
 const LazyComponent = React.lazy(() => import('./CodeBlock'));
 
-const GoToDashboardLink = ({ url }: GoToDashboardLinkProps) => {
+const GoToDashboardLink = ({ product, url }: GoToDashboardLinkProps) => {
+  const productName = getSourceDisplayName(product, ResourceType.dashboard);
   const popoverHoverFocus = (
-    <Popover id="popover-trigger-hover-focus">{MODE_LINK_TOOLTIP_TEXT}</Popover>
+    <Popover id="popover-trigger-hover-focus">{`${LINK_TOOLTIP_TEXT} ${productName}`}</Popover>
   );
 
   return (
@@ -61,7 +68,7 @@ const QueryBlockShimmer = () => {
   );
 };
 
-const QueryListItem = ({ name, text, url }: QueryListItemProps) => {
+const QueryListItem = ({ product, name, text, url }: QueryListItemProps) => {
   const [isExpanded, setExpanded] = React.useState(false);
   const toggleExpand = () => {
     setExpanded(!isExpanded);
@@ -84,7 +91,7 @@ const QueryListItem = ({ name, text, url }: QueryListItemProps) => {
           <label className="query-list-query-label section-title">
             {QUERY_LABEL}:
             <div className="query-list-query-content">
-              <GoToDashboardLink url={url} />
+              <GoToDashboardLink product={product} url={url} />
               <React.Suspense fallback={<QueryBlockShimmer />}>
                 <LazyComponent text={text} />
               </React.Suspense>

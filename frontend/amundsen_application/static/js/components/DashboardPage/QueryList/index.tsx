@@ -5,12 +5,13 @@ import QueryListItem from '../QueryListItem';
 import './styles.scss';
 
 export interface QueryListProps {
+  product: string;
   queries: QueryResource[];
 }
 
 class QueryList extends React.Component<QueryListProps> {
   render() {
-    const { queries } = this.props;
+    const { product, queries } = this.props;
 
     if (queries.length === 0) {
       return null;
@@ -19,6 +20,7 @@ class QueryList extends React.Component<QueryListProps> {
     const queryList = queries.map(({ name, query_text, url }) => (
       <QueryListItem
         key={`key:${name}`}
+        product={product}
         text={query_text}
         url={url}
         name={name}
