@@ -22,13 +22,7 @@ import InlineSearchResults from './InlineSearchResults';
 
 import './styles.scss';
 
-import {
-  BUTTON_CLOSE_TEXT,
-  SEARCH_BUTTON_TEXT,
-  INVALID_SYNTAX_MESSAGE,
-  PLACEHOLDER_DEFAULT,
-  SIZE_SMALL,
-} from './constants';
+import * as Constants from './constants';
 
 export interface StateFromProps {
   searchTerm: string;
@@ -64,7 +58,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   private refToSelf: React.RefObject<HTMLDivElement>;
 
   public static defaultProps: Partial<SearchBarProps> = {
-    placeholder: PLACEHOLDER_DEFAULT,
+    placeholder: Constants.PLACEHOLDER_DEFAULT,
     size: '',
   };
 
@@ -140,7 +134,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     const isValid = searchTerm.indexOf(':') < 0;
 
     /* This will set the error message, it must be explicitly set or cleared each time */
-    input.setCustomValidity(isValid ? '' : INVALID_SYNTAX_MESSAGE);
+    input.setCustomValidity(isValid ? '' : Constants.INVALID_SYNTAX_MESSAGE);
 
     if (searchTerm.length > 0) {
       /* This will show the error message */
@@ -183,10 +177,10 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   render() {
     const inputClass = `${
-      this.props.size === SIZE_SMALL ? 'title-2 small' : 'h2 large'
+      this.props.size === Constants.SIZE_SMALL ? 'title-2 small' : 'h2 large'
     } search-bar-input form-control`;
     const searchButtonClass = `btn btn-flat-icon search-button ${
-      this.props.size === SIZE_SMALL ? 'small' : 'large'
+      this.props.size === Constants.SIZE_SMALL ? 'small' : 'large'
     }`;
 
     return (
@@ -197,35 +191,36 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
           onSubmit={this.handleValueSubmit}
         >
           {/* eslint-disable jsx-a11y/no-autofocus */}
+          <label className="sr-only">{this.props.placeholder}</label>
           <input
             id="search-input"
             required
             className={inputClass}
             value={this.state.searchTerm}
             onChange={this.handleValueChange}
-            aria-label={this.props.placeholder}
             placeholder={this.props.placeholder}
             autoFocus
             autoComplete="off"
           />
           {/* eslint-enable jsx-a11y/no-autofocus */}
           <button className={searchButtonClass} type="submit">
-            <span className="sr-only">{SEARCH_BUTTON_TEXT}</span>
+            <span className="sr-only">{Constants.SEARCH_BUTTON_TEXT}</span>
             <img className="icon icon-search" alt="" />
           </button>
-          {this.props.size === SIZE_SMALL && (
+          {this.props.size === Constants.SIZE_SMALL && (
             <button
               type="button"
               className="btn btn-close clear-button"
-              aria-label={BUTTON_CLOSE_TEXT}
               onClick={this.clearSearchTerm}
-            />
+            >
+              <span className="sr-only">{Constants.BUTTON_CLOSE_TEXT}</span>
+            </button>
           )}
         </form>
         {this.state.showTypeAhead && (
           // @ts-ignore: Investigate proper configuration for 'className' to be valid by default on custom components
           <InlineSearchResults
-            className={this.props.size === SIZE_SMALL ? 'small' : ''}
+            className={this.props.size === Constants.SIZE_SMALL ? 'small' : ''}
             onItemSelect={this.onSelectInlineResult}
             searchTerm={this.state.searchTerm}
           />
