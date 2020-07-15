@@ -132,7 +132,12 @@ export class DashboardPage extends React.Component<
     }
 
     tabInfo.push({
-      content: <QueryList queries={this.props.dashboard.queries} />,
+      content: (
+        <QueryList
+          product={this.props.dashboard.product}
+          queries={this.props.dashboard.queries}
+        />
+      ),
       key: 'queries',
       title: `Queries (${this.props.dashboard.queries.length})`,
     });

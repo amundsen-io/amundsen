@@ -7,6 +7,7 @@ import QueryListItem from '../QueryListItem';
 
 const setup = (propOverrides?: Partial<QueryListProps>) => {
   const props = {
+    product: 'Mode',
     queries: [],
     ...propOverrides,
   };
