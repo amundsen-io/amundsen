@@ -25,23 +25,7 @@ import {
   closeRequestDescriptionDialog,
   submitNotification,
 } from 'ducks/notification/reducer';
-import {
-  TITLE_TEXT,
-  FROM_LABEL,
-  TO_LABEL,
-  REQUEST_TYPE,
-  TABLE_DESCRIPTION,
-  COLUMN_DESCRIPTIONS,
-  COLUMN_REQUESTED_COMMENT_PREFIX,
-  COMMENT_PLACEHOLDER_COLUMN,
-  COMMENT_PLACEHOLDER_DEFAULT,
-  ADDITIONAL_DETAILS,
-  RECIPIENT_LIST_DELIMETER,
-  SEND_BUTTON,
-  SEND_FAILURE_MESSAGE,
-  SEND_INPROGRESS_MESSAGE,
-  SEND_SUCCESS_MESSAGE,
-} from './constants';
+import * as Constants from './constants';
 
 interface StateFromProps {
   columnName?: string;
@@ -84,11 +68,11 @@ export class RequestMetadataForm extends React.Component<
   getFlashMessageString = (): string => {
     switch (this.props.sendState) {
       case SendingState.COMPLETE:
-        return SEND_SUCCESS_MESSAGE;
+        return Constants.SEND_SUCCESS_MESSAGE;
       case SendingState.ERROR:
-        return SEND_FAILURE_MESSAGE;
+        return Constants.SEND_FAILURE_MESSAGE;
       case SendingState.WAITING:
-        return SEND_INPROGRESS_MESSAGE;
+        return Constants.SEND_INPROGRESS_MESSAGE;
       default:
         return '';
     }
@@ -109,7 +93,9 @@ export class RequestMetadataForm extends React.Component<
     const form = document.getElementById('RequestForm') as HTMLFormElement;
     const formData = new FormData(form);
     const recipientString = formData.get('recipients') as string;
-    const recipients = recipientString.split(RECIPIENT_LIST_DELIMETER.trim());
+    const recipients = recipientString.split(
+      Constants.RECIPIENT_LIST_DELIMETER.trim()
+    );
     const sender = formData.get('sender') as string;
     const descriptionRequested = formData.get('table-description') === 'on';
     const fieldsRequested = formData.get('column-description') === 'on';
@@ -144,7 +130,7 @@ export class RequestMetadataForm extends React.Component<
     const colDescriptionNeeded =
       requestMetadataType === RequestMetadataType.COLUMN_DESCRIPTION;
     const defaultComment = columnName
-      ? `${COLUMN_REQUESTED_COMMENT_PREFIX}${columnName}`
+      ? `${Constants.COLUMN_REQUESTED_COMMENT_PREFIX}${columnName}`
       : '';
 
     if (sendState !== SendingState.IDLE) {
@@ -158,17 +144,18 @@ export class RequestMetadataForm extends React.Component<
     return (
       <div className="request-component expanded">
         <div id="request-metadata-title" className="form-group request-header">
-          <h3 className="title">{TITLE_TEXT}</h3>
+          <h3 className="title">{Constants.TITLE_TEXT}</h3>
           <button
             type="button"
             className="btn btn-close"
-            aria-label="Close"
             onClick={this.closeDialog}
-          />
+          >
+            <span className="sr-only">{Constants.CLOSE}</span>
+          </button>
         </div>
         <form onSubmit={this.submitNotification} id="RequestForm">
           <div id="sender-form-group" className="form-group">
-            <label>{FROM_LABEL}</label>
+            <label>{Constants.FROM_LABEL}</label>
             <input
               type="email"
               autoComplete="off"
@@ -180,7 +167,7 @@ export class RequestMetadataForm extends React.Component<
             />
           </div>
           <div id="recipients-form-group" className="form-group">
-            <label>{TO_LABEL}</label>
+            <label>{Constants.TO_LABEL}</label>
             <input
               type="text"
               autoComplete="off"
@@ -188,18 +175,20 @@ export class RequestMetadataForm extends React.Component<
               className="form-control"
               required
               multiple
-              defaultValue={tableOwners.join(RECIPIENT_LIST_DELIMETER)}
+              defaultValue={tableOwners.join(
+                Constants.RECIPIENT_LIST_DELIMETER
+              )}
             />
           </div>
           <div id="request-type-form-group" className="form-group">
-            <label>{REQUEST_TYPE}</label>
+            <label>{Constants.REQUEST_TYPE}</label>
             <label className="select-label">
               <input
                 type="checkbox"
                 name="table-description"
                 defaultChecked={tableDescriptionNeeded}
               />
-              {TABLE_DESCRIPTION}
+              {Constants.TABLE_DESCRIPTION}
             </label>
             <label className="select-label">
               <input
@@ -207,18 +196,18 @@ export class RequestMetadataForm extends React.Component<
                 name="column-description"
                 defaultChecked={colDescriptionNeeded}
               />
-              {COLUMN_DESCRIPTIONS}
+              {Constants.COLUMN_DESCRIPTIONS}
             </label>
           </div>
           <div id="additional-comments-form-group" className="form-group">
-            <label>{ADDITIONAL_DETAILS}</label>
+            <label>{Constants.ADDITIONAL_DETAILS}</label>
             <textarea
               className="form-control"
               name="comment"
               placeholder={
                 colDescriptionNeeded
-                  ? COMMENT_PLACEHOLDER_COLUMN
-                  : COMMENT_PLACEHOLDER_DEFAULT
+                  ? Constants.COMMENT_PLACEHOLDER_COLUMN
+                  : Constants.COMMENT_PLACEHOLDER_DEFAULT
               }
               required={colDescriptionNeeded}
               rows={8}
@@ -233,7 +222,7 @@ export class RequestMetadataForm extends React.Component<
             type="submit"
           >
             <img className="icon icon-send" alt="" />
-            {SEND_BUTTON}
+            {Constants.SEND_BUTTON}
           </button>
         </form>
       </div>

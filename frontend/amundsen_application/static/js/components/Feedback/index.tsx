@@ -5,15 +5,7 @@ import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
 import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
 import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
 
-import {
-  BUG_REPORT_TEXT,
-  FEEDBACK_BUTTON_TEXT,
-  BUTTON_CLOSE_TEXT,
-  FEEDBACK_TITLE,
-  FEEDBACK_TYPE_TEXT,
-  RATING_TEXT,
-  REQUEST_TEXT,
-} from './constants';
+import * as Constants from './constants';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -41,7 +33,7 @@ export default class Feedback extends React.Component<
 > {
   static defaultProps = {
     content: <RatingFeedbackForm />,
-    title: FEEDBACK_TITLE,
+    title: Constants.FEEDBACK_TITLE,
   };
 
   constructor(props) {
@@ -82,7 +74,7 @@ export default class Feedback extends React.Component<
           }`}
           onClick={this.toggle}
         >
-          <span className="sr-only">{FEEDBACK_BUTTON_TEXT}</span>
+          <span className="sr-only">{Constants.FEEDBACK_BUTTON_TEXT}</span>
           <img className="icon icon-help" alt="" />
         </button>
         {this.state.isOpen && (
@@ -92,16 +84,14 @@ export default class Feedback extends React.Component<
               <button
                 type="button"
                 className="btn btn-close"
-                aria-label={BUTTON_CLOSE_TEXT}
                 onClick={this.toggle}
-              />
+              >
+                <span className="sr-only">{Constants.BUTTON_CLOSE_TEXT}</span>
+              </button>
             </div>
             <div className="text-center">
-              <div
-                className="btn-group"
-                role="group"
-                aria-label={FEEDBACK_TYPE_TEXT}
-              >
+              <div className="btn-group" role="group">
+                <span className="sr-only">{Constants.FEEDBACK_TYPE_TEXT}</span>
                 <button
                   type="button"
                   className={
@@ -112,7 +102,7 @@ export default class Feedback extends React.Component<
                   }
                   onClick={this.changeType(FeedbackType.Rating)}
                 >
-                  {RATING_TEXT}
+                  {Constants.RATING_TEXT}
                 </button>
                 <button
                   type="button"
@@ -124,7 +114,7 @@ export default class Feedback extends React.Component<
                   }
                   onClick={this.changeType(FeedbackType.Bug)}
                 >
-                  {BUG_REPORT_TEXT}
+                  {Constants.BUG_REPORT_TEXT}
                 </button>
                 <button
                   type="button"
@@ -136,7 +126,7 @@ export default class Feedback extends React.Component<
                   }
                   onClick={this.changeType(FeedbackType.Request)}
                 >
-                  {REQUEST_TEXT}
+                  {Constants.REQUEST_TEXT}
                 </button>
               </div>
             </div>

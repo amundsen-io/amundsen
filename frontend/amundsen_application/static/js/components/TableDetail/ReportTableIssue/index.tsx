@@ -13,7 +13,7 @@ import {
   NotificationPayload,
   NotificationType,
 } from 'interfaces';
-import { REPORT_DATA_ISSUE_TEXT, TABLE_OWNERS_NOTE } from './constants';
+import * as Constants from './constants';
 
 export interface ComponentProps {
   tableKey: string;
@@ -109,17 +109,20 @@ export class ReportTableIssue extends React.Component<
           className="report-table-issue-link"
           onClick={this.toggle}
         >
-          {REPORT_DATA_ISSUE_TEXT}
+          {Constants.REPORT_DATA_ISSUE_TEXT}
         </a>
         {this.state.isOpen && (
           <div className="report-table-issue-modal">
-            <h3 className="data-issue-header">{REPORT_DATA_ISSUE_TEXT}</h3>
+            <h3 className="data-issue-header">
+              {Constants.REPORT_DATA_ISSUE_TEXT}
+            </h3>
             <button
               type="button"
               className="btn btn-close"
-              aria-label="close"
               onClick={this.toggle}
-            />
+            >
+              <span className="sr-only">{Constants.CLOSE}</span>
+            </button>
             <form id="report-table-issue-form" onSubmit={this.submitForm}>
               <div className="form-group">
                 <label>Title</label>
@@ -144,7 +147,9 @@ export class ReportTableIssue extends React.Component<
                 Submit
               </button>
             </form>
-            <div className="data-owner-notification">{TABLE_OWNERS_NOTE}</div>
+            <div className="data-owner-notification">
+              {Constants.TABLE_OWNERS_NOTE}
+            </div>
           </div>
         )}
       </>

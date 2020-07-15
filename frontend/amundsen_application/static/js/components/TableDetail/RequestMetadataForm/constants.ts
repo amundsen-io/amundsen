@@ -22,3 +22,5 @@ export const COMMENT_PLACEHOLDER_COLUMN =
 
 export const COLUMN_REQUESTED_COMMENT_PREFIX =
   'Description requested for column: ';
+
+export const CLOSE = 'Close';
