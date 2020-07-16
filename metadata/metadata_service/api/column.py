@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 from http import HTTPStatus
 from typing import Iterable, Union
@@ -14,6 +17,7 @@ class ColumnDescriptionAPI(Resource):
     """
     ColumnDescriptionAPI supports PUT and GET operations to upsert column description
     """
+
     def __init__(self) -> None:
         self.client = get_proxy_client()
         super(ColumnDescriptionAPI, self).__init__()

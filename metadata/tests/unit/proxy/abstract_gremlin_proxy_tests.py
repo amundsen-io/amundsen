@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from abc import abstractmethod
 from metadata_service import create_app
 from metadata_service.proxy.gremlin_proxy import AbstractGremlinProxy

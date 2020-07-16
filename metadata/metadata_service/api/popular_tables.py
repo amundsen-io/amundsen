@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from http import HTTPStatus
 from typing import Iterable, List, Mapping, Union
 
@@ -13,6 +16,7 @@ class PopularTablesAPI(Resource):
     """
     PopularTables API
     """
+
     def __init__(self) -> None:
         self.client = get_proxy_client()
 

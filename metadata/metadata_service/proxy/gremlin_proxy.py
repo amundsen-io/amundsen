@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 import logging
 from typing import Any, Dict, List, Mapping, Optional, Union
@@ -34,6 +37,7 @@ class AbstractGremlinProxy(BaseProxy):
     """
     Gremlin Proxy client for the amundsen metadata
     """
+
     def __init__(self, *, key_property_name: str, remote_connection: DriverRemoteConnection) -> None:
         # these might vary from datastore type to another, but if you change these while talking to the same instance
         # without migration, it will go poorly
@@ -195,6 +199,7 @@ class GenericGremlinProxy(AbstractGremlinProxy):
     :param password: (as optional as your server allows) password
     :param driver_remote_connection_options: passed to DriverRemoteConnection's constructor.
     """
+
     def __init__(self, *, host: str, port: Optional[int] = None, user: Optional[str] = None,
                  password: Optional[str] = None, traversal_source: 'str' = 'g', key_property_name: str = 'key',
                  driver_remote_connection_options: Mapping[str, Any] = {}) -> None:

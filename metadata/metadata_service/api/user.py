@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 from http import HTTPStatus
 from typing import Iterable, Mapping, Optional, Union, Dict, List, Any  # noqa: F401

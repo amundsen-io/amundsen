@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 from threading import Lock
 from typing import Any, Dict, Callable  # noqa: F401

@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from http import HTTPStatus
 
 from tests.unit.api.table.table_test_case import TableTestCase

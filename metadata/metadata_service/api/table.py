@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union, Optional
@@ -71,6 +74,7 @@ class TableDescriptionAPI(Resource):
     """
     TableDescriptionAPI supports PUT and GET operation to upsert table description
     """
+
     def __init__(self) -> None:
         self.client = get_proxy_client()
         super(TableDescriptionAPI, self).__init__()
