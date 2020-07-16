@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 from http import HTTPStatus
 from typing import Iterable, Any
@@ -64,6 +67,7 @@ class SearchDashboardFilterAPI(BaseFilterAPI):
     """
     Search Filter for Dashboard
     """
+
     def __init__(self) -> None:
         super().__init__(schema=SearchDashboardResultSchema,
                          index=DASHBOARD_INDEX)

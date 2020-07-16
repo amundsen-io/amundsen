@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import Set, List
 
 import attr
@@ -46,8 +49,8 @@ class DashboardSchema(DashboardSummarySchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class SearchDashboardResult:
-        total_results: int = attr.ib()
-        results: List[Dashboard] = attr.ib(factory=list)
+    total_results: int = attr.ib()
+    results: List[Dashboard] = attr.ib(factory=list)
 
 
 class SearchDashboardResultSchema(AttrsSchema):

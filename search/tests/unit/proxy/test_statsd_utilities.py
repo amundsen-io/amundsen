@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from mock import patch, MagicMock
 from flask import current_app
 from statsd import StatsClient

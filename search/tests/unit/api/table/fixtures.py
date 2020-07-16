@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from search_service.models.table import Table
 from search_service.models.tag import Tag
 
