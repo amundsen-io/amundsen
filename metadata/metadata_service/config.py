@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import distutils.util
 import os
 from typing import List, Dict, Optional, Set  # noqa: F401

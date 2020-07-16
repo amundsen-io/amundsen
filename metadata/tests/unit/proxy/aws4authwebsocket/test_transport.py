@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from metadata_service.proxy.aws4authwebsocket.transport import Aws4AuthWebsocketTransport
 import unittest
 

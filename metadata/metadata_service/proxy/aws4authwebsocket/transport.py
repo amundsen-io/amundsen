@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from gremlin_python.driver.transport import AbstractBaseTransport
 import mocket.mocket
 import mocket.mockhttp
@@ -198,6 +201,7 @@ class Aws4AuthWebsocketTransport(WebsocketClientTransport):
     >>> g = GraphTraversalSource = Graph().traversal().withRemote(DriverRemoteConnection(url=url, traversal_source='g', transport_factory=factory, websocket_options=dict(http_proxy_host='stupid', http_no_proxy=[urllib.parse.urlparse(url).hostname])))
     >>>
     """  # noqa
+
     def __init__(self, *, aws_access_key_id: str, aws_secret_access_key: str, service_region: str,
                  service_name: str = 'neptune-db', extra_aws4auth_options: Mapping[str, Any] = {},
                  extra_websocket_options: Mapping[str, Any] = {}) -> None:

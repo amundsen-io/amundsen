@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from metadata_service.proxy.aws4authwebsocket.transport import WebsocketClientTransport
 from .gremlin_proxy import AbstractGremlinProxy
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
@@ -9,6 +12,7 @@ class JanusGraphGremlinProxy(AbstractGremlinProxy):
     A proxy to a JanusGraph using the Gremlin protocol.
 
     """
+
     def __init__(self, *, host: str, port: Optional[int] = None, user: Optional[str] = None,
                  password: Optional[str] = None, traversal_source: 'str' = 'g',
                  driver_remote_connection_options: Mapping[str, Any] = {},

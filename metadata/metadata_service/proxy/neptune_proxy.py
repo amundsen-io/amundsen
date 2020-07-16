@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from metadata_service.proxy.aws4authwebsocket.transport import (Aws4AuthWebsocketTransport,
                                                                 WebsocketClientTransport)
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
@@ -20,6 +23,7 @@ class NeptuneGremlinProxy(AbstractGremlinProxy):
     See also https://docs.aws.amazon.com/neptune/latest/userguide/access-graph-gremlin-differences.html
     See also https://docs.aws.amazon.com/neptune/latest/userguide/access-graph-gremlin-sessions.html
     """
+
     def __init__(self, *, host: str, port: Optional[int] = None, user: str = None,
                  password: Optional[Union[str, Mapping[str, str]]] = None,
                  driver_remote_connection_options: Mapping[str, Any] = {},

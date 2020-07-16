@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import unittest
 from abc import abstractmethod, ABC
 from typing import Any, Callable, Generic, Type, TypeVar, no_type_check

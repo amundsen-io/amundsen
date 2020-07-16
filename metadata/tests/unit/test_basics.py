@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import unittest
 
 from flask import current_app
@@ -9,6 +12,7 @@ class BasicTestCase(unittest.TestCase):
     """
     Test the service if it can standup
     """
+
     def setUp(self) -> None:
         self.app = create_app(
             config_module_class='metadata_service.config.LocalConfig')
