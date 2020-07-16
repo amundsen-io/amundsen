@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import abc
 
 from pyhocon import ConfigTree  # noqa: F401
@@ -25,6 +28,7 @@ class NoopTransformer(Transformer):
     """
     A no-op transformer
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         pass
@@ -42,6 +46,7 @@ class ChainedTransformer(Transformer):
     """
     A chained transformer that iterates transformers and transforms a record
     """
+
     def __init__(self,
                  transformers,
                  is_init_transformers=False):

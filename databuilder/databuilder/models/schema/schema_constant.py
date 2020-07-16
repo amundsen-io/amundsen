@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 SCHEMA_NODE_LABEL = 'Schema'
 
 SCHEMA_NAME_ATTR = 'name'

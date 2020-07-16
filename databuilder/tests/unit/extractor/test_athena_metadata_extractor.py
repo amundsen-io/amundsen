@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 import unittest
 
@@ -92,7 +95,8 @@ class TestAthenaMetadataExtractor(unittest.TestCase):
             extractor.init(self.conf)
             actual = extractor.extract()
             expected = TableMetadata('athena', self.conf['extractor.athena_metadata.{}'.
-                                     format(AthenaMetadataExtractor.CATALOG_KEY)], 'test_schema', 'test_table', '',
+                                                         format(AthenaMetadataExtractor.CATALOG_KEY)], 'test_schema',
+                                     'test_table', '',
                                      [ColumnMetadata('col_id1', 'description of id1', 'bigint', 0),
                                       ColumnMetadata('col_id2', 'description of id2', 'bigint', 1),
                                       ColumnMetadata('is_active', None, 'boolean', 2),

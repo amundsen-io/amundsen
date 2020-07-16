@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import csv
 import logging
 
@@ -11,6 +14,7 @@ class FileSystemCSVLoader(Loader):
     """
     Loader class to write csv files to Local FileSystem
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         """

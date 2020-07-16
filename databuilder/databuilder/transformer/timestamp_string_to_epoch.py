@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 from datetime import datetime
 
@@ -19,6 +22,7 @@ class TimestampStringToEpoch(Transformer):
     """
     Transforms string timestamp into epoch
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         self._conf = conf.with_fallback(DEFAULT_CONFIG)

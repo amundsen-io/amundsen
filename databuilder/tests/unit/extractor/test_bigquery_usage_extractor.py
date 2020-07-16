@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from mock import patch, Mock
 import base64
 import tempfile
@@ -127,7 +130,7 @@ FAILURE = {"entries": [
 # An empty dict will be ignored, but putting in nextPageToken causes the test
 # to loop infinitely, so we need a bogus key/value to ensure that we will try
 # to read entries
-NO_ENTRIES = { 'key': 'value' }   # noqa
+NO_ENTRIES = {'key': 'value'}   # noqa
 
 KEYFILE_DATA = """
 ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAieW91ci1wcm9q

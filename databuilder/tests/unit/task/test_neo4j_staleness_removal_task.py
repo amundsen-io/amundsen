@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 # Validation of Cypher statements causing Flake8 to fail. Disabling it on this file only
 # flake8: noqa
 
@@ -310,7 +313,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task._delete_stale_relations()
 
             mock_execute.assert_any_call(dry_run=False,
-                                         param_dict={'marker': '(timestamp() - 9876543210)', 'batch_size':  100},
+                                         param_dict={'marker': '(timestamp() - 9876543210)', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (n:Foo)
             WHERE 
@@ -380,7 +383,6 @@ class TestRemoveStaleData(unittest.TestCase):
                     24 * 60 * 60 * 1000,
             })
             task.init(job_config)
-
 
     def test_delete_dry_run(self):
         with patch.object(GraphDatabase, 'driver') as mock_driver:

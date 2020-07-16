@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import importlib
 from sqlalchemy import create_engine
 
@@ -14,6 +17,7 @@ class SQLAlchemyExtractor(Extractor):
     """
     An Extractor that extracts records via SQLAlchemy. Database that supports SQLAlchemy can use this extractor
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         """

@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import copy
 from typing import Union, Dict, Any  # noqa: F401
 

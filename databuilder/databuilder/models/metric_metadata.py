@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from collections import namedtuple
 
 from typing import Iterable, Any, Union, Iterator, Dict, Set  # noqa: F401
@@ -147,9 +150,9 @@ class MetricMetadata(Neo4jCsvSerializable):
 
         # Metric type node
         if self.type:
-                yield {NODE_LABEL: MetricMetadata.METRIC_TYPE_NODE_LABEL,
-                       NODE_KEY: self._get_metric_type_key(),
-                       'name': self.type}
+            yield {NODE_LABEL: MetricMetadata.METRIC_TYPE_NODE_LABEL,
+                   NODE_KEY: self._get_metric_type_key(),
+                   'name': self.type}
 
         others = []
 

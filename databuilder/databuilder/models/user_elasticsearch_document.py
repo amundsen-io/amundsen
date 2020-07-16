@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from databuilder.models.elasticsearch_document import ElasticsearchDocument
 
 
@@ -5,6 +8,7 @@ class UserESDocument(ElasticsearchDocument):
     """
     Schema for the Search index document for user
     """
+
     def __init__(self,
                  email,  # type: str
                  first_name,  # type: str

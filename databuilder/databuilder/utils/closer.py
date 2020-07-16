@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import atexit
 
 from typing import Callable, List  # noqa: F401
@@ -12,6 +15,7 @@ class Closer(object):
     Order of closing registered closeable callable will be LIFO
     as closeable instance can have dependency each other.
     """
+
     def __init__(self):
         # type: () -> None
         self._stack = []  # type: List

@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from mock import patch
 from typing import Any  # noqa: F401
 import unittest
