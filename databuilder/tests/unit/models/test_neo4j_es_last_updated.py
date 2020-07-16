@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import unittest
 from databuilder.models.neo4j_es_last_updated import Neo4jESLastUpdated
 

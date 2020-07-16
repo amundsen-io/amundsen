@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import Iterable, Union, Dict, Any, Iterator  # noqa: F401
 
 from databuilder.models.neo4j_csv_serde import (
@@ -13,6 +16,7 @@ class ColumnReader(object):
     """
     A class represent user's read action on column. Implicitly assumes that read count is one.
     """
+
     def __init__(self,
                  database,  # type: str
                  cluster,  # type: str

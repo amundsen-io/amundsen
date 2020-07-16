@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import textwrap
 
 # Documentation: https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html

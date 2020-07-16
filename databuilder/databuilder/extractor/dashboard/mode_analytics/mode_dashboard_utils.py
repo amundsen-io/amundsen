@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
 from requests.auth import HTTPBasicAuth
 

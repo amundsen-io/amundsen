@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import importlib
 from typing import Iterable, Any  # noqa: F401
 

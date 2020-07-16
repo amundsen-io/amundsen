@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import importlib
 import time
 from typing import Iterable, Any  # noqa: F401
@@ -11,6 +14,7 @@ class Neo4jEsLastUpdatedExtractor(GenericExtractor):
     """
     Extractor to extract last updated timestamp for neo4j and Es
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         """

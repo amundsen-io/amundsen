@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 

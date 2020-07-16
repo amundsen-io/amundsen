@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 """
 This is a example script which demo how to load data
 into Neo4j and Elasticsearch without using an Airflow DAG.

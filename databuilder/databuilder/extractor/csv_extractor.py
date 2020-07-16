@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import csv
 import importlib
 from collections import defaultdict
@@ -16,6 +19,7 @@ class CsvExtractor(Extractor):
     """
     An Extractor that extracts records via CSV.
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         """
@@ -73,6 +77,7 @@ class CsvTableColumnExtractor(Extractor):
     """
     An Extractor that combines Table and Column CSVs.
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         """

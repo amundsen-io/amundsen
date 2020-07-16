@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import unittest
 
 from mock import patch
@@ -99,6 +102,7 @@ class TableMetadataResult:
     Table metadata result model.
     SQL result has one row per column
     """
+
     def __init__(self,
                  database,  # type: str
                  schema,  # type: str

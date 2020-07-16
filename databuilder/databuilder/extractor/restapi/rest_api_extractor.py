@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 import importlib
 from typing import Iterator, Any  # noqa: F401
@@ -41,7 +44,6 @@ class RestAPIExtractor(Extractor):
 
     def extract(self):
         # type: () -> Any
-
         """
         Fetch one result row from RestApiQuery, convert to {model_class} if specified before
         returning.

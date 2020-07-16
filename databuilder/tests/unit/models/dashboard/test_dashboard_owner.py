@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import unittest
 
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner

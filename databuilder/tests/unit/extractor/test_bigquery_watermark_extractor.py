@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 import unittest
 from datetime import datetime
@@ -46,7 +49,7 @@ PARTITION_DATA = {'kind': 'bigquery#queryResponse',
      'rows': [{'f': [{'v': '20180802'}, {'v': '1.547512241348E9'}]},
               {'f': [{'v': '20180803'}, {'v': '1.547512241348E9'}]},
               {'f': [{'v': '20180804'}, {'v': '1.547512241348E9'}]}],
-     'totalBytesProcessed': '0','jobComplete': True,'cacheHit': False} # noqa
+     'totalBytesProcessed': '0', 'jobComplete': True, 'cacheHit': False}  # noqa
 
 
 try:

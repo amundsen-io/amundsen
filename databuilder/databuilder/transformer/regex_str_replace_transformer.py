@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 import six
 from pyhocon import ConfigTree  # noqa: F401
@@ -21,6 +24,7 @@ class RegexStrReplaceTransformer(Transformer):
 
     Any non-string values will be ignored.
     """
+
     def init(self, conf):
         # type: (ConfigTree) -> None
         self._regex_replace_tuples = conf.get_list(REGEX_REPLACE_TUPLE_LIST)
