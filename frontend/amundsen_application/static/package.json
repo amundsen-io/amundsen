@@ -26,7 +26,7 @@
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,scss}\""
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
