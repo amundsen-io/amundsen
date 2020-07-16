@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 
 from typing import Optional, Set, List
 
@@ -47,8 +50,8 @@ class UserSchema(AttrsSchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class SearchUserResult:
-        total_results: int = attr.ib()
-        results: List[User] = attr.ib(factory=list)
+    total_results: int = attr.ib()
+    results: List[User] = attr.ib(factory=list)
 
 
 class SearchUserResultSchema(AttrsSchema):

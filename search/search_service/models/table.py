@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import List, Optional, Set
 
 import attr
@@ -65,8 +68,8 @@ class TableSchema(AttrsSchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class SearchTableResult:
-        total_results: int = attr.ib()
-        results: List[Table] = attr.ib(factory=list)
+    total_results: int = attr.ib()
+    results: List[Table] = attr.ib(factory=list)
 
 
 class SearchTableResultSchema(AttrsSchema):
