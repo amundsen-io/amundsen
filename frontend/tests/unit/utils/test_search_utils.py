@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import unittest
 
 from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, transform_filters

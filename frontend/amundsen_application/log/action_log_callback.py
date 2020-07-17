@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 """
 An Action Logger module. Singleton pattern has been applied into this module
 so that registered callbacks can be used all through the same python process.

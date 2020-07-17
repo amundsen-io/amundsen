@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 
 from http import HTTPStatus
@@ -81,7 +84,7 @@ def validate_options(*, options: Dict) -> None:
     """
     if options.get('resource_path') is None:
         raise Exception('resource_path was not provided in the notification options')
-    if options.get('resource_name')is None:
+    if options.get('resource_name') is None:
         raise Exception('resource_name was not provided in the notification options')
 
 

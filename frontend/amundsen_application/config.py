@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 from typing import Callable, Dict, List, Optional, Set  # noqa: F401
 from amundsen_application.models.user import User
