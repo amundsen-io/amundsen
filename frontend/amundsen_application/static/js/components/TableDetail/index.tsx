@@ -135,12 +135,18 @@ export class TableDetail extends React.Component<
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 
-  renderTabs() {
+  renderTabs(editText, editUrl) {
     const tabInfo = [];
 
     // Default Column content
     tabInfo.push({
-      content: <ColumnList columns={this.props.tableData.columns} />,
+      content: (
+        <ColumnList
+          columns={this.props.tableData.columns}
+          editText={editText}
+          editUrl={editUrl}
+        />
+      ),
       key: 'columns',
       title: `Columns (${this.props.tableData.columns.length})`,
     });
@@ -307,7 +313,9 @@ export class TableDetail extends React.Component<
                 </section>
               ))}
             </aside>
-            <main className="right-panel">{this.renderTabs()}</main>
+            <main className="right-panel">
+              {this.renderTabs(editText, editUrl)}
+            </main>
           </div>
         </div>
       );

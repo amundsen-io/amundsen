@@ -7,6 +7,7 @@ import {
   ColumnListItemProps,
   mapDispatchToProps,
 } from 'components/TableDetail/ColumnListItem';
+import EditableSection from 'components/common/EditableSection';
 import ColumnStats from 'components/TableDetail/ColumnStats';
 import AppConfig from 'config/config';
 import * as UtilMethods from 'ducks/utilMethods';
@@ -34,6 +35,8 @@ describe('ColumnListItem', () => {
       },
       index: 0,
       openRequestDescriptionDialog: jest.fn(),
+      editText: 'Click to edit discription in source',
+      editUrl: 'source/test_column_name',
       ...propOverrides,
     };
 
@@ -124,6 +127,19 @@ describe('ColumnListItem', () => {
       expect(newWrapper.find('.expanded-content').exists()).toBe(true);
       expect(newWrapper.find(ColumnDescEditableText).exists()).toBe(true);
       expect(newWrapper.find(ColumnStats).exists()).toBe(true);
+    });
+
+    it('renders EditableSection with correct edit text and Url when expanded', () => {
+      instance.setState({ isExpanded: true });
+      const newWrapper = shallow(instance.render());
+      expect(newWrapper.find(EditableSection).exists()).toBe(true);
+      const editableSection = newWrapper.find(EditableSection);
+      expect(editableSection.props()).toMatchObject({
+        title: 'Description',
+        readOnly: !props.data.is_editable,
+        editText: props.editText,
+        editUrl: props.editUrl,
+      });
     });
 
     describe('when not expanded', () => {

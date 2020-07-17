@@ -6,10 +6,14 @@ import './styles.scss';
 
 interface ColumnListProps {
   columns?: TableColumn[];
+  editText?: string;
+  editUrl?: string;
 }
 
 const ColumnList: React.SFC<ColumnListProps> = ({
   columns,
+  editText,
+  editUrl,
 }: ColumnListProps) => {
   if (columns.length < 1) {
     return <div />;
@@ -17,7 +21,13 @@ const ColumnList: React.SFC<ColumnListProps> = ({
   }
 
   const columnList = columns.map((entry, index) => (
-    <ColumnListItem key={`column:${index}`} data={entry} index={index} />
+    <ColumnListItem
+      key={`column:${index}`}
+      data={entry}
+      index={index}
+      editText={editText}
+      editUrl={editUrl}
+    />
   ));
 
   return <ul className="column-list list-group">{columnList}</ul>;
@@ -25,6 +35,8 @@ const ColumnList: React.SFC<ColumnListProps> = ({
 
 ColumnList.defaultProps = {
   columns: [] as TableColumn[],
+  editText: '',
+  editUrl: '',
 };
 
 export default ColumnList;
