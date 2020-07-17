@@ -191,7 +191,7 @@ A model that encapsulate Dashboard's last modified timestamp in epoch
 [ModeDashboardLastModifiedTimestampExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_last_modified_timestamp_extractor.py)   
 
 
-#### [DashboardExecution](../models/dashboard/dashboard_execution.py)
+#### [DashboardExecution](../databuilder/models/dashboard/dashboard_execution.py)
 A model that encapsulate Dashboard's execution timestamp in epoch and execution state. Note that this model supports last_execution and last_successful_execution by using [different identifier](../databuilder/models/dashboard/dashboard_execution.py#L23) in the URI.
 
 #### Extraction
