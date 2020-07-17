@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import abc
 
 from flask import Response as FlaskResponse, make_response, jsonify

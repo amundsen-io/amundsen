@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from flask import current_app as app
 from flask import jsonify, make_response, Response
 from flask_restful import Resource, reqparse

@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import abc
 from amundsen_application.models.data_issue import DataIssue
 from amundsen_application.models.issue_results import IssueResults

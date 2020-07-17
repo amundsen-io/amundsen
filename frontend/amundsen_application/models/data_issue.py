@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 # JIRA SDK does not return priority beyond the name
 PRIORITY_MAP = {
     'Blocker': 'P0',
