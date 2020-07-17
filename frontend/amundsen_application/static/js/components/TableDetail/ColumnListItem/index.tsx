@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as React from 'react';
 import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
