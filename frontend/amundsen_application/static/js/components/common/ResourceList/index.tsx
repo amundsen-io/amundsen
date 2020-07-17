@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as React from 'react';
 import Pagination from 'react-js-pagination';
 import ResourceListItem from 'components/common/ResourceListItem';
