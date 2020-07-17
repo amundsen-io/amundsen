@@ -26,6 +26,8 @@ interface DispatchFromProps {
 interface OwnProps {
   data: TableColumn;
   index: number;
+  editText: string;
+  editUrl: string;
 }
 
 interface ColumnListItemState {
@@ -170,6 +172,8 @@ export class ColumnListItem extends React.Component<
                 <EditableSection
                   title="Description"
                   readOnly={!metadata.is_editable}
+                  editText={this.props.editText}
+                  editUrl={this.props.editUrl}
                 >
                   <ColumnDescEditableText
                     columnIndex={this.props.index}
