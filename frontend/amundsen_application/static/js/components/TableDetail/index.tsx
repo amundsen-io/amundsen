@@ -58,6 +58,7 @@ import {
 } from './constants';
 
 import './styles.scss';
+import TableReportsDropdown from 'components/TableDetail/ResourceReportsDropdown';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
@@ -231,6 +232,7 @@ export class TableDetail extends React.Component<
               <SourceLink tableSource={data.source} />
             </div>
             <div className="header-section header-buttons">
+              <TableReportsDropdown resourceReports={data.resource_reports} />
               <DataPreviewButton modalTitle={this.getDisplayName()} />
               <ExploreButton tableData={data} />
             </div>
