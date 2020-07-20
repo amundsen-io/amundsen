@@ -66,7 +66,8 @@ def connection_string():
 def create_table_wm_job(**kwargs):
     sql = textwrap.dedent("""
         SELECT From_unixtime(A0.create_time) as create_time,
-               C0.NAME as schema,
+               'hive'                        as `database`,
+               C0.NAME                       as `schema`,
                B0.tbl_name as table_name,
                {func}(A0.part_name) as part_name,
                {watermark} as part_type
