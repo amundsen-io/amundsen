@@ -7,7 +7,8 @@ from random import randint
 from typing import Any, Dict, List, Union, Optional
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader, ProgrammaticDescription
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader,\
+    ProgrammaticDescription, ResourceReport
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.dashboard import DashboardSummary
 from atlasclient.client import Atlas
@@ -48,6 +49,7 @@ class AtlasProxy(BaseProxy):
     READER_TYPE = 'Reader'
     QN_KEY = 'qualifiedName'
     BOOKMARK_ACTIVE_KEY = 'active'
+    ENTITY_ACTIVE_STATUS = 'ACTIVE'
     GUID_KEY = 'guid'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
@@ -347,6 +349,29 @@ class AtlasProxy(BaseProxy):
             )
         return sorted(columns, key=lambda item: item.sort_order)
 
+    def _get_reports(self, guids: List[str]) -> List[ResourceReport]:
+        reports = []
+        if guids:
+            report_entities_collection = self._driver.entity_bulk(guid=guids)
+            for report_entity in extract_entities(report_entities_collection):
+                try:
+                    if report_entity.status == self.ENTITY_ACTIVE_STATUS:
+                        report_attrs = report_entity.attributes
+                        reports.append(
+                            ResourceReport(
+                                name=report_attrs['name'],
+                                url=report_attrs['url']
+                            )
+                        )
+                except (KeyError, AttributeError) as ex:
+                    LOGGER.exception('Error while accessing table report: {}. {}'
+                                     .format(str(report_entity), str(ex)))
+
+        parsed_reports = app.config['RESOURCE_REPORT_CLIENT'](reports) \
+            if app.config['RESOURCE_REPORT_CLIENT'] else reports
+
+        return parsed_reports
+
     def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
 
@@ -384,6 +409,8 @@ class AtlasProxy(BaseProxy):
 
             columns = self._serialize_columns(entity=entity)
 
+            reports_guids = [report.get("guid") for report in attrs.get("reports") or list()]
+
             table = Table(
                 database=table_details.get('typeName'),
                 cluster=table_qn.get('cluster_name', ''),
@@ -392,6 +419,7 @@ class AtlasProxy(BaseProxy):
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
                 owners=[User(email=attrs.get('owner'))],
+                resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 table_readers=self._get_readers(attrs.get(self.QN_KEY)),
                 last_updated_timestamp=self._parse_date(table_details.get('updateTime')),

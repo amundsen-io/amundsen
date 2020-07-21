@@ -110,7 +110,8 @@ class Data:
                 'testParameterKeyB': 'testParameterValueB',
                 'testParameterKeyA': 'testParameterValueA',
                 'spark.sql.param': 1
-            }
+            },
+            'reports': [{'guid': '23'}, {'guid': '121212'}, {'guid': '2344'}]
         },
         'relationshipAttributes': {
             'db': db_entity,
@@ -260,3 +261,27 @@ class Data:
     }
 
     reader_entities = [DottedDict(reader_entity) for reader_entity in [reader_entity_1, reader_entity_2]]
+
+    report_entity_1 = {
+        'typeName': 'Report',
+        'status': 'ACTIVE',
+        'attributes': {
+            'name': "test_report",
+            'url': "http://test"
+        }}
+    report_entity_2 = {
+        'typeName': 'Report',
+        'status': 'DELETED',
+        'attributes': {
+            'name': "test_report2",
+            'url': "http://test2"
+        }}
+    report_entity_3 = {
+        'typeName': 'Report',
+        'status': 'ACTIVE',
+        'attributes': {
+            'name': "test_report3",
+            'url': "http://test3"
+        }}
+
+    report_entities = [report_entity_1, report_entity_2, report_entity_3]
