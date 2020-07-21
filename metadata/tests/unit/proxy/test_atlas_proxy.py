@@ -6,7 +6,8 @@ import unittest
 from typing import Any, Dict, Optional, cast, List
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader, ProgrammaticDescription
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader,\
+    ProgrammaticDescription, ResourceReport
 from atlasclient.exceptions import BadRequest
 from mock import MagicMock, patch
 from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
@@ -92,6 +93,17 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.assertEqual(ent.__repr__(), unique_attr_response.__repr__())
 
+    def _create_mocked_report_entities_collection(self) -> None:
+        mocked_report_entities_collection = MagicMock()
+        mocked_report_entities_collection.entities = []
+        for entity in self.report_entities:
+            mocked_report_entity = MagicMock()
+            mocked_report_entity.status = entity['status']
+            mocked_report_entity.attributes = entity['attributes']
+            mocked_report_entities_collection.entities.append(mocked_report_entity)
+
+        self.report_entity_collection = [mocked_report_entities_collection]
+
     def _get_table(self, custom_stats_format: bool = False) -> None:
         if custom_stats_format:
             test_exp_col = self.test_exp_col_stats_formatted
@@ -99,6 +111,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
             test_exp_col = self.test_exp_col_stats_raw
 
         self._mock_get_table_entity()
+        self._create_mocked_report_entities_collection()
+        self.proxy._driver.entity_bulk = MagicMock(return_value=self.report_entity_collection)
         response = self.proxy.get_table(table_uri=self.table_uri)
 
         classif_name = self.classification_entity['classifications'][0]['typeName']
@@ -129,6 +143,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          tags=[Tag(tag_name=classif_name, tag_type="default")],
                          description=ent_attrs['description'],
                          owners=[User(email=ent_attrs['owner'])],
+                         resource_reports=[ResourceReport(name='test_report', url='http://test'),
+                                           ResourceReport(name='test_report3', url='http://test3')],
                          last_updated_timestamp=int(str(self.entity1['updateTime'])[:10]),
                          columns=[exp_col] * self.active_columns,
                          programmatic_descriptions=[ProgrammaticDescription(source='test parameter key a',
