@@ -11,6 +11,7 @@ import { getPreviewData } from 'ducks/tableMetadata/reducer';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
 import { PreviewData, PreviewQueryParams, TableMetadata } from 'interfaces';
+import * as Constants from './constants';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -100,14 +101,20 @@ export class DataPreviewButton extends React.Component<
 
   getSanitizedValue(value) {
     // Display the string interpretation of the following "false-y" values
+    // return 'Data Exceeds Render Limit' msg if column is too long
+    let sanitizedValue = '';
     if (value === 0 || typeof value === 'boolean') {
-      return value.toString();
-    }
-    if (typeof value === 'object') {
-      return JSON.stringify(value);
+      sanitizedValue = value.toString();
+    } else if (typeof value === 'object') {
+      sanitizedValue = JSON.stringify(value);
+    } else {
+      sanitizedValue = value;
     }
 
-    return value || '';
+    if (sanitizedValue.length > Constants.PREVIEW_COLUMN_MAX_LEN) {
+      return Constants.PREVIEW_COLUMN_MSG;
+    }
+    return sanitizedValue;
   }
 
   renderModalBody() {
