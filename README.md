@@ -14,6 +14,7 @@
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg" />
+  <img src="https://img.shields.io/twitter/follow/amundsenio?label=Follow&style=social" />
   <a href="https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk">
     <img src="https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social" alt="Slack" />
   </a>
