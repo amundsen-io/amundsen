@@ -735,7 +735,7 @@ class AtlasProxy(BaseProxy):
                     {
                         'attributeName': self.QN_KEY,
                         'operator': 'STARTSWITH',
-                        'attributeValue': qualified_name.split('@')[0]
+                        'attributeValue': qualified_name.split('@')[0] + '.'
                     },
                     {
                         'attributeName': 'count',
