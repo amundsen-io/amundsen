@@ -222,8 +222,10 @@ export class DashboardPage extends React.Component<
               )}`}
             >
               {hasDescription && (
-                <div className="markdown-wrapper">
-                  <ReactMarkdown source={dashboard.description} />
+                <div className="editable-text">
+                  <div className="markdown-wrapper">
+                    <ReactMarkdown source={dashboard.description} />
+                  </div>
                 </div>
               )}
               {!hasDescription && (
