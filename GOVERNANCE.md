@@ -42,5 +42,5 @@ New projects will be added to the amundsen-io organization via GitHub issue disc
 cannot easily decide.
 
 ## References
-Senior maintainer == PMC in ASF
-Maintainer == committer in ASF
+- Senior maintainer == PMC in ASF
+- Maintainer == committer in ASF
