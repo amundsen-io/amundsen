@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
 import ColumnStats from 'components/TableDetail/ColumnStats';
-import { notificationsEnabled } from 'config/config-utils';
+import { notificationsEnabled, getMaxLength } from 'config/config-utils';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { logClick } from 'ducks/utilMethods';
@@ -181,6 +181,7 @@ export class ColumnListItem extends React.Component<
                   <ColumnDescEditableText
                     columnIndex={this.props.index}
                     editable={metadata.is_editable}
+                    maxLength={getMaxLength('columnDescLength')}
                     value={metadata.description}
                   />
                 </EditableSection>
