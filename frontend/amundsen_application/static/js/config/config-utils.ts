@@ -170,3 +170,11 @@ export function generateExploreUrl(tableData: TableMetadata): string {
     tableData.name
   );
 }
+
+/**
+ * Gets the max length for items with a configurable max length.
+ * Currently only applied to `editableText`, but method can be extended for future cases
+ */
+export function getMaxLength(key: string) {
+  return AppConfig.editableText[key];
+}

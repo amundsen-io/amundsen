@@ -11,7 +11,14 @@ import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
 
-import AppConfig from 'config/config';
+import {
+  getMaxLength,
+  getSourceIconClass,
+  indexDashboardsEnabled,
+  issueTrackingEnabled,
+  notificationsEnabled,
+} from 'config/config-utils';
+
 import BadgeList from 'components/common/BadgeList';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
@@ -37,13 +44,6 @@ import TagInput from 'components/Tags/TagInput';
 import { ResourceType, TableMetadata } from 'interfaces';
 
 import EditableSection from 'components/common/EditableSection';
-
-import {
-  getSourceIconClass,
-  indexDashboardsEnabled,
-  issueTrackingEnabled,
-  notificationsEnabled,
-} from 'config/config-utils';
 
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
@@ -246,7 +246,7 @@ export class TableDetail extends React.Component<
                 editUrl={editUrl}
               >
                 <TableDescEditableText
-                  maxLength={AppConfig.editableText.tableDescLength}
+                  maxLength={getMaxLength('tableDescLength')}
                   value={data.description}
                   editable={data.is_editable}
                 />
