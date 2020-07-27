@@ -194,6 +194,7 @@ Currently **officially** using Amundsen:
 1. [Cimpress Technology](https://cimpress.com)
 1. [Coles Group](https://www.colesgroup.com.au/home/)
 1. [Data Sprints](https://datasprints.com/)
+1. [Dcard](https://www.dcard.tw/)
 1. [Devoted Health](https://www.devoted.com/)
 1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
