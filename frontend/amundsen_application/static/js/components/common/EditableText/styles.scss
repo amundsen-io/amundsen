@@ -8,22 +8,6 @@
   .markdown-wrapper {
     font-size: 14px;
     word-break: break-word;
-
-    // Remove extra margin form text elements
-    > p,
-    ul,
-    ol {
-      margin: 0;
-    }
-
-    // Restrict max size of header elements
-    h1,
-    h2,
-    h3 {
-      font-size: 20px;
-      font-weight: $font-weight-header-bold;
-      line-height: 28px;
-    }
   }
 
   .edit-link {
