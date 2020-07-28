@@ -72,7 +72,15 @@ class TestGlueExtractor(unittest.TestCase):
                                 'Type': 'varchar'
                             }
                         ]
-                    }
+                    },
+                    'PartitionKeys': [
+                        {
+                            'Name': 'partition_key1',
+                            'Type': 'string',
+                            'Comment': 'description of partition_key1'
+                        },
+                    ],
+                    'TableType': 'EXTERNAL_TABLE',
                 }
             ]
 
@@ -85,7 +93,9 @@ class TestGlueExtractor(unittest.TestCase):
                                       ColumnMetadata('is_active', None, 'boolean', 2),
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
                                       ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
-                                      ColumnMetadata('ds', None, 'varchar', 5)])
+                                      ColumnMetadata('ds', None, 'varchar', 5),
+                                      ColumnMetadata('partition_key1', 'description of partition_key1', 'string', 6),
+                                      ], False)
             self.assertEqual(expected.__repr__(), actual.__repr__())
             self.assertIsNone(extractor.extract())
 
@@ -128,7 +138,15 @@ class TestGlueExtractor(unittest.TestCase):
                                 'Type': 'varchar'
                             }
                         ]
-                    }
+                    },
+                    'PartitionKeys': [
+                        {
+                            'Name': 'partition_key1',
+                            'Type': 'string',
+                            'Comment': 'description of partition_key1'
+                        },
+                    ],
+                    'TableType': 'EXTERNAL_TABLE',
                 },
                 {
                     'Name': 'test_table2',
@@ -147,12 +165,12 @@ class TestGlueExtractor(unittest.TestCase):
                                 'Comment': 'description of col_name2'
                             }
                         ]
-                    }
+                    },
+                    'TableType': 'EXTERNAL_TABLE',
                 },
                 {
                     'Name': 'test_table3',
                     'DatabaseName': 'test_schema2',
-                    'Description': 'test table 3',
                     'StorageDescriptor': {
                         'Columns': [
                             {
@@ -166,8 +184,30 @@ class TestGlueExtractor(unittest.TestCase):
                                 'Comment': 'description of col_name3'
                             }
                         ]
-                    }
-                }
+                    },
+                    'Parameters': {'comment': 'description of test table 3 from comment'},
+                    'TableType': 'EXTERNAL_TABLE',
+                },
+                {
+                    'Name': 'test_view1',
+                    'DatabaseName': 'test_schema1',
+                    'Description': 'test view 1',
+                    'StorageDescriptor': {
+                        'Columns': [
+                            {
+                                'Name': 'col_id3',
+                                'Type': 'varchar',
+                                'Comment': 'description of col_id3'
+                            },
+                            {
+                                'Name': 'col_name3',
+                                'Type': 'varchar',
+                                'Comment': 'description of col_name3'
+                            }
+                        ]
+                    },
+                    'TableType': 'VIRTUAL_VIEW',
+                },
             ]
 
             extractor = GlueExtractor()
@@ -179,18 +219,27 @@ class TestGlueExtractor(unittest.TestCase):
                                       ColumnMetadata('is_active', None, 'boolean', 2),
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
                                       ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
-                                      ColumnMetadata('ds', None, 'varchar', 5)])
+                                      ColumnMetadata('ds', None, 'varchar', 5),
+                                      ColumnMetadata('partition_key1', 'description of partition_key1', 'string', 6),
+                                      ], False)
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             expected = TableMetadata('glue', 'gold', 'test_schema1', 'test_table2', 'test table 2',
                                      [ColumnMetadata('col_name', 'description of col_name', 'varchar', 0),
-                                      ColumnMetadata('col_name2', 'description of col_name2', 'varchar', 1)])
+                                      ColumnMetadata('col_name2', 'description of col_name2', 'varchar', 1)], False)
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
-            expected = TableMetadata('glue', 'gold', 'test_schema2', 'test_table3', 'test table 3',
+            expected = TableMetadata('glue', 'gold', 'test_schema2', 'test_table3',
+                                     'description of test table 3 from comment',
                                      [ColumnMetadata('col_id3', 'description of col_id3', 'varchar', 0),
                                       ColumnMetadata('col_name3', 'description of col_name3',
-                                                     'varchar', 1)])
+                                                     'varchar', 1)], False)
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+
+            expected = TableMetadata('glue', 'gold', 'test_schema1', 'test_view1', 'test view 1',
+                                     [ColumnMetadata('col_id3', 'description of col_id3', 'varchar', 0),
+                                      ColumnMetadata('col_name3', 'description of col_name3',
+                                                     'varchar', 1)], True)
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             self.assertIsNone(extractor.extract())

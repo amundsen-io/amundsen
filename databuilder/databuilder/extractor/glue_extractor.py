@@ -46,24 +46,26 @@ class GlueExtractor(Extractor):
         :return:
         """
         for row in self._get_raw_extract_iter():
-            columns = []
+            columns, i = [], 0
 
-            for i in range(len(row['StorageDescriptor']['Columns'])):
-                column = row['StorageDescriptor']['Columns'][i]
+            for column in row['StorageDescriptor']['Columns'] \
+                    + row.get('PartitionKeys', []):
                 columns.append(ColumnMetadata(
                     column['Name'],
                     column['Comment'] if 'Comment' in column else None,
                     column['Type'],
                     i
                 ))
+                i += 1
 
             yield TableMetadata(
                 'glue',
                 self._cluster,
                 row['DatabaseName'],
                 row['Name'],
-                row['Description'] if 'Description' in row else None,
-                columns
+                row.get('Description') or row.get('Parameters', {}).get('comment'),
+                columns,
+                row.get('TableType') == 'VIRTUAL_VIEW',
             )
 
     def _get_raw_extract_iter(self):
