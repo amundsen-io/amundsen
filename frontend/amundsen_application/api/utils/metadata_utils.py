@@ -96,14 +96,15 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     for reader_object in readers:
         reader_object['user'] = _map_user_object_to_schema(reader_object['user'])
 
-    # If order is provided, we sort the column based on the pre-defined order
-    if app.config['COLUMN_STAT_ORDER']:
-        columns = results['columns']
-        for col in columns:
+    columns = results['columns']
+    for col in columns:
+        # Set editable state
+        col['is_editable'] = is_editable
+        # If order is provided, we sort the column based on the pre-defined order
+        if app.config['COLUMN_STAT_ORDER']:
             # the stat_type isn't defined in COLUMN_STAT_ORDER, we just use the max index for sorting
             col['stats'].sort(key=lambda x: app.config['COLUMN_STAT_ORDER'].
                               get(x['stat_type'], len(app.config['COLUMN_STAT_ORDER'])))
-            col['is_editable'] = is_editable
 
     # TODO: Add the 'key' or 'id' to the base TableSchema
     results['key'] = f'{table.database}://{table.cluster}.{table.schema}/{table.name}'
