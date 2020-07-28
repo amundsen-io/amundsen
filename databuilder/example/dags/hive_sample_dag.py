@@ -163,6 +163,8 @@ def create_table_metadata_databuilder_job():
             neo4j_password,
         'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_CREATE_ONLY_NODES):
             [DESCRIPTION_NODE_LABEL],
+        'publisher.neo4j.job_publish_tag':
+            'some_unique_tag'  # TO-DO unique tag must be added
     })
 
     job = DefaultJob(conf=job_config,
