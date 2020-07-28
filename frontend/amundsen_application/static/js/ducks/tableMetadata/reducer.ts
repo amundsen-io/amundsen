@@ -309,7 +309,10 @@ export default function reducer(
         },
       };
     case GetTableData.REQUEST:
-      return initialState;
+      return {
+        ...initialState,
+        lastIndexed: state.lastIndexed,
+      };
     case GetTableData.FAILURE:
       return {
         ...state,
