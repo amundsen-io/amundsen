@@ -101,7 +101,7 @@ describe('getBadgeConfig', () => {
     const badgeName = 'not_configured_badge';
     const badgeConfig = ConfigUtils.getBadgeConfig(badgeName);
     expect(badgeConfig.style).toEqual(BadgeStyle.DEFAULT);
-    expect(badgeConfig.displayName).toEqual('not configured badge');
+    expect(badgeConfig.displayName).toEqual(badgeName);
   });
 });
 
