@@ -91,7 +91,7 @@ class Neo4jStalenessRemovalTask(Task):
             self.ms_to_expire = conf.get_int(MS_TO_EXPIRE)
             if self.ms_to_expire < conf.get_int(MIN_MS_TO_EXPIRE):
                 raise Exception('{} is too small'.format(MS_TO_EXPIRE))
-            self.marker = '(timestamp() - {})'.format(conf.get_int(MS_TO_EXPIRE))
+            self.marker = self.ms_to_expire
         else:
             self.marker = conf.get_string(JOB_PUBLISH_TAG)
 
@@ -144,7 +144,7 @@ class Neo4jStalenessRemovalTask(Task):
         """
         if self.ms_to_expire:
             return statement.format(textwrap.dedent("""
-            n.publisher_last_updated_epoch_ms < ${marker}
+            n.publisher_last_updated_epoch_ms < (timestamp() - ${marker})
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)""".format(marker=MARKER_VAR_NAME)))
 
         return statement.format(textwrap.dedent("""
