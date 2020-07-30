@@ -136,7 +136,7 @@ class TestRemoveStaleData(unittest.TestCase):
 
             task.init(job_config)
             self.assertIsNotNone(task.ms_to_expire)
-            self.assertEqual(task.marker, '(timestamp() - 86400000)')
+            self.assertEqual(task.marker, 86400000)
 
     def test_validation_statement_publish_tag(self):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
@@ -215,22 +215,22 @@ class TestRemoveStaleData(unittest.TestCase):
             RETURN head(node) as type, count
             """))
 
-            mock_execute.assert_any_call(param_dict={'marker': '(timestamp() - 9876543210)'},
+            mock_execute.assert_any_call(param_dict={'marker': 9876543210},
                                          statement=textwrap.dedent("""
             MATCH (n)
             WHERE 
-            n.publisher_last_updated_epoch_ms < $marker
+            n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             WITH DISTINCT labels(n) as node, count(*) as count
             RETURN head(node) as type, count
             """))
 
             task._validate_relation_staleness_pct()
-            mock_execute.assert_any_call(param_dict={'marker': '(timestamp() - 9876543210)'},
+            mock_execute.assert_any_call(param_dict={'marker': 9876543210},
                                          statement=textwrap.dedent("""
             MATCH ()-[n]-()
             WHERE 
-            n.publisher_last_updated_epoch_ms < $marker
+            n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             RETURN type(n) as type, count(*) as count
             """))
@@ -313,11 +313,11 @@ class TestRemoveStaleData(unittest.TestCase):
             task._delete_stale_relations()
 
             mock_execute.assert_any_call(dry_run=False,
-                                         param_dict={'marker': '(timestamp() - 9876543210)', 'batch_size': 100},
+                                         param_dict={'marker': 9876543210, 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (n:Foo)
             WHERE 
-            n.publisher_last_updated_epoch_ms < $marker
+            n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             WITH n LIMIT $batch_size
             DETACH DELETE (n)
@@ -325,11 +325,11 @@ class TestRemoveStaleData(unittest.TestCase):
             """))
 
             mock_execute.assert_any_call(dry_run=False,
-                                         param_dict={'marker': '(timestamp() - 9876543210)', 'batch_size': 100},
+                                         param_dict={'marker': 9876543210, 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH ()-[n:BAR]-()
             WHERE 
-            n.publisher_last_updated_epoch_ms < $marker
+            n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             WITH n LIMIT $batch_size
             DELETE n
