@@ -50,10 +50,9 @@ export function getTableDataFromResponseData(
 export function getTableOwnersFromResponseData(
   responseData: API.TableDataAPI
 ): OwnerDict {
-  // TODO: owner needs proper id, until then we have to remember that we are using display_name
   const ownerObj = responseData.tableData.owners.reduce(
     (resultObj, currentOwner) => {
-      resultObj[currentOwner.display_name] = currentOwner as User;
+      resultObj[currentOwner.user_id] = currentOwner as User;
       return resultObj;
     },
     {}
