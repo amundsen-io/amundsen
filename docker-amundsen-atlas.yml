@@ -21,7 +21,7 @@ services:
     environment:
       - CREDENTIALS_PROXY_USER=admin
       - CREDENTIALS_PROXY_PASSWORD=admin
-      - PROXY_ENDPOINT=atlas:21000
+      - PROXY_ENDPOINT=http://atlas:21000
       - PROXY_CLIENT=ATLAS
     networks:
       - amundsennet
@@ -37,7 +37,7 @@ services:
     environment:
       - CREDENTIALS_PROXY_USER=admin
       - CREDENTIALS_PROXY_PASSWORD=admin
-      - PROXY_HOST=atlas
+      - PROXY_HOST=http://atlas
       - PROXY_PORT=21000
       - PROXY_CLIENT=ATLAS
   amundsenfrontend:
