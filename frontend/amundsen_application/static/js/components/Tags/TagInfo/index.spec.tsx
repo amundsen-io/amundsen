@@ -5,10 +5,16 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import * as UtilMethods from 'ducks/utilMethods';
+import { updateSearchState } from 'ducks/search/reducer';
+
 import { mapDispatchToProps, TagInfo, TagInfoProps } from '.';
 
 const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
 logClickSpy.mockImplementation(() => null);
+
+jest.mock('ducks/search/reducer', () => ({
+  updateSearchState: jest.fn(),
+}));
 
 describe('TagInfo', () => {
   const setup = (propOverrides?: Partial<TagInfoProps>) => {
@@ -109,7 +115,8 @@ describe('mapDispatchToProps', () => {
     result = mapDispatchToProps(dispatch);
   });
 
-  it('sets searchTag on the props', () => {
-    expect(result.searchTag).toBeInstanceOf(Function);
+  it('sets searchTag on the props to trigger desired action', () => {
+    result.searchTag();
+    expect(updateSearchState).toHaveBeenCalled();
   });
 });
