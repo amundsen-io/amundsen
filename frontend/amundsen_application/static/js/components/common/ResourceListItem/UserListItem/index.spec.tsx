@@ -12,6 +12,8 @@ import { Link } from 'react-router-dom';
 import { ResourceType } from 'interfaces';
 import UserListItem, { UserListItemProps } from '.';
 
+import { BadgeStyle } from 'config/config-types';
+
 describe('UserListItem', () => {
   const setup = (propOverrides?: Partial<UserListItemProps>) => {
     const props: UserListItemProps = {
@@ -209,7 +211,7 @@ describe('UserListItem', () => {
         expect(flagComponent.exists()).toBe(true);
         expect(flagComponent.props()).toMatchObject({
           text: 'Alumni',
-          labelStyle: 'danger',
+          labelStyle: BadgeStyle.DANGER,
         });
       });
 

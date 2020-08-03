@@ -10,6 +10,7 @@ import { RouteComponentProps } from 'react-router';
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
+import { BadgeStyle } from 'config/config-types';
 
 import {
   getMaxLength,
@@ -222,7 +223,7 @@ export class TableDetail extends React.Component<
                 />
                 {data.badges.length > 0 && <BadgeList badges={data.badges} />}
                 {data.is_view && (
-                  <Flag text="table view" labelStyle="warning" />
+                  <Flag text="table view" labelStyle={BadgeStyle.WARNING} />
                 )}
               </div>
             </div>
