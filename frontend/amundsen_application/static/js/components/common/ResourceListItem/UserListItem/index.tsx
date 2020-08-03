@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { UserResource } from 'interfaces';
 import Flag from 'components/common/Flag';
+import { BadgeStyle } from 'config/config-types';
 import { LoggingParams } from '../types';
 
 export interface UserListItemProps {
@@ -55,7 +56,9 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
           </div>
           <div className="resource-type">User</div>
           <div className="resource-badges">
-            {!user.is_active && <Flag text="Alumni" labelStyle="danger" />}
+            {!user.is_active && (
+              <Flag text="Alumni" labelStyle={BadgeStyle.DANGER} />
+            )}
             <img className="icon icon-right" alt="" />
           </div>
         </Link>

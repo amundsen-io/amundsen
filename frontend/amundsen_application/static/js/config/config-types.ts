@@ -134,11 +134,11 @@ interface BaseResourceConfig {
 }
 
 export enum BadgeStyle {
-  DANGER = 'danger',
-  DEFAULT = 'default',
+  DANGER = 'negative',
+  DEFAULT = 'neutral',
   INFO = 'info',
   PRIMARY = 'primary',
-  SUCCESS = 'success',
+  SUCCESS = 'positive',
   WARNING = 'warning',
 }
 
