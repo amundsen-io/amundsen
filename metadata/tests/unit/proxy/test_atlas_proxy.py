@@ -151,7 +151,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                                             text='testParameterValueA'),
                                                     ProgrammaticDescription(source='test parameter key b',
                                                                             text='testParameterValueB')
-                                                    ])
+                                                    ],
+                         is_view=False)
 
         self.assertEqual(str(expected), str(response))
 

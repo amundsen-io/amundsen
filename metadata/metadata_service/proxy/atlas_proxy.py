@@ -411,6 +411,8 @@ class AtlasProxy(BaseProxy):
 
             reports_guids = [report.get("guid") for report in attrs.get("reports") or list()]
 
+            is_view = True if attrs.get('tableType', '').lower().find('view') != -1 else False
+
             table = Table(
                 database=table_details.get('typeName'),
                 cluster=table_qn.get('cluster_name', ''),
@@ -421,6 +423,7 @@ class AtlasProxy(BaseProxy):
                 owners=[User(email=attrs.get('owner'))],
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
+                is_view=is_view,
                 table_readers=self._get_readers(attrs.get(self.QN_KEY)),
                 last_updated_timestamp=self._parse_date(table_details.get('updateTime')),
                 programmatic_descriptions=programmatic_descriptions)

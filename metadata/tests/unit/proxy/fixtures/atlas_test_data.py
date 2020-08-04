@@ -111,7 +111,8 @@ class Data:
                 'testParameterKeyA': 'testParameterValueA',
                 'spark.sql.param': 1
             },
-            'reports': [{'guid': '23'}, {'guid': '121212'}, {'guid': '2344'}]
+            'reports': [{'guid': '23'}, {'guid': '121212'}, {'guid': '2344'}],
+            'tableType': 'MANAGED_TABLE'
         },
         'relationshipAttributes': {
             'db': db_entity,
@@ -131,7 +132,8 @@ class Data:
             'owner': 'dummy@email.com',
             'db': db_entity,
             'popularityScore': 100,
-            'partitions': list()
+            'partitions': list(),
+            'tableType': 'VIRTUAL_VIEW'
         },
         'relationshipAttributes': {
             'db': db_entity
