@@ -39,6 +39,7 @@ import TagInput from 'components/Tags/TagInput';
 import { ResourceType } from 'interfaces';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
+import { BadgeStyle } from 'config/config-types';
 
 import { getLoggingParams } from 'utils/logUtils';
 
@@ -46,9 +47,6 @@ import { NO_TIMESTAMP_TEXT } from 'components/constants';
 import ImagePreview from './ImagePreview';
 
 import './styles.scss';
-
-const STATUS_SUCCESS = 'success';
-const STATUS_DANGER = 'danger';
 
 interface DashboardPageState {
   uri: string;
@@ -105,11 +103,11 @@ export class DashboardPage extends React.Component<
     }
   }
 
-  mapStatusToStyle = (status: string): string => {
+  mapStatusToStyle = (status: string): BadgeStyle => {
     if (status === LAST_RUN_SUCCEEDED) {
-      return STATUS_SUCCESS;
+      return BadgeStyle.SUCCESS;
     }
-    return STATUS_DANGER;
+    return BadgeStyle.DANGER;
   };
 
   renderTabs() {

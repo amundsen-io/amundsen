@@ -124,7 +124,7 @@ class EditableText extends React.Component<
       return (
         <div className="editable-text">
           <div className="markdown-wrapper">
-            <ReactMarkdown source={this.state.value} />
+            <ReactMarkdown source={this.state.value} escapeHtml={false} />
           </div>
           {this.props.editable && !this.state.value && (
             <a
