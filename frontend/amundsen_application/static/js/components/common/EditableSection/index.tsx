@@ -50,6 +50,10 @@ export class EditableSection extends React.Component<
     this.setState({ isEditing: !this.state.isEditing });
   };
 
+  preventDefault = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
   static convertText(str: string): string {
     return str
       .split(new RegExp('[\\s+_]'))
@@ -122,14 +126,17 @@ export class EditableSection extends React.Component<
     return (
       <section className="editable-section">
         <label className="editable-section-label">
-          <div className="editable-section-label-wrapper">
+          <div
+            className="editable-section-label-wrapper"
+            onClick={this.preventDefault}
+          >
             <span className="section-title title-3">
               {EditableSection.convertText(title)}
             </span>
             {!readOnly ? this.renderButton() : this.renderReadOnlyButton()}
           </div>
-          <div className="editable-section-content">{childrenWithProps}</div>
         </label>
+        <div className="editable-section-content">{childrenWithProps}</div>
       </section>
     );
   }

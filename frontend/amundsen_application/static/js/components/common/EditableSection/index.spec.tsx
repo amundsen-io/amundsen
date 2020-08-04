@@ -21,6 +21,20 @@ describe('EditableSection', () => {
     return { wrapper, props };
   };
 
+  describe('handleClick', () => {
+    const clickEvent = {
+      preventDefault: jest.fn(),
+    };
+
+    it('preventDefault on click', () => {
+      const { wrapper, props } = setup();
+      wrapper
+        .find('.editable-section-label-wrapper')
+        .simulate('click', clickEvent);
+      expect(clickEvent.preventDefault).toHaveBeenCalled();
+    });
+  });
+
   describe('setEditMode', () => {
     const { wrapper, props } = setup();
 
