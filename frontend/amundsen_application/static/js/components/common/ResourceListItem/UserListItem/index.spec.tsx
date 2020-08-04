@@ -10,9 +10,8 @@ import Flag from 'components/common/Flag';
 import { Link } from 'react-router-dom';
 
 import { ResourceType } from 'interfaces';
-import UserListItem, { UserListItemProps } from '.';
-
 import { BadgeStyle } from 'config/config-types';
+import UserListItem, { UserListItemProps } from '.';
 
 describe('UserListItem', () => {
   const setup = (propOverrides?: Partial<UserListItemProps>) => {

@@ -16,7 +16,7 @@ export enum CaseType {
 export interface FlagProps {
   caseType?: string | null;
   text: string;
-  labelStyle?: string;
+  labelStyle?: BadgeStyle;
 }
 
 export function convertText(str: string, caseType: string): string {

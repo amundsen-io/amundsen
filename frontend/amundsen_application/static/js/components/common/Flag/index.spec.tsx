@@ -5,8 +5,8 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import Flag, { CaseType, FlagProps, convertText } from '.';
 import { BadgeStyle } from 'config/config-types';
+import Flag, { CaseType, FlagProps, convertText } from '.';
 
 describe('Flag', () => {
   let props: FlagProps;

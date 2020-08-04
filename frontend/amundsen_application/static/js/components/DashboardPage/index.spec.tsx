@@ -18,6 +18,7 @@ import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
 import * as LogUtils from 'utils/logUtils';
 import { ResourceType } from 'interfaces';
+import { BadgeStyle } from 'config/config-types';
 import ChartList from './ChartList';
 import ImagePreview from './ImagePreview';
 
@@ -146,15 +147,15 @@ describe('DashboardPage', () => {
       ({ wrapper } = setup());
     });
 
-    it('returns success if status === LAST_RUN_SUCCEEDED', () => {
+    it('returns BadgeStyle.SUCCESS if status === LAST_RUN_SUCCEEDED', () => {
       expect(
         wrapper.instance().mapStatusToStyle(Constants.LAST_RUN_SUCCEEDED)
-      ).toBe('success');
+      ).toBe(BadgeStyle.SUCCESS);
     });
 
-    it('returns danger if status !== LAST_RUN_SUCCEEDED', () => {
+    it('returns BadgeStyle.DANGER if status !== LAST_RUN_SUCCEEDED', () => {
       expect(wrapper.instance().mapStatusToStyle('anythingelse')).toBe(
-        'danger'
+        BadgeStyle.DANGER
       );
     });
   });
@@ -226,9 +227,10 @@ describe('DashboardPage', () => {
     });
 
     it('renders a Flag for last run state', () => {
+      const mockStyle = BadgeStyle.DANGER;
       const mapStatusToStyleSpy = jest
         .spyOn(wrapper.instance(), 'mapStatusToStyle')
-        .mockImplementationOnce(() => 'testStyle');
+        .mockImplementationOnce(() => mockStyle);
       wrapper.instance().forceUpdate();
       const element = wrapper.find('.last-run-state').find(Flag);
 
@@ -236,7 +238,7 @@ describe('DashboardPage', () => {
       expect(mapStatusToStyleSpy).toHaveBeenCalledWith(
         props.dashboard.last_run_state
       );
-      expect(element.props().labelStyle).toBe('testStyle');
+      expect(element.props().labelStyle).toBe(mockStyle);
     });
 
     it('renders an ImagePreview with correct props', () => {
