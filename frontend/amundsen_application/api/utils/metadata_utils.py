@@ -113,8 +113,7 @@ def marshall_table_full(table_dict: Dict) -> Dict:
 
     # We follow same style as column stat order for arranging the programmatic descriptions
     prog_descriptions = results['programmatic_descriptions']
-    if prog_descriptions:
-        _update_prog_descriptions(prog_descriptions)
+    results['programmatic_descriptions'] = _convert_prog_descriptions(prog_descriptions)
 
     return results
 
@@ -150,16 +149,44 @@ def marshall_dashboard_full(dashboard_dict: Dict) -> Dict:
     return dashboard_dict
 
 
-def _update_prog_descriptions(prog_descriptions: List) -> None:
-    # We want to make sure there is a display title that is just source
-    for desc in prog_descriptions:
-        source = desc.get('source')
-        if not source:
-            logging.warning("no source found in: " + str(desc))
-    prog_display_config = app.config['PROGRAMMATIC_DISPLAY']
-    if prog_display_config and prog_descriptions:
-        # If config is defined for programmatic disply we look to see what configuration is being used
-        prog_descriptions.sort(key=lambda x: _sort_prog_descriptions(prog_display_config, x))
+def _convert_prog_descriptions(prog_descriptions: List = None) -> Dict:
+    """
+    Apply the PROGRAMMATIC_DISPLAY configuration to convert to the structure.
+    :param prog_descriptions: A list of objects representing programmatic descriptions
+    :return: A dictionary with organized programmatic_descriptions
+    """
+    left = []  # type: List
+    right = []  # type: List
+    other = []  # type: List
+    updated_descriptions = {}
+
+    if prog_descriptions:
+        # We want to make sure there is a display title that is just source
+        for desc in prog_descriptions:
+            source = desc.get('source')
+            if not source:
+                logging.warning("no source found in: " + str(desc))
+
+        # If config is defined for programmatic disply we organize and sort them based on the configuration
+        prog_display_config = app.config['PROGRAMMATIC_DISPLAY']
+        if prog_display_config:
+            left_config = prog_display_config.get('LEFT', {})
+            left = [x for x in prog_descriptions if x.get('source') in left_config]
+            left.sort(key=lambda x: _sort_prog_descriptions(left_config, x))
+
+            right_config = prog_display_config.get('RIGHT', {})
+            right = [x for x in prog_descriptions if x.get('source') in right_config]
+            right.sort(key=lambda x: _sort_prog_descriptions(right_config, x))
+
+            other_config = dict(filter(lambda x: x not in ['LEFT', 'RIGHT'], prog_display_config.items()))
+            other = list(filter(lambda x: x.get('source') not in left_config and x.get('source')
+                                not in right_config, prog_descriptions))
+            other.sort(key=lambda x: _sort_prog_descriptions(other_config, x))
+
+    updated_descriptions['left'] = left
+    updated_descriptions['right'] = right
+    updated_descriptions['other'] = other
+    return updated_descriptions
 
 
 def _sort_prog_descriptions(base_config: Dict, prog_description: Dict) -> int:

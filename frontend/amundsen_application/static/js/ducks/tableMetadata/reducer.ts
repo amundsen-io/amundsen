@@ -282,7 +282,7 @@ export const initialTableDataState: TableMetadata = {
   source: { source: '', source_type: '' },
   resource_reports: [],
   watermarks: [],
-  programmatic_descriptions: [],
+  programmatic_descriptions: {},
 };
 
 export const initialState: TableMetadataReducerState = {

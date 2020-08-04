@@ -42,7 +42,11 @@ import TableIssues from 'components/TableDetail/TableIssues';
 import WatermarkLabel from 'components/TableDetail/WatermarkLabel';
 import WriterLink from 'components/TableDetail/WriterLink';
 import TagInput from 'components/Tags/TagInput';
-import { ResourceType, TableMetadata } from 'interfaces';
+import {
+  ProgrammaticDescription,
+  ResourceType,
+  TableMetadata,
+} from 'interfaces';
 
 import EditableSection from 'components/common/EditableSection';
 
@@ -139,6 +143,23 @@ export class TableDetail extends React.Component<
 
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
+
+  renderProgrammaticDesc = (descriptions: ProgrammaticDescription[]) => {
+    if (!descriptions) {
+      return null;
+    }
+
+    return descriptions.map((d) => (
+      <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          onSubmitValue={null}
+        />
+      </EditableSection>
+    ));
+  };
 
   renderTabs(editText, editUrl) {
     const tabInfo = [];
@@ -285,6 +306,9 @@ export class TableDetail extends React.Component<
                     <div className="section-title title-3">Frequent Users</div>
                     <FrequentUsers readers={data.table_readers} />
                   </section>
+                  {this.renderProgrammaticDesc(
+                    data.programmatic_descriptions.left
+                  )}
                 </section>
                 <section className="right-panel">
                   <EditableSection title="Tags">
@@ -296,28 +320,14 @@ export class TableDetail extends React.Component<
                   <EditableSection title="Owners">
                     <OwnerEditor />
                   </EditableSection>
+                  {this.renderProgrammaticDesc(
+                    data.programmatic_descriptions.right
+                  )}
                 </section>
               </section>
-              {data.programmatic_descriptions.length > 0 && (
-                <>
-                  <div className="programmatic-title title-4">
-                    {PROGRMMATIC_DESC_HEADER}
-                  </div>
-                  <hr className="programmatic-hr hr1" />
-                </>
+              {this.renderProgrammaticDesc(
+                data.programmatic_descriptions.other
               )}
-              {data.programmatic_descriptions.map((d) => (
-                <section key={d.source} className="column-layout-2">
-                  <EditableSection title={d.source} readOnly>
-                    <EditableText
-                      maxLength={999999}
-                      value={d.text}
-                      editable={false}
-                      onSubmitValue={null}
-                    />
-                  </EditableSection>
-                </section>
-              ))}
             </aside>
             <main className="right-panel">
               {this.renderTabs(editText, editUrl)}
