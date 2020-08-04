@@ -106,7 +106,7 @@ export const tableMetadata: TableMetadata = {
     key: 'ds',
     value: '2020-03-05',
   },
-  programmatic_descriptions: [],
+  programmatic_descriptions: {},
   schema: 'base',
   source: {
     source:

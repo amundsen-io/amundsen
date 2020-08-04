@@ -172,7 +172,7 @@ const globalState: GlobalState = {
       source: { source: '', source_type: '' },
       resource_reports: [],
       watermarks: [],
-      programmatic_descriptions: [],
+      programmatic_descriptions: {},
     },
     tableOwners: {
       isLoading: true,

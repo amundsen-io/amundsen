@@ -3,9 +3,7 @@
 
 import unittest
 
-from unittest.mock import patch, Mock
-
-from amundsen_application.api.utils.metadata_utils import _update_prog_descriptions, _sort_prog_descriptions, \
+from amundsen_application.api.utils.metadata_utils import _convert_prog_descriptions, _sort_prog_descriptions, \
     _parse_editable_rule
 from amundsen_application.config import MatchRuleObject
 from amundsen_application import create_app
@@ -17,26 +15,50 @@ class ProgrammaticDescriptionsTest(unittest.TestCase):
     def setUp(self) -> None:
         pass
 
-    @patch('amundsen_application.api.utils.metadata_utils._sort_prog_descriptions')
-    def test_update_prog_descriptions(self, sort_mock) -> None:
+    def test_convert_prog_descriptions(self) -> None:
         with local_app.app_context():
+            # mock config
+            test_config = {
+                'RIGHT': {
+                    'test3': {},
+                    'test2': {'display_order': 0},
+                },
+                'LEFT': {
+                    'test1': {'display_order': 1},
+                    'test0': {'display_order': 0},
+                },
+                'test4': {'display_order': 0},
+            }
+            # test data
             test_desc = [
-                {'source': 'c_1', 'text': 'description c'},
-                {'source': 'a_1', 'text': 'description a'},
-                {'source': 'b_1', 'text': 'description b'}
+                {'source': 'test0', 'text': 'test'},
+                {'source': 'test1', 'text': 'test'},
+                {'source': 'test2', 'text': 'test'},
+                {'source': 'test3', 'text': 'test'},
+                {'source': 'test5', 'text': 'test'},
+                {'source': 'test4', 'text': 'test'},
             ]
-            # Pretend config exists
-            local_app.config['PROGRAMMATIC_DISPLAY'] = Mock()
-            # Mock the effects of the sort method
-            sort_mock.side_effect = [1, 0, 1]
-            # Expected order based on mocked side effect
-            expected_programmatic_desc = [
-                {'source': 'a_1', 'text': 'description a'},
-                {'source': 'c_1', 'text': 'description c'},
-                {'source': 'b_1', 'text': 'description b'}
-            ]
-            _update_prog_descriptions(test_desc)
-            self.assertEqual(test_desc, expected_programmatic_desc)
+            # expected order based on mock
+            expected_programmatic_desc = {
+                'left': [
+                    {'source': 'test0', 'text': 'test'},
+                    {'source': 'test1', 'text': 'test'},
+                ],
+                'right': [
+                    {'source': 'test2', 'text': 'test'},
+                    {'source': 'test3', 'text': 'test'},
+                ],
+                'other': [
+                    {'source': 'test4', 'text': 'test'},
+                    {'source': 'test5', 'text': 'test'},
+                ]
+            }
+            local_app.config['PROGRAMMATIC_DISPLAY'] = test_config
+
+            result = _convert_prog_descriptions(test_desc)
+            self.assertEqual(result.get('left'), expected_programmatic_desc.get('left'))
+            self.assertEqual(result.get('right'), expected_programmatic_desc.get('right'))
+            self.assertEqual(result.get('other'), expected_programmatic_desc.get('other'))
 
     def test_sort_prog_descriptions_returns_value_from_config(self) -> None:
         """

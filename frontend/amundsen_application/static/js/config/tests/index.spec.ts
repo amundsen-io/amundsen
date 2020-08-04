@@ -196,7 +196,7 @@ describe('generateExploreUrl', () => {
     source: { source: '', source_type: '' },
     resource_reports: [],
     watermarks: [],
-    programmatic_descriptions: [],
+    programmatic_descriptions: {},
   };
 
   it('calls `exploreUrlGenerator` with table metadata', () => {

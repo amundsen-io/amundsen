@@ -73,6 +73,11 @@ export interface ProgrammaticDescription {
   source: string;
   text: string;
 }
+export interface TableProgrammaticDescriptions {
+  left?: ProgrammaticDescription[];
+  right?: ProgrammaticDescription[];
+  other?: ProgrammaticDescription[];
+}
 
 export interface ResourceReport {
   name: string;
@@ -97,7 +102,7 @@ export interface TableMetadata {
   source: TableSource;
   resource_reports: ResourceReport[];
   watermarks: Watermark[];
-  programmatic_descriptions: ProgrammaticDescription[];
+  programmatic_descriptions: TableProgrammaticDescriptions;
 }
 
 export interface UpdateOwnerPayload {
