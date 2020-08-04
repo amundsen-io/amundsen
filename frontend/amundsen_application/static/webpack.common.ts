@@ -100,11 +100,7 @@ const config: webpack.Configuration = {
   plugins: [
     new CleanWebpackPlugin(),
     new MomentLocalesPlugin(), // To strip all locales except “en”
-    new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
-    }),
     ...htmlWebpackPluginConfig,
-    // new BundleAnalyzerPlugin(),   // Uncomment to analyze the production bundle on local
   ],
   optimization: {
     moduleIds: 'hashed',
