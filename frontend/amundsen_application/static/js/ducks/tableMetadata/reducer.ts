@@ -38,6 +38,41 @@ import tableOwnersReducer, {
   TableOwnerReducerState,
 } from './owners/reducer';
 
+export const initialPreviewState = {
+  data: {},
+  status: null,
+};
+
+export const initialTableDataState: TableMetadata = {
+  badges: [],
+  cluster: '',
+  columns: [],
+  database: '',
+  is_editable: false,
+  is_view: false,
+  key: '',
+  last_updated_timestamp: 0,
+  schema: '',
+  name: '',
+  description: '',
+  table_writer: { application_url: '', description: '', id: '', name: '' },
+  partition: { is_partitioned: false },
+  table_readers: [],
+  source: { source: '', source_type: '' },
+  resource_reports: [],
+  watermarks: [],
+  programmatic_descriptions: {},
+};
+
+export const initialState: TableMetadataReducerState = {
+  isLoading: true,
+  lastIndexed: null,
+  preview: initialPreviewState,
+  statusCode: null,
+  tableData: initialTableDataState,
+  tableOwners: initialOwnersState,
+};
+
 /* ACTIONS */
 export function getTableData(
   key: string,
@@ -53,6 +88,7 @@ export function getTableData(
     type: GetTableData.REQUEST,
   };
 }
+
 export function getTableDataFailure(): GetTableDataResponse {
   return {
     type: GetTableData.FAILURE,
@@ -64,6 +100,7 @@ export function getTableDataFailure(): GetTableDataResponse {
     },
   };
 }
+
 export function getTableDataSuccess(
   data: TableMetadata,
   owners: OwnerDict,
@@ -258,41 +295,6 @@ export interface TableMetadataReducerState {
   tableData: TableMetadata;
   tableOwners: TableOwnerReducerState;
 }
-
-export const initialPreviewState = {
-  data: {},
-  status: null,
-};
-
-export const initialTableDataState: TableMetadata = {
-  badges: [],
-  cluster: '',
-  columns: [],
-  database: '',
-  is_editable: false,
-  is_view: false,
-  key: '',
-  last_updated_timestamp: 0,
-  schema: '',
-  name: '',
-  description: '',
-  table_writer: { application_url: '', description: '', id: '', name: '' },
-  partition: { is_partitioned: false },
-  table_readers: [],
-  source: { source: '', source_type: '' },
-  resource_reports: [],
-  watermarks: [],
-  programmatic_descriptions: {},
-};
-
-export const initialState: TableMetadataReducerState = {
-  isLoading: true,
-  lastIndexed: null,
-  preview: initialPreviewState,
-  statusCode: null,
-  tableData: initialTableDataState,
-  tableOwners: initialOwnersState,
-};
 
 export default function reducer(
   state: TableMetadataReducerState = initialState,

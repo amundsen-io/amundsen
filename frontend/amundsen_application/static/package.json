@@ -282,7 +282,6 @@
       "@typescript-eslint/naming-convention": "warn",
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-use-before-define": "warn",
       "@typescript-eslint/member-delimiter-style": [
         "off",
         {
@@ -323,7 +322,6 @@
           }
         }
       ],
-      "@typescript-eslint/indent": "off",
       "array-callback-return": "warn",
       "camelcase": "off",
       "class-methods-use-this": "off",
