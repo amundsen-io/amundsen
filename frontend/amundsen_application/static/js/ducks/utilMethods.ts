@@ -33,6 +33,13 @@ export function filterFromObj(
     }, {});
 }
 
+export function logAction(declaredProps: ActionLogParams) {
+  const inferredProps = {
+    location: window.location.pathname,
+  };
+  postActionLog({ ...inferredProps, ...declaredProps });
+}
+
 export function logClick(
   event: React.MouseEvent<HTMLElement>,
   declaredProps?: ActionLogParams
@@ -60,11 +67,4 @@ export function logClick(
   inferredProps.target_type = nodeName;
 
   logAction({ ...inferredProps, ...declaredProps });
-}
-
-export function logAction(declaredProps: ActionLogParams) {
-  const inferredProps = {
-    location: window.location.pathname,
-  };
-  postActionLog({ ...inferredProps, ...declaredProps });
 }

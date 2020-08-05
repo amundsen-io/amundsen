@@ -11,17 +11,12 @@ import { BrowsePage } from '..';
 
 describe('BrowsePage', () => {
   const setup = () => {
-    const wrapper = shallow<BrowsePage>(<BrowsePage />);
-    return { props, wrapper };
+    return shallow<BrowsePage>(<BrowsePage />);
   };
-
-  let props;
   let wrapper;
 
   beforeAll(() => {
-    const setupResult = setup();
-    props = setupResult.props;
-    wrapper = setupResult.wrapper;
+    wrapper = setup();
   });
 
   describe('render', () => {

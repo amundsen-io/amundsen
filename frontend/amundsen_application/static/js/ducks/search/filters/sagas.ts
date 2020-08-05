@@ -9,18 +9,6 @@ import { filterFromObj } from 'ducks/utilMethods';
 
 import { UpdateSearchFilter, UpdateFilterRequest } from './reducer';
 
-/**
- * Listens to actions triggers by user updates to the filter state..
- */
-export function* filterWatcher(): SagaIterator {
-  /*
-    TODO: If we want to minimize api calls on checkbox quick-select,
-    we will have to debounce and accumulate filter updates elsewhere.
-    To be revisited when we have more checkbox filters
-  */
-  yield takeEvery(UpdateSearchFilter.REQUEST, filterWorker);
-}
-
 /*
  * Generates new filter shape from action payload.
  * Then executes a search on current resource based with new filters and current search state values.
@@ -49,4 +37,16 @@ export function* filterWorker(action: UpdateFilterRequest): SagaIterator {
       updateUrl: true,
     })
   );
+}
+
+/**
+ * Listens to actions triggers by user updates to the filter state..
+ */
+export function* filterWatcher(): SagaIterator {
+  /*
+    TODO: If we want to minimize api calls on checkbox quick-select,
+    we will have to debounce and accumulate filter updates elsewhere.
+    To be revisited when we have more checkbox filters
+  */
+  yield takeEvery(UpdateSearchFilter.REQUEST, filterWorker);
 }
