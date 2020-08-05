@@ -12,7 +12,7 @@ export interface LineageLinkProps {
   tableData: TableMetadata;
 }
 
-const LineageLink: React.SFC<LineageLinkProps> = ({
+const LineageLink: React.FC<LineageLinkProps> = ({
   tableData,
 }: LineageLinkProps) => {
   const config = AppConfig.tableLineage;

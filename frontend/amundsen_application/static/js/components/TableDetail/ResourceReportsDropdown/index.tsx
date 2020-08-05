@@ -7,7 +7,7 @@ export interface ResourceReportProps {
   resourceReports: ResourceReport[];
 }
 
-const TableReportsDropdown: React.SFC<ResourceReportProps> = ({
+const TableReportsDropdown: React.FC<ResourceReportProps> = ({
   resourceReports,
 }: ResourceReportProps) => {
   if (resourceReports === null || resourceReports.length < 1) return null;

@@ -33,7 +33,7 @@ export function convertText(str: string, caseType: string): string {
   }
 }
 
-const Flag: React.SFC<FlagProps> = ({
+const Flag: React.FC<FlagProps> = ({
   caseType,
   text,
   labelStyle,

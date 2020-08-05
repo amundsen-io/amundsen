@@ -15,7 +15,7 @@ export interface TableHeaderBulletsProps {
   database: string;
 }
 
-const TableHeaderBullets: React.SFC<TableHeaderBulletsProps> = ({
+const TableHeaderBullets: React.FC<TableHeaderBulletsProps> = ({
   cluster,
   database,
 }: TableHeaderBulletsProps) => {

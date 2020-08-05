@@ -12,7 +12,7 @@ export interface FlashMessageProps {
   onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const FlashMessage: React.SFC<FlashMessageProps> = ({
+const FlashMessage: React.FC<FlashMessageProps> = ({
   iconClass,
   message,
   onClose,

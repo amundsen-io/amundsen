@@ -11,7 +11,7 @@ export interface SourceLinkProps {
   tableSource: TableSource;
 }
 
-const SourceLink: React.SFC<SourceLinkProps> = ({
+const SourceLink: React.FC<SourceLinkProps> = ({
   tableSource,
 }: SourceLinkProps) => {
   if (tableSource === null || tableSource.source === null) return null;

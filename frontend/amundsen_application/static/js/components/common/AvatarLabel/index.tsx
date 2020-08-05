@@ -14,7 +14,7 @@ export interface AvatarLabelProps {
   src?: string;
 }
 
-const AvatarLabel: React.SFC<AvatarLabelProps> = ({
+const AvatarLabel: React.FC<AvatarLabelProps> = ({
   avatarClass,
   labelClass,
   label,
