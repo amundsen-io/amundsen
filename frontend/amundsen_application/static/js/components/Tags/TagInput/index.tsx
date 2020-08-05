@@ -179,9 +179,12 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
 
   toggleTag = (event, tagName) => {
     const element = event.currentTarget;
-    element.classList.contains('selected')
-      ? element.classList.remove('selected')
-      : element.classList.add('selected');
+
+    if (element.classList.contains('selected')) {
+      element.classList.remove('selected');
+    } else {
+      element.classList.add('selected');
+    }
 
     if (!this.batchEditSet.hasOwnProperty(tagName)) {
       this.batchEditSet[tagName] = BatchEditState.PUT;
@@ -240,11 +243,15 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 
   startEditing = () => {
-    this.props.setEditMode && this.props.setEditMode(true);
+    if (this.props.setEditMode) {
+      this.props.setEditMode(true);
+    }
   };
 
   stopEditing = () => {
-    this.props.setEditMode && this.props.setEditMode(false);
+    if (this.props.setEditMode) {
+      this.props.setEditMode(false);
+    }
   };
 
   render() {
