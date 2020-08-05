@@ -65,7 +65,7 @@ describe('HomePage', () => {
     it('calls searchReset', () => {
       const searchResetSpy = jest.spyOn(props, 'searchReset');
       wrapper.instance().componentDidMount();
-      expect(searchResetSpy).toHaveBeenCalled;
+      expect(searchResetSpy).toHaveBeenCalled();
     });
   });
 });
