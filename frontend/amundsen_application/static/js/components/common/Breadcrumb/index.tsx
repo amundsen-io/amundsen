@@ -24,7 +24,7 @@ type BreadcrumbDirection = 'left' | 'right';
 
 export type BreadcrumbProps = OwnProps & MapDispatchToProps;
 
-export const Breadcrumb: React.SFC<BreadcrumbProps> = (
+export const Breadcrumb: React.FC<BreadcrumbProps> = (
   props: BreadcrumbProps
 ) => {
   const { direction = 'left', path, text } = props;

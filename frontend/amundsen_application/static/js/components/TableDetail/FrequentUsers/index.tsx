@@ -56,7 +56,7 @@ export function renderReader(
   );
 }
 
-const FrequentUsers: React.SFC<FrequentUsersProps> = ({
+const FrequentUsers: React.FC<FrequentUsersProps> = ({
   readers,
 }: FrequentUsersProps) => {
   if (readers.length === 0) {

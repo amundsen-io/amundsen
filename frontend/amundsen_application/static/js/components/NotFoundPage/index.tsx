@@ -9,7 +9,7 @@ import './styles.scss';
 
 import Breadcrumb from 'components/common/Breadcrumb';
 
-const NotFoundPage: React.SFC<any> = () => {
+const NotFoundPage: React.FC<any> = () => {
   return (
     <DocumentTitle title="404 Page Not Found - Amundsen">
       <div className="container not-found-page">

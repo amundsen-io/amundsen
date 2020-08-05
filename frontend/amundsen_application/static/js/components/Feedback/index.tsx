@@ -14,12 +14,12 @@ import * as Constants from './constants';
 import './styles.scss';
 
 export interface FeedbackProps {
-  content?: React.SFC<any>;
+  content?: React.FC<any>;
   title?: string;
 }
 
 interface FeedbackState {
-  content: React.SFC<any>;
+  content: React.FC<any>;
   feedbackType: FeedbackType;
   isOpen: boolean;
 }

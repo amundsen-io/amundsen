@@ -15,7 +15,7 @@ export interface CheckBoxItemProps {
   children: React.ReactNode;
 }
 
-const CheckBoxItem: React.SFC<CheckBoxItemProps> = ({
+const CheckBoxItem: React.FC<CheckBoxItemProps> = ({
   checked = false,
   disabled = false,
   name,

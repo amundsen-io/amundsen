@@ -12,7 +12,7 @@ export interface SchemaInfoProps {
   placement?: string;
 }
 
-const SchemaInfo: React.SFC<SchemaInfoProps> = ({
+const SchemaInfo: React.FC<SchemaInfoProps> = ({
   schema,
   table,
   desc,

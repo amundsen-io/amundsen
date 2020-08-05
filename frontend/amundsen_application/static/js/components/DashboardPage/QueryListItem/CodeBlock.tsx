@@ -10,7 +10,7 @@ type CodeBlockProps = {
   text: string;
 };
 
-const CodeBlock: React.SFC<CodeBlockProps> = ({ text }: CodeBlockProps) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({ text }: CodeBlockProps) => {
   return (
     <CopyBlock
       text={text}

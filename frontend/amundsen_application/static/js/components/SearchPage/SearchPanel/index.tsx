@@ -9,7 +9,7 @@ type SearchPanelProps = {
   children: React.ReactNode;
 };
 
-const SearchPanel: React.SFC = ({ children }: SearchPanelProps) => {
+const SearchPanel: React.FC = ({ children }: SearchPanelProps) => {
   return (
     <aside className="search-control-panel">
       {React.Children.map(children, (child, index) => {

@@ -19,7 +19,7 @@ export interface InfoButtonProps {
   size?: string;
 }
 
-const InfoButton: React.SFC<InfoButtonProps> = ({
+const InfoButton: React.FC<InfoButtonProps> = ({
   title,
   infoText,
   placement,

@@ -12,7 +12,7 @@ export interface WriterLinkProps {
   tableWriter: TableWriter;
 }
 
-const WriterLink: React.SFC<WriterLinkProps> = ({
+const WriterLink: React.FC<WriterLinkProps> = ({
   tableWriter,
 }: WriterLinkProps) => {
   if (tableWriter === null || tableWriter.application_url === null) {

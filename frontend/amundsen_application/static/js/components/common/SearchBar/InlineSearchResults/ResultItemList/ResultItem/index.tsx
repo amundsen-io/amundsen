@@ -14,7 +14,7 @@ export interface ResultItemProps {
   type: string;
 }
 
-const ResultItem: React.SFC<ResultItemProps> = ({
+const ResultItem: React.FC<ResultItemProps> = ({
   href,
   iconClass,
   id,

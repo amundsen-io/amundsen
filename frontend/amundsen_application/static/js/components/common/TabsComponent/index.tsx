@@ -19,7 +19,7 @@ interface TabInfo {
   title: string;
 }
 
-const TabsComponent: React.SFC<TabsProps> = ({
+const TabsComponent: React.FC<TabsProps> = ({
   tabs,
   activeKey,
   defaultTab,

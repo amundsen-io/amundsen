@@ -13,7 +13,7 @@ interface ColumnListProps {
   editUrl?: string;
 }
 
-const ColumnList: React.SFC<ColumnListProps> = ({
+const ColumnList: React.FC<ColumnListProps> = ({
   columns,
   editText,
   editUrl,
