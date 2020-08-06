@@ -68,9 +68,9 @@ describe('ColumnListItem', () => {
 
     it('turns expanded state to the opposite state', () => {
       setStateSpy.mockClear();
-      const { isExpanded } = instance.state;
+      const prevState = instance.state;
       instance.toggleExpand(null);
-      expect(setStateSpy).toHaveBeenCalledWith({ isExpanded: !isExpanded });
+      expect(setStateSpy).toHaveBeenCalled();
     });
   });
 
@@ -124,27 +124,137 @@ describe('ColumnListItem', () => {
       expect(wrapper.find('.column-dropdown').exists()).toBe(false);
     });
 
-    it('renders column stats and editable text when expanded', () => {
-      instance.setState({ isExpanded: true });
-      const newWrapper = shallow(instance.render());
-      expect(newWrapper.find('.expanded-content').exists()).toBe(true);
-      expect(newWrapper.find(ColumnDescEditableText).exists()).toBe(true);
-      expect(newWrapper.find(ColumnStats).exists()).toBe(true);
-    });
+    describe('when expanded', () => {
+      it('renders column stats and editable text', () => {
+        instance.setState({ isExpanded: true });
+        const newWrapper = shallow(instance.render());
+        expect(newWrapper.find('.expanded-content').exists()).toBe(true);
+        expect(newWrapper.find(EditableSection).exists()).toBe(true);
+        expect(newWrapper.find(ColumnDescEditableText).exists()).toBe(true);
+        expect(newWrapper.find(ColumnStats).exists()).toBe(true);
+      });
 
-    it('renders EditableSection with correct edit text and Url when expanded', () => {
-      instance.setState({ isExpanded: true });
-      const newWrapper = shallow(instance.render());
-      expect(newWrapper.find(EditableSection).exists()).toBe(true);
-      const editableSection = newWrapper.find(EditableSection);
-      expect(editableSection.props()).toMatchObject({
-        title: 'Description',
-        readOnly: !props.data.is_editable,
-        editText: props.editText,
-        editUrl: props.editUrl,
+      it('renders EditableSection with non-empty description, edit text and url', () => {
+        instance.setState({ isExpanded: true });
+        const newWrapper = shallow(instance.render());
+        const editableSection = newWrapper.find(EditableSection);
+        expect(editableSection.props()).toMatchObject({
+          title: 'Description',
+          readOnly: !props.data.is_editable,
+          editText: props.editText,
+          editUrl: props.editUrl,
+        });
+      });
+
+      it('renders EditableSection with non-empty description, empty edit text and url', () => {
+        const { props, wrapper } = setup({
+          editText: '',
+          editUrl: '',
+        });
+        const instance = wrapper.instance();
+        instance.setState({ isExpanded: true });
+        const newWrapper = shallow(instance.render());
+        expect(newWrapper.find(EditableSection).exists()).toBe(true);
+        const editableSection = newWrapper.find(EditableSection);
+        expect(editableSection.props()).toMatchObject({
+          title: 'Description',
+          readOnly: !props.data.is_editable,
+          editText: props.editText,
+          editUrl: props.editUrl,
+        });
+      });
+
+      describe('when empty description', () => {
+        it('renders EditableSection with empty edit text and url for editable column description', () => {
+          const { props, wrapper } = setup({
+            data: {
+              name: 'test_column_name',
+              description: '',
+              is_editable: true,
+              col_type: 'varchar(32)',
+              stats: [
+                {
+                  end_epoch: 1571616000,
+                  start_epoch: 1571616000,
+                  stat_type: 'count',
+                  stat_val: '12345',
+                },
+              ],
+            },
+            editText: '',
+            editUrl: '',
+          });
+          const instance = wrapper.instance();
+          instance.setState({ isExpanded: true });
+          const newWrapper = shallow(instance.render());
+          expect(newWrapper.find(EditableSection).exists()).toBe(true);
+          const editableSection = newWrapper.find(EditableSection);
+          expect(editableSection.props()).toMatchObject({
+            title: 'Description',
+            readOnly: !props.data.is_editable,
+            editText: props.editText,
+            editUrl: props.editUrl,
+          });
+        });
+
+        it('does not render EditableSection with empty edit text and url for non-editable column description', () => {
+          const { wrapper } = setup({
+            data: {
+              name: 'test_column_name',
+              description: '',
+              is_editable: false,
+              col_type: 'varchar(32)',
+              stats: [
+                {
+                  end_epoch: 1571616000,
+                  start_epoch: 1571616000,
+                  stat_type: 'count',
+                  stat_val: '12345',
+                },
+              ],
+            },
+            editText: '',
+            editUrl: '',
+          });
+          const instance = wrapper.instance();
+          instance.setState({ isExpanded: true });
+          const newWrapper = shallow(instance.render());
+          expect(newWrapper.find(EditableSection).exists()).toBe(false);
+        });
+
+        it('renders EditableSection with non-empty edit text and url for non-editable column description', () => {
+          const { props, wrapper } = setup({
+            data: {
+              name: 'test_column_name',
+              description: '',
+              is_editable: false,
+              col_type: 'varchar(32)',
+              stats: [
+                {
+                  end_epoch: 1571616000,
+                  start_epoch: 1571616000,
+                  stat_type: 'count',
+                  stat_val: '12345',
+                },
+              ],
+            },
+            editText: 'Click to edit description in source',
+            editUrl: 'source/test_column_name',
+          });
+          const instance = wrapper.instance();
+          instance.setState({ isExpanded: true });
+          const newWrapper = shallow(instance.render());
+          expect(newWrapper.find(EditableSection).exists()).toBe(true);
+          const editableSection = newWrapper.find(EditableSection);
+          expect(editableSection.props()).toMatchObject({
+            title: 'Description',
+            readOnly: !props.data.is_editable,
+            editText: props.editText,
+            editUrl: props.editUrl,
+          });
+        });
       });
     });
-
     describe('when not expanded', () => {
       let newWrapper;
       beforeAll(() => {

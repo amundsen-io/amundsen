@@ -18,6 +18,7 @@ import './styles.scss';
 import EditableSection from 'components/common/EditableSection';
 
 const MORE_BUTTON_TEXT = 'More options';
+const EDITABLE_SECTION_TITLE = 'Description';
 
 interface DispatchFromProps {
   openRequestDescriptionDialog: (
@@ -51,15 +52,19 @@ export class ColumnListItem extends React.Component<
   }
 
   toggleExpand = (e) => {
+    const metadata = this.props.data;
     if (!this.state.isExpanded) {
-      const metadata = this.props.data;
       logClick(e, {
         target_id: `column::${metadata.name}`,
         target_type: 'column stats',
         label: `${metadata.name} ${metadata.col_type}`,
       });
     }
-    this.setState({ isExpanded: !this.state.isExpanded });
+    if (this.shouldRenderDescription() || metadata.stats.length !== 0) {
+      this.setState((prevState) => ({
+        isExpanded: !prevState.isExpanded,
+      }));
+    }
   };
 
   openRequest = () => {
@@ -71,6 +76,17 @@ export class ColumnListItem extends React.Component<
 
   stopPropagation = (e) => {
     e.stopPropagation();
+  };
+
+  shouldRenderDescription = (): boolean => {
+    const { data, editText, editUrl } = this.props;
+    if (data.description) {
+      return true;
+    }
+    if (!editText && !editUrl && !data.is_editable) {
+      return false;
+    }
+    return true;
   };
 
   renderColumnType = (columnIndex: number, type: string) => {
@@ -172,19 +188,21 @@ export class ColumnListItem extends React.Component<
           {this.state.isExpanded && (
             <section className="expanded-content">
               <div className="stop-propagation" onClick={this.stopPropagation}>
-                <EditableSection
-                  title="Description"
-                  readOnly={!metadata.is_editable}
-                  editText={this.props.editText}
-                  editUrl={this.props.editUrl}
-                >
-                  <ColumnDescEditableText
-                    columnIndex={this.props.index}
-                    editable={metadata.is_editable}
-                    maxLength={getMaxLength('columnDescLength')}
-                    value={metadata.description}
-                  />
-                </EditableSection>
+                {this.shouldRenderDescription() && (
+                  <EditableSection
+                    title={EDITABLE_SECTION_TITLE}
+                    readOnly={!metadata.is_editable}
+                    editText={this.props.editText}
+                    editUrl={this.props.editUrl}
+                  >
+                    <ColumnDescEditableText
+                      columnIndex={this.props.index}
+                      editable={metadata.is_editable}
+                      maxLength={getMaxLength('columnDescLength')}
+                      value={metadata.description}
+                    />
+                  </EditableSection>
+                )}
               </div>
               <ColumnStats stats={metadata.stats} />
             </section>
