@@ -128,7 +128,7 @@ export class EditableSection extends React.Component<
         <label className="editable-section-label">
           <div
             className="editable-section-label-wrapper"
-            onClick={this.preventDefault}
+            onClick={!readOnly ? this.preventDefault : null}
           >
             <span className="section-title title-3">
               {EditableSection.convertText(title)}
