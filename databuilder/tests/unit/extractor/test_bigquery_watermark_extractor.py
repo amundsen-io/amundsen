@@ -83,6 +83,8 @@ class MockBigQueryClient():
         return self.jobs_query
 
 
+# Patch fallback auth method to avoid actually calling google API
+@patch('google.auth.default', lambda scopes: ['dummy', 'dummy'])
 class TestBigQueryWatermarkExtractor(unittest.TestCase):
     def setUp(self):
         # type: () -> None

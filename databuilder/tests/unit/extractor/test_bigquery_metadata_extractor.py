@@ -137,6 +137,8 @@ class MockBigQueryClient():
         return self.tables_method
 
 
+# Patch fallback auth method to avoid actually calling google API
+@patch('google.auth.default', lambda scopes: ['dummy', 'dummy'])
 class TestBigQueryMetadataExtractor(unittest.TestCase):
     def setUp(self):
         # type: () -> None
