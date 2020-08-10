@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import six
 from collections import namedtuple
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
@@ -60,11 +59,7 @@ class Db2MetadataExtractor(Extractor):
 
         cluster_source = "'{}'".format(self._cluster)
 
-        database = conf.get_string(Db2MetadataExtractor.DATABASE_KEY, default='db2')
-        if six.PY2 and isinstance(database, six.text_type):
-            database = database.encode('utf-8', 'ignore')
-
-        self._database = database
+        self._database = conf.get_string(Db2MetadataExtractor.DATABASE_KEY, default='db2')
 
         self.sql_stmt = Db2MetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(Db2MetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),

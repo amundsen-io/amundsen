@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import six
 from pyhocon import ConfigTree  # noqa: F401
 from typing import Any  # noqa: F401
 
@@ -38,12 +37,8 @@ class RegexStrReplaceTransformer(Transformer):
         else:
             val = getattr(record, self._attribute_name)
 
-        if val is None or not isinstance(val, six.string_types):
+        if val is None or not isinstance(val, str):
             return record
-
-        # Encode unicode string
-        if six.PY2:
-            val = val.encode('utf-8', 'ignore')
 
         for regex_replace_tuple in self._regex_replace_tuples:
             val = val.replace(regex_replace_tuple[0], regex_replace_tuple[1])

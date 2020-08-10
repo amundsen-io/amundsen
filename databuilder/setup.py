@@ -5,7 +5,7 @@ import os
 from setuptools import setup, find_packages
 
 
-__version__ = '2.6.5'
+__version__ = '3.0.0'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -56,7 +56,7 @@ setup(
     packages=find_packages(exclude=['tests*']),
     dependency_links=[],
     install_requires=requirements,
-    python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*',
+    python_requires='>=3.6,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*',
     extras_require={
         ':python_version=="2.7"': ['typing>=3.6'],  # allow typehinting PY2
         'all': all_deps,
@@ -71,7 +71,6 @@ setup(
         'druid': druid,
     },
     classifiers=[
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],

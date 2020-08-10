@@ -2,13 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
-import six
 
 from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Scoped(object):
+class Scoped(object, metaclass=abc.ABCMeta):
     _EMPTY_CONFIG = ConfigFactory.from_dict({})
     """
     An interface for class that works with scoped (nested) config.

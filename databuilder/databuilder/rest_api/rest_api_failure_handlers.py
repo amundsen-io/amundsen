@@ -3,13 +3,11 @@
 
 import abc
 
-import six
 from requests.exceptions import HTTPError
 from typing import Iterable, Union, List, Dict, Any, Optional  # noqa: F401
 
 
-@six.add_metaclass(abc.ABCMeta)
-class BaseFailureHandler(object):
+class BaseFailureHandler(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def can_skip_failure(self,
