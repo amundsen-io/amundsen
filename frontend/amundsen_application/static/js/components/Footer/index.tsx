@@ -7,8 +7,8 @@ import { bindActionCreators } from 'redux';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 import { GlobalState } from 'ducks/rootReducer';
-import { getLastIndexed } from 'ducks/tableMetadata/reducer';
-import { GetLastIndexedRequest } from 'ducks/tableMetadata/types';
+import { getLastIndexed } from 'ducks/lastIndexed/reducer';
+import { GetLastIndexedRequest } from 'ducks/lastIndexed/types';
 
 import { formatDateTimeLong } from 'utils/dateUtils';
 
@@ -33,7 +33,9 @@ const ShimmeringFooterLoader: React.FC = () => {
 
 export class Footer extends React.Component<FooterProps> {
   componentDidMount() {
-    this.props.getLastIndexed();
+    const { getLastIndexed } = this.props;
+
+    getLastIndexed();
   }
 
   generateDateTimeString = () => {
@@ -62,7 +64,7 @@ export class Footer extends React.Component<FooterProps> {
 
 export const mapStateToProps = (state: GlobalState) => {
   return {
-    lastIndexed: state.tableMetadata.lastIndexed,
+    lastIndexed: state.lastIndexed.lastIndexed,
   };
 };
 

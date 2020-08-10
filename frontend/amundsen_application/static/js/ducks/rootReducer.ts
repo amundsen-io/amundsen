@@ -12,6 +12,7 @@ import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, {
   TableMetadataReducerState,
 } from './tableMetadata/reducer';
+import lastIndexed, { LastIndexedReducerState } from './lastIndexed/reducer';
 import tags, { TagsReducerState } from './tags/reducer';
 import user, { UserReducerState } from './user/reducer';
 import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
@@ -28,6 +29,7 @@ export interface GlobalState {
   popularTables: PopularTablesReducerState;
   search: SearchReducerState;
   tableMetadata: TableMetadataReducerState;
+  lastIndexed: LastIndexedReducerState;
   tags: TagsReducerState;
   user: UserReducerState;
 }
@@ -42,6 +44,7 @@ export default combineReducers<GlobalState>({
   popularTables,
   search,
   tableMetadata,
+  lastIndexed,
   tags,
   user,
 });

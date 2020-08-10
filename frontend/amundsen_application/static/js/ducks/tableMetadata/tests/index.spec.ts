@@ -28,9 +28,6 @@ import reducer, {
   getColumnDescriptionFailure,
   getColumnDescriptionSuccess,
   updateColumnDescription,
-  getLastIndexed,
-  getLastIndexedFailure,
-  getLastIndexedSuccess,
   getPreviewData,
   getPreviewDataFailure,
   getPreviewDataSuccess,
@@ -51,8 +48,6 @@ import {
   getColumnDescriptionWorker,
   updateColumnDescriptionWatcher,
   updateColumnDescriptionWorker,
-  getLastIndexedWatcher,
-  getLastIndexedWorker,
   getPreviewDataWatcher,
   getPreviewDataWorker,
 } from '../sagas';
@@ -63,7 +58,6 @@ import {
   UpdateTableDescription,
   GetColumnDescription,
   UpdateColumnDescription,
-  GetLastIndexed,
   GetPreviewData,
 } from '../types';
 
@@ -84,7 +78,6 @@ describe('tableMetadata ducks', () => {
   let newDescription: string;
   let previewData: PreviewData;
   let queryParams: PreviewQueryParams;
-  let testEpoch: number;
   beforeAll(() => {
     expectedData = globalState.tableMetadata.tableData;
     expectedOwners = {
@@ -130,7 +123,6 @@ describe('tableMetadata ducks', () => {
       schema: 'testSchema',
       tableName: 'testName',
     };
-    testEpoch = 1545925769;
   });
 
   describe('actions', () => {
@@ -245,23 +237,6 @@ describe('tableMetadata ducks', () => {
       expect(payload.onFailure).toBe(mockFailure);
     });
 
-    it('getLastIndexed - returns the action to get the last indexed date of the table', () => {
-      const action = getLastIndexed();
-      expect(action.type).toBe(GetLastIndexed.REQUEST);
-    });
-
-    it('getLastIndexedFailure - returns the action to process failure', () => {
-      const action = getLastIndexedFailure();
-      expect(action.type).toBe(GetLastIndexed.FAILURE);
-    });
-
-    it('getLastIndexedSuccess - returns the action to process success', () => {
-      const action = getLastIndexedSuccess(testEpoch);
-      const { payload } = action;
-      expect(action.type).toBe(GetLastIndexed.SUCCESS);
-      expect(payload.lastIndexedEpoch).toBe(testEpoch);
-    });
-
     it('getPreviewData - returns the action to get the preview table data', () => {
       const action = getPreviewData(queryParams);
       const { payload } = action;
@@ -349,20 +324,6 @@ describe('tableMetadata ducks', () => {
       ).toEqual({
         ...testState,
         tableData: expectedData,
-      });
-    });
-
-    it('should handle GetLastIndexed.FAILURE', () => {
-      expect(reducer(testState, getLastIndexedFailure())).toEqual({
-        ...testState,
-        lastIndexed: null,
-      });
-    });
-
-    it('should handle GetLastIndexed.SUCCESS', () => {
-      expect(reducer(testState, getLastIndexedSuccess(testEpoch))).toEqual({
-        ...testState,
-        lastIndexed: testEpoch,
       });
     });
 
@@ -717,37 +678,6 @@ describe('tableMetadata ducks', () => {
         it('with failure callback', () => {
           sagaTest(mockFailure).call(mockFailure).next().isDone();
         });
-      });
-    });
-
-    describe('getLastIndexedWatcher', () => {
-      it('takes every GetLastIndexed.REQUEST with getLastIndexedWorker', () => {
-        testSaga(getLastIndexedWatcher)
-          .next()
-          .takeEvery(GetLastIndexed.REQUEST, getLastIndexedWorker)
-          .next()
-          .isDone();
-      });
-    });
-
-    describe('getLastIndexedWorker', () => {
-      it('executes flow for getting last indexed value', () => {
-        testSaga(getLastIndexedWorker, getLastIndexed())
-          .next()
-          .call(API.getLastIndexed)
-          .next(testEpoch)
-          .put(getLastIndexedSuccess(testEpoch))
-          .next()
-          .isDone();
-      });
-
-      it('handles request error', () => {
-        testSaga(getLastIndexedWorker, getLastIndexed())
-          .next()
-          .throw(new Error())
-          .put(getLastIndexedFailure())
-          .next()
-          .isDone();
       });
     });
 

@@ -24,9 +24,6 @@ import {
   GetColumnDescriptionRequest,
   UpdateColumnDescription,
   UpdateColumnDescriptionRequest,
-  GetLastIndexed,
-  GetLastIndexedRequest,
-  GetLastIndexedResponse,
   GetPreviewData,
   GetPreviewDataRequest,
   GetPreviewDataResponse,
@@ -66,7 +63,6 @@ export const initialTableDataState: TableMetadata = {
 
 export const initialState: TableMetadataReducerState = {
   isLoading: true,
-  lastIndexed: null,
   preview: initialPreviewState,
   statusCode: null,
   tableData: initialTableDataState,
@@ -231,23 +227,6 @@ export function updateColumnDescription(
   };
 }
 
-export function getLastIndexed(): GetLastIndexedRequest {
-  return { type: GetLastIndexed.REQUEST };
-}
-export function getLastIndexedFailure(): GetLastIndexedResponse {
-  return { type: GetLastIndexed.FAILURE };
-}
-export function getLastIndexedSuccess(
-  lastIndexedEpoch: number
-): GetLastIndexedResponse {
-  return {
-    type: GetLastIndexed.SUCCESS,
-    payload: {
-      lastIndexedEpoch,
-    },
-  };
-}
-
 export function getPreviewData(
   queryParams: PreviewQueryParams
 ): GetPreviewDataRequest {
@@ -286,7 +265,6 @@ export interface TableMetadataReducerState {
     errorMessage?: string;
   };
   isLoading: boolean;
-  lastIndexed: number;
   preview: {
     data: PreviewData;
     status: number | null;
@@ -311,10 +289,7 @@ export default function reducer(
         },
       };
     case GetTableData.REQUEST:
-      return {
-        ...initialState,
-        lastIndexed: state.lastIndexed,
-      };
+      return initialState;
     case GetTableData.FAILURE:
       return {
         ...state,
@@ -343,13 +318,6 @@ export default function reducer(
       return {
         ...state,
         tableData: (<GetColumnDescriptionResponse>action).payload.tableMetadata,
-      };
-    case GetLastIndexed.FAILURE:
-      return { ...state, lastIndexed: null };
-    case GetLastIndexed.SUCCESS:
-      return {
-        ...state,
-        lastIndexed: (<GetLastIndexedResponse>action).payload.lastIndexedEpoch,
       };
     case GetPreviewData.FAILURE:
     case GetPreviewData.SUCCESS:

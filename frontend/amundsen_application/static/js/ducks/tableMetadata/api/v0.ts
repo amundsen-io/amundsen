@@ -31,7 +31,6 @@ export type TableData = TableMetadata & {
   tags: Tag[];
 };
 export type DescriptionAPI = { description: string } & MessageAPI;
-export type LastIndexedAPI = { timestamp: string } & MessageAPI;
 export type PreviewDataAPI = { previewData: PreviewData } & MessageAPI;
 export type TableDataAPI = { tableData: TableData } & MessageAPI;
 export type RelatedDashboardDataAPI = {
@@ -171,14 +170,6 @@ export function updateColumnDescription(
     key: tableData.key,
     source: 'user',
   });
-}
-
-export function getLastIndexed() {
-  return axios
-    .get(`${API_PATH}/get_last_indexed`)
-    .then((response: AxiosResponse<LastIndexedAPI>) => {
-      return response.data.timestamp;
-    });
 }
 
 export function getPreviewData(queryParams: PreviewQueryParams) {
