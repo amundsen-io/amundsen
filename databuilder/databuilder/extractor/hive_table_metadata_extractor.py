@@ -23,12 +23,13 @@ class HiveTableMetadataExtractor(Extractor):
     """
     Extracts Hive table and column metadata from underlying meta store database using SQLAlchemyExtractor
     """
+    EXTRACT_SQL = 'extract_sql'
     # SELECT statement from hive metastore database to extract table and column metadata
     # Below SELECT statement uses UNION to combining two queries together.
     # 1st query is retrieving partition columns
     # 2nd query is retrieving columns
     # Using UNION to combine above two statements and order by table & partition identifier.
-    SQL_STATEMENT = """
+    DEFAULT_SQL_STATEMENT = """
     SELECT source.* FROM
     (SELECT t.TBL_ID, d.NAME as `schema`, t.TBL_NAME name, t.TBL_TYPE, tp.PARAM_VALUE as description,
            p.PKEY_NAME as col_name, p.INTEGER_IDX as col_sort_order,
@@ -66,8 +67,10 @@ class HiveTableMetadataExtractor(Extractor):
         conf = conf.with_fallback(HiveTableMetadataExtractor.DEFAULT_CONFIG)
         self._cluster = '{}'.format(conf.get_string(HiveTableMetadataExtractor.CLUSTER_KEY))
 
-        self.sql_stmt = HiveTableMetadataExtractor.SQL_STATEMENT.format(
+        default_sql = HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY))
+
+        self.sql_stmt = conf.get_string(HiveTableMetadataExtractor.EXTRACT_SQL, default=default_sql)
 
         LOGGER.info('SQL for hive metastore: {}'.format(self.sql_stmt))
 

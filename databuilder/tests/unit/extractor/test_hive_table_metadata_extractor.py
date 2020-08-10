@@ -230,6 +230,25 @@ class TestHiveTableMetadataExtractorWithWhereClause(unittest.TestCase):
             extractor.init(self.conf)
             self.assertTrue(self.where_clause_suffix in extractor.sql_stmt)
 
+    def test_hive_sql_statement_with_custom_sql(self):
+        # type: () -> None
+        """
+        Test Extraction by providing a custom sql
+        :return:
+        """
+        with patch.object(SQLAlchemyExtractor, '_get_connection'):
+            config_dict = {
+                HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
+                'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+                    'TEST_CONNECTION',
+                HiveTableMetadataExtractor.EXTRACT_SQL:
+                    'select sth for test {where_clause_suffix}'
+            }
+            conf = ConfigFactory.from_dict(config_dict)
+            extractor = HiveTableMetadataExtractor()
+            extractor.init(conf)
+            self.assertTrue('select sth for test' in extractor.sql_stmt)
+
 
 if __name__ == '__main__':
     unittest.main()
