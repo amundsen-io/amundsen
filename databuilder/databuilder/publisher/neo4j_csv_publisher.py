@@ -11,7 +11,6 @@ from os import listdir
 from os.path import isfile, join
 from string import Template
 
-import six
 from neo4j import GraphDatabase, Transaction  # noqa: F401
 import neo4j
 from neo4j.exceptions import CypherError
@@ -389,7 +388,7 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         """
         template_params = {}
         props = []
-        for k, v in six.iteritems(record_dict):
+        for k, v in record_dict.items():
             if k in excludes:
                 template_params[k] = v
                 continue
@@ -437,10 +436,7 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Executing statement: {} with params {}'.format(stmt, params))
 
-            if six.PY2:
-                result = tx.run(unicode(stmt, errors='ignore'), parameters=params)  # noqa
-            else:
-                result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
+            result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
             if expect_result and not result.single():
                 raise RuntimeError('Failed to executed statement: {}'.format(stmt))
 

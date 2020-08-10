@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import six
+import csv
 import logging
 import os
 import shutil
@@ -16,11 +16,6 @@ from databuilder.models.neo4j_csv_serde import NODE_LABEL, \
     RELATION_START_LABEL, RELATION_END_LABEL, RELATION_TYPE
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable  # noqa: F401
 from databuilder.utils.closer import Closer
-
-if six.PY2:
-    import unicodecsv as csv
-else:
-    import csv
 
 
 LOGGER = logging.getLogger(__name__)
@@ -170,15 +165,9 @@ class FsNeo4jCSVLoader(Loader):
 
         LOGGER.info('Creating file for {}'.format(key))
 
-        if six.PY2:
-
-            file_out = open('{}/{}.csv'.format(dir_path, file_suffix), 'w')
-            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
-                                    quoting=csv.QUOTE_NONNUMERIC, encoding='utf-8')
-        else:
-            file_out = open('{}/{}.csv'.format(dir_path, file_suffix), 'w', encoding='utf8')
-            writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
-                                    quoting=csv.QUOTE_NONNUMERIC)
+        file_out = open('{}/{}.csv'.format(dir_path, file_suffix), 'w', encoding='utf8')
+        writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
+                                quoting=csv.QUOTE_NONNUMERIC)
 
         def file_out_close():
             # type: () -> None

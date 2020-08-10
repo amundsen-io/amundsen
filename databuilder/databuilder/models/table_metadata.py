@@ -3,7 +3,6 @@
 
 import copy
 from collections import namedtuple
-from six import string_types
 
 from typing import Iterable, Any, Union, Iterator, Dict, Set  # noqa: F401
 
@@ -334,7 +333,7 @@ class TableMetadata(Neo4jCsvSerializable):
 
     @staticmethod
     def format_tags(tags):
-        if isinstance(tags, string_types):
+        if isinstance(tags, str):
             tags = list(filter(None, tags.split(',')))
         if isinstance(tags, list):
             tags = [tag.lower().strip() for tag in tags]

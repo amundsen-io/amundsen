@@ -4,14 +4,12 @@
 import abc
 import logging
 
-import six
 from typing import Iterable, Any, Dict, Iterator  # noqa: F401
 
 LOGGER = logging.getLogger(__name__)
 
 
-@six.add_metaclass(abc.ABCMeta)
-class BaseRestApiQuery(object):
+class BaseRestApiQuery(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def execute(self):

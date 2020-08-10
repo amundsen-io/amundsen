@@ -4,14 +4,12 @@
 import abc
 
 import logging
-import six
 import textwrap
 
 LOGGER = logging.getLogger(__name__)
 
 
-@six.add_metaclass(abc.ABCMeta)
-class RelationPreprocessor(object):
+class RelationPreprocessor(object, metaclass=abc.ABCMeta):
     """
     A Preprocessor for relations. Prior to publish Neo4j relations, RelationPreprocessor will be used for
     pre-processing.

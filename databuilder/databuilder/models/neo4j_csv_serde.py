@@ -3,7 +3,6 @@
 
 import abc
 
-import six
 from typing import Dict, Set, Any, Union  # noqa: F401
 
 NODE_KEY = 'KEY'
@@ -24,8 +23,7 @@ LABELS = {NODE_LABEL, RELATION_START_LABEL, RELATION_END_LABEL}
 TYPES = {RELATION_TYPE, RELATION_REVERSE_TYPE}
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Neo4jCsvSerializable(object):
+class Neo4jCsvSerializable(object, metaclass=abc.ABCMeta):
     """
     A Serializable abstract class asks subclass to implement next node or
     next relation in dict form so that it can be serialized to CSV file.
@@ -120,7 +118,7 @@ class Neo4jCsvSerializable(object):
         required_count = 0
         for header_col, val_col in \
                 ((header_col, val_col) for header_col, val_col
-                 in six.iteritems(val_dict) if header_col in required_set):
+                 in val_dict.items() if header_col in required_set):
             required_count += 1
 
             if header_col in LABELS:

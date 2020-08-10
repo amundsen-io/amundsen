@@ -3,15 +3,13 @@
 
 import abc
 import logging
-import six
 
 from typing import List, Optional  # noqa: F401
 
 LOGGER = logging.getLogger(__name__)
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Callback(object):
+class Callback(object, metaclass=abc.ABCMeta):
     """
     A callback interface that expected to fire "on_success" if the operation is successful, else "on_failure" if
     operation failed.
