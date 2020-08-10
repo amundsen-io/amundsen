@@ -189,6 +189,8 @@ class MockLoggingClient():
         return self.b
 
 
+# Patch fallback auth method to avoid actually calling google API
+@patch('google.auth.default', lambda scopes: ['dummy', 'dummy'])
 class TestBigqueryUsageExtractor(unittest.TestCase):
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
