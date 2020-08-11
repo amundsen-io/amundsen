@@ -135,6 +135,7 @@ Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap
 - [Adding Data Quality into Amundsen with Programmatic Descriptions](https://technology.edmunds.com/2020/05/27/Adding-Data-Quality-into-Amundsen-with-Programmatic-Descriptions/) by [Sam Shuster](https://github.com/samshuster) from [Edmunds.com](https://www.edmunds.com/) (May 2020)
 - [Facilitating Data discovery with Apache Atlas and Amundsen](https://medium.com/wbaa/facilitating-data-discovery-with-apache-atlas-and-amundsen-631baa287c8b) by [Mariusz Górski](https://github.com/mgorsk1) from [ING](https://www.ing.com/Home.htm) (June 2020)
 - [Using Amundsen to Support User Privacy via Metadata Collection at Square](https://developer.squareup.com/blog/using-amundsen-to-support-user-privacy-via-metadata-collection-at-square/) by [Alyssa Ransbury](https://github.com/alran) from [Square](https://squareup.com/) (July 14, 2020)
+- [Amundsen Joins LF AI as New Incubation Project](https://lfai.foundation/blog/2020/08/11/amundsen-joins-lf-ai-as-new-incubation-project/) (Aug 11, 2020)
 
 ## Talks
 
