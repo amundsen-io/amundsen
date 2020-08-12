@@ -1,11 +1,13 @@
 # Amundsen K8s Helm Charts
 
-Source code can be found [here](https://github.com/lyft/amundsen)
+Source code can be found [here](https://github.com/amundsen-io/amundsen)
 
 ## What is this?
-This is setup templates for deploying [amundsen](https://github.com/lyft/amundsen) on [k8s (kubernetes)](https://kubernetes.io/), using [helm.](https://helm.sh/) 
+
+This is setup templates for deploying [amundsen](https://github.com/amundsen-io/amundsen) on [k8s (kubernetes)](https://kubernetes.io/), using [helm.](https://helm.sh/)
 
 ## How do I get started?
+
 1. Make sure you have the following command line clients setup:
     - k8s (kubectl)
     - helm
@@ -13,6 +15,7 @@ This is setup templates for deploying [amundsen](https://github.com/lyft/amundse
 3. Ensure you can connect to your cluster with cli tools in step 1.
 
 ## Prerequisites
+
 1. Helm 2.14+
 2. Kubernetes 1.14+
 
@@ -23,6 +26,7 @@ This is setup templates for deploying [amundsen](https://github.com/lyft/amundse
 | https://kubernetes-charts.storage.googleapis.com/ | elasticsearch | 1.32.0 |
 
 ## Chart Values
+
 The following table lists the configurable parameters of the Amundsen charts and their default values.
 
 | Key | Type | Default | Description |
@@ -107,7 +111,8 @@ The following table lists the configurable parameters of the Amundsen charts and
 ## Neo4j DBMS Config?
 
 You may want to override the default memory usage for Neo4J. In particular, if you're just test-driving a deployment and your node exits with status 137, you should set the usage to smaller values:
-```
+
+``` yaml
 config:
   dbms:
     heap_initial_size: 1G
@@ -116,17 +121,20 @@ config:
 ```
 
 With this values file, you can then install Amundsen using Helm 2 with:
+
 ``` shell
 helm install ./templates/helm --values impl/helm/dev/values.yaml
 ```
 
-For Helm 3 it's now mandatory to specify a [chart reference name](https://helm.sh/docs/intro/using_helm/#helm-install-installing-a-package) e.g. `my-amundsen`: 
+For Helm 3 it's now mandatory to specify a [chart reference name](https://helm.sh/docs/intro/using_helm/#helm-install-installing-a-package) e.g. `my-amundsen`:
+
 ``` shell
 helm install my-amundsen ./templates/helm --values impl/helm/dev/values.yaml
 ```
 
 ## Other Notes
-* For aws setup, you will also need to setup the [external-dns plugin](https://github.com/kubernetes-incubator/external-dns)
-* There is an existing helm chart for neo4j, but, it is missing some features necessary to for use such as:
-    * [\[stable/neo4j\] make neo4j service definition more extensible](https://github.com/helm/charts/issues/21441); without this, it is not possible to setup external load balancers, external-dns, etc
-    * [\[stable/neo4j\] allow custom configuration of neo4j](https://github.com/helm/charts/issues/21439); without this, custom configuration is not possible which includes setting configmap based settings, which also includes turning on apoc.
+
+- For aws setup, you will also need to setup the [external-dns plugin](https://github.com/kubernetes-incubator/external-dns)
+- There is an existing helm chart for neo4j, but, it is missing some features necessary to for use such as:
+  - [\[stable/neo4j\] make neo4j service definition more extensible](https://github.com/helm/charts/issues/21441); without this, it is not possible to setup external load balancers, external-dns, etc
+  - [\[stable/neo4j\] allow custom configuration of neo4j](https://github.com/helm/charts/issues/21439); without this, custom configuration is not possible which includes setting configmap based settings, which also includes turning on apoc.
