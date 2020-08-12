@@ -31,7 +31,7 @@ matrix:
     after_success:
     - codecov
 before_deploy:
-- python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"  
+- python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
 deploy:
 - provider: pypi
   user: amundsen-dev
@@ -41,14 +41,14 @@ deploy:
   skip_existing: true
   on:
     tags: true
-    repo: lyft/amundsenfrontendlibrary
+    repo: amundsen-io/amundsenfrontendlibrary
     condition: "$IS_DEPLOYABLE = true"
 - provider: script
   script: docker login -u amundsendev -p $DOCKER_LOGIN_PASSWORD && make build-push-image
   on:
     branch: master
     tags: true
-    repo: lyft/amundsenfrontendlibrary
+    repo: amundsen-io/amundsenfrontendlibrary
     condition: "$IS_DEPLOYABLE = true"
 env:
   global:
