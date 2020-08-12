@@ -1,12 +1,12 @@
 site_name: Amundsen
 repo_name: Amundsen
-repo_url: https://github.com/lyft/Amundsen
+repo_url: https://github.com/amundsen-io/amundsen
 site_description: "Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data."
-site_author: Lyft, Inc.
-site_url: https://lyft.github.io/amundsen/
+site_author: Amundsen Project Authors.
+site_url: https://www.amundsen.io/amundsen/
 remote_branch: gh-pages
 
-copyright: 'Copyright &copy; 2020 Lyft, Inc.'
+copyright: 'Copyright &copy; 2018-2020 Amundsen Project Authors.'
 
 theme:
   name: 'material'
@@ -47,13 +47,13 @@ extra:
   # type is the name of the FontAwesome icon without the fa- prefix.
   social:
     - type: globe
-      link: https://lyft.github.io/
+      link: https://www.amundsen.io/
     - type: github-alt
-      link: https://github.com/lyft
+      link: https://github.com/amundsen-io
     - type: twitter
-      link: https://twitter.com/lyfteng
+      link: https://twitter.com/amundsenio
     - type: linkedin
-      link: https://www.linkedin.com/company/lyft/
+      link: https://www.linkedin.com/company/the-linux-foundation/
 
 nav:
   - 'Overview': index.md

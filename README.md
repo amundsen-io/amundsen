@@ -1,20 +1,24 @@
 <p align="center">
   <img
-    src="https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
+    src="https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
     alt="Amundsen"
     width="1000"
   />
 </p>
 
 <p align="center">
-  <a href="https://github.com/lyft/amundsen/blob/master/LICENSE">
+  <a href="https://github.com/amundsen-io/amundsen/blob/master/LICENSE">
     <img src="https://img.shields.io/:license-Apache%202-blue.svg" />
   </a>
-  <a href="https://github.com/lyft/amundsen/blob/master/CONTRIBUTING.md">
+  <a href="https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
   </a>
-  <img src="https://img.shields.io/github/commit-activity/w/lyft/amundsen.svg" />
-  <img src="https://img.shields.io/twitter/follow/amundsenio?label=Follow&style=social" />
+  <a href="https://github.com/amundsen-io/amundsen/pulse">
+    <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsen.svg" />
+  </a>
+  <a href="https://twitter.com/amundsenio">
+    <img src="https://img.shields.io/twitter/follow/amundsenio?label=Follow&style=social" />
+  </a>
   <a href="https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk">
     <img src="https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social" alt="Slack" />
   </a>
@@ -30,13 +34,13 @@ Amundsen is a data discovery and metadata engine for improving the productivity 
 
 Amundsen is hosted by the [LF AI Foundation](https://lfdl.io)(LF AI). It includes three microservices, one data ingestion library and one common library.
 
-- [amundsenfrontendlibrary](https://github.com/lyft/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend.
-- [amundsensearchlibrary](https://github.com/lyft/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching.
-- [amundsenmetadatalibrary](https://github.com/lyft/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata.
-- [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
-Users could either load the data with [a python script](https://github.com/lyft/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
-or with an [Airflow DAG](https://github.com/lyft/amundsendatabuilder/tree/master/example/dags) importing the library.
-- [amundsencommon](https://github.com/lyft/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen.
+- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" /> [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend.
+- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" /> [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching.
+- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" /> [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata.
+- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" /> [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
+Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
+or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library.
+- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" /> [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen.
 
 ## Homepage
 - https://www.amundsen.io/
@@ -55,36 +59,36 @@ Please note that the mock images only served as demonstration purpose.
 
 - **Landing Page**: The landing page for Amundsen including 1. search bars; 2. popular used tables;
 
-    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/landing_page.png)
+    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/landing_page.png)
 
 - **Search Preview**: See inline search results as you type
 
-    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/search_preview.png)
+    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/search_preview.png)
 
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
-    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/table_detail_page_with_badges.png)
+    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/table_detail_page_with_badges.png)
 
 - **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
 
-    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/column_details.png)
+    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/column_details.png)
 
 - **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset) or other Data Visualization Tools.
 
-    ![](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img/data_preview.png)
+    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/data_preview.png)
 
 ## Get Involved in the Community
 
 Want help or want to help?
-Use the button in our [header](https://github.com/lyft/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/lyft/amundsen/blob/master/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward.
+Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward.
 
 ## Getting Started
 
-Please visit the Amundsen installation documentation for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
-Please visit [Architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
+Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
 
 ## Supported Entities
 - Tables (from Databases)
@@ -125,11 +129,11 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 ## Installation
 
-Please visit [Installation guideline](https://github.com/lyft/amundsen/blob/master/docs/installation.md) on how to install Amundsen.
+Please visit [Installation guideline](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md) on how to install Amundsen.
 
 ## Roadmap
 
-Please visit [Roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
+Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
 
 ## Blog Posts and Interviews
 
