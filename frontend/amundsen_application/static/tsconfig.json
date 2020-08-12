@@ -7,9 +7,7 @@
     "module": "esnext",
     "target": "es2015",
     "jsx": "react",
-    "typeRoots": [
-     "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "allowJs": true,
     "moduleResolution": "node",
     "noResolve": false,
@@ -18,20 +16,13 @@
     "types": ["jest"],
     "baseUrl": "js",
     "paths": {
-        "components/*": [ "components/*" ],
-        "config/*": [ "config/*" ],
-        "ducks/*": [ "ducks/*" ],
-        "interfaces/*": [ "interfaces/*" ],
+      "components/*": ["components/*"],
+      "config/*": ["config/*"],
+      "ducks/*": ["ducks/*"],
+      "interfaces/*": ["interfaces/*"],
+      "stories/*": ["stories/*"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "**/__tests__",
-  ],
-  "include": [
-    "*.ts",
-    "*.js",
-    ".eslintrc.js",
-    "js/"
-  ]
+  "exclude": ["node_modules", "**/__tests__"],
+  "include": ["*.ts", "*.js", ".eslintrc.js", "js/"]
 }
