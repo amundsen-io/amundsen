@@ -1,0 +1,8 @@
+version: 1
+update_configs:
+  - package_manager: "python"
+    directory: "/"
+    update_schedule: "weekly"
+  - package_manager: "javascript"
+    directory: "/amundsen_application/static/"
+    update_schedule: "weekly"
