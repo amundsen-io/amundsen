@@ -18,13 +18,13 @@ deploy:
   skip_existing: true
   on:
     tags: true
-    repo: lyft/amundsenmetadatalibrary
+    repo: amundsen-io/amundsenmetadatalibrary
 - provider: script
   script: docker login -u amundsendev -p $DOCKER_LOGIN_PASSWORD && make build-push-image
   on:
     branch: master
     tags: true
-    repo: lyft/amundsenmetadatalibrary
+    repo: amundsen-io/amundsenmetadatalibrary
 env:
   global:
     secure: qK+qtPjx419eBBhqH2mRPHTkEVgKirw4kC5uil2Z/uuXElTdQMqMbrjGb7SmeYOI41bmq5j6rOgZs6EBVHrIlJXFVITAcr3mbBpOanaMVSdQf6cCcUZ622idKNk1kdlcSeoYyBmLs2PWa43XK8mX6bgcjbivRI6S79FLdK3NffEt17ERDnlL5Ud8QIUnYepw4oB5pKUjCGiz0T9VlKpEPiB51UUBRNfLmQnhLjwQJ29H3GBoI4YAC4B5w2az0YGADg3xqmMs2agsV+mMbHR0NqSoZdyX4t69ffrEjOtimlZ6TgRR7hHmTCUNx1MLRlx2B/M07Dl9T2fD2LINzlwXC24YtubaoQBSj+ufyYdqLr14SV99NiaG18uGGXbth+fucO7CK5V0J4eXnBB/9ZaMmVBH6Zp0bVJwSl+ppf8yklqRsC9J6og7gAMaIAgH9OyeYgZzuTRJXzbJpSCOSx7GcX2zwlpyvqoi5/hIv6R8dz0CE/lqxgnQz4LqH9dwgiPFB9ogIs++TJcSy81QMyvJDWvS5mzQLRNAZCXt70HQiZmuj9XQnE3RBIQw15yznwWYmiczRsJj7VKgQ4Ul/BfgY6igDyPSTJDFOBf6qnoC3jRgqf/Ecg0C6paehC4YoyBHyd9aywKxrtnWPytQGcs9BbU1IuZyshwinhSxbaw3v4c=
