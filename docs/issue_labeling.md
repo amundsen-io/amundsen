@@ -19,7 +19,7 @@ We use a bunch of GitHub labels. They are a mix of custom labels and the default
 - **Status: On Hold** – Issue that is being considered but stopped due to lack of resources or changes in the roadmap
 
 Here is a diagram representing these states within the lifecycles:
-![Feature and Bug Lifecycle](https://raw.githubusercontent.com/lyft/amundsen/master/docs/img//issue_process_diagram.png)
+![Feature and Bug Lifecycle](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img//issue_process_diagram.png)
 
 ## Type Labels
 * They show the type of the issue

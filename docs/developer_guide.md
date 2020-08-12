@@ -2,16 +2,18 @@
 
 This repository uses `git submodules` to link the code for all of Amundsen's libraries into a central location. This document offers guidance on how to develop locally with this setup.
 
-This workflow leverages `docker` and `docker-compose` in a very similar manner to our [installation documentation](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker), to spin up instances of all 3 of Amundsen's services connected with an instances of Neo4j and ElasticSearch which ingest dummy data.
+This workflow leverages `docker` and `docker-compose` in a very similar manner to our [installation documentation](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker), to spin up instances of all 3 of Amundsen's services connected with an instances of Neo4j and ElasticSearch which ingest dummy data.
 
 ## Cloning the Repository
 
 If cloning the repository for the first time, run the following command to clone the repository and pull the submodules:
+
 ```bash
-$ git clone --recursive git@github.com:lyft/amundsen.git
+$ git clone --recursive git@github.com:amundsen-io/amundsen.git
 ```
 
 If  you have already cloned the repository but your submodules are empty, from your cloned `amundsen` directory run:
+
 ```bash
 $ git submodule init
 $ git submodule update
@@ -22,25 +24,31 @@ After cloning the repository you can change directories into any of the upstream
 ## Local Development
 
 ### Ensure you have the latest code
+
 Beyond running `git pull origin master` in your local `amundsen` directory, the submodules for our libraries also have to be manually updated to point to the latest versions of each libraries' code. When creating a new branch on `amundsen` to begin local work, ensure your local submodules are pointing to the latest code for each library by running:
+
 ```bash
 $ git submodule update --remote
 ```
 
 ### Building local changes
-1. First, be sure that you have first followed the [installation documentation](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) and can spin up a default version of Amundsen without any issues. If you have already completed this step, be sure to have stopped and removed those containers by running:
+
+1. First, be sure that you have first followed the [installation documentation](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) and can spin up a default version of Amundsen without any issues. If you have already completed this step, be sure to have stopped and removed those containers by running:
     ```bash
     $ docker-compose -f docker-amundsen.yml down
     ```
+
 2. Launch the containers needed for local development (the `-d` option launches in background) :
     ```bash
     $ docker-compose -f docker-amundsen-local.yml up -d
     ```
+
 3. After making local changes rebuild and relaunch modified containers:
     ```bash
     $ docker-compose -f docker-amundsen-local.yml build \
       && docker-compose -f docker-amundsen-local.yml up -d
     ```
+
 4. Optionally, to still tail logs, in a different terminal you can:
     ```bash
     $ docker-compose -f docker-amundsen-local.yml logs --tail=3 -f
@@ -62,26 +70,25 @@ rm -rf .local/neo4j
 
 
 ### Troubleshooting
+
 1. If you have made a change in `amundsen/amundsenfrontendlibrary` and do not see your changes, this could be due to your browser's caching behaviors. Either execute a hard refresh (recommended) or clear your browser cache (last resort).
-
-
 
 ### Testing Amundsen frontend locally
 
-Amundsen has an instruction regarding local frontend launch [here](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md)
+Amundsen has an instruction regarding local frontend launch [here](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/installation.md)
 
 Here are some additional changes you might need for windows (OS Win 10):
 
- - amundsen_application/config.py, set LOCAL_HOST = '127.0.0.1'
- - amundsen_application/wsgi.py, set host='127.0.0.1'
+- amundsen_application/config.py, set LOCAL_HOST = '127.0.0.1'
+- amundsen_application/wsgi.py, set host='127.0.0.1'
  (for other microservices also need to change `port` here because the default is 5000)
 
 (using that approach you can run locally another microservices as well if needed)  
 
-Once you have a running frontend microservice, the rest of Amundsen components can be launched with docker-compose 
+Once you have a running frontend microservice, the rest of Amundsen components can be launched with docker-compose
 from the root Amundsen project (don't forget to remove frontend microservice section from docker-amundsen.yml):
 `docker-compose -f docker-amundsen.yml up`
-https://github.com/lyft/amundsen/blob/master/docs/installation.md
+https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md
 
 ### Developing Dockerbuild file
 
@@ -89,13 +96,15 @@ When making edits to Dockerbuild file (docker-amundsen-local.yml) it is good to 
 To do that you build it `docker build .`
 
 And then the output should include a line like so at the step right before it failed:
+
 ```bash
-Step 3/20 : RUN git clone --recursive git://github.com/lyft/amundsenfrontendlibrary.git  && cd amundsenfrontendlibrary  && git submodule foreach git pull origin master
+Step 3/20 : RUN git clone --recursive git://github.com/amundsen-io/amundsenfrontendlibrary.git  && cd amundsenfrontendlibrary  && git submodule foreach git pull origin master
  ---> Using cache
  ---> ec052612747e
 ```
 
 You can then launch a container from this image like so
+
 ```bash
 docker container run -it --name=debug ec052612747e /bin/sh
 ```
@@ -115,10 +124,10 @@ the amundsenfrontend image point to the hash of the image that you built
       image: 0312d0ac3938
 ```
 
-
 ### Pushing image to ECR and using in K8s
 
 Assumptions:
+
 - You have an aws account
 - You have aws command line set up and ready to go
 
@@ -143,14 +152,15 @@ Here you can see the tag is YYYY-MM-dd but you should choose whatever you like.
 
 4. Go to the `helm/{env}/amundsen/values.yaml` and modify to the image tag that you want to use.
 
-
 5. When updating amundsen-frontend, make sure to do a hard refresh of amundsen with emptying the cache,
 otherwise you will see stale version of webpage.
 
 ### Test search service in local using staging or production data
+
 To test in local, we need to stand up Elasticsearch, publish index data, and stand up Elastic search
 
 #### Standup Elasticsearch
+
 Running Elasticsearch via Docker. To install Docker, go [here](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
 Example:
 
@@ -158,16 +168,16 @@ Example:
 
 ##### (Optional) Standup Kibana
 
-
     docker run --link ecstatic_edison:elasticsearch -p 5601:5601 docker.elastic.co/kibana/kibana:6.2.4
 
 *Note that `ecstatic_edison` is container_id of Elasticsearch container. Update it if it's different by looking at `docker ps`
 
 #### Publish Table index through Databuilder
+
 ##### Install Databuilder
 
     cd ~/src/
-    git clone git@github.com:lyft/amundsendatabuilder.git
+    git clone git@github.com:amundsen-io/amundsendatabuilder.git
     cd ~/src/amundsendatabuilder
     virtualenv venv
     source venv/bin/activate
@@ -175,6 +185,7 @@ Example:
     pip install -r requirements.txt
 
 ##### Publish Table index
+
 First fill this two environment variables: `NEO4J_ENDPOINT` , `CREDENTIALS_NEO4J_PASSWORD`
 
 	$ python
@@ -247,9 +258,9 @@ First fill this two environment variables: `NEO4J_ENDPOINT` , `CREDENTIALS_NEO4J
     else:  
         raise ValueError('Add environment variable CREDENTIALS_NEO4J_PASSWORD')
 
-
 #### Standup Search service
-Follow this [instruction](https://github.com/lyft/amundsensearchlibrary#instructions-to-start-the-search-service-from-source)
+
+Follow this [instruction](https://github.com/amundsen-io/amundsensearchlibrary#instructions-to-start-the-search-service-from-source)
 
 Test the search API with this command:
 
