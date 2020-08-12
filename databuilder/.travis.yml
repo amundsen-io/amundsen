@@ -18,4 +18,4 @@ deploy:
   skip_existing: true
   on:
     tags: true
-    repo: lyft/amundsendatabuilder
+    repo: amundsen-io/amundsendatabuilder
