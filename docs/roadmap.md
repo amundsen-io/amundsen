@@ -10,7 +10,7 @@ The following roadmap gives an overview of what we are currently working on and 
 ## Short Term - Our Current focus
 
 #### Provide Rich metadata to make data trust worthy
-*What*: Enrich table detail page with additional structure metadata / programmatic description. 
+*What*: Enrich table detail page with additional structure metadata / programmatic description.
 
 *Status*: tech spec WIP
 
@@ -20,7 +20,7 @@ The following roadmap gives an overview of what we are currently working on and 
 *Status*: tech spec out
 
 #### Integrate with data quality system
-*What*: Integrate with different data quality systems to provide quality score. 
+*What*: Integrate with different data quality systems to provide quality score.
 
 *Status*: planning
 
@@ -81,7 +81,6 @@ The following roadmap gives an overview of what we are currently working on and 
 *Status*: implementation has not started
 
 ## How to Get Involved
-Let us know in the [Slack channel](https://app.slack.com/client/TGFR0CZM3/CGFBVT23V) if you are interested in taking a stab at leading the development of one of these features. 
+Let us know in the [Slack channel](https://app.slack.com/client/TGFR0CZM3/CGFBVT23V) if you are interested in taking a stab at leading the development of one of these features.
 
-You can also jump right in by tackling one of our issues labeled as ['help wanted'](https://github.com/lyft/amundsen/labels/help%20wanted) or, if you are new to Amundsen, try one of our ['good first issue'](https://github.com/lyft/amundsen/labels/good%20first%20issue) tickets.
-
+You can also jump right in by tackling one of our issues labeled as ['help wanted'](https://github.com/amundsen-io/amundsen/labels/help%20wanted) or, if you are new to Amundsen, try one of our ['good first issue'](https://github.com/amundsen-io/amundsen/labels/good%20first%20issue) tickets.

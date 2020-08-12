@@ -35,7 +35,7 @@ In addition to their actions as users, contributors may also find themselves doi
 - Writing, editing, translating or reviewing the documentation
 - Organizing events or evangelizing the project
 
-Contributors engage with the project through the issue tracker and slack community, or by writing or editing documentation. They submit changes to the project itself via Pull Requests (PRs), which will be considered for inclusion in the project by existing maintainers (see next section). Contributors follow the [Contributing guide](https://lyft.github.io/amundsen/CONTRIBUTING/) when creating PRs.
+Contributors engage with the project through the issue tracker and slack community, or by writing or editing documentation. They submit changes to the project itself via Pull Requests (PRs), which will be considered for inclusion in the project by existing maintainers (see next section). Contributors follow the [Contributing guide](https://www.amundsen.io/amundsen/CONTRIBUTING/) when creating PRs.
 
 As contributors gain experience and familiarity with the project, their profile and commitment within the community will increase. At some stage, they may find themselves being nominated for being a maintainer.
 
@@ -49,7 +49,7 @@ Anyone can become a maintainer. Typically, a potential maintainer will need to s
 
 ## Becoming a Maintainer
 
-Any existing maintainer can nominate new maintainers. Once they have been nominated, there will be a vote by the rest of the maintainers. Maintainer voting is one of the few activities that take place on a private channel. This is to allow maintainers to express their opinions about a nominee without causing embarrassment freely. The approval requires **three maintainers +1 vote **and **no -1 vote**.
+Any existing maintainer can nominate new maintainers. Once they have been nominated, there will be a vote by the rest of the maintainers. Maintainer voting is one of the few activities that take place on a private channel. This is to allow maintainers to express their opinions about a nominee without causing embarrassment freely. The approval requires **three maintainers +1 vote** and **no -1 vote**.
 
 Once the vote has been held, the aggregated voting results are published on the #amundsen channel. The nominee is entitled to request an explanation of any ‘no’ votes against them, regardless of the vote's outcome. This explanation will be provided by the maintainers and will be anonymous and constructive.
 
@@ -60,7 +60,7 @@ Nominees may decline their appointment as a maintainer. Becoming a maintainer me
 There is not a single path of earning a nomination for maintainer at Amundsen, however, we can give some guidance about some actions that would help:
 
 - Start by expressing interest to the maintainers that you are interested in becoming a maintainer.
-- You can start tackling issues labeled as [‘help wanted’](https://github.com/lyft/amundsen/labels/help%20wanted), or if you are new to the project, some of the [‘good first issue’](https://github.com/lyft/amundsen/labels/good%20first%20issue) tickets.
+- You can start tackling issues labeled as [‘help wanted’](https://github.com/amundsen-io/amundsen/labels/help%20wanted), or if you are new to the project, some of the [‘good first issue’](https://github.com/amundsen-io/amundsen/labels/good%20first%20issue) tickets.
 - As you gain experience with the codebase and our standards, we will ask you to do code reviews for incoming PRs (i.e., all maintainers are expected to shoulder a proportional share of community reviews).
 - We will expect you to start contributing increasingly complicated PRs, under the guidance of the existing maintainers.
 - After approximately 2-3 months of working together, an existing maintainer will be able to nominate you for maintainer status.
@@ -73,7 +73,7 @@ The project maintainers are those individuals identified as ‘project owners’
 
 - Monitor email aliases and our Slack (delayed response is perfectly acceptable).
 - Perform code reviews for other maintainers and the community. The areas of specialization listed in [OWNERS.md](OWNERS.md) can be used to help with routing an issue/question to the right person.
-- Triage GitHub issues, applying [labels](<[https://github.com/lyft/amundsen/labels](https://github.com/lyft/amundsen/labels)>) to each new item. Labels are extremely useful for future issue follow ups. Adding labels is somewhat subjective, so please use your best judgment. Read more about our labels on [this document](https://lyft.github.io/amundsen/issue_labeling/).
+- Triage GitHub issues, applying [labels](https://github.com/amundsen-io/amundsen/labels) to each new item. Labels are extremely useful for future issue follow ups. Adding labels is somewhat subjective, so please use your best judgment. Read more about our labels on [this document](https://www.amundsen.io/amundsen/issue_labeling/).
 - Triage build issues, filing issues for known flaky builds or bugs, fixing or finding someone to fix any master build breakages.
 - Make sure that ongoing PRs are moving forward at the right pace or closing them.
 - Continue to spend at least 25% of your time working on Amundsen (~1.25 business days per week).
@@ -114,7 +114,7 @@ Not all decisions can be made using lazy consensus. Issues such as those affecti
 
 ## Roadmap Creation
 
-Our [roadmap](https://github.com/lyft/amundsen/blob/master/docs/roadmap.md) gives an overview of what we are currently working on and what we want to tackle next. This helps potential contributors understand your project's current status and where it's going next, as well as giving a chance to be part of the planning.
+Our [roadmap](https://www.amundsen.io/amundsen/roadmap/) gives an overview of what we are currently working on and what we want to tackle next. This helps potential contributors understand your project's current status and where it's going next, as well as giving a chance to be part of the planning.
 
 In this section, we describe the process we follow to create it, using request for comments documents (RFCs).
 
@@ -142,7 +142,7 @@ What constitutes a "substantial" change is evolving based on the community, but 
   - Adding lineage features
   - Dashboards integration
 
-Some changes do not require an RFC:
+Some changes do not require a RFC:
 
 - Reorganizing or refactoring code or documentation
 - Improvements that tackle objective quality criteria (speedup, better browser support)
