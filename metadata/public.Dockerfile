@@ -13,7 +13,6 @@ FROM base as oidc-release
 
 RUN pip3 install .[oidc]
 RUN python3 setup.py install
-ENV FRONTEND_SVC_CONFIG_MODULE_CLASS amundsen_application.oidc_config.OidcConfig
 ENV FLASK_APP_MODULE_NAME flaskoidc
 ENV FLASK_APP_CLASS_NAME FlaskOIDC
 ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health

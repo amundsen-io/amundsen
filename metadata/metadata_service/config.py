@@ -90,6 +90,8 @@ class LocalConfig(Config):
 
     JANUS_GRAPH_URL = None
 
+    IS_STATSD_ON = bool(distutils.util.strtobool(os.environ.get(IS_STATSD_ON, 'False')))
+
     SWAGGER_ENABLED = True
     SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
     SWAGGER = {
