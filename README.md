@@ -34,13 +34,13 @@ Amundsen is a data discovery and metadata engine for improving the productivity 
 
 Amundsen is hosted by the [LF AI Foundation](https://lfdl.io)(LF AI). It includes three microservices, one data ingestion library and one common library.
 
-- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" /> [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend.
-- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" /> [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching.
-- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" /> [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata.
-- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" /> [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
+- [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" />
+- [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" />
+- [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" />
+- [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
 Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
-or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library.
-- <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" /> [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen.
+or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" />
+- [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" />
 
 ## Homepage
 - https://www.amundsen.io/
