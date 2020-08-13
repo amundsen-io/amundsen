@@ -4,7 +4,7 @@ import { throwError } from 'redux-saga-test-plan/providers';
 
 import { Bookmark, ResourceType, ResourceDict } from 'interfaces';
 
-import * as API from '../api/v0';
+import * as API from './api/v0';
 import reducer, {
   addBookmark,
   addBookmarkFailure,
@@ -21,7 +21,7 @@ import reducer, {
   initialState,
   initialBookmarkState,
   BookmarkReducerState,
-} from '../reducer';
+} from './reducer';
 import {
   addBookmarkWatcher,
   addBookmarkWorker,
@@ -31,7 +31,7 @@ import {
   getBookmarkForUserWorker,
   removeBookmarkWatcher,
   removeBookmarkWorker,
-} from '../sagas';
+} from './sagas';
 import {
   AddBookmark,
   AddBookmarkRequest,
@@ -40,7 +40,7 @@ import {
   GetBookmarksForUserRequest,
   RemoveBookmark,
   RemoveBookmarkRequest,
-} from '../types';
+} from './types';
 
 describe('bookmark ducks', () => {
   let bookmarks: ResourceDict<Bookmark[]>;
