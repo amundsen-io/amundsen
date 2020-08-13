@@ -50,6 +50,12 @@ Fix all errors before submitting a PR.
 
 To run specific tests, run `npm run test-nocov -t <regex>`, where `<regex>` is any pattern that matches the names of the test blocks that you want to run. See our [recommendations for writing unit tests](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/recommended_practices.md).
 
+### Developing React Components
+
+To preview React components in isolation, use [Storybook](https://storybook.js.org/). Just add a `<componentName>.story.tsx` file in the same folder as your component. In that file, show your component in different states. Then run `npm run storybook`, which will open your browser to the storybook browse page. 
+
+Using Storybook makes it much easier to quickly iterate on components when getting to certain states requires multiple steps of UI manipulation. The gallery also serves as a convenient place to see what reusable components are available so you can avoid reinventing the wheel.
+
 ### Frontend Type Checking
 
 We use TypeScript in our codebase, so `npm run tsc` conducts type checking. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
