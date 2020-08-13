@@ -1,3 +1,7 @@
+# Backing up Neo4j
+
+This document describes how to do a point-in-time backup of Neo4j. Note that if you wish to do online backups, Neo4j Enterprise Edition is required (and this guide doesn't cover that).
+
 ## Neo4j backup and restore
 Install the Neo4j APOC plugin (in a folder next to your `example/docker/neo4j/conf/`)
 

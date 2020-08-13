@@ -15,7 +15,7 @@ This guide does not attempt the 1% of installs that require forking existing fil
 
 As described in the architecture, Amundsen is split into 5 services. Each service has its own git repo. The "main" `amundsen` repo is thus very light all it has is some documentation, docker deployment files, and [submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) links to each service.
 
-Thus, the suggested setup is to fork the main `amundsen`, but to *not* fork the individual service repositories. Note that your fork must be private, since you will have configuration 
+Thus, the suggested setup is to fork the main `amundsen`, but to *not* fork the individual service repositories. Note that your fork must be private, since you will have configuration files inside.
 
 So the first step is to create a private fork of the public repo. The steps differ based on the repo host you use.
 
