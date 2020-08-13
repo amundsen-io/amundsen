@@ -4,7 +4,7 @@ import { LoggedInUser, PeopleUser, Resource, ResourceDict } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
-import * as API from '../api/v0';
+import * as API from './api/v0';
 import reducer, {
   getLoggedInUser,
   getLoggedInUserFailure,
@@ -22,7 +22,7 @@ import reducer, {
   initialState,
   initialOwnState,
   UserReducerState,
-} from '../reducer';
+} from './reducer';
 import {
   getLoggedInUserWorker,
   getLoggedInUserWatcher,
@@ -32,8 +32,8 @@ import {
   getUserOwnWatcher,
   getUserReadWorker,
   getUserReadWatcher,
-} from '../sagas';
-import { GetLoggedInUser, GetUser, GetUserOwn, GetUserRead } from '../types';
+} from './sagas';
+import { GetLoggedInUser, GetUser, GetUserOwn, GetUserRead } from './types';
 
 describe('user ducks', () => {
   let currentUser: LoggedInUser;
@@ -247,7 +247,7 @@ describe('user ducks', () => {
 
     describe('getLoggedInUserWorker', () => {
       it('executes flow for returning the currentUser', () => {
-        testSaga(getLoggedInUserWorker, getLoggedInUser())
+        testSaga(getLoggedInUserWorker)
           .next()
           .call(API.getLoggedInUser)
           .next(currentUser)
@@ -257,7 +257,7 @@ describe('user ducks', () => {
       });
 
       it('handles request error', () => {
-        testSaga(getLoggedInUserWorker, getLoggedInUser())
+        testSaga(getLoggedInUserWorker)
           .next()
           .throw(new Error())
           .put(getLoggedInUserFailure())

@@ -59,7 +59,7 @@ export function* removeBookmarkWatcher(): SagaIterator {
   yield takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker);
 }
 
-export function* getBookmarksWorker(action: GetBookmarksRequest): SagaIterator {
+export function* getBookmarksWorker(): SagaIterator {
   let response;
   try {
     response = yield call(API.getBookmarks);
