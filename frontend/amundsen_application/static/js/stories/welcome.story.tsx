@@ -1,17 +1,12 @@
 import React from 'react';
-import { linkTo } from '@storybook/addon-links';
 import { Welcome } from '@storybook/react/demo';
 
 export default {
-  title: 'Welcome',
+  title: 'Overview/Introduction',
   component: Welcome,
 };
 
-// Don't put other stories in this folder, unless they're meta (i.e. about
-// storybook itself). Storybook components for normal components should be
-// put in the same folder as the component itself.
-
-export const ToAmundsen = () => {
+export const Introduction = () => {
   return (
     <>
       <h1>Welcome to Amundsen's Component Library!</h1>
@@ -41,8 +36,4 @@ export const ToAmundsen = () => {
       </ul>
     </>
   );
-};
-
-ToAmundsen.story = {
-  name: 'to Amundsen Component Library',
 };

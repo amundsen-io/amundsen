@@ -3,7 +3,7 @@ import React from 'react';
 import Flag, { CaseType } from '.';
 
 export default {
-  title: 'Flags',
+  title: 'Components/Flags',
   component: Flag,
 };
 
