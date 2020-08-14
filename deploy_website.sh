@@ -1,6 +1,6 @@
 set -ex
 
-#REPO="git@github.com:lyft/amundsen.git"
+#REPO="git@github.com:amundsen-io/amundsen.git"
 #DIR=temp-clone
 # We use https://www.mkdocs.org/user-guide/deploying-your-docs/ to build/deploy docs
 # Currently the doc is built/deployed manually. We should first build and deploy locally and verify it.
