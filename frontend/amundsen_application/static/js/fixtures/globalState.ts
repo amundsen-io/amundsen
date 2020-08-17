@@ -191,6 +191,14 @@ const globalState: GlobalState = {
           tag_name: 'other_tag_1',
           tag_count: 15,
         },
+        {
+          tag_name: 'alphabetical_tag_1',
+          tag_count: 5,
+        },
+        {
+          tag_name: 'zero_count_tag_1',
+          tag_count: 0,
+        },
       ],
     },
     resourceTags: {
