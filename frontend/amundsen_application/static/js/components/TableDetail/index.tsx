@@ -34,7 +34,7 @@ import DataPreviewButton from 'components/TableDetail/DataPreviewButton';
 import ExploreButton from 'components/TableDetail/ExploreButton';
 import FrequentUsers from 'components/TableDetail/FrequentUsers';
 import LineageLink from 'components/TableDetail/LineageLink';
-import OwnerEditor from 'components/TableDetail/OwnerEditor';
+import TableOwnerEditor from 'components/TableDetail/TableOwnerEditor';
 import SourceLink from 'components/TableDetail/SourceLink';
 import TableDashboardResourceList from 'components/TableDetail/TableDashboardResourceList';
 import TableDescEditableText from 'components/TableDetail/TableDescEditableText';
@@ -319,7 +319,7 @@ export class TableDetail extends React.Component<
                     />
                   </EditableSection>
                   <EditableSection title="Owners">
-                    <OwnerEditor />
+                    <TableOwnerEditor resourceType={ResourceType.table} />
                   </EditableSection>
                   {this.renderProgrammaticDesc(
                     data.programmatic_descriptions.right

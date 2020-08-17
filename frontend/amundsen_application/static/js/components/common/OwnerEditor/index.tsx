@@ -2,21 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 
 import AppConfig from 'config/config';
 import AvatarLabel, { AvatarLabelProps } from 'components/common/AvatarLabel';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import { Modal } from 'react-bootstrap';
-import { UpdateMethod, UpdateOwnerPayload } from 'interfaces';
+import { ResourceType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import { GlobalState } from 'ducks/rootReducer';
-import { updateTableOwner } from 'ducks/tableMetadata/owners/reducer';
 import { EditableSectionChildProps } from 'components/common/EditableSection';
 import { logClick } from 'ducks/utilMethods';
 
@@ -32,6 +28,7 @@ export interface DispatchFromProps {
 
 export interface ComponentProps {
   errorText?: string | null;
+  resourceType: ResourceType;
 }
 
 interface OwnerAvatarLabelProps extends AvatarLabelProps {
@@ -41,7 +38,7 @@ interface OwnerAvatarLabelProps extends AvatarLabelProps {
 
 export interface StateFromProps {
   isLoading: boolean;
-  itemProps: { [id: string]: OwnerAvatarLabelProps };
+  itemProps: OwnerItemProps;
 }
 
 export type OwnerEditorProps = ComponentProps &
@@ -49,9 +46,11 @@ export type OwnerEditorProps = ComponentProps &
   StateFromProps &
   EditableSectionChildProps;
 
+export type OwnerItemProps = { [id: string]: OwnerAvatarLabelProps };
+
 interface OwnerEditorState {
   errorText: string | null;
-  itemProps: { [id: string]: OwnerAvatarLabelProps };
+  itemProps: OwnerItemProps;
   tempItemProps: { [id: string]: AvatarLabelProps };
 }
 
@@ -61,7 +60,7 @@ export class OwnerEditor extends React.Component<
 > {
   private inputRef: React.RefObject<HTMLInputElement>;
 
-  public static defaultProps: OwnerEditorProps = {
+  public static defaultProps: Partial<OwnerEditorProps> = {
     errorText: null,
     isLoading: false,
     itemProps: {},
@@ -205,6 +204,7 @@ export class OwnerEditor extends React.Component<
   };
 
   render() {
+    const { isEditing, readOnly, resourceType } = this.props;
     const hasItems = Object.keys(this.state.itemProps).length > 0;
 
     if (this.state.errorText) {
@@ -229,7 +229,7 @@ export class OwnerEditor extends React.Component<
               <a
                 href={owner.link}
                 target="_blank"
-                id={`table-owners:${key}`}
+                id={`${resourceType}-owners:${key}`}
                 onClick={logClick}
                 rel="noopener noreferrer"
               >
@@ -240,7 +240,7 @@ export class OwnerEditor extends React.Component<
             listItem = (
               <Link
                 to={owner.link}
-                id={`table-owners:${key}`}
+                id={`${resourceType}-owners:${key}`}
                 onClick={logClick}
               >
                 {avatarLabel}
@@ -255,14 +255,14 @@ export class OwnerEditor extends React.Component<
     return (
       <div className="owner-editor-component">
         {ownerList}
-        {this.props.readOnly && !hasItems && (
+        {readOnly && !hasItems && (
           <AvatarLabel
             avatarClass="gray-avatar"
             labelClass="text-placeholder"
             label={Constants.NO_OWNER_TEXT}
           />
         )}
-        {!this.props.readOnly && !hasItems && (
+        {!readOnly && !hasItems && (
           <button
             type="button"
             className="btn btn-flat-icon add-item-button"
@@ -272,10 +272,10 @@ export class OwnerEditor extends React.Component<
             <span>{Constants.ADD_OWNER}</span>
           </button>
         )}
-        {!this.props.readOnly && (
+        {!readOnly && (
           <Modal
             className="owner-editor-modal"
-            show={this.props.isEditing}
+            show={isEditing}
             onHide={this.cancelEdit}
           >
             <Modal.Header className="text-center" closeButton={false}>
@@ -305,35 +305,4 @@ export class OwnerEditor extends React.Component<
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  const ownerObj = state.tableMetadata.tableOwners.owners;
-  const items = Object.keys(ownerObj).reduce((obj, ownerId) => {
-    const { profile_url, user_id, display_name } = ownerObj[ownerId];
-    let profileLink = profile_url;
-    let isExternalLink = true;
-    if (AppConfig.indexUsers.enabled) {
-      isExternalLink = false;
-      profileLink = `/user/${user_id}?source=owned_by`;
-    }
-    obj[ownerId] = {
-      label: display_name,
-      link: profileLink,
-      isExternal: isExternalLink,
-    };
-    return obj;
-  }, {});
-
-  return {
-    isLoading: state.tableMetadata.tableOwners.isLoading,
-    itemProps: items,
-  };
-};
-
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ onUpdateList: updateTableOwner }, dispatch);
-};
-
-export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
-  mapStateToProps,
-  mapDispatchToProps
-)(OwnerEditor);
+export default OwnerEditor;

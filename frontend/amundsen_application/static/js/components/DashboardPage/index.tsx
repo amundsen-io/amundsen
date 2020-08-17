@@ -22,6 +22,7 @@ import { GetDashboardRequest } from 'ducks/dashboard/types';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
 import { DashboardMetadata } from 'interfaces/Dashboard';
+import DashboardOwnerEditor from 'components/DashboardPage/DashboardOwnerEditor';
 import QueryList from 'components/DashboardPage/QueryList';
 import ChartList from 'components/DashboardPage/ChartList';
 import { formatDateTimeShort } from 'utils/dateUtils';
@@ -29,10 +30,9 @@ import ResourceList from 'components/common/ResourceList';
 import {
   ADD_DESC_TEXT,
   EDIT_DESC_TEXT,
-  DASHBOARD_OWNER_SOURCE,
   DASHBOARD_SOURCE,
   LAST_RUN_SUCCEEDED,
-  NO_OWNER_TEXT,
+  OWNER_HEADER_TEXT,
   TABLES_PER_PAGE,
 } from 'components/DashboardPage/constants';
 import TagInput from 'components/common/Tags/TagInput';
@@ -240,27 +240,9 @@ export class DashboardPage extends React.Component<
             </EditableSection>
             <section className="column-layout-2">
               <section className="left-panel">
-                <section className="metadata-section">
-                  <div className="section-title title-3">Owners</div>
-                  <div>
-                    {dashboard.owners.length > 0 &&
-                      dashboard.owners.map((owner) => (
-                        <Link
-                          key={owner.user_id}
-                          to={`/user/${owner.user_id}?source=${DASHBOARD_OWNER_SOURCE}`}
-                        >
-                          <AvatarLabel label={owner.display_name} />
-                        </Link>
-                      ))}
-                    {dashboard.owners.length === 0 && (
-                      <AvatarLabel
-                        avatarClass="gray-avatar"
-                        labelClass="text-placeholder"
-                        label={NO_OWNER_TEXT}
-                      />
-                    )}
-                  </div>
-                </section>
+                <EditableSection title={OWNER_HEADER_TEXT} readOnly>
+                  <DashboardOwnerEditor resourceType={ResourceType.dashboard} />
+                </EditableSection>
                 <section className="metadata-section">
                   <div className="section-title title-3">Created</div>
                   <time className="body-2 text-primary">
