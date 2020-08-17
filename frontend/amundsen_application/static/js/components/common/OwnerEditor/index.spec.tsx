@@ -5,12 +5,9 @@ import { mount } from 'enzyme';
 import globalState from 'fixtures/globalState';
 import AvatarLabel from 'components/common/AvatarLabel';
 
-import {
-  OwnerEditor,
-  OwnerEditorProps,
-  mapStateToProps,
-  mapDispatchToProps,
-} from '.';
+import { ResourceType } from 'interfaces';
+
+import { OwnerEditor, OwnerEditorProps } from '.';
 import * as Constants from './constants';
 
 describe('OwnerEditor', () => {
@@ -23,6 +20,7 @@ describe('OwnerEditor', () => {
       setEditMode: jest.fn(),
       onUpdateList: jest.fn(),
       readOnly: null,
+      resourceType: ResourceType.table,
       ...propOverrides,
     };
     const wrapper = mount<OwnerEditor>(<OwnerEditor {...props} />);
