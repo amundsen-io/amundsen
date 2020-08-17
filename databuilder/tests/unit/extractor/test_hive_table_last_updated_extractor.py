@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import itertools
 import logging
 import unittest
 from datetime import datetime
@@ -15,6 +16,15 @@ from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.filesystem.filesystem import FileSystem
 from databuilder.filesystem.metadata import FileMetadata
+
+
+def null_iterator(items):
+    """
+        Returns an infinite iterator that returns the items from items,
+        then infinite Nones. Required because Extractor.extract is expected
+        to return None when it is exhausted, not terminate.
+    """
+    return itertools.chain(iter(items), itertools.repeat(None))
 
 
 class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
@@ -52,14 +62,14 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
                           return_value=pt_alchemy_extractor_instance),\
             patch.object(HiveTableLastUpdatedExtractor, '_get_non_partitioned_table_sql_alchemy_extractor',
                          return_value=non_pt_alchemy_extractor_instance):
-            pt_alchemy_extractor_instance.extract = MagicMock(side_effect=[
+            pt_alchemy_extractor_instance.extract = MagicMock(side_effect=null_iterator([
                 {'schema': 'foo_schema',
                  'table_name': 'table_1',
                  'last_updated_time': 1},
                 {'schema': 'foo_schema',
                  'table_name': 'table_2',
                  'last_updated_time': 2}
-            ])
+            ]))
 
             non_pt_alchemy_extractor_instance.extract = MagicMock(return_value=None)
 
@@ -102,11 +112,11 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
                          '_get_filesystem', return_value=fs):
             pt_alchemy_extractor_instance.extract = MagicMock(return_value=None)
 
-            non_pt_alchemy_extractor_instance.extract = MagicMock(side_effect=[
+            non_pt_alchemy_extractor_instance.extract = MagicMock(side_effect=null_iterator([
                 {'schema': 'foo_schema',
                  'table_name': 'table_1',
-                 'location': '/foo/bar'}
-            ])
+                 'location': '/foo/bar'},
+            ]))
 
             extractor = HiveTableLastUpdatedExtractor()
             extractor.init(ConfigFactory.from_dict({}))
