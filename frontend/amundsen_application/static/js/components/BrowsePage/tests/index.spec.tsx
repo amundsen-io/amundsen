@@ -6,7 +6,7 @@ import * as DocumentTitle from 'react-document-title';
 
 import { shallow } from 'enzyme';
 
-import TagsList from 'components/common/TagsList';
+import TagsListContainer from 'components/common/Tags';
 import { BrowsePage } from '..';
 
 describe('BrowsePage', () => {
@@ -26,16 +26,14 @@ describe('BrowsePage', () => {
       );
     });
 
-    it('renders correct header', () => {
-      expect(wrapper.find('#browse-header').text()).toEqual('Browse Tags');
-    });
-
     it('renders <hr>', () => {
       expect(wrapper.contains(<hr className="header-hr" />));
     });
 
     it('contains TagsList', () => {
-      expect(wrapper.contains(<TagsList />));
+      const expected = 1;
+      const actual = wrapper.find(TagsListContainer).length;
+      expect(actual).toEqual(expected);
     });
   });
 });

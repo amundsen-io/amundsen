@@ -35,7 +35,7 @@ import {
   NO_OWNER_TEXT,
   TABLES_PER_PAGE,
 } from 'components/DashboardPage/constants';
-import TagInput from 'components/Tags/TagInput';
+import TagInput from 'components/common/Tags/TagInput';
 import { ResourceType } from 'interfaces';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';

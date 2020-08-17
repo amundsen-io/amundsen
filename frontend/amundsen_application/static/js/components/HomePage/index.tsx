@@ -15,12 +15,8 @@ import PopularTables from 'components/common/PopularTables';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 import SearchBar from 'components/common/SearchBar';
-import TagsList from 'components/common/TagsList';
-import {
-  SEARCH_BREADCRUMB_TEXT,
-  HOMEPAGE_TITLE,
-  TAGS_TITLE,
-} from './constants';
+import TagsListContainer from 'components/common/Tags';
+import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
 
 export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
@@ -34,6 +30,9 @@ export class HomePage extends React.Component<HomePageProps> {
   }
 
   render() {
+    /* TODO, just display either popular or curated tags,
+    do we want the title to change based on which
+    implementation is being used? probably not */
     return (
       <main className="container home-page">
         <div className="row">
@@ -48,13 +47,7 @@ export class HomePage extends React.Component<HomePageProps> {
               />
             </div>
             <div className="home-element-container">
-              <h2
-                id="browse-tags-header"
-                className="title-1 browse-tags-header"
-              >
-                {TAGS_TITLE}
-              </h2>
-              <TagsList />
+              <TagsListContainer shortTagsList />
             </div>
             <div className="home-element-container">
               <MyBookmarks />

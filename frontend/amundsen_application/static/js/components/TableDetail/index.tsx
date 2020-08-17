@@ -24,6 +24,7 @@ import BadgeList from 'components/common/BadgeList';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
 import TabsComponent from 'components/common/TabsComponent';
+import TagInput from 'components/common/Tags/TagInput';
 import EditableText from 'components/common/EditableText';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import Flag from 'components/common/Flag';
@@ -41,7 +42,7 @@ import TableHeaderBullets from 'components/TableDetail/TableHeaderBullets';
 import TableIssues from 'components/TableDetail/TableIssues';
 import WatermarkLabel from 'components/TableDetail/WatermarkLabel';
 import WriterLink from 'components/TableDetail/WriterLink';
-import TagInput from 'components/Tags/TagInput';
+
 import {
   ProgrammaticDescription,
   ResourceType,
