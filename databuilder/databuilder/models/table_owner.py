@@ -99,8 +99,7 @@ class TableOwner(Neo4jCsvSerializable):
 
         return results
 
-    def __repr__(self):
-        # type: () -> str
+    def __repr__(self) -> str:
         return 'TableOwner({!r}, {!r}, {!r}, {!r}, {!r})'.format(self.db,
                                                                  self.cluster,
                                                                  self.schema,

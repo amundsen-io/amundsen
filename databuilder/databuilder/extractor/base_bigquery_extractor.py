@@ -10,7 +10,7 @@ import google_auth_httplib2
 from googleapiclient.discovery import build
 import httplib2
 from pyhocon import ConfigTree  # noqa: F401
-from typing import List, Any  # noqa: F401
+from typing import Any, Dict, Iterator, List  # noqa: F401
 
 from databuilder.extractor.base_extractor import Extractor
 
@@ -28,13 +28,12 @@ class BaseBigQueryExtractor(Extractor):
     CRED_KEY = 'project_cred'
     PAGE_SIZE_KEY = 'page_size'
     FILTER_KEY = 'filter'
-    _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/bigquery.readonly', ]
+    _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/bigquery.readonly']
     DEFAULT_PAGE_SIZE = 300
     NUM_RETRIES = 3
     DATE_LENGTH = 8
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         # should use key_path, or cred_key if the former doesn't exist
         self.key_path = conf.get_string(BaseBigQueryExtractor.KEY_PATH_KEY, None)
         self.cred_key = conf.get_string(BaseBigQueryExtractor.CRED_KEY, None)
@@ -55,33 +54,37 @@ class BaseBigQueryExtractor(Extractor):
                     google.oauth2.service_account.Credentials.from_service_account_info(
                         service_account_info, scopes=self._DEFAULT_SCOPES))
             else:
-                credentials, _ = google.auth.default(scopes=self._DEFAULT_SCOPES)
+                # FIXME: mypy can't find this attribute
+                google_auth: Any = getattr(google, 'auth')
+                credentials, _ = google_auth.default(scopes=self._DEFAULT_SCOPES)
 
         http = httplib2.Http()
         authed_http = google_auth_httplib2.AuthorizedHttp(credentials, http=http)
         self.bigquery_service = build('bigquery', 'v2', http=authed_http, cache_discovery=False)
         self.logging_service = build('logging', 'v2', http=authed_http, cache_discovery=False)
-        self.iter = iter(self._iterate_over_tables())
+        self.iter: Iterator[Any] = iter([])
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         try:
             return next(self.iter)
         except StopIteration:
             return None
 
-    def _is_sharded_table(self, table_id):
+    def _is_sharded_table(self, table_id: str) -> bool:
         suffix = table_id[-BaseBigQueryExtractor.DATE_LENGTH:]
         return suffix.isdigit()
 
-    def _iterate_over_tables(self):
-        # type: () -> Any
+    def _iterate_over_tables(self) -> Any:
         for dataset in self._retrieve_datasets():
             for entry in self._retrieve_tables(dataset):
-                yield(entry)
+                yield entry
 
-    def _retrieve_datasets(self):
-        # type: () -> List[DatasetRef]
+    # TRICKY: this function has different return types between different subclasses,
+    # so type as Any. Should probably refactor to remove this unclear sharing.
+    def _retrieve_tables(self, dataset: DatasetRef) -> Any:
+        pass
+
+    def _retrieve_datasets(self) -> List[DatasetRef]:
         datasets = []
         for page in self._page_dataset_list_results():
             if 'datasets' not in page:
@@ -94,8 +97,7 @@ class BaseBigQueryExtractor(Extractor):
 
         return datasets
 
-    def _page_dataset_list_results(self):
-        # type: () -> Any
+    def _page_dataset_list_results(self) -> Iterator[Any]:
         response = self.bigquery_service.datasets().list(
             projectId=self.project_id,
             all=False,  # Do not return hidden datasets
@@ -116,8 +118,7 @@ class BaseBigQueryExtractor(Extractor):
             else:
                 response = None
 
-    def _page_table_list_results(self, dataset):
-        # type: (DatasetRef) -> Any
+    def _page_table_list_results(self, dataset: DatasetRef) -> Iterator[Dict[str, Any]]:
         response = self.bigquery_service.tables().list(
             projectId=dataset.projectId,
             datasetId=dataset.datasetId,
@@ -137,6 +138,5 @@ class BaseBigQueryExtractor(Extractor):
             else:
                 response = None
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.bigquery_table_metadata'

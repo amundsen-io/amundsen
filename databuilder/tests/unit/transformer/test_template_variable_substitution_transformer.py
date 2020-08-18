@@ -11,8 +11,7 @@ from databuilder.transformer.template_variable_substitution_transformer import \
 
 class TestTemplateVariableSubstitutionTransformer(unittest.TestCase):
 
-    def test_conversion(self):
-        # type: () -> None
+    def test_conversion(self) -> None:
 
         transformer = TemplateVariableSubstitutionTransformer()
         config = ConfigFactory.from_dict({

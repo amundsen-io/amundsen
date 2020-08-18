@@ -17,14 +17,12 @@ from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 # patch whole class to avoid actually calling for boto3.client during tests
 @patch('cassandra.cluster.Cluster.connect', lambda x: None)
 class TestCassandraExtractor(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
 
         self.default_conf = ConfigFactory.from_dict({})
 
-    def test_extraction_with_empty_query_result(self):
-        # type: () -> None
+    def test_extraction_with_empty_query_result(self) -> None:
         """
         Test Extraction with empty result from query
         """
@@ -37,8 +35,11 @@ class TestCassandraExtractor(unittest.TestCase):
     @patch('databuilder.extractor.cassandra_extractor.CassandraExtractor._get_keyspaces')
     @patch('databuilder.extractor.cassandra_extractor.CassandraExtractor._get_tables')
     @patch('databuilder.extractor.cassandra_extractor.CassandraExtractor._get_columns')
-    def test_extraction_with_default_conf(self, mock_columns, mock_tables, mock_keyspaces):
-        # type: () -> None
+    def test_extraction_with_default_conf(self,
+                                          mock_columns: Any,
+                                          mock_tables: Any,
+                                          mock_keyspaces: Any
+                                          ) -> None:
         mock_keyspaces.return_value = {'test_schema': None}
         mock_tables.return_value = {'test_table': None}
         columns_dict = OrderedDict()
@@ -58,8 +59,11 @@ class TestCassandraExtractor(unittest.TestCase):
     @patch('databuilder.extractor.cassandra_extractor.CassandraExtractor._get_keyspaces')
     @patch('databuilder.extractor.cassandra_extractor.CassandraExtractor._get_tables')
     @patch('databuilder.extractor.cassandra_extractor.CassandraExtractor._get_columns')
-    def test_extraction_with_filter_conf(self, mock_columns, mock_tables, mock_keyspaces):
-        # type: () -> None
+    def test_extraction_with_filter_conf(self,
+                                         mock_columns: Any,
+                                         mock_tables: Any,
+                                         mock_keyspaces: Any
+                                         ) -> None:
         mock_keyspaces.return_value = {'test_schema': None}
         mock_tables.return_value = {'test_table': None}
         columns_dict = OrderedDict()
@@ -67,7 +71,7 @@ class TestCassandraExtractor(unittest.TestCase):
         columns_dict['txt'] = CassandraColumnMetadata(None, 'txt', 'text')
         mock_columns.return_value = columns_dict
 
-        def filter_function(k, t):
+        def filter_function(k: str, t: str) -> bool:
             return False if 'test' in k or 'test' in t else False
 
         conf = ConfigFactory.from_dict({

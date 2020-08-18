@@ -9,8 +9,7 @@ from databuilder.models.table_elasticsearch_document import TableESDocument
 
 class TestTableElasticsearchDocument(unittest.TestCase):
 
-    def test_to_json(self):
-        # type: () -> None
+    def test_to_json(self) -> None:
         """
         Test string generated from to_json method
         """

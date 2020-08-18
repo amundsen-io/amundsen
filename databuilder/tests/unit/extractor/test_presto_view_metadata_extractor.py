@@ -15,8 +15,7 @@ from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 
 
 class TestPrestoViewMetadataExtractor(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
@@ -25,8 +24,7 @@ class TestPrestoViewMetadataExtractor(unittest.TestCase):
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
-    def test_extraction_with_empty_result(self):
-        # type: () -> None
+    def test_extraction_with_empty_result(self) -> None:
         """
         Test Extraction with empty result from query
         """
@@ -37,8 +35,7 @@ class TestPrestoViewMetadataExtractor(unittest.TestCase):
             results = extractor.extract()
             self.assertEqual(results, None)
 
-    def test_extraction_with_multiple_views(self):
-        # type: () -> None
+    def test_extraction_with_multiple_views(self) -> None:
         with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection:
             connection = MagicMock()
             mock_connection.return_value = connection

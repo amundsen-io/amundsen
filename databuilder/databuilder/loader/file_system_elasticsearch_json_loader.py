@@ -16,8 +16,7 @@ class FSElasticsearchJSONLoader(Loader):
     FILE_PATH_CONFIG_KEY = 'file_path'
     FILE_MODE_CONFIG_KEY = 'mode'
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
 
         :param conf:
@@ -31,8 +30,7 @@ class FSElasticsearchJSONLoader(Loader):
         self._ensure_directory_exists(file_dir)
         self.file_handler = open(self.file_path, self.file_mode)
 
-    def _ensure_directory_exists(self, path):
-        # type: (str) -> None
+    def _ensure_directory_exists(self, path: str) -> None:
         """
         Check to ensure file directory exists; create the directories otherwise
         :param path:
@@ -43,8 +41,7 @@ class FSElasticsearchJSONLoader(Loader):
 
         os.makedirs(path)
 
-    def load(self, record):
-        # type: (ElasticsearchDocument) -> None
+    def load(self, record: ElasticsearchDocument) -> None:
         """
         Write a record in json format to file
         :param record:
@@ -59,8 +56,7 @@ class FSElasticsearchJSONLoader(Loader):
         self.file_handler.write(record.to_json())
         self.file_handler.flush()
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         """
         close the file handler
         :return:
@@ -68,6 +64,5 @@ class FSElasticsearchJSONLoader(Loader):
         if self.file_handler:
             self.file_handler.close()
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'loader.filesystem.elasticsearch'

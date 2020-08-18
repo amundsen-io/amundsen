@@ -11,8 +11,7 @@ from databuilder.models.dashboard.dashboard_execution import DashboardExecution
 
 class TestDictToModel(unittest.TestCase):
 
-    def test_conversion(self):
-        # type: () -> None
+    def test_conversion(self) -> None:
 
         transformer = DictToModel()
         config = ConfigFactory.from_dict({

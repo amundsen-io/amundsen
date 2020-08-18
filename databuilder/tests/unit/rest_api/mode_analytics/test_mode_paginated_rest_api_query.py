@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 
 class TestModePaginatedRestApiQuery(unittest.TestCase):
 
-    def test_pagination(self):
+    def test_pagination(self) -> None:
         seed_record = [{'foo1': 'bar1'},
                        {'foo2': 'bar2'}]
         seed_query = RestApiQuerySeed(seed_record=seed_record)
@@ -57,7 +57,7 @@ class TestModePaginatedRestApiQuery(unittest.TestCase):
             ]
             mock_get.assert_has_calls(calls, any_order=True)
 
-    def test_no_pagination(self):
+    def test_no_pagination(self) -> None:
         seed_record = [{'foo1': 'bar1'},
                        {'foo2': 'bar2'},
                        {'foo3': 'bar3'}]

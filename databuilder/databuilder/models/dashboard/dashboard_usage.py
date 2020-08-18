@@ -23,16 +23,15 @@ class DashboardUsage(Neo4jCsvSerializable):
     """
 
     def __init__(self,
-                 dashboard_group_id,  # type: Optional[str]
-                 dashboard_id,  # type: Optional[str]
-                 email,  # type: str
-                 view_count,  # type: int
-                 should_create_user_node=False,  # type: Optional[bool]
-                 product='',  # type: Optional[str]
-                 cluster='gold',  # type: Optional[str]
-                 **kwargs
-                 ):
-        # type: () -> None
+                 dashboard_group_id: Optional[str],
+                 dashboard_id: Optional[str],
+                 email: str,
+                 view_count: int,
+                 should_create_user_node: Optional[bool] = False,
+                 product: Optional[str] = '',
+                 cluster: Optional[str] = 'gold',
+                 **kwargs: Any
+                 ) -> None:
         """
 
         :param dashboard_group_id:
@@ -57,21 +56,19 @@ class DashboardUsage(Neo4jCsvSerializable):
         self._should_create_user_node = bool(should_create_user_node)
         self._relation_iterator = self._create_relation_iterator()
 
-    def create_next_node(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         if self._should_create_user_node:
             return self._user_model.create_next_node()
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+        return None
+
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_relation_iterator(self):
-        # type: () -> Iterator[[Dict[str, Any]]]
-
+    def _create_relation_iterator(self) -> Iterator[Dict[str, Any]]:
         yield {
             RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
             RELATION_END_LABEL: User.USER_NODE_LABEL,
@@ -87,7 +84,7 @@ class DashboardUsage(Neo4jCsvSerializable):
             READ_RELATION_COUNT_PROPERTY: self._view_count
         }
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'DashboardUsage({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
             self._dashboard_group_id,
             self._dashboard_id,

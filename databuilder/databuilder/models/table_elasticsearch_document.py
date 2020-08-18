@@ -12,24 +12,23 @@ class TableESDocument(ElasticsearchDocument):
     """
 
     def __init__(self,
-                 database,  # type: str
-                 cluster,  # type: str
-                 schema,  # type: str
-                 name,  # type: str
-                 key,  # type: str
-                 description,  # type: str
-                 last_updated_timestamp,  # type: Optional[int]
-                 column_names,  # type: List[str]
-                 column_descriptions,  # type: List[str]
-                 total_usage,  # type: int
-                 unique_usage,  # type: int
-                 tags,  # type: List[str],
-                 badges=None,  # type: Optional[List[str]]
-                 display_name=None,  # type: Optional[str]
-                 schema_description=None,  # type: Optional[str]
-                 programmatic_descriptions=[],  # type: List[str]
-                 ):
-        # type: (...) -> None
+                 database: str,
+                 cluster: str,
+                 schema: str,
+                 name: str,
+                 key: str,
+                 description: str,
+                 last_updated_timestamp: Optional[int],
+                 column_names: List[str],
+                 column_descriptions: List[str],
+                 total_usage: int,
+                 unique_usage: int,
+                 tags: List[str],
+                 badges: Optional[List[str]] = None,
+                 display_name: Optional[str] = None,
+                 schema_description: Optional[str] = None,
+                 programmatic_descriptions: List[str] = [],
+                 ) -> None:
         self.database = database
         self.cluster = cluster
         self.schema = schema

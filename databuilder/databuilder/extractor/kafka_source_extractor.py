@@ -6,6 +6,8 @@ import importlib
 import logging
 
 from confluent_kafka import Consumer, KafkaException, KafkaError
+from pyhocon import ConfigTree
+from typing import Any
 
 from databuilder import Scoped
 from databuilder.callback.call_back import Callback
@@ -47,13 +49,12 @@ class KafkaSourceExtractor(Extractor, Callback):
     # The value transformer to deserde the Kafka message
     RAW_VALUE_TRANSFORMER = 'raw_value_transformer'
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self.conf = conf
         self.consumer_config = conf.get_config(KafkaSourceExtractor.CONSUMER_CONFIG).\
             as_plain_ordered_dict()
 
-        self.topic_names = conf.get_list(KafkaSourceExtractor.TOPIC_NAME_LIST)  # type: list
+        self.topic_names: list = conf.get_list(KafkaSourceExtractor.TOPIC_NAME_LIST)
 
         if not self.topic_names:
             raise Exception('Kafka topic needs to be provided by the user.')
@@ -94,8 +95,7 @@ class KafkaSourceExtractor(Extractor, Callback):
         except Exception:
             raise RuntimeError('Consumer could not start correctly!')
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         :return: Provides a record or None if no more to extract
         """
@@ -112,8 +112,7 @@ class KafkaSourceExtractor(Extractor, Callback):
                     # Users need to figure out how to rewind the consumer offset
                     raise Exception('Encounter exception when transform the record')
 
-    def on_success(self):
-        # Type: () -> None
+    def on_success(self) -> None:
         """
         Commit the offset
         once:
@@ -129,13 +128,11 @@ class KafkaSourceExtractor(Extractor, Callback):
             self.consumer.commit(asynchronous=False)
             self.consumer.close()
 
-    def on_failure(self):
-        # Type: () -> None
+    def on_failure(self) -> None:
         if self.consumer:
             self.consumer.close()
 
-    def consume(self):
-        # Type: () -> Any
+    def consume(self) -> Any:
         """
         Consume messages from a give list of topic
 
@@ -170,6 +167,5 @@ class KafkaSourceExtractor(Extractor, Callback):
         finally:
             return records
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.kafka_source'

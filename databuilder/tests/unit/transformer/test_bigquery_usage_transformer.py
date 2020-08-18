@@ -20,8 +20,7 @@ class TestBigQueryUsageTransform(unittest.TestCase):
     EMAIL = 'your-user-here@test.com'
     READ_COUNT = 305
 
-    def test_transform_function(self):
-        # type: () -> None
+    def test_transform_function(self) -> None:
         config = ConfigFactory.from_dict({})
 
         transformer = BigqueryUsageTransformer()
@@ -37,9 +36,11 @@ class TestBigQueryUsageTransform(unittest.TestCase):
         t1 = (key, TestBigQueryUsageTransform.READ_COUNT)
         xformed = transformer.transform(t1)
 
+        assert xformed is not None
         self.assertIsInstance(xformed, TableColumnUsage)
-        self.assertEqual(len(xformed.col_readers), 1)
-        col_reader = xformed.col_readers[0]
+        col_readers = list(xformed.col_readers)
+        self.assertEqual(len(col_readers), 1)
+        col_reader = col_readers[0]
         self.assertEqual(col_reader.cluster, TestBigQueryUsageTransform.CLUSTER)
         self.assertEqual(col_reader.database, TestBigQueryUsageTransform.DATABASE)
         self.assertEqual(col_reader.schema, TestBigQueryUsageTransform.DATASET)
@@ -48,7 +49,7 @@ class TestBigQueryUsageTransform(unittest.TestCase):
         self.assertEqual(col_reader.user_email, TestBigQueryUsageTransform.EMAIL)
         self.assertEqual(col_reader.read_count, TestBigQueryUsageTransform.READ_COUNT)
 
-    def test_scope(self):
+    def test_scope(self) -> None:
         config = ConfigFactory.from_dict({})
 
         transformer = BigqueryUsageTransformer()

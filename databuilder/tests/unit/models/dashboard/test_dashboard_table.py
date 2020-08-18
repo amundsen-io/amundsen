@@ -10,8 +10,7 @@ from databuilder.models.neo4j_csv_serde import RELATION_START_KEY, RELATION_STAR
 
 class TestDashboardTable(unittest.TestCase):
 
-    def test_dashboard_table_nodes(self):
-        # type: () -> None
+    def test_dashboard_table_nodes(self) -> None:
         dashboard_table = DashboardTable(table_ids=['hive://gold.schema/table1', 'hive://gold.schema/table2'],
                                          cluster='cluster_id', product='product_id',
                                          dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
@@ -19,8 +18,7 @@ class TestDashboardTable(unittest.TestCase):
         actual = dashboard_table.create_next_node()
         self.assertIsNone(actual)
 
-    def test_dashboard_table_relations(self):
-        # type: () -> None
+    def test_dashboard_table_relations(self) -> None:
         dashboard_table = DashboardTable(table_ids=['hive://gold.schema/table1'],
                                          cluster='cluster_id', product='product_id',
                                          dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
@@ -31,4 +29,5 @@ class TestDashboardTable(unittest.TestCase):
                     RELATION_START_KEY: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
                     RELATION_TYPE: 'DASHBOARD_WITH_TABLE',
                     RELATION_REVERSE_TYPE: 'TABLE_OF_DASHBOARD'}
+        assert actual is not None
         self.assertDictEqual(actual, expected)

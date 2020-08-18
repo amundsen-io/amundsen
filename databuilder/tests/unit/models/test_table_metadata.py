@@ -8,12 +8,10 @@ from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestTableMetadata(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         super(TestTableMetadata, self).setUp()
 
-    def test_serialize(self):
-        # type: () -> None
+    def test_serialize(self) -> None:
         self.table_metadata = TableMetadata('hive', 'gold', 'test_schema1', 'test_table1', 'test_table1', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
             ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
@@ -142,8 +140,7 @@ class TestTableMetadata(unittest.TestCase):
 
         self.assertEqual(self.expected_rels_deduped, actual)
 
-    def test_table_attributes(self):
-        # type: () -> None
+    def test_table_attributes(self) -> None:
         self.table_metadata3 = TableMetadata('hive', 'gold', 'test_schema3', 'test_table3', 'test_table3', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
             ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
@@ -162,8 +159,7 @@ class TestTableMetadata(unittest.TestCase):
         self.assertEqual(actual[0].get('attr2'), 'attr2')
 
     # TODO NO test can run before serialiable... need to fix
-    def test_z_custom_sources(self):
-        # type: () -> None
+    def test_z_custom_sources(self) -> None:
         self.custom_source = TableMetadata('hive', 'gold', 'test_schema3', 'test_table4', 'test_table4', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0),
             ColumnMetadata('test_id2', 'description of test_id2', 'bigint', 1),
@@ -182,8 +178,7 @@ class TestTableMetadata(unittest.TestCase):
                     'description_source': 'custom', 'description': 'test_table4'}
         self.assertEqual(actual[1], expected)
 
-    def test_tags_field(self):
-        # type: () -> None
+    def test_tags_field(self) -> None:
         self.table_metadata4 = TableMetadata('hive', 'gold', 'test_schema4', 'test_table4', 'test_table4', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0, ['col-tag1', 'col-tag2'])],
             is_view=False, tags=['tag1', 'tag2'], attr1='uri', attr2='attr2')
@@ -229,8 +224,7 @@ class TestTableMetadata(unittest.TestCase):
         self.assertEqual(actual[6], expected_col_tag_rel1)
         self.assertEqual(actual[7], expected_col_tag_rel2)
 
-    def test_tags_populated_from_str(self):
-        # type: () -> None
+    def test_tags_populated_from_str(self) -> None:
         self.table_metadata5 = TableMetadata('hive', 'gold', 'test_schema5', 'test_table5', 'test_table5', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags="tag3, tag4")
 
@@ -261,8 +255,7 @@ class TestTableMetadata(unittest.TestCase):
         self.assertEqual(actual[2], expected_tab_tag_rel3)
         self.assertEqual(actual[3], expected_tab_tag_rel4)
 
-    def test_tags_arent_populated_from_empty_list_and_str(self):
-        # type: () -> None
+    def test_tags_arent_populated_from_empty_list_and_str(self) -> None:
         self.table_metadata6 = TableMetadata('hive', 'gold', 'test_schema6', 'test_table6', 'test_table6', [
             ColumnMetadata('test_id1', 'description of test_table1', 'bigint', 0)], tags=[])
 

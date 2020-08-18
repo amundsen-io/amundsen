@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Union, Dict, Any, Iterator  # noqa: F401
+from typing import Union, Dict, Any, Iterable, List  # noqa: F401
 
 from databuilder.models.neo4j_csv_serde import (
     Neo4jCsvSerializable, RELATION_START_KEY, RELATION_END_KEY,
@@ -30,15 +30,14 @@ class ColumnUsageModel(Neo4jCsvSerializable):
     READ_RELATION_COUNT = READ_RELATION_COUNT_PROPERTY
 
     def __init__(self,
-                 database,     # type: str
-                 cluster,      # type: str
-                 schema,  # type: str
-                 table_name,   # type: str
-                 column_name,  # type: str
-                 user_email,   # type: str
-                 read_count,   # type: int
-                 ):
-        # type: (...) -> None
+                 database: str,
+                 cluster: str,
+                 schema: str,
+                 table_name: str,
+                 column_name: str,
+                 user_email: str,
+                 read_count: int,
+                 ) -> None:
         self.database = database
         self.cluster = cluster
         self.schema = schema
@@ -50,16 +49,14 @@ class ColumnUsageModel(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
 
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -67,16 +64,14 @@ class ColumnUsageModel(Neo4jCsvSerializable):
 
         return User(email=self.user_email).create_nodes()
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
 
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def create_relation(self):
-        # type: () -> Iterator[Any]
+    def create_relation(self) -> Iterable[Any]:
         return [{
             RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
             RELATION_END_LABEL: User.USER_NODE_LABEL,
@@ -87,19 +82,16 @@ class ColumnUsageModel(Neo4jCsvSerializable):
             ColumnUsageModel.READ_RELATION_COUNT: self.read_count
         }]
 
-    def _get_table_key(self):
-        # type: (ColumnReader) -> str
+    def _get_table_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
                                                      cluster=self.cluster,
                                                      schema=self.schema,
                                                      tbl=self.table_name)
 
-    def _get_user_key(self, email):
-        # type: (str) -> str
+    def _get_user_key(self, email: str) -> str:
         return User.get_user_model_key(email=email)
 
-    def __repr__(self):
-        # type: () -> str
+    def __repr__(self) -> str:
         return 'TableColumnUsage({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.database,
                                                                                    self.cluster,
                                                                                    self.schema,

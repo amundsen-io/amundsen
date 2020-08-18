@@ -8,13 +8,11 @@ import datetime
 import textwrap
 
 from pyhocon import ConfigTree  # noqa: F401
-from typing import List, Any  # noqa: F401
+from typing import Any, Dict, Iterator, List, Tuple, Union  # noqa: F401
 
-from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor
+from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor, DatasetRef
 from databuilder.models.watermark import Watermark
 
-DatasetRef = namedtuple('DatasetRef', ['datasetId', 'projectId'])
-TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 PartitionInfo = namedtuple('PartitionInfo', ['partition_id', 'epoch_created'])
 
 LOGGER = logging.getLogger(__name__)
@@ -22,18 +20,17 @@ LOGGER = logging.getLogger(__name__)
 
 class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         BaseBigQueryExtractor.init(self, conf)
-        self.iter = iter(self._iterate_over_tables())
+        self.iter: Iterator[Watermark] = iter(self._iterate_over_tables())
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.bigquery_watermarks'
 
-    def _retrieve_tables(self, dataset):
-        # type: () -> Any
-        sharded_table_watermarks = {}
+    def _retrieve_tables(self,
+                         dataset: DatasetRef
+                         ) -> Iterator[Watermark]:
+        sharded_table_watermarks: Dict[str, Dict[str, Union[str, Dict[str, Any]]]] = {}
 
         for page in self._page_table_list_results(dataset):
             if 'tables' not in page:
@@ -88,9 +85,12 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
                     cluster=tableRef['projectId']
                 )
 
-    def _get_partitions(self, table, tableRef):
+    def _get_partitions(self,
+                        table: str,
+                        tableRef: Dict[str, str]
+                        ) -> List[PartitionInfo]:
         if 'timePartitioning' not in table:
-            return
+            return []
 
         query = textwrap.dedent("""
         SELECT partition_id,
@@ -109,11 +109,15 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
         result = self.bigquery_service.jobs().query(projectId=self.project_id, body=body).execute()
 
         if 'rows' not in result:
-            return
+            return []
 
         return [PartitionInfo(row['f'][0]['v'], row['f'][1]['v']) for row in result['rows']]
 
-    def _get_partition_watermarks(self, table, tableRef, partitions):
+    def _get_partition_watermarks(self,
+                                  table: Dict[str, Any],
+                                  tableRef: Dict[str, str],
+                                  partitions: List[PartitionInfo]
+                                  ) -> Tuple[Watermark, Watermark]:
         if 'field' in table['timePartitioning']:
             field = table['timePartitioning']['field']
         else:

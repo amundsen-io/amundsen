@@ -16,8 +16,7 @@ class Callback(object, metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def on_success(self):
-        # type: () -> None
+    def on_success(self) -> None:
         """
         A call back method that will be called when operation is successful
         :return: None
@@ -25,8 +24,7 @@ class Callback(object, metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def on_failure(self):
-        # type: () -> None
+    def on_failure(self) -> None:
         """
         A call back method that will be called when operation failed
         :return: None
@@ -34,7 +32,7 @@ class Callback(object, metaclass=abc.ABCMeta):
         pass
 
 
-def notify_callbacks(callbacks, is_success):
+def notify_callbacks(callbacks: List[Callback], is_success: bool) -> None:
     """
     A Utility method that notifies callback. If any callback fails it will still go through all the callbacks,
     and raise the last exception it experienced.
@@ -43,7 +41,6 @@ def notify_callbacks(callbacks, is_success):
     :param is_success:
     :return:
     """
-    # type: (List[Callback], bool) -> None
 
     if not callbacks:
         LOGGER.info('No callbacks to notify')

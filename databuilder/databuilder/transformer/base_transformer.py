@@ -14,13 +14,11 @@ class Transformer(Scoped):
     A transformer transforms a record
     """
     @abc.abstractmethod
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
     @abc.abstractmethod
-    def transform(self, record):
-        # type: (Any) -> Any
+    def transform(self, record: Any) -> Any:
         pass
 
 
@@ -29,16 +27,13 @@ class NoopTransformer(Transformer):
     A no-op transformer
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
-    def transform(self, record):
-        # type: (Any) -> Any
+    def transform(self, record: Any) -> Any:
         return record
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         pass
 
 
@@ -48,20 +43,17 @@ class ChainedTransformer(Transformer):
     """
 
     def __init__(self,
-                 transformers,
-                 is_init_transformers=False):
-        # type: (Iterable[Transformer], Optional[bool]) -> None
+                 transformers: Iterable[Transformer],
+                 is_init_transformers: Optional[bool] = False) -> None:
         self.transformers = transformers
         self.is_init_transformers = is_init_transformers
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         if self.is_init_transformers:
             for transformer in self.transformers:
                 transformer.init(Scoped.get_scoped_conf(conf, transformer.get_scope()))
 
-    def transform(self, record):
-        # type: (Any) -> Any
+    def transform(self, record: Any) -> Any:
         for t in self.transformers:
             record = t.transform(record)
             # Check filtered record
@@ -70,11 +62,9 @@ class ChainedTransformer(Transformer):
 
         return record
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'transformer.chained'
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         for t in self.transformers:
             t.close()

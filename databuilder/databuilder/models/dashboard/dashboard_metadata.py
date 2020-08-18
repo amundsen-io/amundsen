@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 
-from typing import Any, Union, Iterator, Dict, Set, Optional  # noqa: F401
+from typing import Any, Dict, Iterator, List, Optional, Set, Union  # noqa: F401
 
 from databuilder.models.cluster import cluster_constants
 from databuilder.models.neo4j_csv_serde import (
@@ -57,25 +57,24 @@ class DashboardMetadata(Neo4jCsvSerializable):
     DASHBOARD_TAG_RELATION_TYPE = 'TAG'
     TAG_DASHBOARD_RELATION_TYPE = 'TAG_OF'
 
-    serialized_nodes = set()  # type: Set[Any]
-    serialized_rels = set()  # type: Set[Any]
+    serialized_nodes: Set[Any] = set()
+    serialized_rels: Set[Any] = set()
 
     def __init__(self,
-                 dashboard_group,  # type: str
-                 dashboard_name,  # type: str
-                 description,  # type: Union[str, None]
-                 tags=None,  # type: List
-                 cluster='gold',  # type: str
-                 product='',  # type: Optional[str]
-                 dashboard_group_id=None,  # type: Optional[str]
-                 dashboard_id=None,  # type: Optional[str]
-                 dashboard_group_description=None,  # type: Optional[str]
-                 created_timestamp=None,  # type: Optional[int]
-                 dashboard_group_url=None,  # type: Optional[str]
-                 dashboard_url=None,  # type: Optional[str]
-                 **kwargs
-                 ):
-        # type: (...) -> None
+                 dashboard_group: str,
+                 dashboard_name: str,
+                 description: Union[str, None],
+                 tags: List = None,
+                 cluster: str = 'gold',
+                 product: Optional[str] = '',
+                 dashboard_group_id: Optional[str] = None,
+                 dashboard_id: Optional[str] = None,
+                 dashboard_group_description: Optional[str] = None,
+                 created_timestamp: Optional[int] = None,
+                 dashboard_group_url: Optional[str] = None,
+                 dashboard_url: Optional[str] = None,
+                 **kwargs: Any
+                 ) -> None:
 
         self.dashboard_group = dashboard_group
         self.dashboard_name = dashboard_name
@@ -89,13 +88,12 @@ class DashboardMetadata(Neo4jCsvSerializable):
         self.created_timestamp = created_timestamp
         self.dashboard_group_url = dashboard_group_url
         self.dashboard_url = dashboard_url
-        self._processed_cluster = set()
-        self._processed_dashboard_group = set()
+        self._processed_cluster: Set[str] = set()
+        self._processed_dashboard_group: Set[str] = set()
         self._node_iterator = self._create_next_node()
         self._relation_iterator = self._create_next_relation()
 
-    def __repr__(self):
-        # type: () -> str
+    def __repr__(self) -> str:
         return 'DashboardMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})' \
             .format(self.dashboard_group,
                     self.dashboard_name,
@@ -109,53 +107,39 @@ class DashboardMetadata(Neo4jCsvSerializable):
                     self.dashboard_url,
                     )
 
-    def _get_cluster_key(self):
-        # type: () -> str
+    def _get_cluster_key(self) -> str:
         return DashboardMetadata.CLUSTER_KEY_FORMAT.format(cluster=self.cluster,
                                                            product=self.product)
 
-    def _get_dashboard_key(self):
-        # type: () -> str
+    def _get_dashboard_key(self) -> str:
         return DashboardMetadata.DASHBOARD_KEY_FORMAT.format(dashboard_group=self.dashboard_group_id,
                                                              dashboard_name=self.dashboard_id,
                                                              cluster=self.cluster,
                                                              product=self.product)
 
-    def _get_dashboard_description_key(self):
-        # type: () -> str
+    def _get_dashboard_description_key(self) -> str:
         return DashboardMetadata.DASHBOARD_DESCRIPTION_FORMAT.format(dashboard_group=self.dashboard_group_id,
                                                                      dashboard_name=self.dashboard_id,
                                                                      cluster=self.cluster,
                                                                      product=self.product)
 
-    def _get_dashboard_group_description_key(self):
-        # type: () -> str
+    def _get_dashboard_group_description_key(self) -> str:
         return DashboardMetadata.DASHBOARD_GROUP_DESCRIPTION_KEY_FORMAT.format(dashboard_group=self.dashboard_group_id,
                                                                                cluster=self.cluster,
                                                                                product=self.product)
 
-    def _get_dashboard_group_key(self):
-        # type: () -> str
+    def _get_dashboard_group_key(self) -> str:
         return DashboardMetadata.DASHBOARD_GROUP_KEY_FORMAT.format(dashboard_group=self.dashboard_group_id,
                                                                    cluster=self.cluster,
                                                                    product=self.product)
 
-    def _get_dashboard_last_reload_time_key(self):
-        # type: () -> str
-        return DashboardMetadata.DASHBOARD_LAST_RELOAD_TIME_FORMAT.format(dashboard_group=self.dashboard_group,
-                                                                          dashboard_name=self.dashboard_id,
-                                                                          cluster=self.cluster,
-                                                                          product=self.product)
-
-    def create_next_node(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._node_iterator)
         except StopIteration:
             return None
 
-    def _create_next_node(self):
-        # type: () -> Iterator[Any]
+    def _create_next_node(self) -> Iterator[Any]:
         # Cluster node
         if not self._get_cluster_key() in self._processed_cluster:
             self._processed_cluster.add(self._get_cluster_key())
@@ -166,7 +150,7 @@ class DashboardMetadata(Neo4jCsvSerializable):
             }
 
         # Dashboard node
-        dashboard_node = {
+        dashboard_node: Dict[str, Any] = {
             NODE_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
             NODE_KEY: self._get_dashboard_key(),
             DashboardMetadata.DASHBOARD_NAME: self.dashboard_name,
@@ -212,15 +196,13 @@ class DashboardMetadata(Neo4jCsvSerializable):
                        NODE_KEY: TagMetadata.get_tag_key(tag),
                        TagMetadata.TAG_TYPE: 'dashboard'}
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_next_relation(self):
-        # type: () -> Iterator[Any]
+    def _create_next_relation(self) -> Iterator[Any]:
 
         # Cluster <-> Dashboard group
         yield {

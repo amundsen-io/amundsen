@@ -21,8 +21,7 @@ owner2 = 'user2@2'
 
 class TestTableOwner(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         super(TestTableOwner, self).setUp()
         self.table_owner = TableOwner(db_name='hive',
                                       schema=SCHEMA,
@@ -30,18 +29,15 @@ class TestTableOwner(unittest.TestCase):
                                       cluster=CLUSTER,
                                       owners="user1@1, UsER2@2 ")
 
-    def test_get_owner_model_key(self):
-        # type: () -> None
+    def test_get_owner_model_key(self) -> None:
         owner = self.table_owner.get_owner_model_key(owner1)
         self.assertEquals(owner, owner1)
 
-    def test_get_metadata_model_key(self):
-        # type: () -> None
+    def test_get_metadata_model_key(self) -> None:
         metadata = self.table_owner.get_metadata_model_key()
         self.assertEquals(metadata, 'hive://default.base/test')
 
-    def test_create_nodes(self):
-        # type: () -> None
+    def test_create_nodes(self) -> None:
         nodes = self.table_owner.create_nodes()
         self.assertEquals(len(nodes), 2)
 
@@ -59,8 +55,7 @@ class TestTableOwner(unittest.TestCase):
         self.assertTrue(node1 in nodes)
         self.assertTrue(node2 in nodes)
 
-    def test_create_relation(self):
-        # type: () -> None
+    def test_create_relation(self) -> None:
         relations = self.table_owner.create_relation()
         self.assertEquals(len(relations), 2)
 
@@ -84,8 +79,7 @@ class TestTableOwner(unittest.TestCase):
         self.assertTrue(relation1 in relations)
         self.assertTrue(relation2 in relations)
 
-    def test_create_nodes_with_owners_list(self):
-        # type: () -> None
+    def test_create_nodes_with_owners_list(self) -> None:
         self.table_owner_list = TableOwner(db_name='hive',
                                            schema=SCHEMA,
                                            table_name=TABLE,

@@ -13,8 +13,7 @@ from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 
 class TestRestAPIExtractor(unittest.TestCase):
 
-    def test_static_data(self):
-        # type: (...) -> None
+    def test_static_data(self) -> None:
 
         conf = ConfigFactory.from_dict(
             {
@@ -30,7 +29,7 @@ class TestRestAPIExtractor(unittest.TestCase):
 
         self.assertDictEqual(expected, record)
 
-    def test_model_construction(self):
+    def test_model_construction(self) -> None:
         conf = ConfigFactory.from_dict(
             {
                 REST_API_QUERY: RestApiQuerySeed(

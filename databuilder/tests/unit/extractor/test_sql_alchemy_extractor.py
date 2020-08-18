@@ -13,8 +13,7 @@ from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 
 class TestSqlAlchemyExtractor(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         config_dict = {
             'extractor.sqlalchemy.conn_string': 'TEST_CONNECTION',
             'extractor.sqlalchemy.extract_sql': 'SELECT 1 FROM TEST_TABLE;'
@@ -22,8 +21,8 @@ class TestSqlAlchemyExtractor(unittest.TestCase):
         self.conf = ConfigFactory.from_dict(config_dict)
 
     @patch.object(SQLAlchemyExtractor, '_get_connection')
-    def test_extraction_with_empty_query_result(self, mock_method):
-        # type: (Any, Any) -> None
+    def test_extraction_with_empty_query_result(self: Any,
+                                                mock_method: Any) -> None:
         """
         Test Extraction with empty result from query
         """
@@ -36,21 +35,21 @@ class TestSqlAlchemyExtractor(unittest.TestCase):
         self.assertEqual(results, '')
 
     @patch.object(SQLAlchemyExtractor, '_get_connection')
-    def test_extraction_with_single_query_result(self, mock_method):
-        # type: (Any, Any) -> None
+    def test_extraction_with_single_query_result(self: Any,
+                                                 mock_method: Any) -> None:
         """
         Test Extraction from single result from query
         """
         extractor = SQLAlchemyExtractor()
-        extractor.results = [('test_result'), ]
+        extractor.results = [('test_result')]
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                               scope=extractor.get_scope()))
         results = extractor.extract()
         self.assertEqual(results, 'test_result')
 
     @patch.object(SQLAlchemyExtractor, '_get_connection')
-    def test_extraction_with_multiple_query_result(self, mock_method):
-        # type: (Any, Any) -> None
+    def test_extraction_with_multiple_query_result(self: Any,
+                                                   mock_method: Any) -> None:
         """
         Test Extraction from list of results from query
         """
@@ -65,8 +64,7 @@ class TestSqlAlchemyExtractor(unittest.TestCase):
                          ['test_result', 'test_result2', 'test_result3'])
 
     @patch.object(SQLAlchemyExtractor, '_get_connection')
-    def test_extraction_with_model_class(self, mock_method):
-        # type: (Any, Any) -> None
+    def test_extraction_with_model_class(self: Any, mock_method: Any) -> None:
         """
         Test Extraction using model class
         """
@@ -104,16 +102,15 @@ class TableMetadataResult:
     """
 
     def __init__(self,
-                 database,  # type: str
-                 schema,  # type: str
-                 name,  # type: str
-                 description,  # type: str
-                 column_name,  # type: str
-                 column_type,  # type: str
-                 column_comment,  # type: str
-                 owner  # type: str
-                 ):
-        # type: (...) -> None
+                 database: str,
+                 schema: str,
+                 name: str,
+                 description: str,
+                 column_name: str,
+                 column_type: str,
+                 column_comment: str,
+                 owner: str
+                 ) -> None:
         self.database = database
         self.schema = schema
         self.name = name

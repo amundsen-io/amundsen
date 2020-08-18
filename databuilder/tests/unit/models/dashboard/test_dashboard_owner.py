@@ -10,16 +10,14 @@ from databuilder.models.neo4j_csv_serde import RELATION_START_KEY, RELATION_STAR
 
 class TestDashboardOwner(unittest.TestCase):
 
-    def test_dashboard_owner_nodes(self):
-        # type: () -> None
+    def test_dashboard_owner_nodes(self) -> None:
         dashboard_owner = DashboardOwner(email='foo@bar.com', cluster='cluster_id', product='product_id',
                                          dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
 
         actual = dashboard_owner.create_next_node()
         self.assertIsNone(actual)
 
-    def test_dashboard_owner_relations(self):
-        # type: () -> None
+    def test_dashboard_owner_relations(self) -> None:
         dashboard_owner = DashboardOwner(email='foo@bar.com', cluster='cluster_id', product='product_id',
                                          dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
 
@@ -28,4 +26,5 @@ class TestDashboardOwner(unittest.TestCase):
                     RELATION_START_KEY: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
                     RELATION_TYPE: 'OWNER',
                     RELATION_REVERSE_TYPE: 'OWNER_OF'}
+        assert actual is not None
         self.assertDictEqual(actual, expected)

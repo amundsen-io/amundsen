@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import Any  # noqa: F401
 
 from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
 from requests.auth import HTTPBasicAuth
+from typing import Any, List  # noqa: F401
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -15,7 +15,7 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import 
 from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 from databuilder.rest_api.rest_api_failure_handlers import HttpFailureSkipOnStatus
 from databuilder.rest_api.rest_api_query import RestApiQuery
-from databuilder.transformer.base_transformer import ChainedTransformer
+from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
 from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
 from databuilder.transformer.remove_field_transformer import RemoveFieldTransformer, FIELD_NAMES
 
@@ -27,8 +27,7 @@ class ModeDashboardUserExtractor(Extractor):
     An Extractor that extracts all Mode Dashboard user and add mode_user_id attribute to User model.
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self._conf = conf
 
         restapi_query = self._build_restapi_query()
@@ -38,7 +37,7 @@ class ModeDashboardUserExtractor(Extractor):
         )
 
         # Remove all unnecessary fields because User model accepts all attributes and push it to Neo4j.
-        transformers = []
+        transformers: List[Transformer] = []
 
         remove_fields_transformer = RemoveFieldTransformer()
         remove_fields_transformer.init(
@@ -56,26 +55,22 @@ class ModeDashboardUserExtractor(Extractor):
 
         self._transformer = ChainedTransformer(transformers=transformers)
 
-    def extract(self):
-        # type: () -> Any
-
+    def extract(self) -> Any:
         record = self._extractor.extract()
         if not record:
             return None
 
         return self._transformer.transform(record=record)
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.mode_dashboard_owner'
 
-    def _build_restapi_query(self):
+    def _build_restapi_query(self) -> RestApiQuery:
         """
         Build REST API Query. To get Mode Dashboard owner, it needs to call three APIs (spaces API, reports
         API, and user API) joining together.
         :return: A RestApiQuery that provides Mode Dashboard owner
         """
-        # type: () -> RestApiQuery
 
         # Seed query record for next query api to join with
         seed_record = [{

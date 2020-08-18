@@ -12,13 +12,12 @@ class MetricESDocument(ElasticsearchDocument):
     """
 
     def __init__(self,
-                 name,  # type: str
-                 description,  # type: str
-                 type,  # type: str
-                 dashboards,  # type: List
-                 tags,  # type: List
-                 ):
-        # type: (...) -> None
+                 name: str,
+                 description: str,
+                 type: str,
+                 dashboards: List,
+                 tags: List,
+                 ) -> None:
         self.name = name
         self.description = description
         self.type = type

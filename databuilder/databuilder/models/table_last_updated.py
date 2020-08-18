@@ -22,13 +22,12 @@ class TableLastUpdated(Neo4jCsvSerializable):
     LASTUPDATED_TABLE_RELATION_TYPE = timestamp_constants.LASTUPDATED_REVERSE_RELATION_TYPE
 
     def __init__(self,
-                 table_name,  # type: str
-                 last_updated_time_epoch,  # type: int
-                 schema,  # type: str
-                 db='hive',  # type: str
-                 cluster='gold'  # type: str
-                 ):
-        # type: (...) -> None
+                 table_name: str,
+                 last_updated_time_epoch: int,
+                 schema: str,
+                 db: str = 'hive',
+                 cluster: str = 'gold'
+                 ) -> None:
         self.table_name = table_name
         self.last_updated_time = int(last_updated_time_epoch)
         self.schema = schema
@@ -38,45 +37,39 @@ class TableLastUpdated(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def __repr__(self):
-        # type: (...) -> str
+    def __repr__(self) -> str:
         return \
             """TableLastUpdated(table_name={!r}, last_updated_time={!r}, schema={!r}, db={!r}, cluster={!r})"""\
             .format(self.table_name, self.last_updated_time, self.schema, self.db, self.cluster)
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         # creates new node
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def get_table_model_key(self):
-        # type: (...) -> str
+    def get_table_model_key(self) -> str:
         # returns formatted string for table name
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.db,
                                                      cluster=self.cluster,
                                                      schema=self.schema,
                                                      tbl=self.table_name)
 
-    def get_last_updated_model_key(self):
-        # type: (...) -> str
+    def get_last_updated_model_key(self) -> str:
         # returns formatted string for last updated name
         return TableLastUpdated.LAST_UPDATED_KEY_FORMAT.format(db=self.db,
                                                                cluster=self.cluster,
                                                                schema=self.schema,
                                                                tbl=self.table_name)
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -93,8 +86,7 @@ class TableLastUpdated(Neo4jCsvSerializable):
 
         return results
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         """
         Create a list of relations mapping last updated node with table node
         :return:

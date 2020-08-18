@@ -30,10 +30,9 @@ class DefaultJob(Job):
     """
 
     def __init__(self,
-                 conf,
-                 task,
-                 publisher=NoopPublisher()):
-        # type: (ConfigTree, Task, Publisher) -> None
+                 conf: ConfigTree,
+                 task: Task,
+                 publisher: Publisher = NoopPublisher()) -> None:
         self.task = task
         self.conf = conf
         self.publisher = publisher
@@ -46,16 +45,13 @@ class DefaultJob(Job):
         else:
             self.statsd = None
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
-    def _init(self):
-        # type: () -> None
+    def _init(self) -> None:
         self.task.init(self.conf)
 
-    def launch(self):
-        # type: () -> None
+    def launch(self) -> None:
         """
         Launch a job by initializing job, run task and publish.
         :return:

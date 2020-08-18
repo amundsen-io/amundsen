@@ -13,8 +13,7 @@ from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 
 class TestElasticsearchPublisher(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         self.test_file_path = 'test_publisher_file.json'
         self.test_file_mode = 'r'
 
@@ -32,8 +31,7 @@ class TestElasticsearchPublisher(unittest.TestCase):
 
         self.conf = ConfigFactory.from_dict(config_dict)
 
-    def test_publish_with_no_data(self):
-        # type: () -> None
+    def test_publish_with_no_data(self) -> None:
         """
         Test Publish functionality with no data
         """
@@ -49,8 +47,7 @@ class TestElasticsearchPublisher(unittest.TestCase):
             # no calls should be made through elasticseach_client when there is no data
             self.assertTrue(self.mock_es_client.call_count == 0)
 
-    def test_publish_with_data_and_no_old_index(self):
-        # type: () -> None
+    def test_publish_with_data_and_no_old_index(self) -> None:
         """
         Test Publish functionality with data but no index in place
         """
@@ -83,8 +80,7 @@ class TestElasticsearchPublisher(unittest.TestCase):
                 {'actions': [{"add": {"index": self.test_es_new_index, "alias": self.test_es_alias}}]}
             )
 
-    def test_publish_with_data_and_old_index(self):
-        # type: () -> None
+    def test_publish_with_data_and_old_index(self) -> None:
         """
         Test Publish functionality with data and with old_index in place
         """

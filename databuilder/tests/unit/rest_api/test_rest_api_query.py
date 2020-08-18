@@ -11,7 +11,7 @@ from databuilder.rest_api.rest_api_query import RestApiQuery
 
 class TestRestApiQuery(unittest.TestCase):
 
-    def test_rest_api_query_seed(self):
+    def test_rest_api_query_seed(self) -> None:
         rest_api_query = RestApiQuerySeed(seed_record=[
             {'foo': 'bar'},
             {'john': 'doe'}
@@ -25,13 +25,13 @@ class TestRestApiQuery(unittest.TestCase):
 
         self.assertListEqual(expected, result)
 
-    def test_empty_rest_api_query_seed(self):
+    def test_empty_rest_api_query_seed(self) -> None:
         rest_api_query = EmptyRestApiQuerySeed()
 
         result = [v for v in rest_api_query.execute()]
         assert len(result) == 1
 
-    def test_rest_api_query(self):
+    def test_rest_api_query(self) -> None:
 
         seed_record = [{'foo1': 'bar1'},
                        {'foo2': 'bar2'}]
@@ -56,7 +56,7 @@ class TestRestApiQuery(unittest.TestCase):
             for actual in query.execute():
                 self.assertDictEqual(expected.pop(0), actual)
 
-    def test_rest_api_query_multiple_fields(self):
+    def test_rest_api_query_multiple_fields(self) -> None:
 
         seed_record = [{'foo1': 'bar1'},
                        {'foo2': 'bar2'}]
@@ -81,7 +81,7 @@ class TestRestApiQuery(unittest.TestCase):
             for actual in query.execute():
                 self.assertDictEqual(expected.pop(0), actual)
 
-    def test_compute_subresult_single_field(self):
+    def test_compute_subresult_single_field(self) -> None:
         sub_records = RestApiQuery._compute_sub_records(result_list=['1', '2', '3'], field_names=['foo'])
 
         expected_records = [
@@ -95,7 +95,7 @@ class TestRestApiQuery(unittest.TestCase):
 
         assert expected_records == sub_records
 
-    def test_compute_subresult_multiple_fields_json_path_and_expression(self):
+    def test_compute_subresult_multiple_fields_json_path_and_expression(self) -> None:
         sub_records = RestApiQuery._compute_sub_records(
             result_list=['1', 'a', '2', 'b', '3', 'c'], field_names=['foo', 'bar'])
 
@@ -114,7 +114,7 @@ class TestRestApiQuery(unittest.TestCase):
 
         assert expected_records == sub_records
 
-    def test_compute_subresult_multiple_fields_json_path_or_expression(self):
+    def test_compute_subresult_multiple_fields_json_path_or_expression(self) -> None:
         sub_records = RestApiQuery._compute_sub_records(
             result_list=['1', '2', '3', 'a', 'b', 'c'],
             field_names=['foo', 'bar'],

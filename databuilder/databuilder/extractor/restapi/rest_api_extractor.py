@@ -3,7 +3,7 @@
 
 import logging
 import importlib
-from typing import Iterator, Any  # noqa: F401
+from typing import Any, Iterator, Dict, Optional  # noqa: F401
 
 from pyhocon import ConfigTree  # noqa: F401
 
@@ -28,11 +28,10 @@ class RestAPIExtractor(Extractor):
     This extractor almost entirely depends on RestApiQuery.
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
 
-        self._restapi_query = conf.get(REST_API_QUERY)  # type: BaseRestApiQuery
-        self._iterator = None  # type: Iterator[Dict[str, Any]]
+        self._restapi_query: BaseRestApiQuery = conf.get(REST_API_QUERY)
+        self._iterator: Optional[Iterator[Dict[str, Any]]] = None
         self._static_dict = conf.get(STATIC_RECORD_DICT, dict())
         LOGGER.info('static record: {}'.format(self._static_dict))
 
@@ -42,8 +41,7 @@ class RestAPIExtractor(Extractor):
             mod = importlib.import_module(module_name)
             self.model_class = getattr(mod, class_name)
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         Fetch one result row from RestApiQuery, convert to {model_class} if specified before
         returning.
@@ -66,7 +64,6 @@ class RestAPIExtractor(Extractor):
 
         return record
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
 
         return 'extractor.restapi'

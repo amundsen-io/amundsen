@@ -3,6 +3,7 @@
 
 import unittest
 from mock import patch
+from typing import Any
 
 from pyhocon import ConfigFactory
 from databuilder import Scoped
@@ -13,22 +14,19 @@ from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
 
 class TestNeo4jExtractor(unittest.TestCase):
 
-    def test_adding_filter(self):
-        # type: (Any) -> None
+    def test_adding_filter(self: Any) -> None:
         extractor = Neo4jSearchDataExtractor()
         actual = extractor._add_publish_tag_filter('foo', 'MATCH (table:Table) {publish_tag_filter} RETURN table')
 
         self.assertEqual(actual, """MATCH (table:Table) WHERE table.published_tag = 'foo' RETURN table""")
 
-    def test_not_adding_filter(self):
-        # type: (Any) -> None
+    def test_not_adding_filter(self: Any) -> None:
         extractor = Neo4jSearchDataExtractor()
         actual = extractor._add_publish_tag_filter('', 'MATCH (table:Table) {publish_tag_filter} RETURN table')
 
         self.assertEqual(actual, """MATCH (table:Table)  RETURN table""")
 
-    def test_default_search_query(self):
-        # type: (Any) -> None
+    def test_default_search_query(self: Any) -> None:
         with patch.object(Neo4jExtractor, '_get_driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
@@ -46,8 +44,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             self.assertEqual(extractor.cypher_query, Neo4jSearchDataExtractor
                              .DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY.format(publish_tag_filter=''))
 
-    def test_default_search_query_with_tag(self):
-        # type: (Any) -> None
+    def test_default_search_query_with_tag(self: Any) -> None:
         with patch.object(Neo4jExtractor, '_get_driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({

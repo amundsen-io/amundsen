@@ -15,14 +15,12 @@ from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 # patch whole class to avoid actually calling for boto3.client during tests
 @patch('databuilder.extractor.glue_extractor.boto3.client', lambda x: None)
 class TestGlueExtractor(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
 
         self.conf = ConfigFactory.from_dict({})
 
-    def test_extraction_with_empty_query_result(self):
-        # type: () -> None
+    def test_extraction_with_empty_query_result(self) -> None:
         """
         Test Extraction with empty result from query
         """
@@ -33,8 +31,7 @@ class TestGlueExtractor(unittest.TestCase):
             results = extractor.extract()
             self.assertEqual(results, None)
 
-    def test_extraction_with_single_result(self):
-        # type: () -> None
+    def test_extraction_with_single_result(self) -> None:
         with patch.object(GlueExtractor, '_search_tables') as mock_search:
             mock_search.return_value = [
                 {
@@ -99,8 +96,7 @@ class TestGlueExtractor(unittest.TestCase):
             self.assertEqual(expected.__repr__(), actual.__repr__())
             self.assertIsNone(extractor.extract())
 
-    def test_extraction_with_multiple_result(self):
-        # type: () -> None
+    def test_extraction_with_multiple_result(self) -> None:
         with patch.object(GlueExtractor, '_search_tables') as mock_search:
             mock_search.return_value = [
                 {

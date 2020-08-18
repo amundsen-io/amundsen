@@ -37,12 +37,10 @@ class ElasticsearchPublisher(Publisher):
 
     DEFAULT_ELASTICSEARCH_INDEX_MAPPING = TABLE_ELASTICSEARCH_INDEX_MAPPING
 
-    def __init__(self):
-        # type: () -> None
+    def __init__(self) -> None:
         super(ElasticsearchPublisher, self).__init__()
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self.conf = conf
 
         self.file_path = self.conf.get_string(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY)
@@ -59,8 +57,7 @@ class ElasticsearchPublisher(Publisher):
                                                       10000)
         self.file_handler = open(self.file_path, self.file_mode)
 
-    def _fetch_old_index(self):
-        # type: () -> List[str]
+    def _fetch_old_index(self) -> List[str]:
         """
         Retrieve all indices that currently have {elasticsearch_alias} alias
         :return: list of elasticsearch indices
@@ -74,8 +71,7 @@ class ElasticsearchPublisher(Publisher):
             # return empty list on exception
             return []
 
-    def publish_impl(self):
-        # type: () -> None
+    def publish_impl(self) -> None:
         """
         Use Elasticsearch Bulk API to load data from file to a {new_index}.
         After upload, swap alias from {old_index} to {new_index} in a atomic operation
@@ -126,6 +122,5 @@ class ElasticsearchPublisher(Publisher):
         # perform alias update and index delete in single atomic operation
         self.elasticsearch_client.indices.update_aliases(update_action)
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'publisher.elasticsearch'

@@ -10,22 +10,21 @@ class UserESDocument(ElasticsearchDocument):
     """
 
     def __init__(self,
-                 email,  # type: str
-                 first_name,  # type: str
-                 last_name,  # type: str
-                 full_name,  # type: str
-                 github_username,  # type: str
-                 team_name,  # type: str
-                 employee_type,  # type: str
-                 manager_email,  # type: str
-                 slack_id,  # type: str
-                 role_name,  # type: str
-                 is_active,  # type: bool
-                 total_read,  # type: int
-                 total_own,  # type: int
-                 total_follow,  # type: int
-                 ):
-        # type: (...) -> None
+                 email: str,
+                 first_name: str,
+                 last_name: str,
+                 full_name: str,
+                 github_username: str,
+                 team_name: str,
+                 employee_type: str,
+                 manager_email: str,
+                 slack_id: str,
+                 role_name: str,
+                 is_active: bool,
+                 total_read: int,
+                 total_own: int,
+                 total_follow: int,
+                 ) -> None:
         self.email = email
         self.first_name = first_name
         self.last_name = last_name

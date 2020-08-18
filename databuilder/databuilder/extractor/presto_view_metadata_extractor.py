@@ -6,7 +6,7 @@ import json
 import logging
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
-from typing import Iterator, Union, Dict, Any  # noqa: F401
+from typing import Iterator, Union, Dict, Any, List  # noqa: F401
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -45,8 +45,7 @@ class PrestoViewMetadataExtractor(Extractor):
     DEFAULT_CONFIG = ConfigFactory.from_dict({WHERE_CLAUSE_SUFFIX_KEY: ' ',
                                               CLUSTER_KEY: 'gold'})
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(PrestoViewMetadataExtractor.DEFAULT_CONFIG)
         self._cluster = '{}'.format(conf.get_string(PrestoViewMetadataExtractor.CLUSTER_KEY))
 
@@ -60,10 +59,9 @@ class PrestoViewMetadataExtractor(Extractor):
             .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
 
         self._alchemy_extractor.init(sql_alch_conf)
-        self._extract_iter = None  # type: Union[None, Iterator]
+        self._extract_iter: Union[None, Iterator] = None
 
-    def extract(self):
-        # type: () -> Union[TableMetadata, None]
+    def extract(self) -> Union[TableMetadata, None]:
         if not self._extract_iter:
             self._extract_iter = self._get_extract_iter()
         try:
@@ -71,12 +69,10 @@ class PrestoViewMetadataExtractor(Extractor):
         except StopIteration:
             return None
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.presto_view_metadata'
 
-    def _get_extract_iter(self):
-        # type: () -> Iterator[TableMetadata]
+    def _get_extract_iter(self) -> Iterator[TableMetadata]:
         """
         Using itertools.groupby and raw level iterator, it groups to table and yields TableMetadata
         :return:
@@ -93,8 +89,8 @@ class PrestoViewMetadataExtractor(Extractor):
                                 is_view=True)
             row = self._alchemy_extractor.extract()
 
-    def _get_column_metadata(self, view_original_text):
-        # type: (str) -> List[ColumnMetadata]
+    def _get_column_metadata(self,
+                             view_original_text: str) -> List[ColumnMetadata]:
         """
         Get Column Metadata from VIEW_ORIGINAL_TEXT from TBLS table for Presto Views.
         Columns are sorted the same way as they appear in Presto Create View SQL.

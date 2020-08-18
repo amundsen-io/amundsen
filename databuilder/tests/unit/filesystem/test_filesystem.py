@@ -14,8 +14,7 @@ from databuilder.filesystem.metadata import FileMetadata
 
 class TestFileSystem(unittest.TestCase):
 
-    def test_is_file(self):
-        # type: () -> None
+    def test_is_file(self) -> None:
         dask_fs = MagicMock()
         dask_fs.ls = MagicMock(return_value=['/foo/bar'])
 
@@ -33,8 +32,7 @@ class TestFileSystem(unittest.TestCase):
 
         self.assertFalse(fs.is_file('foo'))
 
-    def test_info(self):
-        # type: () -> None
+    def test_info(self) -> None:
         dask_fs = MagicMock()
         dask_fs.info = MagicMock(return_value={'LastModified': datetime(2018, 8, 14, 4, 12, 3, tzinfo=UTC),
                                                'Size': 15093})

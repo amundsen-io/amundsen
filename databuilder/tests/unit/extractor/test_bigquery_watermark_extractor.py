@@ -7,6 +7,7 @@ from datetime import datetime
 
 from mock import patch, Mock
 from pyhocon import ConfigFactory
+from typing import Any
 
 from databuilder import Scoped
 from databuilder.extractor.bigquery_watermark_extractor import BigQueryWatermarkExtractor
@@ -59,7 +60,11 @@ except NameError:
 
 
 class MockBigQueryClient():
-    def __init__(self, dataset_list_data, table_list_data, partition_data):
+    def __init__(self,
+                 dataset_list_data: Any,
+                 table_list_data: Any,
+                 partition_data: Any
+                 ) -> None:
         self.list_execute = Mock()
         self.list_execute.execute.return_value = table_list_data
         self.tables_method = Mock()
@@ -73,28 +78,27 @@ class MockBigQueryClient():
         self.jobs_query = Mock()
         self.jobs_query.query.return_value = self.query_execute
 
-    def datasets(self):
+    def datasets(self) -> Any:
         return self.ds_list
 
-    def tables(self):
+    def tables(self) -> Any:
         return self.tables_method
 
-    def jobs(self):
+    def jobs(self) -> Any:
         return self.jobs_query
 
 
 # Patch fallback auth method to avoid actually calling google API
 @patch('google.auth.default', lambda scopes: ['dummy', 'dummy'])
 class TestBigQueryWatermarkExtractor(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         config_dict = {
             'extractor.bigquery_watermarks.{}'.format(BigQueryWatermarkExtractor.PROJECT_ID_KEY):
                 'your-project-here'}
         self.conf = ConfigFactory.from_dict(config_dict)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_can_handle_no_datasets(self, mock_build):
+    def test_can_handle_no_datasets(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(NO_DATASETS, None, None)
         extractor = BigQueryWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -103,7 +107,7 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_empty_dataset(self, mock_build):
+    def test_empty_dataset(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, NO_TABLES, None)
         extractor = BigQueryWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -112,7 +116,7 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_without_partitions(self, mock_build):
+    def test_table_without_partitions(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, None)
         extractor = BigQueryWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -121,7 +125,7 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_with_default_partitions(self, mock_build):
+    def test_table_with_default_partitions(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, TIME_PARTITIONED, PARTITION_DATA)
         extractor = BigQueryWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -145,12 +149,13 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertEquals(result.parts, [('_partitiontime', '20180804')])
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_with_field_partitions(self, mock_build):
+    def test_table_with_field_partitions(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, TIME_PARTITIONED_WITH_FIELD, PARTITION_DATA)
         extractor = BigQueryWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                               scope=extractor.get_scope()))
         result = extractor.extract()
+        assert result is not None
         self.assertEquals(result.part_type, 'low_watermark')
         self.assertEquals(result.database, 'bigquery')
         self.assertEquals(result.schema, 'fdgdfgh')
@@ -160,6 +165,7 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertEquals(result.parts, [('processed_date', '20180802')])
 
         result = extractor.extract()
+        assert result is not None
         self.assertEquals(result.part_type, 'high_watermark')
         self.assertEquals(result.database, 'bigquery')
         self.assertEquals(result.schema, 'fdgdfgh')
@@ -169,7 +175,7 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertEquals(result.parts, [('processed_date', '20180804')])
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_keypath_can_be_set(self, mock_build):
+    def test_keypath_can_be_set(self, mock_build: Any) -> None:
         config_dict = {
             'extractor.bigquery_watermarks.{}'.format(BigQueryWatermarkExtractor.PROJECT_ID_KEY):
                 'your-project-here',
@@ -186,13 +192,14 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
                                                   scope=extractor.get_scope()))
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_part_of_table_date_range(self, mock_build):
+    def test_table_part_of_table_date_range(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, TABLE_DATE_RANGE, None)
         extractor = BigQueryWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                               scope=extractor.get_scope()))
 
         result = extractor.extract()
+        assert result is not None
         self.assertEquals(result.part_type, 'low_watermark')
         self.assertEquals(result.database, 'bigquery')
         self.assertEquals(result.schema, 'fdgdfgh')
@@ -202,6 +209,7 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertEquals(result.parts, [('__table__', '20190101')])
 
         result = extractor.extract()
+        assert result is not None
         self.assertEquals(result.part_type, 'high_watermark')
         self.assertEquals(result.database, 'bigquery')
         self.assertEquals(result.schema, 'fdgdfgh')

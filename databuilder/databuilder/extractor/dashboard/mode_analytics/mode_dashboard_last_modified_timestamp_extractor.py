@@ -23,12 +23,10 @@ class ModeDashboardLastModifiedTimestampExtractor(ModeDashboardExecutionsExtract
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(ModeDashboardLastModifiedTimestampExtractor, self).__init__()
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
-
+    def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(
             ConfigFactory.from_dict({
                 STATIC_RECORD_DICT: {'product': 'mode'},
@@ -40,17 +38,15 @@ class ModeDashboardLastModifiedTimestampExtractor(ModeDashboardExecutionsExtract
         )
         super(ModeDashboardLastModifiedTimestampExtractor, self).init(conf)
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.mode_dashboard_last_modified_timestamp_execution'
 
-    def _build_restapi_query(self):
+    def _build_restapi_query(self) -> RestApiQuery:
         """
         Build REST API Query. To get Mode Dashboard last modified timestamp, it needs to call two APIs (spaces API,
         and reports API) joining together.
         :return: A RestApiQuery that provides Mode Dashboard last successful execution (run)
         """
-        # type: () -> RestApiQuery
 
         spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
         params = ModeDashboardUtils.get_auth_params(conf=self._conf)

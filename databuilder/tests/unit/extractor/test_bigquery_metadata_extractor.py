@@ -6,6 +6,7 @@ import unittest
 
 from mock import patch, Mock
 from pyhocon import ConfigFactory
+from typing import Any
 
 from databuilder import Scoped
 from databuilder.extractor.bigquery_metadata_extractor import BigQueryMetadataExtractor
@@ -117,7 +118,11 @@ except NameError:
 
 
 class MockBigQueryClient():
-    def __init__(self, dataset_list_data, table_list_data, table_data):
+    def __init__(self,
+                 dataset_list_data: Any,
+                 table_list_data: Any,
+                 table_data: Any
+                 ) -> None:
         self.ds_execute = Mock()
         self.ds_execute.execute.return_value = dataset_list_data
         self.ds_list = Mock()
@@ -130,25 +135,24 @@ class MockBigQueryClient():
         self.tables_method.list.return_value = self.list_execute
         self.tables_method.get.return_value = self.get_execute
 
-    def datasets(self):
+    def datasets(self) -> Any:
         return self.ds_list
 
-    def tables(self):
+    def tables(self) -> Any:
         return self.tables_method
 
 
 # Patch fallback auth method to avoid actually calling google API
 @patch('google.auth.default', lambda scopes: ['dummy', 'dummy'])
 class TestBigQueryMetadataExtractor(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         config_dict = {
             'extractor.bigquery_table_metadata.{}'.format(BigQueryMetadataExtractor.PROJECT_ID_KEY):
                 'your-project-here'}
         self.conf = ConfigFactory.from_dict(config_dict)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_can_handle_datasets(self, mock_build):
+    def test_can_handle_datasets(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(NO_DATASETS, None, None)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -157,7 +161,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_empty_dataset(self, mock_build):
+    def test_empty_dataset(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, NO_TABLES, None)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -166,7 +170,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_accepts_dataset_filter_by_label(self, mock_build):
+    def test_accepts_dataset_filter_by_label(self, mock_build: Any) -> None:
         config_dict = {
             'extractor.bigquery_table_metadata.{}'.format(BigQueryMetadataExtractor.PROJECT_ID_KEY):
                 'your-project-here',
@@ -183,7 +187,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertIsInstance(result, TableMetadata)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_without_schema(self, mock_build):
+    def test_table_without_schema(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, NO_SCHEMA)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -199,7 +203,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEquals(result.is_view, False)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_without_columns(self, mock_build):
+    def test_table_without_columns(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, NO_COLS)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -215,7 +219,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEquals(result.is_view, False)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_view(self, mock_build):
+    def test_view(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_VIEW, VIEW_DATA)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -225,7 +229,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEquals(result.is_view, True)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_normal_table(self, mock_build):
+    def test_normal_table(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, TABLE_DATA)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -245,7 +249,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEquals(result.is_view, False)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_with_nested_records(self, mock_build):
+    def test_table_with_nested_records(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, NESTED_DATA)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,
@@ -263,7 +267,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEquals(third_col.type, 'STRING')
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_keypath_and_pagesize_can_be_set(self, mock_build):
+    def test_keypath_and_pagesize_can_be_set(self, mock_build: Any) -> None:
         config_dict = {
             'extractor.bigquery_table_metadata.{}'.format(BigQueryMetadataExtractor.PROJECT_ID_KEY):
                 'your-project-here',
@@ -282,7 +286,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
                                                   scope=extractor.get_scope()))
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_table_part_of_table_date_range(self, mock_build):
+    def test_table_part_of_table_date_range(self, mock_build: Any) -> None:
         mock_build.return_value = MockBigQueryClient(ONE_DATASET, TABLE_DATE_RANGE, TABLE_DATA)
         extractor = BigQueryMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.conf,

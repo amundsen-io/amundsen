@@ -4,6 +4,7 @@
 import abc
 
 import logging
+from typing import Dict, List, Tuple, Optional
 import textwrap
 
 LOGGER = logging.getLogger(__name__)
@@ -23,13 +24,12 @@ class RelationPreprocessor(object, metaclass=abc.ABCMeta):
     """
 
     def preprocess_cypher(self,
-                          start_label,
-                          end_label,
-                          start_key,
-                          end_key,
-                          relation,
-                          reverse_relation):
-        # type: (str, str, str, str, str, str) -> Tuple[str, Dict[str, str]]
+                          start_label: str,
+                          end_label: str,
+                          start_key: str,
+                          end_key: str,
+                          relation: str,
+                          reverse_relation: str) -> Optional[Tuple[str, Dict[str, str]]]:
         """
         Provides a Cypher statement that will be executed before publishing relations.
         :param start_label:
@@ -52,16 +52,16 @@ class RelationPreprocessor(object, metaclass=abc.ABCMeta):
                                                end_key=end_key,
                                                relation=relation,
                                                reverse_relation=reverse_relation)
+        return None
 
     @abc.abstractmethod
     def preprocess_cypher_impl(self,
-                               start_label,
-                               end_label,
-                               start_key,
-                               end_key,
-                               relation,
-                               reverse_relation):
-        # type: (str, str, str, str, str, str) -> Tuple[str, Dict[str, str]]
+                               start_label: str,
+                               end_label: str,
+                               start_key: str,
+                               end_key: str,
+                               relation: str,
+                               reverse_relation: str) -> Tuple[str, Dict[str, str]]:
         """
         Provides a Cypher statement that will be executed before publishing relations.
         :param start_label:
@@ -73,13 +73,12 @@ class RelationPreprocessor(object, metaclass=abc.ABCMeta):
         pass
 
     def filter(self,
-               start_label,
-               end_label,
-               start_key,
-               end_key,
-               relation,
-               reverse_relation):
-        # type: (str, str, str, str, str, str) -> bool
+               start_label: str,
+               end_label: str,
+               start_key: str,
+               end_key: str,
+               relation: str,
+               reverse_relation: str) -> bool:
         """
         A method that filters pre-processing in record level. Returns True if it needs preprocessing, otherwise False.
         :param start_label:
@@ -90,11 +89,10 @@ class RelationPreprocessor(object, metaclass=abc.ABCMeta):
         :param reverse_relation:
         :return: bool. True if it needs preprocessing, otherwise False.
         """
-        True
+        return True
 
     @abc.abstractmethod
-    def is_perform_preprocess(self):
-        # type: () -> bool
+    def is_perform_preprocess(self) -> bool:
         """
         A method for Neo4j Publisher to determine whether to perform pre-processing or not. Regard this method as a
         global filter.
@@ -106,17 +104,15 @@ class RelationPreprocessor(object, metaclass=abc.ABCMeta):
 class NoopRelationPreprocessor(RelationPreprocessor):
 
     def preprocess_cypher_impl(self,
-                               start_label,
-                               end_label,
-                               start_key,
-                               end_key,
-                               relation,
-                               reverse_relation):
-        # type: (str, str, str, str, str, str) -> Tuple[str, Dict[str, str]]
+                               start_label: str,
+                               end_label: str,
+                               start_key: str,
+                               end_key: str,
+                               relation: str,
+                               reverse_relation: str) -> Tuple[str, Dict[str, str]]:
         pass
 
-    def is_perform_preprocess(self):
-        # type: () -> bool
+    def is_perform_preprocess(self) -> bool:
         return False
 
 
@@ -145,8 +141,9 @@ class DeleteRelationPreprocessor(RelationPreprocessor):
     RETURN count(*) as count;
     """)
 
-    def __init__(self, label_tuples=None, where_clause=''):
-        # type: (List[Tuple[str, str]], str) -> None
+    def __init__(self,
+                 label_tuples: List[Tuple[str, str]] = None,
+                 where_clause: str = '') -> None:
         super(DeleteRelationPreprocessor, self).__init__()
         self._label_tuples = set(label_tuples) if label_tuples else set()
 
@@ -155,13 +152,12 @@ class DeleteRelationPreprocessor(RelationPreprocessor):
         self._where_clause = where_clause
 
     def preprocess_cypher_impl(self,
-                               start_label,
-                               end_label,
-                               start_key,
-                               end_key,
-                               relation,
-                               reverse_relation):
-        # type: (str, str, str, str, str, str) -> Tuple[str, Dict[str, str]]
+                               start_label: str,
+                               end_label: str,
+                               start_key: str,
+                               end_key: str,
+                               relation: str,
+                               reverse_relation: str) -> Tuple[str, Dict[str, str]]:
         """
         Provides DELETE Relation Cypher query on specific relation.
         :param start_label:
@@ -181,18 +177,16 @@ class DeleteRelationPreprocessor(RelationPreprocessor):
                                                                          end_label=end_label,
                                                                          where_clause=self._where_clause), params
 
-    def is_perform_preprocess(self):
-        # type: () -> bool
+    def is_perform_preprocess(self) -> bool:
         return True
 
     def filter(self,
-               start_label,
-               end_label,
-               start_key,
-               end_key,
-               relation,
-               reverse_relation):
-        # type: (str, str, str, str, str, str) -> bool
+               start_label: str,
+               end_label: str,
+               start_key: str,
+               end_key: str,
+               relation: str,
+               reverse_relation: str) -> bool:
         """
         If pair of labels is what client requested passed through label_tuples, filter will return True meaning that
         it needs to be pre-processed.

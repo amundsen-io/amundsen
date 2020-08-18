@@ -10,7 +10,7 @@ from databuilder.models.table_metadata import TableMetadata
 
 
 class TestTableTagTransformer(unittest.TestCase):
-    def test_single_tag(self):
+    def test_single_tag(self) -> None:
         transformer = TableTagTransformer()
         config = ConfigFactory.from_dict({
             TableTagTransformer.TAGS: 'foo',
@@ -27,7 +27,7 @@ class TestTableTagTransformer(unittest.TestCase):
 
         self.assertEqual(result.tags, ['foo'])
 
-    def test_multiple_tags_comma_delimited(self):
+    def test_multiple_tags_comma_delimited(self) -> None:
         transformer = TableTagTransformer()
         config = ConfigFactory.from_dict({
             TableTagTransformer.TAGS: 'foo,bar',
@@ -44,7 +44,7 @@ class TestTableTagTransformer(unittest.TestCase):
 
         self.assertEqual(result.tags, ['foo', 'bar'])
 
-    def test_add_tag_to_existing_tags(self):
+    def test_add_tag_to_existing_tags(self) -> None:
         transformer = TableTagTransformer()
         config = ConfigFactory.from_dict({
             TableTagTransformer.TAGS: 'baz',
@@ -61,7 +61,7 @@ class TestTableTagTransformer(unittest.TestCase):
         ))
         self.assertEqual(result.tags, ['foo', 'bar', 'baz'])
 
-    def test_tags_not_added_to_other_objects(self):
+    def test_tags_not_added_to_other_objects(self) -> None:
         transformer = TableTagTransformer()
         config = ConfigFactory.from_dict({
             TableTagTransformer.TAGS: 'new_tag',

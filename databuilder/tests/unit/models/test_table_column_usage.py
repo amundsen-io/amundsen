@@ -10,8 +10,7 @@ from typing import no_type_check
 class TestTableColumnUsage(unittest.TestCase):
 
     @no_type_check  # mypy is somehow complaining on assignment on expected dict.
-    def test_serialize(self):
-        # type: () -> None
+    def test_serialize(self) -> None:
 
         col_readers = [ColumnReader(database='db', cluster='gold', schema='scm', table='foo', column='*',
                                     user_email='john@example.com')]

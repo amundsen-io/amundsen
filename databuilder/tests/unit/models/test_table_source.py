@@ -17,8 +17,7 @@ SOURCE = '/etl/sql/file.py'
 
 class TestTableSource(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         super(TestTableSource, self).setUp()
         self.table_source = TableSource(db_name='hive',
                                         schema=SCHEMA,
@@ -26,8 +25,7 @@ class TestTableSource(unittest.TestCase):
                                         cluster=CLUSTER,
                                         source=SOURCE)
 
-    def test_get_source_model_key(self):
-        # type: () -> None
+    def test_get_source_model_key(self) -> None:
         source = self.table_source.get_source_model_key()
         self.assertEquals(source, '{db}://{cluster}.{schema}/{tbl}/_source'.format(db=DB,
                                                                                    schema=SCHEMA,
@@ -35,18 +33,15 @@ class TestTableSource(unittest.TestCase):
                                                                                    cluster=CLUSTER,
                                                                                    ))
 
-    def test_get_metadata_model_key(self):
-        # type: () -> None
+    def test_get_metadata_model_key(self) -> None:
         metadata = self.table_source.get_metadata_model_key()
         self.assertEquals(metadata, 'hive://default.base/test')
 
-    def test_create_nodes(self):
-        # type: () -> None
+    def test_create_nodes(self) -> None:
         nodes = self.table_source.create_nodes()
         self.assertEquals(len(nodes), 1)
 
-    def test_create_relation(self):
-        # type: () -> None
+    def test_create_relation(self) -> None:
         relations = self.table_source.create_relation()
         self.assertEquals(len(relations), 1)
 

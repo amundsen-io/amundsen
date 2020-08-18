@@ -14,8 +14,7 @@ from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable
 
 class TestSerialize(unittest.TestCase):
 
-    def test_serialize(self):
-        # type: () -> None
+    def test_serialize(self) -> None:
         actors = [Actor('Tom Cruise'), Actor('Meg Ryan')]
         cities = [City('San Diego'), City('Oakland')]
         movie = Movie('Top Gun', actors, cities)
@@ -58,6 +57,22 @@ class TestSerialize(unittest.TestCase):
         self.assertEqual(expected, actual)
 
 
+class Actor(object):
+    LABEL = 'Actor'
+    KEY_FORMAT = 'actor://{}'
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+
+class City(object):
+    LABEL = 'City'
+    KEY_FORMAT = 'city://{}'
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+
 class Movie(Neo4jCsvSerializable):
     LABEL = 'Movie'
     KEY_FORMAT = 'movie://{}'
@@ -66,30 +81,29 @@ class Movie(Neo4jCsvSerializable):
     MOVIE_CITY_RELATION_TYPE = 'FILMED_AT'
     CITY_MOVIE_RELATION_TYPE = 'APPEARS_IN'
 
-    def __init__(self, name, actors, cities):
-        # type: (str, Iterable[Actor], Iterable[City]) -> None
+    def __init__(self,
+                 name: str,
+                 actors: Iterable[Actor],
+                 cities: Iterable[City]) -> None:
         self._name = name
         self._actors = actors
         self._cities = cities
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def create_nodes(self):
-        # type: () -> Iterable[Dict[str, Any]]
+    def create_nodes(self) -> Iterable[Dict[str, Any]]:
         result = [{NODE_KEY: Movie.KEY_FORMAT.format(self._name),
                    NODE_LABEL: Movie.LABEL,
                    'name': self._name}]
@@ -105,8 +119,7 @@ class Movie(Neo4jCsvSerializable):
                            'name': self._name})
         return result
 
-    def create_relation(self):
-        # type: () -> Iterable[Dict[str, Any]]
+    def create_relation(self) -> Iterable[Dict[str, Any]]:
         result = []
         for actor in self._actors:
             result.append({RELATION_START_KEY:
@@ -132,24 +145,6 @@ class Movie(Neo4jCsvSerializable):
                            Movie.CITY_MOVIE_RELATION_TYPE
                            })
         return result
-
-
-class Actor(object):
-    LABEL = 'Actor'
-    KEY_FORMAT = 'actor://{}'
-
-    def __init__(self, name):
-        # type: (str) -> None
-        self.name = name
-
-
-class City(object):
-    LABEL = 'City'
-    KEY_FORMAT = 'city://{}'
-
-    def __init__(self, name):
-        # type: (str) -> None
-        self.name = name
 
 
 if __name__ == '__main__':

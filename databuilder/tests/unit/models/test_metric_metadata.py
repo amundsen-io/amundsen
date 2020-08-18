@@ -8,8 +8,7 @@ from databuilder.models.metric_metadata import MetricMetadata
 
 
 class TestMetricMetadata(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
 
         self.metric_metadata = MetricMetadata('Product - Jobs.cz',
                                               'Agent',
@@ -104,8 +103,7 @@ class TestMetricMetadata(unittest.TestCase):
 
         self.expected_rels3 = copy.deepcopy(self.expected_rels_deduped3)
 
-    def test_serialize(self):
-        # type: () -> None
+    def test_serialize(self) -> None:
         # First test
         node_row = self.metric_metadata.next_node()
         actual = []

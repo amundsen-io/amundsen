@@ -28,10 +28,9 @@ class DefaultTask(Task):
     PROGRESS_REPORT_FREQUENCY = 'progress_report_frequency'
 
     def __init__(self,
-                 extractor,
-                 loader,
-                 transformer=NoopTransformer()):
-        # type: (Extractor, Loader, Transformer) -> None
+                 extractor: Extractor,
+                 loader: Loader,
+                 transformer: Transformer = NoopTransformer()) -> None:
         self.extractor = extractor
         self.transformer = transformer
         self.loader = loader
@@ -41,8 +40,7 @@ class DefaultTask(Task):
         self._closer.register(self.transformer.close)
         self._closer.register(self.loader.close)
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self._progress_report_frequency = \
             conf.get_int('{}.{}'.format(self.get_scope(), DefaultTask.PROGRESS_REPORT_FREQUENCY), 500)
 
@@ -50,8 +48,7 @@ class DefaultTask(Task):
         self.transformer.init(Scoped.get_scoped_conf(conf, self.transformer.get_scope()))
         self.loader.init(Scoped.get_scoped_conf(conf, self.loader.get_scope()))
 
-    def run(self):
-        # type: () -> None
+    def run(self) -> None:
         """
         Runs a task
         :return:

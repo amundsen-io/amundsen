@@ -11,8 +11,7 @@ from databuilder.transformer.base_transformer import ChainedTransformer
 
 class TestChainedTransformer(unittest.TestCase):
 
-    def test_init_not_called(self):
-        # type: () -> None
+    def test_init_not_called(self) -> None:
 
         mock_transformer1 = MagicMock()
         mock_transformer2 = MagicMock()
@@ -32,8 +31,7 @@ class TestChainedTransformer(unittest.TestCase):
         mock_transformer2.init.assert_not_called()
         mock_transformer2.transform.assert_called_once()
 
-    def test_init_called(self):
-        # type: () -> None
+    def test_init_called(self) -> None:
 
         mock_transformer1 = MagicMock()
         mock_transformer1.get_scope.return_value = 'foo'

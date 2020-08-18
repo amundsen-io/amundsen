@@ -20,8 +20,7 @@ class DBAPIExtractor(Extractor):
     CONNECTION_CONFIG_KEY = 'connection'
     SQL_CONFIG_KEY = 'sql'
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
         Receives a {Connection} object and {sql} to execute.
         An optional model class can be passed, in which, sql result row
@@ -31,7 +30,7 @@ class DBAPIExtractor(Extractor):
         :return:
         """
         self.conf = conf
-        self.connection = conf.get(DBAPIExtractor.CONNECTION_CONFIG_KEY)  # type: Any
+        self.connection: Any = conf.get(DBAPIExtractor.CONNECTION_CONFIG_KEY)
         self.cursor = self.connection.cursor()
         self.sql = conf.get(DBAPIExtractor.SQL_CONFIG_KEY)
 
@@ -43,8 +42,7 @@ class DBAPIExtractor(Extractor):
 
         self._iter = iter(self._execute_query())
 
-    def _execute_query(self):
-        # type: () -> Iterable[Any]
+    def _execute_query(self) -> Iterable[Any]:
         """
         Use cursor to execute the {sql}
         :return:
@@ -53,8 +51,7 @@ class DBAPIExtractor(Extractor):
         self.cursor.execute(self.sql)
         return self.cursor.fetchall()
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         Fetch one sql result row, convert to {model_class} if specified before
         returning.
@@ -72,8 +69,7 @@ class DBAPIExtractor(Extractor):
         else:
             return result
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         """
         close cursor and connection handlers
         :return:
@@ -84,6 +80,5 @@ class DBAPIExtractor(Extractor):
         except Exception as e:
             LOGGER.warning("Exception encountered while closing up connection handler!", e)
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.dbapi'
