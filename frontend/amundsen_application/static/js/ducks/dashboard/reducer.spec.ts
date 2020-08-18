@@ -5,7 +5,7 @@ import reducer, {
   getDashboardSuccess,
   initialDashboardState,
   DashboardReducerState,
-} from '../reducer';
+} from './reducer';
 
 describe('dashboard reducer', () => {
   let testState: DashboardReducerState;

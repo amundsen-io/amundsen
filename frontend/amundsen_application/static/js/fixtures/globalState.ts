@@ -7,6 +7,8 @@ import { dashboardMetadata } from './metadata/dashboard';
 
 const globalState: GlobalState = {
   announcements: {
+    isLoading: false,
+    statusCode: 200,
     posts: [
       {
         date: '12/31/1999',

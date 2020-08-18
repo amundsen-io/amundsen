@@ -83,9 +83,10 @@ $avatar-container-size: 40px;
   .nav-search-bar {
     flex-grow: 1;
     margin: auto $spacer-2 auto auto;
+
     .search-bar {
       max-width: 560px;
-      margin: auto 0px auto auto;
+      margin: auto 0 auto auto;
     }
   }
 

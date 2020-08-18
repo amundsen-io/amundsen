@@ -1,15 +1,15 @@
 import { testSaga } from 'redux-saga-test-plan';
 
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
-import * as API from '../api/v0';
-import * as Sagas from '../sagas';
+import * as API from './api/v0';
+import * as Sagas from './sagas';
 
 import {
   getDashboard,
   getDashboardFailure,
   getDashboardSuccess,
-} from '../reducer';
-import { GetDashboard } from '../types';
+} from './reducer';
+import { GetDashboard } from './types';
 
 describe('dashboard sagas', () => {
   describe('getDashboardWatcher', () => {

@@ -1,9 +1,7 @@
 import { combineReducers } from 'redux';
 
 import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
-import announcements, {
-  AnnouncementsReducerState,
-} from './announcements/reducer';
+import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
 import popularTables, {
   PopularTablesReducerState,

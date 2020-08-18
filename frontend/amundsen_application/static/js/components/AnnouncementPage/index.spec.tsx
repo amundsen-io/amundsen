@@ -13,7 +13,7 @@ import {
   AnnouncementPageProps,
   mapDispatchToProps,
   mapStateToProps,
-} from '..';
+} from '.';
 
 describe('AnnouncementPage', () => {
   let props: AnnouncementPageProps;

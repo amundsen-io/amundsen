@@ -17,7 +17,7 @@ export class BrowsePage extends React.Component {
       <DocumentTitle title={BROWSE_PAGE_DOCUMENT_TITLE}>
         <main className="container">
           <div className="row">
-            <div className="col-xs-12">
+            <div className="col-xs-12 col-md-10 col-md-offset-1">
               <TagsListContainer shortTagsList={false} />
             </div>
           </div>

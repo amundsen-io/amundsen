@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 
-import * as API from '../api/v0';
+import * as API from './v0';
 
 jest.mock('axios');
 

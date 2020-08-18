@@ -14,8 +14,10 @@ import './styles.scss';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { GetAnnouncementsRequest } from 'ducks/announcements/types';
-import { getAnnouncements } from 'ducks/announcements/reducer';
+import { getAnnouncements } from 'ducks/announcements';
 import { AnnouncementPost } from 'interfaces';
+
+const ANNOUNCEMENTS_HEADER_TEXT = 'Announcements';
 
 export interface StateFromProps {
   posts: AnnouncementPost[];
@@ -29,7 +31,9 @@ export type AnnouncementPageProps = StateFromProps & DispatchFromProps;
 
 export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
   componentDidMount() {
-    this.props.announcementsGet();
+    const { announcementsGet } = this.props;
+
+    announcementsGet();
   }
 
   createPost(post: AnnouncementPost, postIndex: number) {
@@ -47,7 +51,9 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
   }
 
   createPosts() {
-    return this.props.posts.map((post, index) => {
+    const { posts } = this.props;
+
+    return posts.map((post, index) => {
       return this.createPost(post, index);
     });
   }
@@ -57,9 +63,9 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
       <DocumentTitle title="Announcements - Amundsen">
         <main className="container announcement-container">
           <div className="row">
-            <div className="col-xs-12">
+            <div className="col-xs-12 col-md-10 col-md-offset-1">
               <h1 id="announcement-header" className="h3">
-                Announcements
+                {ANNOUNCEMENTS_HEADER_TEXT}
               </h1>
               <hr />
               <div id="announcement-content" className="announcement-content">

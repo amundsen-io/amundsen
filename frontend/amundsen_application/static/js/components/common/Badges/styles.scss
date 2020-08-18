@@ -1,10 +1,12 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 @import 'variables';
+
 .clickable-badge {
   &:hover {
     cursor: pointer;
   }
+
   .label {
     padding: 0 0;
   }
@@ -29,37 +31,45 @@
       outline-offset: -2px;
     }
   }
+
   .badge-overlay-negative,
   .badge-overlay-neutral,
   .badge-overlay-positive,
   .badge-overlay-primary {
     &:hover,
     &:focus {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-opacity-light
-      );
+      background-color:
+        rgba(
+          $color: $badge-overlay,
+          $alpha: $badge-opacity-light
+        );
     }
+
     &:active {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-pressed-light
-      );
+      background-color:
+        rgba(
+          $color: $badge-overlay,
+          $alpha: $badge-pressed-light
+        );
     }
   }
+
   .badge-overlay-warning {
     &:hover,
     &:focus {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-opacity-dark
-      );
+      background-color:
+        rgba(
+          $color: $badge-overlay,
+          $alpha: $badge-opacity-dark
+        );
     }
+
     &:active {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-pressed-dark
-      );
+      background-color:
+        rgba(
+          $color: $badge-overlay,
+          $alpha: $badge-pressed-dark
+        );
     }
   }
 }

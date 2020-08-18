@@ -10,7 +10,6 @@ import { Issue } from 'interfaces';
 import { getIssues } from 'ducks/issue/reducer';
 import { logClick } from 'ducks/utilMethods';
 import { GetIssuesRequest } from 'ducks/issue/types';
-import LoadingSpinner from 'components/common/LoadingSpinner';
 import ReportTableIssue from 'components/TableDetail/ReportTableIssue';
 import { NO_DATA_ISSUES_TEXT } from './constants';
 import './styles.scss';
