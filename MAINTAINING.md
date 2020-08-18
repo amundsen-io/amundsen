@@ -3,7 +3,9 @@
 As maintainers of the project, this is our guide. Most of the steps and guidelines
 in the [Contributing](CONTRIBUTING.md) document apply here, including how to set
 up your environment, write code to fit the code style, run tests, craft commits
-and manage branches. Beyond this, this document provides some details that would
+and manage branches.
+
+Beyond this, this document provides some details that would
 be too low-level for contributors.
 
 ## Table of Contents
@@ -17,6 +19,7 @@ be too low-level for contributors.
 - [Versioning](#versioning)
 - [Releasing](#releasing)
 - [Labels](#labels)
+- [Related Documents](#related-documents)
 
 ## Communication
 
@@ -25,19 +28,29 @@ We have several ways that we can communicate with each other:
 - To show our direction and next steps, the [**roadmap**][roadmap] is the best place.
 - To track progress on the movement of issues, [**labels**](#labels)
   are useful.
-  TODO: Fill with the Slack community and the regular community meeting
+- To learn about what the community has been working lately, our [community meeting] is a great event. It happens the first Thursday of every month at 9AM PST, and you can watch past meeting recordings [here][cmeetingrecordings]
+- To chat with the maintainers team, get support or connect with Amundsen's community, join our Slack
 
-[roadmap]: https://lyft.github.io/amundsen/roadmap/
+[roadmap]: https://www.amundsen.io/amundsen/roadmap/
+[cmeeting]: meet.google.com/mqz-ndck-jmj
+[cmeetingrecordings]: https://www.youtube.com/channel/UCgOyzG0sEoolxuC9YXDYPeg
+[slack]: amundsenworkspace.slack.com
 
 ## Managing the community
 
 We try to create and foster a community around Amundsen. We do this by:
 
 - Answering questions from members of the community
+- Triaging Github issues, adding the proper [labels][labels] to new tickets
 - Closing stale issues and feature requests
 - Keeping the community informed by ensuring that we add communications regularly with the new features
 - Ensuring that the documentation, as well as the documentation site, is kept up to
   date
+- Doing code reviews for other maintainers and the community
+- Reviewing [RFCs][rfcs] and shaping the future of the project
+
+[labels]: https://github.com/amundsen-io/amundsen/labels
+[rfcs]: https://github.com/amundsen-io/rfcs
 
 ## Workflow
 
@@ -47,13 +60,13 @@ workflow is as follows:
 
 [github flow]: https://help.github.com/articles/github-flow/
 
-- Cut a feature or bugfix branch from this branch.
+- Cut a feature or bugfix branch from this branch
 - Upon completing a branch, create a PR and ask another maintainer to approve
-  it.
+  it
 - Try to keep the commit history as clean as possible. Before merging, squash
-  "WIP" or related commits together and rebase as needed.
+  "WIP" or related commits together and rebase as needed
 - Once your PR is approved, and you've cleaned up your branch, you're free to
-  merge it in.
+  merge it in
 
 ## Architecture
 
@@ -62,7 +75,6 @@ We have cover Amundsen's architecture in our [docs](https://lyft.github.io/amund
 ## Updating the changelog
 
 **TO ADOPT?**
-
 After every user-facing change makes it into master, we make a note of it in the
 changelog, `CHANGELOG.md`. The changelog is sorted in reverse order by release version.
 
@@ -126,7 +138,11 @@ how you release a version:
 
 4. After merging the commit with the update version, you would use the github UI in each repository to draft a new release (e.g., https://github.com/lyft/amundsenfrontendlibrary/releases).
 
-
 ## Labels
 
 We've found labels to be useful for cataloging and marking progress on features and bugs. You can read about our labels on the [issue_labeling](https://lyft.github.io/amundsen/issue_labeling/) document.
+
+## Related Documents
+
+- [Contributing Guide](https://www.amundsen.io/amundsen/CONTRIBUTING/)
+- [Governance Document](https://github.com/amundsen-io/amundsen/blob/master/GOVERNANCE.md)
