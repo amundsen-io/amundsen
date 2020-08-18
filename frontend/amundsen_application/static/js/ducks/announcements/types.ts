@@ -5,12 +5,17 @@ export enum GetAnnouncements {
   SUCCESS = 'amundsen/announcements/GET_SUCCESS',
   FAILURE = 'amundsen/announcements/GET_FAILURE',
 }
+
 export interface GetAnnouncementsRequest {
   type: GetAnnouncements.REQUEST;
 }
+
 export interface GetAnnouncementsResponse {
   type: GetAnnouncements.SUCCESS | GetAnnouncements.FAILURE;
-  payload: {
-    posts: AnnouncementPost[];
-  };
+  payload: GetAnnouncementsPayload;
+}
+
+export interface GetAnnouncementsPayload {
+  posts?: AnnouncementPost[];
+  statusCode?: number;
 }

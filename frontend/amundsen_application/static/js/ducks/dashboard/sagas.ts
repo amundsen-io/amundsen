@@ -9,6 +9,7 @@ export function* getDashboardWorker(action): SagaIterator {
   try {
     const { uri, searchIndex, source } = action.payload;
     const response = yield call(API.getDashboard, uri, searchIndex, source);
+
     yield put(getDashboardSuccess(response));
   } catch (error) {
     yield put(getDashboardFailure(error));

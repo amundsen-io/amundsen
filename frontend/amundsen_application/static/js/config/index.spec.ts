@@ -105,10 +105,63 @@ describe('getBadgeConfig', () => {
   });
 });
 
+describe('getNavLinks', () => {
+  const testNavLinks = [
+    {
+      label: 'TestLabel1',
+      id: 'nav::testPage1',
+      href: '/testPage1',
+      use_router: true,
+    },
+    {
+      label: 'TestLabel2',
+      id: 'nav::testPage2',
+      href: '/testPage2',
+      use_router: true,
+    },
+  ];
+  AppConfig.navLinks = [
+    ...testNavLinks,
+    {
+      label: 'Announcements',
+      id: 'nav::announcements',
+      href: '/announcements',
+      use_router: true,
+    },
+  ];
+
+  describe('when announcements is active', () => {
+    it('returns all the navLinks', () => {
+      const actual = ConfigUtils.getNavLinks();
+      const expected = AppConfig.navLinks;
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('when announcements is deactivated', () => {
+    it('returns all the navLinks but the announcements', () => {
+      AppConfig.announcements.enabled = false;
+      const actual = ConfigUtils.getNavLinks();
+      const expected = testNavLinks;
+
+      expect(actual).toEqual(expected);
+    });
+  });
+});
+
 describe('feedbackEnabled', () => {
   it('returns whether or not the feaadback feature is enabled', () => {
     expect(ConfigUtils.feedbackEnabled()).toBe(
       AppConfig.mailClientFeatures.feedbackEnabled
+    );
+  });
+});
+
+describe('announcementsEnabled', () => {
+  it('returns whether or not the announcements feature is enabled', () => {
+    expect(ConfigUtils.announcementsEnabled()).toBe(
+      AppConfig.announcements.enabled
     );
   });
 });

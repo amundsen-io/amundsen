@@ -9,13 +9,18 @@ import { RouteComponentProps } from 'react-router';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
+import { resetSearchState } from 'ducks/search/reducer';
+import { UpdateSearchStateReset } from 'ducks/search/types';
+
 import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
 import Breadcrumb from 'components/common/Breadcrumb';
 import PopularTables from 'components/common/PopularTables';
-import { resetSearchState } from 'ducks/search/reducer';
-import { UpdateSearchStateReset } from 'ducks/search/types';
 import SearchBar from 'components/common/SearchBar';
 import TagsListContainer from 'components/common/Tags';
+import Announcements from 'components/common/Announcements';
+
+import { announcementsEnabled } from 'config/config-utils';
+
 import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
 
 export interface DispatchFromProps {
@@ -36,7 +41,11 @@ export class HomePage extends React.Component<HomePageProps> {
     return (
       <main className="container home-page">
         <div className="row">
-          <div className="col-xs-12 col-md-offset-1 col-md-10">
+          <div
+            className={`col-xs-12 ${
+              announcementsEnabled() ? 'col-md-8' : 'col-md-offset-1 col-md-10'
+            }`}
+          >
             <h1 className="sr-only">{HOMEPAGE_TITLE}</h1>
             <SearchBar />
             <div className="filter-breadcrumb pull-right">
@@ -56,6 +65,11 @@ export class HomePage extends React.Component<HomePageProps> {
               <PopularTables />
             </div>
           </div>
+          {announcementsEnabled() && (
+            <div className="col-xs-12 col-md-offset-1 col-md-3">
+              <Announcements />
+            </div>
+          )}
         </div>
       </main>
     );
