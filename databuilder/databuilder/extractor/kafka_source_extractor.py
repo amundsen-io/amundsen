@@ -118,7 +118,7 @@ class KafkaSourceExtractor(Extractor, Callback):
         Commit the offset
         once:
             1. get the success callback from publisher in
-            https://github.com/lyft/amundsendatabuilder/blob/
+            https://github.com/amundsen-io/amundsendatabuilder/blob/
             master/databuilder/publisher/base_publisher.py#L50
             2. close the consumer.
 
