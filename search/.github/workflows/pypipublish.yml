@@ -27,3 +27,16 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.pypi_password }}
+  build-and-publish-docker-image:
+    name: Build and publish docker image
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@2.8
+        with:
+          name: amundsen-io/amundsensearchlibrary
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tag_names: true
