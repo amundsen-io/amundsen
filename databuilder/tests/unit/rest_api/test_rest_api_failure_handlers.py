@@ -9,9 +9,7 @@ from mock import MagicMock
 
 class TestHttpFailureSkipOnStatus(unittest.TestCase):
 
-    def testSkip(self):
-        # typ: (...) -> None
-
+    def testSkip(self) -> None:
         failure_handler = HttpFailureSkipOnStatus([404, 400])
 
         exception = MagicMock()

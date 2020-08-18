@@ -19,8 +19,7 @@ from operator import itemgetter
 
 
 class TestFsNeo4jCSVLoader(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
         prefix = '/var/tmp/TestFsNeo4jCSVLoader'
         self._conf = ConfigFactory.from_dict(
@@ -29,12 +28,10 @@ class TestFsNeo4jCSVLoader(unittest.TestCase):
              .format(prefix, 'relationships'),
              FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR: True})
 
-    def tearDown(self):
-        # type: () -> None
+    def tearDown(self) -> None:
         Job.closer.close()
 
-    def test_load(self):
-        # type: () -> None
+    def test_load(self) -> None:
         actors = [Actor('Tom Cruise'), Actor('Meg Ryan')]
         cities = [City('San Diego'), City('Oakland')]
         movie = Movie('Top Gun', actors, cities)
@@ -59,8 +56,9 @@ class TestFsNeo4jCSVLoader(unittest.TestCase):
                                               itemgetter('START_KEY', 'END_KEY'))
         self.assertEqual(expected_relations, actual_relations)
 
-    def _get_csv_rows(self, path, sorting_key_getter):
-        # type: (str, Callable) -> Iterable[Dict[str, Any]]
+    def _get_csv_rows(self,
+                      path: str,
+                      sorting_key_getter: Callable) -> Iterable[Dict[str, Any]]:
         files = [join(path, f) for f in listdir(path) if isfile(join(path, f))]
 
         result = []

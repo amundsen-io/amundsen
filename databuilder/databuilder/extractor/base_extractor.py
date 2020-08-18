@@ -15,18 +15,15 @@ class Extractor(Scoped):
     """
 
     @abc.abstractmethod
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
     @abc.abstractmethod
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         :return: Provides a record or None if no more to extract
         """
         return None
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor'

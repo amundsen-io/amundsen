@@ -6,6 +6,7 @@ import unittest
 
 from mock import patch
 from pyhocon import ConfigFactory  # noqa: F401
+from typing import Any, Dict, List
 
 from databuilder import Scoped
 from databuilder.extractor.dashboard.redash.redash_dashboard_extractor import \
@@ -19,30 +20,29 @@ from databuilder.models.dashboard.dashboard_table import DashboardTable
 logging.basicConfig(level=logging.INFO)
 
 
-def dummy_tables(*args):
+def dummy_tables(*args: Any) -> List[TableRelationData]:
     return [TableRelationData('some_db', 'prod', 'public', 'users')]
 
 
 class MockApiResponse:
-    def __init__(self, data):
+    def __init__(self, data: Any) -> None:
         self.json_data = data
         self.status_code = 200
 
-    def json(self):
+    def json(self) -> Any:
         return self.json_data
 
-    def raise_for_status(self):
+    def raise_for_status(self) -> None:
         pass
 
 
 class TestRedashDashboardExtractor(unittest.TestCase):
-    def test_table_relation_data(self):
+    def test_table_relation_data(self) -> None:
         tr = TableRelationData('db', 'cluster', 'schema', 'tbl')
         self.assertEqual(tr.key, 'db://cluster.schema/tbl')
 
-    def test_with_one_dashboard(self):
-
-        def mock_api_get(url, *args, **kwargs):
+    def test_with_one_dashboard(self) -> None:
+        def mock_api_get(url: str, *args: Any, **kwargs: Any) -> MockApiResponse:
             if 'test-dash' in url:
                 return MockApiResponse({
                     'id': 123,
@@ -51,7 +51,7 @@ class TestRedashDashboardExtractor(unittest.TestCase):
                             'visualization': {
                                 'query': {
                                     'data_source_id': 1,
-                                    'id': 1234,
+                                    'id': '1234',
                                     'name': 'Test Query',
                                     'query': 'SELECT id FROM users'
                                 }
@@ -108,41 +108,41 @@ class TestRedashDashboardExtractor(unittest.TestCase):
 
             # DashboardLastModified
             record = extractor.extract()
-            identity = {
+            identity: Dict[str, Any] = {
                 'dashboard_id': 123,
                 'dashboard_group_id': RedashDashboardExtractor.DASHBOARD_GROUP_ID,
                 'product': RedashDashboardExtractor.PRODUCT,
                 'cluster': u'prod'
             }
-            expected = DashboardLastModifiedTimestamp(
+            expected_timestamp = DashboardLastModifiedTimestamp(
                 last_modified_timestamp=1577923200,
                 **identity
             )
-            self.assertEqual(record.__repr__(), expected.__repr__())
+            self.assertEqual(record.__repr__(), expected_timestamp.__repr__())
 
             # DashboardOwner
             record = extractor.extract()
-            expected = DashboardOwner(email='asdf@example.com', **identity)
-            self.assertEqual(record.__repr__(), expected.__repr__())
+            expected_owner = DashboardOwner(email='asdf@example.com', **identity)
+            self.assertEqual(record.__repr__(), expected_owner.__repr__())
 
             # DashboardQuery
             record = extractor.extract()
-            expected = DashboardQuery(
-                query_id=1234,
+            expected_query = DashboardQuery(
+                query_id='1234',
                 query_name='Test Query',
                 url=u'{base}/queries/1234'.format(base=redash_base_url),
                 query_text='SELECT id FROM users',
                 **identity
             )
-            self.assertEqual(record.__repr__(), expected.__repr__())
+            self.assertEqual(record.__repr__(), expected_query.__repr__())
 
             # DashboardTable
             record = extractor.extract()
-            expected = DashboardTable(
+            expected_table = DashboardTable(
                 table_ids=[TableRelationData('some_db', 'prod', 'public', 'users').key],
                 **identity
             )
-            self.assertEqual(record.__repr__(), expected.__repr__())
+            self.assertEqual(record.__repr__(), expected_table.__repr__())
 
 
 if __name__ == '__main__':

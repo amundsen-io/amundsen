@@ -2,17 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from collections import namedtuple
 
 from pyhocon import ConfigTree  # noqa: F401
-from typing import List, Any  # noqa: F401
+from typing import cast, Any, Dict, List, Set  # noqa: F401
 
-from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor
+from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor, DatasetRef
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 
-
-DatasetRef = namedtuple('DatasetRef', ['datasetId', 'projectId'])
-TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,13 +25,12 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
     column name.
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         BaseBigQueryExtractor.init(self, conf)
-        self.grouped_tables = set([])
+        self.grouped_tables: Set[str] = set([])
+        self.iter = iter(self._iterate_over_tables())
 
-    def _retrieve_tables(self, dataset):
-        # type: () -> Any
+    def _retrieve_tables(self, dataset: DatasetRef) -> Any:
         for page in self._page_table_list_results(dataset):
             if 'tables' not in page:
                 continue
@@ -66,13 +61,14 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
 
                 # BigQuery tables also have interesting metadata about partitioning
                 # data location (EU/US), mod/create time, etc... Extract that some other time?
-                cols = []
+                cols: List[ColumnMetadata] = []
                 # Not all tables have schemas
                 if 'schema' in table:
                     schema = table['schema']
                     if 'fields' in schema:
                         total_cols = 0
                         for column in schema['fields']:
+                            # TRICKY: this mutates :cols:
                             total_cols = self._iterate_over_cols('', column, cols, total_cols + 1)
 
                 table_meta = TableMetadata(
@@ -86,8 +82,11 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
 
                 yield(table_meta)
 
-    def _iterate_over_cols(self, parent, column, cols, total_cols):
-        # type: (str, str, List[ColumnMetadata()], int) -> int
+    def _iterate_over_cols(self,
+                           parent: str,
+                           column: Dict[str, str],
+                           cols: List[ColumnMetadata],
+                           total_cols: int) -> int:
         if len(parent) > 0:
             col_name = '{parent}.{field}'.format(parent=parent, field=column['name'])
         else:
@@ -102,7 +101,11 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
             cols.append(col)
             total_cols += 1
             for field in column['fields']:
-                total_cols = self._iterate_over_cols(col_name, field, cols, total_cols)
+                # TODO field is actually a TableFieldSchema, per
+                # https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#TableFieldSchema
+                # however it's typed as str, which is incorrect. Work-around by casting.
+                field_casted = cast(Dict[str, str], field)
+                total_cols = self._iterate_over_cols(col_name, field_casted, cols, total_cols)
             return total_cols
         else:
             col = ColumnMetadata(
@@ -113,6 +116,5 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
             cols.append(col)
             return total_cols + 1
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.bigquery_table_metadata'

@@ -5,7 +5,7 @@ import logging
 
 import requests  # noqa: F401
 from jsonpath_rw import parse
-from typing import Any  # noqa: F401
+from typing import Any, Dict  # noqa: F401
 
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
@@ -26,9 +26,9 @@ class ModePaginatedRestApiQuery(RestApiQuery):
     """
 
     def __init__(self,
-                 pagination_json_path=LIST_REPORTS_PAGINATION_JSON_PATH,  # type: str
-                 max_record_size=DEFAULT_MAX_RECORD_SIZE,  # type: int
-                 **kwargs  # type: Any
+                 pagination_json_path: str = LIST_REPORTS_PAGINATION_JSON_PATH,
+                 max_record_size: int = DEFAULT_MAX_RECORD_SIZE,
+                 **kwargs: Any
                  ):
         # type (...) -> None
         super(ModePaginatedRestApiQuery, self).__init__(**kwargs)
@@ -39,9 +39,8 @@ class ModePaginatedRestApiQuery(RestApiQuery):
         self._pagination_jsonpath_expr = parse(pagination_json_path)
 
     def _preprocess_url(self,
-                        record,  # type: Dict[str, Any]
-                        ):
-        # type: (...) -> str
+                        record: Dict[str, Any],
+                        ) -> str:
         """
         Updates URL with page information
         :param record:
@@ -50,14 +49,12 @@ class ModePaginatedRestApiQuery(RestApiQuery):
         page_suffix = PAGE_SUFFIX_TEMPLATE.format(self._current_page)  # example: ?page=2
 
         # example: http://foo.bar/resources?page=2
-        self._url = self._original_url + '{page_suffix}'.format(original_url=self._original_url,
-                                                                page_suffix=page_suffix)
+        self._url = self._original_url + '{page_suffix}'.format(page_suffix=page_suffix)
         return self._url.format(**record)
 
     def _post_process(self,
-                      response,  # type: requests.Response
-                      ):
-        # type: (...) -> None
+                      response: requests.Response,
+                      ) -> None:
         """
         Updates trigger to pagination (self._more_pages) as well as current_page (self._current_page)
         Mode does not have explicit indicator that it just the number of records need to be certain number that

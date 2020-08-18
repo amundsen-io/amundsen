@@ -9,11 +9,10 @@ class PrestoQueryLogs:
     """
 
     def __init__(self,
-                 user,  # type: str
-                 query_text,  # type: str
-                 occurred_at  # type: str
-                 ):
-        # type: (...) -> None
+                 user: str,
+                 query_text: str,
+                 occurred_at: str
+                 ) -> None:
         self.user = user
         self.query_text = query_text
         self.occurred_at = occurred_at

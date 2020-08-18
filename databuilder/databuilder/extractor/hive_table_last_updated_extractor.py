@@ -21,8 +21,7 @@ LOGGER = logging.getLogger(__name__)
 OLDEST_TIMESTAMP = datetime.fromtimestamp(0, UTC)
 
 
-def fs_error_handler(f):
-    # type: (Any) -> Any
+def fs_error_handler(f: Any) -> Any:
     """
     A Decorator that handles error from FileSystem for HiveTableLastUpdatedExtractor use case
     If it's client side error, it logs in INFO level, and other errors is logged as error level with stacktrace.
@@ -32,8 +31,7 @@ def fs_error_handler(f):
     """
 
     @wraps(f)
-    def wrapper(*args, **kwargs):
-        # type: (Any, Any) -> Any
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return f(*args, **kwargs)
         except Exception as e:
@@ -107,8 +105,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
                                               FS_WORKER_TIMEOUT_SEC: 60,
                                               FILE_CHECK_THRESHOLD: -1})
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self._conf = conf.with_fallback(HiveTableLastUpdatedExtractor.DEFAULT_CONFIG)
 
         pool_size = self._conf.get_int(HiveTableLastUpdatedExtractor.FS_WORKER_POOL_SIZE)
@@ -125,10 +122,9 @@ class HiveTableLastUpdatedExtractor(Extractor):
         self._last_updated_filecheck_threshold \
             = self._conf.get_int(HiveTableLastUpdatedExtractor.FILE_CHECK_THRESHOLD)
 
-        self._extract_iter = None  # type: Union[None, Iterator]
+        self._extract_iter: Union[None, Iterator] = None
 
-    def _get_partitioned_table_sql_alchemy_extractor(self):
-        # type: (...) -> Extractor
+    def _get_partitioned_table_sql_alchemy_extractor(self) -> Extractor:
         """
         Getting an SQLAlchemy extractor that extracts last updated timestamp for partitioned table.
         :return: SQLAlchemyExtractor
@@ -146,8 +142,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
         sql_alchemy_extractor.init(sql_alchemy_conf)
         return sql_alchemy_extractor
 
-    def _get_non_partitioned_table_sql_alchemy_extractor(self):
-        # type: () -> Extractor
+    def _get_non_partitioned_table_sql_alchemy_extractor(self) -> Extractor:
         """
         Getting an SQLAlchemy extractor that extracts storage location for non-partitioned table for further probing
         last updated timestamp
@@ -175,14 +170,12 @@ class HiveTableLastUpdatedExtractor(Extractor):
         sql_alchemy_extractor.init(sql_alchemy_conf)
         return sql_alchemy_extractor
 
-    def _get_filesystem(self):
-        # type: () -> FileSystem
+    def _get_filesystem(self) -> FileSystem:
         fs = FileSystem()
         fs.init(Scoped.get_scoped_conf(self._conf, fs.get_scope()))
         return fs
 
-    def extract(self):
-        # type: () -> Union[TableLastUpdated, None]
+    def extract(self) -> Union[TableLastUpdated, None]:
         if not self._extract_iter:
             self._extract_iter = self._get_extract_iter()
         try:
@@ -190,12 +183,10 @@ class HiveTableLastUpdatedExtractor(Extractor):
         except StopIteration:
             return None
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.hive_table_last_updated'
 
-    def _get_extract_iter(self):
-        # type: () -> Iterator[TableLastUpdated]
+    def _get_extract_iter(self) -> Iterator[TableLastUpdated]:
         """
         An iterator that utilizes Generator pattern. First it provides TableLastUpdated objects for partitioned
         table, straight from partitioned_table_extractor (SQLAlchemyExtractor)
@@ -240,11 +231,10 @@ class HiveTableLastUpdatedExtractor(Extractor):
             non_partitioned_tbl_row = self._non_partitioned_table_extractor.extract()
 
     def _get_last_updated_datetime_from_filesystem(self,
-                                                   table,  # type: str
-                                                   schema,  # type: str
-                                                   storage_location,  # type: str
-                                                   ):
-        # type: (...) -> Union[TableLastUpdated, None]
+                                                   table: str,
+                                                   schema: str,
+                                                   storage_location: str,
+                                                   ) -> Union[TableLastUpdated, None]:
         """
         Fetching metadata within files under storage_location to get latest timestamp.
         (First level only under storage_location)
@@ -303,8 +293,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
         return result
 
     @fs_error_handler
-    def _ls(self, path):
-        # type: (str) -> List[str]
+    def _ls(self, path: str) -> List[str]:
         """
         An wrapper to FileSystem.ls to use fs_error_handler decorator
         :param path:
@@ -314,12 +303,11 @@ class HiveTableLastUpdatedExtractor(Extractor):
 
     @fs_error_handler
     def _get_timestamp(self,
-                       path,  # type: str
-                       schema,  # type: str
-                       table,  # type: str
-                       storage_location,  # type: str
-                       ):
-        # type: (...) -> Union[datetime, None]
+                       path: str,
+                       schema: str,
+                       table: str,
+                       storage_location: str,
+                       ) -> Union[datetime, None]:
         """
         An wrapper to FileSystem.ls to use fs_error_handler decorator
         :param path:

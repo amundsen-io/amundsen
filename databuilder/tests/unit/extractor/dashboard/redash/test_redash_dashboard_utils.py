@@ -6,6 +6,7 @@ import random
 import unittest
 
 from mock import patch
+from typing import Any, Dict, List
 
 from databuilder.rest_api.base_rest_api_query import EmptyRestApiQuerySeed
 from databuilder.extractor.dashboard.redash.redash_dashboard_utils import \
@@ -16,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 class TestRedashDashboardUtils(unittest.TestCase):
-    def test_sort_widgets(self):
+    def test_sort_widgets(self) -> None:
         widgets = [
             {
                 'text': 'a',
@@ -39,8 +40,8 @@ class TestRedashDashboardUtils(unittest.TestCase):
         sorted_widgets = sort_widgets(widgets)
         self.assertListEqual([widget['text'] for widget in sorted_widgets], ['a', 'b', 'c', 'd'])
 
-    def test_widget_filters(self):
-        widgets = [
+    def test_widget_filters(self) -> None:
+        widgets: List[Dict[str, Any]] = [
             {'text': 'asdf', 'options': {'ex': 1}},
             {'text': 'asdf', 'options': {'ex': 2}},
             {'visualization': {}, 'options': {'ex': 1}},
@@ -50,14 +51,14 @@ class TestRedashDashboardUtils(unittest.TestCase):
         self.assertEqual(len(get_text_widgets(widgets)), 2)
         self.assertEqual(len(get_visualization_widgets(widgets)), 3)
 
-    def test_text_widget_props(self):
+    def test_text_widget_props(self) -> None:
         widget_data = {
             'text': 'asdf'
         }
         widget = get_text_widgets([widget_data])[0]
         self.assertEqual(widget.text, 'asdf')
 
-    def test_visualization_widget_props(self):
+    def test_visualization_widget_props(self) -> None:
         widget_data = {
             'visualization': {
                 'query': {
@@ -75,7 +76,7 @@ class TestRedashDashboardUtils(unittest.TestCase):
         self.assertEqual(widget.raw_query, 'SELECT 2+2 FROM DUAL')
         self.assertEqual(widget.query_name, 'Test')
 
-    def test_descriptions_from_text(self):
+    def test_descriptions_from_text(self) -> None:
         text_widgets = get_text_widgets([
             {'text': 'T1'},
             {'text': 'T2'}
@@ -122,11 +123,11 @@ class TestRedashDashboardUtils(unittest.TestCase):
         desc4 = generate_dashboard_description([], [])
         self.assertTrue('empty' in desc4)
 
-    def test_auth_headers(self):
+    def test_auth_headers(self) -> None:
         headers = get_auth_headers('testkey')
         self.assertTrue('testkey' in headers['Authorization'])
 
-    def test_paginated_rest_api_query(self):
+    def test_paginated_rest_api_query(self) -> None:
         paged_content = [
             {
                 'page': 1,

@@ -21,19 +21,16 @@ class TemplateVariableSubstitutionTransformer(Transformer):
 
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
 
         self._template = conf.get_string(TEMPLATE)
         self._field_name = conf.get_string(FIELD_NAME)
 
-    def transform(self, record):
-        # type: (Dict[str, Any]) -> Dict[str, Any]
+    def transform(self, record: Dict[str, Any]) -> Dict[str, Any]:
 
         val = self._template.format(**record)
         record[self._field_name] = val
         return record
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'transformer.template_variable_substitution'

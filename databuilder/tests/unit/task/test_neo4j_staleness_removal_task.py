@@ -19,12 +19,10 @@ from databuilder.task.neo4j_staleness_removal_task import Neo4jStalenessRemovalT
 
 class TestRemoveStaleData(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
 
-    def test_validation_failure(self):
-        # type: () -> None
+    def test_validation_failure(self) -> None:
 
         with patch.object(GraphDatabase, 'driver'):
             task = Neo4jStalenessRemovalTask()
@@ -47,8 +45,7 @@ class TestRemoveStaleData(unittest.TestCase):
             targets = {'foo'}
             task._validate_staleness_pct(total_records=total_records, stale_records=stale_records, types=targets)
 
-    def test_validation(self):
-        # type: () -> None
+    def test_validation(self) -> None:
 
         with patch.object(GraphDatabase, 'driver'):
             task = Neo4jStalenessRemovalTask()
@@ -71,8 +68,7 @@ class TestRemoveStaleData(unittest.TestCase):
             targets = {'foo'}
             self.assertRaises(Exception, task._validate_staleness_pct, total_records, stale_records, targets)
 
-    def test_validation_threshold_override(self):
-        # type: () -> None
+    def test_validation_threshold_override(self) -> None:
 
         with patch.object(GraphDatabase, 'driver'):
             task = Neo4jStalenessRemovalTask()
@@ -99,7 +95,7 @@ class TestRemoveStaleData(unittest.TestCase):
             targets = {'foo', 'bar'}
             task._validate_staleness_pct(total_records=total_records, stale_records=stale_records, types=targets)
 
-    def test_marker(self):
+    def test_marker(self) -> None:
         with patch.object(GraphDatabase, 'driver'):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
@@ -138,7 +134,7 @@ class TestRemoveStaleData(unittest.TestCase):
             self.assertIsNotNone(task.ms_to_expire)
             self.assertEqual(task.marker, 86400000)
 
-    def test_validation_statement_publish_tag(self):
+    def test_validation_statement_publish_tag(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
                 as mock_execute:
             task = Neo4jStalenessRemovalTask()
@@ -170,24 +166,24 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (n)
-            WHERE 
+            WHERE{}
             n.published_tag <> $marker
             OR NOT EXISTS(n.published_tag)
             WITH DISTINCT labels(n) as node, count(*) as count
             RETURN head(node) as type, count
-            """))
+            """.format(' ')))
 
             task._validate_relation_staleness_pct()
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH ()-[n]-()
-            WHERE 
+            WHERE{}
             n.published_tag <> $marker
             OR NOT EXISTS(n.published_tag)
             RETURN type(n) as type, count(*) as count
-            """))
+            """.format(' ')))
 
-    def test_validation_statement_ms_to_expire(self):
+    def test_validation_statement_ms_to_expire(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
                 as mock_execute:
             task = Neo4jStalenessRemovalTask()
@@ -218,24 +214,24 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': 9876543210},
                                          statement=textwrap.dedent("""
             MATCH (n)
-            WHERE 
+            WHERE{}
             n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             WITH DISTINCT labels(n) as node, count(*) as count
             RETURN head(node) as type, count
-            """))
+            """.format(' ')))
 
             task._validate_relation_staleness_pct()
             mock_execute.assert_any_call(param_dict={'marker': 9876543210},
                                          statement=textwrap.dedent("""
             MATCH ()-[n]-()
-            WHERE 
+            WHERE{}
             n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             RETURN type(n) as type, count(*) as count
-            """))
+            """.format(' ')))
 
-    def test_delete_statement_publish_tag(self):
+    def test_delete_statement_publish_tag(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
                 as mock_execute:
             mock_execute.return_value.single.return_value = {'count': 0}
@@ -265,27 +261,27 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (n:Foo)
-            WHERE 
+            WHERE{}
             n.published_tag <> $marker
             OR NOT EXISTS(n.published_tag)
             WITH n LIMIT $batch_size
             DETACH DELETE (n)
             RETURN COUNT(*) as count;
-            """))
+            """.format(' ')))
 
             mock_execute.assert_any_call(dry_run=False,
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH ()-[n:BAR]-()
-            WHERE 
+            WHERE{}
             n.published_tag <> $marker
             OR NOT EXISTS(n.published_tag)
             WITH n LIMIT $batch_size
             DELETE n
             RETURN count(*) as count;
-                        """))
+                        """.format(' ')))
 
-    def test_delete_statement_ms_to_expire(self):
+    def test_delete_statement_ms_to_expire(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
                 as mock_execute:
             mock_execute.return_value.single.return_value = {'count': 0}
@@ -316,27 +312,27 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': 9876543210, 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (n:Foo)
-            WHERE 
+            WHERE{}
             n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             WITH n LIMIT $batch_size
             DETACH DELETE (n)
             RETURN COUNT(*) as count;
-            """))
+            """.format(' ')))
 
             mock_execute.assert_any_call(dry_run=False,
                                          param_dict={'marker': 9876543210, 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH ()-[n:BAR]-()
-            WHERE 
+            WHERE{}
             n.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(n.publisher_last_updated_epoch_ms)
             WITH n LIMIT $batch_size
             DELETE n
             RETURN count(*) as count;
-                        """))
+                        """.format(' ')))
 
-    def test_ms_to_expire_too_small(self):
+    def test_ms_to_expire_too_small(self) -> None:
         with patch.object(GraphDatabase, 'driver'):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
@@ -384,7 +380,7 @@ class TestRemoveStaleData(unittest.TestCase):
             })
             task.init(job_config)
 
-    def test_delete_dry_run(self):
+    def test_delete_dry_run(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             session_mock = mock_driver.return_value.session
 

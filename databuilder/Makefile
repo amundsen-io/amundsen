@@ -10,6 +10,10 @@ test_unit:
 lint:
 	flake8 .
 
+.PHONY: mypy
+mypy:
+	mypy .
+
 .PHONY: test
-test: test_unit lint
+test: test_unit lint mypy
 

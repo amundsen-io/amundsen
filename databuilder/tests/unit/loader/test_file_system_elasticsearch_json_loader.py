@@ -16,8 +16,7 @@ from databuilder.models.table_elasticsearch_document import TableESDocument
 
 class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
         self.dest_file_name = '{}/test_file.json'.format(self.temp_dir_path)
         self.file_mode = 'w'
@@ -25,12 +24,10 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
                        'loader.filesystem.elasticsearch.mode': self.file_mode}
         self.conf = ConfigFactory.from_dict(config_dict)
 
-    def tearDown(self):
-        # type: () -> None
+    def tearDown(self) -> None:
         shutil.rmtree(self.temp_dir_path)
 
-    def _check_results_helper(self, expected):
-        # type: (List[str]) -> None
+    def _check_results_helper(self, expected: List[str]) -> None:
         """
         Helper function to compare results with expected outcome
         :param expected: expected result
@@ -41,8 +38,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
                 self.assertDictEqual(json.loads(e), json.loads(actual))
             self.assertFalse(file.readline())
 
-    def test_empty_loading(self):
-        # type: () -> None
+    def test_empty_loading(self) -> None:
         """
         Test loading functionality with no data
         """
@@ -55,8 +51,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         self._check_results_helper(expected=[])
 
-    def test_loading_with_different_object(self):
-        # type: () -> None
+    def test_loading_with_different_object(self) -> None:
         """
         Test Loading functionality with a python Dict object
         """
@@ -84,8 +79,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         loader.close()
 
-    def test_loading_with_single_object(self):
-        # type: () -> None
+    def test_loading_with_single_object(self) -> None:
         """
         Test Loading functionality with single python object
         """
@@ -124,8 +118,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
         self._check_results_helper(expected=expected)
 
-    def test_loading_with_list_of_objects(self):
-        # type: () -> None
+    def test_loading_with_list_of_objects(self) -> None:
         """
         Test Loading functionality with list of objects.
         Check to ensure all objects are added to file

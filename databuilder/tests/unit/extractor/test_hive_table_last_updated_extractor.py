@@ -9,7 +9,7 @@ from pytz import UTC
 
 from mock import patch, MagicMock
 from pyhocon import ConfigFactory
-from typing import Any, Dict  # noqa: F401
+from typing import Any, Iterable, Iterator, Dict, Optional, TypeVar  # noqa: F401
 
 from databuilder.extractor.hive_table_last_updated_extractor import HiveTableLastUpdatedExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
@@ -18,23 +18,24 @@ from databuilder.filesystem.filesystem import FileSystem
 from databuilder.filesystem.metadata import FileMetadata
 
 
-def null_iterator(items):
+T = TypeVar('T')
+
+
+def null_iterator(items: Iterable[T]) -> Iterator[Optional[T]]:
     """
-        Returns an infinite iterator that returns the items from items,
-        then infinite Nones. Required because Extractor.extract is expected
-        to return None when it is exhausted, not terminate.
+    Returns an infinite iterator that returns the items from items,
+    then infinite Nones. Required because Extractor.extract is expected
+    to return None when it is exhausted, not terminate.
     """
     return itertools.chain(iter(items), itertools.repeat(None))
 
 
 class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
 
-    def test_extraction_with_empty_query_result(self):
-        # type: () -> None
+    def test_extraction_with_empty_query_result(self) -> None:
 
         config_dict = {
             'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
@@ -49,8 +50,7 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
             result = extractor.extract()
             self.assertEqual(result, None)
 
-    def test_extraction_with_partition_table_result(self):
-        # type: () -> None
+    def test_extraction_with_partition_table_result(self) -> None:
         config_dict = {
             'filesystem.{}'.format(FileSystem.DASK_FILE_SYSTEM): MagicMock()
         }
@@ -87,8 +87,7 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
 
             self.assertIsNone(extractor.extract())
 
-    def test_extraction(self):
-        # type: () -> None
+    def test_extraction(self) -> None:
         old_datetime = datetime(2018, 8, 14, 4, 12, 3, tzinfo=UTC)
         new_datetime = datetime(2018, 11, 14, 4, 12, 3, tzinfo=UTC)
 

@@ -22,8 +22,7 @@ class ModeDashboardOwnerExtractor(Extractor):
 
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self._conf = conf
 
         restapi_query = self._build_restapi_query()
@@ -36,22 +35,18 @@ class ModeDashboardOwnerExtractor(Extractor):
             )
         )
 
-    def extract(self):
-        # type: () -> Any
-
+    def extract(self) -> Any:
         return self._extractor.extract()
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.mode_dashboard_owner'
 
-    def _build_restapi_query(self):
+    def _build_restapi_query(self) -> RestApiQuery:
         """
         Build REST API Query. To get Mode Dashboard owner, it needs to call three APIs (spaces API, reports
         API, and user API) joining together.
         :return: A RestApiQuery that provides Mode Dashboard owner
         """
-        # type: () -> RestApiQuery
 
         # https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace
         report_url_template = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'

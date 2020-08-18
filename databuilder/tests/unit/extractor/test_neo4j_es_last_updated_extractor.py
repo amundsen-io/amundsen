@@ -13,8 +13,7 @@ from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpd
 
 class TestNeo4jEsLastUpdatedExtractor(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         config_dict = {
             'extractor.neo4j_es_last_updated.model_class':
                 'databuilder.models.neo4j_es_last_updated.Neo4jESLastUpdated',
@@ -22,8 +21,7 @@ class TestNeo4jEsLastUpdatedExtractor(unittest.TestCase):
         self.conf = ConfigFactory.from_dict(config_dict)
 
     @patch('time.time')
-    def test_extraction_with_model_class(self, mock_time):
-        # type: (Any) -> None
+    def test_extraction_with_model_class(self, mock_time: Any) -> None:
         """
         Test Extraction using model class
         """

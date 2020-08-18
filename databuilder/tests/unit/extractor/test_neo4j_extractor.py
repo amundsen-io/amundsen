@@ -14,8 +14,7 @@ from databuilder.models.table_elasticsearch_document import TableESDocument
 
 class TestNeo4jExtractor(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         config_dict = {
             'extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): 'TEST_GRAPH_URL',
             'extractor.neo4j.{}'.format(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY): 'TEST_QUERY',
@@ -25,8 +24,7 @@ class TestNeo4jExtractor(unittest.TestCase):
 
         self.conf = ConfigFactory.from_dict(config_dict)
 
-    def text_extraction_with_empty_query_result(self):
-        # type: (Any) -> None
+    def text_extraction_with_empty_query_result(self: Any) -> None:
         """
         Test Extraction with empty results from query
         """
@@ -39,8 +37,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             result = extractor.extract()
             self.assertIsNone(result)
 
-    def test_extraction_with_single_query_result(self):
-        # type: (Any) -> None
+    def test_extraction_with_single_query_result(self: Any) -> None:
         """
         Test Extraction with single result from query
         """
@@ -57,8 +54,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             result = extractor.extract()
             self.assertIsNone(result)
 
-    def test_extraction_with_multiple_query_result(self):
-        # type: (Any) -> None
+    def test_extraction_with_multiple_query_result(self: Any) -> None:
         """
         Test Extraction with multiple result from query
         """
@@ -82,8 +78,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             result = extractor.extract()
             self.assertIsNone(result)
 
-    def test_extraction_with_model_class(self):
-        # type: (Any) -> None
+    def test_extraction_with_model_class(self: Any) -> None:
         """
         Test Extraction using model class
         """

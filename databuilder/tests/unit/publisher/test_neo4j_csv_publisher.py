@@ -16,14 +16,12 @@ from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 
 class TestPublish(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
         self._resource_path = '{}/../resources/csv_publisher' \
             .format(os.path.join(os.path.dirname(__file__)))
 
-    def test_publisher(self):
-        # type: () -> None
+    def test_publisher(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             mock_session = MagicMock()
             mock_driver.return_value.session.return_value = mock_session
@@ -54,8 +52,7 @@ class TestPublish(unittest.TestCase):
             # 2 node files, 1 relation file
             self.assertEqual(mock_commit.call_count, 1)
 
-    def test_preprocessor(self):
-        # type: () -> None
+    def test_preprocessor(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             mock_session = MagicMock()
             mock_driver.return_value.session.return_value = mock_session

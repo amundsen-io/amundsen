@@ -16,19 +16,16 @@ class Job(Scoped):
     A Databuilder job that represents single work unit.
     """
     @abc.abstractmethod
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
     @abc.abstractmethod
-    def launch(self):
-        # type: () -> None
+    def launch(self) -> None:
         """
         Launch a job
         :return: None
         """
         pass
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'job'

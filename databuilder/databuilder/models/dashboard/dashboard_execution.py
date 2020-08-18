@@ -27,15 +27,15 @@ class DashboardExecution(Neo4jCsvSerializable):
     LAST_SUCCESSFUL_EXECUTION_ID = '_last_successful_execution'
 
     def __init__(self,
-                 dashboard_group_id,  # type: Optional[str]
-                 dashboard_id,  # type: Optional[str]
-                 execution_timestamp,  # type: int
-                 execution_state,  # type: str
-                 execution_id=LAST_EXECUTION_ID,  # type: str
-                 product='',  # type: Optional[str]
-                 cluster='gold',  # type: str
-                 **kwargs
-                 ):
+                 dashboard_group_id: Optional[str],
+                 dashboard_id: Optional[str],
+                 execution_timestamp: int,
+                 execution_state: str,
+                 execution_id: str = LAST_EXECUTION_ID,
+                 product: Optional[str] = '',
+                 cluster: str = 'gold',
+                 **kwargs: Any
+                 ) -> None:
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
         self._execution_timestamp = execution_timestamp
@@ -46,15 +46,13 @@ class DashboardExecution(Neo4jCsvSerializable):
         self._node_iterator = self._create_node_iterator()
         self._relation_iterator = self._create_relation_iterator()
 
-    def create_next_node(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._node_iterator)
         except StopIteration:
             return None
 
-    def _create_node_iterator(self):  # noqa: C901
-        # type: () -> Iterator[[Dict[str, Any]]]
+    def _create_node_iterator(self) -> Iterator[Dict[str, Any]]:  # noqa: C901
         yield {
             NODE_LABEL: DashboardExecution.DASHBOARD_EXECUTION_LABEL,
             NODE_KEY: self._get_last_execution_node_key(),
@@ -62,15 +60,13 @@ class DashboardExecution(Neo4jCsvSerializable):
             'state': self._execution_state
         }
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_relation_iterator(self):
-        # type: () -> Iterator[[Dict[str, Any]]]
+    def _create_relation_iterator(self) -> Iterator[Dict[str, Any]]:
         yield {
             RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
             RELATION_END_LABEL: DashboardExecution.DASHBOARD_EXECUTION_LABEL,
@@ -85,7 +81,7 @@ class DashboardExecution(Neo4jCsvSerializable):
             RELATION_REVERSE_TYPE: DashboardExecution.EXECUTION_DASHBOARD_RELATION_TYPE
         }
 
-    def _get_last_execution_node_key(self):
+    def _get_last_execution_node_key(self) -> str:
         return DashboardExecution.DASHBOARD_EXECUTION_KEY_FORMAT.format(
             product=self._product,
             cluster=self._cluster,
@@ -94,7 +90,7 @@ class DashboardExecution(Neo4jCsvSerializable):
             execution_id=self._execution_id
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'DashboardExecution({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
             self._dashboard_group_id,
             self._dashboard_id,

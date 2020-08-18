@@ -14,8 +14,7 @@ LOGGER = logging.getLogger(__name__)
 CLIENT_ERRORS = {'ClientError', 'FileNotFoundError', 'ParamValidationError'}
 
 
-def is_client_side_error(e):
-    # type: (Exception) -> bool
+def is_client_side_error(e: Exception) -> bool:
     """
     An method that determines if the error is client side error within FileSystem context
     :param e:
@@ -24,8 +23,7 @@ def is_client_side_error(e):
     return e.__class__.__name__ in CLIENT_ERRORS
 
 
-def is_retriable_error(e):
-    # type: (Exception) -> bool
+def is_retriable_error(e: Exception) -> bool:
     """
     An method that determines if the error is retriable error within FileSystem context
     :param e:
@@ -59,9 +57,8 @@ class FileSystem(Scoped):
     DEFAULT_CONFIG = ConfigFactory.from_dict({FILE_METADATA_MAPPING_KEY: default_metadata_mapping})
 
     def init(self,
-             conf  # type: ConfigTree
-             ):
-        # type: (...) -> None
+             conf: ConfigTree
+             ) -> None:
         """
         Initialize Filesystem with DASK file system instance
         Dask file system supports multiple remote storage such as S3, HDFS, Google cloud storage,
@@ -81,8 +78,7 @@ class FileSystem(Scoped):
 
     @retry(retry_on_exception=is_retriable_error, stop_max_attempt_number=3, wait_exponential_multiplier=1000,
            wait_exponential_max=5000)
-    def ls(self, path):
-        # type: (str) -> List[str]
+    def ls(self, path: str) -> List[str]:
         """
         A scope for the config. Typesafe config supports nested config.
         Scope, string, is used to basically peel off nested config
@@ -92,15 +88,13 @@ class FileSystem(Scoped):
 
     @retry(retry_on_exception=is_retriable_error, stop_max_attempt_number=3, wait_exponential_multiplier=1000,
            wait_exponential_max=5000)
-    def is_file(self, path):
-        # type: (str) -> bool
+    def is_file(self, path: str) -> bool:
         contents = self._dask_fs.ls(path)
         return len(contents) == 1 and contents[0] == path
 
     @retry(retry_on_exception=is_retriable_error, stop_max_attempt_number=3, wait_exponential_multiplier=1000,
            wait_exponential_max=5000)
-    def info(self, path):
-        # type: (str) -> FileMetadata
+    def info(self, path: str) -> FileMetadata:
         """
         Metadata information about the file. It utilizes _metadata_key_mapping when fetching metadata so that it can
         deal with different keys
@@ -112,6 +106,5 @@ class FileSystem(Scoped):
                           size=metadata_dict[self._metadata_key_mapping[FileSystem.SIZE]])
         return fm
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'filesystem'

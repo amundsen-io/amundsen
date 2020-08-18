@@ -33,8 +33,7 @@ class Neo4jExtractor(Extractor):
                                               NEO4J_ENCRYPTED: True,
                                               NEO4J_VALIDATE_SSL: False})
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
         Establish connections and import data model class if provided
         :param conf:
@@ -44,7 +43,7 @@ class Neo4jExtractor(Extractor):
         self.cypher_query = conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
         self.driver = self._get_driver()
 
-        self._extract_iter = None  # type: Union[None, Iterator]
+        self._extract_iter: Union[None, Iterator] = None
 
         model_class = conf.get(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY, None)
         if model_class:
@@ -52,8 +51,7 @@ class Neo4jExtractor(Extractor):
             mod = importlib.import_module(module_name)
             self.model_class = getattr(mod, class_name)
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         """
         close connection to neo4j cluster
         """
@@ -62,8 +60,7 @@ class Neo4jExtractor(Extractor):
         except Exception as e:
             LOGGER.error("Exception encountered while closing the graph driver", e)
 
-    def _get_driver(self):
-        # type: () -> Any
+    def _get_driver(self) -> Any:
         """
         Create a Neo4j connection to Database
         """
@@ -77,8 +74,7 @@ class Neo4jExtractor(Extractor):
                                     encrypted=self.conf.get_bool(Neo4jExtractor.NEO4J_ENCRYPTED),
                                     trust=trust)
 
-    def _execute_query(self, tx):
-        # type: (Any) -> Any
+    def _execute_query(self, tx: Any) -> Any:
         """
         Create an iterator to execute sql.
         """
@@ -86,8 +82,7 @@ class Neo4jExtractor(Extractor):
         result = tx.run(self.cypher_query)
         return result
 
-    def _get_extract_iter(self):
-        # type: () -> Iterator[Any]
+    def _get_extract_iter(self) -> Iterator[Any]:
         """
         Execute {cypher_query} and yield result one at a time
         """
@@ -102,8 +97,7 @@ class Neo4jExtractor(Extractor):
                 else:
                     yield result
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         Return {result} object as it is or convert to object of
         {model_class}, if specified.
@@ -116,6 +110,5 @@ class Neo4jExtractor(Extractor):
         except StopIteration:
             return None
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.neo4j'

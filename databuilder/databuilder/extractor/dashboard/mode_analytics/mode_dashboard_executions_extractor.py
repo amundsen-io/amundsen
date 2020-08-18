@@ -4,14 +4,14 @@
 import logging
 
 from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
-from typing import Any  # noqa: F401
+from typing import Any, List  # noqa: F401
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.rest_api_query import RestApiQuery
-from databuilder.transformer.base_transformer import ChainedTransformer
+from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
 from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
 from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
 
@@ -24,8 +24,7 @@ class ModeDashboardExecutionsExtractor(Extractor):
 
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self._conf = conf
 
         restapi_query = self._build_restapi_query()
@@ -36,7 +35,7 @@ class ModeDashboardExecutionsExtractor(Extractor):
 
         # Payload from RestApiQuery has timestamp which is ISO8601. Here we are using TimestampStringToEpoch to
         # transform into epoch and then using DictToModel to convert Dictionary to Model
-        transformers = []
+        transformers: List[Transformer] = []
         timestamp_str_to_epoch_transformer = TimestampStringToEpoch()
         timestamp_str_to_epoch_transformer.init(
             conf=Scoped.get_scoped_conf(self._conf, timestamp_str_to_epoch_transformer.get_scope()).with_fallback(
@@ -53,25 +52,22 @@ class ModeDashboardExecutionsExtractor(Extractor):
 
         self._transformer = ChainedTransformer(transformers=transformers)
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         record = self._extractor.extract()
         if not record:
             return None
 
         return self._transformer.transform(record=record)
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.mode_dashboard_execution'
 
-    def _build_restapi_query(self):
+    def _build_restapi_query(self) -> RestApiQuery:
         """
         Build REST API Query. To get Mode Dashboard last execution, it needs to call three APIs (spaces API, reports
         API, and run API) joining together.
         :return: A RestApiQuery that provides Mode Dashboard execution (run)
         """
-        # type: () -> RestApiQuery
 
         spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
         params = ModeDashboardUtils.get_auth_params(conf=self._conf)

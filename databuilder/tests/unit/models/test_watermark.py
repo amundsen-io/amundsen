@@ -20,8 +20,7 @@ PART_TYPE = 'LOW_WATERMARK'
 
 class TestWatermark(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         super(TestWatermark, self).setUp()
         self.watermark = Watermark(create_time='2017-09-18T00:00:00',
                                    database=DATABASE,
@@ -65,8 +64,7 @@ class TestWatermark(unittest.TestCase):
             RELATION_REVERSE_TYPE: 'WATERMARK'
         }
 
-    def test_get_watermark_model_key(self):
-        # type: () -> None
+    def test_get_watermark_model_key(self) -> None:
         watermark = self.watermark.get_watermark_model_key()
         self.assertEquals(
             watermark, '{database}://{cluster}.{schema}/{table}/{part_type}/'
@@ -76,8 +74,7 @@ class TestWatermark(unittest.TestCase):
                     table=TABLE.lower(),
                     part_type=PART_TYPE.lower()))
 
-    def test_get_metadata_model_key(self):
-        # type: () -> None
+    def test_get_metadata_model_key(self) -> None:
         metadata = self.watermark.get_metadata_model_key()
         self.assertEquals(metadata, '{database}://{cluster}.{schema}/{table}'
                           .format(database=DATABASE.lower(),
@@ -85,24 +82,20 @@ class TestWatermark(unittest.TestCase):
                                   schema=SCHEMA.lower(),
                                   table=TABLE.lower()))
 
-    def test_create_nodes(self):
-        # type: () -> None
+    def test_create_nodes(self) -> None:
         nodes = self.watermark.create_nodes()
         self.assertEquals(len(nodes), 1)
         self.assertEquals(nodes[0], self.expected_node_result)
 
-    def test_create_relation(self):
-        # type: () -> None
+    def test_create_relation(self) -> None:
         relation = self.watermark.create_relation()
         self.assertEquals(len(relation), 1)
         self.assertEquals(relation[0], self.expected_relation_result)
 
-    def test_create_next_node(self):
-        # type: () -> None
+    def test_create_next_node(self) -> None:
         next_node = self.watermark.create_next_node()
         self.assertEquals(next_node, self.expected_node_result)
 
-    def test_create_next_relation(self):
-        # type: () -> None
+    def test_create_next_relation(self) -> None:
         next_relation = self.watermark.create_next_relation()
         self.assertEquals(next_relation, self.expected_relation_result)

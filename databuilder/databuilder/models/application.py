@@ -28,16 +28,15 @@ class Application(Neo4jCsvSerializable):
     TABLE_APPLICATION_RELATION_TYPE = 'DERIVED_FROM'
 
     def __init__(self,
-                 task_id,  # type: str
-                 dag_id,  # type: str,
-                 application_url_template,  # type: str
-                 db_name='hive',  # type: str
-                 cluster='gold',  # type: str
-                 schema='',  # type: str
-                 table_name='',  # type: str
-                 exec_date='',  # type: str
-                 ):
-        # type: (...) -> None
+                 task_id: str,
+                 dag_id: str,
+                 application_url_template: str,
+                 db_name: str = 'hive',
+                 cluster: str = 'gold',
+                 schema: str = '',
+                 table_name: str = '',
+                 exec_date: str = '',
+                 ) -> None:
         self.task = task_id
 
         # todo: need to modify this hack
@@ -49,38 +48,33 @@ class Application(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         # creates new node
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def get_table_model_key(self):
-        # type: (...) -> str
+    def get_table_model_key(self) -> str:
         # returns formatted string for table name
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
                                                      schema=self.schema,
                                                      tbl=self.table,
                                                      cluster=self.cluster)
 
-    def get_application_model_key(self):
-        # type: (...) -> str
+    def get_application_model_key(self) -> str:
         # returns formatting string for application of type dag
         return Application.APPLICATION_KEY_FORMAT.format(cluster=self.cluster,
                                                          dag=self.dag,
                                                          task=self.task)
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -102,8 +96,7 @@ class Application(Neo4jCsvSerializable):
 
         return results
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         """
         Create a list of relations between application and table nodes
         :return:

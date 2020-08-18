@@ -4,6 +4,7 @@
 import unittest
 
 from pyhocon import ConfigFactory
+from typing import Any
 
 from databuilder.transformer.regex_str_replace_transformer import RegexStrReplaceTransformer, \
     REGEX_REPLACE_TUPLE_LIST, ATTRIBUTE_NAME
@@ -11,8 +12,7 @@ from databuilder.transformer.regex_str_replace_transformer import RegexStrReplac
 
 class TestRegexReplacement(unittest.TestCase):
 
-    def test(self):
-        # type: () -> None
+    def test(self) -> None:
         transformer = self._default_test_transformer()
 
         foo = Foo('abc')
@@ -20,8 +20,7 @@ class TestRegexReplacement(unittest.TestCase):
 
         self.assertEqual('bba', actual.val)
 
-    def test_numeric_val(self):
-        # type: () -> None
+    def test_numeric_val(self) -> None:
         transformer = self._default_test_transformer()
 
         foo = Foo(6)
@@ -29,8 +28,7 @@ class TestRegexReplacement(unittest.TestCase):
 
         self.assertEqual(6, actual.val)
 
-    def test_none_val(self):
-        # type: () -> None
+    def test_none_val(self) -> None:
         transformer = self._default_test_transformer()
 
         foo = Foo(None)
@@ -38,8 +36,7 @@ class TestRegexReplacement(unittest.TestCase):
 
         self.assertEqual(None, actual.val)
 
-    def _default_test_transformer(self):
-        # type: () -> RegexStrReplaceTransformer
+    def _default_test_transformer(self) -> RegexStrReplaceTransformer:
         config = ConfigFactory.from_dict({
             REGEX_REPLACE_TUPLE_LIST: [('a', 'b'), ('c', 'a')],
             ATTRIBUTE_NAME: 'val'
@@ -50,8 +47,7 @@ class TestRegexReplacement(unittest.TestCase):
 
         return transformer
 
-    def test_dict_replace(self):
-        # type: () -> None
+    def test_dict_replace(self) -> None:
         config = ConfigFactory.from_dict({
             REGEX_REPLACE_TUPLE_LIST: [('\\', '\\\\')],
             ATTRIBUTE_NAME: 'val'
@@ -68,8 +64,7 @@ class TestRegexReplacement(unittest.TestCase):
 
 
 class Foo(object):
-    def __init__(self, val):
-        # type: (str) -> None
+    def __init__(self, val: Any) -> None:
         self.val = val
 
 

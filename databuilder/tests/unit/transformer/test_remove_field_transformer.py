@@ -10,8 +10,7 @@ from databuilder.transformer.remove_field_transformer import RemoveFieldTransfor
 
 class TestRemoveFieldTransformer(unittest.TestCase):
 
-    def test_conversion(self):
-        # type: () -> None
+    def test_conversion(self) -> None:
 
         transformer = RemoveFieldTransformer()
         config = ConfigFactory.from_dict({
@@ -29,8 +28,7 @@ class TestRemoveFieldTransformer(unittest.TestCase):
         }
         self.assertDictEqual(expected, actual)
 
-    def test_conversion_missing_field(self):
-        # type: () -> None
+    def test_conversion_missing_field(self) -> None:
 
         transformer = RemoveFieldTransformer()
         config = ConfigFactory.from_dict({

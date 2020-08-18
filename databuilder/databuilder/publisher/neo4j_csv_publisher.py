@@ -127,12 +127,10 @@ class Neo4jCsvPublisher(Publisher):
     #TODO User UNWIND batch operation for better performance
     """
 
-    def __init__(self):
-        # type: () -> None
+    def __init__(self) -> None:
         super(Neo4jCsvPublisher, self).__init__()
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(DEFAULT_CONFIG)
 
         self._count = 0  # type: int
@@ -168,8 +166,7 @@ class Neo4jCsvPublisher(Publisher):
         LOGGER.info('Publishing Node csv files {}, and Relation CSV files {}'
                     .format(self._node_files, self._relation_files))
 
-    def _list_files(self, conf, path_key):
-        # type: (ConfigTree, str) -> List[str]
+    def _list_files(self, conf: ConfigTree, path_key: str) -> List[str]:
         """
         List files from directory
         :param conf:
@@ -182,8 +179,7 @@ class Neo4jCsvPublisher(Publisher):
         path = conf.get_string(path_key)
         return [join(path, f) for f in listdir(path) if isfile(join(path, f))]
 
-    def publish_impl(self):  # noqa: C901
-        # type: () -> None
+    def publish_impl(self) -> None:  # noqa: C901
         """
         Publishes Nodes first and then Relations
         :return:
@@ -224,17 +220,15 @@ class Neo4jCsvPublisher(Publisher):
                 tx.rollback()
             raise e
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'publisher.neo4j'
 
-    def _create_indices(self, node_file):
+    def _create_indices(self, node_file: str) -> None:
         """
         Go over the node file and try creating unique index
         :param node_file:
         :return:
         """
-        # type: (str) -> None
         LOGGER.info('Creating indices. (Existing indices will be ignored)')
 
         with open(node_file, 'r', encoding='utf8') as node_csv:
@@ -246,8 +240,7 @@ class Neo4jCsvPublisher(Publisher):
 
         LOGGER.info('Indices have been created.')
 
-    def _publish_node(self, node_file, tx):
-        # type: (str, Transaction) -> Transaction
+    def _publish_node(self, node_file: str, tx: Transaction) -> Transaction:
         """
         Iterate over the csv records of a file, each csv record transform to Merge statement and will be executed.
         All nodes should have a unique key, and this method will try to create unique index on the LABEL when it sees
@@ -271,8 +264,7 @@ class Neo4jCsvPublisher(Publisher):
                 tx = self._execute_statement(stmt, tx)
         return tx
 
-    def is_create_only_node(self, node_record):
-        # type: (dict) -> bool
+    def is_create_only_node(self, node_record: dict) -> bool:
         """
         Check if node can be updated
         :param node_record:
@@ -283,8 +275,7 @@ class Neo4jCsvPublisher(Publisher):
         else:
             return False
 
-    def create_node_merge_statement(self, node_record):
-        # type: (dict) -> str
+    def create_node_merge_statement(self, node_record: dict) -> str:
         """
         Creates node merge statement
         :param node_record:
@@ -301,8 +292,7 @@ class Neo4jCsvPublisher(Publisher):
 
         return NODE_MERGE_TEMPLATE.substitute(params)
 
-    def _publish_relation(self, relation_file, tx):
-        # type: (str, Transaction) -> Transaction
+    def _publish_relation(self, relation_file: str, tx: Transaction) -> Transaction:
         """
         Creates relation between two nodes.
         (In Amundsen, all relation is bi-directional)
@@ -345,8 +335,7 @@ class Neo4jCsvPublisher(Publisher):
 
         return tx
 
-    def create_relationship_merge_statement(self, rel_record):
-        # type: (dict) -> str
+    def create_relationship_merge_statement(self, rel_record: dict) -> str:
         """
         Creates relationship merge statement
         :param rel_record:
@@ -370,10 +359,9 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         return RELATION_MERGE_TEMPLATE.substitute(param)
 
     def _create_props_body(self,
-                           record_dict,
-                           excludes,
-                           identifier):
-        # type: (dict, Set, str) -> str
+                           record_dict: dict,
+                           excludes: Set,
+                           identifier: str) -> str:
         """
         Creates properties body with params required for resolving template.
 
@@ -418,11 +406,10 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         return ', '.join(props)
 
     def _execute_statement(self,
-                           stmt,
-                           tx,
-                           params=None,
-                           expect_result=False):
-        # type: (str, Transaction, bool) -> Transaction
+                           stmt: str,
+                           tx: Transaction,
+                           params: bool=None,
+                           expect_result: bool=False) -> Transaction:
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
         If 'expect_result' flag is True, it confirms if result object is not null.
@@ -456,9 +443,7 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
                 tx.rollback()
             raise e
 
-    def _try_create_index(self,
-                          label):
-        # type: (str) -> None
+    def _try_create_index(self, label: str) -> None:
         """
         For any label seen first time for this publisher it will try to create unique index.
         Neo4j ignores a second creation in 3.x, but raises an error in 4.x.

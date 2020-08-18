@@ -10,13 +10,12 @@ from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor, D
 
 class TestNeo4jPreprocessor(unittest.TestCase):
 
-    def testNoopRelationPreprocessor(self):
-        # type () -> None
+    def testNoopRelationPreprocessor(self) -> None:
         preprocessor = NoopRelationPreprocessor()
 
         self.assertTrue(not preprocessor.is_perform_preprocess())
 
-    def testDeleteRelationPreprocessor(self):  # noqa: W293
+    def testDeleteRelationPreprocessor(self) -> None:  # noqa: W293
         preprocessor = DeleteRelationPreprocessor()
 
         self.assertTrue(preprocessor.is_perform_preprocess())
@@ -52,7 +51,7 @@ class TestNeo4jPreprocessor(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def testDeleteRelationPreprocessorFilter(self):
+    def testDeleteRelationPreprocessorFilter(self) -> None:
         preprocessor = DeleteRelationPreprocessor(label_tuples=[('foo', 'bar')])
 
         self.assertTrue(preprocessor.filter(start_label='foo',

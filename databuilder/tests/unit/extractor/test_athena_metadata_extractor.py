@@ -14,8 +14,7 @@ from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 
 
 class TestAthenaMetadataExtractor(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
@@ -27,8 +26,7 @@ class TestAthenaMetadataExtractor(unittest.TestCase):
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
-    def test_extraction_with_empty_query_result(self):
-        # type: () -> None
+    def test_extraction_with_empty_query_result(self) -> None:
         """
         Test Extraction with empty result from query
         """
@@ -39,8 +37,7 @@ class TestAthenaMetadataExtractor(unittest.TestCase):
             results = extractor.extract()
             self.assertEqual(results, None)
 
-    def test_extraction_with_single_result(self):
-        # type: () -> None
+    def test_extraction_with_single_result(self) -> None:
         with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection:
             connection = MagicMock()
             mock_connection.return_value = connection
@@ -106,8 +103,7 @@ class TestAthenaMetadataExtractor(unittest.TestCase):
             self.assertEqual(expected.__repr__(), actual.__repr__())
             self.assertIsNone(extractor.extract())
 
-    def test_extraction_with_multiple_result(self):
-        # type: () -> None
+    def test_extraction_with_multiple_result(self) -> None:
         with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection:
             connection = MagicMock()
             mock_connection.return_value = connection
@@ -229,15 +225,15 @@ class TestAthenaMetadataExtractor(unittest.TestCase):
             self.assertIsNone(extractor.extract())
             self.assertIsNone(extractor.extract())
 
-    def _union(self, target, extra):
-        # type: (Dict[Any, Any], Dict[Any, Any]) -> Dict[Any, Any]
+    def _union(self,
+               target: Dict[Any, Any],
+               extra: Dict[Any, Any]) -> Dict[Any, Any]:
         target.update(extra)
         return target
 
 
 class TestAthenaMetadataExtractorWithWhereClause(unittest.TestCase):
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
         self.where_clause_suffix = """
         where table_schema in ('public') and table_name = 'movies'
@@ -249,8 +245,7 @@ class TestAthenaMetadataExtractorWithWhereClause(unittest.TestCase):
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
-    def test_sql_statement(self):
-        # type: () -> None
+    def test_sql_statement(self) -> None:
         """
         Test Extraction with empty result from query
         """

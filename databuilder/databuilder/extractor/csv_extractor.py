@@ -20,8 +20,7 @@ class CsvExtractor(Extractor):
     An Extractor that extracts records via CSV.
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
         :param conf:
         """
@@ -35,8 +34,7 @@ class CsvExtractor(Extractor):
             self.model_class = getattr(mod, class_name)
         self._load_csv()
 
-    def _load_csv(self):
-        # type: () -> None
+    def _load_csv(self) -> None:
         """
         Create an iterator to execute sql.
         """
@@ -51,8 +49,7 @@ class CsvExtractor(Extractor):
             results = self.results
         self.iter = iter(results)
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         Yield the csv result one at a time.
         convert the result to model if a model_class is provided
@@ -64,8 +61,7 @@ class CsvExtractor(Extractor):
         except Exception as e:
             raise e
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.csv'
 
 
@@ -78,8 +74,7 @@ class CsvTableColumnExtractor(Extractor):
     An Extractor that combines Table and Column CSVs.
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
         :param conf:
         """
@@ -88,14 +83,18 @@ class CsvTableColumnExtractor(Extractor):
         self.column_file_location = conf.get_string(CsvTableColumnExtractor.COLUMN_FILE_LOCATION)
         self._load_csv()
 
-    def _get_key(self, db, cluster, schema, tbl):
+    def _get_key(self,
+                 db: str,
+                 cluster: str,
+                 schema: str,
+                 tbl: str
+                 ) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=db,
                                                      cluster=cluster,
                                                      schema=schema,
                                                      tbl=tbl)
 
-    def _load_csv(self):
-        # type: () -> None
+    def _load_csv(self) -> None:
         """
         Create an iterator to execute sql.
         """
@@ -108,8 +107,8 @@ class CsvTableColumnExtractor(Extractor):
             db = column_dict['database']
             cluster = column_dict['cluster']
             schema = column_dict['schema']
-            table = column_dict['table_name']
-            id = self._get_key(db, cluster, schema, table)
+            table_name = column_dict['table_name']
+            id = self._get_key(db, cluster, schema, table_name)
             column = ColumnMetadata(
                 name=column_dict['name'],
                 description=column_dict['description'],
@@ -127,8 +126,8 @@ class CsvTableColumnExtractor(Extractor):
             db = table_dict['database']
             cluster = table_dict['cluster']
             schema = table_dict['schema']
-            table = table_dict['name']
-            id = self._get_key(db, cluster, schema, table)
+            table_name = table_dict['name']
+            id = self._get_key(db, cluster, schema, table_name)
             columns = parsed_columns[id]
             if columns is None:
                 columns = []
@@ -138,14 +137,15 @@ class CsvTableColumnExtractor(Extractor):
                                   name=table_dict['name'],
                                   description=table_dict['description'],
                                   columns=columns,
-                                  is_view=table_dict['is_view'],
+                                  # TODO: this possibly should parse stringified booleans;
+                                  # right now it only will be false for empty strings
+                                  is_view=bool(table_dict['is_view']),
                                   tags=table_dict['tags']
                                   )
             results.append(table)
         self._iter = iter(results)
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         Yield the csv result one at a time.
         convert the result to model if a model_class is provided
@@ -157,6 +157,5 @@ class CsvTableColumnExtractor(Extractor):
         except Exception as e:
             raise e
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.csvtablecolumn'

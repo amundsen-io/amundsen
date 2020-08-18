@@ -12,8 +12,7 @@ class ElasticsearchDocument:
     """
     __metaclass__ = ABCMeta
 
-    def to_json(self):
-        # type: () -> str
+    def to_json(self) -> str:
         """
         Convert object to json
         :return:

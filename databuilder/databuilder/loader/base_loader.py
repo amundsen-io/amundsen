@@ -14,15 +14,12 @@ class Loader(Scoped):
     A loader loads to the destination or to the staging area
     """
     @abc.abstractmethod
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
     @abc.abstractmethod
-    def load(self, record):
-        # type: (Any) -> None
+    def load(self, record: Any) -> None:
         pass
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'loader'

@@ -19,19 +19,16 @@ from databuilder.transformer.base_transformer import Transformer
 
 class TestJob(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
         self.dest_file_name = '{}/superhero.json'.format(self.temp_dir_path)
         self.conf = ConfigFactory.from_dict(
             {'loader.superhero.dest_file': self.dest_file_name})
 
-    def tearDown(self):
-        # type: () -> None
+    def tearDown(self) -> None:
         shutil.rmtree(self.temp_dir_path)
 
-    def test_job(self):
-        # type: () -> None
+    def test_job(self) -> None:
 
         with patch("databuilder.job.job.StatsClient") as mock_statsd:
             task = DefaultTask(SuperHeroExtractor(),
@@ -54,19 +51,16 @@ class TestJob(unittest.TestCase):
 
 class TestJobNoTransform(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
         self.dest_file_name = '{}/superhero.json'.format(self.temp_dir_path)
         self.conf = ConfigFactory.from_dict(
             {'loader.superhero.dest_file': self.dest_file_name})
 
-    def tearDown(self):
-        # type: () -> None
+    def tearDown(self) -> None:
         shutil.rmtree(self.temp_dir_path)
 
-    def test_job(self):
-        # type: () -> None
+    def test_job(self) -> None:
         task = DefaultTask(SuperHeroExtractor(), SuperHeroLoader())
 
         job = DefaultJob(self.conf, task)
@@ -83,8 +77,7 @@ class TestJobNoTransform(unittest.TestCase):
 
 class TestJobStatsd(unittest.TestCase):
 
-    def setUp(self):
-        # type: () -> None
+    def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
         self.dest_file_name = '{}/superhero.json'.format(self.temp_dir_path)
         self.conf = ConfigFactory.from_dict(
@@ -92,12 +85,10 @@ class TestJobStatsd(unittest.TestCase):
              'job.is_statsd_enabled': True,
              'job.identifier': 'foobar'})
 
-    def tearDown(self):
-        # type: () -> None
+    def tearDown(self) -> None:
         shutil.rmtree(self.temp_dir_path)
 
-    def test_job(self):
-        # type: () -> None
+    def test_job(self) -> None:
         with patch("databuilder.job.job.StatsClient") as mock_statsd:
             task = DefaultTask(SuperHeroExtractor(), SuperHeroLoader())
 
@@ -116,77 +107,64 @@ class TestJobStatsd(unittest.TestCase):
 
 
 class SuperHeroExtractor(Extractor):
-    def __init__(self):
-        # type: () -> None
+    def __init__(self) -> None:
         pass
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self.records = [SuperHero(hero='Super man', name='Clark Kent'),
                         SuperHero(hero='Bat man', name='Bruce Wayne')]
         self.iter = iter(self.records)
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         try:
             return next(self.iter)
         except StopIteration:
             return None
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.superhero'
 
 
 class SuperHero:
     def __init__(self,
-                 hero,
-                 name):
-        # type: (str, str) -> None
+                 hero: str,
+                 name: str) -> None:
         self.hero = hero
         self.name = name
 
-    def __repr__(self):
-        # type: () -> str
+    def __repr__(self) -> str:
         return "SuperHero(hero={0}, name={1})".format(self.hero, self.name)
 
 
 class SuperHeroReverseNameTransformer(Transformer):
-    def __init__(self):
-        # type: () -> None
+    def __init__(self) -> None:
         pass
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
-    def transform(self, record):
-        # type: (Any) -> Any
+    def transform(self, record: Any) -> Any:
         record.name = record.name[::-1]
         return record
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'transformer.superhero'
 
 
 class SuperHeroLoader(Loader):
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         self.conf = conf
         dest_file_path = self.conf.get_string('dest_file')
         print('Loading to {}'.format(dest_file_path))
         self.dest_file_obj = open(self.conf.get_string('dest_file'), 'w')
 
-    def load(self, record):
-        # type: (Any) -> None
+    def load(self, record: Any) -> None:
         str = json.dumps(record.__dict__, sort_keys=True)
         print('Writing record: {}'.format(str))
         self.dest_file_obj.write('{}\n'.format(str))
         self.dest_file_obj.flush()
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'loader.superhero'
 
 

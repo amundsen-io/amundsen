@@ -4,6 +4,7 @@
 import abc
 
 from pyhocon import ConfigTree  # noqa: F401
+from typing import List
 
 from databuilder import Scoped
 from databuilder.callback import call_back
@@ -24,15 +25,14 @@ class Publisher(Scoped):
 
     """
 
-    def __init__(self):
-        self.call_backs = []  # type: List[Callback]
+    def __init__(self) -> None:
+        self.call_backs: List[Callback] = []
 
     @abc.abstractmethod
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
-    def publish(self):
+    def publish(self) -> None:
         try:
             self.publish_impl()
         except Exception as e:
@@ -41,8 +41,7 @@ class Publisher(Scoped):
         call_back.notify_callbacks(self.call_backs, is_success=True)
 
     @abc.abstractmethod
-    def publish_impl(self):
-        # type: () -> None
+    def publish_impl(self) -> None:
         """
         An implementation of publish method. Subclass of publisher is expected to write publish logic by overriding
         this method
@@ -50,8 +49,7 @@ class Publisher(Scoped):
         """
         pass
 
-    def register_call_back(self, callback):
-        # type: (Callback) -> None
+    def register_call_back(self, callback: Callback) -> None:
         """
         Register any callback method that needs to be notified when publisher is either able to successfully publish
         or failed to publish
@@ -60,24 +58,19 @@ class Publisher(Scoped):
         """
         self.call_backs.append(callback)
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'publisher'
 
 
 class NoopPublisher(Publisher):
-    def __init__(self):
-        # type: () -> None
+    def __init__(self) -> None:
         super(NoopPublisher, self).__init__()
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         pass
 
-    def publish_impl(self):
-        # type: () -> None
+    def publish_impl(self) -> None:
         pass
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'publisher.noop'

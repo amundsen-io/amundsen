@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from typing import Union, Dict, Any  # noqa: F401
+from typing import Any, List, Dict, Optional  # noqa: F401
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
@@ -11,7 +11,6 @@ from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 
 
 class User(Neo4jCsvSerializable):
-    # type: (...) -> None
     """
     User model. This model doesn't define any relationship.
     """
@@ -34,22 +33,21 @@ class User(Neo4jCsvSerializable):
     MANAGER_USER_RELATION_TYPE = 'MANAGE'
 
     def __init__(self,
-                 email,  # type: str
-                 first_name='',  # type: str
-                 last_name='',  # type: str
-                 name='',  # type: str
-                 github_username='',  # type: str
-                 team_name='',  # type: str
-                 employee_type='',  # type: str
-                 manager_email='',  # type: str
-                 slack_id='',  # type: str
-                 is_active=True,  # type: bool
-                 updated_at=0,  # type: int
-                 role_name='',  # type: str
-                 do_not_update_empty_attribute=False,  # type: bool
-                 **kwargs  # type: Dict
-                 ):
-        # type: (...) -> None
+                 email: str,
+                 first_name: str='',
+                 last_name: str='',
+                 name: str='',
+                 github_username: str='',
+                 team_name: str='',
+                 employee_type: str='',
+                 manager_email: str='',
+                 slack_id: str='',
+                 is_active: bool=True,
+                 updated_at: int=0,
+                 role_name: str='',
+                 do_not_update_empty_attribute: bool=False,
+                 **kwargs: Any
+                 ) -> None:
         """
         This class models user node for Amundsen people.
 
@@ -93,16 +91,14 @@ class User(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._rel_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Optional[Dict[str, Any]]:
         # return the string representation of the data
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Optional[Dict[str, Any]]:
         """
         :return:
         """
@@ -113,14 +109,13 @@ class User(Neo4jCsvSerializable):
 
     @classmethod
     def get_user_model_key(cls,
-                           email=None):
-        # type: (...) -> str
+                           email: str=None
+                           ) -> str:
         if not email:
             return ''
         return User.USER_NODE_KEY_FORMAT.format(email=email)
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -172,8 +167,7 @@ class User(Neo4jCsvSerializable):
             }]
         return []
 
-    def __repr__(self):
-        # type: () -> str
+    def __repr__(self) -> str:
         return 'User({!r}, {!r}, {!r}, {!r}, {!r}, ' \
                '{!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.first_name,
                                                                   self.last_name,

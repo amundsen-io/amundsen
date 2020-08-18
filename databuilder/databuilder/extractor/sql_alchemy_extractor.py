@@ -18,8 +18,7 @@ class SQLAlchemyExtractor(Extractor):
     An Extractor that extracts records via SQLAlchemy. Database that supports SQLAlchemy can use this extractor
     """
 
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
         Establish connections and import data model class if provided
         :param conf:
@@ -37,8 +36,7 @@ class SQLAlchemyExtractor(Extractor):
             self.model_class = getattr(mod, class_name)
         self._execute_query()
 
-    def _get_connection(self):
-        # type: () -> Any
+    def _get_connection(self) -> Any:
         """
         Create a SQLAlchemy connection to Database
         """
@@ -46,8 +44,7 @@ class SQLAlchemyExtractor(Extractor):
         conn = engine.connect()
         return conn
 
-    def _execute_query(self):
-        # type: () -> None
+    def _execute_query(self) -> None:
         """
         Create an iterator to execute sql.
         """
@@ -61,8 +58,7 @@ class SQLAlchemyExtractor(Extractor):
             results = self.results
         self.iter = iter(results)
 
-    def extract(self):
-        # type: () -> Any
+    def extract(self) -> Any:
         """
         Yield the sql result one at a time.
         convert the result to model if a model_class is provided
@@ -74,6 +70,5 @@ class SQLAlchemyExtractor(Extractor):
         except Exception as e:
             raise e
 
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         return 'extractor.sqlalchemy'

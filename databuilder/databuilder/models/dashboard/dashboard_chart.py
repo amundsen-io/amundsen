@@ -24,17 +24,17 @@ class DashboardChart(Neo4jCsvSerializable):
     CHART_REVERSE_RELATION_TYPE = 'CHART_OF'
 
     def __init__(self,
-                 dashboard_group_id,  # type: Optional[str]
-                 dashboard_id,  # type: Optional[str]
-                 query_id,  # type: str
-                 chart_id,  # type: str
-                 chart_name=None,  # type: Optional[str]
-                 chart_type=None,  # type: Optional[str]
-                 chart_url=None,  # type: Optional[str]
-                 product='',  # type: Optional[str]
-                 cluster='gold',  # type: str
-                 **kwargs
-                 ):
+                 dashboard_group_id: Optional[str],
+                 dashboard_id: Optional[str],
+                 query_id: str,
+                 chart_id: str,
+                 chart_name: Optional[str] = None,
+                 chart_type: Optional[str] = None,
+                 chart_url: Optional[str] = None,
+                 product: Optional[str] = '',
+                 cluster: str = 'gold',
+                 **kwargs: Any
+                 ) -> None:
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
         self._query_id = query_id
@@ -47,15 +47,13 @@ class DashboardChart(Neo4jCsvSerializable):
         self._node_iterator = self._create_node_iterator()
         self._relation_iterator = self._create_relation_iterator()
 
-    def create_next_node(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._node_iterator)
         except StopIteration:
             return None
 
-    def _create_node_iterator(self):  # noqa: C901
-        # type: () -> Iterator[[Dict[str, Any]]]
+    def _create_node_iterator(self) -> Iterator[Dict[str, Any]]:  # noqa: C901
         node = {
             NODE_LABEL: DashboardChart.DASHBOARD_CHART_LABEL,
             NODE_KEY: self._get_chart_node_key(),
@@ -73,15 +71,13 @@ class DashboardChart(Neo4jCsvSerializable):
 
         yield node
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_relation_iterator(self):
-        # type: () -> Iterator[[Dict[str, Any]]]
+    def _create_relation_iterator(self) -> Iterator[Dict[str, Any]]:
         yield {
             RELATION_START_LABEL: DashboardQuery.DASHBOARD_QUERY_LABEL,
             RELATION_END_LABEL: DashboardChart.DASHBOARD_CHART_LABEL,
@@ -97,7 +93,7 @@ class DashboardChart(Neo4jCsvSerializable):
             RELATION_REVERSE_TYPE: DashboardChart.CHART_REVERSE_RELATION_TYPE
         }
 
-    def _get_chart_node_key(self):
+    def _get_chart_node_key(self) -> str:
         return DashboardChart.DASHBOARD_CHART_KEY_FORMAT.format(
             product=self._product,
             cluster=self._cluster,
@@ -107,7 +103,7 @@ class DashboardChart(Neo4jCsvSerializable):
             chart_id=self._chart_id
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'DashboardChart({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
             self._dashboard_group_id,
             self._dashboard_id,

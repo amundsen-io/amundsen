@@ -29,8 +29,7 @@ class Scoped(object, metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def init(self, conf):
-        # type: (ConfigTree) -> None
+    def init(self, conf: ConfigTree) -> None:
         """
         All scoped instance is expected to be lazily initialized. Means that
         __init__ should not have any heavy operation such as service call.
@@ -46,8 +45,7 @@ class Scoped(object, metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_scope(self):
-        # type: () -> str
+    def get_scope(self) -> str:
         """
         A scope for the config. Typesafe config supports nested config.
         Scope, string, is used to basically peel off nested config
@@ -55,8 +53,7 @@ class Scoped(object, metaclass=abc.ABCMeta):
         """
         return ''
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         """
         Anything that needs to be cleaned up after the use of the instance.
         :return: None
@@ -64,8 +61,7 @@ class Scoped(object, metaclass=abc.ABCMeta):
         pass
 
     @classmethod
-    def get_scoped_conf(cls, conf, scope):
-        # type: (ConfigTree, str) -> ConfigTree
+    def get_scoped_conf(cls, conf: ConfigTree, scope: str) -> ConfigTree:
         """
         Convenient method to provide scoped method.
 
