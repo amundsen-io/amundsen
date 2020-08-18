@@ -19,6 +19,7 @@ be too low-level for contributors.
 - [Versioning](#versioning)
 - [Releasing](#releasing)
 - [Labels](#labels)
+- [Adding new projects](#adding-new-projects)
 - [Related Documents](#related-documents)
 
 ## Communication
@@ -141,6 +142,10 @@ how you release a version:
 ## Labels
 
 We've found labels to be useful for cataloging and marking progress on features and bugs. You can read about our labels on the [issue_labeling](https://lyft.github.io/amundsen/issue_labeling/) document.
+
+## Adding new projects
+
+To add new projects to the amundsen-io organization, we will first discuss it through a GitHub issue. Once we discuss it thoroughly (~3-5 business days, depending on the volume of conversation), the maintainers will decide whether the new project should be added.
 
 ## Related Documents
 
