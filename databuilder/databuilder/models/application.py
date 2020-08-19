@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, List, Union  # noqa: F401
+from typing import Any, Dict, List, Union
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \

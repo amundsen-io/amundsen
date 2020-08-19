@@ -3,15 +3,15 @@
 
 import logging
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder import Scoped
-from databuilder.extractor.base_extractor import Extractor  # noqa: F401
-from databuilder.loader.base_loader import Loader  # noqa: F401
-from databuilder.task.base_task import Task  # noqa: F401
-from databuilder.transformer.base_transformer import Transformer  # noqa: F401
+from databuilder.extractor.base_extractor import Extractor
+from databuilder.loader.base_loader import Loader
+from databuilder.task.base_task import Task
+from databuilder.transformer.base_transformer import Transformer
 from databuilder.transformer.base_transformer \
-    import NoopTransformer  # noqa: F401
+    import NoopTransformer
 from databuilder.utils.closer import Closer
 
 

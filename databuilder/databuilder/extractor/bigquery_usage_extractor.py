@@ -7,8 +7,8 @@ import logging
 import re
 from time import sleep
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Iterator, Dict, Optional, Tuple  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any, Iterator, Dict, Optional, Tuple
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor
 

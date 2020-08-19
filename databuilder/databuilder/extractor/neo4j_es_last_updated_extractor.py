@@ -3,9 +3,9 @@
 
 import importlib
 import time
-from typing import Iterable, Any  # noqa: F401
+from typing import Any
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder.extractor.generic_extractor import GenericExtractor
 

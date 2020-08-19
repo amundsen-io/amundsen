@@ -5,16 +5,16 @@ import csv
 import logging
 import os
 import shutil
-from csv import DictWriter  # noqa: F401
+from csv import DictWriter
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
-from typing import Dict, Any  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
+from typing import Dict, Any
 
 from databuilder.job.base_job import Job
 from databuilder.loader.base_loader import Loader
 from databuilder.models.neo4j_csv_serde import NODE_LABEL, \
     RELATION_START_LABEL, RELATION_END_LABEL, RELATION_TYPE
-from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable  # noqa: F401
+from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable
 from databuilder.utils.closer import Closer
 
 

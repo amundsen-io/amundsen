@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 from mock import patch
 from pyhocon import ConfigFactory
-from typing import Any, Dict  # noqa: F401
+from typing import Any
 
 from cassandra.metadata import ColumnMetadata as CassandraColumnMetadata
 from databuilder.extractor.cassandra_extractor import CassandraExtractor

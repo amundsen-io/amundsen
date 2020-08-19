@@ -1,13 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, List, Union  # noqa: F401
+from typing import Any, Dict, List, Union
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, NODE_LABEL
 
 
 class Neo4jESLastUpdated(Neo4jCsvSerializable):
-    # type: (...) -> None
     """
     Data model to keep track the last updated timestamp for
     neo4j and es.
@@ -18,9 +17,8 @@ class Neo4jESLastUpdated(Neo4jCsvSerializable):
     LATEST_TIMESTAMP = 'latest_timestmap'
 
     def __init__(self,
-                 timestamp,  # type: int
-                 ):
-        # type: (...) -> None
+                 timestamp: int,
+                 ) -> None:
         """
         :param timestamp: epoch for latest updated timestamp for neo4j an es
         """
@@ -28,8 +26,7 @@ class Neo4jESLastUpdated(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._rel_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Union[Dict[str, Any], None]:
         """
         Will create an orphan node for last updated timestamp.
         :return:
@@ -39,8 +36,7 @@ class Neo4jESLastUpdated(Neo4jCsvSerializable):
         except StopIteration:
             return None
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records.
         :return:
@@ -51,16 +47,11 @@ class Neo4jESLastUpdated(Neo4jCsvSerializable):
             Neo4jESLastUpdated.LATEST_TIMESTAMP: self.timestamp
         }]
 
-    def create_next_relation(self):
-        # type: () -> Union[Dict[str, Any], None]
-        """
-        :return:
-        """
+    def create_next_relation(self) -> Union[Dict[str, Any], None]:
         try:
             return next(self._rel_iter)
         except StopIteration:
             return None
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         return []

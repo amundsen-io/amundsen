@@ -3,10 +3,10 @@
 
 import abc
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder import Scoped
-from typing import Any  # noqa: F401
+from typing import Any
 
 
 class Loader(Scoped):

@@ -3,8 +3,8 @@
 
 import logging
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
-from typing import Any, List  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
+from typing import Any, List
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor

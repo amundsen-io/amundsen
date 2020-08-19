@@ -3,9 +3,9 @@
 
 import logging
 
-from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
+from pyhocon import ConfigFactory, ConfigTree
 from retrying import retry
-from typing import List  # noqa: F401
+from typing import List
 
 from databuilder import Scoped
 from databuilder.filesystem.metadata import FileMetadata

@@ -3,7 +3,7 @@
 
 import abc
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
 
 
 class Scoped(object, metaclass=abc.ABCMeta):

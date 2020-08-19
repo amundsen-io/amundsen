@@ -3,12 +3,12 @@
 
 import logging
 import importlib
-from typing import Any, Iterator, Dict, Optional  # noqa: F401
+from typing import Any, Iterator, Dict, Optional
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery  # noqa: F401
+from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 
 
 REST_API_QUERY = 'restapi_query'

@@ -9,7 +9,7 @@ from pytz import UTC
 
 from mock import patch, MagicMock
 from pyhocon import ConfigFactory
-from typing import Any, Iterable, Iterator, Dict, Optional, TypeVar  # noqa: F401
+from typing import Iterable, Iterator, Optional, TypeVar
 
 from databuilder.extractor.hive_table_last_updated_extractor import HiveTableLastUpdatedExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor

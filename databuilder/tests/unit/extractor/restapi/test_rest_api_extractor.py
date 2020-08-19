@@ -3,7 +3,7 @@
 
 import unittest
 
-from pyhocon import ConfigFactory  # noqa: F401
+from pyhocon import ConfigFactory
 
 from databuilder.extractor.restapi.rest_api_extractor import RestAPIExtractor, REST_API_QUERY, MODEL_CLASS, \
     STATIC_RECORD_DICT

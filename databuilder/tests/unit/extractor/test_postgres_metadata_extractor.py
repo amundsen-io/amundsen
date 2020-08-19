@@ -6,7 +6,7 @@ import unittest
 
 from mock import patch, MagicMock
 from pyhocon import ConfigFactory
-from typing import Any, Dict  # noqa: F401
+from typing import Any, Dict
 
 from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor

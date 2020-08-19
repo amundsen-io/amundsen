@@ -7,7 +7,7 @@ import logging
 import requests
 from jsonpath_rw import parse
 from retrying import retry
-from typing import List, Dict, Any, Union, Iterator, Callable  # noqa: F401
+from typing import List, Dict, Any, Union, Iterator, Callable
 
 from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 
@@ -147,10 +147,10 @@ class RestApiQuery(BaseRestApiQuery):
                         continue
                     raise e
 
-                response_json = response.json()  # type: Union[List[Any], Dict[str, Any]]
+                response_json: Union[List[Any], Dict[str, Any]] = response.json()
 
                 # value extraction via JSON Path
-                result_list = [match.value for match in self._jsonpath_expr.find(response_json)]  # type: List[Any]
+                result_list: List[Any] = [match.value for match in self._jsonpath_expr.find(response_json)]
 
                 if not result_list:
                     log_msg = 'No result from URL: {url}  , JSONPATH: {json_path} , response payload: {response}' \
@@ -188,10 +188,7 @@ class RestApiQuery(BaseRestApiQuery):
         return self._url.format(**record)
 
     @retry(stop_max_attempt_number=5, wait_exponential_multiplier=1000, wait_exponential_max=10000)
-    def _send_request(self,
-                      url  # type: str
-                      ):
-        # type: (...) -> requests.Response
+    def _send_request(self, url: str) -> requests.Response:
         """
         Performs HTTP GET operation with retry on failure.
         :param url:

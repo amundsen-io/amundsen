@@ -3,7 +3,7 @@
 
 import os
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder.loader.base_loader import Loader
 from databuilder.models.elasticsearch_document import ElasticsearchDocument

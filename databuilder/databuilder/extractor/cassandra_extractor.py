@@ -4,8 +4,8 @@
 from cassandra.cluster import Cluster
 import cassandra.metadata
 
-from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
-from typing import Iterator, Union, Dict, Any, List  # noqa: F401
+from pyhocon import ConfigFactory, ConfigTree
+from typing import Iterator, Union, Dict
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata

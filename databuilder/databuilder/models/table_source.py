@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, List, Union  # noqa: F401
+from typing import Any, Dict, List, Optional
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
@@ -11,7 +11,6 @@ from databuilder.models.table_metadata import TableMetadata
 
 
 class TableSource(Neo4jCsvSerializable):
-    # type: (...) -> None
     """
     Hive table source model.
     """
@@ -21,14 +20,13 @@ class TableSource(Neo4jCsvSerializable):
     TABLE_SOURCE_RELATION_TYPE = 'SOURCE'
 
     def __init__(self,
-                 db_name,  # type: str
-                 schema,  # type: str
-                 table_name,  # type: str
-                 cluster,  # type: str
-                 source,  # type: str
-                 source_type='github',  # type: str
-                 ):
-        # type: (...) -> None
+                 db_name: str,
+                 schema: str,
+                 table_name: str,
+                 cluster: str,
+                 source: str,
+                 source_type: str='github',
+                 ) -> None:
         self.db = db_name.lower()
         self.schema = schema.lower()
         self.table = table_name.lower()
@@ -40,37 +38,32 @@ class TableSource(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Optional[Dict[str, Any]]:
         # return the string representation of the data
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Optional[Dict[str, Any]]:
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def get_source_model_key(self):
-        # type: (...) -> str
+    def get_source_model_key(self) -> str:
         return TableSource.KEY_FORMAT.format(db=self.db,
                                              cluster=self.cluster,
                                              schema=self.schema,
                                              tbl=self.table)
 
-    def get_metadata_model_key(self):
-        # type: (...) -> str
+    def get_metadata_model_key(self) -> str:
         return '{db}://{cluster}.{schema}/{table}'.format(db=self.db,
                                                           cluster=self.cluster,
                                                           schema=self.schema,
                                                           table=self.table)
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -83,8 +76,7 @@ class TableSource(Neo4jCsvSerializable):
         }]
         return results
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         """
         Create a list of relation map between owner record with original hive table
         :return:

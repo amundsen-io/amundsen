@@ -3,7 +3,7 @@
 
 import logging
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
 
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_executions_extractor import \
     ModeDashboardExecutionsExtractor
@@ -11,7 +11,7 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import 
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
 from databuilder.models.dashboard.dashboard_execution import DashboardExecution
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
-from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
+from databuilder.rest_api.rest_api_query import RestApiQuery
 
 LOGGER = logging.getLogger(__name__)
 

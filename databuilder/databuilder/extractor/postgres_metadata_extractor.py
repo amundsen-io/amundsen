@@ -4,8 +4,8 @@
 import logging
 from collections import namedtuple
 
-from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
-from typing import Iterator, Union, Dict, Any  # noqa: F401
+from pyhocon import ConfigFactory, ConfigTree
+from typing import Iterator, Union, Dict, Any
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor

@@ -4,8 +4,8 @@
 import importlib
 import logging
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Dict  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any, Dict
 
 from databuilder.transformer.base_transformer import Transformer
 

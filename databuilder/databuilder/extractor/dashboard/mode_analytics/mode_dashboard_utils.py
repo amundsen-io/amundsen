@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
 from requests.auth import HTTPBasicAuth
 from typing import Any, Dict
 
@@ -9,9 +9,9 @@ from databuilder import Scoped
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_constants import ORGANIZATION, MODE_ACCESS_TOKEN, \
     MODE_PASSWORD_TOKEN
 from databuilder.extractor.restapi.rest_api_extractor import RestAPIExtractor, REST_API_QUERY, STATIC_RECORD_DICT
-from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery  # noqa: F401
+from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
-from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
+from databuilder.rest_api.rest_api_query import RestApiQuery
 
 
 class ModeDashboardUtils(object):

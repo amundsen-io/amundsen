@@ -3,12 +3,12 @@
 
 import abc
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 from typing import List
 
 from databuilder import Scoped
 from databuilder.callback import call_back
-from databuilder.callback.call_back import Callback  # noqa: F401
+from databuilder.callback.call_back import Callback
 
 
 class Publisher(Scoped):

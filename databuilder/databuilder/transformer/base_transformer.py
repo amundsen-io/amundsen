@@ -3,8 +3,8 @@
 
 import abc
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Iterable, Optional  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any, Iterable, Optional
 
 from databuilder import Scoped
 

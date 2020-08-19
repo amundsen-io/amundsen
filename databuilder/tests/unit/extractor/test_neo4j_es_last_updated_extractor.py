@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from mock import patch
-from typing import Any  # noqa: F401
+from typing import Any
 import unittest
 
-from pyhocon import ConfigFactory  # noqa: F401
+from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpdatedExtractor

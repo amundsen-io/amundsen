@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 
-from typing import Iterable, Any, Union, Iterator, Dict, Set, List  # noqa: F401
+from typing import Any, Iterator, Dict, List, Set, Union
 
 # TODO: We could separate TagMetadata from table_metadata to own module
 from databuilder.models.table_metadata import TagMetadata

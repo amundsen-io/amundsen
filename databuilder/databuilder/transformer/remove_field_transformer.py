@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import Any, Dict  # noqa: F401
+from typing import Any, Dict
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder.transformer.base_transformer import Transformer
 

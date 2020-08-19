@@ -6,7 +6,6 @@ import unittest
 
 from mock import patch
 from pyhocon import ConfigFactory
-from typing import Any, Dict  # noqa: F401
 
 from databuilder.extractor.glue_extractor import GlueExtractor
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata

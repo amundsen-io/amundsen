@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, List, Union  # noqa: F401
+from typing import Any, Dict, List, Optional, Tuple
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
@@ -9,7 +9,6 @@ from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
 
 
 class Watermark(Neo4jCsvSerializable):
-    # type: (...) -> None
     """
     Table watermark result model.
     Each instance represents one row of table watermark result.
@@ -21,20 +20,19 @@ class Watermark(Neo4jCsvSerializable):
     TABLE_WATERMARK_RELATION_TYPE = 'WATERMARK'
 
     def __init__(self,
-                 create_time,  # type: str
-                 database,  # type: str
-                 schema,  # type: str
-                 table_name,  # type: str
-                 part_name,  # type: str
-                 part_type='high_watermark',  # type: str
-                 cluster='gold',  # type: str
-                 ):
-        # type: (...) -> None
+                 create_time: str,
+                 database: str,
+                 schema: str,
+                 table_name: str,
+                 part_name: str,
+                 part_type: str='high_watermark',
+                 cluster: str='gold',
+                 ) -> None:
         self.create_time = create_time
         self.database = database.lower()
         self.schema = schema.lower()
         self.table = table_name.lower()
-        self.parts = []  # type: list
+        self.parts: List[Tuple[str, str]] = []
 
         if '=' not in part_name:
             raise Exception('Only partition table has high watermark')
@@ -48,38 +46,33 @@ class Watermark(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Optional[Dict[str, Any]]:
         # return the string representation of the data
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Optional[Dict[str, Any]]:
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def get_watermark_model_key(self):
-        # type: (...) -> str
+    def get_watermark_model_key(self) -> str:
         return Watermark.KEY_FORMAT.format(database=self.database,
                                            cluster=self.cluster,
                                            schema=self.schema,
                                            table=self.table,
                                            part_type=self.part_type)
 
-    def get_metadata_model_key(self):
-        # type: (...) -> str
+    def get_metadata_model_key(self) -> str:
         return '{database}://{cluster}.{schema}/{table}'.format(database=self.database,
                                                                 cluster=self.cluster,
                                                                 schema=self.schema,
                                                                 table=self.table)
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -95,8 +88,7 @@ class Watermark(Neo4jCsvSerializable):
             })
         return results
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         """
         Create a list of relation map between watermark record with original table
         :return:

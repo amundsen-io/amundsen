@@ -5,8 +5,8 @@ import csv
 import importlib
 from collections import defaultdict
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Iterator  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata

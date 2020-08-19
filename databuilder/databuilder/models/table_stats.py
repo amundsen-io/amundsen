@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, List, Union  # noqa: F401
+from typing import Any, Dict, List, Optional
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
@@ -10,7 +10,6 @@ from databuilder.models.table_metadata import ColumnMetadata
 
 
 class TableColumnStats(Neo4jCsvSerializable):
-    # type: (...) -> None
     """
     Hive table stats model.
     Each instance represents one row of hive watermark result.
@@ -22,17 +21,16 @@ class TableColumnStats(Neo4jCsvSerializable):
     Column_STAT_RELATION_TYPE = 'STAT'
 
     def __init__(self,
-                 table_name,  # type: str
-                 col_name,  # type: str
-                 stat_name,  # type: str
-                 stat_val,  # type: str
-                 start_epoch,  # type: str
-                 end_epoch,  # type: str
-                 db='hive',  # type: str
-                 cluster='gold',  # type: str
-                 schema=None  # type: str
-                 ):
-        # type: (...) -> None
+                 table_name: str,
+                 col_name: str,
+                 stat_name: str,
+                 stat_val: str,
+                 start_epoch: str,
+                 end_epoch: str,
+                 db: str='hive',
+                 cluster: str='gold',
+                 schema: str=None
+                 ) -> None:
         if schema is None:
             self.schema, self.table = table_name.split('.')
         else:
@@ -48,23 +46,20 @@ class TableColumnStats(Neo4jCsvSerializable):
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 
-    def create_next_node(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_node(self) -> Optional[Dict[str, Any]]:
         # return the string representation of the data
         try:
             return next(self._node_iter)
         except StopIteration:
             return None
 
-    def create_next_relation(self):
-        # type: (...) -> Union[Dict[str, Any], None]
+    def create_next_relation(self) -> Optional[Dict[str, Any]]:
         try:
             return next(self._relation_iter)
         except StopIteration:
             return None
 
-    def get_table_stat_model_key(self):
-        # type: (...) -> str
+    def get_table_stat_model_key(self) -> str:
         return TableColumnStats.KEY_FORMAT.format(db=self.db,
                                                   cluster=self.cluster,
                                                   schema=self.schema,
@@ -72,8 +67,7 @@ class TableColumnStats(Neo4jCsvSerializable):
                                                   col=self.col_name,
                                                   stat_name=self.stat_name)
 
-    def get_col_key(self):
-        # type: (...) -> str
+    def get_col_key(self) -> str:
         # no cluster, schema info from the input
         return ColumnMetadata.COLUMN_KEY_FORMAT.format(db=self.db,
                                                        cluster=self.cluster,
@@ -81,8 +75,7 @@ class TableColumnStats(Neo4jCsvSerializable):
                                                        tbl=self.table,
                                                        col=self.col_name)
 
-    def create_nodes(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_nodes(self) -> List[Dict[str, Any]]:
         """
         Create a list of Neo4j node records
         :return:
@@ -97,8 +90,7 @@ class TableColumnStats(Neo4jCsvSerializable):
         }]
         return results
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         """
         Create a list of relation map between table stat record with original hive table
         :return:

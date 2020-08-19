@@ -3,8 +3,8 @@
 
 import logging
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import cast, Any, Dict, List, Set  # noqa: F401
+from pyhocon import ConfigTree
+from typing import cast, Any, Dict, List, Set
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor, DatasetRef
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata

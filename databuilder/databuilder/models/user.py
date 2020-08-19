@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from typing import Any, List, Dict, Optional  # noqa: F401
+from typing import Any, List, Dict, Optional
 
 from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable, NODE_KEY, \
     NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
@@ -153,8 +153,7 @@ class User(Neo4jCsvSerializable):
 
         return [result_node]
 
-    def create_relation(self):
-        # type: () -> List[Dict[str, Any]]
+    def create_relation(self) -> List[Dict[str, Any]]:
         if self.manager_email:
             # only create the relation if the manager exists
             return [{
