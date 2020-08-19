@@ -10,7 +10,10 @@ export interface ResourceReportProps {
 const TableReportsDropdown: React.FC<ResourceReportProps> = ({
   resourceReports,
 }: ResourceReportProps) => {
-  if (resourceReports === null || resourceReports.length < 1) return null;
+  if (!resourceReports || resourceReports.length < 1) {
+    return null;
+  }
+
   return (
     <Dropdown id="user-dropdown">
       <Dropdown.Toggle className="btn btn-default btn-lg">

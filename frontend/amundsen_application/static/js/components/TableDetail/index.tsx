@@ -50,6 +50,7 @@ import {
 } from 'interfaces';
 
 import EditableSection from 'components/common/EditableSection';
+import TableReportsDropdown from 'components/TableDetail/ResourceReportsDropdown';
 
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
@@ -57,14 +58,9 @@ import { getLoggingParams } from 'utils/logUtils';
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 
-import {
-  PROGRMMATIC_DESC_HEADER,
-  ERROR_MESSAGE,
-  EDIT_DESC_TEXT,
-} from './constants';
+import { ERROR_MESSAGE, EDIT_DESC_TEXT } from './constants';
 
 import './styles.scss';
-import TableReportsDropdown from 'components/TableDetail/ResourceReportsDropdown';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
