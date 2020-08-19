@@ -6,13 +6,13 @@ import re
 from random import randint
 from typing import Any, Dict, List, Union, Optional
 
+from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader,\
+from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader, \
     ProgrammaticDescription, ResourceReport
 from amundsen_common.models.user import User as UserEntity
-from amundsen_common.models.dashboard import DashboardSummary
 from atlasclient.client import Atlas
-from atlasclient.exceptions import BadRequest
+from atlasclient.exceptions import BadRequest, Conflict, NotFound
 from atlasclient.models import EntityUniqueAttribute
 from atlasclient.utils import (make_table_qualified_name,
                                parse_table_qualified_name,
@@ -23,8 +23,8 @@ from flask import current_app as app
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
-from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.entity.resource_type import ResourceType
+from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
 from metadata_service.util import UserResourceRel
@@ -33,6 +33,11 @@ LOGGER = logging.getLogger(__name__)
 
 # Expire cache every 11 hours + jitter
 _ATLAS_PROXY_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
+
+
+class Status:
+    ACTIVE = "ACTIVE"
+    DELETED = "DELETED"
 
 
 # noinspection PyMethodMayBeStatic
@@ -49,11 +54,11 @@ class AtlasProxy(BaseProxy):
     READER_TYPE = 'Reader'
     QN_KEY = 'qualifiedName'
     BOOKMARK_ACTIVE_KEY = 'active'
-    ENTITY_ACTIVE_STATUS = 'ACTIVE'
     GUID_KEY = 'guid'
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
     ENTITY_URI_KEY = 'entityUri'
+    user_detail_method = app.config.get('USER_DETAIL_METHOD') or (lambda *args: None)
     _CACHE = CacheManager(**parse_cache_config_options({'cache.regions': 'atlas_proxy',
                                                         'cache.atlas_proxy.type': 'memory',
                                                         'cache.atlas_proxy.expire': _ATLAS_PROXY_CACHE_EXPIRY_SEC}))
@@ -355,7 +360,7 @@ class AtlasProxy(BaseProxy):
             report_entities_collection = self._driver.entity_bulk(guid=guids)
             for report_entity in extract_entities(report_entities_collection):
                 try:
-                    if report_entity.status == self.ENTITY_ACTIVE_STATUS:
+                    if report_entity.status == Status.ACTIVE:
                         report_attrs = report_entity.attributes
                         reports.append(
                             ResourceReport(
@@ -371,6 +376,23 @@ class AtlasProxy(BaseProxy):
             if app.config['RESOURCE_REPORT_CLIENT'] else reports
 
         return parsed_reports
+
+    def _get_owners(self, data_owners: list, fallback_owner: str) -> List[User]:
+        owners_detail = list()
+        active_owners = filter(lambda item:
+                               item['entityStatus'] == Status.ACTIVE and
+                               item['relationshipStatus'] == Status.ACTIVE,
+                               data_owners)
+
+        for owner in active_owners:
+            owner_qn = owner['displayText']
+            owner_data = self.user_detail_method(owner_qn) or {
+                'email': owner_qn,
+                'user_id': owner_qn
+            }
+            owners_detail.append(User(**owner_data))
+
+        return owners_detail or [User(email=fallback_owner, user_id=fallback_owner)]
 
     def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
@@ -391,7 +413,7 @@ class AtlasProxy(BaseProxy):
         try:
             attrs = table_details[self.ATTRS_KEY]
 
-            programmatic_descriptions = self._get_programmatic_descriptions(attrs.get('parameters'))
+            programmatic_descriptions = self._get_programmatic_descriptions(attrs.get('parameters', dict()))
 
             table_qn = parse_table_qualified_name(
                 qualified_name=attrs.get(self.QN_KEY)
@@ -399,7 +421,7 @@ class AtlasProxy(BaseProxy):
 
             tags = []
             # Using or in case, if the key 'classifications' is there with a None
-            for classification in table_details.get("classifications") or list():
+            for classification in table_details.get('classifications') or list():
                 tags.append(
                     Tag(
                         tag_name=classification.get('typeName'),
@@ -420,7 +442,7 @@ class AtlasProxy(BaseProxy):
                 name=attrs.get('name') or table_qn.get("table_name", ''),
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
-                owners=[User(email=attrs.get('owner'))],
+                owners=self._get_owners(table_details[self.REL_ATTRS_KEY].get('ownedBy'), attrs.get('owner')),
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 is_view=is_view,
@@ -437,20 +459,71 @@ class AtlasProxy(BaseProxy):
                              .format(table_uri=table_uri))
 
     def delete_owner(self, *, table_uri: str, owner: str) -> None:
-        pass
+        """
+
+        :param table_uri:
+        :param owner:
+        :return:
+        """
+        table = self._get_table_entity(table_uri=table_uri)
+        table_entity = table.entity
+
+        if table_entity[self.REL_ATTRS_KEY].get("ownedBy"):
+            try:
+                active_owners = filter(lambda item:
+                                       item['relationshipStatus'] == Status.ACTIVE
+                                       and item['displayText'] == owner,
+                                       table_entity[self.REL_ATTRS_KEY]['ownedBy'])
+                if list(active_owners):
+                    self._driver.relationship_guid(next(active_owners)
+                                                   .get('relationshipGuid')).delete()
+                else:
+                    raise BadRequest('You can not delete this owner.')
+            except NotFound as ex:
+                LOGGER.exception('Error while removing table data owner. {}'
+                                 .format(str(ex)))
 
     def add_owner(self, *, table_uri: str, owner: str) -> None:
         """
-        It simply replaces the owner field in atlas with the new string.
-        FixMe (Verdan): Implement multiple data owners and
-        atlas changes in the documentation if needed to make owner field a list
+        Query on Atlas User entity to find if the entity exist for the
+        owner string in parameter, if not create one. And then use that User
+        entity's GUID and add a relationship between Table and User, on ownedBy field.
         :param table_uri:
         :param owner: Email address of the owner
         :return: None, as it simply adds the owner.
         """
-        entity = self._get_table_entity(table_uri=table_uri)
-        entity.entity[self.ATTRS_KEY]['owner'] = owner
-        entity.update()
+        if not (self.user_detail_method(owner) or owner):
+            raise NotFoundException(f'User "{owner}" does not exist.')
+
+        user_dict = {
+            "entity": {
+                "typeName": "User",
+                "attributes": {"qualifiedName": owner},
+            }
+        }
+
+        # Get or Create a User
+        user_entity = self._driver.entity_post.create(data=user_dict)
+        user_guid = next(iter(user_entity.get("guidAssignments").values()))
+
+        table = self._get_table_entity(table_uri=table_uri)
+
+        entity_def = {
+            "typeName": "DataSet_Users_Owner",
+            "end1": {
+                "guid": table.entity.get("guid"), "typeName": "Table",
+            },
+            "end2": {
+                "guid": user_guid, "typeName": "User",
+            },
+        }
+        try:
+            self._driver.relationship.create(data=entity_def)
+        except Conflict as ex:
+            LOGGER.exception('Error while adding the owner information. {}'
+                             .format(str(ex)))
+            raise BadRequest(f'User {owner} is already added as a data owner for '
+                             f'table {table_uri}.')
 
     def get_table_description(self, *,
                               table_uri: str) -> Union[str, None]:
@@ -644,7 +717,7 @@ class AtlasProxy(BaseProxy):
             entity_status = user_reads['entityStatus']
             relationship_status = user_reads['relationshipStatus']
 
-            if entity_status == 'ACTIVE' and relationship_status == 'ACTIVE':
+            if entity_status == Status.ACTIVE and relationship_status == Status.ACTIVE:
                 readers_guids.append(user_reads['guid'])
 
         readers = extract_entities(self._driver.entity_bulk(guid=readers_guids, ignoreRelationships=True))
@@ -682,16 +755,7 @@ class AtlasProxy(BaseProxy):
         if resource_type is not ResourceType.Table:
             raise NotImplemented('resource type {} is not supported'.format(resource_type))
 
-        self._add_table_relation_by_user(table_uri=id,
-                                         user_email=user_id,
-                                         relation_type=relation_type)
-
-    def _add_table_relation_by_user(self, *,
-                                    table_uri: str,
-                                    user_email: str,
-                                    relation_type: UserResourceRel) -> None:
-
-        entity = self._get_bookmark_entity(entity_uri=table_uri, user_id=user_email)
+        entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
         entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = True
         entity.update()
 
@@ -703,15 +767,7 @@ class AtlasProxy(BaseProxy):
         if resource_type is not ResourceType.Table:
             raise NotImplemented('resource type {} is not supported'.format(resource_type))
 
-        self._delete_table_relation_by_user(table_uri=id,
-                                            user_email=user_id,
-                                            relation_type=relation_type)
-
-    def _delete_table_relation_by_user(self, *,
-                                       table_uri: str,
-                                       user_email: str,
-                                       relation_type: UserResourceRel) -> None:
-        entity = self._get_bookmark_entity(entity_uri=table_uri, user_id=user_email)
+        entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
         entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = False
         entity.update()
 
@@ -765,9 +821,12 @@ class AtlasProxy(BaseProxy):
             read_entities = extract_entities(self._driver.entity_bulk(guid=readers, ignoreRelationships=False))
 
             for read_entity in read_entities:
-                reader = Reader(user=User(email=read_entity.relationshipAttributes['user']['displayText'],
-                                          user_id=read_entity.relationshipAttributes['user']['displayText']),
-                                read_count=read_entity.attributes['count'])
+                reader_qn = read_entity.relationshipAttributes['user']['displayText']
+                reader_details = self.user_detail_method(reader_qn) or {
+                    'email': reader_qn,
+                    'user_id': reader_qn
+                }
+                reader = Reader(user=User(**reader_details), read_count=read_entity.attributes['count'])
 
                 results.append(reader)
 

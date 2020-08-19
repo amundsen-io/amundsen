@@ -109,14 +109,14 @@ class TestAtlasProxy(unittest.TestCase, Data):
             test_exp_col = self.test_exp_col_stats_formatted
         else:
             test_exp_col = self.test_exp_col_stats_raw
-
+        ent_attrs = cast(dict, self.entity1['attributes'])
         self._mock_get_table_entity()
         self._create_mocked_report_entities_collection()
+        self.proxy._get_owners = MagicMock(return_value=[User(email=ent_attrs['owner'])])   # type: ignore
         self.proxy._driver.entity_bulk = MagicMock(return_value=self.report_entity_collection)
         response = self.proxy.get_table(table_uri=self.table_uri)
 
         classif_name = self.classification_entity['classifications'][0]['typeName']
-        ent_attrs = cast(dict, self.entity1['attributes'])
 
         col_attrs = cast(dict, self.test_column['attributes'])
         exp_col_stats = list()
@@ -257,10 +257,18 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
     def test_add_owner(self) -> None:
         owner = "OWNER"
-        entity = self._mock_get_table_entity()
-        with patch.object(entity, 'update') as mock_execute:
+        user_guid = 123
+        self._mock_get_table_entity()
+        self.proxy._driver.entity_post = MagicMock()
+        self.proxy._driver.entity_post.create = MagicMock(return_value={"guidAssignments": {user_guid: user_guid}})
+
+        with patch.object(self.proxy._driver.relationship, 'create') as mock_execute:
             self.proxy.add_owner(table_uri=self.table_uri, owner=owner)
-            mock_execute.assert_called_with()
+            mock_execute.assert_called_with(
+                data={'typeName': 'DataSet_Users_Owner',
+                      'end1': {'guid': self.entity1['guid'], 'typeName': 'Table'},
+                      'end2': {'guid': user_guid, 'typeName': 'User'}}
+            )
 
     def test_get_column(self) -> None:
         self._mock_get_table_entity()
