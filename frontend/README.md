@@ -1,7 +1,6 @@
 # Amundsen Frontend Service
 
 [![PyPI version](https://badge.fury.io/py/amundsen-frontend.svg)](https://badge.fury.io/py/amundsen-frontend)
-[![Build Status](https://api.travis-ci.com/lyft/amundsenfrontendlibrary.svg?branch=master)](https://travis-ci.com/lyft/amundsenfrontendlibrary)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lyft/amundsenfrontendlibrary/master.svg)](https://codecov.io/github/lyft/amundsenfrontendlibrary?branch=master)
 [![License](https://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/amundsen-frontend.svg)](https://pypi.org/project/amundsen-frontend/)
@@ -19,8 +18,11 @@ For information about Amundsen and our other services, visit the [main repositor
 - Node = v10 or v12 
 - npm >= 6.x.x
 
-## Doc
-- https://lyft.github.io/amundsen/
+## Homepage
+- https://www.amundsen.io/
+
+## Documentation
+- https://www.amundsen.io/amundsen/
 
 ## User Interface
 
