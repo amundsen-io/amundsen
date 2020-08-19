@@ -72,8 +72,8 @@ services:
         - METADATASERVICE_BASE=http://amundsenmetadata:5000
         # Only for easy config-less Quickstart bookmark evalutation. `TestConfig` extends ordinary `LocalConfig` by
         # defining `AUTH_USER_METHOD` to a hardcoded dummy user in `amundsen_application.tests.test_utils.get_test_user()`
-        # See further docs in https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/configuration.md#flask
-        # and https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/configuration.md#authentication
+        # See further docs in https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/configuration.md#flask
+        # and https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/configuration.md#authentication
         - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
       command: gunicorn -w 2 --bind :5000 amundsen_application.wsgi
 

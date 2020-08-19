@@ -4,9 +4,9 @@
 The following instructions are for setting up a version of Amundsen using Docker.
 
 1. Make sure you have at least 3GB available to docker. Install `docker` and  `docker-compose`.
-2. Clone [this repo](https://github.com/lyft/amundsen) and its submodules by running:
+2. Clone [this repo](https://github.com/amundsen-io/amundsen) and its submodules by running:
    ```bash
-   $ git clone --recursive git@github.com:lyft/amundsen.git
+   $ git clone --recursive git@github.com:amundsen-io/amundsen.git
    ```
 3. Enter the cloned directory and run:
     ```bash
@@ -16,10 +16,10 @@ The following instructions are for setting up a version of Amundsen using Docker
     # For Atlas
     $ docker-compose -f docker-amundsen-atlas.yml up
     ```
-4. Ingest dummy data into Neo4j by doing the following: _(Please skip if you are using Atlas backend)_
+4. Ingest provided sample data into Neo4j by doing the following: _(Please skip if you are using Atlas backend)_
 
-   * Change directory to the [amundsendatabuilder](https://github.com/lyft/amundsendatabuilder) submodule.
-   * Run the following commands in the `amundsendatabuilder` upstream directory:
+   * In a separate terminal window, change directory to the [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder) submodule.
+   * `sample_data_loader` python script included in `examples/` directory uses _elasticsearch client_, _pyhocon_ and other libraries. Install the dependencies in a virtual env and run the script by following the commands below:
    ```bash
     $ python3 -m venv venv
     $ source venv/bin/activate  
