@@ -26,7 +26,9 @@
     "stylelint:fix": "stylelint --fix '**/*.scss'",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,scss}\"",
     "storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' start-storybook -p 6006",
-    "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook"
+    "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook",
+    "betterer": "betterer",
+    "betterer:update": "betterer --update"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -57,6 +59,8 @@
     "@storybook/addons": "^5.3.19",
     "@storybook/react": "^5.3.19",
     "@storybook/theming": "^6.0.6",
+    "@betterer/cli": "^3.0.0",
+    "@betterer/typescript": "^3.0.1",
     "@types/enzyme": "^3.10.5",
     "@types/jasmine-matchers": "^0.2.32",
     "@types/jest": "^24.9.1",

@@ -60,6 +60,10 @@ Using Storybook makes it much easier to quickly iterate on components when getti
 
 We use TypeScript in our codebase, so `npm run tsc` conducts type checking. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
 
+Currently, we are trying to gradually make our TypeScript code more strict. For that, we are leveraging a project called [betterer][betterer], which keeps track of our errors when a given test is passed. Right now, we are running it with "strictNullChecks" set to true, so if any code change makes the results worse, it will break the build.
+
+[betterer]: https://github.com/phenomnomnominal/betterer
+
 ### Frontend Linting and Formatting
 
 We have in place two linters – [ESLint][eslint] for our JavaScript and TypeScript files, [Stylelint][stylelint] for our Sass files. If you have both ESLint and Stylelint extensions installed on your IDE, you should get warnings on your editor by default.

@@ -52,6 +52,12 @@ interface DashboardPageState {
   uri: string;
 }
 
+type TabInfo = {
+  content: JSX.Element;
+  key: string;
+  title: string;
+};
+
 export interface StateFromProps {
   isLoading: boolean;
   statusCode: number;
@@ -111,7 +117,8 @@ export class DashboardPage extends React.Component<
   };
 
   renderTabs() {
-    const tabInfo = [];
+    const tabInfo: TabInfo[] = [];
+
     tabInfo.push({
       content: (
         <ResourceList

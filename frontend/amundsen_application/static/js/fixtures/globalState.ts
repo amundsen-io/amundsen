@@ -154,7 +154,7 @@ const globalState: GlobalState = {
       data: {},
       status: null,
     },
-    statusCode: null,
+    statusCode: 200,
     tableData: {
       badges: [],
       cluster: '',

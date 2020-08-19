@@ -19,8 +19,7 @@ export interface FlagProps {
   labelStyle?: BadgeStyle;
 }
 
-export function convertText(str: string, caseType: string): string {
-  str = str || '';
+export function convertText(str = '', caseType: string): string {
   switch (caseType) {
     case CaseType.LOWER_CASE:
       return str.toLowerCase();
@@ -34,9 +33,9 @@ export function convertText(str: string, caseType: string): string {
 }
 
 const Flag: React.FC<FlagProps> = ({
-  caseType,
-  text,
-  labelStyle,
+  caseType = null,
+  text = '',
+  labelStyle = BadgeStyle.DEFAULT,
 }: FlagProps) => {
   // TODO: After upgrading to Bootstrap 4, this component should leverage badges
   // https://getbootstrap.com/docs/4.1/components/badge/
@@ -47,12 +46,6 @@ const Flag: React.FC<FlagProps> = ({
       </div>
     </span>
   );
-};
-
-Flag.defaultProps = {
-  caseType: null,
-  text: '',
-  labelStyle: BadgeStyle.DEFAULT,
 };
 
 export default Flag;
