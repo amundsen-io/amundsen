@@ -8,13 +8,13 @@
 
 Amundsen Metadata service serves Restful API and is responsible for providing and also updating metadata, such as table & column description, and tags. Metadata service can use Neo4j or Apache Atlas as a persistent layer.
 
-For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen#amundsen) `README.md`. Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture).
+For information about Amundsen and our other services, visit the [main repository](https://github.com/amundsen-io/amundsen#amundsen) `README.md`. Please also see our instructions for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture).
 
 ## Requirements
 - Python >= 3.7
 
 ## Doc
-- https://lyft.github.io/amundsen/
+- https://www.amundsen.io/amundsen/
 
 ## Instructions to start the Metadata service from distribution
 ```bash
@@ -30,7 +30,7 @@ $ curl -v http://localhost:5002/healthcheck
 
 ## Instructions to start the Metadata service from the source
 ```bash
-$ git clone https://github.com/lyft/amundsenmetadatalibrary.git
+$ git clone https://github.com/amundsen-io/amundsenmetadatalibrary.git
 $ cd amundsenmetadatalibrary
 $ python3 -m venv venv
 $ source venv/bin/activate
@@ -65,8 +65,8 @@ $ gunicorn metadata_service.metadata_wsgi
 Here is [documentation](https://docs.gunicorn.org/en/latest/run.html "documentation") of gunicorn configuration.
 
 ### Configuration outside local environment
-By default, Metadata service uses [LocalConfig](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py "LocalConfig") that looks for Neo4j running in localhost.
-In order to use different end point, you need to create [Config](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py "Config") suitable for your use case. Once config class has been created, it can be referenced by [environment variable](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/metadata_wsgi.py "environment variable"): `METADATA_SVC_CONFIG_MODULE_CLASS`
+By default, Metadata service uses [LocalConfig](https://github.com/amundsen-io/amundsenmetadatalibrary/blob/master/metadata_service/config.py "LocalConfig") that looks for Neo4j running in localhost.
+In order to use different end point, you need to create [Config](https://github.com/amundsen-io/amundsenmetadatalibrary/blob/master/metadata_service/config.py "Config") suitable for your use case. Once config class has been created, it can be referenced by [environment variable](https://github.com/amundsen-io/amundsenmetadatalibrary/blob/master/metadata_service/metadata_wsgi.py "environment variable"): `METADATA_SVC_CONFIG_MODULE_CLASS`
 
 For example, in order to have different config for production, you can inherit Config class, create Production config and passing production config class into environment variable. Let's say class name is ProdConfig and it's in metadata_service.config module. then you can set as below:
 
@@ -77,7 +77,7 @@ This way Metadata service will use production config in production environment. 
 # Apache Atlas
 Amundsen Metadata service can use Apache Atlas as a backend. Some of the benefits of using Apache Atlas instead of Neo4j is that Apache Atlas offers plugins to several services (e.g. Apache Hive, Apache Spark) that allow for push based updates. It also allows to set policies on what metadata is accesible and editable by means of Apache Ranger.
 
-If you would like to use Apache Atlas as a backend for Metadata service you will need to create a [Config](https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/config.py "Config") as mentioned above. Make sure to include the following:
+If you would like to use Apache Atlas as a backend for Metadata service you will need to create a [Config](https://github.com/amundsen-io/amundsenmetadatalibrary/blob/master/metadata_service/config.py "Config") as mentioned above. Make sure to include the following:
 
 ```python
 PROXY_CLIENT = PROXY_CLIENTS['ATLAS'] # or env PROXY_CLIENT='ATLAS'
