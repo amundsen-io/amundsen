@@ -5,7 +5,6 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import { ResourceReport } from 'interfaces/TableMetadata';
-import { logClick } from 'ducks/utilMethods';
 import TableReportsDropdown from '.';
 
 describe('TableReportsDropdown component', () => {
@@ -27,6 +26,7 @@ describe('TableReportsDropdown component', () => {
     const container = tableReportsDropdown.find('DropdownMenu');
     expect(container.exists()).toBe(true);
   });
+
   it('do not render resource reports', () => {
     const container = shallow(
       <TableReportsDropdown resourceReports={[]} />

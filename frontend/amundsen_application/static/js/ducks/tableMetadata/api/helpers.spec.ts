@@ -1,12 +1,10 @@
-import axios from 'axios';
 import * as qs from 'simple-query-string';
 
 import * as Utils from 'ducks/utilMethods';
 
 import globalState from 'fixtures/globalState';
-import { relatedDashboards } from 'fixtures/metadata/table';
 
-import { NotificationType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
+import { NotificationType, UpdateMethod } from 'interfaces';
 import * as Helpers from './helpers';
 
 import * as API from './v0';
@@ -17,7 +15,6 @@ jest.mock('axios');
 
 describe('helpers', () => {
   let mockResponseData: API.TableDataAPI;
-  let mockRelatedDashboardsResponseData: API.RelatedDashboardDataAPI;
   let tableResponseData: API.TableData;
   beforeAll(() => {
     tableResponseData = {
@@ -34,10 +31,6 @@ describe('helpers', () => {
         { tag_count: 2, tag_name: 'zname' },
         { tag_count: 1, tag_name: 'aname' },
       ],
-    };
-    mockRelatedDashboardsResponseData = {
-      dashboards: relatedDashboards,
-      msg: '',
     };
     mockResponseData = {
       tableData: tableResponseData,

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { NotificationType } from 'interfaces';
 import AppConfig from 'config/config';
 import * as API from '../v0';
@@ -26,7 +26,7 @@ describe('getIssues', () => {
 
   it('calls axios with correct parameters if tableKey provided', async () => {
     expect.assertions(1);
-    await API.getIssues('tableKey').then((data) => {
+    await API.getIssues('tableKey').then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
         `${API.API_PATH}/issues?key=tableKey`
       );
@@ -35,6 +35,7 @@ describe('getIssues', () => {
 
   it('returns response data', async () => {
     expect.assertions(1);
+
     await API.getIssues('tableKey').then((data) => {
       expect(data).toEqual(mockGetResponse.data.issues);
     });

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export const API_PATH = '/api/metadata/v0';
 
@@ -14,7 +14,7 @@ export function getLastIndexed() {
 
       return data.timestamp;
     })
-    .catch((e) => {
+    .catch(() => {
       const timestamp = null;
       return Promise.reject({
         timestamp,

@@ -19,7 +19,6 @@ import {
   noResultsExample,
 } from 'fixtures/search/inlineResults';
 
-import { logClick } from 'ducks/utilMethods';
 import { SearchItem, SearchItemProps, mapStateToProps } from '..';
 
 jest.mock('ducks/utilMethods', () => ({
@@ -52,7 +51,7 @@ describe('SearchItem', () => {
 
   describe('renderIndicator', () => {
     it('renders LoadingSpinner if props.isLoading', () => {
-      const { props, wrapper } = setup({ isLoading: true });
+      const { wrapper } = setup({ isLoading: true });
       const content = shallow(
         <div>{wrapper.instance().renderIndicator()}</div>
       );
@@ -60,13 +59,13 @@ describe('SearchItem', () => {
     });
 
     it('renders correct text if !props.hasResults', () => {
-      const { props, wrapper } = setup({ hasResults: false });
+      const { wrapper } = setup({ hasResults: false });
       const content = shallow(wrapper.instance().renderIndicator());
       expect(content.text()).toBe(SEARCH_ITEM_NO_RESULTS);
     });
 
     it('renders nothing if !props.Loading and props.hasResults', () => {
-      const { props, wrapper } = setup({ isLoading: false, hasResults: true });
+      const { wrapper } = setup({ isLoading: false, hasResults: true });
       expect(wrapper.instance().renderIndicator()).toBe(null);
     });
   });

@@ -22,7 +22,6 @@ describe('dashboard reducer', () => {
   });
 
   it('should handle GetDashboard.REQUEST', () => {
-    const term = 'testSearch';
     expect(reducer(testState, getDashboard({ uri: 'testUri' }))).toEqual({
       ...testState,
       isLoading: true,

@@ -7,7 +7,7 @@ import reducer, {
   initialFilterState,
   FilterReducerState,
   UpdateSearchFilter,
-} from '../reducer';
+} from './reducer';
 
 describe('filters reducer', () => {
   describe('actions', () => {
@@ -57,8 +57,6 @@ describe('filters reducer', () => {
       });
 
       it('does not update the filter state if request does not contains filter information', () => {
-        const givenResource = ResourceType.table;
-        const givenFilters = { database: { testDb: true } };
         const result = reducer(
           testState,
           submitSearchResource({

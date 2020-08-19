@@ -52,7 +52,7 @@ To run specific tests, run `npm run test-nocov -t <regex>`, where `<regex>` is a
 
 ### Developing React Components
 
-To preview React components in isolation, use [Storybook](https://storybook.js.org/). Just add a `<componentName>.story.tsx` file in the same folder as your component. In that file, show your component in different states. Then run `npm run storybook`, which will open your browser to the storybook browse page. 
+To preview React components in isolation, use [Storybook](https://storybook.js.org/). Just add a `<componentName>.story.tsx` file in the same folder as your component. In that file, show your component in different states. Then run `npm run storybook`, which will open your browser to the storybook browse page.
 
 Using Storybook makes it much easier to quickly iterate on components when getting to certain states requires multiple steps of UI manipulation. The gallery also serves as a convenient place to see what reusable components are available so you can avoid reinventing the wheel.
 
@@ -68,8 +68,8 @@ We also use [Prettier][prettier] to help us keep consistent formatting on our Ty
 
 Whenever you want to run these tasks manually, you can execute:
 
-- `npm run lint` to run ESLint and `npm run lint-fix` to auto-fix most of them.
-- `npm run stylelint` to run Stylelint and `npm run stylelint-fix` to trigger the auto-fix.
+- `npm run lint` to run ESLint and `npm run lint:fix` to auto-fix most of them.
+- `npm run stylelint` to run Stylelint and `npm run stylelint:fix` to trigger the auto-fix.
 - `npm run format` to run Prettier on both the TypeScript and Sass files
 
 We also check your changed files and format them when you create a new commit, making it easy for you and for the project to keep a consistent code style. We do this leveraging [Husky][husky] and [Lint-staged][lint-staged].

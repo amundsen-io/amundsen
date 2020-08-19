@@ -29,7 +29,7 @@ describe('ImagePreview', () => {
   describe('onSuccess', () => {
     let currentState;
     beforeAll(() => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       wrapper.instance().onSuccess();
       currentState = wrapper.state();
     });
@@ -44,7 +44,7 @@ describe('ImagePreview', () => {
   describe('onError', () => {
     let currentState;
     beforeAll(() => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       const event = {} as React.SyntheticEvent<HTMLImageElement>;
       wrapper.instance().onError(event);
       currentState = wrapper.state();
@@ -111,7 +111,7 @@ describe('ImagePreview', () => {
 
     describe('when there is an error', () => {
       it('renders a link', () => {
-        const { props, wrapper } = setup();
+        const { wrapper } = setup();
 
         wrapper.instance().setState({ hasError: true });
         wrapper.update();

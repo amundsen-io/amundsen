@@ -21,7 +21,7 @@ const TableReportsDropdown: React.FC<ResourceReportProps> = ({
       </Dropdown.Toggle>
       <Dropdown.Menu className="profile-menu">
         {resourceReports.map((report) => (
-          <li>
+          <li key={report.url}>
             <a target="_blank" rel="noreferrer" href={`${report.url}`}>
               {`${report.name}`}
             </a>

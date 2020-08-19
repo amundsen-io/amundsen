@@ -5,7 +5,6 @@ import {
   PreviewQueryParams,
   TableMetadata,
   Tag,
-  User,
 } from 'interfaces';
 
 import {

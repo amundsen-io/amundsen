@@ -77,7 +77,7 @@ export function getTableDashboards(tableKey: string) {
       if (response && response.data && response.data.msg) {
         msg = response.data.msg;
       }
-      const status = response ? response.status : null;
+
       return Promise.reject({ msg, dashboards: [] });
     });
 }
@@ -126,7 +126,7 @@ export function generateOwnerUpdateRequests(
 
     /* Chain requests to send notification on success to desired users */
     const request = axios(updatePayload)
-      .then((response) => {
+      .then(() => {
         return axios.get(`/api/metadata/v0/user?user_id=${item.id}`);
       })
       .then((response) => {

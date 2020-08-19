@@ -18,7 +18,6 @@ import * as API from './api/v0';
 
 import {
   LoadPreviousSearch,
-  LoadPreviousSearchRequest,
   SearchAll,
   SearchAllRequest,
   SearchResource,
@@ -45,14 +44,13 @@ import {
   searchResourceFailure,
   searchResourceSuccess,
   getInlineResults,
-  getInlineResultsDebounce,
   getInlineResultsSuccess,
   getInlineResultsFailure,
   updateFromInlineResult,
   updateSearchState,
   submitSearchResource,
 } from './reducer';
-import { initialFilterState, UpdateSearchFilter } from './filters/reducer';
+import { initialFilterState } from './filters/reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
 
 //  SEARCH SAGAS
@@ -194,9 +192,7 @@ export function* urlDidUpdateWatcher(): SagaIterator {
  * Handles workflow for user actions on navigations components.
  * Leverages BrowserHistory or updates search url accordingly.
  */
-export function* loadPreviousSearchWorker(
-  action: LoadPreviousSearchRequest
-): SagaIterator {
+export function* loadPreviousSearchWorker(): SagaIterator {
   const state = yield select(getSearchState);
   if (state.search_term === '') {
     BrowserHistory.goBack();

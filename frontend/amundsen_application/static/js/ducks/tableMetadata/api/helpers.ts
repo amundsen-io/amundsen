@@ -1,13 +1,12 @@
 import * as qs from 'simple-query-string';
 
-import { filterFromObj, sortTagsAlphabetical } from 'ducks/utilMethods';
+import { filterFromObj } from 'ducks/utilMethods';
 
 import {
   NotificationType,
   OwnerDict,
   PeopleUser,
   TableMetadata,
-  Tag,
   UpdateMethod,
   UpdateOwnerPayload,
   User,

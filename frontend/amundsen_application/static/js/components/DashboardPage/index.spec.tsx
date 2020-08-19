@@ -7,7 +7,6 @@ import * as History from 'history';
 
 import { shallow } from 'enzyme';
 
-import AvatarLabel from 'components/common/AvatarLabel';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
@@ -16,7 +15,6 @@ import ResourceList from 'components/common/ResourceList';
 import TabsComponent from 'components/common/TabsComponent';
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
-import * as LogUtils from 'utils/logUtils';
 import { ResourceType } from 'interfaces';
 import { BadgeStyle } from 'config/config-types';
 import ChartList from './ChartList';

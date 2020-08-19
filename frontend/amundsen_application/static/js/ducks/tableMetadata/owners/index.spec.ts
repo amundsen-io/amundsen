@@ -4,7 +4,7 @@ import { OwnerDict, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
-import * as API from '../../api/v0';
+import * as API from '../api/v0';
 
 import reducer, {
   updateTableOwner,
@@ -12,20 +12,18 @@ import reducer, {
   updateTableOwnerSuccess,
   initialOwnersState,
   TableOwnerReducerState,
-} from '../reducer';
+} from './reducer';
 import {
   getTableData,
   getTableDataFailure,
   getTableDataSuccess,
-} from '../../reducer';
+} from '../reducer';
 
-import { updateTableOwnerWorker, updateTableOwnerWatcher } from '../sagas';
+import { updateTableOwnerWorker, updateTableOwnerWatcher } from './sagas';
 
-import { GetTableData, UpdateTableOwner } from '../../types';
+import { UpdateTableOwner } from '../types';
 
-const generateOwnerUpdateRequestsSpy = jest
-  .spyOn(API, 'generateOwnerUpdateRequests')
-  .mockImplementation((payload, key) => []);
+jest.spyOn(API, 'generateOwnerUpdateRequests').mockImplementation(() => []);
 
 describe('tableMetadata:owners ducks', () => {
   let expectedOwners: OwnerDict;

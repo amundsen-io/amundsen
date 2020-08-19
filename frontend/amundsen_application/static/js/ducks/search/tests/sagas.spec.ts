@@ -1,7 +1,6 @@
 import { testSaga } from 'redux-saga-test-plan';
-import { debounce } from 'redux-saga/effects';
 
-import { DEFAULT_RESOURCE_TYPE, ResourceType, SearchType } from 'interfaces';
+import { ResourceType, SearchType } from 'interfaces';
 
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
@@ -11,30 +10,20 @@ import * as API from '../api/v0';
 import * as Sagas from '../sagas';
 
 import {
-  initialState,
-  initialInlineResultsState,
-  loadPreviousSearch,
   searchAll,
   searchAllFailure,
-  searchAllSuccess,
-  SearchReducerState,
   searchResource,
   searchResourceFailure,
   searchResourceSuccess,
-  selectInlineResult,
   submitSearch,
   submitSearchResource,
-  updateFromInlineResult,
   updateSearchState,
   urlDidUpdate,
 } from '../reducer';
 import {
   LoadPreviousSearch,
   InlineSearch,
-  InlineSearchResponsePayload,
-  InlineSearchUpdatePayload,
   SearchAll,
-  SearchAllResponsePayload,
   SearchResource,
   SearchResponsePayload,
   SubmitSearch,
@@ -225,7 +214,7 @@ describe('search sagas', () => {
         searchType: SearchType.FILTER,
         resourceFilters: { database: { hive: true } },
       });
-      const { search_term, resource } = searchState;
+      const { resource } = searchState;
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
         .next()
         .select(SearchUtils.getSearchState)
@@ -243,7 +232,7 @@ describe('search sagas', () => {
         resourceFilters: { database: { hive: true } },
         resource: ResourceType.table,
       });
-      const { search_term, resource } = searchState;
+
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
         .next()
         .select(SearchUtils.getSearchState)
@@ -271,7 +260,7 @@ describe('search sagas', () => {
     it('it update url if necessary with existing state values', () => {
       updateSearchUrlSpy.mockClear();
       const action = updateSearchState({ updateUrl: true });
-      const { search_term, resource } = searchState;
+
       testSaga(Sagas.updateSearchStateWorker, action)
         .next()
         .select(SearchUtils.getSearchState)
@@ -291,7 +280,7 @@ describe('search sagas', () => {
         filters: { [ResourceType.table]: { database: { bigquery: true } } },
         submitSearch: true,
       });
-      const { search_term, resource } = searchState;
+
       testSaga(Sagas.updateSearchStateWorker, action)
         .next()
         .select(SearchUtils.getSearchState)
@@ -417,7 +406,7 @@ describe('search sagas', () => {
     it('applies the existing search state into the URL', () => {
       updateSearchUrlSpy.mockClear();
 
-      testSaga(Sagas.loadPreviousSearchWorker, loadPreviousSearch())
+      testSaga(Sagas.loadPreviousSearchWorker)
         .next()
         .select(SearchUtils.getSearchState)
         .next(searchState)

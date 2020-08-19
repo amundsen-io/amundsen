@@ -8,7 +8,7 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import SchemaInfo from 'components/common/ResourceListItem/SchemaInfo';
-import { ResourceType, Badge, TagType } from 'interfaces';
+import { ResourceType, TagType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import BadgeList from 'components/common/BadgeList';
@@ -68,9 +68,8 @@ describe('TableListItem', () => {
     it('calls getSourceIconClass with given database id', () => {
       const testValue = 'noEffectOnTest';
       const givenResource = ResourceType.table;
-      const iconClass = wrapper
-        .instance()
-        .generateResourceIconClass(testValue, givenResource);
+
+      wrapper.instance().generateResourceIconClass(testValue, givenResource);
 
       expect(getDBIconClassSpy).toHaveBeenCalledWith(testValue, givenResource);
     });
@@ -129,7 +128,7 @@ describe('TableListItem', () => {
 
       describe('if props.table not have schema description', () => {
         it('if schema description is empty string', () => {
-          const { props, wrapper } = setup({
+          const { wrapper } = setup({
             table: {
               type: ResourceType.table,
               cluster: '',
@@ -149,7 +148,7 @@ describe('TableListItem', () => {
         });
 
         it('if schema description is null', () => {
-          const { props, wrapper } = setup({
+          const { wrapper } = setup({
             table: {
               type: ResourceType.table,
               cluster: '',
@@ -221,7 +220,7 @@ describe('TableListItem', () => {
 
       describe('if props.table does not have badges', () => {
         it('does not render badges section', () => {
-          const { props, wrapper } = setup({
+          const { wrapper } = setup({
             table: {
               type: ResourceType.table,
               cluster: '',
@@ -238,7 +237,7 @@ describe('TableListItem', () => {
         });
 
         it('or if they are empty does not render badges section', () => {
-          const { props, wrapper } = setup({
+          const { wrapper } = setup({
             table: {
               type: ResourceType.table,
               cluster: '',

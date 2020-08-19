@@ -6,7 +6,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import { ResourceType } from 'interfaces';
 
-import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
+import { getSourceDisplayName } from 'config/config-utils';
 
 import './styles.scss';
 
@@ -24,7 +24,6 @@ type GoToDashboardLinkProps = {
 
 const QUERY_LABEL = 'Query';
 const LINK_TOOLTIP_TEXT = 'View in';
-const LOADING_QUERY_MESSAGE = 'Loading Query Component, please wait...';
 
 const LazyComponent = React.lazy(() => import('./CodeBlock'));
 
