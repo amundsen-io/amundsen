@@ -1,11 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 
-import {
-  DashboardSearchResults,
-  TableSearchResults,
-  UserSearchResults,
-} from 'ducks/search/types';
-
 import globalState from 'fixtures/globalState';
 
 import { ResourceType, SearchType } from 'interfaces';

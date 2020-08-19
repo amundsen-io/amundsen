@@ -77,18 +77,21 @@ describe('ExploreButton', () => {
 
     it('returns null if explore is not enabled', () => {
       mockExploreEnabled = false;
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
+
       expect(wrapper.instance().render()).toBeNull();
     });
 
     it('returns null if the generated url is empty', () => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       mockExploreUrl = '';
+
       expect(wrapper.instance().render()).toBeNull();
     });
 
     it('renders a link to the explore URL', () => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
+
       expect(wrapper.find('a').props()).toMatchObject({
         href: mockExploreUrl,
         target: '_blank',

@@ -1,12 +1,10 @@
 import { ResourceType, SearchType } from 'interfaces';
 
 import * as NavigationUtils from 'utils/navigationUtils';
-import * as SearchUtils from 'ducks/search/utils';
 
 import globalState from 'fixtures/globalState';
-import * as API from '../api/v0';
 
-import * as filterReducer from '../filters/reducer';
+import * as filterReducer from './filters/reducer';
 
 import reducer, {
   getInlineResults,
@@ -30,7 +28,7 @@ import reducer, {
   updateFromInlineResult,
   updateSearchState,
   urlDidUpdate,
-} from '../reducer';
+} from './reducer';
 import {
   LoadPreviousSearch,
   InlineSearch,
@@ -42,7 +40,7 @@ import {
   SearchResponsePayload,
   SubmitSearch,
   UrlDidUpdate,
-} from '../types';
+} from './types';
 
 const MOCK_TABLE_FILTER_STATE = { database: { hive: true } };
 const MOCK_FILTER_STATE = {
@@ -52,7 +50,7 @@ const filterReducerSpy = jest
   .spyOn(filterReducer, 'default')
   .mockImplementation(() => MOCK_FILTER_STATE);
 
-const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
+jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;
 
 describe('search reducer', () => {
@@ -492,7 +490,8 @@ describe('search reducer', () => {
 
       it('calls filter reducer with existing filters', () => {
         filterReducerSpy.mockClear();
-        const result = reducer(initialState, filterAction);
+        reducer(initialState, filterAction);
+
         expect(filterReducerSpy).toHaveBeenCalledWith(
           initialState.filters,
           filterAction

@@ -5,15 +5,13 @@ import {
   PreviewQueryParams,
   TableMetadata,
   Tag,
-  UpdateMethod,
-  UpdateOwnerPayload,
   User,
 } from 'interfaces';
 
 import { dashboardSummary } from 'fixtures/metadata/dashboard';
 import globalState from 'fixtures/globalState';
 
-import * as API from '../api/v0';
+import * as API from './api/v0';
 
 import reducer, {
   getTableData,
@@ -31,11 +29,10 @@ import reducer, {
   getPreviewData,
   getPreviewDataFailure,
   getPreviewDataSuccess,
-  initialPreviewState,
   initialTableDataState,
   initialState,
   TableMetadataReducerState,
-} from '../reducer';
+} from './reducer';
 
 import {
   getTableDataWatcher,
@@ -50,7 +47,7 @@ import {
   updateColumnDescriptionWorker,
   getPreviewDataWatcher,
   getPreviewDataWorker,
-} from '../sagas';
+} from './sagas';
 
 import {
   GetTableData,
@@ -59,7 +56,7 @@ import {
   GetColumnDescription,
   UpdateColumnDescription,
   GetPreviewData,
-} from '../types';
+} from './types';
 
 describe('tableMetadata ducks', () => {
   let expectedData: TableMetadata;
@@ -68,7 +65,6 @@ describe('tableMetadata ducks', () => {
   let expectedStatus: number;
   let mockSuccess;
   let mockFailure;
-  let updatePayload: UpdateOwnerPayload[];
   let testKey: string;
   let testIndex: string;
   let testSource: string;
@@ -78,6 +74,7 @@ describe('tableMetadata ducks', () => {
   let newDescription: string;
   let previewData: PreviewData;
   let queryParams: PreviewQueryParams;
+
   beforeAll(() => {
     expectedData = globalState.tableMetadata.tableData;
     expectedOwners = {
@@ -96,8 +93,6 @@ describe('tableMetadata ducks', () => {
 
     mockSuccess = jest.fn().mockImplementation(() => {});
     mockFailure = jest.fn().mockImplementation(() => {});
-
-    updatePayload = [{ method: UpdateMethod.PUT, id: 'testId' }];
 
     testKey = 'tableKey';
     testIndex = '3';
@@ -443,7 +438,6 @@ describe('tableMetadata ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          const mockNewTableData: TableMetadata = initialTableDataState;
           sagaTest = (action) => {
             return testSaga(getTableDescriptionWorker, action)
               .next()
@@ -549,6 +543,7 @@ describe('tableMetadata ducks', () => {
         let sagaTest;
         beforeAll(() => {
           const mockNewTableData: TableMetadata = initialTableDataState;
+
           sagaTest = (action) => {
             return testSaga(getColumnDescriptionWorker, action)
               .next()
@@ -579,7 +574,6 @@ describe('tableMetadata ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          const mockNewTableData: TableMetadata = initialTableDataState;
           sagaTest = (action) => {
             return testSaga(getColumnDescriptionWorker, action)
               .next()

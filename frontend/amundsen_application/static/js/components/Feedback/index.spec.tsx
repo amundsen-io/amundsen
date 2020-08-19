@@ -9,13 +9,7 @@ import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
 import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
 import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
 import Feedback, { FeedbackProps, FeedbackType } from '.';
-import {
-  BUG_REPORT_TEXT,
-  BUTTON_CLOSE_TEXT,
-  FEEDBACK_TYPE_TEXT,
-  RATING_TEXT,
-  REQUEST_TEXT,
-} from './constants';
+import { BUG_REPORT_TEXT, RATING_TEXT, REQUEST_TEXT } from './constants';
 
 describe('Feedback', () => {
   const setStateSpy = jest.spyOn(Feedback.prototype, 'setState');
@@ -29,13 +23,13 @@ describe('Feedback', () => {
   };
 
   describe('constructor', () => {
-    let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
-      props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('sets state.isOpen to false', () => {
       expect(wrapper.state().isOpen).toEqual(false);
     });
@@ -52,22 +46,24 @@ describe('Feedback', () => {
   describe('toggle', () => {
     it('calls setState with negation of state.isOpen', () => {
       setStateSpy.mockClear();
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       const previsOpenState = wrapper.state().isOpen;
+
       wrapper.instance().toggle();
+
       expect(setStateSpy).toHaveBeenCalledWith({ isOpen: !previsOpenState });
     });
   });
 
   describe('changeType', () => {
-    let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
-      props = setupResult.props;
       wrapper = setupResult.wrapper;
       setStateSpy.mockClear();
     });
+
     it('returns method that calls setState with correct values if type === FeedbackType.Bug', () => {
       wrapper.instance().changeType(FeedbackType.Bug)();
       expect(setStateSpy).toHaveBeenCalledWith({
@@ -99,9 +95,9 @@ describe('Feedback', () => {
       let feedbackComponent;
       let props;
       let wrapper;
-
       let changeTypeSpy;
       let changeTypeMockResult;
+
       beforeAll(() => {
         const setupResult = setup({ title: 'I am a title' });
         props = setupResult.props;
@@ -116,6 +112,7 @@ describe('Feedback', () => {
         feedbackIcon = wrapper.children().at(0);
         feedbackComponent = wrapper.children().at(1);
       });
+
       it('renders help button with correct props', () => {
         expect(feedbackIcon.exists()).toBe(true);
         expect(feedbackIcon.props().className).toEqual(
@@ -322,13 +319,13 @@ describe('Feedback', () => {
     });
 
     describe('if !state.isOpen', () => {
-      let props;
       let wrapper;
+
       beforeAll(() => {
         const setupResult = setup();
-        props = setupResult.props;
         wrapper = setupResult.wrapper;
       });
+
       it('renders help button with correct props', () => {
         const feedbackIcon = wrapper.children().at(0);
         expect(feedbackIcon.exists()).toBe(true);
