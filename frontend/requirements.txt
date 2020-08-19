@@ -74,7 +74,7 @@ amundsen-common>=0.3.6,<1.0
 
 # Library for rest endpoints with Flask
 # Upstream url: https://github.com/flask-restful/flask-restful
-flask-restful==0.3.7
+flask-restful==0.3.8
 
 # SDK for JIRA
 jira==2.0.0
