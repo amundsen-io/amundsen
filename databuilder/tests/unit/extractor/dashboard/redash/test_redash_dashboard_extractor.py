@@ -5,7 +5,7 @@ import logging
 import unittest
 
 from mock import patch
-from pyhocon import ConfigFactory  # noqa: F401
+from pyhocon import ConfigFactory
 from typing import Any, Dict, List
 
 from databuilder import Scoped

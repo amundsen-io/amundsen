@@ -9,8 +9,8 @@ import google.oauth2.service_account
 import google_auth_httplib2
 from googleapiclient.discovery import build
 import httplib2
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Dict, Iterator, List  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any, Dict, Iterator, List
 
 from databuilder.extractor.base_extractor import Extractor
 

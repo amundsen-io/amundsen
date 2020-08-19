@@ -3,9 +3,9 @@
 
 import logging
 
-import requests  # noqa: F401
+import requests
 from jsonpath_rw import parse
-from typing import Any, Dict  # noqa: F401
+from typing import Any, Dict
 
 from databuilder.rest_api.rest_api_query import RestApiQuery
 

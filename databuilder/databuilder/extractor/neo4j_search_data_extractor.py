@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import textwrap
-from typing import Any  # noqa: F401
+from typing import Any
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor

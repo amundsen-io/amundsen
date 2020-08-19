@@ -7,9 +7,9 @@ from datetime import datetime
 from functools import wraps
 from multiprocessing.pool import ThreadPool
 
-from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
+from pyhocon import ConfigFactory, ConfigTree
 from pytz import UTC
-from typing import Iterator, Union, Any, List  # noqa: F401
+from typing import Iterator, Union, Any, List
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor

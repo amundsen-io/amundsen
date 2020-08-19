@@ -11,12 +11,12 @@ from os import listdir
 from os.path import isfile, join
 from string import Template
 
-from neo4j import GraphDatabase, Transaction  # noqa: F401
+from neo4j import GraphDatabase, Transaction
 import neo4j
 from neo4j.exceptions import CypherError
-from pyhocon import ConfigFactory  # noqa: F401
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Set, List  # noqa: F401
+from pyhocon import ConfigFactory
+from pyhocon import ConfigTree
+from typing import Set, List
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
@@ -133,7 +133,7 @@ class Neo4jCsvPublisher(Publisher):
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(DEFAULT_CONFIG)
 
-        self._count = 0  # type: int
+        self._count: int = 0
         self._progress_report_frequency = conf.get_int(NEO4J_PROGRESS_REPORT_FREQUENCY)
         self._node_files = self._list_files(conf, NODE_FILES_DIR)
         self._node_files_iter = iter(self._node_files)
@@ -156,8 +156,8 @@ class Neo4jCsvPublisher(Publisher):
         # config is list of node label.
         # When set, this list specifies a list of nodes that shouldn't be updated, if exists
         self.create_only_nodes = set(conf.get_list(NEO4J_CREATE_ONLY_NODES, default=[]))
-        self.labels = set()  # type: Set[str]
-        self.publish_tag = conf.get_string(JOB_PUBLISH_TAG)  # type: str
+        self.labels: Set[str] = set()
+        self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
         if not self.publish_tag:
             raise Exception('{} should not be empty'.format(JOB_PUBLISH_TAG))
 

@@ -7,8 +7,8 @@ import logging
 import datetime
 import textwrap
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any, Dict, Iterator, List, Tuple, Union  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any, Dict, Iterator, List, Tuple, Union
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor, DatasetRef
 from databuilder.models.watermark import Watermark

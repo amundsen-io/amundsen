@@ -3,7 +3,7 @@
 
 import atexit
 
-from typing import Callable, List  # noqa: F401
+from typing import Callable, List
 
 
 class Closer(object):

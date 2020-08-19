@@ -3,9 +3,9 @@
 
 import importlib
 import logging
-from typing import Any, Iterator, Union  # noqa: F401
+from typing import Any, Iterator, Union
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
 from neo4j import GraphDatabase
 import neo4j
 

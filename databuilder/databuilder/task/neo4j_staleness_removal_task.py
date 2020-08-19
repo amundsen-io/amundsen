@@ -5,14 +5,14 @@ import logging
 import textwrap
 import time
 
-from neo4j import GraphDatabase  # noqa: F401
+from neo4j import GraphDatabase
 import neo4j
-from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
-from typing import Dict, Iterable, Any, List  # noqa: F401
+from pyhocon import ConfigFactory, ConfigTree
+from typing import Any, Dict, Iterable
 
 from databuilder import Scoped
 from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
-from databuilder.task.base_task import Task  # noqa: F401
+from databuilder.task.base_task import Task
 
 # A end point for Neo4j e.g: bolt://localhost:9999
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'
@@ -182,9 +182,11 @@ class Neo4jStalenessRemovalTask(Task):
                     break
             LOGGER.info('Deleted {} stale data of {}'.format(total_count, t))
 
-    def _validate_staleness_pct(self, total_records, stale_records, types):
-        # type: (Iterable[Dict[str, Any]], Iterable[Dict[str, Any]], Iterable[str]) -> None
-
+    def _validate_staleness_pct(self,
+                                total_records: Iterable[Dict[str, Any]],
+                                stale_records: Iterable[Dict[str, Any]],
+                                types: Iterable[str]
+                                ) -> None:
         total_count_dict = {record['type']: int(record['count']) for record in total_records}
 
         for record in stale_records:
@@ -204,9 +206,7 @@ class Neo4jStalenessRemovalTask(Task):
                 raise Exception('Staleness percentage of {} is {} %. Stopping due to over threshold {} %'
                                 .format(type_str, stale_pct, threshold))
 
-    def _validate_node_staleness_pct(self):
-        # type: () -> None
-
+    def _validate_node_staleness_pct(self) -> None:
         total_nodes_statement = textwrap.dedent("""
         MATCH (n)
         WITH DISTINCT labels(n) as node, count(*) as count
@@ -229,8 +229,7 @@ class Neo4jStalenessRemovalTask(Task):
                                      stale_records=stale_records,
                                      types=self.target_nodes)
 
-    def _validate_relation_staleness_pct(self):
-        # type: () -> None
+    def _validate_relation_staleness_pct(self) -> None:
         total_relations_statement = textwrap.dedent("""
         MATCH ()-[r]-()
         RETURN type(r) as type, count(*) as count;

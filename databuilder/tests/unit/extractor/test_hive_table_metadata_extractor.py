@@ -6,7 +6,7 @@ import unittest
 
 from mock import patch, MagicMock
 from pyhocon import ConfigFactory
-from typing import Any, Dict  # noqa: F401
+from typing import Any, Dict
 
 from databuilder.extractor.hive_table_metadata_extractor import HiveTableMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
@@ -225,8 +225,7 @@ class TestHiveTableMetadataExtractorWithWhereClause(unittest.TestCase):
             extractor.init(self.conf)
             self.assertTrue(self.where_clause_suffix in extractor.sql_stmt)
 
-    def test_hive_sql_statement_with_custom_sql(self):
-        # type: () -> None
+    def test_hive_sql_statement_with_custom_sql(self) -> None:
         """
         Test Extraction by providing a custom sql
         :return:

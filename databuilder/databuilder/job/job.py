@@ -3,14 +3,14 @@
 
 import logging
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 from statsd import StatsClient
 
 from databuilder import Scoped
 from databuilder.job.base_job import Job
 from databuilder.publisher.base_publisher import NoopPublisher
-from databuilder.publisher.base_publisher import Publisher  # noqa: F401
-from databuilder.task.base_task import Task  # noqa: F401
+from databuilder.publisher.base_publisher import Publisher
+from databuilder.task.base_task import Task
 
 LOGGER = logging.getLogger(__name__)
 

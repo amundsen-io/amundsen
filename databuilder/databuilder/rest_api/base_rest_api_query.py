@@ -4,7 +4,7 @@
 import abc
 import logging
 
-from typing import Iterable, Any, Dict, Iterator  # noqa: F401
+from typing import Iterable, Any, Dict, Iterator
 
 LOGGER = logging.getLogger(__name__)
 

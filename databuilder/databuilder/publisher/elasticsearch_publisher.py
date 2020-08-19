@@ -5,8 +5,8 @@ import json
 import logging
 
 from elasticsearch.exceptions import NotFoundError
-from pyhocon import ConfigTree  # noqa: F401
-from typing import List  # noqa: F401
+from pyhocon import ConfigTree
+from typing import List
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.elasticsearch_constants import TABLE_ELASTICSEARCH_INDEX_MAPPING

@@ -10,7 +10,7 @@ from os import listdir
 from os.path import isfile, join
 
 from pyhocon import ConfigFactory
-from typing import Dict, Iterable, Any, Callable  # noqa: F401
+from typing import Dict, Iterable, Any, Callable
 
 from databuilder.job.base_job import Job
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader

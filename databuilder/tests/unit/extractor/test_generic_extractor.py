@@ -3,7 +3,7 @@
 
 import unittest
 
-from pyhocon import ConfigFactory  # noqa: F401
+from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.generic_extractor import GenericExtractor

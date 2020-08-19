@@ -3,7 +3,7 @@
 
 import abc
 
-from typing import Dict, Set, Any, Union  # noqa: F401
+from typing import Dict, Set, Any, Union
 
 NODE_KEY = 'KEY'
 NODE_LABEL = 'LABEL'

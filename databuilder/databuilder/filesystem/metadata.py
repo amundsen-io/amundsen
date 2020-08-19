@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from datetime import datetime  # noqa: F401
+from datetime import datetime
 
 
 class FileMetadata(object):

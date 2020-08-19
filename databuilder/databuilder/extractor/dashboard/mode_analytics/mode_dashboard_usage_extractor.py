@@ -3,13 +3,13 @@
 
 import logging
 
-from pyhocon import ConfigTree  # noqa: F401
-from typing import Any  # noqa: F401
+from pyhocon import ConfigTree
+from typing import Any
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
-from databuilder.rest_api.rest_api_query import RestApiQuery  # noqa: F401
+from databuilder.rest_api.rest_api_query import RestApiQuery
 
 LOGGER = logging.getLogger(__name__)
 

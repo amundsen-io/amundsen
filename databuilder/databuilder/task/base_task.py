@@ -3,7 +3,7 @@
 
 import abc
 
-from pyhocon import ConfigTree  # noqa: F401
+from pyhocon import ConfigTree
 
 from databuilder import Scoped
 

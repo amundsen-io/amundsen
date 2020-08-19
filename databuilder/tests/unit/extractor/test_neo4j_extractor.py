@@ -5,7 +5,7 @@ import unittest
 
 from mock import patch
 from pyhocon import ConfigFactory
-from typing import Any  # noqa: F401
+from typing import Any
 
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor

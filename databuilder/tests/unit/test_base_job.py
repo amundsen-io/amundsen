@@ -7,8 +7,8 @@ import tempfile
 import unittest
 from mock import patch
 
-from pyhocon import ConfigTree, ConfigFactory  # noqa: F401
-from typing import Any  # noqa: F401
+from pyhocon import ConfigTree, ConfigFactory
+from typing import Any
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.job.job import DefaultJob
