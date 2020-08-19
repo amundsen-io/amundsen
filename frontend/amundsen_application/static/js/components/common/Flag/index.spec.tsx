@@ -60,8 +60,8 @@ describe('Flag', () => {
       expect(convertText(text, 'not a valid options')).toEqual(text);
     });
 
-    it('returns empty strings for null values', () => {
-      expect(convertText(null, CaseType.SENTENCE_CASE)).toEqual('');
+    it('returns empty strings for undefined values', () => {
+      expect(convertText(undefined, CaseType.SENTENCE_CASE)).toEqual('');
     });
   });
 });

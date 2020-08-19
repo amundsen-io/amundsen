@@ -10,7 +10,7 @@ TODO: Coupling the shape of the search state and search response requires the us
 Partial to resolve errors, removing type safty of these methods. We should
 restructure any logic that takes of advantage of the case where the shape of the response
 and the shape of the state happend to be the same because a piece of application state
-can be the combination of multiple responses. 
+can be the combination of multiple responses.
 */
 
 export const getPageIndex = (
