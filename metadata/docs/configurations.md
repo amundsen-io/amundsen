@@ -2,14 +2,12 @@ Most of the configurations are set through Flask [Config Class](https://github.c
 
 #### USER_DETAIL_METHOD `OPTIONAL`
 This is a method that can be used to get the user details from any third-party or custom system.
-This custom function takes user_id  as a parameter, and returns a tuple consisting user details defined in [UserSchema](https://github.com/lyft/amundsencommon/blob/master/amundsen_common/models/user.py) along with the status code. 
+This custom function takes user_id as a parameter, and returns a dictionary consisting user details' fields defined in [UserSchema](https://github.com/lyft/amundsencommon/blob/master/amundsen_common/models/user.py). 
 
 Example:
 ```python
 
 def get_user_details(user_id):
-    from amundsen_common.models.user import UserSchema
-    from http import HTTPStatus
     user_info = {
         'email': 'test@email.com',
         'user_id': user_id,
@@ -17,7 +15,7 @@ def get_user_details(user_id):
         'last_name': 'Lastname',
         'full_name': 'Firstname Lastname',
     }
-    return UserSchema().dump(user_info).data, HTTPStatus.OK
+    return user_info
 
 USER_DETAIL_METHOD = get_user_details
 ```
