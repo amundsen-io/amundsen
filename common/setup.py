@@ -9,9 +9,9 @@ setup(
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/lyft/amundsencommon',
-    maintainer='Lyft',
-    maintainer_email='amundsen-dev@lyft.com',
+    url='https://github.com/amundsen-io/amundsencommon',
+    maintainer='Amundsen TSC',
+    maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
     dependency_links=[],
     install_requires=[
