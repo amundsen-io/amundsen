@@ -18,6 +18,12 @@ $icon-size: 14px;
   vertical-align: middle;
 }
 
+.failure,
+.success {
+  display: inline-block;
+  margin-left: $spacer-1;
+}
+
 .failure-icon {
   background-color: $icon-status-missed;
 

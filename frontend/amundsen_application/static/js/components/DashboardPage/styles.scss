@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography-default';
 
 .dashboard-page {
   .header-section {
@@ -15,8 +16,12 @@
   }
 
   .last-run-state {
-    .flag {
-      margin: $spacer-1 0 0 0;
+    margin-top: $spacer-1;
+    .status {
+      @extend %text-body-w2;
+  
+      display: inline-block;
+      vertical-align: middle;
     }
   }
 
