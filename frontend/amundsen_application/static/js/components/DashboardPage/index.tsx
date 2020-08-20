@@ -184,7 +184,7 @@ export class DashboardPage extends React.Component<
             />
           </div>
           <div className="header-section header-title">
-            <h1 className="h3 header-title-text truncated">{dashboard.name}</h1>
+            <h1 className="header-title-text truncated">{dashboard.name}</h1>
             <BookmarkIcon
               bookmarkKey={dashboard.uri}
               resourceType={ResourceType.dashboard}

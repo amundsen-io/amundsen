@@ -90,6 +90,25 @@ We strive to keep our application accessible. For that, we use the 'airbnb-types
 
 We also try to model our application's markup on best practices regarding semantic markup. If you are making large markup changes on one of your PRs, make sure your changes comply with this [HTML semantics checklist][semanticchecklist].
 
+### Typography
+
+In the past, we have used several classes to set the styling of our heading and body text. Nowadays, we recommend to use classes in our stylesheets for each component, and extend those classes with the proper text styling by using an `@extend` to a placehoder selector:
+
+```scss
+@import "variables";
+@import "typography";
+
+.header-title-text {
+  @extend %text-headline-w2;
+}
+
+.header-subtitle-text {
+  @extend %text-subtitle-w3;
+}
+```
+
+You can find the complete list of placeholder selectors for text in [this file](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_typography-default.scss#L12). In the cases were a text class works best, you can use their equivalent classes.
+
 [eslint]: https://eslint.org/
 [eslintconfig]: https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/package.json#L242
 [stylelint]: https://stylelint.io/

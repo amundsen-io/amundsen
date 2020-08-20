@@ -1,5 +1,5 @@
 @import 'variables';
-@import 'typography-default';
+@import 'typography';
 
 $shimmer-loader-items: 1, 2, 3, 4, 5;
 $shimmer-loader-row-height: 16px;
@@ -86,10 +86,9 @@ $card-copy-max-lines: 3;
 
 @each $line in $shimmer-loader-items {
   .shimmer-row-line--#{$line} {
-    width:
-      (
+    width: (
         random($shimmer-loader-row-max-width - $shimmer-loader-row-min-width) +
-        $shimmer-loader-row-min-width
+          $shimmer-loader-row-min-width
       ) +
       px;
   }
