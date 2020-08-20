@@ -33,6 +33,15 @@ class TestTimestampStrToEpoch(unittest.TestCase):
         actual = transformer.transform({'foo': '2020-02-19T19:52:33Z'})
         self.assertDictEqual({'foo': 1582141953}, actual)
 
+    def test_invalid_timestamp(self) -> None:
+        transformer = TimestampStringToEpoch()
+        config = ConfigFactory.from_dict({
+            FIELD_NAME: 'foo',
+        })
+        transformer.init(conf=config)
+        actual = transformer.transform({'foo': '165de33266d4'})
+        self.assertEquals(actual['foo'], 0)
+
 
 if __name__ == '__main__':
     unittest.main()

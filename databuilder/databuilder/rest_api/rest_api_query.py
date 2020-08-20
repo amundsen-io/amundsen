@@ -153,7 +153,7 @@ class RestApiQuery(BaseRestApiQuery):
                 result_list: List[Any] = [match.value for match in self._jsonpath_expr.find(response_json)]
 
                 if not result_list:
-                    log_msg = 'No result from URL: {url}  , JSONPATH: {json_path} , response payload: {response}' \
+                    log_msg = 'No result from URL: {url}, JSONPATH: {json_path} , response payload: {response}' \
                         .format(url=self._url, json_path=self._json_path, response=response_json)
                     LOGGER.info(log_msg)
 
@@ -172,6 +172,9 @@ class RestApiQuery(BaseRestApiQuery):
                                                                 json_path_contains_or=self._json_path_contains_or)
 
                 for sub_record in sub_records:
+                    if not sub_record or len(sub_record) != len(self._field_names):
+                        # skip the record
+                        continue
                     record_dict = copy.deepcopy(record_dict)
                     for field_name in self._field_names:
                         record_dict[field_name] = sub_record.pop(0)

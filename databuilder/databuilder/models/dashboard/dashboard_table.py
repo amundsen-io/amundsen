@@ -57,7 +57,7 @@ class DashboardTable(Neo4jCsvSerializable):
 
     def _create_relation_iterator(self) -> Optional[Iterator[Dict[str, Any]]]:
         for table_id in self._table_ids:
-            m = re.match('(\w+)://(\w+)\.(\w+)\/(\w+)', table_id)
+            m = re.match('([^./]+)://([^./]+)\.([^./]+)\/([^./]+)', table_id)
             if m:
                 yield {
                     RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,

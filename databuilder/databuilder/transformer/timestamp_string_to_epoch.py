@@ -34,7 +34,12 @@ class TimestampStringToEpoch(Transformer):
         if not timestamp_str:
             return record
 
-        utc_dt = datetime.strptime(timestamp_str, self._timestamp_format)
+        try:
+            utc_dt = datetime.strptime(timestamp_str, self._timestamp_format)
+        except ValueError:
+            # if the timestamp_str doesn't match format, no conversion, return initial result
+            record[self._field_name] = 0
+            return record
 
         record[self._field_name] = int((utc_dt - datetime(1970, 1, 1)).total_seconds())
         return record
