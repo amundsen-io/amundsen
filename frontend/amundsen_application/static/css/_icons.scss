@@ -29,6 +29,10 @@ $users: (
   users: '/static/images/icons/users.svg',
 );
 
+$check: (
+  check: '/static/images/icons/check.svg',
+);
+
 // Given a Map of key/value pairs, generates a new class
 @mixin iconBackgrounds($map) {
   @each $name, $url in $map {
@@ -43,6 +47,7 @@ span.icon {
   @include iconBackgrounds($data-stores);
   @include iconBackgrounds($dashboards);
   @include iconBackgrounds($users);
+  @include iconBackgrounds($check);
 
   background-color: $icon-bg;
   border: none;
@@ -55,6 +60,8 @@ span.icon {
 }
 
 img.icon {
+  /*DEPRECATED: follow behavior above to generate
+  icons*/
   background-color: $icon-bg;
   border: none;
   height: $icon-size;

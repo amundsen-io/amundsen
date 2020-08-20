@@ -43,6 +43,7 @@ import {
   FOOTER_TEXT_PREFIX,
   GITHUB_LINK_TEXT,
   ITEMS_PER_PAGE,
+  NOT_ACTIVE_USER_TEXT,
   OWNED_LABEL,
   OWNED_SOURCE,
   OWNED_TITLE_PREFIX,
@@ -213,16 +214,7 @@ export class ProfilePage extends React.Component<
       );
     } else {
       userName = (
-        <h1 className="h3 header-title-text truncated">
-          {user.display_name}
-          {!user.is_active && (
-            <Flag
-              caseType="sentenceCase"
-              labelStyle={BadgeStyle.DANGER}
-              text="Alumni"
-            />
-          )}
-        </h1>
+        <h1 className="h3 header-title-text truncated">{user.display_name}</h1>
       );
     }
 
@@ -238,6 +230,7 @@ export class ProfilePage extends React.Component<
             {user.manager_fullname && (
               <li id="user-manager">{`Manager: ${user.manager_fullname}`}</li>
             )}
+            {!user.is_active && <li id="alumni">{NOT_ACTIVE_USER_TEXT}</li>}
           </ul>
         </div>
       );

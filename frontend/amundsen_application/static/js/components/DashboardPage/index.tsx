@@ -13,7 +13,6 @@ import * as ReactMarkdown from 'react-markdown';
 import AvatarLabel from 'components/common/AvatarLabel';
 import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
-import Flag from 'components/common/Flag';
 import EditableSection from 'components/common/EditableSection';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import TabsComponent from 'components/common/TabsComponent';
@@ -25,15 +24,16 @@ import { DashboardMetadata } from 'interfaces/Dashboard';
 import DashboardOwnerEditor from 'components/DashboardPage/DashboardOwnerEditor';
 import QueryList from 'components/DashboardPage/QueryList';
 import ChartList from 'components/DashboardPage/ChartList';
+import ResourceStatusMarker from 'components/common/ResourceStatusMarker';
 import { formatDateTimeShort } from 'utils/dateUtils';
 import ResourceList from 'components/common/ResourceList';
 import {
   ADD_DESC_TEXT,
   EDIT_DESC_TEXT,
-  DASHBOARD_SOURCE,
-  LAST_RUN_SUCCEEDED,
   OWNER_HEADER_TEXT,
+  DASHBOARD_SOURCE,
   TABLES_PER_PAGE,
+  LAST_RUN_SUCCEEDED,
 } from 'components/DashboardPage/constants';
 import TagInput from 'components/common/Tags/TagInput';
 import { ResourceType } from 'interfaces';
@@ -109,11 +109,11 @@ export class DashboardPage extends React.Component<
     }
   }
 
-  mapStatusToStyle = (status: string): BadgeStyle => {
+  mapStatusToBoolean = (status: string): boolean => {
     if (status === LAST_RUN_SUCCEEDED) {
-      return BadgeStyle.SUCCESS;
+      return true;
     }
-    return BadgeStyle.DANGER;
+    return false;
   };
 
   renderTabs() {
@@ -304,10 +304,9 @@ export class DashboardPage extends React.Component<
                         : NO_TIMESTAMP_TEXT}
                     </time>
                     <div className="last-run-state">
-                      <Flag
-                        caseType="sentenceCase"
-                        text={dashboard.last_run_state}
-                        labelStyle={this.mapStatusToStyle(
+                      <ResourceStatusMarker
+                        stateText={dashboard.last_run_state}
+                        succeeded={this.mapStatusToBoolean(
                           dashboard.last_run_state
                         )}
                       />

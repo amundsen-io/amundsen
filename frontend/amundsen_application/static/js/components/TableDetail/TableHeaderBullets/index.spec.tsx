@@ -15,6 +15,7 @@ import TableHeaderBullets, { TableHeaderBulletsProps } from '.';
 
 const MOCK_RESOURCE_DISPLAY_NAME = 'Test';
 const MOCK_DB_DISPLAY_NAME = 'AlsoTest';
+const TABLE_VIEW_TEXT = 'table view';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(),
@@ -26,6 +27,7 @@ describe('TableHeaderBullets', () => {
     const props: TableHeaderBulletsProps = {
       database: 'hive',
       cluster: 'main',
+      isView: true,
       ...propOverrides,
     };
     const wrapper = shallow(<TableHeaderBullets {...props} />);
@@ -70,6 +72,10 @@ describe('TableHeaderBullets', () => {
 
     it('renders a list with cluster', () => {
       expect(listElement.find('li').at(2).text()).toEqual(props.cluster);
+    });
+
+    it('renders a list with table view', () => {
+      expect(listElement.find('li').at(3).text()).toEqual(TABLE_VIEW_TEXT);
     });
   });
 });
