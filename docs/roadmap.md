@@ -19,12 +19,33 @@ The following roadmap gives an overview of what we are currently working on and 
 
 *Status*: tech spec out
 
-#### Integrate with data quality system
+#### Integrate with Data Quality system
 *What*: Integrate with different data quality systems to provide quality score.
 
 *Status*: planning
 
 ## Mid Term - Our Next steps
+#### Improve search ranking
+*What*: Update search ranking to be informed by "badges" that may exist on data sets e.g. deprecated, etc.
+
+*Status*: planning
+
+#### Notifications when a table evolves
+*What*: Notify users in Amundsen (akin to Facebook notifications or similar) when a table evolves. Owners of data and consumers of data will likely need to be notified of different things.
+
+*Status*: planning has not started 
+
+#### Commonly joined tables / browsing the data model
+*What*: As a data user, I would like to see commonly joined tables and how to join them.
+One option would be to show commonly joined tables and showing example join queries. Another option would be to provide a navigational experience for data model, showing foreign keys and which tables they come from.
+
+*Status*: planning has not started 
+
+#### Curated navigation experience
+*What*: Currently Amundsen's experience is very focussed on search. However, especially for new users, an experience where they are able to navigate through the data hierarchy is very important. This item proposes to revamp the navigational experience in Amundsen (currently, barebones - based on tags) to do justice to the user need to browse through data sets when they don't know what to even search for.
+
+*Status*: planning
+
 #### Push ingest API
 *What*: We want to create a push API so that it is as easy as possible for a new data resource type to be ingested  
 
@@ -34,11 +55,6 @@ The following roadmap gives an overview of what we are currently working on and 
 *What*: enable users to access our data map programmatically through a Rest API  
 
 *Status*: implementation has started  
-
-#### Index S3 buckets
-*What*: add these new resource types to our data map and create resource pages for them  
-
-*Status*:  implementation has not started
 
 #### Granular Access Control
 *What*: we want to have a more granular control of the access. For example, only certain types of people would be able to see certain types of metadata/functionality  
@@ -55,13 +71,13 @@ The following roadmap gives an overview of what we are currently working on and 
 
 *Status*: implementation has not started  
 
-#### Index Processes
-*What*: we want to index ETLs and pipelines from our Machine Learning Engine  
+#### Versioning system
+*What*: We want to create a versioning system for our indexed resources, to be able to index different versions of the same resource. This is especially required for machine learning purposes.  
 
 *Status*: implementation has not started  
 
-#### Versioning system
-*What*: We want to create a versioning system for our indexed resources, to be able to index different versions of the same resource. This is especially required for machine learning purposes.  
+#### Index Processes
+*What*: we want to index ETLs and pipelines from our Machine Learning Engine  
 
 *Status*: implementation has not started  
 
@@ -74,6 +90,11 @@ The following roadmap gives an overview of what we are currently working on and 
 *What*: With our microservices architecture, we want to index services and show how these services interact with data artifacts
 
 *Status*: implementation has not started
+
+#### Index S3 buckets
+*What*: add these new resource types to our data map and create resource pages for them  
+
+*Status*:  implementation has not started
 
 #### Index Pub/Sub systems
 *What*: We want to make our pub/sub systems discoverable
