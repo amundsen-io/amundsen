@@ -64,7 +64,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
         <main className="container announcement-container">
           <div className="row">
             <div className="col-xs-12 col-md-10 col-md-offset-1">
-              <h1 id="announcement-header" className="h3">
+              <h1 id="announcement-header" className="announcement-header">
                 {ANNOUNCEMENTS_HEADER_TEXT}
               </h1>
               <hr />

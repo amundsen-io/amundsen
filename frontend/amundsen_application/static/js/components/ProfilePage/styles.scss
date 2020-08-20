@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
 $shimmer-loader-circle-size: 40px;
 $shimmering-line-height: 16px;
@@ -29,6 +30,10 @@ $shimmering-link-width: 100px;
 
   .resource-list:last-child {
     margin-bottom: $spacer-3;
+  }
+
+  .header-title-text {
+    @extend %text-headline-w2;
   }
 
   .shimmering-circle {

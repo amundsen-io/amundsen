@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
 .table-detail {
   .column-layout-1 .left-panel {
@@ -15,6 +16,10 @@
       border: 1px solid $gray15;
       margin: 10px 0 4px;
     }
+  }
+
+  .header-title-text {
+    @extend %text-headline-w2;
   }
 
   .header-links {

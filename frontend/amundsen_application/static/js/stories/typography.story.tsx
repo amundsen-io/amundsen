@@ -16,13 +16,6 @@ export const Typography = () => {
       <h5>Raw h5</h5>
       <h6>Raw h6</h6>
       <hr />
-      <h1 className="h1">Heading with .h1</h1>
-      <h2 className="h2">Heading with .h2</h2>
-      <h3 className="h3">Heading with .h3</h3>
-      <h4 className="h4">Heading with .h4</h4>
-      <h5 className="h5">Heading with .h5</h5>
-      <h6 className="h6">Heading with .h6</h6>
-      <hr />
       <h1 className="title-1">Heading with .title-1</h1>
       <h1 className="title-2">Heading with .title-2</h1>
       <h1 className="title-3">Heading with .title-3</h1>

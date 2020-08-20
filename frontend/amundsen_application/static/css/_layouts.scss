@@ -29,9 +29,6 @@ $screen-lg-container: 1440px;
 
         .header-title-text {
           display: inline-block;
-          // Better align the header-title-text
-          // (84px header height - 32px vertical padding - 2px border - 20px subtitle line-height) = 30px
-          line-height: 30px;
           max-width: calc(100% - 100px);
         }
       }
