@@ -31,3 +31,30 @@ class TestDashboardTable(unittest.TestCase):
                     RELATION_REVERSE_TYPE: 'TABLE_OF_DASHBOARD'}
         assert actual is not None
         self.assertDictEqual(actual, expected)
+
+    def test_dashboard_table_without_dot_as_name(self) -> None:
+        dashboard_table = DashboardTable(table_ids=['bq-name://project-id.schema-name/table-name'],
+                                         cluster='cluster_id', product='product_id',
+                                         dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
+        actual = dashboard_table.create_next_relation()
+        expected = {RELATION_END_KEY: 'bq-name://project-id.schema-name/table-name', RELATION_START_LABEL: 'Dashboard',
+                    RELATION_END_LABEL: 'Table',
+                    RELATION_START_KEY: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+                    RELATION_TYPE: 'DASHBOARD_WITH_TABLE',
+                    RELATION_REVERSE_TYPE: 'TABLE_OF_DASHBOARD'}
+        assert actual is not None
+        self.assertDictEqual(actual, expected)
+
+    def test_dashboard_table_with_dot_as_name(self) -> None:
+        dashboard_table = DashboardTable(table_ids=['bq-name://project.id.schema-name/table-name'],
+                                         cluster='cluster_id', product='product_id',
+                                         dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
+        actual = dashboard_table.create_next_relation()
+        self.assertIsNone(actual)
+
+    def test_dashboard_table_with_slash_as_name(self) -> None:
+        dashboard_table = DashboardTable(table_ids=['bq/name://project/id.schema/name/table/name'],
+                                         cluster='cluster_id', product='product_id',
+                                         dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
+        actual = dashboard_table.create_next_relation()
+        self.assertIsNone(actual)
