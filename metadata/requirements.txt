@@ -28,7 +28,7 @@ mock==2.0.0
 # Mypy is an optional static type checker for Python.
 # License: MIT
 # Upstream url: https://github.com/python/mypy
-mypy==0.660
+mypy==0.782
 
 # Thin-wrapper around the mock package for easier use with py.test.
 # License: MIT
@@ -60,7 +60,7 @@ marshmallow-annotations==2.4.0
 MarkupSafe==1.1 
 pytz==2018.4
 six==1.11.0
-Werkzeug==0.15.3
+Werkzeug==0.15.5
 wheel==0.33.1
 neo4j==1.7.6
 neotime==1.7.1
@@ -72,3 +72,4 @@ beaker>=1.10.0
 mocket==3.7.3
 overrides==2.5
 websocket-client==0.56.0
+typed-ast==1.4.1
