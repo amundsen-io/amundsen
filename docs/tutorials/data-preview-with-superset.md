@@ -41,7 +41,7 @@ that can be used for data exploration and it is what we leverage internally at L
 3. We could verify the content of the `films` table using superset's sqlab feature:
 ![](../img/tutorials/superset-sqllab-verify.png)
 
-4. Next, We need to build a preview client following this [guide](../frontend/docs/examples/superset_preview_client.md)
+4. Next, We need to build a preview client following this [guide](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/examples/superset_preview_client.md)
 and the [example client code](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/base/examples/example_superset_preview_client.py).
 There are a couple of things to keep in mind:
     - We could start with an unauthenticated Superset([example superset config](https://gist.github.com/feng-tao/b89e6faf7236372cef70a44f13615c39)),
