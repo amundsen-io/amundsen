@@ -8,6 +8,11 @@
 
 // Placeholder selectors
 // Ref: http://thesassway.com/intermediate/understanding-placeholder-selectors
+//
+// Example of use:
+// .header-title-text {
+//   @extend %text-headline-w2;
+// }
 
 %text-headline-w1 {
   font-family: $text-heading-font-family;
