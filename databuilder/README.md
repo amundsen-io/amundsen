@@ -656,6 +656,180 @@ def parse_tables(viz_widget: RedashVisualiationWidget) -> Iterator[TableRelation
 	return []
 ```
 
+### [TableauDashboardExtractor](./databuilder/extractor/dashboard/tableau/tableau_dashboard_extractor.py)
+
+The included `TableauDashboardExtractor` provides support for extracting basic metadata for Tableau workbooks. All Tableau extractors including this one use the [Tableau Metadata GraphQL API](https://help.tableau.com/current/api/metadata_api/en-us/index.html) to gather the metadata. Tableau "workbooks" are mapped to Amundsen dashboards, and the top-level project in which these workbooks preside is the dashboard group. The metadata it gathers is as follows:
+- Dashboard name (Workbook name)
+- Dashboard description (Workbook description)
+- Dashboard creation timestamp (Workbook creation timestamp)
+- Dashboard group name (Workbook top-level folder name)
+- Dashboard and dashboard group URL
+
+If you wish to exclude top-level projects from being loaded, specify their names in the `tableau_excluded_projects` list and workbooks from any of those projects will not be indexed.
+
+Tableau's concept of "owners" does not map cleanly into Amundsen's understanding of owners, as the owner of a Tableau workbook is simply whoever updated it last, even if they made a very small change. This can prove problematic in determining the true point of contact for a workbook, so it's simply omitted for now. Similarly, the hierachy of `dashboard/query/chart` in Amundsen does not map into Tableau, where `charts` have only an optional relation to queries and vice versa. For these reasons, there are not extractors for either entity.
+
+The Tableau Metadata API also does not support usage or execution statistics, so there are no extractors for these entities either.
+
+Sample job config:
+```python
+extractor = TableauDashboardExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+    'extractor.tableau_dashboard_metadata.tableau_host': tableau_host,
+    'extractor.tableau_dashboard_metadata.api_version': tableau_api_version,
+    'extractor.tableau_dashboard_metadata.site_name': tableau_site_name,
+    'extractor.tableau_dashboard_metadata.tableau_personal_access_token_name': tableau_personal_access_token_name,
+    'extractor.tableau_dashboard_metadata.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
+    'extractor.tableau_dashboard_metadata.excluded_projects': tableau_excluded_projects,
+    'extractor.tableau_dashboard_metadata.cluster': tableau_dashboard_cluster,
+    'extractor.tableau_dashboard_metadata.database': tableau_dashboard_database,
+    'extractor.tableau_dashboard_metadata.transformer.timestamp_str_to_epoch.timestamp_format': "%Y-%m-%dT%H:%M:%SZ",
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+### [TableauDashboardTableExtractor](./databuilder/extractor/dashboard/tableau/tableau_dashboard_table_extractor.py)
+
+The included `TableauDashboardTableExtractor` provides support for extracting table metadata from Tableau workbooks. The extractor assumes all the table entities have already been created; if you are interested in using the provided `TableauExternalTableExtractor`, make sure that job runs before this one, as it will create the tables required by this job. It also assumes that the dashboards are using their names as the primary ID.
+
+A sample job config is shown below. Configuration related to the loader and publisher is omitted as it is mostly the same. Please take a look at this [example](#TableauDashboardExtractor) for the configuration that holds loader and publisher.
+
+```python
+extractor = TableauDashboardTableExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+    'extractor.tableau_dashboard_table.tableau_host': tableau_host,
+    'extractor.tableau_dashboard_table.api_version': tableau_api_version,
+    'extractor.tableau_dashboard_table.site_name': tableau_site_name,
+    'extractor.tableau_dashboard_table.tableau_personal_access_token_name': tableau_personal_access_token_name,
+    'extractor.tableau_dashboard_table.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
+    'extractor.tableau_dashboard_table.excluded_projects': tableau_excluded_projects,
+    'extractor.tableau_dashboard_table.cluster': tableau_dashboard_cluster,
+    'extractor.tableau_dashboard_table.database': tableau_dashboard_database,
+    'extractor.tableau_dashboard_table.external_cluster_name': tableau_external_table_cluster,
+    'extractor.tableau_dashboard_table.external_schema_name': tableau_external_table_schema,
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+### [TableauDashboardQueryExtractor](./databuilder/extractor/dashboard/tableau/tableau_dashboard_query_extractor.py)
+
+The included `TableauDashboardQueryExtractor` provides support for extracting query metadata from Tableau workbooks. It retrives the name and query text for each custom SQL query.
+
+A sample job config is shown below. Configuration related to the loader and publisher is omitted as it is mostly the same. Please take a look at this [example](#TableauDashboardExtractor) for the configuration that holds loader and publisher.
+
+```python
+extractor = TableauDashboardQueryExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+    'extractor.tableau_dashboard_query.tableau_host': tableau_host,
+    'extractor.tableau_dashboard_query.api_version': tableau_api_version,
+    'extractor.tableau_dashboard_query.site_name': tableau_site_name,
+    'extractor.tableau_dashboard_query.tableau_personal_access_token_name': tableau_personal_access_token_name,
+    'extractor.tableau_dashboard_query.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
+    'extractor.tableau_dashboard_query.excluded_projects': tableau_excluded_projects,
+    'extractor.tableau_dashboard_query.cluster': tableau_dashboard_cluster,
+    'extractor.tableau_dashboard_query.database': tableau_dashboard_database,
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+### [TableauDashboardLastModifiedExtractor](./databuilder/extractor/dashboard/tableau/tableau_dashboard_last_modified_extractor.py)
+
+The included `TableauDashboardLastModifiedExtractor` provides support for extracting the last updated timestamp for Tableau workbooks.
+
+A sample job config is shown below. Configuration related to the loader and publisher is omitted as it is mostly the same. Please take a look at this [example](#TableauDashboardExtractor) for the configuration that holds loader and publisher.
+
+```python
+extractor = TableauDashboardQueryExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+    'extractor.tableau_dashboard_last_modified.tableau_host': tableau_host,
+    'extractor.tableau_dashboard_last_modified.api_version': tableau_api_version,
+    'extractor.tableau_dashboard_last_modified.site_name': tableau_site_name,
+    'extractor.tableau_dashboard_last_modified.tableau_personal_access_token_name': tableau_personal_access_token_name,
+    'extractor.tableau_dashboard_last_modified.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
+    'extractor.tableau_dashboard_last_modified.excluded_projects': tableau_excluded_projects,
+    'extractor.tableau_dashboard_last_modified.cluster': tableau_dashboard_cluster,
+    'extractor.tableau_dashboard_last_modified.database': tableau_dashboard_database,
+    'extractor.tableau_dashboard_last_modified.transformer.timestamp_str_to_epoch.timestamp_format': "%Y-%m-%dT%H:%M:%SZ",
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+### [TableauExternalTableExtractor](./databuilder/extractor/dashboard/tableau/tableau_external_table_extractor.py)
+
+The included `TableauExternalTableExtractor` provides support for extracting external table entities referenced by Tableau workbooks. In this context, "external" tables are "tables" that are not from a typical database, and are loaded using some other data format, like CSV files.
+This extractor has been tested with the following types of external tables; feel free to add others, but it's recommended
+to test them in a non-production instance first to be safe.
+- Excel spreadsheets
+- Text files (including CSV files)
+- Salesforce connections
+- Google Sheets connections
+
+Use the `external_table_types` list config option to specify which external connection types you would like to index;
+refer to your Tableau instance for the exact formatting of each connection type string.
+
+Excel spreadsheets, Salesforce connections, and Google Sheets connections are all classified as
+"databases" in terms of Tableau's Metadata API, with their "subsheets" forming their "tables" when
+present. However, these tables are not assigned a schema, this extractor chooses to use the name
+of the parent sheet as the schema, and assign a new table to each subsheet. The connection type is
+always used as the database, and for text files, the schema is set using the `external_schema_name`
+config option. Since these external tables are usually named for human consumption only and often
+contain a wider range of characters, all inputs are sanitized to remove any problematic
+occurences before they are inserted: see the `sanitize` methods `TableauDashboardUtils` for specifics.
+
+A more concrete example: if one had a Google Sheet titled "Growth by Region" with 2 subsheets called
+"FY19 Report" and "FY20 Report", two tables would be generated with the following keys:
+`googlesheets://external.growth_by_region/FY_19_Report`
+`googlesheets://external.growth_by_region/FY_20_Report`
+
+A sample job config is shown below. Configuration related to the loader and publisher is omitted as it is mostly the same. Please take a look at this [example](#TableauDashboardExtractor) for the configuration that holds loader and publisher.
+
+```python
+extractor = TableauExternalTableExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+    'extractor.tableau_external_table.tableau_host': tableau_host,
+    'extractor.tableau_external_table.api_version': tableau_api_version,
+    'extractor.tableau_external_table.site_name': tableau_site_name,
+    'extractor.tableau_external_table.tableau_personal_access_token_name': tableau_personal_access_token_name,
+    'extractor.tableau_external_table.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
+    'extractor.tableau_external_table.excluded_projects': tableau_excluded_projects,
+    'extractor.tableau_external_table.cluster': tableau_dashboard_cluster,
+    'extractor.tableau_external_table.database': tableau_dashboard_database,
+    'extractor.tableau_external_table.external_cluster_name': tableau_external_table_cluster,
+    'extractor.tableau_external_table.external_schema_name': tableau_external_table_schema,
+    'extractor.tableau_external_table.external_table_types': tableau_external_table_types
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
 
 ## List of transformers
 #### [ChainedTransformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
