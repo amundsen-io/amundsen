@@ -73,22 +73,6 @@ workflow is as follows:
 
 We have cover Amundsen's architecture in our [docs](https://lyft.github.io/amundsen/architecture/).
 
-## Updating the changelog
-
-**TO ADOPT?**
-After every user-facing change makes it into master, we make a note of it in the
-changelog, `CHANGELOG.md`. The changelog is sorted in reverse order by release version.
-
-Within each version, there are five available categories you can divide changes
-into. They are all optional:
-
-1. Deprecations
-1. Bug fixes
-1. Features
-1. Enhancements
-
-For each change, provide a human-readable description of the change.
-
 ## Documentation
 
 We use [mkdocs] for creating our documentation from Markdown files. This system is configured
@@ -103,41 +87,6 @@ Currently, our docs are built and deployed manually, so we should first build an
 1. Deploy our docs to the Github pages using `mkdocs gh-deploy`
 
 [mkdocs]: https://www.mkdocs.org/
-
-## Versioning
-
-### Naming a new version
-
-**TO REVIEW**
-
-We follow [SemVer 2.0][semver]. This offers a meaningful baseline for deciding how to name versions. Generally speaking:
-
-[semver]: https://semver.org/spec/v2.0.0.html
-
-- We bump the "major" part of the version if we're introducing
-  backward-incompatible changes (e.g., changing the API or core behavior,
-  removing parts of the API).
-- We bump the "minor" part if we're adding a new feature.
-- We bump the "patch" part if we merely include bugfixes.
-
-In addition to major, minor, and patch levels, you can also append a
-suffix to the version for pre-release versions. We usually use this to issue
-release candidates prior to an actual release.
-
-### Preparing and releasing a new version
-
-Assuming you have permission to publish a new version of Amundsen, then this is
-how you release a version:
-
-1. First, you'll want to [make sure that the changelog is up to
-   date](#updating-the-changelog).
-
-2. Next, [generate the documentation locally](#documentation) and do
-   a quick spot-check to ensure that nothing looks awry.
-
-3. Next, you'll want to update the `__version__` constant in the `setup.py` file of the corresponding repository.
-
-4. After merging the commit with the update version, you would use the github UI in each repository to draft a new release (e.g., https://github.com/lyft/amundsenfrontendlibrary/releases).
 
 ## Labels
 
