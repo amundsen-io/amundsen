@@ -287,3 +287,11 @@ class Data:
         }}
 
     report_entities = [report_entity_1, report_entity_2, report_entity_3]
+
+    metrics_data = [DottedDict({
+        'general': {
+            'stats': {
+                'Notification:lastMessageProcessedTime': 1598342400000
+            }
+        }
+    })]

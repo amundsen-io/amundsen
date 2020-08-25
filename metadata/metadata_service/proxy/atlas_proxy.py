@@ -647,7 +647,17 @@ class AtlasProxy(BaseProxy):
         return popular_tables
 
     def get_latest_updated_ts(self) -> int:
-        pass
+        date = None
+
+        for metrics in self._driver.admin_metrics:
+            try:
+                date = self._parse_date(metrics.general.get('stats', {}).get('Notification:lastMessageProcessedTime'))
+            except AttributeError:
+                pass
+
+        date = date or 0
+
+        return date
 
     def get_tags(self) -> List:
         """
