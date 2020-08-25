@@ -101,6 +101,14 @@ You can configure custom icons to be used throughout the UI when representing en
 
 You can configure a specific display name to be used throughout the UI when representing entities from particular sources. On the `supportedSources` object, add an entry with the `id` used to reference that source and map to an object that specified the `displayName` for that source.
 
+### Table Configuration
+To configure Table related features we have created a new resource configuration `TableResourceConfig` which extends `BaseResourceConfig`. In addition to the configurations explained above it also supports `supportedDescriptionSources`.
+
+#### Supported Description Sources
+A table resource may have a source of table and column description attached to it. We can customize it by using `supportedDescriptionSources` object which is an optional object. 
+This object has `displayName` and `iconPath`, which can be used throughout the UI to represent a particular description source. See example in [config-default.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts).
+For configuring new description sources, add an entry in `supportedDescriptionSources` with the `id` used to reference that source and add desired display name and icon for it.
+
 ## Table Lineage
 
 _TODO: Please add doc_

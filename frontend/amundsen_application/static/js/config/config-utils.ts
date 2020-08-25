@@ -1,5 +1,5 @@
 import AppConfig from 'config/config';
-import { BadgeStyleConfig, BadgeStyle } from 'config/config-types';
+import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
 import { FilterConfig, LinkConfig } from './config-types';
@@ -204,4 +204,42 @@ export function generateExploreUrl(tableData: TableMetadata): string {
  */
 export function getMaxLength(key: string) {
   return AppConfig.editableText[key];
+}
+
+/**
+ * Returns the display name for a given description source id for a given resource type.
+ * If a configuration or display name does not exist for the given description source id, the id
+ * is returned.
+ */
+export function getDescriptionSourceDisplayName(sourceId: string): string {
+  const config = AppConfig.resourceConfig[ResourceType.table];
+  if (
+    config &&
+    config.supportedDescriptionSources &&
+    config.supportedDescriptionSources[sourceId] &&
+    config.supportedDescriptionSources[sourceId].displayName
+  ) {
+    return config.supportedDescriptionSources[sourceId].displayName;
+  }
+
+  return sourceId;
+}
+
+/**
+ * Returns the icon path for a given description source id for a given resource type.
+ * If a configuration does not exist for the given description source id, empty string
+ * is returned.
+ */
+export function getDescriptionSourceIconPath(sourceId: string): string {
+  const config = AppConfig.resourceConfig[ResourceType.table];
+  if (
+    config &&
+    config.supportedDescriptionSources &&
+    config.supportedDescriptionSources[sourceId] &&
+    config.supportedDescriptionSources[sourceId].iconPath
+  ) {
+    return config.supportedDescriptionSources[sourceId].iconPath;
+  }
+
+  return '';
 }

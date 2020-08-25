@@ -3,6 +3,10 @@
 
 import * as React from 'react';
 
+import {
+  getDescriptionSourceDisplayName,
+  getDescriptionSourceIconPath,
+} from 'config/config-utils';
 import { logClick } from 'ducks/utilMethods';
 import AvatarLabel from 'components/common/AvatarLabel';
 import { TableSource } from 'interfaces';
@@ -16,8 +20,10 @@ const SourceLink: React.FC<SourceLinkProps> = ({
 }: SourceLinkProps) => {
   if (tableSource === null || tableSource.source === null) return null;
 
-  const image =
-    tableSource.source_type === 'github' ? '/static/images/github.png' : '';
+  const image = getDescriptionSourceIconPath(tableSource.source_type);
+
+  const displayName = getDescriptionSourceDisplayName(tableSource.source_type);
+
   return (
     <a
       className="header-link"
@@ -27,7 +33,10 @@ const SourceLink: React.FC<SourceLinkProps> = ({
       target="_blank"
       rel="noreferrer"
     >
-      <AvatarLabel label={tableSource.source_type} src={image} />
+      <AvatarLabel
+        label={getDescriptionSourceDisplayName(tableSource.source_type)}
+        src={getDescriptionSourceIconPath(tableSource.source_type)}
+      />
     </a>
   );
 };

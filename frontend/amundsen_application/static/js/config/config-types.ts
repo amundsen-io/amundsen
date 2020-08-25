@@ -123,6 +123,13 @@ type SourcesConfig = {
 };
 
 /**
+ * Configures the UI for a given table description source
+ */
+type DescriptionSourceConfig = {
+  [id: string]: { displayName: string; iconPath: string };
+};
+
+/**
  * Base interface for all possible ResourceConfig objects
  *
  * displayName - The name displayed throughout the application to refer to this resource type
@@ -132,6 +139,10 @@ interface BaseResourceConfig {
   displayName: string;
   filterCategories?: FilterConfig;
   supportedSources?: SourcesConfig;
+}
+
+interface TableResourceConfig extends BaseResourceConfig {
+  supportedDescriptionSources?: DescriptionSourceConfig;
 }
 
 export enum BadgeStyle {
@@ -174,7 +185,7 @@ interface DateFormatConfig {
  */
 interface ResourceConfig {
   [ResourceType.dashboard]: BaseResourceConfig;
-  [ResourceType.table]: BaseResourceConfig;
+  [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
 }
 
