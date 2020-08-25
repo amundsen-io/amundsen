@@ -16,8 +16,6 @@ be too low-level for contributors.
 - [Architecture](#architecture)
 - [Updating the changelog](#updating-the-changelog)
 - [Documentation](#documentation)
-- [Versioning](#versioning)
-- [Releasing](#releasing)
 - [Labels](#labels)
 - [Adding new projects](#adding-new-projects)
 - [Related Documents](#related-documents)
@@ -71,20 +69,13 @@ workflow is as follows:
 
 ## Architecture
 
-We have cover Amundsen's architecture in our [docs](https://lyft.github.io/amundsen/architecture/).
+We have covered Amundsen's architecture in our [docs](https://lyft.github.io/amundsen/architecture/).
 
 ## Documentation
 
-We use [mkdocs] for creating our documentation from Markdown files. This system is configured
-from the 'mkdocs.yml' file in the root of this repository.
+We use [mkdocs] for creating our documentation from Markdown files. This system is configured from the 'mkdocs.yml' file in the root of this repository.
 
-Currently, our docs are built and deployed manually, so we should first build and deploy them locally and verify it. Here are some basic steps:
-
-1. Activate the virtualenv with `source venv/bin/activate`
-1. Install the requirements: `pip3 install -r requirements.txt`
-1. Install mkdocs with Homebrew (Mac only): `brew install mkdocs`
-1. Create the documentation with `mkdocs serve` navigate to them in localhost:8000. On mac OS, you may face ImportError and you may need to downgrade openssl by running `brew switch openssl 1.0.2r`
-1. Deploy our docs to the Github pages using `mkdocs gh-deploy`
+Currently, our docs are built and deployed automatically with a GitHub action, so we shouldn't need to do anything.
 
 [mkdocs]: https://www.mkdocs.org/
 
