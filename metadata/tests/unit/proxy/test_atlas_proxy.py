@@ -374,6 +374,18 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.assertEqual(expected, res)
 
+    def test_get_latest_updated_ts_when_exists(self) -> None:
+        with patch.object(self.proxy._driver, 'admin_metrics', self.metrics_data):
+            result = self.proxy.get_latest_updated_ts()
+
+            assert result == 1598342400
+
+    def test_get_latest_updated_ts_when_not_exists(self) -> None:
+        with patch.object(self.proxy._driver, 'admin_metrics', []):
+            result = self.proxy.get_latest_updated_ts()
+
+            assert result == 0
+
 
 if __name__ == '__main__':
     unittest.main()
