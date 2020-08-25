@@ -12,6 +12,7 @@ import { getTableData } from 'ducks/tableMetadata/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
 
 import {
+  getDescriptionSourceDisplayName,
   getMaxLength,
   getSourceIconClass,
   indexDashboardsEnabled,
@@ -207,7 +208,9 @@ export class TableDetail extends React.Component<
     } else {
       const data = tableData;
       const editText = data.source
-        ? `${EDIT_DESC_TEXT} ${data.source.source_type}`
+        ? `${EDIT_DESC_TEXT} ${getDescriptionSourceDisplayName(
+            data.source.source_type
+          )}`
         : '';
       const editUrl = data.source ? data.source.source : '';
 

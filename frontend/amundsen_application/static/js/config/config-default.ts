@@ -154,6 +154,12 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      supportedDescriptionSources: {
+        github: {
+          displayName: 'Github',
+          iconPath: '/static/images/github.png',
+        },
+      },
     },
     [ResourceType.user]: {
       displayName: 'People',
