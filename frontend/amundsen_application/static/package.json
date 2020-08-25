@@ -99,7 +99,7 @@
     "mini-css-extract-plugin": "^0.4.5",
     "moment-locales-webpack-plugin": "^1.2.0",
     "node-sass": "^4.14.1",
-    "postcss": "^7.0.30",
+    "postcss": "^7.0.32",
     "prettier": "^2.0.5",
     "react-docgen-typescript-loader": "^3.7.2",
     "redux-mock-store": "^1.5.4",
