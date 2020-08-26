@@ -27,7 +27,7 @@ export interface AnnouncementsListProps {
 
 const getLatestsAnnouncements = (announcements: AnnouncementPost[]) =>
   announcements.length > ANNOUNCEMENT_LIST_THRESHOLD
-    ? announcements.splice(announcements.length - ANNOUNCEMENT_LIST_THRESHOLD)
+    ? announcements.slice(0, ANNOUNCEMENT_LIST_THRESHOLD)
     : announcements;
 
 const times = (numItems: number) => new Array(numItems).fill(0);
