@@ -199,3 +199,7 @@ with DAG('amundsen_databuilder', default_args=default_args, **dag_args) as dag:
                         'watermark_type': '"low_watermark"',
                         'part_regex': '{}'.format('{{ ds }}')}
     )
+
+    # Schedule high and low watermark task after metadata task
+    amundsen_databuilder_table_metadata_job >> amundsen_hwm_job
+    amundsen_databuilder_table_metadata_job >> amundsen_lwm_job
