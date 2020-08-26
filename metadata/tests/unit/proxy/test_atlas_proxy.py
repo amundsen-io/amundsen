@@ -304,7 +304,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                           column_name=attributes['name'],
                                           description='DOESNT_MATTER')
 
-    def test_get_table_by_user_relation(self) -> None:
+    def test_get_table_by_user_relation_follow(self) -> None:
         bookmark1 = copy.deepcopy(self.bookmark_entity1)
         bookmark1 = self.to_class(bookmark1)
         bookmark_collection = MagicMock()
@@ -318,6 +318,25 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                  name=Data.name, description=None)]
 
         self.assertEqual(res, {'table': expected})
+
+    def test_get_table_by_user_relation_own(self) -> None:
+        unique_attr_response = MagicMock()
+        unique_attr_response.entity = Data.user_entity_2
+        self.proxy._driver.entity_unique_attribute = MagicMock(return_value=unique_attr_response)
+
+        entity_bulk_result = MagicMock()
+        entity_bulk_result.entities = [DottedDict(self.entity1)]
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[entity_bulk_result])
+
+        res = self.proxy.get_table_by_user_relation(user_email='test_user_id',
+                                                    relation_type=UserResourceRel.own)
+
+        ent1_attrs = cast(dict, self.entity1['attributes'])
+
+        expected = [PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                                 name=ent1_attrs['name'], description=ent1_attrs['description'])]
+
+        self.assertEqual({'table': expected}, res)
 
     def test_add_resource_relation_by_user(self) -> None:
         bookmark_entity = self._mock_get_bookmark_entity()
