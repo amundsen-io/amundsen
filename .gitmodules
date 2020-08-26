@@ -1,14 +1,14 @@
 [submodule "amundsendatabuilder"]
 	path = amundsendatabuilder
-	url = https://github.com/amundsen-io/amundsendatabuilder
+	url = https://github.com/keyko-io/nevermined-amundsen-databuilder
 	branch = master
 [submodule "amundsenfrontendlibrary"]
 	path = amundsenfrontendlibrary
-	url = https://github.com/amundsen-io/amundsenfrontendlibrary
+	url = https://github.com/keyko-io/nevermined-amundsen-frontendlibrary
 	branch = master
 [submodule "amundsenmetadatalibrary"]
 	path = amundsenmetadatalibrary
-	url = https://github.com/amundsen-io/amundsenmetadatalibrary
+	url = https://github.com/keyko-io/nevermined-amundsen-metadatalibrary
 	branch = master
 [submodule "amundsensearchlibrary"]
 	path = amundsensearchlibrary
