@@ -226,7 +226,18 @@ class Data:
                     "relationshipStatus": "INACTIVE",
                     "guid": "3"
                 }
-            ]
+            ],
+            """
+                        if (item['entityStatus'] == Status.ACTIVE and
+                    item['relationshipStatus'] == Status.ACTIVE and
+                    item['typeName'] == resource_type):
+            """
+            "ownerOf": [{
+                "entityStatus": "ACTIVE",
+                "relationshipStatus": "ACTIVE",
+                "typeName": "Table",
+                "guid": entity1["guid"]
+            }]
         }
     }
 
