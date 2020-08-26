@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Link, BrowserRouter } from 'react-router-dom';
-import SanitizedHTML from 'react-sanitized-html';
 import { mount } from 'enzyme';
 
 import Card from '../../Card';
@@ -9,26 +8,21 @@ import AnnouncementsList, { AnnouncementsListProps } from '.';
 
 const TWO_FAKE_ANNOUNCEMENTS = [
   {
-    date: '12/31/1999',
-    title: 'Y2K',
-    html_content: '<div>The end of the world</div>',
-  },
-  {
     date: '01/01/2000',
     title: 'False Alarm',
     html_content: '<div>Just kidding</div>',
+  },
+  {
+    date: '12/31/1999',
+    title: 'Y2K',
+    html_content: '<div>The end of the world</div>',
   },
 ];
 const FOUR_FAKE_ANNOUNCEMENTS = [
   {
-    date: '12/31/1999',
-    title: 'Y2K',
-    html_content: '<div>The end of the world</div>',
-  },
-  {
-    date: '01/01/2000',
-    title: 'False Alarm',
-    html_content: '<div>Just kidding</div>',
+    date: '01/01/2020',
+    title: 'New Test',
+    html_content: '<div>New test</div>',
   },
   {
     date: '12/31/2009',
@@ -36,9 +30,14 @@ const FOUR_FAKE_ANNOUNCEMENTS = [
     html_content: '<div>Old test</div>',
   },
   {
-    date: '01/01/2020',
-    title: 'New Test',
-    html_content: '<div>New test</div>',
+    date: '01/01/2000',
+    title: 'False Alarm',
+    html_content: '<div>Just kidding</div>',
+  },
+  {
+    date: '12/31/1999',
+    title: 'Y2K',
+    html_content: '<div>The end of the world</div>',
   },
 ];
 const EMPTY_ANNOUNCEMENTS = [];
@@ -170,6 +169,27 @@ describe('AnnouncementsList', () => {
             });
             const expected = 3;
             const actual = wrapper.find(Card).length;
+
+            expect(actual).toEqual(expected);
+            wrapper.unmount();
+          });
+
+          it('should render them starting on the latest announcement', () => {
+            const { wrapper } = setup({
+              announcements: FOUR_FAKE_ANNOUNCEMENTS,
+            });
+            const firstCardDate = wrapper
+              .find(Card)
+              .at(0)
+              .find('.card-subtitle')
+              .text();
+            const lastCardDate = wrapper
+              .find(Card)
+              .at(1)
+              .find('.card-subtitle')
+              .text();
+            const actual = new Date(firstCardDate) >= new Date(lastCardDate);
+            const expected = true;
 
             expect(actual).toEqual(expected);
           });
