@@ -66,6 +66,10 @@ const configDefault: AppConfig = {
           displayName: 'Redash',
           iconClass: 'icon-redash',
         },
+        tableau: {
+          displayName: 'Tableau',
+          iconClass: 'icon-tableau',
+        },
       },
       filterCategories: [
         {
