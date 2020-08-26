@@ -119,6 +119,7 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 ### Dashboard Connectors
 - [Mode Analytics](https://mode.com/)
 - [Redash](https://redash.io/)
+- [Tableau](https://tableau.com/)
 
 ### ETL Orchestration
 - [Apache Airflow](https://airflow.apache.org/)
