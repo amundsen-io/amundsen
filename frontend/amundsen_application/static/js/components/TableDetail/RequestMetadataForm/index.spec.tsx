@@ -3,9 +3,6 @@
 
 import * as React from 'react';
 import { shallow } from 'enzyme';
-
-import FlashMessage from 'components/common/FlashMessage';
-
 import globalState from 'fixtures/globalState';
 import {
   NotificationType,
