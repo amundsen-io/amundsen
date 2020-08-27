@@ -68,7 +68,8 @@ neo4j_password = 'test'
 
 LOGGER = logging.getLogger(__name__)
 
-tableau_host = ""
+tableau_base_url = ""
+tableau_api_base_url = ""
 tableau_api_version = 0
 tableau_site_name = ""
 tableau_personal_access_token_name = ""
@@ -79,7 +80,7 @@ tableau_dashboard_database = ""
 tableau_external_table_cluster = ""
 tableau_external_table_schema = ""
 tableau_external_table_types = []
-tableau_verify_request = True
+tableau_verify_request = None
 
 common_tableau_config = {
     'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
@@ -156,7 +157,8 @@ def run_tableau_metadata_job():
 
     dict_config = common_tableau_config
     dict_config.update({
-        'extractor.tableau_dashboard_metadata.tableau_host': tableau_host,
+        'extractor.tableau_dashboard_metadata.api_base_url': tableau_api_base_url,
+        'extractor.tableau_dashboard_metadata.tableau_base_url': tableau_base_url,
         'extractor.tableau_dashboard_metadata.api_version': tableau_api_version,
         'extractor.tableau_dashboard_metadata.site_name': tableau_site_name,
         'extractor.tableau_dashboard_metadata.tableau_personal_access_token_name':
@@ -195,7 +197,7 @@ def run_tableau_last_modified_job():
 
     dict_config = common_tableau_config
     dict_config.update({
-        'extractor.tableau_dashboard_last_modified.tableau_host': tableau_host,
+        'extractor.tableau_dashboard_last_modified.api_base_url': tableau_api_base_url,
         'extractor.tableau_dashboard_last_modified.api_version': tableau_api_version,
         'extractor.tableau_dashboard_last_modified.site_name': tableau_site_name,
         'extractor.tableau_dashboard_last_modified.tableau_personal_access_token_name':
@@ -234,7 +236,7 @@ def run_tableau_query_job():
 
     dict_config = common_tableau_config
     dict_config.update({
-        'extractor.tableau_dashboard_query.tableau_host': tableau_host,
+        'extractor.tableau_dashboard_query.api_base_url': tableau_api_base_url,
         'extractor.tableau_dashboard_query.api_version': tableau_api_version,
         'extractor.tableau_dashboard_query.site_name': tableau_site_name,
         'extractor.tableau_dashboard_query.tableau_personal_access_token_name':
@@ -273,7 +275,7 @@ def run_tableau_table_job():
 
     dict_config = common_tableau_config
     dict_config.update({
-        'extractor.tableau_dashboard_table.tableau_host': tableau_host,
+        'extractor.tableau_dashboard_table.api_base_url': tableau_api_base_url,
         'extractor.tableau_dashboard_table.api_version': tableau_api_version,
         'extractor.tableau_dashboard_table.site_name': tableau_site_name,
         'extractor.tableau_dashboard_table.tableau_personal_access_token_name':
@@ -313,7 +315,7 @@ def run_tableau_external_table_job():
 
     dict_config = common_tableau_config
     dict_config.update({
-        'extractor.tableau_external_table.tableau_host': tableau_host,
+        'extractor.tableau_external_table.api_base_url': tableau_api_base_url,
         'extractor.tableau_external_table.api_version': tableau_api_version,
         'extractor.tableau_external_table.site_name': tableau_site_name,
         'extractor.tableau_external_table.tableau_personal_access_token_name':

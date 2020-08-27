@@ -76,6 +76,7 @@ class TableauDashboardExternalTableExtractor(Extractor):
     googlesheets://external.growth_by_region_county/FY_20_Report
     """
 
+    API_BASE_URL = const.API_BASE_URL
     API_VERSION = const.API_VERSION
     CLUSTER = const.CLUSTER
     EXCLUDED_PROJECTS = const.EXCLUDED_PROJECTS
@@ -83,7 +84,6 @@ class TableauDashboardExternalTableExtractor(Extractor):
     EXTERNAL_SCHEMA_NAME = const.EXTERNAL_SCHEMA_NAME
     EXTERNAL_TABLE_TYPES = const.EXTERNAL_TABLE_TYPES
     SITE_NAME = const.SITE_NAME
-    TABLEAU_HOST = const.TABLEAU_HOST
     TABLEAU_ACCESS_TOKEN_NAME = const.TABLEAU_ACCESS_TOKEN_NAME
     TABLEAU_ACCESS_TOKEN_SECRET = const.TABLEAU_ACCESS_TOKEN_SECRET
     VERIFY_REQUEST = const.VERIFY_REQUEST

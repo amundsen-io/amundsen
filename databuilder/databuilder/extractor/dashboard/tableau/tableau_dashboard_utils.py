@@ -65,9 +65,9 @@ class TableauGraphQLApiExtractor(Extractor):
     Base class for querying the Tableau Metdata API, which uses a GraphQL schema.
     """
 
+    API_BASE_URL = const.API_BASE_URL
     QUERY = 'query'
     QUERY_VARIABLES = 'query_variables'
-    TABLEAU_HOST = const.TABLEAU_HOST
     VERIFY_REQUEST = 'verify_request'
 
     def init(self, conf: ConfigTree) -> None:
@@ -76,11 +76,11 @@ class TableauGraphQLApiExtractor(Extractor):
         self._query = self._conf.get(TableauGraphQLApiExtractor.QUERY)
         self._iterator: Optional[Iterator[Dict[str, Any]]] = None
         self._static_dict = conf.get(STATIC_RECORD_DICT, dict())
-        self._metadata_url = 'https://{TABLEAU_HOST}/api/metadata/graphql'.format(
-            TABLEAU_HOST=self._conf.get_string(TableauGraphQLApiExtractor.TABLEAU_HOST)
+        self._metadata_url = '{api_base_url}/api/metadata/graphql'.format(
+            api_base_url=self._conf.get_string(TableauGraphQLApiExtractor.API_BASE_URL)
         )
         self._query_variables = self._conf.get(TableauGraphQLApiExtractor.QUERY_VARIABLES, {})
-        self._verify_request = self._conf.get(TableauGraphQLApiExtractor.VERIFY_REQUEST, True)
+        self._verify_request = self._conf.get(TableauGraphQLApiExtractor.VERIFY_REQUEST, None)
 
     def execute_query(self) -> Dict[str, Any]:
         """
@@ -95,12 +95,12 @@ class TableauGraphQLApiExtractor(Extractor):
             'X-Tableau-Auth': self._auth_token
         }
         params = {
-            'data': query_payload,
-            'headers': headers,
-            'verify': self._verify_request
+            'headers': headers
         }
+        if self._verify_request is not None:
+            params['verify'] = self._verify_request
 
-        response = requests.post(url=self._metadata_url, **params)
+        response = requests.post(url=self._metadata_url, data=query_payload, **params)
         return response.json()['data']
 
     def execute(self) -> Iterator[Dict[str, Any]]:
@@ -136,9 +136,9 @@ class TableauDashboardAuth:
     https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api_concepts_auth.htm
     """
 
+    API_BASE_URL = const.API_BASE_URL
     API_VERSION = const.API_VERSION
     SITE_NAME = const.SITE_NAME
-    TABLEAU_HOST = const.TABLEAU_HOST
     TABLEAU_ACCESS_TOKEN_NAME = const.TABLEAU_ACCESS_TOKEN_NAME
     TABLEAU_ACCESS_TOKEN_SECRET = const.TABLEAU_ACCESS_TOKEN_SECRET
     VERIFY_REQUEST = const.VERIFY_REQUEST
@@ -150,8 +150,8 @@ class TableauDashboardAuth:
         self._access_token_secret = self._conf.get_string(TableauDashboardAuth.TABLEAU_ACCESS_TOKEN_SECRET)
         self._api_version = self._conf.get_string(TableauDashboardAuth.API_VERSION)
         self._site_name = self._conf.get_string(TableauDashboardAuth.SITE_NAME)
-        self._tableau_host = self._conf.get_string(TableauDashboardAuth.TABLEAU_HOST)
-        self._verify_request = self._conf.get(TableauDashboardAuth.VERIFY_REQUEST, True)
+        self._api_base_url = self._conf.get_string(TableauDashboardAuth.API_BASE_URL)
+        self._verify_request = self._conf.get(TableauDashboardAuth.VERIFY_REQUEST, None)
 
     @property
     def token(self) -> Optional[str]:
@@ -166,10 +166,11 @@ class TableauDashboardAuth:
         See https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api_concepts_versions.htm
         for details or ask your Tableau server administrator.
         """
-        self._auth_url = "https://{tableau_host}/api/{api_version}/auth/signin".format(
-            tableau_host=self._tableau_host,
+        self._auth_url = "{api_base_url}/api/{api_version}/auth/signin".format(
+            api_base_url=self._api_base_url,
             api_version=self._api_version
         )
+
         payload = json.dumps({
             'credentials': {
                 'personalAccessTokenName': self._access_token_name,
@@ -185,9 +186,10 @@ class TableauDashboardAuth:
         }
         # verify = False is needed bypass occasional (valid) self-signed cert errors. TODO: actually fix it!!
         params = {
-            'headers': headers,
-            'verify': self._verify_request
+            'headers': headers
         }
+        if self._verify_request is not None:
+            params['verify'] = self._verify_request
 
         response_json = requests.post(url=self._auth_url, data=payload, **params).json()
         return response_json['credentials']['token']
