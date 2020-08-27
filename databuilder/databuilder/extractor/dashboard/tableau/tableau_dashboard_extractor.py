@@ -26,7 +26,7 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
 
     CLUSTER = const.CLUSTER
     EXCLUDED_PROJECTS = const.EXCLUDED_PROJECTS
-    TABLEAU_HOST = const.TABLEAU_HOST
+    TABLEAU_BASE_URL = const.TABLEAU_BASE_URL
 
     def execute(self) -> Iterator[Dict[str, Any]]:
         response = self.execute_query()
@@ -41,12 +41,12 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
                 'dashboard_name': TableauDashboardUtils.sanitize_workbook_name(workbook['name']),
                 'description': workbook.get('description', ''),
                 'created_timestamp': workbook['createdAt'],
-                'dashboard_group_url': 'https://{}/#/projects/{}'.format(
-                    self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_HOST),
+                'dashboard_group_url': '{}/#/projects/{}'.format(
+                    self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL),
                     workbook['projectVizportalUrlId']
                 ),
-                'dashboard_url': 'https://{}/#/workbooks/{}/views'.format(
-                    self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_HOST),
+                'dashboard_url': '{}/#/workbooks/{}/views'.format(
+                    self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL),
                     workbook['vizportalUrlId']
                 ),
                 'cluster': self._conf.get_string(TableauGraphQLApiMetadataExtractor.CLUSTER)
@@ -66,11 +66,12 @@ class TableauDashboardExtractor(Extractor):
     Uses the Metadata API: https://help.tableau.com/current/api/metadata_api/en-us/index.html
     """
 
+    API_BASE_URL = const.API_BASE_URL
     API_VERSION = const.API_VERSION
     CLUSTER = const.CLUSTER
     EXCLUDED_PROJECTS = const.EXCLUDED_PROJECTS
     SITE_NAME = const.SITE_NAME
-    TABLEAU_HOST = const.TABLEAU_HOST
+    TABLEAU_BASE_URL = const.TABLEAU_BASE_URL
     TABLEAU_ACCESS_TOKEN_NAME = const.TABLEAU_ACCESS_TOKEN_NAME
     TABLEAU_ACCESS_TOKEN_SECRET = const.TABLEAU_ACCESS_TOKEN_SECRET
     VERIFY_REQUEST = const.VERIFY_REQUEST

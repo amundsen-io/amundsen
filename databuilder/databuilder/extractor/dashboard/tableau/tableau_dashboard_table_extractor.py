@@ -89,13 +89,13 @@ class TableauDashboardTableExtractor(Extractor):
     Assumes that all the nodes for both the dashboards and the tables have already been created.
     """
 
+    API_BASE_URL = const.API_BASE_URL
     API_VERSION = const.API_VERSION
     CLUSTER = const.CLUSTER
     DATABASE = const.DATABASE
     EXCLUDED_PROJECTS = const.EXCLUDED_PROJECTS
     EXTERNAL_CLUSTER_NAME = const.EXTERNAL_CLUSTER_NAME
     SITE_NAME = const.SITE_NAME
-    TABLEAU_HOST = const.TABLEAU_HOST
     TABLEAU_ACCESS_TOKEN_NAME = const.TABLEAU_ACCESS_TOKEN_NAME
     TABLEAU_ACCESS_TOKEN_SECRET = const.TABLEAU_ACCESS_TOKEN_SECRET
     VERIFY_REQUEST = const.VERIFY_REQUEST

@@ -42,7 +42,7 @@ class TestTableauDashboardLastModified(unittest.TestCase):
     def test_dashboard_last_modified_extractor(self) -> None:
 
         config = ConfigFactory.from_dict({
-            'extractor.tableau_dashboard_last_modified.tableau_host': 'tableau_host',
+            'extractor.tableau_dashboard_last_modified.api_base_url': 'api_base_url',
             'extractor.tableau_dashboard_last_modified.api_version': 'tableau_api_version',
             'extractor.tableau_dashboard_last_modified.site_name': 'tableau_site_name',
             'extractor.tableau_dashboard_last_modified.tableau_personal_access_token_name':

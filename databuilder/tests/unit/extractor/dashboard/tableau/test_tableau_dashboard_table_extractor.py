@@ -57,7 +57,7 @@ class TestTableauDashboardTable(unittest.TestCase):
     def test_dashboard_table_extractor(self) -> None:
 
         config = ConfigFactory.from_dict({
-            'extractor.tableau_dashboard_table.tableau_host': 'tableau_host',
+            'extractor.tableau_dashboard_table.api_base_url': 'api_base_url',
             'extractor.tableau_dashboard_table.api_version': 'tableau_api_version',
             'extractor.tableau_dashboard_table.site_name': 'tableau_site_name',
             'extractor.tableau_dashboard_table.tableau_personal_access_token_name':
