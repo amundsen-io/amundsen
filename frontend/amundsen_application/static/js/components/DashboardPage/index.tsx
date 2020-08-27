@@ -4,28 +4,23 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
-import * as qs from 'simple-query-string';
-
 import * as ReactMarkdown from 'react-markdown';
 
-import AvatarLabel from 'components/common/AvatarLabel';
+import { getDashboard } from 'ducks/dashboard/reducer';
+import { GetDashboardRequest } from 'ducks/dashboard/types';
+import { GlobalState } from 'ducks/rootReducer';
+import { logClick } from 'ducks/utilMethods';
+
 import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import EditableSection from 'components/common/EditableSection';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import TabsComponent from 'components/common/TabsComponent';
-import { getDashboard } from 'ducks/dashboard/reducer';
-import { GetDashboardRequest } from 'ducks/dashboard/types';
-import { GlobalState } from 'ducks/rootReducer';
-import { logClick } from 'ducks/utilMethods';
-import { DashboardMetadata } from 'interfaces/Dashboard';
 import DashboardOwnerEditor from 'components/DashboardPage/DashboardOwnerEditor';
 import QueryList from 'components/DashboardPage/QueryList';
 import ChartList from 'components/DashboardPage/ChartList';
 import ResourceStatusMarker from 'components/common/ResourceStatusMarker';
-import { formatDateTimeShort } from 'utils/dateUtils';
 import ResourceList from 'components/common/ResourceList';
 import {
   ADD_DESC_TEXT,
@@ -37,14 +32,15 @@ import {
   STATUS_TEXT,
 } from 'components/DashboardPage/constants';
 import TagInput from 'components/common/Tags/TagInput';
-import { ResourceType } from 'interfaces';
+import { NO_TIMESTAMP_TEXT } from 'components/constants';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
-import { BadgeStyle } from 'config/config-types';
-
+import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
 
-import { NO_TIMESTAMP_TEXT } from 'components/constants';
+import { ResourceType } from 'interfaces';
+import { DashboardMetadata } from 'interfaces/Dashboard';
+
 import ImagePreview from './ImagePreview';
 
 import './styles.scss';

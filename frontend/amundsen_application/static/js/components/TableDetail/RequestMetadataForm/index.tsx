@@ -16,12 +16,12 @@ import {
 } from 'interfaces';
 
 import FlashMessage from 'components/common/FlashMessage';
+import { ImageIconType } from 'interfaces/Enums';
 
 import { GlobalState } from 'ducks/rootReducer';
 
 import {
   CloseRequestAction,
-  OpenRequestAction,
   SubmitNotificationRequest,
 } from 'ducks/notification/types';
 import {
@@ -84,7 +84,7 @@ export class RequestMetadataForm extends React.Component<
   renderFlashMessage = () => {
     return (
       <FlashMessage
-        iconClass="icon-mail"
+        iconClass={ImageIconType.MAIL}
         message={this.getFlashMessageString()}
         onClose={this.closeDialog}
       />

@@ -6,6 +6,9 @@
 $icon-size: 24px;
 $icon-small-size: 16px;
 
+// Icons
+// Lookout! When you update one of these, please update the enums on
+// /static/js/interfaces/Enums.ts
 // Map of Database names and icon paths
 $data-stores: (
   database: '/static/images/icons/Database.svg',

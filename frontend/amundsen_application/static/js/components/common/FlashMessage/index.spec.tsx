@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
+import { ImageIconType } from 'interfaces/Enums';
 import FlashMessage, { FlashMessageProps } from '.';
 
 describe('FlashMessage', () => {
@@ -22,20 +23,23 @@ describe('FlashMessage', () => {
   describe('render', () => {
     let props: FlashMessageProps;
     let wrapper;
+
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
     });
 
     describe('iconClass logic', () => {
       it('if no iconClass, does not render img', () => {
-        expect(wrapper.find('img').exists()).toBe(false);
+        const expected = 0;
+        const actual = wrapper.find('img').length;
+
+        expect(actual).toEqual(expected);
       });
 
       it('if iconClass, renders img with correct className', () => {
-        const testClass = 'icon-mail';
+        const testClass = ImageIconType.MAIL;
         const { wrapper } = setup({ iconClass: testClass });
+
         expect(wrapper.find('img').props()).toMatchObject({
           className: `icon ${testClass}`,
         });
@@ -43,13 +47,17 @@ describe('FlashMessage', () => {
     });
 
     it('renders correct message text', () => {
-      expect(wrapper.find('div.message').text()).toBe(props.message);
+      const expected = props.message;
+      const actual = wrapper.find('.message').text();
+
+      expect(actual).toEqual(expected);
     });
 
     it('renders correct button', () => {
-      expect(wrapper.find('button.btn.btn-close').props().onClick).toBe(
-        props.onClose
-      );
+      const expected = props.onClose;
+      const actual = wrapper.find('button.btn.btn-close').props().onClick;
+
+      expect(actual).toEqual(expected);
     });
   });
 });
