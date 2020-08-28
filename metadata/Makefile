@@ -39,10 +39,6 @@ push-image-version:
 push-image:
 	docker push ${IMAGE}:latest .
 
-.PHONY: image-version
-image-version:
-	docker build -f public.Dockerfile -t ${IMAGE}:${VERSION} .
-
 .PHONY: oidc-image
 oidc-image:
 	docker build -f public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} .
