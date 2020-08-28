@@ -3,9 +3,9 @@
 
 import * as React from 'react';
 
-// TODO: Use css-modules instead of 'import'
-import './styles.scss';
 import { BadgeStyle } from 'config/config-types';
+
+import './styles.scss';
 
 export enum CaseType {
   LOWER_CASE = 'lowerCase',
