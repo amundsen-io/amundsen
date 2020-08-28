@@ -28,3 +28,5 @@ jobs:
         run: pip3 install -r requirements.txt && pip3 install .[all] && pip3 install codecov
       - name: Run python unit tests
         run: make test
+      - name: Codecov
+        uses: codecov/codecov-action@v1
