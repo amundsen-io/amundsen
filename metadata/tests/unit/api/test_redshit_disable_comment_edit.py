@@ -4,7 +4,7 @@
 import json
 import unittest
 from http import HTTPStatus
-from mock import patch
+from unittest.mock import patch
 from tests.unit.test_basics import BasicTestCase
 
 

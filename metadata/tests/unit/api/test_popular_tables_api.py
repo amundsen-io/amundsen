@@ -3,7 +3,7 @@
 
 from http import HTTPStatus
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 
 from tests.unit.test_basics import BasicTestCase
 

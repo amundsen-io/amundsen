@@ -5,7 +5,7 @@ import unittest
 
 from http import HTTPStatus
 from unittest import mock
-from mock import MagicMock
+from unittest.mock import MagicMock
 from metadata_service import create_app
 
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI, UserFollowsAPI,

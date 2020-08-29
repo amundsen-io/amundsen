@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from mock import patch, MagicMock
+from unittest.mock import patch, MagicMock
 from statsd import StatsClient
 from metadata_service.proxy import statsd_utilities
 from metadata_service.proxy.statsd_utilities import _get_statsd_client
