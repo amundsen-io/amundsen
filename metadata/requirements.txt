@@ -20,10 +20,6 @@ pytest==3.5.1
 # Upstream url: https://github.com/pytest-dev/pytest-cov
 pytest-cov==2.5.1
 
-# Rolling backport of unittest.mock for all Pythons
-# License: BSD
-# Upstream url: https://mock.readthedocs.io/en/latest/
-mock==2.0.0
 
 # Mypy is an optional static type checker for Python.
 # License: MIT
@@ -34,11 +30,6 @@ mypy==0.782
 # License: MIT
 # Upstream url: https://pypi.python.org/pypi/pytest-mock
 pytest-mock==1.1
-
-# PEP 484
-# License: PSF
-# Upstream url: https://github.com/python/typing
-typing==3.6.4
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
@@ -59,7 +50,6 @@ marshmallow==2.15.3
 marshmallow-annotations==2.4.0
 MarkupSafe==1.1 
 pytz==2018.4
-six==1.11.0
 Werkzeug==0.15.5
 wheel==0.33.1
 neo4j==1.7.6

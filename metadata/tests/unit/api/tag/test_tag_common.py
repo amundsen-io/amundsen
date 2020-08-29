@@ -4,7 +4,7 @@
 from http import HTTPStatus
 
 from flask import current_app
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 from metadata_service import create_app
 from metadata_service.api.tag import TagCommon

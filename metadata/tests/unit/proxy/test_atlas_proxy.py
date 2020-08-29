@@ -9,7 +9,7 @@ from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader,\
     ProgrammaticDescription, ResourceReport
 from atlasclient.exceptions import BadRequest
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
 
 from metadata_service import create_app
