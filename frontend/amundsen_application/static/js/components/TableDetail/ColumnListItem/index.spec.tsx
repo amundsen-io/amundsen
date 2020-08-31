@@ -16,6 +16,8 @@ import AppConfig from 'config/config';
 import * as UtilMethods from 'ducks/utilMethods';
 import { RequestMetadataType } from 'interfaces/Notifications';
 
+import ColumnType from './ColumnType';
+
 const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
 logClickSpy.mockImplementation(() => null);
 
@@ -36,6 +38,7 @@ describe('ColumnListItem', () => {
           },
         ],
       },
+      database: 'hive',
       index: 0,
       openRequestDescriptionDialog: jest.fn(),
       editText: 'Click to edit discription in source',
@@ -107,9 +110,9 @@ describe('ColumnListItem', () => {
       expect(columnDesc.text()).toBe(props.data.description);
     });
 
-    it('renders the correct resource type', () => {
+    it('renders the ColumnType', () => {
       const resourceType = wrapper.find('.resource-type');
-      expect(resourceType.text()).toBe(props.data.col_type.toLowerCase());
+      expect(resourceType.find(ColumnType).exists()).toBe(true);
     });
 
     it('renders the dropdown when notifications is enabled', () => {

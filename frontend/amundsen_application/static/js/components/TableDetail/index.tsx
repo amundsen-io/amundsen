@@ -159,18 +159,20 @@ export class TableDetail extends React.Component<
 
   renderTabs(editText, editUrl) {
     const tabInfo = [];
+    const { isLoadingDashboards, numRelatedDashboards, tableData } = this.props;
 
     // Default Column content
     tabInfo.push({
       content: (
         <ColumnList
-          columns={this.props.tableData.columns}
+          columns={tableData.columns}
+          database={tableData.database}
           editText={editText}
           editUrl={editUrl}
         />
       ),
       key: 'columns',
-      title: `Columns (${this.props.tableData.columns.length})`,
+      title: `Columns (${tableData.columns.length})`,
     });
 
     if (indexDashboardsEnabled()) {
@@ -187,9 +189,9 @@ export class TableDetail extends React.Component<
           />
         ),
         key: 'dashboards',
-        title: this.props.isLoadingDashboards
+        title: isLoadingDashboards
           ? loadingTitle
-          : `Dashboards (${this.props.numRelatedDashboards})`,
+          : `Dashboards (${numRelatedDashboards})`,
       });
     }
 

@@ -3,6 +3,14 @@
 
 @import 'variables';
 
+// Space Mono
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: $font-weight-header-regular;
+  src: url('/static/fonts/SpaceMono-Regular.ttf') format('truetype');
+}
+
 // Roboto
 @font-face {
   font-family: 'Roboto';

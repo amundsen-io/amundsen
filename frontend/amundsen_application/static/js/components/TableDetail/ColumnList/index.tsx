@@ -9,12 +9,14 @@ import './styles.scss';
 
 interface ColumnListProps {
   columns?: TableColumn[];
+  database: string;
   editText?: string;
   editUrl?: string;
 }
 
 const ColumnList: React.FC<ColumnListProps> = ({
   columns,
+  database,
   editText,
   editUrl,
 }: ColumnListProps) => {
@@ -27,6 +29,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     <ColumnListItem
       key={`column:${index}`}
       data={entry}
+      database={database}
       index={index}
       editText={editText}
       editUrl={editUrl}
