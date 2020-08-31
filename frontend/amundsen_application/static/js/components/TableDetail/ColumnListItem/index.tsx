@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -16,6 +16,7 @@ import { RequestMetadataType, TableColumn } from 'interfaces';
 
 import './styles.scss';
 import EditableSection from 'components/common/EditableSection';
+import ColumnType from './ColumnType';
 
 const MORE_BUTTON_TEXT = 'More options';
 const EDITABLE_SECTION_TITLE = 'Description';
@@ -29,6 +30,7 @@ interface DispatchFromProps {
 
 interface OwnProps {
   data: TableColumn;
+  database: string;
   index: number;
   editText: string;
   editUrl: string;
@@ -52,15 +54,15 @@ export class ColumnListItem extends React.Component<
   }
 
   toggleExpand = (e) => {
-    const metadata = this.props.data;
+    const { data } = this.props;
     if (!this.state.isExpanded) {
       logClick(e, {
-        target_id: `column::${metadata.name}`,
+        target_id: `column::${data.name}`,
         target_type: 'column stats',
-        label: `${metadata.name} ${metadata.col_type}`,
+        label: `${data.name} ${data.col_type}`,
       });
     }
-    if (this.shouldRenderDescription() || metadata.stats.length !== 0) {
+    if (this.shouldRenderDescription() || data.stats.length !== 0) {
       this.setState((prevState) => ({
         isExpanded: !prevState.isExpanded,
       }));
@@ -89,58 +91,8 @@ export class ColumnListItem extends React.Component<
     return true;
   };
 
-  renderColumnType = (columnIndex: number, type: string) => {
-    const truncatedTypes: string[] = ['array', 'struct', 'map', 'row'];
-    let shouldTrucate = false;
-
-    const fullText = type.toLowerCase();
-    let text = fullText;
-
-    truncatedTypes.forEach((truncatedType) => {
-      if (type.startsWith(truncatedType) && type !== truncatedType) {
-        shouldTrucate = true;
-        const lastChar = type.charAt(type.length - 1);
-        if (lastChar === '>') {
-          text = `${truncatedType}<...>`;
-        } else if (lastChar === ')') {
-          text = `${truncatedType}(...)`;
-        } else {
-          text = `${truncatedType}...`;
-        }
-      }
-    });
-
-    if (shouldTrucate) {
-      const popoverHover = (
-        <Popover
-          className="column-type-popover"
-          id={`column-type-popover:${columnIndex}`}
-        >
-          {fullText}
-        </Popover>
-      );
-      return (
-        <OverlayTrigger
-          trigger={['click']}
-          placement="left"
-          overlay={popoverHover}
-          rootClose
-        >
-          <a
-            className="column-type"
-            href="JavaScript:void(0)"
-            onClick={this.stopPropagation}
-          >
-            {text}
-          </a>
-        </OverlayTrigger>
-      );
-    }
-    return <div className="column-type">{text}</div>;
-  };
-
   render() {
-    const metadata = this.props.data;
+    const { data, database } = this.props;
     return (
       <li className="list-group-item clickable" onClick={this.toggleExpand}>
         <div className="column-list-item">
@@ -150,15 +102,19 @@ export class ColumnListItem extends React.Component<
                 !this.state.isExpanded ? 'my-auto' : ''
               }`}
             >
-              <div className="column-name">{metadata.name}</div>
+              <div className="column-name">{data.name}</div>
               {!this.state.isExpanded && (
                 <div className="column-desc body-3 truncated">
-                  {metadata.description}
+                  {data.description}
                 </div>
               )}
             </div>
             <div className="resource-type">
-              {this.renderColumnType(this.props.index, metadata.col_type)}
+              <ColumnType
+                columnName={data.name}
+                database={database}
+                type={data.col_type}
+              />
             </div>
             <div className="badges">{/* Placeholder */}</div>
             <div className="actions">
@@ -191,20 +147,20 @@ export class ColumnListItem extends React.Component<
                 {this.shouldRenderDescription() && (
                   <EditableSection
                     title={EDITABLE_SECTION_TITLE}
-                    readOnly={!metadata.is_editable}
+                    readOnly={!data.is_editable}
                     editText={this.props.editText}
                     editUrl={this.props.editUrl}
                   >
                     <ColumnDescEditableText
                       columnIndex={this.props.index}
-                      editable={metadata.is_editable}
+                      editable={data.is_editable}
                       maxLength={getMaxLength('columnDescLength')}
-                      value={metadata.description}
+                      value={data.description}
                     />
                   </EditableSection>
                 )}
               </div>
-              <ColumnStats stats={metadata.stats} />
+              <ColumnStats stats={data.stats} />
             </section>
           )}
         </div>

@@ -45,6 +45,7 @@ $font-weight-header-regular: 500 !default;
 $font-weight-header-bold: 700 !default;
 
 $font-family-monospace: 'Menlo-Bold', menlo, monospace !default;
+$font-family-monospace-code: 'Space Mono', menlo, monospace !default;
 $font-family-serif: georgia, 'Times New Roman', times, serif !default;
 
 $font-size-small: 12px !default;
@@ -161,6 +162,8 @@ $w2-headline-line-height: 32px;
 
 $w3-headline-font-size: 22px;
 $w3-headline-line-height: 26px;
+
+$code-font-size: 12px;
 
 $title-font-weight: $font-weight-body-bold;
 $subtitle-font-weight: $font-weight-body-semi-bold;

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 
-import SourceLink, { SourceLinkProps } from '.';
 import AvatarLabel from 'components/common/AvatarLabel';
 import AppConfig from 'config/config';
 import { ResourceType } from 'interfaces/Resources';
+import SourceLink, { SourceLinkProps } from '.';
 
 const setup = (propOverrides?: Partial<SourceLinkProps>) => {
   const props = {
