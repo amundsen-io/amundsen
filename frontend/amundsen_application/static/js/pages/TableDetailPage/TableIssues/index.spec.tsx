@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-
 import { shallow } from 'enzyme';
 
 import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
 
-import { NO_DATA_ISSUES_TEXT } from 'components/TableDetail/TableIssues/constants';
+import { NO_DATA_ISSUES_TEXT } from './constants';
 import {
   TableIssues,
   TableIssueProps,
@@ -74,7 +73,7 @@ describe('TableIssues', () => {
       const { wrapper } = setup({
         issues: [],
         total: 0,
-        allIssuesUrl: null,
+        allIssuesUrl: undefined,
       });
       expect(wrapper.find('.table-issue-more-issues').length).toEqual(0);
     });

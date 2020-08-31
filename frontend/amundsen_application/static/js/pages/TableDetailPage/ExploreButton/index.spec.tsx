@@ -3,10 +3,12 @@
 
 import * as React from 'react';
 import { shallow } from 'enzyme';
+
 import * as ConfigUtils from 'config/config-utils';
-import ExploreButton from 'components/TableDetail/ExploreButton';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { logClick } from 'ducks/utilMethods';
+
+import ExploreButton from '.';
 
 let mockExploreEnabled = true;
 let mockExploreUrl = 'https://test-website.com';

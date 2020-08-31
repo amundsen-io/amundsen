@@ -6,8 +6,6 @@ import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
 import { UserResource } from 'interfaces';
-import Flag from 'components/common/Flag';
-import { BadgeStyle } from 'config/config-types';
 import { LoggingParams } from '../types';
 
 export interface UserListItemProps {

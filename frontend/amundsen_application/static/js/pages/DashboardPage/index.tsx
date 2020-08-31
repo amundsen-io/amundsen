@@ -16,21 +16,9 @@ import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import EditableSection from 'components/common/EditableSection';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import TabsComponent from 'components/common/TabsComponent';
-import DashboardOwnerEditor from 'components/DashboardPage/DashboardOwnerEditor';
-import QueryList from 'components/DashboardPage/QueryList';
-import ChartList from 'components/DashboardPage/ChartList';
+import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
 import ResourceStatusMarker from 'components/common/ResourceStatusMarker';
 import ResourceList from 'components/common/ResourceList';
-import {
-  ADD_DESC_TEXT,
-  EDIT_DESC_TEXT,
-  OWNER_HEADER_TEXT,
-  DASHBOARD_SOURCE,
-  TABLES_PER_PAGE,
-  LAST_RUN_SUCCEEDED,
-  STATUS_TEXT,
-} from 'components/DashboardPage/constants';
 import TagInput from 'components/common/Tags/TagInput';
 import { NO_TIMESTAMP_TEXT } from 'components/constants';
 
@@ -40,6 +28,18 @@ import { getLoggingParams } from 'utils/logUtils';
 
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';
+import {
+  ADD_DESC_TEXT,
+  EDIT_DESC_TEXT,
+  OWNER_HEADER_TEXT,
+  DASHBOARD_SOURCE,
+  TABLES_PER_PAGE,
+  LAST_RUN_SUCCEEDED,
+  STATUS_TEXT,
+} from './constants';
+import ChartList from './ChartList';
+import QueryList from './QueryList';
+import DashboardOwnerEditor from './DashboardOwnerEditor';
 
 import ImagePreview from './ImagePreview';
 
@@ -48,12 +48,6 @@ import './styles.scss';
 interface DashboardPageState {
   uri: string;
 }
-
-type TabInfo = {
-  content: JSX.Element;
-  key: string;
-  title: string;
-};
 
 export interface StateFromProps {
   isLoading: boolean;

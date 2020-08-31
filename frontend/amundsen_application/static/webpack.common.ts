@@ -17,6 +17,7 @@ const VENDORS_PATTERN = /[\\/]node_modules[\\/](react|react-dom)[\\/]/;
 
 const PATHS = {
   dist: path.join(__dirname, '/dist'),
+  pages: path.join(__dirname, '/js/pages'),
   components: path.join(__dirname, '/js/components'),
   config: path.join(__dirname, '/js/config'),
   ducks: path.join(__dirname, '/js/ducks'),
@@ -59,6 +60,7 @@ const config: webpack.Configuration = {
   devtool: 'source-map',
   resolve: {
     alias: {
+      pages: PATHS.pages,
       components: PATHS.components,
       config: PATHS.config,
       ducks: PATHS.ducks,

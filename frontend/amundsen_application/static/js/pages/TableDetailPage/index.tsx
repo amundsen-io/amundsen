@@ -23,36 +23,33 @@ import {
 import BadgeList from 'components/common/BadgeList';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
-import TabsComponent from 'components/common/TabsComponent';
+import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
 import TagInput from 'components/common/Tags/TagInput';
 import EditableText from 'components/common/EditableText';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-
-import ColumnList from 'components/TableDetail/ColumnList';
-import DataPreviewButton from 'components/TableDetail/DataPreviewButton';
-import ExploreButton from 'components/TableDetail/ExploreButton';
-import FrequentUsers from 'components/TableDetail/FrequentUsers';
-import LineageLink from 'components/TableDetail/LineageLink';
-import TableOwnerEditor from 'components/TableDetail/TableOwnerEditor';
-import SourceLink from 'components/TableDetail/SourceLink';
-import TableDashboardResourceList from 'components/TableDetail/TableDashboardResourceList';
-import TableDescEditableText from 'components/TableDetail/TableDescEditableText';
-import TableHeaderBullets from 'components/TableDetail/TableHeaderBullets';
-import TableIssues from 'components/TableDetail/TableIssues';
-import WatermarkLabel from 'components/TableDetail/WatermarkLabel';
-import WriterLink from 'components/TableDetail/WriterLink';
 
 import {
   ProgrammaticDescription,
   ResourceType,
   TableMetadata,
 } from 'interfaces';
-
 import EditableSection from 'components/common/EditableSection';
-import TableReportsDropdown from 'components/TableDetail/ResourceReportsDropdown';
-
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
+import ColumnList from './ColumnList';
+import DataPreviewButton from './DataPreviewButton';
+import ExploreButton from './ExploreButton';
+import FrequentUsers from './FrequentUsers';
+import LineageLink from './LineageLink';
+import TableOwnerEditor from './TableOwnerEditor';
+import SourceLink from './SourceLink';
+import TableDashboardResourceList from './TableDashboardResourceList';
+import TableDescEditableText from './TableDescEditableText';
+import TableHeaderBullets from './TableHeaderBullets';
+import TableIssues from './TableIssues';
+import WatermarkLabel from './WatermarkLabel';
+import WriterLink from './WriterLink';
+import TableReportsDropdown from './ResourceReportsDropdown';
 
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
@@ -79,12 +76,14 @@ export interface DispatchFromProps {
     source?: string
   ) => GetTableDataRequest;
 }
+
 export interface MatchProps {
   cluster: string;
   database: string;
   schema: string;
   table: string;
 }
+
 export type TableDetailProps = StateFromProps &
   DispatchFromProps &
   RouteComponentProps<MatchProps>;
@@ -158,7 +157,7 @@ export class TableDetail extends React.Component<
   };
 
   renderTabs(editText, editUrl) {
-    const tabInfo = [];
+    const tabInfo: TabInfo[] = [];
     const { isLoadingDashboards, numRelatedDashboards, tableData } = this.props;
 
     // Default Column content
@@ -181,6 +180,7 @@ export class TableDetail extends React.Component<
           Dashboards <LoadingSpinner />
         </div>
       );
+
       tabInfo.push({
         content: (
           <TableDashboardResourceList

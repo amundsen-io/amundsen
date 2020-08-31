@@ -9,9 +9,9 @@ import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
 
-import ResourceSelector from 'components/SearchPage/ResourceSelector';
-import SearchFilter from 'components/SearchPage/SearchFilter';
-import SearchPanel from 'components/SearchPage/SearchPanel';
+import ResourceSelector from 'pages/SearchPage/ResourceSelector';
+import SearchFilter from 'pages/SearchPage/SearchFilter';
+import SearchPanel from 'pages/SearchPage/SearchPanel';
 import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
 
 import globalState from 'fixtures/globalState';

@@ -44,5 +44,5 @@ export const mapStateToProps = (state: GlobalState) => {
 
 export default connect<StateFromProps, {}, ComponentProps>(
   mapStateToProps,
-  null
+  {}
 )(OwnerEditor);

@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import * as qs from 'simple-query-string';
 
-import { QueryResource, ResourceType } from 'interfaces/Resources';
+import { ResourceType } from 'interfaces/Resources';
 import { DashboardMetadata } from 'interfaces/Dashboard';
 
 export type GetDashboardAPI = {
