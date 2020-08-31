@@ -8,7 +8,6 @@ import * as DocumentTitle from 'react-document-title';
 import { RouteComponentProps } from 'react-router';
 import { Search as UrlSearch } from 'history';
 
-import LoadingSpinner from 'components/common/LoadingSpinner';
 import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
 import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
 

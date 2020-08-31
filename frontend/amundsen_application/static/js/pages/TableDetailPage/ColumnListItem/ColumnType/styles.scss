@@ -32,6 +32,7 @@ $modal-dialog-width: 418px;
     height: calc(#{$modal-dialog-height - $modal-header-height - $spacer-3});
     font-family: $font-family-monospace-code;
     font-size: $code-font-size;
+
     /* Override react-bootstrap styles to match design */
     margin: 0 $spacer-3 !important;
     padding: $spacer-1 0 !important;
@@ -51,14 +52,17 @@ $modal-dialog-width: 418px;
   .modal-header {
     border-bottom: none;
     height: $modal-header-height;
+
     /* Override react-bootstrap styles to match design */
     padding: $spacer-3 !important;
 
     .main-title {
       @extend %text-title-w1;
     }
+
     .sub-title {
       @extend %text-subtitle-w3;
+
       color: $text-secondary;
     }
   }
@@ -72,13 +76,15 @@ $modal-dialog-width: 418px;
   text-align: center;
   padding: 0 !important;
 }
-.modal:before {
+
+.modal::before {
   content: '';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
   margin-right: -4px;
 }
+
 .modal-dialog {
   display: inline-block;
   vertical-align: middle;

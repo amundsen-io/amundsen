@@ -8,7 +8,7 @@ import {
   NO_WATERMARK_LINE_1,
   NO_WATERMARK_LINE_2,
   WatermarkType,
-} from 'components/TableDetail/WatermarkLabel/constants';
+} from './constants';
 import WatermarkLabel, { WatermarkLabelProps } from '.';
 
 describe('WatermarkLabel', () => {

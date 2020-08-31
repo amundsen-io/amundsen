@@ -5,11 +5,6 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import {
-  DASHBOARD_RESOURCE_TITLE,
-  TABLE_RESOURCE_TITLE,
-  USER_RESOURCE_TITLE,
-} from 'components/SearchPage/constants';
 import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import { updateSearchState } from 'ducks/search/reducer';
@@ -20,6 +15,11 @@ import {
   UserSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
+import {
+  DASHBOARD_RESOURCE_TITLE,
+  TABLE_RESOURCE_TITLE,
+  USER_RESOURCE_TITLE,
+} from '../constants';
 
 const RESOURCE_SELECTOR_TITLE = 'Resource';
 

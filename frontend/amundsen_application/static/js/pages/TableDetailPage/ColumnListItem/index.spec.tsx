@@ -4,17 +4,13 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
-import {
-  ColumnListItem,
-  ColumnListItemProps,
-  mapDispatchToProps,
-} from 'components/TableDetail/ColumnListItem';
-import EditableSection from 'components/common/EditableSection';
-import ColumnStats from 'components/TableDetail/ColumnStats';
 import AppConfig from 'config/config';
+import EditableSection from 'components/common/EditableSection';
 import * as UtilMethods from 'ducks/utilMethods';
 import { RequestMetadataType } from 'interfaces/Notifications';
+import ColumnStats from '../ColumnStats';
+import ColumnDescEditableText from '../ColumnDescEditableText';
+import { ColumnListItem, ColumnListItemProps, mapDispatchToProps } from '.';
 
 import ColumnType from './ColumnType';
 

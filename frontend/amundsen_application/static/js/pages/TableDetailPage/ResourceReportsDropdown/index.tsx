@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Dropdown } from 'react-bootstrap';
 
 import { ResourceReport } from 'interfaces/index';
-import { Dropdown } from 'react-bootstrap';
 
 export interface ResourceReportProps {
   resourceReports: ResourceReport[];

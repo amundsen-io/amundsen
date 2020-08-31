@@ -6,8 +6,6 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import ColumnDescEditableText from 'components/TableDetail/ColumnDescEditableText';
-import ColumnStats from 'components/TableDetail/ColumnStats';
 import { notificationsEnabled, getMaxLength } from 'config/config-utils';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { OpenRequestAction } from 'ducks/notification/types';
@@ -16,6 +14,8 @@ import { RequestMetadataType, TableColumn } from 'interfaces';
 
 import './styles.scss';
 import EditableSection from 'components/common/EditableSection';
+import ColumnStats from '../ColumnStats';
+import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnType from './ColumnType';
 
 const MORE_BUTTON_TEXT = 'More options';

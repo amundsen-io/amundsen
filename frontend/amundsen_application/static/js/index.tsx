@@ -6,26 +6,26 @@ import 'core-js/stable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ReduxPromise from 'redux-promise';
-
 import createSagaMiddleware from 'redux-saga';
-
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
-import DashboardPage from 'components/DashboardPage';
-import Preloader from 'components/common/Preloader';
 import { BrowserHistory } from 'utils/navigationUtils';
-import AnnouncementPage from './components/AnnouncementPage';
-import BrowsePage from './components/BrowsePage';
+
+import DashboardPage from './pages/DashboardPage';
+import AnnouncementPage from './pages/AnnouncementPage';
+import BrowsePage from './pages/BrowsePage';
+import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
+import SearchPage from './pages/SearchPage';
+import ProfilePage from './pages/ProfilePage';
+import TableDetail from './pages/TableDetailPage';
+
+import Preloader from './components/common/Preloader';
 import Footer from './components/Footer';
-import HomePage from './components/HomePage';
 import NavBar from './components/NavBar';
-import NotFoundPage from './components/NotFoundPage';
-import ProfilePage from './components/ProfilePage';
-import SearchPage from './components/SearchPage';
-import TableDetail from './components/TableDetail';
 
 import rootReducer from './ducks/rootReducer';
 import rootSaga from './ducks/rootSaga';

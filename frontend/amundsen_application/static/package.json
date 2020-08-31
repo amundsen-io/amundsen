@@ -28,7 +28,8 @@
     "storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' start-storybook -s ../ -p 6006",
     "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook",
     "betterer": "betterer",
-    "betterer:update": "betterer --update"
+    "betterer:update": "betterer --update",
+    "check": "npm run eslint:errors && npm run stylelint && npm run tsc && npn run betterer"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -510,8 +511,10 @@
     ],
     "rules": {
       "prettier/prettier": true,
+      "indentation": null,
       "scss/dollar-variable-colon-space-after": "always",
       "no-descending-specificity": null,
+      "declaration-colon-newline-after": null,
       "block-no-empty": null,
       "at-rule-no-unknown": [
         true,
