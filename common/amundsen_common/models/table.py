@@ -152,7 +152,7 @@ class Table:
     schema: str
     name: str
     tags: List[Tag] = []
-    badges: Optional[List[Tag]] = []
+    badges: List[Badge] = []
     table_readers: List[Reader] = []
     description: Optional[str] = None
     columns: List[Column]
