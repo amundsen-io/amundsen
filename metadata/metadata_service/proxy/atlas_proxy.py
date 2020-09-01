@@ -176,7 +176,7 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(bookmark_qn)
         return result.groupdict() if result else dict()
 
-    def _get_user_details(self, user_id: str, fallback: str = None) -> Union[Dict, str]:
+    def _get_user_details(self, user_id: str) -> Dict:
         """
         Helper function to help get the user details if the `USER_DETAIL_METHOD` is configured,
         else uses the user_id for both email and user_id properties.
@@ -185,8 +185,6 @@ class AtlasProxy(BaseProxy):
         """
         if app.config.get('USER_DETAIL_METHOD'):
             user_details = app.config.get('USER_DETAIL_METHOD')(user_id)  # type: ignore
-        elif fallback:
-            user_details = fallback
         else:
             user_details = {'email': user_id, 'user_id': user_id}
 
@@ -392,7 +390,7 @@ class AtlasProxy(BaseProxy):
 
         return parsed_reports
 
-    def _get_owners(self, data_owners: list, fallback_owner: str) -> List[User]:
+    def _get_owners(self, data_owners: list, fallback_owner: str = None) -> List[User]:
         owners_detail = list()
         active_owners = filter(lambda item:
                                item['entityStatus'] == Status.ACTIVE and
@@ -404,7 +402,12 @@ class AtlasProxy(BaseProxy):
             owner_data = self._get_user_details(owner_qn)
             owners_detail.append(User(**owner_data))
 
-        return owners_detail or [User(email=fallback_owner, user_id=fallback_owner)]
+        # To avoid the duplication,
+        # we are checking if the fallback is not in data_owners
+        if fallback_owner and (fallback_owner not in data_owners):
+            owners_detail.append(User(**self._get_user_details(fallback_owner)))
+
+        return owners_detail
 
     def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
@@ -454,7 +457,8 @@ class AtlasProxy(BaseProxy):
                 name=attrs.get('name') or table_qn.get("table_name", ''),
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
-                owners=self._get_owners(table_details[self.REL_ATTRS_KEY].get('ownedBy'), attrs.get('owner')),
+                owners=self._get_owners(
+                    table_details[self.REL_ATTRS_KEY].get('ownedBy', []), attrs.get('owner')),
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 is_view=is_view,
@@ -472,7 +476,6 @@ class AtlasProxy(BaseProxy):
 
     def delete_owner(self, *, table_uri: str, owner: str) -> None:
         """
-
         :param table_uri:
         :param owner:
         :return:
@@ -504,8 +507,7 @@ class AtlasProxy(BaseProxy):
         :param owner: Email address of the owner
         :return: None, as it simply adds the owner.
         """
-        # Generating owner_info to validate if the user exists
-        owner_info = self._get_user_details(owner, fallback=owner)
+        owner_info = self._get_user_details(owner)
 
         if not owner_info:
             raise NotFoundException(f'User "{owner}" does not exist.')
@@ -762,14 +764,33 @@ class AtlasProxy(BaseProxy):
             LOGGER.exception(f'User ({user_id}) not found in Atlas')
             raise NotFoundException(f'User {user_id} not found.')
 
-        resource_guids = list()
+        resource_guids = set()
         for item in user_entity[self.REL_ATTRS_KEY].get('ownerOf') or list():
             if (item['entityStatus'] == Status.ACTIVE and
                     item['relationshipStatus'] == Status.ACTIVE and
                     item['typeName'] == resource_type):
-                resource_guids.append(item[self.GUID_KEY])
+                resource_guids.add(item[self.GUID_KEY])
 
-        entities = extract_entities(self._driver.entity_bulk(guid=resource_guids, ignoreRelationships=True))
+        params = {
+            'typeName': self.TABLE_ENTITY,
+            'excludeDeletedEntities': True,
+            'entityFilters': {
+                'condition': 'AND',
+                'criterion': [
+                    {
+                        'attributeName': 'owner',
+                        'operator': 'startsWith',
+                        'attributeValue': user_id.lower()
+                    }
+                ]
+            },
+            'attributes': [self.GUID_KEY]
+        }
+        table_entities = self._driver.search_basic.create(data=params)
+        for table in table_entities.entities:
+            resource_guids.add(table.guid)
+
+        entities = extract_entities(self._driver.entity_bulk(guid=list(resource_guids), ignoreRelationships=True))
         if resource_type == self.TABLE_ENTITY:
             resources = self._serialize_popular_tables(entities)
 
