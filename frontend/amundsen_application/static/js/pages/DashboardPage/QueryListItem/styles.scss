@@ -135,7 +135,7 @@ $shimmer-loader-lines: 1, 2, 3, 4, 5, 6;
 
   @each $line in $shimmer-loader-lines {
     .shimmer-line--#{$line} {
-      width: percentage(random(100) / 100);
+      width: 75%;
     }
   }
 }
