@@ -272,6 +272,7 @@ describe('RequestMetadataForm', () => {
           });
           wrapper = setupResult.wrapper;
         });
+
         it('renders checked column description checkbox', () => {
           element = wrapper.find('#request-type-form-group');
           const label = element.find('label').at(2);
@@ -283,7 +284,7 @@ describe('RequestMetadataForm', () => {
           element = wrapper.find('#additional-comments-form-group');
           const textArea = element.find('textarea');
 
-          expect(textArea.text()).toEqual(
+          expect(textArea.props().defaultValue).toEqual(
             `${COLUMN_REQUESTED_COMMENT_PREFIX}Test`
           );
           expect(textArea.props().required).toBe(true);

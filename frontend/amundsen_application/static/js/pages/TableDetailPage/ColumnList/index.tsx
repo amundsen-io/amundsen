@@ -2,13 +2,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { TableColumn } from 'interfaces';
+
+import { OpenRequestAction } from 'ducks/notification/types';
+
+import { TableColumn, RequestMetadataType } from 'interfaces';
+
 import ColumnListItem from '../ColumnListItem';
 
 import './styles.scss';
 
 interface ColumnListProps {
   columns?: TableColumn[];
+  openRequestDescriptionDialog: (
+    requestMetadataType: RequestMetadataType,
+    columnName: string
+  ) => OpenRequestAction;
   database: string;
   editText?: string;
   editUrl?: string;
@@ -19,6 +27,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   database,
   editText,
   editUrl,
+  openRequestDescriptionDialog,
 }: ColumnListProps) => {
   if (columns.length < 1) {
     return <div />;
@@ -27,6 +36,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
 
   const columnList = columns.map((entry, index) => (
     <ColumnListItem
+      openRequestDescriptionDialog={openRequestDescriptionDialog}
       key={`column:${index}`}
       data={entry}
       database={database}

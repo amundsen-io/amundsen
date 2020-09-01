@@ -91,20 +91,35 @@ export class RequestMetadataForm extends React.Component<
     );
   };
 
-  submitNotification = (event) => {
-    event.preventDefault();
+  extractDataFromForm = () => {
     const form = document.getElementById('RequestForm') as HTMLFormElement;
     const formData = new FormData(form);
     const recipientString = formData.get('recipients') as string;
-    const recipients = recipientString.split(
-      Constants.RECIPIENT_LIST_DELIMETER.trim()
-    );
-    const sender = formData.get('sender') as string;
-    const descriptionRequested = formData.get('table-description') === 'on';
-    const fieldsRequested = formData.get('column-description') === 'on';
-    const comment = formData.get('comment') as string;
-    const { cluster, database, schema, name } = this.props.tableMetadata;
-    this.props.submitNotification(
+
+    return {
+      comment: formData.get('comment') as string,
+      fieldsRequested: formData.get('column-description') === 'on',
+      descriptionRequested: formData.get('table-description') === 'on',
+      sender: formData.get('sender') as string,
+      recipients: recipientString.split(
+        Constants.RECIPIENT_LIST_DELIMETER.trim()
+      ),
+    };
+  };
+
+  submitNotification = (event) => {
+    event.preventDefault();
+    const {
+      comment,
+      fieldsRequested,
+      descriptionRequested,
+      sender,
+      recipients,
+    } = this.extractDataFromForm();
+    const { submitNotification, tableMetadata } = this.props;
+    const { cluster, database, schema, name } = tableMetadata;
+
+    submitNotification(
       recipients,
       sender,
       NotificationType.METADATA_REQUESTED,
@@ -124,7 +139,6 @@ export class RequestMetadataForm extends React.Component<
       requestIsOpen,
       requestMetadataType,
       sendState,
-      tableMetadata,
       tableOwners,
       userEmail,
     } = this.props;
@@ -215,9 +229,8 @@ export class RequestMetadataForm extends React.Component<
               required={colDescriptionNeeded}
               rows={8}
               maxLength={2000}
-            >
-              {defaultComment}
-            </textarea>
+              defaultValue={defaultComment}
+            />
           </div>
           <button
             id="submit-request-button"
