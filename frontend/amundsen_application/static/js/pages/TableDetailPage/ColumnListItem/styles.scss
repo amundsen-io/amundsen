@@ -3,33 +3,34 @@
 
 @import 'variables';
 
+$column-header-height: 38px;
+$column-details-cell-width: 50%;
+$resource-type-cell-width: 100px;
+
 .list-group-item .column-list-item {
-  padding: 16px 24px;
+  padding: $spacer-2 $spacer-3;
 
   .column-header {
     display: flex;
-    height: 38px;
+    height: $column-header-height;
 
     .column-details {
-      flex-basis: 50%;
+      flex-basis: $column-details-cell-width;
       flex-grow: 1;
-      margin-right: 16px;
+      margin-right: $spacer-2;
     }
 
     .resource-type,
     .badges,
+    .usage,
     .actions {
       align-items: center;
       display: flex;
     }
 
     .resource-type {
-      flex-basis: 100px;
+      flex-basis: $resource-type-cell-width;
       overflow: hidden;
-    }
-
-    .badges {
-      // placeholder
     }
 
     .actions {
@@ -72,7 +73,7 @@
   }
 
   .expanded-content {
-    margin-top: -16px;
+    margin-top: -$spacer-2;
   }
 
   .stop-propagation {

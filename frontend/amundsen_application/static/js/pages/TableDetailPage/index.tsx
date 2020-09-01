@@ -9,7 +9,9 @@ import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
+import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
+import { OpenRequestAction } from 'ducks/notification/types';
 
 import {
   getDescriptionSourceDisplayName,
@@ -27,15 +29,18 @@ import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
 import TagInput from 'components/common/Tags/TagInput';
 import EditableText from 'components/common/EditableText';
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import EditableSection from 'components/common/EditableSection';
+
+import { formatDateTimeShort } from 'utils/dateUtils';
+import { getLoggingParams } from 'utils/logUtils';
 
 import {
   ProgrammaticDescription,
   ResourceType,
   TableMetadata,
+  RequestMetadataType,
 } from 'interfaces';
-import EditableSection from 'components/common/EditableSection';
-import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams } from 'utils/logUtils';
+
 import ColumnList from './ColumnList';
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
@@ -50,7 +55,6 @@ import TableIssues from './TableIssues';
 import WatermarkLabel from './WatermarkLabel';
 import WriterLink from './WriterLink';
 import TableReportsDropdown from './ResourceReportsDropdown';
-
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 
@@ -75,6 +79,10 @@ export interface DispatchFromProps {
     searchIndex?: string,
     source?: string
   ) => GetTableDataRequest;
+  openRequestDescriptionDialog: (
+    requestMetadataType: RequestMetadataType,
+    columnName: string
+  ) => OpenRequestAction;
 }
 
 export interface MatchProps {
@@ -158,12 +166,18 @@ export class TableDetail extends React.Component<
 
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
-    const { isLoadingDashboards, numRelatedDashboards, tableData } = this.props;
+    const {
+      isLoadingDashboards,
+      numRelatedDashboards,
+      tableData,
+      openRequestDescriptionDialog,
+    } = this.props;
 
     // Default Column content
     tabInfo.push({
       content: (
         <ColumnList
+          openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
           editText={editText}
@@ -360,7 +374,10 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getTableData }, dispatch);
+  return bindActionCreators(
+    { getTableData, openRequestDescriptionDialog },
+    dispatch
+  );
 };
 
 export default connect<StateFromProps, DispatchFromProps>(

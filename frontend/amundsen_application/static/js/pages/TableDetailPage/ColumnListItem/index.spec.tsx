@@ -10,42 +10,42 @@ import * as UtilMethods from 'ducks/utilMethods';
 import { RequestMetadataType } from 'interfaces/Notifications';
 import ColumnStats from '../ColumnStats';
 import ColumnDescEditableText from '../ColumnDescEditableText';
-import { ColumnListItem, ColumnListItemProps, mapDispatchToProps } from '.';
+import { ColumnListItem, ColumnListItemProps } from '.';
 
 import ColumnType from './ColumnType';
 
 const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
 logClickSpy.mockImplementation(() => null);
 
-describe('ColumnListItem', () => {
-  const setup = (propOverrides?: Partial<ColumnListItemProps>) => {
-    const props = {
-      data: {
-        name: 'test_column_name',
-        description: 'This is a test description of this table',
-        is_editable: true,
-        col_type: 'varchar(32)',
-        stats: [
-          {
-            end_epoch: 1571616000,
-            start_epoch: 1571616000,
-            stat_type: 'count',
-            stat_val: '12345',
-          },
-        ],
-      },
-      database: 'hive',
-      index: 0,
-      openRequestDescriptionDialog: jest.fn(),
-      editText: 'Click to edit discription in source',
-      editUrl: 'source/test_column_name',
-      ...propOverrides,
-    };
-
-    const wrapper = shallow<ColumnListItem>(<ColumnListItem {...props} />);
-    return { wrapper, props };
+const setup = (propOverrides?: Partial<ColumnListItemProps>) => {
+  const props = {
+    data: {
+      name: 'test_column_name',
+      description: 'This is a test description of this table',
+      is_editable: true,
+      col_type: 'varchar(32)',
+      stats: [
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'count',
+          stat_val: '12345',
+        },
+      ],
+    },
+    database: 'hive',
+    index: 0,
+    openRequestDescriptionDialog: jest.fn(),
+    editText: 'Click to edit discription in source',
+    editUrl: 'source/test_column_name',
+    ...propOverrides,
   };
 
+  const wrapper = shallow<ColumnListItem>(<ColumnListItem {...props} />);
+  return { wrapper, props };
+};
+
+describe('ColumnListItem', () => {
   const { wrapper, props } = setup();
   const instance = wrapper.instance();
   const setStateSpy = jest.spyOn(instance, 'setState');
@@ -254,6 +254,7 @@ describe('ColumnListItem', () => {
         });
       });
     });
+
     describe('when not expanded', () => {
       let newWrapper;
       beforeAll(() => {
@@ -273,18 +274,5 @@ describe('ColumnListItem', () => {
         );
       });
     });
-  });
-});
-
-describe('mapDispatchToProps', () => {
-  let dispatch;
-  let result;
-  beforeAll(() => {
-    dispatch = jest.fn(() => Promise.resolve());
-    result = mapDispatchToProps(dispatch);
-  });
-
-  it('sets openRequestDescriptionDialog on the props', () => {
-    expect(result.openRequestDescriptionDialog).toBeInstanceOf(Function);
   });
 });

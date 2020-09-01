@@ -39,6 +39,7 @@ const setup = (
     statusCode: 200,
     tableData: tableMetadata,
     getTableData: jest.fn(),
+    openRequestDescriptionDialog: jest.fn(),
     ...routerProps,
     ...propOverrides,
   };

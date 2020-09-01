@@ -29,7 +29,7 @@
     "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook",
     "betterer": "betterer",
     "betterer:update": "betterer --update",
-    "check": "npm run eslint:errors && npm run stylelint && npm run tsc && npn run betterer"
+    "check": "npm run eslint:errors && npm run stylelint && npm run tsc && npm run betterer"
   },
   "author": "",
   "license": "Apache-2.0",

@@ -3,33 +3,29 @@
 
 import * as React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 import { notificationsEnabled, getMaxLength } from 'config/config-utils';
-import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
-import { OpenRequestAction } from 'ducks/notification/types';
 import { logClick } from 'ducks/utilMethods';
-import { RequestMetadataType, TableColumn } from 'interfaces';
 
-import './styles.scss';
+import { TableColumn, RequestMetadataType } from 'interfaces';
+import { OpenRequestAction } from 'ducks/notification/types';
+
 import EditableSection from 'components/common/EditableSection';
 import ColumnStats from '../ColumnStats';
 import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnType from './ColumnType';
 
+import './styles.scss';
+
 const MORE_BUTTON_TEXT = 'More options';
 const EDITABLE_SECTION_TITLE = 'Description';
 
-interface DispatchFromProps {
+export interface ColumnListItemProps {
+  data: TableColumn;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
     columnName: string
   ) => OpenRequestAction;
-}
-
-interface OwnProps {
-  data: TableColumn;
   database: string;
   index: number;
   editText: string;
@@ -39,8 +35,6 @@ interface OwnProps {
 interface ColumnListItemState {
   isExpanded: boolean;
 }
-
-export type ColumnListItemProps = DispatchFromProps & OwnProps;
 
 export class ColumnListItem extends React.Component<
   ColumnListItemProps,
@@ -93,6 +87,7 @@ export class ColumnListItem extends React.Component<
 
   render() {
     const { data, database } = this.props;
+
     return (
       <li className="list-group-item clickable" onClick={this.toggleExpand}>
         <div className="column-list-item">
@@ -116,7 +111,6 @@ export class ColumnListItem extends React.Component<
                 type={data.col_type}
               />
             </div>
-            <div className="badges">{/* Placeholder */}</div>
             <div className="actions">
               {
                 // TODO - Make this dropdown into a separate component
@@ -169,11 +163,4 @@ export class ColumnListItem extends React.Component<
   }
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ openRequestDescriptionDialog }, dispatch);
-};
-
-export default connect<{}, DispatchFromProps, OwnProps>(
-  null,
-  mapDispatchToProps
-)(ColumnListItem);
+export default ColumnListItem;
