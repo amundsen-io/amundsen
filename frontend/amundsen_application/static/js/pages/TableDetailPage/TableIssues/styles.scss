@@ -90,7 +90,7 @@ $shimmer-loader-lines: 1, 2;
 
   @each $line in $shimmer-loader-lines {
     .shimmer-issues-line--#{$line} {
-      width: percentage(random(100) / 100);
+      width: 75%;
     }
   }
 }

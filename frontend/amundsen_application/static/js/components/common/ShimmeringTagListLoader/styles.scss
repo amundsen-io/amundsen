@@ -5,23 +5,12 @@
 
 $shimmer-loader-tag-height: 36px;
 $shimmer-loader-items: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14;
-$shimmer-loader-tag-max-width: 130;
-$shimmer-loader-tag-min-width: 50;
+$shimmer-loader-tag-width: 90;
 
 .shimmer-tag-loader-item {
   margin: 0 $spacer-1 $spacer-1 0;
   height: $shimmer-loader-tag-height;
-  width: $shimmer-loader-tag-min-width + px;
+  width: $shimmer-loader-tag-width + px;
   border-radius: $tag-border-radius;
   display: inline-block;
-}
-
-@each $item in $shimmer-loader-items {
-  .shimmer-tag-loader-item--#{$item} {
-    width: (
-        random($shimmer-loader-tag-max-width - $shimmer-loader-tag-min-width) +
-          $shimmer-loader-tag-min-width
-      ) +
-      px;
-  }
 }

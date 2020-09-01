@@ -37,6 +37,6 @@ $shimmer-loader-border-size: 1px;
 
 @each $line in $shimmer-loader-lines {
   .shimmer-resource-line--#{$line} {
-    width: percentage(random(100) / 100);
+    width: 75%;
   }
 }
