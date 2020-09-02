@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import React, { ReactNode } from 'react';
 
 import StorySection from '../components/common/StorySection';
