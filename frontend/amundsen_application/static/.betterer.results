@@ -10,14 +10,14 @@ exports[`strict null compilation`] = {
       [100, 32, 36, "No overload matches this call.\\n  Overload 1 of 3, \'(node: ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>, options?: ShallowRendererProps | undefined): ShallowWrapper<...>\', gave the following error.\\n    Argument of type \'Element | null\' is not assignable to parameter of type \'ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>\'.\\n      Type \'null\' is not assignable to type \'ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>\'.\\n  Overload 2 of 3, \'(node: ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>, options?: ShallowRendererProps | undefined): ShallowWrapper<...>\', gave the following error.\\n    Argument of type \'Element | null\' is not assignable to parameter of type \'ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>\'.\\n      Type \'null\' is not assignable to type \'ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>\'.\\n  Overload 3 of 3, \'(node: ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>, options?: ShallowRendererProps | undefined): ShallowWrapper<...>\', gave the following error.\\n    Argument of type \'Element | null\' is not assignable to parameter of type \'ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>\'.\\n      Type \'null\' is not assignable to type \'ReactElement<any, string | ((props: any) => ReactElement<any, string | ... | (new (props: any) => Component<any, any, any>)> | null) | (new (props: any) => Component<any, any, any>)>\'.", "788521834"],
       [110, 39, 4, "Argument of type \'null\' is not assignable to parameter of type \'Partial<NavBarProps> | undefined\'.", "2087897566"]
     ],
-    "js/components/common/Announcements/AnnouncementsList/index.spec.tsx:1395073325": [
-      [94, 23, 124, "Object is possibly \'null\'.", "4248337497"]
+    "js/components/common/Announcements/AnnouncementsList/index.spec.tsx:3063969618": [
+      [97, 23, 124, "Object is possibly \'null\'.", "4248337497"]
     ],
-    "js/components/common/Announcements/AnnouncementsList/index.tsx:3478884749": [
-      [70, 4, 11, "Type \'Element\' is not assignable to type \'null\'.", "3768376622"],
-      [73, 4, 11, "Type \'Element[]\' is not assignable to type \'null\'.", "3768376622"],
-      [85, 4, 11, "Type \'Element\' is not assignable to type \'null\'.", "3768376622"],
-      [88, 4, 11, "Type \'Element[]\' is not assignable to type \'null\'.", "3768376622"]
+    "js/components/common/Announcements/AnnouncementsList/index.tsx:2274670610": [
+      [73, 4, 11, "Type \'Element\' is not assignable to type \'null\'.", "3768376622"],
+      [76, 4, 11, "Type \'Element[]\' is not assignable to type \'null\'.", "3768376622"],
+      [88, 4, 11, "Type \'Element\' is not assignable to type \'null\'.", "3768376622"],
+      [91, 4, 11, "Type \'Element[]\' is not assignable to type \'null\'.", "3768376622"]
     ],
     "js/components/common/BadgeList/index.tsx:4121776008": [
       [21, 12, 4, "Type \'string | undefined\' is not assignable to type \'string\'.\\n  Type \'undefined\' is not assignable to type \'string\'.", "2087956376"]
@@ -30,11 +30,11 @@ exports[`strict null compilation`] = {
       [74, 8, 3, "Type \'string\' is not assignable to type \'never\'.", "193424690"],
       [75, 8, 5, "Type \'string\' is not assignable to type \'never\'.", "183222373"]
     ],
-    "js/components/common/Card/index.spec.tsx:1434265974": [
-      [158, 23, 100, "Object is possibly \'null\'.", "1846024709"]
+    "js/components/common/Card/index.spec.tsx:3613684009": [
+      [161, 23, 100, "Object is possibly \'null\'.", "1846024709"]
     ],
-    "js/components/common/Card/index.tsx:330138477": [
-      [32, 2, 7, "Type \'null\' is not assignable to type \'(e: SyntheticEvent<Element, Event>) => void\'.", "4055953994"]
+    "js/components/common/Card/index.tsx:1284486450": [
+      [35, 2, 7, "Type \'null\' is not assignable to type \'(e: SyntheticEvent<Element, Event>) => void\'.", "4055953994"]
     ],
     "js/components/common/EditableSection/index.spec.tsx:1117078860": [
       [93, 32, 4, "Argument of type \'null\' is not assignable to parameter of type \'Partial<EditableSectionProps> | undefined\'.", "2087897566"]
@@ -55,9 +55,9 @@ exports[`strict null compilation`] = {
     "js/components/common/Flag/index.tsx:2997458704": [
       [44, 27, 8, "Argument of type \'string | null\' is not assignable to parameter of type \'string\'.\\n  Type \'null\' is not assignable to type \'string\'.", "4036080041"]
     ],
-    "js/components/common/OwnerEditor/index.spec.tsx:3936675418": [
-      [18, 6, 9, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "1517648899"],
-      [21, 6, 8, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "2673870115"]
+    "js/components/common/OwnerEditor/index.spec.tsx:3994734501": [
+      [21, 6, 9, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "1517648899"],
+      [24, 6, 8, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "2673870115"]
     ],
     "js/components/common/OwnerEditor/index.tsx:3127875743": [
       [92, 4, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
@@ -335,8 +335,8 @@ exports[`strict null compilation`] = {
       [141, 17, 16, "Object is possibly \'undefined\'.", "3451845569"],
       [257, 30, 34, "Argument of type \'number | null\' is not assignable to parameter of type \'number\'.\\n  Type \'null\' is not assignable to type \'number\'.", "3967943985"]
     ],
-    "js/pages/TableDetailPage/SourceLink/index.spec.tsx:2646548231": [
-      [39, 21, 100, "Object is possibly \'null\'.", "1316242242"]
+    "js/pages/TableDetailPage/SourceLink/index.spec.tsx:4194369848": [
+      [42, 21, 100, "Object is possibly \'null\'.", "1316242242"]
     ],
     "js/pages/TableDetailPage/TableDashboardResourceList/index.tsx:3147978263": [
       [64, 2, 15, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(state: GlobalState) => { dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' is not assignable to parameter of type \'MapStateToPropsParam<StateFromProps, OwnProps, {}>\'.\\n      Type \'(state: GlobalState) => { dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' is not assignable to type \'MapStateToPropsFactory<StateFromProps, OwnProps, {}>\'.\\n        Type \'{ dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' is not assignable to type \'MapStateToProps<StateFromProps, OwnProps, {}>\'.\\n          Type \'{ dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' provides no match for the signature \'(state: {}, ownProps: OwnProps): StateFromProps\'.", "1389821531"]
