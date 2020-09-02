@@ -30,6 +30,83 @@ describe('Table', () => {
       }).not.toThrow();
     });
 
+    describe('when empty data is passed', () => {
+      const { columns, data } = dataBuilder.withEmptyData().build();
+
+      it('renders a table', () => {
+        const { wrapper } = setup({
+          data,
+          columns,
+        });
+        const expected = 1;
+        const actual = wrapper.find('.ams-table').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      describe('table header', () => {
+        it('renders a table header', () => {
+          const { wrapper } = setup({
+            data,
+            columns,
+          });
+          const expected = 1;
+          const actual = wrapper.find('.ams-table-header').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        it('renders one cell inside the header', () => {
+          const { wrapper } = setup({
+            data,
+            columns,
+          });
+          const expected = 1;
+          const actual = wrapper.find(
+            '.ams-table-header .ams-table-heading-cell'
+          ).length;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('table body', () => {
+        it('renders a table body', () => {
+          const { wrapper } = setup({
+            data,
+            columns,
+          });
+          const expected = 1;
+          const actual = wrapper.find('.ams-table-body').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        it('renders one row', () => {
+          const { wrapper } = setup({
+            data,
+            columns,
+          });
+          const expected = 1;
+          const actual = wrapper.find('.ams-table-row').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        it('renders an empty message', () => {
+          const { wrapper } = setup({
+            data,
+            columns,
+          });
+          const expected = 1;
+          const actual = wrapper.find('.ams-table-row .ams-empty-message-cell')
+            .length;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+    });
+
     describe('when simple data is passed', () => {
       it('renders a table', () => {
         const { wrapper } = setup();
@@ -116,6 +193,137 @@ describe('Table', () => {
           const actual = wrapper.find('.ams-table-row .ams-table-cell').length;
 
           expect(actual).toEqual(expected);
+        });
+      });
+    });
+
+    describe('options', () => {
+      describe('when a tableClassName is passed', () => {
+        it('adds the class to the table', () => {
+          const { wrapper } = setup({
+            options: { tableClassName: 'test-class' },
+          });
+          const expected = 1;
+          const actual = wrapper.find('.test-class').length;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when isLoading is active', () => {
+        it('renders a table', () => {
+          const { wrapper } = setup({
+            data: [],
+            columns: [],
+            options: {
+              isLoading: true,
+              numLoadingBlocks: 10,
+            },
+          });
+          const expected = 1;
+          const actual = wrapper.find('.ams-table').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        describe('table header', () => {
+          it('renders a table header', () => {
+            const { wrapper } = setup({
+              data: [],
+              columns: [],
+              options: {
+                isLoading: true,
+              },
+            });
+            const expected = 1;
+            const actual = wrapper.find('.ams-table-header').length;
+
+            expect(actual).toEqual(expected);
+          });
+
+          it('renders one cell inside the header', () => {
+            const { wrapper } = setup({
+              data: [],
+              columns: [],
+              options: {
+                isLoading: true,
+                numLoadingBlocks: 10,
+              },
+            });
+            const expected = 1;
+            const actual = wrapper.find(
+              '.ams-table-header .ams-table-heading-loading-cell'
+            ).length;
+
+            expect(actual).toEqual(expected);
+          });
+
+          it('renders one loading block inside the header', () => {
+            const { wrapper } = setup({
+              data: [],
+              columns: [],
+              options: {
+                isLoading: true,
+                numLoadingBlocks: 10,
+              },
+            });
+            const expected = 1;
+            const actual = wrapper.find(
+              '.ams-table-header .ams-table-shimmer-block'
+            ).length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+
+        describe('table body', () => {
+          it('renders a table body', () => {
+            const { wrapper } = setup({
+              data: [],
+              columns: [],
+              options: {
+                isLoading: true,
+                numLoadingBlocks: 10,
+              },
+            });
+            const expected = 1;
+            const actual = wrapper.find('.ams-table-body').length;
+
+            expect(actual).toEqual(expected);
+          });
+
+          it('renders one row', () => {
+            const { wrapper } = setup({
+              data: [],
+              columns: [],
+              options: {
+                isLoading: true,
+                numLoadingBlocks: 10,
+              },
+            });
+            const expected = 1;
+            const actual = wrapper.find('.ams-table-row').length;
+
+            expect(actual).toEqual(expected);
+          });
+
+          it('renders the proper number of shimmering blocks', () => {
+            const numOfLoadingBlocks = 10;
+            const { wrapper } = setup({
+              data: [],
+              columns: [],
+              options: {
+                isLoading: true,
+                numLoadingBlocks: numOfLoadingBlocks,
+              },
+            });
+            const expected = numOfLoadingBlocks;
+            const actual = wrapper.find(
+              '.ams-table-row .shimmer-resource-loader-item'
+            ).length;
+
+            expect(actual).toEqual(expected);
+          });
         });
       });
     });
