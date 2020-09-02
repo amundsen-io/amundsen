@@ -765,7 +765,7 @@ class AtlasProxy(BaseProxy):
             raise NotFoundException(f'User {user_id} not found.')
 
         resource_guids = set()
-        for item in user_entity[self.REL_ATTRS_KEY].get('ownerOf') or list():
+        for item in user_entity[self.REL_ATTRS_KEY].get('owns') or list():
             if (item['entityStatus'] == Status.ACTIVE and
                     item['relationshipStatus'] == Status.ACTIVE and
                     item['typeName'] == resource_type):
@@ -790,9 +790,12 @@ class AtlasProxy(BaseProxy):
         for table in table_entities.entities:
             resource_guids.add(table.guid)
 
-        entities = extract_entities(self._driver.entity_bulk(guid=list(resource_guids), ignoreRelationships=True))
-        if resource_type == self.TABLE_ENTITY:
-            resources = self._serialize_popular_tables(entities)
+        if resource_guids:
+            entities = extract_entities(self._driver.entity_bulk(guid=list(resource_guids), ignoreRelationships=True))
+            if resource_type == self.TABLE_ENTITY:
+                resources = self._serialize_popular_tables(entities)
+        else:
+            LOGGER.info(f'User ({user_id}) does not own any "{resource_type}"')
 
         return resources
 
