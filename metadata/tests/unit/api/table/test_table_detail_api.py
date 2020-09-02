@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
+import pytest
 
 from metadata_service.exception import NotFoundException
 from tests.unit.api.table.table_test_case import TableTestCase
@@ -64,6 +65,7 @@ API_RESPONSE = {
 
 
 class TestTableDetailAPI(TableTestCase):
+    @pytest.mark.skip(reason='The test is flaky in CI')
     def test_should_get_column_details(self) -> None:
         self.mock_proxy.get_table.return_value = QUERY_RESPONSE
 
