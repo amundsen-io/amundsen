@@ -1,0 +1,26 @@
+@import 'variables';
+@import 'typography';
+
+$table-header-font-size: 12px;
+$table-header-line-height: 16px;
+$table-header-height: 33px;
+$table-header-border-width: 2px;
+
+.ams-table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: $spacer-3;
+  box-sizing: border-box;
+}
+
+.ams-table-header {
+  font-size: $table-header-font-size;
+  line-height: $table-header-line-height;
+  color: $text-secondary;
+  border-bottom: $table-header-border-width solid $gray15;
+}
+
+.ams-table-heading-cell {
+  height: $table-header-height;
+  text-transform: uppercase;
+}
