@@ -314,6 +314,27 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [SnowflakeTableLastUpdatedExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_table_last_updated_extractor.py "SnowflakeTableLastUpdatedExtractor")
+An extractor that extracts table last updated timestamp from a Snowflake database.
+
+It uses same configs as the `SnowflakeMetadataExtractor` described above.
+
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_table_last_updated_extractor.py)
+
+```python
+job_config = ConfigFactory.from_dict({
+	'extractor.snowflake_table_last_updated.{}'.format(SnowflakeTableLastUpdatedExtractor.SNOWFLAKE_DATABASE_KEY): 'YourDbName',
+	'extractor.snowflake_table_last_updated.{}'.format(SnowflakeTableLastUpdatedExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
+       'extractor.snowflake_table_last_updated.{}'.format(SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME): True,
+	'extractor.snowflake_table_last_updated.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string()})
+job = DefaultJob(
+	conf=job_config,
+	task=DefaultTask(
+		extractor=SnowflakeTableLastUpdatedExtractor(),
+		loader=AnyLoader()))
+job.launch()
+```
+
 #### [BigQueryMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/bigquery_metadata_extractor.py "BigQuery Metdata Extractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Bigquery database.
 
