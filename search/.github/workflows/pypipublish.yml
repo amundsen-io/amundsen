@@ -35,6 +35,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Login with docker
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Publish to Registry
+      - name: Publish to Registry for latest
         if: success()
-        run: make build-push-image
+        run: make build-push-image-latest
+      - name: Publish to Registry for version
+        if: startsWith(github.event.ref, 'refs/tags')
+        run: make build-push-image-version
