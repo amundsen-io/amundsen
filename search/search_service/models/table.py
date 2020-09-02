@@ -52,7 +52,8 @@ class Table(Base):
             'last_updated_timestamp',
             'display_name',
             'programmatic_descriptions',
-            'schema_description',
+            'total_usage',
+            'schema_description'
         }
 
     @staticmethod
