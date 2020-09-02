@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 API_VERSION = 'api_version'
 API_BASE_URL = 'api_base_url'
 TABLEAU_BASE_URL = 'tableau_base_url'
