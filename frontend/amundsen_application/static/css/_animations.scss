@@ -16,7 +16,7 @@ $loading-curve: cubic-bezier(0.45, 0, 0.15, 1);
   }
 }
 
-.is-shimmer-animated {
+%is-shimmer-animated {
   animation: $loading-duration shimmer $loading-curve infinite;
   background-image: linear-gradient(
     to right,
@@ -28,4 +28,8 @@ $loading-curve: cubic-bezier(0.45, 0, 0.15, 1);
   );
   background-repeat: no-repeat;
   background-size: 300% 100%;
+}
+
+.is-shimmer-animated {
+  @extend %is-shimmer-animated;
 }

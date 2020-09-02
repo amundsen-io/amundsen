@@ -50,6 +50,15 @@ function TestDataBuilder(config = {}) {
     return new this.Klass(attr);
   };
 
+  this.withEmptyData = () => {
+    const attr = {
+      data: [],
+      columns: [{ title: 'Name', field: 'name' }],
+    };
+
+    return new this.Klass(attr);
+  };
+
   this.withMoreDataThanColumns = () => {
     const attr = {
       data: [
