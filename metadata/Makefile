@@ -24,8 +24,7 @@ test: test_unit lint mypy
 
 .PHONY: image
 image:
-	docker build -f public.Dockerfile -t ${IMAGE}:${VERSION} .
-	docker tag ${IMAGE}:${VERSION} ${IMAGE}:latest
+	docker build -f public.Dockerfile -t ${IMAGE}:latest .
 
 .PHONY: image-version
 image-version:
@@ -33,11 +32,11 @@ image-version:
 
 .PHONY: push-image-version
 push-image-version:
-	docker push ${IMAGE}:${VERSION} .
+	docker push ${IMAGE}:${VERSION}
 
 .PHONY: push-image
 push-image:
-	docker push ${IMAGE}:latest .
+	docker push ${IMAGE}:latest
 
 .PHONY: oidc-image
 oidc-image:
