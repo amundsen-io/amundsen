@@ -163,8 +163,15 @@ $w2-headline-line-height: 32px;
 $w3-headline-font-size: 22px;
 $w3-headline-line-height: 28px;
 
+$w1-caption-font-size: $w2-font-size;
+$w1-caption-line-height: $w2-line-height;
+
+$w2-caption-font-size: 12px;
+$w2-caption-line-height: 16px;
+
 $code-font-size: 12px;
 
 $title-font-weight: $font-weight-body-bold;
 $subtitle-font-weight: $font-weight-body-semi-bold;
 $body-font-weight: $font-weight-body-regular;
+$caption-font-weight: $font-weight-body-bold;

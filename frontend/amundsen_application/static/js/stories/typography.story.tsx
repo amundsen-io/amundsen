@@ -1,7 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { ReactNode } from 'react';
+import * as React from 'react';
 
 import StorySection from '../components/common/StorySection';
 
@@ -38,6 +38,17 @@ export const TypographyUpdated = () => {
           <p className="text-body-w1">Subtitle with .text-body-w1</p>
           <p className="text-body-w2">Subtitle with .text-body-w2</p>
           <p className="text-body-w3">Subtitle with .text-body-w3</p>
+        </>
+      </StorySection>
+      <StorySection title="Caption Text">
+        <>
+          <p className="text-caption-w1">Caption with .text-caption-w1</p>
+          <p className="text-caption-w2">Caption with .text-caption-w2</p>
+        </>
+      </StorySection>
+      <StorySection title="Code Text">
+        <>
+          <p className="text-monospace-w3">Code with .text-monospace-w3</p>
         </>
       </StorySection>
     </>
