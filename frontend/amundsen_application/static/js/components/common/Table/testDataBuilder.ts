@@ -50,6 +50,31 @@ function TestDataBuilder(config = {}) {
     return new this.Klass(attr);
   };
 
+  this.withAlignedColumns = () => {
+    const attr = {
+      data: [...this.config.data],
+      columns: [
+        {
+          title: 'Name',
+          field: 'name',
+          horAlign: 'left',
+        },
+        {
+          title: 'Type',
+          field: 'type',
+          horAlign: 'center',
+        },
+        {
+          title: 'Value',
+          field: 'value',
+          horAlign: 'right',
+        },
+      ],
+    };
+
+    return new this.Klass(attr);
+  };
+
   this.withEmptyData = () => {
     const attr = {
       data: [],

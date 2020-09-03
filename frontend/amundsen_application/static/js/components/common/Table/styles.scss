@@ -30,15 +30,27 @@ $shimmer-block-width: 40%;
 .ams-table-heading-cell {
   height: $table-header-height;
   text-transform: uppercase;
+
+  &:first-child {
+    padding-left: $spacer-3;
+  }
+
+  &:last-child {
+    padding-right: $spacer-3;
+  }
 }
 
-.ams-empty-message-cell {
-  @extend %text-body-w3;
+.ams-table-cell {
+  &:first-child {
+    padding-left: $spacer-3;
+  }
 
-  color: $text-primary;
-  text-align: center;
+  &:last-child {
+    padding-right: $spacer-3;
+  }
 }
 
+// Loading State
 .ams-table-heading-loading-cell {
   padding: $spacer-1;
 }
@@ -56,4 +68,12 @@ $shimmer-block-width: 40%;
 
   height: $shimmer-block-height;
   width: $shimmer-block-width;
+}
+
+// Empty State
+.ams-empty-message-cell {
+  @extend %text-body-w3;
+
+  color: $text-primary;
+  text-align: center;
 }
