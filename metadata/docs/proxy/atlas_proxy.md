@@ -1,9 +1,13 @@
 # Atlas Proxy
 
-In order to make the Atlas-Amundsen integration smooth, we've released a python package, 
+In order to make the Atlas-Amundsen integration smooth, we've developed a python package, 
 [amundsenatlastypes](https://github.com/dwarszawski/amundsen-atlas-types) that has all the required entity definitions along with helper functions needed to make Atlas compatible with Amundsen.
 
 Usage and Installation of `amundsenatlastypes` can be found [here](https://github.com/dwarszawski/amundsen-atlas-types/blob/master/README.md)
+
+Minimum Requirements:
+- amundsenatlastypes==1.1.3
+- pyatlasclient==1.0.4
 
 ### Configurations  
 
