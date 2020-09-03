@@ -98,6 +98,27 @@
   font-weight: $body-font-weight;
 }
 
+%text-monospace-w3 {
+  font-family: $font-family-monospace-code;
+  font-size: $w3-font-size;
+  line-height: $w3-line-height;
+  font-weight: $body-font-weight;
+}
+
+%text-caption-w1 {
+  font-size: $w1-caption-font-size;
+  line-height: $w1-caption-line-height;
+  font-weight: $caption-font-weight;
+  text-transform: uppercase;
+}
+
+%text-caption-w2 {
+  font-size: $w2-caption-font-size;
+  line-height: $w2-caption-line-height;
+  font-weight: $caption-font-weight;
+  text-transform: uppercase;
+}
+
 // Typography classes
 // Headlines
 .text-headline-w1 {
@@ -149,6 +170,20 @@
 
 .text-body-w3 {
   @extend %text-body-w3;
+}
+
+// Captions
+.text-caption-w1 {
+  @extend %text-caption-w1;
+}
+
+.text-caption-w2 {
+  @extend %text-caption-w2;
+}
+
+// Monospace
+.text-monospace-w3 {
+  @extend %text-monospace-w3;
 }
 
 // Typography Helpers
@@ -339,9 +374,9 @@ body {
 }
 
 .resource-type {
+  @extend %text-subtitle-w3;
+
   color: $text-placeholder;
-  font-family: $font-family-monospace;
-  font-size: 13px;
 }
 
 .helper-text {
