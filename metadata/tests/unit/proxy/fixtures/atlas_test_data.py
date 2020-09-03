@@ -116,7 +116,21 @@ class Data:
         },
         'relationshipAttributes': {
             'db': db_entity,
-            'columns': ([test_column_inactive] * inactive_columns) + ([test_column] * active_columns)
+            'columns': ([test_column_inactive] * inactive_columns) + ([test_column] * active_columns),
+            'ownedBy': [
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "000",
+                    "displayText": "active_owned_by"
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "DELETED",
+                    "guid": "111",
+                    "displayText": "deleted_owned_by"
+                }
+            ]
         },
     }
     entity1.update(classification_entity)
@@ -227,12 +241,19 @@ class Data:
                     "guid": "3"
                 }
             ],
-            "owns": [{
-                "entityStatus": "ACTIVE",
-                "relationshipStatus": "ACTIVE",
-                "typeName": "Table",
-                "guid": entity1["guid"]
-            }]
+            "owns": [
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "typeName": entity_type,
+                    "guid": entity1["guid"]
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "DELETED",
+                    "typeName": entity_type,
+                    "guid": entity2["guid"]
+                }]
         }
     }
 

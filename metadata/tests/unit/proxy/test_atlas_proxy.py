@@ -331,12 +331,68 @@ class TestAtlasProxy(unittest.TestCase, Data):
         res = self.proxy.get_table_by_user_relation(user_email='test_user_id',
                                                     relation_type=UserResourceRel.own)
 
+        self.assertEqual(len(res.get("table")), 1)  # type: ignore
+
         ent1_attrs = cast(dict, self.entity1['attributes'])
 
         expected = [PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
                                  name=ent1_attrs['name'], description=ent1_attrs['description'])]
 
         self.assertEqual({'table': expected}, res)
+
+    def test_get_resources_owned_by_user_success(self) -> None:
+        unique_attr_response = MagicMock()
+        unique_attr_response.entity = Data.user_entity_2
+        self.proxy._driver.entity_unique_attribute = MagicMock(return_value=unique_attr_response)
+
+        entity_bulk_result = MagicMock()
+        entity_bulk_result.entities = [DottedDict(self.entity1)]
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[entity_bulk_result])
+
+        res = self.proxy._get_resources_owned_by_user(user_id='test_user_2',
+                                                      resource_type=ResourceType.Table.name)
+
+        self.assertEqual(len(res), 1)
+
+        ent1_attrs = cast(dict, self.entity1['attributes'])
+
+        expected = [PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                                 name=ent1_attrs['name'], description=ent1_attrs['description'])]
+
+        self.assertEqual(expected, res)
+
+    def test_get_resources_owned_by_user_no_user(self) -> None:
+        unique_attr_response = MagicMock()
+        unique_attr_response.entity = None
+        self.proxy._driver.entity_unique_attribute = MagicMock(return_value=unique_attr_response)
+        with self.assertRaises(NotFoundException):
+            self.proxy._get_resources_owned_by_user(user_id='test_user_2',
+                                                    resource_type=ResourceType.Table.name)
+
+    def test_get_resources_owned_by_user_default_owner(self) -> None:
+        unique_attr_response = MagicMock()
+        unique_attr_response.entity = Data.user_entity_2
+        self.proxy._driver.entity_unique_attribute = MagicMock(return_value=unique_attr_response)
+
+        basic_search_result = MagicMock()
+        basic_search_result.entities = self.reader_entities
+
+        entity2 = MagicMock()
+        entity2.guid = self.entity2['guid']
+
+        basic_search_response = MagicMock()
+        basic_search_response.entities = [entity2]
+
+        self.proxy._driver.search_basic.create = MagicMock(return_value=basic_search_response)
+
+        entity_bulk_result = MagicMock()
+        entity_bulk_result.entities = [DottedDict(self.entity1)]
+        self.proxy._driver.entity_bulk = MagicMock(return_value=[entity_bulk_result])
+
+        res = self.proxy._get_resources_owned_by_user(user_id='test_user_2',
+                                                      resource_type=ResourceType.Table.name)
+
+        self.assertEqual(len(res), 1)
 
     def test_add_resource_relation_by_user(self) -> None:
         bookmark_entity = self._mock_get_bookmark_entity()
@@ -404,6 +460,70 @@ class TestAtlasProxy(unittest.TestCase, Data):
             result = self.proxy.get_latest_updated_ts()
 
             assert result == 0
+
+    def test_get_user_detail_default(self) -> None:
+        user_id = "dummy@email.com"
+        user_details = self.proxy._get_user_details(user_id=user_id)
+        self.assertDictEqual(user_details, {'email': user_id, 'user_id': user_id})
+
+    def test_get_user_detail_config_method(self) -> None:
+        user_id = "dummy@email.com"
+        response = {'email': user_id, 'user_id': user_id, 'first_name': 'First', 'last_name': 'Last'}
+
+        def custom_function(id: str) -> Dict[str, Any]:
+            return response
+
+        self.app.config['USER_DETAIL_METHOD'] = custom_function
+
+        user_details = self.proxy._get_user_details(user_id=user_id)
+        self.assertDictEqual(user_details, response)
+        self.app.config['USER_DETAIL_METHOD'] = None
+
+    def test_get_owners_details_no_owner_no_fallback(self) -> None:
+        res = self.proxy._get_owners(data_owners=list(), fallback_owner=None)
+        self.assertEqual(len(res), 0)
+
+    def test_get_owners_details_only_fallback(self) -> None:
+        self.app.config['USER_DETAIL_METHOD'] = None
+        user_id = "dummy@email.com"
+        res = self.proxy._get_owners(data_owners=list(), fallback_owner=user_id)
+        self.assertEqual(1, len(res))
+        self.assertListEqual(res, [User(**{'email': user_id, 'user_id': user_id})])
+
+    def test_get_owners_details_only_active(self) -> None:
+        self.app.config['USER_DETAIL_METHOD'] = None
+        data_owners = cast(dict, self.entity1)["relationshipAttributes"]["ownedBy"]
+        # pass both active and inactive as parameter
+        self.assertEqual(len(data_owners), 2)
+
+        res = self.proxy._get_owners(data_owners=data_owners)
+        # _get_owners should return only active
+        self.assertEqual(1, len(res))
+        self.assertEqual(res[0].user_id, 'active_owned_by')
+
+    def test_get_owners_details_owner_and_fallback(self) -> None:
+        self.app.config['USER_DETAIL_METHOD'] = None
+        user_id = "dummy@email.com"
+
+        data_owners = cast(dict, self.entity1)["relationshipAttributes"]["ownedBy"]
+        # pass both active and inactive as parameter
+        self.assertEqual(len(data_owners), 2)
+
+        res = self.proxy._get_owners(data_owners=data_owners, fallback_owner=user_id)
+        # _get_owners should return only active AND the fallback_owner
+        self.assertEqual(2, len(res))
+        self.assertEqual(res[1].user_id, user_id)
+
+    def test_get_owners_details_owner_and_fallback_duplicates(self) -> None:
+        self.app.config['USER_DETAIL_METHOD'] = None
+        data_owners = cast(dict, self.entity1)["relationshipAttributes"]["ownedBy"]
+        user_id = data_owners[0]["displayText"]
+        self.assertEqual(len(data_owners), 2)
+
+        res = self.proxy._get_owners(data_owners=data_owners, fallback_owner=user_id)
+        # _get_owners should return only active AND the fallback_owner,
+        # but in case where it is duplicate, should return only 1
+        self.assertEqual(1, len(res))
 
 
 if __name__ == '__main__':
