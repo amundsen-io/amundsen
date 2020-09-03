@@ -25,8 +25,8 @@ services:
           - 9200:9200
 # TODO - tried mounting ES data outside the volume.
 # Not confident I did it right, I saw it acting up on restarts, plz halp!
-#      volumes:
-#          - ./example/docker/es_data:/usr/share/elasticsearch/data
+      volumes:
+          - ./example/docker/es_data:/usr/share/elasticsearch/data
       networks:
         - amundsennet
       ulimits:

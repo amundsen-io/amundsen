@@ -11,6 +11,7 @@ The following instructions are for setting up a version of Amundsen using Docker
 3. Enter the cloned directory and run:
     ```bash
     # For Neo4j Backend
+    $ mkdir -p  example/docker/es_data  # this is to create the necessary volume folder with permission for Elastic Search
     $ docker-compose -f docker-amundsen.yml up
 
     # For Atlas

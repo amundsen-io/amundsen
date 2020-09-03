@@ -40,6 +40,7 @@ $ git submodule update --remote
 
 2. Launch the containers needed for local development (the `-d` option launches in background) :
     ```bash
+    $ mkdir -p .local/elasticsearch/data # create the necessary folder for Elastic Search to avoid permission issue
     $ docker-compose -f docker-amundsen-local.yml up -d
     ```
 
