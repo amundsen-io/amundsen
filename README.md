@@ -201,6 +201,7 @@ Currently **officially** using Amundsen:
 1. [Data Sprints](https://datasprints.com/)
 1. [Dcard](https://www.dcard.tw/)
 1. [Devoted Health](https://www.devoted.com/)
+1. [DHI Group](https://dhigroupinc.com/)
 1. [Edmunds](https://www.edmunds.com/)
 1. [Everfi](https://everfi.com/)
 1. [Gusto](https://gusto.com/)
