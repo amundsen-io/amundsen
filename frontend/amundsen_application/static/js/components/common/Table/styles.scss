@@ -5,8 +5,6 @@
 @import 'typography';
 @import 'animations';
 
-$table-header-font-size: 12px;
-$table-header-line-height: 16px;
 $table-header-height: 33px;
 $table-header-border-width: 2px;
 
@@ -21,8 +19,8 @@ $shimmer-block-width: 40%;
 }
 
 .ams-table-header {
-  font-size: $table-header-font-size;
-  line-height: $table-header-line-height;
+  @extend %text-caption-w2;
+
   color: $text-secondary;
   border-bottom: $table-header-border-width solid $gray15;
 }

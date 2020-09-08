@@ -288,6 +288,52 @@ describe('Table', () => {
           });
         });
       });
+
+      describe('when components are passed', () => {
+        describe('when one component', () => {
+          const {
+            columns,
+            data,
+          } = dataBuilder.withOneComponentColumn().build();
+
+          describe('table body', () => {
+            it('renders the first column as a component wrapped value', () => {
+              const { wrapper } = setup({
+                data,
+                columns,
+              });
+              const expected = data.length;
+              const actual = wrapper.find(
+                '.ams-table-body .ams-table-cell strong'
+              ).length;
+
+              expect(actual).toEqual(expected);
+            });
+          });
+        });
+
+        describe('when multiple components per cell', () => {
+          const {
+            columns,
+            data,
+          } = dataBuilder.withMultipleComponentsColumn().build();
+
+          describe('table body', () => {
+            it('renders the first column as a component wrapped value', () => {
+              const { wrapper } = setup({
+                data,
+                columns,
+              });
+              const expected = 6;
+              const actual = wrapper.find(
+                '.ams-table-body .ams-table-cell strong'
+              ).length;
+
+              expect(actual).toEqual(expected);
+            });
+          });
+        });
+      });
     });
 
     describe('options', () => {
