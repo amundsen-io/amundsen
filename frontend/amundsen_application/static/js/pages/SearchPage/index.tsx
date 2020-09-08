@@ -9,6 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import { Search as UrlSearch } from 'history';
 
 import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
+import ResourceListHeader from 'components/common/ResourceList/ResourceListHeader';
 import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -146,6 +147,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
     return (
       <div className="search-list-container">
+        <ResourceListHeader />
         <PaginatedApiResourceList
           activePage={page_index}
           onPagination={this.props.setPageIndex}

@@ -1,0 +1,5 @@
+export const DATASET_HEADER_TITLE = 'DATASET';
+
+export const SOURCE_HEADER_TITLE = 'SOURCE';
+
+export const BADGES_HEADER_TITLE = 'BADGES';
