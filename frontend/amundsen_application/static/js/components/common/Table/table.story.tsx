@@ -14,6 +14,14 @@ const {
   columns: alignedColumns,
   data: alignedData,
 } = dataBuilder.withAlignedColumns().build();
+const {
+  columns: customColumns,
+  data: customColumnsData,
+} = dataBuilder.withOneComponentColumn().build();
+const {
+  columns: multipleCustomColumns,
+  data: multipleCustomComlumnsData,
+} = dataBuilder.withMultipleComponentsColumn().build();
 
 const stories = storiesOf('Components/Table', module);
 
@@ -33,6 +41,20 @@ stories.add('Table', () => (
     </StorySection>
     <StorySection title="Table with 50px row height">
       <Table columns={columns} data={data} options={{ rowHeight: 50 }} />
+    </StorySection>
+    <StorySection title="Table with custom column components">
+      <Table
+        columns={customColumns}
+        data={customColumnsData}
+        options={{ rowHeight: 40 }}
+      />
+    </StorySection>
+    <StorySection title="Table with multiple custom column components">
+      <Table
+        columns={multipleCustomColumns}
+        data={multipleCustomComlumnsData}
+        options={{ rowHeight: 40 }}
+      />
     </StorySection>
   </>
 ));
