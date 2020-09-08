@@ -88,7 +88,9 @@ const config: webpack.Configuration = {
           {
             loader: 'sass-loader',
             options: {
-              includePaths: [PATHS.css],
+              sassOptions: {
+                includePaths: [PATHS.css],
+              },
             },
           },
         ],
