@@ -8,7 +8,7 @@
   font-family: 'Space Mono';
   font-style: normal;
   font-weight: $font-weight-header-regular;
-  src: url('/static/fonts/SpaceMono-Regular.ttf') format('truetype');
+  src: url('../fonts/SpaceMono-Regular.ttf') format('truetype');
 }
 
 // Roboto
@@ -16,14 +16,14 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: $font-weight-header-regular;
-  src: url('/static/fonts/Roboto-Medium.ttf') format('truetype');
+  src: url('../fonts/Roboto-Medium.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: $font-weight-header-bold;
-  src: url('/static/fonts/Roboto-Bold.ttf') format('truetype');
+  src: url('../fonts/Roboto-Bold.ttf') format('truetype');
 }
 
 // Open Sans
@@ -31,19 +31,19 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: $font-weight-body-regular;
-  src: url('/static/fonts/OpenSans-Regular.ttf') format('truetype');
+  src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: $font-weight-body-semi-bold;
-  src: url('/static/fonts/OpenSans-SemiBold.ttf') format('truetype');
+  src: url('../fonts/OpenSans-SemiBold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: $font-weight-body-bold;
-  src: url('/static/fonts/OpenSans-Bold.ttf') format('truetype');
+  src: url('../fonts/OpenSans-Bold.ttf') format('truetype');
 }

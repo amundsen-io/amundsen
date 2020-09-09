@@ -14,6 +14,7 @@ const JSX_PATTERN = /\.jsx?$/;
 const CSS_PATTERN = /\.(sa|sc|c)ss$/;
 const IMAGE_PATTERN = /\.(png|svg|jpg|gif)$/;
 const VENDORS_PATTERN = /[\\/]node_modules[\\/](react|react-dom)[\\/]/;
+const FONT_PATTERN = /\.(ttf|woff2|otf)$/;
 
 const PATHS = {
   dist: path.join(__dirname, '/dist'),
@@ -97,6 +98,10 @@ const config: webpack.Configuration = {
       },
       {
         test: IMAGE_PATTERN,
+        use: 'file-loader',
+      },
+      {
+        test: FONT_PATTERN,
         use: 'file-loader',
       },
     ],
