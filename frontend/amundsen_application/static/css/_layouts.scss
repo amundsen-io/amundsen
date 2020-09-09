@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
 $resource-header-height: 84px;
 $aside-separation-space: 40px;
@@ -108,6 +109,8 @@ $screen-lg-container: 1440px;
       }
 
       .section-title {
+        @extend %text-title-w3;
+
         color: $text-tertiary;
         margin-bottom: 8px;
       }
