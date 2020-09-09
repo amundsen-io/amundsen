@@ -1,5 +1,5 @@
 # Amundsen Roadmap
-The following roadmap gives an overview of what we are currently working on and what we want to tackle next. This helps potential contributors understand the current status of your project and where it's going next, as well as giving a chance to be part of the planning.
+The following roadmap gives an overview of what we are currently working on and what we want to tackle next. This helps potential contributors understand the current status of our project and where it's going next, as well as giving a chance to be part of the planning.
 
 ## Amundsen Mission
 > *To organize all information about data and make it universally actionable*
