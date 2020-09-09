@@ -444,7 +444,7 @@ Other information such as report run, owner, chart name, query name is in separa
 
 It calls two APIs ([spaces API](https://mode.com/developer/api-reference/management/spaces/#listSpaces) and [reports API](https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace)) joining together.
 
-You can create Databuilder job config like this. 
+You can create Databuilder job config like this.
 ```python
 task = DefaultTask(extractor=ModeDashboardExtractor(),
 				   loader=FsNeo4jCSVLoader(), )
@@ -608,6 +608,25 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+If your organization's mode account supports discovery feature(paid feature), you could leverage [ModeDashboardChartsBatchExtractor](./databuilder/extractor/dashboard/mode_analytics/batch/mode_dashboard_charts_batch_extractor.py) which does a batch call to mode API which is more performant. You need to generate a bearer account based on the API instruction.
+
+```python
+extractor = ModeDashboardChartsBatchExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+
+job_config = ConfigFactory.from_dict({
+	'{}.{}'.format(extractor.get_scope(), ORGANIZATION): organization,
+	'{}.{}'.format(extractor.get_scope(), MODE_ACCESS_TOKEN): mode_token,
+	'{}.{}'.format(extractor.get_scope(), MODE_PASSWORD_TOKEN): mode_password,
+	'{}.{}'.format(extractor.get_scope(), MODE_BEARER_TOKEN): mode_bearer_token,
+})
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
 #### [ModeDashboardUserExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_user_extractor.py)
 A Extractor that extracts Mode user_id and then update User node.
 
@@ -636,6 +655,7 @@ A Extractor that extracts Mode dashboard's accumulated view count.
 Note that this provides accumulated view count which does [not effectively show relevancy](./docs/dashboard_ingestion_guide.md#21-ingest-dashboard-usage-data-and-decorate-neo4j-over-base-data). Thus, fields from this extractor is not directly compatible with [DashboardUsage](./docs/models.md#dashboardusage) model.
 
 If you are fine with `accumulated usage`, you could use TemplateVariableSubstitutionTransformer to transform Dict payload from [ModeDashboardUsageExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) to fit [DashboardUsage](./docs/models.md#dashboardusage) and transform Dict to  [DashboardUsage](./docs/models.md#dashboardusage) by [TemplateVariableSubstitutionTransformer](./databuilder/transformer/template_variable_substitution_transformer.py), and [DictToModel](./databuilder/transformer/dict_to_model.py) transformers. ([Example](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_queries_extractor.py#L36) on how to combining these two transformers)
+
 
 ### [RedashDashboardExtractor](./databuilder/extractor/dashboard/redash/redash_dashboard_extractor.py)
 
