@@ -366,11 +366,9 @@ body {
 }
 
 .column-name {
+  @extend %text-title-w3;
+
   color: $column-name-color;
-  font-family: $font-family-body;
-  font-size: 14px;
-  font-weight: $font-weight-body-bold;
-  line-height: 18px;
 }
 
 .resource-type {
