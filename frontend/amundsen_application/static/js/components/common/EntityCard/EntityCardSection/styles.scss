@@ -29,8 +29,8 @@
     border: none;
     border-radius: 5px;
     height: 24px;
-    -webkit-mask-image: url('/static/images/icons/Edit.svg');
-    mask-image: url('/static/images/icons/Edit.svg');
+    -webkit-mask-image: url('../../../../../images/icons/Edit.svg');
+    mask-image: url('../../../../../images/icons/Edit.svg');
     width: 24px;
   }
 
@@ -40,7 +40,7 @@
 
   button.active-edit-button {
     background-color: $brand-color-1;
-    background-image: url('/static/images/icons/Edit_Inverted.svg');
+    background-image: url('../../../../../images/icons/Edit_Inverted.svg');
     border: none;
     border-radius: 5px;
     -moz-box-shadow: inset 1px 1px 2px $brand-color-4;
