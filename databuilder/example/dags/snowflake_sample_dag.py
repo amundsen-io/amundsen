@@ -74,10 +74,20 @@ SNOWFLAKE_DATABASE_KEY = 'YOUR_SNOWFLAKE_DB_NAME'
 
 # todo: connection string needs to change
 def connection_string():
+    # Refer this doc: https://docs.snowflake.com/en/user-guide/sqlalchemy.html#connection-parameters
+    # for supported connection parameters and configurations
     user = 'username'
     password = 'password'
     account = 'YourSnowflakeAccountHere'
-    return "snowflake://%s:%s@%s" % (user, password, account)
+    # specify a warehouse to connect to.
+    warehouse = 'yourwarehouse'
+    return 'snowflake://{user}:{password}@{account}/{database}?warehouse={warehouse}'.format(
+        user=user,
+        password=password,
+        account=account,
+        database=SNOWFLAKE_DATABASE_KEY,
+        warehouse=warehouse,
+    )
 
 
 def create_snowflake_table_metadata_job():
