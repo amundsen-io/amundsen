@@ -29,6 +29,8 @@ class SnowflakeMetadataExtractor(Extractor):
         snowflake-sqlalchemy
     """
     # SELECT statement from snowflake information_schema to extract table and column metadata
+    # https://docs.snowflake.com/en/sql-reference/account-usage.html#label-account-usage-views
+    # This can be modified to use account_usage for performance at the cost of latency if necessary.
     SQL_STATEMENT = """
     SELECT
         lower(c.column_name) AS col_name,
@@ -42,9 +44,9 @@ class SnowflakeMetadataExtractor(Extractor):
         t.comment AS description,
         decode(lower(t.table_type), 'view', 'true', 'false') AS is_view
     FROM
-        {database}.INFORMATION_SCHEMA.COLUMNS AS c
+        {database}.{schema}.COLUMNS AS c
     LEFT JOIN
-        {database}.INFORMATION_SCHEMA.TABLES t
+        {database}.{schema}.TABLES t
             ON c.TABLE_NAME = t.TABLE_NAME
             AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
     {where_clause_suffix};
@@ -58,6 +60,8 @@ class SnowflakeMetadataExtractor(Extractor):
     DATABASE_KEY = 'database_key'
     # Snowflake Database Key, used to determine which Snowflake database to connect to.
     SNOWFLAKE_DATABASE_KEY = 'snowflake_database'
+    # Snowflake Schema Key, used to determine which Snowflake schema to use.
+    SNOWFLAKE_SCHEMA_KEY = 'snowflake_schema'
 
     # Default values
     DEFAULT_CLUSTER_NAME = 'master'
@@ -67,7 +71,8 @@ class SnowflakeMetadataExtractor(Extractor):
          CLUSTER_KEY: DEFAULT_CLUSTER_NAME,
          USE_CATALOG_AS_CLUSTER_NAME: True,
          DATABASE_KEY: 'snowflake',
-         SNOWFLAKE_DATABASE_KEY: 'prod'}
+         SNOWFLAKE_DATABASE_KEY: 'prod',
+         SNOWFLAKE_SCHEMA_KEY: 'INFORMATION_SCHEMA'}
     )
 
     def init(self, conf: ConfigTree) -> None:
@@ -80,12 +85,15 @@ class SnowflakeMetadataExtractor(Extractor):
             cluster_source = "'{}'".format(self._cluster)
 
         self._database = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY)
+        self._schema = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY)
         self._snowflake_database = conf.get_string(SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY)
+        self._snowflake_schema = conf.get_string(SnowflakeMetadataExtractor.SNOWFLAKE_SCHEMA_KEY)
 
         self.sql_stmt = SnowflakeMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(SnowflakeMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
             cluster_source=cluster_source,
-            database=self._snowflake_database
+            database=self._snowflake_database,
+            schema=self._snowflake_schema
         )
 
         LOGGER.info('SQL for snowflake metadata: {}'.format(self.sql_stmt))
