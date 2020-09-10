@@ -8,7 +8,6 @@ This is a example script which demo how to load data into neo4j without using Ai
 import logging
 import os
 from pyhocon import ConfigFactory
-from urllib.parse import unquote_plus
 import uuid
 import sys
 
@@ -56,10 +55,20 @@ es = Elasticsearch([
 
 # todo: connection string needs to change
 def connection_string():
+    # Refer this doc: https://docs.snowflake.com/en/user-guide/sqlalchemy.html#connection-parameters
+    # for supported connection parameters and configurations
     user = 'username'
     password = 'password'
     account = 'YourSnowflakeAccountHere'
-    return "snowflake://%s:%s@%s" % (user, unquote_plus(password), account)
+    # specify a warehouse to connect to.
+    warehouse = 'yourwarehouse'
+    return 'snowflake://{user}:{password}@{account}/{database}?warehouse={warehouse}'.format(
+        user=user,
+        password=password,
+        account=account,
+        database=SNOWFLAKE_DATABASE_KEY,
+        warehouse=warehouse,
+    )
 
 
 def create_sample_snowflake_job():
