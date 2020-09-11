@@ -3,14 +3,9 @@
 
 import * as React from 'react';
 
-import { IconSizes } from '.';
+import { IconSizes, IconProps } from './types';
 
 const DEFAULT_STROKE_COLOR = 'currentColor';
-
-export interface IconProps {
-  stroke?: string;
-  size?: number;
-}
 
 export const AlertIcon: React.FC<IconProps> = ({
   stroke = DEFAULT_STROKE_COLOR,
