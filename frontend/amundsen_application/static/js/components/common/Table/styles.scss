@@ -48,6 +48,23 @@ $shimmer-block-width: 40%;
   }
 }
 
+.ams-table-expanded-row {
+  display: none;
+
+  &.is-expanded {
+    display: table-row;
+  }
+}
+
+.ams-table-expanding-button {
+  border: 0;
+  background-color: white;
+
+  svg {
+    vertical-align: bottom;
+  }
+}
+
 // Loading State
 .ams-table-heading-loading-cell {
   padding: $spacer-1;

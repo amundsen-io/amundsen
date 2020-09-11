@@ -5,7 +5,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 import StorySection from '../StorySection';
-import { AlertIcon } from '.';
+import { AlertIcon, DownIcon, UpIcon } from '.';
 
 const stories = storiesOf('Attributes/Iconography', module);
 
@@ -13,6 +13,12 @@ stories.add('SVG Icons', () => (
   <>
     <StorySection title="Alert">
       <AlertIcon />
+    </StorySection>
+    <StorySection title="Down">
+      <DownIcon />
+    </StorySection>
+    <StorySection title="Up">
+      <UpIcon />
     </StorySection>
   </>
 ));

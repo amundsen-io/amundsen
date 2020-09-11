@@ -2,8 +2,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export * from './AlertIcon';
-
-export enum IconSizes {
-  REGULAR = 24,
-  SMALL = 16,
-}
+export * from './DownIcon';
+export * from './UpIcon';

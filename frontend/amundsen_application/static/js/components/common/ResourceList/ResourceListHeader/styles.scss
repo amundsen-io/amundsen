@@ -6,6 +6,7 @@
 
 .resource-list-header {
   @extend %text-caption-w2;
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -15,18 +16,22 @@
   .dataset {
     flex: 7;
     margin-right: $spacer-2;
+
     .dataset-text {
       margin-left: $spacer-5;
     }
   }
+
   .source {
     flex: 2;
   }
+
   .badges {
     display: flex;
     flex: 3;
     flex-wrap: wrap;
     margin-left: $spacer-3;
+
     .badges-text {
       margin-left: $spacer-3;
     }

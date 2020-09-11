@@ -99,8 +99,8 @@ exports[`strict null compilation`] = {
       [255, 6, 11, "No overload matches this call.\\n  The last overload gave the following error.\\n    Type \'(() => SubmitSearchRequest) | null\' is not assignable to type \'ActionCreator<any>\'.\\n      Type \'null\' is not assignable to type \'ActionCreator<any>\'.", "2296208050"],
       [270, 4, 18, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(dispatch: any, ownProps: any) => ActionCreator<unknown>\' is not assignable to parameter of type \'DispatchFromProps\'.\\n      Type \'(dispatch: any, ownProps: any) => ActionCreator<unknown>\' is missing the following properties from type \'DispatchFromProps\': submitSearch, onInputChange, onSelectInlineResult", "2926224796"]
     ],
-    "js/components/common/Table/index.tsx:2876532157": [
-      [127, 18, 13, "Type \'unknown\' is not assignable to type \'ReactNode\'.\\n  Type \'unknown\' is not assignable to type \'ReactPortal\'.", "971959308"]
+    "js/components/common/Table/index.tsx:2645527205": [
+      [190, 22, 13, "Type \'unknown\' is not assignable to type \'ReactNode\'.\\n  Type \'unknown\' is not assignable to type \'ReactPortal\'.", "971959308"]
     ],
     "js/components/common/Tags/TagInput/index.tsx:3754832290": [
       [63, 22, 6, "Type \'undefined\' is not assignable to type \'GetAllTagsRequest\'.", "1979467425"],
@@ -364,8 +364,8 @@ exports[`strict null compilation`] = {
     "js/utils/navigationUtils.ts:1127210474": [
       [19, 50, 21, "Type \'undefined\' cannot be used as an index type.", "602535635"]
     ],
-    "webpack.common.ts:545199363": [
-      [33, 24, 20, "No overload matches this call.\\n  Overload 1 of 2, \'(...items: ConcatArray<never>[]): never[]\', gave the following error.\\n    Argument of type \'string\' is not assignable to parameter of type \'ConcatArray<never>\'.\\n  Overload 2 of 2, \'(...items: ConcatArray<never>[]): never[]\', gave the following error.\\n    Argument of type \'string\' is not assignable to parameter of type \'ConcatArray<never>\'.", "806093104"]
+    "webpack.common.ts:368637609": [
+      [34, 24, 20, "No overload matches this call.\\n  Overload 1 of 2, \'(...items: ConcatArray<never>[]): never[]\', gave the following error.\\n    Argument of type \'string\' is not assignable to parameter of type \'ConcatArray<never>\'.\\n  Overload 2 of 2, \'(...items: ConcatArray<never>[]): never[]\', gave the following error.\\n    Argument of type \'string\' is not assignable to parameter of type \'ConcatArray<never>\'.", "806093104"]
     ]
   }`
 };
