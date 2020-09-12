@@ -6,7 +6,7 @@ import * as React from 'react';
 import './styles.scss';
 
 import {
-  DATASET_HEADER_TITLE,
+  RESOURCE_HEADER_TITLE,
   SOURCE_HEADER_TITLE,
   BADGES_HEADER_TITLE,
 } from './constants';
@@ -14,8 +14,8 @@ import {
 const ResourceListHeader: React.FC = () => {
   return (
     <div className="resource-list-header">
-      <span className="dataset">
-        <span className="dataset-text">{DATASET_HEADER_TITLE}</span>
+      <span className="resource">
+        <span className="resource-text">{RESOURCE_HEADER_TITLE}</span>
       </span>
       <span className="source">{SOURCE_HEADER_TITLE}</span>
       <span className="badges">

@@ -1,4 +1,4 @@
-export const DATASET_HEADER_TITLE = 'DATASET';
+export const RESOURCE_HEADER_TITLE = 'RESOURCE';
 
 export const SOURCE_HEADER_TITLE = 'SOURCE';
 
