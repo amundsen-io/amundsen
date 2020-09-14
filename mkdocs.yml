@@ -69,6 +69,7 @@ nav:
         - 'How to setup a preview client with Apache Superset': 'tutorials/data-preview-with-superset.md'
         - 'How to setup user profiles': 'tutorials/user-profiles.md'
         - 'How to ingest Dashboard': 'databuilder/docs/dashboard_ingestion_guide.md'
+        - 'How to track user metric for Amundsen': 'tutorials/how-to-track-user-metric.md'
     - 'Deployment':
       - 'Authentication': 'authentication/oidc.md'
       - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
