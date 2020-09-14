@@ -36,12 +36,12 @@ Keep in mind there is likely to be some downtime as v2.0.0, between deploying 3 
 
 ## How to avoid certain metadatas in Amundsen got erased by databuilder ingestion?
 
-By default, databuilder always upsert the metadata. If you want to prevent that happens on certain type of metadata, you could add the following
+By default, databuilder always upserts the metadata. If you want to prevent that happens on certain type of metadata, you could add the following
 config to your databuilder job's config
 
 ```python
 'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_CREATE_ONLY_NODES): [DESCRIPTION_NODE_LABEL],
 ```
 
-The above config means that databuilder will only update the table / column description if it doesn't exist which means the table is newly created.
-This is useful when we treat Amundsen graph as the source of truth for certain types of metadata (e.g description from users).
+The above config means that databuilder will only update the table / column description if it doesn't exist before which could be the table is newly created.
+This is useful when we treat Amundsen graph as the source of truth for certain types of metadata (e.g description).
