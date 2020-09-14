@@ -385,7 +385,7 @@ describe('InlineSearchResults', () => {
           .getSuggestedResultTitle(ResourceType.dashboard, givenDashboard)
       );
       expect(output.text()).toEqual(
-        `${givenDashboard.group_name}${givenDashboard.name}`
+        `${givenDashboard.name}${givenDashboard.group_name}`
       );
     });
     it('returns the schema.name for ResourceType.table', () => {
