@@ -11,6 +11,8 @@ import { getDashboard } from 'ducks/dashboard/reducer';
 import { GetDashboardRequest } from 'ducks/dashboard/types';
 import { GlobalState } from 'ducks/rootReducer';
 import { logClick } from 'ducks/utilMethods';
+import { UpdateSearchStateRequest } from 'ducks/search/types';
+import { updateSearchState } from 'ducks/search/reducer';
 
 import Breadcrumb from 'components/common/Breadcrumb';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
@@ -65,6 +67,7 @@ export interface DispatchFromProps {
     searchIndex?: string;
     source?: string;
   }) => GetDashboardRequest;
+  searchDashboardGroup: (dashboardGroup: string) => UpdateSearchStateRequest;
 }
 
 export type DashboardPageProps = RouteComponentProps<MatchProps> &
@@ -99,6 +102,15 @@ export class DashboardPage extends React.Component<
       this.props.getDashboard({ source, uri, searchIndex: index });
     }
   }
+
+  searchGroup = (e) => {
+    const { dashboard, searchDashboardGroup } = this.props;
+    logClick(e, {
+      target_type: 'dashboard_group',
+      label: dashboard.group_name,
+    });
+    searchDashboardGroup(dashboard.group_name);
+  };
 
   mapStatusToBoolean = (status: string): boolean => {
     if (status === LAST_RUN_SUCCEEDED) {
@@ -181,15 +193,14 @@ export class DashboardPage extends React.Component<
             />
             <div className="body-2">
               Dashboard in&nbsp;
-              <a
-                id="dashboard-group-link"
-                onClick={logClick}
-                href={dashboard.group_url}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                className="btn btn-link body-2"
+                data-type="dashboard-group-link"
+                onClick={this.searchGroup}
               >
                 {dashboard.group_name}
-              </a>
+              </button>
             </div>
           </div>
           {/* <div className="header-section header-links">links here</div> */}
@@ -316,6 +327,17 @@ export class DashboardPage extends React.Component<
   }
 }
 
+function searchDashboardGroup(
+  dashboardGroup: string
+): UpdateSearchStateRequest {
+  return updateSearchState({
+    filters: {
+      [ResourceType.dashboard]: { group_name: dashboardGroup },
+    },
+    submitSearch: true,
+  });
+}
+
 export const mapStateToProps = (state: GlobalState) => {
   return {
     isLoading: state.dashboard.isLoading,
@@ -325,7 +347,7 @@ export const mapStateToProps = (state: GlobalState) => {
 };
 
 export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getDashboard }, dispatch);
+  return bindActionCreators({ getDashboard, searchDashboardGroup }, dispatch);
 };
 
 export default connect<StateFromProps, DispatchFromProps>(

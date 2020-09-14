@@ -58,6 +58,7 @@ const setup = (
     statusCode: 200,
     dashboard: dashboardMetadata,
     getDashboard: jest.fn(),
+    searchDashboardGroup: jest.fn(),
     ...routerProps,
     ...propOverrides,
   };
