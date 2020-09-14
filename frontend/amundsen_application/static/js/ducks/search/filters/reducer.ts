@@ -36,7 +36,7 @@ export type FilterOptions = { [id: string]: boolean };
 
 export interface FilterReducerState {
   [ResourceType.dashboard]?: ResourceFilterReducerState;
-  [ResourceType.table]: ResourceFilterReducerState;
+  [ResourceType.table]?: ResourceFilterReducerState;
 }
 
 export interface ResourceFilterReducerState {
