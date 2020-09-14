@@ -3,7 +3,7 @@
 After you have deployed Amundsen into production, you want to track how user interacts with Amundsen for various reasons. 
 
 The easier way is to leverage [google analytics](https://analytics.google.com/analytics/web/) for basic user tracking. You could first
-get the analytics token for your domain and put it as the [frontend config](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts#L22)
+get the analytics token for your domain and put it as the [frontend config](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/54de01bdc574665316f0517aefbd55cf7ca37ef0/amundsen_application/static/js/config/config-default.ts#L22)
 
 
 Besides implementing the google analytics, we provide a way called `action_logging` to do fine grain user action tracking. 
@@ -47,4 +47,3 @@ Once you have the event in your data warehouse, you could start building differe
 - Metadata edit leaders
 - Amundsen user per role (by joining with employee data)
 - ...
-
