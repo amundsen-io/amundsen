@@ -37,13 +37,23 @@ message UserAction {
 It matches the action log model defined in [here](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/ccfd2d6b82957fef347e956b243e4048c191fc0d/amundsen_application/log/action_log_model.py).
 
 Once you have the event in your data warehouse, you could start building different KPI user metric:
-- WAU
-- DAU
-- Top 50 active user
-- Top search term
-- Top popular tables
-- Search click index
-- Metadata edits
-- Metadata edit leaders
-- Amundsen user per role (by joining with employee data)
-- ...
+
+1. WAU
+
+2. DAU
+
+3. Top 50 active user
+
+4. Top search term
+
+5. Top popular tables
+
+6. Search click index
+
+7. Metadata edits
+
+8. Metadata edit leaders
+
+9. Amundsen user per role (by joining with employee data)
+
+10. ...
