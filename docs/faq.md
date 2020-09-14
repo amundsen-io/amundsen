@@ -33,3 +33,15 @@ The data in the metadata store, however, can be preserved when migrating from 1.
 v2.0 deployments consists of deployment of all three services along with republishing Elasticsearch document on Table with v2.0 Databuilder.
 
 Keep in mind there is likely to be some downtime as v2.0.0, between deploying 3 services and re-seeding the elasticsearch indexes, so it might be ideal to stage a rollout by datacenter/environment if uptime is key
+
+## How to avoid certain metadatas in Amundsen got erased by databuilder ingestion?
+
+By default, databuilder always upsert the metadata. If you want to prevent that happens on certain type of metadata, you could add the following
+config to your databuilder job's config
+
+```python
+'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_CREATE_ONLY_NODES): [DESCRIPTION_NODE_LABEL],
+```
+
+The above config means that databuilder will only update the table / column description if it doesn't exist which means the table is newly created.
+This is useful when we treat Amundsen graph as the source of truth for certain types of metadata (e.g description from users).
