@@ -6,7 +6,7 @@ The easier way is to leverage [google analytics](https://analytics.google.com/an
 get the analytics token for your domain and put it as the [frontend config](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/54de01bdc574665316f0517aefbd55cf7ca37ef0/amundsen_application/static/js/config/config-default.ts#L22)
 
 
-Besides implementing the google analytics, we provide a way called `action_logging` to do fine grain user action tracking. 
+Besides implementing Google Analytics, we provide a way called `action_logging` to do fine grained user action tracking. 
 The `action_logging` is a decorator to allow you to integrate user info and pipe it to your inhouse event tracking system(e.g Kafka).
 
 You need to put the custom method into entry_points following this 
