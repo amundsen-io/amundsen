@@ -58,8 +58,10 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
             />
             <div className="resource-info-text my-auto">
               <div className="resource-name title-2">
-                <div className="dashboard-group">{dashboard.group_name}</div>
-                <div className="dashboard-name truncated">{dashboard.name}</div>
+                <div className="dashboard-name">{dashboard.name}</div>
+                <div className="dashboard-group truncated">
+                  {dashboard.group_name}
+                </div>
                 <BookmarkIcon
                   bookmarkKey={dashboard.uri}
                   resourceType={dashboard.type}

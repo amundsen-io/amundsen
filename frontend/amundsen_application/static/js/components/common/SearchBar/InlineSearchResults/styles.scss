@@ -128,9 +128,12 @@
             .dashboard-title {
               display: flex;
 
+              .dashboard-name {
+                margin-right: $spacer-2;
+              }
+
               .dashboard-group {
                 color: $text-secondary;
-                margin-right: $spacer-2;
                 white-space: nowrap;
               }
             }
