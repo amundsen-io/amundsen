@@ -33,7 +33,7 @@ pytest-mock==1.1
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common>=0.3.6,<1.0
+amundsen-common==0.3.6
 
 flasgger==0.9.3
 Flask-RESTful==0.3.6
