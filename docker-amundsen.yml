@@ -16,6 +16,7 @@ services:
           - ./example/docker/neo4j/conf:/conf
           - ./example/docker/neo4j/plugins:/plugins
           - ./example/backup:/backup
+          - neo4j_data:/neo4j/data
       networks:
         - amundsennet
   elasticsearch:
@@ -23,10 +24,8 @@ services:
       container_name: es_amundsen
       ports:
           - 9200:9200
-# TODO - tried mounting ES data outside the volume.
-# Not confident I did it right, I saw it acting up on restarts, plz halp!
-#      volumes:
-#          - ./example/docker/es_data:/usr/share/elasticsearch/data
+      volumes:
+        - es_data:/usr/share/elasticsearch/data
       networks:
         - amundsennet
       ulimits:
@@ -79,3 +78,7 @@ services:
 
 networks:
   amundsennet:
+
+volumes:
+  es_data:
+  neo4j_data:
