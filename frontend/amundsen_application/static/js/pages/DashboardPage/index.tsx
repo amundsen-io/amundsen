@@ -206,7 +206,17 @@ export class DashboardPage extends React.Component<
           {/* <div className="header-section header-links">links here</div> */}
           <div className="header-section header-buttons">
             <a
-              id="dashboard-link"
+              data-type="dashboard-group-link"
+              target="_blank"
+              href={dashboard.group_url}
+              onClick={logClick}
+              className="btn btn-default btn-lg dashboard-group"
+              rel="noopener noreferrer"
+            >
+              Open Group
+            </a>
+            <a
+              data-type="dashboard-link"
               target="_blank"
               href={dashboard.url}
               onClick={logClick}
