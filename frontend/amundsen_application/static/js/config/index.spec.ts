@@ -132,6 +132,7 @@ describe('getNavLinks', () => {
 
   describe('when announcements is active', () => {
     it('returns all the navLinks', () => {
+      AppConfig.announcements.enabled = true;
       const actual = ConfigUtils.getNavLinks();
       const expected = AppConfig.navLinks;
 

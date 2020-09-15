@@ -37,6 +37,7 @@ export interface AppConfigCustom {
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
   mailClientFeatures?: MailClientFeaturesConfig;
+  announcements?: AnnoucementsFeaturesConfig;
   navLinks?: Array<LinkConfig>;
   resourceConfig?: ResourceConfig;
   tableLineage?: TableLineageConfig;
