@@ -80,7 +80,7 @@ const configDefault: AppConfig = {
         },
         {
           categoryId: 'group_name',
-          displayName: 'Groups',
+          displayName: 'Group',
           helpText: 'Enter exact group name or a regex wildcard pattern',
           type: FilterType.INPUT_SELECT,
         },
