@@ -1,5 +1,4 @@
 import { PeopleUser } from './User';
-import { Badge } from './Tags';
 
 export enum ResourceType {
   table = 'table',
@@ -40,7 +39,7 @@ export interface TableResource extends Resource {
   name: string;
   schema: string;
   schema_description?: string;
-  badges?: Badge[];
+  badges?: any[]; // TODO replace with new badges later @allisonsuarez
 }
 
 export interface UserResource extends Resource, PeopleUser {
