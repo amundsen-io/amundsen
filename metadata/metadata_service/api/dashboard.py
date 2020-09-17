@@ -11,6 +11,7 @@ from flask_restful import Resource, reqparse
 
 from metadata_service.api import BaseAPI
 from metadata_service.api.tag import TagCommon
+from metadata_service.api.badge import BadgeCommon
 from metadata_service.entity.dashboard_detail import DashboardSchema
 from metadata_service.entity.description import DescriptionSchema
 from metadata_service.entity.resource_type import ResourceType
@@ -72,6 +73,46 @@ class DashboardDescriptionAPI(BaseAPI):
 
         except NotFoundException:
             return {'message': 'id {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+
+
+class DashboardBadgeAPI(Resource):
+    """
+    DashboardBadgeAPI that supports PUT and DELETE operation to add or delete badges
+    on Dashboard
+    """
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('category', type=str, required=True)
+        self.parser.add_argument('badge_type', type=str, required=True)
+        super(DashboardBadgeAPI, self).__init__()
+
+        self._badge_common = BadgeCommon(client=self.client)
+
+    @swag_from('swagger_doc/badge/badge_put.yml')
+    def put(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
+        args = self.parser.parse_args()
+
+        category = args.get('category', '')
+        badge_type = args.get('badge_type', '')
+
+        return self._badge_common.put(id=id,
+                                      resource_type=ResourceType.Dashboard,
+                                      badge_name=badge,
+                                      category=category,
+                                      badge_type=badge_type)
+
+    @swag_from('swagger_doc/badge/badge_delete.yml')
+    def delete(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
+        args = self.parser.parse_args()
+        category = args.get('category', '')
+        badge_type = args.get('badge_type', '')
+
+        return self._badge_common.delete(id=id,
+                                         resource_type=ResourceType.Dashboard,
+                                         badge_name=badge,
+                                         category=category,
+                                         badge_type=badge_type)
 
 
 class DashboardTagAPI(Resource):

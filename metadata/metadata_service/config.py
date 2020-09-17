@@ -4,6 +4,7 @@
 import distutils.util
 import os
 from typing import List, Dict, Optional, Set  # noqa: F401
+from metadata_service.entity.badge import Badge
 
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'
@@ -58,7 +59,7 @@ class Config:
     STATISTICS_FORMAT_SPEC: Dict[str, Dict] = {}
 
     # whitelist badges
-    WHITELIST_BADGES: List[str] = []
+    WHITELIST_BADGES: List[Badge] = []
 
     SWAGGER_ENABLED = False
 
