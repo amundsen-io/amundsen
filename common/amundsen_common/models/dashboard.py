@@ -24,4 +24,3 @@ class DashboardSummarySchema(AttrsSchema):
     class Meta:
         target = DashboardSummary
         register_as_scheme = True
-

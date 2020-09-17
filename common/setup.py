@@ -1,11 +1,11 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name='amundsen-common',
-    version='0.5.0',
+    version='0.5.1',
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

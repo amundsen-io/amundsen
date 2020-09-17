@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Optional, Dict
+from typing import Any, Optional, Dict
 
 import attr
 from marshmallow import ValidationError, validates_schema, pre_load
@@ -38,7 +38,7 @@ class User:
     manager_id: Optional[str] = None
     role_name: Optional[str] = None
     profile_url: Optional[str] = None
-    other_key_values: Optional[Dict[str, str]] = attr.ib(factory=dict)
+    other_key_values: Optional[Dict[str, str]] = attr.ib(factory=dict)  # type: ignore
     # TODO: Add frequent_used, bookmarked, & owned resources
 
 
@@ -57,14 +57,14 @@ class UserSchema(AttrsSchema):
         return False
 
     @pre_load
-    def preprocess_data(self, data: Dict) -> Dict:
+    def preprocess_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         if self._str_no_value(data.get('user_id')):
             data['user_id'] = data.get('email')
 
         if self._str_no_value(data.get('profile_url')):
             data['profile_url'] = ''
             if data.get('GET_PROFILE_URL'):
-                data['profile_url'] = data.get('GET_PROFILE_URL')(data['user_id'])
+                data['profile_url'] = data.get('GET_PROFILE_URL')(data['user_id'])  # type: ignore
 
         first_name = data.get('first_name')
         last_name = data.get('last_name')
@@ -81,7 +81,7 @@ class UserSchema(AttrsSchema):
         return data
 
     @validates_schema
-    def validate_user(self, data: Dict) -> None:
+    def validate_user(self, data: Dict[str, Any]) -> None:
         if self._str_no_value(data.get('display_name')):
             raise ValidationError('"display_name", "full_name", or "email" must be provided')
 
