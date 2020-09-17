@@ -581,6 +581,11 @@ class AtlasProxy(BaseProxy):
                            "entityGuids": [entity.entity[self.GUID_KEY]]}
         self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
 
+    def add_badge(self, *, id: str, badge_name: str, category: str = '',
+                  badge_type: str = '', resource_type: ResourceType) -> None:
+        # Not implemented
+        raise NotImplementedError
+
     def delete_tag(self, *, id: str, tag: str, tag_type: str,
                    resource_type: ResourceType = ResourceType.Table) -> None:
         """
@@ -598,6 +603,11 @@ class AtlasProxy(BaseProxy):
             # FixMe (Verdan): Too broad exception. Please make it specific
             LOGGER.exception('For some reason this deletes the classification '
                              'but also always return exception. {}'.format(str(ex)))
+
+    def delete_badge(self, *, id: str, badge_name: str, category: str, badge_type: str,
+                     resource_type: ResourceType) -> None:
+        # Not implemented
+        raise NotImplementedError
 
     def put_column_description(self, *,
                                table_uri: str,
@@ -704,6 +714,10 @@ class AtlasProxy(BaseProxy):
                     )
                 )
         return tags
+
+    def get_badges(self) -> List:
+        # Not implemented
+        return []
 
     def _get_resources_followed_by_user(self, user_id: str, resource_type: str) \
             -> List[Union[PopularTable, DashboardSummary]]:

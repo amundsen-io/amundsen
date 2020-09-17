@@ -121,8 +121,16 @@ class AbstractGremlinProxy(BaseProxy):
                 resource_type: ResourceType = ResourceType.Table) -> None:
         pass
 
+    def add_badge(self, *, id: str, badge_name: str, category: str = '',
+                  badge_type: str = '', resource_type: ResourceType) -> None:
+        pass
+
     def delete_tag(self, *, id: str, tag: str, tag_type: str,
                    resource_type: ResourceType = ResourceType.Table) -> None:
+        pass
+
+    def delete_badge(self, *, id: str, badge_name: str, category: str, badge_type: str,
+                     resource_type: ResourceType) -> None:
         pass
 
     def put_column_description(self, *,
@@ -143,6 +151,9 @@ class AbstractGremlinProxy(BaseProxy):
         pass
 
     def get_tags(self) -> List:
+        pass
+
+    def get_badges(self) -> List:
         pass
 
     def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \

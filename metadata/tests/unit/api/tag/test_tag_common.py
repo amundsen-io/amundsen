@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 from metadata_service import create_app
 from metadata_service.api.tag import TagCommon
 from metadata_service.entity.resource_type import ResourceType
+from metadata_service.entity.badge import Badge
 from tests.unit.api.dashboard.dashboard_test_case import DashboardTestCase
 
 BADGE_NAME = 'foo'
@@ -33,7 +34,9 @@ class TestDashboardTagAPI(DashboardTestCase):
         self.assertFalse(current_app is None)
 
     def test_block_tag_on_reserved_badge_value(self) -> None:
-        self.app.config['WHITELIST_BADGES'] = [BADGE_NAME]
+        self.app.config['WHITELIST_BADGES'] = [Badge(badge_name=BADGE_NAME,
+                                                     category='table_status',
+                                                     badge_type='neutral')]
 
         mock_proxy = MagicMock()
 
@@ -46,7 +49,9 @@ class TestDashboardTagAPI(DashboardTestCase):
         self.assertEqual(response[1], HTTPStatus.CONFLICT)
 
     def test_tag_on_unreserved_badge_value(self) -> None:
-        self.app.config['WHITELIST_BADGES'] = [BADGE_NAME]
+        self.app.config['WHITELIST_BADGES'] = [Badge(badge_name=BADGE_NAME,
+                                                     category='table_status',
+                                                     badge_type='neutral')]
 
         mock_proxy = MagicMock()
 
@@ -59,7 +64,9 @@ class TestDashboardTagAPI(DashboardTestCase):
         self.assertEqual(response[1], HTTPStatus.OK)
 
     def test_badge_on_reserved_badge_value(self) -> None:
-        self.app.config['WHITELIST_BADGES'] = [BADGE_NAME]
+        self.app.config['WHITELIST_BADGES'] = [Badge(badge_name=BADGE_NAME,
+                                                     category='table_status',
+                                                     badge_type='neutral')]
 
         mock_proxy = MagicMock()
         tag_common = TagCommon(client=mock_proxy)
@@ -67,17 +74,4 @@ class TestDashboardTagAPI(DashboardTestCase):
                                   resource_type=ResourceType.Dashboard,
                                   tag=BADGE_NAME,
                                   tag_type='badge')
-
-        self.assertEqual(response[1], HTTPStatus.OK)
-
-    def test_badge_on_unreserved_badge_value(self) -> None:
-        self.app.config['WHITELIST_BADGES'] = [BADGE_NAME]
-
-        mock_proxy = MagicMock()
-        tag_common = TagCommon(client=mock_proxy)
-        response = tag_common.put(id='',
-                                  resource_type=ResourceType.Dashboard,
-                                  tag=TAG_NAME,
-                                  tag_type='badge')
-
-        self.assertEqual(response[1], HTTPStatus.NOT_FOUND)
+        self.assertEqual(response[1], HTTPStatus.NOT_ACCEPTABLE)

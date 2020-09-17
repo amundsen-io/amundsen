@@ -9,7 +9,7 @@ from typing import Any, Dict  # noqa: F401
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Source,
-                                          Statistics, Table, Tag, User,
+                                          Statistics, Table, Tag, Badge, User,
                                           Watermark, ProgrammaticDescription)
 from amundsen_common.models.user import UserSchema
 from unittest.mock import MagicMock, patch
@@ -95,7 +95,8 @@ class TestNeo4jProxy(unittest.TestCase):
             'badge_records': [
                 {
                     'key': 'golden',
-                    'tag_type': 'badge'
+                    'category': 'table_status',
+                    'badge_type': 'neutral'
                 }
             ],
             'src': {
@@ -146,7 +147,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
                              tags=[Tag(tag_name='test', tag_type='default')],
-                             badges=[Tag(tag_name='golden', tag_type='badge')],
+                             badges=[Badge(badge_name='golden', category='table_status', badge_type='neutral')],
                              table_readers=[], description='foo description',
                              watermarks=[Watermark(watermark_type='high_watermark',
                                                    partition_key='ds',
@@ -197,7 +198,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
                              tags=[Tag(tag_name='test', tag_type='default')],
-                             badges=[Tag(tag_name='golden', tag_type='badge')],
+                             badges=[Badge(badge_name='golden', category='table_status', badge_type='neutral')],
                              table_readers=[], description='foo description',
                              watermarks=[Watermark(watermark_type='high_watermark',
                                                    partition_key='ds',
@@ -406,6 +407,26 @@ class TestNeo4jProxy(unittest.TestCase):
                                      owner='tester')
             # we only call neo4j once in delete_owner call
             self.assertEquals(mock_run.call_count, 1)
+            self.assertEquals(mock_commit.call_count, 1)
+
+    def test_add_badge(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.add_badge(id='dummy_uri',
+                                  badge_name='hive')
+            # we call neo4j twice in add_tag call
+            self.assertEquals(mock_run.call_count, 3)
             self.assertEquals(mock_commit.call_count, 1)
 
     def test_add_tag(self) -> None:
@@ -759,6 +780,13 @@ class TestNeo4jProxy(unittest.TestCase):
 
                         }
                     ],
+                    'badges': [
+                        {
+                            'key': 'golden',
+                            'category': 'table_status',
+                            'badge_type': 'neutral'
+                        }
+                    ],
                     'charts': [{'name': 'chart1'}, {'name': 'chart2'}],
                     'queries': [{'name': 'query1'}, {'name': 'query2', 'url': 'http://foo.bar/query',
                                                      'query_text': 'SELECT * FROM foo.bar'}],
@@ -795,6 +823,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'recent_view_count': 0,
                     'owners': [],
                     'tags': [],
+                    'badges':[],
                     'charts': [],
                     'queries': [],
                     'tables': []
@@ -840,6 +869,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                        ],
                                        tags=[Tag(tag_type='tag_type1', tag_name='tag_key1'),
                                              Tag(tag_type='tag_type2', tag_name='tag_key2')],
+                                       badges=[Badge(badge_name='golden', category='table_status',
+                                                     badge_type='neutral')],
                                        recent_view_count=100)
 
             self.assertEqual(expected, dashboard)
@@ -851,8 +882,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                         url='http://www.foo.bar/dashboard_id', description=None,
                                         created_timestamp=123456789, updated_timestamp=None, last_run_timestamp=None,
                                         last_run_state=None, owners=[], frequent_users=[], chart_names=[],
-                                        query_names=[], tables=[], tags=[], last_successful_run_timestamp=None,
-                                        recent_view_count=0)
+                                        query_names=[], tables=[], tags=[], badges=[],
+                                        last_successful_run_timestamp=None, recent_view_count=0)
 
             self.assertEqual(expected2, dashboard2)
 

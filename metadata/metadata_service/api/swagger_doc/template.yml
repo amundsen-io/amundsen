@@ -47,6 +47,19 @@ components:
         tag_count:
           type: integer
           description: 'Count of times used'
+    Badge:
+    # TODO add column level badges later, probably will use this same object
+        type: object
+        properties:
+          badge_name:
+            type: string
+            description: 'name of the badge'
+          category:
+            type: string
+            description: 'category that badge belongs to'
+          badge_type:
+            type: string
+            description: 'negative, neutral, positive, or warning badge'
     TableReaderFields:
       type: object
       properties:
