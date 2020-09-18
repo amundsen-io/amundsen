@@ -76,6 +76,29 @@ class ProgrammaticDescriptionsTest(unittest.TestCase):
             in_config_value = {'source': 'c_1', 'text': 'I am a test'}
             self.assertEqual(_sort_prog_descriptions(mock_config, in_config_value), mock_order)
 
+    def test_convert_prog_descriptions_without_config(self) -> None:
+        with local_app.app_context():
+            # mock config
+            test_config = None
+            # test data
+            test_desc = [
+                {'source': 'test4', 'text': 'test'},
+                {'source': 'test5', 'text': 'test'},
+            ]
+            # expected order based on mock
+            expected_programmatic_desc = {
+                'other': [
+                    {'source': 'test4', 'text': 'test'},
+                    {'source': 'test5', 'text': 'test'},
+                ]
+            }
+            local_app.config['PROGRAMMATIC_DISPLAY'] = test_config
+
+            result = _convert_prog_descriptions(test_desc)
+            self.assertEqual(len(result.get('left')), 0)
+            self.assertEqual(len(result.get('right')), 0)
+            self.assertEqual(result.get('other'), expected_programmatic_desc.get('other'))
+
     def test_sort_prog_descriptions_returns_default_value(self) -> None:
         """
         Verify the method will return the expected default value if programmtic decsription

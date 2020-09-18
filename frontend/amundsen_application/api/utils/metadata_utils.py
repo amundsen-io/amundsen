@@ -158,7 +158,7 @@ def _convert_prog_descriptions(prog_descriptions: List = None) -> Dict:
     """
     left = []  # type: List
     right = []  # type: List
-    other = []  # type: List
+    other = prog_descriptions or []  # type: List
     updated_descriptions = {}
 
     if prog_descriptions:
