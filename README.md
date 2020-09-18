@@ -214,8 +214,8 @@ Currently **officially** using Amundsen:
 1. [PUBG](https://careers.pubg.com/)
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
-1. [Workday](https://www.workday.com/en-us/homepage.html)
 1. [WeTransfer](https://wetransfer.com)
+1. [Workday](https://www.workday.com/en-us/homepage.html)
 
 # License
 [Apache 2.0 License.](/LICENSE)
