@@ -92,7 +92,5 @@ spec:
             claimName: neo4j-pvc
         {{- end}}
         - name: plugins
-          hostPath:
-            path: "/mnt/ephemeral/neo4j/plugins"
-            type: DirectoryOrCreate
+          emptyDir: {}
 {{ end }}
