@@ -61,7 +61,7 @@
     "@storybook/addon-links": "^5.3.19",
     "@storybook/addons": "^5.3.19",
     "@storybook/react": "^5.3.19",
-    "@storybook/theming": "^6.0.6",
+    "@storybook/theming": "^6.0.21",
     "@types/enzyme": "^3.10.5",
     "@types/jasmine-matchers": "^0.2.32",
     "@types/jest": "^24.9.1",
