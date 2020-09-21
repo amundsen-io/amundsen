@@ -33,7 +33,7 @@ class Neo4jSearchDataExtractor(Extractor):
         OPTIONAL MATCH (table)-[:TAGGED_BY]->(tags:Tag) WHERE tags.tag_type='default'
         WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions,
         COLLECT(DISTINCT tags.key) as tags
-        OPTIONAL MATCH (table)-[:TAGGED_BY]->(badges:Tag) WHERE badges.tag_type='badge'
+        OPTIONAL MATCH (table)-[:HAS_BADGE]->(badges:Badge)
         WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags,
         COLLECT(DISTINCT badges.key) as badges
         OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)
@@ -100,7 +100,7 @@ class Neo4jSearchDataExtractor(Extractor):
         OPTIONAL MATCH (dashboard)-[:TAGGED_BY]->(tags:Tag) WHERE tags.tag_type='default'
         WITH dashboard, dbg, db_descr, dbg_descr, cluster, last_exec, query_names, total_usage,
         COLLECT(DISTINCT tags.key) as tags
-        OPTIONAL MATCH (dashboard)-[:TAGGED_BY]->(badges:Tag) WHERE badges.tag_type='badge'
+        OPTIONAL MATCH (dashboard)-[:HAS_BADGE]->(badges:Badge)
         WITH  dashboard, dbg, db_descr, dbg_descr, cluster, last_exec, query_names, total_usage, tags,
         COLLECT(DISTINCT badges.key) as badges
         RETURN dbg.name as group_name, dashboard.name as name, cluster.name as cluster,
