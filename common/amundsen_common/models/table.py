@@ -37,7 +37,6 @@ class TagSchema(AttrsSchema):
 class Badge:
     badge_name: str = attr.ib()
     category: str = attr.ib()
-    badge_type: str = attr.ib()
 
 
 class BadgeSchema(AttrsSchema):
