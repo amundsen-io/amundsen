@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='amundsen-common',
-    version='0.5.1',
+    version='0.5.2',
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
