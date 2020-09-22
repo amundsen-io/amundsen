@@ -65,7 +65,13 @@ TABLE_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
               "type": "keyword"
             },
             "cluster": {
-              "type": "text"
+              "type": "text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
             },
             "database": {
               "type": "text",
