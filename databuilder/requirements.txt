@@ -59,3 +59,4 @@ httplib2>=0.18.0
 unidecode
 
 requests==2.23.0,<3.0
+responses==0.10.6
