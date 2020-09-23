@@ -124,7 +124,7 @@
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
     "webpack-sources": "^1.4.3",
-    "webworkify-webpack": "2.1.0"
+    "webworkify-webpack": "2.1.5"
   },
   "dependencies": {
     "autosize": "^4.0.2",
