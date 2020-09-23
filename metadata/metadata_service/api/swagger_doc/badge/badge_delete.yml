@@ -25,13 +25,6 @@ parameters:
       type: string
     required: true
     example: 'table_status'
-  - name: badge_type
-    in: query
-    type: string
-    schema:
-      type: string
-    required: true
-    example: 'neutral'
 responses:
   200:
     description: 'The badge was deleted successfully'

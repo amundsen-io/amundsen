@@ -16,7 +16,7 @@ BASE = {
     'cluster': 'postgres',
     'schema': 'hogwarts',
     'tags': [{'tag_type': 'table', 'tag_name': 'wizards'}],
-    'badges': [{'badge_name': 'badge', 'category': 'table_status', 'badge_type': 'neutral'}],
+    'badges': [{'badge_name': 'badge', 'category': 'table_status'}],
     'owners': [{'email': 'mmcgonagall@hogwarts.com', 'first_name': 'minerva', 'last_name': 'mcgonagall'}],
     'watermarks': [
         {'watermark_type': 'type', 'partition_key': 'key', 'partition_value': 'value', 'create_time': '1570581861'}],

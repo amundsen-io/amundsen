@@ -122,14 +122,14 @@ class AbstractGremlinProxy(BaseProxy):
         pass
 
     def add_badge(self, *, id: str, badge_name: str, category: str = '',
-                  badge_type: str = '', resource_type: ResourceType) -> None:
+                  resource_type: ResourceType) -> None:
         pass
 
     def delete_tag(self, *, id: str, tag: str, tag_type: str,
                    resource_type: ResourceType = ResourceType.Table) -> None:
         pass
 
-    def delete_badge(self, *, id: str, badge_name: str, category: str, badge_type: str,
+    def delete_badge(self, *, id: str, badge_name: str, category: str,
                      resource_type: ResourceType) -> None:
         pass
 

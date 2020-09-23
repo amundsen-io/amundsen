@@ -4,7 +4,7 @@ tags:
   - 'badge'
 responses:
   200:
-    description: 'Badges with sentiment and category'
+    description: 'Badges with category'
     content:
       application/json:
         schema:

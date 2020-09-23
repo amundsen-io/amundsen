@@ -14,7 +14,6 @@ from tests.unit.api.dashboard.dashboard_test_case import DashboardTestCase
 
 BADGE_NAME = 'alpha'
 CATEGORY = 'table_status'
-BADGE_TYPE = 'neutral'
 
 
 class TestBadgeCommon(DashboardTestCase):
@@ -33,8 +32,7 @@ class TestBadgeCommon(DashboardTestCase):
 
     def test_badge_on_reserved_badge_name(self) -> None:
         self.app.config['WHITELIST_BADGES'] = [Badge(badge_name='alpha',
-                                                     category='table_status',
-                                                     badge_type='neutral')]
+                                                     category='table_status')]
 
         mock_proxy = MagicMock()
 
@@ -42,8 +40,7 @@ class TestBadgeCommon(DashboardTestCase):
         response = badge_common.put(id='',
                                     resource_type=ResourceType.Dashboard,
                                     badge_name=BADGE_NAME,
-                                    category=CATEGORY,
-                                    badge_type=BADGE_TYPE)
+                                    category=CATEGORY)
 
         self.assertEqual(response[1], HTTPStatus.OK)
 
@@ -55,7 +52,6 @@ class TestBadgeCommon(DashboardTestCase):
         response = badge_common.put(id='',
                                     resource_type=ResourceType.Dashboard,
                                     badge_name=BADGE_NAME,
-                                    category=CATEGORY,
-                                    badge_type=BADGE_TYPE)
+                                    category=CATEGORY)
 
         self.assertEqual(response[1], HTTPStatus.NOT_FOUND)

@@ -18,7 +18,6 @@ from metadata_service.proxy.base_proxy import BaseProxy
 badge_fields = {
     'badge_name': fields.String,
     'category': fields.String,
-    'badge_type': fields.String,
 }
 
 badges_fields = {
@@ -46,13 +45,12 @@ class BadgeCommon:
 
     def put(self, id: str, resource_type: ResourceType,
             badge_name: str,
-            category: str = '',
-            badge_type: str = '') -> Tuple[Any, HTTPStatus]:
+            category: str = '') -> Tuple[Any, HTTPStatus]:
 
-        if badge_type == '' or category == '':
+        if category == '':
             return \
                 {'message': f'The badge {badge_name} for resource id {id} is not added successfully because '
-                            f'category `{category}` and badge_type `{badge_type}` parameters are required '
+                            f'category `{category}` parameter is required '
                             'for badges'}, \
                 HTTPStatus.NOT_FOUND
 
@@ -60,18 +58,16 @@ class BadgeCommon:
         # implementing column level badges
         whitelist_badges = app.config.get('WHITELIST_BADGES', [])
         incomimg_badge = Badge(badge_name=badge_name,
-                               category=category,
-                               badge_type=badge_type)
+                               category=category)
         # need to check whether the badge combination is part of the whitelist:
 
         in_whitelist = False
         for badge in whitelist_badges:
-            if incomimg_badge.badge_name == badge.badge_name and incomimg_badge.category == badge.category \
-               and incomimg_badge.badge_type == badge.badge_type:
+            if incomimg_badge.badge_name == badge.badge_name and incomimg_badge.category == badge.category:
                 in_whitelist = True
         if not in_whitelist:
             return \
-                {'message': f'The badge {badge_name} with category {category} badge_type {badge_type} for resource '
+                {'message': f'The badge {badge_name} with category {category} for resource '
                             f'id {id} and resource_type {resource_type.name} is not added successfully because '
                             'this combination of values is not part of the whitelist'}, \
                 HTTPStatus.NOT_FOUND
@@ -80,32 +76,29 @@ class BadgeCommon:
             self.client.add_badge(id=id,
                                   badge_name=badge_name,
                                   category=category,
-                                  badge_type=badge_type,
                                   resource_type=resource_type)
-            return {'message': f'The badge {badge_name} with category {category} and type {badge_type} was '
+            return {'message': f'The badge {badge_name} with category {category} was '
                                f'added successfully to resurce with id {id}'}, HTTPStatus.OK
         except Exception as e:
-            return {'message': f'The badge {badge_name} with category {category}, badge type {badge_type} '
+            return {'message': f'The badge {badge_name} with category {category} '
                                f'for resource id {id} and resource_type {resource_type.name} failed to '
                                'be added'}, \
                 HTTPStatus.NOT_FOUND
 
     def delete(self, id: str, badge_name: str,
                category: str,
-               badge_type: str,
                resource_type: ResourceType) -> Tuple[Any, HTTPStatus]:
         try:
             self.client.delete_badge(id=id,
                                      resource_type=resource_type,
                                      badge_name=badge_name,
-                                     category=category,
-                                     badge_type=badge_type)
+                                     category=category)
             return \
-                {'message': f'The badge {badge_name} with category {category}, badge type {badge_type} for resource '
+                {'message': f'The badge {badge_name} with category {category} for resource '
                             f'id {id} and resource_type {resource_type.name} was deleted successfully'}, \
                 HTTPStatus.OK
         except NotFoundException:
             return \
-                {'message': f'The badge {badge_name} with category {category}, badge type {badge_type} for resource '
+                {'message': f'The badge {badge_name} with category {category} for resource '
                             f'id {id} and resource_type {resource_type.name} was not deleted successfully'}, \
                 HTTPStatus.NOT_FOUND

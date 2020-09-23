@@ -17,7 +17,7 @@ parameters:
     schema:
       type: string
     required: true
-    example: 'test_badge'
+    example: 'beta'
   - name: category
     in: query
     type: string
@@ -25,13 +25,6 @@ parameters:
       type: string
     required: true
     example: 'table_status'
-  - name: badge_type
-    in: query
-    type: string
-    schema:
-      type: string
-    required: true
-    example: 'positive'
 responses:
   200:
     description: 'The badge was added successfully'
