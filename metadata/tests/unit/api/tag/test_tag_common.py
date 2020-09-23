@@ -35,8 +35,7 @@ class TestDashboardTagAPI(DashboardTestCase):
 
     def test_block_tag_on_reserved_badge_value(self) -> None:
         self.app.config['WHITELIST_BADGES'] = [Badge(badge_name=BADGE_NAME,
-                                                     category='table_status',
-                                                     badge_type='neutral')]
+                                                     category='table_status')]
 
         mock_proxy = MagicMock()
 
@@ -50,8 +49,7 @@ class TestDashboardTagAPI(DashboardTestCase):
 
     def test_tag_on_unreserved_badge_value(self) -> None:
         self.app.config['WHITELIST_BADGES'] = [Badge(badge_name=BADGE_NAME,
-                                                     category='table_status',
-                                                     badge_type='neutral')]
+                                                     category='table_status')]
 
         mock_proxy = MagicMock()
 
@@ -65,8 +63,7 @@ class TestDashboardTagAPI(DashboardTestCase):
 
     def test_badge_on_reserved_badge_value(self) -> None:
         self.app.config['WHITELIST_BADGES'] = [Badge(badge_name=BADGE_NAME,
-                                                     category='table_status',
-                                                     badge_type='neutral')]
+                                                     category='table_status')]
 
         mock_proxy = MagicMock()
         tag_common = TagCommon(client=mock_proxy)

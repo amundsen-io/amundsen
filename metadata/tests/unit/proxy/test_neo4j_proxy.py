@@ -95,8 +95,7 @@ class TestNeo4jProxy(unittest.TestCase):
             'badge_records': [
                 {
                     'key': 'golden',
-                    'category': 'table_status',
-                    'badge_type': 'neutral'
+                    'category': 'table_status'
                 }
             ],
             'src': {
@@ -147,7 +146,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
                              tags=[Tag(tag_name='test', tag_type='default')],
-                             badges=[Badge(badge_name='golden', category='table_status', badge_type='neutral')],
+                             badges=[Badge(badge_name='golden', category='table_status')],
                              table_readers=[], description='foo description',
                              watermarks=[Watermark(watermark_type='high_watermark',
                                                    partition_key='ds',
@@ -198,7 +197,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
                              tags=[Tag(tag_name='test', tag_type='default')],
-                             badges=[Badge(badge_name='golden', category='table_status', badge_type='neutral')],
+                             badges=[Badge(badge_name='golden', category='table_status')],
                              table_readers=[], description='foo description',
                              watermarks=[Watermark(watermark_type='high_watermark',
                                                    partition_key='ds',
@@ -783,8 +782,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'badges': [
                         {
                             'key': 'golden',
-                            'category': 'table_status',
-                            'badge_type': 'neutral'
+                            'category': 'table_status'
                         }
                     ],
                     'charts': [{'name': 'chart1'}, {'name': 'chart2'}],
@@ -869,8 +867,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                        ],
                                        tags=[Tag(tag_type='tag_type1', tag_name='tag_key1'),
                                              Tag(tag_type='tag_type2', tag_name='tag_key2')],
-                                       badges=[Badge(badge_name='golden', category='table_status',
-                                                     badge_type='neutral')],
+                                       badges=[Badge(badge_name='golden', category='table_status')],
                                        recent_view_count=100)
 
             self.assertEqual(expected, dashboard)

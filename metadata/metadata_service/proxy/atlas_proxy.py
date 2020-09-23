@@ -582,7 +582,7 @@ class AtlasProxy(BaseProxy):
         self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
 
     def add_badge(self, *, id: str, badge_name: str, category: str = '',
-                  badge_type: str = '', resource_type: ResourceType) -> None:
+                  resource_type: ResourceType) -> None:
         # Not implemented
         raise NotImplementedError
 
@@ -604,7 +604,7 @@ class AtlasProxy(BaseProxy):
             LOGGER.exception('For some reason this deletes the classification '
                              'but also always return exception. {}'.format(str(ex)))
 
-    def delete_badge(self, *, id: str, badge_name: str, category: str, badge_type: str,
+    def delete_badge(self, *, id: str, badge_name: str, category: str,
                      resource_type: ResourceType) -> None:
         # Not implemented
         raise NotImplementedError

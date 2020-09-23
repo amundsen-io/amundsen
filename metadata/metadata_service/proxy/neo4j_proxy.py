@@ -204,8 +204,7 @@ class Neo4jProxy(BaseProxy):
 
         table_records = self._execute_cypher_query(statement=table_level_query,
                                                    param_dict={'tbl_key': table_uri,
-                                                               'tag_normal_type': 'default',
-                                                               'tag_badge_type': 'badge'})
+                                                               'tag_normal_type': 'default'})
 
         table_records = table_records.single()
 
@@ -237,8 +236,7 @@ class Neo4jProxy(BaseProxy):
             badge_records = table_records['badge_records']
             for record in badge_records:
                 badge_result = TableBadge(badge_name=record['key'],
-                                          category=record['category'],
-                                          badge_type=record['badge_type'])
+                                          category=record['category'])
                 badges.append(badge_result)
 
         application_record = table_records['application']
@@ -574,23 +572,22 @@ class Neo4jProxy(BaseProxy):
                   id: str,
                   badge_name: str,
                   category: str = '',
-                  badge_type: str = '',
                   resource_type: ResourceType = ResourceType.Table) -> None:
 
-        LOGGER.info('New badge {} for id {} with category {}, badge type '
-                    '{}, and resource type {}'.format(badge_name, id, category, badge_type, resource_type.name))
+        LOGGER.info('New badge {} for id {} with category {} '
+                    'and resource type {}'.format(badge_name, id, category, resource_type.name))
 
         validation_query = \
             'MATCH (n:{resource_type} {{key: $key}}) return n'.format(resource_type=resource_type.name)
 
         upsert_badge_query = textwrap.dedent("""
         MERGE (u:Badge {key: $badge_name})
-        on CREATE SET u={key: $badge_name, category: $category, badge_type: $badge_type}
-        on MATCH SET u={key: $badge_name, category: $category, badge_type: $badge_type}
+        on CREATE SET u={key: $badge_name, category: $category}
+        on MATCH SET u={key: $badge_name, category: $category}
         """)
 
         upsert_badge_relation_query = textwrap.dedent("""
-        MATCH(n1:Badge {{key: $badge_name, category: $category, badge_type: $badge_type}}),
+        MATCH(n1:Badge {{key: $badge_name, category: $category}}),
         (n2:{resource_type} {{key: $key}})
         MERGE (n1)-[r1:BADGE_FOR]->(n2)-[r2:HAS_BADGE]->(n1)
         RETURN n1.key, n2.key
@@ -603,13 +600,11 @@ class Neo4jProxy(BaseProxy):
                 raise NotFoundException('id {} does not exist'.format(id))
 
             tx.run(upsert_badge_query, {'badge_name': badge_name,
-                                        'category': category,
-                                        'badge_type': badge_type})
+                                        'category': category})
 
             result = tx.run(upsert_badge_relation_query, {'badge_name': badge_name,
                                                           'key': id,
-                                                          'category': category,
-                                                          'badge_type': badge_type})
+                                                          'category': category})
 
             if not result.single():
                 raise RuntimeError('failed to create relation between '
@@ -628,17 +623,15 @@ class Neo4jProxy(BaseProxy):
     def delete_badge(self, id: str,
                      badge_name: str,
                      category: str,
-                     badge_type: str,
                      resource_type: ResourceType = ResourceType.Table) -> None:
 
         # TODO for some reason when deleting it will say it was successful
         # even when the badge never existed to begin with
-        LOGGER.info('Delete badge {} for id {} with category {} badge type {}'.format(badge_name, id, category,
-                                                                                      badge_type))
+        LOGGER.info('Delete badge {} for id {} with category {}'.format(badge_name, id, category))
 
         # only deletes relationshop between badge and resource
         delete_query = textwrap.dedent("""
-        MATCH (b:Badge {{key:$badge_name, category:$category, badge_type: $badge_type}})-
+        MATCH (b:Badge {{key:$badge_name, category:$category}})-
         [r1:BADGE_FOR]->(n:{resource_type} {{key: $key}})-[r2:HAS_BADGE]->(b) DELETE r1,r2
         """.format(resource_type=resource_type.name))
 
@@ -646,8 +639,7 @@ class Neo4jProxy(BaseProxy):
             tx = self._driver.session().begin_transaction()
             tx.run(delete_query, {'badge_name': badge_name,
                                   'key': id,
-                                  'category': category,
-                                  'badge_type': badge_type})
+                                  'category': category})
             tx.commit()
         except Exception as e:
             # propagate the exception back to api
@@ -666,8 +658,7 @@ class Neo4jProxy(BaseProxy):
         results = []
         for record in records:
             results.append(Badge(badge_name=record['badge']['key'],
-                                 category=record['badge']['category'],
-                                 badge_type=record['badge']['badge_type']))
+                                 category=record['badge']['category']))
 
         return results
 
@@ -1242,8 +1233,7 @@ class Neo4jProxy(BaseProxy):
                                                      )
         dashboard_record = self._execute_cypher_query(statement=get_dashboard_detail_query,
                                                       param_dict={'query_key': id,
-                                                                  'tag_normal_type': 'default',
-                                                                  'tag_badge_type': 'badge'}).single()
+                                                                  'tag_normal_type': 'default'}).single()
 
         if not dashboard_record:
             raise NotFoundException('No dashboard exist with URI: {}'.format(id))
@@ -1252,8 +1242,7 @@ class Neo4jProxy(BaseProxy):
         tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in dashboard_record['tags']]
 
         badges = [TableBadge(badge_name=badge['key'],
-                             category=badge['category'],
-                             badge_type=badge['badge_type']) for badge in dashboard_record['badges']]
+                             category=badge['category']) for badge in dashboard_record['badges']]
 
         chart_names = [chart['name'] for chart in dashboard_record['charts'] if 'name' in chart and chart['name']]
         # TODO Deprecate query_names in favor of queries after several releases from v2.5.0

@@ -9,7 +9,6 @@ from marshmallow_annotations.ext.attrs import AttrsSchema
 class Badge:
     badge_name: str = attr.ib()
     category: str = attr.ib()
-    badge_type: str = attr.ib()
 
 
 class BadgeSchema(AttrsSchema):
