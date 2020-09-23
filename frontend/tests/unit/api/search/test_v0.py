@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+from typing import Dict
 import responses
 import unittest
 
 from http import HTTPStatus
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from amundsen_application import create_app
 from amundsen_application.api.search.v0 import SEARCH_DASHBOARD_ENDPOINT, SEARCH_DASHBOARD_FILTER_ENDPOINT, \
@@ -81,7 +82,7 @@ class SearchTable(unittest.TestCase):
 
     @responses.activate
     @patch('amundsen_application.api.search.v0.transform_filters')
-    def test_calls_transform_filters(self, transform_filter_mock) -> None:
+    def test_calls_transform_filters(self, transform_filter_mock: Mock) -> None:
         """
         Test transform_filters is called with the filters from the request json
         from the request_json
@@ -105,7 +106,7 @@ class SearchTable(unittest.TestCase):
     @responses.activate
     @patch('amundsen_application.api.search.v0.transform_filters')
     @patch('amundsen_application.api.search.v0._search_table')
-    def test_calls_search_table_log_helper(self, search_table_mock, transform_filter_mock) -> None:
+    def test_calls_search_table_log_helper(self, search_table_mock: Mock, transform_filter_mock: Mock) -> None:
         """
         Test _search_table helper method is called with correct arguments for logging
         from the request_json
@@ -137,7 +138,11 @@ class SearchTable(unittest.TestCase):
     @patch('amundsen_application.api.search.v0.transform_filters')
     @patch('amundsen_application.api.search.v0.has_filters')
     @patch('amundsen_application.api.search.v0.generate_query_json')
-    def test_calls_generate_query_json(self, mock_generate_query_json, has_filters_mock, transform_filter_mock) -> None:
+    def test_calls_generate_query_json(self,
+                                       mock_generate_query_json: Mock,
+                                       has_filters_mock: Mock,
+                                       transform_filter_mock: Mock
+                                       ) -> None:
         """
         Test generate_query_json helper method is called with correct arguments
         from the request_json if filters exist
@@ -163,7 +168,7 @@ class SearchTable(unittest.TestCase):
     @responses.activate
     @patch('amundsen_application.api.search.v0.has_filters')
     @patch('amundsen_application.api.search.v0.generate_query_json')
-    def test_does_not_calls_generate_query_json(self, mock_generate_query_json, has_filters_mock) -> None:
+    def test_does_not_calls_generate_query_json(self, mock_generate_query_json: Mock, has_filters_mock: Mock) -> None:
         """
         Test generate_query_json helper method is not called if filters do not exist
         :return:
@@ -320,7 +325,6 @@ class SearchUser(unittest.TestCase):
 
             users = data.get('users')
             self.assertEqual(users.get('total_results'), self.mock_search_user_results.get('total_results'))
-            self.assertDictContainsSubset(self.expected_parsed_search_user_results[0], users.get('results')[0])
 
     @responses.activate
     def test_search_user_fail_on_non_200_response(self) -> None:
@@ -419,13 +423,13 @@ class SearchDashboard(unittest.TestCase):
 
     @responses.activate
     @patch('amundsen_application.api.search.v0.transform_filters')
-    def test_calls_transform_filters(self, transform_filter_mock) -> None:
+    def test_calls_transform_filters(self, transform_filter_mock: Mock) -> None:
         """
         Test transform_filters is called with the filters from the request json
         from the request_json
         :return:
         """
-        test_filters = {}
+        test_filters: Dict = {}
         responses.add(responses.POST,
                       self.search_service_url,
                       json=self.mock_results,
@@ -442,7 +446,7 @@ class SearchDashboard(unittest.TestCase):
 
     @responses.activate
     @patch('amundsen_application.api.search.v0._search_dashboard')
-    def test_calls_search_dashboard_log_helper(self, search_dashboard_mock) -> None:
+    def test_calls_search_dashboard_log_helper(self, search_dashboard_mock: Mock) -> None:
         """
         Test _search_dashboard helper method is called wwith correct arguments for logging
         from the request_json
@@ -451,7 +455,7 @@ class SearchDashboard(unittest.TestCase):
         test_term = 'hello'
         test_index = 1
         test_search_type = 'test'
-        mock_filters = {}
+        mock_filters: Dict = {}
         responses.add(responses.GET,
                       self.search_service_url,
                       body=self.mock_results,
@@ -473,7 +477,11 @@ class SearchDashboard(unittest.TestCase):
     @patch('amundsen_application.api.search.v0.transform_filters')
     @patch('amundsen_application.api.search.v0.has_filters')
     @patch('amundsen_application.api.search.v0.generate_query_json')
-    def test_calls_generate_query_json(self, mock_generate_query_json, has_filters_mock, transform_filter_mock) -> None:
+    def test_calls_generate_query_json(self,
+                                       mock_generate_query_json: Mock,
+                                       has_filters_mock: Mock,
+                                       transform_filter_mock: Mock
+                                       ) -> None:
         """
         Test generate_query_json helper method is called with correct arguments
         from the request_json if filters exist
@@ -499,7 +507,7 @@ class SearchDashboard(unittest.TestCase):
     @responses.activate
     @patch('amundsen_application.api.search.v0.has_filters')
     @patch('amundsen_application.api.search.v0.generate_query_json')
-    def test_does_not_calls_generate_query_json(self, mock_generate_query_json, has_filters_mock) -> None:
+    def test_does_not_calls_generate_query_json(self, mock_generate_query_json: Mock, has_filters_mock: Mock) -> None:
         """
         Test generate_query_json helper method is not called if filters do not exist
         :return:
