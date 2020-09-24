@@ -6,7 +6,7 @@
 .tabs-component {
   .nav.nav-tabs {
     border-bottom: 1px solid $stroke;
-    margin-top: 20px;
+    margin-top: $spacer-2;
     padding: 0 12px;
 
     > li {

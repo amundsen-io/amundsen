@@ -35,8 +35,10 @@ $shimmer-loader-border-size: 1px;
   }
 }
 
-@each $line in $shimmer-loader-lines {
-  .shimmer-resource-line--#{$line} {
-    width: 75%;
-  }
+.shimmer-resource-line--1 {
+  width: 90%;
+}
+
+.shimmer-resource-line--2 {
+  width: 75%;
 }

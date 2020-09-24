@@ -4,3 +4,4 @@
 export * from './AlertIcon';
 export * from './DownIcon';
 export * from './UpIcon';
+export * from './RightIcon';

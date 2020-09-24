@@ -1,5 +1,6 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
+
 @import 'variables';
 
 .clickable-badge {
@@ -27,6 +28,7 @@
     &:focus {
       // TODO verify if this is what it is supposed to look like
       // more round?
+
       outline: 5px auto -webkit-focus-ring-color;
       outline-offset: -2px;
     }

@@ -39,7 +39,12 @@ module.exports = {
   },
   testRegex: '(test|spec)\\.(j|t)sx?$',
   moduleDirectories: ['node_modules', 'js'],
-  coveragePathIgnorePatterns: ['stories/*', 'constants.ts'],
+  coveragePathIgnorePatterns: [
+    'stories/*',
+    'constants.ts',
+    '.story.tsx',
+    'js/index.tsx',
+  ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
     '^.+\\.(css|scss)$': '<rootDir>/node_modules/jest-css-modules',

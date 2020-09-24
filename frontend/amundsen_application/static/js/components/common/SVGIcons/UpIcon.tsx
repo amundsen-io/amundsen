@@ -6,7 +6,7 @@ import * as React from 'react';
 import { IconSizes, IconProps } from './types';
 
 const DEFAULT_STROKE_COLOR = '';
-const DEFAULT_FILL_COLOR = '#D6D9DB';
+const DEFAULT_FILL_COLOR = '#9191A8'; // gray40
 
 export const UpIcon: React.FC<IconProps> = ({
   stroke = DEFAULT_STROKE_COLOR,
