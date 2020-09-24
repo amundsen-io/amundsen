@@ -30,6 +30,7 @@ import TagInput from 'components/common/Tags/TagInput';
 import EditableText from 'components/common/EditableText';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import EditableSection from 'components/common/EditableSection';
+import ColumnList from 'components/ColumnList';
 
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
@@ -41,7 +42,6 @@ import {
   RequestMetadataType,
 } from 'interfaces';
 
-import ColumnList from './ColumnList';
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
 import FrequentUsers from './FrequentUsers';

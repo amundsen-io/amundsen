@@ -37,6 +37,7 @@ export function logAction(declaredProps: ActionLogParams) {
   const inferredProps = {
     location: window.location.pathname,
   };
+
   postActionLog({ ...inferredProps, ...declaredProps });
 }
 

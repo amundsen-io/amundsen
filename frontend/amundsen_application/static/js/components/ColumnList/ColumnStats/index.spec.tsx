@@ -88,7 +88,8 @@ describe('ColumnStats', () => {
 
     it('generates correct when no dates are given', () => {
       const expectedInfoText = `Stats reflect data collected over a recent period of time.`;
-      expect(instance.getStatsInfoText(null, null)).toBe(expectedInfoText);
+
+      expect(instance.getStatsInfoText()).toBe(expectedInfoText);
     });
   });
 

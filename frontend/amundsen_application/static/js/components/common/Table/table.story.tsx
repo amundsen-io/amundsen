@@ -96,11 +96,57 @@ stories.add('Customized Table', () => (
         options={{ rowHeight: 40 }}
       />
     </StorySection>
+    <StorySection title="with Custom Empty Message">
+      <Table
+        columns={columns}
+        data={[]}
+        options={{ emptyMessage: 'Custom Empty Message Here!' }}
+      />
+    </StorySection>
+  </>
+));
+
+stories.add('Collapsible Table', () => (
+  <>
     <StorySection title="with Collapsed Rows">
       <Table
         columns={columnsWithCollapsedRow}
         data={dataWithCollapsedRow}
         options={{ rowHeight: 40, expandRow: expandRowComponent }}
+      />
+    </StorySection>
+    <StorySection
+      title="with onExpand handler"
+      text="You can open the console to see the handler being called"
+    >
+      <Table
+        columns={columnsWithCollapsedRow}
+        data={dataWithCollapsedRow}
+        options={{
+          rowHeight: 40,
+          expandRow: expandRowComponent,
+          onExpand: (rowValues, index) => {
+            console.log('Expanded row values:', rowValues);
+            console.log('Expanded row index:', index);
+          },
+        }}
+      />
+    </StorySection>
+    <StorySection
+      title="with onCollapse handler"
+      text="You can open the console to see the handler being called"
+    >
+      <Table
+        columns={columnsWithCollapsedRow}
+        data={dataWithCollapsedRow}
+        options={{
+          rowHeight: 40,
+          expandRow: expandRowComponent,
+          onCollapse: (rowValues, index) => {
+            console.log('Collapsed row values:', rowValues);
+            console.log('Collapsed row index:', index);
+          },
+        }}
       />
     </StorySection>
   </>
