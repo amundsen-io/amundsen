@@ -125,6 +125,10 @@ const configDefault: AppConfig = {
           displayName: 'Redshift',
           iconClass: 'icon-redshift',
         },
+        snowflake: {
+          displayName: 'Snowflake',
+          iconClass: 'icon-snowflake',
+        },
       },
       filterCategories: [
         {
