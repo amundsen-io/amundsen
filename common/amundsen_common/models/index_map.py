@@ -65,7 +65,13 @@ TABLE_INDEX_MAP = textwrap.dedent(
               "type": "keyword"
             },
             "cluster": {
-              "type": "text"
+              "type": "text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
             },
             "database": {
               "type": "text",
