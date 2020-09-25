@@ -12,12 +12,12 @@ import Table, {
 } from 'components/common/Table';
 
 import { logAction } from 'ducks/utilMethods';
-import { formatDate } from 'utils/dateUtils';
 import { notificationsEnabled, getMaxLength } from 'config/config-utils';
 import { TableColumn, RequestMetadataType } from 'interfaces';
 
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
+import { getStatsInfoText } from './utils';
 
 import {
   MORE_BUTTON_TEXT,
@@ -84,28 +84,6 @@ const handleRowExpand = (rowValues) => {
     target_id: `column::${rowValues.content.title}`,
     target_type: 'column stats',
   });
-};
-
-// TODO: Move into utils
-const getStatsInfoText = (startEpoch: number, endEpoch: number) => {
-  const startDate = startEpoch
-    ? formatDate({ epochTimestamp: startEpoch })
-    : null;
-  const endDate = endEpoch ? formatDate({ epochTimestamp: endEpoch }) : null;
-
-  let infoText = 'Stats reflect data collected';
-
-  if (startDate && endDate) {
-    if (startDate === endDate) {
-      infoText = `${infoText} on ${startDate} only. (daily partition)`;
-    } else {
-      infoText = `${infoText} between ${startDate} and ${endDate}.`;
-    }
-  } else {
-    infoText = `${infoText} over a recent period of time.`;
-  }
-
-  return infoText;
 };
 
 // @ts-ignore

@@ -2,126 +2,116 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { shallow } from 'enzyme';
-import { ColumnStats, ColumnStatsProps } from '.';
+import { mount } from 'enzyme';
+
+import ColumnStats, { ColumnStatsProps } from '.';
+import TestDataBuilder from './testDataBuilder';
+
+const dataBuilder = new TestDataBuilder();
+
+const setup = (propOverrides?: Partial<ColumnStatsProps>) => {
+  const props = {
+    stats: [],
+    ...propOverrides,
+  };
+  const wrapper = mount<typeof ColumnStats>(<ColumnStats {...props} />);
+
+  return { props, wrapper };
+};
 
 describe('ColumnStats', () => {
-  const setup = (propOverrides?: Partial<ColumnStatsProps>) => {
-    const props = {
-      stats: [
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'count',
-          stat_val: '12345',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'count_null',
-          stat_val: '123',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'count_distinct',
-          stat_val: '22',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'count_zero',
-          stat_val: '44',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'max',
-          stat_val: '1237466454',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'min',
-          stat_val: '856',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'avg',
-          stat_val: '2356575',
-        },
-        {
-          end_epoch: 1571616000,
-          start_epoch: 1571616000,
-          stat_type: 'stddev',
-          stat_val: '1234563',
-        },
-      ],
-      ...propOverrides,
-    };
-    const wrapper = shallow<ColumnStats>(<ColumnStats {...props} />);
-    return { props, wrapper };
-  };
-
-  const { wrapper, props } = setup();
-  const instance = wrapper.instance();
-
-  describe('getStatsInfoText', () => {
-    it('generates correct info text for a daily partition', () => {
-      const startEpoch = 1568160000;
-      const endEpoch = 1568160000;
-      const expectedInfoText = `Stats reflect data collected on Sep 11, 2019 only. (daily partition)`;
-      expect(instance.getStatsInfoText(startEpoch, endEpoch)).toBe(
-        expectedInfoText
-      );
-    });
-
-    it('generates correct info text for a date range', () => {
-      const startEpoch = 1568160000;
-      const endEpoch = 1571616000;
-      const expectedInfoText = `Stats reflect data collected between Sep 11, 2019 and Oct 21, 2019.`;
-      expect(instance.getStatsInfoText(startEpoch, endEpoch)).toBe(
-        expectedInfoText
-      );
-    });
-
-    it('generates correct when no dates are given', () => {
-      const expectedInfoText = `Stats reflect data collected over a recent period of time.`;
-
-      expect(instance.getStatsInfoText()).toBe(expectedInfoText);
-    });
-  });
-
-  describe('renderColumnStat', () => {
-    it('renders a single column stat', () => {
-      const columnStat = {
-        end_epoch: 1571616000,
-        start_epoch: 1571616000,
-        stat_type: 'count',
-        stat_val: '12345',
-      };
-      const expectedStatType = columnStat.stat_type.toUpperCase();
-      const expectedStatValue = columnStat.stat_val;
-      const result = shallow(instance.renderColumnStat(columnStat));
-      expect(result.find('.stat-name').text()).toBe(expectedStatType);
-      expect(result.find('.stat-value').text()).toBe(expectedStatValue);
-    });
-  });
-
   describe('render', () => {
-    it('calls the appropriate functions', () => {
-      const getStatsInfoTextSpy = jest.spyOn(instance, 'getStatsInfoText');
-      instance.render();
+    describe('when stats are empty', () => {
+      const { stats } = dataBuilder.withEmptyStats().build();
 
-      expect(getStatsInfoTextSpy).toHaveBeenCalledWith(1571616000, 1571616000);
+      it('does not render the component', () => {
+        const { wrapper } = setup({ stats });
+        const expected = stats.length;
+        const actual = wrapper.find('.column-stats').length;
+
+        expect(actual).toEqual(expected);
+      });
     });
 
-    it('calls renderColumnStat with all of the stats', () => {
-      const renderColumnStatSpy = jest.spyOn(instance, 'renderColumnStat');
-      instance.render();
-      props.stats.forEach((stat) => {
-        expect(renderColumnStatSpy).toHaveBeenCalledWith(stat);
+    describe('when four stats are passed', () => {
+      const { stats } = dataBuilder.withFourStats().build();
+
+      it('renders the component', () => {
+        const { wrapper } = setup({ stats });
+        const expected = 1;
+        const actual = wrapper.find('.column-stats').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders two columns', () => {
+        const { wrapper } = setup({ stats });
+        const expected = 2;
+        const actual = wrapper.find('.column-stats-column').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders the stats info text', () => {
+        const { wrapper } = setup({ stats });
+        const expected = 1;
+        const actual = wrapper.find('.stat-collection-info').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders four stat rows', () => {
+        const { wrapper } = setup({ stats });
+        const expected = stats.length;
+        const actual = wrapper.find('.column-stat-row').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when three stats are passed', () => {
+      const { stats } = dataBuilder.withThreeStats().build();
+
+      it('renders three stat rows', () => {
+        const { wrapper } = setup({ stats });
+        const expected = stats.length;
+        const actual = wrapper.find('.column-stat-row').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders two rows in the first column', () => {
+        const { wrapper } = setup({ stats });
+        const expected = 2;
+        const actual = wrapper
+          .find('.column-stats-column')
+          .first()
+          .find('.column-stat-row').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders one row in the second column', () => {
+        const { wrapper } = setup({ stats });
+        const expected = 1;
+        const actual = wrapper
+          .find('.column-stats-column')
+          .last()
+          .find('.column-stat-row').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when eight stats are passed', () => {
+      const { stats } = dataBuilder.withEightStats().build();
+
+      it('renders eight stat rows', () => {
+        const { wrapper } = setup({ stats });
+        const expected = stats.length;
+        const actual = wrapper.find('.column-stat-row').length;
+
+        expect(actual).toEqual(expected);
       });
     });
   });
