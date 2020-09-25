@@ -45,3 +45,14 @@ config to your databuilder job's config
 
 This config means that databuilder will only update the table / column description if it doesn't exist before which could be the table is newly created.
 This is useful when we treat Amundsen graph as the source of truth for certain types of metadata (e.g description).
+
+## How to capture all Google Analytics?
+
+Users are likely to have some sort of adblocker installed, making your Google Analytics less accurate.
+
+To put a proxy in place to bypass any adblockers and capture all analytics, follow these steps:
+
+1. Follow https://github.com/ZitRos/save-analytics-from-content-blockers#setup to set up your own proxy server.
+2. In the same repository, run `npm run mask www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX` and save the output.
+3. In your custom frontend, override https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/templates/fragments/google-analytics-loader.html#L6 to <script async src="https://my-proxy-domain/MASKEDGOOGLETAGAMANAGERURL"></script>
+4. Now, note that network requests to www.googletagmanager.com will be sent from behind your masked proxy endpoint, saving your analytics from content blockers!
