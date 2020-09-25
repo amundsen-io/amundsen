@@ -43,6 +43,11 @@ const DEFAULT_ROW_HEIGHT = 30;
 const EXPANDING_CELL_WIDTH = '70px';
 const DEFAULT_TEXT_ALIGNMENT = 'left';
 const DEFAULT_CELL_WIDTH = 'auto';
+const ALIGNEMENT_TO_CLASS_MAP = {
+  left: 'is-left-aligned',
+  right: 'is-right-aligned',
+  center: 'is-center-aligned',
+};
 
 type RowStyles = {
   height: string;
@@ -53,6 +58,9 @@ type EmptyRowProps = {
   rowStyles: RowStyles;
   emptyMessage?: string;
 };
+
+const getCellAlignmentClass = (alignment: TextAlignmentValues) =>
+  ALIGNEMENT_TO_CLASS_MAP[alignment];
 
 const EmptyRow: React.FC<EmptyRowProps> = ({
   colspan,
@@ -204,7 +212,6 @@ const Table: React.FC<TableProps> = ({
                       : DEFAULT_CELL_WIDTH;
                   const cellStyle = {
                     width,
-                    textAlign: `${horAlign}` as TextAlignmentValues,
                   };
                   // TODO: Improve the typing of this
                   let cellContent: React.ReactNode | typeof value = value;
@@ -214,7 +221,9 @@ const Table: React.FC<TableProps> = ({
 
                   return (
                     <td
-                      className="ams-table-cell"
+                      className={`ams-table-cell ${getCellAlignmentClass(
+                        horAlign
+                      )}`}
                       key={`index:${index}`}
                       style={cellStyle}
                     >
@@ -253,12 +262,13 @@ const Table: React.FC<TableProps> = ({
         ({ title, horAlign = DEFAULT_TEXT_ALIGNMENT, width = null }, index) => {
           const cellStyle = {
             width: width ? `${width}px` : DEFAULT_CELL_WIDTH,
-            textAlign: `${horAlign}` as TextAlignmentValues,
           };
 
           return (
             <th
-              className="ams-table-heading-cell"
+              className={`ams-table-heading-cell ${getCellAlignmentClass(
+                horAlign
+              )}`}
               key={`index:${index}`}
               style={cellStyle}
             >

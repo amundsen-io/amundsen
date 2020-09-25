@@ -4,7 +4,9 @@
 @import 'variables';
 @import 'typography';
 
-$description-max-width: 700px;
+$description-max-width: 650px;
+$description-max-width-med: 450px;
+$description-max-width-small: 300px;
 
 .column-list {
   margin: 0;
@@ -75,25 +77,29 @@ $description-max-width: 700px;
 
   .markdown-wrapper p {
     margin-top: 0;
+    white-space: normal;
   }
 
   .column-desc {
     @extend %text-body-w3;
 
-    padding-right: $spacer-1;
-    max-width: $description-max-width;
+    max-width: $description-max-width-small;
 
-    .ams-table-row.has-child-expanded & {
-      display: none;
+    @media (min-width: $screen-md-max) {
+      max-width: $description-max-width-med;
+    }
+
+    @media (min-width: $screen-lg-max) {
+      max-width: $description-max-width;
     }
   }
 
-  .column-type {
-    padding-right: $spacer-1;
+  .has-child-expanded .column-desc {
+    display: none;
   }
 
-  .actions,
   .usage-value {
-    padding-left: $spacer-1;
+    font-variant-numeric: tabular-nums;
+    font-family: $text-heading-font-family;
   }
 }

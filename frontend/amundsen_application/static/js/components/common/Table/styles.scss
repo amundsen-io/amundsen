@@ -42,6 +42,22 @@ $row-bottom-border-color: $gray10;
   &:last-child {
     padding-right: $spacer-3;
   }
+
+  &.is-left-aligned {
+    text-align: left;
+    padding-right: $spacer-1;
+  }
+
+  &.is-right-aligned {
+    text-align: right;
+    padding-left: $spacer-1;
+  }
+
+  &.is-center-aligned {
+    text-align: center;
+    padding-left: $spacer-1;
+    padding-right: $spacer-1;
+  }
 }
 
 .ams-table-row {
@@ -71,6 +87,22 @@ $row-bottom-border-color: $gray10;
 
   &:last-child {
     padding-right: $spacer-3;
+  }
+
+  &.is-left-aligned {
+    text-align: left;
+    padding-right: $spacer-1;
+  }
+
+  &.is-right-aligned {
+    text-align: right;
+    padding-left: $spacer-1;
+  }
+
+  &.is-center-aligned {
+    text-align: center;
+    padding-left: $spacer-1;
+    padding-right: $spacer-1;
   }
 }
 
