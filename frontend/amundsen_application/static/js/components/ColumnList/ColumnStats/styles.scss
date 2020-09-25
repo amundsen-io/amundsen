@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
 .column-stats {
   .stat-collection-info {
@@ -47,5 +48,9 @@
         }
       }
     }
+  }
+
+  .stat-title {
+    @extend %text-title-w3;
   }
 }
