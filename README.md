@@ -195,6 +195,7 @@ Currently **officially** using Amundsen:
 1. [Asana](https://asana.com/)
 1. [Bagelcode](https://site.bagelcode.com/)
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
+1. [Brex](https://www.brex.com/)
 1. [Cameo](https://www.cameo.com)
 1. [Cimpress Technology](https://cimpress.com)
 1. [Coles Group](https://www.colesgroup.com.au/home/)
