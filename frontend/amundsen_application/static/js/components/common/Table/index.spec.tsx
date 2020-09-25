@@ -212,10 +212,11 @@ describe('Table', () => {
               data,
               columns,
             });
-            const expected = 'left';
+            const expected = true;
             const actual = wrapper
               .find('.ams-table-header .ams-table-heading-cell')
-              .get(0).props.style.textAlign;
+              .at(0)
+              .hasClass('is-left-aligned');
 
             expect(actual).toEqual(expected);
           });
@@ -225,23 +226,25 @@ describe('Table', () => {
               data,
               columns,
             });
-            const expected = 'center';
+            const expected = true;
             const actual = wrapper
               .find('.ams-table-header .ams-table-heading-cell')
-              .get(1).props.style.textAlign;
+              .at(1)
+              .hasClass('is-center-aligned');
 
             expect(actual).toEqual(expected);
           });
 
-          it('renders the first column as right aligned', () => {
+          it('renders the third column as right aligned', () => {
             const { wrapper } = setup({
               data,
               columns,
             });
-            const expected = 'right';
+            const expected = true;
             const actual = wrapper
               .find('.ams-table-header .ams-table-heading-cell')
-              .get(2).props.style.textAlign;
+              .at(2)
+              .hasClass('is-right-aligned');
 
             expect(actual).toEqual(expected);
           });
@@ -253,10 +256,11 @@ describe('Table', () => {
               data,
               columns,
             });
-            const expected = 'left';
+            const expected = true;
             const actual = wrapper
               .find('.ams-table-body .ams-table-cell')
-              .get(0).props.style.textAlign;
+              .at(0)
+              .hasClass('is-left-aligned');
 
             expect(actual).toEqual(expected);
           });
@@ -266,10 +270,11 @@ describe('Table', () => {
               data,
               columns,
             });
-            const expected = 'center';
+            const expected = true;
             const actual = wrapper
               .find('.ams-table-body .ams-table-cell')
-              .get(1).props.style.textAlign;
+              .at(1)
+              .hasClass('is-center-aligned');
 
             expect(actual).toEqual(expected);
           });
@@ -279,10 +284,11 @@ describe('Table', () => {
               data,
               columns,
             });
-            const expected = 'right';
+            const expected = true;
             const actual = wrapper
               .find('.ams-table-body .ams-table-cell')
-              .get(2).props.style.textAlign;
+              .at(2)
+              .hasClass('is-right-aligned');
 
             expect(actual).toEqual(expected);
           });
