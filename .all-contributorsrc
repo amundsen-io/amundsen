@@ -1,0 +1,41 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "feng-tao",
+      "name": "Tao Feng",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3223098?v=4",
+      "profile": "https://www.linkedin.com/in/tao-f-17195814/",
+      "contributions": [
+        "bug",
+        "blog",
+        "code",
+        "content",
+        "doc",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "plugin",
+        "projectManagement",
+        "question",
+        "review",
+        "security",
+        "tool",
+        "test",
+        "tutorial"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "amundsen",
+  "projectOwner": "amundsen-io",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
