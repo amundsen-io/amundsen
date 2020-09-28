@@ -38,17 +38,20 @@ Amundsen is hosted by the [LF AI Foundation](https://lfdl.io)(LF AI). It include
 - [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" />
 - [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" />
 - [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
-Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
-or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" />
+  Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
+  or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" />
 - [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" />
 
 ## Homepage
+
 - https://www.amundsen.io/
 
 ## Documentation
+
 - https://www.amundsen.io/amundsen/
 
 ## Requirements
+
 - Python = 3.6 or 3.7
 - Node = v10 or v12 (v14 may have compatibility issues)
 - npm >= 6
@@ -59,23 +62,23 @@ Please note that the mock images only served as demonstration purpose.
 
 - **Landing Page**: The landing page for Amundsen including 1. search bars; 2. popular used tables;
 
-    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/landing_page.png)
+  ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/landing_page.png)
 
 - **Search Preview**: See inline search results as you type
 
-    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/search_preview.png)
+  ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/search_preview.png)
 
 - **Table Detail Page**: Visualization of a Hive / Redshift table
 
-    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/table_detail_page_with_badges.png)
+  ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/table_detail_page_with_badges.png)
 
 - **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
 
-    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/column_details.png)
+  ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/column_details.png)
 
 - **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset) or other Data Visualization Tools.
 
-    ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/data_preview.png)
+  ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/data_preview.png)
 
 ## Get Involved in the Community
 
@@ -91,6 +94,7 @@ Please visit the Amundsen installation documentation for a [quick start](https:/
 Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
 
 ## Supported Entities
+
 - Tables (from Databases)
 - People (from HR systems)
 - Dashboards
@@ -98,6 +102,7 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 ## Supported Integrations
 
 ### Table Connectors
+
 - [Amazon Athena](https://aws.amazon.com/athena/)
 - [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it (like Databricks Delta - which is a work in progress).
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
@@ -117,16 +122,18 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 
 ### Dashboard Connectors
+
 - [Mode Analytics](https://mode.com/)
 - [Redash](https://redash.io/)
 - [Tableau](https://tableau.com/)
 
 ### ETL Orchestration
+
 - [Apache Airflow](https://airflow.apache.org/)
 
 ### BI Viz Tool
-- [Apache Superset](https://superset.incubator.apache.org/)
 
+- [Apache Superset](https://superset.incubator.apache.org/)
 
 ## Installation
 
@@ -157,12 +164,13 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - Disrupting Data Discovery {[slides](https://www.slideshare.net/PhilippeMizrahi/meetup-sf-amundsen), [recording](https://www.youtube.com/watch?v=NgeCOVjSJ7A)} (Making Big Data Easy SF, May 2019)
 - Disrupting Data Discovery {[slides](https://www.slideshare.net/TamikaTannis/neo4j-graphtour-santa-monica-2019-amundsen-presentation-173073727), [recording](https://www.youtube.com/watch?v=Gr3-RfWn49A)} (Neo4j Graph Tour Santa Monica, September 2019)
 - Disrupting Data Discovery {[slides](https://www.slideshare.net/secret/56EPbcvswqyH90)} (IDEAS SoCal AI & Data Science Conference, Oct 2019)
-- Data Discovery with Amundsen by [Gerard Toonstra](https://twitter.com/radialmind) from Coolblue {[slides](https://docs.google.com/presentation/d/1rkrP8ZobkLPZbwisrLWTdPN5I52SgVGM1eqAFDJXj2A/edit?usp=sharing)} and {[talk](https://www.youtube.com/watch?v=T54EO1MuE7I&list=PLqYhGsQ9iSEq7fDvXcd67iVzx5nsf9xnK&index=17)}  (BigData Vilnius 2019)
+- Data Discovery with Amundsen by [Gerard Toonstra](https://twitter.com/radialmind) from Coolblue {[slides](https://docs.google.com/presentation/d/1rkrP8ZobkLPZbwisrLWTdPN5I52SgVGM1eqAFDJXj2A/edit?usp=sharing)} and {[talk](https://www.youtube.com/watch?v=T54EO1MuE7I&list=PLqYhGsQ9iSEq7fDvXcd67iVzx5nsf9xnK&index=17)} (BigData Vilnius 2019)
 - Towards Enterprise Grade Data Discovery and Data Lineage with Apache Atlas and Amundsen by [Verdan Mahmood](https://github.com/verdan) and Marek Wiewiorka from ING {[slides](https://docs.google.com/presentation/d/1FixTTNd1dt_f3PAKhL1KLOeOLsIQq0iFvQA6qlpjIg0/edit#slide=id.p1), [talk](https://bigdatatechwarsaw.eu/agenda/)} (Big Data Technology Warsaw Summit 2020)
 - Airflow @ Lyft (which covers how we integrate Airflow and Amundsen) by [Tao Feng](https://github.com/feng-tao) {[slides](https://www.slideshare.net/taofung/airflow-at-lyft-airflow-summit2020) and [website](https://airflowsummit.org/sessions/how-airbnb-twitter-lyft-use-airflow/)} (Airflow Summit 2020)
 - Data DAGs with lineage for fun and for profit by [Bolke de Bruin](https://github.com/bolkedebruin) {[website](https://airflowsummit.org/sessions/data-dags-with-lineage/)} (Airflow Summit 2020)
 
 ## Related Articles
+
 - [How LinkedIn, Uber, Lyft, Airbnb and Netflix are Solving Data Management and Discovery for Machine Learning Solutions](https://towardsdatascience.com/how-linkedin-uber-lyft-airbnb-and-netflix-are-solving-data-management-and-discovery-for-machine-9b79ee9184bb)
 - [Data Discovery in 2020](https://medium.com/@torokyle/data-discovery-in-2020-3c907383caa0)
 - [4 Data Trends to Watch in 2020](https://medium.com/memory-leak/4-data-trends-to-watch-in-2020-491707902c09)
@@ -179,9 +187,11 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - [Cataloging Tools for Data Teams](https://towardsdatascience.com/cataloging-tools-for-data-teams-8d62d7a4cd95)
 
 ## Community meetings
+
 Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time. [Link to join](https://meet.google.com/mqz-ndck-jmj)
 
 ### Upcoming meetings & notes
+
 You can the exact date for the next meeting and the agenda a few weeks before the meeting in [this doc](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis).
 
 Notes from all past meetings are available [here](https://docs.google.com/document/d/1bsJWNt1GBFmV-aRbHFuYgMFnMgIIvAmbhsvDatb0Vis).
@@ -218,5 +228,10 @@ Currently **officially** using Amundsen:
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
+## Contributors
+
+This project won't be possible without the help of a long list of [Contributors](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md), join them by following our [Contributing guide](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTORS.md)!
+
 # License
+
 [Apache 2.0 License.](/LICENSE)
