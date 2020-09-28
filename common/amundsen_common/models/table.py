@@ -101,6 +101,7 @@ class Column:
     col_type: str
     sort_order: int
     stats: List[Stat] = []
+    badges: Optional[List[Badge]] = []
 
 
 class ColumnSchema(AttrsSchema):
