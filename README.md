@@ -231,7 +231,7 @@ Currently **officially** using Amundsen:
 
 ## Contributors
 
-This project won't be possible without the help of a long list of [Contributors](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md), join them by following our [Contributing guide](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTORS.md)!
+This project won't be possible without the help of a long list of [Contributors](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTORS.md), join them by following our [Contributing guide](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md)!
 
 # License
 
