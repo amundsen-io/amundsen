@@ -1,4 +1,7 @@
 <p align="center">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
   <img
     src="https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
     alt="Amundsen"
@@ -232,6 +235,18 @@ Currently **officially** using Amundsen:
 ## Contributors
 
 This project won't be possible without the help of a long list of [Contributors](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md), join them by following our [Contributing guide](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTORS.md)!
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://www.linkedin.com/in/tao-f-17195814/"><img src="https://avatars3.githubusercontent.com/u/3223098?v=4" width="100px;" alt=""/><br /><sub><b>Tao Feng</b></sub></a><br /><a href="https://github.com/amundsen-io/amundsen/issues?q=author%3Afeng-tao" title="Bug reports">🐛</a> <a href="#blog-feng-tao" title="Blogposts">📝</a> <a href="https://github.com/amundsen-io/amundsen/commits?author=feng-tao" title="Code">💻</a> <a href="#content-feng-tao" title="Content">🖋</a> <a href="https://github.com/amundsen-io/amundsen/commits?author=feng-tao" title="Documentation">📖</a> <a href="#example-feng-tao" title="Examples">💡</a> <a href="#ideas-feng-tao" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-feng-tao" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-feng-tao" title="Maintenance">🚧</a> <a href="#platform-feng-tao" title="Packaging/porting to new platform">📦</a> <a href="#plugin-feng-tao" title="Plugin/utility libraries">🔌</a> <a href="#projectManagement-feng-tao" title="Project Management">📆</a> <a href="#question-feng-tao" title="Answering Questions">💬</a> <a href="https://github.com/amundsen-io/amundsen/pulls?q=is%3Apr+reviewed-by%3Afeng-tao" title="Reviewed Pull Requests">👀</a> <a href="#security-feng-tao" title="Security">🛡️</a> <a href="#tool-feng-tao" title="Tools">🔧</a> <a href="https://github.com/amundsen-io/amundsen/commits?author=feng-tao" title="Tests">⚠️</a> <a href="#tutorial-feng-tao" title="Tutorials">✅</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 # License
 
