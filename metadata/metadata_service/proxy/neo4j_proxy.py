@@ -13,9 +13,8 @@ from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Reader, Source,
                                           Statistics, Table, User,
-                                          Watermark, ProgrammaticDescription)
-from amundsen_common.models.table import Tag
-from amundsen_common.models.table import Badge as TableBadge
+                                          Watermark, ProgrammaticDescription, Tag,
+                                          Badge as TableBadge)
 from amundsen_common.models.user import User as UserEntity
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
@@ -120,7 +119,9 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:DESCRIPTION]->(col_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:STAT]->(stat:Stat)
-        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats
+        OPTIONAL MATCH (col:Column)-[:HAS_BADGE]->(badge:Badge)
+        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
+        collect(distinct badge) as col_badges
         ORDER BY col.sort_order;""")
 
         tbl_col_neo4j_records = self._execute_cypher_query(
@@ -139,12 +140,17 @@ class Neo4jProxy(BaseProxy):
                 )
                 col_stats.append(col_stat)
 
+            column_badges = []
+            for badge in tbl_col_neo4j_record['col_badges']:
+                column_badges.append(TableBadge(badge_name=badge['key'], category=badge['category']))
+
             last_neo4j_record = tbl_col_neo4j_record
             col = Column(name=tbl_col_neo4j_record['col']['name'],
                          description=self._safe_get(tbl_col_neo4j_record, 'col_dscrpt', 'description'),
                          col_type=tbl_col_neo4j_record['col']['type'],
                          sort_order=int(tbl_col_neo4j_record['col']['sort_order']),
-                         stats=col_stats)
+                         stats=col_stats,
+                         badges=column_badges)
 
             cols.append(col)
 
