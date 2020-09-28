@@ -1,0 +1,40 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "ttannis",
+      "name": "Tamika Tannis",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1790900?v=4",
+      "profile": "https://www.linkedin.com/in/tamika-tannis/",
+      "contributions": [
+        "bug",
+        "code",
+        "content",
+        "doc",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "plugin",
+        "projectManagement",
+        "question",
+        "review",
+        "security",
+        "tool",
+        "test",
+        "tutorial"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "amundsen",
+  "projectOwner": "amundsen-io",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
