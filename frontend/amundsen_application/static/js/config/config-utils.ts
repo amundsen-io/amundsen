@@ -147,6 +147,19 @@ export function getCuratedTags(): string[] {
 }
 
 /**
+ * Returns a list of table sort options
+ */
+export function getTableSortCriterias() {
+  const config = AppConfig.resourceConfig[ResourceType.table];
+
+  if (config && config.sortCriterias) {
+    return config.sortCriterias;
+  }
+
+  return {};
+}
+
+/**
  * Checks if nav links are active
  */
 const isNavLinkActive = (link: LinkConfig): boolean => {

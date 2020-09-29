@@ -78,6 +78,15 @@ describe('getFilterConfigByResource', () => {
   });
 });
 
+describe('getTableSortCriterias', () => {
+  it('returns the sorting criterias for tables', () => {
+    const expectedValue =
+      AppConfig.resourceConfig[ResourceType.table].sortCriterias;
+
+    expect(ConfigUtils.getTableSortCriterias()).toBe(expectedValue);
+  });
+});
+
 describe('getBadgeConfig', () => {
   AppConfig.badges = {
     test_1: {

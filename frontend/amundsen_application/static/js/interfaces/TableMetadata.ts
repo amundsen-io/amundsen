@@ -61,6 +61,7 @@ export interface TableColumn {
   description: string;
   is_editable: boolean;
   col_type: string;
+  sort_order: string;
   stats: TableColumnStats[];
 }
 

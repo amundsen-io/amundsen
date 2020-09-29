@@ -9,11 +9,22 @@ import { OpenRequestAction } from 'ducks/notification/types';
 import EditableSection from 'components/common/EditableSection';
 import Table, {
   TableColumn as ReusableTableColumn,
+  TextAlignmentValues,
 } from 'components/common/Table';
 
 import { logAction } from 'ducks/utilMethods';
-import { notificationsEnabled, getMaxLength } from 'config/config-utils';
-import { TableColumn, RequestMetadataType } from 'interfaces';
+import {
+  notificationsEnabled,
+  getMaxLength,
+  getTableSortCriterias,
+} from 'config/config-utils';
+
+import {
+  TableColumn,
+  RequestMetadataType,
+  SortCriteria,
+  SortDirection,
+} from 'interfaces';
 
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
@@ -38,6 +49,7 @@ export interface ColumnListProps {
   database: string;
   editText?: string;
   editUrl?: string;
+  sortBy?: SortCriteria;
 }
 
 type ContentType = {
@@ -61,12 +73,14 @@ type StatType = {
 type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
-  usage: string | null;
+  usage: number | null;
   stats: StatType | null;
   action: string;
   editText?: string;
   editUrl?: string;
   index: number;
+  name: string;
+  sort_order: string;
   isEditable: boolean;
 };
 
@@ -75,7 +89,52 @@ type ExpandedRowProps = {
   index: number;
 };
 
+// TODO: Move this into the configuration once we have more info about the rest of stats
+const USAGE_STAT_TYPE = 'column_usage';
 const SHOW_STATS_THRESHOLD = 1;
+const DEFAULT_SORTING: SortCriteria = {
+  name: 'Table Default',
+  key: 'sort_order',
+  direction: SortDirection.ascending,
+};
+
+const getSortingFunction = (
+  formattedData: FormattedDataType[],
+  sortBy: SortCriteria
+) => {
+  const numberSortingFunction = (a, b) => {
+    return b[sortBy.key] - a[sortBy.key];
+  };
+
+  const stringSortingFunction = (a, b) => {
+    if (a[sortBy.key] && b[sortBy.key]) {
+      return a[sortBy.key].localeCompare(b[sortBy.key]);
+    }
+    return null;
+  };
+
+  if (!formattedData.length) {
+    return numberSortingFunction;
+  }
+
+  return Number.isInteger(formattedData[0][sortBy.key])
+    ? numberSortingFunction
+    : stringSortingFunction;
+};
+
+const getUsageStat = (item) => {
+  const hasItemStats = !!item.stats.length;
+
+  if (hasItemStats) {
+    const usageStat = item.stats.find((s) => {
+      return s.stat_type === USAGE_STAT_TYPE;
+    });
+
+    return usageStat ? +usageStat.stat_val : null;
+  }
+
+  return null;
+};
 
 const handleRowExpand = (rowValues) => {
   logAction({
@@ -139,6 +198,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   editText,
   editUrl,
   openRequestDescriptionDialog,
+  sortBy = DEFAULT_SORTING,
 }: ColumnListProps) => {
   const formattedData: FormattedDataType[] = columns.map((item, index) => {
     const hasItemStats = !!item.stats.length;
@@ -153,9 +213,11 @@ const ColumnList: React.FC<ColumnListProps> = ({
         name: item.name,
         database,
       },
-      usage: hasItemStats ? item.stats[0].stat_val : '',
+      sort_order: item.sort_order,
+      usage: getUsageStat(item),
       stats: hasItemStats ? item.stats[0] : null,
       action: item.name,
+      name: item.name,
       isEditable: item.is_editable,
       editText,
       editUrl,
@@ -163,7 +225,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
     };
   });
   const statsCount = formattedData.filter((item) => !!item.stats).length;
-  const hasStats = statsCount >= SHOW_STATS_THRESHOLD;
+  const hasUsageStat =
+    getTableSortCriterias().usage && statsCount >= SHOW_STATS_THRESHOLD;
+  let formattedAndOrderedData = formattedData.sort(
+    getSortingFunction(formattedData, sortBy)
+  );
+  if (sortBy.direction === SortDirection.ascending) {
+    formattedAndOrderedData = formattedAndOrderedData.reverse();
+  }
 
   let formattedColumns: ReusableTableColumn[] = [
     {
@@ -191,13 +260,13 @@ const ColumnList: React.FC<ColumnListProps> = ({
     },
   ];
 
-  if (hasStats) {
+  if (hasUsageStat) {
     formattedColumns = [
       ...formattedColumns,
       {
         title: 'Usage',
         field: 'usage',
-        horAlign: 'right',
+        horAlign: TextAlignmentValues.right,
         component: (usage) => (
           <p className="resource-type usage-value">{usage}</p>
         ),
@@ -212,7 +281,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         title: '',
         field: 'action',
         width: 80,
-        horAlign: 'right',
+        horAlign: TextAlignmentValues.right,
         component: (name, index) => (
           <div className="actions">
             <Dropdown
@@ -246,7 +315,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   return (
     <Table
       columns={formattedColumns}
-      data={formattedData}
+      data={formattedAndOrderedData}
       options={{
         rowHeight: 72,
         emptyMessage: EMPTY_MESSAGE,

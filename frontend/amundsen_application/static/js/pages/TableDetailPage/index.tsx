@@ -17,6 +17,7 @@ import {
   getDescriptionSourceDisplayName,
   getMaxLength,
   getSourceIconClass,
+  getTableSortCriterias,
   indexDashboardsEnabled,
   issueTrackingEnabled,
   notificationsEnabled,
@@ -40,6 +41,7 @@ import {
   ResourceType,
   TableMetadata,
   RequestMetadataType,
+  SortCriteria,
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
@@ -57,6 +59,7 @@ import WriterLink from './WriterLink';
 import TableReportsDropdown from './ResourceReportsDropdown';
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
+import ListSortingDropdown from './ListSortingDropdown';
 
 import * as Constants from './constants';
 
@@ -65,8 +68,12 @@ import './styles.scss';
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
 const TABLE_SOURCE = 'table_page';
+const SORT_CRITERIAS = {
+  ...getTableSortCriterias(),
+};
+const COLUMN_TAB_KEY = 'columns';
 
-export interface StateFromProps {
+export interface PropsFromState {
   isLoading: boolean;
   isLoadingDashboards: boolean;
   numRelatedDashboards: number;
@@ -92,7 +99,7 @@ export interface MatchProps {
   table: string;
 }
 
-export type TableDetailProps = StateFromProps &
+export type TableDetailProps = PropsFromState &
   DispatchFromProps &
   RouteComponentProps<MatchProps>;
 
@@ -105,12 +112,23 @@ const ErrorMessage = () => {
   );
 };
 
+export interface StateProps {
+  sortedBy: SortCriteria;
+  currentTab: string;
+}
+
 export class TableDetail extends React.Component<
-  TableDetailProps & RouteComponentProps<any>
+  TableDetailProps & RouteComponentProps<any>,
+  StateProps
 > {
   private key: string;
 
   private didComponentMount: boolean = false;
+
+  state = {
+    sortedBy: SORT_CRITERIAS.sort_order,
+    currentTab: COLUMN_TAB_KEY,
+  };
 
   componentDidMount() {
     const { index, source } = getLoggingParams(this.props.location.search);
@@ -125,6 +143,7 @@ export class TableDetail extends React.Component<
 
     if (this.key !== newKey) {
       const { index, source } = getLoggingParams(this.props.location.search);
+
       this.key = newKey;
       this.props.getTableData(this.key, index, source);
     }
@@ -147,7 +166,9 @@ export class TableDetail extends React.Component<
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 
-  renderProgrammaticDesc = (descriptions: ProgrammaticDescription[]) => {
+  renderProgrammaticDesc = (
+    descriptions: ProgrammaticDescription[] | undefined
+  ) => {
     if (!descriptions) {
       return null;
     }
@@ -164,6 +185,20 @@ export class TableDetail extends React.Component<
     ));
   };
 
+  handleSortingChange = (sortValue) => {
+    this.toggleSort(SORT_CRITERIAS[sortValue]);
+  };
+
+  toggleSort = (sorting: SortCriteria) => {
+    const { sortedBy } = this.state;
+
+    if (sorting !== sortedBy) {
+      this.setState({
+        sortedBy: sorting,
+      });
+    }
+  };
+
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
     const {
@@ -172,6 +207,7 @@ export class TableDetail extends React.Component<
       tableData,
       openRequestDescriptionDialog,
     } = this.props;
+    const { sortedBy } = this.state;
 
     // Default Column content
     tabInfo.push({
@@ -182,6 +218,7 @@ export class TableDetail extends React.Component<
           database={tableData.database}
           editText={editText}
           editUrl={editUrl}
+          sortBy={sortedBy}
         />
       ),
       key: 'columns',
@@ -209,11 +246,20 @@ export class TableDetail extends React.Component<
       });
     }
 
-    return <TabsComponent tabs={tabInfo} defaultTab="columns" />;
+    return (
+      <TabsComponent
+        tabs={tabInfo}
+        defaultTab="columns"
+        onSelect={(key) => {
+          this.setState({ currentTab: key });
+        }}
+      />
+    );
   }
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
+    const { currentTab } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -348,6 +394,12 @@ export class TableDetail extends React.Component<
               )}
             </aside>
             <main className="right-panel">
+              {currentTab === COLUMN_TAB_KEY && (
+                <ListSortingDropdown
+                  options={SORT_CRITERIAS}
+                  onChange={this.handleSortingChange}
+                />
+              )}
               {this.renderTabs(editText, editUrl)}
             </main>
           </div>
@@ -386,7 +438,7 @@ export const mapDispatchToProps = (dispatch: any) => {
   );
 };
 
-export default connect<StateFromProps, DispatchFromProps>(
+export default connect<PropsFromState, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
 )(TableDetail);

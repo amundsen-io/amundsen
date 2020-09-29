@@ -1,4 +1,4 @@
-import { FilterType, ResourceType } from '../interfaces';
+import { FilterType, ResourceType, SortCriteria } from '../interfaces';
 
 /**
  * AppConfig and AppConfigCustom should share the same definition, except each field in AppConfigCustom
@@ -131,6 +131,13 @@ type DescriptionSourceConfig = {
 };
 
 /**
+ * Shows criterias to sort tables
+ */
+type SortCriteriaConfig = {
+  [key: string]: SortCriteria;
+};
+
+/**
  * Base interface for all possible ResourceConfig objects
  *
  * displayName - The name displayed throughout the application to refer to this resource type
@@ -144,6 +151,7 @@ interface BaseResourceConfig {
 
 interface TableResourceConfig extends BaseResourceConfig {
   supportedDescriptionSources?: DescriptionSourceConfig;
+  sortCriterias?: SortCriteriaConfig;
 }
 
 export enum BadgeStyle {

@@ -7,3 +7,5 @@ export const FREQ_USERS_TITLE = 'Frequent Users';
 export const LAST_UPDATED_TITLE = 'Last Updated';
 export const OWNERS_TITLE = 'Owners';
 export const TAG_TITLE = 'Tags';
+export const SORT_BY_DROPDOWN_TITLE = 'Sort by';
+export const SORT_BY_MENU_TITLE_TEXT = 'Sort by';

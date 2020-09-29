@@ -22,7 +22,7 @@ interface StateFromProps {
   errorText: string;
 }
 
-export type TableDashboardResourceListProps = OwnProps & StateFromProps;
+export type TableDashboardResourceListProps = StateFromProps & OwnProps;
 
 export class TableDashboardResourceList extends React.Component<
   TableDashboardResourceListProps
@@ -54,6 +54,7 @@ export class TableDashboardResourceList extends React.Component<
 
 export const mapStateToProps = (state: GlobalState) => {
   const relatedDashboards = state.tableMetadata.dashboards;
+
   return {
     dashboards: relatedDashboards ? relatedDashboards.dashboards : [],
     isLoading: relatedDashboards ? relatedDashboards.isLoading : true,

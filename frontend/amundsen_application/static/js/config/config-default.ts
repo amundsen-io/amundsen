@@ -1,6 +1,6 @@
 import { AppConfig } from './config-types';
 
-import { FilterType, ResourceType } from '../interfaces';
+import { FilterType, ResourceType, SortDirection } from '../interfaces';
 
 const configDefault: AppConfig = {
   badges: {},
@@ -162,6 +162,18 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      sortCriterias: {
+        sort_order: {
+          name: 'Table Default',
+          key: 'sort_order',
+          direction: SortDirection.ascending,
+        },
+        name: {
+          name: 'Alphabetical',
+          key: 'name',
+          direction: SortDirection.descending,
+        },
+      },
       supportedDescriptionSources: {
         github: {
           displayName: 'Github',

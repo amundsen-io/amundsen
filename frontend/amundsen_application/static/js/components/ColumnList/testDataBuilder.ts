@@ -206,6 +206,68 @@ function TestDataBuilder(config = {}) {
     return new this.Klass(attr);
   };
 
+  this.withSeveralStats = () => {
+    const attr = {
+      columns: [
+        {
+          col_type:
+            'struct<trigger_event:string,backfill:boolean,graphql_version:string>',
+          description: null,
+          is_editable: true,
+          name: 'complex_column_name_2',
+          sort_order: 1,
+          stats: [
+            {
+              end_epoch: 1600473600,
+              start_epoch: 1597881600,
+              stat_type: 'column_usage',
+              stat_val: '111',
+            },
+          ],
+        },
+        {
+          col_type: 'struct<code:string,timezone:string>',
+          description: null,
+          is_editable: true,
+          name: 'complex_column_name_3',
+          sort_order: 2,
+          stats: [
+            {
+              end_epoch: 1600473600,
+              start_epoch: 1597881600,
+              stat_type: 'test_stat',
+              stat_val: '000',
+            },
+            {
+              end_epoch: 1600473600,
+              start_epoch: 1597881600,
+              stat_type: 'column_usage',
+              stat_val: '222',
+            },
+          ],
+        },
+        {
+          col_type:
+            'struct<route_id:string,shift:struct<shift_id:string,started_at:timestamp,ended_at:timestamp>>',
+          description: null,
+          is_editable: true,
+          name: 'complex_column_name_4',
+          sort_order: 3,
+          stats: [
+            {
+              end_epoch: 1600473600,
+              start_epoch: 1597881600,
+              stat_type: 'column_usage',
+              stat_val: '333',
+            },
+          ],
+        },
+      ],
+    };
+
+    return new this.Klass(attr);
+  };
+
   this.withEmptyColumns = () => {
     const attr = { columns: [] };
 
