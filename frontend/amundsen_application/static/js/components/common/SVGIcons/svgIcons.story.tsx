@@ -2,26 +2,40 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { storiesOf } from '@storybook/react';
+import { withKnobs, object } from '@storybook/addon-knobs';
 
 import StorySection from '../StorySection';
 import { AlertIcon, DownIcon, UpIcon, RightIcon } from '.';
 
-const stories = storiesOf('Attributes/Iconography', module);
-
-stories.add('SVG Icons', () => (
+export const SVGIcons = () => (
   <>
     <StorySection title="Alert">
-      <AlertIcon />
+      <AlertIcon stroke={object('Alert stroke', 'currentColor')} />
     </StorySection>
     <StorySection title="Down">
-      <DownIcon />
+      <DownIcon
+        stroke={object('DownIcon stroke', 'currentColor')}
+        fill={object('DownIcon fill', '#9191A8')}
+      />
     </StorySection>
     <StorySection title="Up">
-      <UpIcon />
+      <UpIcon
+        stroke={object('UpIcon stroke', 'currentColor')}
+        fill={object('UpIcon fill', '#9191A8')}
+      />
     </StorySection>
     <StorySection title="Right">
-      <RightIcon />
+      <RightIcon
+        stroke={object('RightIcon stroke', 'currentColor')}
+        fill={object('RightIcon fill', '#9191A8')}
+      />
     </StorySection>
   </>
-));
+);
+SVGIcons.storyName = 'SVG Icons';
+
+export default {
+  title: 'Attributes/Iconography',
+  component: AlertIcon,
+  decorators: [withKnobs],
+};

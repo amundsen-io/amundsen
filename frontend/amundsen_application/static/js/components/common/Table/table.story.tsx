@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { storiesOf } from '@storybook/react';
+import { withKnobs, object } from '@storybook/addon-knobs';
 
 import StorySection from '../StorySection';
 import Table from '.';
@@ -39,60 +39,80 @@ const expandRowComponent = (rowValue, index) => (
   </strong>
 );
 
-const stories = storiesOf('Components/Table', module);
+// const stories = storiesOf('Components/Table', module);
 
-stories.add('Table States', () => (
+export const TableStates = () => (
   <>
     <StorySection title="Basic Table">
-      <Table columns={columns} data={data} />
+      <Table
+        columns={object('basic table columns', columns)}
+        data={object('basic table data', data)}
+      />
     </StorySection>
     <StorySection title="Empty Table">
-      <Table columns={columns} data={[]} />
+      <Table
+        columns={object('empty table columns', columns)}
+        data={object('empty table data', [])}
+      />
     </StorySection>
     <StorySection title="Loading Table">
-      <Table columns={[]} data={[]} options={{ isLoading: true }} />
+      <Table
+        columns={[]}
+        data={[]}
+        options={object('options', { isLoading: true })}
+      />
     </StorySection>
   </>
-));
+);
 
-stories.add('Styled Table', () => (
+export const StyledTable = () => (
   <>
     <StorySection title="with different column alignment">
-      <Table columns={alignedColumns} data={alignedData} />
+      <Table
+        columns={object('aligned columns', alignedColumns)}
+        data={object('aligned columns data', alignedData)}
+      />
     </StorySection>
     <StorySection title="with 50px row height">
-      <Table columns={columns} data={data} options={{ rowHeight: 50 }} />
+      <Table
+        columns={columns}
+        data={data}
+        options={object('row height options', { rowHeight: 50 })}
+      />
     </StorySection>
     <StorySection title="with different column widths">
       <Table
-        columns={differentWidthColumns}
+        columns={object(
+          'different column widths columns',
+          differentWidthColumns
+        )}
         data={data}
         options={{ rowHeight: 50 }}
       />
     </StorySection>
   </>
-));
+);
 
-stories.add('Customized Table', () => (
+export const CustomizedTable = () => (
   <>
     <StorySection title="with custom column components">
       <Table
-        columns={customColumns}
-        data={customColumnsData}
+        columns={object('custom component columns', customColumns)}
+        data={object('custom component data', customColumnsData)}
         options={{ rowHeight: 40 }}
       />
     </StorySection>
     <StorySection title="with multiple custom column components">
       <Table
-        columns={multipleCustomColumns}
-        data={multipleCustomComlumnsData}
+        columns={object('multiple component columns', multipleCustomColumns)}
+        data={object('multiple component data', multipleCustomComlumnsData)}
         options={{ rowHeight: 40 }}
       />
     </StorySection>
     <StorySection title="with Bootstrap dropdown as component">
       <Table
-        columns={columnsWithAction}
-        data={dataWithAction}
+        columns={object('action columns', columnsWithAction)}
+        data={object('action data', dataWithAction)}
         options={{ rowHeight: 40 }}
       />
     </StorySection>
@@ -100,19 +120,24 @@ stories.add('Customized Table', () => (
       <Table
         columns={columns}
         data={[]}
-        options={{ emptyMessage: 'Custom Empty Message Here!' }}
+        options={object('empty message options', {
+          emptyMessage: 'Custom Empty Message Here!',
+        })}
       />
     </StorySection>
   </>
-));
+);
 
-stories.add('Collapsible Table', () => (
+export const CollapsibleTable = () => (
   <>
     <StorySection title="with Collapsed Rows">
       <Table
-        columns={columnsWithCollapsedRow}
-        data={dataWithCollapsedRow}
-        options={{ rowHeight: 40, expandRow: expandRowComponent }}
+        columns={object('collapsed rows columns', columnsWithCollapsedRow)}
+        data={object('collapsed rows data', dataWithCollapsedRow)}
+        options={object('collapsed rows options', {
+          rowHeight: 40,
+          expandRow: expandRowComponent,
+        })}
       />
     </StorySection>
     <StorySection
@@ -122,14 +147,14 @@ stories.add('Collapsible Table', () => (
       <Table
         columns={columnsWithCollapsedRow}
         data={dataWithCollapsedRow}
-        options={{
+        options={object('onExpand options', {
           rowHeight: 40,
           expandRow: expandRowComponent,
           onExpand: (rowValues, index) => {
             console.log('Expanded row values:', rowValues);
             console.log('Expanded row index:', index);
           },
-        }}
+        })}
       />
     </StorySection>
     <StorySection
@@ -139,15 +164,21 @@ stories.add('Collapsible Table', () => (
       <Table
         columns={columnsWithCollapsedRow}
         data={dataWithCollapsedRow}
-        options={{
+        options={object('onCollapse options', {
           rowHeight: 40,
           expandRow: expandRowComponent,
           onCollapse: (rowValues, index) => {
             console.log('Collapsed row values:', rowValues);
             console.log('Collapsed row index:', index);
           },
-        }}
+        })}
       />
     </StorySection>
   </>
-));
+);
+
+export default {
+  title: 'Components/Table',
+  component: Table,
+  decorators: [withKnobs],
+};
