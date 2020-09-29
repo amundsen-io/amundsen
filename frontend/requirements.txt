@@ -56,12 +56,12 @@ requests==2.20.0
 # A lightweight library for converting complex datatypes to and from native Python datatypes.
 # License: MIT
 # Upstream url: https://github.com/marshmallow-code/marshmallow
-marshmallow==2.15.3
+marshmallow>=2.15.3,<3.0
 
 # Allows declaring marshmallow schema through type annotations
 # License: MIT
 # Upstream url: https://github.com/justanr/marshmallow-annotations
-marshmallow-annotations==2.4.0
+marshmallow-annotations>=2.4.0,<3.0
 
 # A utility library for mocking out the requests Python library.
 # License: Apache 2.0
