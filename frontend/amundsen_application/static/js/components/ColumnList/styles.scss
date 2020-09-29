@@ -99,7 +99,6 @@ $description-max-width-small: 300px;
   }
 
   .usage-value {
-    font-variant-numeric: tabular-nums;
-    font-family: $text-heading-font-family;
+    font-family: $font-family-monospace-code;
   }
 }

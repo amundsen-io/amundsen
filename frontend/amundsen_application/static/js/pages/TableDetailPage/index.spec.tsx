@@ -17,6 +17,7 @@ import { TableDetail, TableDetailProps, MatchProps } from '.';
 
 jest.mock('config/config-utils', () => ({
   indexDashboardsEnabled: jest.fn(),
+  getTableSortCriterias: jest.fn(),
 }));
 
 const setup = (

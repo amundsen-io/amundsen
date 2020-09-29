@@ -42,11 +42,21 @@
   }
 
   .nav.nav-tabs {
-    margin-top: $spacer-1;
+    margin-top: $spacer-2;
     padding: 0 $spacer-2;
   }
 
   .tabs-component .nav.nav-tabs > li {
     margin: 0 $spacer-1;
+  }
+
+  .right-panel {
+    position: relative;
+  }
+
+  .list-sorting-dropdown {
+    right: $spacer-3;
+    top: $spacer-2;
+    position: absolute;
   }
 }

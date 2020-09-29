@@ -7,7 +7,11 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { mocked } from 'ts-jest/utils';
 
-import { notificationsEnabled } from 'config/config-utils';
+import { SortDirection } from 'interfaces';
+import {
+  notificationsEnabled,
+  getTableSortCriterias,
+} from 'config/config-utils';
 
 import globalState from 'fixtures/globalState';
 import ColumnList, { ColumnListProps } from '.';
@@ -19,6 +23,7 @@ import TestDataBuilder from './testDataBuilder';
 jest.mock('config/config-utils');
 
 const mockedNotificationsEnabled = mocked(notificationsEnabled, true);
+const mockedGetTableSortCriterias = mocked(getTableSortCriterias, true);
 const dataBuilder = new TestDataBuilder();
 const middlewares = [];
 const mockStore = configureStore(middlewares);
@@ -46,6 +51,18 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
 };
 
 describe('ColumnList', () => {
+  mockedGetTableSortCriterias.mockReturnValue({
+    sort_order: {
+      name: 'Table Default',
+      key: 'sort_order',
+      direction: SortDirection.ascending,
+    },
+    usage: {
+      name: 'Usage Count',
+      key: 'usage',
+      direction: SortDirection.descending,
+    },
+  });
   mockedNotificationsEnabled.mockReturnValue(true);
 
   describe('render', () => {
@@ -95,6 +112,69 @@ describe('ColumnList', () => {
         const actual = wrapper.find('.table-detail-table .actions').length;
 
         expect(actual).toEqual(expected);
+      });
+
+      describe('when usage sorting is passed', () => {
+        it('should sort the data by that value', () => {
+          const { wrapper } = setup({
+            columns,
+            sortBy: {
+              name: 'Usage',
+              key: 'usage',
+              direction: SortDirection.descending,
+            },
+          });
+          const expected = 'simple_column_name_timestamp';
+          const actual = wrapper
+            .find('.table-detail-table .ams-table-row')
+            .at(0)
+            .find('.column-name')
+            .text();
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when default sorting is passed', () => {
+        it('should sort the data by that value', () => {
+          const { wrapper } = setup({
+            columns,
+            sortBy: {
+              name: 'Default',
+              key: 'sort_order',
+              direction: SortDirection.ascending,
+            },
+          });
+          const expected = 'simple_column_name_string';
+          const actual = wrapper
+            .find('.table-detail-table .ams-table-row')
+            .at(0)
+            .find('.column-name')
+            .text();
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when name sorting is passed', () => {
+        it('should sort the data by name', () => {
+          const { wrapper } = setup({
+            columns,
+            sortBy: {
+              name: 'Name',
+              key: 'name',
+              direction: SortDirection.descending,
+            },
+          });
+          const expected = 'simple_column_name_bigint';
+          const actual = wrapper
+            .find('.table-detail-table .ams-table-row')
+            .at(0)
+            .find('.column-name')
+            .text();
+
+          expect(actual).toEqual(expected);
+        });
       });
     });
 
@@ -149,6 +229,39 @@ describe('ColumnList', () => {
         const actual = wrapper.find('.table-detail-table .usage-value').length;
 
         expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when columns with serveral stats including usage are passed', () => {
+      const { columns } = dataBuilder.withSeveralStats().build();
+
+      it('should render the usage column', () => {
+        const { wrapper } = setup({ columns });
+        const expected = columns.length;
+        const actual = wrapper.find('.table-detail-table .usage-value').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      describe('when usage sorting is passed', () => {
+        it('should sort the data by that value', () => {
+          const { wrapper } = setup({
+            columns,
+            sortBy: {
+              name: 'Usage',
+              key: 'usage',
+              direction: SortDirection.ascending,
+            },
+          });
+          const expected = 'complex_column_name_2';
+          const actual = wrapper
+            .find('.table-detail-table .ams-table-row')
+            .at(0)
+            .find('.column-name')
+            .text();
+
+          expect(actual).toEqual(expected);
+        });
       });
     });
 

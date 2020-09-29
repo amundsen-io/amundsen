@@ -8,8 +8,14 @@ import { UpIcon, DownIcon } from '../SVGIcons';
 
 import './styles.scss';
 
-type TextAlignmentValues = 'left' | 'right' | 'center';
+// export type SortDirection = 'asc' | 'desc';
+// export type SortCriteria = { key: string; direction: SortDirection };
 
+export enum TextAlignmentValues {
+  left = 'left',
+  right = 'right',
+  center = 'center',
+}
 export interface TableColumn {
   title: string;
   field: string;
@@ -41,7 +47,7 @@ const EXPAND_ROW_TEXT = 'Expand Row';
 const DEFAULT_LOADING_ITEMS = 3;
 const DEFAULT_ROW_HEIGHT = 30;
 const EXPANDING_CELL_WIDTH = '70px';
-const DEFAULT_TEXT_ALIGNMENT = 'left';
+const DEFAULT_TEXT_ALIGNMENT = TextAlignmentValues.left;
 const DEFAULT_CELL_WIDTH = 'auto';
 const ALIGNEMENT_TO_CLASS_MAP = {
   left: 'is-left-aligned',
@@ -201,9 +207,9 @@ const Table: React.FC<TableProps> = ({
               ) : null}
               {Object.entries(item)
                 .filter(([key]) => fields.includes(key))
-                .map(([key, value], index) => {
+                .map(([key, value], rowIndex) => {
                   const columnInfo = columns.find(({ field }) => field === key);
-                  const horAlign = columnInfo
+                  const horAlign: TextAlignmentValues = columnInfo
                     ? columnInfo.horAlign || DEFAULT_TEXT_ALIGNMENT
                     : DEFAULT_TEXT_ALIGNMENT;
                   const width =
@@ -216,7 +222,7 @@ const Table: React.FC<TableProps> = ({
                   // TODO: Improve the typing of this
                   let cellContent: React.ReactNode | typeof value = value;
                   if (columnInfo && columnInfo.component) {
-                    cellContent = columnInfo.component(value, index);
+                    cellContent = columnInfo.component(value, rowIndex);
                   }
 
                   return (
@@ -224,7 +230,7 @@ const Table: React.FC<TableProps> = ({
                       className={`ams-table-cell ${getCellAlignmentClass(
                         horAlign
                       )}`}
-                      key={`index:${index}`}
+                      key={`index:${rowIndex}`}
                       style={cellStyle}
                     >
                       {cellContent}
