@@ -1,10 +1,11 @@
 import { User } from 'interfaces/User';
 import { Tag } from 'interfaces/Tags';
+import { Badge } from 'interfaces/Badges';
 import { TableReader } from 'interfaces/TableMetadata';
 import { TableResource, QueryResource } from 'interfaces/Resources';
 
 export interface DashboardMetadata {
-  badges: Tag[];
+  badges: Badge[];
   chart_names: string[];
   cluster: string;
   created_timestamp: number;

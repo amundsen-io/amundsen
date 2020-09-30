@@ -19,8 +19,8 @@ exports[`strict null compilation`] = {
       [88, 4, 11, "Type \'Element\' is not assignable to type \'null\'.", "3768376622"],
       [91, 4, 11, "Type \'Element[]\' is not assignable to type \'null\'.", "3768376622"]
     ],
-    "js/components/common/BadgeList/index.tsx:3472030733": [
-      [32, 14, 4, "Type \'string | undefined\' is not assignable to type \'string\'.\\n  Type \'undefined\' is not assignable to type \'string\'.", "2087956376"]
+    "js/components/common/BadgeList/index.spec.tsx:3492368698": [
+      [48, 55, 16, "Argument of type \'string | undefined\' is not assignable to parameter of type \'string\'.\\n  Type \'undefined\' is not assignable to type \'string\'.", "340987603"]
     ],
     "js/components/common/Bookmark/MyBookmarks/index.tsx:1185364658": [
       [66, 6, 7, "Type \'Element | null\' is not assignable to type \'never\'.\\n  Type \'null\' is not assignable to type \'never\'.", "3716929964"],
@@ -74,9 +74,9 @@ exports[`strict null compilation`] = {
     "js/components/common/ResourceListItem/DashboardListItem/index.spec.tsx:53357032": [
       [163, 14, 29, "Type \'null\' is not assignable to type \'number\'.", "1157138603"]
     ],
-    "js/components/common/ResourceListItem/TableListItem/index.spec.tsx:1564573503": [
+    "js/components/common/ResourceListItem/TableListItem/index.spec.tsx:218296957": [
       [161, 14, 18, "Type \'null\' is not assignable to type \'string | undefined\'.", "3750638477"],
-      [229, 14, 6, "Type \'null\' is not assignable to type \'any[] | undefined\'.", "1502764275"]
+      [229, 14, 6, "Type \'null\' is not assignable to type \'Badge[] | undefined\'.", "1502764275"]
     ],
     "js/components/common/ResourceListItem/UserListItem/index.tsx:942740425": [
       [29, 21, 49, "Argument of type \'Element\' is not assignable to parameter of type \'never\'.", "2430213531"],

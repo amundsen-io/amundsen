@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 import ClickableBadge from 'components/common/Badges';
 import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
-import { Badge, TagType } from 'interfaces/Tags';
+import { Badge } from 'interfaces/Badges';
 import BadgeList from '.';
 
 describe('BadgeList', () => {
@@ -22,12 +22,12 @@ describe('BadgeList', () => {
   describe('BadgeList function component', () => {
     const badges: Badge[] = [
       {
-        tag_name: 'test_1',
-        tag_type: TagType.BADGE,
+        badge_name: 'beta',
+        category: 'table_status',
       },
       {
-        tag_name: 'test_3',
-        tag_type: TagType.BADGE,
+        badge_name: 'Core Concepts',
+        category: 'coco',
       },
     ];
 
@@ -46,7 +46,7 @@ describe('BadgeList', () => {
       badges.forEach((badge, index) => {
         const clickableBadge = badgeList.childAt(index);
         const clickableBadgeProps = clickableBadge.props();
-        const badgeConfig = ConfigUtils.getBadgeConfig(badge.tag_name);
+        const badgeConfig = ConfigUtils.getBadgeConfig(badge.badge_name);
         expect(clickableBadgeProps.text).toEqual(badgeConfig.displayName);
         expect(clickableBadgeProps.labelStyle).toEqual(badgeConfig.style);
       });
