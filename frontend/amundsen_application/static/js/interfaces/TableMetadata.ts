@@ -1,6 +1,6 @@
 import { UpdateMethod } from './Enums';
 import { User } from './User';
-import { Badge } from './Tags';
+import { Badge } from './Badges';
 
 interface PartitionData {
   is_partitioned: boolean;

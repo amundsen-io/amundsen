@@ -1,4 +1,5 @@
 import { PeopleUser } from './User';
+import { Badge } from './Badges';
 
 export enum ResourceType {
   table = 'table',
@@ -26,6 +27,7 @@ export interface DashboardResource extends Resource {
   url: string;
   // Bookmark logic is cleaner if all resources can settle on either "key" or "uri"
   key?: string;
+  badges?: Badge[];
 }
 
 export interface TableResource extends Resource {
@@ -39,7 +41,7 @@ export interface TableResource extends Resource {
   name: string;
   schema: string;
   schema_description?: string;
-  badges?: any[]; // TODO replace with new badges later @allisonsuarez
+  badges?: Badge[];
 }
 
 export enum SortDirection {

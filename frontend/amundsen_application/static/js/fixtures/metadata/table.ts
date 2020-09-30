@@ -3,13 +3,12 @@ import {
   DashboardResource,
   ResourceType,
 } from '../../interfaces';
-import { TagType } from '../../interfaces/Tags';
 
 export const tableMetadata: TableMetadata = {
   badges: [
     {
-      tag_name: 'ga',
-      tag_type: TagType.BADGE,
+      badge_name: 'ga',
+      category: 'table_status',
     },
   ],
   cluster: 'gold',

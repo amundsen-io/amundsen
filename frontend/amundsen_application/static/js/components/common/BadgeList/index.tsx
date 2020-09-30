@@ -5,46 +5,32 @@ import * as React from 'react';
 
 import ClickableBadge from 'components/common/Badges';
 import { getBadgeConfig } from 'config/config-utils';
-import { BadgeStyle } from 'config/config-types';
-import { Badge } from 'interfaces/Tags';
+import { Badge } from 'interfaces/Badges';
 
 export interface BadgeListProps {
-  badges: any[]; // TODO replace with new badges later @allisonsuarez
-}
-
-/*
- * maps badge type to a badge style
- */
-function mapBadgeStyle(badgeType: string): BadgeStyle {
-  if (badgeType === 'negative') return BadgeStyle.DANGER;
-  if (badgeType === 'positive') return BadgeStyle.SUCCESS;
-  if (badgeType === 'warning') return BadgeStyle.WARNING;
-  return BadgeStyle.DEFAULT;
+  badges: Badge[];
 }
 
 const BadgeList: React.FC<BadgeListProps> = ({ badges }: BadgeListProps) => {
   return (
     <span className="badge-list">
       {badges.map((badge, index) => {
+        let badgeConfig;
+        // search badges with just name
         if (badge.tag_name) {
-          const badgeConfig = getBadgeConfig(badge.tag_name);
-          return (
-            <ClickableBadge
-              text={badgeConfig.displayName}
-              labelStyle={badgeConfig.style}
-              key={`badge-${index}`}
-            />
-          );
+          badgeConfig = getBadgeConfig(badge.tag_name);
         }
-        if (badge.badge_name) {
-          return (
-            <ClickableBadge
-              text={badge.badge_name}
-              labelStyle={mapBadgeStyle(badge.badge_type)}
-              key={`badge-${index}`}
-            />
-          );
+        // metadata badges with name and category
+        else if (badge.badge_name) {
+          badgeConfig = getBadgeConfig(badge.badge_name);
         }
+        return (
+          <ClickableBadge
+            text={badgeConfig.displayName}
+            labelStyle={badgeConfig.style}
+            key={`badge-${index}`}
+          />
+        );
       })}
     </span>
   );
