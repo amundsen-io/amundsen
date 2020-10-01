@@ -16,7 +16,7 @@ RUN python3 setup.py install
 ENV FLASK_APP_MODULE_NAME flaskoidc
 ENV FLASK_APP_CLASS_NAME FlaskOIDC
 ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
-ENV FLASK_OIDC_SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
+ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 
 # You will need to set these environment variables in order to use the oidc image
 # FLASK_OIDC_CLIENT_SECRETS - a path to a client_secrets.json file
