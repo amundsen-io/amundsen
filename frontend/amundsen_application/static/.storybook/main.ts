@@ -7,7 +7,7 @@ module.exports = {
   addons: [
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    '@storybook/addon-knobs'
+    '@storybook/addon-knobs',
   ],
   webpackFinal: async (config) => {
     return merge(devWebpackConfig, config);
