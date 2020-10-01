@@ -108,3 +108,10 @@ We have Swagger documentation setup with OpenApi 3.0.2. This documentation is ge
 
 ## Code structure
 Please visit [Code Structure](docs/structure.md) to read how different modules are structured in Amundsen Metadata service.
+
+## Roundtrip tests
+Roundtrip tests are a new feature - by implementing the abstract_proxy_tests and some test setup endpoints in the base_proxy, you can validate your proxy code against the actual data store. These tests do not run by default, but can be run by passing the `--roundtrip-[proxy]` argument. Note this requires
+a fully-configured backend to test against.
+```bash
+$ python -m pytest --roundtrip-neptune .
+```

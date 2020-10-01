@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Union
 
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
-from amundsen_common.models.user import User as UserEntity
+from amundsen_common.models.user import User
 from amundsen_common.models.dashboard import DashboardSummary
 
 from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
@@ -22,11 +22,11 @@ class BaseProxy(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def get_user(self, *, id: str) -> Union[UserEntity, None]:
+    def get_user(self, *, id: str) -> Union[User, None]:
         pass
 
     @abstractmethod
-    def get_users(self) -> List[UserEntity]:
+    def get_users(self) -> List[User]:
         pass
 
     @abstractmethod

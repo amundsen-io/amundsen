@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Union, Optional
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader, \
+from amundsen_common.models.table import Column, Stat, Table, Tag, User, Reader, \
     ProgrammaticDescription, ResourceReport
 from amundsen_common.models.user import User as UserEntity
 from atlasclient.client import Atlas
@@ -308,7 +308,7 @@ class AtlasProxy(BaseProxy):
             Union[List[Column], List]:
         """
         Helper function to fetch the columns from entity and serialize them
-        using Column and Statistics model.
+        using Column and Stat model.
         :param entity: EntityUniqueAttribute object,
         along with relationshipAttributes
         :return: A list of Column objects, if there are any columns available,
@@ -348,7 +348,7 @@ class AtlasProxy(BaseProxy):
                     end_epoch = stats_attrs.get('end_epoch')
 
                     statistics.append(
-                        Statistics(
+                        Stat(
                             stat_type=stat_type,
                             stat_val=stat_val,
                             start_epoch=start_epoch,

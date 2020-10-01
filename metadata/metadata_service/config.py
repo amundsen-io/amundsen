@@ -5,6 +5,9 @@ import distutils.util
 import os
 from typing import List, Dict, Optional, Set  # noqa: F401
 from metadata_service.entity.badge import Badge
+from amundsen_gremlin.config import (
+    LocalGremlinConfig
+)
 
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'
@@ -77,7 +80,8 @@ class Config:
     PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS = []  # type: list
 
 
-class LocalConfig(Config):
+# NB: If you're using the gremlin proxy, the appropriate GremlinConfig must be added to any other configs
+class LocalConfig(LocalGremlinConfig, Config):
     DEBUG = True
     TESTING = False
     LOG_LEVEL = 'DEBUG'
