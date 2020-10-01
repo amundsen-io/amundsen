@@ -17,3 +17,6 @@
 [submodule "amundsencommon"]
 	path = amundsencommon
 	url = https://github.com/amundsen-io/amundsencommon
+[submodule "amundsengremlin"]
+	path = amundsengremlin
+	url = git@github.com:amundsen-io/amundsengremlin.git
