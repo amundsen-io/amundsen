@@ -25,7 +25,7 @@ setup(
     dependency_links=[],
     install_requires=requirements,
     extras_require={
-        'oidc': ['flaskoidc==0.0.2']
+        'oidc': ['flaskoidc==0.1.1']
     },
     python_requires=">=3.6",
     classifiers=[
