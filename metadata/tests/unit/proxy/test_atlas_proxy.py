@@ -6,7 +6,7 @@ import unittest
 from typing import Any, Dict, Optional, cast, List
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Statistics, Table, Tag, User, Reader,\
+from amundsen_common.models.table import Column, Stat, Table, Tag, User, Reader,\
     ProgrammaticDescription, ResourceReport
 from atlasclient.exceptions import BadRequest
 from unittest.mock import MagicMock, patch
@@ -123,7 +123,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         for stats in test_exp_col:
             exp_col_stats.append(
-                Statistics(
+                Stat(
                     stat_type=stats['attributes']['stat_name'],
                     stat_val=stats['attributes']['stat_val'],
                     start_epoch=stats['attributes']['start_epoch'],

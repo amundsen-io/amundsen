@@ -12,7 +12,7 @@ import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column, Reader, Source,
-                                          Statistics, Table, User,
+                                          Stat, Table, User,
                                           Watermark, ProgrammaticDescription, Tag,
                                           Badge as TableBadge)
 from amundsen_common.models.user import User as UserEntity
@@ -75,6 +75,14 @@ class Neo4jProxy(BaseProxy):
                                             encrypted=encrypted,
                                             trust=trust)  # type: Driver
 
+    def is_healthy(self) -> None:
+        # throws if cluster unhealthy or can't connect.  An alternative would be to use one of
+        # the HTTP status endpoints, which might be more specific, but don't implicitly test
+        # our configuration.
+        with self._driver.session() as session:
+            session.read_transaction(self._execute_cypher_query,
+                                     statement='CALL dbms.cluster.overview()', param_dict={})
+
     @timer_with_counter
     def get_table(self, *, table_uri: str) -> Table:
         """
@@ -132,7 +140,7 @@ class Neo4jProxy(BaseProxy):
             # Getting last record from this for loop as Neo4j's result's random access is O(n) operation.
             col_stats = []
             for stat in tbl_col_neo4j_record['col_stats']:
-                col_stat = Statistics(
+                col_stat = Stat(
                     stat_type=stat['stat_name'],
                     stat_val=stat['stat_val'],
                     start_epoch=int(float(stat['start_epoch'])),

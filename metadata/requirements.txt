@@ -8,8 +8,6 @@ flake8==3.5.0
 # Upstream url: https://pypi.python.org/pypi/flake8-tidy-imports
 flake8-tidy-imports==1.1.0
 
-
-
 # A mature full-featured Python testing tool.
 # License: MIT
 # Upstream url: http://pytest.org/
@@ -19,7 +17,6 @@ pytest==3.5.1
 # License: MIT
 # Upstream url: https://github.com/pytest-dev/pytest-cov
 pytest-cov==2.5.1
-
 
 # Mypy is an optional static type checker for Python.
 # License: MIT
@@ -31,10 +28,17 @@ mypy==0.782
 # Upstream url: https://pypi.python.org/pypi/pytest-mock
 pytest-mock==1.1
 
+# PEP 484
+# License: PSF
+# Upstream url: https://github.com/python/typing
+typing-extensions==3.7.4
+
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common>=0.3.6,<1.0
+amundsen-common>=0.5.3
+amundsen-gremlin>=0.0.4
 
+boto3==1.12.12
 flasgger==0.9.3
 Flask-RESTful==0.3.6
 Flask==1.0.2
@@ -43,6 +47,7 @@ gremlinpython==3.4.3
 aniso8601==3.0.0
 attrs==19.1.0
 click==6.7
+gremlinpython==3.4.3
 itsdangerous==0.24
 Jinja2>=2.10.1
 jsonschema==2.6.0
@@ -59,7 +64,5 @@ requests-aws4auth==0.9
 statsd==3.2.1
 pyatlasclient==1.0.5
 beaker>=1.10.0
-mocket==3.7.3
 overrides==2.5
-websocket-client==0.56.0
 typed-ast==1.4.1
