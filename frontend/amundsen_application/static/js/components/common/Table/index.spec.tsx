@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { mount } from 'enzyme';
+import { mocked } from 'ts-jest/utils';
 
 import Table, { TableProps } from '.';
 
@@ -398,6 +399,28 @@ describe('Table', () => {
               expect(actual).toEqual(expected);
             });
           });
+        });
+      });
+
+      describe('when columns specify fields not in the data', () => {
+        const { columns, data } = dataBuilder.withWrongData().build();
+
+        beforeEach(() => {
+          jest.spyOn(console, 'error');
+          mocked(console.error).mockImplementation(jest.fn);
+        });
+
+        afterEach(() => {
+          mocked(console.error).mockRestore();
+        });
+
+        it('throws an error', () => {
+          expect(() => {
+            setup({
+              data,
+              columns,
+            });
+          }).toThrow();
         });
       });
     });

@@ -44,6 +44,36 @@ function TestDataBuilder(config = {}) {
     ...config,
   };
 
+  this.withWrongData = () => {
+    const attr = {
+      data: [
+        { name: 'rowName', type: 'rowType', value: 1 },
+        { name: 'rowName2', type: 'rowType2', value: 2 },
+        { name: 'rowName3', type: 'rowType3', value: 3 },
+      ],
+      columns: [
+        {
+          title: 'Name',
+          field: 'name',
+        },
+        {
+          title: 'Type',
+          field: 'type',
+        },
+        {
+          title: 'Value',
+          field: 'value',
+        },
+        {
+          title: 'Bad Field',
+          field: 'badfield',
+        },
+      ],
+    };
+
+    return new this.Klass(attr);
+  };
+
   this.withUsageRow = () => {
     const attr = {
       data: [
