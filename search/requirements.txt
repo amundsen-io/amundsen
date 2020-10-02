@@ -13,8 +13,8 @@ flask-cors==3.0.8
 itsdangerous==0.24
 Jinja2>=2.10.1
 jsonschema==2.6.0
-marshmallow==2.15.3
-marshmallow-annotations==2.4.0
+marshmallow>=2.15.3,<3.0
+marshmallow-annotations>=2.4.0,<3.0
 mock==2.0.0
 mypy==0.660
 pytest==3.5.1
