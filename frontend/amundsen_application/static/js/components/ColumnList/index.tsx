@@ -76,8 +76,8 @@ type FormattedDataType = {
   usage: number | null;
   stats: StatType | null;
   action: string;
-  editText?: string;
-  editUrl?: string;
+  editText: string | null;
+  editUrl: string | null;
   index: number;
   name: string;
   sort_order: string;
@@ -168,8 +168,8 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
         <EditableSection
           title={EDITABLE_SECTION_TITLE}
           readOnly={!rowValue.isEditable}
-          editText={rowValue.editText}
-          editUrl={rowValue.editUrl}
+          editText={rowValue.editText || undefined}
+          editUrl={rowValue.editUrl || undefined}
         >
           <ColumnDescEditableText
             columnIndex={rowValue.index}
@@ -219,8 +219,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
       action: item.name,
       name: item.name,
       isEditable: item.is_editable,
-      editText,
-      editUrl,
+      editText: editText || null,
+      editUrl: editUrl || null,
       index,
     };
   });

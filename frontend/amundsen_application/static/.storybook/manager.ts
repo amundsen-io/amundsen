@@ -6,7 +6,7 @@ addons.setConfig({
   isFullscreen: false,
   showNav: true,
   showPanel: true,
-  panelPosition: 'bottom',
+  panelPosition: 'right',
   sidebarAnimations: true,
   enableShortcuts: true,
   isToolshown: true,

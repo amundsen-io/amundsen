@@ -39,8 +39,6 @@ const expandRowComponent = (rowValue, index) => (
   </strong>
 );
 
-// const stories = storiesOf('Components/Table', module);
-
 export const TableStates = () => (
   <>
     <StorySection title="Basic Table">

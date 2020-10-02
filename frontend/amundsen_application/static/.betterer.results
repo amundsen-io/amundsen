@@ -99,9 +99,6 @@ exports[`strict null compilation`] = {
       [255, 6, 11, "No overload matches this call.\\n  The last overload gave the following error.\\n    Type \'(() => SubmitSearchRequest) | null\' is not assignable to type \'ActionCreator<any>\'.\\n      Type \'null\' is not assignable to type \'ActionCreator<any>\'.", "2296208050"],
       [270, 4, 18, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(dispatch: any, ownProps: any) => ActionCreator<unknown>\' is not assignable to parameter of type \'DispatchFromProps\'.\\n      Type \'(dispatch: any, ownProps: any) => ActionCreator<unknown>\' is missing the following properties from type \'DispatchFromProps\': submitSearch, onInputChange, onSelectInlineResult", "2926224796"]
     ],
-    "js/components/common/Table/index.tsx:489040313": [
-      [235, 22, 13, "Type \'unknown\' is not assignable to type \'ReactNode\'.\\n  Type \'unknown\' is not assignable to type \'ReactPortal\'.", "971959308"]
-    ],
     "js/components/common/Tags/TagInput/index.tsx:3754832290": [
       [63, 22, 6, "Type \'undefined\' is not assignable to type \'GetAllTagsRequest\'.", "1979467425"],
       [66, 4, 4, "Type \'undefined\' is not assignable to type \'Tag[]\'.", "2087952548"],

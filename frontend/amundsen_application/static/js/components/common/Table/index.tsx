@@ -24,6 +24,12 @@ export interface TableColumn {
   width?: number;
   // sortable?: bool (false)
 }
+type Some = string | number | boolean | symbol | bigint | object;
+type ValidData = Record<string, Some | null>; // Removes the undefined values
+
+interface RowData {
+  [key: string]: Some | null;
+}
 
 export interface TableOptions {
   tableClassName?: string;
@@ -37,23 +43,10 @@ export interface TableOptions {
 }
 
 export interface TableProps {
+  data: RowData[];
   columns: TableColumn[];
-  data: any[];
   options?: TableOptions;
 }
-
-const DEFAULT_EMPTY_MESSAGE = 'No Results';
-const EXPAND_ROW_TEXT = 'Expand Row';
-const DEFAULT_LOADING_ITEMS = 3;
-const DEFAULT_ROW_HEIGHT = 30;
-const EXPANDING_CELL_WIDTH = '70px';
-const DEFAULT_TEXT_ALIGNMENT = TextAlignmentValues.left;
-const DEFAULT_CELL_WIDTH = 'auto';
-const ALIGNEMENT_TO_CLASS_MAP = {
-  left: 'is-left-aligned',
-  right: 'is-right-aligned',
-  center: 'is-center-aligned',
-};
 
 type RowStyles = {
   height: string;
@@ -65,8 +58,40 @@ type EmptyRowProps = {
   emptyMessage?: string;
 };
 
+const DEFAULT_EMPTY_MESSAGE = 'No Results';
+const EXPAND_ROW_TEXT = 'Expand Row';
+const INVALID_DATA_ERROR_MESSAGE =
+  'Invalid data! Your data does not contain the fields specified on the columns property.';
+const DEFAULT_LOADING_ITEMS = 3;
+const DEFAULT_ROW_HEIGHT = 30;
+const EXPANDING_CELL_WIDTH = '70px';
+const DEFAULT_TEXT_ALIGNMENT = TextAlignmentValues.left;
+const DEFAULT_CELL_WIDTH = 'auto';
+const ALIGNEMENT_TO_CLASS_MAP = {
+  left: 'is-left-aligned',
+  right: 'is-right-aligned',
+  center: 'is-center-aligned',
+};
+
 const getCellAlignmentClass = (alignment: TextAlignmentValues) =>
   ALIGNEMENT_TO_CLASS_MAP[alignment];
+
+const fieldIsDefined = (field, row) => row[field] !== undefined;
+
+const checkIfValidData = (
+  data: unknown[],
+  fields: string[]
+): data is ValidData[] => {
+  let isValid = true;
+
+  for (let i = 0; i < fields.length; i++) {
+    if (!data.some(fieldIsDefined.bind(null, fields[i]))) {
+      isValid = false;
+      break;
+    }
+  }
+  return isValid;
+};
 
 const EmptyRow: React.FC<EmptyRowProps> = ({
   colspan,
@@ -182,6 +207,10 @@ const Table: React.FC<TableProps> = ({
   );
 
   if (data.length) {
+    if (!checkIfValidData(data, fields)) {
+      throw new Error(INVALID_DATA_ERROR_MESSAGE);
+    }
+
     body = data.map((item, index) => {
       return (
         <React.Fragment key={`index:${index}`}>
