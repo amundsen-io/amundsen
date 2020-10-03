@@ -16,6 +16,9 @@
   <a href="https://github.com/amundsen-io/amundsen/pulse">
     <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsen.svg" />
   </a>
+  <a href="https://img.shields.io/github/contributors/amundsen-io/amundsen.svg">
+    <img src="https://img.shields.io/github/contributors/amundsen-io/amundsen.svg" />
+  </a>
   <a href="https://twitter.com/amundsenio">
     <img src="https://img.shields.io/twitter/follow/amundsenio?label=Follow&style=social" />
   </a>
