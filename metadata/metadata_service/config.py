@@ -79,6 +79,10 @@ class Config:
     # List of regexes which will exclude certain parameters from appearing as Programmatic Descriptions
     PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS = []  # type: list
 
+    # List of accepted date formats for AtlasProxy Watermarks. With this we allow more than one datetime partition
+    # format to be used in tables
+    WATERMARK_DATE_FORMATS = ['%Y%m%d']
+
 
 # NB: If you're using the gremlin proxy, the appropriate GremlinConfig must be added to any other configs
 class LocalConfig(LocalGremlinConfig, Config):

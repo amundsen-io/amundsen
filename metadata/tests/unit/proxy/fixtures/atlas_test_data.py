@@ -94,6 +94,44 @@ class Data:
         }
     }
 
+    partition_entity_1 = {
+        'typeName': 'table_partition',
+        'status': 'INACTIVE',
+        'attributes': {
+            'name': '20200908'
+        },
+        'createTime': 1599723564000
+    }
+
+    partition_entity_2 = {
+        'typeName': 'table_partition',
+        'status': 'ACTIVE',
+        'attributes': {
+            'name': '20200909'
+        },
+        'createTime': 1599723564000
+    }
+
+    partition_entity_3 = {
+        'typeName': 'table_partition',
+        'status': 'ACTIVE',
+        'attributes': {
+            'name': '20200910'
+        },
+        'createTime': 1599723564000
+    }
+
+    partition_entity_4 = {
+        'typeName': 'table_partition',
+        'status': 'ACTIVE',
+        'attributes': {
+            'name': '2020,8'
+        },
+        'createTime': 1599723564000
+    }
+
+    partitions = [partition_entity_1, partition_entity_2, partition_entity_3, partition_entity_4]
+
     entity1 = {
         'guid': '1',
         'typeName': entity_type,
@@ -129,6 +167,32 @@ class Data:
                     "relationshipStatus": "DELETED",
                     "guid": "111",
                     "displayText": "deleted_owned_by"
+                }
+            ],
+            'partitions': [
+                {
+                    "entityStatus": "INACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "000",
+                    "displayText": "active_partition"
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "111",
+                    "displayText": "active_partition"
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "222",
+                    "displayText": "active_partition"
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "333",
+                    "displayText": "active_partition"
                 }
             ]
         },

@@ -1,15 +1,16 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import datetime
 import logging
 import re
 from random import randint
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Union, Optional, Tuple
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Stat, Table, Tag, User, Reader, \
-    ProgrammaticDescription, ResourceReport
+    ProgrammaticDescription, ResourceReport, Watermark
 from amundsen_common.models.user import User as UserEntity
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest, Conflict, NotFound
@@ -450,7 +451,8 @@ class AtlasProxy(BaseProxy):
 
             reports_guids = [report.get("guid") for report in attrs.get("reports") or list()]
 
-            is_view = True if attrs.get('tableType', 'table').lower().find('view') != -1 else False
+            table_type = attrs.get('tableType') or 'table'
+            is_view = 'view' in table_type.lower()
 
             table = Table(
                 database=table_details.get('typeName'),
@@ -466,7 +468,8 @@ class AtlasProxy(BaseProxy):
                 is_view=is_view,
                 table_readers=self._get_readers(attrs.get(self.QN_KEY)),
                 last_updated_timestamp=self._parse_date(table_details.get('updateTime')),
-                programmatic_descriptions=programmatic_descriptions)
+                programmatic_descriptions=programmatic_descriptions,
+                watermarks=self._get_table_watermarks(table_details))
 
             return table
         except KeyError as ex:
@@ -475,6 +478,93 @@ class AtlasProxy(BaseProxy):
             raise BadRequest('Some of the required attributes '
                              'are missing in : ( {table_uri} )'
                              .format(table_uri=table_uri))
+
+    @staticmethod
+    def _validate_date(text_date: str, date_format: str) -> Tuple[Optional[datetime.datetime], Optional[str]]:
+        try:
+            return datetime.datetime.strptime(text_date, date_format), date_format
+        except (ValueError, TypeError):
+            return None, None
+
+    @staticmethod
+    def _select_watermark_format(partition_names: List[str]) -> Optional[str]:
+        result = None
+
+        for partition_name in partition_names:
+            # Assume that all partitions for given table have the same date format. Only thing that needs to be done
+            # is establishing which format out of the supported ones it is and then we validate every partition
+            # against it.
+            for df in app.config['WATERMARK_DATE_FORMATS']:
+                _, result = AtlasProxy._validate_date(partition_name, df)
+
+                if result:
+                    LOGGER.debug('Established date format', extra=dict(date_format=result))
+                    return result
+
+        return result
+
+    @staticmethod
+    def _render_partition_key_name(entity: EntityUniqueAttribute) -> Optional[str]:
+        _partition_keys = []
+
+        for partition_key in entity.get('attributes', dict()).get('partitionKeys', []):
+            partition_key_column_name = partition_key.get('displayName')
+
+            if partition_key_column_name:
+                _partition_keys.append(partition_key_column_name)
+
+        partition_key = ' '.join(_partition_keys).strip()
+
+        return partition_key
+
+    def _get_table_watermarks(self, entity: EntityUniqueAttribute) -> List[Watermark]:
+        partition_value_format = '%Y-%m-%d %H:%M:%S'
+
+        _partitions = entity.get('relationshipAttributes', dict()).get('partitions', list())
+
+        guids = [_partition.get('guid') for _partition in _partitions
+                 if _partition.get('entityStatus') == Status.ACTIVE
+                 and _partition.get('relationshipStatus') == Status.ACTIVE]
+
+        if not guids:
+            return []
+
+        partition_key = AtlasProxy._render_partition_key_name(entity)
+
+        full_partitions = extract_entities(self._driver.entity_bulk(guid=list(guids), ignoreRelationships=True))
+        watermark_date_format = AtlasProxy._select_watermark_format([p.attributes.get('name') for p in full_partitions])
+
+        partitions = {}
+
+        for partition in full_partitions:
+            partition_name = partition.attributes.get('name')
+
+            if partition_name and watermark_date_format:
+                partition_date, _ = AtlasProxy._validate_date(partition_name, watermark_date_format)
+
+                if partition_date:
+                    _partition_create_time = self._parse_date(partition.createTime) or 0.0
+
+                    partition_create_time = datetime.datetime.fromtimestamp(
+                        _partition_create_time).strftime(partition_value_format)
+
+                    common_values = {'partition_value': datetime.datetime.strftime(partition_date,
+                                                                                   partition_value_format),
+                                     'create_time': partition_create_time,
+                                     'partition_key': partition_key}
+
+                    partitions[partition_date] = common_values
+
+        if partitions:
+            low_watermark_date = min(partitions.keys())
+            high_watermark_date = max(partitions.keys())
+
+            low_watermark = Watermark(watermark_type='low_watermark', **partitions.get(low_watermark_date))
+            high_watermark = Watermark(watermark_type='high_watermark', **partitions.get(high_watermark_date))
+
+            return [low_watermark, high_watermark]
+        else:
+            return []
 
     def delete_owner(self, *, table_uri: str, owner: str) -> None:
         """
