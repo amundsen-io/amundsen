@@ -525,6 +525,36 @@ class TestAtlasProxy(unittest.TestCase, Data):
         # but in case where it is duplicate, should return only 1
         self.assertEqual(1, len(res))
 
+    def test_get_table_watermarks(self) -> None:
+        params = [(['%Y%m%d'], 2, '2020-09'),
+                  (['%Y,%m'], 2, '2020-08'),
+                  (['%Y-%m-%d'], 0, None),
+                  ([], 0, None)]
+
+        mocked_partition_entities_collection = MagicMock()
+        mocked_partition_entities_collection.entities = []
+
+        for entity in self.partitions:
+            mocked_report_entity = MagicMock()
+            mocked_report_entity.status = entity['status']
+            mocked_report_entity.attributes = entity['attributes']
+            mocked_report_entity.createTime = entity['createTime']
+            mocked_partition_entities_collection.entities.append(mocked_report_entity)
+
+        for supported_formats, expected_result_length, low_date_prefix in params:
+            with self.subTest():
+                self.app.config['WATERMARK_DATE_FORMATS'] = supported_formats
+                self.proxy._driver.entity_bulk = MagicMock(return_value=[mocked_partition_entities_collection])
+
+                result = self.proxy._get_table_watermarks(cast(dict, self.entity1))
+
+                assert len(result) == expected_result_length
+
+                if low_date_prefix:
+                    low, _ = result
+
+                    assert low.partition_value.startswith(low_date_prefix)
+
 
 if __name__ == '__main__':
     unittest.main()
