@@ -13,5 +13,5 @@ addons.setConfig({
   theme: amundsenTheme,
   selectedPanel: undefined,
   initialActive: 'sidebar',
-  showRoots: false,
+  showRoots: true,
 });

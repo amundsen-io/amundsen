@@ -2,14 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 
 import StorySection from '../StorySection';
 import Card from '.';
 
-const stories = storiesOf('Components/Cards', module);
+export default {
+  title: 'Components/Cards',
+};
 
-stories.add('Cards', () => (
+export const Cards = () => (
   <>
     <StorySection title="Loading Card">
       <Card isLoading />
@@ -28,4 +29,6 @@ stories.add('Cards', () => (
       />
     </StorySection>
   </>
-));
+);
+
+Cards.storyName = 'Cards';

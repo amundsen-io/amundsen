@@ -1,22 +1,18 @@
-import anysort from 'anysort';
-import { addParameters } from '@storybook/react';
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
 
 import '../css/styles.scss';
 
 const categoriesOrder = [
-  'Overview/Introduction',
-  'Attributes/**',
-  'Components/**',
+  'Overview',
+  'Attributes',
+  'Components',
 ];
 
-addParameters({
+export const parameters = {
   options: {
-    showRoots: true,
-    storySort: (previous, next) => {
-      const [previousStory, previousMeta] = previous;
-      const [nextStory, nextMeta] = next;
-
-      return anysort(previousMeta.kind, nextMeta.kind, categoriesOrder);
+    storySort: {
+      order: categoriesOrder,
     },
   },
-});
+};
