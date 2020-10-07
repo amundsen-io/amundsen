@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as webpack from 'webpack';
@@ -9,22 +12,27 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
 import appConfig from './js/config/config';
 
+function resolve(dir) {
+  return path.join(__dirname, dir);
+}
+
 const TSX_PATTERN = /\.ts|\.tsx$/;
 const JSX_PATTERN = /\.jsx?$/;
 const CSS_PATTERN = /\.(sa|sc|c)ss$/;
 const IMAGE_PATTERN = /\.(png|svg|jpg|gif)$/;
 const VENDORS_PATTERN = /[\\/]node_modules[\\/](react|react-dom)[\\/]/;
 const FONT_PATTERN = /\.(ttf|woff2|otf)$/;
+const RESOLVED_EXTENSIONS = ['.tsx', '.ts', '.js', '.jsx', '.css', '.scss'];
 
 const PATHS = {
-  dist: path.join(__dirname, '/dist'),
-  pages: path.join(__dirname, '/js/pages'),
-  components: path.join(__dirname, '/js/components'),
-  config: path.join(__dirname, '/js/config'),
-  ducks: path.join(__dirname, '/js/ducks'),
-  interfaces: path.join(__dirname, '/js/interfaces'),
-  utils: path.join(__dirname, '/js/utils'),
-  css: path.join(__dirname, '/css/'),
+  dist: resolve('/dist'),
+  pages: resolve('/js/pages'),
+  components: resolve('/js/components'),
+  config: resolve('/js/config'),
+  ducks: resolve('/js/ducks'),
+  interfaces: resolve('/js/interfaces'),
+  utils: resolve('/js/utils'),
+  css: resolve('/css/'),
 };
 
 // Process of Templates
@@ -48,10 +56,7 @@ const htmlWebpackPluginConfig = templatesList.map((file) => {
 
 const config: webpack.Configuration = {
   entry: {
-    main: [
-      path.join(__dirname, '/css/styles.scss'),
-      path.join(__dirname, '/js/index.tsx'),
-    ],
+    main: [resolve('/css/styles.scss'), resolve('/js/index.tsx')],
   },
   output: {
     publicPath: '/static/dist/',
@@ -68,7 +73,7 @@ const config: webpack.Configuration = {
       interfaces: PATHS.interfaces,
       utils: PATHS.utils,
     },
-    extensions: ['.tsx', '.ts', '.js', '.jsx', '.css', '.scss'],
+    extensions: RESOLVED_EXTENSIONS,
   },
   module: {
     rules: [

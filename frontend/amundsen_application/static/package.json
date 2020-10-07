@@ -56,12 +56,12 @@
     "@babel/preset-react": "^7.10.4",
     "@betterer/cli": "^3.0.3",
     "@betterer/typescript": "^3.0.1",
-    "@storybook/addon-actions": "^6.0.21",
-    "@storybook/addon-info": "^5.3.19",
-    "@storybook/addon-links": "^5.3.19",
-    "@storybook/addons": "^5.3.19",
-    "@storybook/react": "^5.3.19",
-    "@storybook/theming": "^6.0.21",
+    "@storybook/addon-actions": "^6.0.26",
+    "@storybook/addon-info": "^5.3.21",
+    "@storybook/addon-links": "^6.0.26",
+    "@storybook/addons": "^6.0.26",
+    "@storybook/react": "^6.0.26",
+    "@storybook/theming": "^6.0.26",
     "@types/enzyme": "^3.10.5",
     "@types/jasmine-matchers": "^0.2.32",
     "@types/jest": "^26.0.14",
@@ -246,7 +246,8 @@
       "stylesheets/*",
       "vendor/*",
       "docs/*",
-      "appbuilder/*"
+      "appbuilder/*",
+      ".src-custom/*"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

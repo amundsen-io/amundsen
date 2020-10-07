@@ -55,9 +55,7 @@ export const TypographyUpdated = () => {
   );
 };
 
-TypographyUpdated.story = {
-  name: 'Typography',
-};
+TypographyUpdated.storyName = 'Typography';
 
 export const Typography = () => {
   return (
@@ -102,6 +100,4 @@ export const Typography = () => {
   );
 };
 
-Typography.story = {
-  name: 'Deprecated: Headings & Body',
-};
+Typography.storyName = 'Deprecated: Headings & Body';
