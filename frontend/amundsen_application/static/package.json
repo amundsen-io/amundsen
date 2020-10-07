@@ -95,7 +95,7 @@
     "find-unused-sass-variables": "^2.0.0",
     "html-webpack-plugin": "4.3.0",
     "husky": "^4.3.0",
-    "jest": "^26.4.2",
+    "jest": "^26.5.0",
     "jest-css-modules": "^2.1.0",
     "lint-staged": "^10.2.11",
     "mini-css-extract-plugin": "^0.10.0",
