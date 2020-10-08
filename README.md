@@ -223,6 +223,7 @@ Currently **officially** using Amundsen:
 1. [Gusto](https://gusto.com/)
 1. [Hurb](https://hurb.com)
 1. [ING](https://www.ing.com/Home.htm)
+1. [Instacart](https://www.instacart.com/)
 1. [iRobot](https://www.irobot.com)
 1. [LMC](https://www.lmc.eu/cs/)
 1. [Lyft](https://www.lyft.com/)
