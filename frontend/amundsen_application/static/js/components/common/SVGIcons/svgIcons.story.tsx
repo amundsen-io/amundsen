@@ -5,7 +5,14 @@ import React from 'react';
 import { withKnobs, object } from '@storybook/addon-knobs';
 
 import StorySection from '../StorySection';
-import { AlertIcon, DownIcon, UpIcon, RightIcon } from '.';
+import {
+  AlertIcon,
+  DownIcon,
+  UpIcon,
+  RightIcon,
+  LeftIcon,
+  InformationIcon,
+} from '.';
 
 export const SVGIcons = () => (
   <>
@@ -13,22 +20,19 @@ export const SVGIcons = () => (
       <AlertIcon stroke={object('Alert stroke', 'currentColor')} />
     </StorySection>
     <StorySection title="Down">
-      <DownIcon
-        stroke={object('DownIcon stroke', 'currentColor')}
-        fill={object('DownIcon fill', '#9191A8')}
-      />
+      <DownIcon fill={object('DownIcon fill', '#9191A8')} />
     </StorySection>
     <StorySection title="Up">
-      <UpIcon
-        stroke={object('UpIcon stroke', 'currentColor')}
-        fill={object('UpIcon fill', '#9191A8')}
-      />
+      <UpIcon fill={object('UpIcon fill', '#9191A8')} />
     </StorySection>
     <StorySection title="Right">
-      <RightIcon
-        stroke={object('RightIcon stroke', 'currentColor')}
-        fill={object('RightIcon fill', '#9191A8')}
-      />
+      <RightIcon fill={object('RightIcon fill', '#9191A8')} />
+    </StorySection>
+    <StorySection title="Left">
+      <LeftIcon fill={object('LeftIcon fill', '#9191A8')} />
+    </StorySection>
+    <StorySection title="Information">
+      <InformationIcon fill={object('InformationIcon fill', '#9191A8')} />
     </StorySection>
   </>
 );

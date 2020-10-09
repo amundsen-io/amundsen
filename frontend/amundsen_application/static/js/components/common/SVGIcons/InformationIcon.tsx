@@ -6,20 +6,21 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { IconSizes } from 'interfaces';
 import { IconProps } from './types';
-import { DEFAULT_FILL_COLOR } from './constants';
 
-export const UpIcon: React.FC<IconProps> = ({
+const DEFAULT_FILL_COLOR = '#9191A8'; // gray40
+
+export const InformationIcon: React.FC<IconProps> = ({
   size = IconSizes.REGULAR,
   fill = DEFAULT_FILL_COLOR,
 }: IconProps) => {
-  const id = `up_icon_${uuidv4()}`;
+  const id = `info_icon_${uuidv4()}`;
 
   return (
     <svg width={size} height={size} viewBox="0 0 24 24">
-      <title>Up</title>
+      <title>Info</title>
       <defs>
         <path
-          d="M12.097 12.12l4.049-3.898a1.02 1.02 0 011.427.014.981.981 0 01-.013 1.4l-4.73 4.553c-.18.174-.41.268-.642.283a1.026 1.026 0 01-.805-.276L6.553 9.63a.972.972 0 01-.02-1.394 1.028 1.028 0 011.434-.02l4.13 3.904z"
+          d="M12 21a9 9 0 110-18 9 9 0 010 18zm0-2a7 7 0 100-14 7 7 0 000 14zm1-3.833c0 .46-.448.833-1 .833s-1-.373-1-.833v-3.334c0-.46.448-.833 1-.833s1 .373 1 .833v3.334zM12 10a1 1 0 110-2 1 1 0 010 2z"
           id={id}
         />
       </defs>
@@ -27,11 +28,7 @@ export const UpIcon: React.FC<IconProps> = ({
         <mask id="prefix__b" fill="#fff">
           <use xlinkHref={`#${id}`} />
         </mask>
-        <use
-          fill={fill}
-          transform="rotate(-180 12.055 11.206)"
-          xlinkHref={`#${id}`}
-        />
+        <use fill={fill} fillRule="nonzero" xlinkHref={`#${id}`} />
       </g>
     </svg>
   );

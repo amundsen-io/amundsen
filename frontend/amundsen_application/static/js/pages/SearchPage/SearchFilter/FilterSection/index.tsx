@@ -11,7 +11,7 @@ import {
 } from 'ducks/search/filters/reducer';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { FilterType } from 'interfaces';
+import { FilterType, IconSizes } from 'interfaces';
 import InfoButton from 'components/common/InfoButton';
 import { CLEAR_BTN_TEXT } from '../constants';
 
@@ -68,7 +68,11 @@ export class FilterSection extends React.Component<FilterSectionProps> {
               {title}
             </label>
             {helpText && (
-              <InfoButton infoText={helpText} placement="top" size="small" />
+              <InfoButton
+                infoText={helpText}
+                placement="top"
+                size={IconSizes.SMALL}
+              />
             )}
           </div>
           {hasValue && (

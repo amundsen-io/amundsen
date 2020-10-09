@@ -3,29 +3,24 @@
 
 @import 'variables';
 
-button.info-button {
-  background-color: $stroke;
+$info-button-regular-size: 24px;
+$info-button-small-size: 18px;
+
+.btn.info-button {
+  background-color: transparent;
   border: none;
-  height: 24px;
-  margin: 0 0 0 8px;
-  -webkit-mask-image: url('../../../../images/icons/Info.svg');
-  mask-image: url('../../../../images/icons/Info.svg');
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  -webkit-mask-size: 110%;
-  mask-size: contain;
-  mask-size: 110%;
+  height: $info-button-regular-size;
+  margin: 0 0 0 $spacer-1;
   padding: 0;
-  width: 24px;
-}
+  width: $info-button-regular-size;
 
-button.info-button.small {
-  height: 18px;
-  margin: -4px 0 0 4px;
-  width: 18px;
-}
+  &.small {
+    height: $info-button-small-size;
+    margin: -4px 0 0 4px;
+    width: $info-button-small-size;
+  }
 
-button.info-button:hover {
-  background-color: $brand-color-4;
+  &:hover path {
+    fill: $brand-color-4;
+  }
 }

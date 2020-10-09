@@ -3,10 +3,9 @@
 
 import * as React from 'react';
 import SanitizedHTML from 'react-sanitized-html';
-
 import { shallow } from 'enzyme';
-
 import { OverlayTrigger, Popover } from 'react-bootstrap';
+
 import InfoButton, { InfoButtonProps } from '.';
 
 describe('InfoButton', () => {
@@ -18,7 +17,6 @@ describe('InfoButton', () => {
       infoText: 'Some info text to share',
       title: 'Popover Title',
       placement: 'left',
-      size: 'size',
     };
     subject = shallow(<InfoButton {...props} />);
   });
@@ -39,12 +37,6 @@ describe('InfoButton', () => {
       expect(subject.find(OverlayTrigger).props().overlay).toEqual(
         expectedPopover
       );
-    });
-
-    it('renders OverlayTrigger w/ correct placement', () => {
-      expect(
-        subject.find(OverlayTrigger).find('button').props().className
-      ).toEqual(`btn icon info-button ${props.size}`);
     });
   });
 });

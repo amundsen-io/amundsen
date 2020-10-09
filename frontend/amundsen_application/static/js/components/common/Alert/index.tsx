@@ -3,8 +3,8 @@
 
 import * as React from 'react';
 
+import { IconSizes } from 'interfaces';
 import { AlertIcon } from '../SVGIcons';
-import { IconSizes } from '../SVGIcons/types';
 
 import './styles.scss';
 

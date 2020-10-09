@@ -32,7 +32,6 @@ describe('EntityCardSection', () => {
       expect(subject.find(InfoButton).props()).toMatchObject({
         infoText: props.infoText,
         placement: 'top',
-        size: 'small',
       });
     });
 
