@@ -3,27 +3,28 @@
 
 import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
-
-// TODO - Consider an alternative to react-sanitized-html (large filesize)
 import SanitizedHTML from 'react-sanitized-html';
 
-// TODO: Use css-modules instead of 'import'
+import { IconSizes } from 'interfaces';
+import { InformationIcon } from '../SVGIcons';
+
 import './styles.scss';
 
 const INFO_BUTTON_TEXT = 'More info';
+const DEFAULT_PLACEMENT = 'right';
 
 export interface InfoButtonProps {
   infoText?: string;
   title?: string;
   placement?: string;
-  size?: string;
+  size?: IconSizes;
 }
 
 const InfoButton: React.FC<InfoButtonProps> = ({
   title,
   infoText,
-  placement,
-  size,
+  placement = DEFAULT_PLACEMENT,
+  size = IconSizes.REGULAR,
 }: InfoButtonProps) => {
   const popoverHoverFocus = (
     <Popover id="popover-trigger-hover-focus" title={title}>
@@ -37,18 +38,15 @@ const InfoButton: React.FC<InfoButtonProps> = ({
       placement={placement}
       overlay={popoverHoverFocus}
     >
-      <button className={'btn icon info-button ' + size} type="button">
+      <button
+        className={`btn info-button ${size === IconSizes.SMALL ? 'small' : ''}`}
+        type="button"
+      >
+        <InformationIcon size={size} />
         <span className="sr-only">{INFO_BUTTON_TEXT}</span>
       </button>
     </OverlayTrigger>
   );
-};
-
-InfoButton.defaultProps = {
-  infoText: '',
-  title: '',
-  placement: 'right',
-  size: '',
 };
 
 export default InfoButton;

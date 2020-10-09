@@ -4,7 +4,7 @@
 import * as React from 'react';
 import InfoButton from 'components/common/InfoButton';
 
-// TODO: Use css-modules instead of 'import'
+import { IconSizes } from 'interfaces';
 import './styles.scss';
 
 export interface EntityCardSectionProps {
@@ -54,7 +54,7 @@ class EntityCardSection extends React.Component<
               <InfoButton
                 infoText={this.props.infoText}
                 placement="top"
-                size="small"
+                size={IconSizes.SMALL}
               />
             )}
             {this.props.isEditable && (

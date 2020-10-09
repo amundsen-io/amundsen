@@ -62,3 +62,9 @@ export enum IconType {
   REDSHIFT = 'icon-redshift',
   SNOWFLAKE = 'icon-snowflake',
 }
+
+// Icon sizes
+export enum IconSizes {
+  REGULAR = 24,
+  SMALL = 16,
+}
