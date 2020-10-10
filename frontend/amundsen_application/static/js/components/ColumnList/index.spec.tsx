@@ -8,10 +8,8 @@ import configureStore from 'redux-mock-store';
 import { mocked } from 'ts-jest/utils';
 
 import { SortDirection } from 'interfaces';
-import {
-  notificationsEnabled,
-  getTableSortCriterias,
-} from 'config/config-utils';
+import { BadgeStyle } from 'config/config-types';
+import * as ConfigUtils from 'config/config-utils';
 
 import globalState from 'fixtures/globalState';
 import ColumnList, { ColumnListProps } from '.';
@@ -22,8 +20,14 @@ import TestDataBuilder from './testDataBuilder';
 
 jest.mock('config/config-utils');
 
-const mockedNotificationsEnabled = mocked(notificationsEnabled, true);
-const mockedGetTableSortCriterias = mocked(getTableSortCriterias, true);
+const mockedNotificationsEnabled = mocked(
+  ConfigUtils.notificationsEnabled,
+  true
+);
+const mockedGetTableSortCriterias = mocked(
+  ConfigUtils.getTableSortCriterias,
+  true
+);
 const dataBuilder = new TestDataBuilder();
 const middlewares = [];
 const mockStore = configureStore(middlewares);
@@ -232,7 +236,7 @@ describe('ColumnList', () => {
       });
     });
 
-    describe('when columns with serveral stats including usage are passed', () => {
+    describe('when columns with several stats including usage are passed', () => {
       const { columns } = dataBuilder.withSeveralStats().build();
 
       it('should render the usage column', () => {
@@ -275,6 +279,60 @@ describe('ColumnList', () => {
         const actual = wrapper.find('.table-detail-table .actions').length;
 
         expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when columns with badges are passed', () => {
+      const { columns } = dataBuilder.withBadges().build();
+      const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
+      getBadgeConfigSpy.mockImplementation((badgeName: string) => {
+        return {
+          displayName: badgeName + ' test name',
+          style: BadgeStyle.PRIMARY,
+        };
+      });
+
+      it('should render the rows', () => {
+        const { wrapper } = setup({ columns });
+        const expected = columns.length;
+        const actual = wrapper.find('.table-detail-table .ams-table-row')
+          .length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the badge column', () => {
+        const { wrapper } = setup({ columns });
+        const expected = columns.length;
+        const actual = wrapper.find('.badge-list').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      describe('number of bages', () => {
+        it('should render no badges in the first cell', () => {
+          const { wrapper } = setup({ columns });
+          const expected = 0;
+          const actual = wrapper.find('.badge-list').at(0).find('.flag').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        it('should render one badge in the second cell', () => {
+          const { wrapper } = setup({ columns });
+          const expected = 1;
+          const actual = wrapper.find('.badge-list').at(1).find('.flag').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        it('should render three badges in the third cell', () => {
+          const { wrapper } = setup({ columns });
+          const expected = 3;
+          const actual = wrapper.find('.badge-list').at(2).find('.flag').length;
+
+          expect(actual).toEqual(expected);
+        });
       });
     });
   });

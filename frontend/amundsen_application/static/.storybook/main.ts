@@ -4,13 +4,12 @@
 import customWebpackConfig from './webpack.config.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-
 module.exports = {
   stories: ['../js/**/*.story.tsx'],
   addons: [
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    '@storybook/addon-knobs'
+    '@storybook/addon-knobs',
   ],
   webpackFinal: (config) => {
     return {
@@ -25,10 +24,10 @@ module.exports = {
       },
       plugins: [
         new MiniCssExtractPlugin({
-            filename: "[name].[contenthash].css",
+          filename: '[name].[contenthash].css',
         }),
-        ...config.plugins
-      ]
+        ...config.plugins,
+      ],
     };
   },
 };

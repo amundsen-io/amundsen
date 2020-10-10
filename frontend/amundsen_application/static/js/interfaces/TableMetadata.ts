@@ -63,6 +63,7 @@ export interface TableColumn {
   col_type: string;
   sort_order: string;
   stats: TableColumnStats[];
+  badges: Badge[];
 }
 
 export interface TableOwners {

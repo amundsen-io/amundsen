@@ -1,6 +1,7 @@
 import AppConfig from 'config/config';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 import { TableMetadata } from 'interfaces/TableMetadata';
+import { convertText, CaseType } from 'utils/textUtils';
 
 import { FilterConfig, LinkConfig } from './config-types';
 
@@ -85,7 +86,7 @@ export function getBadgeConfig(badgeName: string): BadgeStyleConfig {
 
   return {
     style: BadgeStyle.DEFAULT,
-    displayName: badgeName,
+    displayName: convertText(badgeName, CaseType.TITLE_CASE),
     ...config,
   };
 }

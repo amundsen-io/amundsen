@@ -39,6 +39,7 @@ export const tableMetadata: TableMetadata = {
           stat_val: '992487',
         },
       ],
+      badges: [],
     },
     {
       col_type: 'string',
@@ -48,6 +49,7 @@ export const tableMetadata: TableMetadata = {
       sort_order: '1',
       name: 'ds',
       stats: [],
+      badges: [],
     },
     {
       col_type: 'string',
@@ -93,6 +95,7 @@ export const tableMetadata: TableMetadata = {
           stat_val: '24',
         },
       ],
+      badges: [],
     },
   ],
   database: 'hive',
