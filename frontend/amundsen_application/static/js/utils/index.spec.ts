@@ -2,6 +2,51 @@ import { ResourceType } from 'interfaces/Resources';
 import * as DateUtils from './dateUtils';
 import * as LogUtils from './logUtils';
 import * as NavigationUtils from './navigationUtils';
+import * as TextUtils from './textUtils';
+
+describe('textUtils', () => {
+  describe('convertText', () => {
+    it('converts to lower case', () => {
+      const actual = TextUtils.convertText(
+        'TESt LoWer cASe',
+        TextUtils.CaseType.LOWER_CASE
+      );
+      const expected = 'test lower case';
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('converts to sentence case', () => {
+      const actual = TextUtils.convertText(
+        'tESt sentence cASe',
+        TextUtils.CaseType.SENTENCE_CASE
+      );
+      const expected = 'Test sentence case';
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('converts to upper case', () => {
+      const actual = TextUtils.convertText(
+        'test upper cASe',
+        TextUtils.CaseType.UPPER_CASE
+      );
+      const expected = 'TEST UPPER CASE';
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('converts to title case', () => {
+      const actual = TextUtils.convertText(
+        'tEST title cASe',
+        TextUtils.CaseType.TITLE_CASE
+      );
+      const expected = 'Test Title Case';
+
+      expect(actual).toEqual(expected);
+    });
+  });
+});
 
 describe('navigationUtils', () => {
   describe('updateSearchUrl', () => {

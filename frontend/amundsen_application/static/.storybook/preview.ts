@@ -3,11 +3,7 @@
 
 import '../css/styles.scss';
 
-const categoriesOrder = [
-  'Overview',
-  'Attributes',
-  'Components',
-];
+const categoriesOrder = ['Overview', 'Attributes', 'Components'];
 
 export const parameters = {
   options: {

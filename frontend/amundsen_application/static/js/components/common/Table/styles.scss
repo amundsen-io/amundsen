@@ -27,29 +27,22 @@ $row-bottom-border-color: $gray10;
 
   background-color: $table-header-background-color;
   color: $text-secondary;
-  border-bottom: $table-header-border-width solid
-    $table-header-bottom-border-color;
+  border-bottom: $table-header-border-width solid $table-header-bottom-border-color;
 }
 
 .ams-table-heading-cell {
   height: $table-header-height;
   text-transform: uppercase;
 
-  &:first-child {
-    padding-left: $spacer-3;
-  }
-
-  &:last-child {
-    padding-right: $spacer-3;
-  }
-
   &.is-left-aligned {
     text-align: left;
     padding-right: $spacer-1;
+    padding-left: $spacer-1;
   }
 
   &.is-right-aligned {
     text-align: right;
+    padding-right: $spacer-1;
     padding-left: $spacer-1;
   }
 
@@ -57,6 +50,14 @@ $row-bottom-border-color: $gray10;
     text-align: center;
     padding-left: $spacer-1;
     padding-right: $spacer-1;
+  }
+
+  &:first-child {
+    padding-left: $spacer-3;
+  }
+
+  &:last-child {
+    padding-right: $spacer-3;
   }
 }
 
@@ -81,21 +82,15 @@ $row-bottom-border-color: $gray10;
 .ams-table-cell {
   overflow: visible;
 
-  &:first-child {
-    padding-left: $spacer-3;
-  }
-
-  &:last-child {
-    padding-right: $spacer-3;
-  }
-
   &.is-left-aligned {
     text-align: left;
     padding-right: $spacer-1;
+    padding-left: $spacer-1;
   }
 
   &.is-right-aligned {
     text-align: right;
+    padding-right: $spacer-1;
     padding-left: $spacer-1;
   }
 
@@ -104,6 +99,15 @@ $row-bottom-border-color: $gray10;
     padding-left: $spacer-1;
     padding-right: $spacer-1;
   }
+
+  &:first-child {
+    padding-left: $spacer-3;
+  }
+
+  &:last-child {
+    padding-right: $spacer-3;
+  }
+
 }
 
 .ams-table-expanding-button {
@@ -119,6 +123,7 @@ $row-bottom-border-color: $gray10;
   &:hover svg use {
     fill: $gray60;
   }
+
   // TODO: Fix this so it is accessible
   &:focus {
     outline: none;

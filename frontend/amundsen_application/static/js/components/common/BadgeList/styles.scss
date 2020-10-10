@@ -3,7 +3,21 @@
 
 @import 'variables';
 
-.clickable-badge {
+.flag {
+  border-radius: 5px;
+  display: inline-block;
+  font-size: $font-size-base;
+  height: $badge-height;
+  margin: 0 0 0 $spacer-1;
+}
+
+.label {
+  border-radius: 10px;
+  font-weight: normal;
+}
+
+
+.actionable-badge {
   &:hover {
     cursor: pointer;
   }
@@ -38,36 +52,30 @@
   .badge-overlay-neutral,
   .badge-overlay-positive,
   .badge-overlay-primary {
+
     &:hover,
     &:focus {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-opacity-light
-      );
+      background-color: rgba($color: $badge-overlay,
+          $alpha: $badge-opacity-light);
     }
 
     &:active {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-pressed-light
-      );
+      background-color: rgba($color: $badge-overlay,
+          $alpha: $badge-pressed-light);
     }
   }
 
   .badge-overlay-warning {
+
     &:hover,
     &:focus {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-opacity-dark
-      );
+      background-color: rgba($color: $badge-overlay,
+          $alpha: $badge-opacity-dark);
     }
 
     &:active {
-      background-color: rgba(
-        $color: $badge-overlay,
-        $alpha: $badge-pressed-dark
-      );
+      background-color: rgba($color: $badge-overlay,
+          $alpha: $badge-pressed-dark);
     }
   }
 }
