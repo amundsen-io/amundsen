@@ -7,7 +7,7 @@ import flask
 import unittest
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
 from amundsen_application.proxy.issue_tracker_clients.jira_client import JiraClient, SEARCH_STUB_ALL_ISSUES
-from amundsen_application.models.data_issue import DataIssue
+from amundsen_application.models.data_issue import DataIssue, Priority
 from jira import JIRAError
 from typing import Dict, List
 
@@ -41,7 +41,7 @@ class JiraClientTest(unittest.TestCase):
                                              title='some title',
                                              url='http://somewhere',
                                              status='open',
-                                             priority='Major')
+                                             priority=Priority.P2)
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     def test_create_JiraClient_validates_config(self, mock_JIRA_client: Mock) -> None:
@@ -121,7 +121,7 @@ class JiraClientTest(unittest.TestCase):
                                      issue_tracker_password=app.config['ISSUE_TRACKER_PASSWORD'],
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
                                      issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
-            issues = [DataIssue(issue_key='key', title='title', url='url', status='open', priority='Major')]
+            issues = [DataIssue(issue_key='key', title='title', url='url', status='open', priority=Priority.P2)]
             url = jira_client._generate_all_issues_url(table_uri="table", issues=issues)
             self.assertEqual(url, 'test_url/issues/?jql=test')
 

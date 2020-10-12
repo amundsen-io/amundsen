@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from amundsen_application.models.data_issue import DataIssue
+from amundsen_application.models.data_issue import DataIssue, Priority
 
 
 class DataIssueTest(unittest.TestCase):
@@ -12,7 +12,7 @@ class DataIssueTest(unittest.TestCase):
         self.title = 'title'
         self.url = 'https://place'
         self.status = 'open'
-        self.priority = 'Major'
+        self.priority = Priority.P2
         self.maxDiff = None
 
     def test_mapping_priority(self) -> None:
@@ -22,13 +22,13 @@ class DataIssueTest(unittest.TestCase):
                                title=self.title,
                                url=self.url,
                                status=self.status,
-                               priority=self.priority)
-        self.assertEqual(data_issue.priority_display_name, expected_priority_display_name)
-        self.assertEqual(data_issue.priority_name, expected_priority_name)
-        self.assertEqual(data_issue.issue_key, self.issue_key)
-        self.assertEqual(data_issue.title, self.title)
-        self.assertEqual(data_issue.url, self.url)
-        self.assertEqual(data_issue.status, self.status)
+                               priority=self.priority).serialize()
+        self.assertEqual(data_issue['priority_display_name'], expected_priority_display_name)
+        self.assertEqual(data_issue['priority_name'], expected_priority_name)
+        self.assertEqual(data_issue['issue_key'], self.issue_key)
+        self.assertEqual(data_issue['title'], self.title)
+        self.assertEqual(data_issue['url'], self.url)
+        self.assertEqual(data_issue['status'], self.status)
 
     def test_mapping_priorty_missing(self) -> None:
         expected_priority_name = None  # type: ignore
@@ -37,10 +37,10 @@ class DataIssueTest(unittest.TestCase):
                                title=self.title,
                                url=self.url,
                                status=self.status,
-                               priority='missing')
-        self.assertEqual(data_issue.priority_display_name, expected_priority_display_name)
-        self.assertEqual(data_issue.priority_name, expected_priority_name)
-        self.assertEqual(data_issue.issue_key, self.issue_key)
-        self.assertEqual(data_issue.title, self.title)
-        self.assertEqual(data_issue.url, self.url)
-        self.assertEqual(data_issue.status, self.status)
+                               priority=None).serialize()
+        self.assertEqual(data_issue['priority_display_name'], expected_priority_display_name)
+        self.assertEqual(data_issue['priority_name'], expected_priority_name)
+        self.assertEqual(data_issue['issue_key'], self.issue_key)
+        self.assertEqual(data_issue['title'], self.title)
+        self.assertEqual(data_issue['url'], self.url)
+        self.assertEqual(data_issue['status'], self.status)
