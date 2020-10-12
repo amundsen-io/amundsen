@@ -8,7 +8,7 @@ from flask import current_app as app
 
 from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
-from amundsen_application.models.data_issue import DataIssue
+from amundsen_application.models.data_issue import DataIssue, Priority
 from amundsen_application.models.issue_results import IssueResults
 
 import urllib.parse
@@ -132,7 +132,7 @@ class JiraClient(BaseIssueTrackerClient):
                          title=issue.fields.summary,
                          url=issue.permalink(),
                          status=issue.fields.status.name,
-                         priority=issue.fields.priority.name)
+                         priority=Priority.from_jira_severity(issue.fields.priority.name))
 
     def _generate_all_issues_url(self, table_uri: str, issues: List[DataIssue]) -> str:
         """

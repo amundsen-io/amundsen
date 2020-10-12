@@ -6,7 +6,7 @@ import unittest
 from http import HTTPStatus
 from amundsen_application import create_app
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
-from amundsen_application.models.data_issue import DataIssue
+from amundsen_application.models.data_issue import DataIssue, Priority
 from amundsen_application.models.issue_results import IssueResults
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
@@ -31,7 +31,7 @@ class IssueTest(unittest.TestCase):
                                          title='title',
                                          url='http://somewhere',
                                              status='open',
-                                             priority='Major')
+                                             priority=Priority.P2)
         self.expected_issues = IssueResults(issues=[self.mock_data_issue],
                                             total=0,
                                             all_issues_url="http://moredata")
