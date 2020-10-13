@@ -50,32 +50,38 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
                     {'col_name': 'col_id1',
                      'col_type': 'bigint',
                      'col_description': 'description of id1',
-                     'col_sort_order': 0}, table),
+                     'col_sort_order': 0,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'col_id2',
                      'col_type': 'bigint',
                      'col_description': 'description of id2',
-                     'col_sort_order': 1}, table),
+                     'col_sort_order': 1,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'is_active',
                      'col_type': 'boolean',
                      'col_description': None,
-                     'col_sort_order': 2}, table),
+                     'col_sort_order': 2,
+                     'is_partition_col': 1}, table),
                 self._union(
                     {'col_name': 'source',
                      'col_type': 'varchar',
                      'col_description': 'description of source',
-                     'col_sort_order': 3}, table),
+                     'col_sort_order': 3,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'etl_created_at',
                      'col_type': 'timestamp',
                      'col_description': 'description of etl_created_at',
-                     'col_sort_order': 4}, table),
+                     'col_sort_order': 4,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'ds',
                      'col_type': 'varchar',
                      'col_description': None,
-                     'col_sort_order': 5}, table)
+                     'col_sort_order': 5,
+                     'is_partition_col': 0}, table)
             ]
 
             extractor = HiveTableMetadataExtractor()
@@ -84,9 +90,10 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
             expected = TableMetadata('hive', 'gold', 'test_schema', 'test_table', 'a table for testing',
                                      [ColumnMetadata('col_id1', 'description of id1', 'bigint', 0),
                                       ColumnMetadata('col_id2', 'description of id2', 'bigint', 1),
-                                      ColumnMetadata('is_active', None, 'boolean', 2),
+                                      ColumnMetadata('is_active', None, 'boolean', 2, ['partition column']),
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
-                                      ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
+                                      ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp',
+                                                     4),
                                       ColumnMetadata('ds', None, 'varchar', 5)],
                                      is_view=False)
             self.assertEqual(expected.__repr__(), actual.__repr__())
@@ -118,63 +125,75 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
                     {'col_name': 'col_id1',
                      'col_type': 'bigint',
                      'col_description': 'description of col_id1',
-                     'col_sort_order': 0}, table),
+                     'col_sort_order': 0,
+                     'is_partition_col': 1}, table),
                 self._union(
                     {'col_name': 'col_id2',
                      'col_type': 'bigint',
                      'col_description': 'description of col_id2',
-                     'col_sort_order': 1}, table),
+                     'col_sort_order': 1,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'is_active',
                      'col_type': 'boolean',
                      'col_description': None,
-                     'col_sort_order': 2}, table),
+                     'col_sort_order': 2,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'source',
                      'col_type': 'varchar',
                      'col_description': 'description of source',
-                     'col_sort_order': 3}, table),
+                     'col_sort_order': 3,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'etl_created_at',
                      'col_type': 'timestamp',
                      'col_description': 'description of etl_created_at',
-                     'col_sort_order': 4}, table),
+                     'col_sort_order': 4,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'ds',
                      'col_type': 'varchar',
                      'col_description': None,
-                     'col_sort_order': 5}, table),
+                     'col_sort_order': 5,
+                     'is_partition_col': 0}, table),
                 self._union(
                     {'col_name': 'col_name',
                      'col_type': 'varchar',
                      'col_description': 'description of col_name',
-                     'col_sort_order': 0}, table1),
+                     'col_sort_order': 0,
+                     'is_partition_col': 0}, table1),
                 self._union(
                     {'col_name': 'col_name2',
                      'col_type': 'varchar',
                      'col_description': 'description of col_name2',
-                     'col_sort_order': 1}, table1),
+                     'col_sort_order': 1,
+                     'is_partition_col': 0}, table1),
                 self._union(
                     {'col_name': 'col_id3',
                      'col_type': 'varchar',
                      'col_description': 'description of col_id3',
-                     'col_sort_order': 0}, table2),
+                     'col_sort_order': 0,
+                     'is_partition_col': 0}, table2),
                 self._union(
                     {'col_name': 'col_name3',
                      'col_type': 'varchar',
                      'col_description': 'description of col_name3',
-                     'col_sort_order': 1}, table2)
+                     'col_sort_order': 1,
+                     'is_partition_col': 0}, table2)
             ]
 
             extractor = HiveTableMetadataExtractor()
             extractor.init(self.conf)
 
             expected = TableMetadata('hive', 'gold', 'test_schema1', 'test_table1', 'test table 1',
-                                     [ColumnMetadata('col_id1', 'description of col_id1', 'bigint', 0),
+                                     [ColumnMetadata('col_id1', 'description of col_id1', 'bigint', 0,
+                                                     ['partition column']),
                                       ColumnMetadata('col_id2', 'description of col_id2', 'bigint', 1),
                                       ColumnMetadata('is_active', None, 'boolean', 2),
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
-                                      ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
+                                      ColumnMetadata('etl_created_at', 'description of etl_created_at',
+                                                     'timestamp', 4),
                                       ColumnMetadata('ds', None, 'varchar', 5)],
                                      is_view=False)
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())

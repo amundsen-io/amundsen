@@ -8,6 +8,7 @@ from pyhocon import ConfigFactory, ConfigTree
 from typing import Iterator, Union, Dict, Any
 
 from databuilder import Scoped
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
@@ -101,8 +102,15 @@ class HiveTableMetadataExtractor(Extractor):
 
             for row in group:
                 last_row = row
-                columns.append(ColumnMetadata(row['col_name'], row['col_description'],
-                                              row['col_type'], row['col_sort_order']))
+                column = None
+                if row['is_partition_col'] == 1:
+                    # create add a badge to indicate partition column
+                    column = ColumnMetadata(row['col_name'], row['col_description'],
+                                            row['col_type'], row['col_sort_order'], [PARTITION_BADGE])
+                else:
+                    column = ColumnMetadata(row['col_name'], row['col_description'],
+                                            row['col_type'], row['col_sort_order'])
+                columns.append(column)
             is_view = last_row['is_view'] == 1
             yield TableMetadata('hive', self._cluster,
                                 last_row['schema'],
