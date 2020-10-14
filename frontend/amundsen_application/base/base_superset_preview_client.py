@@ -52,5 +52,5 @@ class BaseSupersetPreviewClient(BasePreviewClient):
                 return make_response(payload, response.status_code)
             else:
                 return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)
-        except Exception as e:
+        except Exception:
             return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)

@@ -1,7 +1,7 @@
 # The modular source code checker: pep8, pyflakes and co
 # License: MIT
 # Upstream url: http://bitbucket.org/tarek/flake8
-flake8==3.5.0
+flake8==3.8.4
 
 # A flake8 plugin that helps you write tidier imports.
 # License: ISCL
