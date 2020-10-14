@@ -51,7 +51,7 @@ wheel==0.33.1
 # HTTP for Humans
 # License: Apache
 # Upstream url: http://docs.python-requests.org/en/master/
-requests==2.20.0
+requests==2.24.0
 
 # A lightweight library for converting complex datatypes to and from native Python datatypes.
 # License: MIT
