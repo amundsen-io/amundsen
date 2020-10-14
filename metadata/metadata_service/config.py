@@ -64,7 +64,7 @@ class Config:
     # whitelist badges
     WHITELIST_BADGES: List[Badge] = []
 
-    SWAGGER_ENABLED = False
+    SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
     USER_DETAIL_METHOD = None   # type: Optional[function]
 
