@@ -32,7 +32,7 @@ class Config:
     # Config used by ElastichSearch
     ELASTICSEARCH_INDEX = 'table_search_index'
 
-    SWAGGER_ENABLED = False
+    SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
 
 class LocalConfig(Config):
