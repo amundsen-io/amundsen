@@ -50,7 +50,7 @@ def action_logging(f: Callable) -> Any:
             metrics['end_epoch_ms'] = get_epoch_millisec()
             try:
                 metrics['output'] = json.dumps(output)
-            except Exception as e:
+            except Exception:
                 metrics['output'] = output
 
             action_log_callback.on_post_execution(ActionLogParams(**metrics))

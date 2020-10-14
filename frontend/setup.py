@@ -15,7 +15,7 @@ def is_npm_installed() -> bool:
     try:
         subprocess.check_call(['npm --version'], shell=True)
         return True
-    except Exception as e:
+    except subprocess.CalledProcessError:
         return False
 
 

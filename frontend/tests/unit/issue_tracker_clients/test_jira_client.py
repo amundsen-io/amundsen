@@ -179,6 +179,5 @@ class JiraClientTest(unittest.TestCase):
                 'name': 'Bug',
             }, labels=mock_labels,
                 summary='title',
-                description='desc' + ' \n Reported By: test@email.com' +
-                            ' \n Table Key: ' + 'key [PLEASE DO NOT REMOVE]',
+                description='desc \n Reported By: test@email.com \n Table Key: key [PLEASE DO NOT REMOVE]',
                 reporter={'name': 'test'}))
