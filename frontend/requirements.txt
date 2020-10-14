@@ -11,7 +11,7 @@ flake8-tidy-imports==1.1.0
 # A mature full-featured Python testing tool.
 # License: MIT
 # Upstream url: http://pytest.org/
-pytest==3.5.1
+pytest==6.1.1
 
 # Pytest plugin for measuring coverage.
 # License: MIT
