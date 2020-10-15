@@ -20,6 +20,7 @@ class DashboardESDocument(ElasticsearchDocument):
                  cluster: Optional[str] = '',
                  group_description: Optional[str] = None,
                  query_names: Union[List[str], None] = None,
+                 chart_names: Optional[List[str]] = None,
                  group_url: Optional[str] = None,
                  url: Optional[str] = None,
                  uri: Optional[str] = None,
@@ -39,5 +40,6 @@ class DashboardESDocument(ElasticsearchDocument):
         self.total_usage = total_usage
         self.group_description = group_description
         self.query_names = query_names
+        self.chart_names = chart_names
         self.tags = tags
         self.badges = badges
