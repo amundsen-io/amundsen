@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Optional
+from typing import List, Optional
 
 import attr
 from marshmallow_annotations.ext.attrs import AttrsSchema
