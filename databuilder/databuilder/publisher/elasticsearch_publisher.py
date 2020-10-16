@@ -8,8 +8,9 @@ from elasticsearch.exceptions import NotFoundError
 from pyhocon import ConfigTree
 from typing import List
 
+from amundsen_common.models.index_map import TABLE_INDEX_MAP as TABLE_ELASTICSEARCH_INDEX_MAPPING
+
 from databuilder.publisher.base_publisher import Publisher
-from databuilder.publisher.elasticsearch_constants import TABLE_ELASTICSEARCH_INDEX_MAPPING
 
 LOGGER = logging.getLogger(__name__)
 
