@@ -7,4 +7,13 @@
 	python -m pytest tests
 	python3 -bb -m pytest tests
 
- test: test_unit
+
+lint:
+	flake8 .
+
+.PHONY: mypy
+mypy:
+	mypy .
+
+
+ test: test_unit lint mypy
