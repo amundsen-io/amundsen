@@ -22,7 +22,7 @@ class TableOwner(Neo4jCsvSerializable):
                  schema: str,
                  table_name: str,
                  owners: Union[List, str],
-                 cluster: str ='gold',
+                 cluster: str = 'gold',
                  ) -> None:
         self.db = db_name.lower()
         self.schema = schema.lower()

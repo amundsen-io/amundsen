@@ -12,58 +12,10 @@ from databuilder.models.neo4j_csv_serde import (
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
 from databuilder.publisher.neo4j_csv_publisher import UNQUOTED_SUFFIX
 from databuilder.models.schema import schema_constant
+from databuilder.models.badge import BadgeMetadata, Badge
 
 DESCRIPTION_NODE_LABEL_VAL = 'Description'
 DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
-
-
-class BadgeMetadata(Neo4jCsvSerializable):
-    BADGE_NODE_LABEL = 'Badge'
-    BADGE_KEY_FORMAT = '{badge}'
-    BADGE_CATEGORY = 'category'
-    DASHBOARD_TYPE = 'dashboard'
-    METRIC_TYPE = 'metric'
-
-    def __init__(self,
-                 name: str,
-                 category: str,
-                 ):
-        self._name = name
-        self._category = category
-        self._nodes = iter([self.create_badge_node(self._name)])
-        self._relations: Iterator[Dict[str, Any]] = iter([])
-
-    def __repr__(self) -> str:
-        return 'BadgeMetadata({!r}, {!r})'.format(self._name,
-                                                  self._category)
-
-    @staticmethod
-    def get_badge_key(name: str) -> str:
-        if not name:
-            return ''
-        return BadgeMetadata.BADGE_KEY_FORMAT.format(badge=name)
-
-    @staticmethod
-    def create_badge_node(name: str,
-                          category: str = 'column',
-                          ) -> Dict[str, str]:
-        return {NODE_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
-                NODE_KEY: BadgeMetadata.get_badge_key(name),
-                BadgeMetadata.BADGE_CATEGORY: category}
-
-    def create_next_node(self) -> Optional[Dict[str, Any]]:
-        # return the string representation of the data
-        try:
-            return next(self._nodes)
-        except StopIteration:
-            return None
-
-    def create_next_relation(self) -> Optional[Dict[str, Any]]:
-        # We don't emit any relations for Badge ingestion
-        try:
-            return next(self._relations)
-        except StopIteration:
-            return None
 
 
 class TagMetadata(Neo4jCsvSerializable):
@@ -92,7 +44,7 @@ class TagMetadata(Neo4jCsvSerializable):
 
     @staticmethod
     def create_tag_node(name: str,
-                        tag_type: str =DEFAULT_TYPE
+                        tag_type: str = DEFAULT_TYPE
                         ) -> Dict[str, str]:
         return {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
                 NODE_KEY: TagMetadata.get_tag_key(name),
@@ -199,10 +151,6 @@ class ColumnMetadata:
     COLUMN_DESCRIPTION = 'description'
     COLUMN_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}/{description_id}'
 
-    # Relation between column and badge
-    COL_BADGE_RELATION_TYPE = 'HAS_BADGE'
-    BADGE_COL_RELATION_TYPE = 'BADGE_FOR'
-
     def __init__(self,
                  name: str,
                  description: Union[str, None],
@@ -222,7 +170,10 @@ class ColumnMetadata:
                                                                            text=description)
         self.type = col_type
         self.sort_order = sort_order
-        self.badges = badges
+        if badges:
+            self.badges = [Badge(badge, 'column') for badge in badges]
+        else:
+            self.badges = []
 
     def __repr__(self) -> str:
         return 'ColumnMetadata({!r}, {!r}, {!r}, {!r}, {!r})'.format(self.name,
@@ -427,8 +378,15 @@ class TableMetadata(Neo4jCsvSerializable):
                 yield col.description.get_node_dict(node_key)
 
             if col.badges:
-                for badge in col.badges:
-                    yield BadgeMetadata.create_badge_node(badge)
+                badge_metadata = BadgeMetadata(db_name=self._get_database_key(),
+                                               schema=self._get_schema_key(),
+                                               start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                                               start_key=self._get_col_key(col),
+                                               badges=col.badges,
+                                               cluster=self._get_cluster_key())
+                badge_nodes = badge_metadata.create_nodes()
+                for node in badge_nodes:
+                    yield node
 
         # Database, cluster, schema
         others = [NodeTuple(key=self._get_database_key(),
@@ -498,17 +456,16 @@ class TableMetadata(Neo4jCsvSerializable):
                 yield col.description.get_relation(ColumnMetadata.COLUMN_NODE_LABEL,
                                                    self._get_col_key(col),
                                                    self._get_col_description_key(col, col.description))
-
             if col.badges:
-                for badge in col.badges:
-                    yield {
-                        RELATION_START_LABEL: ColumnMetadata.COLUMN_NODE_LABEL,
-                        RELATION_END_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
-                        RELATION_START_KEY: self._get_col_key(col),
-                        RELATION_END_KEY: BadgeMetadata.get_badge_key(badge),
-                        RELATION_TYPE: ColumnMetadata.COL_BADGE_RELATION_TYPE,
-                        RELATION_REVERSE_TYPE: ColumnMetadata.BADGE_COL_RELATION_TYPE,
-                    }
+                badge_metadata = BadgeMetadata(db_name=self._get_database_key(),
+                                               schema=self._get_schema_key(),
+                                               start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                                               start_key=self._get_col_key(col),
+                                               badges=col.badges,
+                                               cluster=self._get_cluster_key())
+                badge_relations = badge_metadata.create_relation()
+                for relation in badge_relations:
+                    yield relation
 
         others = [
             RelTuple(start_label=TableMetadata.DATABASE_NODE_LABEL,
