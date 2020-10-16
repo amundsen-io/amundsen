@@ -162,6 +162,15 @@ DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
                     }
                   }
                 },
+                "chart_names": {
+                  "type":"text",
+                  "analyzer": "simple",
+                  "fields": {
+                    "raw": {
+                      "type": "keyword"
+                    }
+                  }
+                },
                 "tags": {
                   "type": "keyword"
                 },
