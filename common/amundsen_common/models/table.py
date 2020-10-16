@@ -60,26 +60,6 @@ class WatermarkSchema(AttrsSchema):
 
 
 @attr.s(auto_attribs=True, kw_only=True)
-class Statistics:
-    """
-    DEPRECATED. Use Stat
-    """
-    stat_type: str
-    stat_val: Optional[str] = None
-    start_epoch: Optional[int] = None
-    end_epoch: Optional[int] = None
-
-
-class StatisticsSchema(AttrsSchema):
-    """
-    DEPRECATED. Use StatSchema
-    """
-    class Meta:
-        target = Statistics
-        register_as_scheme = True
-
-
-@attr.s(auto_attribs=True, kw_only=True)
 class Stat:
     stat_type: str
     stat_val: Optional[str] = None
