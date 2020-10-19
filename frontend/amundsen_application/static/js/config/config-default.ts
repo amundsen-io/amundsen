@@ -33,6 +33,7 @@ const configDefault: AppConfig = {
     enabled: false,
   },
   logoPath: null,
+  numberFormat: null,
   mailClientFeatures: {
     feedbackEnabled: false,
     notificationsEnabled: false,
