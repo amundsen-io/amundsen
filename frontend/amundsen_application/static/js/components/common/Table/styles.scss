@@ -27,7 +27,8 @@ $row-bottom-border-color: $gray10;
 
   background-color: $table-header-background-color;
   color: $text-secondary;
-  border-bottom: $table-header-border-width solid $table-header-bottom-border-color;
+  border-bottom: $table-header-border-width solid
+    $table-header-bottom-border-color;
 }
 
 .ams-table-heading-cell {
@@ -107,7 +108,6 @@ $row-bottom-border-color: $gray10;
   &:last-child {
     padding-right: $spacer-3;
   }
-
 }
 
 .ams-table-expanding-button {

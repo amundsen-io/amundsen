@@ -373,6 +373,7 @@ class SearchDashboard(unittest.TestCase):
         }
         self.expected_parsed_results = [
             {
+                'chart_names': [],
                 'cluster': 'cluster',
                 'description': 'I am a dashboard',
                 'group_name': 'Amundsen Team',
@@ -386,6 +387,7 @@ class SearchDashboard(unittest.TestCase):
                 'url': 'product/name'
             },
             {
+                'chart_names': [],
                 'cluster': 'cluster',
                 'description': 'I am a second dashboard',
                 'group_name': 'Amundsen Team',

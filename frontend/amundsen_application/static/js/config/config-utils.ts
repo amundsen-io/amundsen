@@ -257,3 +257,12 @@ export function getDescriptionSourceIconPath(sourceId: string): string {
 
   return '';
 }
+
+/**
+ * Returns the desired number format in which we want to format any number
+ * Used for formatting column stats
+ * If a configuration does not exist, None is returned
+ */
+export function getNumberFormat() {
+  return AppConfig.numberFormat;
+}
