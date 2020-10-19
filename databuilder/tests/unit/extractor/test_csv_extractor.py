@@ -27,8 +27,8 @@ class TestCsvExtractor(unittest.TestCase):
                                               scope=extractor.get_scope()))
 
         result = extractor.extract()
-        self.assertEquals(result.name, 'test_table1')
-        self.assertEquals(result.description._text, '1st test table')
-        self.assertEquals(result.database, 'hive')
-        self.assertEquals(result.cluster, 'gold')
-        self.assertEquals(result.schema, 'test_schema')
+        self.assertEqual(result.name, 'test_table1')
+        self.assertEqual(result.description._text, '1st test table')
+        self.assertEqual(result.database, 'hive')
+        self.assertEqual(result.cluster, 'gold')
+        self.assertEqual(result.schema, 'test_schema')

@@ -25,13 +25,13 @@ class Watermark(Neo4jCsvSerializable):
                  schema: str,
                  table_name: str,
                  part_name: str,
-                 part_type: str='high_watermark',
-                 cluster: str='gold',
+                 part_type: str = 'high_watermark',
+                 cluster: str = 'gold',
                  ) -> None:
         self.create_time = create_time
-        self.database = database.lower()
-        self.schema = schema.lower()
-        self.table = table_name.lower()
+        self.database = database
+        self.schema = schema
+        self.table = table_name
         self.parts: List[Tuple[str, str]] = []
 
         if '=' not in part_name:
@@ -39,10 +39,10 @@ class Watermark(Neo4jCsvSerializable):
 
         # currently we don't consider nested partitions
         idx = part_name.find('=')
-        name, value = part_name.lower()[:idx], part_name.lower()[idx + 1:]
+        name, value = part_name[:idx], part_name[idx + 1:]
         self.parts = [(name, value)]
-        self.part_type = part_type.lower()
-        self.cluster = cluster.lower()
+        self.part_type = part_type
+        self.cluster = cluster
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 

@@ -40,26 +40,26 @@ class TestTableStats(unittest.TestCase):
 
     def test_get_table_stat_model_key(self) -> None:
         table_stats = self.table_stats.get_table_stat_model_key()
-        self.assertEquals(table_stats, 'hive://gold.base/test/col/avg/')
+        self.assertEqual(table_stats, 'hive://gold.base/test/col/avg/')
 
     def test_get_col_key(self) -> None:
         metadata = self.table_stats.get_col_key()
-        self.assertEquals(metadata, 'hive://gold.base/test/col')
+        self.assertEqual(metadata, 'hive://gold.base/test/col')
 
     def test_create_nodes(self) -> None:
         nodes = self.table_stats.create_nodes()
-        self.assertEquals(len(nodes), 1)
-        self.assertEquals(nodes[0], self.expected_node_result)
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0], self.expected_node_result)
 
     def test_create_relation(self) -> None:
         relation = self.table_stats.create_relation()
-        self.assertEquals(len(relation), 1)
-        self.assertEquals(relation[0], self.expected_relation_result)
+        self.assertEqual(len(relation), 1)
+        self.assertEqual(relation[0], self.expected_relation_result)
 
     def test_create_next_node(self) -> None:
         next_node = self.table_stats.create_next_node()
-        self.assertEquals(next_node, self.expected_node_result)
+        self.assertEqual(next_node, self.expected_node_result)
 
     def test_create_next_relation(self) -> None:
         next_relation = self.table_stats.create_next_relation()
-        self.assertEquals(next_relation, self.expected_relation_result)
+        self.assertEqual(next_relation, self.expected_relation_result)

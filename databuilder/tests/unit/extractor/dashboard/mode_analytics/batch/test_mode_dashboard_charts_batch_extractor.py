@@ -48,10 +48,10 @@ class TestModeDashboardChartsBatchExtractor(unittest.TestCase):
             }
 
             record = extractor.extract()
-            self.assertEquals(record._dashboard_group_id, 'ggg')
-            self.assertEquals(record._dashboard_id, 'ddd')
-            self.assertEquals(record._chart_name, 'some chart')
-            self.assertEquals(record._product, 'mode')
+            self.assertEqual(record._dashboard_group_id, 'ggg')
+            self.assertEqual(record._dashboard_id, 'ddd')
+            self.assertEqual(record._chart_name, 'some chart')
+            self.assertEqual(record._product, 'mode')
 
 
 if __name__ == '__main__':

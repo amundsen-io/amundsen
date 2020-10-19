@@ -31,4 +31,4 @@ class TestNeo4jEsLastUpdatedExtractor(unittest.TestCase):
                                               scope=extractor.get_scope()))
 
         result = extractor.extract()
-        self.assertEquals(result.timestamp, 10000000)
+        self.assertEqual(result.timestamp, 10000000)

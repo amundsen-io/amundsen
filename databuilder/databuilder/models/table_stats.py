@@ -34,10 +34,10 @@ class TableColumnStats(Neo4jCsvSerializable):
         if schema is None:
             self.schema, self.table = table_name.split('.')
         else:
-            self.table = table_name.lower()
-            self.schema = schema.lower()
+            self.table = table_name
+            self.schema = schema
         self.db = db
-        self.col_name = col_name.lower()
+        self.col_name = col_name
         self.start_epoch = start_epoch
         self.end_epoch = end_epoch
         self.cluster = cluster

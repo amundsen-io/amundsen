@@ -27,11 +27,11 @@ class TestUser(unittest.TestCase):
 
     def test_get_user_model_key(self) -> None:
         user_email = User.get_user_model_key(email=self.user.email)
-        self.assertEquals(user_email, '{email}'.format(email='test@email.com'))
+        self.assertEqual(user_email, '{email}'.format(email='test@email.com'))
 
     def test_create_nodes(self) -> None:
         nodes = self.user.create_nodes()
-        self.assertEquals(len(nodes), 1)
+        self.assertEqual(len(nodes), 1)
 
     def test_create_node_additional_attr(self) -> None:
         test_user = User(first_name='test_first',
@@ -54,7 +54,7 @@ class TestUser(unittest.TestCase):
 
     def test_create_relation(self) -> None:
         relations = self.user.create_relation()
-        self.assertEquals(len(relations), 1)
+        self.assertEqual(len(relations), 1)
 
         start_key = '{email}'.format(email='test@email.com')
         end_key = '{email}'.format(email='test_manager@email.com')

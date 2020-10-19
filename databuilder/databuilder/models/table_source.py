@@ -27,11 +27,11 @@ class TableSource(Neo4jCsvSerializable):
                  source: str,
                  source_type: str='github',
                  ) -> None:
-        self.db = db_name.lower()
-        self.schema = schema.lower()
-        self.table = table_name.lower()
+        self.db = db_name
+        self.schema = schema
+        self.table = table_name
 
-        self.cluster = cluster.lower() if cluster else 'gold'
+        self.cluster = cluster if cluster else 'gold'
         # source is the source file location
         self.source = source
         self.source_type = source_type

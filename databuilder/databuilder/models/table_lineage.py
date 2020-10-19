@@ -27,11 +27,10 @@ class TableLineage(Neo4jCsvSerializable):
                  cluster: str,
                  downstream_deps: List=None,
                  ) -> None:
-        self.db = db_name.lower()
-        self.schema = schema.lower()
-        self.table = table_name.lower()
-
-        self.cluster = cluster.lower() if cluster else 'gold'
+        self.db = db_name
+        self.schema = schema
+        self.table = table_name
+        self.cluster = cluster if cluster else 'gold'
         # a list of downstream dependencies, each of which will follow
         # the same key
         self.downstream_deps = downstream_deps or []

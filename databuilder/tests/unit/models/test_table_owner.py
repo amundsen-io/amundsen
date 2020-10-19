@@ -27,19 +27,19 @@ class TestTableOwner(unittest.TestCase):
                                       schema=SCHEMA,
                                       table_name=TABLE,
                                       cluster=CLUSTER,
-                                      owners="user1@1, UsER2@2 ")
+                                      owners="user1@1, user2@2 ")
 
     def test_get_owner_model_key(self) -> None:
         owner = self.table_owner.get_owner_model_key(owner1)
-        self.assertEquals(owner, owner1)
+        self.assertEqual(owner, owner1)
 
     def test_get_metadata_model_key(self) -> None:
         metadata = self.table_owner.get_metadata_model_key()
-        self.assertEquals(metadata, 'hive://default.base/test')
+        self.assertEqual(metadata, 'hive://DEFAULT.BASE/TEST')
 
     def test_create_nodes(self) -> None:
         nodes = self.table_owner.create_nodes()
-        self.assertEquals(len(nodes), 2)
+        self.assertEqual(len(nodes), 2)
 
         node1 = {
             NODE_KEY: User.USER_NODE_KEY_FORMAT.format(email=owner1),
@@ -57,7 +57,7 @@ class TestTableOwner(unittest.TestCase):
 
     def test_create_relation(self) -> None:
         relations = self.table_owner.create_relation()
-        self.assertEquals(len(relations), 2)
+        self.assertEqual(len(relations), 2)
 
         relation1 = {
             RELATION_START_KEY: owner1,
@@ -84,9 +84,9 @@ class TestTableOwner(unittest.TestCase):
                                            schema=SCHEMA,
                                            table_name=TABLE,
                                            cluster=CLUSTER,
-                                           owners=['user1@1', ' UsER2@2 '])
+                                           owners=['user1@1', ' user2@2 '])
         nodes = self.table_owner_list.create_nodes()
-        self.assertEquals(len(nodes), 2)
+        self.assertEqual(len(nodes), 2)
 
         node1 = {
             NODE_KEY: User.USER_NODE_KEY_FORMAT.format(email=owner1),
