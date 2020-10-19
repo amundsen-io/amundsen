@@ -28,7 +28,7 @@ class TestGenericExtractor(unittest.TestCase):
                                               scope=extractor.get_scope()))
 
         result = extractor.extract()
-        self.assertEquals(result.timestamp, 10000000)
+        self.assertEqual(result.timestamp, 10000000)
 
     def test_extraction_without_model_class(self) -> None:
         """
@@ -44,5 +44,5 @@ class TestGenericExtractor(unittest.TestCase):
         extractor.init(Scoped.get_scoped_conf(conf=conf,
                                               scope=extractor.get_scope()))
 
-        self.assertEquals(extractor.extract(), {'foo': 1})
-        self.assertEquals(extractor.extract(), {'bar': 2})
+        self.assertEqual(extractor.extract(), {'foo': 1})
+        self.assertEqual(extractor.extract(), {'bar': 2})

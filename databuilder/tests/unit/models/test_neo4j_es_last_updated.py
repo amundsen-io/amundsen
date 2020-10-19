@@ -22,12 +22,12 @@ class TestNeo4jESLastUpdated(unittest.TestCase):
 
     def test_create_nodes(self) -> None:
         nodes = self.neo4j_es_last_updated.create_nodes()
-        self.assertEquals(len(nodes), 1)
-        self.assertEquals(nodes[0], self.expected_node_result)
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0], self.expected_node_result)
 
     def test_create_next_node(self) -> None:
         next_node = self.neo4j_es_last_updated.create_next_node()
-        self.assertEquals(next_node, self.expected_node_result)
+        self.assertEqual(next_node, self.expected_node_result)
 
     def test_create_next_relation(self) -> None:
         self.assertIs(self.neo4j_es_last_updated.create_next_relation(), None)

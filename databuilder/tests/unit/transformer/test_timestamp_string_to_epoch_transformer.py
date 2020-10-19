@@ -40,7 +40,7 @@ class TestTimestampStrToEpoch(unittest.TestCase):
         })
         transformer.init(conf=config)
         actual = transformer.transform({'foo': '165de33266d4'})
-        self.assertEquals(actual['foo'], 0)
+        self.assertEqual(actual['foo'], 0)
 
 
 if __name__ == '__main__':

@@ -30,15 +30,15 @@ class TestTableLineage(unittest.TestCase):
                                                           cluster=CLUSTER,
                                                           schema=SCHEMA,
                                                           table=TABLE)
-        self.assertEquals(metadata, 'hive://default.base/test')
+        self.assertEqual(metadata, 'hive://default.base/test')
 
     def test_create_nodes(self) -> None:
         nodes = self.table_lineage.create_nodes()
-        self.assertEquals(len(nodes), 0)
+        self.assertEqual(len(nodes), 0)
 
     def test_create_relation(self) -> None:
         relations = self.table_lineage.create_relation()
-        self.assertEquals(len(relations), 2)
+        self.assertEqual(len(relations), 2)
 
         start_key = '{db}://{cluster}.{schema}/{tbl}'.format(db=DB,
                                                              schema=SCHEMA,

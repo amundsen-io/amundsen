@@ -26,12 +26,12 @@ class ColumnReader(object):
                  user_email: str,
                  read_count: int = 1
                  ) -> None:
-        self.database = database.lower()
-        self.cluster = cluster.lower()
-        self.schema = schema.lower()
-        self.table = table.lower()
-        self.column = column.lower()
-        self.user_email = user_email.lower()
+        self.database = database
+        self.cluster = cluster
+        self.schema = schema
+        self.table = table
+        self.column = column
+        self.user_email = user_email
         self.read_count = read_count
 
     def __repr__(self) -> str:

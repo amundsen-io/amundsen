@@ -24,14 +24,14 @@ class TableOwner(Neo4jCsvSerializable):
                  owners: Union[List, str],
                  cluster: str = 'gold',
                  ) -> None:
-        self.db = db_name.lower()
-        self.schema = schema.lower()
-        self.table = table_name.lower()
+        self.db = db_name
+        self.schema = schema
+        self.table = table_name
         if isinstance(owners, str):
             owners = owners.split(',')
-        self.owners = [owner.lower().strip() for owner in owners]
+        self.owners = [owner.strip() for owner in owners]
 
-        self.cluster = cluster.lower()
+        self.cluster = cluster
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
 

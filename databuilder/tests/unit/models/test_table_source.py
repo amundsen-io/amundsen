@@ -27,23 +27,23 @@ class TestTableSource(unittest.TestCase):
 
     def test_get_source_model_key(self) -> None:
         source = self.table_source.get_source_model_key()
-        self.assertEquals(source, '{db}://{cluster}.{schema}/{tbl}/_source'.format(db=DB,
-                                                                                   schema=SCHEMA,
-                                                                                   tbl=TABLE,
-                                                                                   cluster=CLUSTER,
-                                                                                   ))
+        self.assertEqual(source, '{db}://{cluster}.{schema}/{tbl}/_source'.format(db=DB,
+                                                                                  schema=SCHEMA,
+                                                                                  tbl=TABLE,
+                                                                                  cluster=CLUSTER,
+                                                                                  ))
 
     def test_get_metadata_model_key(self) -> None:
         metadata = self.table_source.get_metadata_model_key()
-        self.assertEquals(metadata, 'hive://default.base/test')
+        self.assertEqual(metadata, 'hive://default.base/test')
 
     def test_create_nodes(self) -> None:
         nodes = self.table_source.create_nodes()
-        self.assertEquals(len(nodes), 1)
+        self.assertEqual(len(nodes), 1)
 
     def test_create_relation(self) -> None:
         relations = self.table_source.create_relation()
-        self.assertEquals(len(relations), 1)
+        self.assertEqual(len(relations), 1)
 
         start_key = '{db}://{cluster}.{schema}/{tbl}/_source'.format(db=DB,
                                                                      schema=SCHEMA,
