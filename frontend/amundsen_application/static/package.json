@@ -115,7 +115,7 @@
     "stylelint-scss": "^3.17.2",
     "terser-webpack-plugin": "^4.1.0",
     "ts-jest": "^26.4.1",
-    "ts-loader": "^8.0.5",
+    "ts-loader": "^8.0.6",
     "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0",
     "tslint": "^6.1.3",
