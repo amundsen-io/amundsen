@@ -167,18 +167,18 @@ ORDER BY "click_through_rate" DESC
 LIMIT 10000
 ```
 
-3. Top 50 active user
+6. Top 50 active user
 
-4. Top search term
+7. Top search term
 
-5. Top popular tables
+8. Top popular tables
 
-6. Search click index
+9. Search click index
 
-7. Metadata edits
+10. Metadata edits
 
-8. Metadata edit leaders
+11. Metadata edit leaders
 
-9. Amundsen user per role (by joining with employee data)
+12. Amundsen user per role (by joining with employee data)
 
-10. ...
+13. ...
