@@ -70,6 +70,8 @@ nav:
         - 'How to setup user profiles': 'tutorials/user-profiles.md'
         - 'How to ingest Dashboard': 'databuilder/docs/dashboard_ingestion_guide.md'
         - 'How to track user metric for Amundsen': 'tutorials/how-to-track-user-metric.md'
+        - 'How to add table level and column level badges': 'tutorials/badges.md'
+        - 'How to search Amundsen effectively': 'tutorials/how-to-search-effective.md'
     - 'Deployment':
       - 'Authentication': 'authentication/oidc.md'
       - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
