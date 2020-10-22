@@ -93,10 +93,10 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
     }
 
     return (
-      <div className="bookmark-list">
-        <h2 className="title-1">{BOOKMARK_TITLE}</h2>
+      <article className="bookmark-list">
+        <h2 className="bookmark-list-header">{BOOKMARK_TITLE}</h2>
         {content}
-      </div>
+      </article>
     );
   }
 }

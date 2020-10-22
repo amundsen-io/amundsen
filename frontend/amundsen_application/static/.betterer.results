@@ -19,10 +19,7 @@ exports[`strict null compilation`] = {
       [88, 4, 11, "Type \'Element\' is not assignable to type \'null\'.", "3768376622"],
       [91, 4, 11, "Type \'Element[]\' is not assignable to type \'null\'.", "3768376622"]
     ],
-    "js/components/common/BadgeList/index.spec.tsx:3492368698": [
-      [48, 55, 16, "Argument of type \'string | undefined\' is not assignable to parameter of type \'string\'.\\n  Type \'undefined\' is not assignable to type \'string\'.", "340987603"]
-    ],
-    "js/components/common/Bookmark/MyBookmarks/index.tsx:1185364658": [
+    "js/components/common/Bookmark/MyBookmarks/index.tsx:3008297487": [
       [66, 6, 7, "Type \'Element | null\' is not assignable to type \'never\'.\\n  Type \'null\' is not assignable to type \'never\'.", "3716929964"],
       [67, 6, 3, "Type \'string\' is not assignable to type \'never\'.", "193424690"],
       [68, 6, 5, "Type \'string\' is not assignable to type \'never\'.", "183222373"],
@@ -49,11 +46,11 @@ exports[`strict null compilation`] = {
       [96, 4, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
       [111, 6, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"]
     ],
-    "js/components/common/EntityCard/EntityCardSection/index.tsx:1592385405": [
+    "js/components/common/EntityCard/EntityCardSection/index.tsx:1870704847": [
       [40, 4, 23, "Object is possibly \'null\'.", "1725552512"]
     ],
-    "js/components/common/Flag/index.tsx:2997458704": [
-      [44, 27, 8, "Argument of type \'string | null\' is not assignable to parameter of type \'string\'.\\n  Type \'null\' is not assignable to type \'string\'.", "4036080041"]
+    "js/components/common/Flag/index.tsx:814006609": [
+      [26, 27, 8, "Argument of type \'CaseType | null\' is not assignable to parameter of type \'CaseType\'.\\n  Type \'null\' is not assignable to type \'CaseType\'.", "4036080041"]
     ],
     "js/components/common/OwnerEditor/index.spec.tsx:3994734501": [
       [21, 6, 9, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "1517648899"],
@@ -108,11 +105,11 @@ exports[`strict null compilation`] = {
       [102, 31, 10, "Type \'UpdateMethod.PUT\' is not assignable to type \'never\'.", "3392756765"],
       [102, 61, 7, "Type \'string\' is not assignable to type \'never\'.", "1671693616"]
     ],
-    "js/components/common/Tags/TagsList/index.tsx:3330150315": [
-      [101, 23, 9, "Object is possibly \'undefined\'.", "3803340896"],
+    "js/components/common/Tags/TagsList/index.tsx:4084208491": [
+      [99, 23, 9, "Object is possibly \'undefined\'.", "3803340896"],
       [115, 38, 4, "Type \'Tag[] | undefined\' is not assignable to type \'Tag[]\'.\\n  Type \'undefined\' is not assignable to type \'Tag[]\'.", "2087952548"]
     ],
-    "js/components/common/Tags/index.tsx:575750387": [
+    "js/components/common/Tags/index.tsx:171117907": [
       [67, 49, 13, "Object is possibly \'undefined\'.", "4085240695"],
       [77, 4, 11, "Type \'Tag[]\' is not assignable to type \'never[]\'.\\n  Type \'Tag\' is not assignable to type \'never\'.", "4011456884"],
       [80, 4, 9, "Type \'Tag[]\' is not assignable to type \'never[]\'.", "3803340896"],
@@ -121,10 +118,10 @@ exports[`strict null compilation`] = {
       [93, 4, 11, "Type \'Tag[]\' is not assignable to type \'never[]\'.", "255414113"],
       [98, 4, 9, "Type \'Tag[]\' is not assignable to type \'never[]\'.", "3803340896"]
     ],
-    "js/config/config-utils.ts:1798174672": [
-      [86, 4, 25, "\'style\' is specified more than once, so this usage will be overwritten.", "1214862559"]
+    "js/config/config-utils.ts:3097983516": [
+      [87, 4, 25, "\'style\' is specified more than once, so this usage will be overwritten.", "1214862559"]
     ],
-    "js/config/index.spec.ts:3155903042": [
+    "js/config/index.spec.ts:3696338512": [
       [17, 6, 61, "Object is possibly \'undefined\'.", "1496333578"],
       [51, 6, 61, "Object is possibly \'undefined\'.", "1496333578"]
     ],
@@ -290,7 +287,7 @@ exports[`strict null compilation`] = {
       [72, 13, 7, "Object is possibly \'undefined\'.", "3716929964"],
       [73, 13, 7, "Object is possibly \'undefined\'.", "3716929964"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2956683404": [
+    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2128122504": [
       [51, 48, 18, "Type \'CheckboxFilterProperties[] | undefined\' is not assignable to type \'CheckboxFilterProperties[]\'.\\n  Type \'undefined\' is not assignable to type \'CheckboxFilterProperties[]\'.", "12656471"]
     ],
     "js/pages/SearchPage/SearchFilter/index.spec.tsx:3772392704": [

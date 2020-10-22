@@ -259,7 +259,11 @@ describe('MyBookmarks', () => {
     });
 
     it('renders the correct title', () => {
-      expect(wrapper.find('.title-1').text()).toEqual(BOOKMARK_TITLE);
+      const { wrapper } = setup();
+      const expected = BOOKMARK_TITLE;
+      const actual = wrapper.find('.bookmark-list-header').text();
+
+      expect(actual).toEqual(expected);
     });
 
     it('renders a TabsComponent with correct props', () => {
