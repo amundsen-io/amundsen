@@ -154,7 +154,7 @@ ENV FRONTEND_SVC_CONFIG_MODULE_CLASS amundsen_application.oidc_config.OidcConfig
 ENV APP_WRAPPER flaskoidc
 ENV APP_WRAPPER_CLASS FlaskOIDC
 ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
-ENV FLASK_OIDC_SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
+ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 ```
 
 
