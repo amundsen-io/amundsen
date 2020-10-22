@@ -78,8 +78,11 @@ describe('PopularTables', () => {
     });
 
     it('renders correct label for content', () => {
-      const actual = wrapper.children().find('.title-1').text();
       const expected = POPULAR_TABLES_LABEL;
+      const actual = wrapper
+        .children()
+        .find('.popular-tables-header-text')
+        .text();
 
       expect(actual).toEqual(expected);
     });

@@ -48,7 +48,7 @@ export class TagsListContainer extends React.Component<TagsListContainerProps> {
       shortTagsList,
     } = this.props;
     return (
-      <span className="tag-list">
+      <article className="tag-list">
         <TagsList
           curatedTags={curatedTags}
           popularTags={popularTags}
@@ -56,7 +56,7 @@ export class TagsListContainer extends React.Component<TagsListContainerProps> {
           isLoading={isLoading}
           shortTagsList={shortTagsList}
         />
-      </span>
+      </article>
     );
   }
 }
