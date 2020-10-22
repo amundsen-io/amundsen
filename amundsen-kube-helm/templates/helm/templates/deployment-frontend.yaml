@@ -64,26 +64,41 @@ spec:
           - name: FRONTEND_SVC_CONFIG_MODULE_CLASS
             value: amundsen_application.oidc_config.OidcConfig
           - name: FLASK_OIDC_WHITELISTED_ENDPOINTS
-            value: status,healthcheck,health
-          - name: FLASK_OIDC_SQLALCHEMY_DATABASE_URI
+            value: status,healthcheck,health,logout
+          - name: SQLALCHEMY_DATABASE_URI
             value: sqlite:///sessions.db
           - name: APP_WRAPPER
             value: flaskoidc
           - name: APP_WRAPPER_CLASS
             value: FlaskOIDC
-          - name: FLASK_OIDC_CLIENT_SECRETS
+          - name: OIDC_CLIENT_SECRETS
             value: /etc/client_secrets.json
-          - name: FLASK_OIDC_SECRET_KEY
+          {{- if .Values.frontEnd.OVERWRITE_REDIRECT_URI }}
+          - name: OVERWRITE_REDIRECT_URI
+            value: {{ .Values.frontEnd.OVERWRITE_REDIRECT_URI }}
+          {{- end }}
+          - name: OIDC_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: oidc-config
                 key: OIDC_CLIENT_SECRET
         {{- end }}
+        command: ["gunicorn"]
+        args: ['-w', '4', '--bind', ':5000', 'amundsen_application.wsgi']
+        readinessProbe:
+          httpGet:
+            path: "/healthcheck"
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
         livenessProbe:
           httpGet:
             path: "/healthcheck"
             port: 5000
-          initialDelaySeconds: 60
+          initialDelaySeconds: 10
           periodSeconds: 60
           timeoutSeconds: 1
           successThreshold: 1
