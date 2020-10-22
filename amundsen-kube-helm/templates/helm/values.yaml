@@ -68,7 +68,7 @@ search:
   ##
   ## search.imageTag -- The image tag of the search container.
   ##
-  imageTag: 2.0.0
+  imageTag: 2.4.0
   ##
   ## search.replicas -- How many replicas of the search service to run.
   ##
@@ -128,7 +128,7 @@ metadata:
   ##
   ## metadata.imageTag -- The image tag of the metadata container.
   ##
-  imageTag: 2.0.0
+  imageTag: 2.5.5
   ##
   ## metadata.replicas -- How many replicas of the metadata service to run.
   ##
@@ -184,7 +184,7 @@ frontEnd:
   ##
   ## frontEnd.imageTag -- The image tag of the frontend container.
   ##
-  imageTag: 2.0.0
+  imageTag: 2.3.0
   ##
   ## frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   ##
@@ -222,6 +222,10 @@ frontEnd:
   ## frontEnd.OIDC_AUTH_SERVER_ID -- The authorization server id for OIDC.
   ##
   OIDC_AUTH_SERVER_ID:
+  ##
+  ## frontEnd.OVERWRITE_REDIRECT_URI -- The redirect uri for OIDC.
+  ##
+  OVERWRITE_REDIRECT_URI:
 
   ##
   ## frontEnd.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
