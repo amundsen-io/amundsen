@@ -131,26 +131,29 @@ export class TableDetail extends React.Component<
   };
 
   componentDidMount() {
-    const { index, source } = getLoggingParams(this.props.location.search);
+    const { location, getTableData } = this.props;
+    const { index, source } = getLoggingParams(location.search);
 
     this.key = this.getTableKey();
-    this.props.getTableData(this.key, index, source);
+    getTableData(this.key, index, source);
     this.didComponentMount = true;
   }
 
   componentDidUpdate() {
+    const { location, getTableData } = this.props;
     const newKey = this.getTableKey();
 
     if (this.key !== newKey) {
-      const { index, source } = getLoggingParams(this.props.location.search);
+      const { index, source } = getLoggingParams(location.search);
 
       this.key = newKey;
-      this.props.getTableData(this.key, index, source);
+      getTableData(this.key, index, source);
     }
   }
 
   getDisplayName() {
-    const { params } = this.props.match;
+    const { match } = this.props;
+    const { params } = match;
 
     return `${params.schema}.${params.table}`;
   }
@@ -161,7 +164,8 @@ export class TableDetail extends React.Component<
     we can't pass it as a single URL parameter without encodeURIComponent which makes ugly URLs.
     DO NOT CHANGE
     */
-    const { params } = this.props.match;
+    const { match } = this.props;
+    const { params } = match;
 
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
@@ -367,7 +371,7 @@ export class TableDetail extends React.Component<
                   <EditableSection title={Constants.TAG_TITLE}>
                     <TagInput
                       resourceType={ResourceType.table}
-                      uriKey={this.props.tableData.key}
+                      uriKey={tableData.key}
                     />
                   </EditableSection>
                   {this.renderProgrammaticDesc(
