@@ -290,13 +290,13 @@ exports[`strict null compilation`] = {
     "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2128122504": [
       [51, 48, 18, "Type \'CheckboxFilterProperties[] | undefined\' is not assignable to type \'CheckboxFilterProperties[]\'.\\n  Type \'undefined\' is not assignable to type \'CheckboxFilterProperties[]\'.", "12656471"]
     ],
-    "js/pages/SearchPage/SearchFilter/index.spec.tsx:3772392704": [
-      [234, 23, 9, "Argument of type \'undefined\' is not assignable to parameter of type \'FilterConfig\'.", "2620553983"]
+    "js/pages/SearchPage/SearchFilter/index.spec.tsx:2944458990": [
+      [232, 23, 9, "Argument of type \'undefined\' is not assignable to parameter of type \'FilterConfig\'.", "2620553983"]
     ],
-    "js/pages/SearchPage/SearchFilter/index.tsx:2139967954": [
-      [78, 8, 42, "Type \'{ value: string; label: string | undefined; }[]\' is not assignable to type \'CheckboxFilterProperties[]\'.\\n  Type \'{ value: string; label: string | undefined; }\' is not assignable to type \'CheckboxFilterProperties\'.\\n    Types of property \'label\' are incompatible.\\n      Type \'string | undefined\' is not assignable to type \'string\'.\\n        Type \'undefined\' is not assignable to type \'string\'.", "3344322363"],
-      [84, 26, 7, "Argument of type \'{ categoryId: string; helpText: string | undefined; title: string; type: FilterType; }\' is not assignable to parameter of type \'never\'.", "2519086860"],
-      [93, 56, 4, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'null\' is not assignable to parameter of type \'{}\'.", "2087897566"]
+    "js/pages/SearchPage/SearchFilter/index.tsx:1113311229": [
+      [80, 8, 42, "Type \'{ value: string; label: string | undefined; }[]\' is not assignable to type \'CheckboxFilterProperties[]\'.\\n  Type \'{ value: string; label: string | undefined; }\' is not assignable to type \'CheckboxFilterProperties\'.\\n    Types of property \'label\' are incompatible.\\n      Type \'string | undefined\' is not assignable to type \'string\'.\\n        Type \'undefined\' is not assignable to type \'string\'.", "3344322363"],
+      [86, 26, 7, "Argument of type \'{ categoryId: string; helpText: string | undefined; title: string; type: FilterType; }\' is not assignable to parameter of type \'never\'.", "2519086860"],
+      [95, 56, 4, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'null\' is not assignable to parameter of type \'{}\'.", "2087897566"]
     ],
     "js/pages/SearchPage/index.spec.tsx:2996104118": [
       [45, 52, 8, "Argument of type \'Partial<Location<{} | null | undefined>> | undefined\' is not assignable to parameter of type \'Partial<Location<{} | null | undefined>>\'.\\n  Type \'undefined\' is not assignable to type \'Partial<Location<{} | null | undefined>>\'.", "2700611480"],
@@ -332,10 +332,10 @@ exports[`strict null compilation`] = {
     "js/pages/TableDetailPage/index.spec.tsx:120018363": [
       [33, 4, 8, "Argument of type \'Partial<Location<{} | null | undefined>> | undefined\' is not assignable to parameter of type \'Partial<Location<{} | null | undefined>>\'.\\n  Type \'undefined\' is not assignable to type \'Partial<Location<{} | null | undefined>>\'.", "2700611480"]
     ],
-    "js/pages/TableDetailPage/index.tsx:987689418": [
-      [181, 10, 13, "Type \'null\' is not assignable to type \'((newValue: string, onSuccess?: (() => any) | undefined, onFailure?: (() => any) | undefined) => void) | undefined\'.", "67794331"],
-      [236, 11, 26, "Type \'{ itemsPerPage: number; source: string; }\' is missing the following properties from type \'Readonly<Pick<TableDashboardResourceListProps, \\"source\\" | \\"isLoading\\" | \\"dashboards\\" | \\"itemsPerPage\\" | \\"errorText\\"> & OwnProps>\': isLoading, dashboards, errorText", "2224258167"],
-      [325, 16, 7, "Type \'string | null\' is not assignable to type \'string | undefined\'.\\n  Type \'null\' is not assignable to type \'string | undefined\'.", "3817619378"]
+    "js/pages/TableDetailPage/index.tsx:3727993506": [
+      [185, 10, 13, "Type \'null\' is not assignable to type \'((newValue: string, onSuccess?: (() => any) | undefined, onFailure?: (() => any) | undefined) => void) | undefined\'.", "67794331"],
+      [240, 11, 26, "Type \'{ itemsPerPage: number; source: string; }\' is missing the following properties from type \'Readonly<Pick<TableDashboardResourceListProps, \\"source\\" | \\"isLoading\\" | \\"dashboards\\" | \\"itemsPerPage\\" | \\"errorText\\"> & OwnProps>\': isLoading, dashboards, errorText", "2224258167"],
+      [329, 16, 7, "Type \'string | null\' is not assignable to type \'string | undefined\'.\\n  Type \'null\' is not assignable to type \'string | undefined\'.", "3817619378"]
     ],
     "js/utils/navigationUtils.ts:1127210474": [
       [19, 50, 21, "Type \'undefined\' cannot be used as an index type.", "602535635"]

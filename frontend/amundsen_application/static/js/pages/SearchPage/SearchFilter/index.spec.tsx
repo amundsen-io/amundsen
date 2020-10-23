@@ -16,7 +16,7 @@ import {
   mapStateToProps,
   SearchFilter,
   SearchFilterProps,
-  FilterSection,
+  FilterSectionItem,
   CheckboxFilterSection,
 } from '.';
 
@@ -52,7 +52,7 @@ describe('SearchFilter', () => {
     let wrapper;
     let content;
     let mockCheckboxFilterData: CheckboxFilterSection;
-    let mockInputFilterData: FilterSection;
+    let mockInputFilterData: FilterSectionItem;
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
@@ -127,13 +127,11 @@ describe('SearchFilter', () => {
   });
 
   describe('render', () => {
-    let props;
     let wrapper;
     let renderFilterSectionsSpy;
 
     beforeAll(() => {
       const setupResult = setup();
-      props = setupResult.props;
       wrapper = setupResult.wrapper;
       renderFilterSectionsSpy = jest.spyOn(
         wrapper.instance(),

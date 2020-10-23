@@ -45,7 +45,9 @@ const ShimmeringIssuesLoader: React.FC = () => {
 
 export class TableIssues extends React.Component<TableIssueProps> {
   componentDidMount() {
-    this.props.getIssues(this.props.tableKey);
+    const { getIssues, tableKey } = this.props;
+
+    getIssues(tableKey);
   }
 
   renderIssue = (issue: Issue, index: number) => {
@@ -77,20 +79,21 @@ export class TableIssues extends React.Component<TableIssueProps> {
   };
 
   renderIssueContent = () => {
-    if (this.props.issues.length === 0) {
+    const { issues } = this.props;
+
+    if (issues.length === 0) {
       return <div className="issue-banner">{NO_DATA_ISSUES_TEXT}</div>;
     }
-    return this.props.issues.map(this.renderIssue);
+    return issues.map(this.renderIssue);
   };
 
   renderIssueFooter = () => {
-    const hasIssues = this.props.issues.length !== 0;
+    const { issues, tableKey, tableName, allIssuesUrl, total } = this.props;
+    const hasIssues = issues.length !== 0;
+
     const reportIssueLink = (
       <div className={`table-report-new-issue ${hasIssues ? 'ml-1' : ''}`}>
-        <ReportTableIssue
-          tableKey={this.props.tableKey}
-          tableName={this.props.tableName}
-        />
+        <ReportTableIssue tableKey={tableKey} tableName={tableName} />
       </div>
     );
 
@@ -104,10 +107,10 @@ export class TableIssues extends React.Component<TableIssueProps> {
           className="table-issue-more-issues"
           target="_blank"
           rel="noreferrer"
-          href={this.props.allIssuesUrl}
+          href={allIssuesUrl}
           onClick={logClick}
         >
-          View all {this.props.total} issues
+          View all {total} issues
         </a>
         |{reportIssueLink}
       </span>
@@ -115,7 +118,9 @@ export class TableIssues extends React.Component<TableIssueProps> {
   };
 
   render() {
-    if (this.props.isLoading) {
+    const { isLoading } = this.props;
+
+    if (isLoading) {
       return (
         <>
           {this.renderIssueTitle()}
