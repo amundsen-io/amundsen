@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import copy
+import pandas
 import csv
 import ctypes
 from io import open
@@ -9,7 +9,7 @@ import logging
 import time
 from os import listdir
 from os.path import isfile, join
-from string import Template
+from jinja2 import Template
 
 from neo4j import GraphDatabase, Transaction
 import neo4j
@@ -99,19 +99,6 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSCATION_SIZE: 500,
                                           NEO4J_ENCRYPTED: True,
                                           NEO4J_VALIDATE_SSL: False,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
-
-NODE_MERGE_TEMPLATE = Template("""MERGE (node:$LABEL {key: '${KEY}'})
-ON CREATE SET ${create_prop_body}
-${update_statement}""")
-
-NODE_UPDATE_TEMPLATE = Template("""ON MATCH SET ${update_prop_body}""")
-
-RELATION_MERGE_TEMPLATE = Template("""MATCH (n1:$START_LABEL {key: '${START_KEY}'}),
-(n2:$END_LABEL {key: '${END_KEY}'})
-MERGE (n1)-[r1:$TYPE]->(n2)-[r2:$REVERSE_TYPE]->(n1)
-$PROP_STMT RETURN n1.key, n2.key""")
-
-CREATE_UNIQUE_INDEX_TEMPLATE = Template('CREATE CONSTRAINT ON (node:${LABEL}) ASSERT node.key IS UNIQUE')
 
 LOGGER = logging.getLogger(__name__)
 
@@ -232,7 +219,7 @@ class Neo4jCsvPublisher(Publisher):
         LOGGER.info('Creating indices. (Existing indices will be ignored)')
 
         with open(node_file, 'r', encoding='utf8') as node_csv:
-            for node_record in csv.DictReader(node_csv):
+            for node_record in pandas.read_csv(node_csv).to_dict(orient='records'):
                 label = node_record[NODE_LABEL_KEY]
                 if label not in self.labels:
                     self._try_create_index(label)
@@ -259,9 +246,10 @@ class Neo4jCsvPublisher(Publisher):
         """
 
         with open(node_file, 'r', encoding='utf8') as node_csv:
-            for count, node_record in enumerate(csv.DictReader(node_csv)):
+            for node_record in pandas.read_csv(node_csv).to_dict(orient="records"):
                 stmt = self.create_node_merge_statement(node_record=node_record)
-                tx = self._execute_statement(stmt, tx)
+                params = self._create_props_param(node_record)
+                tx = self._execute_statement(stmt, tx, params)
         return tx
 
     def is_create_only_node(self, node_record: dict) -> bool:
@@ -281,16 +269,17 @@ class Neo4jCsvPublisher(Publisher):
         :param node_record:
         :return:
         """
-        params = copy.deepcopy(node_record)
-        params['create_prop_body'] = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node')
+        template = Template("""
+            MERGE (node:{{ LABEL }} {key: $KEY})
+            ON CREATE SET {{ PROP_BODY }}
+            {% if update %} ON MATCH SET {{ PROP_BODY }} {% endif %}
+        """)
 
-        update_statement = ''
-        if not self.is_create_only_node(node_record):
-            update_prop_body = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node')
-            update_statement = NODE_UPDATE_TEMPLATE.substitute(update_prop_body=update_prop_body)
-        params['update_statement'] = update_statement
+        prop_body = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node')
 
-        return NODE_MERGE_TEMPLATE.substitute(params)
+        return template.render(LABEL=node_record["LABEL"],
+                               PROP_BODY=prop_body,
+                               update=(not self.is_create_only_node(node_record)))
 
     def _publish_relation(self, relation_file: str, tx: Transaction) -> Transaction:
         """
@@ -312,7 +301,7 @@ class Neo4jCsvPublisher(Publisher):
 
             count = 0
             with open(relation_file, 'r', encoding='utf8') as relation_csv:
-                for rel_record in csv.DictReader(relation_csv):
+                for rel_record in pandas.read_csv(relation_csv).to_dict(orient="records"):
                     stmt, params = self._relation_preprocessor.preprocess_cypher(
                         start_label=rel_record[RELATION_START_LABEL],
                         end_label=rel_record[RELATION_END_LABEL],
@@ -328,9 +317,10 @@ class Neo4jCsvPublisher(Publisher):
             LOGGER.info('Executed pre-processing Cypher statement {} times'.format(count))
 
         with open(relation_file, 'r', encoding='utf8') as relation_csv:
-            for count, rel_record in enumerate(csv.DictReader(relation_csv)):
+            for rel_record in pandas.read_csv(relation_csv).to_dict(orient="records"):
                 stmt = self.create_relationship_merge_statement(rel_record=rel_record)
-                tx = self._execute_statement(stmt, tx,
+                params = self._create_props_param(rel_record)
+                tx = self._execute_statement(stmt, tx, params,
                                              expect_result=self._confirm_rel_created)
 
         return tx
@@ -341,22 +331,37 @@ class Neo4jCsvPublisher(Publisher):
         :param rel_record:
         :return:
         """
-        param = copy.deepcopy(rel_record)
-        create_prop_body = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1')
-        param['PROP_STMT'] = ' '  # No properties for relationship by default
+        template = Template("""
+            MATCH (n1:{{ START_LABEL }} {key: $START_KEY}), (n2:{{ END_LABEL }} {key: $END_KEY})
+            MERGE (n1)-[r1:{{ TYPE }}]->(n2)-[r2:{{ REVERSE_TYPE }}]->(n1)
+            {% if update_prop_body %}
+            ON CREATE SET {{ prop_body }}
+            ON MATCH SET {{ prop_body }}
+            {% endif %}
+            RETURN n1.key, n2.key
+        """)
 
-        if create_prop_body:
-            # We need one more body for reverse relation
-            create_prop_body = ' , '.join([create_prop_body,
-                                           self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')])
-            update_prop_body = ' , '.join([self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1'),
-                                           self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')])
+        prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1')
+        prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')
+        prop_body = ' , '.join([prop_body_r1, prop_body_r2])
 
-            param['PROP_STMT'] = """ON CREATE SET {create_prop_body}
-ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
-                                          update_prop_body=update_prop_body)
+        return template.render(START_LABEL=rel_record["START_LABEL"],
+                               END_LABEL=rel_record["END_LABEL"],
+                               TYPE=rel_record["TYPE"],
+                               REVERSE_TYPE=rel_record["REVERSE_TYPE"],
+                               update_prop_body=prop_body_r1,
+                               prop_body=prop_body)
 
-        return RELATION_MERGE_TEMPLATE.substitute(param)
+    def _create_props_param(self, record_dict: dict) -> dict:
+        params = {}
+        for k, v in record_dict.items():
+            if k.endswith(UNQUOTED_SUFFIX):
+                k = k[:-len(UNQUOTED_SUFFIX)]
+            else:
+                v = '{val}'.format(val=v)
+
+            params[k] = v
+        return params
 
     def _create_props_body(self,
                            record_dict: dict,
@@ -371,29 +376,17 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         :param record_dict: A dict represents CSV row
         :param excludes: set of excluded columns that does not need to be in properties (e.g: KEY, LABEL ...)
         :param identifier: identifier that will be used in CYPHER query as shown on above example
-        :param is_update: Creates property body for update statement in MERGE
         :return: Properties body for Cypher statement
         """
-        template_params = {}
         props = []
         for k, v in record_dict.items():
             if k in excludes:
-                template_params[k] = v
                 continue
-
-            # if isinstance(str, v):
-            # escape backslash for Cypher query
-            v = v.replace('\\', '\\\\')
-            # escape quote for Cypher query
-            v = v.replace('\'', "\\'")
 
             if k.endswith(UNQUOTED_SUFFIX):
                 k = k[:-len(UNQUOTED_SUFFIX)]
-                props.append('{id}.{key} = {val}'.format(id=identifier, key=k, val=v))
-            else:
-                props.append("""{id}.{key} = '{val}'""".format(id=identifier, key=k, val=v))
 
-            template_params[k] = v
+            props.append('{id}.{key} = {val}'.format(id=identifier, key=k, val=f'${k}'))
 
         props.append("""{id}.{key} = '{val}'""".format(id=identifier,
                                                        key=PUBLISHED_TAG_PROPERTY_NAME,
@@ -408,7 +401,7 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
     def _execute_statement(self,
                            stmt: str,
                            tx: Transaction,
-                           params: bool=None,
+                           params: dict=None,
                            expect_result: bool=False) -> Transaction:
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
@@ -450,7 +443,10 @@ ON MATCH SET {update_prop_body}""".format(create_prop_body=create_prop_body,
         :param label:
         :return:
         """
-        stmt = CREATE_UNIQUE_INDEX_TEMPLATE.substitute(LABEL=label)
+        stmt = Template("""
+            CREATE CONSTRAINT ON (node:{{ LABEL }}) ASSERT node.key IS UNIQUE
+        """).render(LABEL=label)
+
         LOGGER.info('Trying to create index for label {label} if not exist: {stmt}'.format(label=label,
                                                                                            stmt=stmt))
         with self._driver.session() as session:
