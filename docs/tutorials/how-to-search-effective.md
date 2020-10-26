@@ -16,7 +16,7 @@ Once the users are on the Amundsen home page,  the users could search for any r
 Tips:
 
 - If you know the full table name (e.g. schema.table), try to search with that full table name, which will provide as the top result in general.
-- If you are unsure of the table name, search with `word1 word2` with space in between. For example, if your table's name is `test.test_rides`  but you don't know the exact table name but only know the table name includes fact and rides, please search with `test rides` (space in between). In this case, Amundsen will search all the matching with fact  as well as rides and union the result together based on ranking.
+- If you are unsure of the table name, search with `word1 word2` with space in between. For example, if your table's name is `test.test_rides`  but you don't know the exact table name but only know the table name includes test and rides, please search with `test rides` (space in between). In this case, Amundsen will return tables that match either test or rides and union the result together based on the search algorithm ranking.
 - If you know your table name but don't know the schema of the table name, you could search with `word1_word2`. For example, if you know your table name is `test_rides`, please search with `test_rides` that will only return the table matched that given name.
 
 ## Advanced Search
@@ -29,7 +29,7 @@ If you want to narrow down the search results, you could put more filters. In th
 
 ## Searching Ranking Algorithm Demystified
 
-Currently, Amundsen provides the same search ranking for all the different personas. It ranks the table based on the query count in the presto search query log from the past 90 days at Lyft. It could be different based on your companies' setup.
+Currently, Amundsen provides the same search ranking for all the different personas. It ranks the table based on the query count in the presto search query log from the past 90 days at Lyft. It could be different based on your company's setup.
 
 ## Try out different search heuristic
 
