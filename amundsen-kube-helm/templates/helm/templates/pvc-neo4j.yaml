@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: neo4j-pvc
   namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/resource-policy: "keep"
   labels:
     app: {{ template "amundsen.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
