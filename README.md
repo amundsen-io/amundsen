@@ -114,6 +114,7 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 - [Apache Druid](https://druid.apache.org/)
 - [Apache Hive](https://hive.apache.org/)
 - CSV
+- [Delta Lake](https://delta.io/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
 - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
