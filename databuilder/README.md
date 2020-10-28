@@ -1,8 +1,6 @@
 # Amundsen Databuilder
 
 [![PyPI version](https://badge.fury.io/py/amundsen-databuilder.svg)](https://badge.fury.io/py/amundsen-databuilder)
-[![Build Status](https://api.travis-ci.org/amundsen-io/amundsendatabuilder.svg?branch=master)](https://travis-ci.org/amundsen-io/amundsendatabuilder)
-[![Coverage Status](https://img.shields.io/codecov/c/github/amundsen-io/amundsendatabuilder/master.svg)](https://codecov.io/github/amundsen-io/amundsendatabuilder?branch=master)
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/amundsen-databuilder.svg)](https://pypi.org/project/amundsen-databuilder/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
