@@ -55,8 +55,12 @@ druid = [
     'pydruid'
 ]
 
+spark = [
+    'pyspark == 3.0.1'
+]
+
 all_deps = requirements + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid
+    bigquery + jsonpath + db2 + dremio + druid + spark
 
 setup(
     name='amundsen-databuilder',
@@ -82,6 +86,7 @@ setup(
         'db2': db2,
         'dremio': dremio,
         'druid': druid,
+        'delta-lake': spark
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
