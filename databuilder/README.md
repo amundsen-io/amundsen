@@ -176,6 +176,27 @@ If using the filters option here is the input format
 ]
 ```
 
+#### [Delta-Lake-MetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/delta_lake_metadata_extractor.py)
+An extractor that runs on a spark cluster and obtains delta-lake metadata using spark sql commands. 
+This custom solution is currently necessary because the hive metastore does not contain all metadata information for delta-lake tables.
+For simplicity, this extractor can also be used for all hive tables as well. 
+
+Because it must run on a spark cluster, 
+it is required that you have an operator (for example a [databricks submit run operator](https://airflow.apache.org/docs/stable/_modules/airflow/contrib/operators/databricks_operator.html))
+that calls the configuration code on a spark cluster.   
+```python
+spark = SparkSession.builder.appName("Amundsen Delta Lake Metadata Extraction").getOrCreate()
+job_config = create_delta_lake_job_config()
+dExtractor = DeltaLakeMetadataExtractor()
+dExtractor.set_spark(spark)
+job = DefaultJob(conf=job_config,
+                 task=DefaultTask(extractor=dExtractor, loader=FsNeo4jCSVLoader()),
+                 publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+You can check out the sample deltalake metadata script for a full example.
+
 #### [DremioMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/dremio_metadata_extractor.py)
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from [Dremio](https://www.dremio.com).
 
