@@ -27,7 +27,9 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
         """
         Test Extraction with empty result from query
         """
-        with patch.object(SQLAlchemyExtractor, '_get_connection'):
+        with patch.object(SQLAlchemyExtractor, '_get_connection'), \
+            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             extractor = HiveTableMetadataExtractor()
             extractor.init(self.conf)
 
@@ -35,7 +37,9 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
             self.assertEqual(results, None)
 
     def test_extraction_with_single_result(self) -> None:
-        with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection:
+        with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection, \
+            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             connection = MagicMock()
             mock_connection.return_value = connection
             sql_execute = MagicMock()
@@ -101,7 +105,9 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
             self.assertIsNone(extractor.extract())
 
     def test_extraction_with_multiple_result(self) -> None:
-        with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection:
+        with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection, \
+            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             connection = MagicMock()
             mock_connection.return_value = connection
             sql_execute = MagicMock()
@@ -240,7 +246,9 @@ class TestHiveTableMetadataExtractorWithWhereClause(unittest.TestCase):
         """
         Test Extraction with empty result from query
         """
-        with patch.object(SQLAlchemyExtractor, '_get_connection'):
+        with patch.object(SQLAlchemyExtractor, '_get_connection'), \
+            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             extractor = HiveTableMetadataExtractor()
             extractor.init(self.conf)
             self.assertTrue(self.where_clause_suffix in extractor.sql_stmt)
@@ -250,7 +258,9 @@ class TestHiveTableMetadataExtractorWithWhereClause(unittest.TestCase):
         Test Extraction by providing a custom sql
         :return:
         """
-        with patch.object(SQLAlchemyExtractor, '_get_connection'):
+        with patch.object(SQLAlchemyExtractor, '_get_connection'), \
+            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             config_dict = {
                 HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
                 'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
