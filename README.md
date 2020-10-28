@@ -190,6 +190,7 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - [How to find and organize your data from the command-line](https://towardsdatascience.com/how-to-find-and-organize-your-data-from-the-command-line-852a4042b2be)
 - [Data Discovery Platform at Bagelcode](https://medium.com/bagelcode/data-discovery-platform-at-bagelcode-b58a622d17fd)
 - [Cataloging Tools for Data Teams](https://towardsdatascience.com/cataloging-tools-for-data-teams-8d62d7a4cd95)
+- [An Overview of Data Discovery Platforms and Open Source Solutions](https://eugeneyan.com/writing/data-discovery-platforms/)
 
 ## Community meetings
 
