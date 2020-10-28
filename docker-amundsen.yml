@@ -33,7 +33,7 @@ services:
           soft: 65536
           hard: 65536
   amundsensearch:
-      image: amundsendev/amundsen-search:2.1.3
+      image: amundsendev/amundsen-search:2.4.0
       container_name: amundsensearch
       ports:
         - 5001:5000
@@ -45,7 +45,7 @@ services:
         - PROXY_ENDPOINT=es_amundsen
       command: gunicorn -w 2 --bind :5000 search_service.search_wsgi
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:2.0.0
+      image: amundsendev/amundsen-metadata:2.5.5
       container_name: amundsenmetadata
       depends_on:
         - neo4j
@@ -57,7 +57,7 @@ services:
          - PROXY_HOST=bolt://neo4j_amundsen
       command: gunicorn -w 2 --bind :5000 metadata_service.metadata_wsgi
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:2.1.1
+      image: amundsendev/amundsen-frontend:2.3.0
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata
