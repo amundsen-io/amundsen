@@ -233,6 +233,7 @@ Currently **officially** using Amundsen:
 1. [PicPay](https://picpay.com.br)
 1. [PUBG](https://careers.pubg.com/)
 1. [Rapido](https://rapido.bike/Careers?lan=en "India's largest bike taxi service")
+1. [REA Group](https://www.rea-group.com/)
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
 1. [WeTransfer](https://wetransfer.com)
