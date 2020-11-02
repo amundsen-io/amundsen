@@ -80,54 +80,76 @@ export class OwnerEditor extends React.Component<
   }
 
   componentDidUpdate(prevProps) {
+    const { itemProps } = this.props;
+
     // TODO - itemProps is a new object and this check needs to be fixed
-    if (prevProps.itemProps !== this.props.itemProps) {
+    if (prevProps.itemProps !== itemProps) {
       this.setState({
-        itemProps: this.props.itemProps,
-        tempItemProps: this.props.itemProps,
+        itemProps,
+        tempItemProps: itemProps,
       });
     }
   }
 
   handleShow = () => {
-    this.props.setEditMode(true);
+    const { setEditMode } = this.props;
+
+    if (setEditMode) {
+      setEditMode(true);
+    }
   };
 
   cancelEdit = () => {
-    this.setState({ tempItemProps: this.state.itemProps });
-    this.props.setEditMode(false);
+    const { setEditMode } = this.props;
+    const { itemProps } = this.state;
+
+    this.setState({ tempItemProps: itemProps });
+    if (setEditMode) {
+      setEditMode(false);
+    }
   };
 
   saveEdit = () => {
+    const { itemProps, tempItemProps } = this.state;
+    const { setEditMode, onUpdateList } = this.props;
+
     const updateArray = [];
-    Object.keys(this.state.itemProps).forEach((key) => {
-      if (!this.state.tempItemProps.hasOwnProperty(key)) {
+
+    Object.keys(itemProps).forEach((key) => {
+      if (!tempItemProps.hasOwnProperty(key)) {
         updateArray.push({ method: UpdateMethod.DELETE, id: key });
       }
     });
-    Object.keys(this.state.tempItemProps).forEach((key) => {
-      if (!this.state.itemProps.hasOwnProperty(key)) {
+    Object.keys(tempItemProps).forEach((key) => {
+      if (!itemProps.hasOwnProperty(key)) {
         updateArray.push({ method: UpdateMethod.PUT, id: key });
       }
     });
 
     const onSuccessCallback = () => {
-      this.props.setEditMode(false);
+      if (setEditMode) {
+        setEditMode(false);
+      }
     };
     const onFailureCallback = () => {
       this.setState({
         errorText: Constants.DEFAULT_ERROR_TEXT,
       });
-      this.props.setEditMode(false);
+      if (setEditMode) {
+        setEditMode(false);
+      }
     };
-    this.props.onUpdateList(updateArray, onSuccessCallback, onFailureCallback);
+
+    onUpdateList(updateArray, onSuccessCallback, onFailureCallback);
   };
 
   recordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { value } = this.inputRef.current;
-    if (value) {
+
+    if (this.inputRef.current && value) {
       this.inputRef.current.value = '';
+
       const newTempItemProps = {
         ...this.state.tempItemProps,
         [value]: { label: value },
@@ -137,23 +159,27 @@ export class OwnerEditor extends React.Component<
   };
 
   recordDeleteItem = (deletedKey: string) => {
-    const newTempItemProps = Object.keys(this.state.tempItemProps)
+    const { tempItemProps } = this.state;
+
+    const newTempItemProps = Object.keys(tempItemProps)
       .filter((key) => {
         return key !== deletedKey;
       })
       .reduce((obj, key) => {
-        obj[key] = this.state.tempItemProps[key];
+        obj[key] = tempItemProps[key];
         return obj;
       }, {});
     this.setState({ tempItemProps: newTempItemProps });
   };
 
   renderModalBody = () => {
-    if (!this.props.isEditing) {
+    const { isEditing, isLoading } = this.props;
+
+    if (!isEditing) {
       return null;
     }
 
-    if (this.props.isLoading) {
+    if (isLoading) {
       return (
         <Modal.Body>
           <LoadingSpinner />
@@ -191,6 +217,7 @@ export class OwnerEditor extends React.Component<
                   /* tslint:disable - TODO: Investigate jsx-no-lambda rule */
                   onClick={() => this.recordDeleteItem(key)}
                   /* tslint:enable */
+                  type="button"
                 >
                   <span className="sr-only">{Constants.DELETE_ITEM}</span>
                   <img className="icon icon-delete" alt="" />
@@ -205,20 +232,21 @@ export class OwnerEditor extends React.Component<
 
   render() {
     const { isEditing, readOnly, resourceType } = this.props;
-    const hasItems = Object.keys(this.state.itemProps).length > 0;
+    const { errorText, itemProps } = this.state;
+    const hasItems = Object.keys(itemProps).length > 0;
 
-    if (this.state.errorText) {
+    if (errorText) {
       return (
         <div className="owner-editor-component">
-          <label className="status-message">{this.state.errorText}</label>
+          <label className="status-message">{errorText}</label>
         </div>
       );
     }
 
     const ownerList = hasItems ? (
       <ul className="component-list">
-        {Object.keys(this.state.itemProps).map((key) => {
-          const owner = this.state.itemProps[key];
+        {Object.keys(itemProps).map((key) => {
+          const owner = itemProps[key];
           const avatarLabel = React.createElement(AvatarLabel, owner);
 
           let listItem;
