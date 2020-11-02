@@ -28,11 +28,11 @@ class TestBadge(unittest.TestCase):
 
     def test_get_badge_key(self) -> None:
         badge_key = self.badge_metada.get_badge_key(badge1.name)
-        self.assertEquals(badge_key, badge1.name)
+        self.assertEqual(badge_key, badge1.name)
 
     def test_create_nodes(self) -> None:
         nodes = self.badge_metada.create_nodes()
-        self.assertEquals(len(nodes), 2)
+        self.assertEqual(len(nodes), 2)
 
         node1 = {
             NODE_KEY: BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name),
@@ -75,7 +75,7 @@ class TestBadge(unittest.TestCase):
 
     def test_create_relation(self) -> None:
         relations = self.badge_metada.create_relation()
-        self.assertEquals(len(relations), 2)
+        self.assertEqual(len(relations), 2)
 
         relation1 = {
             RELATION_START_LABEL: self.badge_metada.start_label,
