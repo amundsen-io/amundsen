@@ -1,8 +1,12 @@
 import { ResourceType } from 'interfaces/Resources';
+import { assert } from 'console';
+import { access } from 'fs';
+import { sys } from 'typescript';
 import * as DateUtils from './dateUtils';
 import * as LogUtils from './logUtils';
 import * as NavigationUtils from './navigationUtils';
 import * as TextUtils from './textUtils';
+import * as NumberUtils from './numberUtils';
 
 describe('textUtils', () => {
   describe('convertText', () => {
@@ -42,6 +46,41 @@ describe('textUtils', () => {
         TextUtils.CaseType.TITLE_CASE
       );
       const expected = 'Test Title Case';
+
+      expect(actual).toEqual(expected);
+    });
+  });
+});
+
+describe('numberUtils', () => {
+  describe('isNumber', () => {
+    it('returns true if string is number', () => {
+      const actual = NumberUtils.isNumber('1234');
+      const expected = true;
+
+      expect(actual).toEqual(expected);
+    });
+    it('returns false if string is not number', () => {
+      const actualString = NumberUtils.isNumber('abcd');
+      const actualDate = NumberUtils.isNumber('2020-11-03');
+      const actualAlphaNum = NumberUtils.isNumber('1a2b3c');
+      const expected = false;
+
+      expect(actualString).toEqual(expected);
+      expect(actualDate).toEqual(expected);
+      expect(actualAlphaNum).toEqual(expected);
+    });
+  });
+  describe('formatNumber', () => {
+    it('returns formatted number', () => {
+      const actual = NumberUtils.formatNumber('1998');
+      const expected = '1,998';
+
+      expect(actual).toEqual(expected);
+    });
+    it('get NaN on non numbers', () => {
+      const actual = NumberUtils.formatNumber('2020-11-03');
+      const expected = 'NaN';
 
       expect(actual).toEqual(expected);
     });

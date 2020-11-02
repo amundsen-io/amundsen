@@ -135,6 +135,26 @@ function TestDataBuilder(config = {}) {
 
     return new this.Klass(attr);
   };
+  this.withNonNumericStats = () => {
+    const attr = {
+      stats: [
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'count',
+          stat_val: '12345',
+        },
+        {
+          end_epoch: 1571616000,
+          start_epoch: 1571616000,
+          stat_type: 'date',
+          stat_val: '2020-11-03',
+        },
+      ],
+    };
+
+    return new this.Klass(attr);
+  };
 
   this.withEmptyStats = () => {
     const attr = { stats: [] };
