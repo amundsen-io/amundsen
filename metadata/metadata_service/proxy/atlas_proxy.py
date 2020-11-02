@@ -522,35 +522,27 @@ class AtlasProxy(BaseProxy):
 
         _partitions = entity.get('relationshipAttributes', dict()).get('partitions', list())
 
-        guids = [_partition.get('guid') for _partition in _partitions
+        names = [_partition.get('displayText') for _partition in _partitions
                  if _partition.get('entityStatus') == Status.ACTIVE
                  and _partition.get('relationshipStatus') == Status.ACTIVE]
 
-        if not guids:
+        if not names:
             return []
 
         partition_key = AtlasProxy._render_partition_key_name(entity)
-
-        full_partitions = extract_entities(self._driver.entity_bulk(guid=list(guids), ignoreRelationships=True))
-        watermark_date_format = AtlasProxy._select_watermark_format([p.attributes.get('name') for p in full_partitions])
+        watermark_date_format = AtlasProxy._select_watermark_format(names)
 
         partitions = {}
 
-        for partition in full_partitions:
-            partition_name = partition.attributes.get('name')
-
+        for _partition in _partitions:
+            partition_name = _partition.get('displayText')
             if partition_name and watermark_date_format:
                 partition_date, _ = AtlasProxy._validate_date(partition_name, watermark_date_format)
 
                 if partition_date:
-                    _partition_create_time = self._parse_date(partition.createTime) or 0.0
-
-                    partition_create_time = datetime.datetime.fromtimestamp(
-                        _partition_create_time).strftime(partition_value_format)
-
                     common_values = {'partition_value': datetime.datetime.strftime(partition_date,
                                                                                    partition_value_format),
-                                     'create_time': partition_create_time,
+                                     'create_time': 0,
                                      'partition_key': partition_key}
 
                     partitions[partition_date] = common_values
