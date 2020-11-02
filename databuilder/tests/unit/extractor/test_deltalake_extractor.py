@@ -219,7 +219,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
                   Table(name="test_table3", database="test_schema1", description=None,
                         tableType="delta", isTemporary=False)]
         actual = self.dExtractor.scrape_all_tables(tables)
-        self.assertEquals(2, len(actual))
+        self.assertEqual(2, len(actual))
 
 
 if __name__ == '__main__':
