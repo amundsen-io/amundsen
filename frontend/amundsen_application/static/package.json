@@ -109,7 +109,7 @@
     "redux-saga-test-plan": "4.0.0-rc.3",
     "sass-loader": "^10.0.2",
     "style-loader": "^0.20.3",
-    "stylelint": "^13.7.1",
+    "stylelint": "^13.7.2",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-prettier": "^1.1.2",
     "stylelint-scss": "^3.17.2",
