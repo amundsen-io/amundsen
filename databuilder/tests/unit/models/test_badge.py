@@ -19,11 +19,8 @@ badge2 = Badge('badge2', 'column')
 class TestBadge(unittest.TestCase):
     def setUp(self) -> None:
         super(TestBadge, self).setUp()
-        self.badge_metada = BadgeMetadata(db_name='hive',
-                                          schema=SCHEMA,
-                                          start_label='Column',
+        self.badge_metada = BadgeMetadata(start_label='Column',
                                           start_key='hive://default.base/test/ds',
-                                          cluster=CLUSTER,
                                           badges=[badge1, badge2])
 
     def test_get_badge_key(self) -> None:
@@ -54,11 +51,8 @@ class TestBadge(unittest.TestCase):
 
         self.assertRaises(Exception,
                           BadgeMetadata,
-                          db_name='hive',
-                          schema=SCHEMA,
                           start_label=column_label,
                           start_key=table_key,
-                          cluster=CLUSTER,
                           badges=[badge1, badge2])
 
     def test_bad_entity_label(self) -> None:
@@ -66,11 +60,8 @@ class TestBadge(unittest.TestCase):
         table_key = 'hive://default.base/test'
         self.assertRaises(Exception,
                           BadgeMetadata,
-                          db_name='hive',
-                          schema=SCHEMA,
                           start_label=user_label,
                           start_key=table_key,
-                          cluster=CLUSTER,
                           badges=[badge1, badge2])
 
     def test_create_relation(self) -> None:

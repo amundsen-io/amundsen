@@ -32,18 +32,11 @@ class BadgeMetadata(Neo4jCsvSerializable):
     INVERSE_BADGE_RELATION_TYPE = 'BADGE_FOR'
 
     def __init__(self,
-                 db_name: str,
-                 schema: str,
                  start_label: str,  # Table, Dashboard, Column
                  start_key: str,
                  badges: List[Badge],
-                 cluster: str = 'gold',  # is this what we want as default for badges..?
                  ):
         self.badges = badges
-
-        self.db = db_name.lower()
-        self.schema = schema.lower()
-        self.cluster = cluster.lower()
 
         table_key_pattern = re.compile('[a-z]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
         dashboard_key_pattern = re.compile('[a-z]+_dashboard://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
@@ -64,6 +57,10 @@ class BadgeMetadata(Neo4jCsvSerializable):
 
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
+
+    def __repr__(self) -> str:
+        return 'BadgeMetadata({!r}, {!r})'.format(self.start_label,
+                                                  self.start_key)
 
     def create_next_node(self) -> Optional[Dict[str, Any]]:
         # return the string representation of the data
