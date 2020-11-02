@@ -14,8 +14,8 @@ export interface DashboardMetadata {
   group_name: string;
   group_url: string;
   last_run_state: string;
-  last_run_timestamp: number;
-  last_successful_run_timestamp: number;
+  last_run_timestamp: number | null;
+  last_successful_run_timestamp: number | null;
   name: string;
   owners: User[];
   product: string;

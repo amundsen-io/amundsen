@@ -39,7 +39,7 @@ exports[`strict null compilation`] = {
     "js/components/common/EditableSection/index.tsx:3911151831": [
       [130, 12, 7, "Type \'((event: MouseEvent<HTMLDivElement, MouseEvent>) => void) | null\' is not assignable to type \'((event: MouseEvent<HTMLDivElement, MouseEvent>) => void) | undefined\'.\\n  Type \'null\' is not assignable to type \'((event: MouseEvent<HTMLDivElement, MouseEvent>) => void) | undefined\'.", "4055953994"]
     ],
-    "js/components/common/EditableText/index.tsx:3360221846": [
+    "js/components/common/EditableText/index.tsx:4277986546": [
       [55, 4, 13, "Type \'null\' is not assignable to type \'(newValue: string, onSuccess?: (() => any) | undefined, onFailure?: (() => any) | undefined) => void\'.", "67794331"],
       [56, 4, 14, "Type \'null\' is not assignable to type \'((onSuccess?: (() => any) | undefined, onFailure?: (() => any) | undefined) => void) | undefined\'.", "608289123"],
       [92, 4, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
@@ -56,17 +56,12 @@ exports[`strict null compilation`] = {
       [21, 6, 9, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "1517648899"],
       [24, 6, 8, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "2673870115"]
     ],
-    "js/components/common/OwnerEditor/index.tsx:3127875743": [
-      [92, 4, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
-      [97, 4, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
-      [104, 27, 6, "Type \'UpdateMethod.DELETE\' is not assignable to type \'never\'.", "1469012122"],
-      [104, 56, 2, "Type \'string\' is not assignable to type \'never\'.", "5861160"],
-      [109, 27, 6, "Type \'UpdateMethod.PUT\' is not assignable to type \'never\'.", "1469012122"],
-      [109, 53, 2, "Type \'string\' is not assignable to type \'never\'.", "5861160"],
-      [114, 6, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
-      [120, 6, 22, "Cannot invoke an object which is possibly \'undefined\'.", "2225424112"],
-      [127, 12, 5, "Property \'value\' does not exist on type \'HTMLInputElement | null\'.", "189936718"],
-      [129, 6, 21, "Object is possibly \'null\'.", "2411403565"]
+    "js/components/common/OwnerEditor/index.tsx:487917110": [
+      [119, 27, 6, "Type \'import(\\"./js/interfaces/Enums\\").UpdateMethod\' is not assignable to type \'never\'.", "1469012122"],
+      [119, 56, 2, "Type \'string\' is not assignable to type \'never\'.", "5861160"],
+      [124, 27, 6, "Type \'import(\\"./js/interfaces/Enums\\").UpdateMethod\' is not assignable to type \'never\'.", "1469012122"],
+      [124, 53, 2, "Type \'string\' is not assignable to type \'never\'.", "5861160"],
+      [147, 12, 5, "Property \'value\' does not exist on type \'HTMLInputElement | null\'.", "189936718"]
     ],
     "js/components/common/ResourceListItem/DashboardListItem/index.spec.tsx:53357032": [
       [163, 14, 29, "Type \'null\' is not assignable to type \'number\'.", "1157138603"]
@@ -100,9 +95,9 @@ exports[`strict null compilation`] = {
       [63, 22, 6, "Type \'undefined\' is not assignable to type \'GetAllTagsRequest\'.", "1979467425"],
       [66, 4, 4, "Type \'undefined\' is not assignable to type \'Tag[]\'.", "2087952548"],
       [67, 22, 6, "Type \'undefined\' is not assignable to type \'UpdateTagsRequest\'.", "1979467425"],
-      [100, 31, 10, "Type \'UpdateMethod.DELETE\' is not assignable to type \'never\'.", "3392756765"],
+      [100, 31, 10, "Type \'import(\\"./js/interfaces/Enums\\").UpdateMethod\' is not assignable to type \'never\'.", "3392756765"],
       [100, 64, 7, "Type \'string\' is not assignable to type \'never\'.", "1671693616"],
-      [102, 31, 10, "Type \'UpdateMethod.PUT\' is not assignable to type \'never\'.", "3392756765"],
+      [102, 31, 10, "Type \'import(\\"./js/interfaces/Enums\\").UpdateMethod\' is not assignable to type \'never\'.", "3392756765"],
       [102, 61, 7, "Type \'string\' is not assignable to type \'never\'.", "1671693616"]
     ],
     "js/components/common/Tags/TagsList/index.tsx:4084208491": [
@@ -145,8 +140,6 @@ exports[`strict null compilation`] = {
     ],
     "js/ducks/dashboard/reducer.ts:562296055": [
       [49, 2, 17, "Type \'null\' is not assignable to type \'number\'.", "2818833716"],
-      [55, 2, 18, "Type \'null\' is not assignable to type \'number\'.", "2901767208"],
-      [56, 2, 29, "Type \'null\' is not assignable to type \'number\'.", "1157138603"],
       [61, 2, 17, "Type \'null\' is not assignable to type \'number\'.", "3048879712"],
       [64, 2, 17, "Type \'null\' is not assignable to type \'number\'.", "1885086497"],
       [71, 2, 10, "Type \'null\' is not assignable to type \'number\'.", "3382497788"],
@@ -253,10 +246,8 @@ exports[`strict null compilation`] = {
     "js/pages/DashboardPage/DashboardOwnerEditor/index.spec.tsx:4125678807": [
       [29, 19, 11, "Type \'{ manager_id: null; manager_fullname: null; manager_email: null; profile_url: string; role_name: null; display_name: null; github_username: null; team_name: null; last_name: null; full_name: null; ... 6 more ...; user_id: string; }\' is not assignable to type \'User\'.\\n  Types of property \'display_name\' are incompatible.\\n    Type \'null\' is not assignable to type \'string\'.", "2041815528"]
     ],
-    "js/pages/DashboardPage/index.spec.tsx:3245519479": [
-      [53, 4, 8, "Argument of type \'Partial<Location<{} | null | undefined>> | undefined\' is not assignable to parameter of type \'Partial<Location<{} | null | undefined>>\'.\\n  Type \'undefined\' is not assignable to type \'Partial<Location<{} | null | undefined>>\'.", "2700611480"],
-      [213, 10, 18, "Type \'null\' is not assignable to type \'number\'.", "2901767208"],
-      [214, 10, 29, "Type \'null\' is not assignable to type \'number\'.", "1157138603"]
+    "js/pages/DashboardPage/index.spec.tsx:3811826221": [
+      [53, 4, 8, "Argument of type \'Partial<Location<{} | null | undefined>> | undefined\' is not assignable to parameter of type \'Partial<Location<{} | null | undefined>>\'.\\n  Type \'undefined\' is not assignable to type \'Partial<Location<{} | null | undefined>>\'.", "2700611480"]
     ],
     "js/pages/ProfilePage/index.spec.tsx:4086464143": [
       [41, 6, 4, "Argument of type \'null\' is not assignable to parameter of type \'Partial<Location<{} | null | undefined>>\'.", "2087897566"]

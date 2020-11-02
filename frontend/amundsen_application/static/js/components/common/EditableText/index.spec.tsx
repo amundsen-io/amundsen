@@ -105,7 +105,7 @@ describe('EditableText', () => {
 
   describe('render', () => {
     describe('not in edit mode', () => {
-      const { props, wrapper } = setup({
+      const { wrapper } = setup({
         isEditing: false,
         value: '',
       });
@@ -114,9 +114,6 @@ describe('EditableText', () => {
       it('renders a ReactMarkdown component', () => {
         const markdown = wrapper.find(ReactMarkdown);
         expect(markdown.exists()).toBe(true);
-        expect(markdown.props()).toMatchObject({
-          source: wrapper.state().value,
-        });
       });
 
       it('renders an edit link if it is editable and the text is empty', () => {

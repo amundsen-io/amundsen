@@ -19,7 +19,7 @@ interface StringDateConfig {
 type DateConfig = TimestampDateConfig | EpochDateConfig | StringDateConfig;
 
 // This function is only exported for testing
-export function getMomentDate(config: DateConfig): Moment {
+export function getMomentDate(config: DateConfig): Moment.Moment {
   let moment;
   const { timestamp } = config as TimestampDateConfig;
   const epoch = (config as EpochDateConfig).epochTimestamp;

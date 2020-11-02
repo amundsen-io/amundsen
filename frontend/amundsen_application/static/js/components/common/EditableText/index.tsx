@@ -120,13 +120,16 @@ class EditableText extends React.Component<
   };
 
   render() {
-    if (!this.props.isEditing) {
+    const { isEditing, editable, maxLength } = this.props;
+    const { value = '', isDisabled } = this.state;
+
+    if (!isEditing) {
       return (
         <div className="editable-text">
           <div className="markdown-wrapper">
-            <ReactMarkdown source={this.state.value} escapeHtml={false} />
+            <ReactMarkdown allowDangerousHtml={false}>{value}</ReactMarkdown>
           </div>
-          {this.props.editable && !this.state.value && (
+          {editable && !value && (
             <a
               className="edit-link"
               href="JavaScript:void(0)"
@@ -144,13 +147,13 @@ class EditableText extends React.Component<
         <textarea
           className="editable-textarea"
           rows={2}
-          maxLength={this.props.maxLength}
+          maxLength={maxLength}
           ref={this.textAreaRef}
-          defaultValue={this.state.value}
-          disabled={this.state.isDisabled}
+          defaultValue={value}
+          disabled={isDisabled}
         />
         <div className="editable-textarea-controls">
-          {this.state.isDisabled && (
+          {isDisabled && (
             <>
               <h2 className="label label-danger refresh-message">
                 {REFRESH_MESSAGE}
@@ -158,16 +161,18 @@ class EditableText extends React.Component<
               <button
                 className="btn btn-primary refresh-button"
                 onClick={this.refreshText}
+                type="button"
               >
                 <img className="icon icon-refresh" alt="" />
                 {REFRESH_BUTTON_TEXT}
               </button>
             </>
           )}
-          {!this.state.isDisabled && (
+          {!isDisabled && (
             <button
               className="btn btn-primary update-button"
               onClick={this.updateText}
+              type="button"
             >
               {UPDATE_BUTTON_TEXT}
             </button>
@@ -175,6 +180,7 @@ class EditableText extends React.Component<
           <button
             className="btn btn-default cancel-button"
             onClick={this.exitEditMode}
+            type="button"
           >
             {CANCEL_BUTTON_TEXT}
           </button>
