@@ -114,5 +114,27 @@ describe('ColumnStats', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when different stat values are passed', () => {
+      const { stats } = dataBuilder.withNonNumericStats().build();
+
+      it('displays formatted number', () => {
+        const { wrapper } = setup({ stats });
+        const actual = wrapper.find('.stat-value').first().text();
+
+        const expected = '12,345';
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('displays date string', () => {
+        const { wrapper } = setup({ stats });
+        const actual = wrapper.find('.stat-value').last().text();
+
+        const expected = '2020-11-03';
+
+        expect(actual).toEqual(expected);
+      });
+    });
   });
 });

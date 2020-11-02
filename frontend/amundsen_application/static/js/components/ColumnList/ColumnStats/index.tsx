@@ -4,7 +4,7 @@
 import * as React from 'react';
 
 import { TableColumnStats } from 'interfaces/index';
-import { formatNumber } from 'utils/numberUtils';
+import { formatNumber, isNumber } from 'utils/numberUtils';
 import { getStatsInfoText } from '../utils';
 
 import { COLUMN_STATS_TITLE } from '../constants';
@@ -24,12 +24,12 @@ const ColumnStatRow: React.FC<ColumnStatRowProps> = ({
   stat_type,
   stat_val,
 }: ColumnStatRowProps) => {
-  const numberVal = +stat_val;
-
   return (
     <div className="column-stat-row">
       <div className="stat-name body-3">{stat_type.toUpperCase()}</div>
-      <div className="stat-value">{formatNumber(numberVal)}</div>
+      <div className="stat-value">
+        {isNumber(stat_val) ? formatNumber(+stat_val) : stat_val}
+      </div>
     </div>
   );
 };
