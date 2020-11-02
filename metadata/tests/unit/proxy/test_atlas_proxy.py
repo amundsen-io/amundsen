@@ -23,6 +23,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
     def setUp(self) -> None:
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
         self.app.config['PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS'] = ['spark.*']
+        self.app.config['WATERMARK_DATE_FORMATS'] = ''
         self.app_context = self.app.app_context()
         self.app_context.push()
 
@@ -136,6 +137,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          col_type='Managed',
                          sort_order=col_attrs['position'],
                          stats=exp_col_stats)
+
         expected = Table(database=self.entity_type,
                          cluster=self.cluster,
                          schema=self.db,
@@ -147,6 +149,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                            ResourceReport(name='test_report3', url='http://test3')],
                          last_updated_timestamp=int(str(self.entity1['updateTime'])[:10]),
                          columns=[exp_col] * self.active_columns,
+                         watermarks=[],
                          programmatic_descriptions=[ProgrammaticDescription(source='test parameter key a',
                                                                             text='testParameterValueA'),
                                                     ProgrammaticDescription(source='test parameter key b',
@@ -531,20 +534,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
                   (['%Y-%m-%d'], 0, None),
                   ([], 0, None)]
 
-        mocked_partition_entities_collection = MagicMock()
-        mocked_partition_entities_collection.entities = []
-
-        for entity in self.partitions:
-            mocked_report_entity = MagicMock()
-            mocked_report_entity.status = entity['status']
-            mocked_report_entity.attributes = entity['attributes']
-            mocked_report_entity.createTime = entity['createTime']
-            mocked_partition_entities_collection.entities.append(mocked_report_entity)
-
         for supported_formats, expected_result_length, low_date_prefix in params:
             with self.subTest():
                 self.app.config['WATERMARK_DATE_FORMATS'] = supported_formats
-                self.proxy._driver.entity_bulk = MagicMock(return_value=[mocked_partition_entities_collection])
 
                 result = self.proxy._get_table_watermarks(cast(dict, self.entity1))
 
