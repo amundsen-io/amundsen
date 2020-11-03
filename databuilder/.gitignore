@@ -10,6 +10,7 @@ build/
 dist/
 venv/
 venv3/
+.python-version
 .cache/
 .env
 .idea/
