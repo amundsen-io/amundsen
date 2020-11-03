@@ -8,7 +8,7 @@ import re
 from time import sleep
 
 from pyhocon import ConfigTree
-from typing import Any, Iterator, Dict, Optional, Tuple
+from typing import Any, Iterator, Dict, Optional, Tuple, List
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor
 
@@ -64,36 +64,50 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
                 continue
 
             email = entry['protoPayload']['authenticationInfo']['principalEmail']
+            # Query results can be cached and if the source tables remain untouched,
+            # bigquery will return it from a 24 hour cache result instead. In that
+            # case, referencedTables has been observed to be empty:
+            # https://cloud.google.com/logging/docs/reference/audit/bigquery/rest/Shared.Types/AuditData#JobStatistics
+
             refTables = job['jobStatistics'].get('referencedTables', None)
+            if refTables:
+                if 'totalTablesProcessed' in job['jobStatistics']:
+                    self._create_records(
+                        refTables,
+                        job['jobStatistics']['totalTablesProcessed'], email,
+                        job['jobName']['jobId'])
 
-            if not refTables:
-                # Query results can be cached and if the source tables remain untouched,
-                # bigquery will return it from a 24 hour cache result instead. In that
-                # case, referencedTables has been observed to be empty:
-                # https://cloud.google.com/logging/docs/reference/audit/bigquery/rest/Shared.Types/AuditData#JobStatistics
-                continue
+            refViews = job['jobStatistics'].get('referencedViews', None)
+            if refViews:
+                if 'totalViewsProcessed' in job['jobStatistics']:
+                    self._create_records(
+                        refViews, job['jobStatistics']['totalViewsProcessed'],
+                        email, job['jobName']['jobId'])
 
-            # if email filter is provided, only the email matched with filter will be recorded.
-            if self.email_pattern:
-                if not re.match(self.email_pattern, email):
-                    # the usage account not match email pattern
-                    continue
+    def _create_records(self, refResources: List[dict], resourcesProcessed: int, email: str,
+                        jobId: str) -> None:
+        # if email filter is provided, only the email matched with filter will be recorded.
+        if self.email_pattern:
+            if not re.match(self.email_pattern, email):
+                # the usage account not match email pattern
+                return
 
-            numTablesProcessed = job['jobStatistics']['totalTablesProcessed']
-            if len(refTables) != numTablesProcessed:
-                LOGGER.warn('The number of tables listed in job {job_id} is not consistent'
-                            .format(job_id=job['jobName']['jobId']))
+        if len(refResources) != resourcesProcessed:
+            LOGGER.warn(
+                'The number of tables listed in job {job_id} is not consistent'
+                .format(job_id=jobId))
+            return
 
-            for refTable in refTables:
-                key = TableColumnUsageTuple(database='bigquery',
-                                            cluster=refTable['projectId'],
-                                            schema=refTable['datasetId'],
-                                            table=refTable['tableId'],
-                                            column='*',
-                                            email=email)
+        for refResource in refResources:
+            key = TableColumnUsageTuple(database='bigquery',
+                                        cluster=refResource['projectId'],
+                                        schema=refResource['datasetId'],
+                                        table=refResource['tableId'],
+                                        column='*',
+                                        email=email)
 
-                new_count = self.table_usage_counts.get(key, 0) + 1
-                self.table_usage_counts[key] = new_count
+            new_count = self.table_usage_counts.get(key, 0) + 1
+            self.table_usage_counts[key] = new_count
 
     def _retrieve_records(self) -> Iterator[Optional[Dict]]:
         """
