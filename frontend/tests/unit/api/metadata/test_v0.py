@@ -754,7 +754,7 @@ class MetadataTest(unittest.TestCase):
                     'tag': 'tag_5'
                 }
             )
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_update_table_tags_delete(self) -> None:
@@ -773,7 +773,7 @@ class MetadataTest(unittest.TestCase):
                     'tag': 'tag_5'
                 }
             )
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_update_dashboard_tags_put(self) -> None:
@@ -792,7 +792,7 @@ class MetadataTest(unittest.TestCase):
                     'tag': 'test_tag'
                 }
             )
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_update_dashboard_tags_delete(self) -> None:
@@ -811,7 +811,7 @@ class MetadataTest(unittest.TestCase):
                     'tag': 'test_tag'
                 }
             )
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_get_user_failure(self) -> None:
@@ -823,7 +823,7 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user')
-            self.assertEquals(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @responses.activate
     def test_get_user_success(self) -> None:
@@ -836,8 +836,8 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user', query_string=dict(user_id='testuser'))
             data = json.loads(response.data)
-            self.assertEquals(response.status_code, HTTPStatus.OK)
-            self.assertDictContainsSubset(self.expected_parsed_user, data.get('user'))
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertEqual(dict(data.get('user'), **self.expected_parsed_user), data.get('user'))
 
     @responses.activate
     def test_get_bookmark(self) -> None:
@@ -850,7 +850,7 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/bookmark')
             data = json.loads(response.data)
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_user_resources)
 
     @responses.activate
@@ -882,7 +882,7 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/bookmark', query_string=dict(user_id=specified_user))
             data = json.loads(response.data)
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('bookmarks'), self.expected_parsed_user_resources)
 
     @responses.activate
@@ -907,7 +907,7 @@ class MetadataTest(unittest.TestCase):
                     'key': key,
                 })
 
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_delete_bookmark(self) -> None:
@@ -931,7 +931,7 @@ class MetadataTest(unittest.TestCase):
                     'key': key,
                 })
 
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_get_user_read(self) -> None:
@@ -945,7 +945,7 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/read', query_string=dict(user_id=test_user))
             data = json.loads(response.data)
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('read'), self.expected_parsed_user_resources.get('table'))
 
     @responses.activate
@@ -960,7 +960,7 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/metadata/v0/user/own', query_string=dict(user_id=test_user))
             data = json.loads(response.data)
-            self.assertEquals(response.status_code, HTTPStatus.OK)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('own'), self.expected_parsed_user_resources)
 
     @responses.activate
