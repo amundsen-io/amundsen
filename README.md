@@ -195,7 +195,7 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 
 ## Community meetings
 
-Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time. [Link to join](https://meet.google.com/mqz-ndck-jmj)
+Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time. [Link to join](https://zoom.us/j/92594007352?pwd=Rmo4SGp4WnY3eGlzclgrWlp6bTNTQT09)
 
 ### Upcoming meetings & notes
 
