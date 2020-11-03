@@ -35,7 +35,7 @@ class ActionLogTest(unittest.TestCase):
                         'user': getpass.getuser()}
 
             for k, v in expected.items():
-                self.assertEquals(v, metrics.get(k))
+                self.assertEqual(v, metrics.get(k))
 
             self.assertTrue(metrics.get('start_epoch_ms') <= get_epoch_millisec())  # type: ignore
 

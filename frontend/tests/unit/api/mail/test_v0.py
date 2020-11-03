@@ -133,7 +133,7 @@ class MailTest(unittest.TestCase):
                 'sender': test_sender,
                 'options': test_options,
             })
-            self.assertEquals(response.status_code, HTTPStatus.BAD_REQUEST)
+            self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
             self.assertFalse(send_notification_mock.called)
 
     @unittest.mock.patch('amundsen_application.api.mail.v0.send_notification')
@@ -147,5 +147,5 @@ class MailTest(unittest.TestCase):
             # generates error
             response = test.post('/api/mail/v0/notification', json=None)
 
-            self.assertEquals(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
             self.assertFalse(send_notification_mock.called)
