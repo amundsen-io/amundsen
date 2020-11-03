@@ -18,6 +18,7 @@ def mock_proxy_results() -> Dashboard:
 
 def mock_json_response() -> dict:
     return {
+        "chart_names": [],
         "uri": 'dashboard_uri',
         "cluster": 'gold',
         "group_name": 'mode_dashboard_group',
@@ -32,6 +33,7 @@ def mock_json_response() -> dict:
 
 def default_json_response() -> dict:
     return {
+        "chart_names": [],
         "uri": None,
         "cluster": None,
         "group_name": None,
