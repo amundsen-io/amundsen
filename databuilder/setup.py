@@ -4,7 +4,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = '4.0.2'
+__version__ = '4.0.3'
 
 
 requirements = [
@@ -16,6 +16,8 @@ requirements = [
     "elasticsearch>=6.2.0,<7.0",
     "pyhocon>=0.3.42",
     "unidecode",
+    "Jinja2>=2.10.0,<2.12",
+    "pandas>=0.21.0,<1.2.0"
 ]
 
 kafka = ['confluent-kafka==1.0.0']
