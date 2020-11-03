@@ -42,9 +42,9 @@ class TestDocumentUsersAPI(unittest.TestCase):
     def test_should_not_reach_create_with_id(self) -> None:
         response = self.app.test_client().post('/document_user/1')
 
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_should_not_reach_update_with_id(self) -> None:
         response = self.app.test_client().put('/document_user/1')
 
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)

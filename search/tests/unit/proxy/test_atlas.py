@@ -242,7 +242,7 @@ class TestAtlasProxy(unittest.TestCase):
 
         with patch.object(self.proxy.atlas.search_basic, 'create', result):
             resp = self.proxy.fetch_table_search_results(query_term="Table")
-            self.assertEquals(resp.total_results, 1)
+            self.assertEqual(resp.total_results, 1)
             self.assertIsInstance(resp.results[0], Table, "Search result received is not of 'Table' type!")
             self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]),
                                  "Search Result doesn't match with expected result!")

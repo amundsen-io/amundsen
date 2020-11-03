@@ -238,8 +238,8 @@ class TestElasticsearchProxy(unittest.TestCase):
 
         resp = self.es_proxy.fetch_table_search_results(query_term='test_query_term')
 
-        self.assertEquals(resp.total_results, expected.total_results,
-                          "search result is not of length 1")
+        self.assertEqual(resp.total_results, expected.total_results,
+                         "search result is not of length 1")
         self.assertIsInstance(resp.results[0],
                               Table,
                               "Search result received is not of 'Table' type!")
@@ -280,8 +280,8 @@ class TestElasticsearchProxy(unittest.TestCase):
 
         resp = self.es_proxy.fetch_table_search_results(query_term='test_query_term')
 
-        self.assertEquals(resp.total_results, expected.total_results,
-                          "search result is not of length 2")
+        self.assertEqual(resp.total_results, expected.total_results,
+                         "search result is not of length 2")
         for i in range(2):
             self.assertIsInstance(resp.results[i],
                                   Table,
@@ -320,15 +320,15 @@ class TestElasticsearchProxy(unittest.TestCase):
         }
         resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request, query_term='test')
 
-        self.assertEquals(resp.total_results, expected.total_results)
+        self.assertEqual(resp.total_results, expected.total_results)
         self.assertIsInstance(resp.results[0], Table)
         self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]))
 
     def test_search_table_filter_return_no_results_if_no_search_request(self) -> None:
         resp = self.es_proxy.fetch_search_results_with_filter(search_request=None, query_term='test')
 
-        self.assertEquals(resp.total_results, 0)
-        self.assertEquals(resp.results, [])
+        self.assertEqual(resp.total_results, 0)
+        self.assertEqual(resp.results, [])
 
     def test_search_table_filter_return_no_results_if_dsl_conversion_error(self) -> None:
         search_request = {
@@ -340,14 +340,14 @@ class TestElasticsearchProxy(unittest.TestCase):
             resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request,
                                                                   query_term='test')
 
-            self.assertEquals(resp.total_results, 0)
-            self.assertEquals(resp.results, [])
+            self.assertEqual(resp.total_results, 0)
+            self.assertEqual(resp.results, [])
 
     def test_get_model_by_index_table(self) -> None:
-        self.assertEquals(self.es_proxy.get_model_by_index(TABLE_INDEX), Table)
+        self.assertEqual(self.es_proxy.get_model_by_index(TABLE_INDEX), Table)
 
     def test_get_model_by_index_user(self) -> None:
-        self.assertEquals(self.es_proxy.get_model_by_index(USER_INDEX), User)
+        self.assertEqual(self.es_proxy.get_model_by_index(USER_INDEX), User)
 
     def test_get_model_by_index_raise_exception(self) -> None:
         self.assertRaises(Exception, self.es_proxy.convert_query_json_to_query_dsl, 'some_fake_index')
@@ -365,15 +365,15 @@ class TestElasticsearchProxy(unittest.TestCase):
                           "AND name.raw:(*amundsen*) " \
                           "AND column_names.raw:(*ds*) " \
                           "AND tags:(test-tag)"
-        self.assertEquals(self.es_proxy.parse_filters(filter_list,
-                                                      index=TABLE_INDEX), expected_result)
+        self.assertEqual(self.es_proxy.parse_filters(filter_list,
+                                                     index=TABLE_INDEX), expected_result)
 
     def test_parse_filters_return_no_results(self) -> None:
         filter_list = {
             'unsupported_category': ['fake']
         }
-        self.assertEquals(self.es_proxy.parse_filters(filter_list,
-                                                      index=TABLE_INDEX), '')
+        self.assertEqual(self.es_proxy.parse_filters(filter_list,
+                                                     index=TABLE_INDEX), '')
 
     def test_validate_wrong_filters_values(self) -> None:
         search_request = {
@@ -385,7 +385,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             "query_term": "",
             "page_index": 0
         }
-        self.assertEquals(self.es_proxy.validate_filter_values(search_request), False)
+        self.assertEqual(self.es_proxy.validate_filter_values(search_request), False)
 
     def test_validate_accepted_filters_values(self) -> None:
         search_request = {
@@ -397,7 +397,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             "query_term": "a",
             "page_index": 0
         }
-        self.assertEquals(self.es_proxy.validate_filter_values(search_request), True)
+        self.assertEqual(self.es_proxy.validate_filter_values(search_request), True)
 
     def test_parse_query_term(self) -> None:
         term = 'test'
@@ -405,8 +405,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                           "schema:(test) OR description:(*test*) OR description:(test) OR " \
                           "column_names:(*test*) OR column_names:(test) OR " \
                           "column_descriptions:(*test*) OR column_descriptions:(test))"
-        self.assertEquals(self.es_proxy.parse_query_term(term,
-                                                         index=TABLE_INDEX), expected_result)
+        self.assertEqual(self.es_proxy.parse_query_term(term,
+                                                        index=TABLE_INDEX), expected_result)
 
     def test_convert_query_json_to_query_dsl_term_and_filters(self) -> None:
         term = 'test'
@@ -427,7 +427,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         ret_result = self.es_proxy.convert_query_json_to_query_dsl(search_request=search_request,
                                                                    query_term=term,
                                                                    index=TABLE_INDEX)
-        self.assertEquals(ret_result, expected_result)
+        self.assertEqual(ret_result, expected_result)
 
     def test_convert_query_json_to_query_dsl_no_term(self) -> None:
         term = ''
@@ -443,7 +443,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         ret_result = self.es_proxy.convert_query_json_to_query_dsl(search_request=search_request,
                                                                    query_term=term,
                                                                    index=TABLE_INDEX)
-        self.assertEquals(ret_result, expected_result)
+        self.assertEqual(ret_result, expected_result)
 
     def test_convert_query_json_to_query_dsl_no_filters(self) -> None:
         term = 'test'
@@ -456,7 +456,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         ret_result = self.es_proxy.convert_query_json_to_query_dsl(search_request=search_request,
                                                                    query_term=term,
                                                                    index=TABLE_INDEX)
-        self.assertEquals(ret_result, expected_result)
+        self.assertEqual(ret_result, expected_result)
 
     def test_convert_query_json_to_query_dsl_raise_exception_no_term_or_filters(self) -> None:
         term = ''
@@ -490,8 +490,8 @@ class TestElasticsearchProxy(unittest.TestCase):
         resp = self.es_proxy.fetch_user_search_results(query_term='test_query_term',
                                                        index='user_search_index')
 
-        self.assertEquals(resp.total_results, expected.total_results,
-                          "search result is not of length 1")
+        self.assertEqual(resp.total_results, expected.total_results,
+                         "search result is not of length 1")
         self.assertIsInstance(resp.results[0],
                               User,
                               "Search result received is not of 'Table' type!")
@@ -502,7 +502,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         expected = ''
         result = self.es_proxy.create_document(data=None, index='table_search_index')
         print('result: {}'.format(result))
-        self.assertEquals(expected, result)
+        self.assertEqual(expected, result)
 
     @patch('uuid.uuid4')
     def test_create_document(self, mock_uuid: MagicMock) -> None:
@@ -576,13 +576,13 @@ class TestElasticsearchProxy(unittest.TestCase):
 
         expected_alias = 'table_search_index'
         result = self.es_proxy.create_document(data=start_data, index=expected_alias)
-        self.assertEquals(expected_alias, result)
+        self.assertEqual(expected_alias, result)
         mock_elasticsearch.bulk.assert_called_with(expected_data)
 
     def test_update_document_with_no_data(self) -> None:
         expected = ''
         result = self.es_proxy.update_document(data=None, index='table_search_index')
-        self.assertEquals(expected, result)
+        self.assertEqual(expected, result)
 
     @patch('uuid.uuid4')
     def test_update_document(self, mock_uuid: MagicMock) -> None:
@@ -628,7 +628,7 @@ class TestElasticsearchProxy(unittest.TestCase):
             }
         ]
         result = self.es_proxy.update_document(data=data, index=expected_alias)
-        self.assertEquals(expected_alias, result)
+        self.assertEqual(expected_alias, result)
         mock_elasticsearch.bulk.assert_called_with(expected_data)
 
     @patch('uuid.uuid4')
@@ -646,7 +646,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         ]
         result = self.es_proxy.delete_document(data=data, index=expected_alias)
 
-        self.assertEquals(expected_alias, result)
+        self.assertEqual(expected_alias, result)
         mock_elasticsearch.bulk.assert_called_with(expected_data)
 
     @patch('uuid.uuid4')
@@ -664,7 +664,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         ]
         result = self.es_proxy.delete_document(data=data, index=expected_alias)
 
-        self.assertEquals(expected_alias, result)
+        self.assertEqual(expected_alias, result)
         mock_elasticsearch.bulk.assert_called_with(expected_data)
 
     def test_get_instance_string(self) -> None:
@@ -712,7 +712,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         resp = self.es_proxy.fetch_dashboard_search_results(query_term='test_query_term',
                                                             page_index=0,
                                                             index='dashboard_search_index')
-        self.assertEquals(resp.total_results, expected.total_results)
+        self.assertEqual(resp.total_results, expected.total_results)
 
         self.assertDictEqual(vars(resp.results[0]),
                              vars(expected.results[0]),
