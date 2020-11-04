@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 
 import Breadcrumb from 'components/common/Breadcrumb';
 import Flag from 'components/common/Flag';
-import TabsComponent from 'components/common/TabsComponent';
+import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
 import { BadgeStyle } from 'config/config-types';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -173,7 +173,7 @@ export class ProfilePage extends React.Component<
   };
 
   generateTabInfo = () => {
-    const tabInfo = [];
+    const tabInfo: TabInfo[] = [];
 
     tabInfo.push({
       content: this.generateTabContent(ResourceType.table),
@@ -200,14 +200,14 @@ export class ProfilePage extends React.Component<
     const { user } = this.props;
     const isLoading = !user.display_name && !user.email && !user.employee_type;
 
-    let avatar = null;
+    let avatar: JSX.Element | null = null;
     if (isLoading) {
       avatar = <div className="shimmering-circle is-shimmer-animated" />;
     } else if (user.display_name && user.display_name.length > 0) {
       avatar = <Avatar name={user.display_name} size={AVATAR_SIZE} round />;
     }
 
-    let userName = null;
+    let userName: JSX.Element | null = null;
     if (isLoading) {
       userName = (
         <div className="shimmering-text title-text is-shimmer-animated" />
@@ -218,7 +218,7 @@ export class ProfilePage extends React.Component<
       );
     }
 
-    let bullets = null;
+    let bullets: JSX.Element | null = null;
     if (isLoading) {
       bullets = <div className="shimmering-text bullets is-shimmer-animated" />;
     } else {
@@ -236,7 +236,7 @@ export class ProfilePage extends React.Component<
       );
     }
 
-    let emailLink = null;
+    let emailLink: JSX.Element | null = null;
     if (isLoading) {
       emailLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />
@@ -256,7 +256,7 @@ export class ProfilePage extends React.Component<
       );
     }
 
-    let profileLink = null;
+    let profileLink: JSX.Element | null = null;
     if (isLoading) {
       profileLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />
@@ -276,7 +276,7 @@ export class ProfilePage extends React.Component<
       );
     }
 
-    let githubLink = null;
+    let githubLink: JSX.Element | null = null;
     if (isLoading) {
       githubLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />

@@ -159,7 +159,7 @@ describe('TableListItem', () => {
               badges: [{ tag_name: 'badgeName' }],
               name: 'tableName',
               schema: 'tableSchema',
-              schema_description: null,
+              schema_description: undefined,
             },
           });
           expect(
@@ -227,7 +227,7 @@ describe('TableListItem', () => {
               database: '',
               description: 'I am the description',
               key: '',
-              badges: null,
+              badges: undefined,
               name: 'tableName',
               schema: 'tableSchema',
               schema_description: 'schemaDescription',

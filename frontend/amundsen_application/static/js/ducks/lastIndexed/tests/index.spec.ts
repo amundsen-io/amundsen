@@ -35,7 +35,7 @@ describe('lastIndexed ducks', () => {
       const action = getLastIndexedSuccess(testEpoch);
       const { payload } = action;
       expect(action.type).toBe(GetLastIndexed.SUCCESS);
-      expect(payload.lastIndexedEpoch).toBe(testEpoch);
+      expect(payload?.lastIndexedEpoch).toBe(testEpoch);
     });
   });
 

@@ -19,13 +19,13 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
     return `/user/${user.user_id}?index=${logging.index}&source=${logging.source}`;
   };
 
-  renderUserInfo = (user: UserResource) => {
+  renderUserInfo = (user: UserResource): JSX.Element[] | null => {
     const { role_name, team_name, user_id } = user;
     if (!role_name && !team_name) {
       return null;
     }
 
-    const listItems = [];
+    const listItems: JSX.Element[] = [];
     if (role_name) {
       listItems.push(<li key={`${user_id}:role_name`}>{role_name}</li>);
     }

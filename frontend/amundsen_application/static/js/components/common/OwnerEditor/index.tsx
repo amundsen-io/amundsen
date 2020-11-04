@@ -113,7 +113,7 @@ export class OwnerEditor extends React.Component<
     const { itemProps, tempItemProps } = this.state;
     const { setEditMode, onUpdateList } = this.props;
 
-    const updateArray = [];
+    const updateArray: UpdateOwnerPayload[] = [];
 
     Object.keys(itemProps).forEach((key) => {
       if (!tempItemProps.hasOwnProperty(key)) {

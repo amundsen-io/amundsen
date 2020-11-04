@@ -65,13 +65,15 @@ export const mapStateToProps = (state: GlobalState) => {
   // TODO: These functions are selectors, consider moving them into the ducks
   const allTags = state.tags.allTags.tags;
 
-  const allTagsNoZeros = allTags.filter((tag) => tag.tag_count > 0);
+  const allTagsNoZeros = allTags.filter(
+    (tag) => tag.tag_count !== undefined && tag.tag_count > 0
+  );
 
   const curatedTagsList = getCuratedTags();
 
-  let curatedTags = [];
-  let popularTags = [];
-  let otherTags = [];
+  let curatedTags: Tag[] = [];
+  let popularTags: Tag[] = [];
+  let otherTags: Tag[] = [];
 
   if (curatedTagsList.length > 0) {
     // keeping curated tags with zero usage count
@@ -88,6 +90,9 @@ export const mapStateToProps = (state: GlobalState) => {
   } else {
     const tagsByUsage = allTagsNoZeros
       .sort((a, b) => {
+        if (a.tag_count === undefined || b.tag_count === undefined) {
+          return 0;
+        }
         return a.tag_count - b.tag_count;
       })
       .reverse();

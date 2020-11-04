@@ -84,7 +84,7 @@ describe('bookmark ducks', () => {
       const action = addBookmarkSuccess(bookmarks);
       const { payload } = action;
       expect(action.type).toBe(AddBookmark.SUCCESS);
-      expect(payload.bookmarks).toBe(bookmarks);
+      expect(payload?.bookmarks).toBe(bookmarks);
     });
 
     it('getBookmarks - returns the action to get bookmarks', () => {
@@ -102,7 +102,7 @@ describe('bookmark ducks', () => {
       const action = getBookmarksSuccess(bookmarks);
       const { payload } = action;
       expect(action.type).toBe(GetBookmarks.SUCCESS);
-      expect(payload.bookmarks).toBe(bookmarks);
+      expect(payload?.bookmarks).toBe(bookmarks);
     });
 
     it('getBookmarksForUser - returns the action to get bookmarks for a user', () => {
@@ -122,7 +122,7 @@ describe('bookmark ducks', () => {
       const action = getBookmarksForUserSuccess(bookmarks);
       const { payload } = action;
       expect(action.type).toBe(GetBookmarksForUser.SUCCESS);
-      expect(payload.bookmarks).toBe(bookmarks);
+      expect(payload?.bookmarks).toBe(bookmarks);
     });
 
     it('removeBookmark - returns the action to remove a bookmark', () => {
@@ -142,8 +142,8 @@ describe('bookmark ducks', () => {
       const action = removeBookmarkSuccess(testResourceKey, testResourceType);
       const { payload } = action;
       expect(action.type).toBe(RemoveBookmark.SUCCESS);
-      expect(payload.resourceKey).toBe(testResourceKey);
-      expect(payload.resourceType).toBe(testResourceType);
+      expect(payload?.resourceKey).toBe(testResourceKey);
+      expect(payload?.resourceType).toBe(testResourceType);
     });
   });
 

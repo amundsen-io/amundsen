@@ -55,9 +55,8 @@ describe('FilterSection', () => {
       const { props, wrapper } = setup({ type: FilterType.INPUT_SELECT });
       const content = wrapper.instance().renderFilterComponent();
 
-      // @ts-ignore: This check works but TypeScript complains
-      expect(content.type.displayName).toBe('Connect(InputFilter)');
-      expect(content.props.categoryId).toBe(props.categoryId);
+      expect(content?.type.displayName).toBe('Connect(InputFilter)');
+      expect(content?.props.categoryId).toBe(props.categoryId);
     });
 
     it('returns a CheckBoxFilter w/ correct props if props.type == FilterType.CHECKBOX_SELECT', () => {
@@ -68,10 +67,9 @@ describe('FilterSection', () => {
       });
       const content = wrapper.instance().renderFilterComponent();
 
-      // @ts-ignore: This check works but TypeScript complains
-      expect(content.type.displayName).toBe('Connect(CheckBoxFilter)');
-      expect(content.props.categoryId).toBe(props.categoryId);
-      expect(content.props.checkboxProperties).toBe(mockOptions);
+      expect(content?.type.displayName).toBe('Connect(CheckBoxFilter)');
+      expect(content?.props.categoryId).toBe(props.categoryId);
+      expect(content?.props.checkboxProperties).toBe(mockOptions);
     });
   });
 

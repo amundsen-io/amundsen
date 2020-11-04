@@ -63,7 +63,7 @@ describe('user ducks', () => {
       const action = getLoggedInUserSuccess(currentUser);
       const { payload } = action;
       expect(action.type).toBe(GetLoggedInUser.SUCCESS);
-      expect(payload.user).toBe(currentUser);
+      expect(payload?.user).toBe(currentUser);
     });
 
     it('getLoggedInUserFailure - returns the action to process the failure', () => {
@@ -82,7 +82,7 @@ describe('user ducks', () => {
       const action = getUserSuccess(otherUser.user);
       const { payload } = action;
       expect(action.type).toBe(GetUser.SUCCESS);
-      expect(payload.user).toBe(otherUser.user);
+      expect(payload?.user).toBe(otherUser.user);
     });
 
     it('getUserFailure - returns the action to process the failure', () => {
@@ -101,7 +101,7 @@ describe('user ducks', () => {
       const action = getUserOwnSuccess(otherUser.own);
       const { payload } = action;
       expect(action.type).toBe(GetUserOwn.SUCCESS);
-      expect(payload.own).toBe(otherUser.own);
+      expect(payload?.own).toBe(otherUser.own);
     });
 
     it('getUserOwnFailure - returns the action to process the failure', () => {
@@ -120,7 +120,7 @@ describe('user ducks', () => {
       const action = getUserReadSuccess(otherUser.read);
       const { payload } = action;
       expect(action.type).toBe(GetUserRead.SUCCESS);
-      expect(payload.read).toBe(otherUser.read);
+      expect(payload?.read).toBe(otherUser.read);
     });
 
     it('getUserReadFailure - returns the action to process the failure', () => {

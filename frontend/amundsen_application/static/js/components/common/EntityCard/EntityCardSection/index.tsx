@@ -38,7 +38,7 @@ class EntityCardSection extends React.Component<
     if (this.props.isEditable) {
       this.setState({ readOnly: !this.state.readOnly });
     }
-    this.editButton.current.blur();
+    this.editButton.current?.blur();
   }
 
   render() {
