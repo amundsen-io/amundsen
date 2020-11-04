@@ -56,9 +56,9 @@ class NeptuneGremlinProxyTest(
 
     def test_profile(self) -> None:
         count = self._get(label=VertexTypes.User, key='jack', extra_traversal=__.count())
-        self.assertEquals(count, 0)
+        self.assertEqual(count, 0)
         # just enough to not explode
         self._upsert(label=VertexTypes.User, key='jack', email='jack@squareup.com')
         # and show it ran
         count = self._get(label=VertexTypes.User, key='jack', extra_traversal=__.count())
-        self.assertEquals(count, 1)
+        self.assertEqual(count, 1)

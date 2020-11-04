@@ -257,7 +257,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.assert_called_with(statement=table_description_query,
                                             param_dict={'key': 'test_table'})
 
-            self.assertEquals(table_description, 'sample description')
+            self.assertEqual(table_description, 'sample description')
 
     def test_get_table_with_no_description(self) -> None:
         """
@@ -300,8 +300,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.put_table_description(table_uri='test_table',
                                               description='test_description')
 
-            self.assertEquals(mock_run.call_count, 2)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_get_column_with_valid_description(self) -> None:
         """
@@ -323,7 +323,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                             param_dict={'tbl_key': 'test_table',
                                                         'column_name': 'test_column'})
 
-            self.assertEquals(col_description, 'sample description')
+            self.assertEqual(col_description, 'sample description')
 
     def test_get_column_with_no_description(self) -> None:
         """
@@ -369,8 +369,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                                column_name='test_column',
                                                description='test_description')
 
-            self.assertEquals(mock_run.call_count, 2)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_add_owner(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -389,8 +389,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.add_owner(table_uri='dummy_uri',
                                   owner='tester')
             # we call neo4j twice in add_owner call
-            self.assertEquals(mock_run.call_count, 2)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_delete_owner(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -409,8 +409,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.delete_owner(table_uri='dummy_uri',
                                      owner='tester')
             # we only call neo4j once in delete_owner call
-            self.assertEquals(mock_run.call_count, 1)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 1)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_add_badge(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -429,8 +429,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.add_badge(id='dummy_uri',
                                   badge_name='hive')
             # we call neo4j twice in add_tag call
-            self.assertEquals(mock_run.call_count, 3)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 3)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_add_tag(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -449,8 +449,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.add_tag(id='dummy_uri',
                                 tag='hive')
             # we call neo4j twice in add_tag call
-            self.assertEquals(mock_run.call_count, 3)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 3)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_delete_tag(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -469,8 +469,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.delete_tag(id='dummy_uri',
                                    tag='hive')
             # we only call neo4j once in delete_tag call
-            self.assertEquals(mock_run.call_count, 1)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 1)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_get_tags(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -498,7 +498,7 @@ class TestNeo4jProxy(unittest.TestCase):
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
-            self.assertEquals(neo4j_last_updated_ts, '1000')
+            self.assertEqual(neo4j_last_updated_ts, '1000')
 
             mock_execute.return_value.single.return_value = {
                 'ts': {
@@ -524,7 +524,7 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
 
-            self.assertEquals(mock_execute.call_count, 1)
+            self.assertEqual(mock_execute.call_count, 1)
 
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [
@@ -563,7 +563,7 @@ class TestNeo4jProxy(unittest.TestCase):
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_user = neo4j_proxy.get_user(id='test_email')
-            self.assertEquals(neo4j_user.email, 'test_email')
+            self.assertEqual(neo4j_user.email, 'test_email')
 
     def test_get_user_other_key_values(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -587,7 +587,7 @@ class TestNeo4jProxy(unittest.TestCase):
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_user = neo4j_proxy.get_user(id='test_email')
-            self.assertEquals(neo4j_user.other_key_values, {'mode_user_id': 'mode_foo_bar'})
+            self.assertEqual(neo4j_user.other_key_values, {'mode_user_id': 'mode_foo_bar'})
 
     def test_get_users(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -617,8 +617,8 @@ class TestNeo4jProxy(unittest.TestCase):
                          'team_name',
                          'email',
                          'manager_fullname']:
-                self.assertEquals(getattr(users[0], attr),
-                                  getattr(actual_data[0], attr))
+                self.assertEqual(getattr(users[0], attr),
+                                 getattr(actual_data[0], attr))
 
     def test_get_table_by_user_relation(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -699,8 +699,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                                       user_id='tester',
                                                       relation_type=UserResourceRel.follow,
                                                       resource_type=ResourceType.Table)
-            self.assertEquals(mock_run.call_count, 2)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_delete_resource_relation_by_user(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -720,8 +720,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          user_id='tester',
                                                          relation_type=UserResourceRel.follow,
                                                          resource_type=ResourceType.Table)
-            self.assertEquals(mock_run.call_count, 1)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 1)
+            self.assertEqual(mock_commit.call_count, 1)
 
     def test_get_invalid_user(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -906,7 +906,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.assert_called_with(statement=dashboard_description_query,
                                             param_dict={'key': 'test_dashboard'})
 
-            self.assertEquals(table_description.description, 'sample description')
+            self.assertEqual(table_description.description, 'sample description')
 
     def test_get_dashboard_with_no_description(self) -> None:
         """
@@ -949,8 +949,8 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.put_dashboard_description(id='test_dashboard',
                                                   description='test_description')
 
-            self.assertEquals(mock_run.call_count, 2)
-            self.assertEquals(mock_commit.call_count, 1)
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
 
             expected_stmt = textwrap.dedent("""
             MATCH (n1:Description {key: $desc_key}), (n2:Dashboard {key: $key})

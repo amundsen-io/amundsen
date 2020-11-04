@@ -21,12 +21,12 @@ class TestSwagger(unittest.TestCase):
 
     def test_should_get_swagger_docs(self) -> None:
         response = self.app.test_client().get('/apidocs/')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_should_get_swagger_json(self) -> None:
         response = self.app.test_client().get('/apispec_1.json')
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_should_have_a_component_from_each_reference(self) -> None:
         response = self.app.test_client().get('/apispec_1.json')
