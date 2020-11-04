@@ -112,17 +112,19 @@ export function* submitSearchResourceWatcher(): SagaIterator {
 export function* updateSearchStateWorker(
   action: UpdateSearchStateRequest
 ): SagaIterator {
-  const { filters, resource, updateUrl, submitSearch } = action.payload;
-  const state = yield select(getSearchState);
-  if (filters && submitSearch) {
-    yield put(searchAll(SearchType.FILTER, '', undefined, 0, true));
-  } else if (updateUrl) {
-    updateSearchUrl({
-      resource: resource || state.resource,
-      term: state.search_term,
-      index: getPageIndex(state, resource),
-      filters: filters || state.filters,
-    });
+  if (action.payload !== undefined) {
+    const { filters, resource, updateUrl, submitSearch } = action.payload;
+    const state = yield select(getSearchState);
+    if (filters && submitSearch) {
+      yield put(searchAll(SearchType.FILTER, '', undefined, 0, true));
+    } else if (updateUrl) {
+      updateSearchUrl({
+        resource: resource || state.resource,
+        term: state.search_term,
+        index: getPageIndex(state, resource),
+        filters: filters || state.filters,
+      });
+    }
   }
 }
 export function* updateSearchStateWatcher(): SagaIterator {

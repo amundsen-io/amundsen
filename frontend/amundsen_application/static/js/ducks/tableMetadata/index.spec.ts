@@ -483,7 +483,7 @@ describe('tableMetadata ducks', () => {
           sagaTest = (mockSuccess) => {
             return testSaga(
               updateTableDescriptionWorker,
-              updateTableDescription(newDescription, mockSuccess, null)
+              updateTableDescription(newDescription, mockSuccess, undefined)
             )
               .next()
               .select()
@@ -510,7 +510,7 @@ describe('tableMetadata ducks', () => {
           sagaTest = (mockFailure) => {
             return testSaga(
               updateTableDescriptionWorker,
-              updateTableDescription(newDescription, null, mockFailure)
+              updateTableDescription(newDescription, undefined, mockFailure)
             )
               .next()
               .select()
@@ -623,7 +623,7 @@ describe('tableMetadata ducks', () => {
                 newDescription,
                 columnIndex,
                 mockSuccess,
-                null
+                undefined
               )
             )
               .next()
@@ -655,7 +655,7 @@ describe('tableMetadata ducks', () => {
               updateColumnDescription(
                 newDescription,
                 columnIndex,
-                null,
+                undefined,
                 mockFailure
               )
             )

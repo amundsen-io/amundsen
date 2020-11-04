@@ -61,8 +61,8 @@ export interface SearchReducerState {
 export function searchAll(
   searchType: SearchType,
   term: string,
-  resource?: ResourceType,
-  pageIndex?: number,
+  resource: ResourceType,
+  pageIndex: number,
   useFilters: boolean = false
 ): SearchAllRequest {
   return {
@@ -314,6 +314,11 @@ export default function reducer(
     case SearchAll.SUCCESS:
       // resets all resources with initial state then applies search results
       const newState = (<SearchAllResponse>action).payload;
+      if (newState === undefined) {
+        throw Error(
+          'SearchAllResponse.payload must be specified for SUCCESS type'
+        );
+      }
       return {
         ...initialState,
         ...newState,
@@ -354,6 +359,11 @@ export default function reducer(
       };
     case InlineSearch.SUCCESS:
       const inlineResults = (<InlineSearchResponse>action).payload;
+      if (inlineResults === undefined) {
+        throw Error(
+          'InlineSearchResponse.payload must be specified for SUCCESS type'
+        );
+      }
       return {
         ...state,
         inlineResults: {

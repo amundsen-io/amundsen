@@ -97,10 +97,12 @@ describe('NavBar', () => {
 
   describe('renderSearchBar', () => {
     it('returns small SearchBar when not on home page', () => {
-      const { props, wrapper } = setup(null, { pathname: '/search' });
-      const searchBar = shallow(wrapper.instance().renderSearchBar()).find(
-        SearchBar
-      );
+      const { props, wrapper } = setup(undefined, { pathname: '/search' });
+      const rendered = wrapper.instance().renderSearchBar();
+      if (rendered === null) {
+        throw Error('rendering search bar returned null');
+      }
+      const searchBar = shallow(rendered).find(SearchBar);
       expect(searchBar.exists()).toBe(true);
       expect(searchBar.props()).toMatchObject({
         size: 'small',
@@ -108,7 +110,7 @@ describe('NavBar', () => {
     });
 
     it('returns null if conditions to render search bar are not met', () => {
-      const { props, wrapper } = setup(null, { pathname: '/' });
+      const { props, wrapper } = setup(undefined, { pathname: '/' });
       expect(wrapper.instance().renderSearchBar()).toBe(null);
     });
   });

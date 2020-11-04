@@ -60,8 +60,11 @@ describe('SearchItem', () => {
 
     it('renders correct text if !props.hasResults', () => {
       const { wrapper } = setup({ hasResults: false });
-      const content = shallow(wrapper.instance().renderIndicator());
-      expect(content.text()).toBe(SEARCH_ITEM_NO_RESULTS);
+      const rendered = wrapper.instance().renderIndicator();
+      if (rendered === null) {
+        throw Error('renderIndicator returned null');
+      }
+      expect(shallow(rendered).text()).toBe(SEARCH_ITEM_NO_RESULTS);
     });
 
     it('renders nothing if !props.Loading and props.hasResults', () => {
