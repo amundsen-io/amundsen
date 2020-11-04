@@ -180,7 +180,7 @@ describe('helpers', () => {
     it('returns false if not a user with display_name', () => {
       const testUser = {
         ...globalState.user.loggedInUser,
-        display_name: null,
+        display_name: '',
       };
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });

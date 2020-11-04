@@ -20,11 +20,11 @@ export const getPageIndex = (
   resource = resource || state.resource;
   switch (resource) {
     case ResourceType.table:
-      return state.tables.page_index;
+      return state.tables?.page_index || 0;
     case ResourceType.user:
-      return state.users.page_index;
+      return state.users?.page_index || 0;
     case ResourceType.dashboard:
-      return state.dashboards.page_index;
+      return state.dashboards?.page_index || 0;
   }
   return 0;
 };

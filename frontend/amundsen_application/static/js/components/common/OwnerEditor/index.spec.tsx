@@ -19,10 +19,10 @@ describe('OwnerEditor', () => {
       errorText: null,
       isLoading: false,
       itemProps: {},
-      isEditing: null,
+      isEditing: undefined,
       setEditMode: jest.fn(),
       onUpdateList: jest.fn(),
-      readOnly: null,
+      readOnly: undefined,
       resourceType: ResourceType.table,
       ...propOverrides,
     };

@@ -5,7 +5,7 @@ import * as History from 'history';
 // Mock React-Router
 export function getMockRouterProps<P>(
   data: P,
-  location: Partial<History.Location>
+  location: Partial<History.Location> = {}
 ): RouteComponentProps<P> {
   const mockLocation: History.Location = {
     hash: '',
@@ -24,7 +24,10 @@ export function getMockRouterProps<P>(
       url: '',
     },
     location: mockLocation,
-    history: {
+    // This history object is a mock and `null`s many of the required methods. The
+    // tests are designed not to trigger them, if they do, an error is expected.
+    // So cast this as any.
+    history: <any>{
       length: 2,
       action: 'POP',
       location: mockLocation,

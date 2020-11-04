@@ -36,7 +36,7 @@ const PATHS = {
 };
 
 // Process of Templates
-const walkSync = (dir, filelist = []) => {
+const walkSync = (dir: string, filelist: string[] = []) => {
   fs.readdirSync(dir).forEach((file) => {
     filelist = fs.statSync(path.join(dir, file)).isDirectory()
       ? walkSync(path.join(dir, file), filelist)

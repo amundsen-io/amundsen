@@ -67,7 +67,7 @@ const globalState: GlobalState = {
   },
   issue: {
     issues: [],
-    allIssuesUrl: null,
+    allIssuesUrl: '',
     total: 0,
     isLoading: true,
   },

@@ -145,16 +145,18 @@ export class OwnerEditor extends React.Component<
 
   recordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { value } = this.inputRef.current;
+    if (this.inputRef.current) {
+      const { value } = this.inputRef.current;
 
-    if (this.inputRef.current && value) {
-      this.inputRef.current.value = '';
+      if (value) {
+        this.inputRef.current.value = '';
 
-      const newTempItemProps = {
-        ...this.state.tempItemProps,
-        [value]: { label: value },
-      };
-      this.setState({ tempItemProps: newTempItemProps });
+        const newTempItemProps = {
+          ...this.state.tempItemProps,
+          [value]: { label: value },
+        };
+        this.setState({ tempItemProps: newTempItemProps });
+      }
     }
   };
 
