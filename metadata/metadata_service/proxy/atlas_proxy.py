@@ -4,6 +4,7 @@
 import datetime
 import logging
 import re
+from operator import attrgetter
 from random import randint
 from typing import Any, Dict, List, Union, Optional, Tuple
 
@@ -454,6 +455,8 @@ class AtlasProxy(BaseProxy):
             table_type = attrs.get('tableType') or 'table'
             is_view = 'view' in table_type.lower()
 
+            readers = self._get_readers(table_details)
+
             table = Table(
                 database=table_details.get('typeName'),
                 cluster=table_qn.get('cluster_name', ''),
@@ -466,7 +469,7 @@ class AtlasProxy(BaseProxy):
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 is_view=is_view,
-                table_readers=self._get_readers(attrs.get(self.QN_KEY)),
+                table_readers=readers,
                 last_updated_timestamp=self._parse_date(table_details.get('updateTime')),
                 programmatic_descriptions=programmatic_descriptions,
                 watermarks=self._get_table_watermarks(table_details))
@@ -993,52 +996,33 @@ class AtlasProxy(BaseProxy):
         except Exception:
             return None
 
-    def _get_readers(self, qualified_name: str, top: Optional[int] = 15) -> List[Reader]:
-        params = {
-            'typeName': self.READER_TYPE,
-            'offset': '0',
-            'limit': top,
-            'excludeDeletedEntities': True,
-            'entityFilters': {
-                'condition': 'AND',
-                'criterion': [
-                    {
-                        'attributeName': self.QN_KEY,
-                        'operator': 'STARTSWITH',
-                        'attributeValue': qualified_name.split('@')[0] + '.'
-                    },
-                    {
-                        'attributeName': 'count',
-                        'operator': 'gte',
-                        'attributeValue': f'{app.config["POPULAR_TABLE_MINIMUM_READER_COUNT"]}'
-                    }
-                ]
-            },
-            'attributes': ['count', self.QN_KEY],
-            'sortBy': 'count',
-            'sortOrder': 'DESCENDING'
-        }
+    def _get_readers(self, entity: EntityUniqueAttribute, top: Optional[int] = 15) -> List[Reader]:
+        _readers = entity.get('relationshipAttributes', dict()).get('readers', list())
 
-        search_results = self._driver.search_basic.create(data=params, ignoreRelationships=False)
+        guids = [_reader.get('guid') for _reader in _readers
+                 if _reader.get('entityStatus', 'INACTIVE') == Status.ACTIVE
+                 and _reader.get('relationshipStatus', 'INACTIVE') == Status.ACTIVE]
 
-        readers = []
+        if not guids:
+            return []
 
-        for record in search_results.entities:
-            readers.append(record.guid)
+        readers = extract_entities(self._driver.entity_bulk(guid=guids, ignoreRelationships=False))
 
-        results = []
+        _result = []
 
-        if readers:
-            read_entities = extract_entities(self._driver.entity_bulk(guid=readers, ignoreRelationships=False))
+        for _reader in readers:
+            read_count = _reader.attributes['count']
 
-            for read_entity in read_entities:
-                reader_qn = read_entity.relationshipAttributes['user']['displayText']
+            if read_count >= int(app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']):
+                reader_qn = _reader.relationshipAttributes['user']['displayText']
                 reader_details = self._get_user_details(reader_qn)
-                reader = Reader(user=User(**reader_details), read_count=read_entity.attributes['count'])
+                reader = Reader(user=User(**reader_details), read_count=read_count)
 
-                results.append(reader)
+                _result.append(reader)
 
-        return results
+        result = sorted(_result, key=attrgetter('read_count'), reverse=True)[:top]
+
+        return result
 
     def _get_programmatic_descriptions(self, parameters: dict) -> List[ProgrammaticDescription]:
         programmatic_descriptions: Dict[str, ProgrammaticDescription] = {}

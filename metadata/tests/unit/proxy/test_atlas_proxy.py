@@ -3,11 +3,11 @@
 
 import copy
 import unittest
-from typing import Any, Dict, Optional, cast, List
+from typing import Any, Dict, Optional, cast
 
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Column, Stat, Table, Tag, User, Reader,\
-    ProgrammaticDescription, ResourceReport
+    ProgrammaticDescription
 from atlasclient.exceptions import BadRequest
 from unittest.mock import MagicMock, patch
 from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
@@ -24,6 +24,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
         self.app.config['PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS'] = ['spark.*']
         self.app.config['WATERMARK_DATE_FORMATS'] = ''
+        self.app.config['POPULAR_TABLE_MINIMUM_READER_COUNT'] = 0
         self.app_context = self.app.app_context()
         self.app_context.push()
 
@@ -113,8 +114,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         ent_attrs = cast(dict, self.entity1['attributes'])
         self._mock_get_table_entity()
         self._create_mocked_report_entities_collection()
-        self.proxy._get_owners = MagicMock(return_value=[User(email=ent_attrs['owner'])])   # type: ignore
-        self.proxy._driver.entity_bulk = MagicMock(return_value=self.report_entity_collection)
+        self.proxy._get_owners = MagicMock(return_value=[User(email=ent_attrs['owner'])])  # type: ignore
         response = self.proxy.get_table(table_uri=self.table_uri)
 
         classif_name = self.classification_entity['classifications'][0]['typeName']
@@ -145,8 +145,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          tags=[Tag(tag_name=classif_name, tag_type="default")],
                          description=ent_attrs['description'],
                          owners=[User(email=ent_attrs['owner'])],
-                         resource_reports=[ResourceReport(name='test_report', url='http://test'),
-                                           ResourceReport(name='test_report3', url='http://test3')],
+                         resource_reports=[],
                          last_updated_timestamp=int(str(self.entity1['updateTime'])[:10]),
                          columns=[exp_col] * self.active_columns,
                          watermarks=[],
@@ -425,14 +424,13 @@ class TestAtlasProxy(unittest.TestCase, Data):
         entity_bulk_result.entities = self.reader_entities
         self.proxy._driver.entity_bulk = MagicMock(return_value=[entity_bulk_result])
 
-        res = self.proxy._get_readers('dummy', 1)
+        res = self.proxy._get_readers(dict(relationshipAttributes=dict(readers=[dict(guid=1, entityStatus='ACTIVE',
+                                                                                     relationshipStatus='ACTIVE')])),
+                                      1)
 
-        expected: List[Reader] = []
+        expected = [Reader(user=User(email='test_user_2', user_id='test_user_2'), read_count=150)]
 
-        expected += [Reader(user=User(email='test_user_1', user_id='test_user_1'), read_count=5)]
-        expected += [Reader(user=User(email='test_user_2', user_id='test_user_2'), read_count=150)]
-
-        self.assertEqual(res, expected)
+        self.assertEqual(expected, res)
 
     def test_get_frequently_used_tables(self) -> None:
         entity_unique_attribute_result = MagicMock()
