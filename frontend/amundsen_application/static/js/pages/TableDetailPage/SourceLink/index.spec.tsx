@@ -43,7 +43,7 @@ describe('render SourceLink', () => {
       const actual = wrapper
         .find('.header-link')
         .getDOMNode()
-        .attributes.getNamedItem('href').value;
+        .attributes.getNamedItem('href')?.value;
 
       expect(actual).toEqual(expected);
     });

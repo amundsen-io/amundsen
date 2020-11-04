@@ -17,7 +17,10 @@ export const DEFAULT_SEARCH_ROUTE = '/search';
 
 export const generateSearchUrl = (searchParams: SearchParams): string => {
   const filtersForResource =
-    (searchParams.filters && searchParams.filters[searchParams.resource]) || {};
+    (searchParams.filters &&
+      searchParams.resource &&
+      searchParams.filters[searchParams.resource]) ||
+    {};
   const hasFilters = Object.keys(filtersForResource).length > 0;
 
   // If there is no search input return the search route url

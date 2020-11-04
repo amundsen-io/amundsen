@@ -98,7 +98,7 @@ describe('AnnouncementsList', () => {
         const actual = wrapper
           .find('a.announcements-list-more-link')
           .getDOMNode()
-          .attributes.getNamedItem('href').value;
+          .attributes.getNamedItem('href')?.value;
 
         expect(actual).toEqual(expected);
       });

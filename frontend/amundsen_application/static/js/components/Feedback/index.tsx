@@ -18,7 +18,7 @@ export interface FeedbackProps {
 }
 
 interface FeedbackState {
-  content: React.FC<any>;
+  content?: React.FC<any>;
   feedbackType: FeedbackType;
   isOpen: boolean;
 }

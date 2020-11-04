@@ -12,7 +12,7 @@ import {
   indexDashboardsEnabled,
 } from 'config/config-utils';
 import PaginatedResourceList from 'components/common/ResourceList/PaginatedResourceList';
-import TabsComponent from 'components/common/TabsComponent';
+import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
 import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
 import {
   BOOKMARK_TITLE,
@@ -29,7 +29,7 @@ interface StateFromProps {
 export type MyBookmarksProps = StateFromProps;
 
 export class MyBookmarks extends React.Component<MyBookmarksProps> {
-  generateTabContent = (resource: ResourceType) => {
+  generateTabContent = (resource: ResourceType): JSX.Element | null => {
     const bookmarks = this.props.myBookmarks[resource];
 
     if (!bookmarks) {
@@ -60,8 +60,8 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
     return `${getDisplayNameByResource(resource)} (${bookmarks.length})`;
   };
 
-  generateTabInfo = () => {
-    const tabInfo = [];
+  generateTabInfo = (): TabInfo[] => {
+    const tabInfo: TabInfo[] = [];
 
     tabInfo.push({
       content: this.generateTabContent(ResourceType.table),

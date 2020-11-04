@@ -64,7 +64,7 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     getAllTags: () => void 0,
     isLoading: false,
     resourceType: ResourceType.table,
-    tags: undefined,
+    tags: [],
     updateTags: () => void 0,
     uriKey: '',
   };
@@ -95,12 +95,12 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
 
   handleSaveModalEdit = () => {
     const tagArray = Object.keys(this.batchEditSet).reduce(
-      (previousValue, tag) => {
-        const action = this.batchEditSet[tag];
+      (previousValue: UpdateTagData[], tagName) => {
+        const action = this.batchEditSet[tagName];
         if (action === BatchEditState.DELETE) {
-          previousValue.push({ methodName: UpdateMethod.DELETE, tagName: tag });
+          previousValue.push({ methodName: UpdateMethod.DELETE, tagName });
         } else if (action === BatchEditState.PUT) {
-          previousValue.push({ methodName: UpdateMethod.PUT, tagName: tag });
+          previousValue.push({ methodName: UpdateMethod.PUT, tagName });
         }
         return previousValue;
       },

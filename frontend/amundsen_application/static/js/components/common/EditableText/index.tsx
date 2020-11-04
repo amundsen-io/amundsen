@@ -21,7 +21,7 @@ export interface StateFromProps {
 
 export interface DispatchFromProps {
   getLatestValue?: (onSuccess?: () => any, onFailure?: () => any) => void;
-  onSubmitValue: (
+  onSubmitValue?: (
     newValue: string,
     onSuccess?: () => any,
     onFailure?: () => any
@@ -53,8 +53,6 @@ class EditableText extends React.Component<
   public static defaultProps: EditableTextProps = {
     editable: true,
     maxLength: 250,
-    onSubmitValue: null,
-    getLatestValue: null,
     value: '',
   };
 
@@ -90,11 +88,11 @@ class EditableText extends React.Component<
   }
 
   exitEditMode = () => {
-    this.props.setEditMode(false);
+    this.props.setEditMode?.(false);
   };
 
   enterEditMode = () => {
-    this.props.setEditMode(true);
+    this.props.setEditMode?.(true);
   };
 
   refreshText = () => {
@@ -109,14 +107,14 @@ class EditableText extends React.Component<
   updateText = () => {
     const newValue = this.textAreaRef.current.value;
     const onSuccessCallback = () => {
-      this.props.setEditMode(false);
+      this.props.setEditMode?.(false);
       this.setState({ value: newValue });
     };
     const onFailureCallback = () => {
       this.exitEditMode();
     };
 
-    this.props.onSubmitValue(newValue, onSuccessCallback, onFailureCallback);
+    this.props.onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
   };
 
   render() {

@@ -68,10 +68,10 @@ const AnnouncementsList: React.FC<AnnouncementsListProps> = ({
   isLoading,
 }: AnnouncementsListProps) => {
   const isEmpty = announcements.length === 0;
-  let listContent = null;
+  let listContent: JSX.Element[] = [];
 
   if (isEmpty) {
-    listContent = <EmptyAnnouncementItem />;
+    listContent = [<EmptyAnnouncementItem />];
   }
   if (announcements.length > 0) {
     listContent = getLatestsAnnouncements(
@@ -86,7 +86,7 @@ const AnnouncementsList: React.FC<AnnouncementsListProps> = ({
     ));
   }
   if (hasError) {
-    listContent = <AnnouncementErrorItem />;
+    listContent = [<AnnouncementErrorItem />];
   }
   if (isLoading) {
     listContent = times(3).map((_, index) => (

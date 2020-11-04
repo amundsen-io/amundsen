@@ -14,7 +14,7 @@ export interface TabsProps {
 }
 
 export interface TabInfo {
-  content: JSX.Element;
+  content?: JSX.Element;
   key: string;
   title: string | JSX.Element;
 }
