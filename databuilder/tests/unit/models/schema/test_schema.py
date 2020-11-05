@@ -4,6 +4,7 @@
 import unittest
 
 from databuilder.models.schema.schema import SchemaModel
+from databuilder.serializers import neo4_serializer
 
 
 class TestSchemaDescription(unittest.TestCase):
@@ -13,12 +14,18 @@ class TestSchemaDescription(unittest.TestCase):
         schema = SchemaModel(schema_key='db://cluster.schema',
                              schema='schema_name',
                              description='foo')
-
-        self.assertDictEqual(schema.create_next_node() or {},
-                             {'name': 'schema_name', 'KEY': 'db://cluster.schema', 'LABEL': 'Schema'})
-        self.assertDictEqual(schema.create_next_node() or {},
+        schema_node = schema.create_next_node()
+        serialized_schema_node = neo4_serializer.serialize_node(schema_node)
+        schema_desc_node = schema.create_next_node()
+        serialized_schema_desc_node = neo4_serializer.serialize_node(schema_desc_node)
+        self.assertDictEqual(
+            serialized_schema_node,
+            {'name': 'schema_name', 'KEY': 'db://cluster.schema', 'LABEL': 'Schema'}
+        )
+        self.assertDictEqual(serialized_schema_desc_node,
                              {'description_source': 'description', 'description': 'foo',
-                              'KEY': 'db://cluster.schema/_description', 'LABEL': 'Description'})
+                              'KEY': 'db://cluster.schema/_description', 'LABEL': 'Description'}
+                             )
         self.assertIsNone(schema.create_next_node())
 
     def test_create_nodes_no_description(self) -> None:
@@ -26,7 +33,10 @@ class TestSchemaDescription(unittest.TestCase):
         schema = SchemaModel(schema_key='db://cluster.schema',
                              schema='schema_name')
 
-        self.assertDictEqual(schema.create_next_node() or {},
+        schema_node = schema.create_next_node()
+        serialized_schema_node = neo4_serializer.serialize_node(schema_node)
+
+        self.assertDictEqual(serialized_schema_node,
                              {'name': 'schema_name', 'KEY': 'db://cluster.schema', 'LABEL': 'Schema'})
         self.assertIsNone(schema.create_next_node())
 
@@ -37,9 +47,14 @@ class TestSchemaDescription(unittest.TestCase):
                              description='foo',
                              description_source='bar')
 
-        self.assertDictEqual(schema.create_next_node() or {},
+        schema_node = schema.create_next_node()
+        serialized_schema_node = neo4_serializer.serialize_node(schema_node)
+        schema_desc_node = schema.create_next_node()
+        serialized_schema_prod_desc_node = neo4_serializer.serialize_node(schema_desc_node)
+
+        self.assertDictEqual(serialized_schema_node,
                              {'name': 'schema_name', 'KEY': 'db://cluster.schema', 'LABEL': 'Schema'})
-        self.assertDictEqual(schema.create_next_node() or {},
+        self.assertDictEqual(serialized_schema_prod_desc_node,
                              {'description_source': 'bar', 'description': 'foo',
                               'KEY': 'db://cluster.schema/_bar_description', 'LABEL': 'Programmatic_Description'})
         self.assertIsNone(schema.create_next_node())
@@ -50,10 +65,11 @@ class TestSchemaDescription(unittest.TestCase):
                              description='foo')
 
         actual = schema.create_next_relation()
+        serialized_actual = neo4_serializer.serialize_relationship(actual)
         expected = {'END_KEY': 'db://cluster.schema/_description', 'START_LABEL': 'Schema', 'END_LABEL': 'Description',
                     'START_KEY': 'db://cluster.schema', 'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'}
 
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, serialized_actual)
         self.assertIsNone(schema.create_next_relation())
 
     def test_create_relation_no_description(self) -> None:
@@ -69,11 +85,12 @@ class TestSchemaDescription(unittest.TestCase):
                              description_source='bar')
 
         actual = schema.create_next_relation()
+        serialized_actual = neo4_serializer.serialize_relationship(actual)
         expected = {
             'END_KEY': 'db://cluster.schema/_bar_description', 'START_LABEL': 'Schema',
             'END_LABEL': 'Programmatic_Description', 'START_KEY': 'db://cluster.schema', 'TYPE': 'DESCRIPTION',
             'REVERSE_TYPE': 'DESCRIPTION_OF'
         }
 
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, serialized_actual)
         self.assertIsNone(schema.create_next_relation())

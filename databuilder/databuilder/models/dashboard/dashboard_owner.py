@@ -3,20 +3,21 @@
 
 import logging
 
-from typing import Optional, Dict, Any, Union, Iterator
+from typing import Optional, Any, Union, Iterator
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
-from databuilder.models.neo4j_csv_serde import (
-    Neo4jCsvSerializable, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
-    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
+from databuilder.models.graph_serializable import (
+    GraphSerializable)
 from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE, OWNER_RELATION_TYPE
 from databuilder.models.user import User
 
+from databuilder.models.graph_node import GraphNode
+from databuilder.models.graph_relationship import GraphRelationship
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardOwner(Neo4jCsvSerializable):
+class DashboardOwner(GraphSerializable):
     """
     A model that encapsulate Dashboard's owner.
     Note that it does not create new user as it has insufficient information about user but it builds relation
@@ -42,29 +43,31 @@ class DashboardOwner(Neo4jCsvSerializable):
 
         self._relation_iterator = self._create_relation_iterator()
 
-    def create_next_node(self) -> Union[Dict[str, Any], None]:
+    def create_next_node(self) -> Union[GraphNode, None]:
         return None
 
-    def create_next_relation(self) -> Union[Dict[str, Any], None]:
+    def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_relation_iterator(self) -> Iterator[Dict[str, Any]]:
-        yield {
-            RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
-            RELATION_END_LABEL: User.USER_NODE_LABEL,
-            RELATION_START_KEY: DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
+        relationship = GraphRelationship(
+            start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,
+            end_label=User.USER_NODE_LABEL,
+            start_key=DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
                 product=self._product,
                 cluster=self._cluster,
                 dashboard_group=self._dashboard_group_id,
                 dashboard_name=self._dashboard_id
             ),
-            RELATION_END_KEY: User.get_user_model_key(email=self._email),
-            RELATION_TYPE: OWNER_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: OWNER_OF_OBJECT_RELATION_TYPE
-        }
+            end_key=User.get_user_model_key(email=self._email),
+            type=OWNER_RELATION_TYPE,
+            reverse_type=OWNER_OF_OBJECT_RELATION_TYPE,
+            attributes={}
+        )
+        yield relationship
 
     def __repr__(self) -> str:
         return 'DashboardOwner({!r}, {!r}, {!r}, {!r}, {!r})'.format(

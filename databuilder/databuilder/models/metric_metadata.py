@@ -1,22 +1,19 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from collections import namedtuple
-
-from typing import Any, Iterator, Dict, List, Set, Union
+from typing import Any, Iterator, List, Union, Set
 
 # TODO: We could separate TagMetadata from table_metadata to own module
 from databuilder.models.table_metadata import TagMetadata
-from databuilder.models.neo4j_csv_serde import (
-    Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
-    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
+from databuilder.models.graph_serializable import (
+    GraphSerializable
+)
+
+from databuilder.models.graph_node import GraphNode
+from databuilder.models.graph_relationship import GraphRelationship
 
 
-NodeTuple = namedtuple('KeyName', ['key', 'name', 'label'])
-RelTuple = namedtuple('RelKeys', ['start_label', 'end_label', 'start_key', 'end_key', 'type', 'reverse_type'])
-
-
-class MetricMetadata(Neo4jCsvSerializable):
+class MetricMetadata(GraphSerializable):
     """
     Table metadata that contains columns. It implements Neo4jCsvSerializable so that it can be serialized to produce
     Table, Column and relation of those along with relationship with table and schema. Additionally, it will create
@@ -73,7 +70,6 @@ class MetricMetadata(Neo4jCsvSerializable):
                  type: str,
                  tags: List,
                  ) -> None:
-
         self.dashboard_group = dashboard_group
         self.dashboard_name = dashboard_name
         self.name = name
@@ -108,39 +104,57 @@ class MetricMetadata(Neo4jCsvSerializable):
     def _get_metric_description_key(self) -> str:
         return MetricMetadata.METRIC_DESCRIPTION_FORMAT.format(name=self.name)
 
-    def create_next_node(self) -> Union[Dict[str, Any], None]:
+    def create_next_node(self) -> Union[GraphNode, None]:
         try:
             return next(self._node_iterator)
         except StopIteration:
             return None
 
-    def _create_next_node(self) -> Iterator[Any]:
-
+    def _create_next_node(self) -> Iterator[GraphNode]:
         # Metric node
-        yield {NODE_LABEL: MetricMetadata.METRIC_NODE_LABEL,
-               NODE_KEY: self._get_metric_key(),
-               MetricMetadata.METRIC_NAME: self.name,
-               MetricMetadata.METRIC_EXPRESSION_VALUE: self.expression
-               }
+        metric_node = GraphNode(
+            key=self._get_metric_key(),
+            label=MetricMetadata.METRIC_NODE_LABEL,
+            attributes={
+                MetricMetadata.METRIC_NAME: self.name,
+                MetricMetadata.METRIC_EXPRESSION_VALUE: self.expression
+            }
+        )
+        yield metric_node
 
         # Description node
         if self.description:
-            yield {NODE_LABEL: MetricMetadata.DESCRIPTION_NODE_LABEL,
-                   NODE_KEY: self._get_metric_description_key(),
-                   MetricMetadata.METRIC_DESCRIPTION: self.description}
+            description_node = GraphNode(
+                key=self._get_metric_description_key(),
+                label=MetricMetadata.DESCRIPTION_NODE_LABEL,
+                attributes={
+                    MetricMetadata.METRIC_DESCRIPTION: self.description
+                }
+            )
+            yield description_node
 
         # Metric tag node
         if self.tags:
             for tag in self.tags:
-                yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
-                       NODE_KEY: TagMetadata.get_tag_key(tag),
-                       TagMetadata.TAG_TYPE: 'metric'}
+                tag_node = GraphNode(
+                    key=TagMetadata.get_tag_key(tag),
+                    label=TagMetadata.TAG_NODE_LABEL,
+                    attributes={
+                        TagMetadata.TAG_TYPE: 'metric'
+                    }
+                )
+                yield tag_node
 
         # Metric type node
         if self.type:
-            yield {NODE_LABEL: MetricMetadata.METRIC_TYPE_NODE_LABEL,
-                   NODE_KEY: self._get_metric_type_key(),
-                   'name': self.type}
+            type_node = GraphNode(
+                key=self._get_metric_type_key(),
+                label=MetricMetadata.METRIC_TYPE_NODE_LABEL,
+                attributes={
+                    'name': self.type
+                }
+            )
+            yield type_node
 
         # FIXME: this logic is wrong and does nothing presently
         others: List[Any] = []
@@ -148,63 +162,67 @@ class MetricMetadata(Neo4jCsvSerializable):
         for node_tuple in others:
             if node_tuple not in MetricMetadata.serialized_nodes:
                 MetricMetadata.serialized_nodes.add(node_tuple)
-                yield {
-                    NODE_LABEL: node_tuple.label,
-                    NODE_KEY: node_tuple.key,
-                    'name': node_tuple.name
-                }
+                yield node_tuple
 
-    def create_next_relation(self) -> Union[Dict[str, Any], None]:
+    def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_next_relation(self) -> Iterator[Any]:
+    def _create_next_relation(self) -> Iterator[GraphRelationship]:
 
         # Dashboard > Metric relation
-        yield {
-            RELATION_START_LABEL: MetricMetadata.METRIC_NODE_LABEL,
-            RELATION_END_LABEL: MetricMetadata.DASHBOARD_NODE_LABEL,
-            RELATION_START_KEY: self._get_metric_key(),
-            RELATION_END_KEY: self._get_dashboard_key(),
-            RELATION_TYPE: MetricMetadata.METRIC_DASHBOARD_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: MetricMetadata.DASHBOARD_METRIC_RELATION_TYPE
-        }
+        dashboard_metric_relation = GraphRelationship(
+            start_label=MetricMetadata.METRIC_NODE_LABEL,
+            start_key=self._get_metric_key(),
+            end_label=MetricMetadata.DASHBOARD_NODE_LABEL,
+            end_key=self._get_dashboard_key(),
+            type=MetricMetadata.METRIC_DASHBOARD_RELATION_TYPE,
+            reverse_type=MetricMetadata.DASHBOARD_METRIC_RELATION_TYPE,
+            attributes={}
+        )
+        yield dashboard_metric_relation
 
         # Metric > Metric description relation
         if self.description:
-            yield {
-                RELATION_START_LABEL: MetricMetadata.METRIC_NODE_LABEL,
-                RELATION_END_LABEL: MetricMetadata.DESCRIPTION_NODE_LABEL,
-                RELATION_START_KEY: self._get_metric_key(),
-                RELATION_END_KEY: self._get_metric_description_key(),
-                RELATION_TYPE: MetricMetadata.METRIC_DESCRIPTION_RELATION_TYPE,
-                RELATION_REVERSE_TYPE: MetricMetadata.DESCRIPTION_METRIC_RELATION_TYPE
-            }
+            metric_description_relation = GraphRelationship(
+                start_label=MetricMetadata.METRIC_NODE_LABEL,
+                start_key=self._get_metric_key(),
+                end_label=MetricMetadata.DESCRIPTION_NODE_LABEL,
+                end_key=self._get_metric_description_key(),
+                type=MetricMetadata.METRIC_DESCRIPTION_RELATION_TYPE,
+                reverse_type=MetricMetadata.DESCRIPTION_METRIC_RELATION_TYPE,
+                attributes={}
+            )
+            yield metric_description_relation
 
         # Metric > Metric tag relation
         if self.tags:
             for tag in self.tags:
-                yield {
-                    RELATION_START_LABEL: MetricMetadata.METRIC_NODE_LABEL,
-                    RELATION_END_LABEL: TagMetadata.TAG_NODE_LABEL,
-                    RELATION_START_KEY: self._get_metric_key(),
-                    RELATION_END_KEY: TagMetadata.get_tag_key(tag),
-                    RELATION_TYPE: MetricMetadata.METRIC_TAG_RELATION_TYPE,
-                    RELATION_REVERSE_TYPE: MetricMetadata.TAG_METRIC_RELATION_TYPE
-                }
+                tag_relation = GraphRelationship(
+                    start_label=MetricMetadata.METRIC_NODE_LABEL,
+                    start_key=self._get_metric_key(),
+                    end_label=TagMetadata.TAG_NODE_LABEL,
+                    end_key=TagMetadata.get_tag_key(tag),
+                    type=MetricMetadata.METRIC_TAG_RELATION_TYPE,
+                    reverse_type=MetricMetadata.TAG_METRIC_RELATION_TYPE,
+                    attributes={}
+                )
+                yield tag_relation
 
         # Metric > Metric type relation
         if self.type:
-            yield {
-                RELATION_START_LABEL: MetricMetadata.METRIC_NODE_LABEL,
-                RELATION_END_LABEL: MetricMetadata.METRIC_TYPE_NODE_LABEL,
-                RELATION_START_KEY: self._get_metric_key(),
-                RELATION_END_KEY: self._get_metric_type_key(),
-                RELATION_TYPE: MetricMetadata.METRIC_METRIC_TYPE_RELATION_TYPE,
-                RELATION_REVERSE_TYPE: MetricMetadata.METRIC_TYPE_METRIC_RELATION_TYPE
-            }
+            type_relation = GraphRelationship(
+                start_label=MetricMetadata.METRIC_NODE_LABEL,
+                start_key=self._get_metric_key(),
+                end_label=MetricMetadata.METRIC_TYPE_NODE_LABEL,
+                end_key=self._get_metric_type_key(),
+                type=MetricMetadata.METRIC_METRIC_TYPE_RELATION_TYPE,
+                reverse_type=MetricMetadata.METRIC_TYPE_METRIC_RELATION_TYPE,
+                attributes={}
+            )
+            yield type_relation
 
         # FIXME: this logic is wrong and does nothing presently
         others: List[Any] = []
@@ -212,11 +230,4 @@ class MetricMetadata(Neo4jCsvSerializable):
         for rel_tuple in others:
             if rel_tuple not in MetricMetadata.serialized_rels:
                 MetricMetadata.serialized_rels.add(rel_tuple)
-                yield {
-                    RELATION_START_LABEL: rel_tuple.start_label,
-                    RELATION_END_LABEL: rel_tuple.end_label,
-                    RELATION_START_KEY: rel_tuple.start_key,
-                    RELATION_END_KEY: rel_tuple.end_key,
-                    RELATION_TYPE: rel_tuple.type,
-                    RELATION_REVERSE_TYPE: rel_tuple.reverse_type
-                }
+                yield rel_tuple

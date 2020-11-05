@@ -4,8 +4,9 @@
 import unittest
 
 from databuilder.models.table_lineage import TableLineage
-from databuilder.models.neo4j_csv_serde import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
+from databuilder.models.graph_serializable import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.serializers import neo4_serializer
 
 
 DB = 'hive'
@@ -57,5 +58,9 @@ class TestTableLineage(unittest.TestCase):
             RELATION_TYPE: TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
             RELATION_REVERSE_TYPE: TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE
         }
+        actual_relations = [
+            neo4_serializer.serialize_relationship(relation)
+            for relation in relations
+        ]
         self.assertTrue(len(relations), 2)
-        self.assertTrue(relation in relations)
+        self.assertTrue(relation in actual_relations)

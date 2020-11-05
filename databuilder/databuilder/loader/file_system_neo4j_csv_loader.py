@@ -12,10 +12,9 @@ from typing import Dict, Any
 
 from databuilder.job.base_job import Job
 from databuilder.loader.base_loader import Loader
-from databuilder.models.neo4j_csv_serde import NODE_LABEL, \
-    RELATION_START_LABEL, RELATION_END_LABEL, RELATION_TYPE
-from databuilder.models.neo4j_csv_serde import Neo4jCsvSerializable
+from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.utils.closer import Closer
+from databuilder.serializers import neo4_serializer
 
 
 LOGGER = logging.getLogger(__name__)
@@ -90,7 +89,7 @@ class FsNeo4jCSVLoader(Loader):
         # Directory should be deleted after publish is finished
         Job.closer.register(_delete_dir)
 
-    def load(self, csv_serializable: Neo4jCsvSerializable) -> None:
+    def load(self, csv_serializable: GraphSerializable) -> None:
         """
         Writes Neo4jCsvSerializable into CSV files.
         There are multiple CSV files that this method writes.
@@ -107,9 +106,10 @@ class FsNeo4jCSVLoader(Loader):
         :return:
         """
 
-        node_dict = csv_serializable.next_node()
-        while node_dict:
-            key = (node_dict[NODE_LABEL], len(node_dict))
+        node = csv_serializable.next_node()
+        while node:
+            node_dict = neo4_serializer.serialize_node(node)
+            key = (node.label, len(node_dict))
             file_suffix = '{}_{}'.format(*key)
             node_writer = self._get_writer(node_dict,
                                            self._node_file_mapping,
@@ -117,13 +117,14 @@ class FsNeo4jCSVLoader(Loader):
                                            self._node_dir,
                                            file_suffix)
             node_writer.writerow(node_dict)
-            node_dict = csv_serializable.next_node()
+            node = csv_serializable.next_node()
 
-        relation_dict = csv_serializable.next_relation()
-        while relation_dict:
-            key2 = (relation_dict[RELATION_START_LABEL],
-                    relation_dict[RELATION_END_LABEL],
-                    relation_dict[RELATION_TYPE],
+        relation = csv_serializable.next_relation()
+        while relation:
+            relation_dict = neo4_serializer.serialize_relationship(relation)
+            key2 = (relation.start_label,
+                    relation.end_label,
+                    relation.type,
                     len(relation_dict))
 
             file_suffix = '{}_{}_{}'.format(key2[0], key2[1], key2[2])
@@ -133,7 +134,7 @@ class FsNeo4jCSVLoader(Loader):
                                                self._relation_dir,
                                                file_suffix)
             relation_writer.writerow(relation_dict)
-            relation_dict = csv_serializable.next_relation()
+            relation = csv_serializable.next_relation()
 
     def _get_writer(self,
                     csv_record_dict: Dict[str, Any],
