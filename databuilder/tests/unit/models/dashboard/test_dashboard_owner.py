@@ -4,8 +4,9 @@
 import unittest
 
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner
-from databuilder.models.neo4j_csv_serde import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
+from databuilder.models.graph_serializable import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.serializers import neo4_serializer
 
 
 class TestDashboardOwner(unittest.TestCase):
@@ -22,9 +23,10 @@ class TestDashboardOwner(unittest.TestCase):
                                          dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
 
         actual = dashboard_owner.create_next_relation()
+        actual_serialized = neo4_serializer.serialize_relationship(actual)
         expected = {RELATION_END_KEY: 'foo@bar.com', RELATION_START_LABEL: 'Dashboard', RELATION_END_LABEL: 'User',
                     RELATION_START_KEY: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
                     RELATION_TYPE: 'OWNER',
                     RELATION_REVERSE_TYPE: 'OWNER_OF'}
         assert actual is not None
-        self.assertDictEqual(actual, expected)
+        self.assertDictEqual(actual_serialized, expected)

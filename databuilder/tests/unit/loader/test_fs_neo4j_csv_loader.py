@@ -14,7 +14,7 @@ from typing import Dict, Iterable, Any, Callable
 
 from databuilder.job.base_job import Job
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from tests.unit.models.test_neo4j_csv_serde import Movie, Actor, City
+from tests.unit.models.test_graph_serializable import Movie, Actor, City
 from operator import itemgetter
 
 

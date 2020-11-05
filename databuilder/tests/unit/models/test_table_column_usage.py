@@ -5,6 +5,7 @@ import unittest
 
 from databuilder.models.table_column_usage import ColumnReader, TableColumnUsage
 from typing import no_type_check
+from databuilder.serializers import neo4_serializer
 
 
 class TestTableColumnUsage(unittest.TestCase):
@@ -19,7 +20,8 @@ class TestTableColumnUsage(unittest.TestCase):
         node_row = table_col_usage.next_node()
         actual = []
         while node_row:
-            actual.append(node_row)
+
+            actual.append(neo4_serializer.serialize_node(node_row))
             node_row = table_col_usage.next_node()
 
         expected = [{'first_name': '',
@@ -27,7 +29,7 @@ class TestTableColumnUsage(unittest.TestCase):
                      'full_name': '',
                      'employee_type': '',
                      'is_active:UNQUOTED': True,
-                     'updated_at': 0,
+                     'updated_at:UNQUOTED': 0,
                      'LABEL': 'User',
                      'slack_id': '',
                      'KEY': 'john@example.com',
@@ -40,7 +42,7 @@ class TestTableColumnUsage(unittest.TestCase):
         rel_row = table_col_usage.next_relation()
         actual = []
         while rel_row:
-            actual.append(rel_row)
+            actual.append(neo4_serializer.serialize_relationship(rel_row))
             rel_row = table_col_usage.next_relation()
 
         expected = [{'read_count:UNQUOTED': 1, 'END_KEY': 'john@example.com', 'START_LABEL': 'Table',

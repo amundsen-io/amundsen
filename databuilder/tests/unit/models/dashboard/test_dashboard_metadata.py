@@ -5,6 +5,7 @@ import copy
 import unittest
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
+from databuilder.serializers import neo4_serializer
 
 
 class TestDashboardMetadata(unittest.TestCase):
@@ -41,10 +42,17 @@ class TestDashboardMetadata(unittest.TestCase):
                                                      )
 
         self.expected_nodes_deduped = [
-            {'KEY': '_dashboard://gold', 'LABEL': 'Cluster', 'name': 'gold'},
-            {'created_timestamp': 123456789, 'name': 'Agent', 'KEY': '_dashboard://gold.Product - Jobs.cz/Agent',
-             'LABEL': 'Dashboard',
-             'dashboard_url': 'https://foo.bar/dashboard_group/foo/dashboard/bar'},
+            {
+                'KEY': '_dashboard://gold',
+                'LABEL': 'Cluster', 'name': 'gold'
+            },
+            {
+                'created_timestamp:UNQUOTED': 123456789,
+                'name': 'Agent',
+                'KEY': '_dashboard://gold.Product - Jobs.cz/Agent',
+                'LABEL': 'Dashboard',
+                'dashboard_url': 'https://foo.bar/dashboard_group/foo/dashboard/bar'
+            },
             {'name': 'Product - Jobs.cz', 'KEY': '_dashboard://gold.Product - Jobs.cz', 'LABEL': 'Dashboardgroup',
              'dashboard_group_url': 'https://foo.bar/dashboard_group/foo'},
             {'KEY': '_dashboard://gold.Product - Jobs.cz/_description', 'LABEL': 'Description',
@@ -138,7 +146,8 @@ class TestDashboardMetadata(unittest.TestCase):
         node_row = self.dashboard_metadata.next_node()
         actual = []
         while node_row:
-            actual.append(node_row)
+            node_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_serialized)
             node_row = self.dashboard_metadata.next_node()
 
         self.assertEqual(self.expected_nodes, actual)
@@ -146,7 +155,8 @@ class TestDashboardMetadata(unittest.TestCase):
         relation_row = self.dashboard_metadata.next_relation()
         actual = []
         while relation_row:
-            actual.append(relation_row)
+            relation_serialized = neo4_serializer.serialize_relationship(relation_row)
+            actual.append(relation_serialized)
             relation_row = self.dashboard_metadata.next_relation()
 
         self.assertEqual(self.expected_rels, actual)
@@ -155,7 +165,8 @@ class TestDashboardMetadata(unittest.TestCase):
         node_row = self.dashboard_metadata2.next_node()
         actual = []
         while node_row:
-            actual.append(node_row)
+            node_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_serialized)
             node_row = self.dashboard_metadata2.next_node()
 
         self.assertEqual(self.expected_nodes_deduped2, actual)
@@ -163,7 +174,8 @@ class TestDashboardMetadata(unittest.TestCase):
         relation_row = self.dashboard_metadata2.next_relation()
         actual = []
         while relation_row:
-            actual.append(relation_row)
+            relation_serialized = neo4_serializer.serialize_relationship(relation_row)
+            actual.append(relation_serialized)
             relation_row = self.dashboard_metadata2.next_relation()
 
         self.assertEqual(self.expected_rels_deduped2, actual)
@@ -172,7 +184,8 @@ class TestDashboardMetadata(unittest.TestCase):
         node_row = self.dashboard_metadata3.next_node()
         actual = []
         while node_row:
-            actual.append(node_row)
+            node_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_serialized)
             node_row = self.dashboard_metadata3.next_node()
 
         self.assertEqual(self.expected_nodes_deduped3, actual)
@@ -180,7 +193,8 @@ class TestDashboardMetadata(unittest.TestCase):
         relation_row = self.dashboard_metadata3.next_relation()
         actual = []
         while relation_row:
-            actual.append(relation_row)
+            relation_serialized = neo4_serializer.serialize_relationship(relation_row)
+            actual.append(relation_serialized)
             relation_row = self.dashboard_metadata3.next_relation()
 
         self.assertEqual(self.expected_rels_deduped3, actual)

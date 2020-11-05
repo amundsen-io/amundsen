@@ -4,8 +4,9 @@
 import unittest
 
 from databuilder.models.table_source import TableSource
-from databuilder.models.neo4j_csv_serde import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
+from databuilder.models.graph_serializable import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
     RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.serializers import neo4_serializer
 
 
 DB = 'hive'
@@ -43,7 +44,8 @@ class TestTableSource(unittest.TestCase):
 
     def test_create_relation(self) -> None:
         relations = self.table_source.create_relation()
-        self.assertEqual(len(relations), 1)
+        self.assertEquals(len(relations), 1)
+        serialized_relation = neo4_serializer.serialize_relationship(relations[0])
 
         start_key = '{db}://{cluster}.{schema}/{tbl}/_source'.format(db=DB,
                                                                      schema=SCHEMA,
@@ -54,7 +56,7 @@ class TestTableSource(unittest.TestCase):
                                                            tbl=TABLE,
                                                            cluster=CLUSTER)
 
-        relation = {
+        expected_relation = {
             RELATION_START_KEY: start_key,
             RELATION_START_LABEL: TableSource.LABEL,
             RELATION_END_KEY: end_key,
@@ -63,4 +65,4 @@ class TestTableSource(unittest.TestCase):
             RELATION_REVERSE_TYPE: TableSource.TABLE_SOURCE_RELATION_TYPE
         }
 
-        self.assertTrue(relation in relations)
+        self.assertDictEqual(expected_relation, serialized_relation)

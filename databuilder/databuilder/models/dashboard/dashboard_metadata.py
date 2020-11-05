@@ -1,22 +1,20 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from collections import namedtuple
-
-from typing import Any, Dict, Iterator, List, Optional, Set, Union
+from typing import Any, Iterator, List, Optional, Set, Union, Dict
 
 from databuilder.models.cluster import cluster_constants
-from databuilder.models.neo4j_csv_serde import (
-    Neo4jCsvSerializable, NODE_LABEL, NODE_KEY, RELATION_START_KEY, RELATION_END_KEY, RELATION_START_LABEL,
-    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE)
+from databuilder.models.graph_serializable import (
+    GraphSerializable
+)
 # TODO: We could separate TagMetadata from table_metadata to own module
 from databuilder.models.table_metadata import TagMetadata
 
-NodeTuple = namedtuple('KeyName', ['key', 'name', 'label'])
-RelTuple = namedtuple('RelKeys', ['start_label', 'end_label', 'start_key', 'end_key', 'type', 'reverse_type'])
+from databuilder.models.graph_node import GraphNode
+from databuilder.models.graph_relationship import GraphRelationship
 
 
-class DashboardMetadata(Neo4jCsvSerializable):
+class DashboardMetadata(GraphSerializable):
     """
     Dashboard metadata including dashboard group name, dashboardgroup description, dashboard description,
     and tags.
@@ -132,127 +130,162 @@ class DashboardMetadata(Neo4jCsvSerializable):
                                                                    cluster=self.cluster,
                                                                    product=self.product)
 
-    def create_next_node(self) -> Union[Dict[str, Any], None]:
+    def create_next_node(self) -> Union[GraphNode, None]:
         try:
             return next(self._node_iterator)
         except StopIteration:
             return None
 
-    def _create_next_node(self) -> Iterator[Any]:
+    def _create_next_node(self) -> Iterator[GraphNode]:
         # Cluster node
         if not self._get_cluster_key() in self._processed_cluster:
             self._processed_cluster.add(self._get_cluster_key())
-            yield {
-                NODE_LABEL: cluster_constants.CLUSTER_NODE_LABEL,
-                NODE_KEY: self._get_cluster_key(),
-                cluster_constants.CLUSTER_NAME_PROP_KEY: self.cluster
-            }
+            cluster_node = GraphNode(
+                key=self._get_cluster_key(),
+                label=cluster_constants.CLUSTER_NODE_LABEL,
+                attributes={
+                    cluster_constants.CLUSTER_NAME_PROP_KEY: self.cluster
+                }
+            )
+            yield cluster_node
 
-        # Dashboard node
-        dashboard_node: Dict[str, Any] = {
-            NODE_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
-            NODE_KEY: self._get_dashboard_key(),
+        # Dashboard node attributes
+        dashboard_node_attributes: Dict[str, Any] = {
             DashboardMetadata.DASHBOARD_NAME: self.dashboard_name,
         }
         if self.created_timestamp:
-            dashboard_node[DashboardMetadata.DASHBOARD_CREATED_TIME_STAMP] = self.created_timestamp
+            dashboard_node_attributes[DashboardMetadata.DASHBOARD_CREATED_TIME_STAMP] = self.created_timestamp
 
         if self.dashboard_url:
-            dashboard_node[DashboardMetadata.DASHBOARD_URL] = self.dashboard_url
+            dashboard_node_attributes[DashboardMetadata.DASHBOARD_URL] = self.dashboard_url
+
+        dashboard_node = GraphNode(
+            key=self._get_dashboard_key(),
+            label=DashboardMetadata.DASHBOARD_NODE_LABEL,
+            attributes=dashboard_node_attributes
+        )
 
         yield dashboard_node
 
         # Dashboard group
         if self.dashboard_group and not self._get_dashboard_group_key() in self._processed_dashboard_group:
             self._processed_dashboard_group.add(self._get_dashboard_group_key())
-            dashboard_group_node = {
-                NODE_LABEL: DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
-                NODE_KEY: self._get_dashboard_group_key(),
+            dashboard_group_node_attributes = {
                 DashboardMetadata.DASHBOARD_NAME: self.dashboard_group,
             }
 
             if self.dashboard_group_url:
-                dashboard_group_node[DashboardMetadata.DASHBOARD_GROUP_URL] = self.dashboard_group_url
+                dashboard_group_node_attributes[DashboardMetadata.DASHBOARD_GROUP_URL] = self.dashboard_group_url
+
+            dashboard_group_node = GraphNode(
+                key=self._get_dashboard_group_key(),
+                label=DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
+                attributes=dashboard_group_node_attributes
+            )
 
             yield dashboard_group_node
 
         # Dashboard group description
         if self.dashboard_group_description:
-            yield {NODE_LABEL: DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
-                   NODE_KEY: self._get_dashboard_group_description_key(),
-                   DashboardMetadata.DASHBOARD_DESCRIPTION: self.dashboard_group_description}
+            dashboard_group_description_node = GraphNode(
+                key=self._get_dashboard_group_description_key(),
+                label=DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
+                attributes={
+                    DashboardMetadata.DASHBOARD_DESCRIPTION: self.dashboard_group_description
+                }
+            )
+            yield dashboard_group_description_node
 
         # Dashboard description node
         if self.description:
-            yield {NODE_LABEL: DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
-                   NODE_KEY: self._get_dashboard_description_key(),
-                   DashboardMetadata.DASHBOARD_DESCRIPTION: self.description}
+            dashboard_description_node = GraphNode(
+                key=self._get_dashboard_description_key(),
+                label=DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
+                attributes={
+                    DashboardMetadata.DASHBOARD_DESCRIPTION: self.description
+                }
+            )
+            yield dashboard_description_node
 
         # Dashboard tag node
         if self.tags:
             for tag in self.tags:
-                yield {NODE_LABEL: TagMetadata.TAG_NODE_LABEL,
-                       NODE_KEY: TagMetadata.get_tag_key(tag),
-                       TagMetadata.TAG_TYPE: 'dashboard'}
+                dashboard_tag_node = GraphNode(
+                    key=TagMetadata.get_tag_key(tag),
+                    label=TagMetadata.TAG_NODE_LABEL,
+                    attributes={
+                        TagMetadata.TAG_TYPE: 'dashboard'
+                    }
+                )
+                yield dashboard_tag_node
 
-    def create_next_relation(self) -> Union[Dict[str, Any], None]:
+    def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
             return next(self._relation_iterator)
         except StopIteration:
             return None
 
-    def _create_next_relation(self) -> Iterator[Any]:
-
+    def _create_next_relation(self) -> Iterator[GraphRelationship]:
         # Cluster <-> Dashboard group
-        yield {
-            RELATION_START_LABEL: cluster_constants.CLUSTER_NODE_LABEL,
-            RELATION_END_LABEL: DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
-            RELATION_START_KEY: self._get_cluster_key(),
-            RELATION_END_KEY: self._get_dashboard_group_key(),
-            RELATION_TYPE: DashboardMetadata.CLUSTER_DASHBOARD_GROUP_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: DashboardMetadata.DASHBOARD_GROUP_CLUSTER_RELATION_TYPE
-        }
+        cluster_dashboard_group_relationship = GraphRelationship(
+            start_label=cluster_constants.CLUSTER_NODE_LABEL,
+            start_key=self._get_cluster_key(),
+            end_label=DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
+            end_key=self._get_dashboard_group_key(),
+            type=DashboardMetadata.CLUSTER_DASHBOARD_GROUP_RELATION_TYPE,
+            reverse_type=DashboardMetadata.DASHBOARD_GROUP_CLUSTER_RELATION_TYPE,
+            attributes={}
+        )
+        yield cluster_dashboard_group_relationship
 
         # Dashboard group > Dashboard group description relation
         if self.dashboard_group_description:
-            yield {
-                RELATION_START_LABEL: DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
-                RELATION_END_LABEL: DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
-                RELATION_START_KEY: self._get_dashboard_group_key(),
-                RELATION_END_KEY: self._get_dashboard_group_description_key(),
-                RELATION_TYPE: DashboardMetadata.DASHBOARD_DESCRIPTION_RELATION_TYPE,
-                RELATION_REVERSE_TYPE: DashboardMetadata.DESCRIPTION_DASHBOARD_RELATION_TYPE
-            }
+            dashboard_group_description_relationship = GraphRelationship(
+                start_label=DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
+                start_key=self._get_dashboard_group_key(),
+                end_label=DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
+                end_key=self._get_dashboard_group_description_key(),
+                type=DashboardMetadata.DASHBOARD_DESCRIPTION_RELATION_TYPE,
+                reverse_type=DashboardMetadata.DESCRIPTION_DASHBOARD_RELATION_TYPE,
+                attributes={}
+            )
+            yield dashboard_group_description_relationship
 
         # Dashboard group > Dashboard relation
-        yield {
-            RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
-            RELATION_END_LABEL: DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
-            RELATION_START_KEY: self._get_dashboard_key(),
-            RELATION_END_KEY: self._get_dashboard_group_key(),
-            RELATION_TYPE: DashboardMetadata.DASHBOARD_DASHBOARD_GROUP_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: DashboardMetadata.DASHBOARD_GROUP_DASHBOARD_RELATION_TYPE
-        }
+        dashboard_group_dashboard_relationship = GraphRelationship(
+            start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,
+            end_label=DashboardMetadata.DASHBOARD_GROUP_NODE_LABEL,
+            start_key=self._get_dashboard_key(),
+            end_key=self._get_dashboard_group_key(),
+            type=DashboardMetadata.DASHBOARD_DASHBOARD_GROUP_RELATION_TYPE,
+            reverse_type=DashboardMetadata.DASHBOARD_GROUP_DASHBOARD_RELATION_TYPE,
+            attributes={}
+        )
+        yield dashboard_group_dashboard_relationship
 
         # Dashboard > Dashboard description relation
         if self.description:
-            yield {
-                RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
-                RELATION_END_LABEL: DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
-                RELATION_START_KEY: self._get_dashboard_key(),
-                RELATION_END_KEY: self._get_dashboard_description_key(),
-                RELATION_TYPE: DashboardMetadata.DASHBOARD_DESCRIPTION_RELATION_TYPE,
-                RELATION_REVERSE_TYPE: DashboardMetadata.DESCRIPTION_DASHBOARD_RELATION_TYPE
-            }
+            dashboard_description_relationship = GraphRelationship(
+                start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,
+                end_label=DashboardMetadata.DASHBOARD_DESCRIPTION_NODE_LABEL,
+                start_key=self._get_dashboard_key(),
+                end_key=self._get_dashboard_description_key(),
+                type=DashboardMetadata.DASHBOARD_DESCRIPTION_RELATION_TYPE,
+                reverse_type=DashboardMetadata.DESCRIPTION_DASHBOARD_RELATION_TYPE,
+                attributes={}
+            )
+            yield dashboard_description_relationship
 
         # Dashboard > Dashboard tag relation
         if self.tags:
             for tag in self.tags:
-                yield {
-                    RELATION_START_LABEL: DashboardMetadata.DASHBOARD_NODE_LABEL,
-                    RELATION_END_LABEL: TagMetadata.TAG_NODE_LABEL,
-                    RELATION_START_KEY: self._get_dashboard_key(),
-                    RELATION_END_KEY: TagMetadata.get_tag_key(tag),
-                    RELATION_TYPE: DashboardMetadata.DASHBOARD_TAG_RELATION_TYPE,
-                    RELATION_REVERSE_TYPE: DashboardMetadata.TAG_DASHBOARD_RELATION_TYPE
-                }
+                dashboard_tag_relationship = GraphRelationship(
+                    start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,
+                    end_label=TagMetadata.TAG_NODE_LABEL,
+                    start_key=self._get_dashboard_key(),
+                    end_key=TagMetadata.get_tag_key(tag),
+                    type=DashboardMetadata.DASHBOARD_TAG_RELATION_TYPE,
+                    reverse_type=DashboardMetadata.TAG_DASHBOARD_RELATION_TYPE,
+                    attributes={}
+                )
+                yield dashboard_tag_relationship

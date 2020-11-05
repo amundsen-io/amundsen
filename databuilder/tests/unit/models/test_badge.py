@@ -3,10 +3,9 @@
 
 import unittest
 from databuilder.models.badge import Badge, BadgeMetadata
-
-from databuilder.models.neo4j_csv_serde import NODE_KEY, NODE_LABEL, \
-    RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
-    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.serializers import neo4_serializer
+from databuilder.models.graph_serializable import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
+    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE, NODE_KEY, NODE_LABEL
 
 db = 'hive'
 SCHEMA = 'BASE'
@@ -41,9 +40,13 @@ class TestBadge(unittest.TestCase):
             NODE_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
             BadgeMetadata.BADGE_CATEGORY: badge2.category
         }
+        serialized_nodes = [
+            neo4_serializer.serialize_node(node)
+            for node in nodes
+        ]
 
-        self.assertTrue(node1 in nodes)
-        self.assertTrue(node2 in nodes)
+        self.assertTrue(node1 in serialized_nodes)
+        self.assertTrue(node2 in serialized_nodes)
 
     def test_bad_key_entity_match(self) -> None:
         column_label = 'Column'
@@ -66,6 +69,10 @@ class TestBadge(unittest.TestCase):
 
     def test_create_relation(self) -> None:
         relations = self.badge_metada.create_relation()
+        serialized_relations = [
+            neo4_serializer.serialize_relationship(relation)
+            for relation in relations
+        ]
         self.assertEqual(len(relations), 2)
 
         relation1 = {
@@ -85,5 +92,5 @@ class TestBadge(unittest.TestCase):
             RELATION_REVERSE_TYPE: BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
         }
 
-        self.assertTrue(relation1 in relations)
-        self.assertTrue(relation2 in relations)
+        self.assertTrue(relation1 in serialized_relations)
+        self.assertTrue(relation2 in serialized_relations)
