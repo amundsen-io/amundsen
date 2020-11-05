@@ -20,7 +20,8 @@ PROXY_CLIENT = 'PROXY_CLIENT'
 
 PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
-    'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy'
+    'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy',
+    'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy'
 }
 
 IS_STATSD_ON = 'IS_STATSD_ON'
