@@ -10,7 +10,12 @@ import CreatableSelect from 'react-select/lib/Creatable';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getAllTags, updateTags } from 'ducks/tags/reducer';
-import { GetAllTagsRequest, UpdateTagsRequest } from 'ducks/tags/types';
+import {
+  GetAllTags,
+  GetAllTagsRequest,
+  UpdateTags,
+  UpdateTagsRequest,
+} from 'ducks/tags/types';
 
 import { EditableSectionChildProps } from 'components/common/EditableSection';
 import { ResourceType, Tag, UpdateMethod, UpdateTagData } from 'interfaces';
@@ -61,11 +66,20 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
 
   public static defaultProps: TagInputProps = {
     allTags: [],
-    getAllTags: () => void 0,
+    getAllTags: () => ({
+      type: GetAllTags.REQUEST,
+    }),
     isLoading: false,
     resourceType: ResourceType.table,
     tags: [],
-    updateTags: () => void 0,
+    updateTags: () => ({
+      type: UpdateTags.REQUEST,
+      payload: {
+        tagArray: [],
+        resourceType: ResourceType.table,
+        uriKey: '',
+      },
+    }),
     uriKey: '',
   };
 

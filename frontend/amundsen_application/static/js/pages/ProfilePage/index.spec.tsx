@@ -39,7 +39,7 @@ describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
     const routerProps = getMockRouterProps<RouteProps>(
       { userId: 'test0' },
-      null
+      undefined
     );
     const props: ProfilePageProps = {
       user: globalState.user.profile.user,

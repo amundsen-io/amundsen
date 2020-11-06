@@ -221,6 +221,7 @@ describe('mapStateToProps', () => {
       {
         categoryId: mockSchemaId,
         helpText: mockHelpText,
+        options: [],
         title: mockSchemaTitle,
         type: FilterType.INPUT_SELECT,
       },

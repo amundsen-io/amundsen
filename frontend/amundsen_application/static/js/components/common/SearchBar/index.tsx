@@ -32,7 +32,7 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  clearSearch?: () => SubmitSearchRequest;
+  clearSearch?: () => void;
   submitSearch: (searchTerm: string) => SubmitSearchRequest;
   onInputChange: (term: string) => InlineSearchRequest;
   onSelectInlineResult: (

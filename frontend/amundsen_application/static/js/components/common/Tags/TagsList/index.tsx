@@ -97,7 +97,7 @@ const LongTagsList: React.FC<TagsListProps> = ({
 }: TagsListProps) => {
   const hasCuratedTags = curatedTags.length > 0;
   const hasPopularTags = popularTags.length > 0;
-  const hasOtherTags = otherTags.length > 0;
+  const hasOtherTags = otherTags && otherTags.length > 0;
   return (
     <div className="full-tag-list">
       <h1 className="tag-list-title" id="browse-header">
@@ -113,7 +113,7 @@ const LongTagsList: React.FC<TagsListProps> = ({
       )}
       {hasCuratedTags && <TagsListBlock tags={curatedTags} />}
       {hasOtherTags && <TagsListLabel titleText={OTHER_TAGS_TITLE} />}
-      {hasOtherTags && <TagsListBlock tags={otherTags} />}
+      {hasOtherTags && <TagsListBlock tags={otherTags || []} />}
     </div>
   );
 };

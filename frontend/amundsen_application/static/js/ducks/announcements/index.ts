@@ -55,13 +55,18 @@ export default function reducer(
         isLoading: false,
         statusCode: action.payload.statusCode,
       };
-    case GetAnnouncements.SUCCESS:
+    case GetAnnouncements.SUCCESS: {
+      const { payload } = <GetAnnouncementsResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for GetAnnouncements.SUCCESS');
+      }
       return {
         ...state,
         isLoading: false,
         statusCode: action.payload.statusCode,
-        posts: (<GetAnnouncementsResponse>action).payload.posts,
+        posts: payload.posts || [],
       };
+    }
     default:
       return state;
   }

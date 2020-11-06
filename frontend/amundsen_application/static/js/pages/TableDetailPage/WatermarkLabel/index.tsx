@@ -34,7 +34,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     return (watermark && watermark.partition_value) || null;
   };
 
-  renderWatermarkInfo = (low: string, high: string) => {
+  renderWatermarkInfo = (low: string | null, high: string | null) => {
     if (low === null && high === null) {
       return (
         <div className="body-2">

@@ -114,11 +114,16 @@ export default function reducer(
   action
 ): UserReducerState {
   switch (action.type) {
-    case GetLoggedInUser.SUCCESS:
+    case GetLoggedInUser.SUCCESS: {
+      const { payload } = <GetLoggedInUserResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for GetLoggedInUser.SUCCESS');
+      }
       return {
         ...state,
-        loggedInUser: (<GetLoggedInUserResponse>action).payload.user,
+        loggedInUser: payload.user,
       };
+    }
     case GetUser.REQUEST:
     case GetUser.FAILURE:
       return {
@@ -128,14 +133,19 @@ export default function reducer(
           user: defaultUser,
         },
       };
-    case GetUser.SUCCESS:
+    case GetUser.SUCCESS: {
+      const { payload } = <GetUserResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for GetUser.SUCCESS');
+      }
       return {
         ...state,
         profile: {
           ...state.profile,
-          user: (<GetUserResponse>action).payload.user,
+          user: payload.user,
         },
       };
+    }
     case GetUserOwn.REQUEST:
     case GetUserOwn.FAILURE:
       return {
@@ -147,14 +157,19 @@ export default function reducer(
           },
         },
       };
-    case GetUserOwn.SUCCESS:
+    case GetUserOwn.SUCCESS: {
+      const { payload } = <GetUserOwnResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for GetUserOwn.SUCCESS');
+      }
       return {
         ...state,
         profile: {
           ...state.profile,
-          own: (<GetUserOwnResponse>action).payload.own,
+          own: payload.own,
         },
       };
+    }
     case GetUserRead.REQUEST:
     case GetUserRead.FAILURE:
       return {
@@ -164,14 +179,19 @@ export default function reducer(
           read: [],
         },
       };
-    case GetUserRead.SUCCESS:
+    case GetUserRead.SUCCESS: {
+      const { payload } = <GetUserReadResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for GetUserRead.SUCCESS');
+      }
       return {
         ...state,
         profile: {
           ...state.profile,
-          read: (<GetUserReadResponse>action).payload.read,
+          read: payload.read,
         },
       };
+    }
     default:
       return state;
   }

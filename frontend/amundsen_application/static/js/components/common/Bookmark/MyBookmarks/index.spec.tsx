@@ -118,9 +118,9 @@ describe('MyBookmarks', () => {
       expect(element.props().emptyText).toBe(EMPTY_BOOKMARK_MESSAGE);
     });
 
-    it('returns null if there are no bookmarks to render', () => {
+    it('returns undefined if there are no bookmarks to render', () => {
       content = wrapper.instance().generateTabContent(ResourceType.user);
-      expect(content).toBe(null);
+      expect(content).toBeUndefined();
     });
   });
 

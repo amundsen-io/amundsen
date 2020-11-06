@@ -29,11 +29,11 @@ interface StateFromProps {
 export type MyBookmarksProps = StateFromProps;
 
 export class MyBookmarks extends React.Component<MyBookmarksProps> {
-  generateTabContent = (resource: ResourceType): JSX.Element | null => {
+  generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
     const bookmarks = this.props.myBookmarks[resource];
 
     if (!bookmarks) {
-      return null;
+      return undefined;
     }
 
     return (
