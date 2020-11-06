@@ -50,7 +50,7 @@ export function logClick(
     command: 'click',
     target_id:
       target.dataset && target.dataset.type ? target.dataset.type : target.id,
-    label: target.innerText || target.textContent,
+    label: target.innerText || target.textContent || '',
   };
 
   if (target.nodeValue !== null) {

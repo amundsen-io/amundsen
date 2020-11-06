@@ -128,7 +128,7 @@ export default function reducer(
         resourceTags: {
           ...state.resourceTags,
           isLoading: false,
-          tags: (<GetDashboardResponse>action).payload.dashboard.tags,
+          tags: (<GetDashboardResponse>action).payload.dashboard?.tags || [],
         },
       };
     case GetTableData.FAILURE:

@@ -82,7 +82,7 @@ export function getFilterConfigByResource(
  * use BadgeStyle.DEFAULT and badge name as display name.
  */
 export function getBadgeConfig(badgeName: string): BadgeStyleConfig {
-  const config = AppConfig.badges[badgeName] || {};
+  const config: object = AppConfig.badges[badgeName] || {};
 
   return {
     style: BadgeStyle.DEFAULT,

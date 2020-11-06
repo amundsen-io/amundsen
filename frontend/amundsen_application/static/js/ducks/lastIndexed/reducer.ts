@@ -5,7 +5,7 @@ import {
 } from './types';
 
 export interface LastIndexedReducerState {
-  lastIndexed: number;
+  lastIndexed: number | null;
 }
 export const initialState: LastIndexedReducerState = {
   lastIndexed: null,
@@ -39,10 +39,15 @@ export default function reducer(
   switch (action.type) {
     case GetLastIndexed.REQUEST:
       return initialState;
-    case GetLastIndexed.SUCCESS:
+    case GetLastIndexed.SUCCESS: {
+      const { payload } = <GetLastIndexedResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for GetLastIndexed.SUCCESS');
+      }
       return {
-        lastIndexed: (<GetLastIndexedResponse>action).payload.lastIndexedEpoch,
+        lastIndexed: payload.lastIndexedEpoch || null,
       };
+    }
     case GetLastIndexed.FAILURE:
       return {
         lastIndexed: null,

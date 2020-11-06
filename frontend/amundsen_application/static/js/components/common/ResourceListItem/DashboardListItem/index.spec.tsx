@@ -161,7 +161,7 @@ describe('DashboardListItem', () => {
               uri: 'product_dashboard://cluster.group/name',
               url: 'product/name',
               cluster: 'cluster',
-              last_successful_run_timestamp: null,
+              last_successful_run_timestamp: 0,
             },
           });
           expect(wrapper.find('.resource-badges').find('.title-3').text()).toBe(

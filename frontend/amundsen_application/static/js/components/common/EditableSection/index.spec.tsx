@@ -91,7 +91,7 @@ describe('EditableSection', () => {
 
     it('renders children as-is for non-react elements', () => {
       const child = 'non-react-child';
-      const { wrapper } = setup(null, child);
+      const { wrapper } = setup(undefined, child);
 
       expect(wrapper.find('.editable-section-content').text()).toBe(child);
     });

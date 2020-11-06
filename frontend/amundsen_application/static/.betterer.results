@@ -1,48 +1,20 @@
 // BETTERER RESULTS V2.
 exports[`strict null compilation`] = {
   value: `{
-    "js/components/common/Bookmark/MyBookmarks/index.tsx:3695929904": [
-      [66, 6, 7, "Type \'Element | null\' is not assignable to type \'Element | undefined\'.\\n  Type \'null\' is not assignable to type \'Element | undefined\'.", "3716929964"],
-      [73, 8, 7, "Type \'Element | null\' is not assignable to type \'Element | undefined\'.\\n  Type \'null\' is not assignable to type \'Element | undefined\'.", "3716929964"]
+    "js/components/Footer/index.tsx:474946957": [
+      [79, 2, 15, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(state: GlobalState) => { lastIndexed: number | null; }\' is not assignable to parameter of type \'MapStateToPropsParam<StateFromProps, {}, {}>\'.\\n      Type \'(state: GlobalState) => { lastIndexed: number | null; }\' is not assignable to type \'MapStateToPropsFactory<StateFromProps, {}, {}>\'.\\n        Type \'{ lastIndexed: number | null; }\' is not assignable to type \'MapStateToProps<StateFromProps, {}, {}>\'.\\n          Type \'{ lastIndexed: number | null; }\' provides no match for the signature \'(state: {}, ownProps: {}): StateFromProps\'.", "1389821531"]
     ],
-    "js/components/common/Card/index.tsx:1284486450": [
-      [35, 2, 7, "Type \'null\' is not assignable to type \'(e: SyntheticEvent<Element, Event>) => void\'.", "4055953994"]
-    ],
-    "js/components/common/EditableSection/index.spec.tsx:1117078860": [
-      [93, 32, 4, "Argument of type \'null\' is not assignable to parameter of type \'Partial<EditableSectionProps> | undefined\'.", "2087897566"]
-    ],
-    "js/components/common/ResourceListItem/DashboardListItem/index.spec.tsx:53357032": [
-      [163, 14, 29, "Type \'null\' is not assignable to type \'number\'.", "1157138603"]
-    ],
-    "js/components/common/ScrollTracker/index.tsx:727804392": [
-      [55, 30, 29, "Argument of type \'number | undefined\' is not assignable to parameter of type \'number\'.\\n  Type \'undefined\' is not assignable to type \'number\'.", "745919071"]
-    ],
-    "js/components/common/SearchBar/index.spec.tsx:2504836695": [
-      [403, 30, 4, "Argument of type \'null\' is not assignable to parameter of type \'Partial<SearchBarProps> | undefined\'.", "2087897566"]
-    ],
-    "js/components/common/SearchBar/index.tsx:4158354159": [
+    "js/components/common/SearchBar/index.tsx:3874012304": [
       [255, 6, 11, "No overload matches this call.\\n  The last overload gave the following error.\\n    Type \'(() => SubmitSearchRequest) | null\' is not assignable to type \'ActionCreator<any>\'.\\n      Type \'null\' is not assignable to type \'ActionCreator<any>\'.", "2296208050"],
       [270, 4, 18, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(dispatch: any, ownProps: any) => ActionCreator<unknown>\' is not assignable to parameter of type \'DispatchFromProps\'.\\n      Type \'(dispatch: any, ownProps: any) => ActionCreator<unknown>\' is missing the following properties from type \'DispatchFromProps\': submitSearch, onInputChange, onSelectInlineResult", "2926224796"]
-    ],
-    "js/components/common/Tags/TagInput/index.tsx:1066848945": [
-      [63, 22, 6, "Type \'undefined\' is not assignable to type \'GetAllTagsRequest\'.", "1979467425"],
-      [67, 22, 6, "Type \'undefined\' is not assignable to type \'UpdateTagsRequest\'.", "1979467425"]
-    ],
-    "js/components/common/Tags/TagsList/index.tsx:4084208491": [
-      [99, 23, 9, "Object is possibly \'undefined\'.", "3803340896"],
-      [115, 38, 4, "Type \'Tag[] | undefined\' is not assignable to type \'Tag[]\'.\\n  Type \'undefined\' is not assignable to type \'Tag[]\'.", "2087952548"]
-    ],
-    "js/config/config-utils.ts:3097983516": [
-      [87, 4, 25, "\'style\' is specified more than once, so this usage will be overwritten.", "1214862559"]
     ],
     "js/config/index.spec.ts:3696338512": [
       [17, 6, 61, "Object is possibly \'undefined\'.", "1496333578"],
       [51, 6, 61, "Object is possibly \'undefined\'.", "1496333578"]
     ],
-    "js/ducks/announcements/index.ts:2989299303": [
+    "js/ducks/announcements/index.ts:3464360346": [
       [37, 2, 10, "Type \'null\' is not assignable to type \'number\'.", "3382497788"],
-      [49, 8, 10, "Type \'null\' is not assignable to type \'number\'.", "3382497788"],
-      [62, 8, 5, "Type \'AnnouncementPost[] | undefined\' is not assignable to type \'AnnouncementPost[]\'.\\n  Type \'undefined\' is not assignable to type \'AnnouncementPost[]\'.", "187752366"]
+      [49, 8, 10, "Type \'null\' is not assignable to type \'number\'.", "3382497788"]
     ],
     "js/ducks/dashboard/reducer.ts:1902488284": [
       [71, 2, 10, "Type \'null\' is not assignable to type \'number\'.", "3382497788"],
@@ -67,12 +39,6 @@ exports[`strict null compilation`] = {
       [258, 39, 4, "Argument of type \'null\' is not assignable to parameter of type \'string | undefined\'.", "2087897566"],
       [306, 34, 4, "Argument of type \'null\' is not assignable to parameter of type \'Issue\'.", "2087897566"]
     ],
-    "js/ducks/lastIndexed/reducer.ts:1072326537": [
-      [10, 2, 11, "Type \'null\' is not assignable to type \'number\'.", "1159268112"],
-      [43, 8, 11, "Type \'number | undefined\' is not assignable to type \'number\'.\\n  Type \'undefined\' is not assignable to type \'number\'.", "1159268112"],
-      [43, 21, 40, "Object is possibly \'undefined\'.", "195627832"],
-      [47, 8, 11, "Type \'null\' is not assignable to type \'number\'.", "1159268112"]
-    ],
     "js/ducks/notification/tests/index.spec.ts:2474130513": [
       [197, 43, 4, "Argument of type \'null\' is not assignable to parameter of type \'SubmitNotificationRequest\'.", "2087897566"]
     ],
@@ -91,55 +57,23 @@ exports[`strict null compilation`] = {
     "js/ducks/tableMetadata/reducer.ts:2668005658": [
       [65, 2, 10, "Type \'null\' is not assignable to type \'number\'.", "3382497788"]
     ],
-    "js/ducks/tags/reducer.ts:419330645": [
-      [130, 16, 48, "Object is possibly \'undefined\'.", "1931932323"]
-    ],
-    "js/ducks/user/reducer.ts:1917256202": [
-      [119, 22, 41, "Object is possibly \'undefined\'.", "291980569"],
-      [135, 16, 33, "Object is possibly \'undefined\'.", "625812796"],
-      [154, 15, 36, "Object is possibly \'undefined\'.", "3626509514"],
-      [171, 16, 37, "Object is possibly \'undefined\'.", "1613771502"]
-    ],
-    "js/ducks/utilMethods.ts:3713570825": [
-      [52, 4, 5, "Type \'string | null\' is not assignable to type \'string | undefined\'.\\n  Type \'null\' is not assignable to type \'string | undefined\'.", "173467459"]
-    ],
-    "js/pages/ProfilePage/index.spec.tsx:4086464143": [
-      [41, 6, 4, "Argument of type \'null\' is not assignable to parameter of type \'Partial<Location<{} | null | undefined>> | undefined\'.", "2087897566"]
-    ],
     "js/pages/ProfilePage/index.tsx:1225704099": [
       [356, 2, 15, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(state: GlobalState) => { user: PeopleUser; resourceRelations: { table: { bookmarks: Bookmark[]; own: Resource[]; read: Resource[]; }; dashboard: { bookmarks: Bookmark[] | undefined; own: Resource[] | undefined; read: never[]; }; }; }\' is not assignable to parameter of type \'MapStateToPropsParam<StateFromProps, {}, {}>\'.\\n      Type \'(state: GlobalState) => { user: PeopleUser; resourceRelations: { table: { bookmarks: Bookmark[]; own: Resource[]; read: Resource[]; }; dashboard: { bookmarks: Bookmark[] | undefined; own: Resource[] | undefined; read: never[]; }; }; }\' is not assignable to type \'MapStateToPropsFactory<StateFromProps, {}, {}>\'.\\n        Type \'{ user: PeopleUser; resourceRelations: { table: { bookmarks: Bookmark[]; own: Resource[]; read: Resource[]; }; dashboard: { bookmarks: Bookmark[] | undefined; own: Resource[] | undefined; read: never[]; }; }; }\' is not assignable to type \'MapStateToProps<StateFromProps, {}, {}>\'.\\n          Type \'{ user: PeopleUser; resourceRelations: { table: { bookmarks: Bookmark[]; own: Resource[]; read: Resource[]; }; dashboard: { bookmarks: Bookmark[] | undefined; own: Resource[] | undefined; read: never[]; }; }; }\' provides no match for the signature \'(state: {}, ownProps: {}): StateFromProps\'.", "1389821531"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2128122504": [
-      [51, 48, 18, "Type \'CheckboxFilterProperties[] | undefined\' is not assignable to type \'CheckboxFilterProperties[]\'.\\n  Type \'undefined\' is not assignable to type \'CheckboxFilterProperties[]\'.", "12656471"]
+    "js/pages/SearchPage/SearchFilter/index.spec.tsx:1059167396": [
+      [233, 23, 9, "Argument of type \'undefined\' is not assignable to parameter of type \'FilterConfig\'.", "2620553983"]
     ],
-    "js/pages/SearchPage/SearchFilter/index.spec.tsx:2944458990": [
-      [232, 23, 9, "Argument of type \'undefined\' is not assignable to parameter of type \'FilterConfig\'.", "2620553983"]
-    ],
-    "js/pages/SearchPage/SearchFilter/index.tsx:1113311229": [
-      [80, 8, 42, "Type \'{ value: string; label: string | undefined; }[]\' is not assignable to type \'CheckboxFilterProperties[]\'.\\n  Type \'{ value: string; label: string | undefined; }\' is not assignable to type \'CheckboxFilterProperties\'.\\n    Types of property \'label\' are incompatible.\\n      Type \'string | undefined\' is not assignable to type \'string\'.\\n        Type \'undefined\' is not assignable to type \'string\'.", "3344322363"],
-      [86, 26, 7, "Argument of type \'{ categoryId: string; helpText: string | undefined; title: string; type: FilterType; }\' is not assignable to parameter of type \'never\'.", "2519086860"],
-      [95, 56, 4, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'null\' is not assignable to parameter of type \'{}\'.", "2087897566"]
+    "js/pages/SearchPage/SearchFilter/index.tsx:2448037720": [
+      [96, 56, 4, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'null\' is not assignable to parameter of type \'{}\'.", "2087897566"]
     ],
     "js/pages/SearchPage/index.tsx:3158270092": [
       [176, 11, 12, "Property \'filterSections\' is missing in type \'{}\' but required in type \'Readonly<Pick<StateFromProps, \\"filterSections\\">>\'.", "250899467"]
     ],
-    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:793484139": [
-      [141, 17, 16, "Object is possibly \'undefined\'.", "3451845569"],
-      [257, 30, 34, "Argument of type \'number | null\' is not assignable to parameter of type \'number\'.\\n  Type \'null\' is not assignable to type \'number\'.", "3967943985"]
-    ],
     "js/pages/TableDetailPage/TableDashboardResourceList/index.tsx:3276822301": [
       [65, 2, 15, "No overload matches this call.\\n  The last overload gave the following error.\\n    Argument of type \'(state: GlobalState) => { dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' is not assignable to parameter of type \'MapStateToPropsParam<StateFromProps, OwnProps, {}>\'.\\n      Type \'(state: GlobalState) => { dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' is not assignable to type \'MapStateToPropsFactory<StateFromProps, OwnProps, {}>\'.\\n        Type \'{ dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' is not assignable to type \'MapStateToProps<StateFromProps, OwnProps, {}>\'.\\n          Type \'{ dashboards: DashboardResource[]; isLoading: boolean; errorText: string | undefined; }\' provides no match for the signature \'(state: {}, ownProps: OwnProps): StateFromProps\'.", "1389821531"]
     ],
-    "js/pages/TableDetailPage/WatermarkLabel/index.spec.tsx:1587893154": [
-      [77, 57, 4, "Argument of type \'null\' is not assignable to parameter of type \'string\'.", "2087897566"]
-    ],
-    "js/pages/TableDetailPage/WatermarkLabel/index.tsx:1354016727": [
-      [80, 34, 3, "Argument of type \'string | null\' is not assignable to parameter of type \'string\'.\\n  Type \'null\' is not assignable to type \'string\'.", "193412913"]
-    ],
-    "js/pages/TableDetailPage/index.tsx:3727993506": [
-      [185, 10, 13, "Type \'null\' is not assignable to type \'((newValue: string, onSuccess?: (() => any) | undefined, onFailure?: (() => any) | undefined) => void) | undefined\'.", "67794331"],
-      [240, 11, 26, "Type \'{ itemsPerPage: number; source: string; }\' is missing the following properties from type \'Readonly<Pick<TableDashboardResourceListProps, \\"source\\" | \\"isLoading\\" | \\"dashboards\\" | \\"itemsPerPage\\" | \\"errorText\\"> & OwnProps>\': isLoading, dashboards, errorText", "2224258167"],
-      [329, 16, 7, "Type \'string | null\' is not assignable to type \'string | undefined\'.\\n  Type \'null\' is not assignable to type \'string | undefined\'.", "3817619378"]
+    "js/pages/TableDetailPage/index.tsx:587812140": [
+      [235, 11, 26, "Type \'{ itemsPerPage: number; source: string; }\' is missing the following properties from type \'Readonly<Pick<TableDashboardResourceListProps, \\"source\\" | \\"isLoading\\" | \\"dashboards\\" | \\"itemsPerPage\\" | \\"errorText\\"> & OwnProps>\': isLoading, dashboards, errorText", "2224258167"]
     ]
   }`
 };

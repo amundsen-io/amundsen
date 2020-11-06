@@ -33,7 +33,7 @@ const Card: React.FC<CardProps> = ({
   title,
   subtitle,
   copy,
-  onClick = null,
+  onClick = undefined,
   isLoading = false,
 }: CardProps) => {
   let card;

@@ -401,7 +401,7 @@ describe('SearchBar', () => {
       expect(result.onSelectInlineResult).toBeInstanceOf(Function);
     });
     it('sets clearSearch on the props if on search route', () => {
-      const { props } = setup(null, null, { pathname: '/search' });
+      const { props } = setup(undefined, undefined, { pathname: '/search' });
       result = mapDispatchToProps(dispatch, props);
       expect(result.clearSearch).toBeInstanceOf(Function);
     });

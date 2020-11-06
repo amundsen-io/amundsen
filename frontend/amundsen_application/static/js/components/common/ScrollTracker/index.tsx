@@ -53,7 +53,8 @@ export default class ScrollTracker extends React.Component<
     const scrollableAmount = Math.max(contentHeight - windowHeight, 1);
 
     if (threshold <= (100 * scrollTop) / scrollableAmount) {
-      this.fireAnalyticsEvent(this.state.thresholds.shift());
+      this.state.thresholds.shift();
+      this.fireAnalyticsEvent(threshold);
     }
   };
 

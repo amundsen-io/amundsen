@@ -14,7 +14,7 @@ import { formatDateTimeLong } from 'utils/dateUtils';
 
 // Props
 interface StateFromProps {
-  lastIndexed: number;
+  lastIndexed?: number;
 }
 
 interface DispatchFromProps {
@@ -38,8 +38,8 @@ export class Footer extends React.Component<FooterProps> {
     getLastIndexed();
   }
 
-  generateDateTimeString = () => {
-    return formatDateTimeLong({ epochTimestamp: this.props.lastIndexed });
+  generateDateTimeString = (lastIndexed: number): string => {
+    return formatDateTimeLong({ epochTimestamp: lastIndexed });
   };
 
   render() {
@@ -47,7 +47,11 @@ export class Footer extends React.Component<FooterProps> {
 
     if (this.props.lastIndexed) {
       content = (
-        <div>{`Amundsen was last indexed on ${this.generateDateTimeString()}`}</div>
+        <div>
+          {`Amundsen was last indexed on ${this.generateDateTimeString(
+            this.props.lastIndexed
+          )}`}
+        </div>
       );
     }
 

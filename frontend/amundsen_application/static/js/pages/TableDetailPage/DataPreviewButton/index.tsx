@@ -47,7 +47,7 @@ interface DataPreviewButtonState {
   showModal: boolean;
 }
 
-export function getStatusFromCode(httpErrorCode: number) {
+export function getStatusFromCode(httpErrorCode: number | null) {
   switch (httpErrorCode) {
     case null:
       return LoadingStatus.LOADING;
@@ -139,7 +139,7 @@ export class DataPreviewButton extends React.Component<
                 <div className="grid-cell grid-header subtitle-3">
                   {fieldName.toUpperCase()}
                 </div>
-                {previewData.data.map((row, rowId) => {
+                {(previewData.data || []).map((row, rowId) => {
                   const cellId = `${colId}:${rowId}`;
                   const dataItemValue = this.getSanitizedValue(row[fieldName]);
                   return (

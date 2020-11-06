@@ -49,7 +49,10 @@ export class FilterSection extends React.Component<FilterSectionProps> {
     }
     if (type === FilterType.CHECKBOX_SELECT) {
       return (
-        <CheckBoxFilter categoryId={categoryId} checkboxProperties={options} />
+        <CheckBoxFilter
+          categoryId={categoryId}
+          checkboxProperties={options || []}
+        />
       );
     }
   };
