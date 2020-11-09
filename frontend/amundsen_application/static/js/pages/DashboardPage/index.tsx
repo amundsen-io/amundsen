@@ -53,7 +53,7 @@ interface DashboardPageState {
 
 export interface StateFromProps {
   isLoading: boolean;
-  statusCode: number;
+  statusCode: number | null;
   dashboard: DashboardMetadata;
 }
 

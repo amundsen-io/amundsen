@@ -240,22 +240,23 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
+export const mapStateToProps = (state: GlobalState): StateFromProps => {
   return {
     searchTerm: state.search.search_term,
   };
 };
 
-export const mapDispatchToProps = (dispatch: any, ownProps) => {
+export const mapDispatchToProps = (
+  dispatch: any,
+  ownProps
+): DispatchFromProps => {
   /* These values activate behavior only applicable on SearchPage */
   const useFilters = ownProps.history.location.pathname === '/search';
   const updateStateOnClear = ownProps.history.location.pathname === '/search';
 
-  return bindActionCreators(
+  const dispatchableActions: DispatchFromProps = bindActionCreators(
     {
-      clearSearch: updateStateOnClear
-        ? () => submitSearch({ useFilters, searchTerm: '' })
-        : null,
+      clearSearch: () => submitSearch({ useFilters, searchTerm: '' }),
       submitSearch: (searchTerm: string) =>
         submitSearch({ searchTerm, useFilters }),
       onInputChange: getInlineResultsDebounce,
@@ -263,6 +264,14 @@ export const mapDispatchToProps = (dispatch: any, ownProps) => {
     },
     dispatch
   );
+
+  // Tricky: we want to clear this property, but the bindActionCreators convenience
+  // wrapper won't allow undefined values, so clear it after.
+  if (!updateStateOnClear) {
+    dispatchableActions.clearSearch = undefined;
+  }
+
+  return dispatchableActions;
 };
 
 export default withRouter(

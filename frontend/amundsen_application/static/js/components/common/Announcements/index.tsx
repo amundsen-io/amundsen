@@ -15,7 +15,7 @@ import AnnouncementsList from './AnnouncementsList';
 
 export interface StateFromProps {
   isLoading: boolean;
-  statusCode: number;
+  statusCode: number | null;
   announcements: AnnouncementPost[];
 }
 

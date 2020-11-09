@@ -16,8 +16,8 @@ import './styles.scss';
 
 export interface StateFromProps {
   issues: Issue[];
-  total: number;
-  allIssuesUrl: string;
+  total?: number;
+  allIssuesUrl?: string;
   isLoading: boolean;
 }
 

@@ -31,7 +31,7 @@ export function createIssueSuccess(issue: Issue): CreateIssueResponse {
   };
 }
 
-export function createIssueFailure(issue: Issue): CreateIssueResponse {
+export function createIssueFailure(issue?: Issue): CreateIssueResponse {
   return {
     type: CreateIssue.FAILURE,
     payload: {
@@ -82,14 +82,14 @@ export function getIssuesFailure(
 /* REDUCER */
 export interface IssueReducerState {
   issues: Issue[];
-  allIssuesUrl: string;
-  total: number;
+  allIssuesUrl?: string;
+  total?: number;
   isLoading: boolean;
 }
 
 export const initialIssuestate: IssueReducerState = {
   issues: [],
-  allIssuesUrl: null,
+  allIssuesUrl: undefined,
   total: 0,
   isLoading: false,
 };
@@ -117,9 +117,13 @@ export default function reducer(
     case CreateIssue.FAILURE:
       return { ...state, isLoading: false };
     case CreateIssue.SUCCESS:
+      const { issue } = (<CreateIssueResponse>action).payload;
+      if (issue === undefined) {
+        throw Error('payload.issue must be set for CreateIssue.SUCCESS');
+      }
       return {
         ...state,
-        issues: [(<CreateIssueResponse>action).payload.issue, ...state.issues],
+        issues: [issue, ...state.issues],
         isLoading: false,
       };
     default:

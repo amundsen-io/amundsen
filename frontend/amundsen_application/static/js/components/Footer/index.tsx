@@ -14,7 +14,7 @@ import { formatDateTimeLong } from 'utils/dateUtils';
 
 // Props
 interface StateFromProps {
-  lastIndexed?: number;
+  lastIndexed: number | null;
 }
 
 interface DispatchFromProps {
@@ -66,7 +66,7 @@ export class Footer extends React.Component<FooterProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
+export const mapStateToProps = (state: GlobalState): StateFromProps => {
   return {
     lastIndexed: state.lastIndexed.lastIndexed,
   };

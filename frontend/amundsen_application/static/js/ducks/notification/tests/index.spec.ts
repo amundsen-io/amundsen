@@ -195,7 +195,12 @@ describe('notifications ducks', () => {
       });
 
       it('handles request error', () => {
-        testSaga(submitNotificationWorker, null)
+        // Tricky: per the type definitions, `action.payload` must be non-null,
+        // and so must its constituents. This test is intended to exercise the
+        // parser's error handling logic, however there currently is none, so
+        // this test is somewhat useless, but still narrowly helpful to ensure
+        // that the function appropriately throws.
+        testSaga(submitNotificationWorker, <any>{ payload: null })
           .next()
           .put(submitNotificationFailure())
           .next()

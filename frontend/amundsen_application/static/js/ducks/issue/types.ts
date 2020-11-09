@@ -30,14 +30,14 @@ export interface GetIssuesResponse {
   type: GetIssues.SUCCESS | GetIssues.FAILURE;
   payload: {
     issues: Issue[];
-    total: number;
-    allIssuesUrl: string;
+    total?: number;
+    allIssuesUrl?: string;
   };
 }
 
 export interface CreateIssueResponse {
   type: CreateIssue.SUCCESS | CreateIssue.FAILURE;
   payload: {
-    issue: Issue;
+    issue?: Issue;
   };
 }

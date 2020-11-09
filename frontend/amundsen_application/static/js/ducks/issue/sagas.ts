@@ -27,7 +27,7 @@ export function* getIssuesWorker(action: GetIssuesRequest): SagaIterator {
       getIssuesSuccess(response.issues, response.total, response.all_issues_url)
     );
   } catch (e) {
-    yield put(getIssuesFailure([], 0, null));
+    yield put(getIssuesFailure([], 0, undefined));
   }
 }
 
@@ -45,7 +45,7 @@ export function* createIssueWorker(action: CreateIssueRequest): SagaIterator {
 
     yield put(createIssueSuccess(response));
   } catch (error) {
-    yield put(createIssueFailure(null));
+    yield put(createIssueFailure(undefined));
   }
 }
 

@@ -80,7 +80,7 @@ describe('issue ducks', () => {
     });
 
     it('getIssuesFailure - returns the action to process failure', () => {
-      const action = getIssuesFailure(null);
+      const action = getIssuesFailure([]);
       expect(action.type).toBe(GetIssues.FAILURE);
     });
 
@@ -116,10 +116,10 @@ describe('issue ducks', () => {
     });
 
     it('createIssueFailure - returns the action to process failure', () => {
-      const action = createIssueFailure(null);
+      const action = createIssueFailure();
       const { payload } = action;
       expect(action.type).toBe(CreateIssue.FAILURE);
-      expect(payload.issue).toBe(null);
+      expect(payload.issue).toBe(undefined);
     });
 
     it('createIssueSuccess - returns the action to process success', () => {
@@ -154,7 +154,7 @@ describe('issue ducks', () => {
       expect(reducer(testState, getIssues(tableKey))).toEqual({
         issues: [],
         isLoading: true,
-        allIssuesUrl: null,
+        allIssuesUrl: undefined,
         total: 0,
       });
     });
@@ -171,11 +171,11 @@ describe('issue ducks', () => {
     });
 
     it('should handle GetIssues.FAILURE', () => {
-      expect(reducer(testState, getIssuesFailure([], 0, null))).toEqual({
+      expect(reducer(testState, getIssuesFailure([], 0, undefined))).toEqual({
         total,
         issues: [],
         isLoading: false,
-        allIssuesUrl: null,
+        allIssuesUrl: undefined,
       });
     });
 
@@ -212,8 +212,16 @@ describe('issue ducks', () => {
       });
     });
 
+    it('should handle malformed CreateIssue.SUCCESS', () => {
+      const successBody = createIssueSuccess(issue);
+      successBody.payload.issue = undefined;
+      expect(() => {
+        reducer(testState, successBody);
+      }).toThrow();
+    });
+
     it('should handle CreateIssue.FAILURE', () => {
-      expect(reducer(testState, createIssueFailure(null))).toEqual({
+      expect(reducer(testState, createIssueFailure())).toEqual({
         total,
         allIssuesUrl,
         issues: [],
@@ -235,8 +243,8 @@ describe('issue ducks', () => {
 
     describe('getIssuesWorker', () => {
       let action: GetIssuesRequest;
-      let allIssuesUrl: string;
-      let total: number;
+      let allIssuesUrl: string | undefined;
+      let total: number | undefined;
       beforeAll(() => {
         action = getIssues(tableKey);
         issues = globalState.issue.issues;
@@ -256,7 +264,7 @@ describe('issue ducks', () => {
       it('handles request error', () => {
         return expectSaga(getIssuesWorker, action)
           .provide([[matchers.call.fn(API.getIssues), throwError(new Error())]])
-          .put(getIssuesFailure([], 0, null))
+          .put(getIssuesFailure([], 0, undefined))
           .run();
       });
     });
@@ -304,7 +312,7 @@ describe('issue ducks', () => {
           .provide([
             [matchers.call.fn(API.createIssue), throwError(new Error())],
           ])
-          .put(createIssueFailure(null))
+          .put(createIssueFailure())
           .run();
       });
     });

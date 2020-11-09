@@ -72,7 +72,7 @@ export function getDisplayNameByResource(resourceType: ResourceType): string {
  */
 export function getFilterConfigByResource(
   resourceType: ResourceType
-): FilterConfig {
+): FilterConfig | undefined {
   return AppConfig.resourceConfig[resourceType].filterCategories;
 }
 

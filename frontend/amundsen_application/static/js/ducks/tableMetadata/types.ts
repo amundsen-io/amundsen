@@ -24,7 +24,7 @@ export interface GetTableDataRequest {
 export interface GetTableDataResponse {
   type: GetTableData.SUCCESS | GetTableData.FAILURE;
   payload: {
-    statusCode: number;
+    statusCode: number | null;
     data: TableMetadata;
     owners: OwnerDict;
     tags: Tag[];

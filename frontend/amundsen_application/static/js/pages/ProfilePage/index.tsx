@@ -328,7 +328,7 @@ export class ProfilePage extends React.Component<
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
+export const mapStateToProps = (state: GlobalState): StateFromProps => {
   return {
     user: state.user.profile.user,
     resourceRelations: {
@@ -338,8 +338,9 @@ export const mapStateToProps = (state: GlobalState) => {
         read: state.user.profile.read,
       },
       [ResourceType.dashboard]: {
-        bookmarks: state.bookmarks.bookmarksForUser[ResourceType.dashboard],
-        own: state.user.profile.own[ResourceType.dashboard],
+        bookmarks:
+          state.bookmarks.bookmarksForUser[ResourceType.dashboard] || [],
+        own: state.user.profile.own[ResourceType.dashboard] || [],
         read: [],
       },
     },

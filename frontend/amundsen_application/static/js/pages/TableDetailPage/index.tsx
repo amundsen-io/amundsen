@@ -77,7 +77,7 @@ export interface PropsFromState {
   isLoading: boolean;
   isLoadingDashboards: boolean;
   numRelatedDashboards: number;
-  statusCode?: number;
+  statusCode: number | null;
   tableData: TableMetadata;
 }
 export interface DispatchFromProps {

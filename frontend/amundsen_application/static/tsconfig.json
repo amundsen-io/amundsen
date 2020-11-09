@@ -6,6 +6,7 @@
     "noImplicitAny": false,
     "module": "esnext",
     "target": "es2015",
+    "strictNullChecks": true,
     "jsx": "react",
     "typeRoots": ["node_modules/@types"],
     "allowJs": true,

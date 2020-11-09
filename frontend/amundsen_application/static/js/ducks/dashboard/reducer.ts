@@ -39,7 +39,7 @@ export function getDashboardFailure(
 
 export interface DashboardReducerState {
   isLoading: boolean;
-  statusCode: number;
+  statusCode: number | null;
   dashboard: DashboardMetadata;
 }
 
