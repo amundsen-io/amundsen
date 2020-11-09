@@ -14,9 +14,9 @@ describe('getSourceDisplayName', () => {
 
   it('returns given id for a configured source id', () => {
     const testId = 'hive';
-    const expectedName =
-      AppConfig.resourceConfig[ResourceType.table].supportedSources[testId]
-        .displayName;
+    const expectedName = (<any>AppConfig).resourceConfig[ResourceType.table]
+      .supportedSources[testId].displayName;
+    expect(expectedName).toBeDefined();
     expect(ConfigUtils.getSourceDisplayName(testId, ResourceType.table)).toBe(
       expectedName
     );
@@ -48,9 +48,9 @@ describe('getSourceIconClass', () => {
 
   it('returns given icon class for a configured database id', () => {
     const testId = 'hive';
-    const expectedClass =
-      AppConfig.resourceConfig[ResourceType.table].supportedSources[testId]
-        .iconClass;
+    const expectedClass = (<any>AppConfig).resourceConfig[ResourceType.table]
+      .supportedSources[testId].iconClass;
+    expect(expectedClass).toBeDefined();
     expect(ConfigUtils.getSourceIconClass(testId, ResourceType.table)).toBe(
       expectedClass
     );

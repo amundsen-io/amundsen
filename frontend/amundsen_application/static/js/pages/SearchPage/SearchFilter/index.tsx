@@ -94,4 +94,4 @@ export const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export default connect<StateFromProps>(mapStateToProps, null)(SearchFilter);
+export default connect<StateFromProps>(mapStateToProps)(SearchFilter);

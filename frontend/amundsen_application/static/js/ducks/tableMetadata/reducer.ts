@@ -268,7 +268,7 @@ export interface TableMetadataReducerState {
     data: PreviewData;
     status: number | null;
   };
-  statusCode: number;
+  statusCode: number | null;
   tableData: TableMetadata;
   tableOwners: TableOwnerReducerState;
 }

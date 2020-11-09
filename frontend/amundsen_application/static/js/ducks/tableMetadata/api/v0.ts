@@ -116,16 +116,14 @@ export function getTableOwners(tableKey: string) {
 export function generateOwnerUpdateRequests(
   updateArray: UpdateOwnerPayload[],
   tableData: TableMetadata
-) {
-  const updateRequests = [];
-
-  /* Create the request for updating each owner*/
-  updateArray.forEach((item) => {
+): any {
+  /* Return the list of requests to be executed */
+  return updateArray.map((item) => {
     const updatePayload = createOwnerUpdatePayload(item, tableData.key);
     const notificationData = createOwnerNotificationData(item, tableData);
 
     /* Chain requests to send notification on success to desired users */
-    const request = axios(updatePayload)
+    return axios(updatePayload)
       .then(() => {
         return axios.get(`/api/metadata/v0/user?user_id=${item.id}`);
       })
@@ -134,12 +132,7 @@ export function generateOwnerUpdateRequests(
           return axios.post('/api/mail/v0/notification', notificationData);
         }
       });
-
-    updateRequests.push(request);
   });
-
-  /* Return the list of requests to be executed */
-  return updateRequests;
 }
 
 export function getColumnDescription(

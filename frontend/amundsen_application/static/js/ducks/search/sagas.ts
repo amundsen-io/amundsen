@@ -66,7 +66,7 @@ export function* submitSearchWorker(action: SubmitSearchRequest): SagaIterator {
     searchAll(
       searchTerm ? SearchType.SUBMIT_TERM : SearchType.CLEAR_TERM,
       searchTerm,
-      undefined,
+      ResourceType.table,
       0,
       useFilters
     )
@@ -116,7 +116,7 @@ export function* updateSearchStateWorker(
     const { filters, resource, updateUrl, submitSearch } = action.payload;
     const state = yield select(getSearchState);
     if (filters && submitSearch) {
-      yield put(searchAll(SearchType.FILTER, '', undefined, 0, true));
+      yield put(searchAll(SearchType.FILTER, '', ResourceType.table, 0, true));
     } else if (updateUrl) {
       updateSearchUrl({
         resource: resource || state.resource,

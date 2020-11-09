@@ -153,7 +153,9 @@ describe('search sagas', () => {
         submitSearch({ searchTerm: term, useFilters: true })
       )
         .next()
-        .put(searchAll(SearchType.SUBMIT_TERM, term, undefined, 0, true))
+        .put(
+          searchAll(SearchType.SUBMIT_TERM, term, ResourceType.table, 0, true)
+        )
         .next()
         .isDone();
     });
@@ -164,7 +166,7 @@ describe('search sagas', () => {
         submitSearch({ searchTerm: '', useFilters: false })
       )
         .next()
-        .put(searchAll(SearchType.CLEAR_TERM, '', undefined, 0, false))
+        .put(searchAll(SearchType.CLEAR_TERM, '', ResourceType.table, 0, false))
         .next()
         .isDone();
     });
@@ -285,7 +287,7 @@ describe('search sagas', () => {
         .next()
         .select(SearchUtils.getSearchState)
         .next(searchState)
-        .put(searchAll(SearchType.FILTER, '', undefined, 0, true))
+        .put(searchAll(SearchType.FILTER, '', ResourceType.table, 0, true))
         .next()
         .isDone();
     });

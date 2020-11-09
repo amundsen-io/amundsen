@@ -29,7 +29,7 @@ export function getAnnouncementsSuccess(
 export interface AnnouncementsReducerState {
   posts: AnnouncementPost[];
   isLoading: boolean;
-  statusCode: number;
+  statusCode: number | null;
 }
 
 export const initialState: AnnouncementsReducerState = {

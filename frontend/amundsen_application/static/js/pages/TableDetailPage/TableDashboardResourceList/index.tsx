@@ -19,7 +19,7 @@ interface OwnProps {
 interface StateFromProps {
   dashboards: DashboardResource[];
   isLoading: boolean;
-  errorText: string;
+  errorText?: string;
 }
 
 export type TableDashboardResourceListProps = StateFromProps & OwnProps;
@@ -62,7 +62,6 @@ export const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export default connect<StateFromProps, {}, OwnProps>(
-  mapStateToProps,
-  null
-)(TableDashboardResourceList);
+export default connect<StateFromProps, {}, OwnProps>(mapStateToProps)(
+  TableDashboardResourceList
+);
