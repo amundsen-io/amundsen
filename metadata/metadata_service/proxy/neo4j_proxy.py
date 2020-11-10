@@ -785,10 +785,10 @@ class Neo4jProxy(BaseProxy):
         # todo: Currently all the tags are default type, we could open it up if we want to include badge
         query = textwrap.dedent("""
         MATCH (t:Tag{tag_type: 'default'})
-        OPTIONAL MATCH (tbl:Table)-[:TAGGED_BY]->(t)
-        WITH t as tag_name, count(distinct tbl.key) as tag_count
+        OPTIONAL MATCH (resource)-[:TAGGED_BY]->(t)
+        WITH t as tag_name, count(distinct resource.key) as tag_count
         WHERE tag_count > 0
-        RETURN t as tag_name, count(distinct tbl.key) as tag_count
+        RETURN tag_name, tag_count
         """)
 
         records = self._execute_cypher_query(statement=query,
