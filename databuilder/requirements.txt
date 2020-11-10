@@ -28,11 +28,6 @@ mock>=2.0.0,<3.0
 # Upstream url: https://pypi.python.org/pypi/pytest-mock
 pytest-mock>=1.1,<2.0
 
-# PEP 484
-# License: PSF
-# Upstream url: https://github.com/python/typing
-typing==3.6.4
-
 # Python client for ElasticSearch
 # License: Apache Software License
 # Upstream url: https://pypi.org/project/elasticsearch/
