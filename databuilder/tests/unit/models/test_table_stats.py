@@ -24,7 +24,7 @@ class TestTableStats(unittest.TestCase):
         self.expected_node_result = {
             NODE_KEY: 'hive://gold.base/test/col/avg/',
             NODE_LABEL: 'Stat',
-            'stat_val:UNQUOTED': 1,
+            'stat_val': '1',
             'stat_name': 'avg',
             'start_epoch': '1',
             'end_epoch': '2',
