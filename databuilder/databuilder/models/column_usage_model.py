@@ -43,7 +43,7 @@ class ColumnUsageModel(GraphSerializable):
         self.table_name = table_name
         self.column_name = column_name
         self.user_email = user_email
-        self.read_count = read_count
+        self.read_count = int(read_count)
 
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())

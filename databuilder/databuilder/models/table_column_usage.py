@@ -32,7 +32,7 @@ class ColumnReader(object):
         self.table = table
         self.column = column
         self.user_email = user_email
-        self.read_count = read_count
+        self.read_count = int(read_count)
 
     def __repr__(self) -> str:
         return """\
