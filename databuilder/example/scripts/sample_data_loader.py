@@ -22,7 +22,6 @@ https://github.com/amundsen-io/amundsendatabuilder#list-of-extractors
 
 import logging
 import os
-import sqlite3
 import sys
 import uuid
 
@@ -60,8 +59,6 @@ es = Elasticsearch([
     {'host': es_host, 'port': es_port},
 ])
 
-DB_FILE = '/tmp/test.db'
-SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
 Base = declarative_base()
 
 NEO4J_ENDPOINT = 'bolt://{}:{}'.format(neo_host, neo_port)
@@ -72,15 +69,6 @@ neo4j_user = 'neo4j'
 neo4j_password = 'test'
 
 LOGGER = logging.getLogger(__name__)
-
-
-def create_connection(db_file):
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Exception:
-        LOGGER.exception('exception')
-    return None
 
 
 def run_csv_job(file_loc, job_name, model):
@@ -279,66 +267,65 @@ if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
     # logging.basicConfig(level=logging.INFO)
 
-    if create_connection(DB_FILE):
-        run_table_column_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_col.csv')
-        run_csv_job('example/sample_data/sample_table_column_stats.csv', 'test_table_column_stats',
-                    'databuilder.models.table_stats.TableColumnStats')
-        run_csv_job('example/sample_data/sample_table_programmatic_source.csv', 'test_programmatic_source',
-                    'databuilder.models.table_metadata.TableMetadata')
-        run_csv_job('example/sample_data/sample_watermark.csv', 'test_watermark_metadata',
-                    'databuilder.models.watermark.Watermark')
-        run_csv_job('example/sample_data/sample_table_owner.csv', 'test_table_owner_metadata',
-                    'databuilder.models.table_owner.TableOwner')
-        run_csv_job('example/sample_data/sample_column_usage.csv', 'test_usage_metadata',
-                    'databuilder.models.column_usage_model.ColumnUsageModel')
-        run_csv_job('example/sample_data/sample_user.csv', 'test_user_metadata',
-                    'databuilder.models.user.User')
-        run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
-                    'databuilder.models.application.Application')
-        run_csv_job('example/sample_data/sample_source.csv', 'test_source_metadata',
-                    'databuilder.models.table_source.TableSource')
-        run_csv_job('example/sample_data/sample_tags.csv', 'test_tag_metadata',
-                    'databuilder.models.table_metadata.TagMetadata')
-        run_csv_job('example/sample_data/sample_table_last_updated.csv', 'test_table_last_updated_metadata',
-                    'databuilder.models.table_last_updated.TableLastUpdated')
-        run_csv_job('example/sample_data/sample_schema_description.csv', 'test_schema_description',
-                    'databuilder.models.schema.schema.SchemaModel')
-        run_csv_job('example/sample_data/sample_dashboard_base.csv', 'test_dashboard_base',
-                    'databuilder.models.dashboard.dashboard_metadata.DashboardMetadata')
-        run_csv_job('example/sample_data/sample_dashboard_usage.csv', 'test_dashboard_usage',
-                    'databuilder.models.dashboard.dashboard_usage.DashboardUsage')
-        run_csv_job('example/sample_data/sample_dashboard_owner.csv', 'test_dashboard_owner',
-                    'databuilder.models.dashboard.dashboard_owner.DashboardOwner')
-        run_csv_job('example/sample_data/sample_dashboard_query.csv', 'test_dashboard_query',
-                    'databuilder.models.dashboard.dashboard_query.DashboardQuery')
-        run_csv_job('example/sample_data/sample_dashboard_last_execution.csv', 'test_dashboard_last_execution',
-                    'databuilder.models.dashboard.dashboard_execution.DashboardExecution')
-        run_csv_job('example/sample_data/sample_dashboard_last_modified.csv', 'test_dashboard_last_modified',
-                    'databuilder.models.dashboard.dashboard_last_modified.DashboardLastModifiedTimestamp')
+    run_table_column_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_col.csv')
+    run_csv_job('example/sample_data/sample_table_column_stats.csv', 'test_table_column_stats',
+                'databuilder.models.table_stats.TableColumnStats')
+    run_csv_job('example/sample_data/sample_table_programmatic_source.csv', 'test_programmatic_source',
+                'databuilder.models.table_metadata.TableMetadata')
+    run_csv_job('example/sample_data/sample_watermark.csv', 'test_watermark_metadata',
+                'databuilder.models.watermark.Watermark')
+    run_csv_job('example/sample_data/sample_table_owner.csv', 'test_table_owner_metadata',
+                'databuilder.models.table_owner.TableOwner')
+    run_csv_job('example/sample_data/sample_column_usage.csv', 'test_usage_metadata',
+                'databuilder.models.column_usage_model.ColumnUsageModel')
+    run_csv_job('example/sample_data/sample_user.csv', 'test_user_metadata',
+                'databuilder.models.user.User')
+    run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
+                'databuilder.models.application.Application')
+    run_csv_job('example/sample_data/sample_source.csv', 'test_source_metadata',
+                'databuilder.models.table_source.TableSource')
+    run_csv_job('example/sample_data/sample_tags.csv', 'test_tag_metadata',
+                'databuilder.models.table_metadata.TagMetadata')
+    run_csv_job('example/sample_data/sample_table_last_updated.csv', 'test_table_last_updated_metadata',
+                'databuilder.models.table_last_updated.TableLastUpdated')
+    run_csv_job('example/sample_data/sample_schema_description.csv', 'test_schema_description',
+                'databuilder.models.schema.schema.SchemaModel')
+    run_csv_job('example/sample_data/sample_dashboard_base.csv', 'test_dashboard_base',
+                'databuilder.models.dashboard.dashboard_metadata.DashboardMetadata')
+    run_csv_job('example/sample_data/sample_dashboard_usage.csv', 'test_dashboard_usage',
+                'databuilder.models.dashboard.dashboard_usage.DashboardUsage')
+    run_csv_job('example/sample_data/sample_dashboard_owner.csv', 'test_dashboard_owner',
+                'databuilder.models.dashboard.dashboard_owner.DashboardOwner')
+    run_csv_job('example/sample_data/sample_dashboard_query.csv', 'test_dashboard_query',
+                'databuilder.models.dashboard.dashboard_query.DashboardQuery')
+    run_csv_job('example/sample_data/sample_dashboard_last_execution.csv', 'test_dashboard_last_execution',
+                'databuilder.models.dashboard.dashboard_execution.DashboardExecution')
+    run_csv_job('example/sample_data/sample_dashboard_last_modified.csv', 'test_dashboard_last_modified',
+                'databuilder.models.dashboard.dashboard_last_modified.DashboardLastModifiedTimestamp')
 
-        create_dashboard_tables_job().launch()
+    create_dashboard_tables_job().launch()
 
-        create_last_updated_job().launch()
+    create_last_updated_job().launch()
 
-        job_es_table = create_es_publisher_sample_job(
-            elasticsearch_index_alias='table_search_index',
-            elasticsearch_doc_type_key='table',
-            entity_type='table',
-            model_name='databuilder.models.table_elasticsearch_document.TableESDocument')
-        job_es_table.launch()
+    job_es_table = create_es_publisher_sample_job(
+        elasticsearch_index_alias='table_search_index',
+        elasticsearch_doc_type_key='table',
+        entity_type='table',
+        model_name='databuilder.models.table_elasticsearch_document.TableESDocument')
+    job_es_table.launch()
 
-        job_es_user = create_es_publisher_sample_job(
-            elasticsearch_index_alias='user_search_index',
-            elasticsearch_doc_type_key='user',
-            model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
-            entity_type='user',
-            elasticsearch_mapping=USER_ELASTICSEARCH_INDEX_MAPPING)
-        job_es_user.launch()
+    job_es_user = create_es_publisher_sample_job(
+        elasticsearch_index_alias='user_search_index',
+        elasticsearch_doc_type_key='user',
+        model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
+        entity_type='user',
+        elasticsearch_mapping=USER_ELASTICSEARCH_INDEX_MAPPING)
+    job_es_user.launch()
 
-        job_es_dashboard = create_es_publisher_sample_job(
-            elasticsearch_index_alias='dashboard_search_index',
-            elasticsearch_doc_type_key='dashboard',
-            model_name='databuilder.models.dashboard_elasticsearch_document.DashboardESDocument',
-            entity_type='dashboard',
-            elasticsearch_mapping=DASHBOARD_ELASTICSEARCH_INDEX_MAPPING)
-        job_es_dashboard.launch()
+    job_es_dashboard = create_es_publisher_sample_job(
+        elasticsearch_index_alias='dashboard_search_index',
+        elasticsearch_doc_type_key='dashboard',
+        model_name='databuilder.models.dashboard_elasticsearch_document.DashboardESDocument',
+        entity_type='dashboard',
+        elasticsearch_mapping=DASHBOARD_ELASTICSEARCH_INDEX_MAPPING)
+    job_es_dashboard.launch()
