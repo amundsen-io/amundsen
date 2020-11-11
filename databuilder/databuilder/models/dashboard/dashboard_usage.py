@@ -51,7 +51,7 @@ class DashboardUsage(GraphSerializable):
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
         self._email = email
-        self._view_count = view_count
+        self._view_count = int(view_count)
         self._product = product
         self._cluster = cluster
         self._user_model = User(email=email)
