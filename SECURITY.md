@@ -11,4 +11,4 @@ An Amundsen committer will send you a response indicating the next steps in hand
 
 ## Security announcements
 
-Please subscribe to the main mailing list, where we post notifications and remediation details for security vulnerabilities.
+Please subscribe to [the announcements mailing list](https://lists.lfai.foundation/g/amundsen-announce), where we post notifications and remediation details for security vulnerabilities.
