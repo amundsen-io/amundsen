@@ -87,7 +87,7 @@ Please note that the mock images only served as demonstration purpose.
 ## Get Involved in the Community
 
 Want help or want to help?
-Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward.
+Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](https://github.com/amundsen-io/amundsen/blob/master/SECURITY.md).
 
 ## Getting Started
 
