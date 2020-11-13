@@ -100,6 +100,16 @@ class Config:
     # e.g: ACL_ENABLED_DASHBOARD_PREVIEW = {'ModePreview'}
     ACL_ENABLED_DASHBOARD_PREVIEW = set()  # type: Set[Optional[str]]
 
+    MTLS_CLIENT_CERT = os.getenv('MTLS_CLIENT_CERT')
+    """
+    Optional.
+    The path to a PEM formatted certificate to present when calling the metadata and search services.
+    MTLS_CLIENT_KEY must also be set.
+    """
+
+    MTLS_CLIENT_KEY = os.getenv('MTLS_CLIENT_KEY')
+    """Optional. The path to a PEM formatted key to use with the MTLS_CLIENT_CERT. MTLS_CLIENT_CERT must also be set."""
+
 
 class LocalConfig(Config):
     DEBUG = False

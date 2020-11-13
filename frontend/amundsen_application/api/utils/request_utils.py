@@ -105,7 +105,7 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, da
         else:
             raise Exception('Method not allowed: {}'.format(method))
     else:
-        with requests.Session() as s:
+        with build_session() as s:
             if method == 'DELETE':
                 return s.delete(url, headers=headers, timeout=timeout_sec)
             elif method == 'GET':
@@ -116,3 +116,14 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, da
                 return s.put(url, headers=headers, timeout=timeout_sec, data=data)
             else:
                 raise Exception('Method not allowed: {}'.format(method))
+
+
+def build_session() -> requests.Session:
+    session = requests.Session()
+
+    cert = app.config.get('MTLS_CLIENT_CERT')
+    key = app.config.get('MTLS_CLIENT_KEY')
+    if cert is not None and key is not None:
+        session.cert = (cert, key)
+
+    return session
