@@ -35,7 +35,7 @@ Amundsen is a data discovery and metadata engine for improving the productivity 
   width="200"
 />
 
-Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/)(LF AI & Data Foundation). It includes three microservices, one data ingestion library and one common library.
+Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/). It includes three microservices, one data ingestion library and one common library.
 
 - [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" />
 - [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" />
