@@ -30,12 +30,12 @@
 Amundsen is a data discovery and metadata engine for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover the South Pole.
 
 <img
-  src="https://raw.githubusercontent.com/lfai/artwork/master/lfai/horizontal/color/lfai-color.png"
-  alt="LF AI"
+  src="https://raw.githubusercontent.com/lfai/artwork/master/lfaidata-assets/lfaidata/stacked/color/lfaidata-stacked-color.png"
+  alt="LF AI & Data"
   width="200"
 />
 
-Amundsen is hosted by the [LF AI Foundation](https://lfdl.io)(LF AI). It includes three microservices, one data ingestion library and one common library.
+Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/)(LF AI & Data Foundation). It includes three microservices, one data ingestion library and one common library.
 
 - [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" />
 - [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" />
