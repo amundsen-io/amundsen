@@ -2,15 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-
 import { mocked } from 'ts-jest/utils';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import { BrowserRouter } from 'react-router-dom';
 
 import { ResourceType } from 'interfaces/Resources';
 import {
   getSourceDisplayName,
   getDisplayNameByResource,
 } from 'config/config-utils';
+import globalState from 'fixtures/globalState';
 import TableHeaderBullets, { TableHeaderBulletsProps } from '.';
 
 const MOCK_RESOURCE_DISPLAY_NAME = 'Test';
@@ -22,22 +25,62 @@ jest.mock('config/config-utils', () => ({
   getSourceDisplayName: jest.fn(),
 }));
 
-describe('TableHeaderBullets', () => {
-  const setup = (propOverrides?: Partial<TableHeaderBulletsProps>) => {
-    const props: TableHeaderBulletsProps = {
-      database: 'hive',
-      cluster: 'main',
-      isView: true,
-      ...propOverrides,
-    };
-    const wrapper = shallow(<TableHeaderBullets {...props} />);
-    return { props, wrapper };
-  };
+let noDatabase;
+let noCluster;
+let noIsView;
 
-  describe('render', () => {
-    let props: TableHeaderBulletsProps;
+const middlewares = [];
+const mockStore = configureStore(middlewares);
+
+const setup = (propOverrides?: Partial<TableHeaderBulletsProps>) => {
+  const props = {
+    database: 'hive',
+    cluster: 'main',
+    isView: true,
+    ...propOverrides,
+  };
+  const testState = globalState;
+  const wrapper = mount<TableHeaderBulletsProps>(
+    <Provider store={mockStore(testState)}>
+      <BrowserRouter>
+        <TableHeaderBullets {...props} />
+      </BrowserRouter>
+    </Provider>
+  );
+  return { props, wrapper };
+};
+
+describe('TableHeaderBullets', () => {
+  describe('when no props passed', () => {
+    const { wrapper } = setup({
+      database: noDatabase,
+      cluster: noCluster,
+      isView: noIsView,
+    });
+    it('renders TableHeaderBullets element', () => {
+      const actual = wrapper.find('.header-bullets').length;
+      const expected = 1;
+
+      expect(actual).toEqual(expected);
+    });
+    it('renders TableHeaderBullets list with default props', () => {
+      const actualDatabase = wrapper.find('ul').find('li').at(0).text();
+      const expectedDatabase = '';
+      const actualCluster = wrapper.find('ul').find('li').at(1).text();
+      const expectedCluster = '';
+      const actualIsView = wrapper.find('ul').find('li').at(2).text();
+      const expectedIsView = '';
+
+      expect(actualDatabase).toEqual(expectedDatabase);
+      expect(actualCluster).toEqual(expectedCluster);
+      expect(actualIsView).toEqual(expectedIsView);
+    });
+  });
+
+  describe('when props are defined', () => {
+    let props;
     let wrapper;
-    let listElement;
+
     beforeAll(() => {
       mocked(getSourceDisplayName).mockImplementation(
         () => MOCK_DB_DISPLAY_NAME
@@ -48,34 +91,37 @@ describe('TableHeaderBullets', () => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
-      listElement = wrapper.find('ul');
     });
 
-    it('renders a list with correct class', () => {
-      expect(listElement.props().className).toEqual('header-bullets');
-    });
+    it('renders TableHeaderBullets element', () => {
+      const actual = wrapper.find('.header-bullets').length;
+      const expected = 1;
 
+      expect(actual).toEqual(expected);
+    });
     it('renders a list with resource display name', () => {
+      console.log(wrapper.debug());
       expect(getDisplayNameByResource).toHaveBeenCalledWith(ResourceType.table);
-      expect(listElement.find('li').at(0).text()).toEqual(
+      expect(wrapper.find('ul').find('li').at(0).text()).toEqual(
         MOCK_RESOURCE_DISPLAY_NAME
       );
     });
-
     it('renders a list with database display name', () => {
       expect(getSourceDisplayName).toHaveBeenCalledWith(
         props.database,
         ResourceType.table
       );
-      expect(listElement.find('li').at(1).text()).toEqual(MOCK_DB_DISPLAY_NAME);
+      expect(wrapper.find('ul').find('li').at(1).text()).toEqual(
+        MOCK_DB_DISPLAY_NAME
+      );
     });
-
     it('renders a list with cluster', () => {
-      expect(listElement.find('li').at(2).text()).toEqual(props.cluster);
+      expect(wrapper.find('ul').find('li').at(2).text()).toEqual(props.cluster);
     });
-
     it('renders a list with table view', () => {
-      expect(listElement.find('li').at(3).text()).toEqual(TABLE_VIEW_TEXT);
+      expect(wrapper.find('ul').find('li').at(3).text()).toEqual(
+        TABLE_VIEW_TEXT
+      );
     });
   });
 });
