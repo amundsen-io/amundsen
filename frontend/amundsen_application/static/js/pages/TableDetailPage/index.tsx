@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import * as DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,8 +11,11 @@ import { RouteComponentProps } from 'react-router';
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
+import { updateSearchState } from 'ducks/search/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
 import { OpenRequestAction } from 'ducks/notification/types';
+import { UpdateSearchStateRequest } from 'ducks/search/types';
+import { logClick } from 'ducks/utilMethods';
 
 import {
   getDescriptionSourceDisplayName,
@@ -90,6 +94,7 @@ export interface DispatchFromProps {
     requestMetadataType: RequestMetadataType,
     columnName: string
   ) => OpenRequestAction;
+  searchSchema: (schemaText: string) => UpdateSearchStateRequest;
 }
 
 export interface MatchProps {
@@ -169,6 +174,17 @@ export class TableDetail extends React.Component<
 
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
+
+  handleClick = (e) => {
+    const { match } = this.props;
+    const { params } = match;
+    const schemaText = params.schema;
+    logClick(e, {
+      target_type: 'schema',
+      label: schemaText,
+    });
+    this.props.searchSchema(schemaText);
+  };
 
   renderProgrammaticDesc = (
     descriptions: ProgrammaticDescription[] | undefined
@@ -290,7 +306,10 @@ export class TableDetail extends React.Component<
             </div>
             <div className="header-section header-title">
               <h1 className="header-title-text truncated">
-                {this.getDisplayName()}
+                <Link to="/search" onClick={this.handleClick}>
+                  {data.schema}
+                </Link>
+                .{data.name}
               </h1>
               <BookmarkIcon
                 bookmarkKey={data.key}
@@ -432,7 +451,17 @@ export const mapStateToProps = (state: GlobalState) => {
 
 export const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
-    { getTableData, openRequestDescriptionDialog },
+    {
+      getTableData,
+      openRequestDescriptionDialog,
+      searchSchema: (schemaText: string) =>
+        updateSearchState({
+          filters: {
+            [ResourceType.table]: { schema: schemaText },
+          },
+          submitSearch: true,
+        }),
+    },
     dispatch
   );
 };

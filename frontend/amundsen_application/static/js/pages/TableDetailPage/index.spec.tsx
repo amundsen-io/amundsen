@@ -41,6 +41,7 @@ const setup = (
     tableData: tableMetadata,
     getTableData: jest.fn(),
     openRequestDescriptionDialog: jest.fn(),
+    searchSchema: jest.fn(),
     ...routerProps,
     ...propOverrides,
   };
