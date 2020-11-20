@@ -305,7 +305,10 @@ export class TableDetail extends React.Component<
               />
             </div>
             <div className="header-section header-title">
-              <h1 className="header-title-text truncated">
+              <h1
+                className="header-title-text truncated"
+                title={`${data.schema}.${data.name}`}
+              >
                 <Link to="/search" onClick={this.handleClick}>
                   {data.schema}
                 </Link>
