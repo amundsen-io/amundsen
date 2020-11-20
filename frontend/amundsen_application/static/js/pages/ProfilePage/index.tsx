@@ -214,7 +214,9 @@ export class ProfilePage extends React.Component<
       );
     } else {
       userName = (
-        <h1 className="header-title-text truncated">{user.display_name}</h1>
+        <h1 className="header-title-text truncated" title={user.display_name}>
+          {user.display_name}
+        </h1>
       );
     }
 
