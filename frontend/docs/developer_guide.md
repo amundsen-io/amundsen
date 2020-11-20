@@ -60,10 +60,6 @@ Using Storybook makes it much easier to quickly iterate on components when getti
 
 We use TypeScript in our codebase, so `npm run tsc` conducts type checking. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
 
-Currently, we are trying to gradually make our TypeScript code more strict. For that, we are leveraging a project called [betterer][betterer], which keeps track of our errors when a given test is passed. Right now, we are running it with "strictNullChecks" set to true, so if any code change makes the results worse, it will break the build.
-
-[betterer]: https://github.com/phenomnomnominal/betterer
-
 ### Frontend Linting and Formatting
 
 We have in place two linters – [ESLint][eslint] for our JavaScript and TypeScript files, [Stylelint][stylelint] for our Sass files. If you have both ESLint and Stylelint extensions installed on your IDE, you should get warnings on your editor by default.
@@ -78,7 +74,9 @@ Whenever you want to run these tasks manually, you can execute:
 
 We also check your changed files and format them when you create a new commit, making it easy for you and for the project to keep a consistent code style. We do this leveraging [Husky][husky] and [Lint-staged][lint-staged].
 
-Looking forward, we aim at setting more strict best practices using ESLint and Stylelint. You can read about our plans to improve our TypeScript, Styles and general code style on these issues:
+Looking forward, we aim at setting more strict best practices using ESLint and Stylelint. For that, we are leveraging a project called [betterer][betterer], which keeps track of our errors when a given test is passed. You can run it using `npm run betterer` and it will break if you introduce any new eslint errors. If you want to ignore the new errors you can run `npm run betterer:update` to update the betterer.results file. We do not recommend adding or introducing new eslint errors.
+
+You can read about our plans to improve our TypeScript, Styles and general code style on these issues:
 
 - [Adopt Typescript Recommended Guidelines on the Frontend library][typescript-issue]
 - [Adopt Stylelint's Sass Guidelines on the Frontend library][stylelint-issue]
@@ -119,3 +117,4 @@ You can find the complete list of placeholder selectors for text in [this file](
 [airbnb-issue]: https://github.com/lyft/amundsen/issues/502
 [stylelint-issue]: https://github.com/lyft/amundsen/issues/501
 [semanticchecklist]: https://learn-the-web.algonquindesign.ca/topics/html-semantics-checklist/
+[betterer]: https://github.com/phenomnomnominal/betterer
