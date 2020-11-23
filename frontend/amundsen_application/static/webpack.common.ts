@@ -74,6 +74,10 @@ const config: webpack.Configuration = {
       utils: PATHS.utils,
     },
     extensions: RESOLVED_EXTENSIONS,
+    fallback: {
+      // Needed by react-markdown as of 5.0.2
+      path: require.resolve('path-browserify'),
+    },
   },
   module: {
     rules: [
@@ -109,6 +113,15 @@ const config: webpack.Configuration = {
         test: FONT_PATTERN,
         use: 'file-loader',
       },
+      // Hacky, required for react-bootstrap @ 0.33.1 - remove after upgrading,
+      // see: https://github.com/webpack/webpack/issues/11467
+      // Tracked at https://github.com/amundsen-io/amundsen/issues/818
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
     ],
   },
   plugins: [
@@ -117,7 +130,7 @@ const config: webpack.Configuration = {
     ...htmlWebpackPluginConfig,
   ],
   optimization: {
-    moduleIds: 'hashed',
+    moduleIds: 'deterministic',
     splitChunks: {
       cacheGroups: {
         default: false,
