@@ -21,6 +21,7 @@ import {
 
 import {
   TableColumn,
+  TableColumnStats,
   RequestMetadataType,
   SortCriteria,
   SortDirection,
@@ -30,6 +31,7 @@ import {
 import BadgeList from 'components/common/BadgeList';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
+import ColumnStats from './ColumnStats';
 import { getStatsInfoText } from './utils';
 
 import {
@@ -65,18 +67,11 @@ type DatatypeType = {
   type: string;
 };
 
-type StatType = {
-  end_epoch: number;
-  start_epoch: number;
-  stat_type: string;
-  stat_val: string;
-};
-
 type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
-  stats: StatType | null;
+  stats: TableColumnStats[] | null;
   action: string;
   editText: string | null;
   editUrl: string | null;
@@ -191,15 +186,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
           />
         </EditableSection>
       )}
-      {rowValue.stats && (
-        <div className="stat-collection-info">
-          <span className="stat-title">{COLUMN_STATS_TITLE} </span>
-          {getStatsInfoText(
-            rowValue.stats.start_epoch,
-            rowValue.stats.end_epoch
-          )}
-        </div>
-      )}
+      {rowValue.stats && <ColumnStats stats={rowValue.stats} />}
     </div>
   );
 };
@@ -228,7 +215,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
       },
       sort_order: item.sort_order,
       usage: getUsageStat(item),
-      stats: hasItemStats ? item.stats[0] : null,
+      stats: hasItemStats ? item.stats : null,
       badges: hasColumnBadges ? item.badges : [],
       action: item.name,
       name: item.name,
