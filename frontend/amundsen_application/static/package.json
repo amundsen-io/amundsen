@@ -53,7 +53,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-react": "^7.12.7",
     "@betterer/cli": "^3.0.3",
     "@betterer/eslint": "^3.1.2",
     "@storybook/addon-actions": "^6.0.26",
