@@ -56,7 +56,7 @@
     "@babel/preset-react": "^7.12.7",
     "@betterer/cli": "^3.0.3",
     "@betterer/eslint": "^3.1.2",
-    "@storybook/addon-actions": "^6.0.26",
+    "@storybook/addon-actions": "^6.1.2",
     "@storybook/addon-info": "^5.3.21",
     "@storybook/addon-links": "^6.0.26",
     "@storybook/addons": "^6.0.28",
