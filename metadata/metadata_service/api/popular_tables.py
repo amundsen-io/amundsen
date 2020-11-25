@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
-from typing import Iterable, List, Mapping, Union
+from typing import Iterable, List, Mapping, Union, Optional
 
 from amundsen_common.models.popular_table import (PopularTable,
                                                   PopularTableSchema)
@@ -21,8 +21,9 @@ class PopularTablesAPI(Resource):
         self.client = get_proxy_client()
 
     @swag_from('swagger_doc/popular_tables_get.yml')
-    def get(self) -> Iterable[Union[Mapping, int, None]]:
+    def get(self, user_id: Optional[str] = None) -> Iterable[Union[Mapping, int, None]]:
         limit = request.args.get('limit', 10, type=int)
-        popular_tables: List[PopularTable] = self.client.get_popular_tables(num_entries=limit)
+        popular_tables: List[PopularTable] = self.client.get_popular_tables(num_entries=limit,
+                                                                            user_id=user_id)
         popular_tables_json: str = PopularTableSchema(many=True).dump(popular_tables).data
         return {'popular_tables': popular_tables_json}, HTTPStatus.OK

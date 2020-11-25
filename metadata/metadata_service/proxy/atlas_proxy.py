@@ -755,7 +755,9 @@ class AtlasProxy(BaseProxy):
 
         return popular_tables
 
-    def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
+    def get_popular_tables(self, *,
+                           num_entries: int,
+                           user_id: Optional[str] = None) -> List[PopularTable]:
         """
         Generates a list of Popular tables to be shown on the home page of Amundsen.
         :param num_entries: Number of popular tables to fetch
