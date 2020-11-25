@@ -61,8 +61,12 @@ spark = [
     'pyspark == 3.0.1'
 ]
 
+feast = [
+    'feast==0.8.0'
+]
+
 all_deps = requirements + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast
 
 setup(
     name='amundsen-databuilder',
@@ -87,7 +91,8 @@ setup(
         'db2': db2,
         'dremio': dremio,
         'druid': druid,
-        'delta-lake': spark
+        'delta-lake': spark,
+        'feast': feast,
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
