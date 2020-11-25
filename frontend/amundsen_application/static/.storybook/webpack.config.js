@@ -3,6 +3,7 @@
 
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -61,7 +62,7 @@ module.exports = {
         test: FONT_PATTERN,
         use: 'file-loader',
       },
-    ]
+    ],
   },
   resolve: {
     extensions: RESOLVED_EXTENSIONS,
@@ -74,4 +75,10 @@ module.exports = {
       utils: PATHS.utils,
     },
   },
+  plugins: [
+    // fix "process is not defined" error:
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+  ],
 };

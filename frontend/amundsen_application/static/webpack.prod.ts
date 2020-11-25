@@ -3,6 +3,8 @@ import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import commonConfig from './webpack.common';
 
+const webpack = require('webpack');
+
 export default merge(commonConfig, {
   mode: 'production',
   optimization: {
@@ -18,6 +20,10 @@ export default merge(commonConfig, {
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
+    }),
+    // fix "process is not defined" error:
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
     }),
   ],
 });

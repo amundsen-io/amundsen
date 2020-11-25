@@ -128,6 +128,10 @@ const config: webpack.Configuration = {
     new CleanWebpackPlugin(),
     new MomentLocalesPlugin(), // To strip all locales except “en”
     ...htmlWebpackPluginConfig,
+    // fix "process is not defined" error:
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
   optimization: {
     moduleIds: 'deterministic',
