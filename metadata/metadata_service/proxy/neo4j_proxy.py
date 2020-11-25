@@ -847,7 +847,9 @@ class Neo4jProxy(BaseProxy):
         return [record['table_key'] for record in records]
 
     @timer_with_counter
-    def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
+    def get_popular_tables(self, *,
+                           num_entries: int,
+                           user_id: Optional[str] = None) -> List[PopularTable]:
         """
         Retrieve popular tables. As popular table computation requires full scan of table and user relationship,
         it will utilize cached method _get_popular_tables_uris.

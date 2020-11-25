@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
@@ -84,7 +84,9 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
+    def get_popular_tables(self, *,
+                           num_entries: int,
+                           user_id: Optional[str] = None) -> List[PopularTable]:
         pass
 
     @abstractmethod

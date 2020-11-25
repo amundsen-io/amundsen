@@ -1382,7 +1382,9 @@ class AbstractGremlinProxy(BaseProxy):
 
     @timer_with_counter
     @overrides
-    def get_popular_tables(self, *, num_entries: int = 10) -> List[PopularTable]:
+    def get_popular_tables(self, *,
+                           num_entries: int = 10,
+                           user_id: Optional[str] = None) -> List[PopularTable]:
         """
         Retrieve popular tables. As popular table computation requires full scan of table and user relationship,
         it will utilize cached method _get_popular_tables_uris.
