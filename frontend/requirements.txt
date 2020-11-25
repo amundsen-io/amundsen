@@ -66,7 +66,7 @@ marshmallow-annotations>=2.4.0,<3.0
 # A utility library for mocking out the requests Python library.
 # License: Apache 2.0
 # Upstream url: https://pypi.org/project/responses/
-responses==0.10.15
+responses==0.12.1
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
