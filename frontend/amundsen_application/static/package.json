@@ -135,6 +135,7 @@
     "jquery": "^3.5.0",
     "moment-timezone": "^0.5.31",
     "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "react": "^16.13.1",
     "react-avatar": "^2.5.1",
     "react-bootstrap": "^0.32.4",
