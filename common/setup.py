@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='amundsen-common',
-    version='0.5.8',
+    version='0.5.9',
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -13,7 +13,10 @@ setup(
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
-    dependency_links=[],
+    dependency_links=[
+        ('git+https://www.github.com/hilearn/marshmallow-annotations.git@a7a2dc96932430369bd'
+         'ef36555082df990ed9bef#egg=marshmallow-annotations')
+    ],
     install_requires=[
         # Packages in here should rarely be pinned. This is because these
         # packages (at the specified version) are required for project
@@ -32,8 +35,7 @@ setup(
         # and less than 2.x installed.
         'flask>=1.0.2',
         'marshmallow>=2.15.3,<=3.6',
-        ('git+https://www.github.com/hilearn/marshmallow-annotations.git@a7a2dc96932430369bd'
-         'ef36555082df990ed9bef#egg=marshmallow-annotations')
+        'marshmallow-annotations'
     ],
     python_requires=">=3.6",
     package_data={'amundsen_common': ['py.typed']},
