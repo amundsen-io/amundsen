@@ -14,8 +14,8 @@ from amundsen_application.log.action_log import action_logging
 
 from amundsen_application.models.user import load_user, dump_user
 
-from amundsen_application.api.utils.metadata_utils import marshall_table_partial, marshall_table_full,\
-    marshall_dashboard_partial, marshall_dashboard_full
+from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial,\
+    marshall_table_full,marshall_dashboard_partial, marshall_dashboard_full, TableUri
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 
@@ -280,6 +280,10 @@ def put_table_description() -> Response:
         description = get_query_param(args, 'description')
         src = get_query_param(args, 'source')
 
+        table_uri = TableUri.from_uri(table_key)
+        if not is_table_editable(table_uri.schema, table_uri.table):
+            return make_response('', HTTPStatus.FORBIDDEN)
+
         url = '{0}/{1}/description'.format(table_endpoint, table_key)
         _log_put_table_description(table_key=table_key, description=description, source=src)
 
@@ -315,6 +319,10 @@ def put_column_description() -> Response:
         description = get_query_param(args, 'description')
 
         src = get_query_param(args, 'source')
+
+        table_uri = TableUri.from_uri(table_key)
+        if not is_table_editable(table_uri.schema, table_uri.table):
+            return make_response('', HTTPStatus.FORBIDDEN)
 
         url = '{0}/{1}/column/{2}/description'.format(table_endpoint, table_key, column_name)
         _log_put_column_description(table_key=table_key, column_name=column_name, description=description, source=src)

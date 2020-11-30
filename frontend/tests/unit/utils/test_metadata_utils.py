@@ -4,7 +4,7 @@
 import unittest
 
 from amundsen_application.api.utils.metadata_utils import _convert_prog_descriptions, _sort_prog_descriptions, \
-    _parse_editable_rule
+    _parse_editable_rule, is_table_editable, TableUri
 from amundsen_application.config import MatchRuleObject
 from amundsen_application import create_app
 
@@ -144,3 +144,64 @@ class UneditableTableDescriptionTest(unittest.TestCase):
         self.assertEqual(_parse_editable_rule(test_match_rule, 'schema1', 'test_table'), True)
         self.assertEqual(_parse_editable_rule(test_match_rule, 'schema3', 'other_test_table'), True)
         self.assertEqual(_parse_editable_rule(test_match_rule, 'schema3', 'test_table'), True)
+
+
+class TableEditabilityWrapper(unittest.TestCase):
+    def setUp(self) -> None:
+        pass
+
+    def test_empty_allowed(self) -> None:
+        mockConfig = {
+            'UNEDITABLE_SCHEMAS': [],
+            'UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES': [],
+        }
+
+        self.assertTrue(is_table_editable('anyschema', 'anytable', mockConfig))
+
+    def test_schema(self) -> None:
+        mockConfig = {
+            'UNEDITABLE_SCHEMAS': ['uneditable_schema'],
+            'UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES': [],
+        }
+
+        self.assertTrue(is_table_editable('different_schema', 'anytable', mockConfig))
+        self.assertFalse(is_table_editable('uneditable_schema', 'anytable', mockConfig))
+
+    def test_schema_match_rule(self) -> None:
+        mockConfig = {
+            'UNEDITABLE_SCHEMAS': [''],
+            'UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES': [
+                MatchRuleObject(schema_regex=r"^(uneditable).*"),
+            ],
+        }
+
+        self.assertTrue(is_table_editable('not_uneditable_schema', 'anytable', mockConfig))
+        self.assertFalse(is_table_editable('uneditable_schema', 'anytable', mockConfig))
+
+
+    def test_schema_table_match_rule(self) -> None:
+        mockConfig = {
+            'UNEDITABLE_SCHEMAS': [''],
+            'UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES': [
+                MatchRuleObject(schema_regex=r"^first.*", table_name_regex=r".*bad.*")
+            ],
+        }
+
+        self.assertFalse(is_table_editable('first', 'bad', mockConfig))
+        self.assertFalse(is_table_editable('first', 'also_bad', mockConfig))
+        self.assertTrue(is_table_editable('first', 'good', mockConfig))
+        self.assertTrue(is_table_editable('not_first', 'bad', mockConfig))
+        self.assertTrue(is_table_editable('second', 'bad', mockConfig))
+
+
+class TableUriObject(unittest.TestCase):
+    def test_simple_constructor(self) -> None:
+        uri = TableUri("db", "clstr", "schm", "tbl")
+        self.assertEqual(str(uri), 'db://clstr.schm/tbl')
+
+    def test_from_uri_factory(self) -> None:
+        uri = TableUri.from_uri("db://clstr.with.dots.schm/tbl/with/slashes")
+        self.assertEqual(uri.database, 'db')
+        self.assertEqual(uri.cluster, 'clstr.with.dots')
+        self.assertEqual(uri.schema, 'schm')
+        self.assertEqual(uri.table, 'tbl/with/slashes')

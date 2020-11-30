@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import urllib.parse
 
+from dataclasses import dataclass
 from typing import Any, Dict, List
 
 from amundsen_common.models.dashboard import DashboardSummary, DashboardSummarySchema
@@ -12,6 +14,28 @@ from amundsen_application.models.user import load_user, dump_user
 from amundsen_application.config import MatchRuleObject
 from flask import current_app as app
 import re
+
+
+@dataclass
+class TableUri:
+    database: str
+    cluster: str
+    schema: str
+    table: str
+
+    def __str__(self) -> str:
+        return f"{self.database}://{self.cluster}.{self.schema}/{self.table}"
+
+    @classmethod
+    def from_uri(cls, uri: str) -> 'TableUri':
+        parsed = urllib.parse.urlparse(uri)
+        cluster, schema = parsed.netloc.rsplit('.', 1)
+        return TableUri(
+            database=parsed.scheme,
+            cluster=cluster,
+            schema=schema,
+            table=parsed.path.lstrip('/')
+        )
 
 
 def marshall_table_partial(table_dict: Dict) -> Dict:
@@ -48,19 +72,28 @@ def _parse_editable_rule(rule: MatchRuleObject,
     if rule.schema_regex and rule.table_name_regex:
         match_schema = re.match(rule.schema_regex, schema)
         match_table = re.match(rule.table_name_regex, table)
-        if match_schema and match_table:
-            return False
-        return True
+        return not (match_schema and match_table)
+
     if rule.schema_regex:
-        match_schema = re.match(rule.schema_regex, schema)
-        if match_schema:
-            return False
-        return True
+        return not re.match(rule.schema_regex, schema)
+
     if rule.table_name_regex:
-        match_table = re.match(rule.table_name_regex, table)
-        if match_table:
+        return not re.match(rule.table_name_regex, table)
+
+    return True
+
+
+def is_table_editable(schema_name: str, table_name: str, cfg: any=None) -> bool:
+    if cfg is None:
+        cfg = app.config
+
+    if schema_name in cfg['UNEDITABLE_SCHEMAS']:
+        return False
+
+    for rule in cfg['UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES']:
+        if not _parse_editable_rule(rule, schema_name, table_name):
             return False
-        return True
+
     return True
 
 
@@ -76,17 +109,7 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     table: Table = schema.load(table_dict).data
     results: Dict[str, Any] = schema.dump(table).data
 
-    # Check if schema is uneditable
-    is_editable_schema = results['schema'] not in app.config['UNEDITABLE_SCHEMAS']
-
-    # Check if Table Description is uneditable
-    is_editable_table = True
-    uneditable_table_desc_match_rules = app.config['UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES']
-    for rule in uneditable_table_desc_match_rules:
-        is_editable_table = is_editable_table and _parse_editable_rule(rule, results['schema'], results['name'])
-
-    is_editable = is_editable_schema and is_editable_table
-    results['is_editable'] = is_editable
+    results['is_editable'] = is_table_editable(results['schema'], results['name'])
 
     # TODO - Cleanup https://github.com/lyft/amundsen/issues/296
     #  This code will try to supplement some missing data since the data here is incomplete.
