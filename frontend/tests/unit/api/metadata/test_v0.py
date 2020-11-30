@@ -4,12 +4,14 @@
 import json
 import responses
 import unittest
+from unittest.mock import patch
 
 from http import HTTPStatus
 
 from amundsen_application import create_app
 from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT,\
     POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT
+from amundsen_application.config import MatchRuleObject
 
 from amundsen_application.tests.test_utils import TEST_USER_ID
 
@@ -657,6 +659,28 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
+    def test_put_table_description_denied(self) -> None:
+        """
+        Test put_table_description that should be rejected due to permissions.
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
+            '/db://cluster.schema/table/column/colA/description'
+        responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.OK)
+
+        with patch.dict(local_app.config, {'UNEDITABLE_SCHEMAS': set(['schema'])}):
+            with local_app.test_client() as test:
+                response = test.put(
+                    '/api/metadata/v0/put_table_description',
+                    json={
+                        'key': 'db://cluster.schema/table',
+                        'description': 'test',
+                        'source': 'source'
+                    }
+                )
+                self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    @responses.activate
     def test_get_column_description_success(self) -> None:
         """
         Test successful get_column_description request
@@ -722,6 +746,31 @@ class MetadataTest(unittest.TestCase):
                 }
             )
             self.assertEqual(response.status_code, HTTPStatus.OK)
+
+
+    @responses.activate
+    def test_put_column_description_denied(self) -> None:
+        """
+        Test put_column_description on an unwritable table.
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
+            '/db://cluster.schema/an_uneditable_table/column/col/description'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        rule = MatchRuleObject(table_name_regex=r".*uneditable_table.*")
+        with patch.dict(local_app.config, {'UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES': [rule]}):
+            with local_app.test_client() as test:
+                response = test.put(
+                    '/api/metadata/v0/put_column_description',
+                    json={
+                        'key': 'db://cluster.schema/an_uneditable_table',
+                        'column_name': 'col',
+                        'description': 'test',
+                        'source': 'source'
+                    }
+                )
+                self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
     @responses.activate
     def test_get_tags(self) -> None:
