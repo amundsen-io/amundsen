@@ -178,7 +178,6 @@ class TableEditabilityWrapper(unittest.TestCase):
         self.assertTrue(is_table_editable('not_uneditable_schema', 'anytable', mockConfig))
         self.assertFalse(is_table_editable('uneditable_schema', 'anytable', mockConfig))
 
-
     def test_schema_table_match_rule(self) -> None:
         mockConfig = {
             'UNEDITABLE_SCHEMAS': [''],

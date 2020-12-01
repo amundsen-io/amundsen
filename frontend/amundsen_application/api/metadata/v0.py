@@ -14,8 +14,8 @@ from amundsen_application.log.action_log import action_logging
 
 from amundsen_application.models.user import load_user, dump_user
 
-from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial,\
-    marshall_table_full,marshall_dashboard_partial, marshall_dashboard_full, TableUri
+from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial, \
+    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, TableUri
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 
