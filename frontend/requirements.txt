@@ -70,7 +70,7 @@ responses==0.12.1
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common==0.5.7
+amundsen-common==0.5.9
 
 # Library for rest endpoints with Flask
 # Upstream url: https://github.com/flask-restful/flask-restful
