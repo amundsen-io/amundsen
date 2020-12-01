@@ -747,7 +747,6 @@ class MetadataTest(unittest.TestCase):
             )
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
-
     @responses.activate
     def test_put_column_description_denied(self) -> None:
         """
