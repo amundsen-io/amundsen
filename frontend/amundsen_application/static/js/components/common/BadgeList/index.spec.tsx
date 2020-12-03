@@ -2,15 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Provider } from 'react-redux';
 import { mount } from 'enzyme';
-import configureStore from 'redux-mock-store';
 
-import globalState from 'fixtures/globalState';
-import Flag from 'components/common/Flag';
 import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
 import { Badge } from 'interfaces/Badges';
+
+import * as UtilMethods from 'ducks/utilMethods';
+
+import Flag from 'components/common/Flag';
+
 import BadgeList, { BadgeListProps } from '.';
 
 const columnBadges: Badge[] = [
@@ -34,22 +35,17 @@ const badges: Badge[] = [
   },
 ];
 
-const middlewares = [];
-const mockStore = configureStore(middlewares);
+const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
+logClickSpy.mockImplementation(() => null);
 
 const setup = (propOverrides?: Partial<BadgeListProps>) => {
   const props = {
-    badges: [],
+    badges,
+    onBadgeClick: () => {},
     ...propOverrides,
   };
 
-  const testState = globalState;
-  testState.tableMetadata.tableData.badges = badges;
-  const wrapper = mount<BadgeListProps>(
-    <Provider store={mockStore(testState)}>
-      <BadgeList {...props} />
-    </Provider>
-  );
+  const wrapper = mount<BadgeListProps>(<BadgeList {...props} />);
 
   return { props, wrapper };
 };
@@ -63,57 +59,101 @@ describe('BadgeList', () => {
     };
   });
 
-  describe('when no badges are passed', () => {
-    it('renders a badge-list element', () => {
-      const { wrapper } = setup();
-      const expected = 1;
-      const actual = wrapper.find('.badge-list').length;
+  describe('render', () => {
+    describe('when no badges are passed', () => {
+      it('renders a badge-list element', () => {
+        const { wrapper } = setup();
+        const expected = 1;
+        const actual = wrapper.find('.badge-list').length;
 
-      expect(actual).toEqual(expected);
+        expect(actual).toEqual(expected);
+      });
+
+      it('does not render any badges', () => {
+        const { wrapper } = setup();
+        const actual = wrapper.find(Flag).length;
+        const expected = 0;
+
+        expect(actual).toEqual(expected);
+      });
     });
 
-    it('does not render any badges', () => {
-      const { wrapper } = setup();
-      const actual = wrapper.find(Flag).length;
-      const expected = 0;
+    describe('when badges are passed', () => {
+      it('renders a badge-list element', () => {
+        const { wrapper } = setup({ badges });
+        const expected = 1;
+        const actual = wrapper.find('.badge-list').length;
 
-      expect(actual).toEqual(expected);
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders a .actionable-badge for each badge in the input', () => {
+        const { wrapper } = setup({ badges });
+        const expected = badges.length;
+        const actual = wrapper.find('.actionable-badge').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when badge category is column', () => {
+      it('renders a badge-list element', () => {
+        const { wrapper } = setup({ badges: columnBadges });
+        const expected = 1;
+        const actual = wrapper.find('.badge-list').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders a .static-badge for each badge in the input', () => {
+        const { wrapper } = setup({ badges: columnBadges });
+        const expected = 2;
+        const actual = wrapper.find('.static-badge').length;
+
+        expect(actual).toEqual(expected);
+      });
     });
   });
 
-  describe('when badges are passed', () => {
-    it('renders a badge-list element', () => {
-      const { wrapper } = setup({ badges });
-      const expected = 1;
-      const actual = wrapper.find('.badge-list').length;
+  describe.only('lifetime', () => {
+    describe('when clicking on a badge', () => {
+      it('should log the interaction', () => {
+        logClickSpy.mockClear();
+        const { wrapper } = setup();
 
-      expect(actual).toEqual(expected);
-    });
+        wrapper.find('span.actionable-badge').at(0).simulate('click');
+        expect(logClickSpy).toHaveBeenCalled();
+      });
 
-    it('renders a .actionable-badge for each badge in the input', () => {
-      const { wrapper } = setup({ badges });
-      const expected = badges.length;
-      const actual = wrapper.find('.actionable-badge').length;
+      it('should call the handler', () => {
+        logClickSpy.mockClear();
+        const handlerSpy = jest.fn();
+        const { wrapper } = setup({
+          onBadgeClick: handlerSpy,
+        });
+        const expected = 1;
 
-      expect(actual).toEqual(expected);
-    });
-  });
+        wrapper.find('span.actionable-badge').at(0).simulate('click');
 
-  describe('when badge category is column', () => {
-    it('renders a badge-list element', () => {
-      const { wrapper } = setup({ badges: columnBadges });
-      const expected = 1;
-      const actual = wrapper.find('.badge-list').length;
+        const actual = handlerSpy.mock.calls.length;
 
-      expect(actual).toEqual(expected);
-    });
+        expect(actual).toEqual(expected);
+      });
 
-    it('renders a .static-badge for each badge in the input', () => {
-      const { wrapper } = setup({ badges: columnBadges });
-      const expected = 2;
-      const actual = wrapper.find('.static-badge').length;
+      it('should call the handler with the proper badge name', () => {
+        logClickSpy.mockClear();
+        const handlerSpy = jest.fn();
+        const { wrapper } = setup({
+          onBadgeClick: handlerSpy,
+        });
+        const expected = 'beta test name';
 
-      expect(actual).toEqual(expected);
+        wrapper.find('span.actionable-badge').at(0).simulate('click');
+
+        const actual = handlerSpy.mock.calls[0][0];
+
+        expect(actual).toEqual(expected);
+      });
     });
   });
 });

@@ -10,7 +10,7 @@ import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
-import BadgeList from 'components/common/BadgeList';
+import BadgeList from 'features/BadgeList';
 import SchemaInfo from 'components/common/ResourceListItem/SchemaInfo';
 import { LoggingParams } from '../types';
 

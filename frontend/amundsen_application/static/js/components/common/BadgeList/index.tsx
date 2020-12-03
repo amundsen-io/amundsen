@@ -4,26 +4,21 @@
 import * as React from 'react';
 
 import { getBadgeConfig } from 'config/config-utils';
-import { convertText, CaseType } from 'utils/textUtils';
-import { Badge } from 'interfaces/Badges';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
-import { ResourceType } from 'interfaces';
-import { updateSearchState } from 'ducks/search/reducer';
-import { UpdateSearchStateRequest } from 'ducks/search/types';
+import { convertText, CaseType } from 'utils/textUtils';
+
+import { Badge } from 'interfaces/Badges';
+
 import { logClick } from 'ducks/utilMethods';
+
 import './styles.scss';
 
 const COLUMN_BADGE_CATEGORY = 'column';
 
-export interface ListProps {
+export interface BadgeListProps {
   badges: Badge[];
-}
-
-export interface DispatchFromProps {
-  searchBadge: (badgeText: string) => UpdateSearchStateRequest;
+  onBadgeClick: (badgeText: string) => void;
 }
 
 export interface ActionableBadgeProps {
@@ -31,8 +26,6 @@ export interface ActionableBadgeProps {
   displayName: string;
   action: any;
 }
-
-export type BadgeListProps = ListProps & DispatchFromProps;
 
 const StaticBadge: React.FC<BadgeStyleConfig> = ({
   style,
@@ -57,19 +50,28 @@ const ActionableBadge: React.FC<ActionableBadgeProps> = ({
   );
 };
 
-export class BadgeList extends React.Component<BadgeListProps> {
+export default class BadgeList extends React.Component<BadgeListProps> {
   handleClick = (index: number, badgeText: string, e) => {
+    const { onBadgeClick } = this.props;
+
     logClick(e, {
       target_type: 'badge',
       label: badgeText,
     });
-    this.props.searchBadge(convertText(badgeText, CaseType.LOWER_CASE));
+    onBadgeClick(convertText(badgeText, CaseType.LOWER_CASE));
   };
 
   render() {
+    const { badges } = this.props;
+    const alphabetizedBadges = badges.sort((a, b) => {
+      const aName = (a.badge_name ? a.badge_name : a.tag_name) || '';
+      const bName = (b.badge_name ? b.badge_name : b.tag_name) || '';
+      return aName.localeCompare(bName);
+    });
+
     return (
       <span className="badge-list">
-        {this.props.badges.map((badge, index) => {
+        {alphabetizedBadges.map((badge, index) => {
           let badgeConfig;
           // search badges with just name
           if (badge.tag_name) {
@@ -93,7 +95,7 @@ export class BadgeList extends React.Component<BadgeListProps> {
               <ActionableBadge
                 displayName={badgeConfig.displayName}
                 style={badgeConfig.style}
-                action={(e) =>
+                action={(e: React.SyntheticEvent) =>
                   this.handleClick(index, badgeConfig.displayName, e)
                 }
                 key={`badge-${index}`}
@@ -105,23 +107,3 @@ export class BadgeList extends React.Component<BadgeListProps> {
     );
   }
 }
-
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
-    {
-      searchBadge: (badgeText: string) =>
-        updateSearchState({
-          filters: {
-            [ResourceType.table]: { badges: badgeText },
-          },
-          submitSearch: true,
-        }),
-    },
-    dispatch
-  );
-};
-
-export default connect<null, DispatchFromProps, ListProps>(
-  null,
-  mapDispatchToProps
-)(BadgeList);
