@@ -28,7 +28,7 @@ import {
   Badge,
 } from 'interfaces';
 
-import BadgeList from 'components/common/BadgeList';
+import BadgeList from 'features/BadgeList';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
 import ColumnStats from './ColumnStats';

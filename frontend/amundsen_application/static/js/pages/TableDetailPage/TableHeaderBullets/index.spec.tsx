@@ -100,7 +100,6 @@ describe('TableHeaderBullets', () => {
       expect(actual).toEqual(expected);
     });
     it('renders a list with resource display name', () => {
-      console.log(wrapper.debug());
       expect(getDisplayNameByResource).toHaveBeenCalledWith(ResourceType.table);
       expect(wrapper.find('ul').find('li').at(0).text()).toEqual(
         MOCK_RESOURCE_DISPLAY_NAME

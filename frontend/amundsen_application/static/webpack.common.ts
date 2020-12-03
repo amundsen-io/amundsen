@@ -28,6 +28,7 @@ const PATHS = {
   dist: resolve('/dist'),
   pages: resolve('/js/pages'),
   components: resolve('/js/components'),
+  features: resolve('/js/features'),
   config: resolve('/js/config'),
   ducks: resolve('/js/ducks'),
   interfaces: resolve('/js/interfaces'),
@@ -68,6 +69,7 @@ const config: webpack.Configuration = {
     alias: {
       pages: PATHS.pages,
       components: PATHS.components,
+      features: PATHS.features,
       config: PATHS.config,
       ducks: PATHS.ducks,
       interfaces: PATHS.interfaces,

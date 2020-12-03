@@ -11,7 +11,7 @@ import SchemaInfo from 'components/common/ResourceListItem/SchemaInfo';
 import { ResourceType, TagType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
-import BadgeList from 'components/common/BadgeList';
+import BadgeList from 'features/BadgeList';
 import TableListItem, { TableListItemProps } from '.';
 
 const MOCK_DISPLAY_NAME = 'displayName';

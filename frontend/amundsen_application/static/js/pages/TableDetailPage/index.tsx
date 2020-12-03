@@ -27,7 +27,7 @@ import {
   notificationsEnabled,
 } from 'config/config-utils';
 
-import BadgeList from 'components/common/BadgeList';
+import BadgeList from 'features/BadgeList';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/common/Breadcrumb';
 import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
