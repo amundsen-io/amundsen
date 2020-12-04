@@ -78,6 +78,14 @@ describe('getFilterConfigByResource', () => {
   });
 });
 
+describe('getAnalyticsConfig', () => {
+  it('returns the analytics configuration object', () => {
+    const expectedValue = AppConfig.analytics;
+
+    expect(ConfigUtils.getAnalyticsConfig()).toBe(expectedValue);
+  });
+});
+
 describe('getTableSortCriterias', () => {
   it('returns the sorting criterias for tables', () => {
     const expectedValue =

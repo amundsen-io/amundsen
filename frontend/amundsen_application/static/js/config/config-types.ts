@@ -7,11 +7,11 @@ import { FilterType, ResourceType, SortCriteria } from '../interfaces';
  */
 
 export interface AppConfig {
+  analytics: AnalyticsConfig;
   badges: BadgeConfig;
   browse: BrowseConfig;
   date: DateFormatConfig;
   editableText: EditableTextConfig;
-  google: GoogleAnalyticsConfig;
   indexDashboards: IndexDashboardsConfig;
   indexUsers: IndexUsersConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
@@ -27,11 +27,11 @@ export interface AppConfig {
 }
 
 export interface AppConfigCustom {
+  analytics?: AnalyticsConfig;
   badges?: BadgeConfig;
   browse?: BrowseConfig;
   date?: DateFormatConfig;
   editableText?: EditableTextConfig;
-  google?: GoogleAnalyticsConfig;
   indexDashboards?: IndexDashboardsConfig;
   indexUsers?: IndexUsersConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
@@ -47,15 +47,12 @@ export interface AppConfigCustom {
 }
 
 /**
- * GoogleAnalyticsConfig - Customize 'gtag' - Google Tag Manager.
+ * AnalyticsConfig - Configure a single analytics destination
  *
- * Key - The unique analytics key for your site
- * Sample Rate - The percentage of users (0 - 100) to track site speed.
+ * plugins - array of AnalyticsPlugin functions (upstream doesn't expose this type, so any).
  */
-interface GoogleAnalyticsConfig {
-  enabled: boolean;
-  key: string;
-  sampleRate: number;
+export interface AnalyticsConfig {
+  plugins: Array<any>;
 }
 
 /**
@@ -319,6 +316,7 @@ export interface NumberStyleConfig {
   style: NumberStyle;
   config: string;
 }
+
 /**
  * NumberFormatConfig - configurations for formatting different type of numbers like currency, percentage,number system
  * this allows users to display numbers in desired format
