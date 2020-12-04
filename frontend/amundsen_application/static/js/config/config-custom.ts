@@ -7,10 +7,8 @@ const configCustom: AppConfigCustom = {
     curatedTags: [],
     showAllTags: true,
   },
-  google: {
-    enabled: false,
-    key: 'default-key',
-    sampleRate: 100,
+  analytics: {
+    plugins: [],
   },
   mailClientFeatures: {
     feedbackEnabled: false,

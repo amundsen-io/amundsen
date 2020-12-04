@@ -1,4 +1,4 @@
-<!-- 
+<!--
   Copyright Contributors to the Amundsen project.
   SPDX-License-Identifier: Apache-2.0
 -->
@@ -18,18 +18,13 @@
       {% include 'fragments/icons-prod.html' %}
     {% endif %}
 
-    {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
-      {% include 'fragments/google-analytics-loader.html' %}
-    {% endif %}
-
     <%= htmlWebpackPlugin.tags.headTags %>
+
+    <!-- Do not remove: some analytics scripts attach to this. -->
+    <script id="analyitcs-script-stub"></script>
   </head>
   <body class="{{ env }}">
     <div id="content"/>
     <%= htmlWebpackPlugin.tags.bodyTags %>
   </body>
-
-  {% if <%= htmlWebpackPlugin.options.config.google.enabled%> %}
-    {% include 'fragments/google-analytics-post-loader.html' %}
-  {% endif %}
 </html>

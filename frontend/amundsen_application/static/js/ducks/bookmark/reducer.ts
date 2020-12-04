@@ -25,6 +25,15 @@ export function addBookmark(
       resourceKey,
       resourceType,
     },
+    meta: {
+      analytics: {
+        name: `${resourceType}/addBookmark`,
+        payload: {
+          category: 'Bookmark',
+          label: `${resourceKey}`,
+        },
+      },
+    },
     type: AddBookmark.REQUEST,
   };
 }
@@ -45,6 +54,15 @@ export function removeBookmark(
     payload: {
       resourceKey,
       resourceType,
+    },
+    meta: {
+      analytics: {
+        name: `${resourceType}/removeBookmark`,
+        payload: {
+          category: 'Bookmark',
+          label: `${resourceKey}`,
+        },
+      },
     },
     type: RemoveBookmark.REQUEST,
   };

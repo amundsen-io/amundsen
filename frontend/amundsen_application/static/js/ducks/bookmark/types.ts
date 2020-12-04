@@ -1,4 +1,9 @@
-import { Bookmark, ResourceType, ResourceDict } from 'interfaces';
+import {
+  AnalyticsEvent,
+  Bookmark,
+  ResourceType,
+  ResourceDict,
+} from 'interfaces';
 
 export enum AddBookmark {
   REQUEST = 'amundsen/bookmark/ADD_REQUEST',
@@ -10,6 +15,9 @@ export interface AddBookmarkRequest {
   payload: {
     resourceKey: string;
     resourceType: ResourceType;
+  };
+  meta: {
+    analytics: AnalyticsEvent;
   };
 }
 export interface AddBookmarkResponse {
@@ -29,6 +37,9 @@ export interface RemoveBookmarkRequest {
   payload: {
     resourceKey: string;
     resourceType: ResourceType;
+  };
+  meta: {
+    analytics: AnalyticsEvent;
   };
 }
 export interface RemoveBookmarkResponse {

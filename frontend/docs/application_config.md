@@ -37,9 +37,26 @@ This config allows you to specify various date formats across the app. There are
 
 Reference for formatting: https://devhints.io/datetime#momentjs-format
 
-## Google Analytics
+## Analytics
 
-_TODO: Please add doc_
+Amundsen supports pluggable user behavior analytics via the [analytics](https://github.com/DavidWells/analytics) library.
+
+To emit analytics to a given destination, you must use one of the provided plugins (open a PR if you need to install a different vendor), then specify it the config passing the configuration of your account. Multiple destinations are supported if you wish to emit to multiple backends simultaneously.
+
+For example, to use Google analytics, you must add the import at the top of your `config-custom.ts` file: `import googleAnalytics from '@analytics/google-analytics';`, then add this config block:
+
+```
+analytics: {
+  plugins: [
+    googleAnalytics({
+      trackingId: '<YOUR_UA_CODE>',
+      sampleRate: 100
+    }),
+  ],
+}
+```
+
+We provide out of the box support for Mixpanel, Segment and Google Analytics. All [`@analytics/` plugins](https://github.com/DavidWells/analytics#analytic-plugins) are potentially supported, but you must first install the plugin: `npm install @analytics/<provider>` and send us a PR with it before you can use it.
 
 ## Indexing Optional Resources
 
@@ -102,10 +119,12 @@ You can configure custom icons to be used throughout the UI when representing en
 You can configure a specific display name to be used throughout the UI when representing entities from particular sources. On the `supportedSources` object, add an entry with the `id` used to reference that source and map to an object that specified the `displayName` for that source.
 
 ### Table Configuration
+
 To configure Table related features we have created a new resource configuration `TableResourceConfig` which extends `BaseResourceConfig`. In addition to the configurations explained above it also supports `supportedDescriptionSources`.
 
 #### Supported Description Sources
-A table resource may have a source of table and column description attached to it. We can customize it by using `supportedDescriptionSources` object which is an optional object. 
+
+A table resource may have a source of table and column description attached to it. We can customize it by using `supportedDescriptionSources` object which is an optional object.
 This object has `displayName` and `iconPath`, which can be used throughout the UI to represent a particular description source. See example in [config-default.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts).
 For configuring new description sources, add an entry in `supportedDescriptionSources` with the `id` used to reference that source and add desired display name and icon for it.
 

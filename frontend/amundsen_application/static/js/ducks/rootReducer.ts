@@ -32,7 +32,7 @@ export interface GlobalState {
   user: UserReducerState;
 }
 
-export default combineReducers<GlobalState>({
+const rootReducer = combineReducers<GlobalState>({
   announcements,
   bookmarks,
   dashboard,
@@ -46,3 +46,7 @@ export default combineReducers<GlobalState>({
   tags,
   user,
 });
+
+export default rootReducer;
+
+export type RootState = ReturnType<typeof rootReducer>;

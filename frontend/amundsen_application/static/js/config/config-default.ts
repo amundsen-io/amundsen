@@ -17,10 +17,8 @@ const configDefault: AppConfig = {
     tableDescLength: 750,
     columnDescLength: 250,
   },
-  google: {
-    enabled: false,
-    key: 'default-key',
-    sampleRate: 100,
+  analytics: {
+    plugins: [],
   },
   indexDashboards: {
     enabled: false,
