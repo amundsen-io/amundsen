@@ -48,9 +48,6 @@ _What_: Support RDS as another type of proxy for both metadata and databuilder. 
 
 _Status_: Planning
 
-_What_: Supports tra
-
-_Status_: implementation started
 
 ## Mid Term - Our Next steps
 
