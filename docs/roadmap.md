@@ -36,6 +36,22 @@ _What_: When a column has a limited set of possible values, we want to make then
 
 _Status_: implementation started
 
+#### Neptune Databuilder support
+
+_What_: Supports Databuilder ingestion for Neptune (`FsNeo4jCSVLoader`, `FsNeputuneCSVLoader` and various Neptune components). Detail could be found in [RFC-13](https://github.com/amundsen-io/rfcs/pull/13/files).
+
+_Status_: implementation started
+
+#### RDS Proxy Support
+
+_What_: Support RDS as another type of proxy for both metadata and databuilder. Detail could be found in [RFC-10](https://github.com/amundsen-io/rfcs/pull/10)
+
+_Status_: Planning
+
+_What_: Supports tra
+
+_Status_: implementation started
+
 ## Mid Term - Our Next steps
 
 #### Curated navigation experience
@@ -59,9 +75,9 @@ _Status_: planning has not started
 
 #### Push ingest API
 
-_What_: We want to create a push API so that it is as easy as possible for a new data resource type to be ingested
+_What_: Possible through [Kafka extractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/kafka_source_extractor.py), though Kafka topic schema is not well defined. And it requires client side SDK to support message pushing.
 
-_Status_: not planned
+_Status_: 50%
 
 #### Granular Access Control
 
