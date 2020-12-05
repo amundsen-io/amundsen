@@ -16,15 +16,15 @@ Include one of these prefixes:
 
 ### Summary of Changes
 
-_Include a summary of changes then remove this line_
+<!-- Include a summary of changes then remove this line -->
 
 ### Tests
 
-_What tests did you add or modify and why? If no tests were added or modified, explain why. Remove this line_
+<!-- What tests did you add or modify and why? If no tests were added or modified, explain why.  -->
 
 ### Documentation
 
-_What documentation did you add or modify and why? Add any relevant links then remove this line_
+<!-- What documentation did you add or modify and why? Add any relevant links -->
 
 ### CheckList
 
