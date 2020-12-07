@@ -46,13 +46,16 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                     # If the last eight characters are digits, we assume the table is of a table date range type
                     # and then we only need one schema definition
                     table_prefix = table_id[:-BigQueryMetadataExtractor.DATE_LENGTH]
-                    if table_prefix in self.grouped_tables:
+                    table_id = table_prefix
+                    sharded_table_key = BigQueryMetadataExtractor.SHARDED_TABLE_KEY_FORMAT.format(
+                        dataset_id=tableRef['datasetId'],
+                        table_id=table_id)
+                    if sharded_table_key in self.grouped_tables:
                         # If one table in the date range is processed, then ignore other ones
                         # (it adds too much metadata)
                         continue
 
-                    table_id = table_prefix
-                    self.grouped_tables.add(table_prefix)
+                    self.grouped_tables.add(sharded_table_key)
 
                 table = self.bigquery_service.tables().get(
                     projectId=tableRef['projectId'],
