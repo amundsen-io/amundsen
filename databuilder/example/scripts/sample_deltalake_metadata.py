@@ -23,7 +23,7 @@ neo4j_endpoint = NEO4J_ENDPOINT
 neo4j_user = 'neo4j'
 neo4j_password = 'test'
 cluster_key = 'my_delta_environment'
-database = 'delta-lake'
+database = 'delta'
 # Or set to empty to do all
 schema_list = ['schema1', 'schema2']
 # Or set to empty list if you don't have any schemas that you don't want to process

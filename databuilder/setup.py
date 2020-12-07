@@ -91,7 +91,7 @@ setup(
         'db2': db2,
         'dremio': dremio,
         'druid': druid,
-        'delta-lake': spark,
+        'delta': spark,
         'feast': feast,
     },
     classifiers=[
