@@ -126,7 +126,7 @@ class DeltaLakeMetadataExtractor(Extractor):
     CLUSTER_KEY = "cluster"
     # By default, this will only process and emit delta-lake tables, but it can support all hive table types.
     DELTA_TABLES_ONLY = "delta_tables_only"
-    DEFAULT_CONFIG = ConfigFactory.from_dict({DATABASE_KEY: "delta-lake",
+    DEFAULT_CONFIG = ConfigFactory.from_dict({DATABASE_KEY: "delta",
                                               EXCLUDE_LIST_SCHEMAS_KEY: [],
                                               SCHEMA_LIST_KEY: [],
                                               DELTA_TABLES_ONLY: True})
