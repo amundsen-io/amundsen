@@ -68,6 +68,9 @@ marshmallow-annotations>=2.4.0,<3.0
 # Upstream url: https://pypi.org/project/responses/
 responses==0.12.1
 
+# Required for announcement client
+SQLAlchemy==1.3.20
+
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
 amundsen-common==0.5.9

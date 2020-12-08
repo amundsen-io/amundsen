@@ -62,6 +62,16 @@ class Config:
     # Initialize custom routes
     INIT_CUSTOM_ROUTES = None  # type: Callable[[Flask], None]
 
+    # Settings for Preview Client integration
+    PREVIEW_CLIENT_ENABLED = os.getenv('PREVIEW_CLIENT_ENABLED') == 'true'  # type: bool
+    # Maps to a class path and name
+    PREVIEW_CLIENT = os.getenv('PREVIEW_CLIENT', None)  # type: Optional[str]
+
+    # Settings for Announcement Client integration
+    ANNOUNCEMENT_CLIENT_ENABLED = os.getenv('ANNOUNCEMENT_CLIENT_ENABLED') == 'true'  # type: bool
+    # Maps to a class path and name
+    ANNOUNCEMENT_CLIENT = os.getenv('ANNOUNCEMENT_CLIENT', None)  # type: Optional[str]
+
     # Settings for Issue tracker integration
     ISSUE_LABELS = []  # type: List[str]
     ISSUE_TRACKER_API_TOKEN = None  # type: str
