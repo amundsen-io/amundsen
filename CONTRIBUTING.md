@@ -12,9 +12,9 @@ Before sending a Pull Request with significant changes, please use the [issue tr
 
 ## First-Time Contributors
 
-If this is your first contribution to open source, you can [follow this tutorial][contributionTutorial] or check [this video series][contributionVideos] to learn about the contribution workflow with GitHub.
+If this is your first contribution to open source, you can [follow this tutorial][contributiontutorial] or check [this video series][contributionvideos] to learn about the contribution workflow with GitHub.
 
-We always have tickets labeled ['good first issue'][goodFirstIssues] and ['help wanted'][helpWantedIssues]. These are a great starting point if you want to contribute. Don't hesitate to ask questions about the issue if you are not sure about the strategy to follow.
+We always have tickets labeled ['good first issue'][goodfirstissues] and ['help wanted'][helpwantedissues]. These are a great starting point if you want to contribute. Don't hesitate to ask questions about the issue if you are not sure about the strategy to follow.
 
 ## Requesting a Feature
 
@@ -28,22 +28,17 @@ For that, you can create an issue and select the "Feature Proposal" template. Fi
 
 ## Setup
 
-To start contributing to Amundsen, you need to set up your machine to develop with the project. For that, we have prepareda a [Developer Guide][developerGuide] that will guide you to set up your environment to develop locally with Amundsen.
-
-## Get Recognition
-
-You can add yourself or somebody else to the contributors list by using the [All Contributors bot][allContributorsBot].
+To start contributing to Amundsen, you need to set up your machine to develop with the project. For that, we have prepareda a [Developer Guide][developerguide] that will guide you to set up your environment to develop locally with Amundsen.
 
 ## Next Steps
 
-Once you have your environment set and ready to go, you can check our [documentation][documentationHomepage] and the project's [Roadmap][roadmap] to see what's coming.
+Once you have your environment set and ready to go, you can check our [documentation][documentationhomepage] and the project's [Roadmap][roadmap] to see what's coming.
 
 [issues]: https://github.com/amundsen-io/amundsen/issues
-[allContributorsBot]: https://allcontributors.org/docs/en/bot/usage
-[contributionTutorial]: https://github.com/firstcontributions/first-contributions#first-contributions
-[contributionVideos]: https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github
-[goodFirstIssues]: https://github.com/amundsen-io/amundsen/labels/good%20first%20issue
-[helpWantedIssues]: https://github.com/amundsen-io/amundsen/labels/help%20wanted
-[developerGuide]: https://www.amundsen.io/amundsen/developer_guide/
+[contributiontutorial]: https://github.com/firstcontributions/first-contributions#first-contributions
+[contributionvideos]: https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github
+[goodfirstissues]: https://github.com/amundsen-io/amundsen/labels/good%20first%20issue
+[helpwantedissues]: https://github.com/amundsen-io/amundsen/labels/help%20wanted
+[developerguide]: https://www.amundsen.io/amundsen/developer_guide/
 [roadmap]: https://www.amundsen.io/amundsen/roadmap/
-[documentationHomepage]: https://www.amundsen.io/amundsen/
+[documentationhomepage]: https://www.amundsen.io/amundsen/
