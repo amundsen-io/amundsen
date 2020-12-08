@@ -104,6 +104,10 @@ const configDefault: AppConfig = {
           displayName: 'BigQuery',
           iconClass: 'icon-bigquery',
         },
+        delta: {
+          displayName: 'Delta',
+          iconClass: 'icon-delta',
+        },
         druid: {
           displayName: 'Druid',
           iconClass: 'icon-druid',
