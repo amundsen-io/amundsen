@@ -3,22 +3,20 @@
 
 import json
 import logging
-
-from http import HTTPStatus
 from pkg_resources import iter_entry_points
 
-from flask import Response, jsonify, make_response, request
+from http import HTTPStatus
+
+from flask import Response, jsonify, make_response, request, current_app as app
 from flask.blueprints import Blueprint
+from werkzeug.utils import import_string
 
 from amundsen_application.models.preview_data import PreviewDataSchema
 
 LOGGER = logging.getLogger(__name__)
-
-# TODO: Blueprint classes might be the way to go
 PREVIEW_CLIENT_CLASS = None
 PREVIEW_CLIENT_INSTANCE = None
 
-# get the preview_client_class from the python entry point
 for entry_point in iter_entry_points(group='preview_client', name='table_preview_client_class'):
     preview_client_class = entry_point.load()
     if preview_client_class is not None:
@@ -29,17 +27,22 @@ preview_blueprint = Blueprint('preview', __name__, url_prefix='/api/preview/v0')
 
 @preview_blueprint.route('/', methods=['POST'])
 def get_table_preview() -> Response:
-    # TODO: Want to further separate this file into more blueprints, perhaps a Blueprint class is the way to go
     global PREVIEW_CLIENT_INSTANCE
+    global PREVIEW_CLIENT_CLASS
     try:
-        if PREVIEW_CLIENT_INSTANCE is None and PREVIEW_CLIENT_CLASS is not None:
-            PREVIEW_CLIENT_INSTANCE = PREVIEW_CLIENT_CLASS()
-
         if PREVIEW_CLIENT_INSTANCE is None:
-            payload = jsonify({'previewData': {}, 'msg': 'A client for the preview feature must be configured'})
-            return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
+            if PREVIEW_CLIENT_CLASS is not None:
+                PREVIEW_CLIENT_INSTANCE = PREVIEW_CLIENT_CLASS()
+                logging.warn('Setting preview_client via entry_point is DEPRECATED and '
+                             'will be removed in a future version')
+            elif (app.config['PREVIEW_CLIENT_ENABLED']
+                    and app.config['PREVIEW_CLIENT'] is not None):
+                PREVIEW_CLIENT_CLASS = import_string(app.config['PREVIEW_CLIENT'])
+                PREVIEW_CLIENT_INSTANCE = PREVIEW_CLIENT_CLASS()
+            else:
+                payload = jsonify({'previewData': {}, 'msg': 'A client for the preview feature must be configured'})
+                return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
 
-        # request table preview data
         response = PREVIEW_CLIENT_INSTANCE.get_preview_data(params=request.get_json())
         status_code = response.status_code
 
@@ -57,7 +60,6 @@ def get_table_preview() -> Response:
             logging.error(message)
             # only necessary to pass the error text
             payload = jsonify({'previewData': {'error_text': preview_data.get('error_text', '')}, 'msg': message})
-
         return make_response(payload, status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
