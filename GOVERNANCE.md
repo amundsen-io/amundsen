@@ -25,7 +25,7 @@ Users who continue to engage with the project and its community will often becom
 
 ### Contributors
 
-Contributors are community members who contribute in concrete ways to the project. Anyone can become a contributor, and contributions can take many forms, as detailed in the [all-contributors project](https://allcontributors.org/docs/en/emoji-key#table). There is no expectation of commitment to the project, no specific skill requirements, and no selection process.
+Contributors are community members who contribute in concrete ways to the project. Anyone can become a contributor, and contributions can take many forms. There is no expectation of commitment to the project, no specific skill requirements, and no selection process.
 
 In addition to their actions as users, contributors may also find themselves doing one or more of the following:
 
