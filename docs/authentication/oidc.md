@@ -136,7 +136,7 @@ But here are specific instructions for amundsen:
     createOidcSecret: true
     OIDC_CLIENT_ID: YOUR_CLIENT_ID
     OIDC_CLIENT_SECRET: YOUR_SECRET_ID
-    OIDC_ORG_URL: https://edmunds.okta.com
+    OIDC_ORG_URL: https://amundsen.okta.com
     OIDC_AUTH_SERVER_ID: default
     # You also will need a custom oidc frontend build too
     frontEndServiceImage: 123.dkr.ecr.us-west-2.amazonaws.com/edmunds/amundsen-frontend:oidc-test
