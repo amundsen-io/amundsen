@@ -44,10 +44,13 @@ const setup = (propOverrides?: Partial<BadgeListProps>) => {
     onBadgeClick: () => {},
     ...propOverrides,
   };
-
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount<BadgeListProps>(<BadgeList {...props} />);
 
-  return { props, wrapper };
+  return {
+    props,
+    wrapper,
+  };
 };
 
 describe('BadgeList', () => {

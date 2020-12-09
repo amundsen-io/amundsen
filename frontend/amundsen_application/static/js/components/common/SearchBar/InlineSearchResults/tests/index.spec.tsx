@@ -56,6 +56,7 @@ describe('InlineSearchResults', () => {
       ...propOverrides,
     };
     const wrapper = shallow<InlineSearchResults>(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <InlineSearchResults {...props} />
     );
     return { props, wrapper };

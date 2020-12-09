@@ -12,9 +12,13 @@ const setup = (propOverrides?: Partial<AlertProps>) => {
     onAction: jest.fn(),
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount(<Alert {...props} />);
 
-  return { props, wrapper };
+  return {
+    props,
+    wrapper,
+  };
 };
 
 describe('Alert', () => {

@@ -64,6 +64,7 @@ describe('RequestMetadataForm', () => {
       ...propOverrides,
     };
     const wrapper = shallow<RequestMetadataForm>(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <RequestMetadataForm {...props} />
     );
     return { props, wrapper };

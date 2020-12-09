@@ -16,19 +16,35 @@ describe('ResourceList', () => {
   const setup = (propOverrides?: Partial<ResourceListProps>) => {
     const props: ResourceListProps = {
       allItems: [
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
-        { type: ResourceType.table },
+        {
+          type: ResourceType.table,
+        },
+        {
+          type: ResourceType.table,
+        },
+        {
+          type: ResourceType.table,
+        },
+        {
+          type: ResourceType.table,
+        },
+        {
+          type: ResourceType.table,
+        },
+        {
+          type: ResourceType.table,
+        },
       ],
       itemsPerPage: 4,
       source: 'testSource',
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<ResourceList>(<ResourceList {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('onViewAllToggle', () => {

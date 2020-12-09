@@ -35,7 +35,7 @@ import TagInput from 'components/common/Tags/TagInput';
 import EditableText from 'components/common/EditableText';
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import EditableSection from 'components/common/EditableSection';
-import ColumnList from 'components/ColumnList';
+import ColumnList from 'features/ColumnList';
 
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';

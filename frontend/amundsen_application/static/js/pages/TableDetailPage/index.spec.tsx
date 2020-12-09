@@ -45,6 +45,7 @@ const setup = (
     ...routerProps,
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount<TableDetail>(<TableDetail {...props} />);
 
   return { props, wrapper };

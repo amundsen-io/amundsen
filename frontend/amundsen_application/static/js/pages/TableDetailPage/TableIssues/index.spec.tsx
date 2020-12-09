@@ -27,8 +27,12 @@ describe('TableIssues', () => {
       getIssues: jest.fn(),
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<TableIssues>(<TableIssues {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('render', () => {

@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 
 import AbstractFeedbackForm, {
   FeedbackFormProps,
-} from 'components/Feedback/FeedbackForm';
+} from 'features/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
 import {
   BUG_SUMMARY_LABEL,
@@ -17,7 +17,7 @@ import {
   SUBJECT_LABEL,
   SUBJECT_PLACEHOLDER,
   SUBMIT_TEXT,
-} from 'components/Feedback/constants';
+} from 'features/Feedback/constants';
 
 import globalState from 'fixtures/globalState';
 import { BugReportFeedbackForm, mapDispatchToProps, mapStateToProps } from '.';

@@ -14,6 +14,7 @@ const setup = (propOverrides?: Partial<ShimmeringResourceLoaderProps>) => {
     ...propOverrides,
   };
   const wrapper = mount<ShimmeringResourceLoaderProps>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <ShimmeringResourceLoader {...props} />
   );
 

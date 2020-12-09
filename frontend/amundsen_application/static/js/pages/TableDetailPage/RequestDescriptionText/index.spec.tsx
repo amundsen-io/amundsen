@@ -21,6 +21,7 @@ describe('RequestDescriptionText', () => {
       ...propOverrides,
     };
     const wrapper = shallow<RequestDescriptionText>(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <RequestDescriptionText {...props} />
     );
     return { props, wrapper };

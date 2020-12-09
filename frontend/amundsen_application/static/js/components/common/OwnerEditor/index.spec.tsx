@@ -26,8 +26,12 @@ describe('OwnerEditor', () => {
       resourceType: ResourceType.table,
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = mount<OwnerEditor>(<OwnerEditor {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('render', () => {

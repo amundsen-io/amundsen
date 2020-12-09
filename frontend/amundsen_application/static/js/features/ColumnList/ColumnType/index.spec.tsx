@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { mount } from 'enzyme';
-
 import { Modal } from 'react-bootstrap';
 
 import * as UtilMethods from 'ducks/utilMethods';
@@ -20,8 +19,12 @@ const setup = (propOverrides?: Partial<ColumnTypeProps>) => {
       'row(test_id varchar,test2 row(test2_id varchar,started_at timestamp,ended_at timestamp))',
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount<ColumnType>(<ColumnType {...props} />);
-  return { wrapper, props };
+  return {
+    wrapper,
+    props,
+  };
 };
 const { wrapper, props } = setup();
 

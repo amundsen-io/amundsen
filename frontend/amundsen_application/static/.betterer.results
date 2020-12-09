@@ -1,349 +1,6 @@
 // BETTERER RESULTS V2.
 exports[`eslint`] = {
   value: `{
-    "js/components/ColumnList/ColumnStats/columnStats.story.tsx:850643706": [
-      [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
-    ],
-    "js/components/ColumnList/ColumnStats/index.spec.tsx:704690095": [
-      [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"],
-      [16, 57, 10, "Prop spreading is forbidden", "480399587"]
-    ],
-    "js/components/ColumnList/ColumnStats/index.tsx:3499981845": [
-      [18, 2, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [19, 2, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [22, 6, 43, "Variable name \`ColumnStatRow\` must match one of the following formats: camelCase, UPPER_CASE", "973452665"],
-      [23, 2, 9, "Parameter name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [24, 2, 8, "Parameter name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [36, 20, 11, "Parameter name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [37, 18, 9, "Parameter name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [39, 6, 39, "Variable name \`ColumnStats\` must match one of the following formats: camelCase, UPPER_CASE", "3835608633"]
-    ],
-    "js/components/ColumnList/ColumnStats/testDataBuilder.ts:2454991358": [
-      [14, 9, 15, "Function name \`TestDataBuilder\` must match one of the following formats: camelCase", "4136719554"],
-      [25, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [26, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [27, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [28, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [31, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [32, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [33, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [34, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [37, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [38, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [39, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [40, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [43, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [44, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [45, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [46, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [49, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [50, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [51, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [52, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [55, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [56, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [57, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [58, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [61, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [62, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [63, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [64, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [67, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [68, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [69, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [70, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [82, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [83, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [84, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [85, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [88, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [89, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [90, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [91, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [94, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [95, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [96, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [97, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [100, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [101, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [102, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [103, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [115, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [116, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [117, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [118, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [121, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [122, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [123, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [124, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [127, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [128, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [129, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [130, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [141, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [142, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [143, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [144, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [147, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [148, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [149, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [150, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"]
-    ],
-    "js/components/ColumnList/ColumnType/index.spec.tsx:2893108611": [
-      [22, 48, 10, "Prop spreading is forbidden", "480399587"],
-      [49, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [49, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"]
-    ],
-    "js/components/ColumnList/ColumnType/index.tsx:1445673789": [
-      [35, 2, 30, "nestedType should be placed after constructor", "1117758211"],
-      [110, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
-      [110, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"],
-      [128, 16, 20, "Must use destructuring state assignment", "2976153148"]
-    ],
-    "js/components/ColumnList/ColumnType/parser.ts:1815713777": [
-      [11, 2, 4, "Enum Member name \`Hive\` must match one of the following formats: camelCase", "2089153079"],
-      [12, 2, 6, "Enum Member name \`Presto\` must match one of the following formats: camelCase", "3358715914"],
-      [48, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [49, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [72, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [74, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [98, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [99, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [102, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [140, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
-    ],
-    "js/components/ColumnList/index.spec.tsx:3317234549": [
-      [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"],
-      [49, 18, 10, "Prop spreading is forbidden", "480399587"],
-      [58, 4, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
-    ],
-    "js/components/ColumnList/index.tsx:4059278330": [
-      [34, 9, 16, "\'getStatsInfoText\' is defined but never used.", "2143929761"],
-      [41, 2, 18, "\'COLUMN_STATS_TITLE\' is defined but never used.", "4261315378"],
-      [79, 2, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [149, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
-      [150, 4, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [155, 6, 48, "Variable name \`ExpandedRowComponent\` must match one of the following formats: camelCase, UPPER_CASE", "1170958550"],
-      [193, 6, 37, "Variable name \`ColumnList\` must match one of the following formats: camelCase, UPPER_CASE", "3429043897"],
-      [215, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
-    ],
-    "js/components/ColumnList/testDataBuilder.ts:913985007": [
-      [6, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [8, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [10, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [13, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [14, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [15, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [16, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [21, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [23, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [25, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [28, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [29, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [30, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [31, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [36, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [38, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [40, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [43, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [44, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [45, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [46, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [51, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [53, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [55, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [58, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [59, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [60, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [61, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [75, 9, 15, "Function name \`TestDataBuilder\` must match one of the following formats: camelCase", "4136719554"],
-      [86, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [89, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [91, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [94, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [95, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [96, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [97, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [102, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [104, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [106, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [109, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [110, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [111, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [112, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [117, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [120, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [122, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [125, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [126, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [127, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [128, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [142, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [145, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [147, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [151, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [154, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [156, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [169, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [172, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [174, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [178, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [181, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [183, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [187, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [190, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [192, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [195, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [196, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [197, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [198, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [212, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [215, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [217, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [220, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [221, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [222, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [223, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [228, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [230, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [232, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [235, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [236, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [237, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [238, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [241, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [242, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [243, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [244, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [249, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [252, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [254, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [257, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [258, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [259, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [260, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [274, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [277, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [279, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [282, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [283, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [284, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [285, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [291, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [293, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [295, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [298, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [299, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [300, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [301, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [304, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [305, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [306, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [307, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [312, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [318, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
-      [321, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [323, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [326, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [327, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [328, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [329, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [334, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [338, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [342, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"]
-    ],
-    "js/components/Feedback/FeedbackForm/BugReportFeedbackForm/index.spec.tsx:3957752886": [
-      [31, 65, 10, "Prop spreading is forbidden", "480399587"]
-    ],
-    "js/components/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:1473171770": [
-      [25, 8, 63, "A control must be associated with a text label.", "4061596287"],
-      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
-      [39, 10, 211, "A control must be associated with a text label.", "836174501"],
-      [50, 10, 211, "A control must be associated with a text label.", "2015844771"]
-    ],
-    "js/components/Feedback/FeedbackForm/RatingFeedbackForm/index.spec.tsx:4176795312": [
-      [29, 39, 10, "Prop spreading is forbidden", "480399587"]
-    ],
-    "js/components/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3778778095": [
-      [24, 8, 132, "A control must be associated with a text label.", "2458117852"],
-      [38, 8, 63, "A control must be associated with a text label.", "3147977067"],
-      [55, 10, 267, "A control must be associated with a text label.", "190931411"]
-    ],
-    "js/components/Feedback/FeedbackForm/RequestFeedbackForm/index.spec.tsx:635221281": [
-      [31, 40, 10, "Prop spreading is forbidden", "480399587"]
-    ],
-    "js/components/Feedback/FeedbackForm/RequestFeedbackForm/index.tsx:3326183784": [
-      [25, 8, 68, "A control must be associated with a text label.", "2361546724"],
-      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
-      [39, 10, 219, "A control must be associated with a text label.", "1357545573"],
-      [50, 10, 210, "A control must be associated with a text label.", "1103037886"]
-    ],
-    "js/components/Feedback/FeedbackForm/index.spec.tsx:1382561487": [
-      [9, 7, 12, "\'FeedbackForm\' is defined but never used.", "1337340762"],
-      [10, 0, 58, "\`./RatingFeedbackForm\` import should occur before import of \`.\`", "3652621138"],
-      [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"],
-      [38, 24, 10, "Prop spreading is forbidden", "480399587"]
-    ],
-    "js/components/Feedback/FeedbackForm/index.tsx:367312586": [
-      [31, 9, 7, "Property name \`FORM_ID\` must match one of the following formats: camelCase", "771255297"],
-      [39, 4, 25, "Must use destructuring props assignment", "3149716880"],
-      [42, 2, 421, "render should be placed after renderCustom", "1446266958"],
-      [43, 8, 20, "Must use destructuring props assignment", "2110463974"],
-      [46, 8, 20, "Must use destructuring props assignment", "2110463974"],
-      [49, 8, 20, "Must use destructuring props assignment", "2110463974"]
-    ],
-    "js/components/Feedback/index.spec.tsx:2374067510": [
-      [11, 0, 73, "\`./constants\` import should occur before import of \`.\`", "2308539722"],
-      [20, 48, 10, "Prop spreading is forbidden", "480399587"],
-      [29, 6, 29, "Use object destructuring.", "2645724888"],
-      [62, 6, 29, "Use object destructuring.", "2645724888"],
-      [102, 8, 25, "Use object destructuring.", "354229464"],
-      [103, 8, 29, "Use object destructuring.", "2645724888"],
-      [325, 8, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/components/Feedback/index.tsx:1829853539": [
-      [26, 2, 6, "Enum Member name \`Rating\` must match one of the following formats: camelCase", "3297832418"],
-      [27, 2, 3, "Enum Member name \`Bug\` must match one of the following formats: camelCase", "193448085"],
-      [28, 2, 7, "Enum Member name \`Request\` must match one of the following formats: camelCase", "1301598100"],
-      [45, 15, 18, "Must use destructuring props assignment", "4076523716"],
-      [51, 29, 17, "Must use destructuring state assignment", "4230747098"],
-      [51, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [54, 40, 1, "\'e\' is defined but never used.", "177600"],
-      [72, 8, 313, "Missing an explicit type attribute for button", "4022438992"],
-      [74, 12, 17, "Must use destructuring state assignment", "4230747098"],
-      [81, 9, 17, "Must use destructuring state assignment", "4230747098"],
-      [84, 37, 16, "Must use destructuring props assignment", "1935972237"],
-      [100, 21, 23, "Must use destructuring state assignment", "2756986405"],
-      [112, 21, 23, "Must use destructuring state assignment", "2756986405"],
-      [124, 21, 23, "Must use destructuring state assignment", "2756986405"],
-      [134, 13, 18, "Must use destructuring state assignment", "36119645"]
-    ],
-    "js/components/Footer/index.spec.tsx:3822669087": [
-      [23, 30, 10, "Prop spreading is forbidden", "480399587"]
-    ],
-    "js/components/Footer/index.tsx:1495667360": [
-      [25, 6, 32, "Variable name \`ShimmeringFooterLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1576194116"],
-      [35, 12, 14, "\'getLastIndexed\' is already declared in the upper scope.", "1271465094"],
-      [47, 8, 22, "Must use destructuring props assignment", "1925601400"],
-      [51, 12, 22, "Must use destructuring props assignment", "1925601400"]
-    ],
-    "js/components/NavBar/index.spec.tsx:311839680": [
-      [35, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [42, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [59, 44, 10, "Prop spreading is forbidden", "480399587"],
-      [66, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [99, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [112, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [125, 6, 25, "Use object destructuring.", "354229464"],
-      [126, 6, 29, "Use object destructuring.", "2645724888"],
-      [208, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
-    ],
-    "js/components/NavBar/index.tsx:2020697052": [
-      [69, 8, 19, "Must use destructuring props assignment", "1779396464"]
-    ],
-    "js/components/common/Alert/index.spec.tsx:3553697195": [
-      [14, 31, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/common/Alert/index.tsx:1859809043": [
       [20, 6, 27, "Variable name \`Alert\` must match one of the following formats: camelCase, UPPER_CASE", "3058164153"]
     ],
@@ -372,21 +29,19 @@ exports[`eslint`] = {
     "js/components/common/Announcements/index.tsx:3706656154": [
       [29, 6, 64, "Variable name \`AnnouncementsListContainer\` must match one of the following formats: camelCase, UPPER_CASE", "991168488"]
     ],
-    "js/components/common/AvatarLabel/index.spec.tsx:1717107605": [
-      [15, 41, 10, "Prop spreading is forbidden", "480399587"],
-      [29, 6, 25, "Use object destructuring.", "354229464"],
-      [30, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/common/AvatarLabel/index.spec.tsx:2129493660": [
+      [33, 6, 25, "Use object destructuring.", "354229464"],
+      [34, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/common/AvatarLabel/index.tsx:3025866213": [
       [16, 6, 39, "Variable name \`AvatarLabel\` must match one of the following formats: camelCase, UPPER_CASE", "3862143033"]
     ],
-    "js/components/common/BadgeList/index.spec.tsx:2763335981": [
+    "js/components/common/BadgeList/index.spec.tsx:2279748110": [
       [18, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
       [22, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
       [28, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
       [32, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [47, 51, 10, "Prop spreading is forbidden", "480399587"],
-      [152, 14, 36, "Use array destructuring.", "898356559"]
+      [155, 14, 36, "Use array destructuring.", "898356559"]
     ],
     "js/components/common/BadgeList/index.tsx:4102219202": [
       [29, 6, 39, "Variable name \`StaticBadge\` must match one of the following formats: camelCase, UPPER_CASE", "158146866"],
@@ -450,17 +105,16 @@ exports[`eslint`] = {
       [17, 6, 27, "Variable name \`CardShimmerLoader\` must match one of the following formats: camelCase, UPPER_CASE", "2914870869"],
       [30, 6, 25, "Variable name \`Card\` must match one of the following formats: camelCase, UPPER_CASE", "882870649"]
     ],
-    "js/components/common/EditableSection/index.spec.tsx:2664455117": [
-      [18, 23, 10, "Prop spreading is forbidden", "480399587"],
-      [29, 23, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [38, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [52, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [93, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [105, 10, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [106, 10, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [112, 8, 25, "Use object destructuring.", "354229464"],
-      [113, 8, 29, "Use object destructuring.", "2645724888"],
-      [122, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+    "js/components/common/EditableSection/index.spec.tsx:3906263074": [
+      [30, 23, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [39, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [53, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [94, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [106, 10, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [107, 10, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [113, 8, 25, "Use object destructuring.", "354229464"],
+      [114, 8, 29, "Use object destructuring.", "2645724888"],
+      [123, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/components/common/EditableSection/index.tsx:4161880374": [
       [50, 32, 20, "Must use destructuring state assignment", "3067028466"],
@@ -472,18 +126,17 @@ exports[`eslint`] = {
       [120, 19, 20, "Must use destructuring state assignment", "3067028466"],
       [128, 10, 137, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3965651236"]
     ],
-    "js/components/common/EditableText/index.spec.tsx:677294109": [
+    "js/components/common/EditableText/index.spec.tsx:3000951508": [
       [5, 12, 8, "\'autosize\' is defined but never used.", "4167167887"],
-      [29, 56, 10, "Prop spreading is forbidden", "480399587"],
-      [52, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [52, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [76, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [76, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [77, 12, 8, "\'instance\' is already declared in the upper scope.", "485577868"],
-      [78, 12, 14, "\'setEditModeSpy\' is already declared in the upper scope.", "1811794818"],
-      [107, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [111, 12, 8, "\'instance\' is already declared in the upper scope.", "485577868"],
-      [127, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+      [56, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [56, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [80, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [80, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [81, 12, 8, "\'instance\' is already declared in the upper scope.", "485577868"],
+      [82, 12, 14, "\'setEditModeSpy\' is already declared in the upper scope.", "1811794818"],
+      [111, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [115, 12, 8, "\'instance\' is already declared in the upper scope.", "485577868"],
+      [131, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/components/common/EditableText/index.tsx:1078043893": [
       [50, 2, 21, "textAreaRef should be placed after componentDidUpdate", "3072052035"],
@@ -503,14 +156,11 @@ exports[`eslint`] = {
       [132, 19, 20, "Script URL is a form of eval.", "3373049033"],
       [144, 8, 207, "A control must be associated with a text label.", "2914986446"]
     ],
-    "js/components/common/EntityCard/EntityCardSection/index.spec.tsx:1002266828": [
-      [20, 41, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/common/EntityCard/EntityCardSection/index.tsx:3189254608": [
       [24, 2, 55, "editButton should be placed after constructor", "2479426463"],
       [37, 8, 21, "Must use destructuring props assignment", "2809154561"],
-      [38, 33, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [38, 33, 19, "Must use destructuring state assignment", "2871981746"],
+      [38, 33, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [44, 30, 19, "Must use destructuring state assignment", "2871981746"],
       [51, 13, 16, "Must use destructuring props assignment", "1935972237"],
       [52, 13, 19, "Must use destructuring props assignment", "3530841662"],
@@ -531,9 +181,6 @@ exports[`eslint`] = {
     "js/components/common/Flag/Flag.story.tsx:878439282": [
       [14, 13, 5, "Variable name \`Flags\` must match one of the following formats: camelCase, UPPER_CASE", "207064858"]
     ],
-    "js/components/common/Flag/index.spec.tsx:2664109401": [
-      [18, 28, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/common/Flag/index.tsx:814006609": [
       [16, 6, 25, "Variable name \`Flag\` must match one of the following formats: camelCase, UPPER_CASE", "1549903737"]
     ],
@@ -553,12 +200,11 @@ exports[`eslint`] = {
     "js/components/common/InfoButton/infoButton.story.tsx:668844861": [
       [10, 13, 15, "Variable name \`InfoButtonStory\` must match one of the following formats: camelCase, UPPER_CASE", "2353203646"]
     ],
-    "js/components/common/Inputs/CheckBoxItem/index.spec.tsx:2718615943": [
-      [21, 20, 10, "Prop spreading is forbidden", "480399587"],
-      [32, 6, 25, "Use object destructuring.", "354229464"],
-      [33, 6, 29, "Use object destructuring.", "2645724888"],
-      [58, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [63, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+    "js/components/common/Inputs/CheckBoxItem/index.spec.tsx:732301256": [
+      [33, 6, 25, "Use object destructuring.", "354229464"],
+      [34, 6, 29, "Use object destructuring.", "2645724888"],
+      [59, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [64, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/components/common/Inputs/CheckBoxItem/index.tsx:2914371874": [
       [4, 9, 7, "\'connect\' is defined but never used.", "3716431323"],
@@ -568,10 +214,9 @@ exports[`eslint`] = {
     "js/components/common/LoadingSpinner/index.tsx:836023743": [
       [7, 6, 24, "Variable name \`LoadingSpinner\` must match one of the following formats: camelCase, UPPER_CASE", "3610409870"]
     ],
-    "js/components/common/OwnerEditor/index.spec.tsx:3890688037": [
+    "js/components/common/OwnerEditor/index.spec.tsx:1613430860": [
       [7, 7, 11, "\'globalState\' is defined but never used.", "1130616505"],
-      [13, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"],
-      [28, 52, 10, "Prop spreading is forbidden", "480399587"]
+      [13, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
     "js/components/common/OwnerEditor/index.tsx:297828796": [
       [60, 2, 52, "inputRef should be placed after componentDidUpdate", "1462216978"],
@@ -582,31 +227,24 @@ exports[`eslint`] = {
       [209, 23, 24, "Must use destructuring state assignment", "1659627107"],
       [214, 18, 24, "Must use destructuring state assignment", "1659627107"]
     ],
-    "js/components/common/PopularTables/index.spec.tsx:4029728197": [
-      [29, 56, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/common/PopularTables/index.tsx:2723427504": [
       [38, 4, 27, "Must use destructuring props assignment", "261221331"]
-    ],
-    "js/components/common/Preloader/index.spec.tsx:1317194273": [
-      [15, 50, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/common/Preloader/index.tsx:1644719809": [
       [22, 4, 26, "Must use destructuring props assignment", "1492876559"],
       [23, 4, 23, "Must use destructuring props assignment", "3309761012"]
     ],
-    "js/components/common/ResourceList/PaginatedApiResourceList/index.spec.tsx:1282759866": [
+    "js/components/common/ResourceList/PaginatedApiResourceList/index.spec.tsx:3666159349": [
       [12, 0, 42, "\`../constants\` import should occur before import of \`.\`", "3818422754"],
       [12, 12, 9, "\'CONSTANTS\' is defined but never used.", "2908541320"],
       [15, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"],
-      [35, 32, 10, "Prop spreading is forbidden", "480399587"],
-      [56, 6, 25, "Use object destructuring.", "354229464"],
-      [57, 6, 29, "Use object destructuring.", "2645724888"],
-      [61, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [61, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [78, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [78, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [78, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+      [57, 6, 25, "Use object destructuring.", "354229464"],
+      [58, 6, 29, "Use object destructuring.", "2645724888"],
+      [62, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [62, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [79, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [79, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [79, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/components/common/ResourceList/PaginatedApiResourceList/index.tsx:1638419415": [
       [32, 4, 23, "Must use destructuring props assignment", "2627253856"]
@@ -634,17 +272,16 @@ exports[`eslint`] = {
     "js/components/common/ResourceList/ResourceListHeader/index.tsx:4269470748": [
       [28, 6, 53, "Variable name \`ResourceListHeader\` must match one of the following formats: camelCase, UPPER_CASE", "463128665"]
     ],
-    "js/components/common/ResourceList/index.spec.tsx:3305280289": [
+    "js/components/common/ResourceList/index.spec.tsx:29545800": [
       [11, 0, 41, "\`./constants\` import should occur before import of \`.\`", "2587521996"],
       [14, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"],
-      [29, 56, 10, "Prop spreading is forbidden", "480399587"],
-      [49, 6, 25, "Use object destructuring.", "354229464"],
-      [50, 6, 29, "Use object destructuring.", "2645724888"],
-      [54, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [54, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [59, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [59, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [111, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+      [65, 6, 25, "Use object destructuring.", "354229464"],
+      [66, 6, 29, "Use object destructuring.", "2645724888"],
+      [70, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [70, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [75, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [75, 21, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [127, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/components/common/ResourceList/index.tsx:2962085183": [
       [40, 33, 21, "Must use destructuring state assignment", "3239125001"],
@@ -654,97 +291,88 @@ exports[`eslint`] = {
       [76, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
       [77, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
-    "js/components/common/ResourceListItem/DashboardListItem/index.spec.tsx:134823491": [
-      [9, 23, 17, "\'DashboardResource\' is defined but never used.", "2518238699"],
-      [46, 25, 10, "Prop spreading is forbidden", "480399587"],
-      [53, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [69, 6, 25, "Use object destructuring.", "354229464"],
-      [70, 6, 29, "Use object destructuring.", "2645724888"],
-      [152, 18, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [152, 18, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [152, 25, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [154, 14, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"],
-      [155, 14, 9, "Property name \`group_url\` must match one of the following formats: camelCase", "991267566"],
-      [163, 14, 29, "Property name \`last_successful_run_timestamp\` must match one of the following formats: camelCase", "1157138603"]
+    "js/components/common/ResourceListItem/DashboardListItem/index.spec.tsx:4082383549": [
+      [54, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [70, 6, 25, "Use object destructuring.", "354229464"],
+      [71, 6, 29, "Use object destructuring.", "2645724888"],
+      [153, 18, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [153, 18, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [153, 25, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [155, 14, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"],
+      [156, 14, 9, "Property name \`group_url\` must match one of the following formats: camelCase", "991267566"],
+      [164, 14, 29, "Property name \`last_successful_run_timestamp\` must match one of the following formats: camelCase", "1157138603"]
     ],
-    "js/components/common/ResourceListItem/DashboardListItem/index.tsx:1819790102": [
-      [4, 12, 6, "\'Avatar\' is defined but never used.", "2499316756"],
-      [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
+    "js/components/common/ResourceListItem/DashboardListItem/index.tsx:198506955": [
+      [16, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
     "js/components/common/ResourceListItem/SchemaInfo/index.tsx:3954456561": [
       [15, 6, 37, "Variable name \`SchemaInfo\` must match one of the following formats: camelCase, UPPER_CASE", "145255897"]
     ],
-    "js/components/common/ResourceListItem/SchemaInfo/tests/index.spec.tsx:749732811": [
-      [22, 40, 10, "Prop spreading is forbidden", "480399587"],
-      [32, 6, 25, "Use object destructuring.", "354229464"],
-      [33, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/common/ResourceListItem/SchemaInfo/tests/index.spec.tsx:3098559522": [
+      [36, 6, 25, "Use object destructuring.", "354229464"],
+      [37, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/common/ResourceListItem/TableListItem/index.spec.tsx:2482998820": [
+    "js/components/common/ResourceListItem/TableListItem/index.spec.tsx:1306898251": [
       [10, 23, 7, "\'TagType\' is defined but never used.", "3039634031"],
-      [40, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [41, 19, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [44, 8, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [48, 58, 10, "Prop spreading is forbidden", "480399587"],
-      [65, 6, 25, "Use object destructuring.", "1230260048"],
-      [91, 6, 25, "Use object destructuring.", "354229464"],
-      [92, 6, 29, "Use object destructuring.", "2645724888"],
-      [130, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [137, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [138, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [141, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [150, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [157, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [158, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [161, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [222, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [232, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [239, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [249, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"]
+      [43, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [46, 12, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [51, 8, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [76, 6, 25, "Use object destructuring.", "1230260048"],
+      [102, 6, 25, "Use object destructuring.", "354229464"],
+      [103, 6, 29, "Use object destructuring.", "2645724888"],
+      [141, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [148, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [149, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [152, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [161, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [168, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [169, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [172, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [233, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [243, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [250, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [260, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"]
     ],
-    "js/components/common/ResourceListItem/UserListItem/index.spec.tsx:3140954374": [
+    "js/components/common/ResourceListItem/UserListItem/index.spec.tsx:1821871209": [
       [8, 7, 4, "\'Flag\' is defined but never used.", "2088683081"],
       [12, 9, 10, "\'BadgeStyle\' is defined but never used.", "3922042359"],
-      [21, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
-      [23, 8, 13, "Property name \`employee_type\` must match one of the following formats: camelCase", "309053760"],
-      [24, 8, 10, "Property name \`first_name\` must match one of the following formats: camelCase", "1941527303"],
-      [25, 8, 9, "Property name \`full_name\` must match one of the following formats: camelCase", "4383598"],
-      [26, 8, 15, "Property name \`github_username\` must match one of the following formats: camelCase", "4179409513"],
-      [27, 8, 9, "Property name \`is_active\` must match one of the following formats: camelCase", "1397809004"],
-      [28, 8, 9, "Property name \`last_name\` must match one of the following formats: camelCase", "16632887"],
-      [29, 8, 16, "Property name \`manager_fullname\` must match one of the following formats: camelCase", "3621874077"],
-      [30, 8, 11, "Property name \`profile_url\` must match one of the following formats: camelCase", "4082386394"],
-      [31, 8, 9, "Property name \`role_name\` must match one of the following formats: camelCase", "2456095625"],
-      [32, 8, 8, "Property name \`slack_id\` must match one of the following formats: camelCase", "352348961"],
-      [33, 8, 9, "Property name \`team_name\` must match one of the following formats: camelCase", "802349120"],
-      [34, 8, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"],
-      [38, 56, 10, "Prop spreading is forbidden", "480399587"],
-      [47, 6, 25, "Use object destructuring.", "354229464"],
-      [48, 6, 29, "Use object destructuring.", "2645724888"],
-      [53, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
-      [55, 8, 13, "Property name \`employee_type\` must match one of the following formats: camelCase", "309053760"],
-      [56, 8, 10, "Property name \`first_name\` must match one of the following formats: camelCase", "1941527303"],
-      [57, 8, 9, "Property name \`full_name\` must match one of the following formats: camelCase", "4383598"],
-      [58, 8, 15, "Property name \`github_username\` must match one of the following formats: camelCase", "4179409513"],
-      [59, 8, 9, "Property name \`is_active\` must match one of the following formats: camelCase", "1397809004"],
-      [60, 8, 9, "Property name \`last_name\` must match one of the following formats: camelCase", "16632887"],
-      [61, 8, 16, "Property name \`manager_fullname\` must match one of the following formats: camelCase", "3621874077"],
-      [62, 8, 11, "Property name \`profile_url\` must match one of the following formats: camelCase", "4082386394"],
-      [63, 8, 9, "Property name \`role_name\` must match one of the following formats: camelCase", "2456095625"],
-      [64, 8, 8, "Property name \`slack_id\` must match one of the following formats: camelCase", "352348961"],
-      [65, 8, 9, "Property name \`team_name\` must match one of the following formats: camelCase", "802349120"],
-      [66, 8, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"],
-      [87, 6, 25, "Use object destructuring.", "354229464"],
-      [88, 6, 29, "Use object destructuring.", "2645724888"],
-      [125, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
-      [145, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
+      [24, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
+      [26, 8, 13, "Property name \`employee_type\` must match one of the following formats: camelCase", "309053760"],
+      [27, 8, 10, "Property name \`first_name\` must match one of the following formats: camelCase", "1941527303"],
+      [28, 8, 9, "Property name \`full_name\` must match one of the following formats: camelCase", "4383598"],
+      [29, 8, 15, "Property name \`github_username\` must match one of the following formats: camelCase", "4179409513"],
+      [30, 8, 9, "Property name \`is_active\` must match one of the following formats: camelCase", "1397809004"],
+      [31, 8, 9, "Property name \`last_name\` must match one of the following formats: camelCase", "16632887"],
+      [32, 8, 16, "Property name \`manager_fullname\` must match one of the following formats: camelCase", "3621874077"],
+      [33, 8, 11, "Property name \`profile_url\` must match one of the following formats: camelCase", "4082386394"],
+      [34, 8, 9, "Property name \`role_name\` must match one of the following formats: camelCase", "2456095625"],
+      [35, 8, 8, "Property name \`slack_id\` must match one of the following formats: camelCase", "352348961"],
+      [36, 8, 9, "Property name \`team_name\` must match one of the following formats: camelCase", "802349120"],
+      [37, 8, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"],
+      [54, 6, 25, "Use object destructuring.", "354229464"],
+      [55, 6, 29, "Use object destructuring.", "2645724888"],
+      [60, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
+      [62, 8, 13, "Property name \`employee_type\` must match one of the following formats: camelCase", "309053760"],
+      [63, 8, 10, "Property name \`first_name\` must match one of the following formats: camelCase", "1941527303"],
+      [64, 8, 9, "Property name \`full_name\` must match one of the following formats: camelCase", "4383598"],
+      [65, 8, 15, "Property name \`github_username\` must match one of the following formats: camelCase", "4179409513"],
+      [66, 8, 9, "Property name \`is_active\` must match one of the following formats: camelCase", "1397809004"],
+      [67, 8, 9, "Property name \`last_name\` must match one of the following formats: camelCase", "16632887"],
+      [68, 8, 16, "Property name \`manager_fullname\` must match one of the following formats: camelCase", "3621874077"],
+      [69, 8, 11, "Property name \`profile_url\` must match one of the following formats: camelCase", "4082386394"],
+      [70, 8, 9, "Property name \`role_name\` must match one of the following formats: camelCase", "2456095625"],
+      [71, 8, 8, "Property name \`slack_id\` must match one of the following formats: camelCase", "352348961"],
+      [72, 8, 9, "Property name \`team_name\` must match one of the following formats: camelCase", "802349120"],
+      [73, 8, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"],
+      [94, 6, 25, "Use object destructuring.", "354229464"],
+      [95, 6, 29, "Use object destructuring.", "2645724888"],
+      [132, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
+      [152, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
     ],
     "js/components/common/ResourceListItem/UserListItem/index.tsx:1085524398": [
       [22, 12, 9, "Variable name \`role_name\` must match one of the following formats: camelCase, UPPER_CASE", "2456095625"],
       [22, 23, 9, "Variable name \`team_name\` must match one of the following formats: camelCase, UPPER_CASE", "802349120"],
       [22, 34, 7, "Variable name \`user_id\` must match one of the following formats: camelCase, UPPER_CASE", "2414288038"]
-    ],
-    "js/components/common/ResourceListItem/index.spec.tsx:4127437662": [
-      [22, 40, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/common/ResourceListItem/index.tsx:1891098134": [
       [25, 15, 745, "Component should be written as a pure function", "3576592835"],
@@ -755,9 +383,6 @@ exports[`eslint`] = {
       [39, 21, 18, "Must use destructuring props assignment", "3823604846"],
       [45, 18, 15, "Must use destructuring props assignment", "4222548600"],
       [46, 21, 18, "Must use destructuring props assignment", "3823604846"]
-    ],
-    "js/components/common/ResourceStatusMarker/index.spec.tsx:714097698": [
-      [16, 26, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/common/ResourceStatusMarker/index.tsx:3276515980": [
       [16, 6, 34, "Variable name \`FailureState\` must match one of the following formats: camelCase, UPPER_CASE", "1129059001"],
@@ -794,9 +419,6 @@ exports[`eslint`] = {
       [63, 6, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
       [63, 17, 19, "Must use destructuring props assignment", "371602641"]
     ],
-    "js/components/common/SearchBar/InlineSearchResults/ResultItemList/ResultItem/index.spec.tsx:329637948": [
-      [24, 34, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/common/SearchBar/InlineSearchResults/ResultItemList/ResultItem/index.tsx:712627630": [
       [16, 6, 37, "Variable name \`ResultItem\` must match one of the following formats: camelCase, UPPER_CASE", "1574013625"]
     ],
@@ -825,10 +447,9 @@ exports[`eslint`] = {
       [54, 8, 178, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2304568019"],
       [54, 8, 178, "Static HTML elements with event handlers require a role.", "2304568019"]
     ],
-    "js/components/common/SearchBar/InlineSearchResults/SearchItemList/SearchItem/tests/index.spec.tsx:2363669366": [
-      [38, 52, 10, "Prop spreading is forbidden", "480399587"],
-      [82, 6, 25, "Use object destructuring.", "1501943800"],
-      [83, 6, 29, "Use object destructuring.", "1935870456"]
+    "js/components/common/SearchBar/InlineSearchResults/SearchItemList/SearchItem/tests/index.spec.tsx:460170751": [
+      [86, 6, 25, "Use object destructuring.", "1501943800"],
+      [87, 6, 29, "Use object destructuring.", "1935870456"]
     ],
     "js/components/common/SearchBar/InlineSearchResults/SearchItemList/index.tsx:90242282": [
       [11, 0, 42, "\`../constants\` import should occur before import of \`./SearchItem\`", "3818422754"]
@@ -880,45 +501,44 @@ exports[`eslint`] = {
       [234, 22, 21, "Must use destructuring props assignment", "65539885"],
       [244, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
-    "js/components/common/SearchBar/InlineSearchResults/tests/index.spec.tsx:2224470971": [
+    "js/components/common/SearchBar/InlineSearchResults/tests/index.spec.tsx:3532191892": [
       [8, 7, 14, "\'LoadingSpinner\' is defined but never used.", "1588595358"],
-      [58, 27, 10, "Prop spreading is forbidden", "480399587"],
-      [66, 6, 25, "Use object destructuring.", "1230260048"],
-      [87, 6, 25, "Use object destructuring.", "354229464"],
-      [88, 6, 29, "Use object destructuring.", "2645724888"],
-      [115, 6, 25, "Use object destructuring.", "354229464"],
-      [116, 6, 29, "Use object destructuring.", "2645724888"],
-      [154, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [154, 6, 25, "Use object destructuring.", "354229464"],
-      [155, 6, 29, "Use object destructuring.", "2645724888"],
-      [244, 6, 25, "Use object destructuring.", "354229464"],
-      [245, 6, 29, "Use object destructuring.", "2645724888"],
-      [290, 6, 25, "Use object destructuring.", "354229464"],
-      [291, 6, 29, "Use object destructuring.", "2645724888"],
-      [296, 12, 44, "Use array destructuring.", "2292708154"],
-      [309, 12, 36, "Use array destructuring.", "868044730"],
-      [338, 6, 25, "Use object destructuring.", "354229464"],
-      [339, 6, 29, "Use object destructuring.", "2645724888"],
-      [342, 12, 44, "Use array destructuring.", "2292708154"],
-      [349, 12, 36, "Use array destructuring.", "868044730"],
-      [356, 12, 34, "Use array destructuring.", "2111643962"],
-      [376, 6, 25, "Use object destructuring.", "354229464"],
-      [377, 6, 29, "Use object destructuring.", "2645724888"],
-      [380, 12, 44, "Use array destructuring.", "2292708154"],
-      [391, 12, 36, "Use array destructuring.", "868044730"],
-      [400, 12, 34, "Use array destructuring.", "2111643962"],
-      [419, 6, 25, "Use object destructuring.", "354229464"],
-      [420, 6, 29, "Use object destructuring.", "2645724888"],
-      [425, 12, 44, "Use array destructuring.", "2292708154"],
-      [438, 12, 36, "Use array destructuring.", "868044730"],
-      [474, 8, 25, "Use object destructuring.", "354229464"],
-      [475, 8, 29, "Use object destructuring.", "2645724888"],
-      [503, 8, 25, "Use object destructuring.", "354229464"],
-      [504, 8, 29, "Use object destructuring.", "2645724888"],
-      [572, 6, 25, "Use object destructuring.", "1230260048"],
-      [581, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [622, 6, 25, "Use object destructuring.", "354229464"],
-      [623, 6, 29, "Use object destructuring.", "2645724888"]
+      [67, 6, 25, "Use object destructuring.", "1230260048"],
+      [88, 6, 25, "Use object destructuring.", "354229464"],
+      [89, 6, 29, "Use object destructuring.", "2645724888"],
+      [116, 6, 25, "Use object destructuring.", "354229464"],
+      [117, 6, 29, "Use object destructuring.", "2645724888"],
+      [155, 6, 25, "Use object destructuring.", "354229464"],
+      [155, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [156, 6, 29, "Use object destructuring.", "2645724888"],
+      [245, 6, 25, "Use object destructuring.", "354229464"],
+      [246, 6, 29, "Use object destructuring.", "2645724888"],
+      [291, 6, 25, "Use object destructuring.", "354229464"],
+      [292, 6, 29, "Use object destructuring.", "2645724888"],
+      [297, 12, 44, "Use array destructuring.", "2292708154"],
+      [310, 12, 36, "Use array destructuring.", "868044730"],
+      [339, 6, 25, "Use object destructuring.", "354229464"],
+      [340, 6, 29, "Use object destructuring.", "2645724888"],
+      [343, 12, 44, "Use array destructuring.", "2292708154"],
+      [350, 12, 36, "Use array destructuring.", "868044730"],
+      [357, 12, 34, "Use array destructuring.", "2111643962"],
+      [377, 6, 25, "Use object destructuring.", "354229464"],
+      [378, 6, 29, "Use object destructuring.", "2645724888"],
+      [381, 12, 44, "Use array destructuring.", "2292708154"],
+      [392, 12, 36, "Use array destructuring.", "868044730"],
+      [401, 12, 34, "Use array destructuring.", "2111643962"],
+      [420, 6, 25, "Use object destructuring.", "354229464"],
+      [421, 6, 29, "Use object destructuring.", "2645724888"],
+      [426, 12, 44, "Use array destructuring.", "2292708154"],
+      [439, 12, 36, "Use array destructuring.", "868044730"],
+      [475, 8, 25, "Use object destructuring.", "354229464"],
+      [476, 8, 29, "Use object destructuring.", "2645724888"],
+      [504, 8, 25, "Use object destructuring.", "354229464"],
+      [505, 8, 29, "Use object destructuring.", "2645724888"],
+      [573, 6, 25, "Use object destructuring.", "1230260048"],
+      [582, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [623, 6, 25, "Use object destructuring.", "354229464"],
+      [624, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/common/SearchBar/index.spec.tsx:3541693335": [
       [40, 36, 10, "Prop spreading is forbidden", "480399587"],
@@ -950,8 +570,8 @@ exports[`eslint`] = {
       [127, 14, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
       [159, 4, 31, "Must use destructuring props assignment", "1896862308"],
       [161, 6, 21, "Must use destructuring state assignment", "2515881172"],
-      [178, 48, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [178, 48, 21, "Must use destructuring state assignment", "2515881172"],
+      [178, 48, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [187, 6, 15, "Must use destructuring props assignment", "4223598856"],
       [192, 6, 15, "Must use destructuring props assignment", "4223598856"],
       [203, 38, 22, "Must use destructuring props assignment", "3739111726"],
@@ -963,15 +583,9 @@ exports[`eslint`] = {
       [232, 23, 15, "Must use destructuring props assignment", "4223598856"],
       [234, 24, 21, "Must use destructuring state assignment", "2515881172"]
     ],
-    "js/components/common/ShimmeringResourceLoader/index.spec.tsx:3294818034": [
-      [16, 30, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/common/ShimmeringResourceLoader/index.tsx:1957183104": [
       [10, 13, 32, "Variable name \`ShimmeringResourceItem\` must match one of the following formats: camelCase, UPPER_CASE", "4066977711"],
       [28, 6, 65, "Variable name \`ShimmeringResourceLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1161606841"]
-    ],
-    "js/components/common/ShimmeringTagListLoader/index.spec.tsx:3982588868": [
-      [16, 29, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/common/ShimmeringTagListLoader/index.tsx:2589370461": [
       [14, 13, 51, "Variable name \`ShimmeringTagItem\` must match one of the following formats: camelCase, UPPER_CASE", "2905356537"],
@@ -1011,17 +625,16 @@ exports[`eslint`] = {
     "js/components/common/TabsComponent/index.tsx:289438172": [
       [21, 6, 34, "Variable name \`TabsComponent\` must match one of the following formats: camelCase, UPPER_CASE", "66546454"]
     ],
-    "js/components/common/Tags/TagInfo/index.spec.tsx:2466800644": [
+    "js/components/common/Tags/TagInfo/index.spec.tsx:2036846669": [
       [22, 8, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
       [23, 8, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
-      [29, 46, 10, "Prop spreading is forbidden", "480399587"],
-      [40, 6, 25, "Use object destructuring.", "354229464"],
-      [41, 6, 29, "Use object destructuring.", "2645724888"],
-      [47, 8, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [67, 8, 29, "Use object destructuring.", "2645724888"],
-      [68, 8, 25, "Use object destructuring.", "354229464"],
-      [92, 8, 29, "Use object destructuring.", "2645724888"],
-      [93, 8, 25, "Use object destructuring.", "354229464"]
+      [44, 6, 25, "Use object destructuring.", "354229464"],
+      [45, 6, 29, "Use object destructuring.", "2645724888"],
+      [51, 8, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [71, 8, 29, "Use object destructuring.", "2645724888"],
+      [72, 8, 25, "Use object destructuring.", "354229464"],
+      [96, 8, 29, "Use object destructuring.", "2645724888"],
+      [97, 8, 25, "Use object destructuring.", "354229464"]
     ],
     "js/components/common/Tags/TagInfo/index.tsx:3804447035": [
       [6, 28, 10, "\'SearchType\' is defined but never used.", "3759589107"],
@@ -1047,8 +660,8 @@ exports[`eslint`] = {
       [136, 44, 13, "\'selectOptions\' is defined but never used.", "1076977309"],
       [174, 8, 21, "Must use destructuring props assignment", "2890513821"],
       [178, 6, 21, "Must use destructuring props assignment", "2890513821"],
-      [225, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
       [225, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
+      [225, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
       [231, 40, 15, "Prop spreading is forbidden", "1697062181"],
       [244, 12, 15, "Must use destructuring props assignment", "4223491724"],
       [249, 12, 18, "Must use destructuring props assignment", "1044970797"],
@@ -1091,13 +704,13 @@ exports[`eslint`] = {
     "js/components/common/Tags/index.tsx:613629620": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:3271882115": [
+    "js/config/config-default.ts:3975396501": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
       [46, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
       [52, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [164, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [207, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [208, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [168, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [211, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [212, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/config/config-types.ts:3768974062": [
       [156, 2, 6, "Enum Member name \`DANGER\` must match one of the following formats: camelCase", "2553023038"],
@@ -1594,6 +1207,341 @@ exports[`eslint`] = {
     ],
     "js/features/BadgeList/index.tsx:729873384": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
+    ],
+    "js/features/ColumnList/ColumnStats/columnStats.story.tsx:850643706": [
+      [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
+    ],
+    "js/features/ColumnList/ColumnStats/index.spec.tsx:991779878": [
+      [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
+    ],
+    "js/features/ColumnList/ColumnStats/index.tsx:3499981845": [
+      [18, 2, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [19, 2, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [22, 6, 43, "Variable name \`ColumnStatRow\` must match one of the following formats: camelCase, UPPER_CASE", "973452665"],
+      [23, 2, 9, "Parameter name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [24, 2, 8, "Parameter name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [36, 20, 11, "Parameter name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [37, 18, 9, "Parameter name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [39, 6, 39, "Variable name \`ColumnStats\` must match one of the following formats: camelCase, UPPER_CASE", "3835608633"]
+    ],
+    "js/features/ColumnList/ColumnStats/testDataBuilder.ts:2454991358": [
+      [14, 9, 15, "Function name \`TestDataBuilder\` must match one of the following formats: camelCase", "4136719554"],
+      [25, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [26, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [27, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [28, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [31, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [32, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [33, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [34, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [37, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [38, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [39, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [40, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [43, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [44, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [45, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [46, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [49, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [50, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [51, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [52, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [55, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [56, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [57, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [58, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [61, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [62, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [63, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [64, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [67, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [68, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [69, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [70, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [82, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [83, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [84, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [85, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [88, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [89, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [90, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [91, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [94, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [95, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [96, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [97, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [100, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [101, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [102, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [103, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [115, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [116, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [117, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [118, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [121, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [122, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [123, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [124, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [127, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [128, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [129, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [130, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [141, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [142, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [143, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [144, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [147, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [148, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [149, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [150, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"]
+    ],
+    "js/features/ColumnList/ColumnType/index.spec.tsx:2876249152": [
+      [52, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [52, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"]
+    ],
+    "js/features/ColumnList/ColumnType/index.tsx:1445673789": [
+      [35, 2, 30, "nestedType should be placed after constructor", "1117758211"],
+      [110, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
+      [110, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"],
+      [128, 16, 20, "Must use destructuring state assignment", "2976153148"]
+    ],
+    "js/features/ColumnList/ColumnType/parser.ts:1815713777": [
+      [11, 2, 4, "Enum Member name \`Hive\` must match one of the following formats: camelCase", "2089153079"],
+      [12, 2, 6, "Enum Member name \`Presto\` must match one of the following formats: camelCase", "3358715914"],
+      [48, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [49, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [72, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [74, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [98, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [99, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [102, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [140, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
+    ],
+    "js/features/ColumnList/index.spec.tsx:3317234549": [
+      [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"],
+      [49, 18, 10, "Prop spreading is forbidden", "480399587"],
+      [58, 4, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
+    ],
+    "js/features/ColumnList/index.tsx:4059278330": [
+      [34, 9, 16, "\'getStatsInfoText\' is defined but never used.", "2143929761"],
+      [41, 2, 18, "\'COLUMN_STATS_TITLE\' is defined but never used.", "4261315378"],
+      [79, 2, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [149, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
+      [150, 4, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [155, 6, 48, "Variable name \`ExpandedRowComponent\` must match one of the following formats: camelCase, UPPER_CASE", "1170958550"],
+      [193, 6, 37, "Variable name \`ColumnList\` must match one of the following formats: camelCase, UPPER_CASE", "3429043897"],
+      [215, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
+    ],
+    "js/features/ColumnList/testDataBuilder.ts:913985007": [
+      [6, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [8, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [10, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [13, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [14, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [15, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [16, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [21, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [23, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [25, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [28, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [29, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [30, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [31, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [36, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [38, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [40, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [43, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [44, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [45, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [46, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [51, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [53, 6, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [55, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [58, 10, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [59, 10, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [60, 10, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [61, 10, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [75, 9, 15, "Function name \`TestDataBuilder\` must match one of the following formats: camelCase", "4136719554"],
+      [86, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [89, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [91, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [94, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [95, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [96, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [97, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [102, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [104, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [106, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [109, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [110, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [111, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [112, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [117, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [120, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [122, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [125, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [126, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [127, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [128, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [142, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [145, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [147, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [151, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [154, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [156, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [169, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [172, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [174, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [178, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [181, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [183, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [187, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [190, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [192, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [195, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [196, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [197, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [198, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [212, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [215, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [217, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [220, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [221, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [222, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [223, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [228, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [230, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [232, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [235, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [236, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [237, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [238, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [241, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [242, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [243, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [244, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [249, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [252, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [254, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [257, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [258, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [259, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [260, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [274, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [277, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [279, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [282, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [283, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [284, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [285, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [291, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [293, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [295, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [298, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [299, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [300, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [301, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [304, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [305, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [306, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [307, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [312, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [318, 10, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
+      [321, 10, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [323, 10, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [326, 14, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [327, 14, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [328, 14, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
+      [329, 14, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
+      [334, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [338, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [342, 14, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"]
+    ],
+    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.spec.tsx:1234861750": [
+      [31, 65, 10, "Prop spreading is forbidden", "480399587"]
+    ],
+    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:1473171770": [
+      [25, 8, 63, "A control must be associated with a text label.", "4061596287"],
+      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
+      [39, 10, 211, "A control must be associated with a text label.", "836174501"],
+      [50, 10, 211, "A control must be associated with a text label.", "2015844771"]
+    ],
+    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.spec.tsx:3088814608": [
+      [29, 39, 10, "Prop spreading is forbidden", "480399587"]
+    ],
+    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3778778095": [
+      [24, 8, 132, "A control must be associated with a text label.", "2458117852"],
+      [38, 8, 63, "A control must be associated with a text label.", "3147977067"],
+      [55, 10, 267, "A control must be associated with a text label.", "190931411"]
+    ],
+    "js/features/Feedback/FeedbackForm/RequestFeedbackForm/index.tsx:3326183784": [
+      [25, 8, 68, "A control must be associated with a text label.", "2361546724"],
+      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
+      [39, 10, 219, "A control must be associated with a text label.", "1357545573"],
+      [50, 10, 210, "A control must be associated with a text label.", "1103037886"]
+    ],
+    "js/features/Feedback/FeedbackForm/index.spec.tsx:1382561487": [
+      [9, 7, 12, "\'FeedbackForm\' is defined but never used.", "1337340762"],
+      [10, 0, 58, "\`./RatingFeedbackForm\` import should occur before import of \`.\`", "3652621138"],
+      [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"],
+      [38, 24, 10, "Prop spreading is forbidden", "480399587"]
+    ],
+    "js/features/Feedback/FeedbackForm/index.tsx:367312586": [
+      [31, 9, 7, "Property name \`FORM_ID\` must match one of the following formats: camelCase", "771255297"],
+      [39, 4, 25, "Must use destructuring props assignment", "3149716880"],
+      [42, 2, 421, "render should be placed after renderCustom", "1446266958"],
+      [43, 8, 20, "Must use destructuring props assignment", "2110463974"],
+      [46, 8, 20, "Must use destructuring props assignment", "2110463974"],
+      [49, 8, 20, "Must use destructuring props assignment", "2110463974"]
+    ],
+    "js/features/Feedback/index.spec.tsx:2374067510": [
+      [11, 0, 73, "\`./constants\` import should occur before import of \`.\`", "2308539722"],
+      [20, 48, 10, "Prop spreading is forbidden", "480399587"],
+      [29, 6, 29, "Use object destructuring.", "2645724888"],
+      [62, 6, 29, "Use object destructuring.", "2645724888"],
+      [102, 8, 25, "Use object destructuring.", "354229464"],
+      [103, 8, 29, "Use object destructuring.", "2645724888"],
+      [325, 8, 29, "Use object destructuring.", "2645724888"]
+    ],
+    "js/features/Feedback/index.tsx:1829853539": [
+      [26, 2, 6, "Enum Member name \`Rating\` must match one of the following formats: camelCase", "3297832418"],
+      [27, 2, 3, "Enum Member name \`Bug\` must match one of the following formats: camelCase", "193448085"],
+      [28, 2, 7, "Enum Member name \`Request\` must match one of the following formats: camelCase", "1301598100"],
+      [45, 15, 18, "Must use destructuring props assignment", "4076523716"],
+      [51, 29, 17, "Must use destructuring state assignment", "4230747098"],
+      [51, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [54, 40, 1, "\'e\' is defined but never used.", "177600"],
+      [72, 8, 313, "Missing an explicit type attribute for button", "4022438992"],
+      [74, 12, 17, "Must use destructuring state assignment", "4230747098"],
+      [81, 9, 17, "Must use destructuring state assignment", "4230747098"],
+      [84, 37, 16, "Must use destructuring props assignment", "1935972237"],
+      [100, 21, 23, "Must use destructuring state assignment", "2756986405"],
+      [112, 21, 23, "Must use destructuring state assignment", "2756986405"],
+      [124, 21, 23, "Must use destructuring state assignment", "2756986405"],
+      [134, 13, 18, "Must use destructuring state assignment", "36119645"]
+    ],
+    "js/features/Footer/index.spec.tsx:3822669087": [
+      [23, 30, 10, "Prop spreading is forbidden", "480399587"]
+    ],
+    "js/features/Footer/index.tsx:169922320": [
+      [26, 6, 32, "Variable name \`ShimmeringFooterLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1576194116"],
+      [36, 12, 14, "\'getLastIndexed\' is already declared in the upper scope.", "1271465094"],
+      [48, 8, 22, "Must use destructuring props assignment", "1925601400"],
+      [52, 12, 22, "Must use destructuring props assignment", "1925601400"]
+    ],
+    "js/features/NavBar/index.spec.tsx:2620620411": [
+      [35, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [42, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [59, 44, 10, "Prop spreading is forbidden", "480399587"],
+      [66, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [99, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [112, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [125, 6, 25, "Use object destructuring.", "354229464"],
+      [126, 6, 29, "Use object destructuring.", "2645724888"],
+      [208, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+    ],
+    "js/features/NavBar/index.tsx:2926504679": [
+      [69, 8, 19, "Must use destructuring props assignment", "1779396464"]
     ],
     "js/fixtures/globalState.ts:2008341805": [
       [15, 8, 12, "Property name \`html_content\` must match one of the following formats: camelCase", "574671502"],
@@ -2226,7 +2174,7 @@ exports[`eslint`] = {
     "js/pages/DashboardPage/ShimmeringDashboardLoader/index.tsx:566202208": [
       [7, 6, 35, "Variable name \`ShimmeringDashboardLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1711630885"]
     ],
-    "js/pages/DashboardPage/index.spec.tsx:3811826221": [
+    "js/pages/DashboardPage/index.spec.tsx:753832958": [
       [23, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [25, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"],
       [64, 56, 10, "Prop spreading is forbidden", "480399587"],
@@ -2239,7 +2187,7 @@ exports[`eslint`] = {
       [247, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [250, 10, 11, "Property name \`chart_names\` must match one of the following formats: camelCase", "219563138"]
     ],
-    "js/pages/DashboardPage/index.tsx:154837758": [
+    "js/pages/DashboardPage/index.tsx:1458369677": [
       [82, 20, 16, "Must use destructuring props assignment", "1899951550"],
       [88, 47, 19, "Must use destructuring props assignment", "1779396464"],
       [89, 20, 16, "Must use destructuring props assignment", "1899951550"],
@@ -2276,16 +2224,15 @@ exports[`eslint`] = {
     "js/pages/NotFoundPage/index.tsx:1433117596": [
       [11, 6, 27, "Variable name \`NotFoundPage\` must match one of the following formats: camelCase, UPPER_CASE", "2323826353"]
     ],
-    "js/pages/ProfilePage/index.spec.tsx:1145588014": [
+    "js/pages/ProfilePage/index.spec.tsx:1685341163": [
       [11, 7, 4, "\'Flag\' is defined but never used.", "2088683081"],
       [22, 9, 10, "\'BadgeStyle\' is defined but never used.", "3922042359"],
-      [69, 54, 10, "Prop spreading is forbidden", "480399587"],
-      [213, 9, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [323, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
-      [325, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [354, 8, 9, "Property name \`is_active\` must match one of the following formats: camelCase", "1397809004"],
-      [356, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [377, 12, 17, "\'generateTabKeySpy\' is assigned a value but never used.", "4206744084"]
+      [227, 9, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [337, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
+      [339, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [368, 8, 9, "Property name \`is_active\` must match one of the following formats: camelCase", "1397809004"],
+      [370, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [391, 12, 17, "\'generateTabKeySpy\' is assigned a value but never used.", "4206744084"]
     ],
     "js/pages/ProfilePage/index.tsx:3574035674": [
       [11, 7, 4, "\'Flag\' is defined but never used.", "2088683081"],
@@ -2315,18 +2262,17 @@ exports[`eslint`] = {
       [80, 15, 21, "Must use destructuring props assignment", "1352381626"],
       [88, 15, 16, "Must use destructuring props assignment", "1927755215"]
     ],
-    "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.spec.tsx:2172746632": [
+    "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.spec.tsx:1255946113": [
       [12, 9, 10, "\'FilterType\' is defined but never used.", "2796081021"],
-      [40, 60, 10, "Prop spreading is forbidden", "480399587"],
-      [53, 6, 25, "Use object destructuring.", "354229464"],
-      [54, 6, 29, "Use object destructuring.", "2645724888"],
-      [55, 6, 44, "Use array destructuring.", "3197678167"],
-      [88, 6, 25, "Use object destructuring.", "354229464"],
-      [89, 6, 29, "Use object destructuring.", "2645724888"],
-      [126, 6, 25, "Use object destructuring.", "354229464"],
-      [127, 6, 29, "Use object destructuring.", "2645724888"],
-      [191, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [201, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
+      [57, 6, 25, "Use object destructuring.", "354229464"],
+      [58, 6, 29, "Use object destructuring.", "2645724888"],
+      [59, 6, 44, "Use array destructuring.", "3197678167"],
+      [92, 6, 25, "Use object destructuring.", "354229464"],
+      [93, 6, 29, "Use object destructuring.", "2645724888"],
+      [130, 6, 25, "Use object destructuring.", "354229464"],
+      [131, 6, 29, "Use object destructuring.", "2645724888"],
+      [195, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [205, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
     "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.tsx:973188919": [
       [49, 17, 24, "Must use destructuring props assignment", "4001263474"],
@@ -2336,32 +2282,30 @@ exports[`eslint`] = {
       [79, 6, 23, "Must use destructuring props assignment", "405692188"],
       [81, 6, 23, "Must use destructuring props assignment", "405692188"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.spec.tsx:252572740": [
+    "js/pages/SearchPage/SearchFilter/FilterSection/index.spec.tsx:1669520941": [
       [19, 0, 46, "\`../constants\` import should occur before import of \`.\`", "1852737997"],
-      [30, 56, 10, "Prop spreading is forbidden", "480399587"],
-      [94, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [102, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+      [98, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [106, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2156193796": [
       [40, 4, 22, "Must use destructuring props assignment", "1282914580"],
       [40, 27, 21, "Must use destructuring props assignment", "1640009072"],
       [43, 29, -1205, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/pages/SearchPage/SearchFilter/InputFilter/index.spec.tsx:2195369454": [
+    "js/pages/SearchPage/SearchFilter/InputFilter/index.spec.tsx:2360649383": [
       [10, 9, 10, "\'FilterType\' is defined but never used.", "2796081021"],
-      [29, 54, 10, "Prop spreading is forbidden", "480399587"],
-      [37, 6, 45, "Use object destructuring.", "1240672346"],
-      [49, 6, 25, "Use object destructuring.", "354229464"],
-      [50, 6, 29, "Use object destructuring.", "2645724888"],
-      [87, 6, 25, "Use object destructuring.", "354229464"],
-      [88, 6, 29, "Use object destructuring.", "2645724888"],
-      [113, 6, 25, "Use object destructuring.", "354229464"],
-      [113, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [114, 6, 29, "Use object destructuring.", "2645724888"],
-      [133, 6, 25, "Use object destructuring.", "354229464"],
-      [134, 6, 29, "Use object destructuring.", "2645724888"],
-      [201, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [211, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
+      [41, 6, 45, "Use object destructuring.", "1240672346"],
+      [53, 6, 25, "Use object destructuring.", "354229464"],
+      [54, 6, 29, "Use object destructuring.", "2645724888"],
+      [91, 6, 25, "Use object destructuring.", "354229464"],
+      [92, 6, 29, "Use object destructuring.", "2645724888"],
+      [117, 6, 25, "Use object destructuring.", "354229464"],
+      [117, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [118, 6, 29, "Use object destructuring.", "2645724888"],
+      [137, 6, 25, "Use object destructuring.", "354229464"],
+      [138, 6, 29, "Use object destructuring.", "2645724888"],
+      [205, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [215, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
     "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:1387474436": [
       [49, 21, 16, "Must use destructuring props assignment", "1934035558"],
@@ -2375,16 +2319,15 @@ exports[`eslint`] = {
       [75, 8, 203, "A control must be associated with a text label.", "4138944353"],
       [81, 17, 16, "Must use destructuring state assignment", "3998965439"]
     ],
-    "js/pages/SearchPage/SearchFilter/index.spec.tsx:1059167396": [
-      [45, 56, 10, "Prop spreading is forbidden", "480399587"],
-      [57, 6, 25, "Use object destructuring.", "354229464"],
-      [58, 6, 29, "Use object destructuring.", "2645724888"],
-      [59, 6, 48, "Use array destructuring.", "1915473085"],
-      [60, 6, 45, "Use array destructuring.", "1487312825"],
-      [94, 14, 7, "\'content\' is already declared in the upper scope.", "3716929964"],
-      [109, 6, 25, "Use object destructuring.", "354229464"],
-      [110, 6, 29, "Use object destructuring.", "2645724888"],
-      [134, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/pages/SearchPage/SearchFilter/index.spec.tsx:3995988813": [
+      [67, 6, 25, "Use object destructuring.", "354229464"],
+      [68, 6, 29, "Use object destructuring.", "2645724888"],
+      [69, 6, 48, "Use array destructuring.", "1915473085"],
+      [70, 6, 45, "Use array destructuring.", "1487312825"],
+      [104, 14, 7, "\'content\' is already declared in the upper scope.", "3716929964"],
+      [119, 6, 25, "Use object destructuring.", "354229464"],
+      [120, 6, 29, "Use object destructuring.", "2645724888"],
+      [144, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/pages/SearchPage/SearchPanel/index.tsx:933004133": [
       [11, 6, 21, "Variable name \`SearchPanel\` must match one of the following formats: camelCase, UPPER_CASE", "1210432301"]
@@ -2444,7 +2387,7 @@ exports[`eslint`] = {
       [243, 21, 20, "Must use destructuring state assignment", "2976153148"],
       [245, 26, 21, "Must use destructuring props assignment", "2163940102"]
     ],
-    "js/pages/TableDetailPage/ExploreButton/index.spec.tsx:3224361703": [
+    "js/pages/TableDetailPage/ExploreButton/index.spec.tsx:1196305960": [
       [35, 8, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
       [36, 8, 7, "Property name \`is_view\` must match one of the following formats: camelCase", "2715417645"],
       [40, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
@@ -2452,10 +2395,9 @@ exports[`eslint`] = {
       [43, 10, 15, "Property name \`application_url\` must match one of the following formats: camelCase", "1067313867"],
       [49, 10, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"],
       [53, 8, 13, "Property name \`table_readers\` must match one of the following formats: camelCase", "3636171154"],
-      [54, 30, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"],
-      [55, 8, 16, "Property name \`resource_reports\` must match one of the following formats: camelCase", "3614191341"],
-      [57, 8, 25, "Property name \`programmatic_descriptions\` must match one of the following formats: camelCase", "3262748393"],
-      [61, 58, 10, "Prop spreading is forbidden", "480399587"]
+      [56, 10, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"],
+      [58, 8, 16, "Property name \`resource_reports\` must match one of the following formats: camelCase", "3614191341"],
+      [60, 8, 25, "Property name \`programmatic_descriptions\` must match one of the following formats: camelCase", "3262748393"]
     ],
     "js/pages/TableDetailPage/ExploreButton/index.tsx:3186575728": [
       [13, 0, 454, "Component should be written as a pure function", "1437366564"],
@@ -2506,31 +2448,29 @@ exports[`eslint`] = {
       [139, 16, 7, "A form label must be associated with a control.", "2729454337"],
       [140, 16, 197, "A control must be associated with a text label.", "968313273"]
     ],
-    "js/pages/TableDetailPage/RequestDescriptionText/index.spec.tsx:3585642444": [
+    "js/pages/TableDetailPage/RequestDescriptionText/index.spec.tsx:2570104867": [
       [7, 7, 11, "\'globalState\' is defined but never used.", "1130616505"],
       [14, 0, 50, "\`./constants\` import should occur before import of \`.\`", "1670547063"],
-      [23, 30, 10, "Prop spreading is forbidden", "480399587"],
-      [44, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
+      [45, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
     "js/pages/TableDetailPage/RequestDescriptionText/index.tsx:1704063609": [
       [6, 9, 11, "\'GlobalState\' is defined but never used.", "3862509465"],
       [31, 4, 39, "Must use destructuring props assignment", "4072624518"],
       [40, 13, 20, "Script URL is a form of eval.", "3373049033"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:1862692757": [
+    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:713170810": [
       [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
-      [66, 27, 10, "Prop spreading is forbidden", "480399587"],
-      [125, 6, 25, "Use object destructuring.", "1230260048"],
-      [157, 10, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
-      [158, 10, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
-      [159, 10, 21, "Property name \`description_requested\` must match one of the following formats: camelCase", "3477246476"],
-      [160, 10, 16, "Property name \`fields_requested\` must match one of the following formats: camelCase", "1221611451"],
-      [174, 10, 29, "Use object destructuring.", "2645724888"],
-      [256, 10, 29, "Use object destructuring.", "2645724888"],
-      [272, 10, 29, "Use object destructuring.", "2645724888"],
-      [298, 8, 29, "Use object destructuring.", "2645724888"],
-      [307, 10, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [311, 8, 111, "Use object destructuring.", "1069171227"]
+      [126, 6, 25, "Use object destructuring.", "1230260048"],
+      [158, 10, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
+      [159, 10, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
+      [160, 10, 21, "Property name \`description_requested\` must match one of the following formats: camelCase", "3477246476"],
+      [161, 10, 16, "Property name \`fields_requested\` must match one of the following formats: camelCase", "1221611451"],
+      [175, 10, 29, "Use object destructuring.", "2645724888"],
+      [257, 10, 29, "Use object destructuring.", "2645724888"],
+      [273, 10, 29, "Use object destructuring.", "2645724888"],
+      [299, 8, 29, "Use object destructuring.", "2645724888"],
+      [308, 10, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [312, 8, 111, "Use object destructuring.", "1069171227"]
     ],
     "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:291888557": [
       [63, 4, 40, "Must use destructuring props assignment", "1859841252"],
@@ -2560,9 +2500,6 @@ exports[`eslint`] = {
       [22, 8, 5, "\'image\' is assigned a value but never used.", "178823234"],
       [24, 8, 11, "\'displayName\' is assigned a value but never used.", "2033418264"]
     ],
-    "js/pages/TableDetailPage/TableDashboardResourceList/index.spec.tsx:1646915036": [
-      [29, 32, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
       [45, 28, 10, "Prop spreading is forbidden", "480399587"],
       [91, 6, 25, "Use object destructuring.", "354229464"],
@@ -2577,14 +2514,13 @@ exports[`eslint`] = {
       [54, 14, 19, "Must use destructuring props assignment", "2861102024"],
       [59, 13, 18, "Must use destructuring props assignment", "58025767"]
     ],
-    "js/pages/TableDetailPage/TableIssues/index.spec.tsx:452082829": [
-      [29, 54, 10, "Prop spreading is forbidden", "480399587"],
-      [56, 12, 9, "Property name \`issue_key\` must match one of the following formats: camelCase", "430514804"],
-      [60, 12, 21, "Property name \`priority_display_name\` must match one of the following formats: camelCase", "3184323018"],
-      [61, 12, 13, "Property name \`priority_name\` must match one of the following formats: camelCase", "3589006831"],
-      [84, 12, 9, "Property name \`issue_key\` must match one of the following formats: camelCase", "430514804"],
-      [88, 12, 21, "Property name \`priority_display_name\` must match one of the following formats: camelCase", "3184323018"],
-      [89, 12, 13, "Property name \`priority_name\` must match one of the following formats: camelCase", "3589006831"]
+    "js/pages/TableDetailPage/TableIssues/index.spec.tsx:3557446756": [
+      [60, 12, 9, "Property name \`issue_key\` must match one of the following formats: camelCase", "430514804"],
+      [64, 12, 21, "Property name \`priority_display_name\` must match one of the following formats: camelCase", "3184323018"],
+      [65, 12, 13, "Property name \`priority_name\` must match one of the following formats: camelCase", "3589006831"],
+      [88, 12, 9, "Property name \`issue_key\` must match one of the following formats: camelCase", "430514804"],
+      [92, 12, 21, "Property name \`priority_display_name\` must match one of the following formats: camelCase", "3184323018"],
+      [93, 12, 13, "Property name \`priority_name\` must match one of the following formats: camelCase", "3589006831"]
     ],
     "js/pages/TableDetailPage/TableIssues/index.tsx:3598148381": [
       [36, 6, 32, "Variable name \`ShimmeringIssuesLoader\` must match one of the following formats: camelCase, UPPER_CASE", "4230528043"],
@@ -2621,11 +2557,10 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WriterLink/index.tsx:2510076344": [
       [14, 6, 37, "Variable name \`WriterLink\` must match one of the following formats: camelCase, UPPER_CASE", "1092614105"]
     ],
-    "js/pages/TableDetailPage/index.spec.tsx:1627172183": [
-      [47, 50, 10, "Prop spreading is forbidden", "480399587"],
-      [56, 6, 25, "Use object destructuring.", "1230260048"]
+    "js/pages/TableDetailPage/index.spec.tsx:3231186008": [
+      [57, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3793141121": [
+    "js/pages/TableDetailPage/index.tsx:1528082874": [
       [110, 6, 12, "Variable name \`ErrorMessage\` must match one of the following formats: camelCase, UPPER_CASE", "842978774"],
       [128, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [138, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],

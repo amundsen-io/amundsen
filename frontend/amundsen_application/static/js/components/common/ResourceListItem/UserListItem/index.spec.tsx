@@ -16,7 +16,10 @@ import UserListItem, { UserListItemProps } from '.';
 describe('UserListItem', () => {
   const setup = (propOverrides?: Partial<UserListItemProps>) => {
     const props: UserListItemProps = {
-      logging: { source: 'src', index: 0 },
+      logging: {
+        source: 'src',
+        index: 0,
+      },
       user: {
         type: ResourceType.user,
         display_name: 'firstname lastname',
@@ -36,8 +39,12 @@ describe('UserListItem', () => {
       },
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<UserListItem>(<UserListItem {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('renderUserInfo', () => {

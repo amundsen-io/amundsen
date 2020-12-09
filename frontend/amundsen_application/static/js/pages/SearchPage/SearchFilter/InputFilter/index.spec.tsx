@@ -27,8 +27,12 @@ describe('InputFilter', () => {
       updateFilter: jest.fn(),
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<InputFilter>(<InputFilter {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('constructor', () => {

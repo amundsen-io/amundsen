@@ -33,6 +33,7 @@ describe('PaginatedApiResourceList', () => {
       ...propOverrides,
     };
     const wrapper = shallow<PaginatedApiResourceList>(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <PaginatedApiResourceList {...props} />
     );
     return { props, wrapper };

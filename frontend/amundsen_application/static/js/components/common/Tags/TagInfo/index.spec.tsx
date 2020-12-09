@@ -27,8 +27,12 @@ describe('TagInfo', () => {
       searchTag: jest.fn(),
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<TagInfo>(<TagInfo {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('onClick', () => {

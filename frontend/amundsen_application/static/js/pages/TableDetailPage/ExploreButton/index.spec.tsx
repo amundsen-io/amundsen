@@ -52,15 +52,22 @@ describe('ExploreButton', () => {
           value: 'partition_value',
         },
         table_readers: [],
-        source: { source: '', source_type: '' },
+        source: {
+          source: '',
+          source_type: '',
+        },
         resource_reports: [],
         watermarks: [],
         programmatic_descriptions: {},
         ...tableDataOverrides,
       },
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<ExploreButton>(<ExploreButton {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('generateUrl', () => {});

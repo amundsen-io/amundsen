@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 
 import AbstractFeedbackForm, {
   FeedbackFormProps,
-} from 'components/Feedback/FeedbackForm';
+} from 'features/Feedback/FeedbackForm';
 import { SendingState } from 'interfaces';
 import {
   COMMENTS_PLACEHOLDER,
@@ -15,7 +15,7 @@ import {
   RATING_LOW_TEXT,
   RATING_HIGH_TEXT,
   SUBMIT_TEXT,
-} from 'components/Feedback/constants';
+} from 'features/Feedback/constants';
 
 import globalState from 'fixtures/globalState';
 import { RatingFeedbackForm, mapDispatchToProps, mapStateToProps } from '.';

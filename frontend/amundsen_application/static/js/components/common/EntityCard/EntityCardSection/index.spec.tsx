@@ -18,6 +18,7 @@ describe('EntityCardSection', () => {
       contentRenderer: jest.fn(() => <div>HI!</div>),
       isEditable: true,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     subject = shallow(<EntityCardSection {...props} />);
   });
 

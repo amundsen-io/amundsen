@@ -20,8 +20,12 @@ describe('SchemaInfo', () => {
       placement: 'bottom',
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow(<SchemaInfo {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('render', () => {

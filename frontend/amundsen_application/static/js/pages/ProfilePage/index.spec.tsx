@@ -38,7 +38,9 @@ jest.mock('config/config-utils', () => ({
 describe('ProfilePage', () => {
   const setup = (propOverrides?: Partial<ProfilePageProps>) => {
     const routerProps = getMockRouterProps<RouteProps>(
-      { userId: 'test0' },
+      {
+        userId: 'test0',
+      },
       undefined
     );
     const props: ProfilePageProps = {
@@ -46,10 +48,18 @@ describe('ProfilePage', () => {
       resourceRelations: {
         [ResourceType.table]: {
           bookmarks: [
-            { type: ResourceType.table },
-            { type: ResourceType.table },
-            { type: ResourceType.table },
-            { type: ResourceType.table },
+            {
+              type: ResourceType.table,
+            },
+            {
+              type: ResourceType.table,
+            },
+            {
+              type: ResourceType.table,
+            },
+            {
+              type: ResourceType.table,
+            },
           ],
           read: [],
           own: [],
@@ -67,8 +77,12 @@ describe('ProfilePage', () => {
       ...routerProps,
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<ProfilePage>(<ProfilePage {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('componentDidMount', () => {
