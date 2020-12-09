@@ -15,6 +15,7 @@ from databuilder.models.dashboard.dashboard_last_modified import DashboardLastMo
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 from databuilder.models.dashboard.dashboard_table import DashboardTable
+from databuilder.models.dashboard.dashboard_chart import DashboardChart
 
 
 logging.basicConfig(level=logging.INFO)
@@ -43,18 +44,21 @@ class TestRedashDashboardExtractor(unittest.TestCase):
 
     def test_with_one_dashboard(self) -> None:
         def mock_api_get(url: str, *args: Any, **kwargs: Any) -> MockApiResponse:
-            if 'test-dash' in url:
+            if '1000' in url:
                 return MockApiResponse({
-                    'id': 123,
+                    'id': 1000,
                     'widgets': [
                         {
                             'visualization': {
                                 'query': {
                                     'data_source_id': 1,
-                                    'id': '1234',
+                                    'id': 1234,
                                     'name': 'Test Query',
                                     'query': 'SELECT id FROM users'
-                                }
+                                },
+                                'id': 12345,
+                                'name': 'test_widget',
+                                'type': 'CHART',
                             },
                             'options': {}
                         }
@@ -67,7 +71,7 @@ class TestRedashDashboardExtractor(unittest.TestCase):
                 'page_size': 50,
                 'results': [
                     {
-                        'id': 123,
+                        'id': 1000,
                         'name': 'Test Dash',
                         'slug': 'test-dash',
                         'created_at': '2020-01-01T00:00:00.000Z',
@@ -96,7 +100,7 @@ class TestRedashDashboardExtractor(unittest.TestCase):
 
             # DashboardMetadata
             record = extractor.extract()
-            self.assertEqual(record.dashboard_id, 123)
+            self.assertEqual(record.dashboard_id, '1000')
             self.assertEqual(record.dashboard_name, 'Test Dash')
             self.assertEqual(record.dashboard_group_id, RedashDashboardExtractor.DASHBOARD_GROUP_ID)
             self.assertEqual(record.dashboard_group, RedashDashboardExtractor.DASHBOARD_GROUP_NAME)
@@ -104,12 +108,12 @@ class TestRedashDashboardExtractor(unittest.TestCase):
             self.assertEqual(record.cluster, RedashDashboardExtractor.DEFAULT_CLUSTER)
             self.assertEqual(record.created_timestamp, 1577836800)
             self.assertTrue(redash_base_url in record.dashboard_url)
-            self.assertTrue('test-dash' in record.dashboard_url)
+            self.assertTrue('1000' in record.dashboard_url)
 
             # DashboardLastModified
             record = extractor.extract()
             identity: Dict[str, Any] = {
-                'dashboard_id': 123,
+                'dashboard_id': '1000',
                 'dashboard_group_id': RedashDashboardExtractor.DASHBOARD_GROUP_ID,
                 'product': RedashDashboardExtractor.PRODUCT,
                 'cluster': u'prod'
@@ -135,6 +139,17 @@ class TestRedashDashboardExtractor(unittest.TestCase):
                 **identity
             )
             self.assertEqual(record.__repr__(), expected_query.__repr__())
+
+            # DashboardChart
+            record = extractor.extract()
+            expected_chart = DashboardChart(
+                query_id='1234',
+                chart_id='12345',
+                chart_name='test_widget',
+                chart_type='CHART',
+                **identity
+            )
+            self.assertEqual(record.__repr__(), expected_chart.__repr__())
 
             # DashboardTable
             record = extractor.extract()
