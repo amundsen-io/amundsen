@@ -22,7 +22,7 @@ import {
 } from 'config/config-utils';
 
 import Feedback from 'features/Feedback';
-import SearchBar from 'components/common/SearchBar';
+import SearchBar from 'components/SearchBar';
 
 import './styles.scss';
 

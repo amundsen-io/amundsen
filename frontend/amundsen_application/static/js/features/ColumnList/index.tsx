@@ -6,11 +6,11 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { OpenRequestAction } from 'ducks/notification/types';
 
-import EditableSection from 'components/common/EditableSection';
+import EditableSection from 'components/EditableSection';
 import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
-} from 'components/common/Table';
+} from 'components/Table';
 
 import { logAction } from 'ducks/utilMethods';
 import {
@@ -32,14 +32,12 @@ import BadgeList from 'features/BadgeList';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
 import ColumnStats from './ColumnStats';
-import { getStatsInfoText } from './utils';
 
 import {
   MORE_BUTTON_TEXT,
   REQUEST_DESCRIPTION_TEXT,
   EMPTY_MESSAGE,
   EDITABLE_SECTION_TITLE,
-  COLUMN_STATS_TITLE,
 } from './constants';
 
 import './styles.scss';

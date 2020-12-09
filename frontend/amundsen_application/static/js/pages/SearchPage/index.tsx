@@ -8,9 +8,9 @@ import * as DocumentTitle from 'react-document-title';
 import { RouteComponentProps } from 'react-router';
 import { Search as UrlSearch } from 'history';
 
-import PaginatedApiResourceList from 'components/common/ResourceList/PaginatedApiResourceList';
-import ResourceListHeader from 'components/common/ResourceList/ResourceListHeader';
-import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
+import PaginatedApiResourceList from 'components/ResourceList/PaginatedApiResourceList';
+import ResourceListHeader from 'components/ResourceList/ResourceListHeader';
+import ShimmeringResourceLoader from 'components/ShimmeringResourceLoader';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { submitSearchResource, urlDidUpdate } from 'ducks/search/reducer';
@@ -27,8 +27,6 @@ import { Resource, ResourceType, SearchType } from 'interfaces';
 import SearchPanel from './SearchPanel';
 import SearchFilter from './SearchFilter';
 import ResourceSelector from './ResourceSelector';
-// TODO: Use css-modules instead of 'import'
-import './styles.scss';
 
 import {
   DOCUMENT_TITLE_SUFFIX,
@@ -43,6 +41,8 @@ import {
   USER_RESOURCE_TITLE,
   SEARCHPAGE_TITLE,
 } from './constants';
+
+import './styles.scss';
 
 export interface StateFromProps {
   hasFilters: boolean;

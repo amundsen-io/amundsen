@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import LoadingSpinner from 'components/common/LoadingSpinner';
+import LoadingSpinner from 'components/LoadingSpinner';
 
-// TODO: Use css-modules instead of 'import'
-import '../styles.scss';
 import {
   ResetFeedbackRequest,
   SubmitFeedbackRequest,
@@ -14,6 +12,8 @@ import {
 import { SendingState } from 'interfaces';
 
 import { SUBMIT_FAILURE_MESSAGE, SUBMIT_SUCCESS_MESSAGE } from '../constants';
+
+import '../styles.scss';
 
 export interface StateFromProps {
   sendState: SendingState;

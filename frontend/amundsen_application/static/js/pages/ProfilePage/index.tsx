@@ -8,10 +8,8 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 
-import Breadcrumb from 'components/common/Breadcrumb';
-import Flag from 'components/common/Flag';
-import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
-import { BadgeStyle } from 'config/config-types';
+import Breadcrumb from 'components/Breadcrumb';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getUser, getUserOwn, getUserRead } from 'ducks/user/reducer';
@@ -22,8 +20,7 @@ import {
   GetUserReadRequest,
 } from 'ducks/user/types';
 
-import './styles.scss';
-import ResourceList from 'components/common/ResourceList';
+import ResourceList from 'components/ResourceList';
 import { GetBookmarksForUserRequest } from 'ducks/bookmark/types';
 import { getBookmarksForUser } from 'ducks/bookmark/reducer';
 
@@ -52,6 +49,8 @@ import {
   READ_SOURCE,
   READ_TITLE_PREFIX,
 } from './constants';
+
+import './styles.scss';
 
 interface ResourceRelation {
   bookmarks: Resource[];

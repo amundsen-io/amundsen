@@ -4,8 +4,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import ResourceList from 'components/common/ResourceList';
-import ShimmeringResourceLoader from 'components/common/ShimmeringResourceLoader';
+import ResourceList from 'components/ResourceList';
+import ShimmeringResourceLoader from 'components/ShimmeringResourceLoader';
 
 import { GlobalState } from 'ducks/rootReducer';
 

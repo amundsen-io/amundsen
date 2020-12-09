@@ -9,7 +9,7 @@ import OwnerEditor, {
   ComponentProps,
   StateFromProps,
   OwnerItemProps,
-} from 'components/common/OwnerEditor';
+} from 'components/OwnerEditor';
 
 import { User } from 'interfaces';
 

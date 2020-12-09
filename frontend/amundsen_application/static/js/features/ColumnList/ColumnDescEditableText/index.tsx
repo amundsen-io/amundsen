@@ -14,7 +14,7 @@ import EditableText, {
   ComponentProps,
   DispatchFromProps,
   StateFromProps,
-} from 'components/common/EditableText';
+} from 'components/EditableText';
 
 interface ContainerOwnProps {
   columnIndex: number;

@@ -14,7 +14,7 @@ import EditableText, {
   ComponentProps,
   DispatchFromProps,
   StateFromProps,
-} from 'components/common/EditableText';
+} from 'components/EditableText';
 
 export const mapStateToProps = (state: GlobalState) => {
   return {

@@ -25,7 +25,7 @@ import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import TableDetail from './pages/TableDetailPage';
 
-import Preloader from './components/common/Preloader';
+import Preloader from './components/Preloader';
 import Footer from './features/Footer';
 import NavBar from './features/NavBar';
 
