@@ -28,8 +28,12 @@ const setup = (propOverrides?: Partial<FilterSectionProps>) => {
     type: FilterType.INPUT_SELECT,
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = shallow<FilterSection>(<FilterSection {...props} />);
-  return { props, wrapper };
+  return {
+    props,
+    wrapper,
+  };
 };
 
 describe('FilterSection', () => {

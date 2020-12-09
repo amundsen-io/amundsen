@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
@@ -13,7 +12,7 @@ import { formatDate } from 'utils/dateUtils';
 
 import { ResourceType, DashboardResource } from 'interfaces';
 
-import { NO_TIMESTAMP_TEXT } from 'components/constants';
+import { NO_TIMESTAMP_TEXT } from '../../../../constants';
 import * as Constants from './constants';
 import { LoggingParams } from '../types';
 

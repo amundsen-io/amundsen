@@ -22,7 +22,6 @@ import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
 import ResourceStatusMarker from 'components/common/ResourceStatusMarker';
 import ResourceList from 'components/common/ResourceList';
 import TagInput from 'components/common/Tags/TagInput';
-import { NO_TIMESTAMP_TEXT } from 'components/constants';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 import { formatDateTimeShort } from 'utils/dateUtils';
@@ -30,6 +29,7 @@ import { getLoggingParams } from 'utils/logUtils';
 
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';
+import { NO_TIMESTAMP_TEXT } from '../../constants';
 import {
   ADD_DESC_TEXT,
   EDIT_DESC_TEXT,

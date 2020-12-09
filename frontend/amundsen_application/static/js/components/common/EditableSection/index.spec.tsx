@@ -16,6 +16,7 @@ describe('EditableSection', () => {
       ...propOverrides,
     };
     const wrapper = shallow<EditableSection>(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <EditableSection {...props}>{children}</EditableSection>
     );
     return { wrapper, props };

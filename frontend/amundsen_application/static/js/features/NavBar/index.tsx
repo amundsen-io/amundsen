@@ -21,7 +21,7 @@ import {
   getNavLinks,
 } from 'config/config-utils';
 
-import Feedback from 'components/Feedback';
+import Feedback from 'features/Feedback';
 import SearchBar from 'components/common/SearchBar';
 
 import './styles.scss';

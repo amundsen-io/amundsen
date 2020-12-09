@@ -27,6 +27,7 @@ const setup = (propOverrides?: Partial<TableDashboardResourceListProps>) => {
     ...propOverrides,
   };
   const wrapper = shallow<TableDashboardResourceList>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <TableDashboardResourceList {...props} />
   );
 

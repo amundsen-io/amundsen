@@ -36,8 +36,12 @@ describe('SearchItem', () => {
       hasResults: true,
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<SearchItem>(<SearchItem {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('onViewAllResults', () => {

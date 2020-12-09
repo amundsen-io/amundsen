@@ -14,6 +14,7 @@ const setup = (propOverrides?: Partial<ShimmeringTagListLoaderProps>) => {
     ...propOverrides,
   };
   const wrapper = mount<ShimmeringTagListLoaderProps>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <ShimmeringTagListLoader {...props} />
   );
 

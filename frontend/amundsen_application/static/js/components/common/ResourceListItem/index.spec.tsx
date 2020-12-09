@@ -20,6 +20,7 @@ describe('ResourceListItem', () => {
       logging: { source: 'src', index: 0 },
       item: { type: ResourceType.table },
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     subject = shallow(<ResourceListItem {...props} />);
   });
 

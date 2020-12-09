@@ -27,9 +27,13 @@ const setup = (propOverrides?: Partial<PopularTablesProps>) => {
     getPopularTables: jest.fn(),
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = shallow<PopularTables>(<PopularTables {...props} />);
 
-  return { props, wrapper };
+  return {
+    props,
+    wrapper,
+  };
 };
 
 describe('PopularTables', () => {

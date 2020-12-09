@@ -16,6 +16,7 @@ describe('Flag', () => {
     props = {
       text: 'Testing',
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     subject = shallow(<Flag {...props} />);
   });
 

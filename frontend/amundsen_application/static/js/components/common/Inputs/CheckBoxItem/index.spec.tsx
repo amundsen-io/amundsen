@@ -19,6 +19,7 @@ describe('CheckBoxItem', () => {
       ...propOverrides,
     };
     const wrapper = shallow(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <CheckBoxItem {...props}>{expectedChild}</CheckBoxItem>
     );
     return { props, wrapper };

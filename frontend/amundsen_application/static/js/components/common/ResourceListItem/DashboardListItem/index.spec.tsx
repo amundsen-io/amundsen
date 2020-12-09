@@ -7,14 +7,14 @@ import { shallow } from 'enzyme';
 
 import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
-import { ResourceType, DashboardResource } from 'interfaces';
+import { ResourceType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import * as DateUtils from 'utils/dateUtils';
 
-import { NO_TIMESTAMP_TEXT } from 'components/constants';
-
 import { dashboardSummary } from 'fixtures/metadata/dashboard';
+import { NO_TIMESTAMP_TEXT } from '../../../../constants';
+
 import * as Constants from './constants';
 import DashboardListItem, { DashboardListItemProps } from './index';
 
@@ -44,6 +44,7 @@ describe('DashboardListItem', () => {
       ...propOverrides,
     };
     const wrapper = shallow<DashboardListItem>(
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <DashboardListItem {...props} />
     );
     return { props, wrapper };

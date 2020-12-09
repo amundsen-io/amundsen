@@ -13,8 +13,12 @@ describe('Preloader', () => {
       getBookmarks: jest.fn(),
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<Preloader>(<Preloader {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('componentDidMount', () => {

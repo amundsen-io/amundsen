@@ -22,6 +22,7 @@ describe('ResultItem', () => {
       titleNode: <div>Hello</div>,
       type: 'User',
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     subject = shallow(<ResultItem {...props} />);
   });
 

@@ -4,13 +4,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// TODO: Use css-modules instead of 'import'
-import './styles.scss';
+
 import { GlobalState } from 'ducks/rootReducer';
 import { getLastIndexed } from 'ducks/lastIndexed/reducer';
 import { GetLastIndexedRequest } from 'ducks/lastIndexed/types';
 
 import { formatDateTimeLong } from 'utils/dateUtils';
+
+import './styles.scss';
 
 // Props
 interface StateFromProps {

@@ -14,6 +14,7 @@ const setup = (propsOverrides?: Partial<StatusMarkerProps>) => {
     ...propsOverrides,
   };
   const wrapper = mount<typeof ResourceStatusMarker>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <ResourceStatusMarker {...props} />
   );
   return { props, wrapper };

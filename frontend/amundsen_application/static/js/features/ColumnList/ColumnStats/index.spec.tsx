@@ -14,9 +14,13 @@ const setup = (propOverrides?: Partial<ColumnStatsProps>) => {
     stats: [],
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount<typeof ColumnStats>(<ColumnStats {...props} />);
 
-  return { props, wrapper };
+  return {
+    props,
+    wrapper,
+  };
 };
 
 describe('ColumnStats', () => {

@@ -11,7 +11,7 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
-import Feedback from 'components/Feedback';
+import Feedback from 'features/Feedback';
 import SearchBar from 'components/common/SearchBar';
 
 import { logClick } from 'ducks/utilMethods';

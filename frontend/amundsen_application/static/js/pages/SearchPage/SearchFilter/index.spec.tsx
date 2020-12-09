@@ -28,8 +28,14 @@ describe('SearchFilter', () => {
           categoryId: 'database',
           helpText: 'This is what to do',
           options: [
-            { value: 'bigquery', label: 'BigQuery' },
-            { value: 'hive', label: 'Hive' },
+            {
+              value: 'bigquery',
+              label: 'BigQuery',
+            },
+            {
+              value: 'hive',
+              label: 'Hive',
+            },
           ],
           title: 'Source',
           type: FilterType.CHECKBOX_SELECT,
@@ -43,8 +49,12 @@ describe('SearchFilter', () => {
       ],
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<SearchFilter>(<SearchFilter {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('createFilterSection', () => {

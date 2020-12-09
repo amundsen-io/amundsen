@@ -27,8 +27,12 @@ describe('EditableText', () => {
       value: 'currentValue',
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<EditableText>(<EditableText {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
   const { props, wrapper } = setup();
   const instance = wrapper.instance();

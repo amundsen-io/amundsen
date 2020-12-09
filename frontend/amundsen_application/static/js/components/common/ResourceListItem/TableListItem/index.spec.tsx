@@ -31,7 +31,10 @@ const getDBIconClassSpy = jest.spyOn(ConfigUtils, 'getSourceIconClass');
 describe('TableListItem', () => {
   const setup = (propOverrides?: Partial<TableListItemProps>) => {
     const props: TableListItemProps = {
-      logging: { source: 'src', index: 0 },
+      logging: {
+        source: 'src',
+        index: 0,
+      },
       table: {
         type: ResourceType.table,
         cluster: '',
@@ -39,15 +42,23 @@ describe('TableListItem', () => {
         description: 'I am the description',
         key: '',
         last_updated_timestamp: 1553829681,
-        badges: [{ tag_name: 'badgeName' }],
+        badges: [
+          {
+            tag_name: 'badgeName',
+          },
+        ],
         name: 'tableName',
         schema: 'tableSchema',
         schema_description: 'schemaDescription',
       },
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<TableListItem>(<TableListItem {...props} />);
-    return { props, wrapper };
+    return {
+      props,
+      wrapper,
+    };
   };
 
   describe('getLink', () => {
