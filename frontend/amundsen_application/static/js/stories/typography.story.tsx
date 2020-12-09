@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import StorySection from '../components/common/StorySection';
+import StorySection from '../components/StorySection';
 
 export default {
   title: 'Attributes/Typography',

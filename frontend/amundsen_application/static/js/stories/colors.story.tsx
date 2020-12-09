@@ -4,7 +4,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import StorySection from '../components/common/StorySection';
+import StorySection from '../components/StorySection';
 
 const stories = storiesOf('Attributes/Colors', module);
 

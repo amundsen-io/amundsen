@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-
 import { shallow } from 'enzyme';
 
-import Breadcrumb from 'components/common/Breadcrumb';
-import MyBookmarks from 'components/common/Bookmark/MyBookmarks';
-import PopularTables from 'components/common/PopularTables';
-import SearchBar from 'components/common/SearchBar';
-import TagsListContainer from 'components/common/Tags';
+import Breadcrumb from 'components/Breadcrumb';
+import MyBookmarks from 'components/Bookmark/MyBookmarks';
+import PopularTables from 'components/PopularTables';
+import SearchBar from 'components/SearchBar';
+import TagsListContainer from 'components/Tags';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { mapDispatchToProps, HomePage, HomePageProps } from '.';

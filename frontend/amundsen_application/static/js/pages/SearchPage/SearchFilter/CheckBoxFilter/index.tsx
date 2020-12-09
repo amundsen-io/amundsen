@@ -12,7 +12,7 @@ import {
   FilterOptions,
 } from 'ducks/search/filters/reducer';
 
-import CheckBoxItem from 'components/common/Inputs/CheckBoxItem';
+import CheckBoxItem from 'components/Inputs/CheckBoxItem';
 
 export interface CheckboxFilterProperties {
   label: string;

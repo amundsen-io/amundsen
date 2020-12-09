@@ -8,7 +8,8 @@ import {
   getDescriptionSourceIconPath,
 } from 'config/config-utils';
 import { logClick } from 'ducks/utilMethods';
-import AvatarLabel from 'components/common/AvatarLabel';
+import AvatarLabel from 'components/AvatarLabel';
+
 import { TableSource } from 'interfaces';
 
 export interface SourceLinkProps {
@@ -19,10 +20,6 @@ const SourceLink: React.FC<SourceLinkProps> = ({
   tableSource,
 }: SourceLinkProps) => {
   if (tableSource === null || tableSource.source === null) return null;
-
-  const image = getDescriptionSourceIconPath(tableSource.source_type);
-
-  const displayName = getDescriptionSourceDisplayName(tableSource.source_type);
 
   return (
     <a

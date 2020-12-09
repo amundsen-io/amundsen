@@ -4,15 +4,14 @@
 import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import * as History from 'history';
-
 import { shallow } from 'enzyme';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-
 import { Link, NavLink } from 'react-router-dom';
+
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'features/Feedback';
-import SearchBar from 'components/common/SearchBar';
+import SearchBar from 'components/SearchBar';
 
 import { logClick } from 'ducks/utilMethods';
 import AppConfig from 'config/config';

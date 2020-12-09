@@ -10,7 +10,7 @@ import globalState from 'fixtures/globalState';
 
 import { FilterType, ResourceType } from 'interfaces';
 
-import InfoButton from 'components/common/InfoButton';
+import InfoButton from 'components/InfoButton';
 import {
   FilterSection,
   FilterSectionProps,

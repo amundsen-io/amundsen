@@ -4,7 +4,7 @@
 import React from 'react';
 import { Welcome } from '@storybook/react/demo';
 
-import StorySection from '../components/common/StorySection';
+import StorySection from '../components/StorySection';
 
 export default {
   title: 'Overview/Introduction',

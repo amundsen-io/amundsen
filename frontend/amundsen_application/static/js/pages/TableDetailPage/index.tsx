@@ -28,13 +28,13 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import BookmarkIcon from 'components/common/Bookmark/BookmarkIcon';
-import Breadcrumb from 'components/common/Breadcrumb';
-import TabsComponent, { TabInfo } from 'components/common/TabsComponent';
-import TagInput from 'components/common/Tags/TagInput';
-import EditableText from 'components/common/EditableText';
-import LoadingSpinner from 'components/common/LoadingSpinner';
-import EditableSection from 'components/common/EditableSection';
+import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
+import Breadcrumb from 'components/Breadcrumb';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import TagInput from 'components/Tags/TagInput';
+import EditableText from 'components/EditableText';
+import LoadingSpinner from 'components/LoadingSpinner';
+import EditableSection from 'components/EditableSection';
 import ColumnList from 'features/ColumnList';
 
 import { formatDateTimeShort } from 'utils/dateUtils';

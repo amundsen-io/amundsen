@@ -11,7 +11,7 @@ import OwnerEditor, {
   ComponentProps,
   DispatchFromProps,
   StateFromProps,
-} from 'components/common/OwnerEditor';
+} from 'components/OwnerEditor';
 
 import { indexUsersEnabled } from 'config/config-utils';
 
