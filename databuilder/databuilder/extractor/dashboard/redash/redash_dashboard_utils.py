@@ -37,6 +37,18 @@ class RedashVisualizationWidget:
     def query_name(self) -> str:
         return self._data['visualization']['query']['name']
 
+    @property
+    def visualization_id(self) -> int:
+        return self._data['visualization']['id']
+
+    @property
+    def visualization_name(self) -> str:
+        return self._data['visualization']['name']
+
+    @property
+    def visualization_type(self) -> str:
+        return self._data['visualization']['type']
+
 
 class RedashTextWidget:
     """
@@ -135,7 +147,7 @@ def generate_dashboard_description(text_widgets: List[RedashTextWidget],
     if len(text_widgets) > 0:
         return '\n\n'.join([w.text for w in text_widgets])
     elif len(viz_widgets) > 0:
-        query_list = '\n'.join(['- {}'.format(v.query_name) for v in set(viz_widgets)])
+        query_list = '\n'.join(set(['- {}'.format(v.query_name) for v in set(viz_widgets)]))
         return 'A dashboard containing the following queries:\n\n' + query_list
 
     return 'This dashboard appears to be empty!'
