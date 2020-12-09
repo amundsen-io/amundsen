@@ -160,6 +160,8 @@ export class DashboardPage extends React.Component<
     const { dashboard, isLoading } = this.props;
     const hasDescription =
       dashboard.description && dashboard.description.length > 0;
+    const hasLastRunState =
+      dashboard.last_run_state && dashboard.last_run_state.length > 0;
 
     if (isLoading) {
       return <LoadingSpinner />;
@@ -294,40 +296,42 @@ export class DashboardPage extends React.Component<
                     uriKey={this.props.dashboard.uri}
                   />
                 </EditableSection>
-                <section className="metadata-section">
-                  <div className="section-title title-3">
-                    Last Successful Run
-                  </div>
-                  <time className="last-successful-run-timestamp body-2 text-primary">
-                    {dashboard.last_successful_run_timestamp
-                      ? formatDateTimeShort({
-                          epochTimestamp:
-                            dashboard.last_successful_run_timestamp,
-                        })
-                      : NO_TIMESTAMP_TEXT}
-                  </time>
-                </section>
-                <section className="metadata-section">
-                  <div className="section-title title-3">Last Run</div>
-                  <div>
-                    <time className="last-run-timestamp body-2 text-primary">
-                      {dashboard.last_run_timestamp
+                {hasLastRunState && [
+                  <section className="metadata-section">
+                    <div className="section-title title-3">
+                      Last Successful Run
+                    </div>
+                    <time className="last-successful-run-timestamp body-2 text-primary">
+                      {dashboard.last_successful_run_timestamp
                         ? formatDateTimeShort({
-                            epochTimestamp: dashboard.last_run_timestamp,
+                            epochTimestamp:
+                              dashboard.last_successful_run_timestamp,
                           })
                         : NO_TIMESTAMP_TEXT}
                     </time>
-                    <div className="last-run-state">
-                      <span className="status">{STATUS_TEXT}</span>
-                      <ResourceStatusMarker
-                        stateText={dashboard.last_run_state}
-                        succeeded={this.mapStatusToBoolean(
-                          dashboard.last_run_state
-                        )}
-                      />
+                  </section>,
+                  <section className="metadata-section">
+                    <div className="section-title title-3">Last Run</div>
+                    <div>
+                      <time className="last-run-timestamp body-2 text-primary">
+                        {dashboard.last_run_timestamp
+                          ? formatDateTimeShort({
+                              epochTimestamp: dashboard.last_run_timestamp,
+                            })
+                          : NO_TIMESTAMP_TEXT}
+                      </time>
+                      <div className="last-run-state">
+                        <span className="status">{STATUS_TEXT}</span>
+                        <ResourceStatusMarker
+                          stateText={dashboard.last_run_state}
+                          succeeded={this.mapStatusToBoolean(
+                            dashboard.last_run_state
+                          )}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </section>
+                  </section>,
+                ]}
               </section>
             </section>
             <ImagePreview uri={this.state.uri} redirectUrl={dashboard.url} />

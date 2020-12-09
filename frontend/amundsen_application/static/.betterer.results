@@ -1,5 +1,5 @@
 // BETTERER RESULTS V2.
-exports[`no shadow`] = {
+exports[`eslint`] = {
   value: `{
     "js/components/ColumnList/ColumnStats/columnStats.story.tsx:850643706": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -117,17 +117,15 @@ exports[`no shadow`] = {
       [49, 18, 10, "Prop spreading is forbidden", "480399587"],
       [58, 4, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
     ],
-    "js/components/ColumnList/index.tsx:3302270107": [
-      [68, 2, 9, "Property name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [69, 2, 11, "Property name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [70, 2, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
-      [71, 2, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [84, 2, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [154, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
-      [155, 4, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [160, 6, 48, "Variable name \`ExpandedRowComponent\` must match one of the following formats: camelCase, UPPER_CASE", "1170958550"],
-      [206, 6, 37, "Variable name \`ColumnList\` must match one of the following formats: camelCase, UPPER_CASE", "3429043897"],
-      [228, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
+    "js/components/ColumnList/index.tsx:4059278330": [
+      [34, 9, 16, "\'getStatsInfoText\' is defined but never used.", "2143929761"],
+      [41, 2, 18, "\'COLUMN_STATS_TITLE\' is defined but never used.", "4261315378"],
+      [79, 2, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [149, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
+      [150, 4, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [155, 6, 48, "Variable name \`ExpandedRowComponent\` must match one of the following formats: camelCase, UPPER_CASE", "1170958550"],
+      [193, 6, 37, "Variable name \`ColumnList\` must match one of the following formats: camelCase, UPPER_CASE", "3429043897"],
+      [215, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
     ],
     "js/components/ColumnList/testDataBuilder.ts:913985007": [
       [6, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
@@ -382,23 +380,22 @@ exports[`no shadow`] = {
     "js/components/common/AvatarLabel/index.tsx:3025866213": [
       [16, 6, 39, "Variable name \`AvatarLabel\` must match one of the following formats: camelCase, UPPER_CASE", "3862143033"]
     ],
-    "js/components/common/BadgeList/index.spec.tsx:2025135454": [
-      [17, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [21, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [27, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [31, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [49, 17, 10, "Prop spreading is forbidden", "480399587"]
+    "js/components/common/BadgeList/index.spec.tsx:2763335981": [
+      [18, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [22, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [28, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [32, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
+      [47, 51, 10, "Prop spreading is forbidden", "480399587"],
+      [152, 14, 36, "Use array destructuring.", "898356559"]
     ],
-    "js/components/common/BadgeList/index.tsx:1283407858": [
-      [36, 6, 39, "Variable name \`StaticBadge\` must match one of the following formats: camelCase, UPPER_CASE", "158146866"],
-      [47, 6, 47, "Variable name \`ActionableBadge\` must match one of the following formats: camelCase, UPPER_CASE", "4163554937"],
-      [53, 4, 52, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2290783753"],
-      [53, 4, 52, "Static HTML elements with event handlers require a role.", "2290783753"],
-      [62, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [65, 4, 22, "Must use destructuring props assignment", "2132293350"],
-      [71, 9, 17, "Must use destructuring props assignment", "3224026075"],
-      [71, 46, 2, "Array.prototype.map() expects a value to be returned at the end of arrow function.", "5859494"],
-      [71, 46, -1952, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/components/common/BadgeList/index.tsx:4102219202": [
+      [29, 6, 39, "Variable name \`StaticBadge\` must match one of the following formats: camelCase, UPPER_CASE", "158146866"],
+      [40, 6, 47, "Variable name \`ActionableBadge\` must match one of the following formats: camelCase, UPPER_CASE", "4163554937"],
+      [46, 4, 52, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2290783753"],
+      [46, 4, 52, "Static HTML elements with event handlers require a role.", "2290783753"],
+      [57, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [73, 47, 2, "Array.prototype.map() expects a value to be returned at the end of arrow function.", "5859494"],
+      [73, 47, -1914, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/components/common/Bookmark/BookmarkIcon/index.spec.tsx:2656193229": [
       [29, 56, 10, "Prop spreading is forbidden", "480399587"]
@@ -512,8 +509,8 @@ exports[`no shadow`] = {
     "js/components/common/EntityCard/EntityCardSection/index.tsx:3189254608": [
       [24, 2, 55, "editButton should be placed after constructor", "2479426463"],
       [37, 8, 21, "Must use destructuring props assignment", "2809154561"],
-      [38, 33, 19, "Must use destructuring state assignment", "2871981746"],
       [38, 33, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [38, 33, 19, "Must use destructuring state assignment", "2871981746"],
       [44, 30, 19, "Must use destructuring state assignment", "2871981746"],
       [51, 13, 16, "Must use destructuring props assignment", "1935972237"],
       [52, 13, 19, "Must use destructuring props assignment", "3530841662"],
@@ -634,8 +631,8 @@ exports[`no shadow`] = {
       [46, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [61, 26, 19, "Must use destructuring props assignment", "99931018"]
     ],
-    "js/components/common/ResourceList/ResourceListHeader/index.tsx:1208437612": [
-      [13, 6, 28, "Variable name \`ResourceListHeader\` must match one of the following formats: camelCase, UPPER_CASE", "2201392674"]
+    "js/components/common/ResourceList/ResourceListHeader/index.tsx:4269470748": [
+      [28, 6, 53, "Variable name \`ResourceListHeader\` must match one of the following formats: camelCase, UPPER_CASE", "463128665"]
     ],
     "js/components/common/ResourceList/index.spec.tsx:3305280289": [
       [11, 0, 41, "\`./constants\` import should occur before import of \`.\`", "2587521996"],
@@ -663,8 +660,8 @@ exports[`no shadow`] = {
       [53, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [69, 6, 25, "Use object destructuring.", "354229464"],
       [70, 6, 29, "Use object destructuring.", "2645724888"],
-      [152, 18, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [152, 18, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [152, 18, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [152, 25, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [154, 14, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"],
       [155, 14, 9, "Property name \`group_url\` must match one of the following formats: camelCase", "991267566"],
@@ -682,7 +679,7 @@ exports[`no shadow`] = {
       [32, 6, 25, "Use object destructuring.", "354229464"],
       [33, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/common/ResourceListItem/TableListItem/index.spec.tsx:3003319837": [
+    "js/components/common/ResourceListItem/TableListItem/index.spec.tsx:2482998820": [
       [10, 23, 7, "\'TagType\' is defined but never used.", "3039634031"],
       [40, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
       [41, 19, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
@@ -891,8 +888,8 @@ exports[`no shadow`] = {
       [88, 6, 29, "Use object destructuring.", "2645724888"],
       [115, 6, 25, "Use object destructuring.", "354229464"],
       [116, 6, 29, "Use object destructuring.", "2645724888"],
-      [154, 6, 25, "Use object destructuring.", "354229464"],
       [154, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [154, 6, 25, "Use object destructuring.", "354229464"],
       [155, 6, 29, "Use object destructuring.", "2645724888"],
       [244, 6, 25, "Use object destructuring.", "354229464"],
       [245, 6, 29, "Use object destructuring.", "2645724888"],
@@ -953,8 +950,8 @@ exports[`no shadow`] = {
       [127, 14, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
       [159, 4, 31, "Must use destructuring props assignment", "1896862308"],
       [161, 6, 21, "Must use destructuring state assignment", "2515881172"],
-      [178, 48, 21, "Must use destructuring state assignment", "2515881172"],
       [178, 48, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [178, 48, 21, "Must use destructuring state assignment", "2515881172"],
       [187, 6, 15, "Must use destructuring props assignment", "4223598856"],
       [192, 6, 15, "Must use destructuring props assignment", "4223598856"],
       [203, 38, 22, "Must use destructuring props assignment", "3739111726"],
@@ -1050,8 +1047,8 @@ exports[`no shadow`] = {
       [136, 44, 13, "\'selectOptions\' is defined but never used.", "1076977309"],
       [174, 8, 21, "Must use destructuring props assignment", "2890513821"],
       [178, 6, 21, "Must use destructuring props assignment", "2890513821"],
-      [225, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
       [225, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
+      [225, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
       [231, 40, 15, "Prop spreading is forbidden", "1697062181"],
       [244, 12, 15, "Must use destructuring props assignment", "4223491724"],
       [249, 12, 18, "Must use destructuring props assignment", "1044970797"],
@@ -1094,47 +1091,47 @@ exports[`no shadow`] = {
     "js/components/common/Tags/index.tsx:613629620": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:563159051": [
+    "js/config/config-default.ts:3271882115": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
-      [48, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [54, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [166, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [209, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [210, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [46, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [52, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [164, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [207, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [208, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
-    "js/config/config-types.ts:3001279370": [
-      [159, 2, 6, "Enum Member name \`DANGER\` must match one of the following formats: camelCase", "2553023038"],
-      [160, 2, 7, "Enum Member name \`DEFAULT\` must match one of the following formats: camelCase", "2783041582"],
-      [161, 2, 4, "Enum Member name \`INFO\` must match one of the following formats: camelCase", "2088942571"],
-      [162, 2, 7, "Enum Member name \`PRIMARY\` must match one of the following formats: camelCase", "2343914057"],
-      [163, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
-      [164, 2, 7, "Enum Member name \`WARNING\` must match one of the following formats: camelCase", "3170951759"],
-      [268, 2, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [311, 2, 7, "Enum Member name \`DECIMAL\` must match one of the following formats: camelCase", "2789158350"],
-      [312, 2, 8, "Enum Member name \`CURRENCY\` must match one of the following formats: camelCase", "3859874018"],
-      [313, 2, 7, "Enum Member name \`PERCENT\` must match one of the following formats: camelCase", "2515333182"],
-      [314, 2, 4, "Enum Member name \`UNIT\` must match one of the following formats: camelCase", "2089112131"]
+    "js/config/config-types.ts:3768974062": [
+      [156, 2, 6, "Enum Member name \`DANGER\` must match one of the following formats: camelCase", "2553023038"],
+      [157, 2, 7, "Enum Member name \`DEFAULT\` must match one of the following formats: camelCase", "2783041582"],
+      [158, 2, 4, "Enum Member name \`INFO\` must match one of the following formats: camelCase", "2088942571"],
+      [159, 2, 7, "Enum Member name \`PRIMARY\` must match one of the following formats: camelCase", "2343914057"],
+      [160, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
+      [161, 2, 7, "Enum Member name \`WARNING\` must match one of the following formats: camelCase", "3170951759"],
+      [265, 2, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [308, 2, 7, "Enum Member name \`DECIMAL\` must match one of the following formats: camelCase", "2789158350"],
+      [309, 2, 8, "Enum Member name \`CURRENCY\` must match one of the following formats: camelCase", "3859874018"],
+      [310, 2, 7, "Enum Member name \`PERCENT\` must match one of the following formats: camelCase", "2515333182"],
+      [311, 2, 4, "Enum Member name \`UNIT\` must match one of the following formats: camelCase", "2089112131"]
     ],
-    "js/config/config-utils.ts:1434829333": [
+    "js/config/config-utils.ts:2756169227": [
       [7, 0, 45, "\`../interfaces\` import should occur before import of \`./config-types\`", "3885176344"]
     ],
-    "js/config/index.spec.ts:1741225017": [
-      [91, 4, 6, "Property name \`test_1\` must match one of the following formats: camelCase", "1746685821"],
-      [95, 4, 6, "Property name \`test_2\` must match one of the following formats: camelCase", "1746685822"],
-      [122, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [128, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [137, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [244, 4, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [245, 4, 7, "Property name \`is_view\` must match one of the following formats: camelCase", "2715417645"],
-      [249, 4, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [251, 4, 12, "Property name \`table_writer\` must match one of the following formats: camelCase", "1979434539"],
-      [251, 20, 15, "Property name \`application_url\` must match one of the following formats: camelCase", "1067313867"],
-      [253, 6, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"],
-      [257, 4, 13, "Property name \`table_readers\` must match one of the following formats: camelCase", "3636171154"],
-      [258, 26, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"],
-      [259, 4, 16, "Property name \`resource_reports\` must match one of the following formats: camelCase", "3614191341"],
-      [261, 4, 25, "Property name \`programmatic_descriptions\` must match one of the following formats: camelCase", "3262748393"],
-      [284, 8, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"]
+    "js/config/index.spec.ts:1092443694": [
+      [99, 4, 6, "Property name \`test_1\` must match one of the following formats: camelCase", "1746685821"],
+      [103, 4, 6, "Property name \`test_2\` must match one of the following formats: camelCase", "1746685822"],
+      [130, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [136, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [145, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [252, 4, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [253, 4, 7, "Property name \`is_view\` must match one of the following formats: camelCase", "2715417645"],
+      [257, 4, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [259, 4, 12, "Property name \`table_writer\` must match one of the following formats: camelCase", "1979434539"],
+      [259, 20, 15, "Property name \`application_url\` must match one of the following formats: camelCase", "1067313867"],
+      [261, 6, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"],
+      [265, 4, 13, "Property name \`table_readers\` must match one of the following formats: camelCase", "3636171154"],
+      [266, 26, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"],
+      [267, 4, 16, "Property name \`resource_reports\` must match one of the following formats: camelCase", "3614191341"],
+      [269, 4, 25, "Property name \`programmatic_descriptions\` must match one of the following formats: camelCase", "3262748393"],
+      [292, 8, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"]
     ],
     "js/ducks/announcements/api/index.spec.ts:3136332251": [
       [17, 8, 12, "Property name \`html_content\` must match one of the following formats: camelCase", "574671502"]
@@ -1172,19 +1169,19 @@ exports[`no shadow`] = {
       [20, 2, 19, "\'GetBookmarksRequest\' is defined but never used.", "2458762509"],
       [51, 4, 8, "\'response\' is assigned a value but never used.", "2137101542"]
     ],
-    "js/ducks/bookmark/types.ts:2553223414": [
-      [3, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
-      [4, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
-      [5, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"],
-      [22, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
-      [23, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
-      [24, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"],
-      [43, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
-      [44, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
-      [45, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"],
-      [59, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
-      [60, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
-      [61, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"]
+    "js/ducks/bookmark/types.ts:2681648934": [
+      [8, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
+      [9, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
+      [10, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"],
+      [30, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
+      [31, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
+      [32, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"],
+      [54, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
+      [55, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
+      [56, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"],
+      [70, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
+      [71, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
+      [72, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"]
     ],
     "js/ducks/dashboard/api/api.spec.ts:3873933499": [
       [0, 16, 13, "\'AxiosResponse\' is defined but never used.", "1743879434"]
@@ -1275,6 +1272,9 @@ exports[`no shadow`] = {
     "js/ducks/log/api/v0.ts:4181089028": [
       [4, 2, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
       [5, 2, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"]
+    ],
+    "js/ducks/middlewares/analyticsMiddleware.ts:504068368": [
+      [8, 7, 8, "\'getState\' is defined but never used.", "1919118020"]
     ],
     "js/ducks/notification/api/tests/index.spec.ts:3130281759": [
       [13, 6, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
@@ -1591,6 +1591,9 @@ exports[`no shadow`] = {
     ],
     "js/ducks/utilMethods.ts:2196352937": [
       [50, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"]
+    ],
+    "js/features/BadgeList/index.tsx:729873384": [
+      [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/fixtures/globalState.ts:2008341805": [
       [15, 8, 12, "Property name \`html_content\` must match one of the following formats: camelCase", "574671502"],
@@ -2236,7 +2239,7 @@ exports[`no shadow`] = {
       [247, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [250, 10, 11, "Property name \`chart_names\` must match one of the following formats: camelCase", "219563138"]
     ],
-    "js/pages/DashboardPage/index.tsx:3626260631": [
+    "js/pages/DashboardPage/index.tsx:154837758": [
       [82, 20, 16, "Must use destructuring props assignment", "1899951550"],
       [88, 47, 19, "Must use destructuring props assignment", "1779396464"],
       [89, 20, 16, "Must use destructuring props assignment", "1899951550"],
@@ -2256,11 +2259,11 @@ exports[`no shadow`] = {
       [147, 19, 20, "Must use destructuring props assignment", "3424894889"],
       [148, 19, 20, "Must use destructuring props assignment", "3424894889"],
       [152, 25, 20, "Must use destructuring props assignment", "3424894889"],
-      [166, 8, 21, "Must use destructuring props assignment", "3005585300"],
-      [170, 10, 7, "A form label must be associated with a control.", "2729454337"],
-      [291, 28, 20, "Must use destructuring props assignment", "3424894889"],
-      [330, 31, 14, "Must use destructuring state assignment", "1770565882"],
-      [344, 34, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"]
+      [168, 8, 21, "Must use destructuring props assignment", "3005585300"],
+      [172, 10, 7, "A form label must be associated with a control.", "2729454337"],
+      [295, 28, 20, "Must use destructuring props assignment", "3424894889"],
+      [336, 31, 14, "Must use destructuring state assignment", "1770565882"],
+      [350, 34, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"]
     ],
     "js/pages/HomePage/index.spec.tsx:3384873462": [
       [27, 48, 10, "Prop spreading is forbidden", "480399587"],
@@ -2273,22 +2276,6 @@ exports[`no shadow`] = {
     "js/pages/NotFoundPage/index.tsx:1433117596": [
       [11, 6, 27, "Variable name \`NotFoundPage\` must match one of the following formats: camelCase, UPPER_CASE", "2323826353"]
     ],
-    "js/pages/PreferencesPage/PreferenceGroup/index.tsx:862037316": [
-      [4, 9, 18, "\'bindActionCreators\' is defined but never used.", "1422671829"],
-      [5, 9, 7, "\'connect\' is defined but never used.", "3716431323"],
-      [23, 4, 18, "Must use destructuring props assignment", "2387970594"],
-      [23, 23, 26, "Must use destructuring props assignment", "3745097021"],
-      [29, 6, 59, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2484976399"],
-      [29, 6, 59, "Non-interactive elements should not be assigned mouse or keyboard event listeners.", "2484976399"],
-      [30, 8, 167, "A control must be associated with a text label.", "3714481348"],
-      [31, 26, 19, "Must use destructuring props assignment", "554824964"],
-      [37, 36, 16, "Must use destructuring props assignment", "1935972237"],
-      [38, 45, 19, "Must use destructuring props assignment", "1319557801"]
-    ],
-    "js/pages/PreferencesPage/index.tsx:3919836319": [
-      [60, 24, 29, "Must use destructuring state assignment", "3881089286"],
-      [67, 24, 29, "Must use destructuring state assignment", "3881089286"]
-    ],
     "js/pages/ProfilePage/index.spec.tsx:1145588014": [
       [11, 7, 4, "\'Flag\' is defined but never used.", "2088683081"],
       [22, 9, 10, "\'BadgeStyle\' is defined but never used.", "3922042359"],
@@ -2300,7 +2287,7 @@ exports[`no shadow`] = {
       [356, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [377, 12, 17, "\'generateTabKeySpy\' is assigned a value but never used.", "4206744084"]
     ],
-    "js/pages/ProfilePage/index.tsx:3955104316": [
+    "js/pages/ProfilePage/index.tsx:3574035674": [
       [11, 7, 4, "\'Flag\' is defined but never used.", "2088683081"],
       [13, 9, 10, "\'BadgeStyle\' is defined but never used.", "3922042359"],
       [98, 22, 17, "Must use destructuring state assignment", "3172298888"],
@@ -2425,7 +2412,7 @@ exports[`no shadow`] = {
       [224, 10, 10, "Property name \`page_index\` must match one of the following formats: camelCase", "305070679"],
       [226, 10, 13, "Property name \`total_results\` must match one of the following formats: camelCase", "248890114"]
     ],
-    "js/pages/SearchPage/index.tsx:3158270092": [
+    "js/pages/SearchPage/index.tsx:285374263": [
       [69, 4, 23, "Must use destructuring props assignment", "2469865886"],
       [69, 28, 19, "Must use destructuring props assignment", "1779396464"],
       [73, 8, 19, "Must use destructuring props assignment", "1779396464"],
@@ -2438,8 +2425,8 @@ exports[`no shadow`] = {
       [86, 10, 21, "Must use destructuring props assignment", "1352381626"],
       [108, 12, 10, "Variable name \`page_index\` must match one of the following formats: camelCase, UPPER_CASE", "305070679"],
       [108, 24, 13, "Variable name \`total_results\` must match one of the following formats: camelCase, UPPER_CASE", "248890114"],
-      [152, 24, 23, "Must use destructuring props assignment", "1307307490"],
-      [163, 8, 20, "Must use destructuring props assignment", "2826313809"]
+      [156, 24, 23, "Must use destructuring props assignment", "1307307490"],
+      [167, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
     "js/pages/TableDetailPage/DataPreviewButton/index.tsx:2700868459": [
       [19, 2, 5, "Enum Member name \`ERROR\` must match one of the following formats: camelCase", "202381725"],
@@ -2576,7 +2563,7 @@ exports[`no shadow`] = {
     "js/pages/TableDetailPage/TableDashboardResourceList/index.spec.tsx:1646915036": [
       [29, 32, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:337610798": [
+    "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
       [45, 28, 10, "Prop spreading is forbidden", "480399587"],
       [91, 6, 25, "Use object destructuring.", "354229464"],
       [92, 6, 29, "Use object destructuring.", "2645724888"]
@@ -2638,7 +2625,7 @@ exports[`no shadow`] = {
       [47, 50, 10, "Prop spreading is forbidden", "480399587"],
       [56, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3973286160": [
+    "js/pages/TableDetailPage/index.tsx:3793141121": [
       [110, 6, 12, "Variable name \`ErrorMessage\` must match one of the following formats: camelCase, UPPER_CASE", "842978774"],
       [128, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [138, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
