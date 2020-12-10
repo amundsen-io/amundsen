@@ -729,7 +729,7 @@ job.launch()
 The `RedashDashboardExtractor` extracts raw queries from each dashboard. You may optionally use these queries to parse out relations to tables in Amundsen. A table parser can be provided in the configuration for the `RedashDashboardExtractor`, as seen above. This function should have type signature `(RedashVisualizationWidget) -> Iterator[TableRelationData]`. For example:
 
 ```python
-def parse_tables(viz_widget: RedashVisualiationWidget) -> Iterator[TableRelationData]:
+def parse_tables(viz_widget: RedashVisualizationWidget) -> Iterator[TableRelationData]:
 	# Each viz_widget corresponds to one query.
 	# viz_widget.data_source_id is the ID of the target DB in Redash.
 	# viz_widget.raw_query is the raw query (e.g., SQL).
