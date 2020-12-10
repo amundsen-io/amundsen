@@ -38,6 +38,8 @@ class Config:
 
     # Number of popular tables to be displayed on the index/search page
     POPULAR_TABLE_COUNT = 4  # type: int
+    # Personalize the popular tables response for the current authenticated user
+    POPULAR_TABLE_PERSONALIZATION = False  # type: bool
 
     # Request Timeout Configurations in Seconds
     REQUEST_SESSION_TIMEOUT_SEC = 3
@@ -155,6 +157,7 @@ class LocalConfig(Config):
 
 
 class TestConfig(LocalConfig):
+    POPULAR_TABLE_PERSONALIZATION = True
     AUTH_USER_METHOD = get_test_user
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'test_url'

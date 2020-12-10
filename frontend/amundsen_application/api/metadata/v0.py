@@ -26,7 +26,7 @@ metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v
 
 TABLE_ENDPOINT = '/table'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
-POPULAR_TABLES_ENDPOINT = '/popular_tables/'
+POPULAR_TABLES_ENDPOINT = '/popular_tables'
 TAGS_ENDPOINT = '/tags/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
@@ -56,9 +56,14 @@ def popular_tables() -> Response:
     https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/popular_tables.py
     """
     try:
+        if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_TABLE_PERSONALIZATION']:
+            user_id = app.config['AUTH_USER_METHOD'](app).user_id
+        else:
+            user_id = ''
+
         service_base = app.config['METADATASERVICE_BASE']
         count = app.config['POPULAR_TABLE_COUNT']
-        url = f'{service_base}{POPULAR_TABLES_ENDPOINT}?limit={count}'
+        url = f'{service_base}{POPULAR_TABLES_ENDPOINT}/{user_id}?limit={count}'
 
         response = request_metadata(url=url)
         status_code = response.status_code
