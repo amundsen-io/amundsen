@@ -10,9 +10,7 @@ import TagsListContainer from 'components/Tags';
 import { BrowsePage } from '.';
 
 describe('BrowsePage', () => {
-  const setup = () => {
-    return shallow<BrowsePage>(<BrowsePage />);
-  };
+  const setup = () => shallow<BrowsePage>(<BrowsePage />);
   let wrapper;
 
   beforeAll(() => {

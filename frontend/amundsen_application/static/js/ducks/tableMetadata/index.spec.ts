@@ -409,8 +409,8 @@ describe('tableMetadata ducks', () => {
         let sagaTest;
         beforeAll(() => {
           const mockNewTableData: TableMetadata = initialTableDataState;
-          sagaTest = (action) => {
-            return testSaga(getTableDescriptionWorker, action)
+          sagaTest = (action) =>
+            testSaga(getTableDescriptionWorker, action)
               .next()
               .select()
               .next(globalState)
@@ -420,7 +420,6 @@ describe('tableMetadata ducks', () => {
               )
               .next(mockNewTableData)
               .put(getTableDescriptionSuccess(mockNewTableData));
-          };
         });
         it('without success callback', () => {
           sagaTest(getTableDescription()).next().isDone();
@@ -438,8 +437,8 @@ describe('tableMetadata ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (action) => {
-            return testSaga(getTableDescriptionWorker, action)
+          sagaTest = (action) =>
+            testSaga(getTableDescriptionWorker, action)
               .next()
               .select()
               .next(globalState)
@@ -447,7 +446,6 @@ describe('tableMetadata ducks', () => {
               .put(
                 getTableDescriptionFailure(globalState.tableMetadata.tableData)
               );
-          };
         });
         it('without failure callback', () => {
           sagaTest(getTableDescription()).next().isDone();
@@ -480,8 +478,8 @@ describe('tableMetadata ducks', () => {
       describe('executes flow for updating table description', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (mockSuccess) => {
-            return testSaga(
+          sagaTest = (mockSuccess) =>
+            testSaga(
               updateTableDescriptionWorker,
               updateTableDescription(newDescription, mockSuccess, undefined)
             )
@@ -493,7 +491,6 @@ describe('tableMetadata ducks', () => {
                 newDescription,
                 globalState.tableMetadata.tableData
               );
-          };
         });
         it('without success callback', () => {
           sagaTest().next().isDone();
@@ -507,8 +504,8 @@ describe('tableMetadata ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (mockFailure) => {
-            return testSaga(
+          sagaTest = (mockFailure) =>
+            testSaga(
               updateTableDescriptionWorker,
               updateTableDescription(newDescription, undefined, mockFailure)
             )
@@ -516,7 +513,6 @@ describe('tableMetadata ducks', () => {
               .select()
               .next(globalState)
               .throw(new Error());
-          };
         });
         it('without failure callback', () => {
           sagaTest().next().isDone();
@@ -544,8 +540,8 @@ describe('tableMetadata ducks', () => {
         beforeAll(() => {
           const mockNewTableData: TableMetadata = initialTableDataState;
 
-          sagaTest = (action) => {
-            return testSaga(getColumnDescriptionWorker, action)
+          sagaTest = (action) =>
+            testSaga(getColumnDescriptionWorker, action)
               .next()
               .select()
               .next(globalState)
@@ -556,7 +552,6 @@ describe('tableMetadata ducks', () => {
               )
               .next(mockNewTableData)
               .put(getColumnDescriptionSuccess(mockNewTableData));
-          };
         });
         it('without success callback', () => {
           sagaTest(getColumnDescription(columnIndex)).next().isDone();
@@ -574,8 +569,8 @@ describe('tableMetadata ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (action) => {
-            return testSaga(getColumnDescriptionWorker, action)
+          sagaTest = (action) =>
+            testSaga(getColumnDescriptionWorker, action)
               .next()
               .select()
               .next(globalState)
@@ -583,7 +578,6 @@ describe('tableMetadata ducks', () => {
               .put(
                 getColumnDescriptionFailure(globalState.tableMetadata.tableData)
               );
-          };
         });
         it('without failure callback', () => {
           sagaTest(getColumnDescription(columnIndex)).next().isDone();
@@ -616,8 +610,8 @@ describe('tableMetadata ducks', () => {
       describe('executes flow for updating a table column description', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (mockSuccess) => {
-            return testSaga(
+          sagaTest = (mockSuccess) =>
+            testSaga(
               updateColumnDescriptionWorker,
               updateColumnDescription(
                 newDescription,
@@ -635,7 +629,6 @@ describe('tableMetadata ducks', () => {
                 columnIndex,
                 globalState.tableMetadata.tableData
               );
-          };
         });
         it('without success callback', () => {
           sagaTest().next().isDone();
@@ -649,8 +642,8 @@ describe('tableMetadata ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (mockFailure) => {
-            return testSaga(
+          sagaTest = (mockFailure) =>
+            testSaga(
               updateColumnDescriptionWorker,
               updateColumnDescription(
                 newDescription,
@@ -663,7 +656,6 @@ describe('tableMetadata ducks', () => {
               .select()
               .next(globalState)
               .throw(new Error());
-          };
         });
         it('without failure callback', () => {
           sagaTest().next().isDone();

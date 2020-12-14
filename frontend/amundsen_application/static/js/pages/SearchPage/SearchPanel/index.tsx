@@ -9,18 +9,14 @@ type SearchPanelProps = {
   children: React.ReactNode;
 };
 
-const SearchPanel: React.FC = ({ children }: SearchPanelProps) => {
-  return (
-    <aside className="search-control-panel">
-      {React.Children.map(children, (child, index) => {
-        return (
-          <div key={`search-panel-child:${index}`} className="section">
-            {child}
-          </div>
-        );
-      })}
-    </aside>
-  );
-};
+const SearchPanel: React.FC = ({ children }: SearchPanelProps) => (
+  <aside className="search-control-panel">
+    {React.Children.map(children, (child, index) => (
+      <div key={`search-panel-child:${index}`} className="section">
+        {child}
+      </div>
+    ))}
+  </aside>
+);
 
 export default SearchPanel;

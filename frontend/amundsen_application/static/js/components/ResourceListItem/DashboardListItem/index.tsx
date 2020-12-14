@@ -33,12 +33,8 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
   generateResourceIconClass = (
     dashboardId: string,
     dashboardType: ResourceType
-  ): string => {
-    return `icon resource-icon ${getSourceIconClass(
-      dashboardId,
-      dashboardType
-    )}`;
-  };
+  ): string =>
+    `icon resource-icon ${getSourceIconClass(dashboardId, dashboardType)}`;
 
   render() {
     const { dashboard } = this.props;

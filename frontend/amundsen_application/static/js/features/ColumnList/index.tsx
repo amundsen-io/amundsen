@@ -98,9 +98,7 @@ const getSortingFunction = (
   formattedData: FormattedDataType[],
   sortBy: SortCriteria
 ) => {
-  const numberSortingFunction = (a, b) => {
-    return b[sortBy.key] - a[sortBy.key];
-  };
+  const numberSortingFunction = (a, b) => b[sortBy.key] - a[sortBy.key];
 
   const stringSortingFunction = (a, b) => {
     if (a[sortBy.key] && b[sortBy.key]) {
@@ -118,22 +116,19 @@ const getSortingFunction = (
     : stringSortingFunction;
 };
 
-const hasColumnWithBadge = (columns: TableColumn[]) => {
-  return columns.some((col) => {
+const hasColumnWithBadge = (columns: TableColumn[]) =>
+  columns.some((col) => {
     if (col.badges) {
       return col.badges.length > 0;
     }
     return false;
   });
-};
 
 const getUsageStat = (item) => {
   const hasItemStats = !!item.stats.length;
 
   if (hasItemStats) {
-    const usageStat = item.stats.find((s) => {
-      return s.stat_type === USAGE_STAT_TYPE;
-    });
+    const usageStat = item.stats.find((s) => s.stat_type === USAGE_STAT_TYPE);
 
     return usageStat ? +usageStat.stat_val : null;
   }

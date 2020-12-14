@@ -39,21 +39,19 @@ const AnnouncementItem: React.FC<AnnouncementPost> = ({
   date,
   title,
   html_content,
-}: AnnouncementPost) => {
-  return (
-    <li className="announcement">
-      <Card
-        title={title}
-        subtitle={date}
-        href={ANNOUNCEMENTS_PAGE_PATH}
-        onClick={logClick}
-        copy={
-          <SanitizedHTML className="announcement-content" html={html_content} />
-        }
-      />
-    </li>
-  );
-};
+}: AnnouncementPost) => (
+  <li className="announcement">
+    <Card
+      title={title}
+      subtitle={date}
+      href={ANNOUNCEMENTS_PAGE_PATH}
+      onClick={logClick}
+      copy={
+        <SanitizedHTML className="announcement-content" html={html_content} />
+      }
+    />
+  </li>
+);
 
 const EmptyAnnouncementItem: React.FC = () => (
   <li className="empty-announcement">{NO_ANNOUNCEMENTS_TEXT}</li>

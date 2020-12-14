@@ -11,9 +11,7 @@ export type UserReadAPI = { read: Resource[]; msg: string };
 export function getLoggedInUser() {
   return axios
     .get(`/api/auth_user`)
-    .then((response: AxiosResponse<LoggedInUserAPI>) => {
-      return response.data.user;
-    });
+    .then((response: AxiosResponse<LoggedInUserAPI>) => response.data.user);
 }
 
 export function getUser(userId: string, index?: string, source?: string) {
@@ -21,23 +19,17 @@ export function getUser(userId: string, index?: string, source?: string) {
 
   return axios
     .get(`/api/metadata/v0/user?${queryParams}`)
-    .then((response: AxiosResponse<UserAPI>) => {
-      return response.data.user;
-    });
+    .then((response: AxiosResponse<UserAPI>) => response.data.user);
 }
 
 export function getUserOwn(userId: string) {
   return axios
     .get(`/api/metadata/v0/user/own?user_id=${userId}`)
-    .then((response: AxiosResponse<UserOwnAPI>) => {
-      return response.data;
-    });
+    .then((response: AxiosResponse<UserOwnAPI>) => response.data);
 }
 
 export function getUserRead(userId: string) {
   return axios
     .get(`/api/metadata/v0/user/read?user_id=${userId}`)
-    .then((response: AxiosResponse<UserReadAPI>) => {
-      return response.data;
-    });
+    .then((response: AxiosResponse<UserReadAPI>) => response.data);
 }

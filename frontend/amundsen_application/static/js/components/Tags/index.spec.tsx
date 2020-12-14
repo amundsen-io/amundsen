@@ -7,9 +7,7 @@ import { mapStateToProps, mapDispatchToProps } from '.';
 
 jest.mock('config/config-utils', () => ({
   showAllTags: jest.fn(),
-  getCuratedTags: () => {
-    return ['curated_tag_1'];
-  },
+  getCuratedTags: () => ['curated_tag_1'],
 }));
 
 describe('TagsListContainer', () => {

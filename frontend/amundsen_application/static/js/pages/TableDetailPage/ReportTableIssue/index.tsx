@@ -170,9 +170,8 @@ export const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ createIssue }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ createIssue }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
   mapStateToProps,

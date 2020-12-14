@@ -314,12 +314,11 @@ describe('search sagas', () => {
       resource = searchState.resource;
       index = SearchUtils.getPageIndex(searchState, resource);
 
-      sagaTest = (action) => {
-        return testSaga(Sagas.urlDidUpdateWorker, action)
+      sagaTest = (action) =>
+        testSaga(Sagas.urlDidUpdateWorker, action)
           .next()
           .select(SearchUtils.getSearchState)
           .next(searchState);
-      };
     });
 
     it('calls searchAll when search term changes', () => {

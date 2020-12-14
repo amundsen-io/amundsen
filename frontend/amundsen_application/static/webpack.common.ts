@@ -46,14 +46,15 @@ const walkSync = (dir: string, filelist: string[] = []) => {
   return filelist;
 };
 const templatesList = walkSync('templates');
-const htmlWebpackPluginConfig = templatesList.map((file) => {
-  return new HtmlWebpackPlugin({
-    filename: file,
-    template: file,
-    config: appConfig,
-    inject: false,
-  });
-});
+const htmlWebpackPluginConfig = templatesList.map(
+  (file) =>
+    new HtmlWebpackPlugin({
+      filename: file,
+      template: file,
+      config: appConfig,
+      inject: false,
+    })
+);
 
 const config: webpack.Configuration = {
   entry: {

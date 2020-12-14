@@ -130,9 +130,7 @@ describe('UserListItem', () => {
       it('renders ul with list item results of renderUserInfo', () => {
         const renderUserInfoSpy = jest
           .spyOn(wrapper.instance(), 'renderUserInfo')
-          .mockImplementation(() => {
-            return <div>Mock Info</div>;
-          });
+          .mockImplementation(() => <div>Mock Info</div>);
         wrapper.instance().forceUpdate();
         expect(
           wrapper
@@ -150,9 +148,7 @@ describe('UserListItem', () => {
       it('does not render description if renderUserInfo returns null', () => {
         const renderUserInfoSpy = jest
           .spyOn(wrapper.instance(), 'renderUserInfo')
-          .mockImplementation(() => {
-            return null;
-          });
+          .mockImplementation(() => null);
         wrapper.instance().forceUpdate();
         expect(
           wrapper

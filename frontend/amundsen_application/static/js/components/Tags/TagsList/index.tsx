@@ -51,15 +51,13 @@ const TagsListLabel: React.FC<TagsListTitleProps> = ({
 
 const TagsListBlock: React.FC<TagsListBlockProps> = ({
   tags,
-}: TagsListBlockProps) => {
-  return (
-    <div id="tags-list" className="tags-list">
-      {tags.map((tag) => (
-        <TagInfo data={tag} compact={false} key={tag.tag_name} />
-      ))}
-    </div>
-  );
-};
+}: TagsListBlockProps) => (
+  <div id="tags-list" className="tags-list">
+    {tags.map((tag) => (
+      <TagInfo data={tag} compact={false} key={tag.tag_name} />
+    ))}
+  </div>
+);
 
 const ShortTagsList: React.FC<TagsListProps> = ({
   curatedTags,

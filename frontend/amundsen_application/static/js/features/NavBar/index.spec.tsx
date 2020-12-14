@@ -19,11 +19,9 @@ import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
 import { NavBar, NavBarProps, mapStateToProps } from '.';
 
-jest.mock('ducks/utilMethods', () => {
-  return jest.fn().mockImplementation(() => {
-    return { logClick: jest.fn() };
-  });
-});
+jest.mock('ducks/utilMethods', () =>
+  jest.fn().mockImplementation(() => ({ logClick: jest.fn() }))
+);
 
 AppConfig.logoPath = '/test';
 AppConfig.navLinks = [

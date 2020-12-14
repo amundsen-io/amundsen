@@ -252,21 +252,19 @@ describe('issue ducks', () => {
         allIssuesUrl = globalState.issue.allIssuesUrl;
       });
 
-      it('gets issues', () => {
-        return expectSaga(getIssuesWorker, action)
+      it('gets issues', () =>
+        expectSaga(getIssuesWorker, action)
           .provide([
             [matchers.call.fn(API.getIssues), { issues, total, allIssuesUrl }],
           ])
           .put(getIssuesSuccess(issues, total))
-          .run();
-      });
+          .run());
 
-      it('handles request error', () => {
-        return expectSaga(getIssuesWorker, action)
+      it('handles request error', () =>
+        expectSaga(getIssuesWorker, action)
           .provide([[matchers.call.fn(API.getIssues), throwError(new Error())]])
           .put(getIssuesFailure([], 0, undefined))
-          .run();
-      });
+          .run());
     });
 
     describe('createIssueWatcher', () => {
@@ -300,21 +298,19 @@ describe('issue ducks', () => {
         issues = [issue];
       });
 
-      it('creates a issue', () => {
-        return expectSaga(createIssueWorker, action)
+      it('creates a issue', () =>
+        expectSaga(createIssueWorker, action)
           .provide([[matchers.call.fn(API.createIssue), issue]])
           .put(createIssueSuccess(issue))
-          .run();
-      });
+          .run());
 
-      it('handles request error', () => {
-        return expectSaga(createIssueWorker, action)
+      it('handles request error', () =>
+        expectSaga(createIssueWorker, action)
           .provide([
             [matchers.call.fn(API.createIssue), throwError(new Error())],
           ])
           .put(createIssueFailure())
-          .run();
-      });
+          .run());
     });
   });
 });

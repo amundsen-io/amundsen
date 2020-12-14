@@ -14,13 +14,11 @@ type ShimmeringTagItemProps = {
 
 export const ShimmeringTagItem: React.FC<ShimmeringTagItemProps> = ({
   index,
-}: ShimmeringTagItemProps) => {
-  return (
-    <span
-      className={`shimmer-tag-loader-item shimmer-tag-loader-item--${index} is-shimmer-animated`}
-    />
-  );
-};
+}: ShimmeringTagItemProps) => (
+  <span
+    className={`shimmer-tag-loader-item shimmer-tag-loader-item--${index} is-shimmer-animated`}
+  />
+);
 
 export interface ShimmeringTagListLoaderProps {
   numItems?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
@@ -28,14 +26,12 @@ export interface ShimmeringTagListLoaderProps {
 
 const ShimmeringTagListLoader: React.FC<ShimmeringTagListLoaderProps> = ({
   numItems = DEFAULT_REPETITION,
-}: ShimmeringTagListLoaderProps) => {
-  return (
-    <div className="shimmer-tag-list-loader">
-      {times(numItems, (idx) => (
-        <ShimmeringTagItem key={idx} index={idx} />
-      ))}
-    </div>
-  );
-};
+}: ShimmeringTagListLoaderProps) => (
+  <div className="shimmer-tag-list-loader">
+    {times(numItems, (idx) => (
+      <ShimmeringTagItem key={idx} index={idx} />
+    ))}
+  </div>
+);
 
 export default ShimmeringTagListLoader;

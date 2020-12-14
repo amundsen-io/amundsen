@@ -16,21 +16,18 @@ import EditableText, {
   StateFromProps,
 } from 'components/EditableText';
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    refreshValue: state.tableMetadata.tableData.description,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  refreshValue: state.tableMetadata.tableData.description,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       getLatestValue: getTableDescription,
       onSubmitValue: updateTableDescription,
     },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
   mapStateToProps,

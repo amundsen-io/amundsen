@@ -20,12 +20,11 @@ export interface WatermarkLabelProps {
 }
 
 class WatermarkLabel extends React.Component<WatermarkLabelProps> {
-  formatWatermarkDate = (dateString: string) => {
-    return formatDate({
+  formatWatermarkDate = (dateString: string) =>
+    formatDate({
       dateString,
       dateStringFormat: WATERMARK_INPUT_FORMAT,
     });
-  };
 
   getWatermarkValue = (type: WatermarkType) => {
     const watermark = this.props.watermarks.find(

@@ -61,6 +61,5 @@ export const updateSearchUrl = (
  * @param URI String  URI of the dashboard, it has this shape: uri = "<product>_dashboard://<cluster>.<groupID>/<dashboardID>"
  * @return String     Dashboard Detail page URL
  */
-export const buildDashboardURL = (URI: string) => {
-  return `/dashboard/${encodeURIComponent(URI)}`;
-};
+export const buildDashboardURL = (URI: string) =>
+  `/dashboard/${encodeURIComponent(URI)}`;

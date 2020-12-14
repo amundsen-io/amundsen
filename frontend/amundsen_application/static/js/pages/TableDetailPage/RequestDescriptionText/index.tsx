@@ -47,9 +47,8 @@ export class RequestDescriptionText extends React.Component<
   }
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ openRequestDescriptionDialog }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ openRequestDescriptionDialog }, dispatch);
 
 export default connect<{}, DispatchFromProps>(
   null,

@@ -210,8 +210,8 @@ export const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       urlDidUpdate,
       setPageIndex: (pageIndex: number) =>
@@ -223,7 +223,6 @@ export const mapDispatchToProps = (dispatch: any) => {
     },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

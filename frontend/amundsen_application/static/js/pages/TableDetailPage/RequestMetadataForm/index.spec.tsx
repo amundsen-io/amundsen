@@ -41,9 +41,7 @@ const mockFormData = {
   comment: 'test',
   get: jest.fn(),
 };
-mockFormData.get.mockImplementation((val) => {
-  return mockFormData[val];
-});
+mockFormData.get.mockImplementation((val) => mockFormData[val]);
 function formDataMock() {
   this.append = jest.fn();
 
@@ -128,9 +126,7 @@ describe('RequestMetadataForm', () => {
       mockString = 'I am the message';
       jest
         .spyOn(wrapper.instance(), 'getFlashMessageString')
-        .mockImplementation(() => {
-          return mockString;
-        });
+        .mockImplementation(() => mockString);
     });
 
     it('renders a FlashMessage with correct props', () => {

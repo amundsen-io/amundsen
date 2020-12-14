@@ -113,8 +113,8 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       updateFilter: (
         categoryId: string,
@@ -123,7 +123,6 @@ export const mapDispatchToProps = (dispatch: any) => {
     },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps, OwnProps>(
   mapStateToProps,

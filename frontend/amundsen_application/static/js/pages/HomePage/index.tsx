@@ -75,13 +75,12 @@ export class HomePage extends React.Component<HomePageProps> {
   }
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       searchReset: () => resetSearchState(),
     },
     dispatch
   );
-};
 
 export default connect<DispatchFromProps>(null, mapDispatchToProps)(HomePage);

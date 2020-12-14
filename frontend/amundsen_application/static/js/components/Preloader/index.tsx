@@ -29,9 +29,8 @@ export class Preloader extends React.Component<PreloaderProps> {
   }
 }
 
-export const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getLoggedInUser, getBookmarks }, dispatch);
-};
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ getLoggedInUser, getBookmarks }, dispatch);
 
 export default connect<{}, DispatchFromProps>(
   null,

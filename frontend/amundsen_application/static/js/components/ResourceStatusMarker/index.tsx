@@ -14,28 +14,24 @@ export interface StateProps {
   stateText: string;
 }
 
-const FailureState: React.FC<StateProps> = ({ stateText }: StateProps) => {
-  return (
-    <div className="failure">
-      <div className="failure-icon">
-        <div className="exclamation-top" />
-        <div className="exclamation-bottom" />
-      </div>
-      <span className="status-text">{stateText}</span>
+const FailureState: React.FC<StateProps> = ({ stateText }: StateProps) => (
+  <div className="failure">
+    <div className="failure-icon">
+      <div className="exclamation-top" />
+      <div className="exclamation-bottom" />
     </div>
-  );
-};
+    <span className="status-text">{stateText}</span>
+  </div>
+);
 
-const SuccessState: React.FC<StateProps> = ({ stateText }: StateProps) => {
-  return (
-    <div className="success">
-      <div className="success-icon">
-        <span className="icon icon-check" />
-      </div>
-      <span className="status-text">{stateText}</span>
+const SuccessState: React.FC<StateProps> = ({ stateText }: StateProps) => (
+  <div className="success">
+    <div className="success-icon">
+      <span className="icon icon-check" />
     </div>
-  );
-};
+    <span className="status-text">{stateText}</span>
+  </div>
+);
 
 const ResourceStatusMarker: React.FC<StatusMarkerProps> = ({
   stateText,

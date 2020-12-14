@@ -103,15 +103,13 @@ export class InlineSearchResults extends React.Component<
     resourceType: ResourceType
   ): SuggestedResult[] => {
     const results = this.getResultsForResource(resourceType);
-    return results.map((result, index) => {
-      return {
-        href: this.getSuggestedResultHref(resourceType, result, index),
-        iconClass: this.getSuggestedResultIconClass(resourceType, result),
-        subtitle: this.getSuggestedResultSubTitle(resourceType, result),
-        titleNode: this.getSuggestedResultTitle(resourceType, result),
-        type: this.getSuggestedResultType(resourceType, result),
-      };
-    });
+    return results.map((result, index) => ({
+      href: this.getSuggestedResultHref(resourceType, result, index),
+      iconClass: this.getSuggestedResultIconClass(resourceType, result),
+      subtitle: this.getSuggestedResultSubTitle(resourceType, result),
+      titleNode: this.getSuggestedResultTitle(resourceType, result),
+      type: this.getSuggestedResultType(resourceType, result),
+    }));
   };
 
   getSuggestedResultHref = (

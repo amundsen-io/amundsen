@@ -17,8 +17,8 @@ import { indexUsersEnabled } from 'config/config-utils';
 
 export const DASHBOARD_OWNER_SOURCE = 'dashboard_page_owner';
 
-const convertDashboardOwners = (owners: User[]): OwnerItemProps => {
-  return owners.reduce((obj, user) => {
+const convertDashboardOwners = (owners: User[]): OwnerItemProps =>
+  owners.reduce((obj, user) => {
     const { profile_url, user_id, display_name } = user;
     let profileLink = profile_url;
     let isExternalLink = true;
@@ -33,14 +33,11 @@ const convertDashboardOwners = (owners: User[]): OwnerItemProps => {
     };
     return obj;
   }, {});
-};
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    isLoading: false,
-    itemProps: convertDashboardOwners(state.dashboard.dashboard.owners),
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  isLoading: false,
+  itemProps: convertDashboardOwners(state.dashboard.dashboard.owners),
+});
 
 export default connect<StateFromProps, {}, ComponentProps>(
   mapStateToProps,

@@ -65,15 +65,12 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    sendState: state.feedback.sendState,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  sendState: state.feedback.sendState,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ submitFeedback, resetFeedback }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ submitFeedback, resetFeedback }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

@@ -55,12 +55,10 @@ const setup = (propOverrides?: Partial<BadgeListProps>) => {
 
 describe('BadgeList', () => {
   const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
-  getBadgeConfigSpy.mockImplementation((badgeName: string) => {
-    return {
-      displayName: badgeName + ' test name',
-      style: BadgeStyle.PRIMARY,
-    };
-  });
+  getBadgeConfigSpy.mockImplementation((badgeName: string) => ({
+    displayName: badgeName + ' test name',
+    style: BadgeStyle.PRIMARY,
+  }));
 
   describe('render', () => {
     describe('when no badges are passed', () => {

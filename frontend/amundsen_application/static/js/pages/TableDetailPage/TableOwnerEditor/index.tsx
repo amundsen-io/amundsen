@@ -39,9 +39,8 @@ export const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ onUpdateList: updateTableOwner }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ onUpdateList: updateTableOwner }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
   mapStateToProps,

@@ -22,17 +22,11 @@ const MOCK_ICON_CLASS = 'test-class';
 const MOCK_DATE = 'Jan 1, 2000';
 
 jest.mock('config/config-utils', () => ({
-  getSourceDisplayName: jest.fn(() => {
-    return MOCK_DISPLAY_NAME;
-  }),
-  getSourceIconClass: jest.fn(() => {
-    return MOCK_ICON_CLASS;
-  }),
+  getSourceDisplayName: jest.fn(() => MOCK_DISPLAY_NAME),
+  getSourceIconClass: jest.fn(() => MOCK_ICON_CLASS),
 }));
 jest.mock('utils/dateUtils', () => ({
-  formatDate: jest.fn(() => {
-    return MOCK_DATE;
-  }),
+  formatDate: jest.fn(() => MOCK_DATE),
 }));
 
 describe('DashboardListItem', () => {

@@ -115,15 +115,14 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       clearFilter: (categoryId: string) =>
         updateFilterByCategory({ categoryId, value: undefined }),
     },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps, OwnProps>(
   mapStateToProps,

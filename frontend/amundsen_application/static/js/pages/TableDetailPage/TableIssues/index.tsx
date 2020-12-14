@@ -34,14 +34,12 @@ export type TableIssueProps = StateFromProps &
   DispatchFromProps &
   ComponentProps;
 
-const ShimmeringIssuesLoader: React.FC = () => {
-  return (
-    <div className="shimmer-issues">
-      <div className="shimmer-issues-row shimmer-issues-line--1 is-shimmer-animated" />
-      <div className="shimmer-issues-row shimmer-issues-line--2 is-shimmer-animated" />
-    </div>
-  );
-};
+const ShimmeringIssuesLoader: React.FC = () => (
+  <div className="shimmer-issues">
+    <div className="shimmer-issues-row shimmer-issues-line--1 is-shimmer-animated" />
+    <div className="shimmer-issues-row shimmer-issues-line--2 is-shimmer-animated" />
+  </div>
+);
 
 export class TableIssues extends React.Component<TableIssueProps> {
   componentDidMount() {
@@ -50,33 +48,29 @@ export class TableIssues extends React.Component<TableIssueProps> {
     getIssues(tableKey);
   }
 
-  renderIssue = (issue: Issue, index: number) => {
-    return (
-      <div className="issue-banner" key={`issue-${index}`}>
-        <span className={`table-issue-priority ${issue.priority_name}`}>
-          {issue.priority_display_name}
-        </span>
-        <a
-          id={`table-issue-link-${index}`}
-          className="table-issue-link"
-          target="_blank"
-          href={issue.url}
-          onClick={logClick}
-          rel="noreferrer"
-        >
-          <span>{issue.issue_key}</span>
-        </a>
-        <span className="issue-title-display-text truncated">
-          <span className="issue-title-name">{issue.title}</span>
-        </span>
-        <span className="table-issue-status">{issue.status}</span>
-      </div>
-    );
-  };
+  renderIssue = (issue: Issue, index: number) => (
+    <div className="issue-banner" key={`issue-${index}`}>
+      <span className={`table-issue-priority ${issue.priority_name}`}>
+        {issue.priority_display_name}
+      </span>
+      <a
+        id={`table-issue-link-${index}`}
+        className="table-issue-link"
+        target="_blank"
+        href={issue.url}
+        onClick={logClick}
+        rel="noreferrer"
+      >
+        <span>{issue.issue_key}</span>
+      </a>
+      <span className="issue-title-display-text truncated">
+        <span className="issue-title-name">{issue.title}</span>
+      </span>
+      <span className="table-issue-status">{issue.status}</span>
+    </div>
+  );
 
-  renderIssueTitle = () => {
-    return <div className="section-title title-3">Issues</div>;
-  };
+  renderIssueTitle = () => <div className="section-title title-3">Issues</div>;
 
   renderIssueContent = () => {
     const { issues } = this.props;
@@ -141,18 +135,15 @@ export class TableIssues extends React.Component<TableIssueProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    issues: state.issue.issues,
-    total: state.issue.total,
-    allIssuesUrl: state.issue.allIssuesUrl,
-    isLoading: state.issue.isLoading,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  issues: state.issue.issues,
+  total: state.issue.total,
+  allIssuesUrl: state.issue.allIssuesUrl,
+  isLoading: state.issue.isLoading,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getIssues }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ getIssues }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
   mapStateToProps,

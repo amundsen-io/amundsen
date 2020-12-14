@@ -81,15 +81,13 @@ export class RequestMetadataForm extends React.Component<
     }
   };
 
-  renderFlashMessage = () => {
-    return (
-      <FlashMessage
-        iconClass={ImageIconType.MAIL}
-        message={this.getFlashMessageString()}
-        onClose={this.closeDialog}
-      />
-    );
-  };
+  renderFlashMessage = () => (
+    <FlashMessage
+      iconClass={ImageIconType.MAIL}
+      message={this.getFlashMessageString()}
+      onClose={this.closeDialog}
+    />
+  );
 
   extractDataFromForm = () => {
     const form = document.getElementById('RequestForm') as HTMLFormElement;
@@ -273,12 +271,11 @@ export const mapStateToProps = (state: GlobalState) => {
   return mappedProps;
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     { submitNotification, closeRequestDescriptionDialog },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

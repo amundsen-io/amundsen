@@ -62,13 +62,11 @@ export class ColumnType extends React.Component<
     }
   };
 
-  createLineItem = (text: string, textIndent: number) => {
-    return (
-      <div key={`lineitem:${text}`} style={{ textIndent: `${textIndent}px` }}>
-        {text}
-      </div>
-    );
-  };
+  createLineItem = (text: string, textIndent: number) => (
+    <div key={`lineitem:${text}`} style={{ textIndent: `${textIndent}px` }}>
+      {text}
+    </div>
+  );
 
   renderParsedChildren = (children: ParsedType[], level: number) => {
     const textIndent = level * TEXT_INDENT;

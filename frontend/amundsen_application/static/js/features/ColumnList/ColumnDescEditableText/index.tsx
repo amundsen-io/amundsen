@@ -23,12 +23,10 @@ interface ContainerOwnProps {
 export const mapStateToProps = (
   state: GlobalState,
   ownProps: ContainerOwnProps
-) => {
-  return {
-    refreshValue:
-      state.tableMetadata.tableData.columns[ownProps.columnIndex].description,
-  };
-};
+) => ({
+  refreshValue:
+    state.tableMetadata.tableData.columns[ownProps.columnIndex].description,
+});
 
 export const mapDispatchToProps = (
   dispatch: any,

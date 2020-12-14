@@ -24,24 +24,20 @@ const TabsComponent: React.FC<TabsProps> = ({
   activeKey,
   defaultTab,
   onSelect,
-}: TabsProps) => {
-  return (
-    <Tabs
-      id="tab"
-      className="tabs-component"
-      defaultActiveKey={defaultTab}
-      activeKey={activeKey}
-      onSelect={onSelect}
-    >
-      {tabs.map((tab) => {
-        return (
-          <Tab title={tab.title} eventKey={tab.key} key={tab.key}>
-            {tab.content}
-          </Tab>
-        );
-      })}
-    </Tabs>
-  );
-};
+}: TabsProps) => (
+  <Tabs
+    id="tab"
+    className="tabs-component"
+    defaultActiveKey={defaultTab}
+    activeKey={activeKey}
+    onSelect={onSelect}
+  >
+    {tabs.map((tab) => (
+      <Tab title={tab.title} eventKey={tab.key} key={tab.key}>
+        {tab.content}
+      </Tab>
+    ))}
+  </Tabs>
+);
 
 export default TabsComponent;

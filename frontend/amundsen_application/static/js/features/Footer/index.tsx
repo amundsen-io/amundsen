@@ -24,13 +24,11 @@ interface DispatchFromProps {
 
 export type FooterProps = StateFromProps & DispatchFromProps;
 
-const ShimmeringFooterLoader: React.FC = () => {
-  return (
-    <div className="shimmer-footer">
-      <div className="shimmer-footer-row is-shimmer-animated" />
-    </div>
-  );
-};
+const ShimmeringFooterLoader: React.FC = () => (
+  <div className="shimmer-footer">
+    <div className="shimmer-footer-row is-shimmer-animated" />
+  </div>
+);
 
 export class Footer extends React.Component<FooterProps> {
   componentDidMount() {
@@ -39,9 +37,8 @@ export class Footer extends React.Component<FooterProps> {
     getLastIndexed();
   }
 
-  generateDateTimeString = (lastIndexed: number): string => {
-    return formatDateTimeLong({ epochTimestamp: lastIndexed });
-  };
+  generateDateTimeString = (lastIndexed: number): string =>
+    formatDateTimeLong({ epochTimestamp: lastIndexed });
 
   render() {
     let content = <ShimmeringFooterLoader />;
@@ -67,15 +64,12 @@ export class Footer extends React.Component<FooterProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState): StateFromProps => {
-  return {
-    lastIndexed: state.lastIndexed.lastIndexed,
-  };
-};
+export const mapStateToProps = (state: GlobalState): StateFromProps => ({
+  lastIndexed: state.lastIndexed.lastIndexed,
+});
 
-export const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ getLastIndexed }, dispatch);
-};
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ getLastIndexed }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

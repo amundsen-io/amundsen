@@ -57,18 +57,16 @@ const GoToDashboardLink = ({ product, url }: GoToDashboardLinkProps) => {
   );
 };
 
-const QueryBlockShimmer = () => {
-  return (
-    <div className="shimmer-block">
-      <div className="shimmer-line shimmer-line--1 is-shimmer-animated" />
-      <div className="shimmer-line shimmer-line--2 is-shimmer-animated" />
-      <div className="shimmer-line shimmer-line--3 is-shimmer-animated" />
-      <div className="shimmer-line shimmer-line--4 is-shimmer-animated" />
-      <div className="shimmer-line shimmer-line--5 is-shimmer-animated" />
-      <div className="shimmer-line shimmer-line--6 is-shimmer-animated" />
-    </div>
-  );
-};
+const QueryBlockShimmer = () => (
+  <div className="shimmer-block">
+    <div className="shimmer-line shimmer-line--1 is-shimmer-animated" />
+    <div className="shimmer-line shimmer-line--2 is-shimmer-animated" />
+    <div className="shimmer-line shimmer-line--3 is-shimmer-animated" />
+    <div className="shimmer-line shimmer-line--4 is-shimmer-animated" />
+    <div className="shimmer-line shimmer-line--5 is-shimmer-animated" />
+    <div className="shimmer-line shimmer-line--6 is-shimmer-animated" />
+  </div>
+);
 
 const QueryListItem = ({ product, name, text, url }: QueryListItemProps) => {
   const [isExpanded, setExpanded] = React.useState(false);

@@ -10,9 +10,7 @@ export function extractFromObj(
   desiredKeys: string[]
 ): object {
   return Object.keys(initialObj)
-    .filter((key) => {
-      return desiredKeys.indexOf(key) > -1;
-    })
+    .filter((key) => desiredKeys.indexOf(key) > -1)
     .reduce((obj, key) => {
       obj[key] = initialObj[key];
       return obj;
@@ -24,9 +22,7 @@ export function filterFromObj(
   rejectedKeys: string[]
 ): object {
   return Object.keys(initialObj)
-    .filter((key) => {
-      return rejectedKeys.indexOf(key) === -1;
-    })
+    .filter((key) => rejectedKeys.indexOf(key) === -1)
     .reduce((obj, key) => {
       obj[key] = initialObj[key];
       return obj;

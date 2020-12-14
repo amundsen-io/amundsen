@@ -14,12 +14,8 @@ let mockExploreEnabled = true;
 let mockExploreUrl = 'https://test-website.com';
 
 jest.mock('config/config-utils', () => ({
-  exploreEnabled: () => {
-    return mockExploreEnabled;
-  },
-  generateExploreUrl: () => {
-    return mockExploreUrl;
-  },
+  exploreEnabled: () => mockExploreEnabled,
+  generateExploreUrl: () => mockExploreUrl,
 }));
 
 const generateExploreUrlSpy = jest.spyOn(ConfigUtils, 'generateExploreUrl');

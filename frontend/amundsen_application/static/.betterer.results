@@ -13,49 +13,49 @@ exports[`eslint`] = {
       [42, 4, 12, "Property name \`html_content\` must match one of the following formats: camelCase", "574671502"],
       [54, 25, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/components/Announcements/AnnouncementsList/index.tsx:146552098": [
+    "js/components/Announcements/AnnouncementsList/index.tsx:4113252053": [
       [37, 6, 44, "Variable name \`AnnouncementItem\` must match one of the following formats: camelCase, UPPER_CASE", "3908796954"],
       [40, 2, 12, "Parameter name \`html_content\` must match one of the following formats: camelCase", "574671502"],
-      [57, 6, 31, "Variable name \`EmptyAnnouncementItem\` must match one of the following formats: camelCase, UPPER_CASE", "1359601236"],
-      [60, 6, 31, "Variable name \`AnnouncementErrorItem\` must match one of the following formats: camelCase, UPPER_CASE", "1310461113"],
-      [64, 6, 51, "Variable name \`AnnouncementsList\` must match one of the following formats: camelCase, UPPER_CASE", "4278999417"],
-      [78, 26, 12, "Parameter name \`html_content\` must match one of the following formats: camelCase", "574671502"]
+      [55, 6, 31, "Variable name \`EmptyAnnouncementItem\` must match one of the following formats: camelCase, UPPER_CASE", "1359601236"],
+      [58, 6, 31, "Variable name \`AnnouncementErrorItem\` must match one of the following formats: camelCase, UPPER_CASE", "1310461113"],
+      [62, 6, 51, "Variable name \`AnnouncementsList\` must match one of the following formats: camelCase, UPPER_CASE", "4278999417"],
+      [76, 26, 12, "Parameter name \`html_content\` must match one of the following formats: camelCase", "574671502"]
     ],
     "js/components/Announcements/index.spec.tsx:2594822054": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"],
       [5, 9, 7, "\'shallow\' is defined but never used.", "3030293799"],
       [7, 9, 12, "\'ResourceType\' is defined but never used.", "2981371511"]
     ],
-    "js/components/Announcements/index.tsx:3706656154": [
+    "js/components/Announcements/index.tsx:4031114449": [
       [29, 6, 64, "Variable name \`AnnouncementsListContainer\` must match one of the following formats: camelCase, UPPER_CASE", "991168488"]
     ],
     "js/components/AvatarLabel/index.spec.tsx:2129493660": [
       [33, 6, 25, "Use object destructuring.", "354229464"],
       [34, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/AvatarLabel/index.tsx:3025866213": [
+    "js/components/AvatarLabel/index.tsx:977373330": [
       [16, 6, 39, "Variable name \`AvatarLabel\` must match one of the following formats: camelCase, UPPER_CASE", "3862143033"]
     ],
-    "js/components/BadgeList/index.spec.tsx:3938650476": [
+    "js/components/BadgeList/index.spec.tsx:3460985082": [
       [18, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
       [22, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
       [28, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
       [32, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
-      [155, 14, 36, "Use array destructuring.", "898356559"]
+      [153, 14, 36, "Use array destructuring.", "898356559"]
     ],
-    "js/components/BadgeList/index.tsx:4102219202": [
+    "js/components/BadgeList/index.tsx:568416226": [
       [29, 6, 39, "Variable name \`StaticBadge\` must match one of the following formats: camelCase, UPPER_CASE", "158146866"],
-      [40, 6, 47, "Variable name \`ActionableBadge\` must match one of the following formats: camelCase, UPPER_CASE", "4163554937"],
-      [46, 4, 52, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2290783753"],
-      [46, 4, 52, "Static HTML elements with event handlers require a role.", "2290783753"],
-      [57, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [73, 47, 2, "Array.prototype.map() expects a value to be returned at the end of arrow function.", "5859494"],
-      [73, 47, -1914, "Expected to return a value at the end of arrow function.", "5381"]
+      [38, 6, 47, "Variable name \`ActionableBadge\` must match one of the following formats: camelCase, UPPER_CASE", "4163554937"],
+      [43, 2, 52, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2290783753"],
+      [43, 2, 52, "Static HTML elements with event handlers require a role.", "2290783753"],
+      [53, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [69, 47, 2, "Array.prototype.map() expects a value to be returned at the end of arrow function.", "5859494"],
+      [69, 47, -1870, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/components/Bookmark/BookmarkIcon/index.spec.tsx:2656193229": [
       [29, 56, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/components/Bookmark/BookmarkIcon/index.tsx:1621828146": [
+    "js/components/Bookmark/BookmarkIcon/index.tsx:2757285913": [
       [44, 8, 23, "Must use destructuring props assignment", "2039607050"],
       [45, 6, 25, "Must use destructuring props assignment", "2219705271"],
       [46, 8, 22, "Must use destructuring props assignment", "2939990182"],
@@ -79,17 +79,17 @@ exports[`eslint`] = {
       [252, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [260, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/components/Bookmark/MyBookmarks/index.tsx:1306814450": [
+    "js/components/Bookmark/MyBookmarks/index.tsx:1062745683": [
       [34, 22, 22, "Must use destructuring props assignment", "351657334"],
-      [55, 22, 22, "Must use destructuring props assignment", "351657334"],
-      [87, 8, 19, "Must use destructuring props assignment", "2037903600"]
+      [53, 22, 22, "Must use destructuring props assignment", "351657334"],
+      [85, 8, 19, "Must use destructuring props assignment", "2037903600"]
     ],
     "js/components/Breadcrumb/index.spec.tsx:1974034292": [
       [16, 40, 10, "Prop spreading is forbidden", "480399587"],
       [27, 8, 25, "Use object destructuring.", "354229464"],
       [73, 8, 25, "Use object destructuring.", "354229464"]
     ],
-    "js/components/Breadcrumb/index.tsx:2318648527": [
+    "js/components/Breadcrumb/index.tsx:4251168370": [
       [26, 13, 37, "Variable name \`Breadcrumb\` must match one of the following formats: camelCase, UPPER_CASE", "560711513"],
       [44, 6, 99, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2951945087"],
       [44, 6, 99, "Static HTML elements with event handlers require a role.", "2951945087"],
@@ -116,15 +116,15 @@ exports[`eslint`] = {
       [114, 8, 29, "Use object destructuring.", "2645724888"],
       [123, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/components/EditableSection/index.tsx:4161880374": [
+    "js/components/EditableSection/index.tsx:4217754465": [
       [50, 32, 20, "Must use destructuring state assignment", "3067028466"],
       [50, 32, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [57, 2, 186, "convertText should be placed before defaultProps", "1367950501"],
-      [66, 6, 399, "Missing an explicit type attribute for button", "3521116236"],
-      [68, 10, 20, "Must use destructuring state assignment", "3067028466"],
-      [75, 12, 20, "Must use destructuring state assignment", "3067028466"],
-      [120, 19, 20, "Must use destructuring state assignment", "3067028466"],
-      [128, 10, 137, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3965651236"]
+      [65, 4, 373, "Missing an explicit type attribute for button", "1801680204"],
+      [67, 8, 20, "Must use destructuring state assignment", "3067028466"],
+      [74, 10, 20, "Must use destructuring state assignment", "3067028466"],
+      [118, 19, 20, "Must use destructuring state assignment", "3067028466"],
+      [126, 10, 137, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3965651236"]
     ],
     "js/components/EditableText/index.spec.tsx:2941256500": [
       [55, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
@@ -174,20 +174,20 @@ exports[`eslint`] = {
       [8, 0, 52, "\`./EntityCardSection\` import should occur before import of \`.\`", "1030164788"],
       [31, 34, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/components/EntityCard/index.tsx:2358863364": [
+    "js/components/EntityCard/index.tsx:3762394003": [
       [13, 6, 37, "Variable name \`EntityCard\` must match one of the following formats: camelCase, UPPER_CASE", "3664549465"]
     ],
     "js/components/Flag/Flag.story.tsx:878439282": [
       [14, 13, 5, "Variable name \`Flags\` must match one of the following formats: camelCase, UPPER_CASE", "207064858"]
     ],
-    "js/components/Flag/index.tsx:814006609": [
+    "js/components/Flag/index.tsx:4069209484": [
       [16, 6, 25, "Variable name \`Flag\` must match one of the following formats: camelCase, UPPER_CASE", "1549903737"]
     ],
     "js/components/FlashMessage/index.spec.tsx:469750238": [
       [18, 42, 10, "Prop spreading is forbidden", "480399587"],
       [40, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/components/FlashMessage/index.tsx:3348621337": [
+    "js/components/FlashMessage/index.tsx:913272366": [
       [15, 6, 41, "Variable name \`FlashMessage\` must match one of the following formats: camelCase, UPPER_CASE", "3171342361"]
     ],
     "js/components/InfoButton/index.spec.tsx:1921704347": [
@@ -205,9 +205,9 @@ exports[`eslint`] = {
       [59, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [64, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/components/Inputs/CheckBoxItem/index.tsx:3470511376": [
+    "js/components/Inputs/CheckBoxItem/index.tsx:360935175": [
       [16, 6, 41, "Variable name \`CheckBoxItem\` must match one of the following formats: camelCase, UPPER_CASE", "1942309177"],
-      [27, 8, 177, "A control must be associated with a text label.", "3060189209"]
+      [26, 6, 163, "A control must be associated with a text label.", "3374264857"]
     ],
     "js/components/LoadingSpinner/index.tsx:836023743": [
       [7, 6, 24, "Variable name \`LoadingSpinner\` must match one of the following formats: camelCase, UPPER_CASE", "3610409870"]
@@ -215,19 +215,19 @@ exports[`eslint`] = {
     "js/components/OwnerEditor/index.spec.tsx:871220739": [
       [11, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/components/OwnerEditor/index.tsx:2339166638": [
+    "js/components/OwnerEditor/index.tsx:627283332": [
       [59, 2, 52, "inputRef should be placed after componentDidUpdate", "1462216978"],
       [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [153, 13, 24, "Must use destructuring state assignment", "1659627107"],
       [153, 13, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [194, 10, 225, "A control must be associated with a text label.", "896304965"],
-      [208, 23, 24, "Must use destructuring state assignment", "1659627107"],
-      [213, 18, 24, "Must use destructuring state assignment", "1659627107"]
+      [192, 10, 225, "A control must be associated with a text label.", "896304965"],
+      [206, 23, 24, "Must use destructuring state assignment", "1659627107"],
+      [208, 48, 24, "Must use destructuring state assignment", "1659627107"]
     ],
-    "js/components/PopularTables/index.tsx:1736574994": [
+    "js/components/PopularTables/index.tsx:252281305": [
       [38, 4, 27, "Must use destructuring props assignment", "261221331"]
     ],
-    "js/components/Preloader/index.tsx:1644719809": [
+    "js/components/Preloader/index.tsx:958787996": [
       [22, 4, 26, "Must use destructuring props assignment", "1492876559"],
       [23, 4, 23, "Must use destructuring props assignment", "3309761012"]
     ],
@@ -284,18 +284,18 @@ exports[`eslint`] = {
       [77, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
       [78, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:548000794": [
-      [53, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [69, 6, 25, "Use object destructuring.", "354229464"],
-      [70, 6, 29, "Use object destructuring.", "2645724888"],
-      [152, 18, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [152, 18, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [152, 25, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [154, 14, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"],
-      [155, 14, 9, "Property name \`group_url\` must match one of the following formats: camelCase", "991267566"],
-      [163, 14, 29, "Property name \`last_successful_run_timestamp\` must match one of the following formats: camelCase", "1157138603"]
+    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:3836381581": [
+      [47, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [63, 6, 25, "Use object destructuring.", "354229464"],
+      [64, 6, 29, "Use object destructuring.", "2645724888"],
+      [146, 18, 5, "\'props\' is already declared in the upper scope.", "187023499"],
+      [146, 18, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [146, 25, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [148, 14, 10, "Property name \`group_name\` must match one of the following formats: camelCase", "2646960194"],
+      [149, 14, 9, "Property name \`group_url\` must match one of the following formats: camelCase", "991267566"],
+      [157, 14, 29, "Property name \`last_successful_run_timestamp\` must match one of the following formats: camelCase", "1157138603"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.tsx:2195093734": [
+    "js/components/ResourceListItem/DashboardListItem/index.tsx:660398129": [
       [16, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
     "js/components/ResourceListItem/SchemaInfo/index.tsx:3954456561": [
@@ -305,27 +305,27 @@ exports[`eslint`] = {
       [34, 6, 25, "Use object destructuring.", "354229464"],
       [35, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/ResourceListItem/TableListItem/index.spec.tsx:3234413671": [
-      [42, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [45, 12, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [50, 8, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [75, 6, 25, "Use object destructuring.", "1230260048"],
-      [101, 6, 25, "Use object destructuring.", "354229464"],
-      [102, 6, 29, "Use object destructuring.", "2645724888"],
-      [140, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [147, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [148, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [151, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [160, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [167, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [168, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [171, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [232, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [242, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
-      [249, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [259, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"]
+    "js/components/ResourceListItem/TableListItem/index.spec.tsx:203495047": [
+      [38, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [41, 12, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [46, 8, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [71, 6, 25, "Use object destructuring.", "1230260048"],
+      [97, 6, 25, "Use object destructuring.", "354229464"],
+      [98, 6, 29, "Use object destructuring.", "2645724888"],
+      [136, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [143, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [144, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [147, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [156, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [163, 14, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [164, 25, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [167, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [228, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [238, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"],
+      [245, 18, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [255, 14, 18, "Property name \`schema_description\` must match one of the following formats: camelCase", "3750638477"]
     ],
-    "js/components/ResourceListItem/UserListItem/index.spec.tsx:2185314533": [
+    "js/components/ResourceListItem/UserListItem/index.spec.tsx:3519774565": [
       [22, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
       [24, 8, 13, "Property name \`employee_type\` must match one of the following formats: camelCase", "309053760"],
       [25, 8, 10, "Property name \`first_name\` must match one of the following formats: camelCase", "1941527303"],
@@ -357,7 +357,7 @@ exports[`eslint`] = {
       [92, 6, 25, "Use object destructuring.", "354229464"],
       [93, 6, 29, "Use object destructuring.", "2645724888"],
       [130, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
-      [150, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
+      [148, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
     ],
     "js/components/ResourceListItem/UserListItem/index.tsx:1085524398": [
       [22, 12, 9, "Variable name \`role_name\` must match one of the following formats: camelCase, UPPER_CASE", "2456095625"],
@@ -374,12 +374,12 @@ exports[`eslint`] = {
       [45, 18, 15, "Must use destructuring props assignment", "4222548600"],
       [46, 21, 18, "Must use destructuring props assignment", "3823604846"]
     ],
-    "js/components/ResourceStatusMarker/index.tsx:3276515980": [
+    "js/components/ResourceStatusMarker/index.tsx:2810810604": [
       [16, 6, 34, "Variable name \`FailureState\` must match one of the following formats: camelCase, UPPER_CASE", "1129059001"],
-      [28, 6, 34, "Variable name \`SuccessState\` must match one of the following formats: camelCase, UPPER_CASE", "1560509274"],
-      [39, 6, 49, "Variable name \`ResourceStatusMarker\` must match one of the following formats: camelCase, UPPER_CASE", "2039030579"]
+      [26, 6, 34, "Variable name \`SuccessState\` must match one of the following formats: camelCase, UPPER_CASE", "1560509274"],
+      [35, 6, 49, "Variable name \`ResourceStatusMarker\` must match one of the following formats: camelCase, UPPER_CASE", "2039030579"]
     ],
-    "js/components/SVGIcons/AlertIcon.tsx:3688293903": [
+    "js/components/SVGIcons/AlertIcon.tsx:1220824312": [
       [10, 13, 30, "Variable name \`AlertIcon\` must match one of the following formats: camelCase, UPPER_CASE", "4198809975"]
     ],
     "js/components/SVGIcons/DownIcon.tsx:2344836646": [
@@ -409,7 +409,7 @@ exports[`eslint`] = {
       [63, 6, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
       [63, 17, 19, "Must use destructuring props assignment", "371602641"]
     ],
-    "js/components/SearchBar/InlineSearchResults/ResultItemList/ResultItem/index.tsx:712627630": [
+    "js/components/SearchBar/InlineSearchResults/ResultItemList/ResultItem/index.tsx:2796802835": [
       [16, 6, 37, "Variable name \`ResultItem\` must match one of the following formats: camelCase, UPPER_CASE", "1574013625"]
     ],
     "js/components/SearchBar/InlineSearchResults/ResultItemList/index.tsx:3095869894": [
@@ -444,29 +444,29 @@ exports[`eslint`] = {
     "js/components/SearchBar/InlineSearchResults/SearchItemList/index.tsx:90242282": [
       [11, 0, 42, "\`../constants\` import should occur before import of \`./SearchItem\`", "3818422754"]
     ],
-    "js/components/SearchBar/InlineSearchResults/SearchItemList/tests/index.spec.tsx:381248112": [
+    "js/components/SearchBar/InlineSearchResults/SearchItemList/tests/index.spec.tsx:1082399948": [
       [11, 7, 10, "\'SearchItem\' is defined but never used.", "3758384126"],
-      [23, 14, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"],
-      [23, 31, 18, "\'mapDispatchToProps\' is defined but never used.", "2926224796"],
-      [23, 55, 10, "Parameter name \`SearchItem\` must match one of the following formats: camelCase", "3758384126"],
-      [23, 55, 10, "\'SearchItem\' is already declared in the upper scope.", "3758384126"],
-      [35, 60, 10, "Prop spreading is forbidden", "480399587"],
-      [42, 6, 25, "Use object destructuring.", "1230260048"],
-      [75, 6, 25, "Use object destructuring.", "1501943800"],
-      [76, 6, 29, "Use object destructuring.", "1935870456"],
-      [85, 20, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
-      [98, 8, 25, "Use object destructuring.", "1501943800"],
-      [99, 8, 29, "Use object destructuring.", "1935870456"],
-      [108, 22, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
-      [119, 8, 25, "Use object destructuring.", "1230260048"],
-      [122, 22, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
-      [131, 8, 25, "Use object destructuring.", "1501943800"],
-      [132, 8, 29, "Use object destructuring.", "1935870456"],
-      [142, 13, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
-      [154, 8, 25, "Use object destructuring.", "1230260048"],
-      [158, 13, 4, "\'item\' is already declared in the upper scope.", "2087854480"]
+      [22, 12, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"],
+      [22, 29, 18, "\'mapDispatchToProps\' is defined but never used.", "2926224796"],
+      [22, 53, 10, "Parameter name \`SearchItem\` must match one of the following formats: camelCase", "3758384126"],
+      [22, 53, 10, "\'SearchItem\' is already declared in the upper scope.", "3758384126"],
+      [32, 60, 10, "Prop spreading is forbidden", "480399587"],
+      [39, 6, 25, "Use object destructuring.", "1230260048"],
+      [72, 6, 25, "Use object destructuring.", "1501943800"],
+      [73, 6, 29, "Use object destructuring.", "1935870456"],
+      [82, 20, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
+      [95, 8, 25, "Use object destructuring.", "1501943800"],
+      [96, 8, 29, "Use object destructuring.", "1935870456"],
+      [105, 22, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
+      [116, 8, 25, "Use object destructuring.", "1230260048"],
+      [119, 22, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
+      [128, 8, 25, "Use object destructuring.", "1501943800"],
+      [129, 8, 29, "Use object destructuring.", "1935870456"],
+      [139, 13, 4, "\'item\' is already declared in the upper scope.", "2087854480"],
+      [151, 8, 25, "Use object destructuring.", "1230260048"],
+      [155, 13, 4, "\'item\' is already declared in the upper scope.", "2087854480"]
     ],
-    "js/components/SearchBar/InlineSearchResults/index.tsx:3543687782": [
+    "js/components/SearchBar/InlineSearchResults/index.tsx:1346600112": [
       [28, 0, 46, "Dependency cycle detected.", "3506421300"],
       [78, 15, 21, "Must use destructuring props assignment", "1352381626"],
       [80, 15, 17, "Must use destructuring props assignment", "3767383680"],
@@ -474,22 +474,22 @@ exports[`eslint`] = {
       [91, 15, 21, "Must use destructuring props assignment", "1352381626"],
       [93, 15, 17, "Must use destructuring props assignment", "3767383680"],
       [95, 15, 16, "Must use destructuring props assignment", "1927755215"],
-      [125, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [129, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [133, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [147, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [150, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [165, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [168, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [171, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [184, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [194, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [199, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [212, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [215, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [232, 24, 23, "Must use destructuring props assignment", "1919697041"],
-      [234, 22, 21, "Must use destructuring props assignment", "65539885"],
-      [244, 8, 20, "Must use destructuring props assignment", "2826313809"]
+      [123, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [127, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [131, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
+      [145, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [148, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [163, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [166, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [169, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
+      [182, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [192, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [197, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
+      [210, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [213, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [230, 24, 23, "Must use destructuring props assignment", "1919697041"],
+      [232, 22, 21, "Must use destructuring props assignment", "65539885"],
+      [242, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
     "js/components/SearchBar/InlineSearchResults/tests/index.spec.tsx:3391573717": [
       [65, 6, 25, "Use object destructuring.", "1230260048"],
@@ -548,7 +548,7 @@ exports[`eslint`] = {
       [373, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [373, 23, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/SearchBar/index.tsx:4153879198": [
+    "js/components/SearchBar/index.tsx:1626937055": [
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
       [73, 18, 21, "Must use destructuring props assignment", "65539885"],
       [86, 8, 22, "Must use destructuring props assignment", "764600602"],
@@ -559,26 +559,26 @@ exports[`eslint`] = {
       [127, 14, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
       [159, 4, 31, "Must use destructuring props assignment", "1896862308"],
       [161, 6, 21, "Must use destructuring state assignment", "2515881172"],
-      [178, 48, 21, "Must use destructuring state assignment", "2515881172"],
-      [178, 48, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [187, 6, 15, "Must use destructuring props assignment", "4223598856"],
-      [192, 6, 15, "Must use destructuring props assignment", "4223598856"],
-      [203, 38, 22, "Must use destructuring props assignment", "3739111726"],
-      [204, 10, 295, "A control must be associated with a text label.", "2566911236"],
-      [208, 19, 21, "Must use destructuring state assignment", "2515881172"],
-      [210, 25, 22, "Must use destructuring props assignment", "3739111726"],
-      [219, 11, 15, "Must use destructuring props assignment", "4223598856"],
-      [229, 9, 24, "Must use destructuring state assignment", "3796486886"],
-      [232, 23, 15, "Must use destructuring props assignment", "4223598856"],
-      [234, 24, 21, "Must use destructuring state assignment", "2515881172"]
+      [176, 48, 21, "Must use destructuring state assignment", "2515881172"],
+      [176, 48, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [185, 6, 15, "Must use destructuring props assignment", "4223598856"],
+      [190, 6, 15, "Must use destructuring props assignment", "4223598856"],
+      [201, 38, 22, "Must use destructuring props assignment", "3739111726"],
+      [202, 10, 295, "A control must be associated with a text label.", "2566911236"],
+      [206, 19, 21, "Must use destructuring state assignment", "2515881172"],
+      [208, 25, 22, "Must use destructuring props assignment", "3739111726"],
+      [217, 11, 15, "Must use destructuring props assignment", "4223598856"],
+      [227, 9, 24, "Must use destructuring state assignment", "3796486886"],
+      [230, 23, 15, "Must use destructuring props assignment", "4223598856"],
+      [232, 24, 21, "Must use destructuring state assignment", "2515881172"]
     ],
-    "js/components/ShimmeringResourceLoader/index.tsx:1957183104": [
+    "js/components/ShimmeringResourceLoader/index.tsx:1972470432": [
       [10, 13, 32, "Variable name \`ShimmeringResourceItem\` must match one of the following formats: camelCase, UPPER_CASE", "4066977711"],
-      [28, 6, 65, "Variable name \`ShimmeringResourceLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1161606841"]
+      [26, 6, 65, "Variable name \`ShimmeringResourceLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1161606841"]
     ],
-    "js/components/ShimmeringTagListLoader/index.tsx:2589370461": [
+    "js/components/ShimmeringTagListLoader/index.tsx:835896477": [
       [14, 13, 51, "Variable name \`ShimmeringTagItem\` must match one of the following formats: camelCase, UPPER_CASE", "2905356537"],
-      [28, 6, 63, "Variable name \`ShimmeringTagListLoader\` must match one of the following formats: camelCase, UPPER_CASE", "2528556921"]
+      [26, 6, 63, "Variable name \`ShimmeringTagListLoader\` must match one of the following formats: camelCase, UPPER_CASE", "2528556921"]
     ],
     "js/components/StorySection/index.tsx:1662123228": [
       [11, 6, 34, "Variable name \`StorySection\` must match one of the following formats: camelCase, UPPER_CASE", "3908604762"]
@@ -589,13 +589,13 @@ exports[`eslint`] = {
       [870, 16, 34, "Use array destructuring.", "4232426022"],
       [1012, 16, 36, "Use array destructuring.", "3910325707"]
     ],
-    "js/components/Table/index.tsx:2810422431": [
+    "js/components/Table/index.tsx:2764735560": [
       [95, 6, 33, "Variable name \`EmptyRow\` must match one of the following formats: camelCase, UPPER_CASE", "2977851417"],
       [107, 6, 26, "Variable name \`ShimmeringHeader\` must match one of the following formats: camelCase, UPPER_CASE", "1702830639"],
       [119, 6, 45, "Variable name \`ShimmeringBody\` must match one of the following formats: camelCase, UPPER_CASE", "3080454553"],
       [137, 6, 43, "Variable name \`ExpandingCell\` must match one of the following formats: camelCase, UPPER_CASE", "1343947897"],
       [181, 6, 27, "Variable name \`Table\` must match one of the following formats: camelCase, UPPER_CASE", "3237121145"],
-      [293, 8, 65, "A control must be associated with a text label.", "1026764939"]
+      [291, 8, 65, "A control must be associated with a text label.", "1026764939"]
     ],
     "js/components/Table/table.story.tsx:3074937505": [
       [8, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"],
@@ -611,7 +611,7 @@ exports[`eslint`] = {
     "js/components/TabsComponent/index.spec.tsx:1677620301": [
       [34, 37, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/components/TabsComponent/index.tsx:289438172": [
+    "js/components/TabsComponent/index.tsx:2950447324": [
       [21, 6, 34, "Variable name \`TabsComponent\` must match one of the following formats: camelCase, UPPER_CASE", "66546454"]
     ],
     "js/components/Tags/TagInfo/index.spec.tsx:2036846669": [
@@ -625,7 +625,7 @@ exports[`eslint`] = {
       [96, 8, 29, "Use object destructuring.", "2645724888"],
       [97, 8, 25, "Use object destructuring.", "354229464"]
     ],
-    "js/components/Tags/TagInfo/index.tsx:3804447035": [
+    "js/components/Tags/TagInfo/index.tsx:860061254": [
       [6, 28, 10, "\'SearchType\' is defined but never used.", "3759589107"],
       [31, 17, 15, "Must use destructuring props assignment", "4222917373"],
       [33, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
@@ -636,7 +636,7 @@ exports[`eslint`] = {
       [49, 10, 18, "Must use destructuring props assignment", "4080010090"],
       [50, 39, 15, "Must use destructuring props assignment", "4222917373"]
     ],
-    "js/components/Tags/TagInput/index.tsx:1828744137": [
+    "js/components/Tags/TagInput/index.tsx:2927377327": [
       [33, 2, 7, "Enum Member name \`CURRENT\` must match one of the following formats: camelCase", "1028019532"],
       [34, 2, 6, "Enum Member name \`DELETE\` must match one of the following formats: camelCase", "2557553692"],
       [35, 2, 3, "Enum Member name \`PUT\` must match one of the following formats: camelCase", "193465492"],
@@ -647,33 +647,33 @@ exports[`eslint`] = {
       [122, 4, 21, "Must use destructuring props assignment", "2890513821"],
       [136, 31, 11, "\'selectValue\' is defined but never used.", "662499558"],
       [136, 44, 13, "\'selectOptions\' is defined but never used.", "1076977309"],
-      [174, 8, 21, "Must use destructuring props assignment", "2890513821"],
-      [178, 6, 21, "Must use destructuring props assignment", "2890513821"],
-      [225, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
-      [225, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
-      [231, 40, 15, "Prop spreading is forbidden", "1697062181"],
-      [244, 12, 15, "Must use destructuring props assignment", "4223491724"],
-      [249, 12, 18, "Must use destructuring props assignment", "1044970797"],
-      [249, 57, 15, "Must use destructuring props assignment", "4223491724"],
-      [259, 8, 22, "Must use destructuring props assignment", "2225424112"],
-      [260, 6, 22, "Must use destructuring props assignment", "2225424112"],
-      [265, 8, 22, "Must use destructuring props assignment", "2225424112"],
-      [266, 6, 22, "Must use destructuring props assignment", "2225424112"],
-      [272, 31, 20, "Must use destructuring props assignment", "1386622827"],
-      [274, 10, 17, "Method name \`DropdownIndicator\` must match one of the following formats: camelCase", "710766815"],
-      [277, 10, 18, "Method name \`IndicatorSeparator\` must match one of the following formats: camelCase", "1048339033"],
-      [280, 10, 16, "Method name \`MultiValueRemove\` must match one of the following formats: camelCase", "1230984897"],
-      [285, 10, 17, "Method name \`DropdownIndicator\` must match one of the following formats: camelCase", "710766815"],
-      [288, 10, 18, "Method name \`IndicatorSeparator\` must match one of the following formats: camelCase", "1048339033"],
-      [294, 9, 20, "Must use destructuring props assignment", "1386622827"],
-      [295, 10, 15, "Must use destructuring props assignment", "4223491724"],
-      [297, 10, 203, "Missing an explicit type attribute for button", "893477908"],
-      [306, 18, 15, "Must use destructuring props assignment", "4223491724"],
-      [318, 22, 20, "Must use destructuring props assignment", "2826313809"],
-      [319, 21, 20, "Must use destructuring props assignment", "2826313809"],
-      [326, 51, 18, "Must use destructuring props assignment", "1044970797"],
-      [338, 46, 15, "Must use destructuring props assignment", "4223491724"],
-      [348, 16, 20, "Must use destructuring state assignment", "2976153148"]
+      [175, 8, 21, "Must use destructuring props assignment", "2890513821"],
+      [179, 6, 21, "Must use destructuring props assignment", "2890513821"],
+      [226, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
+      [226, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
+      [232, 40, 15, "Prop spreading is forbidden", "1697062181"],
+      [245, 12, 15, "Must use destructuring props assignment", "4223491724"],
+      [250, 12, 18, "Must use destructuring props assignment", "1044970797"],
+      [250, 57, 15, "Must use destructuring props assignment", "4223491724"],
+      [260, 8, 22, "Must use destructuring props assignment", "2225424112"],
+      [261, 6, 22, "Must use destructuring props assignment", "2225424112"],
+      [266, 8, 22, "Must use destructuring props assignment", "2225424112"],
+      [267, 6, 22, "Must use destructuring props assignment", "2225424112"],
+      [273, 31, 20, "Must use destructuring props assignment", "1386622827"],
+      [275, 10, 17, "Method name \`DropdownIndicator\` must match one of the following formats: camelCase", "710766815"],
+      [276, 10, 18, "Method name \`IndicatorSeparator\` must match one of the following formats: camelCase", "1048339033"],
+      [277, 10, 16, "Method name \`MultiValueRemove\` must match one of the following formats: camelCase", "1230984897"],
+      [280, 10, 17, "Method name \`DropdownIndicator\` must match one of the following formats: camelCase", "710766815"],
+      [281, 10, 18, "Method name \`IndicatorSeparator\` must match one of the following formats: camelCase", "1048339033"],
+      [285, 9, 20, "Must use destructuring props assignment", "1386622827"],
+      [286, 10, 15, "Must use destructuring props assignment", "4223491724"],
+      [288, 10, 203, "Missing an explicit type attribute for button", "893477908"],
+      [297, 18, 15, "Must use destructuring props assignment", "4223491724"],
+      [309, 22, 20, "Must use destructuring props assignment", "2826313809"],
+      [310, 21, 20, "Must use destructuring props assignment", "2826313809"],
+      [317, 51, 18, "Must use destructuring props assignment", "1044970797"],
+      [329, 46, 15, "Must use destructuring props assignment", "4223491724"],
+      [339, 16, 20, "Must use destructuring state assignment", "2976153148"]
     ],
     "js/components/Tags/TagsList/index.spec.tsx:308600799": [
       [3, 9, 4, "\'Link\' is defined but never used.", "2089009317"],
@@ -683,23 +683,23 @@ exports[`eslint`] = {
       [8, 9, 3, "\'all\' is defined but never used.", "193409860"],
       [35, 53, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/components/Tags/TagsList/index.tsx:588722376": [
+    "js/components/Tags/TagsList/index.tsx:3852870495": [
       [43, 6, 43, "Variable name \`TagsListLabel\` must match one of the following formats: camelCase, UPPER_CASE", "876251103"],
       [51, 6, 43, "Variable name \`TagsListBlock\` must match one of the following formats: camelCase, UPPER_CASE", "636574777"],
-      [63, 6, 38, "Variable name \`ShortTagsList\` must match one of the following formats: camelCase, UPPER_CASE", "1107105131"],
-      [92, 6, 37, "Variable name \`LongTagsList\` must match one of the following formats: camelCase, UPPER_CASE", "1470483955"],
-      [120, 6, 33, "Variable name \`TagsList\` must match one of the following formats: camelCase, UPPER_CASE", "1802331609"]
+      [61, 6, 38, "Variable name \`ShortTagsList\` must match one of the following formats: camelCase, UPPER_CASE", "1107105131"],
+      [90, 6, 37, "Variable name \`LongTagsList\` must match one of the following formats: camelCase, UPPER_CASE", "1470483955"],
+      [118, 6, 33, "Variable name \`TagsList\` must match one of the following formats: camelCase, UPPER_CASE", "1802331609"]
     ],
-    "js/components/Tags/index.tsx:613629620": [
+    "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:3975396501": [
+    "js/config/config-default.ts:1841535925": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
       [46, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
       [52, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
       [168, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [211, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [212, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [210, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [211, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/config/config-types.ts:3768974062": [
       [156, 2, 6, "Enum Member name \`DANGER\` must match one of the following formats: camelCase", "2553023038"],
@@ -763,7 +763,7 @@ exports[`eslint`] = {
       [81, 35, 4, "\'data\' is defined but never used.", "2087377941"],
       [121, 61, 4, "\'data\' is defined but never used.", "2087377941"]
     ],
-    "js/ducks/bookmark/index.spec.ts:2979726178": [
+    "js/ducks/bookmark/index.spec.ts:1070259074": [
       [96, 14, 7, "\'payload\' is assigned a value but never used.", "2531329355"],
       [116, 14, 7, "\'payload\' is assigned a value but never used.", "2531329355"]
     ],
@@ -828,13 +828,13 @@ exports[`eslint`] = {
       [76, 8, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
       [77, 8, 14, "Property name \`data_issue_url\` must match one of the following formats: camelCase", "1772189383"]
     ],
-    "js/ducks/issue/api/v0.ts:1192366985": [
+    "js/ducks/issue/api/v0.ts:746980926": [
       [11, 4, 14, "Property name \`all_issues_url\` must match one of the following formats: camelCase", "2751555557"]
     ],
     "js/ducks/issue/reducer.ts:1774302197": [
       [119, 6, 56, "Unexpected lexical declaration in case block.", "2031834906"]
     ],
-    "js/ducks/issue/tests/index.spec.ts:3803590669": [
+    "js/ducks/issue/tests/index.spec.ts:1694016813": [
       [55, 6, 9, "Property name \`issue_key\` must match one of the following formats: camelCase", "430514804"],
       [59, 6, 21, "Property name \`priority_display_name\` must match one of the following formats: camelCase", "3184323018"],
       [60, 6, 13, "Property name \`priority_name\` must match one of the following formats: camelCase", "3589006831"],
@@ -849,8 +849,8 @@ exports[`eslint`] = {
       [249, 8, 33, "Use object destructuring.", "2386588093"],
       [250, 8, 31, "Use object destructuring.", "507617405"],
       [251, 8, 45, "Use object destructuring.", "244310461"],
-      [294, 12, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
-      [295, 12, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"]
+      [292, 12, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
+      [293, 12, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"]
     ],
     "js/ducks/issue/types.ts:2613896698": [
       [3, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
@@ -983,7 +983,7 @@ exports[`eslint`] = {
       [85, 8, 11, "Variable name \`search_term\` must match one of the following formats: camelCase, UPPER_CASE", "1115328666"],
       [282, 6, 11, "Property name \`search_term\` must match one of the following formats: camelCase", "1115328666"]
     ],
-    "js/ducks/search/tests/sagas.spec.ts:1980316011": [
+    "js/ducks/search/tests/sagas.spec.ts:1084062070": [
       [39, 4, 11, "Property name \`search_term\` must match one of the following formats: camelCase", "1115328666"],
       [41, 6, 10, "Property name \`page_index\` must match one of the following formats: camelCase", "305070679"],
       [48, 10, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
@@ -1048,14 +1048,14 @@ exports[`eslint`] = {
       [74, 6, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
       [75, 6, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:3307058917": [
+    "js/ducks/tableMetadata/api/v0.ts:3455693013": [
       [77, 8, 23, "Use object destructuring.", "1142306891"],
       [80, 13, 39, "Expected the Promise rejection reason to be an Error.", "3871091426"],
-      [129, 23, -3985, "Expected to return a value at the end of arrow function.", "5381"],
-      [161, 4, 11, "Property name \`column_name\` must match one of the following formats: camelCase", "2326562123"],
-      [183, 13, 32, "Expected the Promise rejection reason to be an Error.", "2773728948"]
+      [127, 23, -3948, "Expected to return a value at the end of arrow function.", "5381"],
+      [159, 4, 11, "Property name \`column_name\` must match one of the following formats: camelCase", "2326562123"],
+      [182, 13, 32, "Expected the Promise rejection reason to be an Error.", "2773728948"]
     ],
-    "js/ducks/tableMetadata/index.spec.ts:85981852": [
+    "js/ducks/tableMetadata/index.spec.ts:680032540": [
       [81, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
       [82, 8, 11, "Property name \`profile_url\` must match one of the following formats: camelCase", "4082386394"],
       [84, 8, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"],
@@ -1069,12 +1069,12 @@ exports[`eslint`] = {
       [110, 10, 11, "Property name \`column_name\` must match one of the following formats: camelCase", "2326562123"],
       [110, 32, 11, "Property name \`column_type\` must match one of the following formats: camelCase", "2327466228"],
       [113, 6, 10, "Property name \`error_text\` must match one of the following formats: camelCase", "1052291743"],
-      [482, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [509, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
-      [618, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [651, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
+      [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [506, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
+      [612, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [644, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
     ],
-    "js/ducks/tableMetadata/owners/index.spec.ts:2260380282": [
+    "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
       [23, 0, 44, "\`../types\` import should occur before import of \`./reducer\`", "4255093209"],
       [35, 8, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
@@ -1130,10 +1130,10 @@ exports[`eslint`] = {
       [14, 8, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
       [14, 22, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"]
     ],
-    "js/ducks/tags/api/v0.ts:3753225881": [
-      [20, 16, -562, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
+    "js/ducks/tags/api/v0.ts:3312435566": [
+      [20, 16, -551, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
     ],
-    "js/ducks/tags/tests/index.spec.ts:240803882": [
+    "js/ducks/tags/tests/index.spec.ts:1625622551": [
       [47, 10, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
       [47, 24, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
       [48, 10, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
@@ -1146,10 +1146,10 @@ exports[`eslint`] = {
       [124, 26, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
       [125, 12, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
       [125, 26, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
+      [149, 8, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
+      [149, 22, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
       [150, 8, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
-      [150, 22, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"],
-      [151, 8, 9, "Property name \`tag_count\` must match one of the following formats: camelCase", "3118465291"],
-      [151, 22, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"]
+      [150, 22, 8, "Property name \`tag_name\` must match one of the following formats: camelCase", "3608461679"]
     ],
     "js/ducks/tags/types.ts:1047234005": [
       [3, 2, 7, "Enum Member name \`REQUEST\` must match one of the following formats: camelCase", "88329108"],
@@ -1159,8 +1159,8 @@ exports[`eslint`] = {
       [19, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
       [20, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"]
     ],
-    "js/ducks/user/api/v0.ts:1820354902": [
-      [19, 52, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"]
+    "js/ducks/user/api/v0.ts:2204653750": [
+      [17, 52, 7, "Property name \`user_id\` must match one of the following formats: camelCase", "2414288038"]
     ],
     "js/ducks/user/reducer.ts:687831307": [
       [83, 2, 12, "Property name \`display_name\` must match one of the following formats: camelCase", "2661030023"],
@@ -1191,10 +1191,10 @@ exports[`eslint`] = {
       [57, 2, 7, "Enum Member name \`SUCCESS\` must match one of the following formats: camelCase", "3276699078"],
       [58, 2, 7, "Enum Member name \`FAILURE\` must match one of the following formats: camelCase", "213105285"]
     ],
-    "js/ducks/utilMethods.ts:2196352937": [
-      [50, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"]
+    "js/ducks/utilMethods.ts:3966292873": [
+      [46, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"]
     ],
-    "js/features/BadgeList/index.tsx:879446314": [
+    "js/features/BadgeList/index.tsx:4066532183": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
@@ -1203,15 +1203,15 @@ exports[`eslint`] = {
     "js/features/ColumnList/ColumnStats/index.spec.tsx:991779878": [
       [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/ColumnList/ColumnStats/index.tsx:3499981845": [
+    "js/features/ColumnList/ColumnStats/index.tsx:554450818": [
       [18, 2, 9, "Property name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
       [19, 2, 8, "Property name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
       [22, 6, 43, "Variable name \`ColumnStatRow\` must match one of the following formats: camelCase, UPPER_CASE", "973452665"],
       [23, 2, 9, "Parameter name \`stat_type\` must match one of the following formats: camelCase", "3394616688"],
       [24, 2, 8, "Parameter name \`stat_val\` must match one of the following formats: camelCase", "3747080563"],
-      [36, 20, 11, "Parameter name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
-      [37, 18, 9, "Parameter name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
-      [39, 6, 39, "Variable name \`ColumnStats\` must match one of the following formats: camelCase, UPPER_CASE", "3835608633"]
+      [34, 20, 11, "Parameter name \`start_epoch\` must match one of the following formats: camelCase", "1820709483"],
+      [35, 18, 9, "Parameter name \`end_epoch\` must match one of the following formats: camelCase", "319383588"],
+      [37, 6, 39, "Variable name \`ColumnStats\` must match one of the following formats: camelCase, UPPER_CASE", "3835608633"]
     ],
     "js/features/ColumnList/ColumnStats/testDataBuilder.ts:2454991358": [
       [14, 9, 15, "Function name \`TestDataBuilder\` must match one of the following formats: camelCase", "4136719554"],
@@ -1288,11 +1288,11 @@ exports[`eslint`] = {
       [52, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [52, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"]
     ],
-    "js/features/ColumnList/ColumnType/index.tsx:1445673789": [
+    "js/features/ColumnList/ColumnType/index.tsx:2850131434": [
       [35, 2, 30, "nestedType should be placed after constructor", "1117758211"],
-      [110, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
-      [110, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"],
-      [128, 16, 20, "Must use destructuring state assignment", "2976153148"]
+      [108, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
+      [108, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"],
+      [126, 16, 20, "Must use destructuring state assignment", "2976153148"]
     ],
     "js/features/ColumnList/ColumnType/parser.ts:1815713777": [
       [11, 2, 4, "Enum Member name \`Hive\` must match one of the following formats: camelCase", "2089153079"],
@@ -1306,18 +1306,18 @@ exports[`eslint`] = {
       [102, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [140, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
-    "js/features/ColumnList/index.spec.tsx:3317234549": [
+    "js/features/ColumnList/index.spec.tsx:2114128227": [
       [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"],
       [49, 18, 10, "Prop spreading is forbidden", "480399587"],
       [58, 4, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
     ],
-    "js/features/ColumnList/index.tsx:1322095333": [
+    "js/features/ColumnList/index.tsx:743947832": [
       [77, 2, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [147, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
-      [148, 4, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [153, 6, 48, "Variable name \`ExpandedRowComponent\` must match one of the following formats: camelCase, UPPER_CASE", "1170958550"],
-      [191, 6, 37, "Variable name \`ColumnList\` must match one of the following formats: camelCase, UPPER_CASE", "3429043897"],
-      [213, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
+      [142, 4, 9, "Property name \`target_id\` must match one of the following formats: camelCase", "1702172486"],
+      [143, 4, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [148, 6, 48, "Variable name \`ExpandedRowComponent\` must match one of the following formats: camelCase, UPPER_CASE", "1170958550"],
+      [186, 6, 37, "Variable name \`ColumnList\` must match one of the following formats: camelCase, UPPER_CASE", "3429043897"],
+      [208, 6, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"]
     ],
     "js/features/ColumnList/testDataBuilder.ts:913985007": [
       [6, 6, 8, "Property name \`col_type\` must match one of the following formats: camelCase", "2445326018"],
@@ -1447,7 +1447,7 @@ exports[`eslint`] = {
     "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.spec.tsx:1234861750": [
       [31, 65, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:1473171770": [
+    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:3281037041": [
       [25, 8, 63, "A control must be associated with a text label.", "4061596287"],
       [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
       [39, 10, 211, "A control must be associated with a text label.", "836174501"],
@@ -1456,21 +1456,21 @@ exports[`eslint`] = {
     "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.spec.tsx:3088814608": [
       [29, 39, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3778778095": [
+    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3588165124": [
       [24, 8, 132, "A control must be associated with a text label.", "2458117852"],
       [38, 8, 63, "A control must be associated with a text label.", "3147977067"],
       [55, 10, 267, "A control must be associated with a text label.", "190931411"]
     ],
-    "js/features/Feedback/FeedbackForm/RequestFeedbackForm/index.tsx:3326183784": [
+    "js/features/Feedback/FeedbackForm/RequestFeedbackForm/index.tsx:2633645219": [
       [25, 8, 68, "A control must be associated with a text label.", "2361546724"],
       [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
       [39, 10, 219, "A control must be associated with a text label.", "1357545573"],
       [50, 10, 210, "A control must be associated with a text label.", "1103037886"]
     ],
-    "js/features/Feedback/FeedbackForm/index.spec.tsx:2114790430": [
+    "js/features/Feedback/FeedbackForm/index.spec.tsx:955911497": [
       [10, 0, 58, "\`./RatingFeedbackForm\` import should occur before import of \`.\`", "3652621138"],
       [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"],
-      [38, 24, 10, "Prop spreading is forbidden", "480399587"]
+      [36, 24, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/features/Feedback/FeedbackForm/index.tsx:1841353682": [
       [31, 9, 7, "Property name \`FORM_ID\` must match one of the following formats: camelCase", "771255297"],
@@ -1509,24 +1509,24 @@ exports[`eslint`] = {
     "js/features/Footer/index.spec.tsx:3822669087": [
       [23, 30, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/features/Footer/index.tsx:169922320": [
+    "js/features/Footer/index.tsx:3032041713": [
       [26, 6, 32, "Variable name \`ShimmeringFooterLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1576194116"],
-      [36, 12, 14, "\'getLastIndexed\' is already declared in the upper scope.", "1271465094"],
-      [48, 8, 22, "Must use destructuring props assignment", "1925601400"],
-      [52, 12, 22, "Must use destructuring props assignment", "1925601400"]
+      [34, 12, 14, "\'getLastIndexed\' is already declared in the upper scope.", "1271465094"],
+      [45, 8, 22, "Must use destructuring props assignment", "1925601400"],
+      [49, 12, 22, "Must use destructuring props assignment", "1925601400"]
     ],
-    "js/features/NavBar/index.spec.tsx:1193512019": [
-      [34, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [41, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [58, 44, 10, "Prop spreading is forbidden", "480399587"],
-      [65, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [98, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [111, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [124, 6, 25, "Use object destructuring.", "354229464"],
-      [125, 6, 29, "Use object destructuring.", "2645724888"],
-      [207, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
+    "js/features/NavBar/index.spec.tsx:39513842": [
+      [32, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [39, 4, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
+      [56, 44, 10, "Prop spreading is forbidden", "480399587"],
+      [63, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [96, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [109, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [122, 6, 25, "Use object destructuring.", "354229464"],
+      [123, 6, 29, "Use object destructuring.", "2645724888"],
+      [205, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/features/NavBar/index.tsx:25724133": [
+    "js/features/NavBar/index.tsx:2635832531": [
       [69, 8, 19, "Must use destructuring props assignment", "1779396464"]
     ],
     "js/fixtures/globalState.ts:2008341805": [
@@ -2112,7 +2112,7 @@ exports[`eslint`] = {
     "js/pages/DashboardPage/DashboardOwnerEditor/index.spec.tsx:4125678807": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
-    "js/pages/DashboardPage/DashboardOwnerEditor/index.tsx:48748459": [
+    "js/pages/DashboardPage/DashboardOwnerEditor/index.tsx:2619273216": [
       [21, 12, 11, "Variable name \`profile_url\` must match one of the following formats: camelCase, UPPER_CASE", "4082386394"],
       [21, 25, 7, "Variable name \`user_id\` must match one of the following formats: camelCase, UPPER_CASE", "2414288038"],
       [21, 34, 12, "Variable name \`display_name\` must match one of the following formats: camelCase, UPPER_CASE", "2661030023"]
@@ -2143,7 +2143,7 @@ exports[`eslint`] = {
       [14, 0, 516, "Component should be written as a pure function", "698708664"],
       [22, 43, 10, "Parameter name \`query_text\` must match one of the following formats: camelCase", "3482471181"]
     ],
-    "js/pages/DashboardPage/QueryListItem/CodeBlock.tsx:2230565393": [
+    "js/pages/DashboardPage/QueryListItem/CodeBlock.tsx:1313590694": [
       [12, 6, 35, "Variable name \`CodeBlock\` must match one of the following formats: camelCase, UPPER_CASE", "2373856249"]
     ],
     "js/pages/DashboardPage/QueryListItem/index.spec.tsx:3940842462": [
@@ -2151,29 +2151,29 @@ exports[`eslint`] = {
       [89, 25, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [100, 27, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/DashboardPage/QueryListItem/index.tsx:4168944902": [
+    "js/pages/DashboardPage/QueryListItem/index.tsx:3847292017": [
       [27, 6, 13, "Variable name \`LazyComponent\` must match one of the following formats: camelCase, UPPER_CASE", "3394647780"],
       [29, 6, 17, "Variable name \`GoToDashboardLink\` must match one of the following formats: camelCase, UPPER_CASE", "1572243346"],
       [59, 6, 17, "Variable name \`QueryBlockShimmer\` must match one of the following formats: camelCase, UPPER_CASE", "2146479619"],
-      [72, 6, 13, "Variable name \`QueryListItem\` must match one of the following formats: camelCase, UPPER_CASE", "1313071352"]
+      [70, 6, 13, "Variable name \`QueryListItem\` must match one of the following formats: camelCase, UPPER_CASE", "1313071352"]
     ],
-    "js/pages/DashboardPage/ShimmeringDashboardLoader/index.tsx:566202208": [
+    "js/pages/DashboardPage/ShimmeringDashboardLoader/index.tsx:273140023": [
       [7, 6, 35, "Variable name \`ShimmeringDashboardLoader\` must match one of the following formats: camelCase, UPPER_CASE", "1711630885"]
     ],
-    "js/pages/DashboardPage/index.spec.tsx:2810862582": [
+    "js/pages/DashboardPage/index.spec.tsx:3246337270": [
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"],
-      [63, 56, 10, "Prop spreading is forbidden", "480399587"],
-      [143, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [172, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [188, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [206, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [209, 10, 18, "Property name \`last_run_timestamp\` must match one of the following formats: camelCase", "2901767208"],
-      [210, 10, 29, "Property name \`last_successful_run_timestamp\` must match one of the following formats: camelCase", "1157138603"],
-      [246, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [249, 10, 11, "Property name \`chart_names\` must match one of the following formats: camelCase", "219563138"]
+      [59, 56, 10, "Prop spreading is forbidden", "480399587"],
+      [139, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [168, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [184, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [202, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [205, 10, 18, "Property name \`last_run_timestamp\` must match one of the following formats: camelCase", "2901767208"],
+      [206, 10, 29, "Property name \`last_successful_run_timestamp\` must match one of the following formats: camelCase", "1157138603"],
+      [242, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [245, 10, 11, "Property name \`chart_names\` must match one of the following formats: camelCase", "219563138"]
     ],
-    "js/pages/DashboardPage/index.tsx:4281573613": [
+    "js/pages/DashboardPage/index.tsx:277488038": [
       [82, 20, 16, "Must use destructuring props assignment", "1899951550"],
       [88, 47, 19, "Must use destructuring props assignment", "1779396464"],
       [89, 20, 16, "Must use destructuring props assignment", "1899951550"],
@@ -2204,10 +2204,10 @@ exports[`eslint`] = {
       [33, 4, 25, "Use object destructuring.", "354229464"],
       [34, 4, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/pages/HomePage/index.tsx:1251952745": [
+    "js/pages/HomePage/index.tsx:763024916": [
       [32, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
-    "js/pages/NotFoundPage/index.tsx:4060247806": [
+    "js/pages/NotFoundPage/index.tsx:1819004233": [
       [11, 6, 27, "Variable name \`NotFoundPage\` must match one of the following formats: camelCase, UPPER_CASE", "2323826353"]
     ],
     "js/pages/ProfilePage/index.spec.tsx:1483823983": [
@@ -2218,7 +2218,7 @@ exports[`eslint`] = {
       [367, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [388, 12, 17, "\'generateTabKeySpy\' is assigned a value but never used.", "4206744084"]
     ],
-    "js/pages/ProfilePage/index.tsx:2549903614": [
+    "js/pages/ProfilePage/index.tsx:1513493608": [
       [97, 22, 17, "Must use destructuring state assignment", "3172298888"],
       [101, 23, 16, "Must use destructuring props assignment", "1899951550"],
       [103, 19, 17, "Must use destructuring state assignment", "3172298888"],
@@ -2229,20 +2229,20 @@ exports[`eslint`] = {
       [113, 4, 22, "Must use destructuring props assignment", "1578665912"],
       [114, 4, 30, "Must use destructuring props assignment", "3847331326"],
       [122, 8, 28, "Must use destructuring props assignment", "1029230354"],
-      [168, 8, 28, "Must use destructuring props assignment", "1029230354"]
+      [166, 8, 28, "Must use destructuring props assignment", "1029230354"]
     ],
     "js/pages/SearchPage/ResourceSelector/index.spec.tsx:2836978602": [
       [37, 64, 10, "Prop spreading is forbidden", "480399587"],
       [92, 6, 25, "Use object destructuring.", "354229464"],
       [93, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/pages/SearchPage/ResourceSelector/index.tsx:1052952266": [
+    "js/pages/SearchPage/ResourceSelector/index.tsx:4037234230": [
       [46, 4, 22, "Must use destructuring props assignment", "3282194885"],
-      [53, 10, 199, "A control must be associated with a text label.", "1496514362"],
-      [57, 21, 19, "Must use destructuring props assignment", "3960624135"],
-      [72, 15, 17, "Must use destructuring props assignment", "3767383680"],
-      [80, 15, 21, "Must use destructuring props assignment", "1352381626"],
-      [88, 15, 16, "Must use destructuring props assignment", "1927755215"]
+      [52, 8, 187, "A control must be associated with a text label.", "3436291130"],
+      [56, 19, 19, "Must use destructuring props assignment", "3960624135"],
+      [70, 15, 17, "Must use destructuring props assignment", "3767383680"],
+      [78, 15, 21, "Must use destructuring props assignment", "1352381626"],
+      [86, 15, 16, "Must use destructuring props assignment", "1927755215"]
     ],
     "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.spec.tsx:464014135": [
       [57, 6, 25, "Use object destructuring.", "354229464"],
@@ -2255,7 +2255,7 @@ exports[`eslint`] = {
       [195, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [205, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.tsx:307707221": [
+    "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.tsx:764455976": [
       [49, 17, 24, "Must use destructuring props assignment", "4001263474"],
       [66, 11, 24, "Must use destructuring props assignment", "4001263474"],
       [72, 17, 7, "\'removed\' is assigned a value but never used.", "1396037287"],
@@ -2268,7 +2268,7 @@ exports[`eslint`] = {
       [98, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [106, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:1810449414": [
+    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:259327291": [
       [40, 4, 22, "Must use destructuring props assignment", "1282914580"],
       [40, 27, 21, "Must use destructuring props assignment", "1640009072"],
       [43, 29, -1198, "Expected to return a value at the end of arrow function.", "5381"]
@@ -2288,7 +2288,7 @@ exports[`eslint`] = {
       [205, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [215, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:1387474436": [
+    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:1127269209": [
       [49, 21, 16, "Must use destructuring props assignment", "1934035558"],
       [51, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [57, 8, 16, "Must use destructuring state assignment", "3998965439"],
@@ -2310,7 +2310,7 @@ exports[`eslint`] = {
       [120, 6, 29, "Use object destructuring.", "2645724888"],
       [144, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/pages/SearchPage/SearchPanel/index.tsx:933004133": [
+    "js/pages/SearchPage/SearchPanel/index.tsx:3572981893": [
       [11, 6, 21, "Variable name \`SearchPanel\` must match one of the following formats: camelCase, UPPER_CASE", "1210432301"]
     ],
     "js/pages/SearchPage/SearchPanel/tests/index.spec.tsx:3928473928": [
@@ -2336,7 +2336,7 @@ exports[`eslint`] = {
       [223, 10, 10, "Property name \`page_index\` must match one of the following formats: camelCase", "305070679"],
       [225, 10, 13, "Property name \`total_results\` must match one of the following formats: camelCase", "248890114"]
     ],
-    "js/pages/SearchPage/index.tsx:1161755055": [
+    "js/pages/SearchPage/index.tsx:2062297394": [
       [69, 4, 23, "Must use destructuring props assignment", "2469865886"],
       [69, 28, 19, "Must use destructuring props assignment", "1779396464"],
       [73, 8, 19, "Must use destructuring props assignment", "1779396464"],
@@ -2352,7 +2352,7 @@ exports[`eslint`] = {
       [156, 24, 23, "Must use destructuring props assignment", "1307307490"],
       [167, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
-    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:2700868459": [
+    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:2996001920": [
       [19, 2, 5, "Enum Member name \`ERROR\` must match one of the following formats: camelCase", "202381725"],
       [20, 2, 9, "Enum Member name \`FORBIDDEN\` must match one of the following formats: camelCase", "2583670014"],
       [21, 2, 7, "Enum Member name \`LOADING\` must match one of the following formats: camelCase", "154833731"],
@@ -2368,17 +2368,17 @@ exports[`eslint`] = {
       [243, 21, 20, "Must use destructuring state assignment", "2976153148"],
       [245, 26, 21, "Must use destructuring props assignment", "2163940102"]
     ],
-    "js/pages/TableDetailPage/ExploreButton/index.spec.tsx:1196305960": [
-      [35, 8, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
-      [36, 8, 7, "Property name \`is_view\` must match one of the following formats: camelCase", "2715417645"],
-      [40, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
-      [42, 8, 12, "Property name \`table_writer\` must match one of the following formats: camelCase", "1979434539"],
-      [43, 10, 15, "Property name \`application_url\` must match one of the following formats: camelCase", "1067313867"],
-      [49, 10, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"],
-      [53, 8, 13, "Property name \`table_readers\` must match one of the following formats: camelCase", "3636171154"],
-      [56, 10, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"],
-      [58, 8, 16, "Property name \`resource_reports\` must match one of the following formats: camelCase", "3614191341"],
-      [60, 8, 25, "Property name \`programmatic_descriptions\` must match one of the following formats: camelCase", "3262748393"]
+    "js/pages/TableDetailPage/ExploreButton/index.spec.tsx:3838897896": [
+      [31, 8, 11, "Property name \`is_editable\` must match one of the following formats: camelCase", "389228086"],
+      [32, 8, 7, "Property name \`is_view\` must match one of the following formats: camelCase", "2715417645"],
+      [36, 8, 22, "Property name \`last_updated_timestamp\` must match one of the following formats: camelCase", "1908543892"],
+      [38, 8, 12, "Property name \`table_writer\` must match one of the following formats: camelCase", "1979434539"],
+      [39, 10, 15, "Property name \`application_url\` must match one of the following formats: camelCase", "1067313867"],
+      [45, 10, 14, "Property name \`is_partitioned\` must match one of the following formats: camelCase", "361132355"],
+      [49, 8, 13, "Property name \`table_readers\` must match one of the following formats: camelCase", "3636171154"],
+      [52, 10, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"],
+      [54, 8, 16, "Property name \`resource_reports\` must match one of the following formats: camelCase", "3614191341"],
+      [56, 8, 25, "Property name \`programmatic_descriptions\` must match one of the following formats: camelCase", "3262748393"]
     ],
     "js/pages/TableDetailPage/ExploreButton/index.tsx:3186575728": [
       [13, 0, 454, "Component should be written as a pure function", "1437366564"],
@@ -2401,17 +2401,17 @@ exports[`eslint`] = {
       [63, 25, 1, "\'_\' is defined but never used.", "177658"],
       [66, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.spec.tsx:3374166418": [
+    "js/pages/TableDetailPage/ReportTableIssue/index.spec.tsx:3198818853": [
       [7, 7, 9, "\'AppConfig\' is defined but never used.", "1320620174"],
       [11, 2, 14, "\'ComponentProps\' is defined but never used.", "2554343108"],
       [15, 2, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"],
       [24, 2, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
       [25, 2, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
-      [47, 4, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
-      [48, 4, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
-      [72, 64, 10, "Prop spreading is forbidden", "480399587"]
+      [45, 4, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
+      [46, 4, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
+      [70, 64, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2561908370": [
+    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:4268651983": [
       [66, 4, 22, "Must use destructuring props assignment", "2426007440"],
       [77, 11, 19, "Must use destructuring props assignment", "987121924"],
       [82, 48, 24, "Must use destructuring props assignment", "2122165662"],
@@ -2434,39 +2434,39 @@ exports[`eslint`] = {
       [14, 0, 50, "\`./constants\` import should occur before import of \`.\`", "1670547063"],
       [45, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/TableDetailPage/RequestDescriptionText/index.tsx:1704063609": [
+    "js/pages/TableDetailPage/RequestDescriptionText/index.tsx:3255408356": [
       [6, 9, 11, "\'GlobalState\' is defined but never used.", "3862509465"],
       [31, 4, 39, "Must use destructuring props assignment", "4072624518"],
       [40, 13, 20, "Script URL is a form of eval.", "3373049033"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:713170810": [
+    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:1512093594": [
       [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
-      [126, 6, 25, "Use object destructuring.", "1230260048"],
-      [158, 10, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
-      [159, 10, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
-      [160, 10, 21, "Property name \`description_requested\` must match one of the following formats: camelCase", "3477246476"],
-      [161, 10, 16, "Property name \`fields_requested\` must match one of the following formats: camelCase", "1221611451"],
-      [175, 10, 29, "Use object destructuring.", "2645724888"],
-      [257, 10, 29, "Use object destructuring.", "2645724888"],
-      [273, 10, 29, "Use object destructuring.", "2645724888"],
-      [299, 8, 29, "Use object destructuring.", "2645724888"],
-      [308, 10, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [312, 8, 111, "Use object destructuring.", "1069171227"]
+      [124, 6, 25, "Use object destructuring.", "1230260048"],
+      [154, 10, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
+      [155, 10, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
+      [156, 10, 21, "Property name \`description_requested\` must match one of the following formats: camelCase", "3477246476"],
+      [157, 10, 16, "Property name \`fields_requested\` must match one of the following formats: camelCase", "1221611451"],
+      [171, 10, 29, "Use object destructuring.", "2645724888"],
+      [253, 10, 29, "Use object destructuring.", "2645724888"],
+      [269, 10, 29, "Use object destructuring.", "2645724888"],
+      [295, 8, 29, "Use object destructuring.", "2645724888"],
+      [304, 10, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [308, 8, 111, "Use object destructuring.", "1069171227"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:1757308079": [
+    "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:3248519077": [
       [63, 4, 40, "Must use destructuring props assignment", "1859841252"],
       [67, 4, 40, "Must use destructuring props assignment", "1859841252"],
       [71, 12, 20, "Must use destructuring props assignment", "2110463974"],
-      [118, 12, 18, "\'submitNotification\' is already declared in the upper scope.", "677239804"],
-      [127, 8, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
-      [128, 8, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
-      [129, 8, 21, "Property name \`description_requested\` must match one of the following formats: camelCase", "3477246476"],
-      [130, 8, 16, "Property name \`fields_requested\` must match one of the following formats: camelCase", "1221611451"],
-      [175, 12, 226, "A control must be associated with a text label.", "1422426968"],
-      [187, 12, 311, "A control must be associated with a text label.", "3168721374"],
-      [202, 14, 152, "A control must be associated with a text label.", "2793199363"],
-      [210, 14, 151, "A control must be associated with a text label.", "1015004405"],
-      [220, 12, 432, "A control must be associated with a text label.", "534436217"]
+      [116, 12, 18, "\'submitNotification\' is already declared in the upper scope.", "677239804"],
+      [125, 8, 13, "Property name \`resource_name\` must match one of the following formats: camelCase", "2441095223"],
+      [126, 8, 13, "Property name \`resource_path\` must match one of the following formats: camelCase", "2440157661"],
+      [127, 8, 21, "Property name \`description_requested\` must match one of the following formats: camelCase", "3477246476"],
+      [128, 8, 16, "Property name \`fields_requested\` must match one of the following formats: camelCase", "1221611451"],
+      [173, 12, 226, "A control must be associated with a text label.", "1422426968"],
+      [185, 12, 311, "A control must be associated with a text label.", "3168721374"],
+      [200, 14, 152, "A control must be associated with a text label.", "2793199363"],
+      [208, 14, 151, "A control must be associated with a text label.", "1015004405"],
+      [218, 12, 432, "A control must be associated with a text label.", "534436217"]
     ],
     "js/pages/TableDetailPage/ResourceReportsDropdown/index.tsx:1959629208": [
       [12, 6, 51, "Variable name \`TableReportsDropdown\` must match one of the following formats: camelCase, UPPER_CASE", "2789553413"]
@@ -2484,7 +2484,7 @@ exports[`eslint`] = {
       [91, 6, 25, "Use object destructuring.", "354229464"],
       [92, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/pages/TableDetailPage/TableHeaderBullets/index.tsx:3428555292": [
+    "js/pages/TableDetailPage/TableHeaderBullets/index.tsx:75629025": [
       [37, 25, 19, "Must use destructuring props assignment", "2861102024"],
       [39, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
       [42, 4, 25, "Must use destructuring props assignment", "2288791878"],
@@ -2501,14 +2501,14 @@ exports[`eslint`] = {
       [92, 12, 21, "Property name \`priority_display_name\` must match one of the following formats: camelCase", "3184323018"],
       [93, 12, 13, "Property name \`priority_name\` must match one of the following formats: camelCase", "3589006831"]
     ],
-    "js/pages/TableDetailPage/TableIssues/index.tsx:3598148381": [
+    "js/pages/TableDetailPage/TableIssues/index.tsx:3132079201": [
       [36, 6, 32, "Variable name \`ShimmeringIssuesLoader\` must match one of the following formats: camelCase, UPPER_CASE", "4230528043"],
-      [47, 12, 9, "\'getIssues\' is already declared in the upper scope.", "34848249"]
+      [45, 12, 9, "\'getIssues\' is already declared in the upper scope.", "34848249"]
     ],
     "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3400494524": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
-    "js/pages/TableDetailPage/TableOwnerEditor/index.tsx:939625580": [
+    "js/pages/TableDetailPage/TableOwnerEditor/index.tsx:4093859793": [
       [20, 12, 11, "Variable name \`profile_url\` must match one of the following formats: camelCase, UPPER_CASE", "4082386394"],
       [20, 25, 7, "Variable name \`user_id\` must match one of the following formats: camelCase, UPPER_CASE", "2414288038"],
       [20, 34, 12, "Variable name \`display_name\` must match one of the following formats: camelCase, UPPER_CASE", "2661030023"]
@@ -2529,9 +2529,9 @@ exports[`eslint`] = {
       [33, 60, 10, "Prop spreading is forbidden", "480399587"],
       [64, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/TableDetailPage/WatermarkLabel/index.tsx:4160052119": [
-      [30, 22, 21, "Must use destructuring props assignment", "587844958"],
-      [31, 7, 20, "\'watermark\' is already declared in the upper scope.", "1311337087"]
+    "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
+      [29, 22, 21, "Must use destructuring props assignment", "587844958"],
+      [30, 7, 20, "\'watermark\' is already declared in the upper scope.", "1311337087"]
     ],
     "js/pages/TableDetailPage/WriterLink/index.tsx:1272312570": [
       [14, 6, 37, "Variable name \`WriterLink\` must match one of the following formats: camelCase, UPPER_CASE", "1092614105"]
@@ -2539,23 +2539,23 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:163729336": [
       [57, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:1910662008": [
+    "js/pages/TableDetailPage/index.tsx:1290852100": [
       [110, 6, 12, "Variable name \`ErrorMessage\` must match one of the following formats: camelCase, UPPER_CASE", "842978774"],
-      [128, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [138, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [147, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [182, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
-      [185, 4, 23, "Must use destructuring props assignment", "2314094642"],
-      [222, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+      [126, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [136, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [145, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [180, 6, 11, "Property name \`target_type\` must match one of the following formats: camelCase", "2535870899"],
+      [183, 4, 23, "Must use destructuring props assignment", "2314094642"],
+      [220, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/stories/colors.story.tsx:1330622862": [
       [17, 6, 37, "Variable name \`ColorBlock\` must match one of the following formats: camelCase, UPPER_CASE", "1878986105"]
     ],
-    "js/stories/typography.story.tsx:173969079": [
+    "js/stories/typography.story.tsx:1965240919": [
       [11, 13, 17, "Variable name \`TypographyUpdated\` must match one of the following formats: camelCase, UPPER_CASE", "1337636535"],
-      [59, 13, 10, "Variable name \`Typography\` must match one of the following formats: camelCase, UPPER_CASE", "1642521634"]
+      [57, 13, 10, "Variable name \`Typography\` must match one of the following formats: camelCase, UPPER_CASE", "1642521634"]
     ],
-    "js/stories/welcome.story.tsx:18084002": [
+    "js/stories/welcome.story.tsx:2283090101": [
       [13, 13, 12, "Variable name \`Introduction\` must match one of the following formats: camelCase, UPPER_CASE", "1115789285"]
     ],
     "js/utils/index.spec.ts:1046137984": [
@@ -2564,7 +2564,7 @@ exports[`eslint`] = {
       [2, 9, 6, "\'access\' is defined but never used.", "1314097761"],
       [3, 9, 3, "\'sys\' is defined but never used.", "193433276"]
     ],
-    "js/utils/navigationUtils.ts:1997991638": [
+    "js/utils/navigationUtils.ts:1028247851": [
       [6, 13, 14, "Variable name \`BrowserHistory\` must match one of the following formats: camelCase, UPPER_CASE", "1918603115"],
       [63, 34, 11, "Parameter name \`URI\` must match one of the following formats: camelCase", "762560452"]
     ],

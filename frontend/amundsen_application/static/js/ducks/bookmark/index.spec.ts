@@ -274,25 +274,23 @@ describe('bookmark ducks', () => {
         action = addBookmark(testResourceKey, testResourceType);
       });
 
-      it('adds a bookmark', () => {
-        return expectSaga(addBookmarkWorker, action)
+      it('adds a bookmark', () =>
+        expectSaga(addBookmarkWorker, action)
           .provide([
             [matchers.call.fn(API.addBookmark), {}],
             [matchers.call.fn(API.getBookmarks), { bookmarks }],
           ])
           .put(addBookmarkSuccess(bookmarks))
-          .run();
-      });
+          .run());
 
-      it('handles request error', () => {
-        return expectSaga(addBookmarkWorker, action)
+      it('handles request error', () =>
+        expectSaga(addBookmarkWorker, action)
           .provide([
             [matchers.call.fn(API.addBookmark), throwError(new Error())],
             [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
           .put(addBookmarkFailure())
-          .run();
-      });
+          .run());
     });
 
     describe('getBookmarksWatcher', () => {
@@ -306,21 +304,19 @@ describe('bookmark ducks', () => {
     });
 
     describe('getBookmarksWorker', () => {
-      it('gets bookmarks', () => {
-        return expectSaga(getBookmarksWorker)
+      it('gets bookmarks', () =>
+        expectSaga(getBookmarksWorker)
           .provide([[matchers.call.fn(API.getBookmarks), { bookmarks }]])
           .put(getBookmarksSuccess(bookmarks))
-          .run();
-      });
+          .run());
 
-      it('handles request error', () => {
-        return expectSaga(getBookmarksWorker)
+      it('handles request error', () =>
+        expectSaga(getBookmarksWorker)
           .provide([
             [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
           .put(getBookmarksFailure())
-          .run();
-      });
+          .run());
     });
 
     describe('getBookmarksForUserWatcher', () => {
@@ -339,21 +335,19 @@ describe('bookmark ducks', () => {
         action = getBookmarksForUser(testUserId);
       });
 
-      it('gets bookmarks', () => {
-        return expectSaga(getBookmarkForUserWorker, action)
+      it('gets bookmarks', () =>
+        expectSaga(getBookmarkForUserWorker, action)
           .provide([[matchers.call.fn(API.getBookmarks), { bookmarks }]])
           .put(getBookmarksForUserSuccess(bookmarks))
-          .run();
-      });
+          .run());
 
-      it('handles request error', () => {
-        return expectSaga(getBookmarkForUserWorker, action)
+      it('handles request error', () =>
+        expectSaga(getBookmarkForUserWorker, action)
           .provide([
             [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
           .put(getBookmarksForUserFailure())
-          .run();
-      });
+          .run());
     });
 
     describe('removeBookmarkWatcher', () => {
@@ -372,21 +366,19 @@ describe('bookmark ducks', () => {
         action = removeBookmark(testResourceKey, testResourceType);
       });
 
-      it('removes a bookmark', () => {
-        return expectSaga(removeBookmarkWorker, action)
+      it('removes a bookmark', () =>
+        expectSaga(removeBookmarkWorker, action)
           .provide([[matchers.call.fn(API.removeBookmark), {}]])
           .put(removeBookmarkSuccess(testResourceKey, testResourceType))
-          .run();
-      });
+          .run());
 
-      it('handles request error', () => {
-        return expectSaga(removeBookmarkWorker, action)
+      it('handles request error', () =>
+        expectSaga(removeBookmarkWorker, action)
           .provide([
             [matchers.call.fn(API.removeBookmark), throwError(new Error())],
           ])
           .put(removeBookmarkFailure())
-          .run();
-      });
+          .run());
     });
   });
 });

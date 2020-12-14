@@ -22,28 +22,21 @@ const ResultItem: React.FC<ResultItemProps> = ({
   subtitle,
   titleNode,
   type,
-}: ResultItemProps) => {
-  return (
-    <li className="list-group-item">
-      <Link
-        id={id}
-        className="result-item-link"
-        onClick={onItemSelect}
-        to={href}
-      >
-        <span className={`result-icon ${iconClass}`} />
+}: ResultItemProps) => (
+  <li className="list-group-item">
+    <Link id={id} className="result-item-link" onClick={onItemSelect} to={href}>
+      <span className={`result-icon ${iconClass}`} />
 
-        <div className="result-info my-auto">
-          <div className="truncated">
-            {titleNode}
-            <div className="body-secondary-3 truncated">{subtitle}</div>
-          </div>
+      <div className="result-info my-auto">
+        <div className="truncated">
+          {titleNode}
+          <div className="body-secondary-3 truncated">{subtitle}</div>
         </div>
+      </div>
 
-        <div className="resource-type">{type}</div>
-      </Link>
-    </li>
-  );
-};
+      <div className="resource-type">{type}</div>
+    </Link>
+  </li>
+);
 
 export default ResultItem;

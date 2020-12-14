@@ -21,22 +21,20 @@ const CheckBoxItem: React.FC<CheckBoxItemProps> = ({
   onChange,
   value,
   children,
-}: CheckBoxItemProps) => {
-  return (
-    <div className="checkbox">
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={checked}
-          disabled={disabled}
-          name={name}
-          onChange={onChange}
-          value={value}
-        />
-        {children}
-      </label>
-    </div>
-  );
-};
+}: CheckBoxItemProps) => (
+  <div className="checkbox">
+    <label className="checkbox-label">
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        name={name}
+        onChange={onChange}
+        value={value}
+      />
+      {children}
+    </label>
+  </div>
+);
 
 export default CheckBoxItem;
