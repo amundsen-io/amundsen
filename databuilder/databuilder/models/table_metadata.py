@@ -17,6 +17,16 @@ DESCRIPTION_NODE_LABEL_VAL = 'Description'
 DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
 
 
+def _format_as_list(tags: Union[List, str, None]) -> List:
+    if tags is None:
+        tags = []
+    if isinstance(tags, str):
+        tags = list(filter(None, tags.split(',')))
+    if isinstance(tags, list):
+        tags = [tag.lower().strip() for tag in tags]
+    return tags
+
+
 class TagMetadata(GraphSerializable):
     TAG_NODE_LABEL = 'Tag'
     TAG_KEY_FORMAT = '{tag}'
@@ -157,7 +167,7 @@ class ColumnMetadata:
                  description: Union[str, None],
                  col_type: str,
                  sort_order: int,
-                 badges: Union[List[str], None] = None
+                 badges: Union[List[str], None] = None,
                  ) -> None:
         """
         TODO: Add stats
@@ -165,16 +175,15 @@ class ColumnMetadata:
         :param description:
         :param col_type:
         :param sort_order:
+        :param badges: Optional. Column level badges
         """
         self.name = name
         self.description = DescriptionMetadata.create_description_metadata(source=None,
                                                                            text=description)
         self.type = col_type
         self.sort_order = sort_order
-        if badges:
-            self.badges = [Badge(badge, 'column') for badge in badges]
-        else:
-            self.badges = []
+        formatted_badges = _format_as_list(badges)
+        self.badges = [Badge(badge, 'column') for badge in formatted_badges]
 
     def __repr__(self) -> str:
         return 'ColumnMetadata({!r}, {!r}, {!r}, {!r}, {!r})'.format(self.name,
@@ -260,7 +269,7 @@ class TableMetadata(GraphSerializable):
         self.is_view = is_view
         self.attrs: Optional[Dict[str, Any]] = None
 
-        self.tags = TableMetadata.format_tags(tags)
+        self.tags = _format_as_list(tags)
 
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
@@ -324,14 +333,7 @@ class TableMetadata(GraphSerializable):
 
     @staticmethod
     def format_tags(tags: Union[List, str, None]) -> List:
-        if tags is None:
-            tags = []
-        if isinstance(tags, str):
-            tags = list(filter(None, tags.split(',')))
-        if isinstance(tags, list):
-            tags = [tag.lower().strip() for tag in tags]
-
-        return tags
+        return _format_as_list(tags)
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -346,7 +348,7 @@ class TableMetadata(GraphSerializable):
             node_key = self._get_table_description_key(self.description)
             yield self.description.get_node(node_key)
 
-        # Create the table tag node
+        # Create the table tag nodes
         if self.tags:
             for tag in self.tags:
                 yield TagMetadata.create_tag_node(tag)
@@ -368,11 +370,11 @@ class TableMetadata(GraphSerializable):
                 yield col.description.get_node(node_key)
 
             if col.badges:
-                badge_metadata = BadgeMetadata(start_label=ColumnMetadata.COLUMN_NODE_LABEL,
-                                               start_key=self._get_col_key(col),
-                                               badges=col.badges)
-                badge_nodes = badge_metadata.create_nodes()
-                for node in badge_nodes:
+                col_badge_metadata = BadgeMetadata(
+                    start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                    start_key=self._get_col_key(col),
+                    badges=col.badges)
+                for node in col_badge_metadata.create_nodes():
                     yield node
 
         # Database, cluster, schema
