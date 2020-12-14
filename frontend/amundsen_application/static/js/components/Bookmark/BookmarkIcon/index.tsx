@@ -72,18 +72,15 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  return {
-    bookmarkKey: ownProps.bookmarkKey,
-    isBookmarked: state.bookmarks.myBookmarks[ownProps.resourceType].some(
-      (bookmark) => bookmark.key === ownProps.bookmarkKey
-    ),
-  };
-};
+export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => ({
+  bookmarkKey: ownProps.bookmarkKey,
+  isBookmarked: state.bookmarks.myBookmarks[ownProps.resourceType].some(
+    (bookmark) => bookmark.key === ownProps.bookmarkKey
+  ),
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ addBookmark, removeBookmark }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ addBookmark, removeBookmark }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps, OwnProps>(
   mapStateToProps,

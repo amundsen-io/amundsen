@@ -155,8 +155,8 @@ describe('tableMetadata:owners ducks', () => {
       describe('executes flow for updating owners and returning up to date owner dict', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (action) => {
-            return testSaga(updateTableOwnerWorker, action)
+          sagaTest = (action) =>
+            testSaga(updateTableOwnerWorker, action)
               .next()
               .select()
               .next(globalState)
@@ -170,7 +170,6 @@ describe('tableMetadata:owners ducks', () => {
               .call(API.getTableOwners, globalState.tableMetadata.tableData.key)
               .next(expectedOwners)
               .put(updateTableOwnerSuccess(expectedOwners));
-          };
         });
         it('without success callback', () => {
           sagaTest(updateTableOwner(updatePayload)).next().isDone();
@@ -188,8 +187,8 @@ describe('tableMetadata:owners ducks', () => {
       describe('handles request error', () => {
         let sagaTest;
         beforeAll(() => {
-          sagaTest = (action) => {
-            return testSaga(updateTableOwnerWorker, action)
+          sagaTest = (action) =>
+            testSaga(updateTableOwnerWorker, action)
               .next()
               .select()
               .next(globalState)
@@ -199,7 +198,6 @@ describe('tableMetadata:owners ducks', () => {
                   globalState.tableMetadata.tableOwners.owners
                 )
               );
-          };
         });
         it('without failure callback', () => {
           sagaTest(updateTableOwner(updatePayload)).next().isDone();

@@ -64,8 +64,8 @@ export class TableHeaderBullets extends React.Component<
   }
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       searchDatabase: (databaseText: string) =>
         updateSearchState({
@@ -77,7 +77,6 @@ export const mapDispatchToProps = (dispatch: any) => {
     },
     dispatch
   );
-};
 
 export default connect<null, DispatchFromProps, HeaderBulletsProps>(
   null,

@@ -118,9 +118,8 @@ export const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getAllTags }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ getAllTags }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps, OwnProps>(
   mapStateToProps,

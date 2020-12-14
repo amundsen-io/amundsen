@@ -66,16 +66,13 @@ export class PopularTables extends React.Component<PopularTablesProps> {
     );
   }
 }
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    popularTables: state.popularTables.popularTables,
-    isLoaded: state.popularTables.popularTablesIsLoaded,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  popularTables: state.popularTables.popularTables,
+  isLoaded: state.popularTables.popularTablesIsLoaded,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getPopularTables }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ getPopularTables }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

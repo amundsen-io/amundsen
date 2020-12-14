@@ -46,17 +46,14 @@ const AnnouncementsListContainer: React.FC<AnnouncementContainerProps> = ({
   );
 };
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    announcements: state.announcements.posts,
-    isLoading: state.announcements.isLoading,
-    statusCode: state.announcements.statusCode,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  announcements: state.announcements.posts,
+  isLoading: state.announcements.isLoading,
+  statusCode: state.announcements.statusCode,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ announcementsGet: getAnnouncements }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ announcementsGet: getAnnouncements }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

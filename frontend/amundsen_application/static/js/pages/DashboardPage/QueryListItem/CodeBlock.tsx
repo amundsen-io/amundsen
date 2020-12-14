@@ -10,17 +10,15 @@ type CodeBlockProps = {
   text: string;
 };
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ text }: CodeBlockProps) => {
-  return (
-    <CopyBlock
-      text={text}
-      language={LANGUAGE}
-      theme={atomOneLight}
-      showLineNumbers={false}
-      wrapLines
-      codeBlock
-    />
-  );
-};
+const CodeBlock: React.FC<CodeBlockProps> = ({ text }: CodeBlockProps) => (
+  <CopyBlock
+    text={text}
+    language={LANGUAGE}
+    theme={atomOneLight}
+    showLineNumbers={false}
+    wrapLines
+    codeBlock
+  />
+);
 
 export default CodeBlock;

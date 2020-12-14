@@ -19,14 +19,12 @@ const AvatarLabel: React.FC<AvatarLabelProps> = ({
   labelClass,
   label,
   src,
-}: AvatarLabelProps) => {
-  return (
-    <div className="avatar-label-component">
-      <Avatar className={avatarClass} name={label} src={src} size={24} round />
-      <span className={`avatar-label body-2 ${labelClass}`}>{label}</span>
-    </div>
-  );
-};
+}: AvatarLabelProps) => (
+  <div className="avatar-label-component">
+    <Avatar className={avatarClass} name={label} src={src} size={24} round />
+    <span className={`avatar-label body-2 ${labelClass}`}>{label}</span>
+  </div>
+);
 
 AvatarLabel.defaultProps = {
   labelClass: 'text-secondary',

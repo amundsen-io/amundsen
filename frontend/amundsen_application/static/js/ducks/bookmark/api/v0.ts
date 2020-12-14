@@ -9,9 +9,7 @@ export const API_PATH = '/api/metadata/v0';
 export function addBookmark(resourceKey: string, resourceType: ResourceType) {
   return axios
     .put(`${API_PATH}/user/bookmark`, { type: resourceType, key: resourceKey })
-    .then((response: AxiosResponse) => {
-      return response.data;
-    });
+    .then((response: AxiosResponse) => response.data);
 }
 
 export function removeBookmark(
@@ -22,15 +20,11 @@ export function removeBookmark(
     .delete(`${API_PATH}/user/bookmark`, {
       data: { type: resourceType, key: resourceKey },
     })
-    .then((response: AxiosResponse) => {
-      return response.data;
-    });
+    .then((response: AxiosResponse) => response.data);
 }
 
 export function getBookmarks(userId?: string) {
   return axios
     .get(`${API_PATH}/user/bookmark` + (userId ? `?user_id=${userId}` : ''))
-    .then((response: AxiosResponse) => {
-      return response.data;
-    });
+    .then((response: AxiosResponse) => response.data);
 }

@@ -17,19 +17,17 @@ const FlashMessage: React.FC<FlashMessageProps> = ({
   iconClass,
   message,
   onClose,
-}: FlashMessageProps) => {
-  return (
-    <div className="flash-message">
-      <div>
-        {iconClass && <img className={`icon ${iconClass}`} alt="" />}
-        <p className="message">{message}</p>
-      </div>
-      <button type="button" className="btn btn-close" onClick={onClose}>
-        <span className="sr-only">{Constants.CLOSE}</span>
-      </button>
+}: FlashMessageProps) => (
+  <div className="flash-message">
+    <div>
+      {iconClass && <img className={`icon ${iconClass}`} alt="" />}
+      <p className="message">{message}</p>
     </div>
-  );
-};
+    <button type="button" className="btn btn-close" onClick={onClose}>
+      <span className="sr-only">{Constants.CLOSE}</span>
+    </button>
+  </div>
+);
 
 FlashMessage.defaultProps = {
   iconClass: null,

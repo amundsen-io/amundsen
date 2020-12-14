@@ -27,9 +27,7 @@ const mockFormData = {
   owners: 'test@test.com',
   get: jest.fn(),
 };
-mockFormData.get.mockImplementation((val) => {
-  return mockFormData[val];
-});
+mockFormData.get.mockImplementation((val) => mockFormData[val]);
 function formDataMock() {
   this.append = jest.fn();
   return mockFormData;

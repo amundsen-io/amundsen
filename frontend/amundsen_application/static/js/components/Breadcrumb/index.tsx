@@ -53,9 +53,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = (
   );
 };
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ loadPreviousSearch }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ loadPreviousSearch }, dispatch);
 
 export default connect<{}, MapDispatchToProps>(
   null,

@@ -140,9 +140,10 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 
   mapTagsToReactSelectAPI(tagArray) {
-    return tagArray.map((tag) => {
-      return { value: tag.tag_name, label: tag.tag_name };
-    });
+    return tagArray.map((tag) => ({
+      value: tag.tag_name,
+      label: tag.tag_name,
+    }));
   }
 
   mapOptionsToReactSelectAPI(tagArray) {
@@ -272,23 +273,13 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
     // https://react-select.com/props#api
     const componentOverides = !this.props.isEditing
       ? {
-          DropdownIndicator: () => {
-            return null;
-          },
-          IndicatorSeparator: () => {
-            return null;
-          },
-          MultiValueRemove: () => {
-            return null;
-          },
+          DropdownIndicator: () => null,
+          IndicatorSeparator: () => null,
+          MultiValueRemove: () => null,
         }
       : {
-          DropdownIndicator: () => {
-            return null;
-          },
-          IndicatorSeparator: () => {
-            return null;
-          },
+          DropdownIndicator: () => null,
+          IndicatorSeparator: () => null,
         };
 
     let tagBody;
@@ -375,17 +366,14 @@ class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    allTags: state.tags.allTags.tags,
-    isLoading:
-      state.tags.allTags.isLoading || state.tags.resourceTags.isLoading,
-    tags: state.tags.resourceTags.tags,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  allTags: state.tags.allTags.tags,
+  isLoading: state.tags.allTags.isLoading || state.tags.resourceTags.isLoading,
+  tags: state.tags.resourceTags.tags,
+});
 
-export const mapDispatchToProps = (dispatch: any, ownProps: OwnProps) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any, ownProps: OwnProps) =>
+  bindActionCreators(
     {
       getAllTags,
       updateTags: (tags: UpdateTagData[]) =>
@@ -393,7 +381,6 @@ export const mapDispatchToProps = (dispatch: any, ownProps: OwnProps) => {
     },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps, OwnProps>(
   mapStateToProps,

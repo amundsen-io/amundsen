@@ -252,17 +252,14 @@ export class DataPreviewButton extends React.Component<
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    previewData: state.tableMetadata.preview.data,
-    status: getStatusFromCode(state.tableMetadata.preview.status),
-    tableData: state.tableMetadata.tableData,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  previewData: state.tableMetadata.preview.data,
+  status: getStatusFromCode(state.tableMetadata.preview.status),
+  tableData: state.tableMetadata.tableData,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getPreviewData }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ getPreviewData }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
   mapStateToProps,

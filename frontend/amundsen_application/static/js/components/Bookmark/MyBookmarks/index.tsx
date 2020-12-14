@@ -48,9 +48,7 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
     );
   };
 
-  generateTabKey = (resource: ResourceType) => {
-    return `bookmarktab:${resource}`;
-  };
+  generateTabKey = (resource: ResourceType) => `bookmarktab:${resource}`;
 
   generateTabTitle = (resource: ResourceType): string => {
     const bookmarks = this.props.myBookmarks[resource];
@@ -103,11 +101,9 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    myBookmarks: state.bookmarks.myBookmarks,
-    isLoaded: state.bookmarks.myBookmarksIsLoaded,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  myBookmarks: state.bookmarks.myBookmarks,
+  isLoaded: state.bookmarks.myBookmarksIsLoaded,
+});
 
 export default connect<StateFromProps>(mapStateToProps)(MyBookmarks);

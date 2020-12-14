@@ -17,12 +17,8 @@ const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
 
 jest.mock('config/config-utils', () => ({
-  getSourceDisplayName: () => {
-    return MOCK_DISPLAY_NAME;
-  },
-  getSourceIconClass: () => {
-    return MOCK_ICON_CLASS;
-  },
+  getSourceDisplayName: () => MOCK_DISPLAY_NAME,
+  getSourceIconClass: () => MOCK_ICON_CLASS,
 }));
 
 const getDBIconClassSpy = jest.spyOn(ConfigUtils, 'getSourceIconClass');

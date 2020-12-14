@@ -47,23 +47,21 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
     this.props.setResource(event.target.value);
   };
 
-  renderRadioOption = (option: ResourceOptionConfig, index: number) => {
-    return (
-      <div key={`resource-radio-item:${index}`} className="radio">
-        <label className="radio-label">
-          <input
-            type="radio"
-            name="resource"
-            value={option.type}
-            checked={this.props.resource === option.type}
-            onChange={this.onChange}
-          />
-          <span className="subtitle-2">{option.label}</span>
-          <span className="body-secondary-3 pull-right">{option.count}</span>
-        </label>
-      </div>
-    );
-  };
+  renderRadioOption = (option: ResourceOptionConfig, index: number) => (
+    <div key={`resource-radio-item:${index}`} className="radio">
+      <label className="radio-label">
+        <input
+          type="radio"
+          name="resource"
+          value={option.type}
+          checked={this.props.resource === option.type}
+          onChange={this.onChange}
+        />
+        <span className="subtitle-2">{option.label}</span>
+        <span className="body-secondary-3 pull-right">{option.count}</span>
+      </label>
+    </div>
+  );
 
   render = () => {
     const resourceOptions = [
@@ -101,24 +99,21 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
   };
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    resource: state.search.resource,
-    tables: state.search.tables,
-    users: state.search.users,
-    dashboards: state.search.dashboards,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  resource: state.search.resource,
+  tables: state.search.tables,
+  users: state.search.users,
+  dashboards: state.search.dashboards,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       setResource: (resource: ResourceType) =>
         updateSearchState({ resource, updateUrl: true }),
     },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

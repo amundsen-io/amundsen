@@ -62,24 +62,22 @@ export class EditableSection extends React.Component<
       .join(' ');
   }
 
-  renderButton = (): React.ReactNode => {
-    return (
-      <button
-        className={`btn btn-flat-icon edit-button ${
-          this.state.isEditing ? 'active' : ''
+  renderButton = (): React.ReactNode => (
+    <button
+      className={`btn btn-flat-icon edit-button ${
+        this.state.isEditing ? 'active' : ''
+      }`}
+      onClick={this.toggleEdit}
+    >
+      <span className="sr-only">{Constants.EDIT_TEXT}</span>
+      <img
+        className={`icon icon-small icon-edit ${
+          this.state.isEditing ? 'icon-color' : ''
         }`}
-        onClick={this.toggleEdit}
-      >
-        <span className="sr-only">{Constants.EDIT_TEXT}</span>
-        <img
-          className={`icon icon-small icon-edit ${
-            this.state.isEditing ? 'icon-color' : ''
-          }`}
-          alt=""
-        />
-      </button>
-    );
-  };
+        alt=""
+      />
+    </button>
+  );
 
   renderReadOnlyButton = (): React.ReactNode => {
     const { editText, editUrl } = this.props;

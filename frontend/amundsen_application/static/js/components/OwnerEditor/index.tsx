@@ -163,9 +163,7 @@ export class OwnerEditor extends React.Component<
     const { tempItemProps } = this.state;
 
     const newTempItemProps = Object.keys(tempItemProps)
-      .filter((key) => {
-        return key !== deletedKey;
-      })
+      .filter((key) => key !== deletedKey)
       .reduce((obj, key) => {
         obj[key] = tempItemProps[key];
         return obj;
@@ -206,26 +204,21 @@ export class OwnerEditor extends React.Component<
           </button>
         </form>
         <ul className="component-list">
-          {Object.keys(this.state.tempItemProps).map((key) => {
-            return (
-              <li key={`modal-list-item:${key}`}>
-                {React.createElement(
-                  AvatarLabel,
-                  this.state.tempItemProps[key]
-                )}
-                <button
-                  className="btn btn-flat-icon delete-button"
-                  /* tslint:disable - TODO: Investigate jsx-no-lambda rule */
-                  onClick={() => this.recordDeleteItem(key)}
-                  /* tslint:enable */
-                  type="button"
-                >
-                  <span className="sr-only">{Constants.DELETE_ITEM}</span>
-                  <img className="icon icon-delete" alt="" />
-                </button>
-              </li>
-            );
-          })}
+          {Object.keys(this.state.tempItemProps).map((key) => (
+            <li key={`modal-list-item:${key}`}>
+              {React.createElement(AvatarLabel, this.state.tempItemProps[key])}
+              <button
+                className="btn btn-flat-icon delete-button"
+                /* tslint:disable - TODO: Investigate jsx-no-lambda rule */
+                onClick={() => this.recordDeleteItem(key)}
+                /* tslint:enable */
+                type="button"
+              >
+                <span className="sr-only">{Constants.DELETE_ITEM}</span>
+                <img className="icon icon-delete" alt="" />
+              </button>
+            </li>
+          ))}
         </ul>
       </Modal.Body>
     );

@@ -354,17 +354,14 @@ function searchDashboardGroup(
   });
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    isLoading: state.dashboard.isLoading,
-    statusCode: state.dashboard.statusCode,
-    dashboard: state.dashboard.dashboard,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  isLoading: state.dashboard.isLoading,
+  statusCode: state.dashboard.statusCode,
+  dashboard: state.dashboard.dashboard,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ getDashboard, searchDashboardGroup }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ getDashboard, searchDashboardGroup }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

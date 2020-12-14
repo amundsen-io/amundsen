@@ -20,9 +20,7 @@ export type IssueApi = {
 export function getIssues(tableKey: string) {
   return axios
     .get(`${API_PATH}/issues?key=${tableKey}`)
-    .then((response: AxiosResponse<IssuesAPI>) => {
-      return response.data.issues;
-    });
+    .then((response: AxiosResponse<IssuesAPI>) => response.data.issues);
 }
 
 export function createIssue(

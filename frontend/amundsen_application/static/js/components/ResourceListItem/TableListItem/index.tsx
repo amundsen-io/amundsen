@@ -32,9 +32,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
   generateResourceIconClass = (
     databaseId: string,
     resource: ResourceType
-  ): string => {
-    return `icon resource-icon ${getSourceIconClass(databaseId, resource)}`;
-  };
+  ): string => `icon resource-icon ${getSourceIconClass(databaseId, resource)}`;
 
   render() {
     const { table } = this.props;

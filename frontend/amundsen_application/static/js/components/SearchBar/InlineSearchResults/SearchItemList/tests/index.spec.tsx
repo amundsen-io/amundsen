@@ -19,12 +19,9 @@ jest.mock('config/config-utils', () => ({
   indexDashboardsEnabled: jest.fn(),
 }));
 
-jest.mock('react-redux', () => {
-  return {
-    connect: (mapStateToProps, mapDispatchToProps) => (SearchItem) =>
-      SearchItem,
-  };
-});
+jest.mock('react-redux', () => ({
+  connect: (mapStateToProps, mapDispatchToProps) => (SearchItem) => SearchItem,
+}));
 
 describe('SearchItemList', () => {
   const setup = (propOverrides?: Partial<SearchItemListProps>) => {

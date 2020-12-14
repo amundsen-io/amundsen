@@ -59,9 +59,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
     );
   };
 
-  render = () => {
-    return <>{this.renderFilterSections()}</>;
-  };
+  render = () => <>{this.renderFilterSections()}</>;
 }
 
 export const mapStateToProps = (state: GlobalState) => {
@@ -80,9 +78,7 @@ export const mapStateToProps = (state: GlobalState) => {
       };
       if (categoryConfig.type === FilterType.CHECKBOX_SELECT) {
         section.options = categoryConfig.options.map(
-          ({ value, displayName }) => {
-            return { value, label: displayName || '' };
-          }
+          ({ value, displayName }) => ({ value, label: displayName || '' })
         );
       }
       filterSections.push(section);

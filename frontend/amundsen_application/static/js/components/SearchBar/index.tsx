@@ -164,9 +164,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     );
   };
 
-  shouldShowTypeAhead = (searchTerm: string): boolean => {
-    return searchTerm.length > 0;
-  };
+  shouldShowTypeAhead = (searchTerm: string): boolean => searchTerm.length > 0;
 
   updateTypeAhead = (event: Event): void => {
     /* This logic will hide/show the inline results component when the user clicks
@@ -240,11 +238,9 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState): StateFromProps => {
-  return {
-    searchTerm: state.search.search_term,
-  };
-};
+export const mapStateToProps = (state: GlobalState): StateFromProps => ({
+  searchTerm: state.search.search_term,
+});
 
 export const mapDispatchToProps = (
   dispatch: any,

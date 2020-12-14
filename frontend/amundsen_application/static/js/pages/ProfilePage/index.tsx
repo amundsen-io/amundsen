@@ -157,9 +157,7 @@ export class ProfilePage extends React.Component<
     );
   };
 
-  generateTabKey = (resource: ResourceType) => {
-    return `tab:${resource}`;
-  };
+  generateTabKey = (resource: ResourceType) => `tab:${resource}`;
 
   generateTabTitle = (resource: ResourceType) => {
     const {
@@ -329,31 +327,27 @@ export class ProfilePage extends React.Component<
   }
 }
 
-export const mapStateToProps = (state: GlobalState): StateFromProps => {
-  return {
-    user: state.user.profile.user,
-    resourceRelations: {
-      [ResourceType.table]: {
-        bookmarks: state.bookmarks.bookmarksForUser[ResourceType.table],
-        own: state.user.profile.own[ResourceType.table],
-        read: state.user.profile.read,
-      },
-      [ResourceType.dashboard]: {
-        bookmarks:
-          state.bookmarks.bookmarksForUser[ResourceType.dashboard] || [],
-        own: state.user.profile.own[ResourceType.dashboard] || [],
-        read: [],
-      },
+export const mapStateToProps = (state: GlobalState): StateFromProps => ({
+  user: state.user.profile.user,
+  resourceRelations: {
+    [ResourceType.table]: {
+      bookmarks: state.bookmarks.bookmarksForUser[ResourceType.table],
+      own: state.user.profile.own[ResourceType.table],
+      read: state.user.profile.read,
     },
-  };
-};
+    [ResourceType.dashboard]: {
+      bookmarks: state.bookmarks.bookmarksForUser[ResourceType.dashboard] || [],
+      own: state.user.profile.own[ResourceType.dashboard] || [],
+      read: [],
+    },
+  },
+});
 
-export const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
     { getUserOwn, getUserRead, getBookmarksForUser, getUserById: getUser },
     dispatch
   );
-};
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

@@ -53,9 +53,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
   createPosts() {
     const { posts } = this.props;
 
-    return posts.map((post, index) => {
-      return this.createPost(post, index);
-    });
+    return posts.map((post, index) => this.createPost(post, index));
   }
 
   render() {
@@ -79,15 +77,12 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    posts: state.announcements.posts,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  posts: state.announcements.posts,
+});
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({ announcementsGet: getAnnouncements }, dispatch);
-};
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ announcementsGet: getAnnouncements }, dispatch);
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

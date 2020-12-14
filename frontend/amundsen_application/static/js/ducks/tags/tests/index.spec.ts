@@ -131,14 +131,13 @@ describe('allTags ducks', () => {
           .run();
       });
 
-      it('handles request error', () => {
-        return expectSaga(getAllTagsWorker)
+      it('handles request error', () =>
+        expectSaga(getAllTagsWorker)
           .provide([
             [matchers.call.fn(API.getAllTags), throwError(new Error())],
           ])
           .put(getAllTagsFailure())
-          .run();
-      });
+          .run());
     });
   });
 });

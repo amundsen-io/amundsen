@@ -107,9 +107,9 @@ export function getTableOwners(tableKey: string) {
   const tableParams = getTableQueryParams(tableKey);
   return axios
     .get(`${API_PATH}/table?${tableParams}`)
-    .then((response: AxiosResponse<TableDataAPI>) => {
-      return getTableOwnersFromResponseData(response.data);
-    });
+    .then((response: AxiosResponse<TableDataAPI>) =>
+      getTableOwnersFromResponseData(response.data)
+    );
 }
 
 /* TODO: Typing return type generates redux-saga related type error that need more dedicated debugging */
@@ -124,9 +124,7 @@ export function generateOwnerUpdateRequests(
 
     /* Chain requests to send notification on success to desired users */
     return axios(updatePayload)
-      .then(() => {
-        return axios.get(`/api/metadata/v0/user?user_id=${item.id}`);
-      })
+      .then(() => axios.get(`/api/metadata/v0/user?user_id=${item.id}`))
       .then((response) => {
         if (shouldSendNotification(response.data.user)) {
           return axios.post('/api/mail/v0/notification', notificationData);
@@ -171,9 +169,10 @@ export function getPreviewData(queryParams: PreviewQueryParams) {
     method: 'POST',
     data: queryParams,
   })
-    .then((response: AxiosResponse<PreviewDataAPI>) => {
-      return { data: response.data.previewData, status: response.status };
-    })
+    .then((response: AxiosResponse<PreviewDataAPI>) => ({
+      data: response.data.previewData,
+      status: response.status,
+    }))
     .catch((e: AxiosError<PreviewDataAPI>) => {
       const { response } = e;
       let data = {};

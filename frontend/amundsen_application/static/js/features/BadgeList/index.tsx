@@ -20,8 +20,8 @@ export interface BadgeListFeatureProps {
   badges: Badge[];
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       onBadgeClick: (badgeText: string) =>
         updateSearchState({
@@ -33,7 +33,6 @@ export const mapDispatchToProps = (dispatch: any) => {
     },
     dispatch
   );
-};
 
 export default connect<null, DispatchFromProps, BadgeListFeatureProps>(
   null,

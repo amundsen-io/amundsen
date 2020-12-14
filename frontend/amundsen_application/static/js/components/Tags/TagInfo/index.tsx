@@ -55,8 +55,8 @@ export class TagInfo extends React.Component<TagInfoProps> {
   }
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
     {
       searchTag: (tagName: string) =>
         updateSearchState({
@@ -69,7 +69,6 @@ export const mapDispatchToProps = (dispatch: any) => {
     },
     dispatch
   );
-};
 
 export default connect<null, DispatchFromProps, OwnProps>(
   null,

@@ -211,81 +211,79 @@ const Table: React.FC<TableProps> = ({
       throw new Error(INVALID_DATA_ERROR_MESSAGE);
     }
 
-    body = data.map((item, index) => {
-      return (
-        <React.Fragment key={`index:${index}`}>
-          <tr
-            className={`ams-table-row ${
-              expandRow && expandedRows.includes(index)
-                ? 'has-child-expanded'
-                : ''
-            }`}
-            key={`index:${index}`}
-            style={rowStyles}
-          >
-            <>
-              {expandRow ? (
-                <ExpandingCell
-                  index={index}
-                  expandedRows={expandedRows}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
-                  rowValues={item}
-                  onClick={setExpandedRows}
-                />
-              ) : null}
-              {Object.entries(item)
-                .filter(([key]) => fields.includes(key))
-                .map(([key, value], rowIndex) => {
-                  const columnInfo = columns.find(({ field }) => field === key);
-                  const horAlign: TextAlignmentValues = columnInfo
-                    ? columnInfo.horAlign || DEFAULT_TEXT_ALIGNMENT
-                    : DEFAULT_TEXT_ALIGNMENT;
-                  const width =
-                    columnInfo && columnInfo.width
-                      ? `${columnInfo.width}px`
-                      : DEFAULT_CELL_WIDTH;
-                  const cellStyle = {
-                    width,
-                  };
-                  // TODO: Improve the typing of this
-                  let cellContent: React.ReactNode | typeof value = value;
-                  if (columnInfo && columnInfo.component) {
-                    cellContent = columnInfo.component(value, rowIndex);
-                  }
+    body = data.map((item, index) => (
+      <React.Fragment key={`index:${index}`}>
+        <tr
+          className={`ams-table-row ${
+            expandRow && expandedRows.includes(index)
+              ? 'has-child-expanded'
+              : ''
+          }`}
+          key={`index:${index}`}
+          style={rowStyles}
+        >
+          <>
+            {expandRow ? (
+              <ExpandingCell
+                index={index}
+                expandedRows={expandedRows}
+                onExpand={onExpand}
+                onCollapse={onCollapse}
+                rowValues={item}
+                onClick={setExpandedRows}
+              />
+            ) : null}
+            {Object.entries(item)
+              .filter(([key]) => fields.includes(key))
+              .map(([key, value], rowIndex) => {
+                const columnInfo = columns.find(({ field }) => field === key);
+                const horAlign: TextAlignmentValues = columnInfo
+                  ? columnInfo.horAlign || DEFAULT_TEXT_ALIGNMENT
+                  : DEFAULT_TEXT_ALIGNMENT;
+                const width =
+                  columnInfo && columnInfo.width
+                    ? `${columnInfo.width}px`
+                    : DEFAULT_CELL_WIDTH;
+                const cellStyle = {
+                  width,
+                };
+                // TODO: Improve the typing of this
+                let cellContent: React.ReactNode | typeof value = value;
+                if (columnInfo && columnInfo.component) {
+                  cellContent = columnInfo.component(value, rowIndex);
+                }
 
-                  return (
-                    <td
-                      className={`ams-table-cell ${getCellAlignmentClass(
-                        horAlign
-                      )}`}
-                      key={`index:${rowIndex}`}
-                      style={cellStyle}
-                    >
-                      {cellContent}
-                    </td>
-                  );
-                })}
-            </>
+                return (
+                  <td
+                    className={`ams-table-cell ${getCellAlignmentClass(
+                      horAlign
+                    )}`}
+                    key={`index:${rowIndex}`}
+                    style={cellStyle}
+                  >
+                    {cellContent}
+                  </td>
+                );
+              })}
+          </>
+        </tr>
+        {expandRow ? (
+          <tr
+            className={`ams-table-expanded-row ${
+              expandedRows.includes(index) ? 'is-expanded' : ''
+            }`}
+            key={`expandedIndex:${index}`}
+          >
+            <td className="ams-table-cell">
+              {/* Placeholder for the collapse/expand cell */}
+            </td>
+            <td className="ams-table-cell" colSpan={fields.length + 1}>
+              {expandRow(item, index)}
+            </td>
           </tr>
-          {expandRow ? (
-            <tr
-              className={`ams-table-expanded-row ${
-                expandedRows.includes(index) ? 'is-expanded' : ''
-              }`}
-              key={`expandedIndex:${index}`}
-            >
-              <td className="ams-table-cell">
-                {/* Placeholder for the collapse/expand cell */}
-              </td>
-              <td className="ams-table-cell" colSpan={fields.length + 1}>
-                {expandRow(item, index)}
-              </td>
-            </tr>
-          ) : null}
-        </React.Fragment>
-      );
-    });
+        ) : null}
+      </React.Fragment>
+    ));
   }
 
   let header: React.ReactNode = (

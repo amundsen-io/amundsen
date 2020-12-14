@@ -142,10 +142,8 @@ export class NavBar extends React.Component<NavBarProps> {
   }
 }
 
-export const mapStateToProps = (state: GlobalState) => {
-  return {
-    loggedInUser: state.user.loggedInUser,
-  };
-};
+export const mapStateToProps = (state: GlobalState) => ({
+  loggedInUser: state.user.loggedInUser,
+});
 
 export default connect<StateFromProps>(mapStateToProps)(withRouter(NavBar));

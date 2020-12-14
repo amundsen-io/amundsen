@@ -18,16 +18,13 @@ const Flag: React.FC<FlagProps> = ({
   caseType = null,
   text = '',
   labelStyle = BadgeStyle.DEFAULT,
-}: FlagProps) => {
+}: FlagProps) => (
   // TODO: After upgrading to Bootstrap 4, this component should leverage badges
   // https://getbootstrap.com/docs/4.1/components/badge/
-  return (
-    <span className={`flag label label-${labelStyle}`}>
-      <div className={`badge-overlay-${labelStyle}`}>
-        {convertText(text, caseType)}
-      </div>
-    </span>
-  );
-};
-
+  <span className={`flag label label-${labelStyle}`}>
+    <div className={`badge-overlay-${labelStyle}`}>
+      {convertText(text, caseType)}
+    </div>
+  </span>
+);
 export default Flag;
