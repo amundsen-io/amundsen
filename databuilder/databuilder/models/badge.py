@@ -18,6 +18,12 @@ class Badge:
         return 'Badge({!r}, {!r})'.format(self.name,
                                           self.category)
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Badge):
+            return NotImplemented
+        return self.name == other.name and \
+            self.category == other.category
+
 
 class BadgeMetadata(GraphSerializable):
     """
@@ -86,7 +92,7 @@ class BadgeMetadata(GraphSerializable):
 
     def create_nodes(self) -> List[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create a list of `GraphNode` records
         :return:
         """
         results = []
@@ -103,7 +109,7 @@ class BadgeMetadata(GraphSerializable):
         return results
 
     def create_relation(self) -> List[GraphRelationship]:
-        results = []
+        results: List[GraphRelationship] = []
         for badge in self.badges:
             relation = GraphRelationship(
                 start_label=self.start_label,
