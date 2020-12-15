@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
-from pyhocon import ConfigFactory
 from typing import Any
 
-from databuilder.transformer.regex_str_replace_transformer import RegexStrReplaceTransformer, \
-    REGEX_REPLACE_TUPLE_LIST, ATTRIBUTE_NAME
+from pyhocon import ConfigFactory
+
+from databuilder.transformer.regex_str_replace_transformer import (
+    ATTRIBUTE_NAME, REGEX_REPLACE_TUPLE_LIST, RegexStrReplaceTransformer,
+)
 
 
 class TestRegexReplacement(unittest.TestCase):

@@ -3,10 +3,9 @@
 
 import logging
 from datetime import datetime
-
-from pyhocon import ConfigFactory
-from pyhocon import ConfigTree
 from typing import Any, Dict
+
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.transformer.base_transformer import Transformer
 

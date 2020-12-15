@@ -4,14 +4,14 @@
 import logging
 import unittest
 from collections import OrderedDict
-
-from mock import patch
-from pyhocon import ConfigFactory
 from typing import Any
 
 from cassandra.metadata import ColumnMetadata as CassandraColumnMetadata
+from mock import patch
+from pyhocon import ConfigFactory
+
 from databuilder.extractor.cassandra_extractor import CassandraExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 # patch whole class to avoid actually calling for boto3.client during tests

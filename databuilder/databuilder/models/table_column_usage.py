@@ -1,15 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Iterable, Union, Iterator
-
-from databuilder.models.graph_serializable import (
-    GraphSerializable
+from typing import (
+    Iterable, Iterator, Union,
 )
-from databuilder.models.table_metadata import TableMetadata
-from databuilder.models.user import User
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.user import User
 
 
 class ColumnReader(object):
@@ -35,9 +35,9 @@ class ColumnReader(object):
         self.read_count = int(read_count)
 
     def __repr__(self) -> str:
-        return """\
-ColumnReader(database={!r}, cluster={!r}, schema={!r}, table={!r}, column={!r}, user_email={!r}, read_count={!r})"""\
-            .format(self.database, self.cluster, self.schema, self.table, self.column, self.user_email, self.read_count)
+        return f"ColumnReader(database={self.database!r}, cluster={self.cluster!r}, " \
+               f"schema={self.schema!r}, table={self.table!r}, column={self.column!r}, " \
+               f"user_email={self.user_email!r}, read_count={self.read_count!r})"
 
 
 class TableColumnUsage(GraphSerializable):
@@ -54,12 +54,10 @@ class TableColumnUsage(GraphSerializable):
     # Property key for relationship read, readby relationship
     READ_RELATION_COUNT = 'read_count'
 
-    def __init__(self,
-                 col_readers: Iterable[ColumnReader],
-                 ) -> None:
+    def __init__(self, col_readers: Iterable[ColumnReader]) -> None:
         for col_reader in col_readers:
             if col_reader.column != '*':
-                raise NotImplementedError('Column is not supported yet {}'.format(col_readers))
+                raise NotImplementedError(f'Column is not supported yet {col_readers}')
 
         self.col_readers = col_readers
         self._node_iterator = self._create_node_iterator()
@@ -108,4 +106,4 @@ class TableColumnUsage(GraphSerializable):
         return User.get_user_model_key(email=email)
 
     def __repr__(self) -> str:
-        return 'TableColumnUsage(col_readers={!r})'.format(self.col_readers)
+        return f'TableColumnUsage(col_readers={self.col_readers!r})'

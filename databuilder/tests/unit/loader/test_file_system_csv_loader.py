@@ -4,9 +4,9 @@
 import shutil
 import tempfile
 import unittest
+from typing import List
 
 from pyhocon import ConfigFactory
-from typing import List
 
 from databuilder import Scoped
 from databuilder.loader.file_system_csv_loader import FileSystemCSVLoader
@@ -17,7 +17,7 @@ class TestFileSystemCSVLoader(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
-        self.dest_file_name = '{}/test_file.csv'.format(self.temp_dir_path)
+        self.dest_file_name = f'{self.temp_dir_path}/test_file.csv'
         self.file_mode = 'w'
         config_dict = {'loader.filesystem.csv.file_path': self.dest_file_name,
                        'loader.filesystem.csv.mode': self.file_mode}

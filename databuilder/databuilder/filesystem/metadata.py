@@ -16,5 +16,4 @@ class FileMetadata(object):
         self.size = size
 
     def __repr__(self) -> str:
-        return """FileMetadata(path={!r}, last_updated={!r}, size={!r})""" \
-            .format(self.path, self.last_updated, self.size)
+        return f'FileMetadata(path={self.path!r}, last_updated={self.last_updated!r}, size={self.size!r})'

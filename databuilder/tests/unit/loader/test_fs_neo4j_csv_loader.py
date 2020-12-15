@@ -6,17 +6,25 @@ import csv
 import logging
 import os
 import unittest
+from operator import itemgetter
 from os import listdir
 from os.path import isfile, join
+from typing import (
+    Any, Callable, Dict, Iterable, Optional, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Dict, Iterable, Any, Callable, Optional, Union
 
-from databuilder.models.graph_serializable import GraphSerializable, GraphNode, GraphRelationship
 from databuilder.job.base_job import Job
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from tests.unit.models.test_graph_serializable import Movie, Actor, City
-from operator import itemgetter
+from databuilder.models.graph_serializable import (
+    GraphNode, GraphRelationship, GraphSerializable,
+)
+from tests.unit.models.test_graph_serializable import (
+    Actor, City, Movie,
+)
+
+here = os.path.dirname(__file__)
 
 
 class TestFsNeo4jCSVLoader(unittest.TestCase):
@@ -40,16 +48,13 @@ class TestFsNeo4jCSVLoader(unittest.TestCase):
         loader.load(movie)
         loader.close()
 
-        expected_node_path = '{}/../resources/fs_neo4j_csv_loader/{}/nodes'\
-            .format(os.path.join(os.path.dirname(__file__)), folder)
+        expected_node_path = os.path.join(here, f'../resources/fs_neo4j_csv_loader/{folder}/nodes')
         expected_nodes = self._get_csv_rows(expected_node_path, itemgetter('KEY'))
         actual_nodes = self._get_csv_rows(conf.get_string(FsNeo4jCSVLoader.NODE_DIR_PATH),
                                           itemgetter('KEY'))
         self.assertEqual(expected_nodes, actual_nodes)
 
-        expected_rel_path = \
-            '{}/../resources/fs_neo4j_csv_loader/{}/relationships' \
-            .format(os.path.join(os.path.dirname(__file__)), folder)
+        expected_rel_path = os.path.join(here, f'../resources/fs_neo4j_csv_loader/{folder}/relationships')
         expected_relations = self._get_csv_rows(expected_rel_path, itemgetter('START_KEY', 'END_KEY'))
         actual_relations = self._get_csv_rows(conf.get_string(FsNeo4jCSVLoader.RELATION_DIR_PATH),
                                               itemgetter('START_KEY', 'END_KEY'))
@@ -71,8 +76,7 @@ class TestFsNeo4jCSVLoader(unittest.TestCase):
         loader.load(people[1])
         loader.close()
 
-        expected_node_path = '{}/../resources/fs_neo4j_csv_loader/{}/nodes'\
-            .format(os.path.join(os.path.dirname(__file__)), folder)
+        expected_node_path = os.path.join(here, f'../resources/fs_neo4j_csv_loader/{folder}/nodes')
         expected_nodes = self._get_csv_rows(expected_node_path, itemgetter('KEY'))
         actual_nodes = self._get_csv_rows(conf.get_string(FsNeo4jCSVLoader.NODE_DIR_PATH),
                                           itemgetter('KEY'))
@@ -81,11 +85,11 @@ class TestFsNeo4jCSVLoader(unittest.TestCase):
     def _make_conf(self, test_name: str) -> ConfigTree:
         prefix = '/var/tmp/TestFsNeo4jCSVLoader'
 
-        return ConfigFactory.from_dict(
-            {FsNeo4jCSVLoader.NODE_DIR_PATH: '{}/{}/{}'.format(prefix, test_name, 'nodes'),
-             FsNeo4jCSVLoader.RELATION_DIR_PATH: '{}/{}/{}'
-             .format(prefix, test_name, 'relationships'),
-             FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR: True})
+        return ConfigFactory.from_dict({
+            FsNeo4jCSVLoader.NODE_DIR_PATH: f'{prefix}/{test_name}/{"nodes"}',
+            FsNeo4jCSVLoader.RELATION_DIR_PATH: f'{prefix}/{test_name}/{"relationships"}',
+            FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR: True
+        })
 
     def _get_csv_rows(self,
                       path: str,

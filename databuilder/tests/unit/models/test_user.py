@@ -3,8 +3,10 @@
 
 import unittest
 
-from databuilder.models.graph_serializable import RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
-    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.models.graph_serializable import (
+    RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY, RELATION_START_LABEL,
+    RELATION_TYPE,
+)
 from databuilder.models.user import User
 from databuilder.serializers import neo4_serializer
 
@@ -28,7 +30,7 @@ class TestUser(unittest.TestCase):
 
     def test_get_user_model_key(self) -> None:
         user_email = User.get_user_model_key(email=self.user.email)
-        self.assertEqual(user_email, '{email}'.format(email='test@email.com'))
+        self.assertEqual(user_email, 'test@email.com')
 
     def test_create_nodes(self) -> None:
         nodes = self.user.create_nodes()
@@ -58,8 +60,8 @@ class TestUser(unittest.TestCase):
         relations = self.user.create_relation()
         self.assertEqual(len(relations), 1)
 
-        start_key = '{email}'.format(email='test@email.com')
-        end_key = '{email}'.format(email='test_manager@email.com')
+        start_key = 'test@email.com'
+        end_key = 'test_manager@email.com'
 
         expected_relation = {
             RELATION_START_KEY: start_key,

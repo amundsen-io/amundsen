@@ -2,15 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import io
-import unittest
-
 import os
+import unittest
 
 import responses
 from pyhocon import ConfigFactory
 
-from databuilder.models.user import User
 from databuilder.extractor.user.bamboohr.bamboohr_user_extractor import BamboohrUserExtractor
+from databuilder.models.user import User
 
 
 class TestBamboohrUserExtractor(unittest.TestCase):

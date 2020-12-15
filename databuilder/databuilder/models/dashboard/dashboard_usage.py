@@ -2,19 +2,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from typing import Optional, Any, Union, Iterator
+from typing import (
+    Any, Iterator, Optional, Union,
+)
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
-from databuilder.models.graph_serializable import (
-    GraphSerializable
-)
-from databuilder.models.usage.usage_constants import (
-    READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE, READ_RELATION_COUNT_PROPERTY
-)
-from databuilder.models.user import User
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.usage.usage_constants import (
+    READ_RELATION_COUNT_PROPERTY, READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE,
+)
+from databuilder.models.user import User
 
 LOGGER = logging.getLogger(__name__)
 
@@ -90,12 +89,6 @@ class DashboardUsage(GraphSerializable):
         yield relationship
 
     def __repr__(self) -> str:
-        return 'DashboardUsage({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
-            self._dashboard_group_id,
-            self._dashboard_id,
-            self._email,
-            self._view_count,
-            self._should_create_user_node,
-            self._product,
-            self._cluster
-        )
+        return f'DashboardUsage({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \
+               f'{self._email!r}, {self._view_count!r}, {self._should_create_user_node!r}, ' \
+               f'{self._product!r}, {self._cluster!r})'

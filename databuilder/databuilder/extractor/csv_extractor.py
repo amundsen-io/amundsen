@@ -4,13 +4,13 @@
 import csv
 import importlib
 from collections import defaultdict
-
-from pyhocon import ConfigTree
 from typing import Any
 
+from pyhocon import ConfigTree
+
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 from databuilder.models.badge import Badge, BadgeMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class CsvExtractor(Extractor):

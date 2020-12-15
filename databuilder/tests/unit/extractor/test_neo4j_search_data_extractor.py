@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from mock import patch
 from typing import Any
 
+from mock import patch
 from pyhocon import ConfigFactory
+
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
@@ -30,14 +31,10 @@ class TestNeo4jExtractor(unittest.TestCase):
         with patch.object(Neo4jExtractor, '_get_driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
-                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY):
-                    'test-endpoint',
-                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER):
-                    'test-user',
-                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW):
-                    'test-passwd',
-                'extractor.search_data.{}'.format(Neo4jSearchDataExtractor.ENTITY_TYPE):
-                    'dashboard',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'test-endpoint',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'test-user',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'test-passwd',
+                f'extractor.search_data.{Neo4jSearchDataExtractor.ENTITY_TYPE}': 'dashboard',
             })
             extractor.init(Scoped.get_scoped_conf(conf=conf,
                                                   scope=extractor.get_scope()))
@@ -48,16 +45,11 @@ class TestNeo4jExtractor(unittest.TestCase):
         with patch.object(Neo4jExtractor, '_get_driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
-                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY):
-                    'test-endpoint',
-                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER):
-                    'test-user',
-                'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW):
-                    'test-passwd',
-                'extractor.search_data.{}'.format(Neo4jSearchDataExtractor.ENTITY_TYPE):
-                    'dashboard',
-                'extractor.search_data.{}'.format(JOB_PUBLISH_TAG):
-                    'test-date',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'test-endpoint',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'test-user',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'test-passwd',
+                f'extractor.search_data.{Neo4jSearchDataExtractor.ENTITY_TYPE}': 'dashboard',
+                f'extractor.search_data.{JOB_PUBLISH_TAG}': 'test-date',
             })
             extractor.init(Scoped.get_scoped_conf(conf=conf,
                                                   scope=extractor.get_scope()))

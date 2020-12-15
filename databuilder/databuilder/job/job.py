@@ -8,8 +8,7 @@ from statsd import StatsClient
 
 from databuilder import Scoped
 from databuilder.job.base_job import Job
-from databuilder.publisher.base_publisher import NoopPublisher
-from databuilder.publisher.base_publisher import Publisher
+from databuilder.publisher.base_publisher import NoopPublisher, Publisher
 from databuilder.task.base_task import Task
 
 LOGGER = logging.getLogger(__name__)
@@ -39,8 +38,8 @@ class DefaultJob(Job):
         self.scoped_conf = Scoped.get_scoped_conf(self.conf,
                                                   self.get_scope())
         if self.scoped_conf.get_bool(DefaultJob.IS_STATSD_ENABLED, False):
-            prefix = 'amundsen.databuilder.job.{}'.format(self.scoped_conf.get_string(DefaultJob.JOB_IDENTIFIER))
-            LOGGER.info('Setting statsd for job metrics with prefix: {}'.format(prefix))
+            prefix = f'amundsen.databuilder.job.{self.scoped_conf.get_string(DefaultJob.JOB_IDENTIFIER)}'
+            LOGGER.info('Setting statsd for job metrics with prefix: %s', prefix)
             self.statsd = StatsClient(prefix=prefix)
         else:
             self.statsd = None

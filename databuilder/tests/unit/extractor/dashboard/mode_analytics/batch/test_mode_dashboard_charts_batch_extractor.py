@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+
 from mock import patch
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
-from databuilder.extractor.dashboard.mode_analytics.batch.\
-    mode_dashboard_charts_batch_extractor import ModeDashboardChartsBatchExtractor
+from databuilder.extractor.dashboard.mode_analytics.batch.mode_dashboard_charts_batch_extractor import (
+    ModeDashboardChartsBatchExtractor,
+)
 
 
 class TestModeDashboardChartsBatchExtractor(unittest.TestCase):

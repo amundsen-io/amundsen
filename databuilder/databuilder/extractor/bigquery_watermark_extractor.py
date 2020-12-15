@@ -1,14 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from collections import namedtuple
-
-import logging
 import datetime
+import logging
 import textwrap
+from collections import namedtuple
+from typing import (
+    Any, Dict, Iterator, List, Tuple, Union,
+)
 
 from pyhocon import ConfigTree
-from typing import Any, Dict, Iterator, List, Tuple, Union
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor, DatasetRef
 from databuilder.models.watermark import Watermark
@@ -70,7 +71,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
                     'bigquery',
                     tableRef['datasetId'],
                     prefix,
-                    '__table__={partition_id}'.format(partition_id=td['low']),
+                    f'__table__={td["low"]}',
                     part_type="low_watermark",
                     cluster=tableRef['projectId']
                 )
@@ -80,7 +81,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
                     'bigquery',
                     tableRef['datasetId'],
                     prefix,
-                    '__table__={partition_id}'.format(partition_id=td['high']),
+                    f'__table__={td["high"]}',
                     part_type="high_watermark",
                     cluster=tableRef['projectId']
                 )
@@ -129,7 +130,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
             'bigquery',
             tableRef['datasetId'],
             tableRef['tableId'],
-            '{field}={partition_id}'.format(field=field, partition_id=low.partition_id),
+            f'{field}={low.partition_id}',
             part_type="low_watermark",
             cluster=tableRef['projectId']
         )
@@ -140,7 +141,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
             'bigquery',
             tableRef['datasetId'],
             tableRef['tableId'],
-            '{field}={partition_id}'.format(field=field, partition_id=high.partition_id),
+            f'{field}={high.partition_id}',
             part_type="high_watermark",
             cluster=tableRef['projectId']
         )

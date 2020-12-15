@@ -5,18 +5,19 @@ import itertools
 import logging
 import unittest
 from datetime import datetime
-from pytz import UTC
+from typing import (
+    Iterable, Iterator, Optional, TypeVar,
+)
 
-from mock import patch, MagicMock
+from mock import MagicMock, patch
 from pyhocon import ConfigFactory
-from typing import Iterable, Iterator, Optional, TypeVar
+from pytz import UTC
 
 from databuilder.extractor.hive_table_last_updated_extractor import HiveTableLastUpdatedExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.filesystem.filesystem import FileSystem
 from databuilder.filesystem.metadata import FileMetadata
-
+from databuilder.models.table_last_updated import TableLastUpdated
 
 T = TypeVar('T')
 
@@ -36,11 +37,9 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
     def test_extraction_with_empty_query_result(self) -> None:
-
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
-            'filesystem.{}'.format(FileSystem.DASK_FILE_SYSTEM): MagicMock()
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
+            f'filesystem.{FileSystem.DASK_FILE_SYSTEM}': MagicMock()
         }
         conf = ConfigFactory.from_dict(config_dict)
         with patch.object(SQLAlchemyExtractor, '_get_connection'):
@@ -52,24 +51,25 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
 
     def test_extraction_with_partition_table_result(self) -> None:
         config_dict = {
-            'filesystem.{}'.format(FileSystem.DASK_FILE_SYSTEM): MagicMock()
+            f'filesystem.{FileSystem.DASK_FILE_SYSTEM}': MagicMock()
         }
         conf = ConfigFactory.from_dict(config_dict)
 
         pt_alchemy_extractor_instance = MagicMock()
         non_pt_alchemy_extractor_instance = MagicMock()
         with patch.object(HiveTableLastUpdatedExtractor, '_get_partitioned_table_sql_alchemy_extractor',
-                          return_value=pt_alchemy_extractor_instance),\
+                          return_value=pt_alchemy_extractor_instance), \
             patch.object(HiveTableLastUpdatedExtractor, '_get_non_partitioned_table_sql_alchemy_extractor',
                          return_value=non_pt_alchemy_extractor_instance):
-            pt_alchemy_extractor_instance.extract = MagicMock(side_effect=null_iterator([
-                {'schema': 'foo_schema',
-                 'table_name': 'table_1',
-                 'last_updated_time': 1},
-                {'schema': 'foo_schema',
-                 'table_name': 'table_2',
-                 'last_updated_time': 2}
-            ]))
+            pt_alchemy_extractor_instance.extract = MagicMock(side_effect=null_iterator([{
+                'schema': 'foo_schema',
+                'table_name': 'table_1',
+                'last_updated_time': 1
+            }, {
+                'schema': 'foo_schema',
+                'table_name': 'table_2',
+                'last_updated_time': 2
+            }]))
 
             non_pt_alchemy_extractor_instance.extract = MagicMock(return_value=None)
 
@@ -102,20 +102,19 @@ class TestHiveTableLastUpdatedExtractor(unittest.TestCase):
         pt_alchemy_extractor_instance = MagicMock()
         non_pt_alchemy_extractor_instance = MagicMock()
 
-        with patch.object(HiveTableLastUpdatedExtractor,
-                          '_get_partitioned_table_sql_alchemy_extractor', return_value=pt_alchemy_extractor_instance), \
-            patch.object(HiveTableLastUpdatedExtractor,
-                         '_get_non_partitioned_table_sql_alchemy_extractor',
+        with patch.object(HiveTableLastUpdatedExtractor, '_get_partitioned_table_sql_alchemy_extractor',
+                          return_value=pt_alchemy_extractor_instance), \
+            patch.object(HiveTableLastUpdatedExtractor, '_get_non_partitioned_table_sql_alchemy_extractor',
                          return_value=non_pt_alchemy_extractor_instance), \
-            patch.object(HiveTableLastUpdatedExtractor,
-                         '_get_filesystem', return_value=fs):
+            patch.object(HiveTableLastUpdatedExtractor, '_get_filesystem',
+                         return_value=fs):
             pt_alchemy_extractor_instance.extract = MagicMock(return_value=None)
 
-            non_pt_alchemy_extractor_instance.extract = MagicMock(side_effect=null_iterator([
-                {'schema': 'foo_schema',
-                 'table_name': 'table_1',
-                 'location': '/foo/bar'},
-            ]))
+            non_pt_alchemy_extractor_instance.extract = MagicMock(side_effect=null_iterator([{
+                'schema': 'foo_schema',
+                'table_name': 'table_1',
+                'location': '/foo/bar'
+            }]))
 
             extractor = HiveTableLastUpdatedExtractor()
             extractor.init(ConfigFactory.from_dict({}))

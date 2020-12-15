@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from typing import Any
 
 from mock import patch
 from pyhocon import ConfigFactory
-from typing import Any
 
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
@@ -16,10 +16,10 @@ class TestNeo4jExtractor(unittest.TestCase):
 
     def setUp(self) -> None:
         config_dict = {
-            'extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): 'TEST_GRAPH_URL',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY): 'TEST_QUERY',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): 'TEST_USER',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): 'TEST_PW'
+            f'extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'TEST_GRAPH_URL',
+            f'extractor.neo4j.{Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY}': 'TEST_QUERY',
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'TEST_USER',
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'TEST_PW'
         }
 
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -83,11 +83,11 @@ class TestNeo4jExtractor(unittest.TestCase):
         Test Extraction using model class
         """
         config_dict = {
-            'extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): 'TEST_GRAPH_URL',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY): 'TEST_QUERY',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): 'TEST_USER',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): 'TEST_PW',
-            'extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY):
+            f'extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'TEST_GRAPH_URL',
+            f'extractor.neo4j.{Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY}': 'TEST_QUERY',
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'TEST_USER',
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'TEST_PW',
+            f'extractor.neo4j.{Neo4jExtractor.MODEL_CLASS_CONFIG_KEY}':
                 'databuilder.models.table_elasticsearch_document.TableESDocument'
         }
 

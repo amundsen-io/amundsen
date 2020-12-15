@@ -3,14 +3,14 @@
 
 import logging
 import unittest
-
-from mock import patch, MagicMock
-from pyhocon import ConfigFactory
 from typing import Any, Dict
+
+from mock import MagicMock, patch
+from pyhocon import ConfigFactory
 
 from databuilder.extractor.redshift_metadata_extractor import RedshiftMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestRedshiftMetadataExtractor(unittest.TestCase):
@@ -18,8 +18,7 @@ class TestRedshiftMetadataExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             RedshiftMetadataExtractor.CLUSTER_KEY: 'MY_CLUSTER',
             RedshiftMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False,
             RedshiftMetadataExtractor.DATABASE_KEY: 'redshift'
@@ -47,7 +46,7 @@ class TestRedshiftMetadataExtractor(unittest.TestCase):
                      'name': 'test_table',
                      'description': 'a table for testing',
                      'cluster':
-                     self.conf[RedshiftMetadataExtractor.CLUSTER_KEY]
+                         self.conf[RedshiftMetadataExtractor.CLUSTER_KEY]
                      }
 
             sql_execute.return_value = [
@@ -113,7 +112,7 @@ class TestRedshiftMetadataExtractorWithWhereClause(unittest.TestCase):
 
         config_dict = {
             RedshiftMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)

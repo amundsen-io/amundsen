@@ -1,26 +1,24 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import pandas
 import csv
 import ctypes
-from io import open
 import logging
 import time
+from io import open
 from os import listdir
 from os.path import isfile, join
-from jinja2 import Template
+from typing import List, Set
 
-from neo4j import GraphDatabase, Transaction
 import neo4j
+import pandas
+from jinja2 import Template
+from neo4j import GraphDatabase, Transaction
 from neo4j.exceptions import CypherError, TransientError
-from pyhocon import ConfigFactory
-from pyhocon import ConfigTree
-from typing import Set, List
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
-
 
 # Setting field_size_limit to solve the error below
 # _csv.Error: field larger than field limit (131072)
@@ -154,12 +152,11 @@ class Neo4jCsvPublisher(Publisher):
         self.labels: Set[str] = set()
         self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
         if not self.publish_tag:
-            raise Exception('{} should not be empty'.format(JOB_PUBLISH_TAG))
+            raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
 
         self._relation_preprocessor = conf.get(RELATION_PREPROCESSOR)
 
-        LOGGER.info('Publishing Node csv files {}, and Relation CSV files {}'
-                    .format(self._node_files, self._relation_files))
+        LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s', self._node_files, self._relation_files)
 
     def _list_files(self, conf: ConfigTree, path_key: str) -> List[str]:
         """
@@ -182,11 +179,11 @@ class Neo4jCsvPublisher(Publisher):
 
         start = time.time()
 
-        LOGGER.info('Creating indices using Node files: {}'.format(self._node_files))
+        LOGGER.info('Creating indices using Node files: %s', self._node_files)
         for node_file in self._node_files:
             self._create_indices(node_file=node_file)
 
-        LOGGER.info('Publishing Node files: {}'.format(self._node_files))
+        LOGGER.info('Publishing Node files: %s', self._node_files)
         try:
             tx = self._session.begin_transaction()
             while True:
@@ -196,7 +193,7 @@ class Neo4jCsvPublisher(Publisher):
                 except StopIteration:
                     break
 
-            LOGGER.info('Publishing Relationship files: {}'.format(self._relation_files))
+            LOGGER.info('Publishing Relationship files: %s', self._relation_files)
             while True:
                 try:
                     relation_file = next(self._relation_files_iter)
@@ -205,10 +202,10 @@ class Neo4jCsvPublisher(Publisher):
                     break
 
             tx.commit()
-            LOGGER.info('Committed total {} statements'.format(self._count))
+            LOGGER.info('Committed total %i statements', self._count)
 
             # TODO: Add statsd support
-            LOGGER.info('Successfully published. Elapsed: {} seconds'.format(time.time() - start))
+            LOGGER.info('Successfully published. Elapsed: %i seconds', time.time() - start)
         except Exception as e:
             LOGGER.exception('Failed to publish. Rolling back.')
             if not tx.closed():
@@ -305,7 +302,7 @@ class Neo4jCsvPublisher(Publisher):
         """
 
         if self._relation_preprocessor.is_perform_preprocess():
-            LOGGER.info('Pre-processing relation with {}'.format(self._relation_preprocessor))
+            LOGGER.info('Pre-processing relation with %s', self._relation_preprocessor)
 
             count = 0
             with open(relation_file, 'r', encoding='utf8') as relation_csv:
@@ -323,7 +320,7 @@ class Neo4jCsvPublisher(Publisher):
                         tx = self._execute_statement(stmt, tx=tx, params=params)
                         count += 1
 
-            LOGGER.info('Executed pre-processing Cypher statement {} times'.format(count))
+            LOGGER.info('Executed pre-processing Cypher statement %i times', count)
 
         with open(relation_file, 'r', encoding='utf8') as relation_csv:
             for rel_record in pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records"):
@@ -337,7 +334,7 @@ class Neo4jCsvPublisher(Publisher):
                                                      expect_result=self._confirm_rel_created)
                         exception_exists = False
                     except TransientError as e:
-                        if rel_record[RELATION_START_LABEL] in self.deadlock_node_labels\
+                        if rel_record[RELATION_START_LABEL] in self.deadlock_node_labels \
                                 or rel_record[RELATION_END_LABEL] in self.deadlock_node_labels:
                             time.sleep(SLEEP_TIME)
                             retries_for_exception -= 1
@@ -378,8 +375,6 @@ class Neo4jCsvPublisher(Publisher):
         for k, v in record_dict.items():
             if k.endswith(UNQUOTED_SUFFIX):
                 k = k[:-len(UNQUOTED_SUFFIX)]
-            else:
-                v = '{val}'.format(val=v)
 
             params[k] = v
         return params
@@ -407,23 +402,18 @@ class Neo4jCsvPublisher(Publisher):
             if k.endswith(UNQUOTED_SUFFIX):
                 k = k[:-len(UNQUOTED_SUFFIX)]
 
-            props.append('{id}.{key} = {val}'.format(id=identifier, key=k, val=f'${k}'))
+            props.append(f'{identifier}.{k} = ${k}')
 
-        props.append("""{id}.{key} = '{val}'""".format(id=identifier,
-                                                       key=PUBLISHED_TAG_PROPERTY_NAME,
-                                                       val=self.publish_tag))
-
-        props.append("""{id}.{key} = {val}""".format(id=identifier,
-                                                     key=LAST_UPDATED_EPOCH_MS,
-                                                     val='timestamp()'))
+        props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
+        props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
 
         return ', '.join(props)
 
     def _execute_statement(self,
                            stmt: str,
                            tx: Transaction,
-                           params: dict=None,
-                           expect_result: bool=False) -> Transaction:
+                           params: dict = None,
+                           expect_result: bool = False) -> Transaction:
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
         If 'expect_result' flag is True, it confirms if result object is not null.
@@ -434,21 +424,20 @@ class Neo4jCsvPublisher(Publisher):
         :return:
         """
         try:
-            if LOGGER.isEnabledFor(logging.DEBUG):
-                LOGGER.debug('Executing statement: {} with params {}'.format(stmt, params))
+            LOGGER.debug('Executing statement: %s with params %s', stmt, params)
 
             result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
             if expect_result and not result.single():
-                raise RuntimeError('Failed to executed statement: {}'.format(stmt))
+                raise RuntimeError(f'Failed to executed statement: {stmt}')
 
             self._count += 1
             if self._count > 1 and self._count % self._transaction_size == 0:
                 tx.commit()
-                LOGGER.info('Committed {} statements so far'.format(self._count))
+                LOGGER.info(f'Committed {self._count} statements so far')
                 return self._session.begin_transaction()
 
             if self._count > 1 and self._count % self._progress_report_frequency == 0:
-                LOGGER.info('Processed {} statements so far'.format(self._count))
+                LOGGER.info(f'Processed {self._count} statements so far')
 
             return tx
         except Exception as e:
@@ -468,8 +457,7 @@ class Neo4jCsvPublisher(Publisher):
             CREATE CONSTRAINT ON (node:{{ LABEL }}) ASSERT node.key IS UNIQUE
         """).render(LABEL=label)
 
-        LOGGER.info('Trying to create index for label {label} if not exist: {stmt}'.format(label=label,
-                                                                                           stmt=stmt))
+        LOGGER.info(f'Trying to create index for label %s if not exist: %s', label, stmt)
         with self._driver.session() as session:
             try:
                 session.run(stmt)

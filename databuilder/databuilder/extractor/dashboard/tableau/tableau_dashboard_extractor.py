@@ -2,21 +2,22 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import Any, Dict, Iterator, List
+from typing import (
+    Any, Dict, Iterator, List,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
 
 import databuilder.extractor.dashboard.tableau.tableau_dashboard_constants as const
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils import TableauGraphQLApiExtractor,\
-    TableauDashboardUtils
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils import (
+    TableauDashboardUtils, TableauGraphQLApiExtractor,
+)
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
-from databuilder.transformer.base_transformer import ChainedTransformer
-from databuilder.transformer.base_transformer import Transformer
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
-
+from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
+from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME, TimestampStringToEpoch
 
 LOGGER = logging.getLogger(__name__)
 
@@ -37,21 +38,15 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
         workbooks_data = [workbook for workbook in response['workbooks']
                           if workbook['projectName'] not in
                           self._conf.get_list(TableauGraphQLApiMetadataExtractor.EXCLUDED_PROJECTS)]
-
+        base_url = self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL)
         for workbook in workbooks_data:
             data = {
                 'dashboard_group': workbook['projectName'],
                 'dashboard_name': TableauDashboardUtils.sanitize_workbook_name(workbook['name']),
                 'description': workbook.get('description', ''),
                 'created_timestamp': workbook['createdAt'],
-                'dashboard_group_url': '{}/#/projects/{}'.format(
-                    self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL),
-                    workbook['projectVizportalUrlId']
-                ),
-                'dashboard_url': '{}/#/workbooks/{}/views'.format(
-                    self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL),
-                    workbook['vizportalUrlId']
-                ),
+                'dashboard_group_url': f'{base_url}/#/projects/{workbook["projectVizportalUrlId"]}',
+                'dashboard_url': f'{base_url}/#/workbooks/{workbook["vizportalUrlId"]}/views',
                 'cluster': self._conf.get_string(TableauGraphQLApiMetadataExtractor.CLUSTER)
             }
             yield data
@@ -126,13 +121,9 @@ class TableauDashboardExtractor(Extractor):
         :return: A TableauGraphQLApiMetadataExtractor that provides core dashboard metadata.
         """
         extractor = TableauGraphQLApiMetadataExtractor()
-        tableau_extractor_conf = \
-            Scoped.get_scoped_conf(self._conf, extractor.get_scope())\
-                  .with_fallback(self._conf)\
-                  .with_fallback(ConfigFactory.from_dict({TableauGraphQLApiExtractor.QUERY: self.query,
-                                                          STATIC_RECORD_DICT: {'product': 'tableau'}
-                                                          }
-                                                         )
-                                 )
+        tableau_extractor_conf = Scoped.get_scoped_conf(self._conf, extractor.get_scope()) \
+            .with_fallback(self._conf) \
+            .with_fallback(ConfigFactory.from_dict({TableauGraphQLApiExtractor.QUERY: self.query,
+                                                    STATIC_RECORD_DICT: {'product': 'tableau'}}))
         extractor.init(conf=tableau_extractor_conf)
         return extractor

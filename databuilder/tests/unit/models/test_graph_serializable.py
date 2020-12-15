@@ -2,12 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from typing import Iterable, Union
 
-from typing import Union, Iterable
-
-from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_node import GraphNode
+from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.serializers import neo4_serializer
 
 

@@ -1,17 +1,16 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Iterator, List, Optional, Set, Union, Dict
+from typing import (
+    Any, Dict, Iterator, List, Optional, Set, Union,
+)
 
 from databuilder.models.cluster import cluster_constants
-from databuilder.models.graph_serializable import (
-    GraphSerializable
-)
-# TODO: We could separate TagMetadata from table_metadata to own module
-from databuilder.models.table_metadata import TagMetadata
-
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+# TODO: We could separate TagMetadata from table_metadata to own module
+from databuilder.models.table_metadata import TagMetadata
 
 
 class DashboardMetadata(GraphSerializable):
@@ -91,18 +90,10 @@ class DashboardMetadata(GraphSerializable):
         self._relation_iterator = self._create_next_relation()
 
     def __repr__(self) -> str:
-        return 'DashboardMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})' \
-            .format(self.dashboard_group,
-                    self.dashboard_name,
-                    self.description,
-                    self.tags,
-                    self.dashboard_group_id,
-                    self.dashboard_id,
-                    self.dashboard_group_description,
-                    self.created_timestamp,
-                    self.dashboard_group_url,
-                    self.dashboard_url,
-                    )
+        return f'DashboardMetadata(' \
+               f'{self.dashboard_group!r}, {self.dashboard_name!r}, {self.description!r}, {self.tags!r}, ' \
+               f'{self.dashboard_group_id!r}, {self.dashboard_id!r}, {self.dashboard_group_description!r}, ' \
+               f'{self.created_timestamp!r}, {self.dashboard_group_url!r}, {self.dashboard_url!r})'
 
     def _get_cluster_key(self) -> str:
         return DashboardMetadata.CLUSTER_KEY_FORMAT.format(cluster=self.cluster,

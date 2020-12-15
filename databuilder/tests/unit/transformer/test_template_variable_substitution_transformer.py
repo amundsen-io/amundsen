@@ -5,8 +5,9 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.template_variable_substitution_transformer import \
-    TemplateVariableSubstitutionTransformer, FIELD_NAME, TEMPLATE
+from databuilder.transformer.template_variable_substitution_transformer import (
+    FIELD_NAME, TEMPLATE, TemplateVariableSubstitutionTransformer,
+)
 
 
 class TestTemplateVariableSubstitutionTransformer(unittest.TestCase):

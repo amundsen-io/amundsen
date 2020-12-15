@@ -8,6 +8,11 @@ flake8==3.5.0
 # Upstream url: https://pypi.python.org/pypi/flake8-tidy-imports
 flake8-tidy-imports>=1.1.0,<2.0
 
+# A Python utility / library to sort imports.
+# License: MIT
+# Upstream url: https://github.com/PyCQA/isort
+isort[colors]~=5.4
+
 # A mature full-featured Python testing tool.
 # License: MIT
 # Upstream url: http://pytest.org/

@@ -1,28 +1,27 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import textwrap
-from datetime import datetime, timedelta
 import uuid
+from datetime import datetime, timedelta
 
-from elasticsearch import Elasticsearch
 from airflow import DAG  # noqa
 from airflow import macros  # noqa
 from airflow.operators.python_operator import PythonOperator  # noqa
+from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
-from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
+
 from databuilder.extractor.athena_metadata_extractor import AthenaMetadataExtractor
-from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
+from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
+from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
 from databuilder.publisher import neo4j_csv_publisher
+from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
-
 
 dag_args = {
     'concurrency': 10,
@@ -63,7 +62,6 @@ SUPPORTED_SCHEMAS = ['sampledb']
 # String format - ('schema1', schema2', .... 'schemaN')
 SUPPORTED_SCHEMA_SQL_IN_CLAUSE = "('{schemas}')".format(schemas="', '".join(SUPPORTED_SCHEMAS))
 
-
 OPTIONAL_TABLE_NAMES = ''
 AWS_ACCESS = 'YOUR_ACCESS_KEY'
 AWS_SECRET = 'YOUR_SECRET_KEY'
@@ -78,36 +76,24 @@ def connection_string():
 
 
 def create_table_extract_job():
-    where_clause_suffix = textwrap.dedent("""
-        where table_schema in {schemas}
-    """).format(schemas=SUPPORTED_SCHEMA_SQL_IN_CLAUSE)
+    where_clause_suffix = f"where table_schema in {SUPPORTED_SCHEMA_SQL_IN_CLAUSE}"
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'
-    node_files_folder = '{tmp_folder}/nodes/'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships/'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes/'
+    relationship_files_folder = f'{tmp_folder}/relationships/'
 
     job_config = ConfigFactory.from_dict({
-        'extractor.athena_metadata.{}'.format(AthenaMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY):
-            where_clause_suffix,
-        'extractor.athena_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            connection_string(),
-        'extractor.athena_metadata.{}'.format(AthenaMetadataExtractor.CATALOG_KEY): "'AwsDataCatalog'",
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_tag',  # should use unique tag here like {ds}
+        f'extractor.athena_metadata.{AthenaMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+        f'extractor.athena_metadata.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+        f'extractor.athena_metadata.{AthenaMetadataExtractor.CATALOG_KEY}': "'AwsDataCatalog'",
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NODE_FILES_DIR}': node_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.RELATION_FILES_DIR}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
+        f'publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}': 'unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,
                      task=DefaultTask(extractor=AthenaMetadataExtractor(), loader=FsNeo4jCSVLoader(),
@@ -134,24 +120,22 @@ def create_es_publisher_sample_job():
     elasticsearch_index_alias = 'table_search_index'
 
     job_config = ConfigFactory.from_dict({
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): neo4j_endpoint,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY):
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': neo4j_endpoint,
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.MODEL_CLASS_CONFIG_KEY}':
             'databuilder.models.table_elasticsearch_document.TableESDocument',
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): neo4j_user,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): neo4j_password,
-        'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY):
-            extracted_search_data_path,
-        'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY): 'w',
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY):
-            extracted_search_data_path,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY): 'r',
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY):
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': neo4j_user,
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': neo4j_password,
+        f'loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY}': extracted_search_data_path,
+        f'loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY}': 'w',
+        f'publisher.elasticsearch.{ElasticsearchPublisher.FILE_PATH_CONFIG_KEY}': extracted_search_data_path,
+        f'publisher.elasticsearch.{ElasticsearchPublisher.FILE_MODE_CONFIG_KEY}': 'r',
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY}':
             elasticsearch_client,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY):
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY}':
             elasticsearch_new_index_key,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY):
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY}':
             elasticsearch_new_index_key_type,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY):
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY}':
             elasticsearch_index_alias
     })
 

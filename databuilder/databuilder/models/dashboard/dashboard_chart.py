@@ -2,15 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import Optional, Any, Union, Iterator
-
+from typing import (
+    Any, Iterator, Optional, Union,
+)
 
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
-from databuilder.models.graph_serializable import (
-    GraphSerializable)
-
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
 
 LOGGER = logging.getLogger(__name__)
 
@@ -111,14 +110,6 @@ class DashboardChart(GraphSerializable):
         )
 
     def __repr__(self) -> str:
-        return 'DashboardChart({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
-            self._dashboard_group_id,
-            self._dashboard_id,
-            self._query_id,
-            self._chart_id,
-            self._chart_name,
-            self._chart_type,
-            self._chart_url,
-            self._product,
-            self._cluster
-        )
+        return f'DashboardChart({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \
+               f'{self._query_id!r}, {self._chart_id!r}, {self._chart_name!r}, {self._chart_type!r}, ' \
+               f'{self._chart_url!r}, {self._product!r}, {self._cluster!r})'

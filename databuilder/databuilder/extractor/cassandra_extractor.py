@@ -1,14 +1,16 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from cassandra.cluster import Cluster
-import cassandra.metadata
+from typing import (
+    Dict, Iterator, Union,
+)
 
+import cassandra.metadata
+from cassandra.cluster import Cluster
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict
 
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class CassandraExtractor(Extractor):
@@ -38,7 +40,7 @@ class CassandraExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(CassandraExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(CassandraExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(CassandraExtractor.CLUSTER_KEY)
         self._filter = conf.get(CassandraExtractor.FILTER_FUNCTION_KEY)
         ips = conf.get_list(CassandraExtractor.IPS_KEY)
         kwargs = conf.get(CassandraExtractor.KWARGS_KEY)

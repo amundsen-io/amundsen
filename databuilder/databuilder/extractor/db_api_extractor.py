@@ -3,12 +3,11 @@
 
 import importlib
 import logging
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 from pyhocon import ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,7 +46,7 @@ class DBAPIExtractor(Extractor):
         Use cursor to execute the {sql}
         :return:
         """
-        LOGGER.info('Executing query: \n{}'.format(self.sql))
+        LOGGER.info('Executing query: \n%s', self.sql)
         self.cursor.execute(self.sql)
         return self.cursor.fetchall()
 

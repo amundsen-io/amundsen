@@ -17,8 +17,8 @@ class TestCsvExtractor(unittest.TestCase):
         Test Extraction using model class
         """
         config_dict = {
-            'extractor.csv.{}'.format(CsvExtractor.FILE_LOCATION): 'example/sample_data/sample_table.csv',
-            'extractor.csv.model_class': 'databuilder.models.table_metadata.TableMetadata',
+            f'extractor.csv.{CsvExtractor.FILE_LOCATION}': 'example/sample_data/sample_table.csv',
+            f'extractor.csv.model_class': 'databuilder.models.table_metadata.TableMetadata',
         }
         self.conf = ConfigFactory.from_dict(config_dict)
         extractor = CsvExtractor()

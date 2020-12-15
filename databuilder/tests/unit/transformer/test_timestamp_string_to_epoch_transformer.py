@@ -5,7 +5,9 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME, TIMESTAMP_FORMAT
+from databuilder.transformer.timestamp_string_to_epoch import (
+    FIELD_NAME, TIMESTAMP_FORMAT, TimestampStringToEpoch,
+)
 
 
 class TestTimestampStrToEpoch(unittest.TestCase):

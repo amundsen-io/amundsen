@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+from typing import (
+    Any, List, Optional,
+)
 
-from typing import Any, List, Optional
-
-from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
 
 
 class User(GraphSerializable):
@@ -109,7 +110,7 @@ class User(GraphSerializable):
 
     @classmethod
     def get_user_model_key(cls,
-                           email: str=None
+                           email: str = None
                            ) -> str:
         if not email:
             return ''
@@ -124,16 +125,15 @@ class User(GraphSerializable):
         node_attributes = {
             User.USER_NODE_EMAIL: self.email,
             User.USER_NODE_IS_ACTIVE: self.is_active,
+            User.USER_NODE_FIRST_NAME: self.first_name or '',
+            User.USER_NODE_LAST_NAME: self.last_name or '',
+            User.USER_NODE_FULL_NAME: self.name or '',
+            User.USER_NODE_GITHUB_NAME: self.github_username or '',
+            User.USER_NODE_TEAM: self.team_name or '',
+            User.USER_NODE_EMPLOYEE_TYPE: self.employee_type or '',
+            User.USER_NODE_SLACK_ID: self.slack_id or '',
+            User.USER_NODE_ROLE_NAME: self.role_name or ''
         }
-
-        node_attributes[User.USER_NODE_FIRST_NAME] = self.first_name if self.first_name else ''
-        node_attributes[User.USER_NODE_LAST_NAME] = self.last_name if self.last_name else ''
-        node_attributes[User.USER_NODE_FULL_NAME] = self.name if self.name else ''
-        node_attributes[User.USER_NODE_GITHUB_NAME] = self.github_username if self.github_username else ''
-        node_attributes[User.USER_NODE_TEAM] = self.team_name if self.team_name else ''
-        node_attributes[User.USER_NODE_EMPLOYEE_TYPE] = self.employee_type if self.employee_type else ''
-        node_attributes[User.USER_NODE_SLACK_ID] = self.slack_id if self.slack_id else ''
-        node_attributes[User.USER_NODE_ROLE_NAME] = self.role_name if self.role_name else ''
 
         if self.updated_at:
             node_attributes[User.USER_NODE_UPDATED_AT] = self.updated_at
@@ -174,16 +174,6 @@ class User(GraphSerializable):
         return []
 
     def __repr__(self) -> str:
-        return 'User({!r}, {!r}, {!r}, {!r}, {!r}, ' \
-               '{!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(self.first_name,
-                                                                  self.last_name,
-                                                                  self.name,
-                                                                  self.email,
-                                                                  self.github_username,
-                                                                  self.team_name,
-                                                                  self.slack_id,
-                                                                  self.manager_email,
-                                                                  self.employee_type,
-                                                                  self.is_active,
-                                                                  self.updated_at,
-                                                                  self.role_name)
+        return f'User({self.first_name!r}, {self.last_name!r}, {self.name!r}, {self.email!r}, ' \
+               f'{self.github_username!r}, {self.team_name!r}, {self.slack_id!r}, {self.manager_email!r}, ' \
+               f'{self.employee_type!r}, {self.is_active!r}, {self.updated_at!r}, {self.role_name!r})'

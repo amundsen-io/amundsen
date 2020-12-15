@@ -3,11 +3,10 @@
 
 from typing import List, Optional
 
-from databuilder.models.graph_serializable import GraphSerializable
-
-from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_metadata import TableMetadata
 
 
 class TableSource(GraphSerializable):
@@ -25,7 +24,7 @@ class TableSource(GraphSerializable):
                  table_name: str,
                  cluster: str,
                  source: str,
-                 source_type: str='github',
+                 source_type: str = 'github',
                  ) -> None:
         self.db = db_name
         self.schema = schema
@@ -58,10 +57,7 @@ class TableSource(GraphSerializable):
                                              tbl=self.table)
 
     def get_metadata_model_key(self) -> str:
-        return '{db}://{cluster}.{schema}/{table}'.format(db=self.db,
-                                                          cluster=self.cluster,
-                                                          schema=self.schema,
-                                                          table=self.table)
+        return f'{self.db}://{self.cluster}.{self.schema}/{self.table}'
 
     def create_nodes(self) -> List[GraphNode]:
         """
@@ -97,8 +93,4 @@ class TableSource(GraphSerializable):
         return results
 
     def __repr__(self) -> str:
-        return 'TableSource({!r}, {!r}, {!r}, {!r}, {!r})'.format(self.db,
-                                                                  self.cluster,
-                                                                  self.schema,
-                                                                  self.table,
-                                                                  self.source)
+        return f'TableSource({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r}, {self.source!r})'

@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+from typing import List
 
 from pyhocon import ConfigFactory, ConfigTree
 from retrying import retry
-from typing import List
 
 from databuilder import Scoped
 from databuilder.filesystem.metadata import FileMetadata

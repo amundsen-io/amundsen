@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import importlib
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 from pyhocon import ConfigTree
 

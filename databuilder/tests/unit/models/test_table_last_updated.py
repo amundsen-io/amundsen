@@ -3,9 +3,10 @@
 
 import unittest
 
-from databuilder.models.graph_serializable import NODE_KEY, \
-    NODE_LABEL, RELATION_START_KEY, RELATION_START_LABEL, RELATION_END_KEY, \
-    RELATION_END_LABEL, RELATION_TYPE, RELATION_REVERSE_TYPE
+from databuilder.models.graph_serializable import (
+    NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
+    RELATION_START_LABEL, RELATION_TYPE,
+)
 from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.models.timestamp import timestamp_constants
 from databuilder.serializers import neo4_serializer

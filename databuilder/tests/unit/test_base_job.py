@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+import logging
 import shutil
 import tempfile
 import unittest
-from mock import patch
-
-from pyhocon import ConfigTree, ConfigFactory
 from typing import Any
+
+from mock import patch
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.job.job import DefaultJob
@@ -16,20 +17,20 @@ from databuilder.loader.base_loader import Loader
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import Transformer
 
+LOGGER = logging.getLogger(__name__)
+
 
 class TestJob(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
-        self.dest_file_name = '{}/superhero.json'.format(self.temp_dir_path)
-        self.conf = ConfigFactory.from_dict(
-            {'loader.superhero.dest_file': self.dest_file_name})
+        self.dest_file_name = f'{self.temp_dir_path}/superhero.json'
+        self.conf = ConfigFactory.from_dict({'loader.superhero.dest_file': self.dest_file_name})
 
     def tearDown(self) -> None:
         shutil.rmtree(self.temp_dir_path)
 
     def test_job(self) -> None:
-
         with patch("databuilder.job.job.StatsClient") as mock_statsd:
             task = DefaultTask(SuperHeroExtractor(),
                                SuperHeroLoader(),
@@ -53,7 +54,7 @@ class TestJobNoTransform(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
-        self.dest_file_name = '{}/superhero.json'.format(self.temp_dir_path)
+        self.dest_file_name = f'{self.temp_dir_path}/superhero.json'
         self.conf = ConfigFactory.from_dict(
             {'loader.superhero.dest_file': self.dest_file_name})
 
@@ -79,7 +80,7 @@ class TestJobStatsd(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
-        self.dest_file_name = '{}/superhero.json'.format(self.temp_dir_path)
+        self.dest_file_name = f'{self.temp_dir_path}/superhero.json'
         self.conf = ConfigFactory.from_dict(
             {'loader.superhero.dest_file': self.dest_file_name,
              'job.is_statsd_enabled': True,
@@ -133,7 +134,7 @@ class SuperHero:
         self.name = name
 
     def __repr__(self) -> str:
-        return "SuperHero(hero={0}, name={1})".format(self.hero, self.name)
+        return f'SuperHero(hero={self.hero}, name={self.name})'
 
 
 class SuperHeroReverseNameTransformer(Transformer):
@@ -155,13 +156,13 @@ class SuperHeroLoader(Loader):
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
         dest_file_path = self.conf.get_string('dest_file')
-        print('Loading to {}'.format(dest_file_path))
+        LOGGER.info('Loading to %s', dest_file_path)
         self.dest_file_obj = open(self.conf.get_string('dest_file'), 'w')
 
     def load(self, record: Any) -> None:
-        str = json.dumps(record.__dict__, sort_keys=True)
-        print('Writing record: {}'.format(str))
-        self.dest_file_obj.write('{}\n'.format(str))
+        rec = json.dumps(record.__dict__, sort_keys=True)
+        LOGGER.info('Writing record: %s', rec)
+        self.dest_file_obj.write(f'{rec}\n')
         self.dest_file_obj.flush()
 
     def get_scope(self) -> str:

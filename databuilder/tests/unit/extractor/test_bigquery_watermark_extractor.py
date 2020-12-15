@@ -4,54 +4,101 @@
 import logging
 import unittest
 from datetime import datetime
-
-from mock import patch, Mock
-from pyhocon import ConfigFactory
 from typing import Any
+
+from mock import Mock, patch
+from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.bigquery_watermark_extractor import BigQueryWatermarkExtractor
 
 logging.basicConfig(level=logging.INFO)
 
-
 NO_DATASETS = {'kind': 'bigquery#datasetList', 'etag': '1B2M2Y8AsgTpgAmY7PhCfg=='}
-ONE_DATASET = {'kind': 'bigquery#datasetList', 'etag': 'yScH5WIHeNUBF9b/VKybXA==',
-    'datasets': [{'kind': 'bigquery#dataset', 'id': 'your-project-here:empty', 'datasetReference':
-        {'datasetId': 'empty', 'projectId': 'your-project-here'}, 'location': 'US'}]}  # noqa
+ONE_DATASET = {
+    'kind': 'bigquery#datasetList', 'etag': 'yScH5WIHeNUBF9b/VKybXA==',
+    'datasets': [{
+        'kind': 'bigquery#dataset',
+        'id': 'your-project-here:empty',
+        'datasetReference': {'datasetId': 'empty', 'projectId': 'your-project-here'},
+        'location': 'US'
+    }]
+}  # noqa
 NO_TABLES = {'kind': 'bigquery#tableList', 'etag': '1B2M2Y8AsgTpgAmY7PhCfg==', 'totalItems': 0}
-ONE_TABLE = {'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
-    'tables': [{'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.nested_recs', 'tableReference':
-        {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'nested_recs'},
-        'type': 'TABLE', 'creationTime': '1557578974009'}],
-    'totalItems': 1}  # noqa
-TIME_PARTITIONED = {'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
-    'tables': [{'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.other', 'tableReference':
-            {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'other'},
-            'type': 'TABLE', 'timePartitioning': {'type': 'DAY', 'requirePartitionFilter': False},
-            'creationTime': '1557577779306'}], 'totalItems': 1}  # noqa
-TIME_PARTITIONED_WITH_FIELD = {'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
-    'tables': [{'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.other', 'tableReference':
-            {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'other'},
-            'type': 'TABLE', 'timePartitioning': {'type': 'DAY', 'field': 'processed_date',
-            'requirePartitionFilter': False}, 'creationTime': '1557577779306'}], 'totalItems': 1}  # noqa
-TABLE_DATE_RANGE = {'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
-    'tables': [{'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.other_20190101', 'tableReference':
-            {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'date_range_20190101'},
-            'type': 'TABLE', 'creationTime': '1557577779306'},
-            {'kind': 'bigquery#table', 'id': 'your-project-here:fdgdfgh.other_20190102', 'tableReference':
-            {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'date_range_20190102'},
-            'type': 'TABLE', 'creationTime': '1557577779306'}], 'totalItems': 2}  # noqa
-PARTITION_DATA = {'kind': 'bigquery#queryResponse',
-     'schema': {'fields': [{'name': 'partition_id', 'type': 'STRING', 'mode': 'NULLABLE'},
-                           {'name': 'creation_time', 'type': 'TIMESTAMP', 'mode': 'NULLABLE'}]},
-     'jobReference': {'projectId': 'your-project-here', 'jobId': 'job_bfTRGj3Lv0tRjcrotXbZSgMCpNhY', 'location': 'EU'},
-     'totalRows': '3',
-     'rows': [{'f': [{'v': '20180802'}, {'v': '1.547512241348E9'}]},
-              {'f': [{'v': '20180803'}, {'v': '1.547512241348E9'}]},
-              {'f': [{'v': '20180804'}, {'v': '1.547512241348E9'}]}],
-     'totalBytesProcessed': '0', 'jobComplete': True, 'cacheHit': False}  # noqa
-
+ONE_TABLE = {
+    'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
+    'tables': [{
+        'kind': 'bigquery#table',
+        'id': 'your-project-here:fdgdfgh.nested_recs',
+        'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'nested_recs'},
+        'type': 'TABLE',
+        'creationTime': '1557578974009'
+    }],
+    'totalItems': 1
+}  # noqa
+TIME_PARTITIONED = {
+    'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
+    'tables': [{
+        'kind': 'bigquery#table',
+        'id': 'your-project-here:fdgdfgh.other',
+        'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'other'},
+        'type': 'TABLE',
+        'timePartitioning': {'type': 'DAY', 'requirePartitionFilter': False},
+        'creationTime': '1557577779306'
+    }],
+    'totalItems': 1
+}  # noqa
+TIME_PARTITIONED_WITH_FIELD = {
+    'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
+    'tables': [{
+        'kind': 'bigquery#table',
+        'id': 'your-project-here:fdgdfgh.other',
+        'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'other'},
+        'type': 'TABLE',
+        'timePartitioning': {'type': 'DAY', 'field': 'processed_date', 'requirePartitionFilter': False},
+        'creationTime': '1557577779306'
+    }],
+    'totalItems': 1
+}  # noqa
+TABLE_DATE_RANGE = {
+    'kind': 'bigquery#tableList', 'etag': 'Iaqrz2TCDIANAOD/Xerkjw==',
+    'tables': [{
+        'kind': 'bigquery#table',
+        'id': 'your-project-here:fdgdfgh.other_20190101',
+        'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'date_range_20190101'},
+        'type': 'TABLE',
+        'creationTime': '1557577779306'
+    }, {
+        'kind': 'bigquery#table',
+        'id': 'your-project-here:fdgdfgh.other_20190102',
+        'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'date_range_20190102'},
+        'type': 'TABLE',
+        'creationTime': '1557577779306'
+    }],
+    'totalItems': 2
+}  # noqa
+PARTITION_DATA = {
+    'kind': 'bigquery#queryResponse',
+    'schema': {
+        'fields': [{
+            'name': 'partition_id',
+            'type': 'STRING',
+            'mode': 'NULLABLE'
+        }, {
+            'name': 'creation_time',
+            'type': 'TIMESTAMP',
+            'mode': 'NULLABLE'
+        }]
+    },
+    'jobReference': {'projectId': 'your-project-here', 'jobId': 'job_bfTRGj3Lv0tRjcrotXbZSgMCpNhY', 'location': 'EU'},
+    'totalRows': '3',
+    'rows': [{'f': [{'v': '20180802'}, {'v': '1.547512241348E9'}]},
+             {'f': [{'v': '20180803'}, {'v': '1.547512241348E9'}]},
+             {'f': [{'v': '20180804'}, {'v': '1.547512241348E9'}]}],
+    'totalBytesProcessed': '0',
+    'jobComplete': True,
+    'cacheHit': False
+}  # noqa
 
 try:
     FileNotFoundError
@@ -93,7 +140,7 @@ class MockBigQueryClient():
 class TestBigQueryWatermarkExtractor(unittest.TestCase):
     def setUp(self) -> None:
         config_dict = {
-            'extractor.bigquery_watermarks.{}'.format(BigQueryWatermarkExtractor.PROJECT_ID_KEY):
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.PROJECT_ID_KEY}':
                 'your-project-here'}
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -177,10 +224,8 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_keypath_can_be_set(self, mock_build: Any) -> None:
         config_dict = {
-            'extractor.bigquery_watermarks.{}'.format(BigQueryWatermarkExtractor.PROJECT_ID_KEY):
-                'your-project-here',
-            'extractor.bigquery_watermarks.{}'.format(BigQueryWatermarkExtractor.KEY_PATH_KEY):
-                '/tmp/doesnotexist',
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.KEY_PATH_KEY}': '/tmp/doesnotexist',
         }
         conf = ConfigFactory.from_dict(config_dict)
 

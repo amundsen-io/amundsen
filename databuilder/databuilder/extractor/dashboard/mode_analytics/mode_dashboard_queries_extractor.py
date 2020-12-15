@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from pyhocon import ConfigTree, ConfigFactory
 from typing import Any, List
+
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -12,11 +12,13 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import 
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.regex_str_replace_transformer import RegexStrReplaceTransformer, \
-    REGEX_REPLACE_TUPLE_LIST, ATTRIBUTE_NAME
-from databuilder.transformer.template_variable_substitution_transformer import \
-    TemplateVariableSubstitutionTransformer, TEMPLATE, FIELD_NAME
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
+from databuilder.transformer.regex_str_replace_transformer import (
+    ATTRIBUTE_NAME, REGEX_REPLACE_TUPLE_LIST, RegexStrReplaceTransformer,
+)
+from databuilder.transformer.template_variable_substitution_transformer import (
+    FIELD_NAME, TEMPLATE, TemplateVariableSubstitutionTransformer,
+)
 
 LOGGER = logging.getLogger(__name__)
 

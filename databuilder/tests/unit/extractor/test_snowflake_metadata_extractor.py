@@ -3,14 +3,14 @@
 
 import logging
 import unittest
-
-from mock import patch, MagicMock
-from pyhocon import ConfigFactory
 from typing import Any, Dict
+
+from mock import MagicMock, patch
+from pyhocon import ConfigFactory
 
 from databuilder.extractor.snowflake_metadata_extractor import SnowflakeMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestSnowflakeMetadataExtractor(unittest.TestCase):
@@ -18,14 +18,10 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            'TEST_CONNECTION',
-            'extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY):
-            'MY_CLUSTER',
-            'extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
-            False,
-            'extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY):
-            'prod'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
+            f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}': 'MY_CLUSTER',
+            f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME}': False,
+            f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY}': 'prod'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -49,8 +45,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
             table = {'schema': 'test_schema',
                      'name': 'test_table',
                      'description': 'a table for testing',
-                     'cluster':
-                     self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                     'cluster': self.conf[f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                      'is_view': 'false'
                      }
 
@@ -112,7 +107,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                      'name': 'test_table1',
                      'description': 'test table 1',
                      'cluster':
-                     self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                         self.conf[f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                      'is_view': 'nottrue'
                      }
 
@@ -120,7 +115,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                       'name': 'test_table2',
                       'description': 'test table 2',
                       'cluster':
-                      self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                          self.conf[f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                       'is_view': 'false'
                       }
 
@@ -128,7 +123,7 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
                       'name': 'test_table3',
                       'description': 'test table 3',
                       'cluster':
-                      self.conf['extractor.snowflake_metadata.{}'.format(SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                          self.conf[f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                       'is_view': 'true'
                       }
 
@@ -189,8 +184,8 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
             extractor.init(self.conf)
 
             expected = TableMetadata('snowflake',
-                                     self.conf['extractor.snowflake_metadata.{}'.format(
-                                         SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                                     self.conf[
+                                         f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                                      'test_schema1', 'test_table1', 'test table 1',
                                      [ColumnMetadata('col_id1', 'description of col_id1', 'number', 0),
                                       ColumnMetadata('col_id2', 'description of col_id2', 'number', 1),
@@ -202,16 +197,16 @@ class TestSnowflakeMetadataExtractor(unittest.TestCase):
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             expected = TableMetadata('snowflake',
-                                     self.conf['extractor.snowflake_metadata.{}'.format(
-                                         SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                                     self.conf[
+                                         f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                                      'test_schema1', 'test_table2', 'test table 2',
                                      [ColumnMetadata('col_name', 'description of col_name', 'varchar', 0),
                                       ColumnMetadata('col_name2', 'description of col_name2', 'varchar', 1)])
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             expected = TableMetadata('snowflake',
-                                     self.conf['extractor.snowflake_metadata.{}'.format(
-                                         SnowflakeMetadataExtractor.CLUSTER_KEY)],
+                                     self.conf[
+                                         f'extractor.snowflake_metadata.{SnowflakeMetadataExtractor.CLUSTER_KEY}'],
                                      'test_schema2', 'test_table3', 'test table 3',
                                      [ColumnMetadata('col_id3', 'description of col_id3', 'varchar', 0),
                                       ColumnMetadata('col_name3', 'description of col_name3',
@@ -238,7 +233,7 @@ class TestSnowflakeMetadataExtractorWithWhereClause(unittest.TestCase):
 
         config_dict = {
             SnowflakeMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -261,7 +256,7 @@ class TestSnowflakeMetadataExtractorClusterKeyNoTableCatalog(unittest.TestCase):
 
         config_dict = {
             SnowflakeMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION',
             SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
@@ -285,7 +280,7 @@ class TestSnowflakeMetadataExtractorDefaultSnowflakeDatabaseKey(unittest.TestCas
 
         config_dict = {
             SnowflakeMetadataExtractor.SNOWFLAKE_DATABASE_KEY: self.snowflake_database_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -308,7 +303,7 @@ class TestSnowflakeMetadataExtractorDefaultDatabaseKey(unittest.TestCase):
 
         config_dict = {
             SnowflakeMetadataExtractor.DATABASE_KEY: self.database_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -359,7 +354,7 @@ class TestSnowflakeMetadataExtractorNoClusterKeyNoTableCatalog(unittest.TestCase
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION',
             SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
@@ -383,7 +378,7 @@ class TestSnowflakeMetadataExtractorTableCatalogEnabled(unittest.TestCase):
 
         config_dict = {
             SnowflakeMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION',
             SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: True
         }

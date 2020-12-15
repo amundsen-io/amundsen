@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+from typing import Any, Optional
 
 from pyhocon import ConfigTree
-from typing import Optional, Any
 
 from databuilder.loader.base_loader import Loader
 
@@ -19,7 +19,7 @@ def log_call_back(record: Optional[Any]) -> None:
     :param record:
     :return:
     """
-    LOGGER.info('record: {}'.format(record))
+    LOGGER.info('record: %s', record)
 
 
 class GenericLoader(Loader):

@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from mock import patch, MagicMock
 import unittest
 
+from mock import MagicMock, patch
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
@@ -15,13 +15,11 @@ class TestKafkaSourceExtractor(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
         config_dict = {
-            'extractor.kafka_source.consumer_config': {'"group.id"': 'consumer-group',
-                                                       '"enable.auto.commit"': False},
-            'extractor.kafka_source.{}'.format(KafkaSourceExtractor.RAW_VALUE_TRANSFORMER):
+            f'extractor.kafka_source.consumer_config': {'"group.id"': 'consumer-group', '"enable.auto.commit"': False},
+            f'extractor.kafka_source.{KafkaSourceExtractor.RAW_VALUE_TRANSFORMER}':
                 'databuilder.transformer.base_transformer.NoopTransformer',
-            'extractor.kafka_source.{}'.format(KafkaSourceExtractor.TOPIC_NAME_LIST): ['test-topic'],
-            'extractor.kafka_source.{}'.format(KafkaSourceExtractor.CONSUMER_TOTAL_TIMEOUT_SEC): 1,
-
+            f'extractor.kafka_source.{KafkaSourceExtractor.TOPIC_NAME_LIST}': ['test-topic'],
+            f'extractor.kafka_source.{KafkaSourceExtractor.CONSUMER_TOTAL_TIMEOUT_SEC}': 1,
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -31,7 +29,6 @@ class TestKafkaSourceExtractor(unittest.TestCase):
                                                     scope=kafka_extractor.get_scope()))
 
         with patch.object(kafka_extractor, 'consumer') as mock_consumer:
-
             mock_poll = MagicMock()
             mock_poll.error.return_value = False
             # only return once

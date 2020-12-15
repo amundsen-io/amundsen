@@ -4,11 +4,10 @@
 import re
 from typing import List, Union
 
-from databuilder.models.graph_serializable import GraphSerializable
-
-from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_metadata import TableMetadata
 
 
 class TableLineage(GraphSerializable):
@@ -56,10 +55,7 @@ class TableLineage(GraphSerializable):
                             schema: str,
                             table: str
                             ) -> str:
-        return '{db}://{cluster}.{schema}/{table}'.format(db=db,
-                                                          cluster=cluster,
-                                                          schema=schema,
-                                                          table=table)
+        return f'{db}://{cluster}.{schema}/{table}'
 
     def create_nodes(self) -> List[Union[GraphNode, None]]:
         """
@@ -103,7 +99,4 @@ class TableLineage(GraphSerializable):
         return results
 
     def __repr__(self) -> str:
-        return 'TableLineage({!r}, {!r}, {!r}, {!r})'.format(self.db,
-                                                             self.cluster,
-                                                             self.schema,
-                                                             self.table)
+        return f'TableLineage({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r})'

@@ -4,11 +4,13 @@
 import logging
 import textwrap
 import time
+from typing import (
+    Any, Dict, Iterable,
+)
 
-from neo4j import GraphDatabase
 import neo4j
+from neo4j import GraphDatabase
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Any, Dict, Iterable
 
 from databuilder import Scoped
 from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
@@ -80,13 +82,13 @@ class Neo4jStalenessRemovalTask(Task):
         self.staleness_pct_dict = conf.get(STALENESS_PCT_MAX_DICT)
 
         if JOB_PUBLISH_TAG in conf and MS_TO_EXPIRE in conf:
-            raise Exception('Cannot have both {} and {} in job config'.format(JOB_PUBLISH_TAG, MS_TO_EXPIRE))
+            raise Exception(f'Cannot have both {JOB_PUBLISH_TAG} and {MS_TO_EXPIRE} in job config')
 
         self.ms_to_expire = None
         if MS_TO_EXPIRE in conf:
             self.ms_to_expire = conf.get_int(MS_TO_EXPIRE)
             if self.ms_to_expire < conf.get_int(MIN_MS_TO_EXPIRE):
-                raise Exception('{} is too small'.format(MS_TO_EXPIRE))
+                raise Exception(f'{MS_TO_EXPIRE} is too small')
             self.marker = self.ms_to_expire
         else:
             self.marker = conf.get_string(JOB_PUBLISH_TAG)
@@ -139,13 +141,13 @@ class Neo4jStalenessRemovalTask(Task):
         :return:
         """
         if self.ms_to_expire:
-            return statement.format(textwrap.dedent("""
-            n.publisher_last_updated_epoch_ms < (timestamp() - ${marker})
-            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)""".format(marker=MARKER_VAR_NAME)))
+            return statement.format(textwrap.dedent(f"""
+            n.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})
+            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)"""))
 
-        return statement.format(textwrap.dedent("""
-        n.published_tag <> ${marker}
-        OR NOT EXISTS(n.published_tag)""".format(marker=MARKER_VAR_NAME)))
+        return statement.format(textwrap.dedent(f"""
+        n.published_tag <> ${MARKER_VAR_NAME}
+        OR NOT EXISTS(n.published_tag)"""))
 
     def _delete_stale_relations(self) -> None:
         statement = textwrap.dedent("""
@@ -168,7 +170,7 @@ class Neo4jStalenessRemovalTask(Task):
         :return:
         """
         for t in targets:
-            LOGGER.info('Deleting stale data of {} with batch size {}'.format(t, self.batch_size))
+            LOGGER.info('Deleting stale data of %s with batch size %i', t, self.batch_size)
             total_count = 0
             while True:
                 results = self._execute_cypher_query(statement=statement.format(type=t),
@@ -180,7 +182,7 @@ class Neo4jStalenessRemovalTask(Task):
                 total_count = total_count + count
                 if count == 0:
                     break
-            LOGGER.info('Deleted {} stale data of {}'.format(total_count, t))
+            LOGGER.info('Deleted %i stale data of %s', total_count, t)
 
     def _validate_staleness_pct(self,
                                 total_records: Iterable[Dict[str, Any]],
@@ -203,8 +205,8 @@ class Neo4jStalenessRemovalTask(Task):
 
             threshold = self.staleness_pct_dict.get(type_str, self.staleness_pct)
             if stale_pct >= threshold:
-                raise Exception('Staleness percentage of {} is {} %. Stopping due to over threshold {} %'
-                                .format(type_str, stale_pct, threshold))
+                raise Exception(f'Staleness percentage of {type_str} is {stale_pct} %. '
+                                f'Stopping due to over threshold {threshold} %')
 
     def _validate_node_staleness_pct(self) -> None:
         total_nodes_statement = textwrap.dedent("""
@@ -252,11 +254,10 @@ class Neo4jStalenessRemovalTask(Task):
 
     def _execute_cypher_query(self,
                               statement: str,
-                              param_dict: Dict[str, Any]={},
-                              dry_run: bool=False
+                              param_dict: Dict[str, Any] = {},
+                              dry_run: bool = False
                               ) -> Iterable[Dict[str, Any]]:
-        LOGGER.info('Executing Cypher query: {statement} with params {params}: '.format(statement=statement,
-                                                                                        params=param_dict))
+        LOGGER.info('Executing Cypher query: %s with params %s: ', statement, param_dict)
 
         if dry_run:
             LOGGER.info('Skipping for it is a dryrun')
@@ -268,5 +269,4 @@ class Neo4jStalenessRemovalTask(Task):
                 return session.run(statement, **param_dict)
 
         finally:
-            if LOGGER.isEnabledFor(logging.DEBUG):
-                LOGGER.debug('Cypher query execution elapsed for {} seconds'.format(time.time() - start))
+            LOGGER.debug('Cypher query execution elapsed for %i seconds', time.time() - start)

@@ -3,15 +3,17 @@
 
 import logging
 from collections import namedtuple
+from itertools import groupby
+from typing import (
+    Any, Dict, Iterator, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict, Any
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-from itertools import groupby
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema_name', 'table_name'])
 
@@ -76,13 +78,12 @@ class MSSQLMetadataExtractor(Extractor):
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(MSSQLMetadataExtractor.DEFAULT_CONFIG)
 
-        self._cluster = '{}'.format(
-            conf.get_string(MSSQLMetadataExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(MSSQLMetadataExtractor.CLUSTER_KEY)
 
         if conf.get_bool(MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
             cluster_source = "DB_NAME()"
         else:
-            cluster_source = "'{}'".format(self._cluster)
+            cluster_source = f"'{self._cluster}'"
 
         self._database = conf.get_string(
             MSSQLMetadataExtractor.DATABASE_KEY,
@@ -91,11 +92,11 @@ class MSSQLMetadataExtractor(Extractor):
         config_where_clause = conf.get_string(
             MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY)
 
-        logging.info("Crawling for Schemas %s", config_where_clause)
+        LOGGER.info("Crawling for Schemas %s", config_where_clause)
 
-        if len(config_where_clause) > 0:
-            where_clause_suffix = MSSQLMetadataExtractor\
-                .DEFAULT_WHERE_CLAUSE_VALUE\
+        if config_where_clause:
+            where_clause_suffix = MSSQLMetadataExtractor \
+                .DEFAULT_WHERE_CLAUSE_VALUE \
                 .format(schemas=config_where_clause)
         else:
             where_clause_suffix = ''
@@ -105,15 +106,12 @@ class MSSQLMetadataExtractor(Extractor):
             cluster_source=cluster_source
         )
 
-        LOGGER.info('SQL for MS SQL Metadata: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for MS SQL Metadata: %s', self.sql_stmt)
 
         self._alchemy_extractor = SQLAlchemyExtractor()
-        sql_alch_conf = Scoped\
+        sql_alch_conf = Scoped \
             .get_scoped_conf(conf, self._alchemy_extractor.get_scope()) \
-            .with_fallback(
-                ConfigFactory.from_dict({
-                    SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt})
-            )
+            .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
 
         self._alchemy_extractor.init(sql_alch_conf)
         self._extract_iter: Union[None, Iterator] = None

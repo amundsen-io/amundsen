@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import importlib
-from sqlalchemy import create_engine
+from typing import Any
 
 from pyhocon import ConfigTree
-from typing import Any
+from sqlalchemy import create_engine
 
 from databuilder.extractor.base_extractor import Extractor
 

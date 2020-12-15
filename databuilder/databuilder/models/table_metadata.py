@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+from typing import (
+    Any, Dict, Iterable, Iterator, List, Optional, Set, Union,
+)
 
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Set, Union
-
+from databuilder.models.badge import Badge, BadgeMetadata
 from databuilder.models.cluster import cluster_constants
-from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.schema import schema_constant
-from databuilder.models.badge import BadgeMetadata, Badge
-
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.schema import schema_constant
 
 DESCRIPTION_NODE_LABEL_VAL = 'Description'
 DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
@@ -127,7 +127,7 @@ class DescriptionMetadata:
             return "_" + self._source + "_description"
 
     def __repr__(self) -> str:
-        return 'DescriptionMetadata({!r}, {!r})'.format(self._source, self._text)
+        return f'DescriptionMetadata({self._source!r}, {self._text!r})'
 
     def get_node(self, node_key: str) -> GraphNode:
         node = GraphNode(
@@ -186,11 +186,8 @@ class ColumnMetadata:
         self.badges = [Badge(badge, 'column') for badge in formatted_badges]
 
     def __repr__(self) -> str:
-        return 'ColumnMetadata({!r}, {!r}, {!r}, {!r}, {!r})'.format(self.name,
-                                                                     self.description,
-                                                                     self.type,
-                                                                     self.sort_order,
-                                                                     self.badges)
+        return f'ColumnMetadata({self.name!r}, {self.description!r}, {self.type!r}, ' \
+               f'{self.sort_order!r}, {self.badges!r})'
 
 
 class TableMetadata(GraphSerializable):
@@ -278,15 +275,8 @@ class TableMetadata(GraphSerializable):
         self._relation_iterator = self._create_next_relation()
 
     def __repr__(self) -> str:
-        return 'TableMetadata({!r}, {!r}, {!r}, {!r} ' \
-               '{!r}, {!r}, {!r}, {!r})'.format(self.database,
-                                                self.cluster,
-                                                self.schema,
-                                                self.name,
-                                                self.description,
-                                                self.columns,
-                                                self.is_view,
-                                                self.tags)
+        return f'TableMetadata({self.database!r}, {self.cluster!r}, {self.schema!r}, {self.name!r} ' \
+               f'{self.description!r}, {self.columns!r}, {self.is_view!r}, {self.tags!r})'
 
     def _get_table_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,

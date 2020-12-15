@@ -33,7 +33,7 @@ class TableESDocument(ElasticsearchDocument):
         self.cluster = cluster
         self.schema = schema
         self.name = name
-        self.display_name = display_name if display_name else '{schema}.{table}'.format(schema=schema, table=name)
+        self.display_name = display_name if display_name else f'{schema}.{name}'
         self.key = key
         self.description = description
         # todo: use last_updated_timestamp to match the record in metadata

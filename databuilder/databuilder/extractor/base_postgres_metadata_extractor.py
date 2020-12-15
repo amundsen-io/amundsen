@@ -4,16 +4,17 @@
 import abc
 import logging
 from collections import namedtuple
+from itertools import groupby
+from typing import (
+    Any, Dict, Iterator, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict, Any
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-from itertools import groupby
-
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -47,7 +48,7 @@ class BasePostgresMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(BasePostgresMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(BasePostgresMetadataExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(BasePostgresMetadataExtractor.CLUSTER_KEY)
 
         self._database = conf.get_string(BasePostgresMetadataExtractor.DATABASE_KEY, default='postgres')
 
@@ -62,7 +63,7 @@ class BasePostgresMetadataExtractor(Extractor):
 
         self.sql_stmt = sql_alch_conf.get_string(SQLAlchemyExtractor.EXTRACT_SQL)
 
-        LOGGER.info('SQL for postgres metadata: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for postgres metadata: %s', self.sql_stmt)
 
         self._alchemy_extractor.init(sql_alch_conf)
         self._extract_iter: Union[None, Iterator] = None

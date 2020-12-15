@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from typing import no_type_check
 
 from databuilder.models.table_column_usage import ColumnReader, TableColumnUsage
-from typing import no_type_check
 from databuilder.serializers import neo4_serializer
 
 

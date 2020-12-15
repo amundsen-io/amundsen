@@ -6,20 +6,21 @@ import os
 import unittest
 import uuid
 
-from mock import patch, MagicMock
+from mock import MagicMock, patch
 from neo4j import GraphDatabase
 from pyhocon import ConfigFactory
 
 from databuilder.publisher import neo4j_csv_publisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 
+here = os.path.dirname(__file__)
+
 
 class TestPublish(unittest.TestCase):
 
     def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
-        self._resource_path = '{}/../resources/csv_publisher' \
-            .format(os.path.join(os.path.dirname(__file__)))
+        self._resource_path = os.path.join(here, f'../resources/csv_publisher')
 
     def test_publisher(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
@@ -38,11 +39,11 @@ class TestPublish(unittest.TestCase):
 
             conf = ConfigFactory.from_dict(
                 {neo4j_csv_publisher.NEO4J_END_POINT_KEY: 'dummy://999.999.999.999:7687/',
-                 neo4j_csv_publisher.NODE_FILES_DIR: '{}/nodes'.format(self._resource_path),
-                 neo4j_csv_publisher.RELATION_FILES_DIR: '{}/relations'.format(self._resource_path),
+                 neo4j_csv_publisher.NODE_FILES_DIR: f'{self._resource_path}/nodes',
+                 neo4j_csv_publisher.RELATION_FILES_DIR: f'{self._resource_path}/relations',
                  neo4j_csv_publisher.NEO4J_USER: 'neo4j_user',
                  neo4j_csv_publisher.NEO4J_PASSWORD: 'neo4j_password',
-                 neo4j_csv_publisher.JOB_PUBLISH_TAG: '{}'.format(uuid.uuid4())}
+                 neo4j_csv_publisher.JOB_PUBLISH_TAG: str(uuid.uuid4())}
             )
             publisher.init(conf)
             publisher.publish()
@@ -73,12 +74,12 @@ class TestPublish(unittest.TestCase):
 
             conf = ConfigFactory.from_dict(
                 {neo4j_csv_publisher.NEO4J_END_POINT_KEY: 'dummy://999.999.999.999:7687/',
-                 neo4j_csv_publisher.NODE_FILES_DIR: '{}/nodes'.format(self._resource_path),
-                 neo4j_csv_publisher.RELATION_FILES_DIR: '{}/relations'.format(self._resource_path),
+                 neo4j_csv_publisher.NODE_FILES_DIR: f'{self._resource_path}/nodes',
+                 neo4j_csv_publisher.RELATION_FILES_DIR: f'{self._resource_path}/relations',
                  neo4j_csv_publisher.RELATION_PREPROCESSOR: mock_preprocessor,
                  neo4j_csv_publisher.NEO4J_USER: 'neo4j_user',
                  neo4j_csv_publisher.NEO4J_PASSWORD: 'neo4j_password',
-                 neo4j_csv_publisher.JOB_PUBLISH_TAG: '{}'.format(uuid.uuid4())}
+                 neo4j_csv_publisher.JOB_PUBLISH_TAG: str(uuid.uuid4())}
             )
             publisher.init(conf)
             publisher.publish()

@@ -3,20 +3,22 @@
 
 import logging
 import unittest
+from typing import (
+    Any, Dict, List,
+)
 
 from mock import patch
 from pyhocon import ConfigFactory
-from typing import Any, Dict, List
 
 from databuilder import Scoped
-from databuilder.extractor.dashboard.redash.redash_dashboard_extractor import \
-    RedashDashboardExtractor, TableRelationData
+from databuilder.extractor.dashboard.redash.redash_dashboard_extractor import (
+    RedashDashboardExtractor, TableRelationData,
+)
+from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.dashboard.dashboard_last_modified import DashboardLastModifiedTimestamp
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 from databuilder.models.dashboard.dashboard_table import DashboardTable
-from databuilder.models.dashboard.dashboard_chart import DashboardChart
-
 
 logging.basicConfig(level=logging.INFO)
 
@@ -134,7 +136,7 @@ class TestRedashDashboardExtractor(unittest.TestCase):
             expected_query = DashboardQuery(
                 query_id='1234',
                 query_name='Test Query',
-                url=u'{base}/queries/1234'.format(base=redash_base_url),
+                url=f'{redash_base_url}/queries/1234',
                 query_text='SELECT id FROM users',
                 **identity
             )

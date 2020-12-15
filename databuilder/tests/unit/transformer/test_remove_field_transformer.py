@@ -5,7 +5,7 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.remove_field_transformer import RemoveFieldTransformer, FIELD_NAMES
+from databuilder.transformer.remove_field_transformer import FIELD_NAMES, RemoveFieldTransformer
 
 
 class TestRemoveFieldTransformer(unittest.TestCase):

@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
+from typing import List
 
 from pyhocon import ConfigTree
-from typing import List
 
 from databuilder import Scoped
 from databuilder.callback import call_back

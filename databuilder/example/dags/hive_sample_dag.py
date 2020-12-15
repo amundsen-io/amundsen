@@ -13,13 +13,12 @@ from pyhocon import ConfigFactory
 from databuilder.extractor.hive_table_metadata_extractor import HiveTableMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.job.job import DefaultJob
-from databuilder.models.table_metadata import DESCRIPTION_NODE_LABEL
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.models.table_metadata import DESCRIPTION_NODE_LABEL
 from databuilder.publisher import neo4j_csv_publisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
-
 
 dag_args = {
     'concurrency': 10,
@@ -57,6 +56,8 @@ SUPPORTED_HIVE_SCHEMAS = ['hive']
 # String format - ('schema1', schema2', .... 'schemaN')
 SUPPORTED_HIVE_SCHEMA_SQL_IN_CLAUSE = "('{schemas}')".format(schemas="', '".join(SUPPORTED_HIVE_SCHEMAS))
 
+LOGGER = logging.getLogger(__name__)
+
 
 # Todo: user needs to modify and provide a hivemetastore connection string
 def connection_string():
@@ -85,11 +86,10 @@ def create_table_wm_job(**kwargs):
                 watermark=kwargs['templates_dict'].get('watermark_type'),
                 schemas=SUPPORTED_HIVE_SCHEMA_SQL_IN_CLAUSE)
 
-    logging.info('SQL query: {}'.format(sql))
-    tmp_folder = '/var/tmp/amundsen/table_{hwm}'.format(hwm=kwargs['templates_dict']
-                                                        .get('watermark_type').strip("\""))
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    LOGGER.info('SQL query: %s', sql)
+    tmp_folder = '/var/tmp/amundsen/table_{hwm}'.format(hwm=kwargs['templates_dict'].get('watermark_type').strip("\""))
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     hwm_extractor = SQLAlchemyExtractor()
     csv_loader = FsNeo4jCSVLoader()
@@ -99,23 +99,16 @@ def create_table_wm_job(**kwargs):
                        transformer=NoopTransformer())
 
     job_config = ConfigFactory.from_dict({
-        'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING): connection_string(),
-        'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.EXTRACT_SQL): sql,
+        f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+        f'extractor.sqlalchemy.{SQLAlchemyExtractor.EXTRACT_SQL}': sql,
         'extractor.sqlalchemy.model_class': 'databuilder.models.watermark.Watermark',
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NODE_FILES_DIR}': node_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.RELATION_FILES_DIR}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -139,32 +132,21 @@ def create_table_metadata_databuilder_job():
     """).format(schemas=SUPPORTED_HIVE_SCHEMA_SQL_IN_CLAUSE)
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'
-    node_files_folder = '{tmp_folder}/nodes/'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships/'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes/'
+    relationship_files_folder = f'{tmp_folder}/relationships/'
 
     job_config = ConfigFactory.from_dict({
-        'extractor.hive_table_metadata.{}'.format(HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY):
-            where_clause_suffix,
-        'extractor.hive_table_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            connection_string(),
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_CREATE_ONLY_NODES):
-            [DESCRIPTION_NODE_LABEL],
-        'publisher.neo4j.job_publish_tag':
-            'some_unique_tag'  # TO-DO unique tag must be added
+        f'extractor.hive_table_metadata.{HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+        f'extractor.hive_table_metadata.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NODE_FILES_DIR}': node_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.RELATION_FILES_DIR}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_CREATE_ONLY_NODES}': [DESCRIPTION_NODE_LABEL],
+        'publisher.neo4j.job_publish_tag': 'some_unique_tag'  # TO-DO unique tag must be added
     })
 
     job = DefaultJob(conf=job_config,
@@ -174,7 +156,6 @@ def create_table_metadata_databuilder_job():
 
 
 with DAG('amundsen_databuilder', default_args=default_args, **dag_args) as dag:
-
     amundsen_databuilder_table_metadata_job = PythonOperator(
         task_id='amundsen_databuilder_table_metadata_job',
         python_callable=create_table_metadata_databuilder_job
@@ -187,7 +168,7 @@ with DAG('amundsen_databuilder', default_args=default_args, **dag_args) as dag:
         provide_context=True,
         templates_dict={'agg_func': 'max',
                         'watermark_type': '"high_watermark"',
-                        'part_regex': '{}'.format('{{ ds }}')}
+                        'part_regex': '{{ ds }}'}
     )
 
     # calculate hive low watermark
@@ -197,7 +178,7 @@ with DAG('amundsen_databuilder', default_args=default_args, **dag_args) as dag:
         provide_context=True,
         templates_dict={'agg_func': 'min',
                         'watermark_type': '"low_watermark"',
-                        'part_regex': '{}'.format('{{ ds }}')}
+                        'part_regex': '{{ ds }}'}
     )
 
     # Schedule high and low watermark task after metadata task

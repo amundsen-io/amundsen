@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from typing import Optional, Any, Union, Iterator
+from typing import (
+    Any, Iterator, Optional, Union,
+)
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
-from databuilder.models.graph_serializable import (GraphSerializable)
-
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
 
 LOGGER = logging.getLogger(__name__)
 
@@ -97,12 +97,6 @@ class DashboardExecution(GraphSerializable):
         )
 
     def __repr__(self) -> str:
-        return 'DashboardExecution({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})'.format(
-            self._dashboard_group_id,
-            self._dashboard_id,
-            self._execution_timestamp,
-            self._execution_state,
-            self._execution_id,
-            self._product,
-            self._cluster
-        )
+        return f'DashboardExecution({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \
+               f'{self._execution_timestamp!r}, {self._execution_state!r}, ' \
+               f'{self._execution_id!r}, {self._product!r}, {self._cluster!r})'

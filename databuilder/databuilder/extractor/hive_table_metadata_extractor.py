@@ -3,18 +3,19 @@
 
 import logging
 from collections import namedtuple
+from itertools import groupby
+from typing import (
+    Any, Dict, Iterator, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict, Any
 from sqlalchemy.engine.url import make_url
 
 from databuilder import Scoped
-from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-from itertools import groupby
-
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -94,7 +95,7 @@ class HiveTableMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(HiveTableMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(HiveTableMetadataExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(HiveTableMetadataExtractor.CLUSTER_KEY)
 
         self._alchemy_extractor = SQLAlchemyExtractor()
 
@@ -104,7 +105,7 @@ class HiveTableMetadataExtractor(Extractor):
 
         self.sql_stmt = conf.get_string(HiveTableMetadataExtractor.EXTRACT_SQL, default=default_sql)
 
-        LOGGER.info('SQL for hive metastore: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for hive metastore: %i', self.sql_stmt)
 
         sql_alch_conf = sql_alch_conf.with_fallback(ConfigFactory.from_dict(
             {SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))

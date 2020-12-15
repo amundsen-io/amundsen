@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import atexit
-
 from typing import Callable, List
 
 
@@ -27,8 +26,7 @@ class Closer(object):
         :return: None
         """
         if not callable(close_callable):
-            raise RuntimeError('Only callable can be registered: {}'.format(
-                close_callable))
+            raise RuntimeError(f'Only callable can be registered: {close_callable}')
 
         self._stack.append(close_callable)
 

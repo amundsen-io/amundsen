@@ -3,7 +3,7 @@
 
 import unittest
 
-from mock import patch, MagicMock
+from mock import MagicMock, patch
 from pyhocon import ConfigFactory
 
 from databuilder.extractor.snowflake_table_last_updated_extractor import SnowflakeTableLastUpdatedExtractor
@@ -14,15 +14,13 @@ from databuilder.models.table_last_updated import TableLastUpdated
 class TestSnowflakeTableLastUpdatedExtractor(unittest.TestCase):
     def setUp(self) -> None:
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION',
-            'extractor.snowflake_table_last_updated.{}'.format(SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY):
+            f'extractor.snowflake_table_last_updated.{SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY}':
                 'MY_CLUSTER',
-            'extractor.snowflake_table_last_updated.{}'.format(
-                SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME):
+            f'extractor.snowflake_table_last_updated.{SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME}':
                 False,
-            'extractor.snowflake_table_last_updated.{}'.format(
-                SnowflakeTableLastUpdatedExtractor.SNOWFLAKE_DATABASE_KEY):
+            f'extractor.snowflake_table_last_updated.{SnowflakeTableLastUpdatedExtractor.SNOWFLAKE_DATABASE_KEY}':
                 'prod'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -51,8 +49,8 @@ class TestSnowflakeTableLastUpdatedExtractor(unittest.TestCase):
                 {'schema': 'test_schema',
                  'table_name': 'test_table',
                  'last_updated_time': 1000,
-                 'cluster': self.conf['extractor.snowflake_table_last_updated.{}'.format(
-                     SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY)],
+                 'cluster': self.conf[
+                     f'extractor.snowflake_table_last_updated.{SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY}'],
                  }
             ]
 
@@ -76,8 +74,8 @@ class TestSnowflakeTableLastUpdatedExtractor(unittest.TestCase):
             sql_execute = MagicMock()
             connection.execute = sql_execute
 
-            default_cluster = self.conf['extractor.snowflake_table_last_updated.{}'.format(
-                SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY)]
+            default_cluster = self.conf[
+                f'extractor.snowflake_table_last_updated.{SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY}']
 
             table = {'schema': 'test_schema1',
                      'table_name': 'test_table1',
@@ -124,6 +122,7 @@ class TestSnowflakeTableLastUpdatedExtractorWithWhereClause(unittest.TestCase):
     """
     Test 'where_clause' config key in extractor
     """
+
     def setUp(self) -> None:
         self.where_clause_suffix = """
         where table_schema in ('public') and table_name = 'movies'
@@ -131,8 +130,7 @@ class TestSnowflakeTableLastUpdatedExtractorWithWhereClause(unittest.TestCase):
 
         config_dict = {
             SnowflakeTableLastUpdatedExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -150,12 +148,13 @@ class TestSnowflakeTableLastUpdatedExtractorClusterKeyNoTableCatalog(unittest.Te
     """
     Test with 'USE_CATALOG_AS_CLUSTER_NAME' is false and 'CLUSTER_KEY' is specified
     """
+
     def setUp(self) -> None:
         self.cluster_key = "not_master"
 
         config_dict = {
             SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
                 'TEST_CONNECTION',
             SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
@@ -175,13 +174,13 @@ class TestSnowflakeTableLastUpdatedExtractorDefaultSnowflakeDatabaseKey(unittest
     """
     Test with SNOWFLAKE_DATABASE_KEY config specified
     """
+
     def setUp(self) -> None:
         self.snowflake_database_key = "not_prod"
 
         config_dict = {
             SnowflakeTableLastUpdatedExtractor.SNOWFLAKE_DATABASE_KEY: self.snowflake_database_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -199,13 +198,13 @@ class TestSnowflakeTableLastUpdatedExtractorDefaultDatabaseKey(unittest.TestCase
     """
     Test with DATABASE_KEY config specified
     """
+
     def setUp(self) -> None:
         self.database_key = 'not_snowflake'
 
         config_dict = {
             SnowflakeTableLastUpdatedExtractor.DATABASE_KEY: self.database_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -250,10 +249,10 @@ class TestSnowflakeTableLastUpdatedExtractorNoClusterKeyNoTableCatalog(unittest.
     """
     Test when USE_CATALOG_AS_CLUSTER_NAME is false and CLUSTER_KEY is NOT specified
     """
+
     def setUp(self) -> None:
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -272,13 +271,13 @@ class TestSnowflakeTableLastUpdatedExtractorTableCatalogEnabled(unittest.TestCas
     """
     Test when USE_CATALOG_AS_CLUSTER_NAME is true (CLUSTER_KEY should be ignored)
     """
+
     def setUp(self) -> None:
         self.cluster_key = "not_master"
 
         config_dict = {
             SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME: True
         }
         self.conf = ConfigFactory.from_dict(config_dict)

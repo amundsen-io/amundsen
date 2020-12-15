@@ -5,8 +5,8 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.table_tag_transformer import TableTagTransformer
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.transformer.table_tag_transformer import TableTagTransformer
 
 
 class TestTableTagTransformer(unittest.TestCase):

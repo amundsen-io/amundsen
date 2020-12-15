@@ -1,14 +1,16 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from collections import namedtuple
-from datetime import date, timedelta
 import logging
 import re
+from collections import namedtuple
+from datetime import date, timedelta
 from time import sleep
+from typing import (
+    Any, Dict, Iterator, List, Optional, Tuple,
+)
 
 from pyhocon import ConfigTree
-from typing import Any, Iterator, Dict, Optional, Tuple, List
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor
 
@@ -47,7 +49,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
         for entry in self._retrieve_records():
             count += 1
             if count % self.pagesize == 0:
-                LOGGER.info('Aggregated {} records'.format(count))
+                LOGGER.info(f'Aggregated %i records', count)
 
             if entry is None:
                 continue
@@ -93,9 +95,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
                 return
 
         if len(refResources) != resourcesProcessed:
-            LOGGER.warn(
-                'The number of tables listed in job {job_id} is not consistent'
-                .format(job_id=jobId))
+            LOGGER.warning(f'The number of tables listed in job {jobId} is not consistent')
             return
 
         for refResource in refResources:
@@ -117,17 +117,15 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
         :return: Provides a record or None if no more to extract
         """
         body = {
-            'resourceNames': [
-                'projects/{project_id}'.format(project_id=self.project_id)
-            ],
+            'resourceNames': [f'projects/{self.project_id}'],
             'pageSize': self.pagesize,
             'filter': 'resource.type="bigquery_resource" AND '
                       'protoPayload.methodName="jobservice.jobcompleted" AND '
-                      'timestamp >= "{timestamp}"'.format(timestamp=self.timestamp)
+                      f'timestamp >= "{self.timestamp}"'
         }
         for page in self._page_over_results(body):
             for entry in page['entries']:
-                yield(entry)
+                yield entry
 
     def extract(self) -> Optional[Tuple[Any, int]]:
         try:
