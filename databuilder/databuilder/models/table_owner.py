@@ -1,13 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional, Union
+from typing import (
+    List, Optional, Union,
+)
 
-from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.owner_constants import OWNER_RELATION_TYPE, OWNER_OF_OBJECT_RELATION_TYPE
-from databuilder.models.user import User
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE, OWNER_RELATION_TYPE
+from databuilder.models.user import User
 
 
 class TableOwner(GraphSerializable):
@@ -52,10 +54,7 @@ class TableOwner(GraphSerializable):
         return User.USER_NODE_KEY_FORMAT.format(email=owner)
 
     def get_metadata_model_key(self) -> str:
-        return '{db}://{cluster}.{schema}/{table}'.format(db=self.db,
-                                                          cluster=self.cluster,
-                                                          schema=self.schema,
-                                                          table=self.table)
+        return f'{self.db}://{self.cluster}.{self.schema}/{self.table}'
 
     def create_nodes(self) -> List[GraphNode]:
         """
@@ -96,8 +95,4 @@ class TableOwner(GraphSerializable):
         return results
 
     def __repr__(self) -> str:
-        return 'TableOwner({!r}, {!r}, {!r}, {!r}, {!r})'.format(self.db,
-                                                                 self.cluster,
-                                                                 self.schema,
-                                                                 self.table,
-                                                                 self.owners)
+        return f'TableOwner({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r}, {self.owners!r})'

@@ -2,20 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from databuilder.models.watermark import Watermark
 
-from databuilder.models.graph_serializable import (
-    NODE_KEY,
-    NODE_LABEL,
-    RELATION_START_KEY,
-    RELATION_START_LABEL,
-    RELATION_END_KEY,
-    RELATION_END_LABEL,
-    RELATION_TYPE,
-    RELATION_REVERSE_TYPE
-)
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import (
+    NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
+    RELATION_START_LABEL, RELATION_TYPE,
+)
+from databuilder.models.watermark import Watermark
 from databuilder.serializers import neo4_serializer
 
 CREATE_TIME = '2017-09-18T00:00:00'
@@ -40,19 +34,8 @@ class TestWatermark(unittest.TestCase):
             part_type=PART_TYPE,
             part_name=NESTED_PART
         )
-        start_key = '{database}://{cluster}.{schema}/{table}/{part_type}/'.format(
-            database=DATABASE,
-            cluster=CLUSTER,
-            schema=SCHEMA,
-            table=TABLE,
-            part_type=PART_TYPE
-        )
-        end_key = '{database}://{cluster}.{schema}/{table}'.format(
-            database=DATABASE,
-            cluster=CLUSTER,
-            schema=SCHEMA,
-            table=TABLE
-        )
+        start_key = f'{DATABASE}://{CLUSTER}.{SCHEMA}/{TABLE}/{PART_TYPE}/'
+        end_key = f'{DATABASE}://{CLUSTER}.{SCHEMA}/{TABLE}'
         self.expected_node_result = GraphNode(
             key=start_key,
             label='Watermark',
@@ -92,21 +75,11 @@ class TestWatermark(unittest.TestCase):
 
     def test_get_watermark_model_key(self) -> None:
         watermark = self.watermark.get_watermark_model_key()
-        self.assertEqual(
-            watermark, '{database}://{cluster}.{schema}/{table}/{part_type}/'
-            .format(database=DATABASE,
-                    cluster=CLUSTER,
-                    schema=SCHEMA,
-                    table=TABLE,
-                    part_type=PART_TYPE))
+        self.assertEqual(watermark, f'{DATABASE}://{CLUSTER}.{SCHEMA}/{TABLE}/{PART_TYPE}/')
 
     def test_get_metadata_model_key(self) -> None:
         metadata = self.watermark.get_metadata_model_key()
-        self.assertEqual(metadata, '{database}://{cluster}.{schema}/{table}'
-                         .format(database=DATABASE,
-                                 cluster=CLUSTER,
-                                 schema=SCHEMA,
-                                 table=TABLE))
+        self.assertEqual(metadata, f'{DATABASE}://{CLUSTER}.{SCHEMA}/{TABLE}')
 
     def test_create_nodes(self) -> None:
         nodes = self.watermark.create_nodes()

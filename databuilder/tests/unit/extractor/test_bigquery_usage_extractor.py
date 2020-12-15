@@ -1,137 +1,136 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from mock import patch, Mock
 import base64
 import tempfile
 import unittest
-
-from pyhocon import ConfigFactory
 from typing import Any
 
+from mock import Mock, patch
+from pyhocon import ConfigFactory
+
 from databuilder import Scoped
-from databuilder.extractor.bigquery_usage_extractor import BigQueryTableUsageExtractor
-from databuilder.extractor.bigquery_usage_extractor import TableColumnUsageTuple
+from databuilder.extractor.bigquery_usage_extractor import BigQueryTableUsageExtractor, TableColumnUsageTuple
 
-
-CORRECT_DATA = {"entries": [
-{
-"protoPayload": {
-"@type": "type.googleapis.com/google.cloud.audit.AuditLog",
-"status": {},
-"authenticationInfo": {
-    "principalEmail": "your-user-here@test.com"
-},
-"serviceName": "bigquery.googleapis.com",
-"methodName": "jobservice.jobcompleted",
-"resourceName": "projects/your-project-here/jobs/bquxjob_758c08d1_16a96889839",
-"serviceData": {
-    "@type": "type.googleapis.com/google.cloud.bigquery.logging.v1.AuditData",
-    "jobCompletedEvent": {
-        "eventName": "query_job_completed",
-        "job": {
-            "jobName": {
-                "projectId": "your-project-here",
-                "jobId": "bquxjob_758c08d1_16a96889839",
-                "location": "US"
+CORRECT_DATA = {
+    "entries": [{
+        "protoPayload": {
+            "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+            "status": {},
+            "authenticationInfo": {
+                "principalEmail": "your-user-here@test.com"
             },
-            "jobConfiguration": {
-                "query": {
-                    "query": "select descript from "
-                    "`bigquery-public-data.austin_incidents.incidents_2008`\n",
-                    "destinationTable": {
-                        "projectId": "your-project-here",
-                        "datasetId": "_07147a061ddfd6dcaf246cfc5e858a0ccefa7080",
-                        "tableId": "anon1dd83635c62357091e55a5f76fb62d7deebcfa4c"
-                    },
-                    "createDisposition": "CREATE_IF_NEEDED",
-                    "writeDisposition": "WRITE_TRUNCATE",
-                    "defaultDataset": {},
-                    "queryPriority": "QUERY_INTERACTIVE",
-                    "statementType": "SELECT"
-                }
-            },
-            "jobStatus": {
-                "state": "DONE",
-                "error": {}
-            },
-            "jobStatistics": {
-                "createTime": "2019-05-08T08:22:56.349Z",
-                "startTime": "2019-05-08T08:22:56.660Z",
-                "endTime": "2019-05-08T08:23:00.049Z",
-                "totalProcessedBytes": "3637807",
-                "totalBilledBytes": "10485760",
-                "billingTier": 1,
-                "totalSlotMs": "452",
-                "referencedTables": [
-                    {
-                        "projectId": "bigquery-public-data",
-                        "datasetId": "austin_incidents",
-                        "tableId": "incidents_2008"
+            "serviceName": "bigquery.googleapis.com",
+            "methodName": "jobservice.jobcompleted",
+            "resourceName": "projects/your-project-here/jobs/bquxjob_758c08d1_16a96889839",
+            "serviceData": {
+                "@type": "type.googleapis.com/google.cloud.bigquery.logging.v1.AuditData",
+                "jobCompletedEvent": {
+                    "eventName": "query_job_completed",
+                    "job": {
+                        "jobName": {
+                            "projectId": "your-project-here",
+                            "jobId": "bquxjob_758c08d1_16a96889839",
+                            "location": "US"
+                        },
+                        "jobConfiguration": {
+                            "query": {
+                                "query": "select descript from "
+                                         "`bigquery-public-data.austin_incidents.incidents_2008`\n",
+                                "destinationTable": {
+                                    "projectId": "your-project-here",
+                                    "datasetId": "_07147a061ddfd6dcaf246cfc5e858a0ccefa7080",
+                                    "tableId": "anon1dd83635c62357091e55a5f76fb62d7deebcfa4c"
+                                },
+                                "createDisposition": "CREATE_IF_NEEDED",
+                                "writeDisposition": "WRITE_TRUNCATE",
+                                "defaultDataset": {},
+                                "queryPriority": "QUERY_INTERACTIVE",
+                                "statementType": "SELECT"
+                            }
+                        },
+                        "jobStatus": {
+                            "state": "DONE",
+                            "error": {}
+                        },
+                        "jobStatistics": {
+                            "createTime": "2019-05-08T08:22:56.349Z",
+                            "startTime": "2019-05-08T08:22:56.660Z",
+                            "endTime": "2019-05-08T08:23:00.049Z",
+                            "totalProcessedBytes": "3637807",
+                            "totalBilledBytes": "10485760",
+                            "billingTier": 1,
+                            "totalSlotMs": "452",
+                            "referencedTables": [
+                                {
+                                    "projectId": "bigquery-public-data",
+                                    "datasetId": "austin_incidents",
+                                    "tableId": "incidents_2008"
+                                }
+                            ],
+                            "totalTablesProcessed": 1,
+                            "queryOutputRowCount": "179524"
+                        }
                     }
-                ],
-                "totalTablesProcessed": 1,
-                "queryOutputRowCount": "179524"
+                }
             }
-        }
-    }
-}
-},
-"insertId": "-jyqvjse6lwjz",
-"resource": {
-"type": "bigquery_resource",
-"labels": {
-    "project_id": "your-project-here"
-}
-},
-"timestamp": "2019-05-08T08:23:00.061Z",
-"severity": "INFO",
-"logName": "projects/your-project-here/logs/cloudaudit.googleapis.com%2Fdata_access",
-"receiveTimestamp": "2019-05-08T08:23:00.310709609Z"
-}
-]}   # noqa
+        },
+        "insertId": "-jyqvjse6lwjz",
+        "resource": {
+            "type": "bigquery_resource",
+            "labels": {
+                "project_id": "your-project-here"
+            }
+        },
+        "timestamp": "2019-05-08T08:23:00.061Z",
+        "severity": "INFO",
+        "logName": "projects/your-project-here/logs/cloudaudit.googleapis.com%2Fdata_access",
+        "receiveTimestamp": "2019-05-08T08:23:00.310709609Z"
+    }]
+}  # noqa
 
-FAILURE = {"entries": [
-{
-    "protoPayload": {
-        "authenticationInfo": {
-            "principalEmail": "your-user-here@test.com"
-        },
-        "methodName": "jobservice.jobcompleted",
-        "serviceData": {
-            "jobCompletedEvent": {
-                "job": {
-                    "jobStatus": {
-                        "state": "DONE",
-                        "error": {
-                            "code": 11,
-                            "message": "Some descriptive error message"
+FAILURE = {
+    "entries": [{
+        "protoPayload": {
+            "authenticationInfo": {
+                "principalEmail": "your-user-here@test.com"
+            },
+            "methodName": "jobservice.jobcompleted",
+            "serviceData": {
+                "jobCompletedEvent": {
+                    "job": {
+                        "jobStatus": {
+                            "state": "DONE",
+                            "error": {
+                                "code": 11,
+                                "message": "Some descriptive error message"
+                            }
+                        },
+                        "jobStatistics": {
+                            "createTime": "2019-05-08T08:22:56.349Z",
+                            "startTime": "2019-05-08T08:22:56.660Z",
+                            "endTime": "2019-05-08T08:23:00.049Z",
+                            "totalProcessedBytes": "3637807",
+                            "totalBilledBytes": "10485760",
+                            "referencedTables": [
+                                {
+                                    "projectId": "bigquery-public-data",
+                                    "datasetId": "austin_incidents",
+                                    "tableId": "incidents_2008"
+                                }
+                            ]
                         }
-                    },
-                "jobStatistics": {
-                    "createTime": "2019-05-08T08:22:56.349Z",
-                    "startTime": "2019-05-08T08:22:56.660Z",
-                    "endTime": "2019-05-08T08:23:00.049Z",
-                    "totalProcessedBytes": "3637807",
-                    "totalBilledBytes": "10485760",
-                    "referencedTables": [
-                        {
-                            "projectId": "bigquery-public-data",
-                            "datasetId": "austin_incidents",
-                            "tableId": "incidents_2008"
-                        }
-                    ]
+                    }
                 }
-                }
-            }
+            },
         },
-    },
-}]}   # noqa
+    }]
+}  # noqa
 
 # An empty dict will be ignored, but putting in nextPageToken causes the test
 # to loop infinitely, so we need a bogus key/value to ensure that we will try
 # to read entries
-NO_ENTRIES = {'key': 'value'}   # noqa
+NO_ENTRIES = {'key': 'value'}  # noqa
 
 KEYFILE_DATA = """
 ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAieW91ci1wcm9q
@@ -200,8 +199,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         Test Extraction using mock class
         """
         config_dict = {
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -227,8 +225,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_no_entries(self, mock_build: Any) -> None:
         config_dict = {
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -252,10 +249,8 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
             keyfile.write(base64.b64decode(KEYFILE_DATA))
             keyfile.flush()
             config_dict = {
-                'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                    'your-project-here',
-                'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.KEY_PATH_KEY):
-                    keyfile.name,
+                f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+                f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.KEY_PATH_KEY}': keyfile.name,
             }
             conf = ConfigFactory.from_dict(config_dict)
 
@@ -278,12 +273,9 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         PAGESIZE = 215
 
         config_dict = {
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                'your-project-here',
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.TIMESTAMP_KEY):
-                TIMESTAMP,
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PAGE_SIZE_KEY):
-                PAGESIZE,
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.TIMESTAMP_KEY}': TIMESTAMP,
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PAGE_SIZE_KEY}': PAGESIZE,
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -301,10 +293,8 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_failed_jobs_should_not_be_counted(self, mock_build: Any) -> None:
-
         config_dict = {
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -320,10 +310,8 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_email_filter_not_counted(self, mock_build: Any) -> None:
         config_dict = {
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                'your-project-here',
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.EMAIL_PATTERN):
-                'emailFilter',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.EMAIL_PATTERN}': 'emailFilter',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -337,10 +325,8 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_email_filter_counted(self, mock_build: Any) -> None:
         config_dict = {
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.PROJECT_ID_KEY):
-                'your-project-here',
-            'extractor.bigquery_table_usage.{}'.format(BigQueryTableUsageExtractor.EMAIL_PATTERN):
-                '.*@test.com.*',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.EMAIL_PATTERN}': '.*@test.com.*',
         }
         conf = ConfigFactory.from_dict(config_dict)
 

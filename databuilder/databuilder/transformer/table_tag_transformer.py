@@ -1,11 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from pyhocon import ConfigFactory, ConfigTree
 from typing import Any
 
-from databuilder.transformer.base_transformer import Transformer
+from pyhocon import ConfigFactory, ConfigTree
+
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.transformer.base_transformer import Transformer
 
 
 class TableTagTransformer(Transformer):

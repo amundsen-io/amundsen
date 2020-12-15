@@ -3,8 +3,9 @@
 
 import abc
 import logging
-
-from typing import Iterable, Any, Dict, Iterator
+from typing import (
+    Any, Dict, Iterable, Iterator,
+)
 
 LOGGER = logging.getLogger(__name__)
 

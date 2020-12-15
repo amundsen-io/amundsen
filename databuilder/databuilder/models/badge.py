@@ -1,12 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional
 import re
+from typing import List, Optional
 
-from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
 
 
 class Badge:
@@ -15,8 +15,7 @@ class Badge:
         self.category = category
 
     def __repr__(self) -> str:
-        return 'Badge({!r}, {!r})'.format(self.name,
-                                          self.category)
+        return f'Badge({self.name!r}, {self.category!r})'
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Badge):
@@ -65,8 +64,7 @@ class BadgeMetadata(GraphSerializable):
         self._relation_iter = iter(self.create_relation())
 
     def __repr__(self) -> str:
-        return 'BadgeMetadata({!r}, {!r})'.format(self.start_label,
-                                                  self.start_key)
+        return f'BadgeMetadata({self.start_label!r}, {self.start_key!r})'
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data

@@ -3,10 +3,10 @@
 
 import json
 import logging
+from typing import List
 
 from elasticsearch.exceptions import NotFoundError
 from pyhocon import ConfigTree
-from typing import List
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.elasticsearch_constants import TABLE_ELASTICSEARCH_INDEX_MAPPING
@@ -99,7 +99,7 @@ class ElasticsearchPublisher(Publisher):
             cnt += 1
             if cnt == self.elasticsearch_batch_size:
                 self.elasticsearch_client.bulk(bulk_actions)
-                LOGGER.info('Publish {} of records to ES'.format(str(cnt)))
+                LOGGER.info('Publish %i of records to ES', cnt)
                 cnt = 0
                 bulk_actions = []
 

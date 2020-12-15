@@ -4,7 +4,7 @@
 import logging
 import unittest
 
-from mock import patch, call
+from mock import call, patch
 
 from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery

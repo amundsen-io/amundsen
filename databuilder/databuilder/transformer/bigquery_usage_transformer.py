@@ -1,12 +1,13 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from pyhocon import ConfigTree
 from typing import Optional, Tuple
 
-from databuilder.transformer.base_transformer import Transformer
-from databuilder.models.table_column_usage import ColumnReader, TableColumnUsage
+from pyhocon import ConfigTree
+
 from databuilder.extractor.bigquery_usage_extractor import TableColumnUsageTuple
+from databuilder.models.table_column_usage import ColumnReader, TableColumnUsage
+from databuilder.transformer.base_transformer import Transformer
 
 
 class BigqueryUsageTransformer(Transformer):

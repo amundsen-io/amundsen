@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
-from mock import MagicMock, mock_open, patch
 import unittest
 
+from mock import (
+    MagicMock, mock_open, patch,
+)
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped

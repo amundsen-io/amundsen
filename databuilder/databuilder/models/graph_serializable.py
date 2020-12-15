@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
-
 from typing import Union  # noqa: F401
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 
@@ -25,6 +25,7 @@ class GraphSerializable(object, metaclass=abc.ABCMeta):
 
     Any model class that needs to be pushed to a graph database should inherit this class.
     """
+
     def __init__(self) -> None:
         pass
 
@@ -68,10 +69,10 @@ class GraphSerializable(object, metaclass=abc.ABCMeta):
         node_id, node_label, _ = node
 
         if node_id is None:
-            RuntimeError('Required header missing. Required attributes id and label , Missing: id')
+            raise RuntimeError('Required header missing. Required attributes id and label , Missing: id')
 
         if node_label is None:
-            RuntimeError('Required header missing. Required attributes id and label , Missing: label')
+            raise RuntimeError('Required header missing. Required attributes id and label , Missing: label')
 
         self._validate_label_value(node_label)
 
@@ -82,9 +83,9 @@ class GraphSerializable(object, metaclass=abc.ABCMeta):
         self._validate_relation_type_value(relation.reverse_type)
 
     def _validate_relation_type_value(self, value: str) -> None:
-        if not value == value.upper():
-            raise RuntimeError('TYPE needs to be upper case: {}'.format(value))
+        if not value.isupper():
+            raise RuntimeError(f'TYPE needs to be upper case: {value}')
 
     def _validate_label_value(self, value: str) -> None:
         if not value.istitle():
-            raise RuntimeError('LABEL should only have upper case character on its first one: {}'.format(value))
+            raise RuntimeError(f'LABEL should only have upper case character on its first one: {value}')

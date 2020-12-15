@@ -1,8 +1,8 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Iterator, Union
 from datetime import datetime
+from typing import Iterator, Union
 
 import yaml
 from feast import Client
@@ -10,7 +10,7 @@ from feast.feature_table import FeatureTable
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class FeastExtractor(Extractor):

@@ -4,17 +4,18 @@
 
 import logging
 from collections import namedtuple
+from itertools import groupby
+from typing import (
+    Any, Dict, Iterator, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict, Any
 from unidecode import unidecode
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-from itertools import groupby
-
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -77,12 +78,12 @@ class SnowflakeMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(SnowflakeMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(SnowflakeMetadataExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(SnowflakeMetadataExtractor.CLUSTER_KEY)
 
         if conf.get_bool(SnowflakeMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
             cluster_source = "c.table_catalog"
         else:
-            cluster_source = "'{}'".format(self._cluster)
+            cluster_source = f"'{self._cluster}'"
 
         self._database = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY)
         self._schema = conf.get_string(SnowflakeMetadataExtractor.DATABASE_KEY)
@@ -96,10 +97,10 @@ class SnowflakeMetadataExtractor(Extractor):
             schema=self._snowflake_schema
         )
 
-        LOGGER.info('SQL for snowflake metadata: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for snowflake metadata: %s', self.sql_stmt)
 
         self._alchemy_extractor = SQLAlchemyExtractor()
-        sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope())\
+        sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope()) \
             .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
 
         self._alchemy_extractor.init(sql_alch_conf)
@@ -127,11 +128,11 @@ class SnowflakeMetadataExtractor(Extractor):
             for row in group:
                 last_row = row
                 columns.append(ColumnMetadata(
-                               row['col_name'],
-                               unidecode(row['col_description']) if row['col_description'] else None,
-                               row['col_type'],
-                               row['col_sort_order'])
-                               )
+                    row['col_name'],
+                    unidecode(row['col_description']) if row['col_description'] else None,
+                    row['col_type'],
+                    row['col_sort_order'])
+                )
 
             yield TableMetadata(self._database, last_row['cluster'],
                                 last_row['schema'],

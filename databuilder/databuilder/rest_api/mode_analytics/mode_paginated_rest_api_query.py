@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+from typing import Any, Dict
 
 import requests
 from jsonpath_rw import parse
-from typing import Any, Dict
 
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
@@ -49,12 +49,10 @@ class ModePaginatedRestApiQuery(RestApiQuery):
         page_suffix = PAGE_SUFFIX_TEMPLATE.format(self._current_page)  # example: ?page=2
 
         # example: http://foo.bar/resources?page=2
-        self._url = self._original_url + '{page_suffix}'.format(page_suffix=page_suffix)
+        self._url = f"{self._original_url}{page_suffix}"
         return self._url.format(**record)
 
-    def _post_process(self,
-                      response: requests.Response,
-                      ) -> None:
+    def _post_process(self, response: requests.Response, ) -> None:
         """
         Updates trigger to pagination (self._more_pages) as well as current_page (self._current_page)
         Mode does not have explicit indicator that it just the number of records need to be certain number that

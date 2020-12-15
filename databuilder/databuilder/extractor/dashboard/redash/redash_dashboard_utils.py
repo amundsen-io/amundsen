@@ -1,7 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, Iterable, List, Tuple
+from typing import (
+    Any, Dict, Iterable, List, Tuple,
+)
 
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
@@ -31,7 +33,7 @@ class RedashVisualizationWidget:
 
     @property
     def query_relative_url(self) -> str:
-        return '/queries/{id}'.format(id=self.query_id)
+        return f'/queries/{self.query_id}'
 
     @property
     def query_name(self) -> str:
@@ -131,7 +133,7 @@ def get_visualization_widgets(widgets: Iterable[Dict[str, Any]]) -> List[RedashV
 
 
 def get_auth_headers(api_key: str) -> Dict[str, str]:
-    return {'Authorization': 'Key {}'.format(api_key)}
+    return {'Authorization': f'Key {api_key}'}
 
 
 def generate_dashboard_description(text_widgets: List[RedashTextWidget],
@@ -147,7 +149,7 @@ def generate_dashboard_description(text_widgets: List[RedashTextWidget],
     if len(text_widgets) > 0:
         return '\n\n'.join([w.text for w in text_widgets])
     elif len(viz_widgets) > 0:
-        query_list = '\n'.join(set(['- {}'.format(v.query_name) for v in set(viz_widgets)]))
+        query_list = '\n'.join(set([f'- {v.query_name}' for v in set(viz_widgets)]))
         return 'A dashboard containing the following queries:\n\n' + query_list
 
     return 'This dashboard appears to be empty!'

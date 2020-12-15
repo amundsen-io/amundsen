@@ -1,8 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 __version__ = '4.0.3'
 

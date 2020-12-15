@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from pyhocon import ConfigTree, ConfigFactory
 from typing import Any, List
+
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -12,8 +12,8 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import 
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
+from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME, TimestampStringToEpoch
 
 LOGGER = logging.getLogger(__name__)
 

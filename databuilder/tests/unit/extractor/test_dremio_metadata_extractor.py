@@ -2,14 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import Dict, List, Any
 import unittest
+from typing import (
+    Any, Dict, List,
+)
 from unittest.mock import MagicMock, patch
 
 from pyhocon import ConfigFactory
 
 from databuilder.extractor.dremio_metadata_extractor import DremioMetadataExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestDremioMetadataExtractor(unittest.TestCase):

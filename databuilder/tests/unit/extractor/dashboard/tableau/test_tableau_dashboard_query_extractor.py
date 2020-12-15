@@ -10,9 +10,9 @@ from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.dashboard.tableau.tableau_dashboard_query_extractor import TableauDashboardQueryExtractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils \
-    import TableauDashboardAuth, TableauGraphQLApiExtractor
-
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils import (
+    TableauDashboardAuth, TableauGraphQLApiExtractor,
+)
 
 logging.basicConfig(level=logging.INFO)
 

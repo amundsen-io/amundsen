@@ -24,6 +24,15 @@ from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
 
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_extractor import TableauDashboardExtractor
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_last_modified_extractor import (
+    TableauDashboardLastModifiedExtractor,
+)
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_query_extractor import TableauDashboardQueryExtractor
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_table_extractor import TableauDashboardTableExtractor
+from databuilder.extractor.dashboard.tableau.tableau_external_table_extractor import (
+    TableauDashboardExternalTableExtractor,
+)
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
@@ -33,15 +42,6 @@ from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
-
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_extractor import TableauDashboardExtractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_last_modified_extractor import \
-    TableauDashboardLastModifiedExtractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_query_extractor import TableauDashboardQueryExtractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_table_extractor import TableauDashboardTableExtractor
-from databuilder.extractor.dashboard.tableau.tableau_external_table_extractor import \
-    TableauDashboardExternalTableExtractor
-
 
 es_host = os.getenv('CREDENTIALS_ELASTICSEARCH_PROXY_HOST', 'localhost')
 neo_host = os.getenv('CREDENTIALS_NEO4J_PROXY_HOST', 'localhost')
@@ -59,7 +59,7 @@ es = Elasticsearch([
 
 Base = declarative_base()
 
-NEO4J_ENDPOINT = 'bolt://{}:{}'.format(neo_host, neo_port)
+NEO4J_ENDPOINT = f'bolt://{neo_host}:{neo_port}'
 
 neo4j_endpoint = NEO4J_ENDPOINT
 
@@ -117,7 +117,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     # elastic search client instance
     elasticsearch_client = es
     # unique name of new index in Elasticsearch
-    elasticsearch_new_index_key = '{}_'.format(elasticsearch_doc_type_key) + str(uuid.uuid4())
+    elasticsearch_new_index_key = f'{elasticsearch_doc_type_key}_{uuid.uuid4()}'
 
     job_config = ConfigFactory.from_dict({
         'extractor.search_data.entity_type': entity_type,
@@ -138,7 +138,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 
     # only optionally add these keys, so need to dynamically `put` them
     if elasticsearch_mapping:
-        job_config.put('publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY),
+        job_config.put(f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY}',
                        elasticsearch_mapping)
 
     job = DefaultJob(conf=job_config,
@@ -152,8 +152,8 @@ def run_tableau_metadata_job():
 
     tmp_folder = '/var/tmp/amundsen/tableau_dashboard_metadata'
 
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     dict_config = common_tableau_config
     dict_config.update({
@@ -192,8 +192,8 @@ def run_tableau_last_modified_job():
 
     tmp_folder = '/var/tmp/amundsen/tableau_dashboard_user'
 
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     dict_config = common_tableau_config
     dict_config.update({
@@ -231,23 +231,20 @@ def run_tableau_query_job():
 
     tmp_folder = '/var/tmp/amundsen/tableau_dashboard_query'
 
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     dict_config = common_tableau_config
     dict_config.update({
         'extractor.tableau_dashboard_query.api_base_url': tableau_api_base_url,
         'extractor.tableau_dashboard_query.api_version': tableau_api_version,
         'extractor.tableau_dashboard_query.site_name': tableau_site_name,
-        'extractor.tableau_dashboard_query.tableau_personal_access_token_name':
-            tableau_personal_access_token_name,
-        'extractor.tableau_dashboard_query.tableau_personal_access_token_secret':
-            tableau_personal_access_token_secret,
+        'extractor.tableau_dashboard_query.tableau_personal_access_token_name': tableau_personal_access_token_name,
+        'extractor.tableau_dashboard_query.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
         'extractor.tableau_dashboard_query.excluded_projects': tableau_excluded_projects,
         'extractor.tableau_dashboard_query.cluster': tableau_dashboard_cluster,
         'extractor.tableau_dashboard_query.database': tableau_dashboard_database,
-        'extractor.tableau_dashboard_query.transformer.timestamp_str_to_epoch.timestamp_format':
-            "%Y-%m-%dT%H:%M:%SZ",
+        'extractor.tableau_dashboard_query.transformer.timestamp_str_to_epoch.timestamp_format': "%Y-%m-%dT%H:%M:%SZ",
         'extractor.tableau_dashboard_query.verify_request': tableau_verify_request,
         'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
         'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,
@@ -270,18 +267,16 @@ def run_tableau_table_job():
 
     tmp_folder = '/var/tmp/amundsen/tableau_dashboard_table'
 
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     dict_config = common_tableau_config
     dict_config.update({
         'extractor.tableau_dashboard_table.api_base_url': tableau_api_base_url,
         'extractor.tableau_dashboard_table.api_version': tableau_api_version,
         'extractor.tableau_dashboard_table.site_name': tableau_site_name,
-        'extractor.tableau_dashboard_table.tableau_personal_access_token_name':
-            tableau_personal_access_token_name,
-        'extractor.tableau_dashboard_table.tableau_personal_access_token_secret':
-            tableau_personal_access_token_secret,
+        'extractor.tableau_dashboard_table.tableau_personal_access_token_name': tableau_personal_access_token_name,
+        'extractor.tableau_dashboard_table.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
         'extractor.tableau_dashboard_table.excluded_projects': tableau_excluded_projects,
         'extractor.tableau_dashboard_table.cluster': tableau_dashboard_cluster,
         'extractor.tableau_dashboard_table.database': tableau_dashboard_database,
@@ -310,18 +305,16 @@ def run_tableau_external_table_job():
 
     tmp_folder = '/var/tmp/amundsen/tableau_dashboard_external_table'
 
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     dict_config = common_tableau_config
     dict_config.update({
         'extractor.tableau_external_table.api_base_url': tableau_api_base_url,
         'extractor.tableau_external_table.api_version': tableau_api_version,
         'extractor.tableau_external_table.site_name': tableau_site_name,
-        'extractor.tableau_external_table.tableau_personal_access_token_name':
-            tableau_personal_access_token_name,
-        'extractor.tableau_external_table.tableau_personal_access_token_secret':
-            tableau_personal_access_token_secret,
+        'extractor.tableau_external_table.tableau_personal_access_token_name': tableau_personal_access_token_name,
+        'extractor.tableau_external_table.tableau_personal_access_token_secret': tableau_personal_access_token_secret,
         'extractor.tableau_external_table.excluded_projects': tableau_excluded_projects,
         'extractor.tableau_external_table.cluster': tableau_dashboard_cluster,
         'extractor.tableau_external_table.database': tableau_dashboard_database,

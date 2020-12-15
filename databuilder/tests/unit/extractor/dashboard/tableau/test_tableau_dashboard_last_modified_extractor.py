@@ -9,11 +9,12 @@ from mock import patch
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_last_modified_extractor \
-    import TableauDashboardLastModifiedExtractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils \
-    import TableauDashboardAuth, TableauGraphQLApiExtractor
-
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_last_modified_extractor import (
+    TableauDashboardLastModifiedExtractor,
+)
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils import (
+    TableauDashboardAuth, TableauGraphQLApiExtractor,
+)
 
 logging.basicConfig(level=logging.INFO)
 

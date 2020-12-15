@@ -1,7 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional, Union
+from typing import (
+    List, Optional, Union,
+)
 
 from databuilder.models.elasticsearch_document import ElasticsearchDocument
 

@@ -3,14 +3,14 @@
 
 import logging
 import unittest
-
-from mock import patch, MagicMock
-from pyhocon import ConfigFactory
 from typing import Any, Dict
+
+from mock import MagicMock, patch
+from pyhocon import ConfigFactory
 
 from databuilder.extractor.hive_table_metadata_extractor import HiveTableMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestHiveTableMetadataExtractor(unittest.TestCase):
@@ -18,8 +18,7 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -38,8 +37,8 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
 
     def test_extraction_with_single_result(self) -> None:
         with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection, \
-            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
-                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
+                patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                             return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             connection = MagicMock()
             mock_connection.return_value = connection
             sql_execute = MagicMock()
@@ -106,8 +105,8 @@ class TestHiveTableMetadataExtractor(unittest.TestCase):
 
     def test_extraction_with_multiple_result(self) -> None:
         with patch.object(SQLAlchemyExtractor, '_get_connection') as mock_connection, \
-            patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
-                         return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
+                patch.object(HiveTableMetadataExtractor, '_choose_default_sql_stm',
+                             return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             connection = MagicMock()
             mock_connection.return_value = connection
             sql_execute = MagicMock()
@@ -237,8 +236,7 @@ class TestHiveTableMetadataExtractorWithWhereClause(unittest.TestCase):
 
         config_dict = {
             HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -263,8 +261,7 @@ class TestHiveTableMetadataExtractorWithWhereClause(unittest.TestCase):
                          return_value=HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT):
             config_dict = {
                 HiveTableMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-                'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                    'TEST_CONNECTION',
+                f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
                 HiveTableMetadataExtractor.EXTRACT_SQL:
                     'select sth for test {where_clause_suffix}'
             }

@@ -171,6 +171,5 @@ class Neo4jSearchDataExtractor(Extractor):
         else:
             if not hasattr(self, 'entity'):
                 self.entity = 'table'
-            publish_tag_filter = """WHERE {entity}.published_tag = '{tag}'""".format(entity=self.entity,
-                                                                                     tag=publish_tag)
+            publish_tag_filter = f"WHERE {self.entity}.published_tag = '{publish_tag}'"
         return cypher_query.format(publish_tag_filter=publish_tag_filter)

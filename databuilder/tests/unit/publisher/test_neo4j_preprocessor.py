@@ -5,7 +5,7 @@ import textwrap
 import unittest
 import uuid
 
-from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor, DeleteRelationPreprocessor
+from databuilder.publisher.neo4j_preprocessor import DeleteRelationPreprocessor, NoopRelationPreprocessor
 
 
 class TestNeo4jPreprocessor(unittest.TestCase):

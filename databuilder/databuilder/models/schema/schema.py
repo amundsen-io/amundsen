@@ -1,13 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Union, Iterator
+from typing import (
+    Any, Iterator, Union,
+)
 
-from databuilder.models.graph_serializable import (GraphSerializable)
-from databuilder.models.schema.schema_constant import SCHEMA_NODE_LABEL, SCHEMA_NAME_ATTR
-from databuilder.models.table_metadata import DescriptionMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.schema.schema_constant import SCHEMA_NAME_ATTR, SCHEMA_NODE_LABEL
+from databuilder.models.table_metadata import DescriptionMetadata
 
 
 class SchemaModel(GraphSerializable):
@@ -54,7 +56,7 @@ class SchemaModel(GraphSerializable):
 
     def _get_description_node_key(self) -> str:
         desc = self._description.get_description_id() if self._description is not None else ''
-        return '{}/{}'.format(self._schema_key, desc)
+        return f'{self._schema_key}/{desc}'
 
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         if self._description:

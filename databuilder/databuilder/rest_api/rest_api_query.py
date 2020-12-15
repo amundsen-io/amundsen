@@ -3,11 +3,13 @@
 
 import copy
 import logging
+from typing import (
+    Any, Callable, Dict, Iterator, List, Union,
+)
 
 import requests
 from jsonpath_rw import parse
 from retrying import retry
-from typing import List, Dict, Any, Union, Iterator, Callable
 
 from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 
@@ -56,10 +58,10 @@ class RestApiQuery(BaseRestApiQuery):
                  params: Dict[str, Any],
                  json_path: str,
                  field_names: List[str],
-                 fail_no_result: bool=False,
-                 skip_no_result: bool=False,
-                 json_path_contains_or: bool=False,
-                 can_skip_failure: Callable=None,
+                 fail_no_result: bool = False,
+                 skip_no_result: bool = False,
+                 json_path_contains_or: bool = False,
+                 can_skip_failure: Callable = None,
                  **kwargs: Any
                  ) -> None:
         """
@@ -153,8 +155,8 @@ class RestApiQuery(BaseRestApiQuery):
                 result_list: List[Any] = [match.value for match in self._jsonpath_expr.find(response_json)]
 
                 if not result_list:
-                    log_msg = 'No result from URL: {url}, JSONPATH: {json_path} , response payload: {response}' \
-                        .format(url=self._url, json_path=self._json_path, response=response_json)
+                    log_msg = f'No result from URL: {self._url}, JSONPATH: {self._json_path} , ' \
+                              f'response payload: {response_json}'
                     LOGGER.info(log_msg)
 
                     self._post_process(response)
@@ -197,7 +199,7 @@ class RestApiQuery(BaseRestApiQuery):
         :param url:
         :return:
         """
-        LOGGER.info('Calling URL {}'.format(url))
+        LOGGER.info('Calling URL %s', url)
         response = requests.get(url, **self._params)
         response.raise_for_status()
         return response
@@ -206,7 +208,7 @@ class RestApiQuery(BaseRestApiQuery):
     def _compute_sub_records(cls,
                              result_list: List[Any],
                              field_names: List[str],
-                             json_path_contains_or: bool=False,
+                             json_path_contains_or: bool = False,
                              ) -> List[List[Any]]:
         """
         The behavior of JSONPATH is different when it's extracting multiple fields using AND(,) vs OR(|)

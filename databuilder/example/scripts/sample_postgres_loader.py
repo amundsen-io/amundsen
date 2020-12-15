@@ -10,14 +10,15 @@ into Neo4j and Elasticsearch without using an Airflow DAG.
 import sys
 import textwrap
 import uuid
+
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
 
-from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
-from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
+from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
+from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
@@ -42,7 +43,7 @@ DB_FILE = '/tmp/test.db'
 SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
 Base = declarative_base()
 
-NEO4J_ENDPOINT = 'bolt://{}:7687'.format(neo_host if neo_host else 'localhost')
+NEO4J_ENDPOINT = f'bolt://{neo_host or "localhost"}:7687'
 
 neo4j_endpoint = NEO4J_ENDPOINT
 
@@ -65,34 +66,22 @@ def run_postgres_job():
     """)
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'
-    node_files_folder = '{tmp_folder}/nodes/'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships/'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes/'
+    relationship_files_folder = f'{tmp_folder}/relationships/'
 
     job_config = ConfigFactory.from_dict({
-        'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY):
-            where_clause_suffix,
-        'extractor.postgres_metadata.{}'.format(PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
-            True,
-        'extractor.postgres_metadata.extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            connection_string(),
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH):
-            node_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH):
-            relationship_files_folder,
-        'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR):
-            True,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR):
-            node_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR):
-            relationship_files_folder,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY):
-            neo4j_endpoint,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_USER):
-            neo4j_user,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_PASSWORD):
-            neo4j_password,
-        'publisher.neo4j.{}'.format(neo4j_csv_publisher.JOB_PUBLISH_TAG):
-            'unique_tag',  # should use unique tag here like {ds}
+        f'extractor.postgres_metadata.{PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+        f'extractor.postgres_metadata.{PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME}': True,
+        f'extractor.postgres_metadata.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+        f'publisher.neo4j.{neo4j_csv_publisher.NODE_FILES_DIR}': node_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.RELATION_FILES_DIR}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
+        f'publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}': 'unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,
                      task=DefaultTask(extractor=PostgresMetadataExtractor(), loader=FsNeo4jCSVLoader()),
@@ -129,32 +118,30 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     elasticsearch_new_index_key = 'tables' + str(uuid.uuid4())
 
     job_config = ConfigFactory.from_dict({
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.GRAPH_URL_CONFIG_KEY): neo4j_endpoint,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY): model_name,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_USER): neo4j_user,
-        'extractor.search_data.extractor.neo4j.{}'.format(Neo4jExtractor.NEO4J_AUTH_PW): neo4j_password,
-        'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY):
-            extracted_search_data_path,
-        'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY): 'w',
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY):
-            extracted_search_data_path,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY): 'r',
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY):
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': neo4j_endpoint,
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.MODEL_CLASS_CONFIG_KEY}': model_name,
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': neo4j_user,
+        f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': neo4j_password,
+        f'loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY}': extracted_search_data_path,
+        f'loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY}': 'w',
+        f'publisher.elasticsearch.{ElasticsearchPublisher.FILE_PATH_CONFIG_KEY}': extracted_search_data_path,
+        f'publisher.elasticsearch.{ElasticsearchPublisher.FILE_MODE_CONFIG_KEY}': 'r',
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY}':
             elasticsearch_client,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY):
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY}':
             elasticsearch_new_index_key,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY):
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY}':
             elasticsearch_doc_type_key,
-        'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY):
+        f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY}':
             elasticsearch_index_alias,
     })
 
     # only optionally add these keys, so need to dynamically `put` them
     if cypher_query:
-        job_config.put('extractor.search_data.{}'.format(Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY),
+        job_config.put(f'extractor.search_data.{Neo4jSearchDataExtractor.CYPHER_QUERY_CONFIG_KEY}',
                        cypher_query)
     if elasticsearch_mapping:
-        job_config.put('publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY),
+        job_config.put(f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY}',
                        elasticsearch_mapping)
 
     job = DefaultJob(conf=job_config,

@@ -5,9 +5,9 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.bigquery_usage_transformer import BigqueryUsageTransformer
 from databuilder.extractor.bigquery_usage_extractor import TableColumnUsageTuple
 from databuilder.models.table_column_usage import TableColumnUsage
+from databuilder.transformer.bigquery_usage_transformer import BigqueryUsageTransformer
 
 
 class TestBigQueryUsageTransform(unittest.TestCase):

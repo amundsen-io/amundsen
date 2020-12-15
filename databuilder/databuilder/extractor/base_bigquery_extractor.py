@@ -4,16 +4,17 @@
 import json
 import logging
 from collections import namedtuple
+from typing import (
+    Any, Dict, Iterator, List,
+)
 
 import google.oauth2.service_account
 import google_auth_httplib2
-from googleapiclient.discovery import build
 import httplib2
+from googleapiclient.discovery import build
 from pyhocon import ConfigTree
-from typing import Any, Dict, Iterator, List
 
 from databuilder.extractor.base_extractor import Extractor
-
 
 DatasetRef = namedtuple('DatasetRef', ['datasetId', 'projectId'])
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])

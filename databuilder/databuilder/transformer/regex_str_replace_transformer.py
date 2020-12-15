@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from pyhocon import ConfigTree
 from typing import Any
 
-from databuilder.transformer.base_transformer import Transformer
+from pyhocon import ConfigTree
 
+from databuilder.transformer.base_transformer import Transformer
 
 LOGGER = logging.getLogger(__name__)
 

@@ -5,8 +5,9 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.extractor.restapi.rest_api_extractor import RestAPIExtractor, REST_API_QUERY, MODEL_CLASS, \
-    STATIC_RECORD_DICT
+from databuilder.extractor.restapi.rest_api_extractor import (
+    MODEL_CLASS, REST_API_QUERY, STATIC_RECORD_DICT, RestAPIExtractor,
+)
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 

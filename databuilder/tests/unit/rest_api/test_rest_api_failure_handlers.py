@@ -3,8 +3,9 @@
 
 import unittest
 
-from databuilder.rest_api.rest_api_failure_handlers import HttpFailureSkipOnStatus
 from mock import MagicMock
+
+from databuilder.rest_api.rest_api_failure_handlers import HttpFailureSkipOnStatus
 
 
 class TestHttpFailureSkipOnStatus(unittest.TestCase):

@@ -2,26 +2,29 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import importlib
+from typing import (
+    Any, Dict, Iterator, Optional,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Any, Dict, Iterator, Optional
 
-from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
+from databuilder.extractor.base_extractor import Extractor
+from databuilder.extractor.dashboard.redash.redash_dashboard_utils import (
+    RedashPaginatedRestApiQuery, generate_dashboard_description, get_auth_headers, get_text_widgets,
+    get_visualization_widgets, sort_widgets,
+)
+from databuilder.extractor.restapi.rest_api_extractor import REST_API_QUERY, RestAPIExtractor
+from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.dashboard.dashboard_last_modified import DashboardLastModifiedTimestamp
+from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 from databuilder.models.dashboard.dashboard_table import DashboardTable
-from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.table_metadata import TableMetadata
-from databuilder.extractor.base_extractor import Extractor
-from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.rest_api.base_rest_api_query import EmptyRestApiQuerySeed
-from databuilder.extractor.restapi.rest_api_extractor import RestAPIExtractor, REST_API_QUERY
-from databuilder.extractor.dashboard.redash.redash_dashboard_utils import \
-    get_auth_headers, get_text_widgets, get_visualization_widgets, sort_widgets, \
-    generate_dashboard_description, RedashPaginatedRestApiQuery
+from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer
-from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME as TS_FIELD_NAME
+from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME as TS_FIELD_NAME, TimestampStringToEpoch
 
 
 class TableRelationData:
@@ -35,12 +38,10 @@ class TableRelationData:
                  cluster: str,
                  schema: str,
                  name: str) -> None:
-
         self._data = {'db': database, 'cluster': cluster, 'schema': schema, 'tbl': name}
 
     @property
     def key(self) -> str:
-
         return TableMetadata.TABLE_KEY_FORMAT.format(**self._data)
 
 
@@ -126,8 +127,7 @@ class RedashDashboardExtractor(Extractor):
                 'dashboard_name':
                     record['dashboard_name'],
                 'dashboard_url':
-                    '{redash}/dashboards/{id}'
-                    .format(redash=self._redash_base_url, id=record['dashboard_id']),
+                    f'{self._redash_base_url}/dashboards/{record["dashboard_id"]}',
                 'created_timestamp':
                     record['created_timestamp']
             }
@@ -195,7 +195,7 @@ class RedashDashboardExtractor(Extractor):
 
         dashes_query = RedashPaginatedRestApiQuery(
             query_to_join=EmptyRestApiQuerySeed(),
-            url='{redash_api}/dashboards'.format(redash_api=self._api_base_url),
+            url=f'{self._api_base_url}/dashboards',
             params=self._get_default_api_query_params(),
             json_path='results[*].[id,name,slug,created_at,updated_at,is_archived,is_draft,user]',
             field_names=[
@@ -207,7 +207,7 @@ class RedashDashboardExtractor(Extractor):
 
         return RestApiQuery(
             query_to_join=dashes_query,
-            url='{redash_api}/dashboards/{{dashboard_id}}'.format(redash_api=self._api_base_url),
+            url=f'{self._api_base_url}/dashboards/{{dashboard_id}}',
             params=self._get_default_api_query_params(),
             json_path='widgets',
             field_names=['widgets'],

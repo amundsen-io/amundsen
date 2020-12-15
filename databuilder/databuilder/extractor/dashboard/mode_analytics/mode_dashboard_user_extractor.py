@@ -2,22 +2,23 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from pyhocon import ConfigTree, ConfigFactory
-from requests.auth import HTTPBasicAuth
 from typing import Any, List
+
+from pyhocon import ConfigFactory, ConfigTree
+from requests.auth import HTTPBasicAuth
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_constants import ORGANIZATION, MODE_ACCESS_TOKEN, \
-    MODE_PASSWORD_TOKEN
+from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_constants import (
+    MODE_ACCESS_TOKEN, MODE_PASSWORD_TOKEN, ORGANIZATION,
+)
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 from databuilder.rest_api.rest_api_failure_handlers import HttpFailureSkipOnStatus
 from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.remove_field_transformer import RemoveFieldTransformer, FIELD_NAMES
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
+from databuilder.transformer.remove_field_transformer import FIELD_NAMES, RemoveFieldTransformer
 
 LOGGER = logging.getLogger(__name__)
 

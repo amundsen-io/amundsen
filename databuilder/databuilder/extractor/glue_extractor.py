@@ -1,13 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import boto3
+from typing import (
+    Any, Dict, Iterator, List, Union,
+)
 
+import boto3
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict, Any, List
 
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class GlueExtractor(Extractor):
@@ -21,7 +23,7 @@ class GlueExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(GlueExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(GlueExtractor.CLUSTER_KEY)
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
         self._glue = boto3.client('glue')
         self._extract_iter: Union[None, Iterator] = None

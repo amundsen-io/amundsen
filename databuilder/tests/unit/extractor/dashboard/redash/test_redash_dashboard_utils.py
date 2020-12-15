@@ -4,14 +4,17 @@
 import logging
 import random
 import unittest
+from typing import (
+    Any, Dict, List,
+)
 
 from mock import patch
-from typing import Any, Dict, List
 
+from databuilder.extractor.dashboard.redash.redash_dashboard_utils import (
+    RedashPaginatedRestApiQuery, generate_dashboard_description, get_auth_headers, get_text_widgets,
+    get_visualization_widgets, sort_widgets,
+)
 from databuilder.rest_api.base_rest_api_query import EmptyRestApiQuerySeed
-from databuilder.extractor.dashboard.redash.redash_dashboard_utils import \
-    get_text_widgets, get_visualization_widgets, sort_widgets, \
-    generate_dashboard_description, get_auth_headers, RedashPaginatedRestApiQuery
 
 logging.basicConfig(level=logging.INFO)
 

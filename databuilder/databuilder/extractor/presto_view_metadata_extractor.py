@@ -4,15 +4,16 @@
 import base64
 import json
 import logging
+from typing import (
+    Iterator, List, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, List, Union
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,12 +48,12 @@ class PrestoViewMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(PrestoViewMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(PrestoViewMetadataExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(PrestoViewMetadataExtractor.CLUSTER_KEY)
 
         self.sql_stmt = PrestoViewMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(PrestoViewMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY))
 
-        LOGGER.info('SQL for hive metastore: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for hive metastore: %s', self.sql_stmt)
 
         self._alchemy_extractor = SQLAlchemyExtractor()
         sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope())\

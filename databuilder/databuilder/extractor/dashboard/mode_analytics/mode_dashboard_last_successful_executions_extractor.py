@@ -3,10 +3,11 @@
 
 import logging
 
-from pyhocon import ConfigTree, ConfigFactory
+from pyhocon import ConfigFactory, ConfigTree
 
-from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_executions_extractor import \
-    ModeDashboardExecutionsExtractor
+from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_executions_extractor import (
+    ModeDashboardExecutionsExtractor,
+)
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
 from databuilder.models.dashboard.dashboard_execution import DashboardExecution

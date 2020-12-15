@@ -14,6 +14,13 @@ lint:
 mypy:
 	mypy .
 
-.PHONY: test
-test: test_unit lint mypy
+.PHONY: isort
+isort:
+	isort .
 
+.PHONY: isort_check
+isort_check:
+	isort ./ --check --diff
+
+.PHONY: test
+test: test_unit lint mypy isort_check

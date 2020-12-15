@@ -2,21 +2,22 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import Any, Dict, Iterator, List
+from typing import (
+    Any, Dict, Iterator, List,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
 
 import databuilder.extractor.dashboard.tableau.tableau_dashboard_constants as const
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils import TableauGraphQLApiExtractor,\
-    TableauDashboardUtils
+from databuilder.extractor.dashboard.tableau.tableau_dashboard_utils import (
+    TableauDashboardUtils, TableauGraphQLApiExtractor,
+)
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
-from databuilder.transformer.base_transformer import ChainedTransformer
-from databuilder.transformer.base_transformer import Transformer
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.timestamp_string_to_epoch import TimestampStringToEpoch, FIELD_NAME
-
+from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
+from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME, TimestampStringToEpoch
 
 LOGGER = logging.getLogger(__name__)
 

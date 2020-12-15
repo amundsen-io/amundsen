@@ -3,14 +3,14 @@
 
 import logging
 import unittest
-
-from mock import patch, MagicMock
-from pyhocon import ConfigFactory
 from typing import Any, Dict
+
+from mock import MagicMock, patch
+from pyhocon import ConfigFactory
 
 from databuilder.extractor.mssql_metadata_extractor import MSSQLMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestMSSQLMetadataExtractor(unittest.TestCase):
@@ -18,15 +18,11 @@ class TestMSSQLMetadataExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
-            'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.CLUSTER_KEY):
-                'MY_CLUSTER',
-            'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
-                False,
-            'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.DATABASE_KEY):
-                'mssql',
-            'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): ''
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
+            f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}': 'MY_CLUSTER',
+            f'extractor.mssql_metadata.{MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME}': False,
+            f'extractor.mssql_metadata.{MSSQLMetadataExtractor.DATABASE_KEY}': 'mssql',
+            f'extractor.mssql_metadata.{MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': ''
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -51,7 +47,7 @@ class TestMSSQLMetadataExtractor(unittest.TestCase):
                      'name': 'test_table',
                      'description': 'a table for testing',
                      'cluster':
-                         self.conf['extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.CLUSTER_KEY)]
+                         self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}']
                      }
 
             sql_execute.return_value = [
@@ -111,21 +107,21 @@ class TestMSSQLMetadataExtractor(unittest.TestCase):
                      'name': 'test_table1',
                      'description': 'test table 1',
                      'cluster':
-                         self.conf['extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.CLUSTER_KEY)]
+                         self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}']
                      }
 
             table1 = {'schema_name': 'test_schema1',
                       'name': 'test_table2',
                       'description': 'test table 2',
                       'cluster':
-                          self.conf['extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.CLUSTER_KEY)]
+                          self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}']
                       }
 
             table2 = {'schema_name': 'test_schema2',
                       'name': 'test_table3',
                       'description': 'test table 3',
                       'cluster':
-                          self.conf['extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.CLUSTER_KEY)]
+                          self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}']
                       }
 
             sql_execute.return_value = [
@@ -185,8 +181,7 @@ class TestMSSQLMetadataExtractor(unittest.TestCase):
             extractor.init(self.conf)
 
             expected = TableMetadata('mssql',
-                                     self.conf['extractor.mssql_metadata.{}'.format(
-                                         MSSQLMetadataExtractor.CLUSTER_KEY)],
+                                     self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}'],
                                      'test_schema1', 'test_table1', 'test table 1',
                                      [ColumnMetadata('col_id1', 'description of col_id1', 'bigint', 0),
                                       ColumnMetadata('col_id2', 'description of col_id2', 'bigint', 1),
@@ -197,8 +192,7 @@ class TestMSSQLMetadataExtractor(unittest.TestCase):
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             expected = TableMetadata('mssql',
-                                     self.conf['extractor.mssql_metadata.{}'.format(
-                                         MSSQLMetadataExtractor.CLUSTER_KEY)],
+                                     self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}'],
                                      'test_schema1', 'test_table2', 'test table 2',
                                      [ColumnMetadata('col_name', 'description of col_name', 'varchar', 0),
                                       ColumnMetadata('col_name2', 'description of col_name2', 'varchar', 1)],
@@ -206,8 +200,7 @@ class TestMSSQLMetadataExtractor(unittest.TestCase):
             self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
 
             expected = TableMetadata('mssql',
-                                     self.conf['extractor.mssql_metadata.{}'.format(
-                                         MSSQLMetadataExtractor.CLUSTER_KEY)],
+                                     self.conf[f'extractor.mssql_metadata.{MSSQLMetadataExtractor.CLUSTER_KEY}'],
                                      'test_schema2', 'test_table3', 'test table 3',
                                      [ColumnMetadata('col_id3', 'description of col_id3', 'varchar', 0),
                                       ColumnMetadata('col_name3', 'description of col_name3',
@@ -233,8 +226,7 @@ class TestMSSQLMetadataExtractorWithWhereClause(unittest.TestCase):
 
         config_dict = {
             MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -256,8 +248,7 @@ class TestMSSQLMetadataExtractorClusterKeyNoTableCatalog(unittest.TestCase):
 
         config_dict = {
             MSSQLMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -278,8 +269,7 @@ class TestMSSQLMetadataExtractorNoClusterKeyNoTableCatalog(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -302,8 +292,7 @@ class TestMSSQLMetadataExtractorTableCatalogEnabled(unittest.TestCase):
 
         config_dict = {
             MSSQLMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             MSSQLMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: True
         }
         self.conf = ConfigFactory.from_dict(config_dict)

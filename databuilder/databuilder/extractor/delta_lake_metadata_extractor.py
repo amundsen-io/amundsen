@@ -1,18 +1,22 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-from datetime import datetime
+
+import concurrent.futures
 import logging
 from collections import namedtuple
+from datetime import datetime
+from typing import (  # noqa: F401
+    Dict, Iterator, List, Optional, Union,
+)
 
-from databuilder.extractor.base_extractor import Extractor
-from databuilder.models.table_last_updated import TableLastUpdated
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
 from pyspark.sql import SparkSession
 from pyspark.sql.catalog import Table
 from pyspark.sql.utils import AnalysisException
-from typing import Iterator, Union, List, Dict, Optional  # noqa: F401
-import concurrent.futures
+
+from databuilder.extractor.base_extractor import Extractor
+from databuilder.models.table_last_updated import TableLastUpdated
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -35,15 +39,15 @@ class ScrapedColumnMetadata(object):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ScrapedColumnMetadata):
             return False
-        return self.name == other.name and \
-            self.data_type == other.data_type and \
-            self.description == other.description and \
-            self.sort_order == other.sort_order and \
-            self.is_partition == other.is_partition and \
-            self.attributes == other.attributes
+        return (self.name == other.name and
+                self.data_type == other.data_type and
+                self.description == other.description and
+                self.sort_order == other.sort_order and
+                self.is_partition == other.is_partition and
+                self.attributes == other.attributes)
 
     def __repr__(self) -> str:
-        return "{0}:{1}".format(self.name, self.data_type)
+        return f'{self.name}:{self.data_type}'
 
 
 # TODO consider deprecating this for using TableMetadata directly
@@ -108,7 +112,7 @@ class ScrapedTableMetadata(object):
             return False
 
     def __repr__(self) -> str:
-        return "{schema}.{table}".format(schema=self.schema, table=self.table)
+        return f'{self.schema}.{self.table}'
 
 
 class DeltaLakeMetadataExtractor(Extractor):
@@ -164,13 +168,13 @@ class DeltaLakeMetadataExtractor(Extractor):
          - last updated information
         """
         if self.schema_list:
-            LOGGER.info("working on {}".format(self.schema_list))
+            LOGGER.info("working on %s", self.schema_list)
             tables = self.get_all_tables(self.schema_list)
         else:
             LOGGER.info("fetching all schemas")
-            LOGGER.info("Excluding: {}".format(self.exclude_list))
+            LOGGER.info("Excluding: %s", self.exclude_list)
             schemas = self.get_schemas(self.exclude_list)
-            LOGGER.info("working on {}".format(schemas))
+            LOGGER.info("working on %s", schemas)
             tables = self.get_all_tables(schemas)
         # TODO add the programmatic information as well?
         # TODO add watermarks
@@ -179,7 +183,7 @@ class DeltaLakeMetadataExtractor(Extractor):
             if not scraped_table:
                 continue
             if self.delta_tables_only and not scraped_table.is_delta_table():
-                LOGGER.info("Skipping none delta table {}".format(scraped_table.table))
+                LOGGER.info("Skipping none delta table %s", scraped_table.table)
                 continue
             else:
                 yield self.create_table_metadata(scraped_table)
@@ -245,7 +249,7 @@ class DeltaLakeMetadataExtractor(Extractor):
 
     def scrape_table_detail(self, table_name: str) -> Optional[Dict]:
         try:
-            table_details_df = self.spark.sql("describe detail {0}".format(table_name))
+            table_details_df = self.spark.sql(f"describe detail {table_name}")
             table_detail = table_details_df.collect()[0]
             return table_detail.asDict()
         except Exception as e:
@@ -256,8 +260,7 @@ class DeltaLakeMetadataExtractor(Extractor):
         # TODO the blanket try catches need to be changed
         describeExtendedOutput = []
         try:
-            describeExtendedOutput = self.spark.sql("describe extended {view_name}"
-                                                    .format(view_name=view_name)).collect()
+            describeExtendedOutput = self.spark.sql(f"describe extended {view_name}").collect()
         except Exception as e:
             LOGGER.error(e)
             return None
@@ -277,7 +280,7 @@ class DeltaLakeMetadataExtractor(Extractor):
         in the general case cannot rely on spark.catalog.listColumns.'''
         raw_columns = []
         try:
-            raw_columns = self.spark.sql("describe {0}.{1}".format(schema, table)).collect()
+            raw_columns = self.spark.sql(f"describe {schema}.{table}").collect()
         except AnalysisException as e:
             LOGGER.error(e)
             return raw_columns
@@ -301,10 +304,10 @@ class DeltaLakeMetadataExtractor(Extractor):
                 sort_order += 1
             else:
                 if row['data_type'] in parsed_columns:
-                    LOGGER.debug("Adding partition column table for {0}".format(row['data_type']))
+                    LOGGER.debug(f"Adding partition column table for {row['data_type']}")
                     parsed_columns[row['data_type']].set_is_partition(True)
                 elif row['col_name'] in parsed_columns:
-                    LOGGER.debug("Adding partition column table for {0}".format(row['col_name']))
+                    LOGGER.debug(f"Adding partition column table for {row['col_name']}")
                     parsed_columns[row['col_name']].set_is_partition(True)
         return list(parsed_columns.values())
 

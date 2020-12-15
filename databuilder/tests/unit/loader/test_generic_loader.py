@@ -6,7 +6,7 @@ import unittest
 from mock import MagicMock
 from pyhocon import ConfigFactory
 
-from databuilder.loader.generic_loader import GenericLoader, CALLBACK_FUNCTION
+from databuilder.loader.generic_loader import CALLBACK_FUNCTION, GenericLoader
 
 
 class TestGenericLoader(unittest.TestCase):

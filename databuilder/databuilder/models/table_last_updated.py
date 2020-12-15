@@ -3,12 +3,11 @@
 
 from typing import List, Union
 
-from databuilder.models.graph_serializable import GraphSerializable
-
-from databuilder.models.table_metadata import TableMetadata
-from databuilder.models.timestamp import timestamp_constants
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.timestamp import timestamp_constants
 
 
 class TableLastUpdated(GraphSerializable):
@@ -38,9 +37,8 @@ class TableLastUpdated(GraphSerializable):
         self._relation_iter = iter(self.create_relation())
 
     def __repr__(self) -> str:
-        return \
-            """TableLastUpdated(table_name={!r}, last_updated_time={!r}, schema={!r}, db={!r}, cluster={!r})"""\
-            .format(self.table_name, self.last_updated_time, self.schema, self.db, self.cluster)
+        return f"TableLastUpdated(table_name={self.table_name!r}, last_updated_time={self.last_updated_time!r}, " \
+               f"schema={self.schema!r}, db={self.db!r}, cluster={self.cluster!r})"
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # creates new node

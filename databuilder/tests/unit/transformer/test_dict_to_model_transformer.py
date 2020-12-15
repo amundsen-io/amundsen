@@ -5,8 +5,8 @@ import unittest
 
 from pyhocon import ConfigFactory
 
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
 from databuilder.models.dashboard.dashboard_execution import DashboardExecution
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
 
 
 class TestDictToModel(unittest.TestCase):

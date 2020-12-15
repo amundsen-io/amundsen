@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
+from typing import Any
 
 from pyhocon import ConfigTree
 
 from databuilder import Scoped
-from typing import Any
 
 
 class Loader(Scoped):

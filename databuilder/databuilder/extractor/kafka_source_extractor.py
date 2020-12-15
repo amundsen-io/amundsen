@@ -1,19 +1,20 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from datetime import datetime, timedelta
 import importlib
 import logging
-
-from confluent_kafka import Consumer, KafkaException, KafkaError
-from pyhocon import ConfigTree
+from datetime import datetime, timedelta
 from typing import Any
+
+from confluent_kafka import (
+    Consumer, KafkaError, KafkaException,
+)
+from pyhocon import ConfigTree
 
 from databuilder import Scoped
 from databuilder.callback.call_back import Callback
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.transformer.base_transformer import Transformer
-
 
 LOGGER = logging.getLogger(__name__)
 

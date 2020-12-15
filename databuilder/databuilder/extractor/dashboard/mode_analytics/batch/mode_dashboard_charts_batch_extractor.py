@@ -2,19 +2,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from pyhocon import ConfigTree, ConfigFactory
 from typing import Any
+
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
+from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_constants import ORGANIZATION
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
+from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.rest_api_query import RestApiQuery
-from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed
-from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_constants import ORGANIZATION
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
 
 LOGGER = logging.getLogger(__name__)
 

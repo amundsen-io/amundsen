@@ -2,16 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
-from typing import Optional, Any, Union, Iterator
+from typing import (
+    Any, Iterator, Optional, Union,
+)
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
-from databuilder.models.graph_serializable import (
-    GraphSerializable)
-from databuilder.models.timestamp import timestamp_constants
-
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.timestamp import timestamp_constants
 
 LOGGER = logging.getLogger(__name__)
 
@@ -90,10 +89,5 @@ class DashboardLastModifiedTimestamp(GraphSerializable):
         )
 
     def __repr__(self) -> str:
-        return 'DashboardLastModifiedTimestamp({!r}, {!r}, {!r}, {!r}, {!r})'.format(
-            self._dashboard_group_id,
-            self._dashboard_id,
-            self._last_modified_timestamp,
-            self._product,
-            self._cluster
-        )
+        return f'DashboardLastModifiedTimestamp({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \
+               f'{self._last_modified_timestamp!r}, {self._product!r}, {self._cluster!r})'

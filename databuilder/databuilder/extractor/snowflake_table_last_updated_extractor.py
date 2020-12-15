@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+from typing import Iterator, Union
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -57,11 +57,12 @@ class SnowflakeTableLastUpdatedExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(SnowflakeTableLastUpdatedExtractor.DEFAULT_CONFIG)
+        self._cluster = conf.get_string(SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY)
 
         if conf.get_bool(SnowflakeTableLastUpdatedExtractor.USE_CATALOG_AS_CLUSTER_NAME):
             cluster_source = "t.table_catalog"
         else:
-            cluster_source = "'{}'".format(conf.get_string(SnowflakeTableLastUpdatedExtractor.CLUSTER_KEY))
+            cluster_source = f"'{self._cluster}'"
 
         self._database = conf.get_string(SnowflakeTableLastUpdatedExtractor.DATABASE_KEY)
         self._snowflake_database = conf.get_string(SnowflakeTableLastUpdatedExtractor.SNOWFLAKE_DATABASE_KEY)
@@ -72,7 +73,7 @@ class SnowflakeTableLastUpdatedExtractor(Extractor):
             database=self._snowflake_database
         )
 
-        LOGGER.info('SQL for snowflake table last updated timestamp: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for snowflake table last updated timestamp: %s', self.sql_stmt)
 
         # use an sql_alchemy_extractor to execute sql
         self._alchemy_extractor = SQLAlchemyExtractor()

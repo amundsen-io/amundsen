@@ -29,21 +29,25 @@ from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
 
-from databuilder.extractor.csv_extractor import CsvTableBadgeExtractor, CsvTableColumnExtractor, CsvExtractor
+from databuilder.extractor.csv_extractor import (
+    CsvExtractor, CsvTableBadgeExtractor, CsvTableColumnExtractor,
+)
 from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpdatedExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from databuilder.publisher.elasticsearch_constants import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, \
-    USER_ELASTICSEARCH_INDEX_MAPPING
+from databuilder.publisher.elasticsearch_constants import (
+    DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_ELASTICSEARCH_INDEX_MAPPING,
+)
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
-from databuilder.transformer.base_transformer import ChainedTransformer
-from databuilder.transformer.base_transformer import NoopTransformer
-from databuilder.transformer.dict_to_model import DictToModel, MODEL_CLASS
-from databuilder.transformer.generic_transformer import GenericTransformer, CALLBACK_FUNCTION, FIELD_NAME
+from databuilder.transformer.base_transformer import ChainedTransformer, NoopTransformer
+from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
+from databuilder.transformer.generic_transformer import (
+    CALLBACK_FUNCTION, FIELD_NAME, GenericTransformer,
+)
 
 es_host = os.getenv('CREDENTIALS_ELASTICSEARCH_PROXY_HOST', 'localhost')
 neo_host = os.getenv('CREDENTIALS_NEO4J_PROXY_HOST', 'localhost')
@@ -61,7 +65,7 @@ es = Elasticsearch([
 
 Base = declarative_base()
 
-NEO4J_ENDPOINT = 'bolt://{}:{}'.format(neo_host, neo_port)
+NEO4J_ENDPOINT = f'bolt://{neo_host}:{neo_port}'
 
 neo4j_endpoint = NEO4J_ENDPOINT
 
@@ -72,9 +76,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def run_csv_job(file_loc, job_name, model):
-    tmp_folder = '/var/tmp/amundsen/{job_name}'.format(job_name=job_name)
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    tmp_folder = f'/var/tmp/amundsen/{job_name}'
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     csv_extractor = CsvExtractor()
     csv_loader = FsNeo4jCSVLoader()
@@ -105,8 +109,8 @@ def run_csv_job(file_loc, job_name, model):
 
 def run_table_badge_job(table_path, badge_path):
     tmp_folder = '/var/tmp/amundsen/table_badge'
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
     extractor = CsvTableBadgeExtractor()
     csv_loader = FsNeo4jCSVLoader()
     task = DefaultTask(extractor=extractor,
@@ -134,8 +138,8 @@ def run_table_badge_job(table_path, badge_path):
 
 def run_table_column_job(table_path, column_path):
     tmp_folder = '/var/tmp/amundsen/table_column'
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
     extractor = CsvTableColumnExtractor()
     csv_loader = FsNeo4jCSVLoader()
     task = DefaultTask(extractor,
@@ -164,8 +168,8 @@ def run_table_column_job(table_path, column_path):
 def create_last_updated_job():
     # loader saves data to these folders and publisher reads it from here
     tmp_folder = '/var/tmp/amundsen/last_updated_data'
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     task = DefaultTask(extractor=Neo4jEsLastUpdatedExtractor(),
                        loader=FsNeo4jCSVLoader())
@@ -197,8 +201,8 @@ def _str_to_list(str_val):
 def create_dashboard_tables_job():
     # loader saves data to these folders and publisher reads it from here
     tmp_folder = '/var/tmp/amundsen/dashboard_table'
-    node_files_folder = '{tmp_folder}/nodes'.format(tmp_folder=tmp_folder)
-    relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_folder)
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
 
     csv_extractor = CsvExtractor()
     csv_loader = FsNeo4jCSVLoader()
@@ -214,21 +218,21 @@ def create_dashboard_tables_job():
     publisher = Neo4jCsvPublisher()
 
     job_config = ConfigFactory.from_dict({
-        '{}.file_location'.format(csv_extractor.get_scope()): 'example/sample_data/sample_dashboard_table.csv',
-        '{}.{}.{}'.format(transformer.get_scope(), generic_transformer.get_scope(), FIELD_NAME): 'table_ids',
-        '{}.{}.{}'.format(transformer.get_scope(), generic_transformer.get_scope(), CALLBACK_FUNCTION): _str_to_list,
-        '{}.{}.{}'.format(transformer.get_scope(), dict_to_model_transformer.get_scope(), MODEL_CLASS):
+        f'{csv_extractor.get_scope()}.file_location': 'example/sample_data/sample_dashboard_table.csv',
+        f'{transformer.get_scope()}.{generic_transformer.get_scope()}.{FIELD_NAME}': 'table_ids',
+        f'{transformer.get_scope()}.{generic_transformer.get_scope()}.{CALLBACK_FUNCTION}': _str_to_list,
+        f'{transformer.get_scope()}.{dict_to_model_transformer.get_scope()}.{MODEL_CLASS}':
             'databuilder.models.dashboard.dashboard_table.DashboardTable',
-        '{}.node_dir_path'.format(csv_loader.get_scope()): node_files_folder,
-        '{}.relationship_dir_path'.format(csv_loader.get_scope()): relationship_files_folder,
-        '{}.delete_created_directories'.format(csv_loader.get_scope()): True,
-        '{}.node_files_directory'.format(publisher.get_scope()): node_files_folder,
-        '{}.relation_files_directory'.format(publisher.get_scope()): relationship_files_folder,
-        '{}.neo4j_endpoint'.format(publisher.get_scope()): neo4j_endpoint,
-        '{}.neo4j_user'.format(publisher.get_scope()): neo4j_user,
-        '{}.neo4j_password'.format(publisher.get_scope()): neo4j_password,
-        '{}.neo4j_encrypted'.format(publisher.get_scope()): False,
-        '{}.job_publish_tag'.format(publisher.get_scope()): 'unique_tag',  # should use unique tag here like {ds}
+        f'{csv_loader.get_scope()}.node_dir_path': node_files_folder,
+        f'{csv_loader.get_scope()}.relationship_dir_path': relationship_files_folder,
+        f'{csv_loader.get_scope()}.delete_created_directories': True,
+        f'{publisher.get_scope()}.node_files_directory': node_files_folder,
+        f'{publisher.get_scope()}.relation_files_directory': relationship_files_folder,
+        f'{publisher.get_scope()}.neo4j_endpoint': neo4j_endpoint,
+        f'{publisher.get_scope()}.neo4j_user': neo4j_user,
+        f'{publisher.get_scope()}.neo4j_password': neo4j_password,
+        f'{publisher.get_scope()}.neo4j_encrypted': False,
+        f'{publisher.get_scope()}.job_publish_tag': 'unique_tag',  # should use unique tag here like {ds}
     })
 
     return DefaultJob(conf=job_config,
@@ -262,7 +266,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     # elastic search client instance
     elasticsearch_client = es
     # unique name of new index in Elasticsearch
-    elasticsearch_new_index_key = '{}_'.format(elasticsearch_doc_type_key) + str(uuid.uuid4())
+    elasticsearch_new_index_key = f'{elasticsearch_doc_type_key}_{uuid.uuid4()}'
 
     job_config = ConfigFactory.from_dict({
         'extractor.search_data.entity_type': entity_type,
@@ -283,7 +287,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 
     # only optionally add these keys, so need to dynamically `put` them
     if elasticsearch_mapping:
-        job_config.put('publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY),
+        job_config.put(f'publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_MAPPING_CONFIG_KEY}',
                        elasticsearch_mapping)
 
     job = DefaultJob(conf=job_config,

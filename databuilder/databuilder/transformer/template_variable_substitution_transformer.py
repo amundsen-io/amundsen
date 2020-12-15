@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+from typing import Any, Dict
 
 from pyhocon import ConfigTree
-from typing import Any, Dict
 
 from databuilder.transformer.base_transformer import Transformer
 

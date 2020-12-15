@@ -3,15 +3,15 @@
 
 import logging
 import re
-
-from typing import Optional, Any, List, Union, Iterator
+from typing import (
+    Any, Iterator, List, Optional, Union,
+)
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
-from databuilder.models.graph_serializable import (
-    GraphSerializable)
-from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_metadata import TableMetadata
 
 LOGGER = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ class DashboardTable(GraphSerializable):
 
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         for table_id in self._table_ids:
-            m = re.match('([^./]+)://([^./]+)\.([^./]+)\/([^./]+)', table_id)
+            m = re.match(r'([^./]+)://([^./]+)\.([^./]+)\/([^./]+)', table_id)
             if m:
                 relationship = GraphRelationship(
                     start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,
@@ -80,10 +80,5 @@ class DashboardTable(GraphSerializable):
                 yield relationship
 
     def __repr__(self) -> str:
-        return 'DashboardTable({!r}, {!r}, {!r}, {!r}, ({!r}))'.format(
-            self._dashboard_group_id,
-            self._dashboard_id,
-            self._product,
-            self._cluster,
-            ','.join(self._table_ids),
-        )
+        return f'DashboardTable({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \
+               f'{self._product!r}, {self._cluster!r}, ({",".join(self._table_ids)!r}))'

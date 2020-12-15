@@ -3,14 +3,14 @@
 
 import logging
 import unittest
-
-from mock import patch, MagicMock
-from pyhocon import ConfigFactory
 from typing import Any, Dict
+
+from mock import MagicMock, patch
+from pyhocon import ConfigFactory
 
 from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestPostgresMetadataExtractor(unittest.TestCase):
@@ -18,8 +18,7 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-            'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             PostgresMetadataExtractor.CLUSTER_KEY: 'MY_CLUSTER',
             PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False,
             PostgresMetadataExtractor.DATABASE_KEY: 'postgres'
@@ -47,7 +46,7 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
                      'name': 'test_table',
                      'description': 'a table for testing',
                      'cluster':
-                     self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
+                         self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
                      }
 
             sql_execute.return_value = [
@@ -107,21 +106,21 @@ class TestPostgresMetadataExtractor(unittest.TestCase):
                      'name': 'test_table1',
                      'description': 'test table 1',
                      'cluster':
-                     self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
+                         self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
                      }
 
             table1 = {'schema': 'test_schema1',
                       'name': 'test_table2',
                       'description': 'test table 2',
                       'cluster':
-                      self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
+                          self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
                       }
 
             table2 = {'schema': 'test_schema2',
                       'name': 'test_table3',
                       'description': 'test table 3',
                       'cluster':
-                      self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
+                          self.conf[PostgresMetadataExtractor.CLUSTER_KEY]
                       }
 
             sql_execute.return_value = [
@@ -225,8 +224,7 @@ class TestPostgresMetadataExtractorWithWhereClause(unittest.TestCase):
 
         config_dict = {
             PostgresMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION'
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -248,8 +246,7 @@ class TestPostgresMetadataExtractorClusterKeyNoTableCatalog(unittest.TestCase):
 
         config_dict = {
             PostgresMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -270,8 +267,7 @@ class TestPostgresMetadataExtractorNoClusterKeyNoTableCatalog(unittest.TestCase)
         logging.basicConfig(level=logging.INFO)
 
         config_dict = {
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -294,8 +290,7 @@ class TestPostgresMetadataExtractorTableCatalogEnabled(unittest.TestCase):
 
         config_dict = {
             PostgresMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            'extractor.sqlalchemy.{}'.format(SQLAlchemyExtractor.CONN_STRING):
-                'TEST_CONNECTION',
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             PostgresMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: True
         }
         self.conf = ConfigFactory.from_dict(config_dict)

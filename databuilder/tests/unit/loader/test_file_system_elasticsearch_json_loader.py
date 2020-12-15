@@ -5,9 +5,9 @@ import json
 import shutil
 import tempfile
 import unittest
+from typing import List
 
 from pyhocon import ConfigFactory
-from typing import List
 
 from databuilder import Scoped
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
@@ -18,7 +18,7 @@ class TestFSElasticsearchJSONLoader(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir_path = tempfile.mkdtemp()
-        self.dest_file_name = '{}/test_file.json'.format(self.temp_dir_path)
+        self.dest_file_name = f'{self.temp_dir_path}/test_file.json'
         self.file_mode = 'w'
         config_dict = {'loader.filesystem.elasticsearch.file_path': self.dest_file_name,
                        'loader.filesystem.elasticsearch.mode': self.file_mode}

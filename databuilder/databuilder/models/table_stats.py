@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import List, Optional
 
-from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.table_metadata import ColumnMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
+from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_metadata import ColumnMetadata
 
 
 class TableColumnStats(GraphSerializable):

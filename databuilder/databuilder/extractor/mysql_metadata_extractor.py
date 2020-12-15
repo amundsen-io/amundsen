@@ -3,16 +3,17 @@
 
 import logging
 from collections import namedtuple
+from itertools import groupby
+from typing import (
+    Any, Dict, Iterator, Union,
+)
 
 from pyhocon import ConfigFactory, ConfigTree
-from typing import Iterator, Union, Dict, Any
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
-from databuilder.models.table_metadata import TableMetadata, ColumnMetadata
-from itertools import groupby
-
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -60,12 +61,12 @@ class MysqlMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(MysqlMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = '{}'.format(conf.get_string(MysqlMetadataExtractor.CLUSTER_KEY))
+        self._cluster = conf.get_string(MysqlMetadataExtractor.CLUSTER_KEY)
 
         if conf.get_bool(MysqlMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
             cluster_source = "c.table_catalog"
         else:
-            cluster_source = "'{}'".format(self._cluster)
+            cluster_source = f"'{self._cluster}'"
 
         self._database = conf.get_string(MysqlMetadataExtractor.DATABASE_KEY, default='mysql')
 
@@ -75,12 +76,12 @@ class MysqlMetadataExtractor(Extractor):
         )
 
         self._alchemy_extractor = SQLAlchemyExtractor()
-        sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope())\
+        sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope()) \
             .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
 
         self.sql_stmt = sql_alch_conf.get_string(SQLAlchemyExtractor.EXTRACT_SQL)
 
-        LOGGER.info('SQL for mysql metadata: {}'.format(self.sql_stmt))
+        LOGGER.info('SQL for mysql metadata: %s', self.sql_stmt)
 
         self._alchemy_extractor.init(sql_alch_conf)
         self._extract_iter: Union[None, Iterator] = None

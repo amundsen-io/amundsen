@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from pyhocon import ConfigTree
-import requests
-from requests.auth import HTTPBasicAuth
 from typing import Iterator, Optional
 from xml.etree import ElementTree
+
+import requests
+from pyhocon import ConfigTree
+from requests.auth import HTTPBasicAuth
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.user import User
@@ -32,9 +33,7 @@ class BamboohrUserExtractor(Extractor):
             return None
 
     def _employee_directory_uri(self) -> str:
-        return 'https://api.bamboohr.com/api/gateway.php/{subdomain}/v1/employees/directory'.format(
-            subdomain=self._subdomain
-        )
+        return f'https://api.bamboohr.com/api/gateway.php/{self._subdomain}/v1/employees/directory'
 
     def _get_extract_iter(self) -> Iterator[User]:
         response = requests.get(
@@ -46,7 +45,7 @@ class BamboohrUserExtractor(Extractor):
         for user in root.findall('./employees/employee'):
 
             def get_field(name: str) -> str:
-                field = user.find('./field[@id=\'{name}\']'.format(name=name))
+                field = user.find(f"./field[@id='{name}']")
                 if field is not None and field.text is not None:
                     return field.text
                 else:

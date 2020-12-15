@@ -5,7 +5,7 @@ import unittest
 
 from mock import patch
 
-from databuilder.rest_api.base_rest_api_query import RestApiQuerySeed, EmptyRestApiQuerySeed
+from databuilder.rest_api.base_rest_api_query import EmptyRestApiQuerySeed, RestApiQuerySeed
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
 
