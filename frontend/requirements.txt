@@ -46,7 +46,7 @@ flask==1.0.2
 # The wheel project provides a bdist_wheel command for setuptools >= 0.8.0
 # License: MIT
 # Upstream url: https://github.com/pypa/wheel
-wheel==0.36.1
+wheel==0.36.2
 
 # HTTP for Humans
 # License: Apache
