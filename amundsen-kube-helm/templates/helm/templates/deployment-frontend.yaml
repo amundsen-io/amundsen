@@ -77,7 +77,7 @@ spec:
           - name: OVERWRITE_REDIRECT_URI
             value: {{ .Values.frontEnd.OVERWRITE_REDIRECT_URI }}
           {{- end }}
-          - name: OIDC_SECRET_KEY
+          - name: FLASK_OIDC_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: oidc-config
