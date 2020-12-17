@@ -30,7 +30,7 @@ snowflake = [
     'snowflake-sqlalchemy'
 ]
 
-athena = ['PyAthena[SQLAlchemy]>=1.0.0']
+athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 
 # Python API client for google
 # License: Apache Software License
