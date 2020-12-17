@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { GlobalState } from 'ducks/rootReducer';
 import { ResourceType, SendingState } from 'interfaces';
 
@@ -253,6 +256,7 @@ const globalState: GlobalState = {
       },
     },
   },
+  ui: {},
 };
 
 export default globalState;

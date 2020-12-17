@@ -16,6 +16,10 @@ import { analyticsMiddleware } from 'ducks/middlewares';
 
 import { BrowserHistory } from 'utils/navigationUtils';
 
+import { pageViewed } from 'ducks/ui';
+import rootReducer from 'ducks/rootReducer';
+import rootSaga from 'ducks/rootSaga';
+
 import DashboardPage from './pages/DashboardPage';
 import AnnouncementPage from './pages/AnnouncementPage';
 import BrowsePage from './pages/BrowsePage';
@@ -29,9 +33,6 @@ import Preloader from './components/Preloader';
 import Footer from './features/Footer';
 import NavBar from './features/NavBar';
 
-import rootReducer from './ducks/rootReducer';
-import rootSaga from './ducks/rootSaga';
-
 const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(
   ReduxPromise,
@@ -42,26 +43,45 @@ const store = createStoreWithMiddleware(rootReducer);
 
 sagaMiddleware.run(rootSaga);
 
+const Routes: React.FC = () => {
+  const history = BrowserHistory;
+
+  function trackPageView() {
+    store.dispatch(pageViewed(window.location.pathname));
+  }
+
+  React.useEffect(() => {
+    trackPageView(); // To track the first pageview upon load
+    history.listen(trackPageView); // To track the subsequent pageviews
+  }, [history]);
+
+  return (
+    <>
+      <Route component={NavBar} />
+      <Switch>
+        <Route path="/announcements" component={AnnouncementPage} />
+        <Route path="/browse" component={BrowsePage} />
+        <Route path="/dashboard/:uri" component={DashboardPage} />
+        <Route path="/search" component={SearchPage} />
+        <Route
+          path="/table_detail/:cluster/:database/:schema/:table"
+          component={TableDetail}
+        />
+        <Route path="/user/:userId" component={ProfilePage} />
+        <Route path="/404" component={NotFoundPage} />
+        <Route path="/" component={HomePage} />
+      </Switch>
+    </>
+  );
+};
+
 ReactDOM.render(
   <DocumentTitle title="Amundsen - Data Discovery Portal">
     <Provider store={store}>
       <Router history={BrowserHistory}>
         <div id="main">
           <Preloader />
-          <Route component={NavBar} />
-          <Switch>
-            <Route path="/announcements" component={AnnouncementPage} />
-            <Route path="/browse" component={BrowsePage} />
-            <Route path="/dashboard/:uri" component={DashboardPage} />
-            <Route path="/search" component={SearchPage} />
-            <Route
-              path="/table_detail/:cluster/:database/:schema/:table"
-              component={TableDetail}
-            />
-            <Route path="/user/:userId" component={ProfilePage} />
-            <Route path="/404" component={NotFoundPage} />
-            <Route path="/" component={HomePage} />
-          </Switch>
+          <Routes />
           <Footer />
         </div>
       </Router>
