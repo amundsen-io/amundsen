@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { combineReducers } from 'redux';
 
 import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
@@ -13,6 +16,7 @@ import tableMetadata, {
 import lastIndexed, { LastIndexedReducerState } from './lastIndexed/reducer';
 import tags, { TagsReducerState } from './tags/reducer';
 import user, { UserReducerState } from './user/reducer';
+import ui, { UIReducerState } from './ui';
 import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
 import notification, { NotificationReducerState } from './notification/reducer';
 import issue, { IssueReducerState } from './issue/reducer';
@@ -30,6 +34,7 @@ export interface GlobalState {
   lastIndexed: LastIndexedReducerState;
   tags: TagsReducerState;
   user: UserReducerState;
+  ui: UIReducerState;
 }
 
 const rootReducer = combineReducers<GlobalState>({
@@ -45,6 +50,7 @@ const rootReducer = combineReducers<GlobalState>({
   lastIndexed,
   tags,
   user,
+  ui,
 });
 
 export default rootReducer;
