@@ -33,7 +33,6 @@ class BaseBigQueryExtractor(Extractor):
     DEFAULT_PAGE_SIZE = 300
     NUM_RETRIES = 3
     DATE_LENGTH = 8
-    SHARDED_TABLE_KEY_FORMAT = '{dataset_id}/{table_id}'
 
     def init(self, conf: ConfigTree) -> None:
         # should use key_path, or cred_key if the former doesn't exist
