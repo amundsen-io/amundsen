@@ -28,10 +28,11 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
 
     def init(self, conf: ConfigTree) -> None:
         BaseBigQueryExtractor.init(self, conf)
-        self.grouped_tables: Set[str] = set([])
         self.iter = iter(self._iterate_over_tables())
 
     def _retrieve_tables(self, dataset: DatasetRef) -> Any:
+        grouped_tables: Set[str] = set([])
+
         for page in self._page_table_list_results(dataset):
             if 'tables' not in page:
                 continue
@@ -47,16 +48,13 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                     # If the last eight characters are digits, we assume the table is of a table date range type
                     # and then we only need one schema definition
                     table_prefix = table_id[:-BigQueryMetadataExtractor.DATE_LENGTH]
-                    table_id = table_prefix
-                    sharded_table_key = BigQueryMetadataExtractor.SHARDED_TABLE_KEY_FORMAT.format(
-                        dataset_id=tableRef['datasetId'],
-                        table_id=table_id)
-                    if sharded_table_key in self.grouped_tables:
+                    if table_prefix in grouped_tables:
                         # If one table in the date range is processed, then ignore other ones
                         # (it adds too much metadata)
                         continue
 
-                    self.grouped_tables.add(sharded_table_key)
+                    table_id = table_prefix
+                    grouped_tables.add(table_prefix)
 
                 table = self.bigquery_service.tables().get(
                     projectId=tableRef['projectId'],
