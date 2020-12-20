@@ -1,9 +1,10 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+
 from setuptools import find_packages, setup
 
-__version__ = '4.0.3'
+__version__ = '4.0.4'
 
 
 requirements = [
@@ -64,6 +65,10 @@ feast = [
     'feast==0.8.0'
 ]
 
+atlas = [
+    'pyatlasclient==1.1.2'
+]
+
 all_deps = requirements + kafka + cassandra + glue + snowflake + athena + \
     bigquery + jsonpath + db2 + dremio + druid + spark + feast
 
@@ -92,6 +97,7 @@ setup(
         'druid': druid,
         'delta': spark,
         'feast': feast,
+        'atlas': atlas
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
