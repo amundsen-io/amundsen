@@ -69,7 +69,7 @@ marshmallow-annotations>=2.4.0,<3.0
 responses==0.12.1
 
 # Required for announcement client
-SQLAlchemy==1.3.20
+SQLAlchemy==1.3.22
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
