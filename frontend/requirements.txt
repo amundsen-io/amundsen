@@ -6,7 +6,7 @@ flake8==3.8.4
 # A flake8 plugin that helps you write tidier imports.
 # License: ISCL
 # Upstream url: https://pypi.python.org/pypi/flake8-tidy-imports
-flake8-tidy-imports==1.1.0
+flake8-tidy-imports==4.2.1
 
 # A mature full-featured Python testing tool.
 # License: MIT
