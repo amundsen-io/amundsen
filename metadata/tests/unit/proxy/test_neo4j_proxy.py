@@ -515,16 +515,27 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertIsNone(neo4j_last_updated_ts)
 
     def test_get_popular_tables(self) -> None:
-        # Test cache hit
+        # Test cache hit for global popular tables
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
 
             self.assertEqual(mock_execute.call_count, 1)
+
+        # Test cache hit for personal popular tables
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'test_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'test_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'other_id'), ['foo', 'bar'])
+
+            self.assertEqual(mock_execute.call_count, 2)
 
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [
