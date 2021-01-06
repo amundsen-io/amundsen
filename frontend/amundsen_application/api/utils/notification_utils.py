@@ -218,7 +218,7 @@ def send_notification(*, notification_type: str, options: Dict, recipients: List
         )
         status_code = response.status_code
 
-        if status_code == HTTPStatus.OK:
+        if 200 <= status_code < 300:
             message = 'Success'
         else:
             message = 'Mail client failed with status code ' + str(status_code)
