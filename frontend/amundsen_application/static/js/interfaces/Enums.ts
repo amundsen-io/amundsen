@@ -56,6 +56,7 @@ export enum IconType {
   DATABASE = 'icon-database',
   HIVE = 'icon-hive',
   BIGQUERY = 'icon-bigquery',
+  DREMIO = 'icon-dremio',
   DRUID = 'icon-druid',
   PRESTO = 'icon-presto',
   POSTGRES = 'icon-postgres',

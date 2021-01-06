@@ -33,8 +33,8 @@ exports[`eslint`] = {
       [33, 6, 25, "Use object destructuring.", "354229464"],
       [34, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/AvatarLabel/index.tsx:977373330": [
-      [16, 6, 39, "Variable name \`AvatarLabel\` must match one of the following formats: camelCase, UPPER_CASE", "3862143033"]
+    "js/components/AvatarLabel/index.tsx:1662930605": [
+      [17, 6, 39, "Variable name \`AvatarLabel\` must match one of the following formats: camelCase, UPPER_CASE", "3862143033"]
     ],
     "js/components/BadgeList/index.spec.tsx:3460985082": [
       [18, 4, 10, "Property name \`badge_name\` must match one of the following formats: camelCase", "1663829240"],
@@ -693,13 +693,13 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:1841535925": [
+    "js/config/config-default.ts:1262490958": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
       [46, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
       [52, 6, 10, "Property name \`use_router\` must match one of the following formats: camelCase", "2026345778"],
-      [168, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
-      [210, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [211, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [172, 8, 10, "Property name \`sort_order\` must match one of the following formats: camelCase", "1697854094"],
+      [218, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [219, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/config/config-types.ts:3768974062": [
       [156, 2, 6, "Enum Member name \`DANGER\` must match one of the following formats: camelCase", "2553023038"],
@@ -1960,7 +1960,7 @@ exports[`eslint`] = {
       [22, 2, 17, "Property name \`recent_view_count\` must match one of the following formats: camelCase", "3048879712"],
       [25, 2, 17, "Property name \`updated_timestamp\` must match one of the following formats: camelCase", "1885086497"]
     ],
-    "js/interfaces/Enums.ts:2496623588": [
+    "js/interfaces/Enums.ts:2000518745": [
       [1, 2, 3, "Enum Member name \`PUT\` must match one of the following formats: camelCase", "193465492"],
       [2, 2, 6, "Enum Member name \`DELETE\` must match one of the following formats: camelCase", "2557553692"],
       [6, 2, 15, "Enum Member name \`CHECKBOX_SELECT\` must match one of the following formats: camelCase", "3914631617"],
@@ -2004,13 +2004,14 @@ exports[`eslint`] = {
       [55, 2, 8, "Enum Member name \`DATABASE\` must match one of the following formats: camelCase", "1787457952"],
       [56, 2, 4, "Enum Member name \`HIVE\` must match one of the following formats: camelCase", "2089119255"],
       [57, 2, 8, "Enum Member name \`BIGQUERY\` must match one of the following formats: camelCase", "2775320131"],
-      [58, 2, 5, "Enum Member name \`DRUID\` must match one of the following formats: camelCase", "208312203"],
-      [59, 2, 6, "Enum Member name \`PRESTO\` must match one of the following formats: camelCase", "3324391722"],
-      [60, 2, 8, "Enum Member name \`POSTGRES\` must match one of the following formats: camelCase", "2048417342"],
-      [61, 2, 8, "Enum Member name \`REDSHIFT\` must match one of the following formats: camelCase", "3620745238"],
-      [62, 2, 9, "Enum Member name \`SNOWFLAKE\` must match one of the following formats: camelCase", "2253633893"],
-      [67, 2, 7, "Enum Member name \`REGULAR\` must match one of the following formats: camelCase", "112855263"],
-      [68, 2, 5, "Enum Member name \`SMALL\` must match one of the following formats: camelCase", "232618394"]
+      [58, 2, 6, "Enum Member name \`DREMIO\` must match one of the following formats: camelCase", "2579905821"],
+      [59, 2, 5, "Enum Member name \`DRUID\` must match one of the following formats: camelCase", "208312203"],
+      [60, 2, 6, "Enum Member name \`PRESTO\` must match one of the following formats: camelCase", "3324391722"],
+      [61, 2, 8, "Enum Member name \`POSTGRES\` must match one of the following formats: camelCase", "2048417342"],
+      [62, 2, 8, "Enum Member name \`REDSHIFT\` must match one of the following formats: camelCase", "3620745238"],
+      [63, 2, 9, "Enum Member name \`SNOWFLAKE\` must match one of the following formats: camelCase", "2253633893"],
+      [68, 2, 7, "Enum Member name \`REGULAR\` must match one of the following formats: camelCase", "112855263"],
+      [69, 2, 5, "Enum Member name \`SMALL\` must match one of the following formats: camelCase", "232618394"]
     ],
     "js/interfaces/Feedback.ts:175362719": [
       [1, 2, 5, "Enum Member name \`ERROR\` must match one of the following formats: camelCase", "202381725"],
@@ -2479,7 +2480,7 @@ exports[`eslint`] = {
       [19, 55, 10, "Prop spreading is forbidden", "480399587"],
       [95, 10, 11, "Property name \`source_type\` must match one of the following formats: camelCase", "2336271487"]
     ],
-    "js/pages/TableDetailPage/SourceLink/index.tsx:1337415295": [
+    "js/pages/TableDetailPage/SourceLink/index.tsx:2340651505": [
       [18, 6, 37, "Variable name \`SourceLink\` must match one of the following formats: camelCase, UPPER_CASE", "1610242585"]
     ],
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [

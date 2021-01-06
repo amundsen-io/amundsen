@@ -108,6 +108,10 @@ const configDefault: AppConfig = {
           displayName: 'Delta',
           iconClass: 'icon-delta',
         },
+        dremio: {
+          displayName: 'Dremio',
+          iconClass: 'icon-dremio',
+        },
         druid: {
           displayName: 'Druid',
           iconClass: 'icon-druid',
@@ -178,6 +182,10 @@ const configDefault: AppConfig = {
         },
       },
       supportedDescriptionSources: {
+        dremio: {
+          displayName: 'Dremio',
+          iconPath: '/static/images/icons/logo-dremio.svg',
+        },
         github: {
           displayName: 'Github',
           iconPath: '/static/images/github.png',
