@@ -319,29 +319,34 @@ class NotificationUtilsTest(unittest.TestCase):
         Test successful execution of send_notification
         :return:
         """
-        with local_app.app_context():
-            get_mail_client.return_value = MockMailClient(status_code=HTTPStatus.OK)
-            get_notif_subject.return_value = 'Test Subject'
-            get_notif_html.return_value = '<div>test html</div>'
+        status_codes = [HTTPStatus.OK, HTTPStatus.ACCEPTED]
 
-            test_recipients = ['test@test.com']
-            test_sender = 'test2@test.com'
-            test_notification_type = NotificationType.OWNER_ADDED
-            test_options = {}
+        for status_code in status_codes:
+            with self.subTest():
+                with local_app.app_context():
+                    get_mail_client.return_value = MockMailClient(status_code=status_code)
+                    get_notif_subject.return_value = 'Test Subject'
+                    get_notif_html.return_value = '<div>test html</div>'
 
-            response = send_notification(
-                notification_type=test_notification_type,
-                options=test_options,
-                recipients=test_recipients,
-                sender=test_sender
-            )
+                    test_recipients = ['test@test.com']
+                    test_sender = 'test2@test.com'
+                    test_notification_type = NotificationType.OWNER_ADDED
+                    test_options = {}
 
-            get_mail_client.assert_called
-            get_notif_subject.assert_called_with(notification_type=test_notification_type, options=test_options)
-            get_notif_html.assert_called_with(notification_type=test_notification_type,
-                                              options=test_options,
-                                              sender=test_sender)
-            self.assertEqual(response.status_code, HTTPStatus.OK)
+                    response = send_notification(
+                        notification_type=test_notification_type,
+                        options=test_options,
+                        recipients=test_recipients,
+                        sender=test_sender
+                    )
+
+                    get_mail_client.assert_called
+                    get_notif_subject.assert_called_with(notification_type=test_notification_type,
+                                                         options=test_options)
+                    get_notif_html.assert_called_with(notification_type=test_notification_type,
+                                                      options=test_options,
+                                                      sender=test_sender)
+                    self.assertTrue(200 <= response.status_code <= 300)
 
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_notification_html')
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_notification_subject')

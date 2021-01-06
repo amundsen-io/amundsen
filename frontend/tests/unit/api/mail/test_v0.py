@@ -59,12 +59,15 @@ class MailTest(unittest.TestCase):
         Test mail client success
         :return:
         """
-        local_app.config['MAIL_CLIENT'] = MockMailClient(status_code=200)
-        with local_app.test_client() as test:
-            response = test.post('/api/mail/v0/feedback', json={
-                'rating': '10', 'comment': 'test'
-            })
-            self.assertEqual(response.status_code, HTTPStatus.OK)
+        status_codes = [HTTPStatus.OK, HTTPStatus.ACCEPTED]
+        for status_code in status_codes:
+            local_app.config['MAIL_CLIENT'] = MockMailClient(status_code=status_code)
+            with self.subTest():
+                with local_app.test_client() as test:
+                    response = test.post('/api/mail/v0/feedback', json={
+                        'rating': '10', 'comment': 'test'
+                    })
+                    self.assertTrue(200 <= response.status_code <= 300)
 
     def test_feedback_client_raise_exception(self) -> None:
         """

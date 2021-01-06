@@ -56,7 +56,7 @@ def feedback() -> Response:
         response = mail_client.send_email(html=html_content, subject=subject, optional_data=options)
         status_code = response.status_code
 
-        if status_code == HTTPStatus.OK:
+        if 200 <= status_code < 300:
             message = 'Success'
         else:
             message = 'Mail client failed with status code ' + str(status_code)
