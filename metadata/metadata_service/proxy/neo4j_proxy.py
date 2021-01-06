@@ -819,7 +819,7 @@ class Neo4jProxy(BaseProxy):
             return None
 
     @timer_with_counter
-    @_CACHE.cache('_get_global_popular_tables_uris', _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
+    @_CACHE.cache('_get_global_popular_tables_uris', expire=_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
     def _get_global_popular_tables_uris(self, num_entries: int) -> List[str]:
         """
         Retrieve popular table uris. Will provide tables with top x popularity score.
