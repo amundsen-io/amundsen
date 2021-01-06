@@ -33,6 +33,7 @@ const SourceLink: React.FC<SourceLinkProps> = ({
       <AvatarLabel
         label={getDescriptionSourceDisplayName(tableSource.source_type)}
         src={getDescriptionSourceIconPath(tableSource.source_type)}
+        round={false}
       />
     </a>
   );
