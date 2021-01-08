@@ -134,7 +134,7 @@
     "@analytics/segment": "^0.5.1",
     "analytics": "^0.5.5",
     "autosize": "^4.0.2",
-    "axios": "0.19.0",
+    "axios": "0.21.1",
     "core-js": "^3.6.5",
     "form-serialize": "^0.7.2",
     "fsevents": "*",
