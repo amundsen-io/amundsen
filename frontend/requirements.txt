@@ -26,7 +26,7 @@ mock==4.0.3
 # Thin-wrapper around the mock package for easier use with py.test.
 # License: MIT
 # Upstream url: https://pypi.python.org/pypi/pytest-mock
-pytest-mock==3.4.0
+pytest-mock==3.5.1
 
 # Mypy is an optional static type checker for Python.
 # License: MIT
