@@ -17,6 +17,12 @@ $ export AWS_PROFILE=profilename
 
 For the purpose of this instruction we used the [tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-ec2.html#ECS_CLI_tutorial_compose_create) on AWS documentation
 
+Enter the cloned directory:
+
+```
+cd amundsen/docs/installation-aws-ecs
+```
+
 
 ## STEP 1: Create a cluster configuration:
 
