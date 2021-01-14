@@ -2,7 +2,7 @@ name: Monthly Release
 
 on:
   schedule:
-    - cron: 10 21 14 * *
+    - cron: 30 22 14 * *
 
 jobs:
   release:
