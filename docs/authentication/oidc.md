@@ -157,4 +157,4 @@ ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
 ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 ```
 
-
+Please also take a look at this blog [post](https://nirav-langaliya.medium.com/setup-oidc-authentication-with-lyft-amundsen-via-okta-eb0b89d724d3) for more detail.
