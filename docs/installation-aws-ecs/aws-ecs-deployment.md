@@ -34,21 +34,21 @@ $ ecs-cli configure --cluster amundsen --region us-west-2 --default-launch-type 
 ### STEP 2: Create a profile using your access key and secret key:
 
 ```bash
-# in ~/<your-path-to-cloned-repo>/amundsenfrontendlibrary/docs/instalation-aws-ecs
+# in ~/<your-path-to-cloned-repo>/amundsen/docs/installation-aws-ecs
 $ ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name amundsen
 ```
 
 ### STEP 3: Create the Cluster Use profile name from \~/.aws/credentials
 
 ```bash
-# in ~/<your-path-to-cloned-repo>/amundsenfrontendlibrary/docs/instalation-aws-ecs
+# in ~/<your-path-to-cloned-repo>/amundsen/docs/installation-aws-ecs
 $ ecs-cli up --keypair JoaoCorreia --extra-user-data userData.sh --capability-iam --size 1 --instance-type t2.large --cluster-config amundsen --verbose --force --aws-profile $AWS_PROFILE
 ```
 
 ### STEP 4: Deploy the Compose File to a Cluster
 
 ```bash
-# in ~/<your-path-to-cloned-repo>/amundsenfrontendlibrary/docs/instalation-aws-ecs
+# in ~/<your-path-to-cloned-repo>/amundsen/docs/installation-aws-ecs
 $ ecs-cli compose --cluster-config amundsen --file docker-ecs-amundsen.yml up --create-log-groups
 ```
 
