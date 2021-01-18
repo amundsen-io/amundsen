@@ -6,3 +6,5 @@ example/docker/es_data*
 .idea/
 venv/
 site/
+
+.vscode/
