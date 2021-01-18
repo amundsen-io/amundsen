@@ -76,6 +76,28 @@ Atlas would be ready once you'll have the following output in the docker output 
      hard: 65535
  ```
    Then check if all 5 Amundsen related containers are running with `docker ps`? Can you connect to the Neo4j UI at http://localhost:7474/browser/ and similarly the raw ES API at http://localhost:9200? Does Docker logs reveal any serious issues?
+   
+   If Neo4j UI doesn't come up, check `neo4j` container logs. If you see output like below, then change the `End of Line Sequence` setting for `.\example\docker\neo4j\conf\neo4j.conf` file, using `VS Code`.
+   ```
+neo4j_amundsen      | Changed password for user 'neo4j'.
+neo4j_amundsen      | Active database: amundsen.db
+neo4j_amundsen      | Directories in use:
+neo4j_amundsen      |   home:         /var/lib/neo4j
+neo4j_amundsen      |   config:       /var/lib/neo4j/conf
+neo4j_amundsen      |   logs:         /var/log/neo4j
+neo4j_amundsen      |   plugins:      /plugins
+neo4j_amundsen      |   import:       /var/lib/neo4j/import
+neo4j_amundsen      |   data:         /neo4j/data
+neo4j_amundsen      |   certificates: /var/lib/neo4j/certificates
+neo4j_amundsen      |   run:          /var/lib/neo4j/run
+neo4j_amundsen      | Starting Neo4j.
+'eo4j_amundsen      | Unrecognized VM option 'UseG1GC
+neo4j_amundsen      | Did you mean '(+/-)UseG1GC'?
+neo4j_amundsen      | Error: Could not create the Java Virtual Machine.
+neo4j_amundsen      | Error: A fatal exception has occurred. Program will exit.
+```
+**VS Code Note:** Use <kbd>ctrl</kbd><kbd>shift</kbd><kbd>p</kbd> to open `Command Palette`. Choose `LF`. Press `Enter`.
+![](img/vscode-end-of-line-setting.png)
 
 5. If ES container crashed with Docker error 137 on the first call from the website (http://localhost:5000/), this is because you are using the default Docker engine memory allocation of 2GB. The minimum needed for all the containers to run with the loaded sample data is 3GB. To do this go to your `Docker -> Preferences -> Resources -> Advanced` and increase the `Memory`, then restart the Docker engine.
 
