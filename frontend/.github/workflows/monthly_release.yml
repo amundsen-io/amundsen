@@ -3,6 +3,11 @@ name: Monthly Release
 on:
   schedule:
     - cron: 15 20 19 * *
+  workflow_dispatch:
+    logLevel:
+      description: "Log level"
+      required: true
+      default: "warning"
 
 jobs:
   release:
