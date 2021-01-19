@@ -19,6 +19,8 @@ jobs:
           python-version: 3.6
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
       - name: Semantic Release
         run: |
           pip install python-semantic-release
