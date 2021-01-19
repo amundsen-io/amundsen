@@ -16,7 +16,7 @@ pytest==6.2.1
 # Pytest plugin for measuring coverage.
 # License: MIT
 # Upstream url: https://github.com/pytest-dev/pytest-cov
-pytest-cov==2.5.1
+pytest-cov==2.11.0
 
 # Rolling backport of unittest.mock for all Pythons
 # License: BSD
