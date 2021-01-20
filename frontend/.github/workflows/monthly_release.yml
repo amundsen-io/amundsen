@@ -27,6 +27,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           semantic-release publish
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
         with:
