@@ -22,13 +22,11 @@ jobs:
         with:
           fetch-depth: "0"
       - name: Semantic Release
-        run: |
-          pip install python-semantic-release
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          semantic-release publish
+        uses: relekang/python-semantic-release@master
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
         with:
