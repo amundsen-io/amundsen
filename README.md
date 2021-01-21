@@ -195,6 +195,7 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - [Data Discovery Platform at Bagelcode](https://medium.com/bagelcode/data-discovery-platform-at-bagelcode-b58a622d17fd)
 - [Cataloging Tools for Data Teams](https://towardsdatascience.com/cataloging-tools-for-data-teams-8d62d7a4cd95)
 - [An Overview of Data Discovery Platforms and Open Source Solutions](https://eugeneyan.com/writing/data-discovery-platforms/)
+- [Hacking Data Discovery in AWS with Amundsen at SEEK](https://medium.com/seek-blog/hacking-data-discovery-with-amundsen-c55d262014f4)
 
 ## Community meetings
 
@@ -235,6 +236,7 @@ Currently **officially** using Amundsen:
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)
 1. [PicPay](https://picpay.com.br)
+1. [Plarium Krasnodar](https://company.plarium.com/en/studio/russia-krasnodar/)
 1. [PUBG](https://careers.pubg.com/)
 1. [Rapido](https://rapido.bike/Careers?lan=en "India's largest bike taxi service")
 1. [REA Group](https://www.rea-group.com/)

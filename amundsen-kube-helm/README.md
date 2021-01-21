@@ -23,7 +23,7 @@ This is setup templates for deploying [amundsen](https://github.com/amundsen-io/
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://kubernetes-charts.storage.googleapis.com/ | elasticsearch | 1.32.0 |
+| https://charts.helm.sh/stable | elasticsearch | 1.32.0 |
 
 ## Chart Values
 
