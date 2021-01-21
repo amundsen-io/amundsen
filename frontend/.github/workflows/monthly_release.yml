@@ -25,7 +25,8 @@ jobs:
         uses: relekang/python-semantic-release@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          pypi_username: __token__
+          pypi_password: ${{ secrets.pypi_password }}
 
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
