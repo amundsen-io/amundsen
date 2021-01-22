@@ -200,7 +200,7 @@ frontEnd:
   ##
   ## frontEnd.oidcEnabled -- To enable auth via OIDC, set this to true.
   ##
-  oidcEnabled: false
+  oidcEnabled: true
   ##
   ## frontEnd.createOidcSecret -- OIDC needs some configuration. If you want the chart to make your secrets, set this to true and set the next four values. If you don't want to configure your secrets via helm, you can still use the amundsen-oidc-config.yaml as a template
   ##
