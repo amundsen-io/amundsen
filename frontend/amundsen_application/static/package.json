@@ -63,7 +63,7 @@
     "@storybook/addons": "^6.1.15",
     "@storybook/react": "^6.1.9",
     "@storybook/theming": "^6.0.28",
-    "@types/enzyme": "^3.10.5",
+    "@types/enzyme": "^3.10.8",
     "@types/jasmine-matchers": "^0.2.32",
     "@types/jest": "^26.0.14",
     "@types/node": "^10.17.21",
