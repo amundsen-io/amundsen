@@ -60,7 +60,7 @@
     "@storybook/addon-actions": "^6.1.2",
     "@storybook/addon-info": "^5.3.21",
     "@storybook/addon-links": "^6.0.26",
-    "@storybook/addons": "^6.1.11",
+    "@storybook/addons": "^6.1.15",
     "@storybook/react": "^6.1.9",
     "@storybook/theming": "^6.0.28",
     "@types/enzyme": "^3.10.5",
