@@ -13,6 +13,16 @@ import textwrap
 TABLE_INDEX_MAP = textwrap.dedent(
     """
     {
+    "settings": {
+      "analysis": {
+        "normalizer": {
+          "column_names_normalizer": {
+            "type": "custom",
+            "filter": ["lowercase"]
+          }
+        }
+      }
+    },
     "mappings":{
         "table":{
           "properties": {
@@ -51,6 +61,7 @@ TABLE_INDEX_MAP = textwrap.dedent(
               "fields": {
                 "raw": {
                   "type": "keyword"
+                  "normalizer": "column_names_normalizer"
                 }
               }
             },
