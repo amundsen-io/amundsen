@@ -221,7 +221,10 @@ class TestAtlasProxy(unittest.TestCase):
 
     def test_search_normal(self) -> None:
         expected = SearchTableResult(total_results=2,
-                                     results=[Table(name=self.entity1_name,
+                                     results=[Table(id=f"{self.entity_type}://"
+                                                       f"{self.cluster}.{self.db}/"
+                                                       f"{self.entity1_name}",
+                                                    name=self.entity1_name,
                                                     key=f"{self.entity_type}://"
                                                         f"{self.cluster}.{self.db}/"
                                                         f"{self.entity1_name}",

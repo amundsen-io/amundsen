@@ -116,7 +116,34 @@ class ElasticsearchProxy(BaseProxy):
 
         for hit in response:
             try:
-                # ES hit: {'_d_': {'key': xxx...}
+                es_metadata = hit.__dict__.get('meta', {})
+                """
+                ES hit example:
+                {
+                    '_d_': {
+                        'name': 'name',
+                        'database': 'database',
+                        'schema': 'schema',
+                        'key': 'database://cluster.schema/name',
+                        'cluster': 'cluster',
+                        'column_descriptions': ['description1', 'description2'],
+                        'column_names': ['colname1', 'colname2'],
+                        'description': None,
+                        'display_name': 'display name',
+                        'last_updated_timestamp': 12345678,
+                        'programmatic_descriptions': [],
+                        'schema_description': None,
+                        'tags': ['tag1', 'tag2'],
+                        'badges': [],
+                        'total_usage': 0
+                    },
+                    'mata': {
+                        'index': 'table index',
+                        'id': 'table id',
+                        'type': 'type'
+                    }
+                }
+                """
                 es_payload = hit.__dict__.get('_d_', {})
                 if not es_payload:
                     raise Exception('The ES doc not contain required field')
@@ -124,6 +151,7 @@ class ElasticsearchProxy(BaseProxy):
                 for attr, val in es_payload.items():
                     if attr in model.get_attrs():
                         result[attr] = self._get_instance(attr=attr, val=val)
+                result['id'] = self._get_instance(attr='id', val=es_metadata['id'])
 
                 results.append(model(**result))
             except Exception:
@@ -590,7 +618,7 @@ class ElasticsearchProxy(BaseProxy):
 
         for item in data:
             actions.append({'update': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}})
-            actions.append({'doc': item.__dict__})
+            actions.append({'doc': item.get_attrs_dict()})
         return actions
 
     def _build_delete_actions(self, data: List[str], index_key: str, type: str) -> List[Dict[str, Any]]:

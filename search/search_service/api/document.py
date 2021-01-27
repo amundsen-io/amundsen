@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import json
 
 from http import HTTPStatus
 from typing import Tuple, Any
-
+from ast import literal_eval
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
 from search_service.proxy import get_proxy_client
@@ -58,7 +59,7 @@ class BaseDocumentsAPI(Resource):
          :param data: list of data objects to be indexed in Elasticsearch
          :return: name of new index
          """
-        self.parser.add_argument('data', required=True)
+        self.parser.add_argument('data', required=True, action='append')
         args = self.parser.parse_args()
 
         try:
@@ -78,11 +79,13 @@ class BaseDocumentsAPI(Resource):
         :param data: list of data objects to be indexed in Elasticsearch
         :return: name of index
         """
-        self.parser.add_argument('data', required=True)
+        self.parser.add_argument('data', required=True, action='append')
         args = self.parser.parse_args()
 
         try:
-            data = self.schema(many=True, strict=False).loads(args.get('data')).data
+            table_dict_list = [literal_eval(table_str) for table_str in args.get('data')]
+            table_list_json = json.dumps(table_dict_list)
+            data = self.schema(many=True, strict=False).loads(table_list_json).data
             results = self.proxy.update_document(data=data, index=args.get('index'))
             return results, HTTPStatus.OK
         except RuntimeError as e:

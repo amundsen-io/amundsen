@@ -52,6 +52,10 @@ components:
     TableFields:
       type: object
       properties:
+        id:
+          type: string
+          description: 'elasticsearch doc id'
+          example: 'M81jD3cBdULZTSY96PSh'
         name:
           type: string
           description: 'name of table'
@@ -82,16 +86,54 @@ components:
               type: string
           description: 'list of column names'
           example: ['col1', 'col2']
+        column_descriptions:
+          type: array
+          items:
+            type: string
+          description: 'list of column descriptions'
+          example: ['column description1', 'column description2']
+        programmatic_descriptions:
+          type: array
+          items:
+            type: string
+          description: 'list of programmatic descriptions'
+          example: ['programmatic description1', 'programmatic description2']
         tags:
           type: array
           items:
-              type: string
+            type: object
+            properties:
+              tag_name:
+                type: string
           description: 'list of table tags'
-          example: ['tag2', 'tag1']
+          example: [{'tag_name': 'tag1'}, {'tag_name': 'tag2'}]
+        badges:
+          type: array
+          items:
+            type: object
+            properties:
+              tag_name:
+                type: string
+          description: 'list of table badges'
+          example: [{'tag_name': 'badge1'}, {'tag_name': 'badge2'}]
         last_updated_timestamp:
           type: integer
           description: 'table last updated time'
           example: 1568814420
+        display_name:
+          type: string
+          description: 'table display name'
+          example: 'display_name'
+        total_usage:
+          type: int
+          description: 'total usage'
+          example: 0
+        schema_description:
+          type: array
+          items:
+            type: string
+          description: 'list of schema descriptions'
+          example: ['schema description1', 'schema description2']
     DashboardFields:
       type: object
       properties:
@@ -130,6 +172,10 @@ components:
     UserFields:
       type: object
       properties:
+        id:
+          type: string
+          description: 'elasticsearch doc id'
+          example: 'M81jD3cBdULZTSY96PSh'
         name:
           type: string
           description: 'user name'
