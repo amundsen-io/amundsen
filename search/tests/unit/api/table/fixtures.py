@@ -6,7 +6,8 @@ from search_service.models.tag import Tag
 
 
 def mock_proxy_results() -> Table:
-    return Table(name='hello',
+    return Table(id='world',
+                 name='hello',
                  key='world',
                  description='des1',
                  cluster='clust',
@@ -22,7 +23,8 @@ def mock_proxy_results() -> Table:
 
 
 def mock_default_proxy_results() -> Table:
-    return Table(name='',
+    return Table(id='',
+                 name='',
                  key='',
                  description='',
                  cluster='',
@@ -39,6 +41,7 @@ def mock_default_proxy_results() -> Table:
 
 def mock_json_response() -> dict:
     return {
+        "id": "world",
         "name": "hello",
         "key": "world",
         "description": "des1",
@@ -53,12 +56,13 @@ def mock_json_response() -> dict:
         "schema_description": 'schema description',
         'programmatic_descriptions': [],
         'total_usage': 0,
-        'column_descriptions': []
+        'column_descriptions': None
     }
 
 
 def default_json_response() -> dict:
     return {
+        "id": '',
         "name": '',
         "key": '',
         "description": '',
@@ -73,5 +77,5 @@ def default_json_response() -> dict:
         "schema_description": '',
         'programmatic_descriptions': [],
         'total_usage': 0,
-        'column_descriptions': []
+        'column_descriptions': None
     }

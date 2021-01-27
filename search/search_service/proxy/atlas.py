@@ -92,7 +92,8 @@ class AtlasProxy(BaseProxy):
 
             badges: List[Tag] = tags
 
-            table = Table(name=entity_name,
+            table = Table(id=f"{entity.typeName}://{db_cluster}.{db_name}/{entity_name}",
+                          name=entity_name,
                           key=f"{entity.typeName}://{db_cluster}.{db_name}/{entity_name}",
                           description=entity_attrs.get('description'),
                           cluster=db_cluster,

@@ -17,14 +17,16 @@ class User(Base, CommonUser):
     This represents the part of a user stored in the search proxy
     """
     manager_email: Optional[str] = None
+    id: str
 
     def get_id(self) -> str:
         # uses the user email as the document id in ES
-        return self.email if self.email else ''
+        return self.id
 
     @classmethod
     def get_attrs(cls) -> Set:
         return {
+            'id',
             'full_name',
             'first_name',
             'last_name',

@@ -11,19 +11,18 @@ parameters:
       type: string
       default: 'table_search_index'
     required: false
-  - name: body
-    in: body
-    schema:
-      type: object
-      name: data
-      properties:
-        data:
-          type: array
-          description: 'List of tables'
-          items:
-            $ref: '#/components/schemas/TableFields'
-    description: 'Tables to update'
-    required: true
+requestBody:
+  content:
+    'application/json':
+      schema:
+        type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/TableFields'
+  description: 'Tables to update'
+  required: true
 responses:
   200:
     description: Empty json response
