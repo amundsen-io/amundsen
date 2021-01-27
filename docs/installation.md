@@ -22,7 +22,8 @@ The following instructions are for setting up a version of Amundsen using Docker
    * `sample_data_loader` python script included in `examples/` directory uses _elasticsearch client_, _pyhocon_ and other libraries. Install the dependencies in a virtual env and run the script by following the commands below:
    ```bash
     $ python3 -m venv venv
-    $ source venv/bin/activate  
+    $ source venv/bin/activate
+    $ pip3 install --upgrade pip
     $ pip3 install -r requirements.txt
     $ python3 setup.py install
     $ python3 example/scripts/sample_data_loader.py
