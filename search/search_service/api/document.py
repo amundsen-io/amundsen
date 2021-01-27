@@ -1,20 +1,21 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
 import json
-
-from http import HTTPStatus
-from typing import Tuple, Any
+import logging
 from ast import literal_eval
+from http import HTTPStatus
+from typing import Any, Tuple
+
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
-from search_service.proxy import get_proxy_client
-from search_service.proxy.base import BaseProxy
-from search_service.models.table import TableSchema
-from search_service.models.user import UserSchema
+
 from search_service.api.table import TABLE_INDEX
 from search_service.api.user import USER_INDEX
+from search_service.models.table import TableSchema
+from search_service.models.user import UserSchema
+from search_service.proxy import get_proxy_client
+from search_service.proxy.base import BaseProxy
 
 LOGGER = logging.getLogger(__name__)
 

@@ -2,14 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
 
-from search_service.proxy import get_proxy_client
 from search_service.models.user import SearchUserResultSchema
-
+from search_service.proxy import get_proxy_client
 
 USER_INDEX = 'user_search_index'
 

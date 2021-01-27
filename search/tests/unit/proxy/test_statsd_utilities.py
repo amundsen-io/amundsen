@@ -1,15 +1,16 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from mock import patch, MagicMock
-from flask import current_app
-from statsd import StatsClient
 import unittest
+
+from flask import current_app
+from mock import MagicMock, patch
+from statsd import StatsClient
 
 from search_service import create_app
 from search_service.proxy import statsd_utilities
-from search_service.proxy.statsd_utilities import _get_statsd_client
 from search_service.proxy.elasticsearch import ElasticsearchProxy
+from search_service.proxy.statsd_utilities import _get_statsd_client
 
 
 class TestStatsdUtilities(unittest.TestCase):

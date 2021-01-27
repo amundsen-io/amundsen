@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
-from typing import Any, Dict, Iterable  # noqa: F401
+from typing import (  # noqa: F401
+    Any, Dict, Iterable,
+)
 
 from flask_restful import Resource, reqparse
 from marshmallow_annotations.ext.attrs import AttrsSchema

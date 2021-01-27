@@ -3,7 +3,7 @@
 
 import logging
 from http import HTTPStatus
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 from flasgger import swag_from
 from flask_restful import Resource, reqparse  # noqa: I201
@@ -12,7 +12,6 @@ from search_service.api.base import BaseFilterAPI
 from search_service.exception import NotFoundException
 from search_service.models.dashboard import SearchDashboardResultSchema
 from search_service.proxy import get_proxy_client
-
 
 DASHBOARD_INDEX = 'dashboard_search_index'
 

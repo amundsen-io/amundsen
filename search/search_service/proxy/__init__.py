@@ -4,10 +4,10 @@
 from threading import Lock
 
 from flask import current_app
+from werkzeug.utils import import_string
 
 from search_service import config
 from search_service.proxy.base import BaseProxy
-from werkzeug.utils import import_string
 
 _proxy_client = None
 _proxy_client_lock = Lock()

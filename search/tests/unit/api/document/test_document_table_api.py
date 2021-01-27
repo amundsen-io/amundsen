@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
 from http import HTTPStatus
-from mock import patch, Mock, MagicMock
 
-from search_service.api.document import DocumentTableAPI
+from mock import (
+    MagicMock, Mock, patch,
+)
+
 from search_service import create_app
+from search_service.api.document import DocumentTableAPI
 
 
 class TestDocumentTableAPI(unittest.TestCase):

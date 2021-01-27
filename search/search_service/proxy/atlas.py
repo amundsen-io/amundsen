@@ -3,7 +3,9 @@
 
 import logging
 from re import sub
-from typing import Any, List, Dict, Tuple, Optional
+from typing import (
+    Any, Dict, List, Optional, Tuple,
+)
 
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest
@@ -12,10 +14,9 @@ from atlasclient.models import Entity, EntityCollection
 from atlasclient.utils import parse_table_qualified_name
 
 from search_service.models.dashboard import SearchDashboardResult
-from search_service.models.table import SearchTableResult
-from search_service.models.user import SearchUserResult
-from search_service.models.table import Table
+from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
+from search_service.models.user import SearchUserResult
 from search_service.proxy import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 

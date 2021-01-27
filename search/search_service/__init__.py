@@ -3,22 +3,24 @@
 
 import ast
 import importlib
-import os
 import logging
 import logging.config
+import os
 import sys
+from typing import Any, Dict  # noqa: F401
 
-from flask import Flask, Blueprint
-from flask_restful import Api
-from flask_cors import CORS
-from typing import Dict, Any  # noqa: F401
 from flasgger import Swagger
+from flask import Blueprint, Flask
+from flask_cors import CORS
+from flask_restful import Api
 
 from search_service.api.dashboard import SearchDashboardAPI, SearchDashboardFilterAPI
+from search_service.api.document import (
+    DocumentTableAPI, DocumentTablesAPI, DocumentUserAPI, DocumentUsersAPI,
+)
+from search_service.api.healthcheck import healthcheck
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
-from search_service.api.document import DocumentUserAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUsersAPI
-from search_service.api.healthcheck import healthcheck
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
