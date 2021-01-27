@@ -20,7 +20,8 @@ def request_metadata(*,     # type: ignore
                      method: str = 'GET',
                      headers=None,
                      timeout_sec: int = 0,
-                     data=None):
+                     data=None,
+                     json=None):
     """
     Helper function to make a request to metadata service.
     Sets the client and header information based on the configuration
@@ -43,7 +44,8 @@ def request_metadata(*,     # type: ignore
                            client=app.config['METADATASERVICE_REQUEST_CLIENT'],
                            headers=headers,
                            timeout_sec=timeout_sec,
-                           data=data)
+                           data=data,
+                           json=json)
 
 
 def request_search(*,     # type: ignore
@@ -51,7 +53,8 @@ def request_search(*,     # type: ignore
                    method: str = 'GET',
                    headers=None,
                    timeout_sec: int = 0,
-                   data=None):
+                   data=None,
+                   json=None):
     """
     Helper function to make a request to search service.
     Sets the client and header information based on the configuration
@@ -75,11 +78,12 @@ def request_search(*,     # type: ignore
                            client=app.config['SEARCHSERVICE_REQUEST_CLIENT'],
                            headers=headers,
                            timeout_sec=timeout_sec,
-                           data=data)
+                           data=data,
+                           json=json)
 
 
 # TODO: Define an interface for envoy_client
-def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, data=None):  # type: ignore
+def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, data=None, json=None):  # type: ignore
     """
     Wraps a request to use Envoy client and headers, if available
     :param method: DELETE | GET | POST | PUT
@@ -99,9 +103,9 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, da
         elif method == 'GET':
             return client.get(url, headers=headers, raw_response=True)
         elif method == 'POST':
-            return client.post(url, headers=headers, raw_response=True, raw_request=True, data=data)
+            return client.post(url, headers=headers, raw_response=True, raw_request=True, data=data, json=json)
         elif method == 'PUT':
-            return client.put(url, headers=headers, raw_response=True, raw_request=True, data=data)
+            return client.put(url, headers=headers, raw_response=True, raw_request=True, data=data, json=json)
         else:
             raise Exception('Method not allowed: {}'.format(method))
     else:
@@ -111,9 +115,9 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, da
             elif method == 'GET':
                 return s.get(url, headers=headers, timeout=timeout_sec)
             elif method == 'POST':
-                return s.post(url, headers=headers, timeout=timeout_sec, data=data)
+                return s.post(url, headers=headers, timeout=timeout_sec, data=data, json=json)
             elif method == 'PUT':
-                return s.put(url, headers=headers, timeout=timeout_sec, data=data)
+                return s.put(url, headers=headers, timeout=timeout_sec, data=data, json=json)
             else:
                 raise Exception('Method not allowed: {}'.format(method))
 
