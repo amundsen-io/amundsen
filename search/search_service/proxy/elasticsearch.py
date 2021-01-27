@@ -1,27 +1,28 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import itertools
 import logging
 import uuid
-import itertools
-from typing import Any, List, Dict, Union
+from typing import (
+    Any, Dict, List, Union,
+)
 
+from amundsen_common.models.index_map import TABLE_INDEX_MAP, USER_INDEX_MAP
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search, query
 from elasticsearch.exceptions import NotFoundError
+from elasticsearch_dsl import Search, query
 from flask import current_app
-from amundsen_common.models.index_map import USER_INDEX_MAP, TABLE_INDEX_MAP
 
 from search_service import config
 from search_service.api.dashboard import DASHBOARD_INDEX
-from search_service.api.user import USER_INDEX
 from search_service.api.table import TABLE_INDEX
-from search_service.models.search_result import SearchResult
-from search_service.models.table import Table, SearchTableResult
-from search_service.models.user import SearchUserResult
-from search_service.models.user import User
+from search_service.api.user import USER_INDEX
 from search_service.models.dashboard import Dashboard, SearchDashboardResult
+from search_service.models.search_result import SearchResult
+from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
+from search_service.models.user import SearchUserResult, User
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 

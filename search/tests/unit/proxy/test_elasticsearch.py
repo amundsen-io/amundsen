@@ -2,20 +2,21 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
-from unittest.mock import patch, MagicMock
-from typing import Any, Iterable, List  # noqa: F401
+from typing import (  # noqa: F401
+    Any, Iterable, List,
+)
+from unittest.mock import MagicMock, patch
 
 from search_service import create_app
-from search_service.api.user import USER_INDEX
 from search_service.api.table import TABLE_INDEX
-from search_service.proxy import get_proxy_client
-from search_service.proxy.elasticsearch import ElasticsearchProxy
-from search_service.models.search_result import SearchResult
+from search_service.api.user import USER_INDEX
 from search_service.models.dashboard import Dashboard
+from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.tag import Tag
 from search_service.models.user import User
+from search_service.proxy import get_proxy_client
+from search_service.proxy.elasticsearch import ElasticsearchProxy
 
 
 class MockSearchResult:

@@ -4,13 +4,12 @@
 from http import HTTPStatus
 from typing import Any, Iterable  # noqa: F401
 
-from flask_restful import Resource, reqparse
 from flasgger import swag_from
+from flask_restful import Resource, reqparse
 
 from search_service.api.base import BaseFilterAPI
 from search_service.models.table import SearchTableResultSchema
 from search_service.proxy import get_proxy_client
-
 
 TABLE_INDEX = 'table_search_index'
 

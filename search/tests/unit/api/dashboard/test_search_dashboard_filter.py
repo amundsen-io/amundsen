@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
 from http import HTTPStatus
-from mock import patch, MagicMock
+
+from mock import MagicMock, patch
 
 from search_service import create_app
 

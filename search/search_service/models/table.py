@@ -1,14 +1,17 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional, Set
+import time
+from typing import (
+    List, Optional, Set,
+)
 
 import attr
 from marshmallow_annotations.ext.attrs import AttrsSchema
 
-from .base import Base
 from search_service.models.tag import Tag
-import time
+
+from .base import Base
 
 
 @attr.s(auto_attribs=True, kw_only=True)

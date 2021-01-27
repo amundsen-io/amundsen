@@ -19,8 +19,16 @@ lint:
 mypy:
 	mypy --ignore-missing-imports --strict-optional --warn-no-return .
 
+.PHONY: isort
+isort:
+	isort .
+
+.PHONY: isort_check
+isort_check:
+	isort ./ --check --diff
+
 .PHONY: test
-test: test_unit lint mypy
+test: test_unit lint mypy isort_check
 
 .PHONY: image
 image:

@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict, List, Union
+from typing import (
+    Any, Dict, List, Union,
+)
 
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.table import SearchTableResult

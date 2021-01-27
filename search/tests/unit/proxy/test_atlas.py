@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from typing import (
+    Any, Callable, Dict, List, Tuple,
+)
 
 from mock import MagicMock, patch
-from typing import Any, Callable, Dict, List, Tuple
 
-from search_service import create_app, config
-from search_service.models.table import Table, SearchTableResult
+from search_service import config, create_app
+from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
 from search_service.proxy import get_proxy_client
 

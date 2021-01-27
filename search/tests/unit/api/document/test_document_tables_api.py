@@ -1,16 +1,18 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import unittest
-
 from http import HTTPStatus
-from mock import patch, Mock, MagicMock
 
-from search_service.api.document import DocumentTablesAPI
+from mock import (
+    MagicMock, Mock, patch,
+)
+
 from search_service import create_app
+from search_service.api.document import DocumentTablesAPI
 from search_service.models.table import Table
 from search_service.models.tag import Tag
-import json
 
 
 class TestDocumentTablesAPI(unittest.TestCase):
