@@ -803,6 +803,15 @@ class MetadataTest(unittest.TestCase):
         url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/tag/tag_5'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
+        searchservice_base = local_app.config['SEARCHSERVICE_BASE']
+        get_table_url = f'{searchservice_base}/search_table'
+        responses.add(responses.POST, get_table_url,
+                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
+                      status=HTTPStatus.OK)
+
+        post_table_url = f'{searchservice_base}/document_table'
+        responses.add(responses.PUT, post_table_url, json={}, status=HTTPStatus.OK)
+
         with local_app.test_client() as test:
             response = test.put(
                 '/api/metadata/v0/update_table_tags',
@@ -821,6 +830,15 @@ class MetadataTest(unittest.TestCase):
         """
         url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table/tag/tag_5'
         responses.add(responses.DELETE, url, json={}, status=HTTPStatus.OK)
+
+        searchservice_base = local_app.config['SEARCHSERVICE_BASE']
+        get_table_url = f'{searchservice_base}/search_table'
+        responses.add(responses.POST, get_table_url,
+                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
+                      status=HTTPStatus.OK)
+
+        post_table_url = f'{searchservice_base}/document_table'
+        responses.add(responses.PUT, post_table_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.delete(
