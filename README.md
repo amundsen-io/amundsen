@@ -233,6 +233,7 @@ Currently **officially** using Amundsen:
 1. [ING](https://www.ing.com/Home.htm)
 1. [Instacart](https://www.instacart.com/)
 1. [iRobot](https://www.irobot.com)
+1. [Lett](https://lett.digital/)
 1. [LMC](https://www.lmc.eu/cs/)
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)
