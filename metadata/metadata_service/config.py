@@ -17,6 +17,7 @@ PROXY_PASSWORD = 'PROXY_PASSWORD'
 PROXY_ENCRYPTED = 'PROXY_ENCRYPTED'
 PROXY_VALIDATE_SSL = 'PROXY_VALIDATE_SSL'
 PROXY_CLIENT = 'PROXY_CLIENT'
+PROXY_CLIENT_KWARGS = 'PROXY_CLIENT_KWARGS'
 
 PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
@@ -83,6 +84,10 @@ class Config:
     # List of accepted date formats for AtlasProxy Watermarks. With this we allow more than one datetime partition
     # format to be used in tables
     WATERMARK_DATE_FORMATS = ['%Y%m%d']
+
+    # Custom kwargs that will be passed to proxy client. Can be used to fine-tune parameters like timeout
+    # or num of retries
+    PROXY_CLIENT_KWARGS: Dict = dict()
 
 
 # NB: If you're using the gremlin proxy, the appropriate GremlinConfig must be added to any other configs

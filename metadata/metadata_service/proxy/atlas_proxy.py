@@ -70,7 +70,8 @@ class AtlasProxy(BaseProxy):
                  user: str = 'admin',
                  password: str = '',
                  encrypted: bool = False,
-                 validate_ssl: bool = False) -> None:
+                 validate_ssl: bool = False,
+                 client_kwargs: dict = dict()) -> None:
         """
         Initiate the Apache Atlas client with the provided credentials
         """
@@ -80,7 +81,8 @@ class AtlasProxy(BaseProxy):
                              username=user,
                              password=password,
                              protocol=protocol,
-                             validate_ssl=validate_ssl)
+                             validate_ssl=validate_ssl,
+                             **client_kwargs)
 
     def _get_ids_from_basic_search(self, *, params: Dict) -> List[str]:
         """
