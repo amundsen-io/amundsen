@@ -5,7 +5,8 @@ from search_service.models.dashboard import Dashboard
 
 
 def mock_proxy_results() -> Dashboard:
-    return Dashboard(uri='dashboard_uri',
+    return Dashboard(id='mode_dashboard',
+                     uri='dashboard_uri',
                      cluster='gold',
                      group_name='mode_dashboard_group',
                      group_url='mode_dashboard_group_url',
@@ -18,6 +19,7 @@ def mock_proxy_results() -> Dashboard:
 
 def mock_json_response() -> dict:
     return {
+        "id": 'mode_dashboard',
         "chart_names": [],
         "uri": 'dashboard_uri',
         "cluster": 'gold',

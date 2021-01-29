@@ -16,14 +16,16 @@ class Dashboard(Base,
     """
     This represents the part of a dashboard stored in the search proxy
     """
+    id: str = attr.ib()
 
     def get_id(self) -> str:
         # uses the table key as the document id in ES
-        return self.name
+        return self.id
 
     @classmethod
     def get_attrs(cls) -> Set:
         return {
+            'id',
             'uri',
             'cluster',
             'group_name',

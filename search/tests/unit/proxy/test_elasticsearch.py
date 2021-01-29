@@ -151,7 +151,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                  role_name='swe',
                                                  new_attr='aaa')
 
-        self.mock_dashboard_result = Dashboard(uri='dashboard_uri',
+        self.mock_dashboard_result = Dashboard(id='mode_dashboard',
+                                               uri='dashboard_uri',
                                                cluster='gold',
                                                group_name='mode_dashboard_group',
                                                group_url='mode_dashboard_group_url',
@@ -711,7 +712,8 @@ class TestElasticsearchProxy(unittest.TestCase):
     def test_fetch_dashboard_search_results(self,
                                             mock_search: MagicMock) -> None:
 
-        self.mock_dashboard_result = Dashboard(uri='dashboard_uri',
+        self.mock_dashboard_result = Dashboard(id='mode_dashboard',
+                                               uri='dashboard_uri',
                                                cluster='gold',
                                                group_name='mode_dashboard_group',
                                                group_url='mode_dashboard_group_url',
@@ -725,7 +727,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                 results=[self.mock_dashboard_result])
 
         expected = SearchResult(total_results=1,
-                                results=[Dashboard(uri='dashboard_uri',
+                                results=[Dashboard(id='mode_dashboard',
+                                                   uri='dashboard_uri',
                                                    cluster='gold',
                                                    group_name='mode_dashboard_group',
                                                    group_url='mode_dashboard_group_url',
