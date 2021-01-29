@@ -30,15 +30,17 @@ jobs:
           git config user.email github-actions@github.com
           semantic-release version
           echo ::set-output name=version::$(semantic-release print-version --current)
-          echo ::set-output name=difflog::$(semantic-release changelog)
+          echo ::set-output name=difflog::"$(semantic-release changelog)"
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Bumped version to ${{ steps.semantic-release.outputs.version }}
-          title: Bumped version for release ${{ steps.semantic-release.outputs.version }}
           author: github-actions <github-actions@github.com>
-          body: ${{ steps.semantic-release.outputs.difflog }}
+          title: Bumped version for release ${{ steps.semantic-release.outputs.version }}
+          body: |
+            Bumped version to ${{ steps.semantic-release.outputs.version }}
+            ${{ steps.semantic-release.outputs.difflog }}
           team-reviewers: amundsen-io/amundsen-committers
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: true
