@@ -107,7 +107,7 @@ class RedashDashboardExtractor(Extractor):
             if not record:
                 break  # the end.
 
-            record = self._transformer.transform(record=record)
+            record = next(self._transformer.transform(record=record), None)
 
             if not self._is_published_dashboard(record):
                 continue  # filter this one out

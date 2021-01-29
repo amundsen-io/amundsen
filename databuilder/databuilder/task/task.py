@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+from typing import Iterator
 
 from pyhocon import ConfigTree
 
@@ -48,22 +49,29 @@ class DefaultTask(Task):
     def run(self) -> None:
         """
         Runs a task
-        :return:
         """
         LOGGER.info('Running a task')
         try:
             record = self.extractor.extract()
-            count = 1
+            count = 0
             while record:
                 record = self.transformer.transform(record)
                 if not record:
+                    # Move on if the transformer filtered the record out
                     record = self.extractor.extract()
                     continue
-                self.loader.load(record)
-                record = self.extractor.extract()
-                count += 1
+
+                # Support transformers which return one record, or yield multiple
+                results = record if isinstance(record, Iterator) else [record]
+                for result in results:
+                    if result:
+                        self.loader.load(result)
+                        count += 1
+
                 if count > 0 and count % self._progress_report_frequency == 0:
                     LOGGER.info(f'Extracted %i records so far', count)
 
+                # Prepare the next record
+                record = self.extractor.extract()
         finally:
             self._closer.close()

@@ -100,7 +100,7 @@ class TableauDashboardLastModifiedExtractor(Extractor):
         if not record:
             return None
 
-        return self._transformer.transform(record=record)
+        return next(self._transformer.transform(record=record), None)
 
     def get_scope(self) -> str:
         return 'extractor.tableau_dashboard_last_modified'

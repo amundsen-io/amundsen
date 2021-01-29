@@ -938,8 +938,15 @@ job.launch()
 
 
 ## List of transformers
+
+Transformers are implemented by subclassing [Transformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L12 "Transformer") and implementing `transform(self, record)`. A transformer can:
+
+- Modify a record and return it,
+- Return `None` to filter a record out,
+- Yield multiple records. This is useful for e.g. inferring metadata (such as ownership) from table descriptions.
+
 #### [ChainedTransformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
-A chanined transformer that can take multiple transformer.
+A chanined transformer that can take multiple transformers, passing each record through the chain.
 
 #### [RegexStrReplaceTransformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/regex_str_replace_transformer.py "RegexStrReplaceTransformer")
 Generic string replacement transformer using REGEX. User can pass list of tuples where tuple contains regex and replacement pair.
