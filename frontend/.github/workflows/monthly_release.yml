@@ -46,7 +46,7 @@ jobs:
 
             [1]: https://github.com/peter-evans/create-pull-request
           team-reviewers: amundsen-io/amundsen-committers
-          branch: ${{ env.BRANCH_NAME }}
-          base: master
+          branch: master
+          base: ${{ env.BRANCH_NAME }}
           delete-branch: true
           signoff: true
