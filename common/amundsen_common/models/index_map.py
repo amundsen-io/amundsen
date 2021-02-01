@@ -60,7 +60,7 @@ TABLE_INDEX_MAP = textwrap.dedent(
               "analyzer": "simple",
               "fields": {
                 "raw": {
-                  "type": "keyword"
+                  "type": "keyword",
                   "normalizer": "column_names_normalizer"
                 }
               }
