@@ -7,6 +7,7 @@ on:
     paths:
       # triggered when version is bumped
       - "setup.py"
+      - "CHANGELOG.md"
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -29,7 +30,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.vers.outputs.version }}
-          release_name: New features & Bug Fixes
+          release_name: New Features & Bug Fixes
+          body_path: ./CHANGELOG.md
       - name: Add wheel dependency
         run: pip install wheel
       - name: Generate dist
