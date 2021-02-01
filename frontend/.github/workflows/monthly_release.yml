@@ -2,7 +2,7 @@ name: Monthly Release
 
 on:
   schedule:
-    - cron: 15 20 19 * *
+    - cron: 0 0 1 * *
   workflow_dispatch:
     logLevel:
       description: "Log level"
@@ -30,7 +30,7 @@ jobs:
           git config user.email github-actions@github.com
           semantic-release version
           echo ::set-output name=version::$(semantic-release print-version --current)
-          echo ::set-output name=difflog::"$(semantic-release changelog)"
+          echo semantic-release changelog > './CHANGELOG.md'
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -40,7 +40,6 @@ jobs:
           title: Bumped version for release ${{ steps.semantic-release.outputs.version }}
           body: |
             Bumped version to ${{ steps.semantic-release.outputs.version }}
-            ${{ steps.semantic-release.outputs.difflog }}
           team-reviewers: amundsen-io/amundsen-committers
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: true
