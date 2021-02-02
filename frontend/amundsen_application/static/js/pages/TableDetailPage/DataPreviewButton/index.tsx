@@ -87,6 +87,7 @@ export class DataPreviewButton extends React.Component<
       database: tableData.database,
       schema: tableData.schema,
       tableName: tableData.name,
+      cluster: tableData.cluster,
     });
   }
 

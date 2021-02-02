@@ -48,6 +48,7 @@ export interface PreviewQueryParams {
   database: string;
   schema: string;
   tableName: string;
+  cluster: string;
 }
 
 export interface PreviewData {

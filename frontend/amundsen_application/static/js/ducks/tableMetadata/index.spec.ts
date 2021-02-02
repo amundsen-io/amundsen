@@ -117,6 +117,7 @@ describe('tableMetadata ducks', () => {
       database: 'testDb',
       schema: 'testSchema',
       tableName: 'testName',
+      cluster: 'testCluster',
     };
   });
 
