@@ -30,17 +30,18 @@ jobs:
           git config user.email github-actions@github.com
           semantic-release version
           echo ::set-output name=version::$(semantic-release print-version --current)
-          echo semantic-release changelog > './CHANGELOG.md'
+          semantic-release changelog > './CHANGELOG.md'
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Bumped version to ${{ steps.semantic-release.outputs.version }}
+          committer: github-actions <github-actions@github.com>
           author: github-actions <github-actions@github.com>
+          signoff: true
+          branch: ${{ env.BRANCH_NAME }}
+          delete-branch: true
           title: Bumped version for release ${{ steps.semantic-release.outputs.version }}
           body: |
             Bumped version to ${{ steps.semantic-release.outputs.version }}
           team-reviewers: amundsen-io/amundsen-committers
-          branch: ${{ env.BRANCH_NAME }}
-          delete-branch: true
-          signoff: true
