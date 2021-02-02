@@ -24,9 +24,7 @@ interface StateFromProps {
 
 export type TableDashboardResourceListProps = StateFromProps & OwnProps;
 
-export class TableDashboardResourceList extends React.Component<
-  TableDashboardResourceListProps
-> {
+export class TableDashboardResourceList extends React.Component<TableDashboardResourceListProps> {
   render() {
     const {
       dashboards,
