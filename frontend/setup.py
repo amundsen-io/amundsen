@@ -54,7 +54,7 @@ setup(
     install_requires=requirements,
     extras_require={
         'oidc': ['flaskoidc==0.1.1'],
-        'pyarrow': ['pyarrow==2.0.0'],
+        'pyarrow': ['pyarrow==3.0.0'],
     },
     python_requires=">=3.6",
     entry_points="""
