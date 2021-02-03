@@ -236,6 +236,7 @@ Currently **officially** using Amundsen:
 1. [iRobot](https://www.irobot.com)
 1. [Lett](https://lett.digital/)
 1. [LMC](https://www.lmc.eu/cs/)
+1. [Loft](https://loft.com.br)
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)
 1. [PicPay](https://picpay.com.br)
