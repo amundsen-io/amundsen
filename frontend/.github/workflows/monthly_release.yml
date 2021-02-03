@@ -41,7 +41,8 @@ jobs:
           signoff: true
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: true
-          title: "chore: "Bumped version for release ${{ steps.semantic-release.outputs.version }}
+          title: |
+            chore: Bumped version for release ${{ steps.semantic-release.outputs.version }}
           body: |
             Bumped version to ${{ steps.semantic-release.outputs.version }}
           team-reviewers: amundsen-io/amundsen-committers
