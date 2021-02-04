@@ -1,0 +1,20 @@
+### Feature
+* Add chart into common ES index map ([#77](https://github.com/amundsen-io/amundsencommon/issues/77)) ([`4a7eea4`](https://github.com/amundsen-io/amundsencommon/commit/4a7eea49a22371d1cbf21258685790f4fc1beafb))
+* Add chart to dashboard model ([#73](https://github.com/amundsen-io/amundsencommon/issues/73)) ([`241f627`](https://github.com/amundsen-io/amundsencommon/commit/241f6270617f3e623ab03c3ecb798f365858ccc2))
+* Added badges field (optional) to column in table model ([#68](https://github.com/amundsen-io/amundsencommon/issues/68)) ([`7bf5a84`](https://github.com/amundsen-io/amundsencommon/commit/7bf5a84101bd4232bb74b1c3236421432e9c19c8))
+* Add marshmallow packages to setup.py ([#66](https://github.com/amundsen-io/amundsencommon/issues/66)) ([`7ff2fe1`](https://github.com/amundsen-io/amundsencommon/commit/7ff2fe1c6e299338c6cc78b90196fa353b67b995))
+* Tweaks for gremlin support ([#60](https://github.com/amundsen-io/amundsencommon/issues/60)) ([`1a2733b`](https://github.com/amundsen-io/amundsencommon/commit/1a2733bbe667eac3cb58429e6318eead52903a95))
+* Table model badges field update ([#56](https://github.com/amundsen-io/amundsencommon/issues/56)) ([`6a393d0`](https://github.com/amundsen-io/amundsencommon/commit/6a393d0e1ca6ff7aef55d0909e29d843c5068de6))
+* Added new badge model ([#55](https://github.com/amundsen-io/amundsencommon/issues/55)) ([`09897d9`](https://github.com/amundsen-io/amundsencommon/commit/09897d9828e87ff2eb372b06a35684e197613165))
+* Add github action for test and pypi publish ([#47](https://github.com/amundsen-io/amundsencommon/issues/47)) ([`1a466b1`](https://github.com/amundsen-io/amundsencommon/commit/1a466b1c9506491c5caeaf19ab6398fca55f44e0))
+* Added resource_reports into Table model ([`60b1751`](https://github.com/amundsen-io/amundsencommon/commit/60b1751be8e99a77a83876d5264e6530d37f50e4))
+
+### Fix
+* Moved version declaration ([#88](https://github.com/amundsen-io/amundsencommon/issues/88)) ([`19be687`](https://github.com/amundsen-io/amundsencommon/commit/19be687817604cc23752cff01c791b5369d5a635))
+* Fix table index map bug ([#86](https://github.com/amundsen-io/amundsencommon/issues/86)) ([`f250d6a`](https://github.com/amundsen-io/amundsencommon/commit/f250d6aea170e2d3e448867f68bc40f4c01cb91b))
+* Make column names searchable by lowercase ([#85](https://github.com/amundsen-io/amundsencommon/issues/85)) ([`0ead455`](https://github.com/amundsen-io/amundsencommon/commit/0ead4550e4e918698ac236cb72f87a9c8895f664))
+* Changed marshmallow-annotation version, temp solution ([#81](https://github.com/amundsen-io/amundsencommon/issues/81)) ([`ff9d2e2`](https://github.com/amundsen-io/amundsencommon/commit/ff9d2e249452bf85924ec5864003bf96494e2500))
+* Enable flake8 and mypy in CI ([#75](https://github.com/amundsen-io/amundsencommon/issues/75)) ([`32e317c`](https://github.com/amundsen-io/amundsencommon/commit/32e317c42a68d3ec9a651ae9271d3e7451b66e71))
+* Fix import ([#74](https://github.com/amundsen-io/amundsencommon/issues/74)) ([`2d1725b`](https://github.com/amundsen-io/amundsencommon/commit/2d1725bb001785c01d2e69330c5b31947eb5fce5))
+* Add dashboard index map copied from amundsendatabuilder ([#65](https://github.com/amundsen-io/amundsencommon/issues/65)) ([`551834b`](https://github.com/amundsen-io/amundsencommon/commit/551834bbf0f8cf1a498f8017325930a03ef4f62a))
+* Update elasticsearch mapping ([#64](https://github.com/amundsen-io/amundsencommon/issues/64)) ([`b43a687`](https://github.com/amundsen-io/amundsencommon/commit/b43a6870e6579e7e7a5b94af6e0e0e1867f3ef97))
