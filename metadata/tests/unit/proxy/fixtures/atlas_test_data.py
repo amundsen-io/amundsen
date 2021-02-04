@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from typing import List, Dict
+from typing import Dict, List
 
 
 class DottedDict(dict):

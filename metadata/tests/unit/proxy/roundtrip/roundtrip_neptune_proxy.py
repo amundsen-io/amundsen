@@ -4,14 +4,16 @@
 
 import logging
 from typing import List
-from amundsen_common.models.table import Table, Application
+
+from amundsen_common.models.table import Application, Table
 from amundsen_common.models.user import User
-from amundsen_gremlin.neptune_bulk_loader.gremlin_model_converter import (
+from amundsen_gremlin.neptune_bulk_loader.gremlin_model_converter import \
     GetGraph
-)
 from overrides import overrides
-from .roundtrip_gremlin_proxy import RoundtripGremlinProxy
+
 from metadata_service.proxy.neptune_proxy import NeptuneGremlinProxy
+
+from .roundtrip_gremlin_proxy import RoundtripGremlinProxy
 
 LOGGER = logging.getLogger(__name__)
 

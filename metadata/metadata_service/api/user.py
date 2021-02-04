@@ -3,7 +3,8 @@
 
 import logging
 from http import HTTPStatus
-from typing import Iterable, Mapping, Optional, Union, Dict, List, Any  # noqa: F401
+from typing import (Any, Dict, Iterable, List, Mapping, Optional,  # noqa: F401
+                    Union)
 
 from amundsen_common.models.dashboard import DashboardSummarySchema
 from amundsen_common.models.popular_table import PopularTableSchema
@@ -13,7 +14,8 @@ from flask import current_app as app
 from flask_restful import Resource
 
 from metadata_service.api import BaseAPI
-from metadata_service.entity.resource_type import to_resource_type, ResourceType
+from metadata_service.entity.resource_type import (ResourceType,
+                                                   to_resource_type)
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.util import UserResourceRel

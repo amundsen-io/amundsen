@@ -3,8 +3,10 @@
 
 
 import logging
-from .roundtrip_gremlin_proxy import RoundtripGremlinProxy
+
 from metadata_service.proxy.janus_graph_proxy import JanusGraphGremlinProxy
+
+from .roundtrip_gremlin_proxy import RoundtripGremlinProxy
 
 LOGGER = logging.getLogger(__name__)
 

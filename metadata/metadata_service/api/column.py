@@ -5,8 +5,8 @@ import json
 from http import HTTPStatus
 from typing import Iterable, Union
 
-from flask import request
 from flasgger import swag_from
+from flask import request
 from flask_restful import Resource
 
 from metadata_service.exception import NotFoundException

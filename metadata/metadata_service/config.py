@@ -3,11 +3,11 @@
 
 import distutils.util
 import os
-from typing import List, Dict, Optional, Set  # noqa: F401
+from typing import Dict, List, Optional, Set  # noqa: F401
+
+from amundsen_gremlin.config import LocalGremlinConfig
+
 from metadata_service.entity.badge import Badge
-from amundsen_gremlin.config import (
-    LocalGremlinConfig
-)
 
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'

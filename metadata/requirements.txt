@@ -66,3 +66,4 @@ pyatlasclient==1.0.5
 beaker>=1.10.0
 overrides==2.5
 typed-ast==1.4.1
+isort[colors]~=5.4

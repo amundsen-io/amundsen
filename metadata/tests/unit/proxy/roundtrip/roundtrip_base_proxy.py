@@ -1,11 +1,14 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from metadata_service.proxy import BaseProxy
 from abc import abstractmethod
-from amundsen_common.models.table import Table, Application, Column, ProgrammaticDescription
-from amundsen_common.models.user import User
 from typing import List
+
+from amundsen_common.models.table import (Application, Column,
+                                          ProgrammaticDescription, Table)
+from amundsen_common.models.user import User
+
+from metadata_service.proxy import BaseProxy
 
 
 class RoundtripBaseProxy(BaseProxy):

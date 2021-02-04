@@ -1,11 +1,11 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
+from typing import List
 
+import pytest
 from _pytest.config import Config, Parser
 from _pytest.nodes import Item
-from typing import List
 
 # This file configures the roundtrip pytest option and skips roundtrip tests without it
 

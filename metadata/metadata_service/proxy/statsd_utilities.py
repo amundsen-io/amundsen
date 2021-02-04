@@ -3,7 +3,7 @@
 
 import logging
 from threading import Lock
-from typing import Any, Dict, Callable  # noqa: F401
+from typing import Any, Callable, Dict  # noqa: F401
 
 from flask import current_app, has_app_context
 from statsd import StatsClient

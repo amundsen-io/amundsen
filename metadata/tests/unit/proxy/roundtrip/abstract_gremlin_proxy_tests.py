@@ -3,26 +3,25 @@
 
 import unittest
 from abc import abstractmethod
-from typing import (
-    Any, Callable, List, Mapping, Optional, Type, TypeVar, Union,
-    no_type_check, overload
-)
+from typing import (Any, Callable, List, Mapping, Optional, Type, TypeVar,
+                    Union, no_type_check, overload)
 from unittest import mock
 
 from amundsen_common.tests.fixtures import Fixtures
-from amundsen_gremlin.gremlin_model import (
-    EdgeType, EdgeTypes, GremlinType, Property, VertexType, VertexTypes
-)
+from amundsen_gremlin.gremlin_model import (EdgeType, EdgeTypes, GremlinType,
+                                            Property, VertexType, VertexTypes)
 from flask import Flask
 from gremlin_python.driver.resultset import ResultSet
 from gremlin_python.process.graph_traversal import __
 from gremlin_python.process.traversal import Cardinality, Traversal, within
 
 from metadata_service import create_app
-from metadata_service.proxy.gremlin_proxy import (
-    _V, AbstractGremlinProxy, FromResultSet, _append_traversal, _edges_from,
-    _expire_link, _link, _safe_get, _safe_get_list, _upsert
-)
+from metadata_service.proxy.gremlin_proxy import (_V, AbstractGremlinProxy,
+                                                  FromResultSet,
+                                                  _append_traversal,
+                                                  _edges_from, _expire_link,
+                                                  _link, _safe_get,
+                                                  _safe_get_list, _upsert)
 
 from .abstract_proxy_tests import abstract_proxy_test_class
 

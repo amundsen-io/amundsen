@@ -7,69 +7,61 @@ import logging
 from abc import abstractmethod
 from datetime import date, datetime, timedelta
 from operator import attrgetter
-from typing import (
-    Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Set,
-    Type, TypeVar, Union, no_type_check, overload
-)
+from typing import (Any, Callable, Dict, Iterable, List, Mapping, Optional,
+                    Sequence, Set, Type, TypeVar, Union, no_type_check,
+                    overload)
 from urllib.parse import unquote
 
 import gremlin_python
-from amundsen_common.models.table import (
-    Application, Column, ProgrammaticDescription, Reader, Source,
-    Stat, Table, Tag, Watermark
-)
+from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.popular_table import PopularTable
+from amundsen_common.models.table import (Application, Column,
+                                          ProgrammaticDescription, Reader,
+                                          Source, Stat, Table, Tag, Watermark)
 from amundsen_common.models.user import User
-from amundsen_gremlin.gremlin_model import (
-    EdgeType, EdgeTypes, VertexType, VertexTypes, WellKnownProperties
-)
+from amundsen_gremlin.gremlin_model import (EdgeType, EdgeTypes, VertexType,
+                                            VertexTypes, WellKnownProperties)
 from amundsen_gremlin.gremlin_shared import \
     append_traversal as _append_traversal  # TODO: rename the references
-from amundsen_gremlin.gremlin_shared import (
-    make_column_uri, make_description_uri
-)
-from amundsen_gremlin.neptune_bulk_loader.gremlin_model_converter import (
+from amundsen_gremlin.gremlin_shared import (make_column_uri,
+                                             make_description_uri)
+from amundsen_gremlin.neptune_bulk_loader.gremlin_model_converter import \
     ensure_vertex_type
-)
 from amundsen_gremlin.script_translator import (
-    ScriptTranslator, ScriptTranslatorTargetJanusgraph
-)
+    ScriptTranslator, ScriptTranslatorTargetJanusgraph)
 from amundsen_gremlin.test_and_development_shard import get_shard
 from gremlin_python.driver.client import Client
-from gremlin_python.driver.driver_remote_connection import (
+from gremlin_python.driver.driver_remote_connection import \
     DriverRemoteConnection
-)
 from gremlin_python.driver.resultset import ResultSet
 from gremlin_python.process.anonymous_traversal import traversal
-from gremlin_python.process.graph_traversal import (
-    GraphTraversal, GraphTraversalSource, V, __, bothV, coalesce,
-    constant, has, inE, inV, outE,
-    outV, select, unfold, valueMap, values
-)
+from gremlin_python.process.graph_traversal import (GraphTraversal,
+                                                    GraphTraversalSource, V,
+                                                    __, bothV, coalesce,
+                                                    constant, has, inE, inV,
+                                                    outE, outV, select, unfold,
+                                                    valueMap, values)
 from gremlin_python.process.traversal import Cardinality
 from gremlin_python.process.traversal import Column as MapColumn
-from gremlin_python.process.traversal import (
-    Direction, Order, P, T, TextP, Traversal, gte, not_, within, without
-)
+from gremlin_python.process.traversal import (Direction, Order, P, T, TextP,
+                                              Traversal, gte, not_, within,
+                                              without)
 from neptune_python_utils.gremlin_utils import ExtendedGraphSONSerializersV3d0
 from overrides import overrides
 from tornado import httpclient
 from typing_extensions import Protocol  # TODO: it's in typing 3.8
 
-from amundsen_common.models.popular_table import PopularTable
-from metadata_service.entity.tag_detail import TagDetail
-from metadata_service.exception import NotFoundException
-from metadata_service.util import UserResourceRel
-from metadata_service.proxy.statsd_utilities import timer_with_counter
-
-from .base_proxy import BaseProxy
-from .shared import (
-    checkNotNone, retrying
-)
-from amundsen_common.models.dashboard import DashboardSummary
-
-from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.dashboard_detail import \
+    DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
 from metadata_service.entity.resource_type import ResourceType
+from metadata_service.entity.tag_detail import TagDetail
+from metadata_service.exception import NotFoundException
+from metadata_service.proxy.statsd_utilities import timer_with_counter
+from metadata_service.util import UserResourceRel
+
+from .base_proxy import BaseProxy
+from .shared import checkNotNone, retrying
 
 # don't use statics.load_statics(globals()) it plays badly with mypy
 

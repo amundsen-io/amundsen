@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
-from typing import Iterable, Union, Mapping, Tuple, Any
+from typing import Any, Iterable, Mapping, Tuple, Union
 
 from flasgger import swag_from
 from flask import current_app as app

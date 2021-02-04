@@ -10,8 +10,8 @@ from flask import request
 from flask_restful import Resource, reqparse
 
 from metadata_service.api import BaseAPI
-from metadata_service.api.tag import TagCommon
 from metadata_service.api.badge import BadgeCommon
+from metadata_service.api.tag import TagCommon
 from metadata_service.entity.dashboard_detail import DashboardSchema
 from metadata_service.entity.description import DescriptionSchema
 from metadata_service.entity.resource_type import ResourceType

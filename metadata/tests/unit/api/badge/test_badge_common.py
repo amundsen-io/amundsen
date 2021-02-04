@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
+from unittest.mock import MagicMock
 
 from flask import current_app
-from unittest.mock import MagicMock
 
 from metadata_service import create_app
 from metadata_service.api.badge import BadgeCommon
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.badge import Badge
+from metadata_service.entity.resource_type import ResourceType
 from tests.unit.api.dashboard.dashboard_test_case import DashboardTestCase
 
 BADGE_NAME = 'alpha'

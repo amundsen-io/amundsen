@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
-from typing import Iterable, Union, Mapping
+from typing import Iterable, Mapping, Union
 
-from flask_restful import Resource
 from flasgger import swag_from
+from flask_restful import Resource
 
 from metadata_service.proxy import get_proxy_client
 

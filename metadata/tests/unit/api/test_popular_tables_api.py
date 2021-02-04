@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
-
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 from tests.unit.test_basics import BasicTestCase
 
