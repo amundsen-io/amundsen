@@ -14,6 +14,7 @@ class SQLAlchemyExtractor(Extractor):
     # Config keys
     CONN_STRING = 'conn_string'
     EXTRACT_SQL = 'extract_sql'
+    CONNECT_ARGS = 'connect_args'
     """
     An Extractor that extracts records via SQLAlchemy. Database that supports SQLAlchemy can use this extractor
     """
@@ -25,6 +26,7 @@ class SQLAlchemyExtractor(Extractor):
         """
         self.conf = conf
         self.conn_string = conf.get_string(SQLAlchemyExtractor.CONN_STRING)
+
         self.connection = self._get_connection()
 
         self.extract_sql = conf.get_string(SQLAlchemyExtractor.EXTRACT_SQL)
@@ -40,7 +42,13 @@ class SQLAlchemyExtractor(Extractor):
         """
         Create a SQLAlchemy connection to Database
         """
-        engine = create_engine(self.conn_string)
+        connect_args = {
+            k: v
+            for k, v in self.conf.get_config(
+                self.CONNECT_ARGS, default=ConfigTree()
+            ).items()
+        }
+        engine = create_engine(self.conn_string, connect_args=connect_args)
         conn = engine.connect()
         return conn
 
