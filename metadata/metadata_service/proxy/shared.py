@@ -4,9 +4,7 @@
 import logging
 from random import randint
 from time import sleep
-from typing import (
-    Callable, Optional, TypeVar
-)
+from typing import Callable, Optional, TypeVar
 
 LOGGER = logging.getLogger(__name__)
 

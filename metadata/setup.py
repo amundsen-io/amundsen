@@ -3,7 +3,7 @@
 
 import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 __version__ = '3.1.0'
 

@@ -1,16 +1,17 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import gremlin_python.driver.protocol
 import json
-from typing import Any, Mapping
 import unittest
+from typing import Any, Mapping
 
-from metadata_service.proxy.neptune_proxy import NeptuneGremlinProxy
+import gremlin_python.driver.protocol
 from amundsen_gremlin.gremlin_model import VertexTypes
 from amundsen_gremlin.script_translator import ScriptTranslator
-from gremlin_python.process.traversal import Cardinality
 from gremlin_python.process.graph_traversal import __
+from gremlin_python.process.traversal import Cardinality
+
+from metadata_service.proxy.neptune_proxy import NeptuneGremlinProxy
 
 from .abstract_gremlin_proxy_tests import abstract_gremlin_proxy_test_class
 from .roundtrip_neptune_proxy import RoundtripNeptuneGremlinProxy

@@ -5,14 +5,14 @@ import copy
 import textwrap
 import unittest
 from typing import Any, Dict  # noqa: F401
+from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import (Application, Badge, Column, Source,
-                                          Stat, Table, Tag, User,
-                                          Watermark, ProgrammaticDescription)
+from amundsen_common.models.table import (Application, Badge, Column,
+                                          ProgrammaticDescription, Source,
+                                          Stat, Table, Tag, User, Watermark)
 from amundsen_common.models.user import UserSchema
-from unittest.mock import MagicMock, patch
 from neo4j import GraphDatabase
 
 from metadata_service import create_app

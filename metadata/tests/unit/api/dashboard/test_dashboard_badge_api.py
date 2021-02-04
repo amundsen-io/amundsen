@@ -3,11 +3,10 @@
 
 import unittest
 from http import HTTPStatus
+from unittest.mock import Mock, patch
 
-from unittest.mock import patch, Mock
-
-from tests.unit.test_basics import BasicTestCase
 from metadata_service.entity.badge import Badge
+from tests.unit.test_basics import BasicTestCase
 
 DASHBOARD_NAME = 'magic'
 BADGE_NAME = 'alpha'

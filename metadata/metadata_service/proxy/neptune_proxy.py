@@ -11,26 +11,22 @@ import gremlin_python.driver.protocol
 import requests
 from amundsen_gremlin.gremlin_model import WellKnownProperties
 from amundsen_gremlin.neptune_bulk_loader.api import (
-    NeptuneBulkLoaderApi, get_neptune_graph_traversal_source_factory
-)
+    NeptuneBulkLoaderApi, get_neptune_graph_traversal_source_factory)
 from amundsen_gremlin.script_translator import ScriptTranslatorTargetNeptune
 from amundsen_gremlin.test_and_development_shard import get_shard
 from for_requests.assume_role_aws4auth import AssumeRoleAWS4Auth
 from for_requests.aws4auth_compatible import to_aws4_request_compatible_host
 from for_requests.host_header_ssl import HostHeaderSSLAdapter
 from gremlin_python.process.traversal import TextP
-from neptune_python_utils.endpoints import (
-    Endpoint, Endpoints, RequestParameters
-)
+from neptune_python_utils.endpoints import (Endpoint, Endpoints,
+                                            RequestParameters)
 from overrides import overrides
-from ssl_override_server_hostname.ssl_context import (
+from ssl_override_server_hostname.ssl_context import \
     OverrideServerHostnameSSLContext
-)
 from tornado import httpclient
 
-from .gremlin_proxy import (
-    AbstractGremlinProxy, FromResultSet, _parse_gremlin_server_error
-)
+from .gremlin_proxy import (AbstractGremlinProxy, FromResultSet,
+                            _parse_gremlin_server_error)
 
 LOGGER = logging.getLogger(__name__)
 

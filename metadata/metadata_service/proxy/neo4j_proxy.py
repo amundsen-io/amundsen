@@ -11,10 +11,11 @@ from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import (Application, Column, Reader, Source,
-                                          Stat, Table, User,
-                                          Watermark, ProgrammaticDescription, Tag,
-                                          Badge as TableBadge)
+from amundsen_common.models.table import Application
+from amundsen_common.models.table import Badge as TableBadge
+from amundsen_common.models.table import (Column, ProgrammaticDescription,
+                                          Reader, Source, Stat, Table, Tag,
+                                          User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
@@ -22,12 +23,14 @@ from flask import current_app, has_app_context
 from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service import config
-from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
-from metadata_service.entity.dashboard_query import DashboardQuery as DashboardQueryEntity
+from metadata_service.entity.badge import Badge
+from metadata_service.entity.dashboard_detail import \
+    DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.dashboard_query import \
+    DashboardQuery as DashboardQueryEntity
 from metadata_service.entity.description import Description
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
-from metadata_service.entity.badge import Badge
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter

@@ -1,16 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from flask_restful import Resource, fields, marshal
-
 from http import HTTPStatus
-from typing import Iterable, Union, Mapping, Tuple, Any
+from typing import Any, Iterable, Mapping, Tuple, Union
 
 from flasgger import swag_from
 from flask import current_app as app
+from flask_restful import Resource, fields, marshal
 
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.badge import Badge
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.proxy.base_proxy import BaseProxy

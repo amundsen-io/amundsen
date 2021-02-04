@@ -6,24 +6,25 @@ import logging
 import re
 from operator import attrgetter
 from random import randint
-from typing import Any, Dict, List, Union, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Stat, Table, Tag, User, Reader, \
-    ProgrammaticDescription, ResourceReport, Watermark
+from amundsen_common.models.table import (Column, ProgrammaticDescription,
+                                          Reader, ResourceReport, Stat, Table,
+                                          Tag, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest, Conflict, NotFound
 from atlasclient.models import EntityUniqueAttribute
-from atlasclient.utils import (make_table_qualified_name,
-                               parse_table_qualified_name,
-                               extract_entities)
+from atlasclient.utils import (extract_entities, make_table_qualified_name,
+                               parse_table_qualified_name)
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app as app
 
-from metadata_service.entity.dashboard_detail import DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.dashboard_detail import \
+    DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail

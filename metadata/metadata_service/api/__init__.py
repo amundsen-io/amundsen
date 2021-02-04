@@ -3,7 +3,7 @@
 
 import logging
 from http import HTTPStatus
-from typing import Iterable, Union, Mapping, Any, Optional, List
+from typing import Any, Iterable, List, Mapping, Optional, Union
 
 from flask_restful import Resource
 

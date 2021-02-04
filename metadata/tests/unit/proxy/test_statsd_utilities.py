@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from unittest.mock import patch, MagicMock
-from statsd import StatsClient
-from metadata_service.proxy import statsd_utilities
-from metadata_service.proxy.statsd_utilities import _get_statsd_client
+from unittest.mock import MagicMock, patch
 
 from flask import current_app
+from neo4j import GraphDatabase
+from statsd import StatsClient
 
 from metadata_service import create_app
-from neo4j import GraphDatabase
+from metadata_service.proxy import statsd_utilities
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
+from metadata_service.proxy.statsd_utilities import _get_statsd_client
 
 
 class TestStatsdUtilities(unittest.TestCase):

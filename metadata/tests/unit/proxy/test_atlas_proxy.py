@@ -4,19 +4,19 @@
 import copy
 import unittest
 from typing import Any, Dict, Optional, cast
+from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Column, Stat, Table, Tag, User, Reader,\
-    ProgrammaticDescription
+from amundsen_common.models.table import (Column, ProgrammaticDescription,
+                                          Reader, Stat, Table, Tag, User)
 from atlasclient.exceptions import BadRequest
-from unittest.mock import MagicMock, patch
-from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
 
 from metadata_service import create_app
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.util import UserResourceRel
-from metadata_service.entity.resource_type import ResourceType
+from tests.unit.proxy.fixtures.atlas_test_data import Data, DottedDict
 
 
 class TestAtlasProxy(unittest.TestCase, Data):

@@ -1,8 +1,8 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Mapping
 import unittest
+from typing import Any, Mapping
 
 from .abstract_gremlin_proxy_tests import abstract_gremlin_proxy_test_class
 from .roundtrip_janusgraph_proxy import RoundtripJanusGraphProxy
