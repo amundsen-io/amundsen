@@ -105,7 +105,7 @@ class HiveTableMetadataExtractor(Extractor):
 
         self.sql_stmt = conf.get_string(HiveTableMetadataExtractor.EXTRACT_SQL, default=default_sql)
 
-        LOGGER.info('SQL for hive metastore: %i', self.sql_stmt)
+        LOGGER.info('SQL for hive metastore: %s', self.sql_stmt)
 
         sql_alch_conf = sql_alch_conf.with_fallback(ConfigFactory.from_dict(
             {SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
