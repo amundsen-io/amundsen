@@ -1,0 +1,21 @@
+### Feature
+* Neo4j backend for popular tables personalization ([#233](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/233)) ([`d045efa`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/d045efabe116a5cb459441389b814571fb83232b))
+* Updated popular_tables endpoint to allow optional user_id ([#232](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/232)) ([`5680775`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/56807753963735eaf1556dae199e0da82b4ebb71))
+* AddSwaggerEnabledAsEnvVar ([#215](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/215)) ([`3c9a55e`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/3c9a55e6af4cac9b342803c34cfe81851470e7f5))
+* Add neptune proxy ([#204](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/204)) ([`09845d4`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/09845d479297415093033d123868196bd02d19b5))
+* Return column level badges ([#205](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/205)) ([`d4d8101`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/d4d81017ab2994375526fb5f4c48092fbb804150))
+* Badges with category and badge_type fields ([#201](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/201)) ([`19e1bf8`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/19e1bf8e5c9581ab4b6947f37b7584bac8f2ccf1))
+* Get last updated ts for AtlasProxy ([#177](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/177)) ([`3e92586`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/3e9258675ea46beb4192638b4bbebcb20c30cb77))
+* Data Owner Implementation of Atlas Proxy ([#156](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/156)) ([`48b4c71`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/48b4c71054f7b34bca8a8f148e8b7499dfb986fc))
+
+### Fix
+* Reapply previous fix ([#245](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/245)) ([`c7dc172`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/c7dc172b2b8c3b8ff4d7f145e5564474a3cb8dd8))
+* Expire is a keyword argument for beaker cache ([#239](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/239)) ([`a7b2ec5`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/a7b2ec543470157361767e705f945beed4b32bac))
+* Get_tags no longer return tag_count 0 tag ([#230](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/230)) ([`5097d2b`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/5097d2baba2fe8894c15e9627e1ca7bacc3807fb))
+* Too many partitions in one Atlas query (Watermarks in Atlas Proxy) ([#217](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/217)) ([`cc3768f`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/cc3768fb3ae055f0f84958ee5c08560e9c63ffc4))
+* Data_type as Column.col_type. ([#203](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/203)) ([`7b97f62`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/7b97f62cc2ef0279d3b292991a952e7b103dfc92))
+* Add /delete bidirectional relations in case of owner ([#206](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/206)) ([`40cd0dd`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/40cd0dd4de7c52ae9f58ecec71309f82553098a0))
+* Removed all badge_type fields from API ([#202](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/202)) ([`6a81b97`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/6a81b974f2715429748f86bdb3459b1c91dfedfb))
+* Improvements to the Owned By feature ([#178](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/178)) ([`0558d69`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/0558d69f619a5f9426e5839cadc06cea13366706))
+* Get all tags should work for all resources ([#175](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/175)) ([`cf1ab6d`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/cf1ab6d179c70c0f43156cc499332c465226cb45))
+* Removing OidcConfig file and making statsd configurable through envrionment variable ([#157](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/157)) ([`2752492`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/2752492e71d6f5e134cdf55c4b55e67254409a88))
