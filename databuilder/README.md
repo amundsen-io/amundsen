@@ -444,6 +444,15 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [VerticaMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/vertica_metadata_extractor.py "MysqlMetadataExtractor")
+An extractor that extracts table and column metadata including database, schema, table name, column name and column datatype from a Vertica database.
+
+A sample loading script for Vertica is provided [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/databuilder/example/scripts/sample_vertica_loader.py)
+
+By default, the Vertica database name is used as the cluster name. The `where_clause_suffix` in the example can be used to define which schemas you would like to query.
+
+
+
 #### [SQLAlchemyExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/sql_alchemy_extractor.py "SQLAlchemyExtractor")
 An extractor utilizes [SQLAlchemy](https://www.sqlalchemy.org/ "SQLAlchemy") to extract record from any database that support SQL Alchemy.
 ```python
