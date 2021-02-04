@@ -126,6 +126,7 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Presto](https://prestosql.io/)
+- [Vertica](https://www.vertica.com/)
 - [Snowflake](https://www.snowflake.com/)
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
