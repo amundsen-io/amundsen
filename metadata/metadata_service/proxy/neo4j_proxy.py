@@ -57,7 +57,8 @@ class Neo4jProxy(BaseProxy):
                  num_conns: int = 50,
                  max_connection_lifetime_sec: int = 100,
                  encrypted: bool = False,
-                 validate_ssl: bool = False) -> None:
+                 validate_ssl: bool = False,
+                 **kwargs: dict) -> None:
         """
         There's currently no request timeout from client side where server
         side can be enforced via "dbms.transaction.timeout"

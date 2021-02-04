@@ -57,7 +57,8 @@ class NeptuneGremlinProxy(AbstractGremlinProxy):
     def __init__(self, *, host: str, port: Optional[int] = None, user: str = None,
                  password: Optional[Union[str, boto3.session.Session]] = None,
                  driver_remote_connection_options: Mapping[str, Any] = {},
-                 neptune_bulk_loader_s3_bucket_name: Optional[str] = None) -> None:
+                 neptune_bulk_loader_s3_bucket_name: Optional[str] = None,
+                 **kwargs: dict) -> None:
 
         driver_remote_connection_options = dict(driver_remote_connection_options)
         # port should be part of that url
