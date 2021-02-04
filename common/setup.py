@@ -3,9 +3,11 @@
 
 from setuptools import find_packages, setup
 
+__version__ = '0.5.11'
+
 setup(
     name='amundsen-common',
-    version='0.5.11',
+    version=__version__,
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
