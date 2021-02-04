@@ -32,7 +32,7 @@ ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 
 # You will need to set these environment variables in order to use the oidc image
 # OIDC_CLIENT_SECRETS - a path to a client_secrets.json file
-# OIDC_SECRET_KEY - A secret key from your oidc provider
+# FLASK_OIDC_SECRET_KEY - A secret key from your oidc provider
 # You will also need to mount a volume for the clients_secrets.json file.
 
 FROM base as release
