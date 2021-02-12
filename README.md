@@ -125,7 +125,7 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
 - [PostgreSQL](https://www.postgresql.org/)
-- [Presto](https://prestosql.io/)
+- [Trino (formerly Presto SQL)](https://trino.io/)
 - [Vertica](https://www.vertica.com/)
 - [Snowflake](https://www.snowflake.com/)
 
