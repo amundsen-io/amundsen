@@ -32,7 +32,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from databuilder.extractor.csv_extractor import (
     CsvExtractor, CsvTableBadgeExtractor, CsvTableColumnExtractor,
 )
-from databuilder.extractor.neo4j_es_last_updated_extractor import Neo4jEsLastUpdatedExtractor
+from databuilder.extractor.es_last_updated_extractor import EsLastUpdatedExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
@@ -171,12 +171,12 @@ def create_last_updated_job():
     node_files_folder = f'{tmp_folder}/nodes'
     relationship_files_folder = f'{tmp_folder}/relationships'
 
-    task = DefaultTask(extractor=Neo4jEsLastUpdatedExtractor(),
+    task = DefaultTask(extractor=EsLastUpdatedExtractor(),
                        loader=FsNeo4jCSVLoader())
 
     job_config = ConfigFactory.from_dict({
-        'extractor.neo4j_es_last_updated.model_class':
-            'databuilder.models.neo4j_es_last_updated.Neo4jESLastUpdated',
+        'extractor.es_last_updated.model_class':
+            'databuilder.models.es_last_updated.ESLastUpdated',
 
         'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
         'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,

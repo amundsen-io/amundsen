@@ -37,7 +37,7 @@ class User(GraphSerializable):
                  email: str,
                  first_name: str = '',
                  last_name: str = '',
-                 name: str = '',
+                 full_name: str = '',
                  github_username: str = '',
                  team_name: str = '',
                  employee_type: str = '',
@@ -71,7 +71,7 @@ class User(GraphSerializable):
         """
         self.first_name = first_name
         self.last_name = last_name
-        self.name = name
+        self.full_name = full_name
 
         self.email = email
         self.github_username = github_username
@@ -127,7 +127,7 @@ class User(GraphSerializable):
             User.USER_NODE_IS_ACTIVE: self.is_active,
             User.USER_NODE_FIRST_NAME: self.first_name or '',
             User.USER_NODE_LAST_NAME: self.last_name or '',
-            User.USER_NODE_FULL_NAME: self.name or '',
+            User.USER_NODE_FULL_NAME: self.full_name or '',
             User.USER_NODE_GITHUB_NAME: self.github_username or '',
             User.USER_NODE_TEAM: self.team_name or '',
             User.USER_NODE_EMPLOYEE_TYPE: self.employee_type or '',
@@ -174,6 +174,6 @@ class User(GraphSerializable):
         return []
 
     def __repr__(self) -> str:
-        return f'User({self.first_name!r}, {self.last_name!r}, {self.name!r}, {self.email!r}, ' \
+        return f'User({self.first_name!r}, {self.last_name!r}, {self.full_name!r}, {self.email!r}, ' \
                f'{self.github_username!r}, {self.team_name!r}, {self.slack_id!r}, {self.manager_email!r}, ' \
                f'{self.employee_type!r}, {self.is_active!r}, {self.updated_at!r}, {self.role_name!r})'

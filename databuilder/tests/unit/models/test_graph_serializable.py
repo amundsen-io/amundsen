@@ -46,10 +46,10 @@ class TestSerialize(unittest.TestCase):
              'END_LABEL': 'Actor', 'START_KEY': 'movie://Top Gun',
              'TYPE': 'ACTOR', 'REVERSE_TYPE': 'ACTED_IN'},
             {'END_KEY': 'city://San Diego', 'START_LABEL': 'Movie',
-             'END_LABEL': 'City', 'START_KEY': 'city://Top Gun',
+             'END_LABEL': 'City', 'START_KEY': 'movie://Top Gun',
              'TYPE': 'FILMED_AT', 'REVERSE_TYPE': 'APPEARS_IN'},
             {'END_KEY': 'city://Oakland', 'START_LABEL': 'Movie',
-             'END_LABEL': 'City', 'START_KEY': 'city://Top Gun',
+             'END_LABEL': 'City', 'START_KEY': 'movie://Top Gun',
              'TYPE': 'FILMED_AT', 'REVERSE_TYPE': 'APPEARS_IN'}
         ]
         self.assertEqual(expected, actual)
@@ -147,7 +147,7 @@ class Movie(GraphSerializable):
 
         for city in self._cities:
             city_movie_relation = GraphRelationship(
-                start_key=City.KEY_FORMAT.format(self._name),
+                start_key=Movie.KEY_FORMAT.format(self._name),
                 end_key=City.KEY_FORMAT.format(city.name),
                 start_label=Movie.LABEL,
                 end_label=City.LABEL,

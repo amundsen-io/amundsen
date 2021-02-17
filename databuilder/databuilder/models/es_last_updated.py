@@ -8,10 +8,10 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 
 
-class Neo4jESLastUpdated(GraphSerializable):
+class ESLastUpdated(GraphSerializable):
     """
     Data model to keep track the last updated timestamp for
-    neo4j and es.
+    datastore and es.
     """
 
     LABEL = 'Updatedtimestamp'
@@ -42,10 +42,10 @@ class Neo4jESLastUpdated(GraphSerializable):
         Create a list of Neo4j node records.
         """
         node = GraphNode(
-            key=Neo4jESLastUpdated.KEY,
-            label=Neo4jESLastUpdated.LABEL,
+            key=ESLastUpdated.KEY,
+            label=ESLastUpdated.LABEL,
             attributes={
-                Neo4jESLastUpdated.LATEST_TIMESTAMP: self.timestamp
+                ESLastUpdated.LATEST_TIMESTAMP: self.timestamp
             }
         )
         return [node]

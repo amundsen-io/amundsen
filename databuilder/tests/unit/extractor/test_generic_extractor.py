@@ -17,7 +17,7 @@ class TestGenericExtractor(unittest.TestCase):
         """
         config_dict = {
             'extractor.generic.extraction_items': [{'timestamp': 10000000}],
-            'extractor.generic.model_class': 'databuilder.models.neo4j_es_last_updated.Neo4jESLastUpdated',
+            'extractor.generic.model_class': 'databuilder.models.es_last_updated.ESLastUpdated',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
