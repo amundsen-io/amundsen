@@ -39,6 +39,10 @@ class TableauGraphQLApiLastModifiedExtractor(TableauGraphQLApiExtractor):
                           self._conf.get_list(TableauGraphQLApiLastModifiedExtractor.EXCLUDED_PROJECTS)]
 
         for workbook in workbooks_data:
+            if None in (workbook['projectName'], workbook['name']):
+                LOGGER.warning(f'Ignoring workbook (ID:{workbook["vizportalUrlId"]}) ' +
+                               f'in project (ID:{workbook["projectVizportalUrlId"]}) because of a lack of permission')
+                continue
             data = {
                 'dashboard_group_id': workbook['projectName'],
                 'dashboard_id': TableauDashboardUtils.sanitize_workbook_name(workbook['name']),
@@ -73,6 +77,8 @@ class TableauDashboardLastModifiedExtractor(Extractor):
                 name
                 projectName
                 updatedAt
+                projectVizportalUrlId
+                vizportalUrlId
             }
         }"""
 

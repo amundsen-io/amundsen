@@ -28,6 +28,15 @@ def mock_query(*_args: Any, **_kwargs: Any) -> Dict[str, Any]:
                 'projectName': 'Test Project',
                 'projectVizportalUrlId': 123,
                 'vizportalUrlId': 456
+            },
+            {
+                'id': 'fake-id',
+                'name': None,
+                'createdAt': '2020-04-08T05:32:01Z',
+                'description': '',
+                'projectName': None,
+                'projectVizportalUrlId': 123,
+                'vizportalUrlId': 456
             }
         ]
     }
@@ -62,8 +71,8 @@ class TestTableauDashboardExtractor(unittest.TestCase):
 
         extractor = TableauDashboardExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=config, scope=extractor.get_scope()))
-        record = extractor.extract()
 
+        record = extractor.extract()
         self.assertEqual(record.dashboard_id, 'Test Workbook')
         self.assertEqual(record.dashboard_name, 'Test Workbook')
         self.assertEqual(record.dashboard_group_id, 'Test Project')
@@ -71,6 +80,9 @@ class TestTableauDashboardExtractor(unittest.TestCase):
         self.assertEqual(record.product, 'tableau')
         self.assertEqual(record.cluster, 'tableau_dashboard_cluster')
         self.assertEqual(record.created_timestamp, 1586323921)
+
+        record = extractor.extract()
+        self.assertIsNone(record)
 
 
 if __name__ == '__main__':
