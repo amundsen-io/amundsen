@@ -186,25 +186,23 @@ class AtlasSearchDataExtractor(Extractor):
                      timeout=self.conf.get_int(AtlasSearchDataExtractor.ATLAS_TIMEOUT_SECONDS_KEY),
                      max_retries=self.conf.get_int(AtlasSearchDataExtractor.ATLAS_MAX_RETRIES_KEY))
 
-    def _get_approximate_count_of_entities(self) -> int:
+    def _get_latest_entity_metrics(self) -> Optional[dict]:
+        admin_metrics = list(self.driver.admin_metrics)
+
         try:
-            # Fetch the table entities based on query terms
-            count_query = deepcopy(self.basic_search_query)
-
-            minimal_parameters = {
-                'includeClassificationAttributes': False,
-                'includeSubClassifications': False
-            }
-
-            count_query.update(minimal_parameters)
-
-            search_results = self.driver.search_basic.create(data=count_query)
-
-            count = search_results._data.get("approximateCount")
+            return admin_metrics[-1].entity
         except Exception as e:
-            count = 0
+            return None
 
-        return count
+    def _get_count_of_active_entities(self) -> int:
+        entity_metrics = self._get_latest_entity_metrics()
+
+        if entity_metrics:
+            count = entity_metrics.get('entityActive-typeAndSubTypes', dict()).get(self.entity_type, 0)
+
+            return int(count)
+        else:
+            return 0
 
     def _get_entity_guids(self, start_offset: int) -> List[str]:
         result = []
@@ -261,12 +259,12 @@ class AtlasSearchDataExtractor(Extractor):
 
         guids = []
 
-        approximate_count = self._get_approximate_count_of_entities()
+        entity_count = self._get_count_of_active_entities()
 
-        LOGGER.info(f'Received count: {approximate_count}')
+        LOGGER.info(f'Received count: {entity_count}')
 
-        if approximate_count > 0:
-            offsets = [i * self.search_chunk_size for i in range(int(approximate_count / self.search_chunk_size) + 1)]
+        if entity_count > 0:
+            offsets = [i * self.search_chunk_size for i in range(int(entity_count / self.search_chunk_size) + 1)]
         else:
             offsets = []
 
