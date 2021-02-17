@@ -26,7 +26,17 @@ def mock_query(*_args: Any, **_kwargs: Any) -> Dict[str, Any]:
                 'id': 'fake-workbook-id',
                 'name': 'Test Workbook',
                 'projectName': 'Test Project',
-                'updatedAt': '2020-08-04T20:16:05Z'
+                'updatedAt': '2020-08-04T20:16:05Z',
+                'projectVizportalUrlId': 123,
+                'vizportalUrlId': 456
+            },
+            {
+                'id': 'fake-workbook-id',
+                'name': None,
+                'projectName': None,
+                'createdAt': '2020-08-04T20:16:05Z',
+                'projectVizportalUrlId': 123,
+                'vizportalUrlId': 456
             }
         ]
     }
@@ -60,13 +70,16 @@ class TestTableauDashboardLastModified(unittest.TestCase):
 
         extractor = TableauDashboardLastModifiedExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=config, scope=extractor.get_scope()))
-        record = extractor.extract()
 
+        record = extractor.extract()
         self.assertEqual(record._dashboard_id, 'Test Workbook')
         self.assertEqual(record._dashboard_group_id, 'Test Project')
         self.assertEqual(record._product, 'tableau')
         self.assertEqual(record._cluster, 'tableau_dashboard_cluster')
         self.assertEqual(record._last_modified_timestamp, 1596572165)
+
+        record = extractor.extract()
+        self.assertIsNone(record)
 
 
 if __name__ == '__main__':
