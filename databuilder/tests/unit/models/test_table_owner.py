@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from unittest.mock import ANY
 
 from databuilder.models.graph_serializable import (
     NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
@@ -9,7 +10,13 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.models.table_owner import TableOwner
 from databuilder.models.user import User
-from databuilder.serializers import neo4_serializer
+from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers.neptune_serializer import (
+    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
+    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
+    NEPTUNE_RELATIONSHIP_HEADER_TO,
+)
 
 db = 'hive'
 SCHEMA = 'BASE'
@@ -59,6 +66,32 @@ class TestTableOwner(unittest.TestCase):
         self.assertTrue(expected_node1 in actual_nodes)
         self.assertTrue(expected_node2 in actual_nodes)
 
+    def test_create_nodes_neptune(self) -> None:
+        nodes = self.table_owner.create_nodes()
+
+        expected_node1 = {
+            NEPTUNE_HEADER_ID: User.USER_NODE_KEY_FORMAT.format(email=owner1),
+            NEPTUNE_HEADER_LABEL: User.USER_NODE_LABEL,
+            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+            NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
+            User.USER_NODE_EMAIL + ":String(single)": owner1
+        }
+        expected_node2 = {
+            NEPTUNE_HEADER_ID: User.USER_NODE_KEY_FORMAT.format(email=owner2),
+            NEPTUNE_HEADER_LABEL: User.USER_NODE_LABEL,
+            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+            NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
+            User.USER_NODE_EMAIL + ":String(single)": owner2
+        }
+
+        actual_nodes = [
+            neptune_serializer.convert_node(node)
+            for node in nodes
+        ]
+
+        self.assertTrue(expected_node1 in actual_nodes)
+        self.assertTrue(expected_node2 in actual_nodes)
+
     def test_create_relation(self) -> None:
         relations = self.table_owner.create_relation()
         self.assertEqual(len(relations), 2)
@@ -87,6 +120,41 @@ class TestTableOwner(unittest.TestCase):
 
         self.assertTrue(expected_relation1 in actual_relations)
         self.assertTrue(expected_relation2 in actual_relations)
+
+    def test_create_relation_neptune(self) -> None:
+        relations = self.table_owner.create_relation()
+        expected = [
+            {
+                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
+                    from_vertex_id=owner1,
+                    to_vertex_id=self.table_owner.get_metadata_model_key(),
+                    label=TableOwner.OWNER_TABLE_RELATION_TYPE
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: owner1,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: self.table_owner.get_metadata_model_key(),
+                NEPTUNE_HEADER_LABEL: TableOwner.OWNER_TABLE_RELATION_TYPE,
+                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+            },
+            {
+                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
+                    from_vertex_id=self.table_owner.get_metadata_model_key(),
+                    to_vertex_id=owner1,
+                    label=TableOwner.TABLE_OWNER_RELATION_TYPE
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: self.table_owner.get_metadata_model_key(),
+                NEPTUNE_RELATIONSHIP_HEADER_TO: owner1,
+                NEPTUNE_HEADER_LABEL: TableOwner.TABLE_OWNER_RELATION_TYPE,
+                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+            }
+        ]
+
+        actual_relations = [
+            neptune_serializer.convert_relationship(relation)
+            for relation in relations
+        ]
+        self.assertTrue(expected in actual_relations)
 
     def test_create_nodes_with_owners_list(self) -> None:
         self.table_owner_list = TableOwner(db_name='hive',

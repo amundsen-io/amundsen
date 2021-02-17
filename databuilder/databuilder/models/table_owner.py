@@ -81,16 +81,17 @@ class TableOwner(GraphSerializable):
         """
         results = []
         for owner in self.owners:
-            relationship = GraphRelationship(
-                start_key=self.get_owner_model_key(owner),
-                start_label=User.USER_NODE_LABEL,
-                end_key=self.get_metadata_model_key(),
-                end_label='Table',
-                type=TableOwner.OWNER_TABLE_RELATION_TYPE,
-                reverse_type=TableOwner.TABLE_OWNER_RELATION_TYPE,
-                attributes={}
-            )
-            results.append(relationship)
+            if owner:
+                relationship = GraphRelationship(
+                    start_key=self.get_owner_model_key(owner),
+                    start_label=User.USER_NODE_LABEL,
+                    end_key=self.get_metadata_model_key(),
+                    end_label='Table',
+                    type=TableOwner.OWNER_TABLE_RELATION_TYPE,
+                    reverse_type=TableOwner.TABLE_OWNER_RELATION_TYPE,
+                    attributes={}
+                )
+                results.append(relationship)
 
         return results
 

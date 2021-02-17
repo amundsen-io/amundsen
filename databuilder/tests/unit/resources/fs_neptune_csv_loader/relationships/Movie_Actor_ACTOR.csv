@@ -1,0 +1,5 @@
+"~id","~from","~to","~label","last_extracted_datetime:Date(single)","creation_type:String","published_tag:String(single)"
+"movie://Top Gun_actor://Tom Cruise_ACTOR","movie://Top Gun","actor://Tom Cruise","ACTOR","2020-09-01T01:01:00","job","TESTED"
+"actor://Tom Cruise_movie://Top Gun_ACTED_IN","actor://Tom Cruise","movie://Top Gun","ACTED_IN","2020-09-01T01:01:00","job","TESTED"
+"movie://Top Gun_actor://Meg Ryan_ACTOR","movie://Top Gun","actor://Meg Ryan","ACTOR","2020-09-01T01:01:00","job","TESTED"
+"actor://Meg Ryan_movie://Top Gun_ACTED_IN","actor://Meg Ryan","movie://Top Gun","ACTED_IN","2020-09-01T01:01:00","job","TESTED"

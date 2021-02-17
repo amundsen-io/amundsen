@@ -69,7 +69,7 @@ class TableLastUpdated(GraphSerializable):
 
     def create_nodes(self) -> List[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create a list of graph node records
         :return:
         """
         results = []

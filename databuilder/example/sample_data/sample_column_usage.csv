@@ -11,6 +11,6 @@ hive,gold,test_schema,test_table1,col1,hoald7@example.org,100
 hive,gold,test_schema,test_table1,col1,ioald8@example.org,10
 hive,gold,test_schema,test_table1,col1,joald9@example.org,10
 hive,gold,test_schema,test_table1,col1,koald9@example.org,10
-hive,gold,test_schema,test_table2,col1,soald9@example.org,10
-hive,gold,test_schema,test_table2,col1,toald9@example.org,10
+dynamo,gold,test_schema,test_table2,col1,soald9@example.org,10
+dynamo,gold,test_schema,test_table2,col1,toald9@example.org,10
 dynamo,gold,test_schema,test_table2,col1,chrisc@example.org,500
