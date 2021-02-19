@@ -67,7 +67,8 @@ neptune = [
     'gremlinpython==3.4.3',
     'requests-aws4auth==0.9',
     'typing-extensions==3.7.4',
-    'overrides==2.5'
+    'overrides==2.5',
+    'boto3==1.10.1'
 ]
 
 feast = [
