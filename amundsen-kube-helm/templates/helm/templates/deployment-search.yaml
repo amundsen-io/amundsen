@@ -47,6 +47,10 @@ spec:
         env:
         - name: PROXY_ENDPOINT
           value: {{ if .Values.search.elasticsearchEndpoint }}{{ .Values.search.elasticsearchEndpoint }}{{ else }}{{ .Release.Name }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
+        - name: CREDENTIALS_PROXY_USER
+          value: {{ .Values.search.elasticSearchUser }}
+        - name: CREDENTIALS_PROXY_PASSWORD
+          value: {{ .Values.search.elasticSearchPassword }}
         livenessProbe:
           httpGet:
             path: "/healthcheck"
