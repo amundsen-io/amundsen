@@ -62,13 +62,12 @@ search:
   ##
   elasticsearchEndpoint:
   ##
-  ## search.elasticSearchUser -- The elasticsearch user
+  ## search.elasticSearchCredentials -- The elasticsearch user and password. This should only be set if you bring your own elasticsearch cluster in which case you must also set elasticsearch.enabled to false
   ##
-  credentialsProxyUser:
+  elasticSearchCredentials: {}
+  #  user:
+  #  password:
   ##
-  ## search.elasticSearchPassword -- The elasticsearch password
-  ##
-  elasticSearchPassword:
   ##
   ## search.image -- The image of the search container.
   ##
