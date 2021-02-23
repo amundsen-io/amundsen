@@ -39,6 +39,10 @@ with open(requirements_path) as requirements_file:
 
 __version__ = '3.5.0'
 
+oicd = ['flaskoidc==0.1.1']
+pyarrrow = ['pyarrow==3.0.0']
+bigquery_preview = ['google-cloud-bigquery>=2.8.0,<3.0.0', 'flatten-dict==0.3.0']
+all_deps = requirements + oicd + pyarrrow + bigquery_preview
 
 setup(
     name='amundsen-frontend',
@@ -53,8 +57,10 @@ setup(
     setup_requires=['cython >= 0.29'],
     install_requires=requirements,
     extras_require={
-        'oidc': ['flaskoidc==0.1.1'],
-        'pyarrow': ['pyarrow==3.0.0'],
+        'oidc': oicd,
+        'pyarrow': pyarrrow,
+        'bigquery_preview': bigquery_preview,
+        'all': all_deps,
     },
     python_requires=">=3.6",
     entry_points="""
