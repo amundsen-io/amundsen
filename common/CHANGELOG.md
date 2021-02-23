@@ -1,4 +1,5 @@
 ### Feature
+* Added lineage item and lineage entities ([#90](https://github.com/amundsen-io/amundsencommon/issues/90)) ([`f1c6011`](https://github.com/amundsen-io/amundsencommon/commit/f1c6011dbbefc2645d42a1ce5a2b373196a9f3fe))
 * Add chart into common ES index map ([#77](https://github.com/amundsen-io/amundsencommon/issues/77)) ([`4a7eea4`](https://github.com/amundsen-io/amundsencommon/commit/4a7eea49a22371d1cbf21258685790f4fc1beafb))
 * Add chart to dashboard model ([#73](https://github.com/amundsen-io/amundsencommon/issues/73)) ([`241f627`](https://github.com/amundsen-io/amundsencommon/commit/241f6270617f3e623ab03c3ecb798f365858ccc2))
 * Added badges field (optional) to column in table model ([#68](https://github.com/amundsen-io/amundsencommon/issues/68)) ([`7bf5a84`](https://github.com/amundsen-io/amundsencommon/commit/7bf5a84101bd4232bb74b1c3236421432e9c19c8))
