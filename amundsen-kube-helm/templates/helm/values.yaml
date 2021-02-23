@@ -62,6 +62,15 @@ search:
   ##
   elasticsearchEndpoint:
   ##
+  ## search.elasticSearchCredentials -- The elasticsearch user and password. This should only be set if you bring your own elasticsearch cluster in which case you must also set elasticsearch.enabled to false
+  ##
+  elasticSearchCredentials: {}
+  #  user:
+  #  password:
+  ##
+  ##
+  ## search.image -- The image of the search container.
+  ##
   ## search.image -- The image of the search container.
   ##
   image: amundsendev/amundsen-search
