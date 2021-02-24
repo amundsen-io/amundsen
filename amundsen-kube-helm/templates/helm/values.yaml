@@ -75,6 +75,11 @@ search:
   ##
   image: amundsendev/amundsen-search
   ##
+  ## search.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+  ##
   ## search.imageTag -- The image tag of the search container.
   ##
   imageTag: 2.4.0
@@ -135,6 +140,11 @@ metadata:
   ##
   image: amundsendev/amundsen-metadata
   ##
+  ## metadata.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+  ##
   ## metadata.imageTag -- The image tag of the metadata container.
   ##
   imageTag: 2.5.5
@@ -190,6 +200,11 @@ frontEnd:
   ## frontEnd.image -- The image of the frontend container.
   ##
   image: amundsendev/amundsen-frontend
+  ##
+  ## frontEnd.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
   ##
   ## frontEnd.imageTag -- The image tag of the frontend container.
   ##
