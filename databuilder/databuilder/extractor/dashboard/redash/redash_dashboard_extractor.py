@@ -68,8 +68,10 @@ class RedashDashboardExtractor(Extractor):
     API_KEY_KEY = 'api_key'
     CLUSTER_KEY = 'cluster'  # optional config
     TABLE_PARSER_KEY = 'table_parser'  # optional config
+    REDASH_VERSION = 'redash_version'  # optional config
 
     DEFAULT_CLUSTER = 'prod'
+    DEFAULT_VERSION = 9
 
     PRODUCT = 'redash'
     DASHBOARD_GROUP_ID = 'redash'
@@ -86,6 +88,10 @@ class RedashDashboardExtractor(Extractor):
         self._cluster = conf.get_string(
             RedashDashboardExtractor.CLUSTER_KEY, RedashDashboardExtractor.DEFAULT_CLUSTER
         )
+        self._redash_version = conf.get_int(
+            RedashDashboardExtractor.REDASH_VERSION, RedashDashboardExtractor.DEFAULT_VERSION
+        )
+
         self._parse_tables = None
         tbl_parser_path = conf.get_string(RedashDashboardExtractor.TABLE_PARSER_KEY)
         if tbl_parser_path:
@@ -116,8 +122,13 @@ class RedashDashboardExtractor(Extractor):
                 'cluster': self._cluster,
                 'product': RedashDashboardExtractor.PRODUCT,
                 'dashboard_group_id': str(RedashDashboardExtractor.DASHBOARD_GROUP_ID),
-                'dashboard_id': str(record['dashboard_id'])
+                'dashboard_id': str(record['dashboard_id']),
             }
+
+            if self._redash_version >= 9:
+                dashboard_url = f'{self._redash_base_url}/dashboards/{record["dashboard_id"]}'
+            else:
+                dashboard_url = f'{self._redash_base_url}/dashboard/{record["slug"]}'
 
             dash_data = {
                 'dashboard_group':
@@ -127,7 +138,7 @@ class RedashDashboardExtractor(Extractor):
                 'dashboard_name':
                     record['dashboard_name'],
                 'dashboard_url':
-                    f'{self._redash_base_url}/dashboards/{record["dashboard_id"]}',
+                    dashboard_url,
                 'created_timestamp':
                     record['created_timestamp']
             }
@@ -205,9 +216,14 @@ class RedashDashboardExtractor(Extractor):
             skip_no_result=True
         )
 
+        if self._redash_version >= 9:
+            dashboard_url = f'{self._api_base_url}/dashboards/{{dashboard_id}}'
+        else:
+            dashboard_url = f'{self._api_base_url}/dashboards/{{slug}}'
+
         return RestApiQuery(
             query_to_join=dashes_query,
-            url=f'{self._api_base_url}/dashboards/{{dashboard_id}}',
+            url=dashboard_url,
             params=self._get_default_api_query_params(),
             json_path='widgets',
             field_names=['widgets'],
