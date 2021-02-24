@@ -724,7 +724,8 @@ job_config = ConfigFactory.from_dict({
 	'extractor.redash_dashboard.redash_base_url': redash_base_url, # ex: https://redash.example.org
 	'extractor.redash_dashboard.api_base_url': api_base_url, # ex: https://redash.example.org/api
 	'extractor.redash_dashboard.api_key': api_key, # ex: abc1234
-	'extractor.redash_dashboard.table_parser': table_parser # ex: my_library.module.parse_tables
+	'extractor.redash_dashboard.table_parser': table_parser, # ex: my_library.module.parse_tables
+	'extractor.redash_dashboard.redash_version': redash_version # ex: 8. optional, default=9 
 })
 
 job = DefaultJob(conf=job_config,
