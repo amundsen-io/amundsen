@@ -5,6 +5,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Dict, List, Optional, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User
@@ -153,4 +154,15 @@ class BaseProxy(metaclass=ABCMeta):
     def get_resources_using_table(self, *,
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
+        pass
+
+    @abstractmethod
+    def get_lineage(self, *,
+                    id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        """
+        Method should be implemented to obtain lineage from whatever source is preferred internally
+        :param direction: if the request is for a list of upstream/downstream nodes or both
+        :param depth: the level of lineage requested (ex: 1 would mean only nodes directly connected
+        to the current id in whatever direction is specified)
+        """
         pass

@@ -9,6 +9,7 @@ from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Column, ProgrammaticDescription,
                                           Reader, ResourceReport, Stat, Table,
@@ -1068,3 +1069,7 @@ class AtlasProxy(BaseProxy):
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
         return {}
+
+    def get_lineage(self, *,
+                    id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        pass
