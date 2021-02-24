@@ -14,6 +14,7 @@ from urllib.parse import unquote
 
 import gremlin_python
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column,
                                           ProgrammaticDescription, Reader,
@@ -1721,6 +1722,10 @@ class AbstractGremlinProxy(BaseProxy):
             return EdgeTypes.Follow
 
         raise NotImplementedError(f"Don't know how to handle UserResourceRel={relation}")
+
+    def get_lineage(self, *,
+                    id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        pass
 
 
 class GenericGremlinProxy(AbstractGremlinProxy):

@@ -10,6 +10,7 @@ from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Application
 from amundsen_common.models.table import Badge as TableBadge
@@ -1406,3 +1407,8 @@ class Neo4jProxy(BaseProxy):
         for record in records:
             results.append(DashboardSummary(**record))
         return {'dashboards': results}
+
+    def get_lineage(self, *,
+                    id: str,
+                    resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        pass
