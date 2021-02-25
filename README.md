@@ -248,6 +248,7 @@ Currently **officially** using Amundsen:
 1. [REA Group](https://www.rea-group.com/)
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
+1. [Tile](https://www.thetileapp.com)
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
