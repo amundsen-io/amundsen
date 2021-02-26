@@ -40,18 +40,13 @@ search:
 
   # search.elasticsearchEndpoint -- The name of the service hosting elasticsearch on your cluster, if you bring your own. You should only need to change this, if you don't use the version in this chart.
   elasticsearchEndpoint:
-  ##
-  ## search.elasticSearchCredentials -- The elasticsearch user and password. This should only be set if you bring your own elasticsearch cluster in which case you must also set elasticsearch.enabled to false
-  ##
+
+  # search.elasticSearchCredentials -- The elasticsearch user and password. This should only be set if you bring your own elasticsearch cluster in which case you must also set elasticsearch.enabled to false
   elasticSearchCredentials: {}
   #  user:
   #  password:
-  ##
-  ##
-  ## search.image -- The image of the search container.
-  ##
-  ## search.image -- The image of the search container.
-  ##
+
+  # search.image -- The image of the search container.
   image: amundsendev/amundsen-search
 
   # search.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
@@ -162,13 +157,11 @@ frontEnd:
 
   # frontEnd.baseUrl -- used by notifications util to provide links to amundsen pages in emails.
   baseUrl: http://localhost
-  ##
-  ## frontEnd.oidcEnabled -- To enable auth via OIDC, set this to true.
-  ##
+
+  # frontEnd.oidcEnabled -- To enable auth via OIDC, set this to true.
   oidcEnabled: false
-  ##
-  ## frontEnd.createOidcSecret -- OIDC needs some configuration. If you want the chart to make your secrets, set this to true and set the next four values. If you don't want to configure your secrets via helm, you can still use the amundsen-oidc-config.yaml as a template
-  ##
+
+  # frontEnd.createOidcSecret -- OIDC needs some configuration. If you want the chart to make your secrets, set this to true and set the next four values. If you don't want to configure your secrets via helm, you can still use the amundsen-oidc-config.yaml as a template
   createOidcSecret: false
 
   # frontEnd.OIDC_CLIENT_ID -- The client id for OIDC.
