@@ -57,7 +57,7 @@ class NeptuneGremlinProxy(AbstractGremlinProxy):
     def __init__(self, *, host: str, port: Optional[int] = None, user: str = None,
                  password: Optional[Union[str, boto3.session.Session]] = None,
                  driver_remote_connection_options: Mapping[str, Any] = {},
-                 neptune_bulk_loader_s3_bucket_name: Optional[str] = None,
+                 client_kwargs: Dict = dict(),
                  **kwargs: dict) -> None:
 
         driver_remote_connection_options = dict(driver_remote_connection_options)
@@ -101,11 +101,10 @@ class NeptuneGremlinProxy(AbstractGremlinProxy):
         # always g for Neptune
         driver_remote_connection_options.update(traversal_source='g')
 
-        s3_bucket_name: str = ''
-        if neptune_bulk_loader_s3_bucket_name is None:
+        try:
+            s3_bucket_name = client_kwargs['neptune_bulk_loader_s3_bucket_name']  # noqa: E731
+        except Exception:
             raise NotImplementedError(f'Cannot find s3 bucket name!')
-        else:
-            s3_bucket_name = neptune_bulk_loader_s3_bucket_name
 
         # Instantiate bulk loader and graph traversal factory
         bulk_loader_config: Dict[str, Any] = dict(NEPTUNE_SESSION=password, NEPTUNE_URL=host,

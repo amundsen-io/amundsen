@@ -5,7 +5,9 @@ import distutils.util
 import os
 from typing import Dict, List, Optional, Set  # noqa: F401
 
+import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
+from amundsen_gremlin.test_and_development_shard import shard_set_explicitly
 
 from metadata_service.entity.badge import Badge
 
@@ -102,6 +104,42 @@ class LocalConfig(LocalGremlinConfig, Config):
     PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'NEO4J')]
     PROXY_ENCRYPTED = bool(distutils.util.strtobool(os.environ.get(PROXY_ENCRYPTED, 'True')))
     PROXY_VALIDATE_SSL = bool(distutils.util.strtobool(os.environ.get(PROXY_VALIDATE_SSL, 'False')))
+
+    JANUS_GRAPH_URL = None
+
+    IS_STATSD_ON = bool(distutils.util.strtobool(os.environ.get(IS_STATSD_ON, 'False')))
+
+    SWAGGER_ENABLED = True
+    SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
+    SWAGGER = {
+        'openapi': '3.0.2',
+        'title': 'Metadata Service',
+        'uiversion': 3
+    }
+
+
+# The databuilder expects this to be False currently. We are defaulting to true because the testing expects this
+if bool(distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'False'))):
+    shard_set_explicitly('')
+
+
+class NeptuneConfig(LocalGremlinConfig, Config):
+    DEBUG = False
+    TESTING = False
+    LOG_LEVEL = 'INFO'
+    LOCAL_HOST = '0.0.0.0'
+
+    # FORMAT: wss://<NEPTUNE_URL>:<NEPTUNE_PORT>/gremlin
+    PROXY_HOST = os.environ.get('PROXY_HOST')
+    PROXY_PORT = None
+    PROXY_CLIENT = PROXY_CLIENTS['NEPTUNE']
+    PROXY_ENCRYPTED = bool(distutils.util.strtobool(os.environ.get(PROXY_ENCRYPTED, 'True')))
+    PROXY_VALIDATE_SSL = bool(distutils.util.strtobool(os.environ.get(PROXY_VALIDATE_SSL, 'False')))
+    PROXY_PASSWORD = boto3.session.Session(region_name=os.environ.get('AWS_REGION', 'us-east-1'))
+
+    PROXY_CLIENT_KWARGS = {
+        'neptune_bulk_loader_s3_bucket_name': os.environ.get('S3_BUCKET_NAME'),
+    }
 
     JANUS_GRAPH_URL = None
 

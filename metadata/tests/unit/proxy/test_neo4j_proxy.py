@@ -45,18 +45,18 @@ class TestNeo4jProxy(unittest.TestCase):
 
         col1 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
         col1['col'] = {'name': 'bar_id_1',
-                       'type': 'varchar',
+                       'col_type': 'varchar',
                        'sort_order': 0}
         col1['col_dscrpt'] = {'description': 'bar col description'}
-        col1['col_stats'] = [{'stat_name': 'avg', 'start_epoch': 1, 'end_epoch': 1, 'stat_val': '1'}]
+        col1['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 1, 'end_epoch': 1, 'stat_val': '1'}]
         col1['col_badges'] = []
 
         col2 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
         col2['col'] = {'name': 'bar_id_2',
-                       'type': 'bigint',
+                       'col_type': 'bigint',
                        'sort_order': 1}
         col2['col_dscrpt'] = {'description': 'bar col2 description'}
-        col2['col_stats'] = [{'stat_name': 'avg', 'start_epoch': 2, 'end_epoch': 2, 'stat_val': '2'}]
+        col2['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 2, 'end_epoch': 2, 'stat_val': '2'}]
         col2['col_badges'] = [{'key': 'primary key', 'category': 'column'}]
 
         table_level_results = MagicMock()
@@ -493,7 +493,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = {
                 'ts': {
-                    'latest_timestmap': '1000'
+                    'latest_timestamp': '1000'
                 }
             }
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)

@@ -21,8 +21,14 @@ class NeptuneGremlinProxyTest(
         abstract_gremlin_proxy_test_class(), unittest.TestCase):  # type: ignore
     def _create_gremlin_proxy(self, config: Mapping[str, Any]) -> RoundtripNeptuneGremlinProxy:
         # Don't use PROXY_HOST, PROXY_PORT, PROXY_PASSWORD.  They might not be neptune
-        return RoundtripNeptuneGremlinProxy(host=config['NEPTUNE_URL'], password=config['NEPTUNE_SESSION'],
-                                            neptune_bulk_loader_s3_bucket_name=config['NEPTUNE_BULK_LOADER_S3_BUCKET_NAME']) # noqa E501
+        client_kwargs = {
+            'neptune_bulk_loader_s3_bucket_name': config['NEPTUNE_BULK_LOADER_S3_BUCKET_NAME']
+        }
+        return RoundtripNeptuneGremlinProxy(
+            host=config['NEPTUNE_URL'],
+            password=config['NEPTUNE_SESSION'],
+            client_kwargs=client_kwargs
+        )  # noqa E501
 
     def test_is_retryable(self) -> None:
         exception = gremlin_python.driver.protocol.GremlinServerError(dict(
