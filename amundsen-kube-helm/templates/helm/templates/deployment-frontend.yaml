@@ -45,6 +45,10 @@ spec:
           secret:
             secretName: oidc-config
       {{- end }}
+    {{- if .Values.frontEnd.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.frontEnd.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}
         image: {{ .Values.frontEnd.image }}:{{ .Values.frontEnd.imageTag }}
