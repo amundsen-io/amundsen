@@ -19,8 +19,9 @@ class LineageItem:
 
 
 class LineageItemSchema(AttrsSchema):
-    target = LineageItem
-    register_as_scheme = True
+    class Meta:
+        target = LineageItem
+        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True, kw_only=True)
@@ -33,5 +34,6 @@ class Lineage:
 
 
 class LineageSchema(AttrsSchema):
-    target = Lineage
-    register_as_scheme = True
+    class Meta:
+        target = Lineage
+        register_as_scheme = True
