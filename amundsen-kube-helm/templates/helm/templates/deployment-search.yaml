@@ -39,6 +39,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+    {{- if .Values.search.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.search.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
         image: {{ .Values.search.image }}:{{ .Values.search.imageTag }}
