@@ -457,11 +457,13 @@ def _V(label: Union[str, VertexTypes, VertexType], key: Optional[Union[str, Text
         if key_property_name is None:
             raise AssertionError('expected key_property_name')
         g = g.V().has(get_label_from(label), key_property_name, key)
-        properties.setdefault(WellKnownProperties.TestShard.value.name, get_shard())
+        if get_shard():
+            properties.setdefault(WellKnownProperties.TestShard.value.name, get_shard())
     else:
         # let's support hasLabel, but need to limit it to either the test_shard (or unsharded perhaps)
         g = g.V().hasLabel(get_label_from(label))
-        properties.setdefault(WellKnownProperties.TestShard.value.name, get_shard())
+        if get_shard():
+            properties.setdefault(WellKnownProperties.TestShard.value.name, get_shard())
 
     # should we do this when using the V(id)? there are a couple or one case where we use it to filter  so seems handy
     if properties is not None:
@@ -525,7 +527,8 @@ def _upsert(*, executor: ExecuteQuery, execute: Callable[[ResultSet], TYPE] = Fr
         id = label.id(key=key, **properties)
     else:
         raise AssertionError('wat')  # appease mypy
-    properties.setdefault(WellKnownProperties.TestShard.value.name, get_shard())
+    if get_shard():
+        properties.setdefault(WellKnownProperties.TestShard.value.name, get_shard())
 
     existing_node = executor(query=g.V(id).valueMap(True), get=FromResultSet.getOptional)
     _label = get_label_from(label)
@@ -1026,8 +1029,7 @@ class AbstractGremlinProxy(BaseProxy):
 
     @timer_with_counter
     @overrides
-    def get_table(self, *, table_uri: str,
-                  is_reviewer: bool = False) -> Table:
+    def get_table(self, *, table_uri: str, is_reviewer: bool = False) -> Table:
         """
         :param table_uri: Table URI
         :return:  A Table object
@@ -1041,9 +1043,7 @@ class AbstractGremlinProxy(BaseProxy):
         readers = self._get_table_readers(table_uri=table_uri)
 
         users_by_type: Dict[str, List[User]] = {}
-        users_by_type['owner'] = sorted(
-            _safe_get_list(result, f'all_owners', transform=self._convert_to_user) or [],
-            key=attrgetter('user_id'))
+        users_by_type['owner'] = _safe_get_list(result, f'all_owners', transform=self._convert_to_user) or []
 
         stats = _safe_get_list(result, 'stats', transform=self._convert_to_statistics) or []
 
@@ -1088,7 +1088,7 @@ class AbstractGremlinProxy(BaseProxy):
                        hasLabel(VertexTypes.Application.value.label).fold()).as_('application')
         g = g.coalesce(select('table').outE(EdgeTypes.LastUpdatedAt.value.label).inV().
                        hasLabel(VertexTypes.Updatedtimestamp.value.label).
-                       values('latest_timestamp').fold()).as_('timestamp')
+                       values('timestamp').fold()).as_('timestamp')
         g = g.coalesce(select('table').inE(EdgeTypes.Tag.value.label).outV().
                        hasLabel(VertexTypes.Tag.value.label).fold()).as_('tags')
         g = g.coalesce(select('table').outE(EdgeTypes.Source.value.label).inV().
@@ -1096,10 +1096,10 @@ class AbstractGremlinProxy(BaseProxy):
         g = g.coalesce(select('table').outE(EdgeTypes.Stat.value.label).inV().
                        hasLabel(VertexTypes.Stat.value.label).fold()).as_('stats')
         g = g.coalesce(select('table').outE(EdgeTypes.Description.value.label).
-                       inV().has(VertexTypes.Description.value.label, 'source', 'user').fold()).as_('description')
-        g = g.coalesce(select('table').outE(EdgeTypes.Description.value.label).
-                       inV().has(VertexTypes.Description.value.label, 'source', without('user')).fold()). \
-            as_('programmatic_descriptions')
+                       inV().hasLabel(VertexTypes.Description.value.label).fold()).as_('description')
+        g = g.coalesce(
+            select('table').out(EdgeTypes.Description.value.label).hasLabel('Programmatic_Description').fold()
+        ).as_('programmatic_descriptions')
         g = g.coalesce(select('table').inE(EdgeTypes.Read.value.label).
                        has('date', gte(date.today() - timedelta(days=5))).
                        where(outV().hasLabel(VertexTypes.User.value.label)).
@@ -1137,8 +1137,9 @@ class AbstractGremlinProxy(BaseProxy):
         g = _V(g=self.g, label=VertexTypes.Table.value.label, key=table_uri). \
             outE(EdgeTypes.Column.value.label). \
             inV().hasLabel(VertexTypes.Column.value.label).as_('column')
-        g = g.coalesce(select('column').outE(EdgeTypes.Description.value.label).
-                       inV().has(VertexTypes.Description.value.label, 'source', 'user').fold()).as_('description')
+        g = g.coalesce(
+            select('column').out(EdgeTypes.Description.value.label).hasLabel(VertexTypes.Description.value.label).fold()
+        ).as_('description')
         g = g.coalesce(select('column').outE(EdgeTypes.Stat.value.label).inV().
                        hasLabel(VertexTypes.Stat.value.label).fold()).as_('stats')
         g = g.select('column', 'description', 'stats'). \
@@ -1398,8 +1399,9 @@ class AbstractGremlinProxy(BaseProxy):
             outV().hasLabel(VertexTypes.Cluster.value.label).as_('cluster')
         g = g.inE(EdgeTypes.Cluster.value.label). \
             outV().hasLabel(VertexTypes.Database.value.label).as_('database')
-        g = g.coalesce(select('table').outE(EdgeTypes.Description.value.label).
-                       inV().has(VertexTypes.Description.value.label, 'source', 'user').fold()).as_('description')
+        g = g.coalesce(
+            select('table').out(EdgeTypes.Description.value.label).hasLabel(VertexTypes.Description.value.label).fold()
+        ).as_('description')
         g = g.select('database', 'cluster', 'schema', 'table', 'description'). \
             by('name').by('name').by('name').by('name').by(unfold().values('description').fold())
         results = self.query_executor()(query=g, get=FromResultSet.toList)
@@ -1663,11 +1665,12 @@ class AbstractGremlinProxy(BaseProxy):
             application_url=_safe_get(result, 'application_url'),
             description=_safe_get(result, 'description'),
             name=_safe_get(result, 'name'),
-            id=_safe_get(result, 'id', default=''))
+            id=_safe_get(result, 'id', default='')
+        )
 
     def _convert_to_description(self, result: Mapping[str, Any]) -> ProgrammaticDescription:
         return ProgrammaticDescription(text=_safe_get(result, 'description'),
-                                       source=_safe_get(result, 'source'))
+                                       source=_safe_get(result, 'description_source'))
 
     def _convert_to_user(self, result: Mapping[str, Any]) -> User:
         return User(email=_safe_get(result, 'email'),
