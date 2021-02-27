@@ -9,7 +9,7 @@ from unittest.mock import ANY
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -173,25 +173,35 @@ class TestDashboardMetadata(unittest.TestCase):
         expected_neptune_rels = [
             [
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Cluster:_dashboard://gold',
+                        to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DASHBOARD_GROUP'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Cluster:_dashboard://gold',
+                        to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        label='DASHBOARD_GROUP'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Cluster:_dashboard://gold',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                     NEPTUNE_HEADER_LABEL: 'DASHBOARD_GROUP',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz',
-                        to_vertex_id='_dashboard://gold',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        to_vertex_id='Cluster:_dashboard://gold',
                         label='DASHBOARD_GROUP_OF'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        to_vertex_id='Cluster:_dashboard://gold',
+                        label='DASHBOARD_GROUP_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Cluster:_dashboard://gold',
                     NEPTUNE_HEADER_LABEL: 'DASHBOARD_GROUP_OF',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -199,25 +209,35 @@ class TestDashboardMetadata(unittest.TestCase):
             ],
             [
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz/_description',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
                         label='DESCRIPTION'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz/_description',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
+                        label='DESCRIPTION'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Description:_dashboard://gold.Product - Jobs.cz/_description',
                     NEPTUNE_HEADER_LABEL: 'DESCRIPTION',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz/_description',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
+                        to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DESCRIPTION_OF'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz/_description',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
+                        to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        label='DESCRIPTION_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Description:_dashboard://gold.Product - Jobs.cz/_description',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                     NEPTUNE_HEADER_LABEL: 'DESCRIPTION_OF',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -225,25 +245,35 @@ class TestDashboardMetadata(unittest.TestCase):
             ],
             [
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DASHBOARD_OF'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz/Agent',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        label='DASHBOARD_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                     NEPTUNE_HEADER_LABEL: 'DASHBOARD_OF',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='DASHBOARD'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz/Agent',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        label='DASHBOARD'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                     NEPTUNE_HEADER_LABEL: 'DASHBOARD',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -251,25 +281,37 @@ class TestDashboardMetadata(unittest.TestCase):
             ],
             [
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
                         label='DESCRIPTION'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz/Agent',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                        label='DESCRIPTION'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO:
+                        'Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
                     NEPTUNE_HEADER_LABEL: 'DESCRIPTION',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent/_description',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='DESCRIPTION_OF'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz/Agent/_description',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz/Agent',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        label='DESCRIPTION_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM:
+                        'Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                     NEPTUNE_HEADER_LABEL: 'DESCRIPTION_OF',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -277,25 +319,35 @@ class TestDashboardMetadata(unittest.TestCase):
             ],
             [
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
-                        to_vertex_id='test_tag',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Tag:test_tag',
                         label='TAG'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz/Agent',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'test_tag',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Tag:test_tag',
+                        label='TAG'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Tag:test_tag',
                     NEPTUNE_HEADER_LABEL: 'TAG',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='test_tag',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Tag:test_tag',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='TAG_OF'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'test_tag',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz/Agent',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Tag:test_tag',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        label='TAG_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Tag:test_tag',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                     NEPTUNE_HEADER_LABEL: 'TAG_OF',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -303,25 +355,35 @@ class TestDashboardMetadata(unittest.TestCase):
             ],
             [
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
-                        to_vertex_id='tag2',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Tag:tag2',
                         label='TAG'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: '_dashboard://gold.Product - Jobs.cz/Agent',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'tag2',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        to_vertex_id='Tag:tag2',
+                        label='TAG'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Tag:tag2',
                     NEPTUNE_HEADER_LABEL: 'TAG',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
-                    NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                        from_vertex_id='tag2',
-                        to_vertex_id='_dashboard://gold.Product - Jobs.cz/Agent',
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Tag:tag2',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='TAG_OF'
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'tag2',
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: '_dashboard://gold.Product - Jobs.cz/Agent',
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Tag:tag2',
+                        to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                        label='TAG_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Tag:tag2',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                     NEPTUNE_HEADER_LABEL: 'TAG_OF',
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -331,14 +393,16 @@ class TestDashboardMetadata(unittest.TestCase):
 
         expected_neptune_nodes = [
             {
-                NEPTUNE_HEADER_ID: '_dashboard://gold',
+                NEPTUNE_HEADER_ID: 'Cluster:_dashboard://gold',
+                METADATA_KEY_PROPERTY_NAME: 'Cluster:_dashboard://gold',
                 NEPTUNE_HEADER_LABEL: 'Cluster',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
                 'name:String(single)': 'gold'
             },
             {
-                NEPTUNE_HEADER_ID: '_dashboard://gold.Product - Jobs.cz/Agent',
+                NEPTUNE_HEADER_ID: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                METADATA_KEY_PROPERTY_NAME: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                 NEPTUNE_HEADER_LABEL: 'Dashboard',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -347,7 +411,8 @@ class TestDashboardMetadata(unittest.TestCase):
                 'created_timestamp:Long(single)': 123456789,
             },
             {
-                NEPTUNE_HEADER_ID: '_dashboard://gold.Product - Jobs.cz',
+                NEPTUNE_HEADER_ID: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                METADATA_KEY_PROPERTY_NAME: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                 NEPTUNE_HEADER_LABEL: 'Dashboardgroup',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -355,34 +420,39 @@ class TestDashboardMetadata(unittest.TestCase):
                 'dashboard_group_url:String(single)': 'https://foo.bar/dashboard_group/foo'
             },
             {
-                NEPTUNE_HEADER_ID: '_dashboard://gold.Product - Jobs.cz/_description',
+                NEPTUNE_HEADER_ID: 'Description:_dashboard://gold.Product - Jobs.cz/_description',
+                METADATA_KEY_PROPERTY_NAME: 'Description:_dashboard://gold.Product - Jobs.cz/_description',
                 NEPTUNE_HEADER_LABEL: 'Description',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
                 'description:String(single)': 'foo dashboard group description',
             },
             {
-                NEPTUNE_HEADER_ID: '_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                NEPTUNE_HEADER_ID: 'Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                METADATA_KEY_PROPERTY_NAME: 'Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
                 NEPTUNE_HEADER_LABEL: 'Description',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
                 'description:String(single)': 'Agent dashboard description'
             },
             {
-                NEPTUNE_HEADER_ID: 'test_tag',
+                NEPTUNE_HEADER_ID: 'Tag:test_tag',
+                METADATA_KEY_PROPERTY_NAME: 'Tag:test_tag',
                 NEPTUNE_HEADER_LABEL: 'Tag',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
                 'tag_type:String(single)': 'dashboard'
             },
             {
-                NEPTUNE_HEADER_ID: 'tag2',
+                NEPTUNE_HEADER_ID: 'Tag:tag2',
+                METADATA_KEY_PROPERTY_NAME: 'Tag:tag2',
                 NEPTUNE_HEADER_LABEL: 'Tag',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
                 'tag_type:String(single)': 'dashboard'
             },
         ]
+        self.maxDiff = None
         node_row = self.full_dashboard_metadata.next_node()
         actual = []
         while node_row:

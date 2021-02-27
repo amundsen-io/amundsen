@@ -16,7 +16,7 @@ class ESLastUpdated(GraphSerializable):
 
     LABEL = 'Updatedtimestamp'
     KEY = 'amundsen_updated_timestamp'
-    LATEST_TIMESTAMP = 'latest_timestmap'
+    LATEST_TIMESTAMP = 'latest_timestamp'
 
     def __init__(self,
                  timestamp: int,

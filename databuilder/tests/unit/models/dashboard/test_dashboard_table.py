@@ -11,9 +11,10 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID,
-    NEPTUNE_HEADER_LABEL, NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT,
-    NEPTUNE_RELATIONSHIP_HEADER_FROM, NEPTUNE_RELATIONSHIP_HEADER_TO,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
+    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
+    NEPTUNE_RELATIONSHIP_HEADER_TO,
 )
 
 
@@ -41,26 +42,38 @@ class TestDashboardTable(unittest.TestCase):
                     RELATION_REVERSE_TYPE: 'TABLE_OF_DASHBOARD'}
 
         neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
-                to_vertex_id='hive://gold.schema/table1',
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+                to_vertex_id='Table:hive://gold.schema/table1',
                 label='DASHBOARD_WITH_TABLE'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'hive://gold.schema/table1',
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+                to_vertex_id='Table:hive://gold.schema/table1',
+                label='DASHBOARD_WITH_TABLE'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM:
+                'Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'Table:hive://gold.schema/table1',
             NEPTUNE_HEADER_LABEL: 'DASHBOARD_WITH_TABLE',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='hive://gold.schema/table1',
-                to_vertex_id='product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Table:hive://gold.schema/table1',
+                to_vertex_id='Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
                 label='TABLE_OF_DASHBOARD'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'hive://gold.schema/table1',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Table:hive://gold.schema/table1',
+                to_vertex_id='Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+                label='TABLE_OF_DASHBOARD'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Table:hive://gold.schema/table1',
+            NEPTUNE_RELATIONSHIP_HEADER_TO:
+                'Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
             NEPTUNE_HEADER_LABEL: 'TABLE_OF_DASHBOARD',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

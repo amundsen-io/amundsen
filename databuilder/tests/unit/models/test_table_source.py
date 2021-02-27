@@ -11,9 +11,10 @@ from databuilder.models.graph_serializable import (
 from databuilder.models.table_source import TableSource
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID,
-    NEPTUNE_HEADER_LABEL, NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT,
-    NEPTUNE_RELATIONSHIP_HEADER_FROM, NEPTUNE_RELATIONSHIP_HEADER_TO,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
+    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
+    NEPTUNE_RELATIONSHIP_HEADER_TO,
 )
 
 DB = 'hive'
@@ -70,25 +71,35 @@ class TestTableSource(unittest.TestCase):
 
         expected = [
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id=self.start_key,
-                    to_vertex_id=self.end_key,
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Source:" + self.start_key,
+                    to_vertex_id="Table:" + self.end_key,
                     label=TableSource.SOURCE_TABLE_RELATION_TYPE
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: self.start_key,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: self.end_key,
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Source:" + self.start_key,
+                    to_vertex_id="Table:" + self.end_key,
+                    label=TableSource.SOURCE_TABLE_RELATION_TYPE
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: "Source:" + self.start_key,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + self.end_key,
                 NEPTUNE_HEADER_LABEL: TableSource.SOURCE_TABLE_RELATION_TYPE,
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id=self.end_key,
-                    to_vertex_id=self.start_key,
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Table:" + self.end_key,
+                    to_vertex_id="Source:" + self.start_key,
                     label=TableSource.TABLE_SOURCE_RELATION_TYPE
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: self.end_key,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: self.start_key,
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Table:" + self.end_key,
+                    to_vertex_id="Source:" + self.start_key,
+                    label=TableSource.TABLE_SOURCE_RELATION_TYPE
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + self.end_key,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: "Source:" + self.start_key,
                 NEPTUNE_HEADER_LABEL: TableSource.TABLE_SOURCE_RELATION_TYPE,
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

@@ -12,7 +12,7 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -44,7 +44,8 @@ class TestDashboardChart(unittest.TestCase):
             'LABEL': 'Chart'
         }
         neptune_expected = {
-            '~id': '_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
+            '~id': 'Chart:_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
+            METADATA_KEY_PROPERTY_NAME: 'Chart:_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
             '~label': 'Chart',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -77,7 +78,8 @@ class TestDashboardChart(unittest.TestCase):
             'url': 'http://gold.foo.bar/'
         }
         neptune_expected2 = {
-            '~id': '_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
+            '~id': 'Chart:_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
+            METADATA_KEY_PROPERTY_NAME: 'Chart:_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
             '~label': 'Chart',
             'id:String(single)': 'c_id',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
@@ -112,26 +114,36 @@ class TestDashboardChart(unittest.TestCase):
         }
 
         neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=start_key,
-                to_vertex_id=end_key,
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id="Query:" + start_key,
+                to_vertex_id="Chart:" + end_key,
                 label='HAS_CHART'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: start_key,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: end_key,
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id="Query:" + start_key,
+                to_vertex_id="Chart:" + end_key,
+                label='HAS_CHART'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: "Query:" + start_key,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: "Chart:" + end_key,
             NEPTUNE_HEADER_LABEL: 'HAS_CHART',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=end_key,
-                to_vertex_id=start_key,
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id="Chart:" + end_key,
+                to_vertex_id="Query:" + start_key,
                 label='CHART_OF'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: end_key,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: start_key,
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id="Chart:" + end_key,
+                to_vertex_id="Query:" + start_key,
+                label='CHART_OF'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: "Chart:" + end_key,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: "Query:" + start_key,
             NEPTUNE_HEADER_LABEL: 'CHART_OF',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

@@ -11,9 +11,10 @@ from databuilder.models.graph_serializable import (
 from databuilder.models.user import User
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID,
-    NEPTUNE_HEADER_LABEL, NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT,
-    NEPTUNE_RELATIONSHIP_HEADER_FROM, NEPTUNE_RELATIONSHIP_HEADER_TO,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
+    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
+    NEPTUNE_RELATIONSHIP_HEADER_TO,
 )
 
 
@@ -105,12 +106,17 @@ class TestUser(unittest.TestCase):
 
         serialized = neptune_serializer.convert_relationship(relations[0])
 
-        start_key = '{email}'.format(email='test@email.com')
-        end_key = '{email}'.format(email='test_manager@email.com')
+        start_key = 'User:{email}'.format(email='test@email.com')
+        end_key = 'User:{email}'.format(email='test_manager@email.com')
 
         expected = [
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id=start_key,
+                    to_vertex_id=end_key,
+                    label=User.USER_MANAGER_RELATION_TYPE
+                ),
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id=start_key,
                     to_vertex_id=end_key,
                     label=User.USER_MANAGER_RELATION_TYPE
@@ -122,7 +128,12 @@ class TestUser(unittest.TestCase):
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id=end_key,
+                    to_vertex_id=start_key,
+                    label=User.MANAGER_USER_RELATION_TYPE
+                ),
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id=end_key,
                     to_vertex_id=start_key,
                     label=User.MANAGER_USER_RELATION_TYPE

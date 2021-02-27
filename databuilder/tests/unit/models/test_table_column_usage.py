@@ -8,9 +8,10 @@ from unittest.mock import ANY
 from databuilder.models.table_column_usage import ColumnReader, TableColumnUsage
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID,
-    NEPTUNE_HEADER_LABEL, NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT,
-    NEPTUNE_RELATIONSHIP_HEADER_FROM, NEPTUNE_RELATIONSHIP_HEADER_TO,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
+    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
+    NEPTUNE_RELATIONSHIP_HEADER_TO,
 )
 
 
@@ -70,26 +71,36 @@ class TestTableColumnUsage(unittest.TestCase):
             rel_row = self.table_col_usage.next_relation()
         expected = [[
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id='db://gold.scm/foo',
-                    to_vertex_id='john@example.com',
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Table:db://gold.scm/foo',
+                    to_vertex_id='User:john@example.com',
                     label='READ_BY'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'db://gold.scm/foo',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'john@example.com',
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Table:db://gold.scm/foo',
+                    to_vertex_id='User:john@example.com',
+                    label='READ_BY'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Table:db://gold.scm/foo',
+                NEPTUNE_RELATIONSHIP_HEADER_TO: 'User:john@example.com',
                 NEPTUNE_HEADER_LABEL: 'READ_BY',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
                 'read_count:Long(single)': 1
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id='john@example.com',
-                    to_vertex_id='db://gold.scm/foo',
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='User:john@example.com',
+                    to_vertex_id='Table:db://gold.scm/foo',
                     label='READ'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'john@example.com',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'db://gold.scm/foo',
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='User:john@example.com',
+                    to_vertex_id='Table:db://gold.scm/foo',
+                    label='READ'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'User:john@example.com',
+                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Table:db://gold.scm/foo',
                 NEPTUNE_HEADER_LABEL: 'READ',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,

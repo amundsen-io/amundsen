@@ -7,7 +7,7 @@ from unittest.mock import ANY
 from databuilder.models.schema.schema import SchemaModel
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -40,7 +40,8 @@ class TestSchemaDescription(unittest.TestCase):
     def test_create_nodes_neptune(self) -> None:
         schema_node = self.schema.create_next_node()
         expected_serialized_schema_node = {
-            NEPTUNE_HEADER_ID: 'db://cluster.schema',
+            NEPTUNE_HEADER_ID: 'Schema:db://cluster.schema',
+            METADATA_KEY_PROPERTY_NAME: 'Schema:db://cluster.schema',
             NEPTUNE_HEADER_LABEL: 'Schema',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -53,7 +54,8 @@ class TestSchemaDescription(unittest.TestCase):
         )
         schema_desc_node = self.schema.create_next_node()
         excepted_serialized_schema_desc_node = {
-            NEPTUNE_HEADER_ID: 'db://cluster.schema/_description',
+            NEPTUNE_HEADER_ID: 'Description:db://cluster.schema/_description',
+            METADATA_KEY_PROPERTY_NAME: 'Description:db://cluster.schema/_description',
             NEPTUNE_HEADER_LABEL: 'Description',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -109,33 +111,38 @@ class TestSchemaDescription(unittest.TestCase):
     def test_create_relation_neptune(self) -> None:
         actual = self.schema.create_next_relation()
         serialized_actual = neptune_serializer.convert_relationship(actual)
+        forward_header_id = "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            from_vertex_id='Schema:db://cluster.schema',
+            to_vertex_id='Description:db://cluster.schema/_description',
+            label='DESCRIPTION'
+        )
+        reverse_header_id = "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            from_vertex_id='Description:db://cluster.schema/_description',
+            to_vertex_id='Schema:db://cluster.schema',
+            label='DESCRIPTION_OF'
+        )
 
         neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='db://cluster.schema',
-                to_vertex_id='db://cluster.schema/_description',
-                label='DESCRIPTION'
-            ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'db://cluster.schema',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'db://cluster.schema/_description',
+            NEPTUNE_HEADER_ID: forward_header_id,
+            METADATA_KEY_PROPERTY_NAME: forward_header_id,
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Schema:db://cluster.schema',
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'Description:db://cluster.schema/_description',
             NEPTUNE_HEADER_LABEL: 'DESCRIPTION',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='db://cluster.schema/_description',
-                to_vertex_id='db://cluster.schema',
-                label='DESCRIPTION_OF'
-            ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'db://cluster.schema/_description',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'db://cluster.schema',
+            NEPTUNE_HEADER_ID: reverse_header_id,
+            METADATA_KEY_PROPERTY_NAME: reverse_header_id,
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Description:db://cluster.schema/_description',
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'Schema:db://cluster.schema',
             NEPTUNE_HEADER_LABEL: 'DESCRIPTION_OF',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
+        self.maxDiff = None
         self.assertDictEqual(serialized_actual[0], neptune_forward_expected)
         self.assertDictEqual(serialized_actual[1], neptune_reversed_expected)
 

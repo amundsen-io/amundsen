@@ -13,7 +13,7 @@ from databuilder.models.graph_serializable import (
 from databuilder.models.watermark import Watermark
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -99,7 +99,8 @@ class TestWatermark(unittest.TestCase):
         nodes = self.watermark.create_nodes()
 
         expected_serialized_node_result = {
-            NEPTUNE_HEADER_ID: self.start_key,
+            NEPTUNE_HEADER_ID: 'Watermark:' + self.start_key,
+            METADATA_KEY_PROPERTY_NAME: 'Watermark:' + self.start_key,
             NEPTUNE_HEADER_LABEL: 'Watermark',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -122,25 +123,35 @@ class TestWatermark(unittest.TestCase):
         serialized_relation = neptune_serializer.convert_relationship(relation[0])
         expected = [
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id=self.start_key,
-                    to_vertex_id=self.end_key,
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Watermark:" + self.start_key,
+                    to_vertex_id="Table:" + self.end_key,
                     label='BELONG_TO_TABLE'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: self.start_key,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: self.end_key,
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Watermark:" + self.start_key,
+                    to_vertex_id="Table:" + self.end_key,
+                    label='BELONG_TO_TABLE'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: "Watermark:" + self.start_key,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + self.end_key,
                 NEPTUNE_HEADER_LABEL: 'BELONG_TO_TABLE',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id=self.end_key,
-                    to_vertex_id=self.start_key,
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Table:" + self.end_key,
+                    to_vertex_id="Watermark:" + self.start_key,
                     label='WATERMARK'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: self.end_key,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: self.start_key,
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Table:" + self.end_key,
+                    to_vertex_id="Watermark:" + self.start_key,
+                    label='WATERMARK'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + self.end_key,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: "Watermark:" + self.start_key,
                 NEPTUNE_HEADER_LABEL: 'WATERMARK',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

@@ -15,7 +15,7 @@ class TableColumnStats(GraphSerializable):
     """
     LABEL = 'Stat'
     KEY_FORMAT = '{db}://{cluster}.{schema}' \
-                 '/{table}/{col}/{stat_name}/'
+                 '/{table}/{col}/{stat_type}/'
     STAT_Column_RELATION_TYPE = 'STAT_OF'
     Column_STAT_RELATION_TYPE = 'STAT'
 
@@ -40,7 +40,7 @@ class TableColumnStats(GraphSerializable):
         self.start_epoch = start_epoch
         self.end_epoch = end_epoch
         self.cluster = cluster
-        self.stat_name = stat_name
+        self.stat_type = stat_name
         self.stat_val = str(stat_val)
         self._node_iter = iter(self.create_nodes())
         self._relation_iter = iter(self.create_relation())
@@ -64,7 +64,7 @@ class TableColumnStats(GraphSerializable):
                                                   schema=self.schema,
                                                   table=self.table,
                                                   col=self.col_name,
-                                                  stat_name=self.stat_name)
+                                                  stat_type=self.stat_type)
 
     def get_col_key(self) -> str:
         # no cluster, schema info from the input
@@ -84,7 +84,7 @@ class TableColumnStats(GraphSerializable):
             label=TableColumnStats.LABEL,
             attributes={
                 'stat_val': self.stat_val,
-                'stat_name': self.stat_name,
+                'stat_type': self.stat_type,
                 'start_epoch': self.start_epoch,
                 'end_epoch': self.end_epoch,
             }

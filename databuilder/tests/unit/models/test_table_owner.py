@@ -12,7 +12,7 @@ from databuilder.models.table_owner import TableOwner
 from databuilder.models.user import User
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -70,14 +70,16 @@ class TestTableOwner(unittest.TestCase):
         nodes = self.table_owner.create_nodes()
 
         expected_node1 = {
-            NEPTUNE_HEADER_ID: User.USER_NODE_KEY_FORMAT.format(email=owner1),
+            NEPTUNE_HEADER_ID: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner1),
+            METADATA_KEY_PROPERTY_NAME: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner1),
             NEPTUNE_HEADER_LABEL: User.USER_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
             User.USER_NODE_EMAIL + ":String(single)": owner1
         }
         expected_node2 = {
-            NEPTUNE_HEADER_ID: User.USER_NODE_KEY_FORMAT.format(email=owner2),
+            NEPTUNE_HEADER_ID: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner2),
+            METADATA_KEY_PROPERTY_NAME: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner2),
             NEPTUNE_HEADER_LABEL: User.USER_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -125,25 +127,35 @@ class TestTableOwner(unittest.TestCase):
         relations = self.table_owner.create_relation()
         expected = [
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id=owner1,
-                    to_vertex_id=self.table_owner.get_metadata_model_key(),
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="User:" + owner1,
+                    to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                     label=TableOwner.OWNER_TABLE_RELATION_TYPE
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: owner1,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: self.table_owner.get_metadata_model_key(),
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="User:" + owner1,
+                    to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
+                    label=TableOwner.OWNER_TABLE_RELATION_TYPE
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: "User:" + owner1,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + self.table_owner.get_metadata_model_key(),
                 NEPTUNE_HEADER_LABEL: TableOwner.OWNER_TABLE_RELATION_TYPE,
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id=self.table_owner.get_metadata_model_key(),
-                    to_vertex_id=owner1,
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
+                    to_vertex_id="User:" + owner1,
                     label=TableOwner.TABLE_OWNER_RELATION_TYPE
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: self.table_owner.get_metadata_model_key(),
-                NEPTUNE_RELATIONSHIP_HEADER_TO: owner1,
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
+                    to_vertex_id="User:" + owner1,
+                    label=TableOwner.TABLE_OWNER_RELATION_TYPE
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + self.table_owner.get_metadata_model_key(),
+                NEPTUNE_RELATIONSHIP_HEADER_TO: "User:" + owner1,
                 NEPTUNE_HEADER_LABEL: TableOwner.TABLE_OWNER_RELATION_TYPE,
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

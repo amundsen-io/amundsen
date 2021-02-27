@@ -17,6 +17,7 @@ NEPTUNE_RELATIONSHIP_HEADER_FROM = "~from"
 NEPTUNE_RELATIONSHIP_HEADER_TO = "~to"
 
 
+METADATA_KEY_PROPERTY_NAME = 'key:String(single)'
 # last seen property names
 NEPTUNE_LAST_EXTRACTED_AT_NODE_PROPERTY_NAME = "last_extracted_datetime"
 NEPTUNE_LAST_EXTRACTED_AT_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT = "{name}:Date(single)".format(
@@ -46,30 +47,33 @@ def convert_relationship(relationship: Optional[GraphRelationship]) -> List[Dict
     if relationship.start_key == '' or relationship.end_key == '':
         return []
 
-    relation_id = "{from_vertex_id}_{to_vertex_id}_{label}".format(
-        from_vertex_id=relationship.start_key,
-        to_vertex_id=relationship.end_key,
-        label=relationship.type
+    neptune_start_key = "{label}:{key}".format(
+        label=relationship.start_label,
+        key=relationship.start_key
     )
-    relation_id_reverse = "{from_vertex_id}_{to_vertex_id}_{label}".format(
-        from_vertex_id=relationship.end_key,
-        to_vertex_id=relationship.start_key,
-        label=relationship.reverse_type
+    neptune_end_key = "{label}:{key}".format(
+        label=relationship.end_label,
+        key=relationship.end_key
     )
+    relation_id = get_forward_relationship_id(relationship)
+    relation_id_reverse = get_reverse_relationship_id(relationship)
     current_string_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
     forward_relationship_doc = {
         NEPTUNE_HEADER_ID: relation_id,
-        NEPTUNE_RELATIONSHIP_HEADER_FROM: relationship.start_key,
-        NEPTUNE_RELATIONSHIP_HEADER_TO: relationship.end_key,
+        METADATA_KEY_PROPERTY_NAME: relation_id,
+        NEPTUNE_RELATIONSHIP_HEADER_FROM: neptune_start_key,
+        NEPTUNE_RELATIONSHIP_HEADER_TO: neptune_end_key,
         NEPTUNE_HEADER_LABEL: relationship.type,
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: current_string_time,
-        NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+        NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
+
     }
 
     reverse_relationship_doc = {
         NEPTUNE_HEADER_ID: relation_id_reverse,
-        NEPTUNE_RELATIONSHIP_HEADER_FROM: relationship.end_key,
-        NEPTUNE_RELATIONSHIP_HEADER_TO: relationship.start_key,
+        METADATA_KEY_PROPERTY_NAME: relation_id_reverse,
+        NEPTUNE_RELATIONSHIP_HEADER_FROM: neptune_end_key,
+        NEPTUNE_RELATIONSHIP_HEADER_TO: neptune_start_key,
         NEPTUNE_HEADER_LABEL: relationship.reverse_type,
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: current_string_time,
         NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -90,6 +94,26 @@ def convert_relationship(relationship: Optional[GraphRelationship]) -> List[Dict
     ]
 
 
+def get_forward_relationship_id(relationship: GraphRelationship) -> str:
+    return "{label}:{from_vertex_label}:{from_vertex_id}_{to_vertex_label}:{to_vertex_id}".format(
+        from_vertex_id=relationship.start_key,
+        from_vertex_label=relationship.start_label,
+        to_vertex_id=relationship.end_key,
+        to_vertex_label=relationship.end_label,
+        label=relationship.type
+    )
+
+
+def get_reverse_relationship_id(relationship: GraphRelationship) -> str:
+    return "{label}:{from_vertex_label}:{from_vertex_id}_{to_vertex_label}:{to_vertex_id}".format(
+        to_vertex_id=relationship.start_key,
+        to_vertex_label=relationship.start_label,
+        from_vertex_id=relationship.end_key,
+        from_vertex_label=relationship.end_label,
+        label=relationship.reverse_type
+    )
+
+
 def convert_node(node: Optional[GraphNode]) -> Dict[str, Any]:
     if node is None:
         return {}
@@ -98,8 +122,10 @@ def convert_node(node: Optional[GraphNode]) -> Dict[str, Any]:
         return {}
 
     current_string_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+    node_id = get_node_id(node)
     node_dict = {
-        NEPTUNE_HEADER_ID: node.key,
+        NEPTUNE_HEADER_ID: node_id,
+        METADATA_KEY_PROPERTY_NAME: node_id,
         NEPTUNE_HEADER_LABEL: node.label,
         NEPTUNE_LAST_EXTRACTED_AT_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: current_string_time,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
@@ -115,6 +141,13 @@ def convert_node(node: Optional[GraphNode]) -> Dict[str, Any]:
             node_dict[doc_key] = attr_value
 
     return node_dict
+
+
+def get_node_id(node: GraphNode) -> str:
+    return "{label}:{key}".format(
+        label=node.label,
+        key=node.key
+    )
 
 
 def _get_neptune_type_for_value(value: Any) -> Optional[str]:

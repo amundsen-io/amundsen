@@ -12,7 +12,7 @@ from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.models.timestamp import timestamp_constants
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -51,8 +51,10 @@ class TestTableLastUpdated(unittest.TestCase):
         self.assertEqual(next_node_serialized, self.expected_node_result)
 
     def test_create_next_node_neptune(self) -> None:
+        node_id = TableLastUpdated.LAST_UPDATED_NODE_LABEL + ":" + self.tableLastUpdated.get_last_updated_model_key()
         expected_node = {
-            NEPTUNE_HEADER_ID: self.tableLastUpdated.get_last_updated_model_key(),
+            NEPTUNE_HEADER_ID: node_id,
+            METADATA_KEY_PROPERTY_NAME: node_id,
             NEPTUNE_HEADER_LABEL: TableLastUpdated.LAST_UPDATED_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -75,25 +77,35 @@ class TestTableLastUpdated(unittest.TestCase):
         next_relation_serialized = neptune_serializer.convert_relationship(next_relation)
         expected = [
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id='hive://gold.default/test_table',
-                    to_vertex_id='hive://gold.default/test_table/timestamp',
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Table:hive://gold.default/test_table',
+                    to_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
                     label='LAST_UPDATED_AT'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'hive://gold.default/test_table',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'hive://gold.default/test_table/timestamp',
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Table:hive://gold.default/test_table',
+                    to_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                    label='LAST_UPDATED_AT'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Table:hive://gold.default/test_table',
+                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Timestamp:hive://gold.default/test_table/timestamp',
                 NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_AT',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id='hive://gold.default/test_table/timestamp',
-                    to_vertex_id='hive://gold.default/test_table',
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                    to_vertex_id='Table:hive://gold.default/test_table',
                     label='LAST_UPDATED_TIME_OF'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'hive://gold.default/test_table/timestamp',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'hive://gold.default/test_table',
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                    to_vertex_id='Table:hive://gold.default/test_table',
+                    label='LAST_UPDATED_TIME_OF'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Timestamp:hive://gold.default/test_table/timestamp',
+                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Table:hive://gold.default/test_table',
                 NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_TIME_OF',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

@@ -17,7 +17,7 @@ class TestNeo4jESLastUpdated(unittest.TestCase):
         self.expected_node_result = {
             NODE_KEY: 'amundsen_updated_timestamp',
             NODE_LABEL: 'Updatedtimestamp',
-            'latest_timestmap:UNQUOTED': 100,
+            'latest_timestamp:UNQUOTED': 100,
         }
 
     def test_create_nodes(self) -> None:
