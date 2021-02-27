@@ -11,7 +11,7 @@ from databuilder.models.graph_serializable import (
 from databuilder.models.table_stats import TableColumnStats
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -33,7 +33,7 @@ class TestTableStats(unittest.TestCase):
             NODE_KEY: 'hive://gold.base/test/col/avg/',
             NODE_LABEL: 'Stat',
             'stat_val': '1',
-            'stat_name': 'avg',
+            'stat_type': 'avg',
             'start_epoch': '1',
             'end_epoch': '2',
         }
@@ -77,12 +77,13 @@ class TestTableStats(unittest.TestCase):
         next_node = self.table_stats.create_next_node()
         serialized_node = neptune_serializer.convert_node(next_node)
         expected_neptune_node = {
-            NEPTUNE_HEADER_ID: 'hive://gold.base/test/col/avg/',
+            NEPTUNE_HEADER_ID: 'Stat:hive://gold.base/test/col/avg/',
+            METADATA_KEY_PROPERTY_NAME: 'Stat:hive://gold.base/test/col/avg/',
             NEPTUNE_HEADER_LABEL: 'Stat',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
             'stat_val:String(single)': '1',
-            'stat_name:String(single)': 'avg',
+            'stat_type:String(single)': 'avg',
             'start_epoch:String(single)': '1',
             'end_epoch:String(single)': '2',
         }
@@ -107,25 +108,35 @@ class TestTableStats(unittest.TestCase):
 
         expected = [
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id='hive://gold.base/test/col/avg/',
-                    to_vertex_id='hive://gold.base/test/col',
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Stat:hive://gold.base/test/col/avg/',
+                    to_vertex_id='Column:hive://gold.base/test/col',
                     label='STAT_OF'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'hive://gold.base/test/col/avg/',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'hive://gold.base/test/col',
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Stat:hive://gold.base/test/col/avg/',
+                    to_vertex_id='Column:hive://gold.base/test/col',
+                    label='STAT_OF'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Stat:hive://gold.base/test/col/avg/',
+                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Column:hive://gold.base/test/col',
                 NEPTUNE_HEADER_LABEL: 'STAT_OF',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             },
             {
-                NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                    from_vertex_id='hive://gold.base/test/col',
-                    to_vertex_id='hive://gold.base/test/col/avg/',
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Column:hive://gold.base/test/col',
+                    to_vertex_id='Stat:hive://gold.base/test/col/avg/',
                     label='STAT'
                 ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'hive://gold.base/test/col',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'hive://gold.base/test/col/avg/',
+                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id='Column:hive://gold.base/test/col',
+                    to_vertex_id='Stat:hive://gold.base/test/col/avg/',
+                    label='STAT'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Column:hive://gold.base/test/col',
+                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Stat:hive://gold.base/test/col/avg/',
                 NEPTUNE_HEADER_LABEL: 'STAT',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

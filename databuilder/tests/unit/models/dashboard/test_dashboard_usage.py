@@ -12,9 +12,10 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID,
-    NEPTUNE_HEADER_LABEL, NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT,
-    NEPTUNE_RELATIONSHIP_HEADER_FROM, NEPTUNE_RELATIONSHIP_HEADER_TO,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
+    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
+    NEPTUNE_RELATIONSHIP_HEADER_TO,
 )
 
 
@@ -84,14 +85,23 @@ class TestDashboardOwner(unittest.TestCase):
         actual = dashboard_usage.create_next_relation()
         actual_serialized = neptune_serializer.convert_relationship(actual)
 
+        forward_id = "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            from_vertex_id='Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            to_vertex_id='User:foo@bar.com',
+            label='READ_BY'
+        )
+        reverse_id = "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            from_vertex_id='User:foo@bar.com',
+            to_vertex_id='Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            label='READ'
+        )
+
+        dashboard_id = 'Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id'
         neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
-                to_vertex_id='foo@bar.com',
-                label='READ_BY'
-            ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'foo@bar.com',
+            NEPTUNE_HEADER_ID: forward_id,
+            METADATA_KEY_PROPERTY_NAME: forward_id,
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: dashboard_id,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'User:foo@bar.com',
             NEPTUNE_HEADER_LABEL: 'READ_BY',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -99,13 +109,10 @@ class TestDashboardOwner(unittest.TestCase):
         }
 
         neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='foo@bar.com',
-                to_vertex_id='product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
-                label='READ'
-            ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'foo@bar.com',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            NEPTUNE_HEADER_ID: reverse_id,
+            METADATA_KEY_PROPERTY_NAME: reverse_id,
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'User:foo@bar.com',
+            NEPTUNE_RELATIONSHIP_HEADER_TO: dashboard_id,
             NEPTUNE_HEADER_LABEL: 'READ',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -113,6 +120,7 @@ class TestDashboardOwner(unittest.TestCase):
         }
 
         assert actual is not None
+        self.maxDiff = None
         self.assertDictEqual(neptune_forward_expected, actual_serialized[0])
         self.assertDictEqual(neptune_reversed_expected, actual_serialized[1])
         self.assertIsNone(dashboard_usage.create_next_relation())

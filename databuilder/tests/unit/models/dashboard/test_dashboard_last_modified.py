@@ -12,7 +12,7 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -55,7 +55,8 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         actual = self.dashboard_last_modified.create_next_node()
         actual_neptune_serialized = neptune_serializer.convert_node(actual)
         neptune_expected = {
-            NEPTUNE_HEADER_ID: self.expected_ts_key,
+            NEPTUNE_HEADER_ID: 'Timestamp:' + self.expected_ts_key,
+            METADATA_KEY_PROPERTY_NAME: 'Timestamp:' + self.expected_ts_key,
             NEPTUNE_HEADER_LABEL: 'Timestamp',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -87,31 +88,41 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         actual = self.dashboard_last_modified.create_next_relation()
         actual_serialized = neptune_serializer.convert_relationship(actual)
         neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=self.expected_dashboard_key,
-                to_vertex_id=self.expected_ts_key,
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Dashboard:' + self.expected_dashboard_key,
+                to_vertex_id='Timestamp:' + self.expected_ts_key,
                 label='LAST_UPDATED_AT'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: self.expected_dashboard_key,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: self.expected_ts_key,
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Dashboard:' + self.expected_dashboard_key,
+                to_vertex_id='Timestamp:' + self.expected_ts_key,
+                label='LAST_UPDATED_AT'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Dashboard:' + self.expected_dashboard_key,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'Timestamp:' + self.expected_ts_key,
             NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_AT',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=self.expected_ts_key,
-                to_vertex_id=self.expected_dashboard_key,
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Timestamp:' + self.expected_ts_key,
+                to_vertex_id='Dashboard:' + self.expected_dashboard_key,
                 label='LAST_UPDATED_TIME_OF'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: self.expected_ts_key,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: self.expected_dashboard_key,
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id='Timestamp:' + self.expected_ts_key,
+                to_vertex_id='Dashboard:' + self.expected_dashboard_key,
+                label='LAST_UPDATED_TIME_OF'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Timestamp:' + self.expected_ts_key,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'Dashboard:' + self.expected_dashboard_key,
             NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_TIME_OF',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
-
+        self.maxDiff = None
         assert actual is not None
         self.assertDictEqual(actual_serialized[0], neptune_forward_expected)
         self.assertDictEqual(actual_serialized[1], neptune_reversed_expected)

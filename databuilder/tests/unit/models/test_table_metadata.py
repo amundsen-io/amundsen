@@ -55,28 +55,28 @@ class TestTableMetadata(unittest.TestCase):
              'is_view:UNQUOTED': False},
             {'description': 'test_table1', 'KEY': 'hive://gold.test_schema1/test_table1/_description',
              'LABEL': 'Description', 'description_source': 'description'},
-            {'sort_order:UNQUOTED': 0, 'type': 'bigint', 'name': 'test_id1',
+            {'sort_order:UNQUOTED': 0, 'col_type': 'bigint', 'name': 'test_id1',
              'KEY': 'hive://gold.test_schema1/test_table1/test_id1', 'LABEL': 'Column'},
             {'description': 'description of test_table1',
              'KEY': 'hive://gold.test_schema1/test_table1/test_id1/_description', 'LABEL': 'Description',
              'description_source': 'description'},
-            {'sort_order:UNQUOTED': 1, 'type': 'bigint', 'name': 'test_id2',
+            {'sort_order:UNQUOTED': 1, 'col_type': 'bigint', 'name': 'test_id2',
              'KEY': 'hive://gold.test_schema1/test_table1/test_id2', 'LABEL': 'Column'},
             {'description': 'description of test_id2',
              'KEY': 'hive://gold.test_schema1/test_table1/test_id2/_description',
              'LABEL': 'Description', 'description_source': 'description'},
-            {'sort_order:UNQUOTED': 2, 'type': 'boolean', 'name': 'is_active',
+            {'sort_order:UNQUOTED': 2, 'col_type': 'boolean', 'name': 'is_active',
              'KEY': 'hive://gold.test_schema1/test_table1/is_active', 'LABEL': 'Column'},
-            {'sort_order:UNQUOTED': 3, 'type': 'varchar', 'name': 'source',
+            {'sort_order:UNQUOTED': 3, 'col_type': 'varchar', 'name': 'source',
              'KEY': 'hive://gold.test_schema1/test_table1/source', 'LABEL': 'Column'},
             {'description': 'description of source', 'KEY': 'hive://gold.test_schema1/test_table1/source/_description',
              'LABEL': 'Description', 'description_source': 'description'},
-            {'sort_order:UNQUOTED': 4, 'type': 'timestamp', 'name': 'etl_created_at',
+            {'sort_order:UNQUOTED': 4, 'col_type': 'timestamp', 'name': 'etl_created_at',
              'KEY': 'hive://gold.test_schema1/test_table1/etl_created_at', 'LABEL': 'Column'},
             {'description': 'description of etl_created_at',
              'KEY': 'hive://gold.test_schema1/test_table1/etl_created_at/_description', 'LABEL': 'Description',
              'description_source': 'description'},
-            {'sort_order:UNQUOTED': 5, 'type': 'varchar', 'name': 'ds',
+            {'sort_order:UNQUOTED': 5, 'col_type': 'varchar', 'name': 'ds',
              'KEY': 'hive://gold.test_schema1/test_table1/ds', 'LABEL': 'Column'}
         ]
 
@@ -180,7 +180,7 @@ class TestTableMetadata(unittest.TestCase):
             relation_row_serialized = neptune_serializer.convert_relationship(relation_row)
             neptune_actual.append(relation_row_serialized)
             relation_row = self.table_metadata.next_relation()
-
+        self.maxDiff = None
         self.assertEqual(EXPECTED_RELATIONSHIPS_NEPTUNE, neptune_actual)
 
     def test_table_attributes(self) -> None:

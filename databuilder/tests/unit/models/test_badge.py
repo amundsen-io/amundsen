@@ -12,7 +12,7 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -65,17 +65,19 @@ class TestBadge(unittest.TestCase):
             neptune_serializer.convert_node(node)
             for node in nodes
         ]
-
+        node_id_1 = BadgeMetadata.BADGE_NODE_LABEL + ":" + BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name)
         expected_node1 = {
-            NEPTUNE_HEADER_ID: BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name),
+            NEPTUNE_HEADER_ID: node_id_1,
+            METADATA_KEY_PROPERTY_NAME: node_id_1,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
             BadgeMetadata.BADGE_CATEGORY + ':String(single)': badge1.category
         }
-
+        node_id_2 = BadgeMetadata.BADGE_NODE_LABEL + ":" + BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name)
         expected_node2 = {
-            NEPTUNE_HEADER_ID: BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name),
+            NEPTUNE_HEADER_ID: node_id_2,
+            METADATA_KEY_PROPERTY_NAME: node_id_2,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -138,53 +140,77 @@ class TestBadge(unittest.TestCase):
             neptune_serializer.convert_relationship(rel) for rel in relations
         ], [])
 
+        badge_id_1 = BadgeMetadata.BADGE_NODE_LABEL + ':' + BadgeMetadata.get_badge_key(badge1.name)
+        badge_id_2 = BadgeMetadata.BADGE_NODE_LABEL + ':' + BadgeMetadata.get_badge_key(badge2.name)
+        start_key = self.badge_metada.start_label + ':' + self.badge_metada.start_key
+
         neptune_forward_expected_1 = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=self.badge_metada.start_key,
-                to_vertex_id=BadgeMetadata.get_badge_key(badge1.name),
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=start_key,
+                to_vertex_id=badge_id_1,
                 label=BadgeMetadata.BADGE_RELATION_TYPE,
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: self.badge_metada.start_key,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: BadgeMetadata.get_badge_key(badge1.name),
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=start_key,
+                to_vertex_id=badge_id_1,
+                label=BadgeMetadata.BADGE_RELATION_TYPE,
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: start_key,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: badge_id_1,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.BADGE_RELATION_TYPE,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected_1 = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=BadgeMetadata.get_badge_key(badge1.name),
-                to_vertex_id=self.badge_metada.start_key,
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=badge_id_1,
+                to_vertex_id=start_key,
                 label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: BadgeMetadata.get_badge_key(badge1.name),
-            NEPTUNE_RELATIONSHIP_HEADER_TO: self.badge_metada.start_key,
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=badge_id_1,
+                to_vertex_id=start_key,
+                label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: badge_id_1,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: start_key,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_forward_expected_2 = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=self.badge_metada.start_key,
-                to_vertex_id=BadgeMetadata.get_badge_key(badge2.name),
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=start_key,
+                to_vertex_id=badge_id_2,
                 label=BadgeMetadata.BADGE_RELATION_TYPE,
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: self.badge_metada.start_key,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: BadgeMetadata.get_badge_key(badge2.name),
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=start_key,
+                to_vertex_id=badge_id_2,
+                label=BadgeMetadata.BADGE_RELATION_TYPE,
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: start_key,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: badge_id_2,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.BADGE_RELATION_TYPE,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected_2 = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id=BadgeMetadata.get_badge_key(badge2.name),
-                to_vertex_id=self.badge_metada.start_key,
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=badge_id_2,
+                to_vertex_id=start_key,
                 label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: BadgeMetadata.get_badge_key(badge2.name),
-            NEPTUNE_RELATIONSHIP_HEADER_TO: self.badge_metada.start_key,
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=badge_id_2,
+                to_vertex_id=start_key,
+                label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: badge_id_2,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: start_key,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

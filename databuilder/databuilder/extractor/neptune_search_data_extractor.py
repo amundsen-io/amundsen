@@ -142,7 +142,7 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
 
 def _dashboard_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dict]:
     traversal = graph.V().hasLabel(DashboardMetadata.DASHBOARD_NODE_LABEL)
-    traversal = traversal.has('full_name')
+    traversal = traversal.has('name')
     if tag_filter:
         traversal = traversal.where('published_tag', tag_filter)
 
@@ -184,13 +184,16 @@ def _dashboard_search_query(graph: GraphTraversalSource, tag_filter: str) -> Lis
         __.constant('')
     ))  # group_description
     traversal = traversal.by(
-        __.out(DashboardMetadata.DASHBOARD_DASHBOARD_GROUP_RELATION_TYPE).values('group_url')
+        __.out(DashboardMetadata.DASHBOARD_DASHBOARD_GROUP_RELATION_TYPE).values('dashboard_group_url')
     )  # group_url
     traversal = traversal.by('dashboard_url')  # dashboard_url
     traversal = traversal.by('key')  # uri
 
     traversal = traversal.by(
-        __.out('EXECUTED').has('key', TextP.endingWith('_last_successful_execution')).values('timestamp')
+        __.coalesce(
+            __.out('EXECUTED').has('key', TextP.endingWith('_last_successful_execution')).values('timestamp'),
+            __.constant('')
+        )
     )  # last_successful_run_timestamp
     traversal = traversal.by(
         __.out(DashboardQuery.DASHBOARD_QUERY_RELATION_TYPE).values('name').dedup().fold()

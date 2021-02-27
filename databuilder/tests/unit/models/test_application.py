@@ -12,7 +12,7 @@ from databuilder.models.graph_serializable import (
 from databuilder.models.table_metadata import TableMetadata
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -56,8 +56,10 @@ class TestApplication(unittest.TestCase):
     def test_create_next_node_neptune(self) -> None:
         next_node = self.application.create_next_node()
         serialized_next_node = neptune_serializer.convert_node(next_node)
+        node_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
         neptune_expected = {
-            NEPTUNE_HEADER_ID: 'application://gold.airflow/event_test/hive.default.test_table',
+            NEPTUNE_HEADER_ID: node_id,
+            METADATA_KEY_PROPERTY_NAME: node_id,
             NEPTUNE_HEADER_LABEL: 'Application',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -74,28 +76,39 @@ class TestApplication(unittest.TestCase):
         self.assertEquals(serialized_next_relation, self.expected_relation_result)
 
     def test_create_next_relation_neptune(self) -> None:
-
+        application_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
+        table_id = 'Table:hive://gold.default/test_table'
         neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='hive://gold.default/test_table',
-                to_vertex_id='application://gold.airflow/event_test/hive.default.test_table',
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=table_id,
+                to_vertex_id=application_id,
                 label='DERIVED_FROM'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'hive://gold.default/test_table',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'application://gold.airflow/event_test/hive.default.test_table',
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=table_id,
+                to_vertex_id=application_id,
+                label='DERIVED_FROM'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: table_id,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: application_id,
             NEPTUNE_HEADER_LABEL: 'DERIVED_FROM',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
 
         neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{from_vertex_id}_{to_vertex_id}_{label}".format(
-                from_vertex_id='application://gold.airflow/event_test/hive.default.test_table',
-                to_vertex_id='hive://gold.default/test_table',
+            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=application_id,
+                to_vertex_id=table_id,
                 label='GENERATES'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'application://gold.airflow/event_test/hive.default.test_table',
-            NEPTUNE_RELATIONSHIP_HEADER_TO: 'hive://gold.default/test_table',
+            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                from_vertex_id=application_id,
+                to_vertex_id=table_id,
+                label='GENERATES'
+            ),
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: application_id,
+            NEPTUNE_RELATIONSHIP_HEADER_TO: table_id,
             NEPTUNE_HEADER_LABEL: 'GENERATES',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

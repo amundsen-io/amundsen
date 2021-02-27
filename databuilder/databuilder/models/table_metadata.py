@@ -157,7 +157,7 @@ class ColumnMetadata:
     COLUMN_NODE_LABEL = 'Column'
     COLUMN_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}'
     COLUMN_NAME = 'name'
-    COLUMN_TYPE = 'type'
+    COLUMN_TYPE = 'col_type'
     COLUMN_ORDER = 'sort_order'
     COLUMN_DESCRIPTION = 'description'
     COLUMN_DESCRIPTION_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{col}/{description_id}'
