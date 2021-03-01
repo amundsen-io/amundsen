@@ -203,6 +203,11 @@ frontEnd:
   # frontEnd.podAnnotations -- Frontend pod specific annotations.
   podAnnotations: {}
 
+  # frontEnd.ingress -- Frontend ingress specific annotations.
+  ingress:
+    enabled: false
+    annotations: { }
+
 # Configuration related to neo4j.
 neo4j:
   # neo4j.enabled -- If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version.

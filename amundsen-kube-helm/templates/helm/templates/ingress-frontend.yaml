@@ -1,0 +1,23 @@
+{{- if .Values.frontEnd.ingress.enabled -}}
+  {{- $fullName := include "amundsen.fullname" . -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "amundsen.name" . }}-{{ .Values.frontEnd.serviceName }}
+  labels:
+  {{- include "amundsen.labels" . | nindent 4 }}
+  {{- if .Values.frontEnd.ingress.enabled }}
+  annotations:
+    {{- range $key, $value := .Values.frontEnd.ingress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+  {{- end }}
+  {{- end }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: {{ template "amundsen.name" . }}-{{ .Values.frontEnd.serviceName }}
+              servicePort: {{ .Values.frontEnd.servicePort }}
+  {{- end }}

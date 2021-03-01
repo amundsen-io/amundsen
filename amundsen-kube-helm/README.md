@@ -62,6 +62,8 @@ This is setup templates for deploying [amundsen](https://github.com/amundsen-io/
 | frontEnd.servicePort | int | `80` | The port the frontend service will be exposed on via the loadbalancer. |
 | frontEnd.serviceType | string | `"ClusterIP"` | The frontend service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) |
 | frontEnd.tolerations | list | `[]` | Frontend pod specific tolerations. |
+| frontEnd.ingress.enabled | bool | `false` | set this to true, if you want to provide the frontend ingress annotations. |
+| frontEnd.ingress.annotations | object | `{}` | Frontend ingress sepecific annotations. |
 | metadata.affinity | object | `{}` | Metadata pod specific affinity. |
 | metadata.annotations | object | `{}` | Metadata service specific tolerations. |
 | metadata.image | string | `"amundsendev/amundsen-metadata"` | The image of the metadata container. |
