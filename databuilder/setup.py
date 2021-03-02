@@ -38,7 +38,7 @@ athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 # Upstream url: https://github.com/googleapis/google-api-python-client
 bigquery = [
     'google-api-python-client>=1.6.0, <2.0.0dev',
-    'google-auth-httplib2>=0.0.1'
+    'google-auth-httplib2>=0.0.1',
     'google-auth>=1.0.0, <2.0.0dev'
 ]
 
