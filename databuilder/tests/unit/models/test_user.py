@@ -24,7 +24,7 @@ class TestUser(unittest.TestCase):
         super(TestUser, self).setUp()
         self.user = User(first_name='test_first',
                          last_name='test_last',
-                         name='test_first test_last',
+                         full_name='test_first test_last',
                          email='test@email.com',
                          github_username='github_test',
                          team_name='test_team',
@@ -40,13 +40,35 @@ class TestUser(unittest.TestCase):
         self.assertEqual(user_email, 'test@email.com')
 
     def test_create_nodes(self) -> None:
-        nodes = self.user.create_nodes()
-        self.assertEqual(len(nodes), 1)
+        expected_nodes = [{
+            'LABEL': 'User',
+            'KEY': 'test@email.com',
+            'email': 'test@email.com',
+            'is_active:UNQUOTED': True,
+            'first_name': 'test_first',
+            'last_name': 'test_last',
+            'full_name': 'test_first test_last',
+            'github_username': 'github_test',
+            'team_name': 'test_team',
+            'employee_type': 'FTE',
+            'slack_id': 'slack',
+            'role_name': 'swe',
+            'updated_at:UNQUOTED': 1
+        }]
+
+        actual = []
+        node = self.user.create_next_node()
+        while node:
+            serialized_node = neo4_serializer.serialize_node(node)
+            actual.append(serialized_node)
+            node = self.user.create_next_node()
+
+        self.assertEqual(actual, expected_nodes)
 
     def test_create_node_additional_attr(self) -> None:
         test_user = User(first_name='test_first',
                          last_name='test_last',
-                         name='test_first test_last',
+                         full_name='test_first test_last',
                          email='test@email.com',
                          github_username='github_test',
                          team_name='test_team',
@@ -57,8 +79,8 @@ class TestUser(unittest.TestCase):
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)
-        nodes = test_user.create_nodes()
-        serialized_node = neo4_serializer.serialize_node(nodes[0])
+        node = test_user.create_next_node()
+        serialized_node = neo4_serializer.serialize_node(node)
         self.assertEqual(serialized_node['email'], 'test@email.com')
         self.assertEqual(serialized_node['role_name'], 'swe')
         self.assertTrue(serialized_node['enable_notify:UNQUOTED'])
@@ -77,76 +99,85 @@ class TestUser(unittest.TestCase):
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)
-        nodes = test_user.create_nodes()
-        serialized_node = neptune_serializer.convert_node(nodes[0])
+        node = test_user.create_next_node()
+        serialized_node = neptune_serializer.convert_node(node)
         self.assertEqual(serialized_node['email:String(single)'], 'test@email.com')
         self.assertEqual(serialized_node['role_name:String(single)'], 'swe')
         self.assertTrue(serialized_node['enable_notify:Bool(single)'])
 
     def test_create_relation(self) -> None:
-        relations = self.user.create_relation()
-        self.assertEqual(len(relations), 1)
+        actual = []
+        relation = self.user.create_next_relation()
+        while relation:
+            serialized_relation = neo4_serializer.serialize_relationship(relation)
+            actual.append(serialized_relation)
+            relation = self.user.create_next_relation()
 
         start_key = 'test@email.com'
         end_key = 'test_manager@email.com'
 
-        expected_relation = {
+        expected_relations = [{
             RELATION_START_KEY: start_key,
             RELATION_START_LABEL: User.USER_NODE_LABEL,
             RELATION_END_KEY: end_key,
             RELATION_END_LABEL: User.USER_NODE_LABEL,
             RELATION_TYPE: User.USER_MANAGER_RELATION_TYPE,
             RELATION_REVERSE_TYPE: User.MANAGER_USER_RELATION_TYPE
-        }
+        }]
 
-        self.assertTrue(expected_relation, neo4_serializer.serialize_relationship(relations[0]))
+        self.assertTrue(expected_relations, actual)
 
     def test_create_relation_neptune(self) -> None:
-        relations = self.user.create_relation()
-
-        serialized = neptune_serializer.convert_relationship(relations[0])
+        actual = []
+        relation = self.user.create_next_relation()
+        while relation:
+            serialized = neptune_serializer.convert_relationship(relation)
+            actual.append(serialized)
+            relation = self.user.create_next_relation()
 
         start_key = 'User:{email}'.format(email='test@email.com')
         end_key = 'User:{email}'.format(email='test_manager@email.com')
 
         expected = [
-            {
-                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id=start_key,
-                    to_vertex_id=end_key,
-                    label=User.USER_MANAGER_RELATION_TYPE
-                ),
-                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id=start_key,
-                    to_vertex_id=end_key,
-                    label=User.USER_MANAGER_RELATION_TYPE
-                ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: start_key,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: end_key,
-                NEPTUNE_HEADER_LABEL: User.USER_MANAGER_RELATION_TYPE,
-                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-            },
-            {
-                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id=end_key,
-                    to_vertex_id=start_key,
-                    label=User.MANAGER_USER_RELATION_TYPE
-                ),
-                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id=end_key,
-                    to_vertex_id=start_key,
-                    label=User.MANAGER_USER_RELATION_TYPE
-                ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: end_key,
-                NEPTUNE_RELATIONSHIP_HEADER_TO: start_key,
-                NEPTUNE_HEADER_LABEL: User.MANAGER_USER_RELATION_TYPE,
-                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-            }
+            [
+                {
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id=start_key,
+                        to_vertex_id=end_key,
+                        label=User.USER_MANAGER_RELATION_TYPE
+                    ),
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id=start_key,
+                        to_vertex_id=end_key,
+                        label=User.USER_MANAGER_RELATION_TYPE
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: start_key,
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: end_key,
+                    NEPTUNE_HEADER_LABEL: User.USER_MANAGER_RELATION_TYPE,
+                    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+                },
+                {
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id=end_key,
+                        to_vertex_id=start_key,
+                        label=User.MANAGER_USER_RELATION_TYPE
+                    ),
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id=end_key,
+                        to_vertex_id=start_key,
+                        label=User.MANAGER_USER_RELATION_TYPE
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: end_key,
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: start_key,
+                    NEPTUNE_HEADER_LABEL: User.MANAGER_USER_RELATION_TYPE,
+                    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+                }
+            ]
         ]
 
-        self.assertListEqual(serialized, expected)
+        self.assertListEqual(actual, expected)
 
     def test_not_including_empty_attribute(self) -> None:
         test_user = User(email='test@email.com',

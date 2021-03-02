@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import re
-from typing import List, Optional
+from typing import (
+    Iterator, List, Optional,
+)
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -60,8 +62,8 @@ class BadgeMetadata(GraphSerializable):
         else:
             raise Exception(start_label + ' is not a valid start_label for a Badge relation')
 
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def __repr__(self) -> str:
         return f'BadgeMetadata({self.start_label!r}, {self.start_key!r})'
@@ -88,12 +90,8 @@ class BadgeMetadata(GraphSerializable):
     def get_metadata_model_key(self) -> str:
         return self.start_key
 
-    def create_nodes(self) -> List[GraphNode]:
-        """
-        Create a list of `GraphNode` records
-        :return:
-        """
-        results = []
+    def get_badge_nodes(self) -> List[GraphNode]:
+        nodes = []
         for badge in self.badges:
             if badge:
                 node = GraphNode(
@@ -103,11 +101,11 @@ class BadgeMetadata(GraphSerializable):
                         self.BADGE_CATEGORY: badge.category
                     }
                 )
-                results.append(node)
-        return results
+                nodes.append(node)
+        return nodes
 
-    def create_relation(self) -> List[GraphRelationship]:
-        results: List[GraphRelationship] = []
+    def get_badge_relations(self) -> List[GraphRelationship]:
+        relations = []
         for badge in self.badges:
             relation = GraphRelationship(
                 start_label=self.start_label,
@@ -118,5 +116,19 @@ class BadgeMetadata(GraphSerializable):
                 reverse_type=self.INVERSE_BADGE_RELATION_TYPE,
                 attributes={}
             )
-            results.append(relation)
-        return results
+            relations.append(relation)
+        return relations
+
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
+        """
+        Create badge nodes
+        :return:
+        """
+        nodes = self.get_badge_nodes()
+        for node in nodes:
+            yield node
+
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
+        relations = self.get_badge_relations()
+        for relation in relations:
+            yield relation

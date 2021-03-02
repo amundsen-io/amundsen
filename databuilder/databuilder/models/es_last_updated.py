@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Union
+from typing import Iterator, Union
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -25,8 +25,8 @@ class ESLastUpdated(GraphSerializable):
         :param timestamp: epoch for latest updated timestamp for neo4j an es
         """
         self.timestamp = timestamp
-        self._node_iter = iter(self.create_nodes())
-        self._rel_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._rel_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         """
@@ -37,9 +37,9 @@ class ESLastUpdated(GraphSerializable):
         except StopIteration:
             return None
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records.
+        Create an es_updated_timestamp node
         """
         node = GraphNode(
             key=ESLastUpdated.KEY,
@@ -48,7 +48,7 @@ class ESLastUpdated(GraphSerializable):
                 ESLastUpdated.LATEST_TIMESTAMP: self.timestamp
             }
         )
-        return [node]
+        yield node
 
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
@@ -56,5 +56,6 @@ class ESLastUpdated(GraphSerializable):
         except StopIteration:
             return None
 
-    def create_relation(self) -> List[GraphRelationship]:
-        return []
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
+        return
+        yield

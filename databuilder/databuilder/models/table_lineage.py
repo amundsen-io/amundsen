@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import re
-from typing import List, Union
+from typing import (
+    Iterator, List, Union,
+)
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -33,8 +35,8 @@ class TableLineage(GraphSerializable):
         # a list of downstream dependencies, each of which will follow
         # the same key
         self.downstream_deps = downstream_deps or []
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_rel_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # return the string representation of the data
@@ -57,19 +59,19 @@ class TableLineage(GraphSerializable):
                             ) -> str:
         return f'{db}://{cluster}.{schema}/{table}'
 
-    def create_nodes(self) -> List[Union[GraphNode, None]]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
         It won't create any node for this model
         :return:
         """
-        return []
+        return
+        yield
 
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_rel_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relation between source table and all the downstream tables
+        Create relations between source table and all the downstream tables
         :return:
         """
-        results = []
         for downstream_tab in self.downstream_deps:
             # every deps should follow '{db}://{cluster}.{schema}/{table}'
             # todo: if we change the table uri, we should change here.
@@ -95,8 +97,7 @@ class TableLineage(GraphSerializable):
                     reverse_type=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE,
                     attributes={}
                 )
-                results.append(relationship)
-        return results
+                yield relationship
 
     def __repr__(self) -> str:
         return f'TableLineage({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r})'

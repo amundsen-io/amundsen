@@ -73,7 +73,8 @@ class TableColumnUsage(GraphSerializable):
         for col_reader in self.col_readers:
             if col_reader.column == '*':
                 # using yield for better memory efficiency
-                yield User(email=col_reader.user_email).create_nodes()[0]
+                user_node = User(email=col_reader.user_email).get_user_node()
+                yield user_node
 
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:

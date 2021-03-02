@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    List, Optional, Union,
+    Iterator, List, Optional, Union,
 )
 
 from databuilder.models.graph_node import GraphNode
@@ -34,8 +34,8 @@ class TableOwner(GraphSerializable):
         self.owners = [owner.strip() for owner in owners]
 
         self.cluster = cluster
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -56,12 +56,11 @@ class TableOwner(GraphSerializable):
     def get_metadata_model_key(self) -> str:
         return f'{self.db}://{self.cluster}.{self.schema}/{self.table}'
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create table owner nodes
         :return:
         """
-        results = []
         for owner in self.owners:
             if owner:
                 node = GraphNode(
@@ -71,15 +70,13 @@ class TableOwner(GraphSerializable):
                         User.USER_NODE_EMAIL: owner
                     }
                 )
-                results.append(node)
-        return results
+                yield node
 
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relation map between owner record with original hive table
+        Create relation map between owner record with original hive table
         :return:
         """
-        results = []
         for owner in self.owners:
             if owner:
                 relationship = GraphRelationship(
@@ -91,9 +88,7 @@ class TableOwner(GraphSerializable):
                     reverse_type=TableOwner.TABLE_OWNER_RELATION_TYPE,
                     attributes={}
                 )
-                results.append(relationship)
-
-        return results
+                yield relationship
 
     def __repr__(self) -> str:
         return f'TableOwner({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r}, {self.owners!r})'

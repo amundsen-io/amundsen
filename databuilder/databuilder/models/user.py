@@ -3,7 +3,7 @@
 
 import copy
 from typing import (
-    Any, List, Optional,
+    Any, Iterator, Optional,
 )
 
 from databuilder.models.graph_node import GraphNode
@@ -54,7 +54,7 @@ class User(GraphSerializable):
 
         :param first_name:
         :param last_name:
-        :param name:
+        :param full_name:
         :param email:
         :param github_username:
         :param team_name:
@@ -89,8 +89,8 @@ class User(GraphSerializable):
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
 
-        self._node_iter = iter(self.create_nodes())
-        self._rel_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._rel_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -116,12 +116,7 @@ class User(GraphSerializable):
             return ''
         return User.USER_NODE_KEY_FORMAT.format(email=email)
 
-    def create_nodes(self) -> List[GraphNode]:
-        """
-        Create a list of Neo4j node records
-        :return:
-        """
-
+    def get_user_node(self) -> GraphNode:
         node_attributes = {
             User.USER_NODE_EMAIL: self.email,
             User.USER_NODE_IS_ACTIVE: self.is_active,
@@ -156,9 +151,17 @@ class User(GraphSerializable):
             attributes=node_attributes
         )
 
-        return [node]
+        return node
 
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
+        """
+        Create an user node
+        :return:
+        """
+        user_node = self.get_user_node()
+        yield user_node
+
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         if self.manager_email:
             # only create the relation if the manager exists
             relationship = GraphRelationship(
@@ -170,8 +173,7 @@ class User(GraphSerializable):
                 reverse_type=User.MANAGER_USER_RELATION_TYPE,
                 attributes={}
             )
-            return [relationship]
-        return []
+            yield relationship
 
     def __repr__(self) -> str:
         return f'User({self.first_name!r}, {self.last_name!r}, {self.full_name!r}, {self.email!r}, ' \

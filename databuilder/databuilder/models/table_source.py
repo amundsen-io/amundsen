@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional
+from typing import Iterator, Optional
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -34,8 +34,8 @@ class TableSource(GraphSerializable):
         # source is the source file location
         self.source = source
         self.source_type = source_type
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -59,9 +59,9 @@ class TableSource(GraphSerializable):
     def get_metadata_model_key(self) -> str:
         return f'{self.db}://{self.cluster}.{self.schema}/{self.table}'
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create a table source node
         :return:
         """
         node = GraphNode(
@@ -72,12 +72,11 @@ class TableSource(GraphSerializable):
                 'source_type': self.source_type
             }
         )
-        results = [node]
-        return results
+        yield node
 
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relation map between owner record with original hive table
+        Create relation map between owner record with original hive table
         :return:
         """
         relationship = GraphRelationship(
@@ -89,8 +88,7 @@ class TableSource(GraphSerializable):
             reverse_type=TableSource.TABLE_SOURCE_RELATION_TYPE,
             attributes={}
         )
-        results = [relationship]
-        return results
+        yield relationship
 
     def __repr__(self) -> str:
         return f'TableSource({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r}, {self.source!r})'

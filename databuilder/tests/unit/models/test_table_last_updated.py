@@ -28,90 +28,22 @@ class TestTableLastUpdated(unittest.TestCase):
                                                  last_updated_time_epoch=25195665,
                                                  schema='default')
 
-        self.expected_node_result = {
+        self.expected_node_results = [{
             NODE_KEY: 'hive://gold.default/test_table/timestamp',
             NODE_LABEL: 'Timestamp',
             'last_updated_timestamp:UNQUOTED': 25195665,
             timestamp_constants.TIMESTAMP_PROPERTY + ":UNQUOTED": 25195665,
             'name': 'last_updated_timestamp'
-        }
+        }]
 
-        self.expected_relation_result = {
+        self.expected_relation_results = [{
             RELATION_START_KEY: 'hive://gold.default/test_table',
             RELATION_START_LABEL: 'Table',
             RELATION_END_KEY: 'hive://gold.default/test_table/timestamp',
             RELATION_END_LABEL: 'Timestamp',
             RELATION_TYPE: 'LAST_UPDATED_AT',
             RELATION_REVERSE_TYPE: 'LAST_UPDATED_TIME_OF'
-        }
-
-    def test_create_next_node(self) -> None:
-        next_node = self.tableLastUpdated.create_next_node()
-        next_node_serialized = neo4_serializer.serialize_node(next_node)
-        self.assertEqual(next_node_serialized, self.expected_node_result)
-
-    def test_create_next_node_neptune(self) -> None:
-        node_id = TableLastUpdated.LAST_UPDATED_NODE_LABEL + ":" + self.tableLastUpdated.get_last_updated_model_key()
-        expected_node = {
-            NEPTUNE_HEADER_ID: node_id,
-            METADATA_KEY_PROPERTY_NAME: node_id,
-            NEPTUNE_HEADER_LABEL: TableLastUpdated.LAST_UPDATED_NODE_LABEL,
-            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-            NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
-            'name:String(single)': 'last_updated_timestamp',
-            'last_updated_timestamp:Long(single)': 25195665,
-            timestamp_constants.TIMESTAMP_PROPERTY + ":Long(single)": 25195665,
-        }
-
-        next_node = self.tableLastUpdated.create_next_node()
-        next_node_serialized = neptune_serializer.convert_node(next_node)
-        self.assertEqual(next_node_serialized, expected_node)
-
-    def test_create_next_relation(self) -> None:
-        next_relation = self.tableLastUpdated.create_next_relation()
-        next_relation_serialized = neo4_serializer.serialize_relationship(next_relation)
-        self.assertEqual(next_relation_serialized, self.expected_relation_result)
-
-    def test_create_next_relation_neptune(self) -> None:
-        next_relation = self.tableLastUpdated.create_next_relation()
-        next_relation_serialized = neptune_serializer.convert_relationship(next_relation)
-        expected = [
-            {
-                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id='Table:hive://gold.default/test_table',
-                    to_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
-                    label='LAST_UPDATED_AT'
-                ),
-                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id='Table:hive://gold.default/test_table',
-                    to_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
-                    label='LAST_UPDATED_AT'
-                ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Table:hive://gold.default/test_table',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Timestamp:hive://gold.default/test_table/timestamp',
-                NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_AT',
-                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-            },
-            {
-                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
-                    to_vertex_id='Table:hive://gold.default/test_table',
-                    label='LAST_UPDATED_TIME_OF'
-                ),
-                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                    from_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
-                    to_vertex_id='Table:hive://gold.default/test_table',
-                    label='LAST_UPDATED_TIME_OF'
-                ),
-                NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Timestamp:hive://gold.default/test_table/timestamp',
-                NEPTUNE_RELATIONSHIP_HEADER_TO: 'Table:hive://gold.default/test_table',
-                NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_TIME_OF',
-                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-            }
-        ]
-        self.assertEqual(next_relation_serialized, expected)
+        }]
 
     def test_get_table_model_key(self) -> None:
         table = self.tableLastUpdated.get_table_model_key()
@@ -122,13 +54,90 @@ class TestTableLastUpdated(unittest.TestCase):
         self.assertEqual(last_updated, 'hive://gold.default/test_table/timestamp')
 
     def test_create_nodes(self) -> None:
-        nodes = self.tableLastUpdated.create_nodes()
-        self.assertEquals(len(nodes), 1)
-        serialize_node = neo4_serializer.serialize_node(nodes[0])
-        self.assertEquals(serialize_node, self.expected_node_result)
+        actual = []
+        node = self.tableLastUpdated.create_next_node()
+        while node:
+            serialize_node = neo4_serializer.serialize_node(node)
+            actual.append(serialize_node)
+            node = self.tableLastUpdated.create_next_node()
+
+        self.assertEqual(actual, self.expected_node_results)
+
+    def test_create_nodes_neptune(self) -> None:
+        node_id = TableLastUpdated.LAST_UPDATED_NODE_LABEL + ":" + self.tableLastUpdated.get_last_updated_model_key()
+        expected_nodes = [{
+            NEPTUNE_HEADER_ID: node_id,
+            METADATA_KEY_PROPERTY_NAME: node_id,
+            NEPTUNE_HEADER_LABEL: TableLastUpdated.LAST_UPDATED_NODE_LABEL,
+            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+            NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
+            'name:String(single)': 'last_updated_timestamp',
+            'last_updated_timestamp:Long(single)': 25195665,
+            timestamp_constants.TIMESTAMP_PROPERTY + ":Long(single)": 25195665,
+        }]
+
+        actual = []
+        next_node = self.tableLastUpdated.create_next_node()
+        while next_node:
+            next_node_serialized = neptune_serializer.convert_node(next_node)
+            actual.append(next_node_serialized)
+            next_node = self.tableLastUpdated.create_next_node()
+
+        self.assertEqual(actual, expected_nodes)
 
     def test_create_relation(self) -> None:
-        relation = self.tableLastUpdated.create_relation()
-        self.assertEquals(len(relation), 1)
-        serialized_relation = neo4_serializer.serialize_relationship(relation[0])
-        self.assertEquals(serialized_relation, self.expected_relation_result)
+        actual = []
+        relation = self.tableLastUpdated.create_next_relation()
+        while relation:
+            serialized_relation = neo4_serializer.serialize_relationship(relation)
+            actual.append(serialized_relation)
+            relation = self.tableLastUpdated.create_next_relation()
+
+    def test_create_relation_neptune(self) -> None:
+        actual = []
+        next_relation = self.tableLastUpdated.create_next_relation()
+        while next_relation:
+            next_relation_serialized = neptune_serializer.convert_relationship(next_relation)
+            actual.append(next_relation_serialized)
+            next_relation = self.tableLastUpdated.create_next_relation()
+
+        expected = [
+            [
+                {
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Table:hive://gold.default/test_table',
+                        to_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                        label='LAST_UPDATED_AT'
+                    ),
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Table:hive://gold.default/test_table',
+                        to_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                        label='LAST_UPDATED_AT'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Table:hive://gold.default/test_table',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Timestamp:hive://gold.default/test_table/timestamp',
+                    NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_AT',
+                    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+                },
+                {
+                    NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                        to_vertex_id='Table:hive://gold.default/test_table',
+                        label='LAST_UPDATED_TIME_OF'
+                    ),
+                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                        from_vertex_id='Timestamp:hive://gold.default/test_table/timestamp',
+                        to_vertex_id='Table:hive://gold.default/test_table',
+                        label='LAST_UPDATED_TIME_OF'
+                    ),
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Timestamp:hive://gold.default/test_table/timestamp',
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: 'Table:hive://gold.default/test_table',
+                    NEPTUNE_HEADER_LABEL: 'LAST_UPDATED_TIME_OF',
+                    NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                    NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+                }
+            ]
+        ]
+
+        self.assertEqual(actual, expected)
