@@ -30,34 +30,52 @@ class TestApplication(unittest.TestCase):
                                        table_name='test_table',
                                        application_url_template='airflow_host.net/admin/airflow/tree?dag_id={dag_id}')
 
-        self.expected_node_result = {
+        self.expected_node_results = [{
             NODE_KEY: 'application://gold.airflow/event_test/hive.default.test_table',
             NODE_LABEL: 'Application',
             'application_url': 'airflow_host.net/admin/airflow/tree?dag_id=event_test',
             'id': 'event_test/hive.default.test_table',
             'name': 'Airflow',
             'description': 'Airflow with id event_test/hive.default.test_table'
-        }
+        }]
 
-        self.expected_relation_result = {
+        self.expected_relation_results = [{
             RELATION_START_KEY: 'hive://gold.default/test_table',
             RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
             RELATION_END_KEY: 'application://gold.airflow/event_test/hive.default.test_table',
             RELATION_END_LABEL: 'Application',
             RELATION_TYPE: 'DERIVED_FROM',
             RELATION_REVERSE_TYPE: 'GENERATES'
-        }
+        }]
 
-    def test_create_next_node(self) -> None:
-        next_node = self.application.create_next_node()
-        serialized_next_node = neo4_serializer.serialize_node(next_node)
-        self.assertEquals(serialized_next_node, self.expected_node_result)
+    def test_get_table_model_key(self) -> None:
+        table = self.application.get_table_model_key()
+        self.assertEqual(table, 'hive://gold.default/test_table')
+
+    def test_get_application_model_key(self) -> None:
+        application = self.application.get_application_model_key()
+        self.assertEqual(application, self.expected_node_results[0][NODE_KEY])
+
+    def test_create_nodes(self) -> None:
+        actual = []
+        node = self.application.create_next_node()
+        while node:
+            serialized_next_node = neo4_serializer.serialize_node(node)
+            actual.append(serialized_next_node)
+            node = self.application.create_next_node()
+
+        self.assertEqual(actual, self.expected_node_results)
 
     def test_create_next_node_neptune(self) -> None:
+        actual = []
         next_node = self.application.create_next_node()
-        serialized_next_node = neptune_serializer.convert_node(next_node)
+        while next_node:
+            serialized_next_node = neptune_serializer.convert_node(next_node)
+            actual.append(serialized_next_node)
+            next_node = self.application.create_next_node()
+
         node_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
-        neptune_expected = {
+        neptune_expected = [{
             NEPTUNE_HEADER_ID: node_id,
             METADATA_KEY_PROPERTY_NAME: node_id,
             NEPTUNE_HEADER_LABEL: 'Application',
@@ -67,13 +85,18 @@ class TestApplication(unittest.TestCase):
             'id:String(single)': 'event_test/hive.default.test_table',
             'name:String(single)': 'Airflow',
             'description:String(single)': 'Airflow with id event_test/hive.default.test_table',
-        }
-        self.assertDictEqual(neptune_expected, serialized_next_node)
+        }]
+        self.assertEqual(neptune_expected, actual)
 
-    def test_create_next_relation(self) -> None:
-        next_relation = self.application.create_next_relation()
-        serialized_next_relation = neo4_serializer.serialize_relationship(next_relation)
-        self.assertEquals(serialized_next_relation, self.expected_relation_result)
+    def test_create_relation(self) -> None:
+        actual = []
+        relation = self.application.create_next_relation()
+        while relation:
+            serialized_relation = neo4_serializer.serialize_relationship(relation)
+            actual.append(serialized_relation)
+            relation = self.application.create_next_relation()
+
+        self.assertEqual(actual, self.expected_relation_results)
 
     def test_create_next_relation_neptune(self) -> None:
         application_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
@@ -113,27 +136,13 @@ class TestApplication(unittest.TestCase):
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
+        neptune_expected = [[neptune_forward_expected, neptune_reversed_expected]]
 
+        actual = []
         next_relation = self.application.create_next_relation()
-        serialized_next_relations = neptune_serializer.convert_relationship(next_relation)
-        self.assertDictEqual(serialized_next_relations[0], neptune_forward_expected)
-        self.assertDictEqual(serialized_next_relations[1], neptune_reversed_expected)
+        while next_relation:
+            serialized_next_relation = neptune_serializer.convert_relationship(next_relation)
+            actual.append(serialized_next_relation)
+            next_relation = self.application.create_next_relation()
 
-    def test_get_table_model_key(self) -> None:
-        table = self.application.get_table_model_key()
-        self.assertEqual(table, 'hive://gold.default/test_table')
-
-    def test_get_application_model_key(self) -> None:
-        application = self.application.get_application_model_key()
-        self.assertEqual(application, self.expected_node_result[NODE_KEY])
-
-    def test_create_nodes(self) -> None:
-        nodes = self.application.create_nodes()
-        self.assertEquals(len(nodes), 1)
-        serialized_next_node = neo4_serializer.serialize_node(nodes[0])
-        self.assertEquals(serialized_next_node, self.expected_node_result)
-
-    def test_create_relation(self) -> None:
-        relation = self.application.create_relation()
-        self.assertEquals(len(relation), 1)
-        self.assertEquals(neo4_serializer.serialize_relationship(relation[0]), self.expected_relation_result)
+        self.assertEqual(actual, neptune_expected)

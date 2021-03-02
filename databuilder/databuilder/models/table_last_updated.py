@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Union
+from typing import Iterator, Union
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -33,8 +33,8 @@ class TableLastUpdated(GraphSerializable):
         self.db = db
         self.cluster = cluster
 
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def __repr__(self) -> str:
         return f"TableLastUpdated(table_name={self.table_name!r}, last_updated_time={self.last_updated_time!r}, " \
@@ -67,13 +67,11 @@ class TableLastUpdated(GraphSerializable):
                                                                schema=self.schema,
                                                                tbl=self.table_name)
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of graph node records
+        Create a last_updated node
         :return:
         """
-        results = []
-
         node = GraphNode(
             key=self.get_last_updated_model_key(),
             label=TableLastUpdated.LAST_UPDATED_NODE_LABEL,
@@ -83,14 +81,11 @@ class TableLastUpdated(GraphSerializable):
                 TableLastUpdated.TIMESTAMP_NAME_PROPERTY: timestamp_constants.TimestampName.last_updated_timestamp.name
             }
         )
+        yield node
 
-        results.append(node)
-
-        return results
-
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relations mapping last updated node with table node
+        Create relations mapping last updated node with table node
         :return:
         """
         relationship = GraphRelationship(
@@ -102,6 +97,4 @@ class TableLastUpdated(GraphSerializable):
             reverse_type=TableLastUpdated.LASTUPDATED_TABLE_RELATION_TYPE,
             attributes={}
         )
-        results = [relationship]
-
-        return results
+        yield relationship

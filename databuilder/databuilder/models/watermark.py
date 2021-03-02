@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    List, Tuple, Union,
+    Iterator, List, Tuple, Union,
 )
 
 from databuilder.models.graph_node import GraphNode
@@ -45,8 +45,8 @@ class Watermark(GraphSerializable):
         self.parts = [(name, value)]
         self.part_type = part_type
         self.cluster = cluster
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # return the string representation of the data
@@ -71,12 +71,11 @@ class Watermark(GraphSerializable):
     def get_metadata_model_key(self) -> str:
         return f'{self.database}://{self.cluster}.{self.schema}/{self.table}'
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create watermark nodes
         :return:
         """
-        results = []
         for part in self.parts:
             part_node = GraphNode(
                 key=self.get_watermark_model_key(),
@@ -87,12 +86,11 @@ class Watermark(GraphSerializable):
                     'create_time': self.create_time
                 }
             )
-            results.append(part_node)
-        return results
+            yield part_node
 
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relation map between watermark record with original table
+        Create relation map between watermark record with original table
         :return:
         """
         relation = GraphRelationship(
@@ -104,5 +102,4 @@ class Watermark(GraphSerializable):
             reverse_type=Watermark.TABLE_WATERMARK_RELATION_TYPE,
             attributes={}
         )
-        results = [relation]
-        return results
+        yield relation

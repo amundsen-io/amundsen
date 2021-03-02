@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Union
+from typing import Iterator, Union
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -44,8 +44,8 @@ class Application(GraphSerializable):
 
         self.dag = dag_id
 
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # creates new node
@@ -73,12 +73,11 @@ class Application(GraphSerializable):
                                                          dag=self.dag,
                                                          task=self.task)
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create an application node
         :return:
         """
-        results = []
         application_description = '{app_type} with id {id}'.format(
             app_type=Application.APPLICATION_TYPE,
             id=Application.APPLICATION_ID_FORMAT.format(dag_id=self.dag, task_id=self.task)
@@ -97,13 +96,11 @@ class Application(GraphSerializable):
                 Application.APPLICATION_ID: application_id
             }
         )
-        results.append(application_node)
+        yield application_node
 
-        return results
-
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relations between application and table nodes
+        Create relations between application and table nodes
         :return:
         """
         graph_relationship = GraphRelationship(
@@ -115,5 +112,4 @@ class Application(GraphSerializable):
             reverse_type=Application.APPLICATION_TABLE_RELATION_TYPE,
             attributes={}
         )
-        results = [graph_relationship]
-        return results
+        yield graph_relationship

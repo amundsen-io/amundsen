@@ -1,6 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-from typing import List, Optional
+from typing import Iterator, Optional
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -42,8 +42,8 @@ class TableColumnStats(GraphSerializable):
         self.cluster = cluster
         self.stat_type = stat_name
         self.stat_val = str(stat_val)
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -74,9 +74,9 @@ class TableColumnStats(GraphSerializable):
                                                        tbl=self.table,
                                                        col=self.col_name)
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create a table stat node
         :return:
         """
         node = GraphNode(
@@ -89,12 +89,11 @@ class TableColumnStats(GraphSerializable):
                 'end_epoch': self.end_epoch,
             }
         )
-        results = [node]
-        return results
+        yield node
 
-    def create_relation(self) -> List[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         """
-        Create a list of relation map between table stat record with original hive table
+        Create relation map between table stat record with original hive table
         :return:
         """
         relationship = GraphRelationship(
@@ -106,5 +105,4 @@ class TableColumnStats(GraphSerializable):
             reverse_type=TableColumnStats.Column_STAT_RELATION_TYPE,
             attributes={}
         )
-        results = [relationship]
-        return results
+        yield relationship

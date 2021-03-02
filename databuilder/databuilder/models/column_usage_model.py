@@ -1,9 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import (
-    Iterable, List, Union,
-)
+from typing import Iterator, Union
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -46,8 +44,8 @@ class ColumnUsageModel(GraphSerializable):
         self.user_email = user_email
         self.read_count = int(read_count)
 
-        self._node_iter = iter(self.create_nodes())
-        self._relation_iter = iter(self.create_relation())
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
 
@@ -56,13 +54,13 @@ class ColumnUsageModel(GraphSerializable):
         except StopIteration:
             return None
 
-    def create_nodes(self) -> List[GraphNode]:
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
-        Create a list of Neo4j node records
+        Create an user node
         :return:
         """
-
-        return User(email=self.user_email).create_nodes()
+        user_node = User(email=self.user_email).get_user_node()
+        yield user_node
 
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
@@ -70,7 +68,7 @@ class ColumnUsageModel(GraphSerializable):
         except StopIteration:
             return None
 
-    def create_relation(self) -> Iterable[GraphRelationship]:
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         relationship = GraphRelationship(
             start_key=self._get_table_key(),
             start_label=TableMetadata.TABLE_NODE_LABEL,
@@ -82,7 +80,7 @@ class ColumnUsageModel(GraphSerializable):
                 ColumnUsageModel.READ_RELATION_COUNT: self.read_count
             }
         )
-        return [relationship]
+        yield relationship
 
     def _get_table_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,

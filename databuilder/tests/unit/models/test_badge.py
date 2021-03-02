@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from typing import Dict, List
 from unittest.mock import ANY
 
 from databuilder.models.badge import Badge, BadgeMetadata
@@ -38,9 +37,6 @@ class TestBadge(unittest.TestCase):
         self.assertEqual(badge_key, badge1.name)
 
     def test_create_nodes(self) -> None:
-        nodes = self.badge_metada.create_nodes()
-        self.assertEqual(len(nodes), 2)
-
         node1 = {
             NODE_KEY: BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name),
             NODE_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
@@ -51,20 +47,25 @@ class TestBadge(unittest.TestCase):
             NODE_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
             BadgeMetadata.BADGE_CATEGORY: badge2.category
         }
-        serialized_nodes = [
-            neo4_serializer.serialize_node(node)
-            for node in nodes
-        ]
+        expected = [node1, node2]
 
-        self.assertTrue(node1 in serialized_nodes)
-        self.assertTrue(node2 in serialized_nodes)
+        actual = []
+        node = self.badge_metada.create_next_node()
+        while node:
+            serialized_node = neo4_serializer.serialize_node(node)
+            actual.append(serialized_node)
+            node = self.badge_metada.create_next_node()
+
+        self.assertEqual(expected, actual)
 
     def test_create_nodes_neptune(self) -> None:
-        nodes = self.badge_metada.create_nodes()
-        serialized_nodes = [
-            neptune_serializer.convert_node(node)
-            for node in nodes
-        ]
+        actual = []
+        node = self.badge_metada.create_next_node()
+        while node:
+            serialized_node = neptune_serializer.convert_node(node)
+            actual.append(serialized_node)
+            node = self.badge_metada.create_next_node()
+
         node_id_1 = BadgeMetadata.BADGE_NODE_LABEL + ":" + BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name)
         expected_node1 = {
             NEPTUNE_HEADER_ID: node_id_1,
@@ -83,9 +84,9 @@ class TestBadge(unittest.TestCase):
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
             BadgeMetadata.BADGE_CATEGORY + ':String(single)': badge2.category
         }
+        expected = [expected_node1, expected_node2]
 
-        self.assertTrue(expected_node1 in serialized_nodes)
-        self.assertTrue(expected_node2 in serialized_nodes)
+        self.assertEqual(expected, actual)
 
     def test_bad_key_entity_match(self) -> None:
         column_label = 'Column'
@@ -107,12 +108,12 @@ class TestBadge(unittest.TestCase):
                           badges=[badge1, badge2])
 
     def test_create_relation(self) -> None:
-        relations = self.badge_metada.create_relation()
-        serialized_relations = [
-            neo4_serializer.serialize_relationship(relation)
-            for relation in relations
-        ]
-        self.assertEqual(len(relations), 2)
+        actual = []
+        relation = self.badge_metada.create_next_relation()
+        while relation:
+            serialized_relation = neo4_serializer.serialize_relationship(relation)
+            actual.append(serialized_relation)
+            relation = self.badge_metada.create_next_relation()
 
         relation1 = {
             RELATION_START_LABEL: self.badge_metada.start_label,
@@ -130,15 +131,17 @@ class TestBadge(unittest.TestCase):
             RELATION_TYPE: BadgeMetadata.BADGE_RELATION_TYPE,
             RELATION_REVERSE_TYPE: BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
         }
+        expected = [relation1, relation2]
 
-        self.assertTrue(relation1 in serialized_relations)
-        self.assertTrue(relation2 in serialized_relations)
+        self.assertEqual(expected, actual)
 
     def test_create_relation_neptune(self) -> None:
-        relations = self.badge_metada.create_relation()
-        serialized_relations: List[Dict] = sum([
-            neptune_serializer.convert_relationship(rel) for rel in relations
-        ], [])
+        actual = []
+        relation = self.badge_metada.create_next_relation()
+        while relation:
+            serialized_relations = neptune_serializer.convert_relationship(relation)
+            actual.append(serialized_relations)
+            relation = self.badge_metada.create_next_relation()
 
         badge_id_1 = BadgeMetadata.BADGE_NODE_LABEL + ':' + BadgeMetadata.get_badge_key(badge1.name)
         badge_id_2 = BadgeMetadata.BADGE_NODE_LABEL + ':' + BadgeMetadata.get_badge_key(badge2.name)
@@ -215,8 +218,7 @@ class TestBadge(unittest.TestCase):
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
+        expected = [[neptune_forward_expected_1, neptune_reversed_expected_1],
+                    [neptune_forward_expected_2, neptune_reversed_expected_2]]
 
-        self.assertTrue(neptune_forward_expected_1 in serialized_relations)
-        self.assertTrue(neptune_reversed_expected_1 in serialized_relations)
-        self.assertTrue(neptune_forward_expected_2 in serialized_relations)
-        self.assertTrue(neptune_reversed_expected_2 in serialized_relations)
+        self.assertEqual(expected, actual)
