@@ -11,9 +11,10 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import (Column, ProgrammaticDescription,
-                                          Reader, ResourceReport, Stat, Table,
-                                          Tag, User, Watermark)
+from amundsen_common.models.table import (Badge, Column,
+                                          ProgrammaticDescription, Reader,
+                                          ResourceReport, Stat, Table, Tag,
+                                          User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from atlasclient.client import Atlas
 from atlasclient.exceptions import BadRequest, Conflict, NotFound
@@ -331,6 +332,14 @@ class AtlasProxy(BaseProxy):
             col_attrs = col_entity[self.ATTRS_KEY]
             statistics = list()
 
+            badges = list()
+
+            for column_classification in col_entity.get('classifications') or list():
+                if column_classification.get('entityStatus') == Status.ACTIVE:
+                    name = column_classification.get('typeName')
+
+                    badges.append(Badge(badge_name=name, category='default'))
+
             for stats in col_attrs.get('statistics') or list():
                 stats_attrs = stats['attributes']
 
@@ -369,6 +378,7 @@ class AtlasProxy(BaseProxy):
                     col_type=col_attrs.get('type') or col_attrs.get('dataType') or col_attrs.get('data_type'),
                     sort_order=col_attrs.get('position') or 9999,
                     stats=statistics,
+                    badges=badges
                 )
             )
         return sorted(columns, key=lambda item: item.sort_order)
