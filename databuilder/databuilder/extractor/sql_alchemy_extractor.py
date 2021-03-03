@@ -38,6 +38,9 @@ class SQLAlchemyExtractor(Extractor):
             self.model_class = getattr(mod, class_name)
         self._execute_query()
 
+    def close(self) -> None:
+        self.connection.close()
+
     def _get_connection(self) -> Any:
         """
         Create a SQLAlchemy connection to Database
