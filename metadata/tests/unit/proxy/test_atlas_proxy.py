@@ -7,8 +7,9 @@ from typing import Any, Dict, Optional, cast
 from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import (Column, ProgrammaticDescription,
-                                          Reader, Stat, Table, Tag, User)
+from amundsen_common.models.table import (Badge, Column,
+                                          ProgrammaticDescription, Reader,
+                                          Stat, Table, Tag, User)
 from atlasclient.exceptions import BadRequest
 
 from metadata_service import create_app
@@ -136,7 +137,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                          description='column description',
                          col_type='Managed',
                          sort_order=col_attrs['position'],
-                         stats=exp_col_stats)
+                         stats=exp_col_stats,
+                         badges=[Badge(category='default', badge_name='active_col_badge')])
 
         expected = Table(database=self.entity_type,
                          cluster=self.cluster,

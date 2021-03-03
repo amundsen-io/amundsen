@@ -54,6 +54,16 @@ class Data:
                 }},
             ]
         },
+        "classifications": [
+            {
+                "typeName": "active_col_badge",
+                "entityStatus": "ACTIVE"
+            },
+            {
+                "typeName": "inactive_col_badge",
+                "entityStatus": "INACTIVE"
+            }
+        ]
     }
 
     test_column_inactive = copy.deepcopy(test_column)
