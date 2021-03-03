@@ -83,6 +83,9 @@ class SnowflakeTableLastUpdatedExtractor(Extractor):
         self._alchemy_extractor.init(sql_alch_conf)
         self._extract_iter: Union[None, Iterator] = None
 
+    def close(self) -> None:
+        self._alchemy_extractor.close()
+
     def extract(self) -> Union[TableLastUpdated, None]:
         if not self._extract_iter:
             self._extract_iter = self._get_extract_iter()
