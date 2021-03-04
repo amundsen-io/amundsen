@@ -12,7 +12,7 @@ from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Source,
                                           Stat, Table, Tag, User, Watermark)
-from amundsen_common.models.user import UserSchema
+from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
 from metadata_service import create_app
@@ -614,10 +614,22 @@ class TestNeo4jProxy(unittest.TestCase):
                 'email': 'test_email',
                 'manager_fullname': 'test_manager',
             }
+            test_user_obj = UserModel(email='test_email',
+                                      first_name='test_first_name',
+                                      last_name='test_last_name',
+                                      full_name='test_full_name',
+                                      is_active=True,
+                                      github_username='test-github',
+                                      team_name='test_team',
+                                      slack_id='test_id',
+                                      employee_type='teamMember',
+                                      manager_fullname='test_manager')
+
+    # TODO: Add frequent_used, bookmarked, & owned resources)
             mock_execute.return_value.single.return_value = {'users': [test_user]}
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             users = neo4j_proxy.get_users()
-            actual_data = UserSchema(many=True).load([test_user]).data
+            actual_data = [test_user_obj]
             for attr in ['employee_type',
                          'full_name',
                          'is_active',

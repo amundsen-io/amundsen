@@ -35,7 +35,7 @@ typing-extensions==3.7.4
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common>=0.7.0
+amundsen-common>=0.8.1
 amundsen-gremlin>=0.0.4
 
 boto3==1.12.12
@@ -51,8 +51,6 @@ gremlinpython==3.4.3
 itsdangerous==0.24
 Jinja2>=2.10.1
 jsonschema==2.6.0
-marshmallow>=2.15.3,<3.0
-marshmallow-annotations>=2.4.0,<3.0
 MarkupSafe==1.1 
 pytz==2018.4
 Werkzeug==0.15.5
@@ -67,3 +65,5 @@ beaker>=1.10.0
 overrides==2.5
 typed-ast==1.4.2
 isort[colors]~=5.4
+marshmallow==3.6.0
+git+https://www.github.com/hilearn/marshmallow-annotations.git@a7a2dc96932430369bdef36555082df990ed9bef#egg=marshmallow-annotations

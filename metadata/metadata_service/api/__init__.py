@@ -33,11 +33,11 @@ class BaseAPI(Resource):
                 actual_id: Union[str, int] = int(id) if id.isdigit() else id
                 object = get_object(id=actual_id, **kwargs)
                 if object is not None:
-                    return self.schema().dump(object).data, HTTPStatus.OK
+                    return self.schema().dump(object), HTTPStatus.OK
                 return None, HTTPStatus.NOT_FOUND
             except ValueError as e:
                 return {'message': f'exception:{e}'}, HTTPStatus.BAD_REQUEST
         else:
             get_objects = getattr(self.client, f'get_{self.str_type}s')
             objects: List[Any] = get_objects()
-            return self.schema(many=True).dump(objects).data, HTTPStatus.OK
+            return self.schema().dump(objects, many=True), HTTPStatus.OK
