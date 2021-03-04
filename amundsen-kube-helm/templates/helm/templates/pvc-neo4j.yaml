@@ -15,6 +15,7 @@ spec:
   accessModes:
     - {{ default "ReadWriteOnce" .Values.neo4j.persistence.accessMode }}
   storageClassName: "{{ default "" .Values.neo4j.persistence.storageClass }}"
+  volumeName: neo4j-pv
   resources:
     requests:
       storage: {{ default "3Gi" .Values.neo4j.persistence.size }}
