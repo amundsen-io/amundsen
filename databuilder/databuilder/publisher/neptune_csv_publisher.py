@@ -59,10 +59,10 @@ class NeptuneCSVPublisher(Publisher):
 
     def init(self, conf: ConfigTree) -> None:
         self._boto_session = Session(
-            aws_access_key_id=conf.get_config(NeptuneCSVPublisher.AWS_ACCESS_KEY, default=None),
-            aws_secret_access_key=conf.get_config(NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY, default=None),
-            aws_session_token=conf.get_config(NeptuneCSVPublisher.AWS_SESSION_TOKEN, default=None),
-            region_name=conf.get_config(NeptuneCSVPublisher.AWS_REGION, default=None)
+            aws_access_key_id=conf.get_string(NeptuneCSVPublisher.AWS_ACCESS_KEY, default=None),
+            aws_secret_access_key=conf.get_string(NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY, default=None),
+            aws_session_token=conf.get_string(NeptuneCSVPublisher.AWS_SESSION_TOKEN, default=None),
+            region_name=conf.get_string(NeptuneCSVPublisher.AWS_REGION, default=None)
         )
 
         self.node_files_dir = conf.get_string(NeptuneCSVPublisher.NODE_FILES_DIR)
