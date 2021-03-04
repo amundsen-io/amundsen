@@ -2,6 +2,10 @@ FROM python:3.7-slim as base
 WORKDIR /app
 RUN pip3 install gunicorn
 
+RUN apt-get update 
+RUN apt-get upgrade -y
+RUN apt-get install git -y
+
 COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
 
