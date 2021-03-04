@@ -11,6 +11,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
+  storageClassName: "{{ default "" .Values.neo4j.persistence.storageClass }}"
   capacity:
     storage: {{ default "3Gi" .Values.neo4j.persistence.size }}
   nfs:
