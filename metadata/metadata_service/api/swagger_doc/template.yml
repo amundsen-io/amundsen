@@ -248,6 +248,55 @@ components:
           is_view:
             type: boolean
             description: 'If the table is a view'
+    Lineage:
+      type: object
+      properties:
+        key:
+          type: string
+          description: 'Key of entity to obtain lineage for'
+          example: 'db://cluster.schema/test_table_1'
+        depth:
+          type: integer
+          description: 'how many levels of lineage are shown'
+          example: 1
+        direction:
+          type: string
+          description: 'upstream, dowstream or both'
+          example: 'downstream'
+        upstream_entities:
+          type: array
+          description: 'upstream entities from key'
+          items:
+            $ref: '#/components/schemas/LineageItem'
+        upstream_entities:
+          type: array
+          description: 'downstream entities from key'
+          items:
+            $ref: '#/components/schemas/LineageItem'
+    LineageItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: 'upstream or downstream resource key'
+          example: 'db://cluster.schema/up_table_1'
+        level:
+          type: integer
+          description: 'distance up or downstream from requested'
+          example: 2
+        source:
+          type: string
+          description: 'data source the resouce is extracted from'
+          example: 'hive'
+        badges:
+          type: array
+          description: 'badges associated with resource'
+          items:
+            $ref: '#/components/schemas/Badge'
+        usage:
+          type: integer
+          description: 'value to sort lineage results by'
+          example: 541
     Neo4jDetail:
       type: object
       properties:

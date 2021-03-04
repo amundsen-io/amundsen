@@ -37,7 +37,7 @@ class UserDetailAPI(BaseAPI):
         if app.config['USER_DETAIL_METHOD']:
             try:
                 user_data = app.config['USER_DETAIL_METHOD'](id)
-                return UserSchema().dump(user_data).data, HTTPStatus.OK
+                return UserSchema().dump(user_data), HTTPStatus.OK
             except Exception:
                 LOGGER.exception('UserDetailAPI GET Failed - Using "USER_DETAIL_METHOD" config variable')
                 return {'message': 'user_id {} fetch failed'.format(id)}, HTTPStatus.NOT_FOUND
@@ -73,13 +73,13 @@ class UserFollowsAPI(Resource):
             }  # type: Dict[str, List[Any]]
 
             if resources and table_key in resources and len(resources[table_key]) > 0:
-                result[table_key] = PopularTableSchema(many=True).dump(resources[table_key]).data
+                result[table_key] = PopularTableSchema().dump(resources[table_key], many=True)
 
             resources = self.client.get_dashboard_by_user_relation(user_email=user_id,
                                                                    relation_type=UserResourceRel.follow)
 
             if resources and dashboard_key in resources and len(resources[dashboard_key]) > 0:
-                result[dashboard_key] = DashboardSummarySchema(many=True).dump(resources[dashboard_key]).data
+                result[dashboard_key] = DashboardSummarySchema().dump(resources[dashboard_key], many=True)
 
             return result, HTTPStatus.OK
 
@@ -179,13 +179,13 @@ class UserOwnsAPI(Resource):
             resources = self.client.get_table_by_user_relation(user_email=user_id,
                                                                relation_type=UserResourceRel.own)
             if resources and table_key in resources and len(resources[table_key]) > 0:
-                result[table_key] = PopularTableSchema(many=True).dump(resources[table_key]).data
+                result[table_key] = PopularTableSchema().dump(resources[table_key], many=True)
 
             resources = self.client.get_dashboard_by_user_relation(user_email=user_id,
                                                                    relation_type=UserResourceRel.own)
 
             if resources and dashboard_key in resources and len(resources[dashboard_key]) > 0:
-                result[dashboard_key] = DashboardSummarySchema(many=True).dump(resources[dashboard_key]).data
+                result[dashboard_key] = DashboardSummarySchema().dump(resources[dashboard_key], many=True)
 
             return result, HTTPStatus.OK
 
@@ -261,7 +261,7 @@ class UserReadsAPI(Resource):
         try:
             resources = self.client.get_frequently_used_tables(user_email=user_id)
             if len(resources['table']) > 0:
-                return {'table': PopularTableSchema(many=True).dump(resources['table']).data}, HTTPStatus.OK
+                return {'table': PopularTableSchema().dump(resources['table'], many=True)}, HTTPStatus.OK
             return {'table': []}, HTTPStatus.OK
 
         except NotFoundException:

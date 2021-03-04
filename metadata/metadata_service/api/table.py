@@ -5,6 +5,7 @@ import json
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Optional, Union
 
+from amundsen_common.models.lineage import LineageSchema
 from amundsen_common.models.table import TableSchema
 from flasgger import swag_from
 from flask import request
@@ -31,11 +32,35 @@ class TableDetailAPI(Resource):
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             table = self.client.get_table(table_uri=table_uri)
-            schema = TableSchema(strict=True)
-            return schema.dump(table).data, HTTPStatus.OK
+            schema = TableSchema()
+            return schema.dump(table), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'table_uri {} does not exist'.format(table_uri)}, HTTPStatus.NOT_FOUND
+
+
+class TableLineageAPI(Resource):
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('direction', type=str, required=False)
+        self.parser.add_argument('depth', type=int, required=False)
+        super(TableLineageAPI, self).__init__()
+
+    @swag_from('swagger_doc/lineage/lineage_get.yml')
+    def get(self, id: str) -> Iterable[Union[Mapping, int, None]]:
+        args = self.parser.parse_args()
+        direction = args.get('direction', 'both')
+        depth = args.get('depth', 0)
+        try:
+            lineage = self.client.get_lineage(id=id,
+                                              resource_type=ResourceType.Table,
+                                              direction=direction,
+                                              depth=depth)
+            schema = LineageSchema()
+            return schema.dump(lineage), HTTPStatus.OK
+        except Exception as e:
+            return {'message': f'Exception raised when getting lineage: {e}'}, HTTPStatus.NOT_FOUND
 
 
 class TableOwnerAPI(Resource):

@@ -26,5 +26,5 @@ class PopularTablesAPI(Resource):
         limit = request.args.get('limit', 10, type=int)
         popular_tables: List[PopularTable] = self.client.get_popular_tables(num_entries=limit,
                                                                             user_id=user_id)
-        popular_tables_json: str = PopularTableSchema(many=True).dump(popular_tables).data
+        popular_tables_json: str = PopularTableSchema().dump(popular_tables, many=True)
         return {'popular_tables': popular_tables_json}, HTTPStatus.OK

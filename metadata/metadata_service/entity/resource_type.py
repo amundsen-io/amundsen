@@ -8,6 +8,7 @@ class ResourceType(Enum):
     Table = auto()
     Dashboard = auto()
     User = auto()
+    Column = auto()
 
 
 def to_resource_type(*, label: str) -> ResourceType:
