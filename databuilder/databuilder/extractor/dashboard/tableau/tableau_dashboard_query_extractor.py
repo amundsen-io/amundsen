@@ -36,7 +36,7 @@ class TableauGraphQLApiQueryExtractor(TableauGraphQLApiExtractor):
         for query in response['customSQLTables']:
             for workbook in query['downstreamWorkbooks']:
                 if workbook['projectName'] not in \
-                        self._conf.get_list(TableauGraphQLApiQueryExtractor.EXCLUDED_PROJECTS):
+                        self._conf.get_list(TableauGraphQLApiQueryExtractor.EXCLUDED_PROJECTS, []):
                     data = {
                         'dashboard_group_id': workbook['projectName'],
                         'dashboard_id': TableauDashboardUtils.sanitize_workbook_name(workbook['name']),

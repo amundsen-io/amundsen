@@ -37,7 +37,7 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
 
         workbooks_data = [workbook for workbook in response['workbooks']
                           if workbook['projectName'] not in
-                          self._conf.get_list(TableauGraphQLApiMetadataExtractor.EXCLUDED_PROJECTS)]
+                          self._conf.get_list(TableauGraphQLApiMetadataExtractor.EXCLUDED_PROJECTS, [])]
         base_url = self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL)
         for workbook in workbooks_data:
             if None in (workbook['projectName'], workbook['name']):
