@@ -6,9 +6,8 @@ from typing import Iterator, Union
 
 from pyhocon import ConfigFactory, ConfigTree
 
-from databuilder import Scoped
+from databuilder.extractor import sql_alchemy_extractor
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_last_updated import TableLastUpdated
 
 LOGGER = logging.getLogger(__name__)
@@ -76,15 +75,12 @@ class SnowflakeTableLastUpdatedExtractor(Extractor):
         LOGGER.info('SQL for snowflake table last updated timestamp: %s', self.sql_stmt)
 
         # use an sql_alchemy_extractor to execute sql
-        self._alchemy_extractor = SQLAlchemyExtractor()
-        sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope()) \
-            .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
-
-        self._alchemy_extractor.init(sql_alch_conf)
+        self._alchemy_extractor = sql_alchemy_extractor.from_surrounding_config(conf, self.sql_stmt)
         self._extract_iter: Union[None, Iterator] = None
 
     def close(self) -> None:
-        self._alchemy_extractor.close()
+        if getattr(self, '_alchemy_extractor', None) is not None:
+            self._alchemy_extractor.close()
 
     def extract(self) -> Union[TableLastUpdated, None]:
         if not self._extract_iter:

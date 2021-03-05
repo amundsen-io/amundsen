@@ -10,9 +10,8 @@ from typing import (
 
 from pyhocon import ConfigFactory, ConfigTree
 
-from databuilder import Scoped
+from databuilder.extractor import sql_alchemy_extractor
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
@@ -56,15 +55,12 @@ class AthenaMetadataExtractor(Extractor):
 
         LOGGER.info('SQL for Athena metadata: %s', self.sql_stmt)
 
-        self._alchemy_extractor = SQLAlchemyExtractor()
-        sql_alch_conf = Scoped.get_scoped_conf(conf, self._alchemy_extractor.get_scope())\
-            .with_fallback(ConfigFactory.from_dict({SQLAlchemyExtractor.EXTRACT_SQL: self.sql_stmt}))
-
-        self._alchemy_extractor.init(sql_alch_conf)
+        self._alchemy_extractor = sql_alchemy_extractor.from_surrounding_config(conf, self.sql_stmt)
         self._extract_iter: Union[None, Iterator] = None
 
     def close(self) -> None:
-        self._alchemy_extractor.close()
+        if getattr(self, '_alchemy_extractor', None) is not None:
+            self._alchemy_extractor.close()
 
     def extract(self) -> Union[TableMetadata, None]:
         if not self._extract_iter:
