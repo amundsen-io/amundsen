@@ -36,7 +36,7 @@ class TableauGraphQLApiLastModifiedExtractor(TableauGraphQLApiExtractor):
 
         workbooks_data = [workbook for workbook in response['workbooks']
                           if workbook['projectName'] not in
-                          self._conf.get_list(TableauGraphQLApiLastModifiedExtractor.EXCLUDED_PROJECTS)]
+                          self._conf.get_list(TableauGraphQLApiLastModifiedExtractor.EXCLUDED_PROJECTS, [])]
 
         for workbook in workbooks_data:
             if None in (workbook['projectName'], workbook['name']):
