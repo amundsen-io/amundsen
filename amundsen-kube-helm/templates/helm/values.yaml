@@ -232,6 +232,9 @@ neo4j:
       # neo4j.config.dbms.pagecache_size -- the page cache size for neo4j
       pagecache_size: 2G
 
+  # neo4j.serviceType -- The neo4j service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  serviceType: ClusterIP
+
   # neo4j.persistence -- Neo4j persistence. Turn this on to keep your data between pod crashes, etc. This is also needed for backups.
   persistence: {}
   #  storageClass: gp2
