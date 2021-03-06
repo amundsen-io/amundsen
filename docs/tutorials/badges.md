@@ -55,14 +55,14 @@ To delete a badge on a table:
 curl -X DELETE https://{your metadata url}/table/{table key}/badge/{badge name}?category={badge category}
 ```
 
-To delete a badge on a column:
-```
-curl -X DELETE https://{your metadata url}/table/{table key}/column/{column name}/badge/{badge name}?category={badge category}
-```
-
 To add a badge on a column:
 ```
 curl -X PUT https://{your metadata url}/table/{table key}/column/{column name}/badge/{badge name}?category={badge category}
+```
+
+To delete a badge on a column:
+```
+curl -X DELETE https://{your metadata url}/table/{table key}/column/{column name}/badge/{badge name}?category={badge category}
 ```
 
 `table key` is in the format of `datasource://database.schema/table`
