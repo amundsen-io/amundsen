@@ -2,4 +2,4 @@ version: 1
 update_configs:
   - package_manager: "python"
     directory: "/"
-    update_schedule: "weekly"
+    update_schedule: "monthly"
