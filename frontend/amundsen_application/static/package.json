@@ -71,7 +71,7 @@
     "@types/react-router": "^4.4.5",
     "@types/react-tagsinput": "^3.19.7",
     "@types/storybook__addon-knobs": "^5.2.1",
-    "@types/webpack": "^4.41.25",
+    "@types/webpack": "^4.41.26",
     "@typescript-eslint/eslint-plugin": "4.14.2",
     "@typescript-eslint/eslint-plugin-tslint": "4.15.0",
     "@typescript-eslint/parser": "4.6.1",
