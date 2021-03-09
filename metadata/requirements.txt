@@ -38,7 +38,7 @@ typing-extensions==3.7.4
 amundsen-common>=0.8.1
 amundsen-gremlin>=0.0.4
 
-boto3==1.12.12
+boto3==1.17.23
 flasgger==0.9.3
 Flask-RESTful==0.3.6
 Flask==1.0.2
