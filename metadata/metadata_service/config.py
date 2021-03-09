@@ -7,7 +7,6 @@ from typing import Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
-from amundsen_gremlin.test_and_development_shard import shard_set_explicitly
 
 from metadata_service.entity.badge import Badge
 
@@ -118,11 +117,6 @@ class LocalConfig(LocalGremlinConfig, Config):
     }
 
 
-# The databuilder expects this to be False currently. We are defaulting to true because the testing expects this
-if bool(distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'False'))):
-    shard_set_explicitly('')
-
-
 class NeptuneConfig(LocalGremlinConfig, Config):
     DEBUG = False
     TESTING = False
@@ -139,6 +133,7 @@ class NeptuneConfig(LocalGremlinConfig, Config):
 
     PROXY_CLIENT_KWARGS = {
         'neptune_bulk_loader_s3_bucket_name': os.environ.get('S3_BUCKET_NAME'),
+        'ignore_neptune_shard': distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'True'))
     }
 
     JANUS_GRAPH_URL = None

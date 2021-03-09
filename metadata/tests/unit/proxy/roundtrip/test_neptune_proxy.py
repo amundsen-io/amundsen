@@ -22,7 +22,8 @@ class NeptuneGremlinProxyTest(
     def _create_gremlin_proxy(self, config: Mapping[str, Any]) -> RoundtripNeptuneGremlinProxy:
         # Don't use PROXY_HOST, PROXY_PORT, PROXY_PASSWORD.  They might not be neptune
         client_kwargs = {
-            'neptune_bulk_loader_s3_bucket_name': config['NEPTUNE_BULK_LOADER_S3_BUCKET_NAME']
+            'neptune_bulk_loader_s3_bucket_name': config['NEPTUNE_BULK_LOADER_S3_BUCKET_NAME'],
+            'ignore_neptune_shard': False
         }
         return RoundtripNeptuneGremlinProxy(
             host=config['NEPTUNE_URL'],
