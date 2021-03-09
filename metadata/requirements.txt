@@ -42,7 +42,7 @@ boto3==1.12.12
 flasgger==0.9.3
 Flask-RESTful==0.3.6
 Flask==1.0.2
-flask-cors==3.0.8
+flask-cors==3.0.10
 gremlinpython==3.4.3
 aniso8601==3.0.0
 attrs==19.1.0
