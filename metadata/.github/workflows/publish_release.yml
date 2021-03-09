@@ -41,3 +41,16 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.pypi_password }}
+  build-and-publish-docker-image:
+    name: Build and publish docker image
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Login with docker
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish to Registry for latest
+        if: success()
+        run: make build-push-image-latest
+      - name: Publish to Registry for version
+        run: make build-push-image-version
