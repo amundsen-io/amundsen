@@ -1,4 +1,7 @@
 ### Feature
+* Table Lineage API ([#262](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/262)) ([`e306034`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/e306034043e067a2d6c24477bd197d10177d1d6d))
+* Column badges in Atlas Proxy ([#263](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/263)) ([`a3efb4c`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/a3efb4cb778a6a5a58b0e55874622f114fd2e7e7))
+* Added get_lineage method to neo4j proxy ([#259](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/259)) ([`b129cc7`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/b129cc701117871a90ae05c36bcf0f112ae36e5e))
 * Neo4j backend for popular tables personalization ([#233](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/233)) ([`d045efa`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/d045efabe116a5cb459441389b814571fb83232b))
 * Updated popular_tables endpoint to allow optional user_id ([#232](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/232)) ([`5680775`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/56807753963735eaf1556dae199e0da82b4ebb71))
 * AddSwaggerEnabledAsEnvVar ([#215](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/215)) ([`3c9a55e`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/3c9a55e6af4cac9b342803c34cfe81851470e7f5))
@@ -9,6 +12,8 @@
 * Data Owner Implementation of Atlas Proxy ([#156](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/156)) ([`48b4c71`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/48b4c71054f7b34bca8a8f148e8b7499dfb986fc))
 
 ### Fix
+* Compatibility changes  to the gremlin integration ([#260](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/260)) ([`a765424`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/a765424aa13c71afdb04f7457f30d8a8977974a2))
+* Proxy client creation fails after adding client_kwargs ([#258](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/258)) ([`1880cec`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/1880cec3bf0ed4b889c5fe3b61633228063cdfad))
 * Reapply previous fix ([#245](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/245)) ([`c7dc172`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/c7dc172b2b8c3b8ff4d7f145e5564474a3cb8dd8))
 * Expire is a keyword argument for beaker cache ([#239](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/239)) ([`a7b2ec5`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/a7b2ec543470157361767e705f945beed4b32bac))
 * Get_tags no longer return tag_count 0 tag ([#230](https://github.com/amundsen-io/amundsenmetadatalibrary/issues/230)) ([`5097d2b`](https://github.com/amundsen-io/amundsenmetadatalibrary/commit/5097d2baba2fe8894c15e9627e1ca7bacc3807fb))
