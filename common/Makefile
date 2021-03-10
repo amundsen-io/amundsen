@@ -1,9 +1,9 @@
- clean:
+clean:
 	find . -name \*.pyc -delete
 	find . -name __pycache__ -delete
 	rm -rf dist/
 
- test_unit:
+test_unit:
 	python -m pytest tests
 	python3 -bb -m pytest tests
 
@@ -16,4 +16,4 @@ mypy:
 	mypy .
 
 
- test: test_unit lint mypy
+test: test_unit lint mypy
