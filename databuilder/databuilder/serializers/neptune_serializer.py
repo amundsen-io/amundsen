@@ -6,8 +6,6 @@ from typing import (
     Any, Dict, List, Optional,
 )
 
-import six
-
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 
@@ -151,11 +149,11 @@ def get_node_id(node: GraphNode) -> str:
 
 
 def _get_neptune_type_for_value(value: Any) -> Optional[str]:
-    if isinstance(value, six.string_types):
+    if isinstance(value, str):
         return "String"
     elif isinstance(value, bool):
         return "Bool"
-    elif isinstance(value, six.integer_types):
+    elif isinstance(value, int):
         return "Long"
     elif isinstance(value, float):
         return "Double"
