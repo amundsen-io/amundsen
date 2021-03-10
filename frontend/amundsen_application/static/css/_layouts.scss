@@ -98,6 +98,7 @@ $screen-lg-container: 1440px;
       border-right: 4px solid $divider;
       flex-basis: 600px;
       flex-shrink: 0;
+      min-height: min-content;
       overflow-y: auto;
       padding: 0 24px $aside-separation-space;
 
