@@ -57,7 +57,7 @@ class UserSchema(AttrsSchema):
         return False
 
     @pre_load
-    def preprocess_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def preprocess_data(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         if self._str_no_value(data.get('user_id')):
             data['user_id'] = data.get('email')
 
@@ -81,7 +81,7 @@ class UserSchema(AttrsSchema):
         return data
 
     @validates_schema
-    def validate_user(self, data: Dict[str, Any]) -> None:
+    def validate_user(self, data: Dict[str, Any], **kwargs: Any) -> None:
         if self._str_no_value(data.get('display_name')):
             raise ValidationError('"display_name", "full_name", or "email" must be provided')
 

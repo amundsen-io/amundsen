@@ -12,4 +12,4 @@ CALLER_HEADER_KEY = 'CALLER_HEADER_KEY'
 class HttpHeaderCallerRetrieval(BaseCallerRetriever):
     def get_caller(self) -> str:
         header_key = flask_app.config.get(CALLER_HEADER_KEY, 'user-agent')
-        return request.headers.get(header_key, 'UNKNOWN')
+        return request.headers.get(header_key) or 'UNKNOWN'

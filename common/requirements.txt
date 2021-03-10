@@ -1,9 +1,5 @@
-attrs==19.1.0
 flake8==3.7.8
-Flask==1.1.1
-marshmallow==3.6.0
-git+https://www.github.com/hilearn/marshmallow-annotations.git@a7a2dc96932430369bdef36555082df990ed9bef#egg=marshmallow-annotations
-mypy==0.761
+mypy==0.812
 pytest>=4.6
 pytest-cov
 pytest-mock
