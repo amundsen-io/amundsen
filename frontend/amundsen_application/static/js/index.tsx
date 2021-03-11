@@ -12,6 +12,8 @@ import { createStore, applyMiddleware } from 'redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
+import { getDocumentTitle } from 'config/config-utils';
+
 import { analyticsMiddleware } from 'ducks/middlewares';
 
 import { BrowserHistory } from 'utils/navigationUtils';
@@ -76,7 +78,7 @@ const Routes: React.FC = () => {
 };
 
 ReactDOM.render(
-  <DocumentTitle title="Amundsen - Data Discovery Portal">
+  <DocumentTitle title={getDocumentTitle()}>
     <Provider store={store}>
       <Router history={BrowserHistory}>
         <div id="main">

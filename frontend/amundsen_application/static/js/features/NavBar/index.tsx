@@ -19,6 +19,7 @@ import {
   feedbackEnabled,
   indexUsersEnabled,
   getNavLinks,
+  getLogoTitle,
 } from 'config/config-utils';
 
 import Feedback from 'features/Feedback';
@@ -26,7 +27,6 @@ import SearchBar from 'components/SearchBar';
 
 import './styles.scss';
 
-const LOGO_TITLE = 'AMUNDSEN';
 const PROFILE_LINK_TEXT = 'My Profile';
 
 // Props
@@ -100,7 +100,7 @@ export class NavBar extends React.Component<NavBarProps> {
                     alt=""
                   />
                 )}
-                <span className="title-3">{LOGO_TITLE}</span>
+                <span className="title-3">{getLogoTitle()}</span>
               </Link>
             </div>
             {this.renderSearchBar()}

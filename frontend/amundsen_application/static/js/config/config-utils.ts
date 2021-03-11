@@ -273,3 +273,17 @@ export function getDescriptionSourceIconPath(sourceId: string): string {
 export function getNumberFormat() {
   return AppConfig.numberFormat;
 }
+
+/**
+ * Returns documentTitle.
+ */
+export function getDocumentTitle(): string {
+  return AppConfig.documentTitle;
+}
+
+/**
+ * Returns logoTitle.
+ */
+export function getLogoTitle(): string {
+  return AppConfig.logoTitle;
+}
