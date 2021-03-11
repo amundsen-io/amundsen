@@ -17,6 +17,8 @@ export interface AppConfig {
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
+  logoTitle: string;
+  documentTitle: string;
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
   announcements: AnnoucementsFeaturesConfig;
@@ -37,6 +39,8 @@ export interface AppConfigCustom {
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
+  logoTitle?: string;
+  documentTitle?: string;
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;

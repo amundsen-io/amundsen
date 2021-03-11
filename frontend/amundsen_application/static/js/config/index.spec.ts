@@ -315,3 +315,19 @@ describe('numberFormat', () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe('getDocumentTitle', () => {
+  it('returns documentTitle defined in config', () => {
+    const actual = ConfigUtils.getDocumentTitle();
+    const expected = AppConfig.documentTitle;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getLogoTitle', () => {
+  it('returns logoTitle defined in config', () => {
+    const actual = ConfigUtils.getLogoTitle();
+    const expected = AppConfig.logoTitle;
+    expect(actual).toBe(expected);
+  });
+});
