@@ -3,14 +3,43 @@
 
 import json
 from http import HTTPStatus
-from typing import Iterable, Union
+from typing import Iterable, Mapping, Union
 
+from amundsen_common.models.lineage import LineageSchema
 from flasgger import swag_from
 from flask import request
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
+
+
+class ColumnLineageAPI(Resource):
+    """
+    ColumnLineageAPI supports GET operation to get column lineage
+    """
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('direction', type=str, required=False)
+        self.parser.add_argument('depth', type=int, required=False)
+        super(ColumnLineageAPI, self).__init__()
+
+    @swag_from('swagger_doc/column/lineage_get.yml')
+    def get(self, table_uri: str, column_name: str) -> Iterable[Union[Mapping, int, None]]:
+        args = self.parser.parse_args()
+        direction = args.get('direction', 'both')
+        depth = args.get('depth', 0)
+        try:
+            lineage = self.client.get_lineage(id=f"{table_uri}/{column_name}",
+                                              resource_type=ResourceType.Column,
+                                              direction=direction,
+                                              depth=depth)
+            schema = LineageSchema()
+            return schema.dump(lineage), HTTPStatus.OK
+        except Exception as e:
+            return {'message': f'Exception raised when getting lineage: {e}'}, HTTPStatus.NOT_FOUND
 
 
 class ColumnDescriptionAPI(Resource):
