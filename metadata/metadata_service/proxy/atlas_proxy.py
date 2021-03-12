@@ -51,8 +51,8 @@ class AtlasProxy(BaseProxy):
     Atlas Proxy client for the amundsen metadata
     {ATLAS_API_DOCS} = https://atlas.apache.org/api/v2/
     """
-    TABLE_ENTITY = app.config['ATLAS_TABLE_ENTITY']
-    DB_ATTRIBUTE = app.config['ATLAS_DB_ATTRIBUTE']
+    TABLE_ENTITY = 'Table'
+    DB_ATTRIBUTE = 'db'
     STATISTICS_FORMAT_SPEC = app.config['STATISTICS_FORMAT_SPEC']
     BOOKMARK_TYPE = 'Bookmark'
     USER_TYPE = 'User'
