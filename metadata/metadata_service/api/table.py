@@ -47,7 +47,7 @@ class TableLineageAPI(Resource):
         self.parser.add_argument('depth', type=int, required=False)
         super(TableLineageAPI, self).__init__()
 
-    @swag_from('swagger_doc/lineage/lineage_get.yml')
+    @swag_from('swagger_doc/table/lineage_get.yml')
     def get(self, id: str) -> Iterable[Union[Mapping, int, None]]:
         args = self.parser.parse_args()
         direction = args.get('direction', 'both')
