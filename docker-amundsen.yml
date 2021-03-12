@@ -1,7 +1,7 @@
 version: '3'
 services:
   neo4j:
-      image: neo4j:3.3.0
+      image: neo4j:3.5.26
       container_name: neo4j_amundsen
       environment:
         - NEO4J_AUTH=neo4j/test
@@ -13,10 +13,10 @@ services:
           - 7474:7474
           - 7687:7687
       volumes:
-          - ./example/docker/neo4j/conf:/conf
-          - ./example/docker/neo4j/plugins:/plugins
+          - ./example/docker/neo4j/conf:/var/lib/neo4j/conf
+          - ./example/docker/neo4j/plugins:/var/lib/neo4j/plugins
           - ./example/backup:/backup
-          - neo4j_data:/neo4j/data
+          - neo4j_data:/data
       networks:
         - amundsennet
   elasticsearch:
