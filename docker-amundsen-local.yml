@@ -1,7 +1,7 @@
 version: '3'
 services:
   neo4j:
-      image: neo4j:3.3.0
+      image: neo4j:3.5.26
       container_name: neo4j_amundsen
       environment:
         - NEO4J_AUTH=neo4j/test
@@ -13,8 +13,8 @@ services:
           - 7474:7474
           - 7687:7687
       volumes:
-          - ./example/docker/neo4j/conf:/conf
-          - ./.local/neo4j/data:/neo4j/data
+          - ./example/docker/neo4j/conf:/var/lib/neo4j/conf
+          - ./.local/neo4j/data:/data
       networks:
         - amundsennet
   elasticsearch:
@@ -74,6 +74,7 @@ services:
       environment:
         - SEARCHSERVICE_BASE=http://amundsensearch:5001
         - METADATASERVICE_BASE=http://amundsenmetadata:5002
+        - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
 
 networks:
   amundsennet:
