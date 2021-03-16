@@ -10,4 +10,4 @@
 # review when someone opens a pull request.
 *       @amundsen-io/amundsen-committers
 
-*.py    @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1
+*.py    @allisonsuarez @bolkedebruin @feng-tao @dorianj @jinhyukchang @mgorsk1 @verdan
