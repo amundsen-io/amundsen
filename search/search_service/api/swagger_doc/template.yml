@@ -129,11 +129,9 @@ components:
           description: 'total usage'
           example: 0
         schema_description:
-          type: array
-          items:
-            type: string
-          description: 'list of schema descriptions'
-          example: ['schema description1', 'schema description2']
+          type: string
+          description: 'schema description'
+          example: 'schema description1'
     DashboardFields:
       type: object
       properties:
