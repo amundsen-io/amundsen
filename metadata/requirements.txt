@@ -65,5 +65,5 @@ beaker>=1.10.0
 overrides==2.5
 typed-ast==1.4.2
 isort[colors]~=5.4
-marshmallow==3.6.0
-git+https://www.github.com/hilearn/marshmallow-annotations.git@a7a2dc96932430369bdef36555082df990ed9bef#egg=marshmallow-annotations
+marshmallow>=3.0,<=3.6
+marshmallow-annotations@git+https://www.github.com/hilearn/marshmallow-annotations.git@a7a2dc96932430369bdef36555082df990ed9bef
