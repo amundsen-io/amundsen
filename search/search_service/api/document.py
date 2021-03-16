@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import json
 import logging
 from ast import literal_eval
 from http import HTTPStatus
@@ -9,6 +8,7 @@ from typing import Any, Tuple
 
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
+from marshmallow.exceptions import ValidationError
 
 from search_service.api.table import TABLE_INDEX
 from search_service.api.user import USER_INDEX
@@ -64,7 +64,11 @@ class BaseDocumentsAPI(Resource):
         args = self.parser.parse_args()
 
         try:
-            data = self.schema(many=True, strict=False).loads(args.get('data')).data
+            table_dict_list = [literal_eval(table_str) for table_str in args.get('data')]
+            data, errors = self.schema(many=True).load(table_dict_list)
+            if errors:
+                logging.warning("Invalid input: %s", errors)
+                raise ValidationError("Invalid input")
             results = self.proxy.create_document(data=data, index=args.get('index'))
             return results, HTTPStatus.OK
         except RuntimeError as e:
@@ -85,8 +89,10 @@ class BaseDocumentsAPI(Resource):
 
         try:
             table_dict_list = [literal_eval(table_str) for table_str in args.get('data')]
-            table_list_json = json.dumps(table_dict_list)
-            data = self.schema(many=True, strict=False).loads(table_list_json).data
+            data, errors = self.schema(many=True).load(table_dict_list)
+            if errors:
+                logging.warning("Invalid input: %s", errors)
+                raise ValidationError("Invalid input")
             results = self.proxy.update_document(data=data, index=args.get('index'))
             return results, HTTPStatus.OK
         except RuntimeError as e:

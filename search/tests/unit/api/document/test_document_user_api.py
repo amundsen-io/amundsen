@@ -25,7 +25,7 @@ class TestDocumentUserAPI(unittest.TestCase):
     @patch('search_service.api.document.get_proxy_client')
     def test_delete(self, get_proxy: MagicMock, RequestParser: MagicMock) -> None:
         mock_proxy = get_proxy.return_value = Mock()
-        RequestParser().parse_args.return_value = dict(data='[]', index='fake_index')
+        RequestParser().parse_args.return_value = dict(data=[], index='fake_index')
 
         response = DocumentUserAPI().delete(document_id='fake id')
         self.assertEqual(list(response)[1], HTTPStatus.OK)

@@ -611,7 +611,7 @@ class ElasticsearchProxy(BaseProxy):
         for item in data:
             index_action = {'index': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}}
             actions.append(index_action)
-            actions.append(item.__dict__)
+            actions.append(item.get_attrs_dict())
         return actions
 
     def _build_update_actions(self, data: List[Table], index_key: str) -> List[Dict[str, Any]]:
