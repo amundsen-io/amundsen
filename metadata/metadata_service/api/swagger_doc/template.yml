@@ -121,10 +121,13 @@ components:
         name:
           type: string
           description: 'Column name'
+        key:
+          type: string
+          description: 'Column key'
         description:
           type: string
           description: 'Column description'
-        type:
+        col_type:
           type: string
           description: 'Column type'
         sort_order:
