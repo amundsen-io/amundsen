@@ -1,4 +1,7 @@
 ### Feature
+* Neptune Data builder Integration ([#438](https://github.com/amundsen-io/amundsendatabuilder/issues/438)) ([`303e8aa`](https://github.com/amundsen-io/amundsendatabuilder/commit/303e8aa2a42779070f5d6260faac010ba86a216c))
+* Add config key for connect_arg for SqlAlchemyExtractor ([#434](https://github.com/amundsen-io/amundsendatabuilder/issues/434)) ([`7f3be0f`](https://github.com/amundsen-io/amundsendatabuilder/commit/7f3be0fe58ec863679169e945441e01fcdc0e64c))
+* Vertica metadata extractor ([#433](https://github.com/amundsen-io/amundsendatabuilder/issues/433)) ([`f4bd207`](https://github.com/amundsen-io/amundsendatabuilder/commit/f4bd2071cf9c31ae6ff9a51bb5983f5c18e4a0bf))
 * Multi-yield transformers ([#396](https://github.com/amundsen-io/amundsendatabuilder/issues/396)) ([`49ae0ed`](https://github.com/amundsen-io/amundsendatabuilder/commit/49ae0ed253aabec38346d0f26479218dec62081f))
 * Atlas_search_extractor | :tada: Initial commit. ([#415](https://github.com/amundsen-io/amundsendatabuilder/issues/415)) ([`8c63307`](https://github.com/amundsen-io/amundsendatabuilder/commit/8c633072da81b7fb2e343aa31e6e7f9c3bfae07d))
 * Sample Feast job with ES publisher ([#425](https://github.com/amundsen-io/amundsendatabuilder/issues/425)) ([`453a18b`](https://github.com/amundsen-io/amundsendatabuilder/commit/453a18b9f70b94226bf01180d7e44b915ca2ddcf))
@@ -25,6 +28,11 @@
 * Add a transformer that adds tags to all tables created in a job ([#287](https://github.com/amundsen-io/amundsendatabuilder/issues/287)) ([`d2f4bd3`](https://github.com/amundsen-io/amundsendatabuilder/commit/d2f4bd308c1ef92ea2bbfb7a7443cb42113f03f9))
 
 ### Fix
+* Avoid error by checking for existence before close. ([#454](https://github.com/amundsen-io/amundsendatabuilder/issues/454)) ([`5cd0dc8`](https://github.com/amundsen-io/amundsendatabuilder/commit/5cd0dc83d31409de1d81e38a087a1347392e6f16))
+* Correct config getter ([#455](https://github.com/amundsen-io/amundsendatabuilder/issues/455)) ([`4b37746`](https://github.com/amundsen-io/amundsendatabuilder/commit/4b377465b5ee195c39a0c23b746c2ad9ebd7619f))
+* Close SQL Alchemy connections. ([#453](https://github.com/amundsen-io/amundsendatabuilder/issues/453)) ([`25124c1`](https://github.com/amundsen-io/amundsendatabuilder/commit/25124c169faee6c2e48f47326fcfcbaf19e32e9e))
+* Add comma between bigquery requirements listings ([#452](https://github.com/amundsen-io/amundsendatabuilder/issues/452)) ([`027edb9`](https://github.com/amundsen-io/amundsendatabuilder/commit/027edb948195f3ad032548f9f3ab0868a57263a3))
+* Increase the compatibility of id structure between the Databuilder and the Metadata Library ([#445](https://github.com/amundsen-io/amundsendatabuilder/issues/445)) ([`6a13762`](https://github.com/amundsen-io/amundsendatabuilder/commit/6a13762ddaea1226f54d289f2b3011c4cb1e43c7))
 * Move 'grouped_tables' into `_retrieve_tables` ([#430](https://github.com/amundsen-io/amundsendatabuilder/issues/430)) ([`26a0d0a`](https://github.com/amundsen-io/amundsendatabuilder/commit/26a0d0a4ffe5bf004507c9d1598a5f08b30ecdf0))
 * Address PyAthena version ([#429](https://github.com/amundsen-io/amundsendatabuilder/issues/429)) ([`7157c24`](https://github.com/amundsen-io/amundsendatabuilder/commit/7157c24305a48e124ac873529f54c0eabe5d5190))
 * Add csv badges back in Quickstart ([#418](https://github.com/amundsen-io/amundsendatabuilder/issues/418)) ([`c0296b7`](https://github.com/amundsen-io/amundsendatabuilder/commit/c0296b70de8aae4116fd3869233cd9de0d08fbbc))
@@ -55,6 +63,7 @@
 * Variable organization in Model URL ([#293](https://github.com/amundsen-io/amundsendatabuilder/issues/293)) ([`b4c24ef`](https://github.com/amundsen-io/amundsendatabuilder/commit/b4c24ef891ba13fc4678faef0faaa5c7bf4c5cb6))
 
 ### Documentation
+* Minor fixes to README ([#457](https://github.com/amundsen-io/amundsendatabuilder/issues/457)) ([`54e89ce`](https://github.com/amundsen-io/amundsendatabuilder/commit/54e89ce74b70ade742edc77d4e76b9fc8241d8ab))
 * Update DashboardMetadata docs ([#402](https://github.com/amundsen-io/amundsendatabuilder/issues/402)) ([`093b3d6`](https://github.com/amundsen-io/amundsendatabuilder/commit/093b3d6fbe40040b6f720c030aa6d8504178b0ea))
 * Fix broken doc link to dashboard_execution model ([#296](https://github.com/amundsen-io/amundsendatabuilder/issues/296)) ([`24b3b0a`](https://github.com/amundsen-io/amundsendatabuilder/commit/24b3b0afdf4ad3c6b13f9677d9f805ff43f42de7))
 * Fix README.md ([#301](https://github.com/amundsen-io/amundsendatabuilder/issues/301)) ([`ad5765a`](https://github.com/amundsen-io/amundsendatabuilder/commit/ad5765a1cb0ae5fceffb1168876031801b44a79f))
