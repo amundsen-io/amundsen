@@ -592,7 +592,7 @@ class Neo4jProxy(BaseProxy):
                   id: str,
                   badge_name: str,
                   category: str = '',
-                  resource_type: ResourceType = ResourceType.Table) -> None:
+                  resource_type: ResourceType) -> None:
 
         LOGGER.info('New badge {} for id {} with category {} '
                     'and resource type {}'.format(badge_name, id, category, resource_type.name))
@@ -643,7 +643,7 @@ class Neo4jProxy(BaseProxy):
     def delete_badge(self, id: str,
                      badge_name: str,
                      category: str,
-                     resource_type: ResourceType = ResourceType.Table) -> None:
+                     resource_type: ResourceType) -> None:
 
         # TODO for some reason when deleting it will say it was successful
         # even when the badge never existed to begin with
