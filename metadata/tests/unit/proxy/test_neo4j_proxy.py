@@ -412,7 +412,7 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEqual(mock_run.call_count, 1)
             self.assertEqual(mock_commit.call_count, 1)
 
-    def test_add_badge(self) -> None:
+    def test_add_table_badge(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             mock_session = MagicMock()
             mock_driver.return_value.session.return_value = mock_session
@@ -427,7 +427,29 @@ class TestNeo4jProxy(unittest.TestCase):
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.add_badge(id='dummy_uri',
-                                  badge_name='hive')
+                                  badge_name='hive',
+                                  resource_type=ResourceType.Table)
+            # we call neo4j twice in add_tag call
+            self.assertEqual(mock_run.call_count, 3)
+            self.assertEqual(mock_commit.call_count, 1)
+
+    def test_add_column_badge(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.add_badge(id='dummy_uri/dummy_column',
+                                  badge_name='hive',
+                                  resource_type=ResourceType.Column)
             # we call neo4j twice in add_tag call
             self.assertEqual(mock_run.call_count, 3)
             self.assertEqual(mock_commit.call_count, 1)
