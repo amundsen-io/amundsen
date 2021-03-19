@@ -55,6 +55,18 @@ To delete a badge on a table:
 curl -X DELETE https://{your metadata url}/table/{table key}/badge/{badge name}?category={badge category}
 ```
 
+To add a badge on a column:
+```
+curl -X PUT https://{your metadata url}/table/{table key}/column/{column name}/badge/{badge name}?category={badge category}
+```
+
+To delete a badge on a column:
+```
+curl -X DELETE https://{your metadata url}/table/{table key}/column/{column name}/badge/{badge name}?category={badge category}
+```
+
+`table key` is in the format of `datasource://database.schema/table`
+
 ## Adding badges throught databuilder (and column level badges)
 
 To add badges using databuilder, you can use the [BadgeMetadata](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/models/badge.py) class and pass in the entity you want to create a badge relationship for. For an example of how this is done search for badge in [TableMetadata](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/models/table_metadata.py) to see how we add badge nodes and relationships to neo4j.
