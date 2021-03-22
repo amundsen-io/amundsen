@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY, RELATION_START_LABEL,
     RELATION_TYPE,
 )
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -110,3 +112,28 @@ class TestDashboardTable(unittest.TestCase):
                                          dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
         actual = dashboard_table.create_next_relation()
         self.assertIsNone(actual)
+
+    def test_dashboard_table_records(self) -> None:
+        dashboard_table = DashboardTable(table_ids=['hive://gold.schema/table1', 'hive://gold.schema/table2'],
+                                         cluster='cluster_id', product='product_id',
+                                         dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id')
+        actual1 = dashboard_table.create_next_record()
+        actual1_serialized = mysql_serializer.serialize_record(actual1)
+        expected1 = {
+            'dashboard_rk': 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            'table_rk': 'hive://gold.schema/table1'
+        }
+
+        actual2 = dashboard_table.create_next_record()
+        actual2_serialized = mysql_serializer.serialize_record(actual2)
+        expected2 = {
+            'dashboard_rk': 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id',
+            'table_rk': 'hive://gold.schema/table2'
+        }
+
+        assert actual1 is not None
+        self.assertDictEqual(expected1, actual1_serialized)
+
+        assert actual2 is not None
+        self.assertDictEqual(expected2, actual2_serialized)
+        self.assertIsNone(dashboard_table.create_next_record())

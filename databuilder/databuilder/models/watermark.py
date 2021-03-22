@@ -5,12 +5,16 @@ from typing import (
     Iterator, List, Tuple, Union,
 )
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.table import TableWatermark as RDSTableWatermark
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_serializable import TableSerializable
 
 
-class Watermark(GraphSerializable):
+class Watermark(GraphSerializable, TableSerializable):
     """
     Table watermark result model.
     Each instance represents one row of table watermark result.
@@ -47,6 +51,7 @@ class Watermark(GraphSerializable):
         self.cluster = cluster
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+        self._record_iter = self._create_next_record()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # return the string representation of the data
@@ -58,6 +63,12 @@ class Watermark(GraphSerializable):
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
             return next(self._relation_iter)
+        except StopIteration:
+            return None
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
         except StopIteration:
             return None
 
@@ -103,3 +114,17 @@ class Watermark(GraphSerializable):
             attributes={}
         )
         yield relation
+
+    def _create_next_record(self) -> Iterator[RDSModel]:
+        """
+        Create watermark records
+        """
+        for part in self.parts:
+            part_record = RDSTableWatermark(
+                rk=self.get_watermark_model_key(),
+                partition_key=part[0],
+                partition_value=part[1],
+                create_time=self.create_time,
+                table_rk=self.get_metadata_model_key()
+            )
+            yield part_record

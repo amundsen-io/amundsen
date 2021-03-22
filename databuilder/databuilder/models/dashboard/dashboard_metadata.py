@@ -5,15 +5,24 @@ from typing import (
     Any, Dict, Iterator, List, Optional, Set, Union,
 )
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.dashboard import (
+    Dashboard as RDSDashboard, DashboardCluster as RDSDashboardCluster, DashboardDescription as RDSDashboardDescription,
+    DashboardGroup as RDSDashboardGroup, DashboardGroupDescription as RDSDashboardGroupDescription,
+    DashboardTag as RDSDashboardTag,
+)
+from amundsen_rds.models.tag import Tag as RDSTag
+
 from databuilder.models.cluster import cluster_constants
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 # TODO: We could separate TagMetadata from table_metadata to own module
 from databuilder.models.table_metadata import TagMetadata
+from databuilder.models.table_serializable import TableSerializable
 
 
-class DashboardMetadata(GraphSerializable):
+class DashboardMetadata(GraphSerializable, TableSerializable):
     """
     Dashboard metadata including dashboard group name, dashboardgroup description, dashboard description,
     and tags.
@@ -88,6 +97,7 @@ class DashboardMetadata(GraphSerializable):
         self._processed_dashboard_group: Set[str] = set()
         self._node_iterator = self._create_next_node()
         self._relation_iterator = self._create_next_relation()
+        self._record_iterator = self._create_record_iterator()
 
     def __repr__(self) -> str:
         return f'DashboardMetadata(' \
@@ -280,3 +290,76 @@ class DashboardMetadata(GraphSerializable):
                     attributes={}
                 )
                 yield dashboard_tag_relationship
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iterator)
+        except StopIteration:
+            return None
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        # Cluster
+        if not self._get_cluster_key() in self._processed_cluster:
+            self._processed_cluster.add(self._get_cluster_key())
+            yield RDSDashboardCluster(
+                rk=self._get_cluster_key(),
+                name=self.cluster
+            )
+
+        # Dashboard group
+        if self.dashboard_group and not self._get_dashboard_group_key() in self._processed_dashboard_group:
+            self._processed_dashboard_group.add(self._get_dashboard_group_key())
+            dashboard_group_record = RDSDashboardGroup(
+                rk=self._get_dashboard_group_key(),
+                name=self.dashboard_group,
+                cluster_rk=self._get_cluster_key()
+            )
+            if self.dashboard_group_url:
+                dashboard_group_record.dashboard_group_url = self.dashboard_group_url
+
+            yield dashboard_group_record
+
+        # Dashboard group description
+        if self.dashboard_group_description:
+            yield RDSDashboardGroupDescription(
+                rk=self._get_dashboard_group_description_key(),
+                description=self.dashboard_group_description,
+                dashboard_group_rk=self._get_dashboard_group_key()
+            )
+
+        # Dashboard
+        dashboard_record = RDSDashboard(
+            rk=self._get_dashboard_key(),
+            name=self.dashboard_name,
+            dashboard_group_rk=self._get_dashboard_group_key()
+        )
+        if self.created_timestamp:
+            dashboard_record.created_timestamp = self.created_timestamp
+
+        if self.dashboard_url:
+            dashboard_record.dashboard_url = self.dashboard_url
+
+        yield dashboard_record
+
+        # Dashboard description
+        if self.description:
+            yield RDSDashboardDescription(
+                rk=self._get_dashboard_description_key(),
+                description=self.description,
+                dashboard_rk=self._get_dashboard_key()
+            )
+
+        # Dashboard tag
+        if self.tags:
+            for tag in self.tags:
+                tag_record = RDSTag(
+                    rk=TagMetadata.get_tag_key(tag),
+                    tag_type='dashboard',
+                )
+                yield tag_record
+
+                dashboard_tag_record = RDSDashboardTag(
+                    dashboard_rk=self._get_dashboard_key(),
+                    tag_rk=TagMetadata.get_tag_key(tag)
+                )
+                yield dashboard_tag_record

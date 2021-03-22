@@ -5,10 +5,14 @@ from typing import (
     Iterable, Iterator, Union,
 )
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.table import TableUsage as RDSTableUsage
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.user import User
 
 
@@ -40,7 +44,7 @@ class ColumnReader(object):
                f"user_email={self.user_email!r}, read_count={self.read_count!r})"
 
 
-class TableColumnUsage(GraphSerializable):
+class TableColumnUsage(GraphSerializable, TableSerializable):
     """
     A model represents user <--> column graph model
     Currently it only support to serialize to table level
@@ -62,6 +66,7 @@ class TableColumnUsage(GraphSerializable):
         self.col_readers = col_readers
         self._node_iterator = self._create_node_iterator()
         self._rel_iter = self._create_rel_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -96,6 +101,23 @@ class TableColumnUsage(GraphSerializable):
                 }
             )
             yield relationship
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
+        except StopIteration:
+            return None
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        for col_reader in self.col_readers:
+            if col_reader.column == '*':
+                user_record = User(email=col_reader.user_email).get_user_record()
+                yield user_record
+
+            table_usage_record = RDSTableUsage(user_rk=self._get_user_key(col_reader.user_email),
+                                               table_rk=self._get_table_key(col_reader),
+                                               read_count=col_reader.read_count)
+            yield table_usage_record
 
     def _get_table_key(self, col_reader: ColumnReader) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=col_reader.database,

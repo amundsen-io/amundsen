@@ -249,7 +249,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEqual(result.cluster, 'your-project-here')
         self.assertEqual(result.schema, 'fdgdfgh')
         self.assertEqual(result.name, 'nested_recs')
-        self.assertEqual(result.description._text, '')
+        self.assertEqual(result.description.text, '')
         self.assertEqual(result.columns, [])
         self.assertEqual(result.is_view, False)
 
@@ -265,7 +265,7 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEqual(result.cluster, 'your-project-here')
         self.assertEqual(result.schema, 'fdgdfgh')
         self.assertEqual(result.name, 'nested_recs')
-        self.assertEqual(result.description._text, "")
+        self.assertEqual(result.description.text, "")
         self.assertEqual(result.columns, [])
         self.assertEqual(result.is_view, False)
 
@@ -291,12 +291,12 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEqual(result.cluster, 'your-project-here')
         self.assertEqual(result.schema, 'fdgdfgh')
         self.assertEqual(result.name, 'nested_recs')
-        self.assertEqual(result.description._text, "")
+        self.assertEqual(result.description.text, "")
 
         first_col = result.columns[0]
         self.assertEqual(first_col.name, 'test')
         self.assertEqual(first_col.type, 'STRING')
-        self.assertEqual(first_col.description._text, 'some_description')
+        self.assertEqual(first_col.description.text, 'some_description')
         self.assertEqual(result.is_view, False)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')

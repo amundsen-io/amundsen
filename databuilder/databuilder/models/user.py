@@ -3,15 +3,19 @@
 
 import copy
 from typing import (
-    Any, Iterator, Optional,
+    Any, Iterator, Optional, Union,
 )
+
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.user import User as RDSUser
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_serializable import TableSerializable
 
 
-class User(GraphSerializable):
+class User(GraphSerializable, TableSerializable):
     """
     User model. This model doesn't define any relationship.
     """
@@ -91,6 +95,7 @@ class User(GraphSerializable):
 
         self._node_iter = self._create_node_iterator()
         self._rel_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -105,6 +110,12 @@ class User(GraphSerializable):
         """
         try:
             return next(self._rel_iter)
+        except StopIteration:
+            return None
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
         except StopIteration:
             return None
 
@@ -153,6 +164,33 @@ class User(GraphSerializable):
 
         return node
 
+    def get_user_record(self) -> RDSModel:
+        record_attr_map = {
+            RDSUser.email: self.email,
+            RDSUser.is_active: self.is_active,
+            RDSUser.first_name: self.first_name or '',
+            RDSUser.last_name: self.last_name or '',
+            RDSUser.full_name: self.full_name or '',
+            RDSUser.github_username: self.github_username or '',
+            RDSUser.team_name: self.team_name or '',
+            RDSUser.employee_type: self.employee_type or '',
+            RDSUser.slack_id: self.slack_id or '',
+            RDSUser.role_name: self.role_name or '',
+            RDSUser.updated_at: self.updated_at or 0
+        }
+
+        record = RDSUser(rk=User.get_user_model_key(email=self.email))
+        # set value for attributes of user record if the value is not empty
+        # or the flag allows to update empty values
+        for attr, value in record_attr_map.items():
+            if value or not self.do_not_update_empty_attribute:
+                record.__setattr__(attr.key, value)
+
+        if self.manager_email:
+            record.manager_rk = self.get_user_model_key(email=self.manager_email)
+
+        return record
+
     def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
         Create an user node
@@ -174,6 +212,10 @@ class User(GraphSerializable):
                 attributes={}
             )
             yield relationship
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        user_record = self.get_user_record()
+        yield user_record
 
     def __repr__(self) -> str:
         return f'User({self.first_name!r}, {self.last_name!r}, {self.full_name!r}, {self.email!r}, ' \

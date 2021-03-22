@@ -5,7 +5,9 @@ import unittest
 from unittest.mock import ANY
 
 from databuilder.models.schema.schema import SchemaModel
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -168,3 +170,40 @@ class TestSchemaDescription(unittest.TestCase):
 
         self.assertEqual(expected, serialized_actual)
         self.assertIsNone(schema.create_next_relation())
+
+    def test_create_records(self) -> None:
+        schema_record = self.schema.create_next_record()
+        serialized_schema_record = mysql_serializer.serialize_record(schema_record)
+        schema_desc_record = self.schema.create_next_record()
+        serialized_schema_desc_record = mysql_serializer.serialize_record(schema_desc_record)
+        self.assertDictEqual(serialized_schema_record, {'rk': 'db://cluster.schema', 'name': 'schema_name',
+                                                        'cluster_rk': 'db://cluster'})
+        self.assertDictEqual(serialized_schema_desc_record, {'rk': 'db://cluster.schema/_description',
+                                                             'description_source': 'description', 'description': 'foo',
+                                                             'schema_rk': 'db://cluster.schema'})
+
+    def test_create_records_no_description(self) -> None:
+        schema = SchemaModel(schema_key='db://cluster.schema',
+                             schema='schema_name')
+        schema_record = schema.create_next_record()
+        serialized_schema_record = mysql_serializer.serialize_record(schema_record)
+        self.assertDictEqual(serialized_schema_record, {'rk': 'db://cluster.schema', 'name': 'schema_name',
+                                                        'cluster_rk': 'db://cluster'})
+        self.assertIsNone(schema.create_next_record())
+
+    def test_create_records_programmatic_description(self) -> None:
+        schema = SchemaModel(schema_key='db://cluster.schema',
+                             schema='schema_name',
+                             description='foo',
+                             description_source='bar')
+
+        schema_record = schema.create_next_record()
+        serialized_schema_record = mysql_serializer.serialize_record(schema_record)
+        schema_prog_desc_record = schema.create_next_record()
+        serialized_schema_prog_desc_record = mysql_serializer.serialize_record(schema_prog_desc_record)
+        self.assertDictEqual(serialized_schema_record, {'rk': 'db://cluster.schema', 'name': 'schema_name',
+                                                        'cluster_rk': 'db://cluster'})
+        self.assertDictEqual(serialized_schema_prog_desc_record, {'rk': 'db://cluster.schema/_bar_description',
+                                                                  'description_source': 'bar',
+                                                                  'description': 'foo',
+                                                                  'schema_rk': 'db://cluster.schema'})

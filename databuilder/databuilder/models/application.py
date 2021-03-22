@@ -3,13 +3,17 @@
 
 from typing import Iterator, Union
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.application import Application as RDSApplication, ApplicationTable as RDSApplicationTable
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.table_serializable import TableSerializable
 
 
-class Application(GraphSerializable):
+class Application(GraphSerializable, TableSerializable):
     """
     Application-table matching model (Airflow task and table)
     """
@@ -46,6 +50,7 @@ class Application(GraphSerializable):
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # creates new node
@@ -57,6 +62,12 @@ class Application(GraphSerializable):
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
             return next(self._relation_iter)
+        except StopIteration:
+            return None
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
         except StopIteration:
             return None
 
@@ -113,3 +124,27 @@ class Application(GraphSerializable):
             attributes={}
         )
         yield graph_relationship
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        application_description = '{app_type} with id {id}'.format(
+            app_type=Application.APPLICATION_TYPE,
+            id=Application.APPLICATION_ID_FORMAT.format(dag_id=self.dag, task_id=self.task)
+        )
+        application_id = Application.APPLICATION_ID_FORMAT.format(
+            dag_id=self.dag,
+            task_id=self.task
+        )
+        application_record = RDSApplication(
+            rk=self.get_application_model_key(),
+            application_url=self.application_url,
+            name=Application.APPLICATION_TYPE,
+            id=application_id,
+            description=application_description
+        )
+        yield application_record
+
+        application_table_record = RDSApplicationTable(
+            rk=self.get_table_model_key(),
+            application_rk=self.get_application_model_key(),
+        )
+        yield application_table_record

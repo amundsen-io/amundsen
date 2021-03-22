@@ -627,3 +627,98 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
         }
     ]
 ]
+
+EXPECTED_RECORDS_MYSQL = [
+    {
+        'rk': 'database://hive',
+        'name': 'hive'
+    },
+    {
+        'rk': 'hive://gold',
+        'name': 'gold',
+        'database_rk': 'database://hive'
+    },
+    {
+        'rk': 'hive://gold.test_schema1',
+        'name': 'test_schema1',
+        'cluster_rk': 'hive://gold',
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1',
+        'name': 'test_table1',
+        'is_view': False,
+        'schema_rk': 'hive://gold.test_schema1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/_description',
+        'description': 'test_table1',
+        'description_source': 'description',
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/test_id1',
+        'name': 'test_id1',
+        'type': 'bigint',
+        'sort_order': 0,
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/test_id1/_description',
+        'description': 'description of test_table1',
+        'description_source': 'description',
+        'column_rk': 'hive://gold.test_schema1/test_table1/test_id1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/test_id2',
+        'name': 'test_id2',
+        'type': 'bigint',
+        'sort_order': 1,
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/test_id2/_description',
+        'description': 'description of test_id2',
+        'description_source': 'description',
+        'column_rk': 'hive://gold.test_schema1/test_table1/test_id2'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/is_active',
+        'name': 'is_active',
+        'type': 'boolean',
+        'sort_order': 2,
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/source',
+        'name': 'source',
+        'type': 'varchar',
+        'sort_order': 3,
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/source/_description',
+        'description': 'description of source',
+        'description_source': 'description',
+        'column_rk': 'hive://gold.test_schema1/test_table1/source'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/etl_created_at',
+        'name': 'etl_created_at',
+        'type': 'timestamp',
+        'sort_order': 4,
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/etl_created_at/_description',
+        'description': 'description of etl_created_at',
+        'description_source': 'description',
+        'column_rk': 'hive://gold.test_schema1/test_table1/etl_created_at'
+    },
+    {
+        'rk': 'hive://gold.test_schema1/test_table1/ds',
+        'name': 'ds',
+        'type': 'varchar',
+        'sort_order': 5,
+        'table_rk': 'hive://gold.test_schema1/test_table1'
+    }
+]

@@ -11,7 +11,9 @@ from databuilder.models.graph_serializable import (
     RELATION_START_LABEL, RELATION_TYPE,
 )
 from databuilder.models.watermark import Watermark
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -177,3 +179,21 @@ class TestWatermark(unittest.TestCase):
         ]
 
         self.assertListEqual(actual, expected)
+
+    def test_create_records(self) -> None:
+        expected = [{
+            'rk': self.start_key,
+            'partition_key': 'ds',
+            'partition_value': '2017-09-18/feature_id=9',
+            'create_time': '2017-09-18T00:00:00',
+            'table_rk': self.end_key
+        }]
+
+        actual = []
+        record = self.watermark.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.watermark.create_next_record()
+
+        self.assertEqual(actual, expected)

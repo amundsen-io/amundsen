@@ -3,12 +3,16 @@
 
 import re
 from typing import (
-    Iterator, List, Optional,
+    Iterator, List, Optional, Union,
 )
+
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.badge import Badge as RDSBadge
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_serializable import TableSerializable
 
 
 class Badge:
@@ -26,7 +30,7 @@ class Badge:
             self.category == other.category
 
 
-class BadgeMetadata(GraphSerializable):
+class BadgeMetadata(GraphSerializable, TableSerializable):
     """
     Badge model.
     """
@@ -64,6 +68,7 @@ class BadgeMetadata(GraphSerializable):
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def __repr__(self) -> str:
         return f'BadgeMetadata({self.start_label!r}, {self.start_key!r})'
@@ -78,6 +83,12 @@ class BadgeMetadata(GraphSerializable):
     def create_next_relation(self) -> Optional[GraphRelationship]:
         try:
             return next(self._relation_iter)
+        except StopIteration:
+            return None
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
         except StopIteration:
             return None
 
@@ -119,6 +130,18 @@ class BadgeMetadata(GraphSerializable):
             relations.append(relation)
         return relations
 
+    def get_badge_records(self) -> List[RDSModel]:
+        records = []
+        for badge in self.badges:
+            if badge:
+                record = RDSBadge(
+                    rk=self.get_badge_key(badge.name),
+                    category=badge.category
+                )
+                records.append(record)
+
+        return records
+
     def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
         Create badge nodes
@@ -132,3 +155,8 @@ class BadgeMetadata(GraphSerializable):
         relations = self.get_badge_relations()
         for relation in relations:
             yield relation
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        records = self.get_badge_records()
+        for record in records:
+            yield record

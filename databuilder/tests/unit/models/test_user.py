@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     RELATION_TYPE,
 )
 from databuilder.models.user import User
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -104,6 +106,25 @@ class TestUser(unittest.TestCase):
         self.assertEqual(serialized_node['email:String(single)'], 'test@email.com')
         self.assertEqual(serialized_node['role_name:String(single)'], 'swe')
         self.assertTrue(serialized_node['enable_notify:Bool(single)'])
+
+    def test_create_record_additional_attr_mysql(self) -> None:
+        test_user = User(first_name='test_first',
+                         last_name='test_last',
+                         name='test_first test_last',
+                         email='test@email.com',
+                         github_username='github_test',
+                         team_name='test_team',
+                         employee_type='FTE',
+                         manager_email='test_manager@email.com',
+                         slack_id='slack',
+                         is_active=True,
+                         updated_at=1,
+                         role_name='swe',
+                         enable_notify=True)
+        record = test_user.create_next_record()
+        serialized_record = mysql_serializer.serialize_record(record)
+        self.assertEqual(serialized_record['email'], 'test@email.com')
+        self.assertEqual(serialized_record['role_name'], 'swe')
 
     def test_create_relation(self) -> None:
         actual = []

@@ -10,7 +10,9 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.models.timestamp import timestamp_constants
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -141,3 +143,21 @@ class TestTableLastUpdated(unittest.TestCase):
         ]
 
         self.assertEqual(actual, expected)
+
+    def test_create_records(self) -> None:
+        expected = [{
+            'rk': 'hive://gold.default/test_table/timestamp',
+            'last_updated_timestamp': 25195665,
+            'timestamp': 25195665,
+            'name': 'last_updated_timestamp',
+            'table_rk': 'hive://gold.default/test_table'
+        }]
+
+        actual = []
+        record = self.tableLastUpdated.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.tableLastUpdated.create_next_record()
+
+        self.assertEqual(expected, actual)

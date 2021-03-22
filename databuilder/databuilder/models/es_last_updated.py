@@ -3,12 +3,16 @@
 
 from typing import Iterator, Union
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.updated_timestamp import UpdatedTimestamp as RDSUpdatedTimestamp
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_serializable import TableSerializable
 
 
-class ESLastUpdated(GraphSerializable):
+class ESLastUpdated(GraphSerializable, TableSerializable):
     """
     Data model to keep track the last updated timestamp for
     datastore and es.
@@ -27,6 +31,7 @@ class ESLastUpdated(GraphSerializable):
         self.timestamp = timestamp
         self._node_iter = self._create_node_iterator()
         self._rel_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         """
@@ -59,3 +64,14 @@ class ESLastUpdated(GraphSerializable):
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         return
         yield
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
+        except StopIteration:
+            return None
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        record = RDSUpdatedTimestamp(rk=ESLastUpdated.KEY,
+                                     latest_timestamp=self.timestamp)
+        yield record

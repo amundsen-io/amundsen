@@ -3,17 +3,21 @@
 
 from typing import Iterator, Union
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.table import TableUsage as RDSTableUsage
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.usage.usage_constants import (
     READ_RELATION_COUNT_PROPERTY, READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE,
 )
 from databuilder.models.user import User
 
 
-class ColumnUsageModel(GraphSerializable):
+class ColumnUsageModel(GraphSerializable, TableSerializable):
     """
     A model represents user <--> column graph model
     Currently it only support to serialize to table level
@@ -46,6 +50,7 @@ class ColumnUsageModel(GraphSerializable):
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
 
@@ -81,6 +86,23 @@ class ColumnUsageModel(GraphSerializable):
             }
         )
         yield relationship
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
+        except StopIteration:
+            return None
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        user_record = User(email=self.user_email).get_user_record()
+        yield user_record
+
+        table_usage_record = RDSTableUsage(
+            user_rk=self._get_user_key(self.user_email),
+            table_rk=self._get_table_key(),
+            read_count=self.read_count
+        )
+        yield table_usage_record
 
     def _get_table_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
