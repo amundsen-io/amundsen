@@ -5,14 +5,19 @@ from typing import (
     Iterator, List, Optional, Union,
 )
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.table import TableOwner as RDSTableOwner
+from amundsen_rds.models.user import User as RDSUser
+
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE, OWNER_RELATION_TYPE
+from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.user import User
 
 
-class TableOwner(GraphSerializable):
+class TableOwner(GraphSerializable, TableSerializable):
     """
     Hive table owner model.
     """
@@ -36,6 +41,7 @@ class TableOwner(GraphSerializable):
         self.cluster = cluster
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -47,6 +53,12 @@ class TableOwner(GraphSerializable):
     def create_next_relation(self) -> Optional[GraphRelationship]:
         try:
             return next(self._relation_iter)
+        except StopIteration:
+            return None
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
         except StopIteration:
             return None
 
@@ -89,6 +101,21 @@ class TableOwner(GraphSerializable):
                     attributes={}
                 )
                 yield relationship
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        for owner in self.owners:
+            if owner:
+                user_record = RDSUser(
+                    rk=self.get_owner_model_key(owner),
+                    email=owner
+                )
+                yield user_record
+
+                table_owner_record = RDSTableOwner(
+                    table_rk=self.get_metadata_model_key(),
+                    user_rk=self.get_owner_model_key(owner)
+                )
+                yield table_owner_record
 
     def __repr__(self) -> str:
         return f'TableOwner({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r}, {self.owners!r})'

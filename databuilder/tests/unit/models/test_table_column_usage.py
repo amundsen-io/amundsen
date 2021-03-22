@@ -6,7 +6,9 @@ from typing import no_type_check
 from unittest.mock import ANY
 
 from databuilder.models.table_column_usage import ColumnReader, TableColumnUsage
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -109,6 +111,36 @@ class TestTableColumnUsage(unittest.TestCase):
         ]]
         self.maxDiff = None
         self.assertListEqual(expected, actual)
+
+    def test_mysql_serialize(self) -> None:
+        col_readers = [ColumnReader(database='db', cluster='gold', schema='scm', table='foo', column='*',
+                                    user_email='john@example.com')]
+        table_col_usage = TableColumnUsage(col_readers=col_readers)
+
+        actual = []
+        record = table_col_usage.next_record()
+        while record:
+            actual.append(mysql_serializer.serialize_record(record))
+            record = table_col_usage.next_record()
+
+        expected_user = {'rk': 'john@example.com',
+                         'first_name': '',
+                         'last_name': '',
+                         'full_name': '',
+                         'employee_type': '',
+                         'is_active': True,
+                         'updated_at': 0,
+                         'slack_id': '',
+                         'github_username': '',
+                         'team_name': '',
+                         'email': 'john@example.com',
+                         'role_name': ''}
+        expected_usage = {'table_rk': 'db://gold.scm/foo',
+                          'user_rk': 'john@example.com',
+                          'read_count': 1}
+        expected = [expected_user, expected_usage]
+
+        self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':

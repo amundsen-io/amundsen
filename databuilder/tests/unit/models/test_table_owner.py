@@ -10,7 +10,9 @@ from databuilder.models.graph_serializable import (
 )
 from databuilder.models.table_owner import TableOwner
 from databuilder.models.user import User
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -206,6 +208,35 @@ class TestTableOwner(unittest.TestCase):
             relation = self.table_owner.create_next_relation()
 
         self.assertEqual(expected, actual)
+
+    def test_create_records(self) -> None:
+        expected = [
+            {
+                'rk': User.USER_NODE_KEY_FORMAT.format(email=owner1),
+                'email': owner1
+            },
+            {
+                'table_rk': self.table_owner.get_metadata_model_key(),
+                'user_rk': owner1
+            },
+            {
+                'rk': User.USER_NODE_KEY_FORMAT.format(email=owner2),
+                'email': owner2
+            },
+            {
+                'table_rk': self.table_owner.get_metadata_model_key(),
+                'user_rk': owner2
+            }
+        ]
+
+        actual = []
+        record = self.table_owner.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.table_owner.create_next_record()
+
+        self.assertEqual(actual, expected)
 
     def test_create_nodes_with_owners_list(self) -> None:
         self.table_owner_list = TableOwner(db_name='hive',

@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     RELATION_START_LABEL, RELATION_TYPE,
 )
 from databuilder.models.table_stats import TableColumnStats
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -154,3 +156,22 @@ class TestTableStats(unittest.TestCase):
             next_relation = self.table_stats.create_next_relation()
 
         self.assertListEqual(actual, expected)
+
+    def test_create_records(self) -> None:
+        expected = [{
+            'rk': 'hive://gold.base/test/col/avg/',
+            'stat_val': '1',
+            'stat_type': 'avg',
+            'start_epoch': '1',
+            'end_epoch': '2',
+            'column_rk': 'hive://gold.base/test/col'
+        }]
+
+        actual = []
+        record = self.table_stats.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.table_stats.create_next_record()
+
+        self.assertEqual(actual, expected)

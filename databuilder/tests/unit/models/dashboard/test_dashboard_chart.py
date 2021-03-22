@@ -10,7 +10,9 @@ from databuilder.models.graph_serializable import (
     RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY, RELATION_START_LABEL,
     RELATION_TYPE,
 )
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -22,7 +24,6 @@ from databuilder.serializers.neptune_serializer import (
 class TestDashboardChart(unittest.TestCase):
 
     def test_create_nodes(self) -> None:
-
         dashboard_chart = DashboardChart(dashboard_group_id='dg_id',
                                          dashboard_id='d_id',
                                          query_id='q_id',
@@ -154,3 +155,47 @@ class TestDashboardChart(unittest.TestCase):
         self.assertEqual(neptune_forward_expected, actual_neptune_serialized[0])
         self.assertEqual(neptune_reversed_expected, actual_neptune_serialized[1])
         self.assertIsNone(dashboard_chart.create_next_relation())
+
+    def test_create_records(self) -> None:
+        dashboard_chart = DashboardChart(dashboard_group_id='dg_id',
+                                         dashboard_id='d_id',
+                                         query_id='q_id',
+                                         chart_id='c_id',
+                                         chart_name='c_name',
+                                         chart_type='bar',
+                                         chart_url='http://gold.foo/chart'
+                                         )
+
+        actual = dashboard_chart.create_next_record()
+        actual_serialized = mysql_serializer.serialize_record(actual)
+        expected = {
+            'rk': '_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
+            'id': 'c_id',
+            'query_rk': '_dashboard://gold.dg_id/d_id/query/q_id',
+            'name': 'c_name',
+            'type': 'bar',
+            'url': 'http://gold.foo/chart'
+        }
+
+        assert actual is not None
+        self.assertDictEqual(expected, actual_serialized)
+        self.assertIsNone(dashboard_chart.create_next_record())
+
+        dashboard_chart = DashboardChart(dashboard_group_id='dg_id',
+                                         dashboard_id='d_id',
+                                         query_id='q_id',
+                                         chart_id='c_id',
+                                         chart_url='http://gold.foo.bar/'
+                                         )
+
+        actual2 = dashboard_chart.create_next_record()
+        actual2_serialized = mysql_serializer.serialize_record(actual2)
+        expected2 = {
+            'rk': '_dashboard://gold.dg_id/d_id/query/q_id/chart/c_id',
+            'id': 'c_id',
+            'query_rk': '_dashboard://gold.dg_id/d_id/query/q_id',
+            'url': 'http://gold.foo.bar/'
+        }
+
+        assert actual2 is not None
+        self.assertDictEqual(expected2, actual2_serialized)

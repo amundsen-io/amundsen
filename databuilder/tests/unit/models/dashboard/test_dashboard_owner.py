@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY, RELATION_START_LABEL,
     RELATION_TYPE,
 )
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -92,3 +94,16 @@ class TestDashboardOwner(unittest.TestCase):
         assert actual is not None
         self.assertDictEqual(actual_serialized[0], neptune_forward_expected)
         self.assertDictEqual(actual_serialized[1], neptune_reversed_expected)
+
+    def test_dashboard_owner_record(self) -> None:
+
+        actual = self.dashboard_owner.create_next_record()
+        actual_serialized = mysql_serializer.serialize_record(actual)
+        expected = {
+            'user_rk': 'foo@bar.com',
+            'dashboard_rk': 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id'
+        }
+
+        assert actual is not None
+        self.assertDictEqual(expected, actual_serialized)
+        self.assertIsNone(self.dashboard_owner.create_next_record())

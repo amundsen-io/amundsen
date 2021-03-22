@@ -7,7 +7,9 @@ from typing import Dict, List
 from unittest.mock import ANY
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -508,6 +510,75 @@ class TestDashboardMetadata(unittest.TestCase):
             relation_row = self.dashboard_metadata3.next_relation()
 
         self.assertEqual(self.expected_rels_deduped3, actual)
+
+    def test_dashboard_record_full_example(self) -> None:
+        expected_records = [
+            {'rk': '_dashboard://gold', 'name': 'gold'},
+            {'rk': '_dashboard://gold.Product - Jobs.cz', 'name': 'Product - Jobs.cz',
+             'cluster_rk': '_dashboard://gold',
+             'dashboard_group_url': 'https://foo.bar/dashboard_group/foo'},
+            {'rk': '_dashboard://gold.Product - Jobs.cz/_description', 'description': 'foo dashboard group description',
+             'dashboard_group_rk': '_dashboard://gold.Product - Jobs.cz'},
+            {'rk': '_dashboard://gold.Product - Jobs.cz/Agent', 'name': 'Agent',
+             'dashboard_group_rk': '_dashboard://gold.Product - Jobs.cz', 'created_timestamp': 123456789,
+             'dashboard_url': 'https://foo.bar/dashboard_group/foo/dashboard/bar'},
+            {'rk': '_dashboard://gold.Product - Jobs.cz/Agent/_description',
+             'description': 'Agent dashboard description',
+             'dashboard_rk': '_dashboard://gold.Product - Jobs.cz/Agent'},
+            {'rk': 'test_tag', 'tag_type': 'dashboard'},
+            {'dashboard_rk': '_dashboard://gold.Product - Jobs.cz/Agent', 'tag_rk': 'test_tag'},
+            {'rk': 'tag2', 'tag_type': 'dashboard'},
+            {'dashboard_rk': '_dashboard://gold.Product - Jobs.cz/Agent', 'tag_rk': 'tag2'}
+        ]
+        record = self.full_dashboard_metadata.next_record()
+        actual = []
+        while record:
+            record_serialized = mysql_serializer.serialize_record(record)
+            actual.append(record_serialized)
+            record = self.full_dashboard_metadata.next_record()
+
+        self.assertEqual(expected_records, actual)
+
+    def test_dashboard_record_without_tags(self) -> None:
+        expected_records_without_tags = [
+            {'rk': '_dashboard://gold', 'name': 'gold'},
+            {'rk': '_dashboard://gold.Product - Atmoskop', 'name': 'Product - Atmoskop',
+             'cluster_rk': '_dashboard://gold'},
+            {'rk': '_dashboard://gold.Product - Atmoskop/Atmoskop', 'name': 'Atmoskop',
+             'dashboard_group_rk': '_dashboard://gold.Product - Atmoskop'},
+            {'rk': '_dashboard://gold.Product - Atmoskop/Atmoskop/_description',
+             'description': 'Atmoskop dashboard description',
+             'dashboard_rk': '_dashboard://gold.Product - Atmoskop/Atmoskop'}
+        ]
+        record = self.dashboard_metadata2.next_record()
+        actual = []
+        while record:
+            record_serialized = mysql_serializer.serialize_record(record)
+            actual.append(record_serialized)
+            record = self.dashboard_metadata2.next_record()
+
+        self.assertEqual(expected_records_without_tags, actual)
+
+    def test_dashboard_record_no_description(self) -> None:
+        expected_records_without_description = [
+            {'rk': '_dashboard://gold', 'name': 'gold'},
+            {'rk': '_dashboard://gold.Product - Jobs.cz', 'name': 'Product - Jobs.cz',
+             'cluster_rk': '_dashboard://gold'},
+            {'rk': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'name': 'Dohazovac',
+             'dashboard_group_rk': '_dashboard://gold.Product - Jobs.cz'},
+            {'rk': 'test_tag', 'tag_type': 'dashboard'},
+            {'dashboard_rk': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'tag_rk': 'test_tag'},
+            {'rk': 'tag3', 'tag_type': 'dashboard'},
+            {'dashboard_rk': '_dashboard://gold.Product - Jobs.cz/Dohazovac', 'tag_rk': 'tag3'}
+        ]
+        record = self.dashboard_metadata3.next_record()
+        actual = []
+        while record:
+            record_serialized = mysql_serializer.serialize_record(record)
+            actual.append(record_serialized)
+            record = self.dashboard_metadata3.next_record()
+
+        self.assertEqual(expected_records_without_description, actual)
 
 
 if __name__ == '__main__':

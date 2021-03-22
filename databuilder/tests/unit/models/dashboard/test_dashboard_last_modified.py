@@ -10,7 +10,9 @@ from databuilder.models.graph_serializable import (
     RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY, RELATION_START_LABEL,
     RELATION_TYPE,
 )
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -127,3 +129,19 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.assertDictEqual(actual_serialized[0], neptune_forward_expected)
         self.assertDictEqual(actual_serialized[1], neptune_reversed_expected)
         self.assertIsNone(self.dashboard_last_modified.create_next_relation())
+
+    def test_dashboard_timestamp_records(self) -> None:
+
+        actual = self.dashboard_last_modified.create_next_record()
+        actual_serialized = mysql_serializer.serialize_record(actual)
+
+        expected = {
+            'rk': 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id/_last_modified_timestamp',
+            'timestamp': 123456789,
+            'name': 'last_updated_timestamp',
+            'dashboard_rk': 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id'
+        }
+
+        assert actual is not None
+        self.assertDictEqual(actual_serialized, expected)
+        self.assertIsNone(self.dashboard_last_modified.create_next_record())

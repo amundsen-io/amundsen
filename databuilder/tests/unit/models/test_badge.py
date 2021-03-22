@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
     RELATION_START_LABEL, RELATION_TYPE,
 )
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -220,5 +222,26 @@ class TestBadge(unittest.TestCase):
         }
         expected = [[neptune_forward_expected_1, neptune_reversed_expected_1],
                     [neptune_forward_expected_2, neptune_reversed_expected_2]]
+
+        self.assertEqual(expected, actual)
+
+    def test_create_records(self) -> None:
+        expected = [
+            {
+                'rk': BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name),
+                'category': badge1.category
+            },
+            {
+                'rk': BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name),
+                'category': badge2.category
+            }
+        ]
+
+        actual = []
+        record = self.badge_metada.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.badge_metada.create_next_record()
 
         self.assertEqual(expected, actual)

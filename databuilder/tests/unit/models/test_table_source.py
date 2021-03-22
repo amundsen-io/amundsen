@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     RELATION_TYPE,
 )
 from databuilder.models.table_source import TableSource
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -129,3 +131,20 @@ class TestTableSource(unittest.TestCase):
         ]
 
         self.assertListEqual(expected, actual)
+
+    def test_create_records(self) -> None:
+        expected = [{
+            'rk': self.table_source.get_source_model_key(),
+            'source': self.table_source.source,
+            'source_type': self.table_source.source_type,
+            'table_rk': self.table_source.get_metadata_model_key()
+        }]
+
+        actual = []
+        record = self.table_source.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.table_source.create_next_record()
+
+        self.assertEqual(expected, actual)

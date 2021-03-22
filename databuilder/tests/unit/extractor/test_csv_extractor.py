@@ -27,7 +27,7 @@ class TestCsvExtractor(unittest.TestCase):
 
         result = extractor.extract()
         self.assertEqual(result.name, 'test_table1')
-        self.assertEqual(result.description._text, '1st test table')
+        self.assertEqual(result.description.text, '1st test table')
         self.assertEqual(result.database, 'hive')
         self.assertEqual(result.cluster, 'gold')
         self.assertEqual(result.schema, 'test_schema')

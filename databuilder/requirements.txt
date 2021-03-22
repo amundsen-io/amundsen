@@ -64,3 +64,5 @@ requests==2.23.0,<3.0
 responses==0.10.6
 
 pyatlasclient==1.1.2
+
+amundsen-rds>=0.0.3

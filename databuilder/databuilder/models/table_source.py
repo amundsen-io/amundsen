@@ -1,15 +1,21 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Iterator, Optional
+from typing import (
+    Iterator, Optional, Union,
+)
+
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.table import TableSource as RDSTableSource
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.table_serializable import TableSerializable
 
 
-class TableSource(GraphSerializable):
+class TableSource(GraphSerializable, TableSerializable):
     """
     Hive table source model.
     """
@@ -36,6 +42,7 @@ class TableSource(GraphSerializable):
         self.source_type = source_type
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -47,6 +54,12 @@ class TableSource(GraphSerializable):
     def create_next_relation(self) -> Optional[GraphRelationship]:
         try:
             return next(self._relation_iter)
+        except StopIteration:
+            return None
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
         except StopIteration:
             return None
 
@@ -89,6 +102,15 @@ class TableSource(GraphSerializable):
             attributes={}
         )
         yield relationship
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        record = RDSTableSource(
+            rk=self.get_source_model_key(),
+            source=self.source,
+            source_type=self.source_type,
+            table_rk=self.get_metadata_model_key()
+        )
+        yield record
 
     def __repr__(self) -> str:
         return f'TableSource({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r}, {self.source!r})'

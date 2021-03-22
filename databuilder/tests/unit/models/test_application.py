@@ -10,7 +10,9 @@ from databuilder.models.graph_serializable import (
     RELATION_START_LABEL, RELATION_TYPE,
 )
 from databuilder.models.table_metadata import TableMetadata
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -66,7 +68,7 @@ class TestApplication(unittest.TestCase):
 
         self.assertEqual(actual, self.expected_node_results)
 
-    def test_create_next_node_neptune(self) -> None:
+    def test_create_nodes_neptune(self) -> None:
         actual = []
         next_node = self.application.create_next_node()
         while next_node:
@@ -98,7 +100,7 @@ class TestApplication(unittest.TestCase):
 
         self.assertEqual(actual, self.expected_relation_results)
 
-    def test_create_next_relation_neptune(self) -> None:
+    def test_create_relations_neptune(self) -> None:
         application_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
         table_id = 'Table:hive://gold.default/test_table'
         neptune_forward_expected = {
@@ -146,3 +148,26 @@ class TestApplication(unittest.TestCase):
             next_relation = self.application.create_next_relation()
 
         self.assertEqual(actual, neptune_expected)
+
+    def test_create_records(self) -> None:
+        expected_application_record = {
+            'rk': 'application://gold.airflow/event_test/hive.default.test_table',
+            'application_url': 'airflow_host.net/admin/airflow/tree?dag_id=event_test',
+            'id': 'event_test/hive.default.test_table',
+            'name': 'Airflow',
+            'description': 'Airflow with id event_test/hive.default.test_table'
+        }
+        expected_application_table_record = {
+            'rk': 'hive://gold.default/test_table',
+            'application_rk': 'application://gold.airflow/event_test/hive.default.test_table'
+        }
+        expected = [expected_application_record, expected_application_table_record]
+
+        actual = []
+        record = self.application.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.application.create_next_record()
+
+        self.assertEqual(expected, actual)

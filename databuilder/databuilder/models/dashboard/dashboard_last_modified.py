@@ -6,16 +6,20 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.dashboard import DashboardTimestamp as RDSDashboardTimestamp
+
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.timestamp import timestamp_constants
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardLastModifiedTimestamp(GraphSerializable):
+class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable):
     """
     A model that encapsulate Dashboard's last modified timestamp in epoch
     """
@@ -38,6 +42,7 @@ class DashboardLastModifiedTimestamp(GraphSerializable):
         self._cluster = cluster
         self._node_iterator = self._create_node_iterator()
         self._relation_iterator = self._create_relation_iterator()
+        self._record_iterator = self._create_record_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -79,6 +84,25 @@ class DashboardLastModifiedTimestamp(GraphSerializable):
             attributes={}
         )
         yield relationship
+
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iterator)
+        except StopIteration:
+            return None
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        yield RDSDashboardTimestamp(
+            rk=self._get_last_modified_node_key(),
+            timestamp=self._last_modified_timestamp,
+            name=timestamp_constants.TimestampName.last_updated_timestamp.name,
+            dashboard_rk=DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                product=self._product,
+                cluster=self._cluster,
+                dashboard_group=self._dashboard_group_id,
+                dashboard_name=self._dashboard_id
+            )
+        )
 
     def _get_last_modified_node_key(self) -> str:
         return DashboardLastModifiedTimestamp.DASHBOARD_LAST_MODIFIED_KEY_FORMAT.format(

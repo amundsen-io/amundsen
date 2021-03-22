@@ -6,9 +6,11 @@ import unittest
 from typing import Dict, List
 
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from tests.unit.models.test_fixtures.table_metadata_fixtures import (
-    EXPECTED_NEPTUNE_NODES, EXPECTED_RELATIONSHIPS_NEPTUNE,
+    EXPECTED_NEPTUNE_NODES, EXPECTED_RECORDS_MYSQL, EXPECTED_RELATIONSHIPS_NEPTUNE,
 )
 
 
@@ -182,6 +184,16 @@ class TestTableMetadata(unittest.TestCase):
             relation_row = self.table_metadata.next_relation()
         self.maxDiff = None
         self.assertEqual(EXPECTED_RELATIONSHIPS_NEPTUNE, neptune_actual)
+
+    def test_serialize_mysql(self) -> None:
+        actual = []
+        record = self.table_metadata.next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.table_metadata.next_record()
+
+        self.assertEqual(EXPECTED_RECORDS_MYSQL, actual)
 
     def test_table_attributes(self) -> None:
         self.table_metadata3 = TableMetadata('hive', 'gold', 'test_schema3', 'test_table3', 'test_table3', [
