@@ -6,7 +6,7 @@ from typing import List, Optional
 import attr
 
 from amundsen_common.models.user import User
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
 @attr.s(auto_attribs=True, kw_only=True)
