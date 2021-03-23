@@ -200,6 +200,7 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - [Hacking Data Discovery in AWS with Amundsen at SEEK](https://medium.com/seek-blog/hacking-data-discovery-with-amundsen-c55d262014f4)
 - [A step-by-step guide deploying Amundsen on Google Cloud Platform](https://medium.com/talabat-tech/a-step-by-step-guide-deploying-amundsen-on-google-cloud-platform-ee4ef20d81f5)
 - [Machine Learning Features discovery with Feast and Amundsen](https://getindata.com/blog/machine-learning-features-discovery-feast-amundsen)
+- [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
 
 ## Community meetings
 
