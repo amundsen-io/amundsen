@@ -5,7 +5,7 @@ from typing import Any, Optional, Dict
 
 import attr
 from marshmallow import ValidationError, validates_schema, pre_load
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 """
 TODO: Explore all internationalization use cases and
