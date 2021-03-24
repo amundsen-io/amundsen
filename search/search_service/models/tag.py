@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import attr
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
 @attr.s(auto_attribs=True, kw_only=True)

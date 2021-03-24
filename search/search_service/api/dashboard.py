@@ -50,7 +50,7 @@ class SearchDashboardAPI(Resource):
                 index=args['index']
             )
 
-            return SearchDashboardResultSchema().dump(results).data, HTTPStatus.OK
+            return SearchDashboardResultSchema().dump(results), HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'query_term does not exist'}, HTTPStatus.NOT_FOUND

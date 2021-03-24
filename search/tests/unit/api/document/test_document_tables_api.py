@@ -5,6 +5,7 @@ import json
 import unittest
 from http import HTTPStatus
 
+from marshmallow.exceptions import ValidationError
 from mock import (
     MagicMock, Mock, patch,
 )
@@ -82,6 +83,22 @@ class TestDocumentTablesAPI(unittest.TestCase):
         response = DocumentTablesAPI().put()
         self.assertEqual(list(response)[1], HTTPStatus.OK)
         mock_proxy.update_document.assert_called_with(data=expected_data, index='fake_index')
+
+    @patch('search_service.api.document.reqparse.RequestParser')
+    @patch('search_service.api.document.get_proxy_client')
+    def test_put_multiple_tables_fails(self, get_proxy: MagicMock, RequestParser: MagicMock) -> None:
+        input_data = [
+            json.dumps({
+                'anykey1': 'anyval1'
+            }),
+            json.dumps({
+                'anykey2': 'anyval2'
+            })
+        ]
+        RequestParser().parse_args.return_value = dict(data=input_data, index='fake_index')
+
+        with self.assertRaises(ValidationError):
+            DocumentTablesAPI().put()
 
     def test_should_not_reach_create_with_id(self) -> None:
         response = self.app.test_client().post('/document_table/1')

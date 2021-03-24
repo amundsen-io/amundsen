@@ -8,7 +8,7 @@ from typing import (
 
 import attr
 from amundsen_common.models.user import User as CommonUser
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 from .base import Base
 
