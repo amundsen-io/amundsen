@@ -16,6 +16,7 @@ venv3/
 .coverage
 .mypy_cache
 .pytest_cache
+.python-version
 **/coverage.xml
 **/htmlcov/**
 
