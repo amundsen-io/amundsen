@@ -48,7 +48,7 @@ class SearchTableAPI(Resource):
                 index=args.get('index')
             )
 
-            return SearchTableResultSchema().dump(results).data, HTTPStatus.OK
+            return SearchTableResultSchema().dump(results), HTTPStatus.OK
 
         except RuntimeError:
 

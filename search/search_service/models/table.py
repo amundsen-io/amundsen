@@ -7,7 +7,7 @@ from typing import (
 )
 
 import attr
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 from search_service.models.tag import Tag
 

@@ -7,7 +7,7 @@ from typing import (  # noqa: F401
 )
 
 from flask_restful import Resource, reqparse
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 from search_service.proxy import get_proxy_client
 
@@ -59,6 +59,6 @@ class BaseFilterAPI(Resource):
                 index=self.index
             )
 
-            return self.schema().dump(results).data, HTTPStatus.OK
+            return self.schema().dump(results), HTTPStatus.OK
         except RuntimeError as e:
             raise e
