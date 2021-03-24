@@ -7,7 +7,7 @@ import attr
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Badge, Tag
 from amundsen_common.models.user import User
-from marshmallow_annotations.ext.attrs import AttrsSchema
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 from metadata_service.entity.dashboard_query import DashboardQuery
 
