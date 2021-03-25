@@ -4,7 +4,7 @@
 
 from setuptools import find_packages, setup
 
-__version__ = '4.2.1'
+__version__ = '4.2.2'
 
 
 requirements = [
@@ -17,7 +17,8 @@ requirements = [
     "pyhocon>=0.3.42",
     "unidecode",
     "Jinja2>=2.10.0,<2.12",
-    "pandas>=0.21.0,<1.2.0"
+    "pandas>=0.21.0,<1.2.0",
+    "amundsen-rds"
 ]
 
 kafka = ['confluent-kafka==1.0.0']
