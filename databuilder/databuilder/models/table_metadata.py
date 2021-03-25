@@ -117,7 +117,7 @@ class TagMetadata(GraphSerializable, TableSerializable):
 
 
 # TODO: this should inherit from ProgrammaticDescription in amundsen-common
-class DescriptionMetadata:
+class DescriptionMetadata(GraphSerializable):
     DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
     PROGRAMMATIC_DESCRIPTION_NODE_LABEL = 'Programmatic_Description'
     DESCRIPTION_KEY_FORMAT = '{description}'
@@ -132,7 +132,10 @@ class DescriptionMetadata:
 
     def __init__(self,
                  text: Optional[str],
-                 source: str = DEFAULT_SOURCE
+                 source: str = DEFAULT_SOURCE,
+                 description_key: Optional[str] = None,
+                 start_label: Optional[str] = None,  # Table, Column, Schema
+                 start_key: Optional[str] = None,
                  ):
         """
         :param source: The unique source of what is populating this description.
@@ -146,17 +149,28 @@ class DescriptionMetadata:
         else:
             self.label = self.PROGRAMMATIC_DESCRIPTION_NODE_LABEL
 
+        self.start_label = start_label
+        self.start_key = start_key
+        self.description_key = description_key or self.get_description_default_key(start_key)
+
+        self._node_iter = self._create_node_iterator()
+        self._relation_iter = self._create_relation_iterator()
+
     @staticmethod
     def create_description_metadata(text: Union[None, str],
-                                    source: Optional[str] = DEFAULT_SOURCE
+                                    source: Optional[str] = DEFAULT_SOURCE,
+                                    description_key: Optional[str] = None,
+                                    start_label: Optional[str] = None,  # Table, Column, Schema
+                                    start_key: Optional[str] = None,
                                     ) -> Optional['DescriptionMetadata']:
         # We do not want to create a node if there is no description text!
         if text is None:
             return None
-        if not source:
-            description_node = DescriptionMetadata(text=text, source=DescriptionMetadata.DEFAULT_SOURCE)
-        else:
-            description_node = DescriptionMetadata(text=text, source=source)
+        description_node = DescriptionMetadata(text=text,
+                                               source=source or DescriptionMetadata.DEFAULT_SOURCE,
+                                               description_key=description_key,
+                                               start_label=start_label,
+                                               start_key=start_key)
         return description_node
 
     def get_description_id(self) -> str:
@@ -165,8 +179,8 @@ class DescriptionMetadata:
         else:
             return "_" + self.source + "_description"
 
-    def __repr__(self) -> str:
-        return f'DescriptionMetadata({self.source!r}, {self.text!r})'
+    def get_description_default_key(self, start_key: Optional[str]) -> Optional[str]:
+        return f'{start_key}/{self.get_description_id()}' if start_key else None
 
     def get_node(self, node_key: str) -> GraphNode:
         node = GraphNode(
@@ -179,7 +193,11 @@ class DescriptionMetadata:
         )
         return node
 
-    def get_relation(self, start_node: str, start_key: Any, end_key: Any) -> GraphRelationship:
+    def get_relation(self,
+                     start_node: str,
+                     start_key: str,
+                     end_key: str,
+                     ) -> GraphRelationship:
         relationship = GraphRelationship(
             start_label=start_node,
             start_key=start_key,
@@ -190,6 +208,40 @@ class DescriptionMetadata:
             attributes={}
         )
         return relationship
+
+    def create_next_node(self) -> Optional[GraphNode]:
+        # return the string representation of the data
+        try:
+            return next(self._node_iter)
+        except StopIteration:
+            return None
+
+    def create_next_relation(self) -> Optional[GraphRelationship]:
+        try:
+            return next(self._relation_iter)
+        except StopIteration:
+            return None
+
+    def _create_node_iterator(self) -> Iterator[GraphNode]:
+        if not self.description_key:
+            raise Exception('Required description node key cannot be None')
+        yield self.get_node(self.description_key)
+
+    def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
+        if not self.start_label:
+            raise Exception('Required relation start node label cannot be None')
+        if not self.start_key:
+            raise Exception('Required relation start key cannot be None')
+        if not self.description_key:
+            raise Exception('Required relation end key cannot be None')
+        yield self.get_relation(
+            start_node=self.start_label,
+            start_key=self.start_key,
+            end_key=self.description_key
+        )
+
+    def __repr__(self) -> str:
+        return f'DescriptionMetadata({self.source!r}, {self.text!r})'
 
 
 class ColumnMetadata:
