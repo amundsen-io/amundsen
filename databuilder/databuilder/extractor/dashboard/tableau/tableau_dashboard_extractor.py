@@ -30,6 +30,7 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
 
     CLUSTER = const.CLUSTER
     EXCLUDED_PROJECTS = const.EXCLUDED_PROJECTS
+    SITE_NAME = const.SITE_NAME
     TABLEAU_BASE_URL = const.TABLEAU_BASE_URL
 
     def execute(self) -> Iterator[Dict[str, Any]]:
@@ -39,6 +40,10 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
                           if workbook['projectName'] not in
                           self._conf.get_list(TableauGraphQLApiMetadataExtractor.EXCLUDED_PROJECTS, [])]
         base_url = self._conf.get(TableauGraphQLApiMetadataExtractor.TABLEAU_BASE_URL)
+        site_name = self._conf.get_string(TableauGraphQLApiMetadataExtractor.SITE_NAME, '')
+        site_url_path = ''
+        if site_name != '':
+            site_url_path = f'/site/{site_name}'
         for workbook in workbooks_data:
             if None in (workbook['projectName'], workbook['name']):
                 LOGGER.warning(f'Ignoring workbook (ID:{workbook["vizportalUrlId"]}) ' +
@@ -49,8 +54,8 @@ class TableauGraphQLApiMetadataExtractor(TableauGraphQLApiExtractor):
                 'dashboard_name': TableauDashboardUtils.sanitize_workbook_name(workbook['name']),
                 'description': workbook.get('description', ''),
                 'created_timestamp': workbook['createdAt'],
-                'dashboard_group_url': f'{base_url}/#/projects/{workbook["projectVizportalUrlId"]}',
-                'dashboard_url': f'{base_url}/#/workbooks/{workbook["vizportalUrlId"]}/views',
+                'dashboard_group_url': f'{base_url}/#{site_url_path}/projects/{workbook["projectVizportalUrlId"]}',
+                'dashboard_url': f'{base_url}/#{site_url_path}/workbooks/{workbook["vizportalUrlId"]}/views',
                 'cluster': self._conf.get_string(TableauGraphQLApiMetadataExtractor.CLUSTER)
             }
             yield data
