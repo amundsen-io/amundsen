@@ -154,7 +154,7 @@ class TableauDashboardAuth:
         self._access_token_name = self._conf.get_string(TableauDashboardAuth.TABLEAU_ACCESS_TOKEN_NAME)
         self._access_token_secret = self._conf.get_string(TableauDashboardAuth.TABLEAU_ACCESS_TOKEN_SECRET)
         self._api_version = self._conf.get_string(TableauDashboardAuth.API_VERSION)
-        self._site_name = self._conf.get_string(TableauDashboardAuth.SITE_NAME)
+        self._site_name = self._conf.get_string(TableauDashboardAuth.SITE_NAME, '')
         self._api_base_url = self._conf.get_string(TableauDashboardAuth.API_BASE_URL)
         self._verify_request = self._conf.get(TableauDashboardAuth.VERIFY_REQUEST, None)
 
