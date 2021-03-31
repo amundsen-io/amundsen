@@ -47,6 +47,11 @@ class AtlasSearchDataExtractorHelpers:
         return AtlasSearchDataExtractorHelpers._filter_none(
             [c.get('typeName') for c in classifications if c.get('entityStatus', '').lower() == 'active'])
 
+    @staticmethod
+    def get_tags_from_glossary_terms(meanings: List) -> List:
+        return AtlasSearchDataExtractorHelpers._filter_none(
+            [c.get('displayText') for c in meanings if c.get('entityStatus', '').lower() == 'active'])
+
 
 class AtlasSearchDataExtractor(Extractor):
     ATLAS_URL_CONFIG_KEY = 'atlas_url'
@@ -93,7 +98,8 @@ class AtlasSearchDataExtractor(Extractor):
              lambda x: AtlasSearchDataExtractorHelpers.get_column_names(x), []),
             ('column_descriptions', 'relationshipAttributes.columns',
              lambda x: AtlasSearchDataExtractorHelpers.get_column_descriptions(x), []),
-            ('tags', 'tags', None, []),
+            ('tags', 'relationshipAttributes.meanings',
+             lambda x: AtlasSearchDataExtractorHelpers.get_tags_from_glossary_terms(x), []),
             ('badges', 'classifications',
              lambda x: AtlasSearchDataExtractorHelpers.get_badges_from_classifications(x), []),
             ('display_name', 'attributes.qualifiedName', lambda x: x.split('@')[0], None),
@@ -245,6 +251,8 @@ class AtlasSearchDataExtractor(Extractor):
 
             return result
         except Exception:
+            LOGGER.warning(f'Error processing guids. {len(guid_list)}', exc_info=True)
+
             return []
 
     @staticmethod
