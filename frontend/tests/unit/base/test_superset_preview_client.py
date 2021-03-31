@@ -135,7 +135,7 @@ class SupersetPreviewClientTest(unittest.TestCase):
     def test_post_sql_json_correct_data_shape(self) -> None:
         """
         Test post_sql_json(), which should result in
-        a response with 500 error and empty preview_data payload
+        a response with 200 status and correct preview_data payload
         :return:
         """
         with app.test_request_context():

@@ -37,11 +37,11 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements = requirements_file.readlines()
 
-__version__ = '3.5.1'
+__version__ = '3.6.0'
 
 oicd = ['flaskoidc==0.1.1']
 pyarrrow = ['pyarrow==3.0.0']
-bigquery_preview = ['google-cloud-bigquery>=2.8.0,<3.0.0', 'flatten-dict==0.3.0']
+bigquery_preview = ['google-cloud-bigquery>=2.13.1,<3.0.0', 'flatten-dict==0.3.0']
 all_deps = requirements + oicd + pyarrrow + bigquery_preview
 
 setup(

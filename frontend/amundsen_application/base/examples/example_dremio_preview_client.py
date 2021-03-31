@@ -6,6 +6,7 @@ import logging
 from typing import Dict  # noqa: F401
 
 from flask import Response, jsonify, make_response, current_app as app
+from marshmallow import ValidationError
 from pyarrow import flight
 
 from amundsen_application.base.base_superset_preview_client import BasePreviewClient
@@ -79,16 +80,15 @@ class DremioPreviewClient(BasePreviewClient):
             column_items = [ColumnItem(n, t) for n, t in zip(names, types)]
 
             preview_data = PreviewData(column_items, rows)
-
-            data = PreviewDataSchema().dump(preview_data)[0]
-            errors = PreviewDataSchema().load(data)[1]
-            if errors:
-                logging.error(f'Error(s) occurred while building preview data: {errors}')
-                payload = jsonify({'preview_data': {}})
-                return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
-            else:
+            try:
+                data = PreviewDataSchema().dump(preview_data)
+                PreviewDataSchema().load(data)  # for validation only
                 payload = jsonify({'preview_data': data})
                 return make_response(payload, HTTPStatus.OK)
+            except ValidationError as err:
+                logging.error(f'Error(s) occurred while building preview data: {err.messages}')
+                payload = jsonify({'preview_data': {}})
+                return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
         except Exception as e:
             logging.error(f'Encountered exception: {e}')

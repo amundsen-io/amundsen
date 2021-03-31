@@ -9,6 +9,7 @@ from http import HTTPStatus
 
 from flask import Response, jsonify, make_response, request, current_app as app
 from flask.blueprints import Blueprint
+from marshmallow import ValidationError
 from werkzeug.utils import import_string
 
 from amundsen_application.models.preview_data import PreviewDataSchema
@@ -49,11 +50,11 @@ def get_table_preview() -> Response:
         preview_data = json.loads(response.data).get('preview_data')
         if status_code == HTTPStatus.OK:
             # validate the returned table preview data
-            data, errors = PreviewDataSchema().load(preview_data)
-            if not errors:
+            try:
+                data = PreviewDataSchema().load(preview_data)
                 payload = jsonify({'previewData': data, 'msg': 'Success'})
-            else:
-                logging.error('Preview data dump returned errors: ' + str(errors))
+            except ValidationError as err:
+                logging.error('Preview data dump returned errors: ' + str(err.messages))
                 raise Exception('The preview client did not return a valid PreviewData object')
         else:
             message = 'Encountered error: Preview client request failed with code ' + str(status_code)

@@ -75,7 +75,7 @@ class AnnouncementClientTest(unittest.TestCase):
                 {
                     'title': 'Test Title',
                     'date': 'December 31, 1999',
-                    'info_list': ['Test announcement'],
+                    'html_content': 'content',
                 }
             ]
             response = MockClient(success_posts)._get_posts()

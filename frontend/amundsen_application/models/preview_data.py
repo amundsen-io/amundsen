@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, EXCLUDE
 from typing import List
 
 
@@ -24,6 +24,6 @@ class PreviewData:
 
 
 class PreviewDataSchema(Schema):
-    columns = fields.Nested(ColumnItemSchema, many=True)
+    columns = fields.Nested(ColumnItemSchema, many=True, unknown=EXCLUDE)
     data = fields.List(fields.Dict, many=True)
     error_text = fields.Str()
