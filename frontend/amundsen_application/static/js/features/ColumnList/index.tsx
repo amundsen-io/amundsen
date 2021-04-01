@@ -11,6 +11,7 @@ import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
 } from 'components/Table';
+import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 
 import { logAction } from 'ducks/utilMethods';
 import {
@@ -29,6 +30,7 @@ import {
 } from 'interfaces';
 
 import BadgeList from 'features/BadgeList';
+import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
 import ColumnStats from './ColumnStats';
@@ -161,6 +163,8 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
 
     return true;
   };
+  const normalStats = rowValue.stats && filterOutUniqueValues(rowValue.stats);
+  const uniqueValueStats = rowValue.stats && getUniqueValues(rowValue.stats);
 
   return (
     <div className="expanded-row-container">
@@ -179,7 +183,10 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
           />
         </EditableSection>
       )}
-      {rowValue.stats && <ColumnStats stats={rowValue.stats} />}
+      {normalStats && <ColumnStats stats={normalStats} />}
+      {uniqueValueStats && (
+        <ExpandableUniqueValues uniqueValues={uniqueValueStats} />
+      )}
     </div>
   );
 };

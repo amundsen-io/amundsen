@@ -86,6 +86,18 @@ describe('getAnalyticsConfig', () => {
   });
 });
 
+describe('getUniqueValueStatTypeName', () => {
+  it('returns the unique value stat type key name', () => {
+    const expectedValue = 'test';
+
+    AppConfig.resourceConfig[ResourceType.table].stats = {
+      uniqueValueTypeName: expectedValue,
+    };
+
+    expect(ConfigUtils.getUniqueValueStatTypeName()).toBe(expectedValue);
+  });
+});
+
 describe('getTableSortCriterias', () => {
   it('returns the sorting criterias for tables', () => {
     const expectedValue =
