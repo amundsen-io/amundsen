@@ -54,5 +54,7 @@
 
   .stat-title {
     @extend %text-title-w3;
+
+    padding-right: $spacer-1;
   }
 }

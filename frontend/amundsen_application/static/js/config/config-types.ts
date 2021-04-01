@@ -141,6 +141,13 @@ type SortCriteriaConfig = {
 };
 
 /**
+ * Stats configuration options
+ */
+type StatsConfig = {
+  uniqueValueTypeName: string;
+};
+
+/**
  * Base interface for all possible ResourceConfig objects
  *
  * displayName - The name displayed throughout the application to refer to this resource type
@@ -155,6 +162,7 @@ interface BaseResourceConfig {
 interface TableResourceConfig extends BaseResourceConfig {
   supportedDescriptionSources?: DescriptionSourceConfig;
   sortCriterias?: SortCriteriaConfig;
+  stats?: StatsConfig;
 }
 
 export enum BadgeStyle {

@@ -128,6 +128,23 @@ A table resource may have a source of table and column description attached to i
 This object has `displayName` and `iconPath`, which can be used throughout the UI to represent a particular description source. See example in [config-default.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts).
 For configuring new description sources, add an entry in `supportedDescriptionSources` with the `id` used to reference that source and add desired display name and icon for it.
 
+## Table Stats
+
+If you have a stat field that is made of a JSON like set of value names and counts, you can show that as a set of "unique values". You can see an example of this in the following figure:
+
+<img src='img/distinct_values.png' width='50%' />
+
+To achieve this, you will need to modify your custom configuration (config-custom.ts) by adding the name of the stat_type field that holds these values. You can find the config property in the stats section for table resource:
+
+```
+[ResourceType.table]: {
+  //...
+  stats: {
+    uniqueValueTypeName: "keyNameExample",
+  },
+}
+```
+
 ## Table Lineage
 
 _TODO: Please add doc_

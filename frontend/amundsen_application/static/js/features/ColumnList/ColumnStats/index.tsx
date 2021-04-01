@@ -3,9 +3,10 @@
 
 import * as React from 'react';
 
-import { TableColumnStats } from 'interfaces/index';
 import { formatNumber, isNumber } from 'utils/numberUtils';
-import { getStatsInfoText } from '../utils';
+import { getStatsInfoText } from 'utils/stats';
+
+import { TableColumnStats } from 'interfaces/index';
 
 import { COLUMN_STATS_TITLE } from '../constants';
 
@@ -35,9 +36,7 @@ const ColumnStatRow: React.FC<ColumnStatRowProps> = ({
 const getStart = ({ start_epoch }) => start_epoch;
 const getEnd = ({ end_epoch }) => end_epoch;
 
-const ColumnStats: React.FC<ColumnStatsProps> = ({
-  stats,
-}: ColumnStatsProps) => {
+const ColumnStats: React.FC<ColumnStatsProps> = ({ stats }) => {
   if (stats.length === 0) {
     return null;
   }

@@ -421,6 +421,7 @@
       "react/no-unused-prop-types": "off",
       "react/prefer-stateless-function": "warn",
       "react/require-default-props": "off",
+      "react/prop-types": "off",
       "react/sort-comp": "warn",
       "react/state-in-constructor": "off",
       "react/static-property-placement": "warn",

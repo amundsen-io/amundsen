@@ -16,7 +16,9 @@ describe('FlashMessage', () => {
       onClose: jest.fn(),
       ...propOverrides,
     };
+    // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow(<FlashMessage {...props} />);
+
     return { props, wrapper };
   };
 
