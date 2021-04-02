@@ -1,10 +1,14 @@
 import AppConfig from 'config/config';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
-import { TableMetadata } from 'interfaces/TableMetadata';
 import { convertText, CaseType } from 'utils/textUtils';
 
-import { AnalyticsConfig, FilterConfig, LinkConfig } from './config-types';
-
+import { TableMetadata } from 'interfaces/TableMetadata';
+import {
+  AnalyticsConfig,
+  FilterConfig,
+  LinkConfig,
+  NoticeType,
+} from './config-types';
 import { ResourceType } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
@@ -58,6 +62,22 @@ export function getSourceIconClass(
   }
 
   return config.supportedSources[sourceId].iconClass;
+}
+
+/**
+ * Returns notices for the given resource name if present
+ */
+export function getResourceNotices(
+  resourceType: ResourceType,
+  resourceName: string
+): NoticeType | false {
+  const { notices } = AppConfig.resourceConfig[resourceType];
+
+  if (notices && notices[resourceName]) {
+    return notices[resourceName];
+  }
+
+  return false;
 }
 
 /**

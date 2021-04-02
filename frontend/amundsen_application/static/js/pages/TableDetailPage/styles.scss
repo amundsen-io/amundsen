@@ -6,6 +6,11 @@
 
 .table-detail {
   .column-layout-1 .left-panel {
+    .alert {
+      margin-top: $spacer-4;
+      margin-bottom: 0;
+    }
+
     .programmatic-title {
       color: $text-primary;
       font-weight: $font-weight-body-bold;

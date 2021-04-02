@@ -8,7 +8,10 @@ This document describes how to leverage the frontend service's application confi
 
 Annoncements is a feature that allows to disclose new features, changes or any other news to Amundsen's users.
 
-<img src='img/announcements_feature.png' width='50%' />
+<figure>
+  <img src='img/announcements_feature.png' width='50%' />
+  <figcaption>Announcements in the homepage</figcaption>
+</figure>
 
 To enable this feature, change the `announcements.enable` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-custom.ts#L1). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
 
@@ -144,6 +147,61 @@ To achieve this, you will need to modify your custom configuration (config-custo
   },
 }
 ```
+
+## Notices
+
+We now can add notices to tables and dashboards. These notices allows Amundsen administrators to show informational, warning and alert messages related to the different resources (tables, dashboards, eventually people) we expose in Amundsen.
+
+This feature help administrators show messages related to deprecation, updates (or lack of), and informational messages related to specific resources.
+
+A notice is a small box with an icon and a message containing HTML markup (like links and bolded text). These will come in three flavors:
+
+<figure>
+  <figcaption>Informational: Marked with a blue "i" icon on the right side</figcaption>
+  <img src='img/notices-info-table.png' width='50%' />
+</figure>
+
+<figure>
+  <figcaption>Warning: Marked with an orange exclamation mark icon on the right side</figcaption>
+  <img src='img/notices-warning-dashboard.png' width='50%' />
+</figure>
+
+<figure>
+  <figcaption>Alert: Marked with a red exclamation mark icon on the right side</figcaption>
+  <img src='img/notices-alert-table.png' width='50%' />
+</figure>
+
+To set them up, we'll use the current configuration objects for the resources. For example, if company X wants to deprecate the use of one table or dashboard, they can opt to add new notices in their configuration file:
+
+```
+  resourceConfig: {
+    [ResourceType.table]: {
+      ... //Table Resource Configuration
+      notices: {
+          "<CLUSTER>.<DATABASE>.<SCHEMA>.<TABLENAME>": {
+            severity: NoticeSeverity.ALERT,
+            messageHtml: `This table is deprecated, please use <a href="<LINKTONEWTABLEDETAILPAGE>">this new table</a> instead.`,
+          },
+      },
+    },
+    [ResourceType.dashboard]: {
+      ... //Dashboard Resource Configuration
+      notices: {
+          "<PRODUCT>.<CLUSTER>.<GROUPNAME>.<DASHBOARDNAME>": {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: `This dashboard is deprecated, please use <a href="<LINKTONEWDASHBOARDDETAILPAGE>">this new dashboard</a> instead.`,
+          },
+      },
+    },
+
+  },
+```
+
+The above code will show a notice with a red exclamation icon whenever a final user visits the table's Table Detail page or the Dashboard Detail page.
+
+This feature's ultimate goal is to allow Amundsen administrators to point their users to more trusted/higher quality resources without removing the old references.
+
+Learn more about the future developments for this feature in [its RFC](https://github.com/amundsen-io/rfcs/blob/master/rfcs/029-resource-notices.md).
 
 ## Table Lineage
 

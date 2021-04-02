@@ -98,6 +98,7 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      notices: {},
     },
     [ResourceType.table]: {
       displayName: 'Datasets',
@@ -193,6 +194,7 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
+      notices: {},
     },
     [ResourceType.user]: {
       displayName: 'People',

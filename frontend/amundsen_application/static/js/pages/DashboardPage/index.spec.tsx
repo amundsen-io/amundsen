@@ -30,6 +30,7 @@ const MOCK_ICON_CLASS = 'dashboard-icon';
 jest.mock('config/config-utils', () => ({
   getSourceDisplayName: jest.fn(() => MOCK_DISPLAY_NAME),
   getSourceIconClass: jest.fn(() => MOCK_ICON_CLASS),
+  getResourceNotices: jest.fn(() => {}),
 }));
 const setStateSpy = jest.spyOn(DashboardPage.prototype, 'setState');
 

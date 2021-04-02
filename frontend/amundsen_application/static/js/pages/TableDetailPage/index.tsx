@@ -21,6 +21,7 @@ import {
   getDescriptionSourceDisplayName,
   getMaxLength,
   getSourceIconClass,
+  getResourceNotices,
   getTableSortCriterias,
   indexDashboardsEnabled,
   issueTrackingEnabled,
@@ -28,6 +29,8 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
+import ColumnList from 'features/ColumnList';
+
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/Breadcrumb';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
@@ -35,7 +38,7 @@ import TagInput from 'components/Tags/TagInput';
 import EditableText from 'components/EditableText';
 import LoadingSpinner from 'components/LoadingSpinner';
 import EditableSection from 'components/EditableSection';
-import ColumnList from 'features/ColumnList';
+import Alert from 'components/Alert';
 
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
@@ -174,14 +177,15 @@ export class TableDetail extends React.Component<
   }
 
   handleClick = (e) => {
-    const { match } = this.props;
+    const { match, searchSchema } = this.props;
     const { params } = match;
     const schemaText = params.schema;
+
     logClick(e, {
       target_type: 'schema',
       label: schemaText,
     });
-    this.props.searchSchema(schemaText);
+    searchSchema(schemaText);
   };
 
   renderProgrammaticDesc = (
@@ -295,6 +299,10 @@ export class TableDetail extends React.Component<
           )}`
         : '';
       const editUrl = data.source ? data.source.source : '';
+      const tableNotice = getResourceNotices(
+        ResourceType.table,
+        `${data.cluster}.${data.database}.${data.schema}.${data.name}`
+      );
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
@@ -345,6 +353,12 @@ export class TableDetail extends React.Component<
           </header>
           <div className="column-layout-1">
             <aside className="left-panel">
+              {!!tableNotice && (
+                <Alert
+                  message={tableNotice.messageHtml}
+                  severity={tableNotice.severity}
+                />
+              )}
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
