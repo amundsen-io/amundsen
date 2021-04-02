@@ -8,8 +8,18 @@ const mapIntoUniqueValueFormat = ([k, v]): ColumnUniqueValues => ({
   value: k,
   count: v,
 });
-const parseRawUniqueValues = (uniqueValues: string) =>
-  JSON.parse(uniqueValues.split("'").join('"'));
+const parseRawUniqueValues = (uniqueValues: string) => {
+  let parsedUniqueValues = {};
+
+  try {
+    parsedUniqueValues = JSON.parse(uniqueValues.split("'").join('"'));
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log('Error parsing unique values on stats!');
+  }
+
+  return parsedUniqueValues;
+};
 
 /**
  * Parses the stats' unique values key into an array of

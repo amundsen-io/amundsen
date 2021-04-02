@@ -148,6 +148,18 @@ To achieve this, you will need to modify your custom configuration (config-custo
 }
 ```
 
+The unique values set needs to be an object like this:
+
+```
+    {
+      end_epoch: 1609522182,
+      start_epoch: 1608917382,
+      stat_type: 'keyNameExample',
+      stat_val:
+        "{'Category': 66, 'AnotherCategory': 54, 'More': 48}",
+    },
+```
+
 ## Notices
 
 We now can add notices to tables and dashboards. These notices allows Amundsen administrators to show informational, warning and alert messages related to the different resources (tables, dashboards, eventually people) we expose in Amundsen.
