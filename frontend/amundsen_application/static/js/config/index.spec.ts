@@ -1,6 +1,6 @@
 import AppConfig from 'config/config';
 import * as ConfigUtils from 'config/config-utils';
-import { BadgeStyle } from 'config/config-types';
+import { BadgeStyle, NoticeSeverity } from 'config/config-types';
 
 import { ResourceType } from 'interfaces';
 
@@ -64,6 +64,69 @@ describe('getDisplayNameByResource', () => {
     expect(ConfigUtils.getDisplayNameByResource(testResource)).toBe(
       expectedValue
     );
+  });
+});
+
+describe('getResourceNotices', () => {
+  describe('when there is a notice', () => {
+    AppConfig.resourceConfig[ResourceType.table].notices = {
+      testName: {
+        severity: NoticeSeverity.WARNING,
+        messageHtml: 'testMessage',
+      },
+    };
+
+    it('returns the notice', () => {
+      const expected = 'testMessage';
+      const notice = ConfigUtils.getResourceNotices(
+        ResourceType.table,
+        'testName'
+      );
+      const actual = notice && notice.messageHtml;
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('when there is no notice', () => {
+    AppConfig.resourceConfig[ResourceType.table].notices = {
+      testName: {
+        severity: NoticeSeverity.WARNING,
+        messageHtml: 'testMessage',
+      },
+    };
+
+    it('returns false', () => {
+      const expected = false;
+      const actual = ConfigUtils.getResourceNotices(
+        ResourceType.table,
+        'testNameNoThere'
+      );
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('when resource is a dashboard', () => {
+    describe('when there is a notice', () => {
+      AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+        testName: {
+          severity: NoticeSeverity.WARNING,
+          messageHtml: 'testMessage',
+        },
+      };
+
+      it('returns the notice', () => {
+        const expected = 'testMessage';
+        const notice = ConfigUtils.getResourceNotices(
+          ResourceType.dashboard,
+          'testName'
+        );
+        const actual = notice && notice.messageHtml;
+
+        expect(actual).toEqual(expected);
+      });
+    });
   });
 });
 

@@ -4,6 +4,8 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 
+import { NoticeSeverity } from 'config/config-types';
+
 import Alert, { AlertProps } from '.';
 
 const setup = (propOverrides?: Partial<AlertProps>) => {
@@ -92,6 +94,40 @@ describe('Alert', () => {
         });
         const expected = 1;
         const actual = wrapper.find('.test-action-link').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when passing a severity', () => {
+      it('should render the alert icon by default', () => {
+        const { wrapper } = setup();
+        const expected = 1;
+        const actual = wrapper.find('.alert-triangle-svg-icon').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the info icon when info severity', () => {
+        const { wrapper } = setup({ severity: NoticeSeverity.INFO });
+        const expected = 1;
+        const actual = wrapper.find('.info-svg-icon').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the alert icon when alert severity', () => {
+        const { wrapper } = setup({ severity: NoticeSeverity.ALERT });
+        const expected = 1;
+        const actual = wrapper.find('.alert-triangle-svg-icon').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the alert icon when warning severity', () => {
+        const { wrapper } = setup({ severity: NoticeSeverity.WARNING });
+        const expected = 1;
+        const actual = wrapper.find('.alert-triangle-svg-icon').length;
 
         expect(actual).toEqual(expected);
       });

@@ -2,16 +2,23 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import SanitizedHTML from 'react-sanitized-html';
 
 import { IconSizes } from 'interfaces';
-import { AlertIcon } from '../SVGIcons';
+import { NoticeSeverity } from 'config/config-types';
+import { AlertIcon, InformationIcon } from '../SVGIcons';
 
 import './styles.scss';
 
-const STROKE_COLOR = '#b8072c'; // $red70
+const SEVERITY_TO_COLOR_MAP = {
+  [NoticeSeverity.INFO]: '#3a97d3', // cyan50
+  [NoticeSeverity.WARNING]: '#ffb146', // $amber50
+  [NoticeSeverity.ALERT]: '#b8072c', // $red70
+};
 
 export interface AlertProps {
   message: string | React.ReactNode;
+  severity?: NoticeSeverity;
   actionLink?: React.ReactNode;
   actionText?: string;
   actionHref?: string;
@@ -20,6 +27,7 @@ export interface AlertProps {
 
 const Alert: React.FC<AlertProps> = ({
   message,
+  severity = NoticeSeverity.WARNING,
   onAction,
   actionText,
   actionHref,
@@ -51,10 +59,31 @@ const Alert: React.FC<AlertProps> = ({
     action = <span className="alert-action">{actionLink}</span>;
   }
 
+  let iconComponent: React.ReactNode = null;
+  if (severity === NoticeSeverity.INFO) {
+    iconComponent = (
+      <InformationIcon
+        fill={SEVERITY_TO_COLOR_MAP[severity]}
+        size={IconSizes.REGULAR}
+      />
+    );
+  } else {
+    iconComponent = (
+      <AlertIcon
+        stroke={SEVERITY_TO_COLOR_MAP[severity]}
+        size={IconSizes.SMALL}
+      />
+    );
+  }
+
+  // If we receive a string, we want to sanitize any html inside
+  const formattedMessage =
+    typeof message === 'string' ? <SanitizedHTML html={message} /> : message;
+
   return (
     <div className="alert">
-      <AlertIcon stroke={STROKE_COLOR} size={IconSizes.SMALL} />
-      <p className="alert-message">{message}</p>
+      {iconComponent}
+      <p className="alert-message">{formattedMessage}</p>
       {action}
     </div>
   );
