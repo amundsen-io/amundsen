@@ -432,6 +432,69 @@ describe('stats utils', () => {
       stat_val: '70',
     },
   ];
+  const STRINGIFIED_ARRAY_UNIQUE_VALUES = [
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'count_null',
+      stat_val: '0.0',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'count_zero',
+      stat_val: '4378016.0',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'stddev_value',
+      stat_val: '0.5856386084183235',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'avg_value',
+      stat_val: '0.6695026231618191',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'distinctValues',
+      stat_val:
+        '{1: 5756008, 0: 4450396, 2: 591892, 3: 12948, 4: 424, 5: 40, 11: 16, 7: 12, 6: 8, 9: 8, 8: 4, 10: 4}',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'approx_distinct_count',
+      stat_val: '13.0',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'max_value',
+      stat_val: '12.0',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'min_value',
+      stat_val: '0.0',
+    },
+    {
+      end_epoch: 1617147150,
+      start_epoch: 1616542350,
+      stat_type: 'median_value',
+      stat_val: '0.9907752863495858',
+    },
+    {
+      end_epoch: 1615593600,
+      start_epoch: 1613001600,
+      stat_type: 'column_usage',
+      stat_val: '78',
+    },
+  ];
 
   describe('getUniqueValues', () => {
     it('returns an empty array when there is no stats', () => {
@@ -541,6 +604,17 @@ describe('stats utils', () => {
         const expected = 6;
         const actual = StatUtils.getUniqueValues(STATS_WITH_SIX_UNIQUE_VALUES)
           .length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when there are unique values as a stringified array', () => {
+      it('returns an array with zero elements', () => {
+        const expected = 0;
+        const actual = StatUtils.getUniqueValues(
+          STRINGIFIED_ARRAY_UNIQUE_VALUES
+        ).length;
 
         expect(actual).toEqual(expected);
       });
