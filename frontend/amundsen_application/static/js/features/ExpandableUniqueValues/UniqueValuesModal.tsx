@@ -17,7 +17,7 @@ const UniqueValueRow: React.FC<UniqueValueRowProps> = ({
   count,
 }: UniqueValueRowProps) => (
   <div className="unique-value-row">
-    <div className="unique-value-name body-3">{value.toUpperCase()}</div>
+    <div className="unique-value-name body-3">{value}</div>
     <div className="unique-value-value">
       {isNumber(count) ? formatNumber(+count) : count}
     </div>

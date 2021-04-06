@@ -26,7 +26,7 @@ const ColumnStatRow: React.FC<ColumnStatRowProps> = ({
   stat_val,
 }: ColumnStatRowProps) => (
   <div className="column-stat-row">
-    <div className="stat-name body-3">{stat_type.toUpperCase()}</div>
+    <div className="stat-name body-3">{stat_type}</div>
     <div className="stat-value">
       {isNumber(stat_val) ? formatNumber(+stat_val) : stat_val}
     </div>
