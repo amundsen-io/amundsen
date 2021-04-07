@@ -20,7 +20,7 @@ Both of these variables can be set using environment variables._
 [Neo4j](https://neo4j.com/docs/ "Neo4j") proxy module serves various use case of getting metadata or updating metadata from or into Neo4j. Most of the methods have [Cypher query](https://neo4j.com/developer/cypher/ "Cypher query") for the use case, execute the query and transform into [entity](https://github.com/amundsen-io/amundsenmetadatalibrary/tree/master/metadata_service/entity "entity").
 
 ##### [Apache Atlas proxy module](https://github.com/amundsen-io/amundsenmetadatalibrary/blob/master/metadata_service/proxy/atlas_proxy.py "Apache Atlas proxy module")
-[Apache Atlas](https://atlas.apache.org/ "Apache Atlas") proxy module serves all of the metadata from Apache Atlas, using [pyatlasclient](https://pyatlasclient.readthedocs.io/en/latest/index.html). 
+[Apache Atlas](https://atlas.apache.org/ "Apache Atlas") proxy module serves all of the metadata from Apache Atlas, using [apache_atlas](https://github.com/apache/atlas/tree/master/intg/src/main/python). 
 More information on how to setup Apache Atlas to make it compatible with Amundsen can be found [here](proxy/atlas_proxy.md) 
 
 ##### [Statsd utilities module](https://github.com/amundsen-io/amundsenmetadatalibrary/blob/master/metadata_service/proxy/statsd_utilities.py "Statsd utilities module")
