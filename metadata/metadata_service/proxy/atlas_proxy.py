@@ -6,7 +6,7 @@ import logging
 import re
 from operator import attrgetter
 from random import randint
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Generator, List, Optional, Pattern, Tuple, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.lineage import Lineage
@@ -16,14 +16,18 @@ from amundsen_common.models.table import (Badge, Column,
                                           ResourceReport, Stat, Table, Tag,
                                           User, Watermark)
 from amundsen_common.models.user import User as UserEntity
-from atlasclient.client import Atlas
-from atlasclient.exceptions import BadRequest, Conflict, NotFound
-from atlasclient.models import EntityUniqueAttribute
-from atlasclient.utils import (extract_entities, make_table_qualified_name,
-                               parse_table_qualified_name)
+from apache_atlas.client.base_client import AtlasClient
+from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,
+                                         AtlasGlossaryTerm)
+from apache_atlas.model.instance import (AtlasEntityHeader,
+                                         AtlasEntityWithExtInfo,
+                                         AtlasRelatedObjectId)
+from apache_atlas.model.relationship import AtlasRelationship
+from apache_atlas.utils import type_coerce
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app as app
+from werkzeug.exceptions import BadRequest
 
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
@@ -45,6 +49,81 @@ class Status:
     DELETED = "DELETED"
 
 
+# TODO: Move this to amundsencommon
+DEFAULT_TABLE_QN_REGEX = re.compile(r"""
+    ^(?P<db_name>.*?)\.(?P<table_name>.*)@(?P<cluster_name>.*?)$
+    """, re.X)
+
+# TODO: Move this to amundsencommon
+DEFAULT_DB_CLUSTER = 'default'
+
+
+# TODO: Move this to amundsencommon
+def parse_table_qualified_name(qualified_name: str, qn_regex: Pattern = DEFAULT_TABLE_QN_REGEX) -> Dict:
+    """
+    Parses the Atlas' table qualified name
+    :param qualified_name: Qualified Name of the table
+    :param qn_regex: Default Qualified Name regex.
+    :return: A dictionary consisting of database name,
+    table name and cluster name of the table.
+    If database or cluster name not found,
+    then uses the 'atlas_default' as both of them.
+    """
+
+    def apply_qn_regex(name: str, table_qn_regex: Pattern) -> Any:
+        return table_qn_regex.match(name)
+
+    _regex_result = apply_qn_regex(qualified_name, qn_regex)
+
+    if not _regex_result:
+        qn_regex = re.compile(r"""
+        ^(?P<table_name>.*)@(?P<cluster_name>.*?)$
+        """, re.X)
+        _regex_result = apply_qn_regex(qualified_name, qn_regex)
+
+    if not _regex_result:
+        qn_regex = re.compile(r"""
+        ^(?P<db_name>.*?)\.(?P<table_name>.*)$
+        """, re.X)
+        _regex_result = apply_qn_regex(qualified_name, qn_regex)
+
+    if not _regex_result:
+        qn_regex = re.compile(r"""
+        ^(?P<table_name>.*)$
+        """, re.X)
+        _regex_result = apply_qn_regex(qualified_name, qn_regex)
+
+    _regex_result = _regex_result.groupdict()
+
+    qn_dict = {
+        'table_name': _regex_result.get('table_name', qualified_name),
+        'db_name': _regex_result.get('db_name', DEFAULT_DB_CLUSTER),
+        'cluster_name': _regex_result.get('cluster_name', DEFAULT_DB_CLUSTER),
+    }
+
+    return qn_dict
+
+
+# TODO: Move this to amundsencommon
+def make_table_qualified_name(table_name: str, cluster: Optional[Any] = None, db: Optional[Any] = None) -> str:
+    """
+    Based on the given parameters, generate the Atlas' table qualified Name
+    :param db: Database Name of the table
+    :param table_name: Table Name
+    :param cluster: Cluster Name of the table
+    :return: A string i.e., Qualified Name of the table
+    If database or cluster name are 'atlas_default', then simply strips that part.
+    """
+    qualified_name = table_name
+    if db and db != DEFAULT_DB_CLUSTER:
+        qualified_name = '{}.{}'.format(db, qualified_name)
+
+    if cluster and cluster != DEFAULT_DB_CLUSTER:
+        qualified_name = '{}@{}'.format(qualified_name, cluster)
+
+    return qualified_name
+
+
 # noinspection PyMethodMayBeStatic
 class AtlasProxy(BaseProxy):
     """
@@ -54,6 +133,7 @@ class AtlasProxy(BaseProxy):
     TABLE_ENTITY = 'Table'
     DB_ATTRIBUTE = 'db'
     STATISTICS_FORMAT_SPEC = app.config['STATISTICS_FORMAT_SPEC']
+    TABLE_TYPE = 'Table'
     BOOKMARK_TYPE = 'Bookmark'
     USER_TYPE = 'User'
     READER_TYPE = 'Reader'
@@ -63,6 +143,9 @@ class AtlasProxy(BaseProxy):
     ATTRS_KEY = 'attributes'
     REL_ATTRS_KEY = 'relationshipAttributes'
     ENTITY_URI_KEY = 'entityUri'
+    # Qualified Name of the Glossary, that holds the user defined terms.
+    # For Amundsen, we are using Glossary Terms as the Tags.
+    AMUNDSEN_USER_TAGS = 'amundsen_user_tags'
     _CACHE = CacheManager(**parse_cache_config_options({'cache.regions': 'atlas_proxy',
                                                         'cache.atlas_proxy.type': 'memory',
                                                         'cache.atlas_proxy.expire': _ATLAS_PROXY_CACHE_EXPIRY_SEC}))
@@ -79,40 +162,8 @@ class AtlasProxy(BaseProxy):
         Initiate the Apache Atlas client with the provided credentials
         """
         protocol = 'https' if encrypted else 'http'
-        self._driver = Atlas(host=host,
-                             port=port,
-                             username=user,
-                             password=password,
-                             protocol=protocol,
-                             validate_ssl=validate_ssl,
-                             **client_kwargs)
-
-    def _get_ids_from_basic_search(self, *, params: Dict) -> List[str]:
-        """
-        FixMe (Verdan): UNUSED. Please remove after implementing atlas proxy
-        Search for the entities based on the params provided as argument.
-        :param params: the dictionary of parameters to be used for the basic search
-        :return: The flat list of GUIDs of entities founds based on the params.
-        """
-        ids = list()
-        search_results = self._driver.search_basic(**params)
-        for result in search_results:
-            for entity in result.entities:
-                ids.append(entity.guid)
-        return ids
-
-    def _get_flat_values_from_dsl(self, dsl_param: dict) -> List:
-        """
-        Makes a DSL query asking for specific attribute, extracts that attribute
-        from result (which is a list of list, and converts that into a flat list.
-        :param dsl_param: A DSL parameter, with SELECT clause
-        :return: A Flat list of specified attributes in SELECT clause
-        """
-        attributes: List = list()
-        _search_collection = self._driver.search_dsl(**dsl_param)
-        for collection in _search_collection:
-            attributes = collection.flatten_attrs()
-        return attributes
+        self.client = AtlasClient(f'{protocol}://{host}:{port}', (user, password))
+        self.client.session.verify = validate_ssl
 
     def _extract_info_from_uri(self, *, table_uri: str) -> Dict:
         """
@@ -135,28 +186,6 @@ class AtlasProxy(BaseProxy):
             $
         """, re.X)
         result = pattern.match(table_uri)
-        return result.groupdict() if result else dict()
-
-    def _parse_reader_qn(self, reader_qn: str) -> Dict:
-        """
-        Parse reader qualifiedName and extract the info
-        :param reader_qn:
-        :return: Dictionary object containing following information:
-        cluster: cluster information
-        db: Database name
-        name: Table name
-        """
-        pattern = re.compile(r"""
-        ^(?P<db>[^.]*)
-        \.
-        (?P<table>[^.]*)
-        \.
-        (?P<user_id>[^.]*)\.reader
-        \@
-        (?P<cluster>.*)
-        $
-        """, re.X)
-        result = pattern.match(reader_qn)
         return result.groupdict() if result else dict()
 
     def _parse_bookmark_qn(self, bookmark_qn: str) -> Dict:
@@ -197,43 +226,40 @@ class AtlasProxy(BaseProxy):
 
         return user_details
 
-    def _get_table_entity(self, *, table_uri: str) -> EntityUniqueAttribute:
+    def _get_table_entity(self, *, table_uri: str) -> AtlasEntityWithExtInfo:
         """
         Fetch information from table_uri and then find the appropriate entity
-        The reason, we're not returning the entity_unique_attribute().entity
-        directly is because the entity_unique_attribute() return entity Object
-        that can be used for update purposes,
-        while entity_unique_attribute().entity only returns the dictionary
-        :param table_uri:
-        :return: A tuple of Table entity and parsed information of table qualified name
+        :param table_uri: The table URI coming from Amundsen Frontend
+        :return: A table entity matching the Qualified Name derived from table_uri
         """
         table_info = self._extract_info_from_uri(table_uri=table_uri)
-        table_qn = make_table_qualified_name(table_info.get('name'),
+        table_qn = make_table_qualified_name(table_info.get('name', ''),
                                              table_info.get('cluster'),
                                              table_info.get('db')
                                              )
 
         try:
-            return self._driver.entity_unique_attribute(table_info['entity'], qualifiedName=table_qn)
+            return self.client.entity.get_entity_by_attribute(type_name=table_info['entity'],
+                                                              uniq_attributes=[(self.QN_KEY, table_qn)])
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException('Table URI( {table_uri} ) does not exist'
                                     .format(table_uri=table_uri))
 
-    def _get_user_entity(self, user_id: str) -> EntityUniqueAttribute:
+    def _get_user_entity(self, user_id: str) -> AtlasEntityWithExtInfo:
         """
         Fetches an user entity from an id
-        :param user_id:
-        :return:
+        :param user_id: User ID
+        :return: A User entity matching the user_id
         """
         try:
-            return self._driver.entity_unique_attribute("User",
-                                                        qualifiedName=user_id)
+            return self.client.entity.get_entity_by_attribute(type_name=self.USER_TYPE,
+                                                              uniq_attributes=[(self.QN_KEY, user_id)])
         except Exception as ex:
             raise NotFoundException('(User {user_id}) does not exist'
                                     .format(user_id=user_id))
 
-    def _create_bookmark(self, entity: EntityUniqueAttribute, user_guid: str, bookmark_qn: str,
+    def _create_bookmark(self, entity: AtlasEntityWithExtInfo, user_guid: str, bookmark_qn: str,
                          table_uri: str) -> None:
         """
         Creates a bookmark entity for a specific user and table uri.
@@ -253,9 +279,10 @@ class AtlasProxy(BaseProxy):
             }
         }
 
-        self._driver.entity_post.create(data=bookmark_entity)
+        bookmark_entity = type_coerce(bookmark_entity, AtlasEntityWithExtInfo)
+        self.client.entity.create_entity(bookmark_entity)
 
-    def _get_bookmark_entity(self, entity_uri: str, user_id: str) -> EntityUniqueAttribute:
+    def _get_bookmark_entity(self, entity_uri: str, user_id: str) -> AtlasEntityWithExtInfo:
         """
         Fetch a Bookmark entity from parsing table uri and user id.
         If Bookmark is not present, create one for the user.
@@ -271,24 +298,22 @@ class AtlasProxy(BaseProxy):
                                                        table_info.get('cluster'))
 
         try:
-            bookmark_entity = self._driver.entity_unique_attribute(self.BOOKMARK_TYPE, qualifiedName=bookmark_qn)
-
-            if not bookmark_entity.entity:
-                table_entity = self._get_table_entity(table_uri=entity_uri)
-                # Fetch user entity from user_id for relation
-                user_entity = self._get_user_entity(user_id)
-                # Create bookmark entity with the user relation.
-                self._create_bookmark(table_entity,
-                                      user_entity.entity[self.GUID_KEY], bookmark_qn, entity_uri)
-                # Fetch bookmark entity after creating it.
-                bookmark_entity = self._driver.entity_unique_attribute(self.BOOKMARK_TYPE, qualifiedName=bookmark_qn)
-
-            return bookmark_entity
-
+            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=self.BOOKMARK_TYPE,
+                                                                         uniq_attributes=[(self.QN_KEY, bookmark_qn)])
         except Exception as ex:
             LOGGER.exception(f'Bookmark not found. {str(ex)}')
-            raise NotFoundException('Bookmark( {bookmark_qn} ) does not exist'
-                                    .format(bookmark_qn=bookmark_qn))
+
+            table_entity = self._get_table_entity(table_uri=entity_uri)
+            # Fetch user entity from user_id for relation
+            user_entity = self._get_user_entity(user_id)
+            # Create bookmark entity with the user relation.
+            self._create_bookmark(table_entity,
+                                  user_entity.entity[self.GUID_KEY], bookmark_qn, entity_uri)
+            # Fetch bookmark entity after creating it.
+            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=self.BOOKMARK_TYPE,
+                                                                         uniq_attributes=[(self.QN_KEY, bookmark_qn)])
+
+        return bookmark_entity
 
     def _get_column(self, *, table_uri: str, column_name: str) -> Dict:
         """
@@ -311,12 +336,12 @@ class AtlasProxy(BaseProxy):
             LOGGER.exception(f'Column not found: {str(ex)}')
             raise NotFoundException(f'Column not found: {column_name}')
 
-    def _serialize_columns(self, *, entity: EntityUniqueAttribute) -> \
+    def _serialize_columns(self, *, entity: AtlasEntityWithExtInfo) -> \
             Union[List[Column], List]:
         """
         Helper function to fetch the columns from entity and serialize them
         using Column and Stat model.
-        :param entity: EntityUniqueAttribute object,
+        :param entity: AtlasEntityWithExtInfo object,
         along with relationshipAttributes
         :return: A list of Column objects, if there are any columns available,
         else an empty list.
@@ -333,7 +358,6 @@ class AtlasProxy(BaseProxy):
             statistics = list()
 
             badges = list()
-
             for column_classification in col_entity.get('classifications') or list():
                 if column_classification.get('entityStatus') == Status.ACTIVE:
                     name = column_classification.get('typeName')
@@ -386,8 +410,8 @@ class AtlasProxy(BaseProxy):
     def _get_reports(self, guids: List[str]) -> List[ResourceReport]:
         reports = []
         if guids:
-            report_entities_collection = self._driver.entity_bulk(guid=guids)
-            for report_entity in extract_entities(report_entities_collection):
+            report_entities = self.client.entity.get_entities_by_guids(guids=guids)
+            for report_entity in report_entities.entities:
                 try:
                     if report_entity.status == Status.ACTIVE:
                         report_attrs = report_entity.attributes
@@ -452,15 +476,26 @@ class AtlasProxy(BaseProxy):
                 qualified_name=attrs.get(self.QN_KEY)
             )
 
-            tags = []
+            badges = []
             # Using or in case, if the key 'classifications' is there with a None
             for classification in table_details.get('classifications') or list():
-                tags.append(
-                    Tag(
-                        tag_name=classification.get('typeName'),
-                        tag_type="default"
+                badges.append(
+                    Badge(
+                        badge_name=classification.get('typeName'),
+                        category="default"
                     )
                 )
+
+            tags = []
+            for term in table_details.get(self.REL_ATTRS_KEY).get("meanings") or list():
+                if term.get('entityStatus') == Status.ACTIVE and \
+                        term.get('relationshipStatus') == Status.ACTIVE:
+                    tags.append(
+                        Tag(
+                            tag_name=term.get("displayText"),
+                            tag_type="default"
+                        )
+                    )
 
             columns = self._serialize_columns(entity=entity)
 
@@ -476,6 +511,7 @@ class AtlasProxy(BaseProxy):
                 cluster=table_qn.get('cluster_name', ''),
                 schema=table_qn.get('db_name', ''),
                 name=attrs.get('name') or table_qn.get("table_name", ''),
+                badges=badges,
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
                 owners=self._get_owners(
@@ -521,7 +557,7 @@ class AtlasProxy(BaseProxy):
         return result
 
     @staticmethod
-    def _render_partition_key_name(entity: EntityUniqueAttribute) -> Optional[str]:
+    def _render_partition_key_name(entity: AtlasEntityWithExtInfo) -> Optional[str]:
         _partition_keys = []
 
         for partition_key in entity.get('attributes', dict()).get('partitionKeys', []):
@@ -534,7 +570,7 @@ class AtlasProxy(BaseProxy):
 
         return partition_key
 
-    def _get_table_watermarks(self, entity: EntityUniqueAttribute) -> List[Watermark]:
+    def _get_table_watermarks(self, entity: AtlasEntityWithExtInfo) -> List[Watermark]:
         partition_value_format = '%Y-%m-%d %H:%M:%S'
 
         _partitions = entity.get('relationshipAttributes', dict()).get('partitions', list())
@@ -546,15 +582,15 @@ class AtlasProxy(BaseProxy):
         if not names:
             return []
 
-        partition_key = AtlasProxy._render_partition_key_name(entity)
-        watermark_date_format = AtlasProxy._select_watermark_format(names)
+        partition_key = self._render_partition_key_name(entity)
+        watermark_date_format = self._select_watermark_format(names)
 
         partitions = {}
 
         for _partition in _partitions:
             partition_name = _partition.get('displayText')
             if partition_name and watermark_date_format:
-                partition_date, _ = AtlasProxy._validate_date(partition_name, watermark_date_format)
+                partition_date, _ = self._validate_date(partition_name, watermark_date_format)
 
                 if partition_date:
                     common_values = {'partition_value': datetime.datetime.strftime(partition_date,
@@ -591,11 +627,12 @@ class AtlasProxy(BaseProxy):
                                        and item['displayText'] == owner,
                                        table_entity[self.REL_ATTRS_KEY]['ownedBy'])
                 if list(active_owners):
-                    self._driver.relationship_guid(next(active_owners)
-                                                   .get('relationshipGuid')).delete()
+                    self.client.relationship.delete_relationship_by_guid(
+                        guid=next(active_owners).get('relationshipGuid')
+                    )
                 else:
                     raise BadRequest('You can not delete this owner.')
-            except NotFound as ex:
+            except Exception as ex:
                 LOGGER.exception('Error while removing table data owner. {}'
                                  .format(str(ex)))
 
@@ -613,16 +650,16 @@ class AtlasProxy(BaseProxy):
         if not owner_info:
             raise NotFoundException(f'User "{owner}" does not exist.')
 
-        user_dict = {
+        user_dict = type_coerce({
             "entity": {
                 "typeName": "User",
                 "attributes": {"qualifiedName": owner},
             }
-        }
+        }, AtlasEntityWithExtInfo)
 
         # Get or Create a User
-        user_entity = self._driver.entity_post.create(data=user_dict)
-        user_guid = next(iter(user_entity.get("guidAssignments").values()))
+        user_entity = self.client.entity.create_entity(user_dict)
+        user_guid = next(iter(user_entity.guidAssignments.values()))
 
         table = self._get_table_entity(table_uri=table_uri)
 
@@ -636,8 +673,10 @@ class AtlasProxy(BaseProxy):
             },
         }
         try:
-            self._driver.relationship.create(data=entity_def)
-        except Conflict as ex:
+            relationship = type_coerce(entity_def, AtlasRelationship)
+            self.client.relationship.create_relationship(relationship=relationship)
+
+        except Exception as ex:
             LOGGER.exception('Error while adding the owner information. {}'
                              .format(str(ex)))
             raise BadRequest(f'User {owner} is already added as a data owner for '
@@ -661,24 +700,78 @@ class AtlasProxy(BaseProxy):
         :param description: Description string
         :return: None
         """
-        entity = self._get_table_entity(table_uri=table_uri)
-        entity.entity[self.ATTRS_KEY]['description'] = description
-        entity.update()
+        table = self._get_table_entity(table_uri=table_uri)
 
-    def add_tag(self, *, id: str, tag: str, tag_type: str,
+        self.client.entity.partial_update_entity_by_guid(
+            entity_guid=table.entity.get("guid"), attr_value=description, attr_name='description'
+        )
+
+    @_CACHE.cache('_get_user_defined_glossary_guid')
+    def _get_user_defined_glossary_guid(self) -> str:
+        """
+        This function look for a user defined glossary i.e., self.ATLAS_USER_DEFINED_TERMS
+        If there is not one available, this will create a new glossary.
+        The meain reason to put this functionality into a separate function is to avoid
+        the lookup each time someone assigns a tag to a data source.
+        :return: Glossary object, that holds the user defined terms.
+        """
+        # Check if the user glossary already exists
+        glossaries = self.client.glossary.get_all_glossaries()
+        for glossary in glossaries:
+            if glossary.get(self.QN_KEY) == self.AMUNDSEN_USER_TAGS:
+                return glossary[self.GUID_KEY]
+
+        # If not already exists, create one
+        glossary_def = AtlasGlossary({"name": self.AMUNDSEN_USER_TAGS,
+                                      "shortDescription": "Amundsen User Defined Terms"})
+        glossary = self.client.glossary.create_glossary(glossary_def)
+        return glossary.guid
+
+    @_CACHE.cache('_get_create_glossary_term')
+    def _get_create_glossary_term(self, term_name: str) -> Union[AtlasGlossaryTerm, AtlasEntityHeader]:
+        """
+        Since Atlas does not provide any API to find a term directly by a qualified name,
+        we need to look for AtlasGlossaryTerm via basic search, if found then return, else
+        create a new glossary term under the user defined glossary.
+        :param term_name: Name of the term. NOTE: this is different from qualified name.
+        :return: Term Object.
+        """
+        params = {
+            'typeName': "AtlasGlossaryTerm",
+            'excludeDeletedEntities': True,
+            'includeSubTypes': True,
+            'attributes': ["assignedEntities", ],
+            'entityFilters': {'condition': "AND",
+                              'criterion': [{'attributeName': "name", 'operator': "=", 'attributeValue': term_name}]
+                              }
+        }
+        result = self.client.discovery.faceted_search(search_parameters=params)
+        if result.approximateCount:
+            term = result.entities[0]
+        else:
+            glossary_guid = self._get_user_defined_glossary_guid()
+            glossary_def = AtlasGlossaryHeader({'glossaryGuid': glossary_guid})
+            term_def = AtlasGlossaryTerm({'name': term_name, 'anchor': glossary_def})
+            term = self.client.glossary.create_glossary_term(term_def)
+
+        return term
+
+    def add_tag(self, *, id: str, tag: str, tag_type: str = "default",
                 resource_type: ResourceType = ResourceType.Table) -> None:
         """
-        Assign the tag/classification to the give table
-        API Ref: /resource_EntityREST.html#resource_EntityREST_addClassification_POST
-        :param table_uri:
-        :param tag: Tag/Classification Name
+        Assign the Glossary Term to the give table. If the term is not there, it will
+        create a new term under the Glossary self.ATLAS_USER_DEFINED_TERMS
+        :param id: Table URI / Dashboard ID etc.
+        :param tag: Tag Name
         :param tag_type
         :return: None
         """
         entity = self._get_table_entity(table_uri=id)
-        entity_bulk_tag = {"classification": {"typeName": tag},
-                           "entityGuids": [entity.entity[self.GUID_KEY]]}
-        self._driver.entity_bulk_classification.create(data=entity_bulk_tag)
+
+        term = self._get_create_glossary_term(tag)
+        related_entity = AtlasRelatedObjectId({self.GUID_KEY: entity.entity[self.GUID_KEY],
+                                               "typeName": resource_type.name})
+        self.client.glossary.assign_term_to_entities(term.guid, [related_entity])
 
     def add_badge(self, *, id: str, badge_name: str, category: str = '',
                   resource_type: ResourceType) -> None:
@@ -688,20 +781,23 @@ class AtlasProxy(BaseProxy):
     def delete_tag(self, *, id: str, tag: str, tag_type: str,
                    resource_type: ResourceType = ResourceType.Table) -> None:
         """
-        Delete the assigned classfication/tag from the given table
-        API Ref: /resource_EntityREST.html#resource_EntityREST_deleteClassification_DELETE
-        :param table_uri:
-        :param tag:
-        :return:
+        Removes the Glossary Term assignment from the provided source.
+        :param id: Table URI / Dashboard ID etc.
+        :param tag: Tag Name
+        :return:None
         """
-        try:
-            entity = self._get_table_entity(table_uri=id)
-            guid_entity = self._driver.entity_guid(entity.entity[self.GUID_KEY])
-            guid_entity.classifications(tag).delete()
-        except Exception as ex:
-            # FixMe (Verdan): Too broad exception. Please make it specific
-            LOGGER.exception('For some reason this deletes the classification '
-                             'but also always return exception. {}'.format(str(ex)))
+        entity = self._get_table_entity(table_uri=id)
+        term = self._get_create_glossary_term(tag)
+
+        if not term:
+            return
+
+        assigned_entities = self.client.glossary.get_entities_assigned_with_term(term.guid, "ASC", -1, 0)
+
+        for item in assigned_entities or list():
+            if item.get(self.GUID_KEY) == entity.entity[self.GUID_KEY]:
+                related_entity = AtlasRelatedObjectId(item)
+                return self.client.glossary.disassociate_term_from_entities(term.guid, [related_entity])
 
     def delete_badge(self, *, id: str, badge_name: str, category: str,
                      resource_type: ResourceType) -> None:
@@ -723,9 +819,9 @@ class AtlasProxy(BaseProxy):
             column_name=column_name)
         col_guid = column_detail[self.GUID_KEY]
 
-        entity = self._driver.entity_guid(col_guid)
-        entity.entity[self.ATTRS_KEY]['description'] = description
-        entity.update(attribute='description')
+        self.client.entity.partial_update_entity_by_guid(
+            entity_guid=col_guid, attr_value=description, attr_name='description'
+        )
 
     def get_column_description(self, *,
                                table_uri: str,
@@ -782,43 +878,60 @@ class AtlasProxy(BaseProxy):
                                 'sortOrder': 'DESCENDING',
                                 'excludeDeletedEntities': True,
                                 'limit': num_entries}
-        search_results = self._driver.search_basic.create(data=popular_query_params)
+        search_results = self.client.discovery.faceted_search(search_parameters=popular_query_params)
         return self._serialize_popular_tables(search_results.entities)
 
     def get_latest_updated_ts(self) -> int:
         date = None
 
-        for metrics in self._driver.admin_metrics:
-            try:
-                date = self._parse_date(metrics.general.get('stats', {}).get('Notification:lastMessageProcessedTime'))
-            except AttributeError:
-                pass
+        metrics = self.client.admin.get_metrics()
+        try:
+            date = self._parse_date(metrics.general.get('stats', {}).get('Notification:lastMessageProcessedTime'))
+        except AttributeError:
+            pass
 
-        date = date or 0
-
-        return date
+        return date or 0
 
     def get_tags(self) -> List:
         """
-        Fetch all the classification entity definitions from atlas  as this
+        Fetch all the glossary terms from atlas, along with their assigned entities as this
         will be used to generate the autocomplete on the table detail page
         :return: A list of TagDetail Objects
         """
         tags = []
-        for metrics in self._driver.admin_metrics:
-            tag_stats = metrics.tag
-            for tag, count in tag_stats["tagEntities"].items():
-                tags.append(
-                    TagDetail(
-                        tag_name=tag,
-                        tag_count=count
-                    )
+        params = {
+            'typeName': "AtlasGlossaryTerm",
+            'limit': 1000,
+            'offset': 0,
+            'excludeDeletedEntities': True,
+            'includeSubTypes': True,
+            'attributes': ["assignedEntities", ]
+        }
+        glossary_terms = self.client.discovery.faceted_search(search_parameters=params)
+        for item in glossary_terms.entities or list():
+            tags.append(
+                TagDetail(
+                    tag_name=item.attributes.get("name"),
+                    tag_count=len(item.attributes.get("assignedEntities"))
                 )
+            )
         return tags
 
     def get_badges(self) -> List:
-        # Not implemented
-        return []
+        badges = list()
+
+        metrics = self.client.admin.get_metrics()
+        try:
+            system_badges = metrics["tag"].get("tagEntities").keys()
+
+            for item in system_badges:
+                badges.append(
+                    Badge(badge_name=item, category="default")
+                )
+        except AttributeError:
+            LOGGER.info("No badges/classifications available in the system.")
+
+        return badges
 
     def _get_resources_followed_by_user(self, user_id: str, resource_type: str) \
             -> List[Union[PopularTable, DashboardSummary]]:
@@ -852,7 +965,7 @@ class AtlasProxy(BaseProxy):
             'attributes': ['count', self.QN_KEY, self.ENTITY_URI_KEY]
         }
         # Fetches the bookmark entities based on filters
-        search_results = self._driver.search_basic.create(data=params)
+        search_results = self.client.discovery.faceted_search(search_parameters=params)
 
         resources = []
         for record in search_results.entities:
@@ -875,15 +988,19 @@ class AtlasProxy(BaseProxy):
         :return: A list of PopularTable, DashboardSummary or any other resource.
         """
         resources = list()
+
         if resource_type == ResourceType.Table.name:
             type_regex = "(.*)_table$"
+            entity_type = 'Table'
         # elif resource_type == ResourceType.Dashboard.name:
         #     type_regex = "Dashboard"
+        #     entity_type = 'Dashboard'
         else:
             LOGGER.exception(f'Resource Type ({resource_type}) is not yet implemented')
             raise NotImplemented
 
-        user_entity = self._driver.entity_unique_attribute(self.USER_TYPE, qualifiedName=user_id).entity
+        user_entity = self.client.entity.get_entity_by_attribute(type_name=self.USER_TYPE,
+                                                                 uniq_attributes=[(self.QN_KEY, user_id)]).entity
 
         if not user_entity:
             LOGGER.exception(f'User ({user_id}) not found in Atlas')
@@ -896,33 +1013,29 @@ class AtlasProxy(BaseProxy):
                     re.compile(type_regex).match(item['typeName'])):
                 resource_guids.add(item[self.GUID_KEY])
 
-        params = {
-            'typeName': self.TABLE_ENTITY,
-            'excludeDeletedEntities': True,
-            'entityFilters': {
-                'condition': 'AND',
-                'criterion': [
-                    {
-                        'attributeName': 'owner',
-                        'operator': 'startsWith',
-                        'attributeValue': user_id.lower()
-                    }
-                ]
-            },
-            'attributes': [self.GUID_KEY]
-        }
-        table_entities = self._driver.search_basic.create(data=params)
-        for table in table_entities.entities:
+        owned_tables_query = f'{entity_type} where owner like "{user_id.lower()}*" and __state = "ACTIVE"'
+        table_entities = self.client.discovery.dsl_search(owned_tables_query)
+
+        for table in table_entities.entities or list():
             resource_guids.add(table.guid)
 
         if resource_guids:
-            entities = extract_entities(self._driver.entity_bulk(guid=list(resource_guids), ignoreRelationships=True))
-            if resource_type == ResourceType.Table.name:
-                resources = self._serialize_popular_tables(entities)
+            resource_guids_chunks = AtlasProxy.split_list_to_chunks(list(resource_guids), 100)
+
+            for chunk in resource_guids_chunks:
+                entities = self.client.entity.get_entities_by_guids(guids=list(chunk), ignore_relationships=True)
+                if resource_type == ResourceType.Table.name:
+                    resources += self._serialize_popular_tables(entities.entities)
         else:
             LOGGER.info(f'User ({user_id}) does not own any "{resource_type}"')
 
         return resources
+
+    @staticmethod
+    def split_list_to_chunks(input_list: List[Any], n: int) -> Generator:
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(input_list), n):
+            yield input_list[i:i + n]
 
     def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
             -> Dict[str, List[DashboardSummary]]:
@@ -940,7 +1053,8 @@ class AtlasProxy(BaseProxy):
         return {'table': tables}
 
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, List[PopularTable]]:
-        user = self._driver.entity_unique_attribute(self.USER_TYPE, qualifiedName=user_email).entity
+        user = self.client.entity.get_entity_by_attribute(type_name=self.USER_TYPE,
+                                                          uniq_attributes=[(self.QN_KEY, user_email)]).entity
 
         readers_guids = []
         for user_reads in user['relationshipAttributes'].get('entityReads'):
@@ -950,10 +1064,10 @@ class AtlasProxy(BaseProxy):
             if entity_status == Status.ACTIVE and relationship_status == Status.ACTIVE:
                 readers_guids.append(user_reads['guid'])
 
-        readers = extract_entities(self._driver.entity_bulk(guid=readers_guids, ignoreRelationships=True))
+        readers = self.client.entity.get_entities_by_guids(guids=list(readers_guids), ignore_relationships=True)
 
         _results = {}
-        for reader in readers:
+        for reader in readers.entities or list():
             entity_uri = reader.attributes.get(self.ENTITY_URI_KEY)
             count = reader.attributes.get('count')
 
@@ -1012,7 +1126,7 @@ class AtlasProxy(BaseProxy):
         except Exception:
             return None
 
-    def _get_readers(self, entity: EntityUniqueAttribute, top: Optional[int] = 15) -> List[Reader]:
+    def _get_readers(self, entity: AtlasEntityWithExtInfo, top: Optional[int] = 15) -> List[Reader]:
         _readers = entity.get('relationshipAttributes', dict()).get('readers', list())
 
         guids = [_reader.get('guid') for _reader in _readers
@@ -1022,11 +1136,11 @@ class AtlasProxy(BaseProxy):
         if not guids:
             return []
 
-        readers = extract_entities(self._driver.entity_bulk(guid=guids, ignoreRelationships=False))
+        readers = self.client.entity.get_entities_by_guids(guids=list(guids), ignore_relationships=False)
 
         _result = []
 
-        for _reader in readers:
+        for _reader in readers.entities or list():
             read_count = _reader.attributes['count']
 
             if read_count >= int(app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']):

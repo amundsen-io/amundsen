@@ -7,7 +7,7 @@ Usage and Installation of `amundsenatlastypes` can be found [here](https://githu
 
 Minimum Requirements:
 - amundsenatlastypes==1.1.4
-- pyatlasclient==1.0.4
+- apache_atlas==0.0.11
 
 ### Configurations  
 
