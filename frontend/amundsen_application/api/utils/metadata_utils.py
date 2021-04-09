@@ -172,6 +172,21 @@ def marshall_dashboard_full(dashboard_dict: Dict) -> Dict:
     return dashboard_dict
 
 
+def marshall_lineage_table(table_dict: Dict) -> Dict:
+    """
+    Decorate lineage entries with database, schema, cluster, and table
+    :param table_dict:
+    :return: table entry with additional fields
+    """
+    table_key = str(table_dict.get('key'))
+    table_uri = TableUri.from_uri(table_key)
+    table_dict['database'] = table_uri.database
+    table_dict['schema'] = table_uri.schema
+    table_dict['cluster'] = table_uri.cluster
+    table_dict['name'] = table_uri.table
+    return table_dict
+
+
 def _convert_prog_descriptions(prog_descriptions: List = None) -> Dict:
     """
     Apply the PROGRAMMATIC_DISPLAY configuration to convert to the structure.

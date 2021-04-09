@@ -3,8 +3,12 @@
 
 import * as React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { OpenRequestAction } from 'ducks/notification/types';
+import { GetColumnLineageRequest } from 'ducks/tableMetadata/types';
+import { getColumnLineage } from 'ducks/tableMetadata/reducer';
 
 import EditableSection from 'components/EditableSection';
 import Table, {
@@ -18,6 +22,7 @@ import {
   notificationsEnabled,
   getMaxLength,
   getTableSortCriterias,
+  isColumnListLineageEnabled,
 } from 'config/config-utils';
 
 import {
@@ -31,6 +36,7 @@ import {
 
 import BadgeList from 'features/BadgeList';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
+import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
 import ColumnStats from './ColumnStats';
@@ -44,7 +50,7 @@ import {
 
 import './styles.scss';
 
-export interface ColumnListProps {
+export interface ComponentProps {
   columns: TableColumn[];
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
@@ -54,7 +60,17 @@ export interface ColumnListProps {
   editText?: string;
   editUrl?: string;
   sortBy?: SortCriteria;
+  tableKey: string;
 }
+
+export interface DispatchFromProps {
+  getColumnLineageDispatch: (
+    key: string,
+    columnName: string
+  ) => GetColumnLineageRequest;
+}
+
+export type ColumnListProps = ComponentProps & DispatchFromProps;
 
 type ContentType = {
   title: string;
@@ -77,6 +93,7 @@ type FormattedDataType = {
   editUrl: string | null;
   index: number;
   name: string;
+  tableKey: string;
   sort_order: string;
   isEditable: boolean;
   badges: Badge[];
@@ -138,15 +155,6 @@ const getUsageStat = (item) => {
   return null;
 };
 
-const handleRowExpand = (rowValues) => {
-  logAction({
-    command: 'click',
-    label: `${rowValues.content.title} ${rowValues.type.type}`,
-    target_id: `column::${rowValues.content.title}`,
-    target_type: 'column stats',
-  });
-};
-
 // @ts-ignore
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
@@ -187,6 +195,12 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
       {uniqueValueStats && (
         <ExpandableUniqueValues uniqueValues={uniqueValueStats} />
       )}
+      {isColumnListLineageEnabled() && (
+        <ColumnLineage
+          tableKey={rowValue.tableKey}
+          columnName={rowValue.name}
+        />
+      )}
     </div>
   );
 };
@@ -198,12 +212,15 @@ const ColumnList: React.FC<ColumnListProps> = ({
   editUrl,
   openRequestDescriptionDialog,
   sortBy = DEFAULT_SORTING,
+  tableKey,
+  getColumnLineageDispatch,
 }: ColumnListProps) => {
   const hasColumnBadges = hasColumnWithBadge(columns);
   const formattedData: FormattedDataType[] = columns.map((item, index) => {
     const hasItemStats = !!item.stats.length;
 
     return {
+      tableKey,
       content: {
         title: item.name,
         description: item.description,
@@ -325,6 +342,21 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ];
   }
 
+  const openedColumnsMap = {};
+  const handleRowExpand = (rowValues) => {
+    if (openedColumnsMap[rowValues.name]) {
+      return;
+    }
+    openedColumnsMap[rowValues.name] = true;
+    logAction({
+      command: 'click',
+      label: `${rowValues.content.title} ${rowValues.type.type}`,
+      target_id: `column::${rowValues.content.title}`,
+      target_type: 'column stats',
+    });
+    getColumnLineageDispatch(rowValues.tableKey, rowValues.name);
+  };
+
   return (
     <Table
       columns={formattedColumns}
@@ -340,4 +372,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
   );
 };
 
-export default ColumnList;
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ getColumnLineageDispatch: getColumnLineage }, dispatch);
+
+export default connect<{}, DispatchFromProps, ComponentProps>(
+  null,
+  mapDispatchToProps
+)(ColumnList);

@@ -38,6 +38,7 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
     editUrl: 'https://test.datasource.site/table',
     database: 'testDatabase',
     columns: [],
+    tableKey: 'test-key',
     openRequestDescriptionDialog: jest.fn(),
     ...propOverrides,
   };

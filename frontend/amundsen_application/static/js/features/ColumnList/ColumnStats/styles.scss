@@ -4,6 +4,8 @@
 @import 'variables';
 @import 'typography';
 
+$column-stats-max-width: 600px;
+
 .column-stats {
   .stat-collection-info {
     color: $text-secondary;
@@ -13,14 +15,14 @@
 
   .column-stats-table {
     display: flex;
-    max-width: 600px;
+    max-width: $column-stats-max-width;
 
     .column-stats-column {
       flex-basis: 50%;
       flex-grow: 1;
 
       &:first-child {
-        margin-right: 16px;
+        margin-right: $spacer-2;
       }
 
       .column-stat-row {

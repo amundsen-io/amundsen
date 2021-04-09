@@ -40,23 +40,23 @@ describe('helpers', () => {
 
   describe('getTableQueryParams', () => {
     it('generates table query params with a key', () => {
-      const tableKey = 'database://cluster.schema/table';
-      const queryString = Helpers.getTableQueryParams(tableKey);
+      const key = 'database://cluster.schema/table';
+      const queryString = Helpers.getTableQueryParams({ key });
       const params = qs.parse(queryString);
 
-      expect(params.key).toEqual(tableKey);
+      expect(params.key).toEqual(key);
       expect(params.index).toEqual(undefined);
       expect(params.source).toEqual(undefined);
     });
 
     it('generates query params with logging params', () => {
-      const tableKey = 'database://cluster.schema/table';
+      const key = 'database://cluster.schema/table';
       const index = '4';
       const source = 'test-source';
-      const queryString = Helpers.getTableQueryParams(tableKey, index, source);
+      const queryString = Helpers.getTableQueryParams({ key, index, source });
       const params = qs.parse(queryString);
 
-      expect(params.key).toEqual(tableKey);
+      expect(params.key).toEqual(key);
       expect(params.index).toEqual(index);
       expect(params.source).toEqual(source);
     });

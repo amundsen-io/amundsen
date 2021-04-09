@@ -43,7 +43,9 @@ import { filterWatcher } from './search/filters/sagas';
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
 import {
   getTableDataWatcher,
+  getTableLineageWatcher,
   getColumnDescriptionWatcher,
+  getColumnLineageWatcher,
   getPreviewDataWatcher,
   getTableDescriptionWatcher,
   updateColumnDescriptionWatcher,
@@ -101,7 +103,9 @@ export default function* rootSaga() {
     updateResourceTagsWatcher(),
     // TableDetail
     getTableDataWatcher(),
+    getTableLineageWatcher(),
     getColumnDescriptionWatcher(),
+    getColumnLineageWatcher(),
     getPreviewDataWatcher(),
     getTableDescriptionWatcher(),
     updateColumnDescriptionWatcher(),

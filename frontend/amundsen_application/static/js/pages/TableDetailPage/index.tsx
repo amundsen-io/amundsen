@@ -9,10 +9,13 @@ import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getTableData } from 'ducks/tableMetadata/reducer';
+import { getTableData, getTableLineage } from 'ducks/tableMetadata/reducer';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
-import { GetTableDataRequest } from 'ducks/tableMetadata/types';
+import {
+  GetTableDataRequest,
+  GetTableLineageRequest,
+} from 'ducks/tableMetadata/types';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { logClick } from 'ducks/utilMethods';
@@ -25,6 +28,7 @@ import {
   getTableSortCriterias,
   indexDashboardsEnabled,
   issueTrackingEnabled,
+  isTableListLineageEnabled,
   notificationsEnabled,
 } from 'config/config-utils';
 
@@ -49,12 +53,14 @@ import {
   TableMetadata,
   RequestMetadataType,
   SortCriteria,
+  Lineage,
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
 import FrequentUsers from './FrequentUsers';
 import LineageLink from './LineageLink';
+import LineageList from './LineageList';
 import TableOwnerEditor from './TableOwnerEditor';
 import SourceLink from './SourceLink';
 import TableDashboardResourceList from './TableDashboardResourceList';
@@ -78,7 +84,6 @@ const TABLE_SOURCE = 'table_page';
 const SORT_CRITERIAS = {
   ...getTableSortCriterias(),
 };
-const COLUMN_TAB_KEY = 'columns';
 
 export interface PropsFromState {
   isLoading: boolean;
@@ -86,6 +91,7 @@ export interface PropsFromState {
   numRelatedDashboards: number;
   statusCode: number | null;
   tableData: TableMetadata;
+  tableLineage: Lineage;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -93,6 +99,7 @@ export interface DispatchFromProps {
     searchIndex?: string,
     source?: string
   ) => GetTableDataRequest;
+  getTableLineageDispatch: (key: string) => GetTableLineageRequest;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
     columnName: string
@@ -133,15 +140,19 @@ export class TableDetail extends React.Component<
 
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
-    currentTab: COLUMN_TAB_KEY,
+    currentTab: Constants.COLUMN_TAB_KEY,
   };
 
   componentDidMount() {
-    const { location, getTableData } = this.props;
+    const { location, getTableData, getTableLineageDispatch } = this.props;
     const { index, source } = getLoggingParams(location.search);
 
     this.key = this.getTableKey();
     getTableData(this.key, index, source);
+
+    if (isTableListLineageEnabled()) {
+      getTableLineageDispatch(this.key);
+    }
     this.didComponentMount = true;
   }
 
@@ -223,6 +234,7 @@ export class TableDetail extends React.Component<
       numRelatedDashboards,
       tableData,
       openRequestDescriptionDialog,
+      tableLineage,
     } = this.props;
     const { sortedBy } = this.state;
 
@@ -233,12 +245,13 @@ export class TableDetail extends React.Component<
           openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
+          tableKey={tableData.key}
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
         />
       ),
-      key: 'columns',
+      key: Constants.COLUMN_TAB_KEY,
       title: `Columns (${tableData.columns.length})`,
     });
 
@@ -256,17 +269,31 @@ export class TableDetail extends React.Component<
             source={TABLE_SOURCE}
           />
         ),
-        key: 'dashboards',
+        key: Constants.DASHBOARD_TAB_KEY,
         title: isLoadingDashboards
           ? loadingTitle
           : `Dashboards (${numRelatedDashboards})`,
       });
     }
 
+    if (isTableListLineageEnabled()) {
+      tabInfo.push({
+        content: <LineageList items={tableLineage.downstream_entities} />,
+        key: Constants.DOWNSTREAM_TAB_KEY,
+        title: `Downstream (${tableLineage.downstream_entities.length})`,
+      });
+
+      tabInfo.push({
+        content: <LineageList items={tableLineage.upstream_entities} />,
+        key: Constants.UPSTREAM_TAB_KEY,
+        title: `Upstream (${tableLineage.upstream_entities.length})`,
+      });
+    }
+
     return (
       <TabsComponent
         tabs={tabInfo}
-        defaultTab="columns"
+        defaultTab={Constants.COLUMN_TAB_KEY}
         onSelect={(key) => {
           this.setState({ currentTab: key });
         }}
@@ -439,7 +466,7 @@ export class TableDetail extends React.Component<
               )}
             </aside>
             <main className="right-panel">
-              {currentTab === COLUMN_TAB_KEY && (
+              {currentTab === Constants.COLUMN_TAB_KEY && (
                 <ListSortingDropdown
                   options={SORT_CRITERIAS}
                   onChange={this.handleSortingChange}
@@ -466,6 +493,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.tableMetadata.isLoading,
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
+  tableLineage: state.tableMetadata.tableLineage.lineage,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,
@@ -478,6 +506,7 @@ export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
       getTableData,
+      getTableLineageDispatch: getTableLineage,
       openRequestDescriptionDialog,
       searchSchema: (schemaText: string) =>
         updateSearchState({

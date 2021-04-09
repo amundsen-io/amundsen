@@ -25,6 +25,7 @@ export interface AppConfig {
   navLinks: Array<LinkConfig>;
   resourceConfig: ResourceConfig;
   tableLineage: TableLineageConfig;
+  columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
 }
 
@@ -47,6 +48,7 @@ export interface AppConfigCustom {
   navLinks?: Array<LinkConfig>;
   resourceConfig?: ResourceConfig;
   tableLineage?: TableLineageConfig;
+  columnLineage?: ColumnLineageConfig;
   tableProfile?: TableProfileConfig;
 }
 
@@ -267,12 +269,14 @@ interface TableProfileConfig {
 }
 
 /**
- * TableLineageConfig - Customize the "Table Lineage" section of the "Table Details" page.
+ * TableLineageConfig - Customize the "Table Lineage" links of the "Table Details" page.
+ * This feature is intended to link to an external lineage provider.
  *
  * iconPath - Path to an icon image to display next to the lineage URL.
  * isBeta - Adds a "beta" tag to the section header.
  * isEnabled - Whether to show or hide this section
  * urlGenerator - Generate a URL to the third party lineage website
+ * inAppListEnabled - Enable the in app Upstream/Downstream tabs for table lineage. Requires backend support.
  */
 interface TableLineageConfig {
   iconPath: string;
@@ -283,6 +287,23 @@ interface TableLineageConfig {
     cluster: string,
     schema: string,
     table: string
+  ) => string;
+  inAppListEnabled: boolean;
+}
+
+/**
+ * ColumnLineageConfig - Configure column level lineage features in Amundsen.
+ *
+ * inAppListEnabled
+ */
+interface ColumnLineageConfig {
+  inAppListEnabled: boolean;
+  urlGenerator: (
+    database: string,
+    cluster: string,
+    schema: string,
+    table: string,
+    column: string
   ) => string;
 }
 

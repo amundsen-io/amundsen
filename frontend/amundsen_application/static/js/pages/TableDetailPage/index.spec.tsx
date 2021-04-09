@@ -7,7 +7,7 @@ import { mount, shallow } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
-import { tableMetadata } from 'fixtures/metadata/table';
+import { tableMetadata, tableLineage } from 'fixtures/metadata/table';
 
 import LoadingSpinner from 'components/LoadingSpinner';
 import TabsComponent from 'components/TabsComponent';
@@ -17,6 +17,7 @@ import { TableDetail, TableDetailProps, MatchProps } from '.';
 
 jest.mock('config/config-utils', () => ({
   indexDashboardsEnabled: jest.fn(),
+  isTableListLineageEnabled: jest.fn(),
   getTableSortCriterias: jest.fn(),
 }));
 
@@ -34,12 +35,14 @@ const setup = (
     location
   );
   const props = {
+    tableLineage,
     isLoading: false,
     isLoadingDashboards: false,
     numRelatedDashboards: 0,
     statusCode: 200,
     tableData: tableMetadata,
     getTableData: jest.fn(),
+    getTableLineageDispatch: jest.fn(),
     openRequestDescriptionDialog: jest.fn(),
     searchSchema: jest.fn(),
     ...routerProps,
@@ -57,7 +60,7 @@ describe('TableDetail', () => {
     beforeAll(() => {
       wrapper = setup().wrapper;
     });
-    it('renders one tab when dashboards are not enabled', () => {
+    it('does not render dashboard tab when disabled', () => {
       mocked(indexDashboardsEnabled).mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       expect(content.find(TabsComponent).props().tabs.length).toEqual(1);

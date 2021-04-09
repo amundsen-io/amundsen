@@ -13,15 +13,18 @@ import {
 } from 'interfaces';
 import * as API from './v0';
 
+export interface TableQueryParams {
+  key: string;
+  column_name?: string;
+  index?: string;
+  source?: string;
+}
+
 /**
  * Generates the query string parameters needed for requests that act on a particular table resource.
  */
-export function getTableQueryParams(
-  key: string,
-  index?: string,
-  source?: string
-): string {
-  return qs.stringify({ key, index, source });
+export function getTableQueryParams(params: TableQueryParams): string {
+  return qs.stringify(params);
 }
 
 /**

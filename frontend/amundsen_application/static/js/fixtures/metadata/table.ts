@@ -2,6 +2,7 @@ import {
   TableMetadata,
   DashboardResource,
   ResourceType,
+  Lineage,
 } from '../../interfaces';
 
 export const tableMetadata: TableMetadata = {
@@ -169,6 +170,11 @@ export const tableMetadata: TableMetadata = {
       watermark_type: 'low_watermark',
     },
   ],
+};
+
+export const tableLineage: Lineage = {
+  downstream_entities: [],
+  upstream_entities: [],
 };
 
 export const relatedDashboards: DashboardResource[] = [

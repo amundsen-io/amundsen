@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
 .list-group-item .resource-list-item {
   color: $text-primary;
@@ -41,6 +42,9 @@
     }
 
     .resource-name {
+      @extend %text-title-w2;
+
+      color: $resource-title-color;
       display: flex;
 
       .dashboard-group {
@@ -86,9 +90,5 @@
     .flag {
       margin: 4px;
     }
-  }
-
-  .title-2 {
-    color: $resource-title-color;
   }
 }

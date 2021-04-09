@@ -109,7 +109,7 @@ export class ReportTableIssue extends React.Component<
         {/* eslint-disable jsx-a11y/anchor-is-valid */}
         <a
           href="javascript:void(0)"
-          className="report-table-issue-link"
+          className="body-link"
           onClick={this.toggle}
         >
           {Constants.REPORT_DATA_ISSUE_TEXT}

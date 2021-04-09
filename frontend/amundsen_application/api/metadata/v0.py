@@ -16,7 +16,7 @@ from amundsen_application.log.action_log import action_logging
 from amundsen_application.models.user import load_user, dump_user
 
 from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial, \
-    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, TableUri
+    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, marshall_lineage_table, TableUri
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata, request_search
 
 
@@ -789,3 +789,54 @@ def _get_related_dashboards_metadata(*, url: str) -> Dict[str, Any]:
         # explicitly raise the exception which will trigger 500 api response
         results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
         return results_dict
+
+
+@metadata_blueprint.route('/get_table_lineage', methods=['GET'])
+def get_table_lineage() -> Response:
+    """
+    Call metadata service to fetch table lineage for a given table
+    :return:
+    """
+    try:
+        table_endpoint = _get_table_endpoint()
+        table_key = get_query_param(request.args, 'key')
+        url = f'{table_endpoint}/{table_key}/lineage'
+        response = request_metadata(url=url, method=request.method)
+        json = response.json()
+        downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
+        upstream = [marshall_lineage_table(table) for table in json.get('upstream_entities')]
+
+        payload = {
+            'downstream_entities': downstream,
+            'upstream_entities': upstream,
+        }
+        return make_response(jsonify(payload), 200)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/get_column_lineage', methods=['GET'])
+def get_column_lineage() -> Response:
+    """
+    Call metadata service to fetch table lineage for a given table
+    :return:
+    """
+    try:
+        table_endpoint = _get_table_endpoint()
+        table_key = get_query_param(request.args, 'key')
+        column_name = get_query_param(request.args, 'column_name')
+        url = f'{table_endpoint}/{table_key}/column/{column_name}/lineage'
+        response = request_metadata(url=url, method=request.method)
+        json = response.json()
+        downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
+        upstream = [marshall_lineage_table(table) for table in json.get('upstream_entities')]
+
+        payload = {
+            'downstream_entities': downstream,
+            'upstream_entities': upstream,
+        }
+        return make_response(jsonify(payload), 200)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

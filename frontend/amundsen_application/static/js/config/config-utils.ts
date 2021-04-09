@@ -316,3 +316,33 @@ export function getDocumentTitle(): string {
 export function getLogoTitle(): string {
   return AppConfig.logoTitle;
 }
+
+/**
+ * Returns whether the in-app table lineage list is enabled.
+ */
+export function isTableListLineageEnabled() {
+  return AppConfig.tableLineage.inAppListEnabled;
+}
+
+/**
+ * Returns whether the in-app column list lineage is enabled.
+ */
+export function isColumnListLineageEnabled() {
+  return AppConfig.columnLineage.inAppListEnabled;
+}
+
+/**
+ * Returns the lineage link for a given column
+ */
+export function getColumnLineageLink(
+  tableData: TableMetadata,
+  columnName: string
+) {
+  return AppConfig.columnLineage.urlGenerator(
+    tableData.database,
+    tableData.cluster,
+    tableData.schema,
+    tableData.name,
+    columnName
+  );
+}

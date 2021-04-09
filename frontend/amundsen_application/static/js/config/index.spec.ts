@@ -406,3 +406,59 @@ describe('getLogoTitle', () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe('isTableListLineageEnabled', () => {
+  it('returns isTableListLineageEnabled defined in config', () => {
+    const actual = ConfigUtils.isTableListLineageEnabled();
+    const expected = AppConfig.tableLineage.inAppListEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('isColumnListLineageEnabled', () => {
+  it('returns isColumnListLineageEnabled defined in config', () => {
+    const actual = ConfigUtils.isColumnListLineageEnabled();
+    const expected = AppConfig.columnLineage.inAppListEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getColumnLineageLink', () => {
+  it('calls the column lineage link with the right params', () => {
+    const tableData = {
+      badges: [],
+      cluster: 'cluster',
+      columns: [],
+      dashboards: [],
+      database: 'database',
+      is_editable: false,
+      is_view: false,
+      key: '',
+      schema: 'schema',
+      name: 'table_name',
+      last_updated_timestamp: 12321312312,
+      description: '',
+      table_writer: { application_url: '', description: '', id: '', name: '' },
+      partition: {
+        is_partitioned: true,
+        key: 'partition_key',
+        value: 'partition_value',
+      },
+      table_readers: [],
+      source: { source: '', source_type: '' },
+      resource_reports: [],
+      watermarks: [],
+      programmatic_descriptions: {},
+    };
+    const columnName = 'column_name';
+    const actual = ConfigUtils.getColumnLineageLink(tableData, columnName);
+    const expected = AppConfig.columnLineage.urlGenerator(
+      tableData.database,
+      tableData.cluster,
+      tableData.schema,
+      tableData.name,
+      columnName
+    );
+    expect(actual).toBe(expected);
+  });
+});
