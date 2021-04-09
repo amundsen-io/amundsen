@@ -14,7 +14,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -58,7 +59,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         actual_neptune_serialized = neptune_serializer.convert_node(actual)
         neptune_expected = {
             NEPTUNE_HEADER_ID: 'Timestamp:' + self.expected_ts_key,
-            METADATA_KEY_PROPERTY_NAME: 'Timestamp:' + self.expected_ts_key,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: self.expected_ts_key,
             NEPTUNE_HEADER_LABEL: 'Timestamp',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -95,7 +96,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
                 to_vertex_id='Timestamp:' + self.expected_ts_key,
                 label='LAST_UPDATED_AT'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Dashboard:' + self.expected_dashboard_key,
                 to_vertex_id='Timestamp:' + self.expected_ts_key,
                 label='LAST_UPDATED_AT'
@@ -113,7 +114,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
                 to_vertex_id='Dashboard:' + self.expected_dashboard_key,
                 label='LAST_UPDATED_TIME_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Timestamp:' + self.expected_ts_key,
                 to_vertex_id='Dashboard:' + self.expected_dashboard_key,
                 label='LAST_UPDATED_TIME_OF'

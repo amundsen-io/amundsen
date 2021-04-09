@@ -14,7 +14,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -77,9 +78,10 @@ class TestApplication(unittest.TestCase):
             next_node = self.application.create_next_node()
 
         node_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
+        node_key = 'application://gold.airflow/event_test/hive.default.test_table'
         neptune_expected = [{
             NEPTUNE_HEADER_ID: node_id,
-            METADATA_KEY_PROPERTY_NAME: node_id,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: node_key,
             NEPTUNE_HEADER_LABEL: 'Application',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -109,7 +111,7 @@ class TestApplication(unittest.TestCase):
                 to_vertex_id=application_id,
                 label='DERIVED_FROM'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id=table_id,
                 to_vertex_id=application_id,
                 label='DERIVED_FROM'
@@ -127,7 +129,7 @@ class TestApplication(unittest.TestCase):
                 to_vertex_id=table_id,
                 label='GENERATES'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id=application_id,
                 to_vertex_id=table_id,
                 label='GENERATES'

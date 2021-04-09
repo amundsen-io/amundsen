@@ -26,6 +26,7 @@ from databuilder.models.table_owner import TableOwner
 from databuilder.models.timestamp.timestamp_constants import LASTUPDATED_RELATION_TYPE, TIMESTAMP_PROPERTY
 from databuilder.models.usage.usage_constants import READ_RELATION_COUNT_PROPERTY, READ_REVERSE_RELATION_TYPE
 from databuilder.models.user import User
+from databuilder.serializers.neptune_serializer import METADATA_KEY_PROPERTY_NAME
 
 
 def _table_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dict]:
@@ -84,7 +85,9 @@ def _table_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Di
         __.constant(0)).sum()
     )  # total_usage
     traversal = traversal.by(__.outE(ColumnUsageModel.TABLE_USER_RELATION_TYPE).count())  # unique_usage
-    traversal = traversal.by(__.inE(TableMetadata.TAG_TABLE_RELATION_TYPE).outV().id().fold())  # tags
+    traversal = traversal.by(
+        __.inE(TableMetadata.TAG_TABLE_RELATION_TYPE).outV().values(METADATA_KEY_PROPERTY_NAME).fold()
+    )  # tags
     traversal = traversal.by(
         __.out('HAS_BADGE').values('keys').dedup().fold()
     )  # badges

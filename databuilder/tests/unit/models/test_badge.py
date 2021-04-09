@@ -13,7 +13,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -67,20 +68,21 @@ class TestBadge(unittest.TestCase):
             serialized_node = neptune_serializer.convert_node(node)
             actual.append(serialized_node)
             node = self.badge_metada.create_next_node()
-
-        node_id_1 = BadgeMetadata.BADGE_NODE_LABEL + ":" + BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name)
+        node_key_1 = BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name)
+        node_id_1 = BadgeMetadata.BADGE_NODE_LABEL + ":" + node_key_1
         expected_node1 = {
             NEPTUNE_HEADER_ID: node_id_1,
-            METADATA_KEY_PROPERTY_NAME: node_id_1,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: node_key_1,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
             BadgeMetadata.BADGE_CATEGORY + ':String(single)': badge1.category
         }
-        node_id_2 = BadgeMetadata.BADGE_NODE_LABEL + ":" + BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name)
+        node_key_2 = BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name)
+        node_id_2 = BadgeMetadata.BADGE_NODE_LABEL + ":" + node_key_2
         expected_node2 = {
             NEPTUNE_HEADER_ID: node_id_2,
-            METADATA_KEY_PROPERTY_NAME: node_id_2,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: node_key_2,
             NEPTUNE_HEADER_LABEL: BadgeMetadata.BADGE_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -155,7 +157,7 @@ class TestBadge(unittest.TestCase):
                 to_vertex_id=badge_id_1,
                 label=BadgeMetadata.BADGE_RELATION_TYPE,
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id=start_key,
                 to_vertex_id=badge_id_1,
                 label=BadgeMetadata.BADGE_RELATION_TYPE,
@@ -173,7 +175,7 @@ class TestBadge(unittest.TestCase):
                 to_vertex_id=start_key,
                 label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id=badge_id_1,
                 to_vertex_id=start_key,
                 label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE
@@ -191,7 +193,7 @@ class TestBadge(unittest.TestCase):
                 to_vertex_id=badge_id_2,
                 label=BadgeMetadata.BADGE_RELATION_TYPE,
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id=start_key,
                 to_vertex_id=badge_id_2,
                 label=BadgeMetadata.BADGE_RELATION_TYPE,
@@ -209,7 +211,7 @@ class TestBadge(unittest.TestCase):
                 to_vertex_id=start_key,
                 label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id=badge_id_2,
                 to_vertex_id=start_key,
                 label=BadgeMetadata.INVERSE_BADGE_RELATION_TYPE,

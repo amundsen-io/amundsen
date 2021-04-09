@@ -11,7 +11,7 @@ from databuilder.models.graph_serializable import (
 from databuilder.models.table_lineage import TableLineage
 from databuilder.serializers import neo4_serializer, neptune_serializer
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -93,7 +93,7 @@ class TestTableLineage(unittest.TestCase):
                         to_vertex_id='Table:' + self.end_key1,
                         label=TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Table:' + self.start_key,
                         to_vertex_id='Table:' + self.end_key1,
                         label=TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
@@ -110,7 +110,7 @@ class TestTableLineage(unittest.TestCase):
                         to_vertex_id='Table:' + self.start_key,
                         label=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Table:' + self.end_key1,
                         to_vertex_id='Table:' + self.start_key,
                         label=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE
@@ -129,7 +129,7 @@ class TestTableLineage(unittest.TestCase):
                         to_vertex_id='Table:' + self.end_key2,
                         label=TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Table:' + self.start_key,
                         to_vertex_id='Table:' + self.end_key2,
                         label=TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
@@ -146,7 +146,7 @@ class TestTableLineage(unittest.TestCase):
                         to_vertex_id='Table:' + self.start_key,
                         label=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Table:' + self.end_key2,
                         to_vertex_id='Table:' + self.start_key,
                         label=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE

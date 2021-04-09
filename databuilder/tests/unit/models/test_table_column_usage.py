@@ -10,7 +10,7 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -78,7 +78,7 @@ class TestTableColumnUsage(unittest.TestCase):
                     to_vertex_id='User:john@example.com',
                     label='READ_BY'
                 ),
-                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id='Table:db://gold.scm/foo',
                     to_vertex_id='User:john@example.com',
                     label='READ_BY'
@@ -96,7 +96,7 @@ class TestTableColumnUsage(unittest.TestCase):
                     to_vertex_id='Table:db://gold.scm/foo',
                     label='READ'
                 ),
-                METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id='User:john@example.com',
                     to_vertex_id='Table:db://gold.scm/foo',
                     label='READ'

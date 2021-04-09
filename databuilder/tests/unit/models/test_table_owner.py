@@ -14,7 +14,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -71,7 +72,7 @@ class TestTableOwner(unittest.TestCase):
     def test_create_nodes_neptune(self) -> None:
         expected_node1 = {
             NEPTUNE_HEADER_ID: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner1),
-            METADATA_KEY_PROPERTY_NAME: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner1),
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: User.USER_NODE_KEY_FORMAT.format(email=owner1),
             NEPTUNE_HEADER_LABEL: User.USER_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -79,7 +80,7 @@ class TestTableOwner(unittest.TestCase):
         }
         expected_node2 = {
             NEPTUNE_HEADER_ID: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner2),
-            METADATA_KEY_PROPERTY_NAME: "User:" + User.USER_NODE_KEY_FORMAT.format(email=owner2),
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: User.USER_NODE_KEY_FORMAT.format(email=owner2),
             NEPTUNE_HEADER_LABEL: User.USER_NODE_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -133,7 +134,7 @@ class TestTableOwner(unittest.TestCase):
                         to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                         label=TableOwner.OWNER_TABLE_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="User:" + owner1,
                         to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                         label=TableOwner.OWNER_TABLE_RELATION_TYPE
@@ -150,7 +151,7 @@ class TestTableOwner(unittest.TestCase):
                         to_vertex_id="User:" + owner1,
                         label=TableOwner.TABLE_OWNER_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                         to_vertex_id="User:" + owner1,
                         label=TableOwner.TABLE_OWNER_RELATION_TYPE
@@ -169,7 +170,7 @@ class TestTableOwner(unittest.TestCase):
                         to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                         label=TableOwner.OWNER_TABLE_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="User:" + owner2,
                         to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                         label=TableOwner.OWNER_TABLE_RELATION_TYPE
@@ -186,7 +187,7 @@ class TestTableOwner(unittest.TestCase):
                         to_vertex_id="User:" + owner2,
                         label=TableOwner.TABLE_OWNER_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
                         to_vertex_id="User:" + owner2,
                         label=TableOwner.TABLE_OWNER_RELATION_TYPE

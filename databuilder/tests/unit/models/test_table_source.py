@@ -13,7 +13,7 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -99,7 +99,7 @@ class TestTableSource(unittest.TestCase):
                         to_vertex_id="Table:" + self.end_key,
                         label=TableSource.SOURCE_TABLE_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="Source:" + self.start_key,
                         to_vertex_id="Table:" + self.end_key,
                         label=TableSource.SOURCE_TABLE_RELATION_TYPE
@@ -116,7 +116,7 @@ class TestTableSource(unittest.TestCase):
                         to_vertex_id="Source:" + self.start_key,
                         label=TableSource.TABLE_SOURCE_RELATION_TYPE
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="Table:" + self.end_key,
                         to_vertex_id="Source:" + self.start_key,
                         label=TableSource.TABLE_SOURCE_RELATION_TYPE

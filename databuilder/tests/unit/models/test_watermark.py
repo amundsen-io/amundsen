@@ -15,7 +15,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -103,7 +104,7 @@ class TestWatermark(unittest.TestCase):
     def test_create_nodes_neptune(self) -> None:
         expected_serialized_node_results = [{
             NEPTUNE_HEADER_ID: 'Watermark:' + self.start_key,
-            METADATA_KEY_PROPERTY_NAME: 'Watermark:' + self.start_key,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: self.start_key,
             NEPTUNE_HEADER_LABEL: 'Watermark',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -147,7 +148,7 @@ class TestWatermark(unittest.TestCase):
                         to_vertex_id="Table:" + self.end_key,
                         label='BELONG_TO_TABLE'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="Watermark:" + self.start_key,
                         to_vertex_id="Table:" + self.end_key,
                         label='BELONG_TO_TABLE'
@@ -164,7 +165,7 @@ class TestWatermark(unittest.TestCase):
                         to_vertex_id="Watermark:" + self.start_key,
                         label='WATERMARK'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id="Table:" + self.end_key,
                         to_vertex_id="Watermark:" + self.start_key,
                         label='WATERMARK'
