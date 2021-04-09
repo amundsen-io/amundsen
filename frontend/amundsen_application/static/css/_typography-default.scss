@@ -349,7 +349,14 @@ body {
 
 .body-link {
   color: $brand-color-4;
-  font-size: 14px;
+  font-size: $font-size-large;
+
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    text-decoration: none;
+  }
 }
 
 .caption {

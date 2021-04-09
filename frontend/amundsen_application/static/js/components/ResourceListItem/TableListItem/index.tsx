@@ -51,7 +51,7 @@ class TableListItem extends React.Component<TableListItemProps, {}> {
               )}
             />
             <div className="resource-info-text my-auto">
-              <div className="resource-name title-2">
+              <div className="resource-name">
                 <div className="truncated">
                   {table.schema_description && (
                     <SchemaInfo

@@ -3,18 +3,6 @@
 
 @import 'variables';
 
-.report-table-issue-link {
-  font-size: 16px;
-  text-decoration: none;
-
-  &:hover,
-  &:visited,
-  &:active,
-  &:link {
-    text-decoration: none;
-  }
-}
-
 .report-table-issue-modal {
   background-color: $white;
   border-radius: 6px;

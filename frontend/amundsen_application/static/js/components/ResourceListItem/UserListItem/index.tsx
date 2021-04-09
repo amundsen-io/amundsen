@@ -44,7 +44,7 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
           <div className="resource-info">
             <Avatar name={user.display_name} size={24} round />
             <div className="resource-info-text my-auto">
-              <div className="resource-name title-2">{user.display_name}</div>
+              <div className="resource-name">{user.display_name}</div>
               {userInfo && (
                 <div className="body-secondary-3 truncated">
                   <ul>{userInfo}</ul>
