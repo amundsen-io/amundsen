@@ -11,7 +11,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -180,7 +181,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DASHBOARD_GROUP'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Cluster:_dashboard://gold',
                         to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DASHBOARD_GROUP'
@@ -197,7 +198,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Cluster:_dashboard://gold',
                         label='DASHBOARD_GROUP_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         to_vertex_id='Cluster:_dashboard://gold',
                         label='DASHBOARD_GROUP_OF'
@@ -216,7 +217,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
                         label='DESCRIPTION'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
                         label='DESCRIPTION'
@@ -233,7 +234,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DESCRIPTION_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/_description',
                         to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DESCRIPTION_OF'
@@ -252,7 +253,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DASHBOARD_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         to_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         label='DASHBOARD_OF'
@@ -269,7 +270,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='DASHBOARD'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='DASHBOARD'
@@ -288,7 +289,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
                         label='DESCRIPTION'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         to_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
                         label='DESCRIPTION'
@@ -306,7 +307,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='DESCRIPTION_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='DESCRIPTION_OF'
@@ -326,7 +327,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Tag:test_tag',
                         label='TAG'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         to_vertex_id='Tag:test_tag',
                         label='TAG'
@@ -343,7 +344,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='TAG_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Tag:test_tag',
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='TAG_OF'
@@ -362,7 +363,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Tag:tag2',
                         label='TAG'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         to_vertex_id='Tag:tag2',
                         label='TAG'
@@ -379,7 +380,7 @@ class TestDashboardMetadata(unittest.TestCase):
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='TAG_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Tag:tag2',
                         to_vertex_id='Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
                         label='TAG_OF'
@@ -396,7 +397,7 @@ class TestDashboardMetadata(unittest.TestCase):
         expected_neptune_nodes = [
             {
                 NEPTUNE_HEADER_ID: 'Cluster:_dashboard://gold',
-                METADATA_KEY_PROPERTY_NAME: 'Cluster:_dashboard://gold',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: '_dashboard://gold',
                 NEPTUNE_HEADER_LABEL: 'Cluster',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -404,7 +405,7 @@ class TestDashboardMetadata(unittest.TestCase):
             },
             {
                 NEPTUNE_HEADER_ID: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
-                METADATA_KEY_PROPERTY_NAME: 'Dashboard:_dashboard://gold.Product - Jobs.cz/Agent',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: '_dashboard://gold.Product - Jobs.cz/Agent',
                 NEPTUNE_HEADER_LABEL: 'Dashboard',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -414,7 +415,7 @@ class TestDashboardMetadata(unittest.TestCase):
             },
             {
                 NEPTUNE_HEADER_ID: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
-                METADATA_KEY_PROPERTY_NAME: 'Dashboardgroup:_dashboard://gold.Product - Jobs.cz',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: '_dashboard://gold.Product - Jobs.cz',
                 NEPTUNE_HEADER_LABEL: 'Dashboardgroup',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -423,7 +424,7 @@ class TestDashboardMetadata(unittest.TestCase):
             },
             {
                 NEPTUNE_HEADER_ID: 'Description:_dashboard://gold.Product - Jobs.cz/_description',
-                METADATA_KEY_PROPERTY_NAME: 'Description:_dashboard://gold.Product - Jobs.cz/_description',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: '_dashboard://gold.Product - Jobs.cz/_description',
                 NEPTUNE_HEADER_LABEL: 'Description',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -431,7 +432,7 @@ class TestDashboardMetadata(unittest.TestCase):
             },
             {
                 NEPTUNE_HEADER_ID: 'Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
-                METADATA_KEY_PROPERTY_NAME: 'Description:_dashboard://gold.Product - Jobs.cz/Agent/_description',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: '_dashboard://gold.Product - Jobs.cz/Agent/_description',
                 NEPTUNE_HEADER_LABEL: 'Description',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -439,7 +440,7 @@ class TestDashboardMetadata(unittest.TestCase):
             },
             {
                 NEPTUNE_HEADER_ID: 'Tag:test_tag',
-                METADATA_KEY_PROPERTY_NAME: 'Tag:test_tag',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'test_tag',
                 NEPTUNE_HEADER_LABEL: 'Tag',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -447,7 +448,7 @@ class TestDashboardMetadata(unittest.TestCase):
             },
             {
                 NEPTUNE_HEADER_ID: 'Tag:tag2',
-                METADATA_KEY_PROPERTY_NAME: 'Tag:tag2',
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'tag2',
                 NEPTUNE_HEADER_LABEL: 'Tag',
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,

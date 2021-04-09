@@ -14,7 +14,7 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -101,7 +101,7 @@ class TestDashboardOwner(unittest.TestCase):
         dashboard_id = 'Dashboard:product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id'
         neptune_forward_expected = {
             NEPTUNE_HEADER_ID: forward_id,
-            METADATA_KEY_PROPERTY_NAME: forward_id,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: forward_id,
             NEPTUNE_RELATIONSHIP_HEADER_FROM: dashboard_id,
             NEPTUNE_RELATIONSHIP_HEADER_TO: 'User:foo@bar.com',
             NEPTUNE_HEADER_LABEL: 'READ_BY',
@@ -112,7 +112,7 @@ class TestDashboardOwner(unittest.TestCase):
 
         neptune_reversed_expected = {
             NEPTUNE_HEADER_ID: reverse_id,
-            METADATA_KEY_PROPERTY_NAME: reverse_id,
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: reverse_id,
             NEPTUNE_RELATIONSHIP_HEADER_FROM: 'User:foo@bar.com',
             NEPTUNE_RELATIONSHIP_HEADER_TO: dashboard_id,
             NEPTUNE_HEADER_LABEL: 'READ',

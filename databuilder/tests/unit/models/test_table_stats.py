@@ -13,7 +13,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -87,7 +88,7 @@ class TestTableStats(unittest.TestCase):
 
         expected_neptune_nodes = [{
             NEPTUNE_HEADER_ID: 'Stat:hive://gold.base/test/col/avg/',
-            METADATA_KEY_PROPERTY_NAME: 'Stat:hive://gold.base/test/col/avg/',
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.base/test/col/avg/',
             NEPTUNE_HEADER_LABEL: 'Stat',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -117,7 +118,7 @@ class TestTableStats(unittest.TestCase):
                         to_vertex_id='Column:hive://gold.base/test/col',
                         label='STAT_OF'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Stat:hive://gold.base/test/col/avg/',
                         to_vertex_id='Column:hive://gold.base/test/col',
                         label='STAT_OF'
@@ -134,7 +135,7 @@ class TestTableStats(unittest.TestCase):
                         to_vertex_id='Stat:hive://gold.base/test/col/avg/',
                         label='STAT'
                     ),
-                    METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                         from_vertex_id='Column:hive://gold.base/test/col',
                         to_vertex_id='Stat:hive://gold.base/test/col/avg/',
                         label='STAT'

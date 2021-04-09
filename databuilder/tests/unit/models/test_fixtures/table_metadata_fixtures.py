@@ -4,7 +4,8 @@
 from unittest.mock import ANY
 
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -14,7 +15,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'name:String(single)': 'test_table1',
         NEPTUNE_HEADER_ID: 'Table:hive://gold.test_schema1/test_table1',
-        METADATA_KEY_PROPERTY_NAME: 'Table:hive://gold.test_schema1/test_table1',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1',
         NEPTUNE_HEADER_LABEL: 'Table',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -23,7 +24,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'description:String(single)': 'test_table1',
         NEPTUNE_HEADER_ID: 'Description:hive://gold.test_schema1/test_table1/_description',
-        METADATA_KEY_PROPERTY_NAME: 'Description:hive://gold.test_schema1/test_table1/_description',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/_description',
         NEPTUNE_HEADER_LABEL: 'Description',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -36,13 +37,13 @@ EXPECTED_NEPTUNE_NODES = [
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
         NEPTUNE_HEADER_ID: 'Column:hive://gold.test_schema1/test_table1/test_id1',
-        METADATA_KEY_PROPERTY_NAME: 'Column:hive://gold.test_schema1/test_table1/test_id1',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/test_id1',
         NEPTUNE_HEADER_LABEL: 'Column'
     },
     {
         'description:String(single)': 'description of test_table1',
         NEPTUNE_HEADER_ID: 'Description:hive://gold.test_schema1/test_table1/test_id1/_description',
-        METADATA_KEY_PROPERTY_NAME: 'Description:hive://gold.test_schema1/test_table1/test_id1/_description',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/test_id1/_description',
         NEPTUNE_HEADER_LABEL: 'Description',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -53,7 +54,7 @@ EXPECTED_NEPTUNE_NODES = [
         'col_type:String(single)': 'bigint',
         'name:String(single)': 'test_id2',
         NEPTUNE_HEADER_ID: 'Column:hive://gold.test_schema1/test_table1/test_id2',
-        METADATA_KEY_PROPERTY_NAME: 'Column:hive://gold.test_schema1/test_table1/test_id2',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/test_id2',
         NEPTUNE_HEADER_LABEL: 'Column',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -61,7 +62,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'description:String(single)': 'description of test_id2',
         NEPTUNE_HEADER_ID: 'Description:hive://gold.test_schema1/test_table1/test_id2/_description',
-        METADATA_KEY_PROPERTY_NAME: 'Description:hive://gold.test_schema1/test_table1/test_id2/_description',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/test_id2/_description',
         NEPTUNE_HEADER_LABEL: 'Description',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -72,7 +73,7 @@ EXPECTED_NEPTUNE_NODES = [
         'col_type:String(single)': 'boolean',
         'name:String(single)': 'is_active',
         NEPTUNE_HEADER_ID: 'Column:hive://gold.test_schema1/test_table1/is_active',
-        METADATA_KEY_PROPERTY_NAME: 'Column:hive://gold.test_schema1/test_table1/is_active',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/is_active',
         NEPTUNE_HEADER_LABEL: 'Column',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -82,7 +83,7 @@ EXPECTED_NEPTUNE_NODES = [
         'col_type:String(single)': 'varchar',
         'name:String(single)': 'source',
         NEPTUNE_HEADER_ID: 'Column:hive://gold.test_schema1/test_table1/source',
-        METADATA_KEY_PROPERTY_NAME: 'Column:hive://gold.test_schema1/test_table1/source',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/source',
         NEPTUNE_HEADER_LABEL: 'Column',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -90,7 +91,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'description:String(single)': 'description of source',
         NEPTUNE_HEADER_ID: 'Description:hive://gold.test_schema1/test_table1/source/_description',
-        METADATA_KEY_PROPERTY_NAME: 'Description:hive://gold.test_schema1/test_table1/source/_description',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/source/_description',
         NEPTUNE_HEADER_LABEL: 'Description',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -101,7 +102,7 @@ EXPECTED_NEPTUNE_NODES = [
         'col_type:String(single)': 'timestamp',
         'name:String(single)': 'etl_created_at',
         NEPTUNE_HEADER_ID: 'Column:hive://gold.test_schema1/test_table1/etl_created_at',
-        METADATA_KEY_PROPERTY_NAME: 'Column:hive://gold.test_schema1/test_table1/etl_created_at',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/etl_created_at',
         NEPTUNE_HEADER_LABEL: 'Column',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -109,7 +110,8 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'description:String(single)': 'description of etl_created_at',
         NEPTUNE_HEADER_ID: 'Description:hive://gold.test_schema1/test_table1/etl_created_at/_description',
-        METADATA_KEY_PROPERTY_NAME: 'Description:hive://gold.test_schema1/test_table1/etl_created_at/_description',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
+            'hive://gold.test_schema1/test_table1/etl_created_at/_description',
         NEPTUNE_HEADER_LABEL: 'Description',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -120,7 +122,7 @@ EXPECTED_NEPTUNE_NODES = [
         'col_type:String(single)': 'varchar',
         'name:String(single)': 'ds',
         NEPTUNE_HEADER_ID: 'Column:hive://gold.test_schema1/test_table1/ds',
-        METADATA_KEY_PROPERTY_NAME: 'Column:hive://gold.test_schema1/test_table1/ds',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1/test_table1/ds',
         NEPTUNE_HEADER_LABEL: 'Column',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -128,7 +130,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'name:String(single)': 'hive',
         NEPTUNE_HEADER_ID: 'Database:database://hive',
-        METADATA_KEY_PROPERTY_NAME: 'Database:database://hive',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'database://hive',
         NEPTUNE_HEADER_LABEL: 'Database',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -136,7 +138,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'name:String(single)': 'gold',
         NEPTUNE_HEADER_ID: 'Cluster:hive://gold',
-        METADATA_KEY_PROPERTY_NAME: 'Cluster:hive://gold',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold',
         NEPTUNE_HEADER_LABEL: 'Cluster',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -144,7 +146,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'name:String(single)': 'test_schema1',
         NEPTUNE_HEADER_ID: 'Schema:hive://gold.test_schema1',
-        METADATA_KEY_PROPERTY_NAME: 'Schema:hive://gold.test_schema1',
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'hive://gold.test_schema1',
         NEPTUNE_HEADER_LABEL: 'Schema',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -159,7 +161,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='TABLE'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Schema:hive://gold.test_schema1',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='TABLE'
@@ -176,7 +178,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Schema:hive://gold.test_schema1',
                 label='TABLE_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Schema:hive://gold.test_schema1',
                 label='TABLE_OF'
@@ -195,7 +197,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/_description',
                 label='DESCRIPTION'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/_description',
                 label='DESCRIPTION'
@@ -212,7 +214,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='DESCRIPTION_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Description:hive://gold.test_schema1/test_table1/_description',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='DESCRIPTION_OF'
@@ -231,7 +233,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id1',
                 label='COLUMN'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id1',
                 label='COLUMN'
@@ -248,7 +250,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id1',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
@@ -267,7 +269,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/test_id1/_description',
                 label='DESCRIPTION'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id1',
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/test_id1/_description',
                 label='DESCRIPTION'
@@ -284,7 +286,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id1',
                 label='DESCRIPTION_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Description:hive://gold.test_schema1/test_table1/test_id1/_description',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id1',
                 label='DESCRIPTION_OF'
@@ -303,7 +305,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id2',
                 label='COLUMN'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id2',
                 label='COLUMN'
@@ -320,7 +322,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id2',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
@@ -339,7 +341,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/test_id2/_description',
                 label='DESCRIPTION'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id2',
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/test_id2/_description',
                 label='DESCRIPTION'
@@ -356,7 +358,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id2',
                 label='DESCRIPTION_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Description:hive://gold.test_schema1/test_table1/test_id2/_description',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/test_id2',
                 label='DESCRIPTION_OF'
@@ -375,7 +377,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/is_active',
                 label='COLUMN'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/is_active',
                 label='COLUMN'
@@ -392,7 +394,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/is_active',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
@@ -411,7 +413,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/source',
                 label='COLUMN'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/source',
                 label='COLUMN'
@@ -428,7 +430,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/source',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
@@ -447,7 +449,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/source/_description',
                 label='DESCRIPTION'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/source',
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/source/_description',
                 label='DESCRIPTION'
@@ -464,7 +466,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/source',
                 label='DESCRIPTION_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Description:hive://gold.test_schema1/test_table1/source/_description',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/source',
                 label='DESCRIPTION_OF'
@@ -483,7 +485,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/etl_created_at',
                 label='COLUMN'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/etl_created_at',
                 label='COLUMN'
@@ -500,7 +502,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/etl_created_at',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
@@ -519,7 +521,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/etl_created_at/_description',
                 label='DESCRIPTION'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/etl_created_at',
                 to_vertex_id='Description:hive://gold.test_schema1/test_table1/etl_created_at/_description',
                 label='DESCRIPTION'
@@ -537,7 +539,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/etl_created_at',
                 label='DESCRIPTION_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Description:hive://gold.test_schema1/test_table1/etl_created_at/_description',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/etl_created_at',
                 label='DESCRIPTION_OF'
@@ -557,7 +559,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/ds',
                 label='COLUMN'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/ds',
                 label='COLUMN'
@@ -574,7 +576,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/ds',
                 to_vertex_id='Table:hive://gold.test_schema1/test_table1',
                 label='COLUMN_OF'
@@ -592,7 +594,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Database:database://hive',
             NEPTUNE_HEADER_ID: 'CLUSTER:Database:database://hive_Cluster:hive://gold',
-            METADATA_KEY_PROPERTY_NAME: 'CLUSTER:Database:database://hive_Cluster:hive://gold',
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'CLUSTER:Database:database://hive_Cluster:hive://gold',
             NEPTUNE_HEADER_LABEL: 'CLUSTER',
             NEPTUNE_RELATIONSHIP_HEADER_TO: 'Cluster:hive://gold'
         },
@@ -601,7 +603,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Cluster:hive://gold',
             NEPTUNE_HEADER_ID: 'CLUSTER_OF:Cluster:hive://gold_Database:database://hive',
-            METADATA_KEY_PROPERTY_NAME: 'CLUSTER_OF:Cluster:hive://gold_Database:database://hive',
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'CLUSTER_OF:Cluster:hive://gold_Database:database://hive',
             NEPTUNE_HEADER_LABEL: 'CLUSTER_OF',
             NEPTUNE_RELATIONSHIP_HEADER_TO: 'Database:database://hive'
         }
@@ -612,7 +614,7 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Cluster:hive://gold',
             NEPTUNE_HEADER_ID: 'SCHEMA:Cluster:hive://gold_Schema:hive://gold.test_schema1',
-            METADATA_KEY_PROPERTY_NAME: 'SCHEMA:Cluster:hive://gold_Schema:hive://gold.test_schema1',
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: 'SCHEMA:Cluster:hive://gold_Schema:hive://gold.test_schema1',
             NEPTUNE_HEADER_LABEL: 'SCHEMA',
             NEPTUNE_RELATIONSHIP_HEADER_TO: 'Schema:hive://gold.test_schema1'
         },
@@ -621,7 +623,8 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Schema:hive://gold.test_schema1',
             NEPTUNE_HEADER_ID: 'SCHEMA_OF:Schema:hive://gold.test_schema1_Cluster:hive://gold',
-            METADATA_KEY_PROPERTY_NAME: 'SCHEMA_OF:Schema:hive://gold.test_schema1_Cluster:hive://gold',
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
+                'SCHEMA_OF:Schema:hive://gold.test_schema1_Cluster:hive://gold',
             NEPTUNE_HEADER_LABEL: 'SCHEMA_OF',
             NEPTUNE_RELATIONSHIP_HEADER_TO: 'Cluster:hive://gold'
         }

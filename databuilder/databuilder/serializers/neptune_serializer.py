@@ -15,7 +15,11 @@ NEPTUNE_RELATIONSHIP_HEADER_FROM = "~from"
 NEPTUNE_RELATIONSHIP_HEADER_TO = "~to"
 
 
-METADATA_KEY_PROPERTY_NAME = 'key:String(single)'
+METADATA_KEY_PROPERTY_NAME = 'key'
+METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT = '{name}:String(single)'.format(
+    name=METADATA_KEY_PROPERTY_NAME
+)
+
 # last seen property names
 NEPTUNE_LAST_EXTRACTED_AT_NODE_PROPERTY_NAME = "last_extracted_datetime"
 NEPTUNE_LAST_EXTRACTED_AT_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT = "{name}:Date(single)".format(
@@ -58,7 +62,7 @@ def convert_relationship(relationship: Optional[GraphRelationship]) -> List[Dict
     current_string_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
     forward_relationship_doc = {
         NEPTUNE_HEADER_ID: relation_id,
-        METADATA_KEY_PROPERTY_NAME: relation_id,
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: relation_id,
         NEPTUNE_RELATIONSHIP_HEADER_FROM: neptune_start_key,
         NEPTUNE_RELATIONSHIP_HEADER_TO: neptune_end_key,
         NEPTUNE_HEADER_LABEL: relationship.type,
@@ -69,7 +73,7 @@ def convert_relationship(relationship: Optional[GraphRelationship]) -> List[Dict
 
     reverse_relationship_doc = {
         NEPTUNE_HEADER_ID: relation_id_reverse,
-        METADATA_KEY_PROPERTY_NAME: relation_id_reverse,
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: relation_id_reverse,
         NEPTUNE_RELATIONSHIP_HEADER_FROM: neptune_end_key,
         NEPTUNE_RELATIONSHIP_HEADER_TO: neptune_start_key,
         NEPTUNE_HEADER_LABEL: relationship.reverse_type,
@@ -123,7 +127,7 @@ def convert_node(node: Optional[GraphNode]) -> Dict[str, Any]:
     node_id = get_node_id(node)
     node_dict = {
         NEPTUNE_HEADER_ID: node_id,
-        METADATA_KEY_PROPERTY_NAME: node_id,
+        METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: node.key,
         NEPTUNE_HEADER_LABEL: node.label,
         NEPTUNE_LAST_EXTRACTED_AT_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: current_string_time,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB

@@ -13,7 +13,8 @@ from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
-    METADATA_KEY_PROPERTY_NAME, NEPTUNE_CREATION_TYPE_JOB, NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
+    METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
+    NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_RELATIONSHIP_HEADER_FROM,
     NEPTUNE_RELATIONSHIP_HEADER_TO,
@@ -51,7 +52,7 @@ class TestDashboardQuery(unittest.TestCase):
         actual_serialized = neptune_serializer.convert_node(actual)
         neptune_expected = {
             NEPTUNE_HEADER_ID: 'Query:_dashboard://gold.dg_id/d_id/query/q_id',
-            METADATA_KEY_PROPERTY_NAME: 'Query:_dashboard://gold.dg_id/d_id/query/q_id',
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: '_dashboard://gold.dg_id/d_id/query/q_id',
             NEPTUNE_HEADER_LABEL: DashboardQuery.DASHBOARD_QUERY_LABEL,
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
@@ -85,7 +86,7 @@ class TestDashboardQuery(unittest.TestCase):
                 to_vertex_id='Query:_dashboard://gold.dg_id/d_id/query/q_id',
                 label='HAS_QUERY'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Dashboard:_dashboard://gold.dg_id/d_id',
                 to_vertex_id='Query:_dashboard://gold.dg_id/d_id/query/q_id',
                 label='HAS_QUERY'
@@ -103,7 +104,7 @@ class TestDashboardQuery(unittest.TestCase):
                 to_vertex_id='Dashboard:_dashboard://gold.dg_id/d_id',
                 label='QUERY_OF'
             ),
-            METADATA_KEY_PROPERTY_NAME: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Query:_dashboard://gold.dg_id/d_id/query/q_id',
                 to_vertex_id='Dashboard:_dashboard://gold.dg_id/d_id',
                 label='QUERY_OF'
