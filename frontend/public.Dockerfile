@@ -17,7 +17,7 @@ RUN pip3 install -r requirements.txt
 
 COPY --from=node-stage /app /app
 COPY . /app
-RUN python3 setup.py install
+RUN pip3 install -e .
 
 CMD [ "python3",  "amundsen_application/wsgi.py" ]
 
