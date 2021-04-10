@@ -1,7 +1,7 @@
 name,description,col_type,sort_order,database,cluster,schema,table_name,badges
 col1,"col1 description","string",1,hive,gold,test_schema,test_table1,PK
 col2,"col2 description","string",2,hive,gold,test_schema,test_table1,PII
-col3,"col3 description","string",3,hive,gold,test_schema,test_table1,
+col3,"col3 description","string",3,hive,gold,test_schema,test_table1,"FK,PII"
 col4,"col4 description","string",4,hive,gold,test_schema,test_table1,
 col5,"col5 description","float",5,hive,gold,test_schema,test_table1,
 col1,"col1 description","string",1,dynamo,gold,test_schema,test_table2,

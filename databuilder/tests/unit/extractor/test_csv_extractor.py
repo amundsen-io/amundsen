@@ -6,7 +6,9 @@ import unittest
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
-from databuilder.extractor.csv_extractor import CsvExtractor, CsvTableColumnExtractor
+from databuilder.extractor.csv_extractor import (
+    CsvExtractor, CsvTableBadgeExtractor, CsvTableColumnExtractor, split_badge_list,
+)
 from databuilder.models.badge import Badge
 
 
@@ -42,6 +44,26 @@ class TestCsvExtractor(unittest.TestCase):
         self.assertEqual(result3.name, 'test_view1')
         self.assertEqual(result3.is_view, 'true')
 
+    def test_extraction_table_badges(self) -> None:
+        """
+        Tests that badges are properly parsed from a CSV file and assigned to a table.
+        """
+        config_dict = {
+            f'extractor.csvtablebadge.{CsvTableBadgeExtractor.TABLE_FILE_LOCATION}':
+            'example/sample_data/sample_table.csv',
+            f'extractor.csvtablebadge.{CsvTableBadgeExtractor.BADGE_FILE_LOCATION}':
+            'example/sample_data/sample_badges.csv',
+        }
+        self.conf = ConfigFactory.from_dict(config_dict)
+        extractor = CsvTableBadgeExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+        result_1 = extractor.extract()
+        self.assertEqual([b.name for b in result_1.badges], ['beta'])
+
+        result_2 = extractor.extract()
+        self.assertEqual([b.name for b in result_2.badges], ['json', 'npi'])
+
     def test_extraction_of_tablecolumn_badges(self) -> None:
         """
         Test Extraction using the combined CsvTableModel model class
@@ -62,3 +84,20 @@ class TestCsvExtractor(unittest.TestCase):
         self.assertEqual(result.name, 'test_table1')
         self.assertEqual(result.columns[0].badges, [Badge('pk', 'column')])
         self.assertEqual(result.columns[1].badges, [Badge('pii', 'column')])
+        self.assertEqual(result.columns[2].badges, [Badge('fk', 'column'), Badge('pii', 'column')])
+
+    def test_split_badge_list(self) -> None:
+        """
+        Test spliting a string of badges into a list, removing all empty badges.
+        """
+        badge_list_1 = 'badge1'
+        result_1 = split_badge_list(badges=badge_list_1, separator=',')
+        self.assertEqual(result_1, ['badge1'])
+
+        badge_list_2 = ''
+        result_2 = split_badge_list(badges=badge_list_2, separator=',')
+        self.assertEqual(result_2, [])
+
+        badge_list_3 = 'badge1|badge2|badge3'
+        result_3 = split_badge_list(badges=badge_list_3, separator='|')
+        self.assertEqual(result_3, ['badge1', 'badge2', 'badge3'])
