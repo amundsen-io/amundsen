@@ -8,7 +8,7 @@ from typing import (
 
 from amundsen_rds.models import RDSModel
 from sqlalchemy import (
-    Column, ForeignKey, String,
+    BigInteger, Column, ForeignKey, String,
 )
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -61,6 +61,8 @@ class RDSMovie(Base):  # type: ignore
 
     rk = Column(String(128), primary_key=True)
     name = Column(String(128))
+    published_tag = Column(String(128), nullable=False)
+    publisher_last_updated_epoch_ms = Column(BigInteger, nullable=False)
 
 
 class RDSActor(Base):  # type: ignore
@@ -68,6 +70,8 @@ class RDSActor(Base):  # type: ignore
 
     rk = Column(String(128), primary_key=True)
     name = Column(String(128))
+    published_tag = Column(String(128), nullable=False)
+    publisher_last_updated_epoch_ms = Column(BigInteger, nullable=False)
 
 
 class RDSMovieActor(Base):  # type: ignore
@@ -75,6 +79,8 @@ class RDSMovieActor(Base):  # type: ignore
 
     movie_rk = Column(String(128), ForeignKey('movie.rk'), primary_key=True)
     actor_rk = Column(String(128), ForeignKey('actor.rk'), primary_key=True)
+    published_tag = Column(String(128), nullable=False)
+    publisher_last_updated_epoch_ms = Column(BigInteger, nullable=False)
 
 
 class Actor(object):
