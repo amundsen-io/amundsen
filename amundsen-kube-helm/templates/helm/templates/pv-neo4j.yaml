@@ -16,5 +16,5 @@ spec:
     storage: {{ default "3Gi" .Values.neo4j.persistence.size }}
   nfs:
     server: {{ .Values.neo4j.persistence.efs.dns }}
-    path: "/"
+    path: {{ default "/" .Values.neo4j.persistence.path }}
 {{- end }}
