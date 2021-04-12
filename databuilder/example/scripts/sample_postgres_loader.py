@@ -7,6 +7,7 @@ into Neo4j and Elasticsearch without using an Airflow DAG.
 
 """
 
+import logging
 import sys
 import textwrap
 import uuid
@@ -50,6 +51,7 @@ neo4j_endpoint = NEO4J_ENDPOINT
 neo4j_user = 'neo4j'
 neo4j_password = 'test'
 
+LOGGER = logging.getLogger(__name__)
 
 # todo: connection string needs to change
 def connection_string():
