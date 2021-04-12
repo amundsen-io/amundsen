@@ -242,6 +242,7 @@ neo4j:
   #  accessMode: ReadWriteMany
   #  efs:
   #    dns:
+  #  path: "/"
 
   # neo4j.backup -- If enabled is set to true, make sure and set the s3 path as well.
   backup:
