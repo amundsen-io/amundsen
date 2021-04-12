@@ -18,7 +18,7 @@ requirements = [
     "unidecode",
     "Jinja2>=2.10.0,<2.12",
     "pandas>=0.21.0,<1.2.0",
-    "amundsen-rds"
+    "amundsen-rds>=0.0.4"
 ]
 
 kafka = ['confluent-kafka==1.0.0']
@@ -80,8 +80,13 @@ atlas = [
     'pyatlasclient==1.1.2'
 ]
 
+rds = [
+    'sqlalchemy>=1.3.6,<1.4'
+    'mysqlclient>=1.3.6,<3'
+]
+
 all_deps = requirements + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds
 
 setup(
     name='amundsen-databuilder',
@@ -109,7 +114,8 @@ setup(
         'neptune': neptune,
         'delta': spark,
         'feast': feast,
-        'atlas': atlas
+        'atlas': atlas,
+        'rds': rds
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
