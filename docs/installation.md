@@ -8,7 +8,7 @@ The following instructions are for setting up a version of Amundsen using Docker
    ```bash
    $ git clone --recursive git@github.com:amundsen-io/amundsen.git
    ```
-3. Enter the cloned directory and run:
+3. Enter the cloned directory and run below:
     ```bash
     # For Neo4j Backend
     $ docker-compose -f docker-amundsen.yml up
@@ -16,6 +16,7 @@ The following instructions are for setting up a version of Amundsen using Docker
     # For Atlas
     $ docker-compose -f docker-amundsen-atlas.yml up
     ```
+    If it's your first time, you may want to proactively go through [troubleshooting](troubleshooting) steps, especially the first one related to heap memory for ElasticSearch and Docker engine memory allocation (leading to Docker error 137).
 4. Ingest provided sample data into Neo4j by doing the following: _(Please skip if you are using Atlas backend)_
 
    * In a separate terminal window, change directory to the [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder) submodule.
@@ -79,4 +80,5 @@ Atlas would be ready once you'll have the following output in the docker output 
    Then check if all 5 Amundsen related containers are running with `docker ps`? Can you connect to the Neo4j UI at http://localhost:7474/browser/ and similarly the raw ES API at http://localhost:9200? Does Docker logs reveal any serious issues?
 
 5. If ES container crashed with Docker error 137 on the first call from the website (http://localhost:5000/), this is because you are using the default Docker engine memory allocation of 2GB. The minimum needed for all the containers to run with the loaded sample data is 3GB. To do this go to your `Docker -> Preferences -> Resources -> Advanced` and increase the `Memory`, then restart the Docker engine.
+![](img/docker_memory_setup.jpg)
 
