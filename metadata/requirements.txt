@@ -36,7 +36,7 @@ typing-extensions==3.7.4
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
 amundsen-common>=0.9.0
-amundsen-gremlin>=0.0.7
+amundsen-gremlin>=0.0.9
 
 boto3==1.17.23
 flasgger==0.9.3

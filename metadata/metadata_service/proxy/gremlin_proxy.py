@@ -1230,7 +1230,7 @@ class AbstractGremlinProxy(BaseProxy):
 
         g = _V(g=self.g, label=VertexTypes.Table, key=table_uri). \
             outE(EdgeTypes.Description.value.label).inV(). \
-            has(VertexTypes.Description.value.label, 'source', 'user'). \
+            has('description_source', 'description'). \
             values('description').fold()
         descriptions = self.query_executor()(query=g, get=FromResultSet.getOnly)
         return _safe_get(descriptions)
@@ -1250,9 +1250,10 @@ class AbstractGremlinProxy(BaseProxy):
         description = unquote(description)
 
         # default table description is user added
-        desc_key = make_description_uri(subject_uri=table_uri, source='user')
+        desc_key = make_description_uri(subject_uri=table_uri, source='description')
+
         _upsert(executor=executor, g=self.g, label=VertexTypes.Description, key=desc_key,
-                key_property_name=self.key_property_name, description=description, source='user')
+                key_property_name=self.key_property_name, description=description, description_source='description')
         _link(executor=executor, g=self.g, edge_label=EdgeTypes.Description, key_property_name=self.key_property_name,
               vertex1_label=VertexTypes.Table, vertex1_key=table_uri,
               vertex2_label=VertexTypes.Description, vertex2_key=desc_key)
@@ -1352,9 +1353,12 @@ class AbstractGremlinProxy(BaseProxy):
 
         column_uri = make_column_uri(table_uri=table_uri, column_name=column_name)
         # default table description is user added
-        desc_key = make_description_uri(subject_uri=column_uri, source='user')
-        vertex_id: Any = _upsert(executor=executor, g=self.g, label=VertexTypes.Description, key=desc_key,
-                                 key_property_name=self.key_property_name, description=description, source='user')
+        desc_key = make_description_uri(subject_uri=column_uri, source='description')
+        vertex_id: Any = _upsert(
+            executor=executor, g=self.g,
+            label=VertexTypes.Description, key=desc_key, key_property_name=self.key_property_name,
+            description=description, description_source='description'
+        )
         _link(executor=executor, g=self.g, edge_label=EdgeTypes.Description, key_property_name=self.key_property_name,
               vertex1_label=VertexTypes.Column, vertex1_key=column_uri, vertex2_id=vertex_id)
 
@@ -1371,7 +1375,7 @@ class AbstractGremlinProxy(BaseProxy):
         column_uri = make_column_uri(table_uri=table_uri, column_name=column_name)
         g = _V(g=self.g, label=VertexTypes.Column, key=column_uri)
         g = g.outE(EdgeTypes.Description.value.label).inV()
-        g = g.has(VertexTypes.Description.value.label, 'source', 'user').values('description')
+        g = g.has(VertexTypes.Description.value.label, 'description_source', 'description').values('description')
         return self.query_executor()(query=g, get=FromResultSet.getOptional)
 
     @timer_with_counter

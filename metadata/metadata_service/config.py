@@ -123,6 +123,7 @@ class NeptuneConfig(LocalGremlinConfig, LocalConfig):
     LOG_LEVEL = 'INFO'
 
     # PROXY_HOST FORMAT: wss://<NEPTUNE_URL>:<NEPTUNE_PORT>/gremlin
+    PROXY_HOST = os.environ.get('PROXY_HOST', 'localhost')
     PROXY_PORT = None   # type: ignore
 
     PROXY_CLIENT = PROXY_CLIENTS['NEPTUNE']
