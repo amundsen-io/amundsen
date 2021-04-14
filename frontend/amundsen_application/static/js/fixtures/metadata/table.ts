@@ -172,9 +172,36 @@ export const tableMetadata: TableMetadata = {
   ],
 };
 
-export const tableLineage: Lineage = {
+export const emptyTableLineage: Lineage = {
   downstream_entities: [],
   upstream_entities: [],
+};
+
+export const tableLineage: Lineage = {
+  downstream_entities: [
+    {
+      badges: [],
+      cluster: 'cluster',
+      database: 'database',
+      key: 'database://cluster.schema/table_name',
+      level: 1,
+      name: 'table_name',
+      schema: 'schema',
+      usage: 1398,
+    },
+  ],
+  upstream_entities: [
+    {
+      badges: [],
+      cluster: 'cluster',
+      database: 'database',
+      key: 'database://cluster.schema/table_name',
+      level: 1,
+      name: 'table_name',
+      schema: 'schema',
+      usage: 1398,
+    },
+  ],
 };
 
 export const relatedDashboards: DashboardResource[] = [
