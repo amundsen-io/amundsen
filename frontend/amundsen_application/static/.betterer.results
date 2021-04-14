@@ -1033,10 +1033,10 @@ exports[`eslint`] = {
       [29, 22, 21, "Must use destructuring props assignment", "587844958"],
       [30, 7, 20, "\'watermark\' is already declared in the upper scope.", "1311337087"]
     ],
-    "js/pages/TableDetailPage/index.spec.tsx:1735345187": [
-      [60, 6, 25, "Use object destructuring.", "1230260048"]
+    "js/pages/TableDetailPage/index.spec.tsx:3538331913": [
+      [68, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:801208432": [
+    "js/pages/TableDetailPage/index.tsx:144152621": [
       [136, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [146, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
       [159, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],

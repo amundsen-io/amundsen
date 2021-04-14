@@ -142,7 +142,10 @@ export interface Lineage {
 }
 
 export interface ColumnLineageMap {
-  [column: string]: Lineage;
+  [columnName: string]: {
+    lineage: Lineage;
+    isLoading: boolean;
+  };
 }
 
 export interface TableLineageParams {

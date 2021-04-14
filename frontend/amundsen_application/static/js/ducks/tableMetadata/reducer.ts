@@ -445,6 +445,19 @@ export default function reducer(
           status: (<GetTableLineageResponse>action).payload.status,
         },
       };
+    case GetColumnLineage.REQUEST: {
+      const { columnName } = (<GetColumnLineageRequest>action).payload;
+      return {
+        ...state,
+        columnLineageMap: {
+          ...state.columnLineageMap,
+          [columnName]: {
+            lineage: emptyLineage,
+            isLoading: true,
+          },
+        },
+      };
+    }
     case GetColumnLineage.SUCCESS:
     case GetColumnLineage.FAILURE: {
       const { columnName, lineage: columnLineage } = (<
@@ -454,7 +467,10 @@ export default function reducer(
         ...state,
         columnLineageMap: {
           ...state.columnLineageMap,
-          [columnName]: columnLineage,
+          [columnName]: {
+            lineage: columnLineage,
+            isLoading: false,
+          },
         },
       };
     }

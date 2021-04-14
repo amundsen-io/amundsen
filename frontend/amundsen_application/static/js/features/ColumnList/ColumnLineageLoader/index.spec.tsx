@@ -4,15 +4,15 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import ShimmeringDashboardLoader from '.';
+import ColumnLineageLoader from '.';
 
 const setup = () => {
-  const wrapper = shallow(<ShimmeringDashboardLoader />);
+  const wrapper = shallow(<ColumnLineageLoader />);
 
   return wrapper;
 };
 
-describe('ShimmeringDashboardLoader', () => {
+describe('ColumnLineageLoader', () => {
   describe('render', () => {
     it('should render without errors', () => {
       expect(() => {
@@ -20,15 +20,15 @@ describe('ShimmeringDashboardLoader', () => {
       }).not.toThrow();
     });
 
-    it('should render three columns', () => {
-      const expected = 3;
+    it('should render two columns', () => {
+      const expected = 2;
       const actual = setup().find('.shimmer-loader-column').length;
 
       expect(actual).toEqual(expected);
     });
 
-    it('should render six cells', () => {
-      const expected = 6;
+    it('should render four cells', () => {
+      const expected = 4;
       const actual = setup().find('.shimmer-loader-cell').length;
 
       expect(actual).toEqual(expected);

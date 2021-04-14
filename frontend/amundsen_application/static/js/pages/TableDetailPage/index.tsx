@@ -277,17 +277,20 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-      tabInfo.push({
-        content: <LineageList items={tableLineage.downstream_entities} />,
-        key: Constants.DOWNSTREAM_TAB_KEY,
-        title: `Downstream (${tableLineage.downstream_entities.length})`,
-      });
-
-      tabInfo.push({
-        content: <LineageList items={tableLineage.upstream_entities} />,
-        key: Constants.UPSTREAM_TAB_KEY,
-        title: `Upstream (${tableLineage.upstream_entities.length})`,
-      });
+      if (tableLineage.upstream_entities.length > 0) {
+        tabInfo.push({
+          content: <LineageList items={tableLineage.upstream_entities} />,
+          key: Constants.UPSTREAM_TAB_KEY,
+          title: `Upstream (${tableLineage.upstream_entities.length})`,
+        });
+      }
+      if (tableLineage.downstream_entities.length > 0) {
+        tabInfo.push({
+          content: <LineageList items={tableLineage.downstream_entities} />,
+          key: Constants.DOWNSTREAM_TAB_KEY,
+          title: `Downstream (${tableLineage.downstream_entities.length})`,
+        });
+      }
     }
 
     return (
