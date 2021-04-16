@@ -63,7 +63,7 @@ spark = [
 ]
 
 neptune = [
-    'amundsen-gremlin>=0.0.5',
+    'amundsen-gremlin>=0.0.9',
     'Flask==1.0.2',
     'gremlinpython==3.4.3',
     'requests-aws4auth==0.9',
