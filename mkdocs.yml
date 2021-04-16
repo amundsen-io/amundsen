@@ -17,6 +17,7 @@ theme:
     accent: '#2B1B81'
   feature:
     tabs: true
+  custom_dir: docs_overrides/
 
 -extra_css:
   - 'css/app.css'
