@@ -1,4 +1,7 @@
 ### Feature
+* Add support for tags based on atlas terms ([#466](https://github.com/amundsen-io/amundsendatabuilder/issues/466)) ([`cc1caf3`](https://github.com/amundsen-io/amundsendatabuilder/commit/cc1caf37f87b140a393aedfd0a07fd17c58e8ac4))
+* Make DescriptionMetadata inherit from GraphSerializable ([#461](https://github.com/amundsen-io/amundsendatabuilder/issues/461)) ([`7f095fb`](https://github.com/amundsen-io/amundsendatabuilder/commit/7f095fb368dc8b6fba5f65f3870c1dd2444b0413))
+* Add TableSerializable and mysql_serializer ([#459](https://github.com/amundsen-io/amundsendatabuilder/issues/459)) ([`4bb4452`](https://github.com/amundsen-io/amundsendatabuilder/commit/4bb44528d6e17a4a2fed32bb449a21c35591ecbf))
 * Neptune Data builder Integration ([#438](https://github.com/amundsen-io/amundsendatabuilder/issues/438)) ([`303e8aa`](https://github.com/amundsen-io/amundsendatabuilder/commit/303e8aa2a42779070f5d6260faac010ba86a216c))
 * Add config key for connect_arg for SqlAlchemyExtractor ([#434](https://github.com/amundsen-io/amundsendatabuilder/issues/434)) ([`7f3be0f`](https://github.com/amundsen-io/amundsendatabuilder/commit/7f3be0fe58ec863679169e945441e01fcdc0e64c))
 * Vertica metadata extractor ([#433](https://github.com/amundsen-io/amundsendatabuilder/issues/433)) ([`f4bd207`](https://github.com/amundsen-io/amundsendatabuilder/commit/f4bd2071cf9c31ae6ff9a51bb5983f5c18e4a0bf))
@@ -28,6 +31,7 @@
 * Add a transformer that adds tags to all tables created in a job ([#287](https://github.com/amundsen-io/amundsendatabuilder/issues/287)) ([`d2f4bd3`](https://github.com/amundsen-io/amundsendatabuilder/commit/d2f4bd308c1ef92ea2bbfb7a7443cb42113f03f9))
 
 ### Fix
+* Add support for Tableau multi-site deployment ([#463](https://github.com/amundsen-io/amundsendatabuilder/issues/463)) ([`e35af58`](https://github.com/amundsen-io/amundsendatabuilder/commit/e35af5808a40512aac09735711c3ab75c578d018))
 * Avoid error by checking for existence before close. ([#454](https://github.com/amundsen-io/amundsendatabuilder/issues/454)) ([`5cd0dc8`](https://github.com/amundsen-io/amundsendatabuilder/commit/5cd0dc83d31409de1d81e38a087a1347392e6f16))
 * Correct config getter ([#455](https://github.com/amundsen-io/amundsendatabuilder/issues/455)) ([`4b37746`](https://github.com/amundsen-io/amundsendatabuilder/commit/4b377465b5ee195c39a0c23b746c2ad9ebd7619f))
 * Close SQL Alchemy connections. ([#453](https://github.com/amundsen-io/amundsendatabuilder/issues/453)) ([`25124c1`](https://github.com/amundsen-io/amundsendatabuilder/commit/25124c169faee6c2e48f47326fcfcbaf19e32e9e))
