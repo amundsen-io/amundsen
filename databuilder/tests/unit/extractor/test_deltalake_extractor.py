@@ -28,6 +28,8 @@ class TestDeltaLakeExtractor(unittest.TestCase):
             .config("spark.jars.packages", "io.delta:delta-core_2.12:0.7.0") \
             .config("spark.sql.warehouse.dir", tempfile.TemporaryDirectory()) \
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+            .config("spark.driver.host", "127.0.0.1") \
+            .config("spark.driver.bindAddress", "127.0.0.1") \
             .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
             .getOrCreate()
         self.config_dict = {
