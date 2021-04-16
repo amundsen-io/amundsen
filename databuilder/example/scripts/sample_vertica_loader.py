@@ -58,6 +58,7 @@ neo4j_password = 'test'
 
 LOGGER = logging.getLogger(__name__)
 
+
 # specify vertica access credentials, host server, port (default 5433),
 # database name (default 'vertica')
 def connection_string():

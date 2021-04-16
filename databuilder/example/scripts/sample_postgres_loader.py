@@ -53,6 +53,7 @@ neo4j_password = 'test'
 
 LOGGER = logging.getLogger(__name__)
 
+
 # todo: connection string needs to change
 def connection_string():
     user = 'username'
