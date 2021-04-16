@@ -11,6 +11,7 @@
 * Added resource_reports into Table model ([`60b1751`](https://github.com/amundsen-io/amundsencommon/commit/60b1751be8e99a77a83876d5264e6530d37f50e4))
 
 ### Fix
+* Standardize requirements and fixes for marshmallow3+ ([#98](https://github.com/amundsen-io/amundsencommon/issues/98)) ([`d185046`](https://github.com/amundsen-io/amundsencommon/commit/d185046260fc7b0c9951a18a2f0d00b715ca9afe))
 * Moved version declaration ([#88](https://github.com/amundsen-io/amundsencommon/issues/88)) ([`19be687`](https://github.com/amundsen-io/amundsencommon/commit/19be687817604cc23752cff01c791b5369d5a635))
 * Fix table index map bug ([#86](https://github.com/amundsen-io/amundsencommon/issues/86)) ([`f250d6a`](https://github.com/amundsen-io/amundsencommon/commit/f250d6aea170e2d3e448867f68bc40f4c01cb91b))
 * Make column names searchable by lowercase ([#85](https://github.com/amundsen-io/amundsencommon/issues/85)) ([`0ead455`](https://github.com/amundsen-io/amundsencommon/commit/0ead4550e4e918698ac236cb72f87a9c8895f664))
