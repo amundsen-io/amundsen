@@ -59,6 +59,19 @@ class RedshiftMetadataExtractor(BasePostgresMetadataExtractor):
             FROM
                 PG_GET_LATE_BINDING_VIEW_COLS()
                     COLS(view_schema NAME, view_name NAME, column_name NAME, data_type VARCHAR, ordinal_position INT)
+
+            UNION
+
+            SELECT
+              {cluster_source} AS cluster,
+              schemaname AS schema,
+              tablename AS name,
+              NULL AS description,
+              columnname AS col_name,
+              external_type AS col_type,
+              NULL AS col_description,
+              columnnum AS col_sort_order
+            FROM svv_external_columns
         )
 
         {where_clause_suffix}
