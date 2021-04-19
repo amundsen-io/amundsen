@@ -6,6 +6,7 @@ In order to make the Atlas-Amundsen integration smooth, we've developed a python
 Usage and Installation of `amundsenatlastypes` can be found [here](https://github.com/dwarszawski/amundsen-atlas-types/blob/master/README.md)
 
 Minimum Requirements:
+
 - amundsenatlastypes==1.1.4
 - apache_atlas==0.0.11
 
