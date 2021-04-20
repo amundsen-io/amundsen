@@ -428,7 +428,7 @@ class AtlasProxy(BaseProxy):
         parsed_reports = app.config['RESOURCE_REPORT_CLIENT'](reports) \
             if app.config['RESOURCE_REPORT_CLIENT'] else reports
 
-        return parsed_reports
+        return sorted(parsed_reports)
 
     def _get_owners(self, data_owners: list, fallback_owner: str = None) -> List[User]:
         owners_detail = list()
