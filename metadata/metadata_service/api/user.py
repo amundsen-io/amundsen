@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import logging
 from http import HTTPStatus
 from typing import (Any, Dict, Iterable, List, Mapping, Optional,  # noqa: F401
@@ -11,7 +12,9 @@ from amundsen_common.models.popular_table import PopularTableSchema
 from amundsen_common.models.user import UserSchema
 from flasgger import swag_from
 from flask import current_app as app
+from flask import request
 from flask_restful import Resource
+from marshmallow.exceptions import ValidationError as SchemaValidationError
 
 from metadata_service.api import BaseAPI
 from metadata_service.entity.resource_type import (ResourceType,
@@ -43,6 +46,34 @@ class UserDetailAPI(BaseAPI):
                 return {'message': 'user_id {} fetch failed'.format(id)}, HTTPStatus.NOT_FOUND
         else:
             return super().get(id=id)
+
+    @swag_from('swagger_doc/user/detail_put.yml')
+    def put(self) -> Iterable[Union[Mapping, int, None]]:
+        """
+        Create or update a user. Serializes the data in the request body
+        using the UserSchema, validating the inputs in the process to ensure
+        all downstream processes leverage clean data, and passes the User
+        object to the client to create or update the user record.
+        """
+        if not request.data:
+            return {'message': 'No user information provided in the request.'}, HTTPStatus.BAD_REQUEST
+
+        try:
+            user_attributes = json.loads(request.data)
+            schema = UserSchema()
+            user = schema.load(user_attributes)
+
+            new_user, user_created = self.client.create_update_user(user=user)
+            resp_code = HTTPStatus.CREATED if user_created else HTTPStatus.OK
+            return schema.dumps(new_user), resp_code
+
+        except SchemaValidationError as schema_err:
+            err_msg = 'User inputs provided are not valid: %s' % schema_err
+            return {'message': err_msg}, HTTPStatus.BAD_REQUEST
+
+        except Exception:
+            LOGGER.exception('UserDetailAPI PUT Failed')
+            return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class UserFollowsAPI(Resource):

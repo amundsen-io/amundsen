@@ -18,6 +18,7 @@ from amundsen_common.models.table import (Column, ProgrammaticDescription,
                                           Reader, Source, Stat, Table, Tag,
                                           User, Watermark)
 from amundsen_common.models.user import User as UserEntity
+from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
@@ -41,6 +42,12 @@ _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 
 # Expire cache every 11 hours + jitter
 _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
+
+
+CREATED_EPOCH_MS = 'publisher_created_epoch_ms'
+LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
+PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -957,6 +964,61 @@ class Neo4jProxy(BaseProxy):
             manager_name = ''
 
         return self._build_user_from_record(record=record, manager_name=manager_name)
+
+    def create_update_user(self, *, user: User) -> Tuple[User, bool]:
+        """
+        Create a user if it does not exist, otherwise update the user. Required
+        fields for creating / updating a user are validated upstream to this when
+        the User object is created.
+
+        :param user:
+        :return:
+        """
+        user_data = UserSchema().dump(user)
+        user_props = self._create_props_body(user_data, 'usr')
+
+        create_update_user_query = textwrap.dedent("""
+        MERGE (usr:User {key: $user_id})
+        on CREATE SET %s, usr.%s=timestamp()
+        on MATCH SET %s
+        RETURN usr, usr.%s = timestamp() as created
+        """ % (user_props, CREATED_EPOCH_MS, user_props, CREATED_EPOCH_MS))
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            result = tx.run(create_update_user_query, user_data)
+
+            user_result = result.single()
+            if not user_result:
+                raise RuntimeError('Failed to create user with data %s' % user_data)
+            tx.commit()
+
+            new_user = self._build_user_from_record(user_result['usr'])
+            new_user_created = True if user_result['created'] is True else False
+
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            # propagate the exception back to api
+            raise e
+
+        return new_user, new_user_created
+
+    def _create_props_body(self,
+                           record_dict: dict,
+                           identifier: str) -> str:
+        """
+        Creates a Neo4j property body by converting a dictionary into a comma
+        separated string of KEY = VALUE.
+        """
+        props = []
+        for k, v in record_dict.items():
+            if v:
+                props.append(f'{identifier}.{k} = ${k}')
+
+        props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = 'api_create_update_user'")
+        props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
+        return ', '.join(props)
 
     def get_users(self) -> List[UserEntity]:
         statement = "MATCH (usr:User) WHERE usr.is_active = true RETURN collect(usr) as users"

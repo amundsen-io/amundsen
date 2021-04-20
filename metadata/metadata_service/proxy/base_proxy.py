@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.lineage import Lineage
@@ -25,6 +25,18 @@ class BaseProxy(metaclass=ABCMeta):
 
     @abstractmethod
     def get_user(self, *, id: str) -> Union[User, None]:
+        pass
+
+    @abstractmethod
+    def create_update_user(self, *, user: User) -> Tuple[User, bool]:
+        """
+        Allows creating and updating users. Returns a tuple of the User
+        object that has been created or updated as well as a flag that
+        depicts whether or no the user was created or updated.
+
+        :param user: a User object
+        :return: Tuple of [User object, bool (True = created, False = updated)]
+        """
         pass
 
     @abstractmethod
