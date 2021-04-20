@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import unittest
 from http import HTTPStatus
 from unittest import mock
@@ -36,6 +37,32 @@ class UserDetailAPITest(unittest.TestCase):
         response = self.api.get()
         self.assertEqual(list(response)[1], HTTPStatus.OK)
         self.mock_client.get_users.assert_called_once()
+
+    def test_put(self) -> None:
+        m = MagicMock()
+        m.data = json.dumps({'email': 'create_email@email.com'})
+        with mock.patch("metadata_service.api.user.request", m):
+            # Test user creation
+            create_email = {'email': 'test_email'}
+            self.mock_client.create_update_user.return_value = create_email, True
+            test_user, test_user_created = self.api.put()
+            self.assertEqual(test_user, json.dumps(create_email))
+            self.assertEqual(test_user_created, HTTPStatus.CREATED)
+
+            # Test user update
+            update_email = {'email': 'update_email@email.com'}
+            self.mock_client.create_update_user.return_value = update_email, False
+            test_user2, test_user_updated = self.api.put()
+            self.assertEqual(test_user2, json.dumps(update_email))
+            self.assertEqual(test_user_updated, HTTPStatus.OK)
+
+    def test_put_no_inputs(self) -> None:
+        # Test no data provided
+        m2 = MagicMock()
+        m2.data = {}
+        with mock.patch("metadata_service.api.user.request", m2):
+            _, status_code = self.api.put()
+            self.assertEquals(status_code, HTTPStatus.BAD_REQUEST)
 
 
 class UserFollowsAPITest(unittest.TestCase):

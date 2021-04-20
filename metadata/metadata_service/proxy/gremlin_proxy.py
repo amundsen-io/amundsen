@@ -8,7 +8,7 @@ from abc import abstractmethod
 from datetime import date, datetime, timedelta
 from operator import attrgetter
 from typing import (Any, Callable, Dict, Iterable, List, Mapping, Optional,
-                    Sequence, Set, Type, TypeVar, Union, no_type_check,
+                    Sequence, Set, Tuple, Type, TypeVar, Union, no_type_check,
                     overload)
 from urllib.parse import unquote
 
@@ -1009,6 +1009,9 @@ class AbstractGremlinProxy(BaseProxy):
         managers = _safe_get_list(result, 'managers')
         user.manager_fullname = _safe_get(managers[0], 'full_name', default=None) if managers else None
         return user
+
+    def create_update_user(self, *, user: User) -> Tuple[User, bool]:
+        pass
 
     @timer_with_counter
     @overrides

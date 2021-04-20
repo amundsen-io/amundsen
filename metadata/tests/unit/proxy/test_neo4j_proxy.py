@@ -622,6 +622,24 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_user = neo4j_proxy.get_user(id='test_email')
             self.assertEqual(neo4j_user.other_key_values, {'mode_user_id': 'mode_foo_bar'})
 
+    def test_put_user_new_user(self) -> None:
+        """
+        Test creating a new user
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_transaction = mock_driver.return_value.session.return_value.begin_transaction.return_value
+            mock_run = mock_transaction.run
+            mock_commit = mock_transaction.commit
+
+            test_user = MagicMock()
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.create_update_user(user=test_user)
+
+            self.assertEqual(mock_run.call_count, 1)
+            self.assertEqual(mock_commit.call_count, 1)
+
     def test_get_users(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             test_user = {

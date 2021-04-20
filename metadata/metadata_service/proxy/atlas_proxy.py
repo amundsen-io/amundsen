@@ -454,6 +454,9 @@ class AtlasProxy(BaseProxy):
     def get_user(self, *, id: str) -> Union[UserEntity, None]:
         pass
 
+    def create_update_user(self, *, user: User) -> Tuple[User, bool]:
+        pass
+
     def get_users(self) -> List[UserEntity]:
         pass
 
