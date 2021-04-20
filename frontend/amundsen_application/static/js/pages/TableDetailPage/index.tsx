@@ -426,14 +426,12 @@ export class TableDetail extends React.Component<
                       </time>
                     </section>
                   )}
-                  {!data.is_view && (
-                    <section className="metadata-section">
-                      <div className="section-title">
-                        {Constants.DATE_RANGE_TITLE}
-                      </div>
-                      <WatermarkLabel watermarks={data.watermarks} />
-                    </section>
-                  )}
+                  <section className="metadata-section">
+                    <div className="section-title">
+                      {Constants.DATE_RANGE_TITLE}
+                    </div>
+                    <WatermarkLabel watermarks={data.watermarks} />
+                  </section>
                   <EditableSection title={Constants.TAG_TITLE}>
                     <TagInput
                       resourceType={ResourceType.table}
