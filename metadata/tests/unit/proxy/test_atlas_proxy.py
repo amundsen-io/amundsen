@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
-                                          Stat, Table, User)
+                                          ResourceReport, Stat, Table, User)
 from apache_atlas.model.instance import AtlasRelatedObjectId
 from apache_atlas.model.relationship import AtlasRelationship
 from apache_atlas.utils import type_coerce
@@ -101,7 +101,17 @@ class TestAtlasProxy(unittest.TestCase, Data):
             mocked_report_entity.attributes = entity['attributes']
             mocked_report_entities_collection.entities.append(mocked_report_entity)
 
-        self.report_entity_collection = [mocked_report_entities_collection]
+        self.report_entity_collection = mocked_report_entities_collection
+
+    def test_get_sorted_reports(self) -> None:
+        self._create_mocked_report_entities_collection()
+        self.report_entity_collection.entities.sort(key=lambda x: x.attributes['name'], reverse=True)
+        self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=self.report_entity_collection)
+        reports_guid = cast(dict, self.entity1)['attributes']['reports']
+        sorted_reports = self.proxy._get_reports(reports_guid)
+        expected = [ResourceReport(name="test_report", url="http://test"),
+                    ResourceReport(name="test_report3", url="http://test3")]
+        self.assertEqual(sorted_reports, expected)
 
     def _get_table(self, custom_stats_format: bool = False) -> None:
         if custom_stats_format:
