@@ -49,7 +49,7 @@ class IssueTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.ACCEPTED)
 
     @unittest.mock.patch('amundsen_application.api.issue.issue.get_issue_tracker_client')
-    def test_get_jira_issues_missing_config(self, mock_issue_tracker_client) -> None:
+    def test_get_jira_issues_missing_config(self, mock_issue_tracker_client: unittest.mock.Mock) -> None:
         """
         Test request failure if config settings are missing
         :return:
@@ -70,7 +70,7 @@ class IssueTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @unittest.mock.patch('amundsen_application.api.issue.issue.get_issue_tracker_client')
-    def test_get_jira_issues_success(self, mock_issue_tracker_client) -> None:
+    def test_get_jira_issues_success(self, mock_issue_tracker_client: unittest.mock.Mock) -> None:
         """
         Tests successful get request
         :return:
@@ -104,7 +104,7 @@ class IssueTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.ACCEPTED)
 
     @unittest.mock.patch('amundsen_application.api.issue.issue.get_issue_tracker_client')
-    def test_create_jira_issue_missing_config(self, mock_issue_tracker_client) -> None:
+    def test_create_jira_issue_missing_config(self, mock_issue_tracker_client: unittest.mock.Mock) -> None:
         """
         Test request failure if config settings are missing
         :return:
@@ -156,7 +156,7 @@ class IssueTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @unittest.mock.patch('amundsen_application.api.issue.issue.get_issue_tracker_client')
-    def test_create_jira_issue_success(self, mock_issue_tracker_client) -> None:
+    def test_create_jira_issue_success(self, mock_issue_tracker_client: unittest.mock.Mock) -> None:
         """
         Test request returns success and expected outcome
         :return:

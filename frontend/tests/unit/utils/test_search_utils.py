@@ -27,7 +27,7 @@ class SearchUtilsTest(unittest.TestCase):
             'table': ['table_name'],
             'tag': ['tag_name'],
         }
-        self.test_page_index = "1"
+        self.test_page_index = 1
         self.test_term = 'hello'
 
     def test_transform_filters(self) -> None:

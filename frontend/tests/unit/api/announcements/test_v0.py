@@ -35,7 +35,7 @@ class AnnouncementTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.NOT_IMPLEMENTED)
 
     @unittest.mock.patch(ANNOUNCEMENT_CLIENT_CLASS + '._get_posts')
-    def test_good_client_response(self, mock_get_posts) -> None:
+    def test_good_client_response(self, mock_get_posts: unittest.mock.Mock) -> None:
         """
         :return:
         """
