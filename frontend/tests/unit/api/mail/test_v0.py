@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from unittest.mock import Mock
 
 from http import HTTPStatus
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from flask import Response, jsonify, make_response
 
@@ -19,12 +20,11 @@ class MockMailClient(BaseMailClient):
         self.status_code = status_code
 
     def send_email(self,
-                   sender: str = None,
-                   recipients: List = [],
-                   subject: str = None,
-                   text: str = None,
-                   html: str = None,
-                   optional_data: Dict = {}) -> Response:
+                   html: str,
+                   subject: str,
+                   optional_data: Optional[Dict] = None,
+                   recipients: Optional[List[str]] = None,
+                   sender: Optional[str] = None) -> Response:
         return make_response(jsonify({}), self.status_code)
 
 
@@ -33,12 +33,11 @@ class MockBadClient(BaseMailClient):
         pass
 
     def send_email(self,
-                   sender: str = None,
-                   recipients: List = [],
-                   subject: str = None,
-                   text: str = None,
-                   html: str = None,
-                   optional_data: Dict = {}) -> Response:
+                   html: str,
+                   subject: str,
+                   optional_data: Optional[Dict] = None,
+                   recipients: Optional[List[str]] = None,
+                   sender: Optional[str] = None) -> Response:
         raise Exception('Bad client')
 
 
@@ -96,7 +95,7 @@ class MailTest(unittest.TestCase):
             self.assertEqual(response.status_code, expected_code)
 
     @unittest.mock.patch('amundsen_application.api.mail.v0.send_notification')
-    def test_notification_endpoint_calls_send_notification(self, send_notification_mock) -> None:
+    def test_notification_endpoint_calls_send_notification(self, send_notification_mock: Mock) -> None:
         """
         Test that the endpoint calls send_notification with the correct information
         from the request json
@@ -104,7 +103,7 @@ class MailTest(unittest.TestCase):
         """
         test_recipients = ['test@test.com']
         test_notification_type = 'added'
-        test_options = {}
+        test_options: Dict = {}
 
         with local_app.test_client() as test:
             test.post('/api/mail/v0/notification', json={
@@ -120,7 +119,7 @@ class MailTest(unittest.TestCase):
             )
 
     @unittest.mock.patch('amundsen_application.api.mail.v0.send_notification')
-    def test_notification_endpoint_fails_missing_notification_type(self, send_notification_mock) -> None:
+    def test_notification_endpoint_fails_missing_notification_type(self, send_notification_mock: Mock) -> None:
         """
         Test that the endpoint fails if notificationType is not provided in the
         request json
@@ -128,7 +127,7 @@ class MailTest(unittest.TestCase):
         """
         test_recipients = ['test@test.com']
         test_sender = 'test2@test.com'
-        test_options = {}
+        test_options: Dict = {}
 
         with local_app.test_client() as test:
             response = test.post('/api/mail/v0/notification', json={
@@ -140,7 +139,7 @@ class MailTest(unittest.TestCase):
             self.assertFalse(send_notification_mock.called)
 
     @unittest.mock.patch('amundsen_application.api.mail.v0.send_notification')
-    def test_notification_endpoint_fails_with_exception(self, send_notification_mock) -> None:
+    def test_notification_endpoint_fails_with_exception(self, send_notification_mock: Mock) -> None:
         """
         Test that the endpoint returns 500 exception when error occurs
         and that send_notification is not called

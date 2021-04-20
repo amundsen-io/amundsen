@@ -3,9 +3,10 @@
 
 import json
 import unittest
+from unittest.mock import Mock
 
 from http import HTTPStatus
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from flask import jsonify, make_response, Response
 
@@ -24,12 +25,11 @@ class MockMailClient(BaseMailClient):
         self.status_code = status_code
 
     def send_email(self,
-                   sender: str = None,
-                   recipients: List = [],
-                   subject: str = None,
-                   text: str = None,
-                   html: str = None,
-                   optional_data: Dict = {}) -> Response:
+                   html: str,
+                   subject: str,
+                   optional_data: Optional[Dict] = None,
+                   recipients: Optional[List[str]] = None,
+                   sender: Optional[str] = None) -> Response:
         return make_response(jsonify({}), self.status_code)
 
 
@@ -314,7 +314,10 @@ class NotificationUtilsTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_notification_html')
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_notification_subject')
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_mail_client')
-    def test_send_notification_success(self, get_mail_client, get_notif_subject, get_notif_html) -> None:
+    def test_send_notification_success(self,
+                                       get_mail_client: Mock,
+                                       get_notif_subject: Mock,
+                                       get_notif_html: Mock) -> None:
         """
         Test successful execution of send_notification
         :return:
@@ -331,7 +334,7 @@ class NotificationUtilsTest(unittest.TestCase):
                     test_recipients = ['test@test.com']
                     test_sender = 'test2@test.com'
                     test_notification_type = NotificationType.OWNER_ADDED
-                    test_options = {}
+                    test_options: Dict = {}
 
                     response = send_notification(
                         notification_type=test_notification_type,
@@ -351,41 +354,45 @@ class NotificationUtilsTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_notification_html')
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_notification_subject')
     @unittest.mock.patch('amundsen_application.api.utils.notification_utils.get_mail_client')
-    def test_remove_sender_from_notification(self, get_mail_client, get_notif_subject, get_notif_html) -> None:
+    def test_remove_sender_from_notification(self,
+                                             get_mail_client: Mock,
+                                             get_notif_subject: Mock,
+                                             get_notif_html: Mock) -> None:
         """
         Test sender is removed if they exist in recipients
         :return:
         """
         with local_app.app_context():
             mock_client = MockMailClient(status_code=HTTPStatus.OK)
-            mock_client.send_email = unittest.mock.Mock()
-            get_mail_client.return_value = mock_client
+            with unittest.mock.patch.object(mock_client, "send_email") as mock_send_email:
 
-            mock_subject = 'Test Subject'
-            get_notif_subject.return_value = mock_subject
+                get_mail_client.return_value = mock_client
 
-            mock_html = '<div>test html</div>'
-            get_notif_html.return_value = mock_html
+                mock_subject = 'Test Subject'
+                get_notif_subject.return_value = mock_subject
 
-            test_sender = 'test@test.com'
-            test_recipients = [test_sender, 'test2@test.com']
-            test_notification_type = NotificationType.OWNER_ADDED
-            test_options = {}
-            expected_recipients = ['test2@test.com']
+                mock_html = '<div>test html</div>'
+                get_notif_html.return_value = mock_html
 
-            send_notification(
-                notification_type=test_notification_type,
-                options=test_options,
-                recipients=test_recipients,
-                sender=test_sender
-            )
-            mock_client.send_email.assert_called_with(
-                html=mock_html,
-                subject=mock_subject,
-                optional_data={'email_type': test_notification_type},
-                recipients=expected_recipients,
-                sender=test_sender
-            )
+                test_sender = 'test@test.com'
+                test_recipients = [test_sender, 'test2@test.com']
+                test_notification_type = NotificationType.OWNER_ADDED
+                test_options: Dict = {}
+                expected_recipients = ['test2@test.com']
+
+                send_notification(
+                    notification_type=test_notification_type,
+                    options=test_options,
+                    recipients=test_recipients,
+                    sender=test_sender
+                )
+                mock_send_email.assert_called_with(
+                    html=mock_html,
+                    subject=mock_subject,
+                    optional_data={'email_type': test_notification_type},
+                    recipients=expected_recipients,
+                    sender=test_sender
+                )
 
     def test_no_recipients_for_notification(self) -> None:
         """

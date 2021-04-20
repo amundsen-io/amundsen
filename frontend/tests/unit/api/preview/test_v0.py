@@ -36,7 +36,7 @@ class PreviewTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.NOT_IMPLEMENTED)
 
     @unittest.mock.patch(PREVIEW_CLIENT_CLASS + '.get_preview_data')
-    def test_good_client_response(self, mock_get_preview_data) -> None:
+    def test_good_client_response(self, mock_get_preview_data: unittest.mock.Mock) -> None:
         """
         """
         expected_response_json = {
@@ -51,12 +51,12 @@ class PreviewTest(unittest.TestCase):
         mock_get_preview_data.return_value = Response(response=response,
                                                       status=HTTPStatus.OK)
         with local_app.test_client() as test:
-            response = test.post('/api/preview/v0/')
-            self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertEqual(response.json, expected_response_json)
+            post_response = test.post('/api/preview/v0/')
+            self.assertEqual(post_response.status_code, HTTPStatus.OK)
+            self.assertEqual(post_response.json, expected_response_json)
 
     @unittest.mock.patch(PREVIEW_CLIENT_CLASS + '.get_preview_data')
-    def test_bad_client_response(self, mock_get_preview_data) -> None:
+    def test_bad_client_response(self, mock_get_preview_data: unittest.mock.Mock) -> None:
         """
         """
         expected_response_json = {
@@ -69,7 +69,7 @@ class PreviewTest(unittest.TestCase):
         mock_get_preview_data.return_value = Response(response=response,
                                                       status=HTTPStatus.OK)
         with local_app.test_client() as test:
-            response = test.post('/api/preview/v0/')
-            self.assertEqual(response.status_code,
+            post_response = test.post('/api/preview/v0/')
+            self.assertEqual(post_response.status_code,
                              HTTPStatus.INTERNAL_SERVER_ERROR)
-            self.assertEqual(response.json, expected_response_json)
+            self.assertEqual(post_response.json, expected_response_json)

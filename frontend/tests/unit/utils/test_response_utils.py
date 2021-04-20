@@ -3,6 +3,7 @@
 
 import json
 import unittest
+from typing import Dict
 
 from amundsen_application import create_app
 from amundsen_application.api.utils.response_utils import create_error_response
@@ -20,7 +21,7 @@ class ResponseUtilsTest(unittest.TestCase):
         :return:
         """
         test_message = 'Success'
-        test_payload = {}
+        test_payload: Dict = {}
         status_code = 200
         with local_app.app_context():
             response = create_error_response(message=test_message,

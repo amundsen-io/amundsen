@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from typing import Dict
 import unittest
 
 from amundsen_application.api.utils.metadata_utils import _convert_prog_descriptions, _sort_prog_descriptions, \
@@ -95,8 +96,8 @@ class ProgrammaticDescriptionsTest(unittest.TestCase):
             local_app.config['PROGRAMMATIC_DISPLAY'] = test_config
 
             result = _convert_prog_descriptions(test_desc)
-            self.assertEqual(len(result.get('left')), 0)
-            self.assertEqual(len(result.get('right')), 0)
+            self.assertEqual(len(result['left']), 0)
+            self.assertEqual(len(result['right']), 0)
             self.assertEqual(result.get('other'), expected_programmatic_desc.get('other'))
 
     def test_sort_prog_descriptions_returns_default_value(self) -> None:
@@ -151,7 +152,7 @@ class TableEditabilityWrapper(unittest.TestCase):
         pass
 
     def test_empty_allowed(self) -> None:
-        mockConfig = {
+        mockConfig: Dict = {
             'UNEDITABLE_SCHEMAS': [],
             'UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES': [],
         }

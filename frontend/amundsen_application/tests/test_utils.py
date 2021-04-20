@@ -7,7 +7,7 @@ from amundsen_application.models.user import load_user, User
 TEST_USER_ID = 'test_user_id'
 
 
-def get_test_user(app: app) -> User:
+def get_test_user(app: app) -> User:  # type: ignore
     user_info = {
         'email': 'test@email.com',
         'user_id': TEST_USER_ID,
