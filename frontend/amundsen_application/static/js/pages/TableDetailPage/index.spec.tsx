@@ -16,11 +16,7 @@ import {
   indexDashboardsEnabled,
   isTableListLineageEnabled,
 } from 'config/config-utils';
-import {
-  DASHBOARD_TAB_KEY,
-  DOWNSTREAM_TAB_KEY,
-  UPSTREAM_TAB_KEY,
-} from './constants';
+import { TABLE_TAB } from './constants';
 import { TableDetail, TableDetailProps, MatchProps } from '.';
 
 jest.mock('config/config-utils', () => ({
@@ -72,29 +68,37 @@ describe('TableDetail', () => {
       mocked(indexDashboardsEnabled).mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
-      expect(tabInfo.find((tab) => tab.key === DASHBOARD_TAB_KEY)).toBeFalsy();
+      expect(
+        tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
+      ).toBeFalsy();
     });
 
     it('renders two tabs when dashboards are enabled', () => {
       mocked(indexDashboardsEnabled).mockImplementation(() => true);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
-      expect(tabInfo.find((tab) => tab.key === DASHBOARD_TAB_KEY)).toBeTruthy();
+      expect(
+        tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
+      ).toBeTruthy();
     });
     it('does not render upstream and downstream tabs when disabled', () => {
       mocked(isTableListLineageEnabled).mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
-      expect(tabInfo.find((tab) => tab.key === UPSTREAM_TAB_KEY)).toBeFalsy();
-      expect(tabInfo.find((tab) => tab.key === DOWNSTREAM_TAB_KEY)).toBeFalsy();
+      expect(tabInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)).toBeFalsy();
+      expect(
+        tabInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
+      ).toBeFalsy();
     });
     it('renders upstream and downstream tabs when enabled', () => {
       mocked(isTableListLineageEnabled).mockImplementation(() => true);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
-      expect(tabInfo.find((tab) => tab.key === UPSTREAM_TAB_KEY)).toBeTruthy();
       expect(
-        tabInfo.find((tab) => tab.key === DOWNSTREAM_TAB_KEY)
+        tabInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)
+      ).toBeTruthy();
+      expect(
+        tabInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
       ).toBeTruthy();
     });
   });

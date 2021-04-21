@@ -4,8 +4,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
+import { logClick } from 'utils/analytics';
 
 import LoadingSpinner from 'components/LoadingSpinner';
 

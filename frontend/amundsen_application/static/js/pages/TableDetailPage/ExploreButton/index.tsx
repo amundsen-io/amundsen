@@ -3,9 +3,9 @@
 
 import * as React from 'react';
 
-import { logClick } from 'ducks/utilMethods';
 import { TableMetadata } from 'interfaces';
 import { exploreEnabled, generateExploreUrl } from 'config/config-utils';
+import { logClick } from 'utils/analytics';
 
 export interface ExploreButtonProps {
   tableData: TableMetadata;

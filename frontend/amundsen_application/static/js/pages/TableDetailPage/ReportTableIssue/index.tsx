@@ -8,8 +8,7 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import { createIssue } from 'ducks/issue/reducer';
 import { CreateIssueRequest } from 'ducks/issue/types';
-import './styles.scss';
-import { logClick } from 'ducks/utilMethods';
+import { logClick } from 'utils/analytics';
 import {
   TableMetadata,
   CreateIssuePayload,
@@ -17,6 +16,8 @@ import {
   NotificationType,
 } from 'interfaces';
 import * as Constants from './constants';
+
+import './styles.scss';
 
 export interface ComponentProps {
   tableKey: string;

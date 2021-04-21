@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 import { TableReader } from 'interfaces';
 import AppConfig from 'config/config';
-import { logClick } from 'ducks/utilMethods';
+import { logClick } from 'utils/analytics';
 
 import './styles.scss';
 

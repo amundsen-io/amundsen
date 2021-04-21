@@ -5,9 +5,8 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import SanitizedHTML from 'react-sanitized-html';
 
-import { logClick } from 'ducks/utilMethods';
-
 import { AnnouncementPost } from 'interfaces';
+import { logClick } from 'utils/analytics';
 import Card from '../../Card';
 
 import {

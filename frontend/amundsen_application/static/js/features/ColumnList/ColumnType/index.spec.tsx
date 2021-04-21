@@ -5,10 +5,10 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { Modal } from 'react-bootstrap';
 
-import * as UtilMethods from 'ducks/utilMethods';
+import * as Analytics from 'utils/analytics';
 import ColumnType, { ColumnTypeProps } from '.';
 
-const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
+const logClickSpy = jest.spyOn(Analytics, 'logClick');
 logClickSpy.mockImplementation(() => null);
 
 const setup = (propOverrides?: Partial<ColumnTypeProps>) => {

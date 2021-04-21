@@ -4,10 +4,9 @@
 import * as React from 'react';
 import { Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 
-import { logClick } from 'ducks/utilMethods';
-
 import './styles.scss';
 
+import { logClick } from 'utils/analytics';
 import {
   getTruncatedText,
   parseNestedType,

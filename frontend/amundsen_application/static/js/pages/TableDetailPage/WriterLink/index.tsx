@@ -5,8 +5,8 @@ import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import AvatarLabel from 'components/AvatarLabel';
-import { logClick } from 'ducks/utilMethods';
 import { TableWriter } from 'interfaces';
+import { logClick } from 'utils/analytics';
 
 export interface WriterLinkProps {
   tableWriter: TableWriter;

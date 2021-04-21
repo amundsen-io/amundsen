@@ -12,8 +12,8 @@ import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
+import { logClick } from 'utils/analytics';
 
-import { logClick } from 'ducks/utilMethods';
 import AppConfig from 'config/config';
 
 import globalState from 'fixtures/globalState';

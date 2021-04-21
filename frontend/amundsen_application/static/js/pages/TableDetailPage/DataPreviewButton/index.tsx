@@ -9,8 +9,8 @@ import { bindActionCreators } from 'redux';
 
 import { getPreviewData } from 'ducks/tableMetadata/reducer';
 import { GlobalState } from 'ducks/rootReducer';
-import { logClick } from 'ducks/utilMethods';
 import { PreviewData, PreviewQueryParams, TableMetadata } from 'interfaces';
+import { logClick } from 'utils/analytics';
 import * as Constants from './constants';
 
 // TODO: Use css-modules instead of 'import'

@@ -8,6 +8,7 @@ import { GlobalState } from 'ducks/rootReducer';
 import { emptyLineage } from 'ducks/tableMetadata/reducer';
 import { getColumnLineageLink } from 'config/config-utils';
 import { Lineage, LineageItem, TableMetadata } from 'interfaces/TableMetadata';
+import { logClick } from 'utils/analytics';
 import ColumnLineageLoader from '../ColumnLineageLoader';
 import {
   COLUMN_LINEAGE_LIST_SIZE,
@@ -42,6 +43,18 @@ const getLink = (table) => {
   return `/table_detail/${cluster}/${database}/${schema}/${name}?source=column_lineage`;
 };
 
+const handleLineageClick = (e) => {
+  logClick(e, {
+    target_id: 'column_lineage',
+  });
+};
+
+const handleSeeMoreClick = (e) => {
+  logClick(e, {
+    target_id: 'column_lineage_see_more',
+  });
+};
+
 const renderLineageLinks = (entity, index) => {
   if (index >= COLUMN_LINEAGE_LIST_SIZE) {
     return null;
@@ -53,6 +66,7 @@ const renderLineageLinks = (entity, index) => {
         className="body-link"
         target="_blank"
         rel="noreferrer"
+        onClick={handleLineageClick}
       >
         {entity.schema}.{entity.name}
       </a>
@@ -68,7 +82,13 @@ const LineageList: React.FC<LineageListProps> = ({
   <div className="column-lineage-list">
     <div className="header-row">
       <span className="column-lineage-title">{title}</span>
-      <a href={link} className="body-link" rel="noreferrer" target="_blank">
+      <a
+        href={link}
+        className="body-link"
+        rel="noreferrer"
+        target="_blank"
+        onClick={handleSeeMoreClick}
+      >
         {COLUMN_LINEAGE_MORE_TEXT}
       </a>
     </div>

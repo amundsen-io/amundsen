@@ -3,8 +3,8 @@
 
 import { Middleware } from 'redux';
 
+import { trackEvent } from 'utils/analytics';
 import { RootState } from '../rootReducer';
-import { trackEvent } from '../../utils/analytics';
 
 export const analyticsMiddleware: Middleware<
   {}, // legacy type parameter added to satisfy interface signature

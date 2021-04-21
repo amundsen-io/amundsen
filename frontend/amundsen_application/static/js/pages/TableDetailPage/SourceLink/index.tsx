@@ -7,10 +7,10 @@ import {
   getDescriptionSourceDisplayName,
   getDescriptionSourceIconPath,
 } from 'config/config-utils';
-import { logClick } from 'ducks/utilMethods';
 import AvatarLabel from 'components/AvatarLabel';
 
 import { TableSource } from 'interfaces';
+import { logClick } from 'utils/analytics';
 
 export interface SourceLinkProps {
   tableSource: TableSource;

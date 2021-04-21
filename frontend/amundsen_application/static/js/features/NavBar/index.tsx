@@ -10,11 +10,11 @@ import { connect } from 'react-redux';
 import AppConfig from 'config/config';
 import { LinkConfig } from 'config/config-types';
 import { GlobalState } from 'ducks/rootReducer';
-import { logClick } from 'ducks/utilMethods';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { LoggedInUser } from 'interfaces';
 
+import { logClick } from 'utils/analytics';
 import {
   feedbackEnabled,
   indexUsersEnabled,

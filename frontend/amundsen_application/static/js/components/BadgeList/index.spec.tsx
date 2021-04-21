@@ -8,7 +8,7 @@ import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
 import { Badge } from 'interfaces/Badges';
 
-import * as UtilMethods from 'ducks/utilMethods';
+import * as Analytics from 'utils/analytics';
 
 import Flag from 'components/Flag';
 
@@ -35,7 +35,7 @@ const badges: Badge[] = [
   },
 ];
 
-const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
+const logClickSpy = jest.spyOn(Analytics, 'logClick');
 logClickSpy.mockImplementation(() => null);
 
 const setup = (propOverrides?: Partial<BadgeListProps>) => {
