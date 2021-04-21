@@ -1,0 +1,69 @@
+# The modular source code checker: pep8, pyflakes and co
+# License: MIT
+# Upstream url: http://bitbucket.org/tarek/flake8
+flake8==3.5.0
+
+# A flake8 plugin that helps you write tidier imports.
+# License: ISCL
+# Upstream url: https://pypi.python.org/pypi/flake8-tidy-imports
+flake8-tidy-imports==1.1.0
+
+# A mature full-featured Python testing tool.
+# License: MIT
+# Upstream url: http://pytest.org/
+pytest==3.5.1
+
+# Pytest plugin for measuring coverage.
+# License: MIT
+# Upstream url: https://github.com/pytest-dev/pytest-cov
+pytest-cov==2.5.1
+
+# Mypy is an optional static type checker for Python.
+# License: MIT
+# Upstream url: https://github.com/python/mypy
+mypy==0.782
+
+# Thin-wrapper around the mock package for easier use with py.test.
+# License: MIT
+# Upstream url: https://pypi.python.org/pypi/pytest-mock
+pytest-mock==1.1
+
+# PEP 484
+# License: PSF
+# Upstream url: https://github.com/python/typing
+typing-extensions==3.7.4
+
+# A common package that holds the models deifnition and schemas that are used
+# accross different amundsen repositories.
+amundsen-common>=0.9.0
+amundsen-gremlin>=0.0.7
+
+boto3==1.17.23
+flasgger==0.9.3
+Flask-RESTful==0.3.6
+Flask==1.0.2
+flask-cors==3.0.10
+gremlinpython==3.4.3
+aniso8601==3.0.0
+attrs==19.1.0
+click==6.7
+gremlinpython==3.4.3
+itsdangerous==0.24
+Jinja2>=2.10.1
+jsonschema==2.6.0
+MarkupSafe==1.1 
+pytz==2018.4
+Werkzeug==0.15.5
+wheel==0.33.1
+neo4j==1.7.6
+neotime==1.7.1
+pytz==2018.4
+requests-aws4auth==0.9
+statsd==3.3.0
+apache_atlas==0.0.11
+beaker>=1.10.0
+overrides==2.5
+typed-ast==1.4.2
+isort[colors]~=5.4
+marshmallow>=3.0,<=3.6
+marshmallow3-annotations>=1.0.0

@@ -1,0 +1,3 @@
+include requirements.txt
+include metadata_service/api/swagger_doc/*.yml
+include metadata_service/api/swagger_doc/*/*.yml
