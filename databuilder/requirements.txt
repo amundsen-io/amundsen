@@ -1,0 +1,68 @@
+# The modular source code checker: pep8, pyflakes and co
+# License: MIT
+# Upstream url: http://bitbucket.org/tarek/flake8
+flake8==3.5.0
+
+# A flake8 plugin that helps you write tidier imports.
+# License: ISCL
+# Upstream url: https://pypi.python.org/pypi/flake8-tidy-imports
+flake8-tidy-imports>=1.1.0,<2.0
+freezegun==1.1.0
+
+# A Python utility / library to sort imports.
+# License: MIT
+# Upstream url: https://github.com/PyCQA/isort
+isort[colors]~=5.4
+
+# A mature full-featured Python testing tool.
+# License: MIT
+# Upstream url: http://pytest.org/
+pytest>=3.6.0,<4.0
+
+# Pytest plugin for measuring coverage.
+# License: MIT
+# Upstream url: https://github.com/pytest-dev/pytest-cov
+pytest-cov>=2.5.1,<=2.9
+
+# Rolling backport of unittest.mock for all Pythons
+# License: BSD
+# Upstream url: https://mock.readthedocs.io/en/latest/
+mock>=2.0.0,<3.0
+
+# Thin-wrapper around the mock package for easier use with py.test.
+# License: MIT
+# Upstream url: https://pypi.python.org/pypi/pytest-mock
+pytest-mock>=1.1,<2.0
+
+# Python client for ElasticSearch
+# License: Apache Software License
+# Upstream url: https://pypi.org/project/elasticsearch/
+elasticsearch>=6.2.0,<7.0
+
+atomicwrites==1.1.5
+more-itertools==4.2.0
+pluggy>=0.6.0
+py==1.5.3
+pyhocon==0.3.42
+pyparsing==2.2.0
+sqlalchemy>=1.3.6,<1.4
+wheel==0.31.1
+neo4j-driver==1.7.2
+neotime==1.7.1
+mypy==0.782
+pytz==2018.4
+statsd==3.2.1
+retrying==1.3.3
+unicodecsv==0.14.1,<1.0
+
+httplib2>=0.18.0
+unidecode
+Jinja2>=2.10.0,<2.12
+pandas>=0.21.0,<1.2.0
+
+requests==2.23.0,<3.0
+responses==0.10.6
+
+pyatlasclient==1.1.2
+
+amundsen-rds>=0.0.4
