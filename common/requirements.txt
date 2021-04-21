@@ -1,0 +1,6 @@
+flake8==3.7.8
+mypy==0.812
+pytest>=4.6
+pytest-cov
+pytest-mock
+mock
