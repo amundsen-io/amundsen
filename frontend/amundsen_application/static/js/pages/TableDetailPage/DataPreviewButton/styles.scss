@@ -1,0 +1,56 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+.overlay-trigger {
+  display: inline-block;
+}
+
+.modal-dialog {
+  width: 90%;
+
+  .modal-content {
+    min-height: 90%;
+
+    .modal-title {
+      font-family: $font-family-header;
+      font-size: 20px;
+      font-weight: $font-weight-header-bold;
+    }
+
+    .modal-body {
+      margin: 15px;
+      overflow-y: scroll;
+      padding: 0;
+      text-align: center;
+
+      .grid {
+        display: flex;
+      }
+
+      .grid-column {
+        flex-grow: 1;
+      }
+
+      .grid-header.grid-cell {
+        background-color: $body-bg-secondary;
+        height: 40px;
+      }
+
+      .grid-cell {
+        align-items: center;
+        border-bottom: 1px solid $stroke;
+        display: flex;
+        flex-grow: 1;
+        font-size: 12px;
+        height: 32px;
+        justify-content: center;
+        min-width: 0;
+        padding: 8px;
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+  }
+}
