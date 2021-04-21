@@ -6,3 +6,21 @@ update_configs:
     automerged_updates:
       - match:
           update_type: all
+  - package_manager: "python"
+    directory: "/amundsencommon"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/amundsendatabuilder"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/amundsenfrontendlibrary"
+    update_schedule: "monthly"
+  - package_manager: "javascript"
+    directory: "/amundsenfrontendlibrary/amundsen_application/static/"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/amundsenmetadatalibrary"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/amundsensearchlibrary"
+    update_schedule: "monthly"

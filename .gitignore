@@ -1,8 +1,52 @@
+# Docker data files
 example/backup/
 example/docker/neo4j/plugins/
 example/docker/es_data*
 .local/
 
+# Dev
 .idea/
-venv/
 site/
+
+# Python
+*~
+*.log
+*.pyc
+*.pyo
+*.pyt
+*.pytc
+*.egg-info
+.*.swp
+.DS_Store
+venv/
+venv3/
+.cache/
+build/
+.idea/
+.vscode/
+.coverage
+.mypy_cache
+.pytest_cache
+
+# macOS
+.DS_Store
+
+# Front-end dev
+amundsenfrontendlibrary/amundsen_application/.*/
+amundsenfrontendlibrary/dist/
+npm-debug.log
+amundsenfrontendlibrary/**/env
+node_modules/
+jest
+.coverage
+coverage
+**/coverage.xml
+**/htmlcov/**
+
+# IntelliJ
+*.iml
+/.idea
+
+# Auto-generated source maps from PyCharm
+*/static/dist/webpack.*
+*/static/dist/js/
