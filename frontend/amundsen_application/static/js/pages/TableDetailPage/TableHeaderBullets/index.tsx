@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 
 import { updateSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
-import { logClick } from 'ducks/utilMethods';
+import { logClick } from 'utils/analytics';
 
 import { ResourceType } from 'interfaces/Resources';
 

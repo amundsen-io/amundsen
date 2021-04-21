@@ -11,7 +11,11 @@ import { ResourceType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import BadgeList from 'features/BadgeList';
-import TableListItem, { TableListItemProps } from '.';
+import TableListItem, {
+  TableListItemProps,
+  getLink,
+  generateResourceIconClass,
+} from '.';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
@@ -49,7 +53,7 @@ describe('TableListItem', () => {
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
-    const wrapper = shallow<TableListItem>(<TableListItem {...props} />);
+    const wrapper = shallow(<TableListItem {...props} />);
     return {
       props,
       wrapper,
@@ -58,32 +62,24 @@ describe('TableListItem', () => {
 
   describe('getLink', () => {
     it('getLink returns correct string', () => {
-      const { props, wrapper } = setup();
+      const { props } = setup();
       const { table, logging } = props;
-      expect(wrapper.instance().getLink()).toEqual(
+      expect(getLink(table, logging)).toEqual(
         `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?index=${logging.index}&source=${logging.source}`
       );
     });
   });
 
   describe('generateResourceIconClass', () => {
-    let wrapper;
-    beforeAll(() => {
-      wrapper = setup().wrapper;
-    });
     it('calls getSourceIconClass with given database id', () => {
       const testValue = 'noEffectOnTest';
       const givenResource = ResourceType.table;
-
-      wrapper.instance().generateResourceIconClass(testValue, givenResource);
-
+      generateResourceIconClass(testValue);
       expect(getDBIconClassSpy).toHaveBeenCalledWith(testValue, givenResource);
     });
 
     it('returns the default classes with the correct icon class appended', () => {
-      const iconClass = wrapper
-        .instance()
-        .generateResourceIconClass('noEffectOnTest');
+      const iconClass = generateResourceIconClass('noEffectOnTest');
 
       expect(iconClass).toEqual(`icon resource-icon test-class`);
     });
@@ -113,7 +109,7 @@ describe('TableListItem', () => {
         const startIcon = resourceInfo.find('.resource-icon');
         expect(startIcon.exists()).toBe(true);
         expect(startIcon.props().className).toEqual(
-          wrapper.instance().generateResourceIconClass(props.table.database)
+          generateResourceIconClass(props.table.database)
         );
       });
 

@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 
 import { Issue } from 'interfaces';
 import { getIssues } from 'ducks/issue/reducer';
-import { logClick } from 'ducks/utilMethods';
 import { GetIssuesRequest } from 'ducks/issue/types';
+import { logClick } from 'utils/analytics';
 import ReportTableIssue from '../ReportTableIssue';
 import { NO_DATA_ISSUES_TEXT } from './constants';
 import './styles.scss';

@@ -8,7 +8,7 @@ import { ResourceType, Tag, SearchType } from 'interfaces';
 
 import { updateSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
-import { logClick } from 'ducks/utilMethods';
+import { logClick } from 'utils/analytics';
 
 import './styles.scss';
 

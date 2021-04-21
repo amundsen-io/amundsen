@@ -18,7 +18,6 @@ import {
 } from 'ducks/tableMetadata/types';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
-import { logClick } from 'ducks/utilMethods';
 
 import {
   getDescriptionSourceDisplayName,
@@ -44,6 +43,7 @@ import LoadingSpinner from 'components/LoadingSpinner';
 import EditableSection from 'components/EditableSection';
 import Alert from 'components/Alert';
 
+import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
 
@@ -140,7 +140,7 @@ export class TableDetail extends React.Component<
 
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
-    currentTab: Constants.COLUMN_TAB_KEY,
+    currentTab: Constants.TABLE_TAB.COLUMN,
   };
 
   componentDidMount() {
@@ -251,7 +251,7 @@ export class TableDetail extends React.Component<
           sortBy={sortedBy}
         />
       ),
-      key: Constants.COLUMN_TAB_KEY,
+      key: Constants.TABLE_TAB.COLUMN,
       title: `Columns (${tableData.columns.length})`,
     });
 
@@ -269,7 +269,7 @@ export class TableDetail extends React.Component<
             source={TABLE_SOURCE}
           />
         ),
-        key: Constants.DASHBOARD_TAB_KEY,
+        key: Constants.TABLE_TAB.DASHBOARD,
         title: isLoadingDashboards
           ? loadingTitle
           : `Dashboards (${numRelatedDashboards})`,
@@ -280,14 +280,14 @@ export class TableDetail extends React.Component<
       if (tableLineage.upstream_entities.length > 0) {
         tabInfo.push({
           content: <LineageList items={tableLineage.upstream_entities} />,
-          key: Constants.UPSTREAM_TAB_KEY,
+          key: Constants.TABLE_TAB.UPSTREAM,
           title: `Upstream (${tableLineage.upstream_entities.length})`,
         });
       }
       if (tableLineage.downstream_entities.length > 0) {
         tabInfo.push({
           content: <LineageList items={tableLineage.downstream_entities} />,
-          key: Constants.DOWNSTREAM_TAB_KEY,
+          key: Constants.TABLE_TAB.DOWNSTREAM,
           title: `Downstream (${tableLineage.downstream_entities.length})`,
         });
       }
@@ -296,9 +296,14 @@ export class TableDetail extends React.Component<
     return (
       <TabsComponent
         tabs={tabInfo}
-        defaultTab={Constants.COLUMN_TAB_KEY}
+        defaultTab={Constants.TABLE_TAB.COLUMN}
         onSelect={(key) => {
           this.setState({ currentTab: key });
+          logAction({
+            command: 'click',
+            target_id: 'table_detail_tab',
+            label: key,
+          });
         }}
       />
     );
@@ -467,7 +472,7 @@ export class TableDetail extends React.Component<
               )}
             </aside>
             <main className="right-panel">
-              {currentTab === Constants.COLUMN_TAB_KEY && (
+              {currentTab === Constants.TABLE_TAB.COLUMN && (
                 <ListSortingDropdown
                   options={SORT_CRITERIAS}
                   onChange={this.handleSortingChange}

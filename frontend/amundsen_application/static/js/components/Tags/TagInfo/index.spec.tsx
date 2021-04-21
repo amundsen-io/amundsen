@@ -4,12 +4,12 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import * as UtilMethods from 'ducks/utilMethods';
 import { updateSearchState } from 'ducks/search/reducer';
+import * as Analytics from 'utils/analytics';
 
 import { mapDispatchToProps, TagInfo, TagInfoProps } from '.';
 
-const logClickSpy = jest.spyOn(UtilMethods, 'logClick');
+const logClickSpy = jest.spyOn(Analytics, 'logClick');
 logClickSpy.mockImplementation(() => null);
 
 jest.mock('ducks/search/reducer', () => ({

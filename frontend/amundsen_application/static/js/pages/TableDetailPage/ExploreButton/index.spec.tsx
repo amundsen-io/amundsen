@@ -6,8 +6,8 @@ import { shallow } from 'enzyme';
 
 import * as ConfigUtils from 'config/config-utils';
 import { TableMetadata } from 'interfaces/TableMetadata';
-import { logClick } from 'ducks/utilMethods';
 
+import { logClick } from 'utils/analytics';
 import ExploreButton from '.';
 
 let mockExploreEnabled = true;

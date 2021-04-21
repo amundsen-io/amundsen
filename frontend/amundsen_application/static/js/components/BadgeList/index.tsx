@@ -7,10 +7,9 @@ import { getBadgeConfig } from 'config/config-utils';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 
 import { convertText, CaseType } from 'utils/textUtils';
+import { logClick } from 'utils/analytics';
 
 import { Badge } from 'interfaces/Badges';
-
-import { logClick } from 'ducks/utilMethods';
 
 import './styles.scss';
 

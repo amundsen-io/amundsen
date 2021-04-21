@@ -1,11 +1,18 @@
 import axios from 'axios';
 
 export interface ActionLogParams {
-  command?: string;
+  command: string;
   target_id?: string;
   target_type?: string;
   label?: string;
   location?: string;
+  value?: string;
+}
+
+export interface ClickLogParams {
+  target_id?: string;
+  target_type?: string;
+  label?: string;
   value?: string;
 }
 

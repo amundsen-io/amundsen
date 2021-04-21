@@ -17,7 +17,6 @@ import Table, {
 } from 'components/Table';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 
-import { logAction } from 'ducks/utilMethods';
 import {
   notificationsEnabled,
   getMaxLength,
@@ -36,6 +35,7 @@ import {
 
 import BadgeList from 'features/BadgeList';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
+import { logAction } from 'utils/analytics';
 import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';

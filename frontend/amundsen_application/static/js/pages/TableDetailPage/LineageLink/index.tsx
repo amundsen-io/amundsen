@@ -5,8 +5,8 @@ import * as React from 'react';
 
 import AvatarLabel from 'components/AvatarLabel';
 import AppConfig from 'config/config';
-import { logClick } from 'ducks/utilMethods';
 import { TableMetadata } from 'interfaces/TableMetadata';
+import { logClick } from 'utils/analytics';
 
 export interface LineageLinkProps {
   tableData: TableMetadata;

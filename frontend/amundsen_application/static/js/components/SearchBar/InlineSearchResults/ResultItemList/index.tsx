@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { logClick } from 'ducks/utilMethods';
 import { ResourceType } from 'interfaces';
+import { logClick } from 'utils/analytics';
 
 import { SuggestedResult } from '..';
 import ResultItem from './ResultItem';
