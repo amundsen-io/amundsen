@@ -8,6 +8,7 @@ from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Source,
@@ -1057,6 +1058,65 @@ class TestNeo4jProxy(unittest.TestCase):
             expected = '(resource:Dashboard {key: $resource_key})-[r1:FOLLOWED_BY]->(usr:User {key: $user_key})-' \
                        '[r2:FOLLOW]->(resource:Dashboard {key: $resource_key})'
             self.assertEqual(expected, actual)
+
+    def test_get_lineage_no_lineage_information(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            key = "alpha"
+            mock_execute.return_value.single.side_effect = [{}]
+
+            expected = Lineage(
+                key=key,
+                upstream_entities=[],
+                downstream_entities=[],
+                direction="both",
+                depth=1
+            )
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_lineage(id=key, resource_type=ResourceType.Table, direction="both", depth=1)
+            self.assertEqual(expected, actual)
+
+    def test_get_lineage_success(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            key = "alpha"
+            mock_execute.return_value.single.side_effect = [{
+                "upstream_entities": [
+                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100},
+                    {"key": "gamma", "source": "dyno", "level": 1,
+                     "badges":
+                        [
+                            {"key": "badge1", "category": "default"},
+                            {"key": "badge2", "category": "default"},
+                        ],
+                     "usage": 200},
+                ],
+                "downstream_entities": [
+                    {"key": "delta", "source": "gold", "level": 1, "badges": [], "usage": 50},
+                ]
+            }]
+
+            expected = Lineage(
+                key=key,
+                upstream_entities=[
+                    LineageItem(**{"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100}),
+                    LineageItem(**{"key": "gamma", "source": "dyno", "level": 1,
+                                   "badges":
+                                       [
+                                           Badge(**{"badge_name": "badge1", "category": "default"}),
+                                           Badge(**{"badge_name": "badge2", "category": "default"})
+                                       ],
+                                   "usage": 200}),
+                ],
+                downstream_entities=[
+                    LineageItem(**{"key": "delta", "source": "gold", "level": 1, "badges": [], "usage": 50})
+                ],
+                direction="both",
+                depth=1
+            )
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_lineage(id=key, resource_type=ResourceType.Table, direction="both", depth=1)
+            self.assertEqual(expected.__repr__(), actual.__repr__())
 
 
 if __name__ == '__main__':
