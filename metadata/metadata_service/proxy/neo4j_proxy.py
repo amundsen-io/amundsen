@@ -5,18 +5,17 @@ import logging
 import textwrap
 import time
 from random import randint
-from typing import (Any, Dict, List, Optional, Tuple, Union,  # noqa: F401
-                    no_type_check)
+from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
+                    Union, no_type_check)
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
-from amundsen_common.models.lineage import Lineage
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Application
-from amundsen_common.models.table import Badge as TableBadge
-from amundsen_common.models.table import (Column, ProgrammaticDescription,
-                                          Reader, Source, Stat, Table, Tag,
-                                          User, Watermark)
+from amundsen_common.models.table import (Application, Badge, Column,
+                                          ProgrammaticDescription, Reader,
+                                          Source, Stat, Table, Tag, User,
+                                          Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -25,7 +24,6 @@ from flask import current_app, has_app_context
 from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service import config
-from metadata_service.entity.badge import Badge
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.dashboard_query import \
@@ -160,9 +158,7 @@ class Neo4jProxy(BaseProxy):
                 )
                 col_stats.append(col_stat)
 
-            column_badges = []
-            for badge in tbl_col_neo4j_record['col_badges']:
-                column_badges.append(TableBadge(badge_name=badge['key'], category=badge['category']))
+            column_badges = self._make_badges(tbl_col_neo4j_record['col_badges'])
 
             last_neo4j_record = tbl_col_neo4j_record
             col = Column(name=tbl_col_neo4j_record['col']['name'],
@@ -256,14 +252,8 @@ class Neo4jProxy(BaseProxy):
                                  tag_type=record['tag_type'])
                 tags.append(tag_result)
 
-        badges = []
         # this is for any badges added with BadgeAPI instead of TagAPI
-        if table_records.get('badge_records'):
-            badge_records = table_records['badge_records']
-            for record in badge_records:
-                badge_result = TableBadge(badge_name=record['key'],
-                                          category=record['category'])
-                badges.append(badge_result)
+        badges = self._make_badges(table_records.get('badge_records'))
 
         application_record = table_records['application']
         if application_record is not None:
@@ -334,6 +324,19 @@ class Neo4jProxy(BaseProxy):
             # TODO: Add support on statsd
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Cypher query execution elapsed for {} seconds'.format(time.time() - start))
+
+    # noinspection PyMethodMayBeStatic
+    def _make_badges(self, badges: Iterable) -> List[Badge]:
+        """
+        Generates a list of Badges objects
+
+        :param badges: A list of badges of a table or a column
+        :return: a list of Badge objects
+        """
+        _badges = []
+        for badge in badges:
+            _badges.append(Badge(badge_name=badge["key"], category=badge["category"]))
+        return _badges
 
     @timer_with_counter
     def _get_resource_description(self, *,
@@ -1367,8 +1370,7 @@ class Neo4jProxy(BaseProxy):
         owners = [self._build_user_from_record(record=owner) for owner in dashboard_record['owners']]
         tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in dashboard_record['tags']]
 
-        badges = [TableBadge(badge_name=badge['key'],
-                             category=badge['category']) for badge in dashboard_record['badges']]
+        badges = self._make_badges(dashboard_record['badges'])
 
         chart_names = [chart['name'] for chart in dashboard_record['charts'] if 'name' in chart and chart['name']]
         # TODO Deprecate query_names in favor of queries after several releases from v2.5.0
@@ -1470,7 +1472,112 @@ class Neo4jProxy(BaseProxy):
             results.append(DashboardSummary(**record))
         return {'dashboards': results}
 
+    @timer_with_counter
     def get_lineage(self, *,
-                    id: str,
-                    resource_type: ResourceType, direction: str, depth: int) -> Lineage:
-        pass
+                    id: str, resource_type: ResourceType, direction: str, depth: int = 1) -> Lineage:
+        """
+        Retrieves the lineage information for the specified resource type.
+
+        :param id: key of a table or a column
+        :param resource_type: Type of the entity for which lineage is being retrieved
+        :param direction: Whether to get the upstream/downstream or both directions
+        :param depth: depth or level of lineage information
+        :return: The Lineage object with upstream & downstream lineage items
+        """
+
+        get_both_lineage_query = textwrap.dedent(u"""
+        MATCH (source:{resource} {{key: $query_key}})
+        OPTIONAL MATCH (source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
+        OPTIONAL MATCH (source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
+        WITH downstream_entity, upstream_entity, downstream_len, upstream_len
+        OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
+        OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
+        WITH CASE WHEN downstream_badge IS NULL THEN []
+        ELSE collect(distinct {{key:downstream_badge.key,category:downstream_badge.category}})
+        END AS downstream_badges, CASE WHEN upstream_badge IS NULL THEN []
+        ELSE collect(distinct {{key:upstream_badge.key,category:upstream_badge.category}})
+        END AS upstream_badges, upstream_entity, downstream_entity, upstream_len, downstream_len
+        OPTIONAL MATCH (downstream_entity:{resource})-[downstream_read:READ_BY]->(:User)
+        WITH upstream_entity, downstream_entity, upstream_len, downstream_len,
+        downstream_badges, upstream_badges, sum(downstream_read.read_count) as downstream_read_count
+        OPTIONAL MATCH (upstream_entity:{resource})-[upstream_read:READ_BY]->(:User)
+        WITH upstream_entity, downstream_entity, upstream_len, downstream_len,
+        downstream_badges, upstream_badges, downstream_read_count,
+        sum(upstream_read.read_count) as upstream_read_count
+        WITH CASE WHEN upstream_len IS NULL THEN []
+        ELSE COLLECT(distinct{{level:SIZE(upstream_len), source:split(upstream_entity.key,'://')[0],
+        key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count}})
+        END AS upstream_entities, CASE WHEN downstream_len IS NULL THEN []
+        ELSE COLLECT(distinct{{level:SIZE(downstream_len), source:split(downstream_entity.key,'://')[0],
+        key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count}})
+        END AS downstream_entities RETURN downstream_entities, upstream_entities
+        """).format(depth=depth, resource=resource_type.name)
+
+        get_upstream_lineage_query = textwrap.dedent(u"""
+        MATCH (source:{resource} {{key: $query_key}})
+        OPTIONAL MATCH (source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
+        WITH upstream_entity, upstream_len
+        OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
+        WITH CASE WHEN upstream_badge IS NULL THEN []
+        ELSE collect(distinct {{key:upstream_badge.key,category:upstream_badge.category}})
+        END AS upstream_badges, upstream_entity, upstream_len
+        OPTIONAL MATCH (upstream_entity:{resource})-[upstream_read:READ_BY]->(:User)
+        WITH upstream_entity, upstream_len, upstream_badges,
+        sum(upstream_read.read_count) as upstream_read_count
+        WITH CASE WHEN upstream_len IS NULL THEN []
+        ELSE COLLECT(distinct{{level:SIZE(upstream_len), source:split(upstream_entity.key,'://')[0],
+        key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count}})
+        END AS upstream_entities RETURN upstream_entities
+        """).format(depth=depth, resource=resource_type.name)
+
+        get_downstream_lineage_query = textwrap.dedent(u"""
+        MATCH (source:{resource} {{key: $query_key}})
+        OPTIONAL MATCH (source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
+        WITH downstream_entity, downstream_len
+        OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
+        WITH CASE WHEN downstream_badge IS NULL THEN []
+        ELSE collect(distinct {{key:downstream_badge.key,category:downstream_badge.category}})
+        END AS downstream_badges, downstream_entity, downstream_len
+        OPTIONAL MATCH (downstream_entity:{resource})-[downstream_read:READ_BY]->(:User)
+        WITH downstream_entity, downstream_len, downstream_badges,
+        sum(downstream_read.read_count) as downstream_read_count
+        WITH CASE WHEN downstream_len IS NULL THEN []
+        ELSE COLLECT(distinct{{level:SIZE(downstream_len), source:split(downstream_entity.key,'://')[0],
+        key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count}})
+        END AS downstream_entities RETURN downstream_entities
+        """).format(depth=depth, resource=resource_type.name)
+
+        if direction == 'upstream':
+            lineage_query = get_upstream_lineage_query
+
+        elif direction == 'downstream':
+            lineage_query = get_downstream_lineage_query
+
+        else:
+            lineage_query = get_both_lineage_query
+
+        records = self._execute_cypher_query(statement=lineage_query,
+                                             param_dict={'query_key': id})
+        result = records.single()
+
+        downstream_tables = []
+        upstream_tables = []
+
+        for downstream in result.get("downstream_entities") or []:
+            downstream_tables.append(LineageItem(**{"key": downstream["key"],
+                                                    "source": downstream["source"],
+                                                    "level": downstream["level"],
+                                                    "badges": self._make_badges(downstream["badges"]),
+                                                    "usage": downstream.get("usage", 0)}))
+
+        for upstream in result.get("upstream_entities") or []:
+            upstream_tables.append(LineageItem(**{"key": upstream["key"],
+                                                  "source": upstream["source"],
+                                                  "level": upstream["level"],
+                                                  "badges": self._make_badges(upstream["badges"]),
+                                                  "usage": upstream.get("usage", 0)}))
+
+        return Lineage(**{"key": id,
+                          "upstream_entities": upstream_tables,
+                          "downstream_entities": downstream_tables,
+                          "direction": direction, "depth": depth})
