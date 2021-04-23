@@ -1,3 +1,21 @@
+<!---
+Provide a general summary of your changes in the Title above
+Include one of these prefixes:
+  fix – Fixes an unexpected problem or unintended behavior
+  feat – Adds a new feature
+  docs – A documentation improvement task
+  build – A task related to our build system
+  ci – A task related to our ci system
+  perf – A performance improvement
+  refactor – A code refactor PR
+  style – A task about styling
+  test – A PR that improve test coverage
+  chore – A regular maintenance chore or task
+  other – Any other kind of PR
+
+Example: docs: Improves the documentation on...
+-->
+
 ### Summary of Changes
 
 _Include a summary of changes then remove this line_
