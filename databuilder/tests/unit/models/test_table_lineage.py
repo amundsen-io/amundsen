@@ -27,23 +27,13 @@ class TestTableLineage(unittest.TestCase):
 
     def setUp(self) -> None:
         super(TestTableLineage, self).setUp()
-        self.table_lineage = TableLineage(db_name='hive',
-                                          schema=SCHEMA,
-                                          table_name=TABLE,
-                                          cluster=CLUSTER,
+        self.table_lineage = TableLineage(table_key=f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}',
                                           downstream_deps=['hive://default.test_schema/test_table1',
                                                            'hive://default.test_schema/test_table2'])
 
         self.start_key = f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}'
         self.end_key1 = f'{DB}://{CLUSTER}.test_schema/test_table1'
         self.end_key2 = f'{DB}://{CLUSTER}.test_schema/test_table2'
-
-    def test_get_table_model_key(self) -> None:
-        metadata = self.table_lineage.get_table_model_key(db=DB,
-                                                          cluster=CLUSTER,
-                                                          schema=SCHEMA,
-                                                          table=TABLE)
-        self.assertEqual(metadata, 'hive://default.base/test')
 
     def test_create_nodes(self) -> None:
         actual = []
