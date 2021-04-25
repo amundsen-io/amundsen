@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import re
+from abc import abstractmethod
 from typing import (
     Iterator, List, Union,
 )
@@ -9,32 +9,18 @@ from typing import (
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
-class TableLineage(GraphSerializable):
+class BaseLineage(GraphSerializable):
     """
-    Table Lineage Model. It won't create nodes but create upstream/downstream rels.
+    Generic Lineage Interface
     """
     LABEL = 'Lineage'
-    KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/'
-    ORIGIN_DEPENDENCY_RELATION_TYPE = 'UPSTREAM'
-    DEPENDENCY_ORIGIN_RELATION_TYPE = 'DOWNSTREAM'
+    ORIGIN_DEPENDENCY_RELATION_TYPE = 'HAS_DOWNSTREAM'
+    DEPENDENCY_ORIGIN_RELATION_TYPE = 'HAS_UPSTREAM'
 
-    def __init__(self,
-                 db_name: str,
-                 schema: str,
-                 table_name: str,
-                 cluster: str,
-                 downstream_deps: List = None,
-                 ) -> None:
-        self.db = db_name
-        self.schema = schema
-        self.table = table_name
-        self.cluster = cluster if cluster else 'gold'
-        # a list of downstream dependencies, each of which will follow
-        # the same key
-        self.downstream_deps = downstream_deps or []
+    def __init__(self) -> None:
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_rel_iterator()
 
@@ -51,14 +37,6 @@ class TableLineage(GraphSerializable):
         except StopIteration:
             return None
 
-    def get_table_model_key(self,
-                            db: str,
-                            cluster: str,
-                            schema: str,
-                            table: str
-                            ) -> str:
-        return f'{db}://{cluster}.{schema}/{table}'
-
     def _create_node_iterator(self) -> Iterator[GraphNode]:
         """
         It won't create any node for this model
@@ -67,37 +45,77 @@ class TableLineage(GraphSerializable):
         return
         yield
 
+    @abstractmethod
+    def _create_rel_iterator(self) -> Iterator[GraphRelationship]:
+        pass
+
+
+class TableLineage(BaseLineage):
+    """
+    Table Lineage Model. It won't create nodes but create upstream/downstream rels.
+    """
+
+    def __init__(self,
+                 table_key: str,
+                 downstream_deps: List = None,  # List of table keys
+                 ) -> None:
+        self.table_key = table_key
+        # a list of downstream dependencies, each of which will follow
+        # the same key
+        self.downstream_deps = downstream_deps or []
+        super().__init__()
+
     def _create_rel_iterator(self) -> Iterator[GraphRelationship]:
         """
         Create relations between source table and all the downstream tables
         :return:
         """
-        for downstream_tab in self.downstream_deps:
-            # every deps should follow '{db}://{cluster}.{schema}/{table}'
-            # todo: if we change the table uri, we should change here.
-            m = re.match('(\w+)://(\w+)\.(\w+)\/(\w+)', downstream_tab)
-            if m:
-                # if not match, skip those records
-                relationship = GraphRelationship(
-                    start_key=self.get_table_model_key(
-                        db=self.db,
-                        cluster=self.cluster,
-                        schema=self.schema,
-                        table=self.table
-                    ),
-                    start_label=TableMetadata.TABLE_NODE_LABEL,
-                    end_label=TableMetadata.TABLE_NODE_LABEL,
-                    end_key=self.get_table_model_key(
-                        db=m.group(1),
-                        cluster=m.group(2),
-                        schema=m.group(3),
-                        table=m.group(4)
-                    ),
-                    type=TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
-                    reverse_type=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE,
-                    attributes={}
-                )
-                yield relationship
+        for downstream_key in self.downstream_deps:
+            relationship = GraphRelationship(
+                start_key=self.table_key,
+                start_label=TableMetadata.TABLE_NODE_LABEL,
+                end_label=TableMetadata.TABLE_NODE_LABEL,
+                end_key=downstream_key,
+                type=TableLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
+                reverse_type=TableLineage.DEPENDENCY_ORIGIN_RELATION_TYPE,
+                attributes={}
+            )
+            yield relationship
 
     def __repr__(self) -> str:
-        return f'TableLineage({self.db!r}, {self.cluster!r}, {self.schema!r}, {self.table!r})'
+        return f'TableLineage({self.table_key!r})'
+
+
+class ColumnLineage(BaseLineage):
+    """
+    Column Lineage Model. It won't create nodes but create upstream/downstream rels.
+    """
+    def __init__(self,
+                 column_key: str,
+                 downstream_deps: List = None,  # List of column keys
+                 ) -> None:
+        self.column_key = column_key
+        # a list of downstream dependencies, each of which will follow
+        # the same key
+        self.downstream_deps = downstream_deps or []
+        super().__init__()
+
+    def _create_rel_iterator(self) -> Iterator[GraphRelationship]:
+        """
+        Create relations between source column and all the downstream columns
+        :return:
+        """
+        for downstream_key in self.downstream_deps:
+            relationship = GraphRelationship(
+                start_key=self.column_key,
+                start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                end_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                end_key=downstream_key,
+                type=ColumnLineage.ORIGIN_DEPENDENCY_RELATION_TYPE,
+                reverse_type=ColumnLineage.DEPENDENCY_ORIGIN_RELATION_TYPE,
+                attributes={}
+            )
+            yield relationship
+
+    def __repr__(self) -> str:
+        return f'ColumnLineage({self.column_key!r})'

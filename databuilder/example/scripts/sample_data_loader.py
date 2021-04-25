@@ -30,7 +30,7 @@ from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
 
 from databuilder.extractor.csv_extractor import (
-    CsvExtractor, CsvTableBadgeExtractor, CsvTableColumnExtractor,
+    CsvColumnLineageExtractor, CsvExtractor, CsvTableBadgeExtractor, CsvTableColumnExtractor, CsvTableLineageExtractor,
 )
 from databuilder.extractor.es_last_updated_extractor import EsLastUpdatedExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
@@ -158,6 +158,62 @@ def run_table_column_job(table_path, column_path):
         'publisher.neo4j.neo4j_password': neo4j_password,
         'publisher.neo4j.neo4j_encrypted': False,
         'publisher.neo4j.job_publish_tag': 'unique_tag',  # should use unique tag here like {ds}
+    })
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=Neo4jCsvPublisher())
+    job.launch()
+
+
+def run_table_lineage_job(table_lineage_path):
+    tmp_folder = '/var/tmp/amundsen/table_column'
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
+    extractor = CsvTableLineageExtractor()
+    csv_loader = FsNeo4jCSVLoader()
+    task = DefaultTask(extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job_config = ConfigFactory.from_dict({
+        'extractor.csvtablelineage.table_lineage_file_location': table_lineage_path,
+        'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
+        'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,
+        'loader.filesystem_csv_neo4j.delete_created_directories': True,
+        'publisher.neo4j.node_files_directory': node_files_folder,
+        'publisher.neo4j.relation_files_directory': relationship_files_folder,
+        'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
+        'publisher.neo4j.neo4j_user': neo4j_user,
+        'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.neo4j_encrypted': False,
+        'publisher.neo4j.job_publish_tag': 'lineage_unique_tag',  # should use unique tag here like {ds}
+    })
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=Neo4jCsvPublisher())
+    job.launch()
+
+
+def run_column_lineage_job(column_lineage_path):
+    tmp_folder = '/var/tmp/amundsen/table_column'
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
+    extractor = CsvColumnLineageExtractor()
+    csv_loader = FsNeo4jCSVLoader()
+    task = DefaultTask(extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job_config = ConfigFactory.from_dict({
+        'extractor.csvcolumnlineage.column_lineage_file_location': column_lineage_path,
+        'loader.filesystem_csv_neo4j.node_dir_path': node_files_folder,
+        'loader.filesystem_csv_neo4j.relationship_dir_path': relationship_files_folder,
+        'loader.filesystem_csv_neo4j.delete_created_directories': True,
+        'publisher.neo4j.node_files_directory': node_files_folder,
+        'publisher.neo4j.relation_files_directory': relationship_files_folder,
+        'publisher.neo4j.neo4j_endpoint': neo4j_endpoint,
+        'publisher.neo4j.neo4j_user': neo4j_user,
+        'publisher.neo4j.neo4j_password': neo4j_password,
+        'publisher.neo4j.neo4j_encrypted': False,
+        'publisher.neo4j.job_publish_tag': 'lineage_unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -302,6 +358,8 @@ if __name__ == "__main__":
 
     run_table_column_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_col.csv')
     run_table_badge_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_badges.csv')
+    run_table_lineage_job('example/sample_data/sample_table_lineage.csv')
+    run_column_lineage_job('example/sample_data/sample_column_lineage.csv')
     run_csv_job('example/sample_data/sample_table_column_stats.csv', 'test_table_column_stats',
                 'databuilder.models.table_stats.TableColumnStats')
     run_csv_job('example/sample_data/sample_table_programmatic_source.csv', 'test_programmatic_source',
