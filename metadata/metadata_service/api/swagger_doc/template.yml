@@ -307,6 +307,33 @@ components:
           type: integer
           description: 'Last time at which neo4j was updated (epoch)'
           example: '1577836800'
+    StatisticsDetail:
+      type: object
+      properties:
+        number_of_tables:
+          type: integer
+          description: 'Total number of tables in the system'
+          example: '1'
+        number_of_documented_tables:
+          type: integer
+          description: 'Total number of tables that have description at the table level'
+          example: '1'
+        number_of_documented_cols:
+          type: integer
+          description: 'Number of columns that hold documentation'
+          example: '1'
+        number_of_owners:
+          type: integer
+          description: 'Number of users who have been assigned as owners for tables'
+          example: '1'
+        number_of_tables_with_owners:
+          type: integer
+          description: 'Number of tables that have at least one assigned owner'
+          example: '1'
+        number_of_documented_and_owned_tables:
+          type: integer
+          description: 'Total number of tables that have both owner and description at the table level'
+          example: '1'
     DashboardDetail:
       type: object
       properties:

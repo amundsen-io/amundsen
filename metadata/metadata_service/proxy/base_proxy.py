@@ -108,6 +108,10 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def get_statistics(self) -> Dict[str, Any]:
+        pass
+
+    @abstractmethod
     def get_tags(self) -> List:
         pass
 

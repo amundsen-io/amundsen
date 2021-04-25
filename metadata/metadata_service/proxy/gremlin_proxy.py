@@ -1462,6 +1462,10 @@ class AbstractGremlinProxy(BaseProxy):
                      key=AMUNDSEN_TIMESTAMP_KEY).values('latest_timestamp').toList()
         return _safe_get(results, transform=int)
 
+    def get_statistics(self) -> Dict[str, Any]:
+        # Not implemented
+        pass
+
     @timer_with_counter
     @overrides
     def get_tags(self) -> List:

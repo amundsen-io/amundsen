@@ -895,6 +895,10 @@ class AtlasProxy(BaseProxy):
 
         return date or 0
 
+    def get_statistics(self) -> Dict[str, Any]:
+        # Not implemented
+        pass
+
     def get_tags(self) -> List:
         """
         Fetch all the glossary terms from atlas, along with their assigned entities as this
