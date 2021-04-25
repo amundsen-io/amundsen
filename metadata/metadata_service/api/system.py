@@ -25,3 +25,20 @@ class Neo4jDetailAPI(Resource):
             return {'neo4j_latest_timestamp': int(last_updated_ts)}, HTTPStatus.OK
         else:
             return {'message': 'neo4j / es hasnt been updated / indexed.'}, HTTPStatus.NO_CONTENT
+
+
+class StatisticsMetricsAPI(Resource):
+    """
+    API to fetch system statistic metrics from the database
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/system/statistics_get.yml')
+    def get(self) -> Iterable[Union[Mapping, int, None]]:
+        statistics = self.client.get_statistics()
+        if statistics is not {}:
+            return {'Statistics': statistics}, HTTPStatus.OK
+        else:
+            return {'message': 'There was an error with retreiving the metrics of Neo4j'}, HTTPStatus.NO_CONTENT

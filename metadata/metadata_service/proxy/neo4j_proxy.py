@@ -834,6 +834,45 @@ class Neo4jProxy(BaseProxy):
             return None
 
     @timer_with_counter
+    def get_statistics(self) -> Dict[str, Any]:
+        """
+        API method to fetch statistics metrics for neo4j
+        :return: dictionary of statistics
+        """
+        query = textwrap.dedent("""
+        MATCH (table_node:Table) with count(table_node) as number_of_tables
+        MATCH p=(item_node)-[r:DESCRIPTION]->(description_node)
+        WHERE size(description_node.description)>2 and exists(item_node.is_view)
+        with count(item_node) as number_of_documented_tables, number_of_tables
+        MATCH p=(item_node)-[r:DESCRIPTION]->(description_node)
+        WHERE  size(description_node.description)>2 and exists(item_node.sort_order)
+        with count(item_node) as number_of_documented_cols, number_of_documented_tables, number_of_tables
+        MATCH p=(table_node)-[r:OWNER]->(user_node) with count(distinct table_node) as number_of_tables_with_owners,
+        count(distinct user_node) as number_of_owners, number_of_documented_cols,
+        number_of_documented_tables, number_of_tables
+        MATCH (item_node)-[:DESCRIPTION]->(description_node)
+        WHERE  size(description_node.description)>2 and exists(item_node.is_view)
+        MATCH  (item_node)-[:OWNER]->(user_node)
+        with count(item_node) as number_of_documented_and_owned_tables,
+        number_of_tables_with_owners, number_of_owners, number_of_documented_cols,
+        number_of_documented_tables, number_of_tables
+        Return number_of_tables, number_of_documented_tables, number_of_documented_cols,
+        number_of_owners, number_of_tables_with_owners, number_of_documented_and_owned_tables
+        """)
+        LOGGER.info('Getting Neo4j Statistics')
+        records = self._execute_cypher_query(statement=query,
+                                             param_dict={})
+        for record in records:
+            neo4j_statistics = {'number_of_tables': record['number_of_tables'],
+                                'number_of_documented_tables': record['number_of_documented_tables'],
+                                'number_of_documented_cols': record['number_of_documented_cols'],
+                                'number_of_owners': record['number_of_owners'],
+                                'number_of_tables_with_owners': record['number_of_tables_with_owners'],
+                                'number_of_documented_and_owned_tables': record['number_of_documented_and_owned_tables']
+                                }
+            return neo4j_statistics
+        return {}
+
     @_CACHE.cache('_get_global_popular_tables_uris', expire=_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
     def _get_global_popular_tables_uris(self, num_entries: int) -> List[str]:
         """

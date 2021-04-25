@@ -537,6 +537,19 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertIsNone(neo4j_last_updated_ts)
 
+    def test_get_statistics(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = [
+                {'number_of_tables': '2', 'number_of_documented_tables': '1', 'number_of_documented_cols': '1',
+                 'number_of_owners': '1', 'number_of_tables_with_owners': '1',
+                 'number_of_documented_and_owned_tables': '1'}]
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_statistics = neo4j_proxy.get_statistics()
+            self.assertEqual(neo4j_statistics, {'number_of_tables': '2', 'number_of_documented_tables': '1',
+                                                'number_of_documented_cols': '1', 'number_of_owners': '1',
+                                                'number_of_tables_with_owners': '1',
+                                                'number_of_documented_and_owned_tables': '1'})
+
     def test_get_popular_tables(self) -> None:
         # Test cache hit for global popular tables
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -889,7 +902,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'recent_view_count': 0,
                     'owners': [],
                     'tags': [],
-                    'badges':[],
+                    'badges': [],
                     'charts': [],
                     'queries': [],
                     'tables': []
