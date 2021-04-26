@@ -9,9 +9,9 @@
 
 Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover South Pole.
 
-The frontend service leverages a separate [search service](https://github.com/lyft/amundsensearchlibrary) for allowing users to search for data resources, and a separate [metadata service](https://github.com/lyft/amundsenmetadatalibrary) for viewing and editing metadata for a given resource. It is a Flask application with a React frontend.
+The frontend service leverages a separate [search service](./../search) for allowing users to search for data resources, and a separate [metadata service](./../metadata) for viewing and editing metadata for a given resource. It is a Flask application with a React frontend.
 
-For information about Amundsen and our other services, visit the [main repository](https://github.com/lyft/amundsen#amundsen) `README.md`. Please also see our instructions for a [quick start](https://github.com/lyft/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/lyft/amundsen/blob/master/docs/architecture.md#architecture).
+For information about Amundsen and our other services, refer to this [README.md](./../README.md). Please also see our instructions for a [quick start](./../docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](./../docs/architecture.md#architecture).
 
 ## Requirements
 - Python >= 3.6
