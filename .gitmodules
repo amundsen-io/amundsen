@@ -1,7 +1,3 @@
-[submodule "amundsendatabuilder"]
-	path = amundsendatabuilder
-	url = https://github.com/amundsen-io/amundsendatabuilder
-	branch = master
 [submodule "amundsenfrontendlibrary"]
 	path = amundsenfrontendlibrary
 	url = https://github.com/amundsen-io/amundsenfrontendlibrary
