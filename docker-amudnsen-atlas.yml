@@ -1,0 +1,63 @@
+version: '3'
+services:
+  atlas:
+    # the image comes from https://github.com/ing-bank/rokku-dev-apache-atlas
+    # it might take some time for Atlas to start
+    image: wbaa/rokku-dev-apache-atlas:0.1.5
+    container_name: atlas
+    ports:
+      - 21000:21000
+    networks:
+      - amundsennet
+    environment:
+      - ATLAS_KICKSTART_AMUNDSEN=true
+  amundsensearch:
+    build:
+      context: ./search
+      dockerfile: public.Dockerfile
+    container_name: amundsensearch
+    ports:
+      - 5001:5001
+    environment:
+      - CREDENTIALS_PROXY_USER=admin
+      - CREDENTIALS_PROXY_PASSWORD=admin
+      - PROXY_ENDPOINT=http://atlas:21000
+      - PROXY_CLIENT=ATLAS
+    networks:
+      - amundsennet
+  amundsenmetadata:
+    build:
+      context: ./metadata
+      dockerfile: public.Dockerfile
+    container_name: amundsenmetadata
+    ports:
+      - 5002:5002
+    networks:
+      - amundsennet
+    environment:
+      - CREDENTIALS_PROXY_USER=admin
+      - CREDENTIALS_PROXY_PASSWORD=admin
+      - PROXY_HOST=atlas
+      - PROXY_PORT=21000
+      - PROXY_ENCRYPTED=False
+      - PROXY_CLIENT=ATLAS
+  amundsenfrontend:
+    build:
+      context: ./frontend
+      args:
+        SEARCHSERVICE_BASE: http://amundsensearch:5001
+        METADATASERVICE_BASE: http://amundsenmetadata:5002
+      dockerfile: local.Dockerfile
+    container_name: amundsenfrontend
+    depends_on:
+      - amundsenmetadata
+      - amundsensearch
+    ports:
+      - 5000:5000
+    networks:
+      - amundsennet
+    environment:
+      - METADATASERVICE_BASE=http://amundsenmetadata:5002
+      - SEARCHSERVICE_BASE=http://amundsensearch:5001
+networks:
+  amundsennet:
