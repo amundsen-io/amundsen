@@ -40,13 +40,13 @@ Amundsen is a data discovery and metadata engine for improving the productivity 
 
 Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/). It includes three microservices, one data ingestion library and one common library.
 
-- [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenfrontendlibrary.svg" />
-- [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsensearchlibrary.svg" />
-- [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenmetadatalibrary.svg" />
-- [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
-  Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
-  or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsendatabuilder.svg" />
-- [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsencommon.svg" />
+- [amundsenfrontendlibrary](/frontend): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenfrontendlibrary.svg" />
+- [amundsensearchlibrary](/search): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsensearchlibrary.svg" />
+- [amundsenmetadatalibrary](/metadata): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenmetadatalibrary.svg" />
+- [amundsendatabuilder](/databuilder): Data ingestion library for building metadata graph and search index.
+  Users could either load the data with [a python script](/databuilder/example/scripts/sample_data_loader.py) with the library
+  or with an [Airflow DAG](/databuilder/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsendatabuilder.svg" />
+- [amundsencommon](/common): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsencommon.svg" />
 - [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsengremlin.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsengremlin.svg" />
 - [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenrds.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenrds.svg" />
 
@@ -91,15 +91,15 @@ Please note that the mock images only served as demonstration purpose.
 ## Get Involved in the Community
 
 Want help or want to help?
-Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](https://github.com/amundsen-io/amundsen/blob/master/SECURITY.md).
+Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](./CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](./SECURITY.md).
 
 ## Getting Started
 
-Please visit the Amundsen installation documentation for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](./docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
-Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
+Please visit [Architecture](./docs/architecture.md#architecture) for Amundsen architecture overview.
 
 ## Supported Entities
 
@@ -147,11 +147,11 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 ## Installation
 
-Please visit [Installation guideline](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md) on how to install Amundsen.
+Please visit [Installation guideline](./docs/installation.md) on how to install Amundsen.
 
 ## Roadmap
 
-Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
+Please visit [Roadmap](./docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
 
 ## Blog Posts and Interviews
 

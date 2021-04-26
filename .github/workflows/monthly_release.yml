@@ -1,5 +1,4 @@
 name: Monthly Release
-
 on:
   schedule:
     - cron: 0 0 1 * *
@@ -8,12 +7,14 @@ on:
       description: "Log level"
       required: true
       default: "warning"
-
 jobs:
   release:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        library: ['common', 'databuilder', 'frontend', 'metadata', 'search']
     env:
-      BRANCH_NAME: new-release-${{ github.run_id }}
+      BRANCH_NAME: new-release-${{ matrix.library }}-${{ github.run_id }}
     steps:
       - uses: actions/setup-python@v2
         with:
@@ -31,18 +32,19 @@ jobs:
           semantic-release version
           echo ::set-output name=version::$(semantic-release print-version --current)
           semantic-release changelog > './CHANGELOG.md'
+        working-directory: ./${{ matrix.library }}
       - name: Create release pull request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Bumped version to ${{ steps.semantic-release.outputs.version }}
+          commit-message: Bumped ${{ matrix.library }} version to ${{ steps.semantic-release.outputs.version }}
           committer: github-actions <github-actions@github.com>
           author: github-actions <github-actions@github.com>
           signoff: true
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: true
           title: |
-            chore: Bumped version for release ${{ steps.semantic-release.outputs.version }}
+            chore: Bumped ${{ matrix.library }} version for release ${{ steps.semantic-release.outputs.version }}
           body: |
-            Bumped version to ${{ steps.semantic-release.outputs.version }}
+            Bumped ${{ matrix.library }} version to ${{ steps.semantic-release.outputs.version }}
           team-reviewers: amundsen-io/amundsen-committers
