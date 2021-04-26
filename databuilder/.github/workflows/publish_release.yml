@@ -1,0 +1,43 @@
+name: Publish Monthly Release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      # triggered when version is bumped
+      - "setup.py"
+      - "CHANGELOG.md"
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Get version
+        id: vers
+        run: |
+          pip install python-semantic-release
+          echo ::set-output name=version::$(semantic-release print-version --current)
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.vers.outputs.version }}
+          release_name: New Features & Bug Fixes
+          body_path: ./CHANGELOG.md
+      - name: Add wheel dependency
+        run: pip install wheel
+      - name: Generate dist
+        run: python setup.py sdist bdist_wheel
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_password }}
