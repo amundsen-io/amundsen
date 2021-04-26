@@ -1,7 +1,3 @@
-[submodule "amundsensearchlibrary"]
-	path = amundsensearchlibrary
-	url = https://github.com/amundsen-io/amundsensearchlibrary
-	branch = master
 [submodule "amundsengremlin"]
 	path = amundsengremlin
 	url = https://github.com/amundsen-io/amundsengremlin
