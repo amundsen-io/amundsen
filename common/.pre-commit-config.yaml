@@ -1,0 +1,43 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.1.0
+    hooks:
+    -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: check-yaml
+    -   id: debug-statements
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.7.2
+    hooks:
+    -   id: flake8
+        additional_dependencies:
+        -   flake8-bugbear==18.8.0
+        -   flake8-builtins==1.4.1
+        -   flake8-comprehensions==1.4.1
+        -   flake8-tidy-imports==1.1.0
+-   repo: https://github.com/asottile/yesqa
+    rev: v0.0.8
+    hooks:
+    -   id: yesqa
+        additional_dependencies:
+        -   flake8-bugbear==18.8.0
+        -   flake8-builtins==1.4.1
+        -   flake8-comprehensions==1.4.1
+        -   flake8-tidy-imports==1.1.0
+        -   flake8==3.7.2
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v1.11.1
+    hooks:
+    -   id: pyupgrade
+-   repo: https://github.com/asottile/add-trailing-comma
+    rev: v0.7.1
+    hooks:
+    -   id: add-trailing-comma
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.701
+    hooks:
+    -   id: mypy

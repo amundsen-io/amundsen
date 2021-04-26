@@ -1,0 +1,48 @@
+name: Monthly Release
+
+on:
+  schedule:
+    - cron: 0 0 1 * *
+  workflow_dispatch:
+    logLevel:
+      description: "Log level"
+      required: true
+      default: "warning"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: new-release-${{ github.run_id }}
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+      - name: Checkout master
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - name: Semantic release
+        id: semantic-release
+        run: |
+          pip install python-semantic-release
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          semantic-release version
+          echo ::set-output name=version::$(semantic-release print-version --current)
+          semantic-release changelog > './CHANGELOG.md'
+      - name: Create release pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Bumped version to ${{ steps.semantic-release.outputs.version }}
+          committer: github-actions <github-actions@github.com>
+          author: github-actions <github-actions@github.com>
+          signoff: true
+          branch: ${{ env.BRANCH_NAME }}
+          delete-branch: true
+          title: |
+            chore: Bumped version for release ${{ steps.semantic-release.outputs.version }}
+          body: |
+            Bumped version to ${{ steps.semantic-release.outputs.version }}
+          team-reviewers: amundsen-io/amundsen-committers
