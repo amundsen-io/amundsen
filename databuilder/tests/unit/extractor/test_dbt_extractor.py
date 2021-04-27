@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
-from typing import Any, no_type_check, Optional, Union
 import unittest
+from typing import (
+    Any, Optional, Union, no_type_check,
+)
 
 import pyhocon
-from pyhocon import ConfigFactory
 import pytest
+from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.dbt_extractor import DbtExtractor, InvalidDbtInputs

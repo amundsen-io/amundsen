@@ -1,20 +1,21 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from enum import Enum
 import json
 import logging
 import os
-from typing import Dict, Iterator, Union
+from enum import Enum
+from typing import (
+    Dict, Iterator, Union,
+)
 
 from pyhocon import ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.badge import Badge, BadgeMetadata
-from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 from databuilder.models.table_lineage import TableLineage
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 from databuilder.models.table_source import TableSource
-
 
 LOGGER = logging.getLogger(__name__)
 
