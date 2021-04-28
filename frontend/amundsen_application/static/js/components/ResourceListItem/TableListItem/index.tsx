@@ -12,6 +12,7 @@ import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
 import SchemaInfo from 'components/ResourceListItem/SchemaInfo';
+import { logClick } from 'utils/analytics';
 import { LoggingParams } from '../types';
 
 export interface TableListItemProps {
@@ -31,6 +32,9 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
     <Link
       className="resource-list-item table-list-item"
       to={getLink(table, logging)}
+      onClick={(e) =>
+        logClick(e, { target_id: 'table_list_item', value: logging.source })
+      }
     >
       <div className="resource-info">
         <span className={generateResourceIconClass(table.database)} />

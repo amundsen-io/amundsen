@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
+import { logClick } from 'utils/analytics';
 import { buildDashboardURL } from 'utils/navigationUtils';
 import { formatDate } from 'utils/dateUtils';
 
@@ -37,12 +38,18 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
     `icon resource-icon ${getSourceIconClass(dashboardId, dashboardType)}`;
 
   render() {
-    const { dashboard } = this.props;
+    const { dashboard, logging } = this.props;
     return (
       <li className="list-group-item clickable">
         <Link
           className="resource-list-item table-list-item"
           to={this.getLink()}
+          onClick={(e) =>
+            logClick(e, {
+              target_id: 'dashboard_list_item',
+              value: logging.source,
+            })
+          }
         >
           <div className="resource-info">
             <span
