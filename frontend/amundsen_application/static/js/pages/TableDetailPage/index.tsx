@@ -283,14 +283,24 @@ export class TableDetail extends React.Component<
     if (isTableListLineageEnabled()) {
       if (tableLineage.upstream_entities.length > 0) {
         tabInfo.push({
-          content: <LineageList items={tableLineage.upstream_entities} />,
+          content: (
+            <LineageList
+              items={tableLineage.upstream_entities}
+              direction="upstream"
+            />
+          ),
           key: Constants.TABLE_TAB.UPSTREAM,
           title: `Upstream (${tableLineage.upstream_entities.length})`,
         });
       }
       if (tableLineage.downstream_entities.length > 0) {
         tabInfo.push({
-          content: <LineageList items={tableLineage.downstream_entities} />,
+          content: (
+            <LineageList
+              items={tableLineage.downstream_entities}
+              direction="downstream"
+            />
+          ),
           key: Constants.TABLE_TAB.DOWNSTREAM,
           title: `Downstream (${tableLineage.downstream_entities.length})`,
         });

@@ -33,40 +33,31 @@ interface StateFromProps {
 type ColumnLineageListProps = ColumnLineageListOwnProps & StateFromProps;
 
 interface LineageListProps {
+  direction: string;
+  lineageItems: LineageItem[];
   link: string;
   title: string;
-  lineageItems: LineageItem[];
 }
 
-const getLink = (table) => {
+const getLink = (table, direction) => {
   const { cluster, database, schema, name } = table;
-  return `/table_detail/${cluster}/${database}/${schema}/${name}?source=column_lineage`;
+  return `/table_detail/${cluster}/${database}/${schema}/${name}?source=column_lineage_${direction}`;
 };
 
-const handleLineageClick = (e) => {
-  logClick(e, {
-    target_id: 'column_lineage',
-  });
-};
-
-const handleSeeMoreClick = (e) => {
-  logClick(e, {
-    target_id: 'column_lineage_see_more',
-  });
-};
-
-const renderLineageLinks = (entity, index) => {
+const renderLineageLinks = (entity, index, direction) => {
   if (index >= COLUMN_LINEAGE_LIST_SIZE) {
     return null;
   }
   return (
     <div>
       <a
-        href={getLink(entity)}
+        href={getLink(entity, direction)}
         className="body-link"
         target="_blank"
         rel="noreferrer"
-        onClick={handleLineageClick}
+        onClick={(e) =>
+          logClick(e, { target_id: `column_lineage`, value: direction })
+        }
       >
         {entity.schema}.{entity.name}
       </a>
@@ -76,6 +67,7 @@ const renderLineageLinks = (entity, index) => {
 
 const LineageList: React.FC<LineageListProps> = ({
   link,
+  direction,
   title,
   lineageItems,
 }) => (
@@ -87,12 +79,19 @@ const LineageList: React.FC<LineageListProps> = ({
         className="body-link"
         rel="noreferrer"
         target="_blank"
-        onClick={handleSeeMoreClick}
+        onClick={(e) =>
+          logClick(e, {
+            target_id: `column_lineage_see_more`,
+            value: direction,
+          })
+        }
       >
         {COLUMN_LINEAGE_MORE_TEXT}
       </a>
     </div>
-    {lineageItems.map(renderLineageLinks)}
+    {lineageItems.map((item, index) =>
+      renderLineageLinks(item, index, direction)
+    )}
   </div>
 );
 
@@ -114,16 +113,18 @@ export const ColumnLineageList: React.FC<ColumnLineageListProps> = ({
     <article className="column-lineage-wrapper">
       {upstream_entities.length !== 0 && (
         <LineageList
+          direction="upstream"
+          lineageItems={upstream_entities}
           link={externalLink}
           title={COLUMN_LINEAGE_UPSTREAM_TITLE}
-          lineageItems={upstream_entities}
         />
       )}
       {downstream_entities.length !== 0 && (
         <LineageList
+          direction="downstream"
+          lineageItems={downstream_entities}
           link={externalLink}
           title={COLUMN_LINEAGE_DOWNSTREAM_TITLE}
-          lineageItems={downstream_entities}
         />
       )}
     </article>
