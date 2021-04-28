@@ -112,14 +112,14 @@ export const ColumnLineageList: React.FC<ColumnLineageListProps> = ({
   }
   return (
     <article className="column-lineage-wrapper">
-      {upstream_entities.length && (
+      {upstream_entities.length !== 0 && (
         <LineageList
           link={externalLink}
           title={COLUMN_LINEAGE_UPSTREAM_TITLE}
           lineageItems={upstream_entities}
         />
       )}
-      {downstream_entities.length && (
+      {downstream_entities.length !== 0 && (
         <LineageList
           link={externalLink}
           title={COLUMN_LINEAGE_DOWNSTREAM_TITLE}

@@ -157,7 +157,7 @@ export class TableDetail extends React.Component<
   }
 
   componentDidUpdate() {
-    const { location, getTableData } = this.props;
+    const { location, getTableData, getTableLineageDispatch } = this.props;
     const newKey = this.getTableKey();
 
     if (this.key !== newKey) {
@@ -165,6 +165,10 @@ export class TableDetail extends React.Component<
 
       this.key = newKey;
       getTableData(this.key, index, source);
+
+      if (isTableListLineageEnabled()) {
+        getTableLineageDispatch(this.key);
+      }
     }
   }
 
