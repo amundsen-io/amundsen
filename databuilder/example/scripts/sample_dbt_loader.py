@@ -161,7 +161,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 
 if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
-    logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
 
     run_dbt_job(
         database_name='snowflake',
