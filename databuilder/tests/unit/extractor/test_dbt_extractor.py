@@ -56,8 +56,8 @@ class TestCsvExtractor(unittest.TestCase):
 
         result = extractor.extract()
         self.assertTrue(isinstance(result, TableMetadata))
-        self.assertEqual(result.name, 'fact_catalog_returns')
-        self.assertEqual(result.description.text, 'Aggregate item to call center returns within the retail catalog.')
+        self.assertEqual(result.name, 'fact_third_party_performance')
+        self.assertEqual(result.description.text, 'The performance for third party vendors loss rate by day.')
         self.assertEqual(result.database, self.database_name)
         self.assertEqual(result.cluster, 'dbt_demo')
         self.assertEqual(result.schema, 'public')
@@ -70,8 +70,8 @@ class TestCsvExtractor(unittest.TestCase):
         self.assertEqual(result2.db, self.database_name)
         self.assertEqual(result2.cluster, 'dbt_demo')
         self.assertEqual(result2.schema, 'public')
-        self.assertEqual(result2.table, 'fact_catalog_returns')
-        self.assertEqual(result2.source, 'test_url/models/call_center/fact_catalog_returns.sql')
+        self.assertEqual(result2.table, 'fact_third_party_performance')
+        self.assertEqual(result2.source, 'test_url/models/call_center/fact_third_party_performance.sql')
         extracted_classes.append(TableSource)
 
         result3 = _extract_until_not_these(extractor, extracted_classes)
@@ -147,7 +147,8 @@ class TestCsvExtractor(unittest.TestCase):
         extractor.init(Scoped.get_scoped_conf(conf=conf, scope=extractor.get_scope()))
 
         result = extractor.extract()
-        self.assertEqual(result.name, 'FACT_CATALOG_RETURNS')
+
+        self.assertEqual(result.name, 'fact_third_party_performance')
         self.assertEqual(result.database, 'SNOWFLAKE')
         self.assertEqual(result.cluster, 'DBT_DEMO')
         self.assertEqual(result.schema, 'PUBLIC')
@@ -260,6 +261,52 @@ class TestCsvExtractor(unittest.TestCase):
             self.assertFalse(isinstance(extraction, TableLineage))
             if extraction is None:
                 break
+
+    def test_alias_for_table_name(self) -> None:
+        """
+        Test that table level lineage is not extracted from dbt
+        """
+        config_dict = {
+            f'extractor.dbt.{DbtExtractor.DATABASE_NAME}': self.database_name.upper(),
+            f'extractor.dbt.{DbtExtractor.CATALOG_JSON}': self.catalog_file_loc,
+            f'extractor.dbt.{DbtExtractor.MANIFEST_JSON}': self.manifest_data,
+            f'extractor.dbt.{DbtExtractor.MODEL_NAME_KEY}': 'alias'
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+        extractor = DbtExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+
+        result = extractor.extract()
+        known_alias = 'cost_summary'  # One table aliased as "cost_summary"
+        known_alias_cnt = 0
+        while result:
+            if isinstance(result, TableMetadata):
+                self.assertNotEqual(result.name, 'fact_daily_expenses')
+                if result.name == known_alias:
+                    known_alias_cnt += 1
+            result = extractor.extract()
+        self.assertEqual(known_alias_cnt, 1)
+
+    def test_filter_schema_name(self) -> None:
+        """
+        Test that table level lineage is not extracted from dbt
+        """
+        config_dict = {
+            f'extractor.dbt.{DbtExtractor.DATABASE_NAME}': self.database_name.upper(),
+            f'extractor.dbt.{DbtExtractor.CATALOG_JSON}': self.catalog_file_loc,
+            f'extractor.dbt.{DbtExtractor.MANIFEST_JSON}': self.manifest_data,
+            f'extractor.dbt.{DbtExtractor.EXTRACT_LINEAGE}': False,
+            f'extractor.dbt.{DbtExtractor.SCHEMA_FILTER}': 'other_schema_value'
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+        extractor = DbtExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+
+        # Tests currently have 1 schema defined
+        result = extractor.extract()
+        self.assertEqual(result, None)
 
     def test_invalid_dbt_inputs(self) -> None:
         """

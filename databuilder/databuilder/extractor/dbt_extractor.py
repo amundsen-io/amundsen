@@ -6,7 +6,7 @@ import logging
 import os
 from enum import Enum
 from typing import (
-    Dict, Iterator, Union,
+    Dict, Iterator, List, Optional, Tuple, Union,
 )
 
 from pyhocon import ConfigTree
@@ -22,6 +22,7 @@ LOGGER = logging.getLogger(__name__)
 
 DBT_CATALOG_REQD_KEYS = ['nodes']
 DBT_MANIFEST_REQD_KEYS = ['nodes', 'child_map']
+DBT_MODEL_TYPE = 'model'
 DBT_MODEL_PREFIX = 'model.'
 DBT_TEST_PREFIX = 'test.'
 
@@ -29,6 +30,11 @@ DBT_TEST_PREFIX = 'test.'
 class DBT_TAG_AS(Enum):
     BADGE = 'badge'
     TAG = 'tag'
+
+
+class DBT_MODEL_NAME_KEY(Enum):
+    ALIAS = 'alias'
+    NAME = 'name'
 
 
 class InvalidDbtInputs(Exception):
@@ -71,6 +77,8 @@ class DbtExtractor(Extractor):
     EXTRACT_LINEAGE = 'extract_lineage'
     SOURCE_URL = 'source_url'  # Base source code URL for the repo containing dbt workflows
     IMPORT_TAGS_AS = 'import_tags_as'
+    SCHEMA_FILTER = 'schema_filter'  # Only extract dbt models from this schema, defaults to all models
+    MODEL_NAME_KEY = 'model_name_key'  # Whether to use the "name" or "alias" from dbt as the Amundsen name
 
     # Makes all db, schema, cluster and table names lowercase. This is done so that table metadata from dbt
     # with the default key `Sample://Cluster/Schema/Table` match existing metadata that Amundsen has from
@@ -96,6 +104,9 @@ class DbtExtractor(Extractor):
         self._source_url = conf.get_string(DbtExtractor.SOURCE_URL, None)
         self._force_table_key_lower = conf.get_bool(DbtExtractor.FORCE_TABLE_KEY_LOWER, True)
         self._dbt_tag_as = DBT_TAG_AS(conf.get_string(DbtExtractor.IMPORT_TAGS_AS, DBT_TAG_AS.BADGE.value))
+        self._schema_filter = conf.get_string(DbtExtractor.SCHEMA_FILTER, '')
+        self._model_name_key = DBT_MODEL_NAME_KEY(
+            conf.get_string(DbtExtractor.MODEL_NAME_KEY, DBT_MODEL_NAME_KEY.NAME.value)).value
         self._clean_inputs()
 
         self._extract_iter: Union[None, Iterator] = None
@@ -181,13 +192,6 @@ class DbtExtractor(Extractor):
         except StopIteration:
             return None
 
-    def _get_col_full_name(self, tbl_node: str, col_name: str) -> str:
-        """
-        Generates a string that represents the table/column relationship. This is only used
-        within this class to correlate metadata between the catalog.json and the manifest.json.
-        """
-        return f'{tbl_node}.{col_name}'.lower()
-
     def _default_sanitize(self, s: str) -> str:
         """
         Default function that will be run to convert the value of a string to lowercase.
@@ -196,43 +200,87 @@ class DbtExtractor(Extractor):
             s = s.lower()
         return s
 
-    def _remove_empty_keys(self, d: Dict) -> Dict:
+    def _get_table_descriptions(self, manifest_content: Dict) -> Tuple[Optional[str], Optional[str]]:
         """
-        Removes all keys in a dictionary where the value is empty or null
+        Gets a description and description source for a table.
         """
-        return {k: v for k, v in d.items() if v}
+        desc, desc_src = None, None
+        if self._extract_descriptions:
+            desc = manifest_content.get('description')
+            desc_src = 'dbt description'
+        return desc, desc_src
+
+    def _get_table_tags_badges(self, manifest_content: Dict) -> Tuple[Optional[List[str]], Optional[List[str]]]:
+        """
+        Gets tags or badges for a given table. At most one of these values will not be null.
+        """
+        tags, tbl_badges = None, None
+        if self._extract_tags:
+            if self._dbt_tag_as == DBT_TAG_AS.BADGE:
+                tbl_badges = manifest_content.get('tags')
+            elif self._dbt_tag_as == DBT_TAG_AS.TAG:
+                tags = manifest_content.get('tags')
+        return tags, tbl_badges
+
+    def _can_yield_schema(self, schema: str) -> bool:
+        """
+        Whether or not the schema can be yielded based on the schema filter criteria.
+        """
+        return (not self._schema_filter) or (self._schema_filter.lower() == schema.lower())
 
     def _get_extract_iter(self) -> Iterator[Union[TableMetadata, BadgeMetadata, TableSource, TableLineage]]:
-
-        tables = self._extract_catalog_content()
-        self._update_from_manifest(tables)
-
-        # Keep track of table to metadata to generate lineage at the end
+        """
+        Generates the extract iterator for all of the model types created by the dbt files.
+        """
         dbt_id_to_table_key = {}
-        for table_id, table in tables.items():
-            table_cols = table['columns']
-            col_metadata = [ColumnMetadata(**col) for col in table_cols.values()]
+        for tbl_node, manifest_content in self._dbt_manifest['nodes'].items():
 
-            table['columns'] = col_metadata
-            tbl_badges = table.pop('_badges', None)
-            tbl_source = table.pop('_source_url', None)
-            tbl_metedata = TableMetadata(**table)
-            dbt_id_to_table_key[table_id] = tbl_metedata._get_table_key()
+            if manifest_content['resource_type'] == DBT_MODEL_TYPE and tbl_node in self._dbt_catalog['nodes']:
+                LOGGER.info(
+                    'Extracting dbt {}.{}'.format(manifest_content['schema'], manifest_content[self._model_name_key])
+                )
 
-            if self._extract_tables:
-                yield tbl_metedata
+                catalog_content = self._dbt_catalog['nodes'][tbl_node]
 
-            if self._extract_tags and tbl_badges:
-                yield BadgeMetadata(start_label=TableMetadata.TABLE_NODE_LABEL,
-                                    start_key=tbl_metedata._get_table_key(),
-                                    badges=[Badge(badge, 'table') for badge in tbl_badges])
+                tbl_columns: List[ColumnMetadata] = self._get_column_values(
+                    manifest_columns=manifest_content['columns'], catalog_columns=catalog_content['columns']
+                )
 
-            if self._source_url and tbl_source:
-                yield TableSource(db_name=tbl_metedata.database,
-                                  cluster=tbl_metedata.cluster,
-                                  schema=tbl_metedata.schema,
-                                  table_name=tbl_metedata.name,
-                                  source=os.path.join(self._source_url, tbl_source))
+                desc, desc_src = self._get_table_descriptions(manifest_content)
+                tags, tbl_badges = self._get_table_tags_badges(manifest_content)
+
+                tbl_metedata = TableMetadata(
+                    database=self._default_sanitize(self._database_name),
+                    # The dbt "database" is the cluster here
+                    cluster=self._default_sanitize(manifest_content['database']),
+                    schema=self._default_sanitize(manifest_content['schema']),
+                    name=self._default_sanitize(manifest_content[self._model_name_key]),
+                    is_view=catalog_content['metadata']['type'] == 'VIEW',
+                    columns=tbl_columns,
+                    tags=tags,
+                    description=desc,
+                    description_source=desc_src
+                )
+                # Keep track for Lineage
+                dbt_id_to_table_key[tbl_node] = tbl_metedata._get_table_key()
+
+                # Optionally filter schemas in the output
+                yield_schema = self._can_yield_schema(manifest_content['schema'])
+
+                if self._extract_tables and yield_schema:
+                    yield tbl_metedata
+
+                if self._extract_tags and tbl_badges and yield_schema:
+                    yield BadgeMetadata(start_label=TableMetadata.TABLE_NODE_LABEL,
+                                        start_key=tbl_metedata._get_table_key(),
+                                        badges=[Badge(badge, 'table') for badge in tbl_badges])
+
+                if self._source_url and yield_schema:
+                    yield TableSource(db_name=tbl_metedata.database,
+                                      cluster=tbl_metedata.cluster,
+                                      schema=tbl_metedata.schema,
+                                      table_name=tbl_metedata.name,
+                                      source=os.path.join(self._source_url, manifest_content.get('original_file_path')))
 
         if self._extract_lineage:
             for upstream, downstreams in self._dbt_manifest['child_map'].items():
@@ -245,170 +293,36 @@ class DbtExtractor(Extractor):
                         downstream_deps=valid_downstreams
                     )
 
-    def _get_columns_from_catalog(self, tbl_node: str, table_columns: Dict) -> Dict:
+    def _get_column_values(self, manifest_columns: Dict, catalog_columns: Dict) -> List[ColumnMetadata]:
         """
-        The catalog file has metadata about all columns for the tables / views
-        that are created by dbt even if those tables, views and columns are not
-        defined in a corresponding schema.yml file. The input for this function
-        looks like:
-        {
-            "DT": {
-                "type": "NUMBER",
-                "index": 1,
-                "name": "DT",
-                "comment": null
-            },
-            "INVENTORY_COST": {
-                "type": "NUMBER",
-                "index": 2,
-                "name": "INVENTORY_COST",
-                "comment": null
-            }
-        }
+        Iterates over the columns in the manifest file and creates a `ColumnMetadata` object
+        with the combined informatino from the manifest file as well as the catalog file.
 
-        :params tbl_node: the dbt node ID for the table, used to generate a unique
-            column ID
-        :params table_columns: A dictionary where the keys are the name of the column
-            and the values are the metedata for the
-        :returns: a dictionary of values that can be used to build a single
-            `ColumnMetadata` in Amundsen.
+        :params manifest_columns: A dictionary of values from the manifest.json, the keys
+            are column names and the values are column metadata
+        :params catalog_columns: A dictionary of values from the catalog.json, the keys
+            are column names and the values are column metadata
+        :returns: A list of `ColumnMetadata` in Amundsen.
         """
-        tbl_columns = {}
-        for col_name, col_content in table_columns.items():
-            tbl_col_name = self._get_col_full_name(tbl_node, col_name)
-            tbl_columns[tbl_col_name] = dict(
-                name=self._default_sanitize(col_content['name']),
-                description=None,
-                col_type=col_content['type'],
-                sort_order=col_content['index'],
-                badges=None,
-                # TODO: use this in the future if columns have programatic descriptions?
-                # col_comment = col_content['comment']
-            )
-        return tbl_columns
+        tbl_columns = []
+        for manifest_col_name, manifest_col_content in manifest_columns.items():
+            catalog_col_content = catalog_columns.get(manifest_col_name.upper(), {})
 
-    def _extract_catalog_content(self) -> Dict:
-        """
-        Extracts metadata from the catalog file content. It is expected that
-        some of this information will be updated by the manifest file after it
-        is processed as well.
-        """
-        tables: Dict = {}
-
-        for tbl_node, tbl_content in self._dbt_catalog['nodes'].items():
-
-            # Extract column metadata for the table
-            tbl_columns = self._get_columns_from_catalog(tbl_node=tbl_node, table_columns=tbl_content['columns'])
-
-            # TODO Add this as a table-level programatic desc
-            # Cannot get dbt to fill in this value for some reason..
-            # tbl_comment = tbl_content['metadata']['comment']
-
-            # TODO get column stats here
-            # for col_name, col_stat in tbl_content['stats'].items():
-            #     ...
-
-            # Since table/column metadata objects call `_create_next_node`, `_create_next_relation`,
-            # etc. on init and half of the metadata we need could potentially be in the other file we need
-            # to keep track of this information and create the metadata objects after combining the data
-            table = dict(
-                database=self._default_sanitize(self._database_name),
-                # The dbt "database" is the cluster here
-                cluster=self._default_sanitize(tbl_content['metadata']['database']),
-                schema=self._default_sanitize(tbl_content['metadata']['schema']),
-                name=self._default_sanitize(tbl_content['metadata']['name']),
-                description=None,
-                columns=tbl_columns,
-                is_view=tbl_content['metadata']['type'] == 'VIEW',
-                tags=None,
-                description_source=None,
-            )
-            tables[tbl_node] = table
-
-        return tables
-
-    def _update_columns_from_manifest(self, existing_metadata: Dict,
-                                      tbl_node: str, manifest_tbl_columns: Dict) -> None:
-        """
-        Column level information is only available in the manifest file if explicitly defined
-        in a schema.yml. This function updates the existing column level metadata from
-        the catalog.json if it exists.
-
-        :params existing_metadata: a dictionary of all existing metadata from the catalog.json. Generally
-            looks like
-                >>> {
-                >>>    "table_id": {
-                >>>        "col1": {...},
-                >>>        "col2": {...}
-                >>>        ...
-                >>>    }
-                >>> }
-        :params tbl_node: The unique ID used to represent the table.
-        :returns: None, all values in the dictionary are updated directly
-        """
-        for col_name, col_content in manifest_tbl_columns.items():
-            tbl_col_name = self._get_col_full_name(tbl_node, col_name)
-            tbl_col_update: Dict = {}
-
-            # TODO: What to do with column meta? Could be useful for column-level prog desc
-            # col_meta = col_content['meta]
-
+            col_desc = None
             if self._extract_descriptions:
-                tbl_col_update['description'] = col_content.get('description')
+                col_desc = manifest_col_content.get('description')
 
             # Only extract column-level tags IF converting to badges, Amundsen does not have column-level tags
+            badges = None
             if self._extract_tags and self._dbt_tag_as == DBT_TAG_AS.BADGE:
-                tbl_col_update['badges'] = col_content.get('tags')
+                badges = manifest_col_content.get('tags')
 
-            # Update the columns
-            existing_metadata[tbl_node]['columns'][tbl_col_name].update(self._remove_empty_keys(tbl_col_update))
-
-    def _update_from_manifest(self, tables: Dict) -> None:
-        """
-        Extracts metadata from the manifest file, updating the information
-        previously extracted from the catalog file where applicable.
-        :param tables: A dictionary containing keys that can generate a table metadata
-            object
-        :returns: None, by updating the dictionary directly it does not need to be returned
-        """
-
-        # Process the manifest file. This has overlapping and orthogonal metadata
-        manifest_nodes = self._dbt_manifest['nodes']
-        for tbl_node, tbl_content in manifest_nodes.items():
-
-            # TODO - handle dbt tests / data quality
-            # if tbl_node.startswith(DBT_TEST_PREFIX):
-            #     ...
-
-            # Process dbt models
-            if tbl_node.startswith(DBT_MODEL_PREFIX):
-
-                self._update_columns_from_manifest(
-                    existing_metadata=tables,
-                    tbl_node=tbl_node,
-                    manifest_tbl_columns=tbl_content['columns']
-                )
-
-                # Update the incremental table metadata captured from the manifest file
-                manifest_table: Dict = {}
-
-                if self._extract_descriptions:
-                    desc = tbl_content.get('description')
-                    if desc:
-                        manifest_table['description'] = desc
-                        manifest_table['description_source'] = 'dbt description'
-
-                if self._extract_tags:
-                    if self._dbt_tag_as == DBT_TAG_AS.BADGE:
-                        manifest_table['_badges'] = tbl_content.get('tags')
-                    elif self._dbt_tag_as == DBT_TAG_AS.TAG:
-                        manifest_table['tags'] = tbl_content.get('tags')
-
-                if self._source_url:
-                    manifest_table['_source_url'] = tbl_content.get('original_file_path')
-
-                # TODO - associate SQL to table
-                # compiled_sql = tbl_content['compiled_sql']
-
-                # Update the table
-                tables[tbl_node].update(self._remove_empty_keys(manifest_table))
+            col_metadata = ColumnMetadata(
+                name=self._default_sanitize(catalog_col_content['name']),
+                description=col_desc,
+                col_type=catalog_col_content['type'],
+                sort_order=catalog_col_content['index'],
+                badges=badges
+            )
+            tbl_columns.append(col_metadata)
+        return tbl_columns
