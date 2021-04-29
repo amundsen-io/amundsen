@@ -16,6 +16,17 @@ on: pull_request
 jobs:
   test-unit-frontend:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: Do nothing
+        run: exit 0
+  test-unit-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.6.x", "3.7.x", "3.8.x"]
     steps:
       - name: Do nothing
         run: exit 0
