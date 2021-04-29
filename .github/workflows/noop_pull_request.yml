@@ -7,11 +7,15 @@
 # runners with a single name, if any of them fail, the whole PR will fail. Thus
 # this file specifies dummy tests that will always pass.
 
+# The matrix specified here must be a superset of the actual tests run. This
+# has the unfortunate side effect of making PRs appear like they have more
+# coverage than they actually do, but I think it's relatively minor
+
 # See also:
 # * https://github.community/t/github-actions-and-required-checks-in-a-monorepo-using-paths-to-limit-execution/16586/4
 # * https://github.community/t/feature-request-conditional-required-checks/16761/2
 
-name: Dummy Front-end tests
+name: no-op
 on: pull_request
 jobs:
   test-unit-frontend:
