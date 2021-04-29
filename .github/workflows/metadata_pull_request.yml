@@ -2,13 +2,13 @@ name: metadata PR
 on:
   pull_request:
     paths:
-      - "metadata"
+      - "metadata/**"
 jobs:
-  test-unit:
+  test-unit-python:
     runs-on: ubuntu-18.04
     strategy:
-        matrix:
-          python-version: ['3.6.x', '3.7.x']
+      matrix:
+        python-version: ['3.6.x', '3.7.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v1
