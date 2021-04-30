@@ -13,7 +13,7 @@ exports[`eslint`] = {
       [33, 6, 25, "Use object destructuring.", "354229464"],
       [34, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/BadgeList/index.spec.tsx:3460985082": [
+    "js/components/BadgeList/index.spec.tsx:3772320601": [
       [153, 14, 36, "Use array destructuring.", "898356559"]
     ],
     "js/components/BadgeList/index.tsx:3233891211": [
@@ -280,7 +280,7 @@ exports[`eslint`] = {
       [69, 8, 184, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3208468016"],
       [69, 8, 184, "Static HTML elements with event handlers require a role.", "3208468016"]
     ],
-    "js/components/SearchBar/InlineSearchResults/ResultItemList/tests/index.spec.tsx:1817990300": [
+    "js/components/SearchBar/InlineSearchResults/ResultItemList/tests/index.spec.tsx:875527071": [
       [45, 60, 10, "Prop spreading is forbidden", "480399587"],
       [101, 6, 25, "Use object destructuring.", "1501943800"],
       [102, 6, 29, "Use object destructuring.", "1935870456"]
@@ -293,7 +293,7 @@ exports[`eslint`] = {
       [54, 8, 178, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2304568019"],
       [54, 8, 178, "Static HTML elements with event handlers require a role.", "2304568019"]
     ],
-    "js/components/SearchBar/InlineSearchResults/SearchItemList/SearchItem/tests/index.spec.tsx:3008350229": [
+    "js/components/SearchBar/InlineSearchResults/SearchItemList/SearchItem/tests/index.spec.tsx:3788634646": [
       [85, 6, 25, "Use object destructuring.", "1501943800"],
       [86, 6, 29, "Use object destructuring.", "1935870456"]
     ],
@@ -445,7 +445,7 @@ exports[`eslint`] = {
     "js/components/TabsComponent/index.spec.tsx:1677620301": [
       [34, 37, 10, "Prop spreading is forbidden", "480399587"]
     ],
-    "js/components/Tags/TagInfo/index.spec.tsx:2036846669": [
+    "js/components/Tags/TagInfo/index.spec.tsx:4185537358": [
       [44, 6, 25, "Use object destructuring.", "354229464"],
       [45, 6, 29, "Use object destructuring.", "2645724888"],
       [71, 8, 29, "Use object destructuring.", "2645724888"],
@@ -621,7 +621,7 @@ exports[`eslint`] = {
     "js/features/ColumnList/ColumnStats/index.spec.tsx:991779878": [
       [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/ColumnList/ColumnType/index.spec.tsx:2876249152": [
+    "js/features/ColumnList/ColumnType/index.spec.tsx:1471339331": [
       [52, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [52, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"]
     ],
@@ -1034,11 +1034,11 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:2793457785": [
+    "js/pages/TableDetailPage/index.tsx:1010332848": [
       [136, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [146, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
       [159, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [235, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+      [239, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

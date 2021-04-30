@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { UserResource } from 'interfaces';
 import { LoggingParams } from '../types';
+import { logClick } from '../../../utils/analytics';
 
 export interface UserListItemProps {
   user: UserResource;
@@ -36,11 +37,17 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, logging } = this.props;
     const userInfo = this.renderUserInfo(user);
     return (
       <li className="list-group-item clickable">
-        <Link className="resource-list-item user-list-item" to={this.getLink()}>
+        <Link
+          className="resource-list-item user-list-item"
+          to={this.getLink()}
+          onClick={(e) =>
+            logClick(e, { target_id: 'user_list_item', value: logging.source })
+          }
+        >
           <div className="resource-info">
             <Avatar name={user.display_name} size={24} round />
             <div className="resource-info-text my-auto">
