@@ -8,7 +8,7 @@ from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_last_modified_timestamp_extractor import (
-    ModeDashboardLastModifiedTimestampExtractor
+    ModeDashboardLastModifiedTimestampExtractor,
 )
 from databuilder.models.dashboard.dashboard_last_modified import DashboardLastModifiedTimestamp
 
