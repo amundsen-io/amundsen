@@ -288,7 +288,9 @@ interface TableLineageConfig {
     schema: string,
     table: string
   ) => string;
+  externalEnabled: boolean;
   inAppListEnabled: boolean;
+  inAppPageEnabled: boolean;
 }
 
 /**
@@ -298,6 +300,7 @@ interface TableLineageConfig {
  */
 interface ColumnLineageConfig {
   inAppListEnabled: boolean;
+  inAppPageEnabled: boolean;
   urlGenerator: (
     database: string,
     cluster: string,

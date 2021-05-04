@@ -30,6 +30,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import TableDetail from './pages/TableDetailPage';
+import LineagePage from './pages/LineagePage';
 
 import Preloader from './components/Preloader';
 import Footer from './features/Footer';
@@ -68,6 +69,10 @@ const Routes: React.FC = () => {
         <Route
           path="/table_detail/:cluster/:database/:schema/:table"
           component={TableDetail}
+        />
+        <Route
+          path="/lineage/:resource/:cluster/:database/:schema/:table"
+          component={LineagePage}
         />
         <Route path="/user/:userId" component={ProfilePage} />
         <Route path="/404" component={NotFoundPage} />

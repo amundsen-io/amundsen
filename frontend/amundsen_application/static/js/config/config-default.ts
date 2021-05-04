@@ -203,7 +203,7 @@ const configDefault: AppConfig = {
   tableLineage: {
     iconPath: 'PATH_TO_ICON',
     isBeta: false,
-    isEnabled: false,
+    isEnabled: true,
     urlGenerator: (
       database: string,
       cluster: string,
@@ -211,10 +211,13 @@ const configDefault: AppConfig = {
       table: string
     ) =>
       `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`,
-    inAppListEnabled: false,
+    externalEnabled: false,
+    inAppListEnabled: true,
+    inAppPageEnabled: true,
   },
   columnLineage: {
-    inAppListEnabled: false,
+    inAppListEnabled: true,
+    inAppPageEnabled: false,
     urlGenerator: (
       database: string,
       cluster: string,

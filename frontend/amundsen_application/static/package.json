@@ -136,6 +136,7 @@
     "autosize": "^4.0.2",
     "axios": "0.21.1",
     "core-js": "^3.6.5",
+    "d3": "^6.7.0",
     "form-serialize": "^0.7.2",
     "fsevents": "*",
     "jquery": "^3.5.0",
