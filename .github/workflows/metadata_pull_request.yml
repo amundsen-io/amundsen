@@ -24,4 +24,5 @@ jobs:
         working-directory: ./metadata
       - name: Codecov
         uses: codecov/codecov-action@v1
-        working-directory: ./metadata
+        with:
+          directory: ./metadata
