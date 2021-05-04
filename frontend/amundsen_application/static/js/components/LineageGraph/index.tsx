@@ -24,6 +24,8 @@ export class LineageGraph extends React.Component<
 
   private nodeRef = React.createRef<HTMLDivElement>();
 
+  drawTree = this._drawTree.bind(this);
+
   componentDidMount() {
     // Centering the graph
     const dimensions = this.nodeRef.current!.getBoundingClientRect();
@@ -37,100 +39,6 @@ export class LineageGraph extends React.Component<
       });
     }
 
-    const up = {
-      name: 'root',
-      children: [
-        {
-          name: 'upstream 2',
-          position: 'left',
-          children: [
-            {
-              name: 'upstream 4',
-              position: 'left',
-              children: [
-                { name: 'upstream 10', position: 'left', size: 7500 },
-                { name: 'upstream 11', position: 'left', size: 12000 },
-              ],
-            },
-            {
-              name: 'upstream 5',
-              position: 'left',
-              children: [
-                {
-                  name: 'upstream 12',
-                  position: 'left',
-                  children: [
-                    { name: 'upstream 16', position: 'left', size: 10000 },
-                    { name: 'upstream 17', position: 'left', size: 12000 },
-                  ],
-                },
-                { name: 'upstream 13', position: 'left', size: 5000 },
-              ],
-            },
-          ],
-        },
-        {
-          name: 'upstream 3',
-          position: 'left',
-          children: [
-            {
-              name: 'upstream 6',
-              position: 'left',
-              children: [
-                { name: 'upstream 14', position: 'left', size: 8000 },
-                { name: 'upstream 15', position: 'left', size: 9000 },
-              ],
-            },
-            {
-              name: 'upstream 7',
-              position: 'left',
-              children: [
-                { name: 'upstream 8', position: 'left', size: 10000 },
-                { name: 'upstream 9', position: 'left', size: 12000 },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const down = {
-      name: 'root',
-      children: [
-        {
-          name: 'downstream 2',
-          children: [
-            {
-              name: 'downstream 4',
-              children: [
-                { name: 'downstream 10', size: 7500 },
-                { name: 'downstream 11', size: 12000 },
-              ],
-            },
-            {
-              name: 'downstream 5',
-              children: [
-                {
-                  name: 'downstream 12',
-                  children: [
-                    { name: 'downstream 16', size: 10000 },
-                    { name: 'downstream 17', size: 12000 },
-                  ],
-                },
-                { name: 'downstream 13', size: 5000 },
-              ],
-            },
-          ],
-        },
-        {
-          name: 'downstream 7',
-          children: [
-            { name: 'downstream 8', size: 10000 },
-            { name: 'downstream 9', size: 12000 },
-          ],
-        },
-      ],
-    };
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
     // Setting up the dimensions/fallback dimensions
     const totalWidth = dimensions.width || 1280 - (margin.left + margin.right);
@@ -141,16 +49,29 @@ export class LineageGraph extends React.Component<
       .append('svg')
       .attr('viewBox', [0, 0, totalWidth, totalHeight]);
 
-    this.drawTree({ up, down }, totalWidth / 2, totalHeight, margin);
+    this.drawTree(totalWidth / 2, totalHeight, margin);
   }
 
-  drawTree(data: any, width: number, height: number, margin) {
+  _drawTree(width: number, height: number, margin) {
+    const { lineage } = this.props;
+
+    const stratify = d3
+      .stratify()
+      .id((d) => d.key)
+      .parentId((d) => d.parent);
+
     let uniqueIdCounter = 0;
     const animationDuration = 500;
 
     const treemap = d3.tree().size([height, width]);
-    const upstreamRoot = d3.hierarchy(data.up, (d) => d.children);
-    const downstreamRoot = d3.hierarchy(data.down, (d) => d.children);
+    const upstreamRoot = d3.hierarchy(
+      stratify(lineage.upstream_entities),
+      (d) => d.children
+    );
+    const downstreamRoot = d3.hierarchy(
+      stratify(lineage.downstream_entities),
+      (d) => d.children
+    );
 
     const root = {
       x0: height / 2,
@@ -163,8 +84,8 @@ export class LineageGraph extends React.Component<
       .attr('transform', `translate(${width + margin.left},${margin.top})`);
 
     // Collapse after the second level
-    upstreamRoot.children.forEach(collapse);
-    downstreamRoot.children.forEach(collapse);
+    // upstreamRoot.children.forEach(collapse);
+    // downstreamRoot.children.forEach(collapse);
 
     update(root);
 
@@ -176,22 +97,18 @@ export class LineageGraph extends React.Component<
       }
     }
 
-    function splitArray(array) {
+    function makeUpstream(array) {
       return array.map((item) => {
-        let dr = 1;
-        if (item.data && item.data.position && item.data.position === 'left') {
-          dr = -1;
-        }
-        item.y *= dr;
+        item.y *= -1;
         return item;
       });
     }
 
     function update(source) {
-      const upNodes = treemap(upstreamRoot).descendants();
+      const upNodes = makeUpstream(treemap(upstreamRoot).descendants());
       const downNodes = treemap(downstreamRoot).descendants();
 
-      const nodes = splitArray(upNodes.concat(downNodes));
+      const nodes = upNodes.concat(downNodes);
       const links = upNodes.slice(1).concat(downNodes.slice(1));
 
       // ****************** Nodes
@@ -226,7 +143,8 @@ export class LineageGraph extends React.Component<
           return d.children || d._children ? 'end' : 'start';
         })
         .text(function (d) {
-          return d.name || d.text || d.data.name;
+          console.log("nodeEnter", d);
+          return d.name || d.text || d.data.data.name;
         });
 
       // UPDATE
