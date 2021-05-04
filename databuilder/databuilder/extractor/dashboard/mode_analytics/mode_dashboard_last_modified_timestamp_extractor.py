@@ -52,7 +52,7 @@ class ModeDashboardLastModifiedTimestampExtractor(ModeDashboardExecutionsExtract
         params = ModeDashboardUtils.get_auth_params(conf=self._conf, discover_auth=True)
 
         # Reports
-        # https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace
+        # https://mode.com/developer/discovery-api/analytics/reports/
         url = 'https://app.mode.com/batch/{organization}/reports'
         json_path = 'reports[*].[token, space_token, edited_at]'
         field_names = ['dashboard_id', 'dashboard_group_id', 'last_modified_timestamp']
