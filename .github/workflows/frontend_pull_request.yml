@@ -1,0 +1,51 @@
+name: frontend PR
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
+jobs:
+  test-unit-python:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        python-version: ["3.6.x", "3.7.x", "3.8.x"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: pip3 install -r requirements.txt && pip3 install .[all] && pip3 install codecov
+        working-directory: ./frontend
+      - name: Run python unit tests
+        run: make test
+        working-directory: ./frontend
+  test-unit-frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install and Lint
+        working-directory: ./frontend/amundsen_application/static
+        run: |
+          npm install
+          npm install codecov -g
+          npm run lint
+      - name: Check and build
+        working-directory: ./frontend/amundsen_application/static
+        run: |
+          npm run betterer
+          npm run build --if-present
+      - name: Test
+        working-directory: ./frontend/amundsen_application/static
+        run: npm run test
+        env:
+          CI: true

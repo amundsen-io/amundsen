@@ -1,13 +1,21 @@
-# Codeowners file by GitHub
+
 # Reference: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
 # Each line is a file pattern followed by one or more owners.
 # Order is important; the last matching pattern takes the most
 # precedence.
 
 # These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence,
-# @amundsen-io/amundsen-committerswill be requested for
+# @amundsen-io/amundsen-committers will be requested for
 # review when someone opens a pull request.
 *       @amundsen-io/amundsen-committers
 
 /amundsen-kube-helm/ @feng-tao @jornh @javamonkey79
+
+common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1
+databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119
+frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @dikshathakur3119 @feng-tao @dorianj
+frontend/*.py    @ttannis @feng-tao @dikshathakur3119 @allisonsuarez @dorianj
+metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1
+search/*.py      @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1
