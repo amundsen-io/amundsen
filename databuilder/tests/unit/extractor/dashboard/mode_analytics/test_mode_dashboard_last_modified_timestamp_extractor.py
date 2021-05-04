@@ -25,7 +25,9 @@ class TestModeDashboardLastModifiedTimestampExtractor(unittest.TestCase):
         extractor = ModeDashboardLastModifiedTimestampExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.config, scope=extractor.get_scope()))
 
-        with patch('databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query.ModePaginatedRestApiQuery.execute') as mock_execute:
+        with patch(
+                'databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query.ModePaginatedRestApiQuery.execute'
+        ) as mock_execute:
             mock_execute.return_value = iter([
                 {
                     'dashboard_group_id': 'ggg',
