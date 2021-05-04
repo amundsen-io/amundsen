@@ -20,6 +20,14 @@ from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import Mo
 class ModeDashboardUtils(object):
 
     @staticmethod
+    def get_seed_query(conf: ConfigTree) -> BaseRestApiQuery:
+        # Seed query record for next query api to join with
+        seed_record = [{'organization': conf.get_string(ORGANIZATION)}]
+        seed_query = RestApiQuerySeed(seed_record=seed_record)
+        return seed_query
+
+    # TODO: Delete this get_spaces_query_api once everything is moved to use discovery api
+    @staticmethod
     def get_spaces_query_api(conf: ConfigTree) -> BaseRestApiQuery:
         """
         Provides RestApiQuerySeed where it will provides iterator of dictionaries as records where dictionary keys are
