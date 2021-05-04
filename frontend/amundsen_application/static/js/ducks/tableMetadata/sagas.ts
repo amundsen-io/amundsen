@@ -13,10 +13,6 @@ import {
   getColumnDescriptionSuccess,
   getPreviewDataFailure,
   getPreviewDataSuccess,
-  getTableLineageSuccess,
-  getTableLineageFailure,
-  getColumnLineageSuccess,
-  getColumnLineageFailure,
 } from './reducer';
 
 import {
@@ -32,10 +28,6 @@ import {
   UpdateColumnDescriptionRequest,
   UpdateTableDescription,
   UpdateTableDescriptionRequest,
-  GetTableLineageRequest,
-  GetTableLineage,
-  GetColumnLineageRequest,
-  GetColumnLineage,
 } from './types';
 
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
@@ -182,37 +174,4 @@ export function* getPreviewDataWorker(
 }
 export function* getPreviewDataWatcher(): SagaIterator {
   yield takeLatest(GetPreviewData.REQUEST, getPreviewDataWorker);
-}
-
-export function* getTableLineageWorker(
-  action: GetTableLineageRequest
-): SagaIterator {
-  try {
-    const response = yield call(API.getTableLineage, action.payload.key);
-    const { data, status } = response;
-    yield put(getTableLineageSuccess(data, status));
-  } catch (error) {
-    const { status } = error;
-    yield put(getTableLineageFailure(status));
-  }
-}
-export function* getTableLineageWatcher(): SagaIterator {
-  yield takeEvery(GetTableLineage.REQUEST, getTableLineageWorker);
-}
-
-export function* getColumnLineageWorker(
-  action: GetColumnLineageRequest
-): SagaIterator {
-  const { key, columnName } = action.payload;
-  try {
-    const response = yield call(API.getColumnLineage, key, columnName);
-    const { data, status } = response;
-    yield put(getColumnLineageSuccess(data, columnName, status));
-  } catch (error) {
-    const { status } = error;
-    yield put(getColumnLineageFailure(columnName, status));
-  }
-}
-export function* getColumnLineageWatcher(): SagaIterator {
-  yield takeEvery(GetColumnLineage.REQUEST, getColumnLineageWorker);
 }

@@ -1,7 +1,5 @@
 import {
-  ColumnLineageMap,
   DashboardResource,
-  Lineage,
   OwnerDict,
   PreviewData,
   PreviewQueryParams,
@@ -29,12 +27,6 @@ import {
   GetPreviewDataRequest,
   GetPreviewDataResponse,
   UpdateTableOwner,
-  GetTableLineageResponse,
-  GetTableLineage,
-  GetTableLineageRequest,
-  GetColumnLineageResponse,
-  GetColumnLineage,
-  GetColumnLineageRequest,
 } from './types';
 
 import tableOwnersReducer, {
@@ -68,27 +60,14 @@ export const initialTableDataState: TableMetadata = {
   programmatic_descriptions: {},
 };
 
-export const initialTableLineageState = {
-  lineage: {
-    upstream_entities: [],
-    downstream_entities: [],
-  },
-  status: null,
-};
-
-export const emptyLineage = {
-  upstream_entities: [],
-  downstream_entities: [],
-};
-
 export const initialState: TableMetadataReducerState = {
   isLoading: true,
   preview: initialPreviewState,
   statusCode: null,
   tableData: initialTableDataState,
   tableOwners: initialOwnersState,
-  tableLineage: initialTableLineageState,
-  columnLineageMap: {},
+  // tableLineage: initialTableLineageState,
+  // columnLineageMap: {},
 };
 
 /* ACTIONS */
@@ -279,86 +258,6 @@ export function getPreviewDataSuccess(
   };
 }
 
-export function getTableLineage(key: string): GetTableLineageRequest {
-  return {
-    type: GetTableLineage.REQUEST,
-    payload: { key },
-  };
-}
-
-export function getTableLineageSuccess(
-  data: Lineage,
-  status: number
-): GetTableLineageResponse {
-  return {
-    type: GetTableLineage.SUCCESS,
-    payload: {
-      lineage: data,
-      status,
-    },
-  };
-}
-
-export function getTableLineageFailure(
-  status: number
-): GetTableLineageResponse {
-  return {
-    type: GetTableLineage.FAILURE,
-    payload: {
-      lineage: initialTableLineageState.lineage,
-      status,
-    },
-  };
-}
-
-export function getColumnLineage(
-  key: string,
-  columnName: string
-): GetColumnLineageRequest {
-  return {
-    type: GetColumnLineage.REQUEST,
-    payload: { key, columnName },
-    meta: {
-      analytics: {
-        name: `getColumnLineage`,
-        payload: {
-          category: 'lineage',
-          label: `${key}/${columnName}`,
-        },
-      },
-    },
-  };
-}
-
-export function getColumnLineageSuccess(
-  data: Lineage,
-  columnName: string,
-  status: number
-): GetColumnLineageResponse {
-  return {
-    type: GetColumnLineage.SUCCESS,
-    payload: {
-      columnName,
-      status,
-      lineage: data,
-    },
-  };
-}
-
-export function getColumnLineageFailure(
-  columnName: string,
-  status: number
-): GetColumnLineageResponse {
-  return {
-    type: GetColumnLineage.FAILURE,
-    payload: {
-      columnName,
-      lineage: initialTableLineageState.lineage,
-      status,
-    },
-  };
-}
-
 /* REDUCER */
 export interface TableMetadataReducerState {
   dashboards?: {
@@ -374,11 +273,6 @@ export interface TableMetadataReducerState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableOwners: TableOwnerReducerState;
-  tableLineage: {
-    status: number | null;
-    lineage: Lineage;
-  };
-  columnLineageMap: ColumnLineageMap;
 }
 
 export default function reducer(
@@ -436,44 +330,6 @@ export default function reducer(
         ...state,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
       };
-    case GetTableLineage.SUCCESS:
-    case GetTableLineage.FAILURE:
-      return {
-        ...state,
-        tableLineage: {
-          lineage: (<GetTableLineageResponse>action).payload.lineage,
-          status: (<GetTableLineageResponse>action).payload.status,
-        },
-      };
-    case GetColumnLineage.REQUEST: {
-      const { columnName } = (<GetColumnLineageRequest>action).payload;
-      return {
-        ...state,
-        columnLineageMap: {
-          ...state.columnLineageMap,
-          [columnName]: {
-            lineage: emptyLineage,
-            isLoading: true,
-          },
-        },
-      };
-    }
-    case GetColumnLineage.SUCCESS:
-    case GetColumnLineage.FAILURE: {
-      const { columnName, lineage: columnLineage } = (<
-        GetColumnLineageResponse
-      >action).payload;
-      return {
-        ...state,
-        columnLineageMap: {
-          ...state.columnLineageMap,
-          [columnName]: {
-            lineage: columnLineage,
-            isLoading: false,
-          },
-        },
-      };
-    }
     default:
       return state;
   }

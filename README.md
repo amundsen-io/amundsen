@@ -118,6 +118,7 @@ Please visit [Architecture](./docs/architecture.md#architecture) for Amundsen ar
 - [Apache Druid](https://druid.apache.org/)
 - [Apache Hive](https://hive.apache.org/)
 - CSV
+- [dbt](https://www.getdbt.com/)
 - [Delta Lake](https://delta.io/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)

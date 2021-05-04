@@ -20,6 +20,13 @@ from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import Mo
 class ModeDashboardUtils(object):
 
     @staticmethod
+    def get_seed_query(conf: ConfigTree) -> BaseRestApiQuery:
+        # Seed query record for next query api to join with
+        seed_record = [{'organization': conf.get_string(ORGANIZATION)}]
+        seed_query = RestApiQuerySeed(seed_record=seed_record)
+        return seed_query
+
+    @staticmethod
     def get_spaces_query_api(conf: ConfigTree) -> BaseRestApiQuery:
         """
         Provides RestApiQuerySeed where it will provides iterator of dictionaries as records where dictionary keys are
@@ -32,8 +39,7 @@ class ModeDashboardUtils(object):
         spaces_url_template = 'https://app.mode.com/batch/{organization}/spaces'
 
         # Seed query record for next query api to join with
-        seed_record = [{'organization': conf.get_string(ORGANIZATION)}]
-        seed_query = RestApiQuerySeed(seed_record=seed_record)
+        seed_query = ModeDashboardUtils.get_seed_query(conf=conf)
 
         # mode_bearer_token must be provided in the conf
         # the token is required to access discovery endpoint
