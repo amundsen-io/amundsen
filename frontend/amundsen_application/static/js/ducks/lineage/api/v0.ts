@@ -20,8 +20,8 @@ export function getTableLineage(
     }))
     .catch((e: AxiosError<LineageAPI>) => {
       const { response } = e;
-      const status = response ? response.status : null;
-      return Promise.reject({ status });
+      const statusCode = response?.status;
+      return Promise.reject({ statusCode });
     });
 }
 
@@ -45,7 +45,7 @@ export function getColumnLineage(
     }))
     .catch((e: AxiosError<LineageAPI>) => {
       const { response } = e;
-      const status = response ? response.status : null;
-      return Promise.reject({ status });
+      const statusCode = response?.status;
+      return Promise.reject({ statusCode });
     });
 }

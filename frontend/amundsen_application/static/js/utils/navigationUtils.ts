@@ -1,7 +1,7 @@
 import * as qs from 'simple-query-string';
 import { createBrowserHistory } from 'history';
 
-import { ResourceType } from 'interfaces/Resources';
+import { ResourceType, TableMetadata } from 'interfaces';
 
 // https://github.com/ReactTraining/react-router/issues/3972#issuecomment-264805667
 export const BrowserHistory = createBrowserHistory();
@@ -11,6 +11,13 @@ export interface SearchParams {
   resource?: ResourceType;
   index?: number;
   filters?: {};
+}
+
+export interface TablePageParams {
+  database: string;
+  cluster: string;
+  schema: string;
+  table: string;
 }
 
 export const DEFAULT_SEARCH_ROUTE = '/search';
@@ -55,6 +62,27 @@ export const updateSearchUrl = (
     BrowserHistory.push(newUrl);
   }
 };
+
+/**
+ * Creates a table key for endpoints from url params.
+ * @param TablePageParams Route params with expectations of matching a Table resource
+ * @return String Params formatted as a table key.
+ */
+export const buildTableKey = (params: TablePageParams) =>
+  `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
+
+/**
+ * Create a lineage path from table metadata.
+ * @param TableMetadata - information on table properties.
+ * @return String Params formatted a path to a lineage table.
+ */
+export const buildLineageURL = ({
+  cluster,
+  database,
+  schema,
+  name,
+}: Partial<TableMetadata>) =>
+  `/lineage/table/${cluster}/${database}/${schema}/${name}`;
 
 /**
  * Creates the dashboard detail URL from the URI
