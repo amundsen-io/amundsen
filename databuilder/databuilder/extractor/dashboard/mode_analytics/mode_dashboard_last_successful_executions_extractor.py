@@ -41,21 +41,23 @@ class ModeDashboardLastSuccessfulExecutionExtractor(ModeDashboardExecutionsExtra
 
     def _build_restapi_query(self) -> RestApiQuery:
         """
-        Build REST API Query. To get Mode Dashboard last successful execution, it needs to call two APIs (spaces API,
-        and reports API) joining together.
+        Build REST API Query to get Mode Dashboard last successful execution metadata.
         :return: A RestApiQuery that provides Mode Dashboard last successful execution (run)
         """
 
-        spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
-        params = ModeDashboardUtils.get_auth_params(conf=self._conf)
+        seed_query = ModeDashboardUtils.get_seed_query(conf=self._conf)
+        params = ModeDashboardUtils.get_auth_params(conf=self._conf, discover_auth=True)
 
         # Reports
-        # https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace
-        url = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
-        json_path = '_embedded.reports[*].[token,last_successfully_run_at]'
-        field_names = ['dashboard_id', 'execution_timestamp']
-        last_successful_run_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=url, params=params,
+        # https://mode.com/developer/discovery-api/analytics/reports/
+        url = 'https://app.mode.com/batch/{organization}/reports'
+        json_path = 'reports[*].[token, space_token, last_successfully_run_at]'
+        field_names = ['dashboard_id', 'dashboard_group_id', 'execution_timestamp']
+        max_record_size = 1000
+        pagination_json_path = 'reports[*]'
+        last_successful_run_query = ModePaginatedRestApiQuery(query_to_join=seed_query, url=url, params=params,
                                                               json_path=json_path, field_names=field_names,
-                                                              skip_no_result=True)
+                                                              skip_no_result=True, max_record_size=max_record_size,
+                                                              pagination_json_path=pagination_json_path)
 
         return last_successful_run_query
