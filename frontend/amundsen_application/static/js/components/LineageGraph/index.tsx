@@ -47,6 +47,7 @@ export class LineageGraph extends React.Component<
 
     d3.select(this.nodeRef.current)
       .append('svg')
+      .attr('class', 'svg-container')
       .attr('viewBox', [0, 0, totalWidth, totalHeight]);
 
     this.drawTree(totalWidth / 2, totalHeight, margin);
@@ -63,7 +64,7 @@ export class LineageGraph extends React.Component<
     let uniqueIdCounter = 0;
     const animationDuration = 500;
 
-    const treemap = d3.tree().size([height, width]);
+    const treemap = d3.tree().size([height, width / 2]);
     const upstreamRoot = d3.hierarchy(
       stratify(lineage.upstream_entities),
       (d) => d.children
@@ -81,7 +82,7 @@ export class LineageGraph extends React.Component<
     const svg = d3
       .select('svg')
       .append('g')
-      .attr('transform', `translate(${width + margin.left},${margin.top})`);
+      .attr('transform', `translate(${width})`);
 
     // Collapse after the second level
     // upstreamRoot.children.forEach(collapse);
@@ -121,16 +122,13 @@ export class LineageGraph extends React.Component<
       const nodeEnter = node
         .enter()
         .append('g')
-        .attr('class', 'node fixed')
+        .attr('class', 'node')
         .attr('transform', (d) => `translate(${source.y0},${source.x0})`)
         .on('click', (event, d) => click(event, d, nodes));
 
       // Add Circle for the nodes
-      nodeEnter
-        .append('circle')
-        .attr('class', 'node')
-        .attr('r', 0)
-        .style('fill', (d) => (d._children ? 'lightsteelblue' : '#fff'));
+      nodeEnter.append('circle').attr('class', 'node').attr('r', 0);
+      // .style('fill', (d) => (d._children ? 'lightsteelblue' : '#fff'));
 
       // Add labels for the nodes
       nodeEnter
@@ -142,10 +140,18 @@ export class LineageGraph extends React.Component<
         .attr('text-anchor', function (d) {
           return d.children || d._children ? 'end' : 'start';
         })
-        .text(function (d) {
-          console.log("nodeEnter", d);
-          return d.name || d.text || d.data.data.name;
+        .text(function (d, index) {
+          if (index === 0) return '';
+          return `${d.data.data.schema}.${d.data.data.name}`;
         });
+
+      nodeEnter
+        .append('text')
+        .attr('dx', '-.25em')
+        .attr('dy', '.25em')
+        .attr('class', 'plus')
+        .style('color', '#8b37ff')
+        .text((d) => (d._children ? '+' : ''));
 
       // UPDATE
       const nodeUpdate = nodeEnter.merge(node);
@@ -166,20 +172,22 @@ export class LineageGraph extends React.Component<
       // Update the node attributes and style
       nodeUpdate
         .select('circle.node')
-        .attr('r', 10)
-        .style('fill', function (d) {
-          return d._children ? 'lightsteelblue' : '#fff';
-        })
+        .attr('r', (d) => (d.depth === 0 ? 12 : 8))
+        // .style('fill', function (d) {
+        //   return d._children ? 'lightsteelblue' : '#fff';
+        // })
         .attr('cursor', 'pointer');
+
+      nodeUpdate
+        .select('text.plus')
+        .text((d) => (d._children ? '+' : ''));
 
       // Remove any exiting nodes
       const nodeExit = node
         .exit()
         .transition()
         .duration(animationDuration)
-        .attr('transform', (d) => {
-          return `translate(${source.y},${source.x})`;
-        })
+        .attr('transform', (d) => `translate(${source.y},${source.x})`)
         .remove();
 
       // On exit reduce the node circles size to 0

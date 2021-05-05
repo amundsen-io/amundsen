@@ -1,26 +1,39 @@
+@import 'variables';
+@import 'typography';
+
+.svg-container {
+  background: linear-gradient(90deg, $gray5 50%, $gray0 50%);
+}
+
 .node {
   cursor: pointer;
 }
 
 .node circle {
   fill: #fff;
-  stroke: steelblue;
+  stroke: $purple60;
   stroke-width: 3px;
 }
 
 .node text {
   font: 12px sans-serif;
+
+  &.plus {
+    fill: $purple60;
+    font-size: 25px;
+  }
 }
 
 .link {
   fill: none;
-  stroke: #ccc;
+  stroke: rgba(12, 11, 49, 0.16);
   stroke-width: 2px;
 }
 
-.upstream-tree node, .upstream-tree text {
-      -moz-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    transform: scaleX(-1);
+.upstream-tree node,
+.upstream-tree text {
+  -moz-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  transform: scaleX(-1);
 }
