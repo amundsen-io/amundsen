@@ -7,9 +7,7 @@ from mock import patch
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
-from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_owner_extractor import (
-    ModeDashboardOwnerExtractor,
-)
+from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_owner_extractor import ModeDashboardOwnerExtractor
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner
 
 
