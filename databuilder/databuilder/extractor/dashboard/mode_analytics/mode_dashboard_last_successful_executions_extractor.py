@@ -12,7 +12,6 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import 
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
 from databuilder.models.dashboard.dashboard_execution import DashboardExecution
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
-from databuilder.rest_api.rest_api_query import RestApiQuery
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,7 +38,7 @@ class ModeDashboardLastSuccessfulExecutionExtractor(ModeDashboardExecutionsExtra
     def get_scope(self) -> str:
         return 'extractor.mode_dashboard_last_successful_execution'
 
-    def _build_restapi_query(self) -> RestApiQuery:
+    def _build_restapi_query(self) -> ModePaginatedRestApiQuery:
         """
         Build REST API Query to get Mode Dashboard last successful execution metadata.
         :return: A RestApiQuery that provides Mode Dashboard last successful execution (run)
