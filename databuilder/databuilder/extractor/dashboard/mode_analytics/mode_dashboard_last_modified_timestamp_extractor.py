@@ -11,7 +11,6 @@ from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_executions_ex
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.extractor.restapi.rest_api_extractor import STATIC_RECORD_DICT
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
-from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
 from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME, TimestampStringToEpoch
 
@@ -42,7 +41,7 @@ class ModeDashboardLastModifiedTimestampExtractor(ModeDashboardExecutionsExtract
     def get_scope(self) -> str:
         return 'extractor.mode_dashboard_last_modified_timestamp_execution'
 
-    def _build_restapi_query(self) -> RestApiQuery:
+    def _build_restapi_query(self) -> ModePaginatedRestApiQuery:
         """
         Build REST API Query. To get Mode Dashboard last modified timestamp
         :return: A RestApiQuery that provides Mode Dashboard last successful execution (run)
