@@ -561,8 +561,7 @@ task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
 
 job_config = ConfigFactory.from_dict({
     '{}.{}'.format(extractor.get_scope(), ORGANIZATION): organization,
-    '{}.{}'.format(extractor.get_scope(), MODE_ACCESS_TOKEN): mode_token,
-    '{}.{}'.format(extractor.get_scope(), MODE_PASSWORD_TOKEN): mode_password,
+    '{}.{}'.format(extractor.get_scope(), MODE_BEARER_TOKEN): mode_bearer_token,
 })
 
 job = DefaultJob(conf=job_config,
