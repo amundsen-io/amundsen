@@ -8,7 +8,7 @@ from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_last_successful_executions_extractor import (
-    ModeDashboardLastSuccessfulExecutionExtractor
+    ModeDashboardLastSuccessfulExecutionExtractor,
 )
 from databuilder.models.dashboard.dashboard_execution import DashboardExecution
 
