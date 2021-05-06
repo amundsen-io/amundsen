@@ -10,6 +10,7 @@ from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
+from databuilder.rest_api.rest_api_failure_handlers import HttpFailureSkipOnStatus
 from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
 from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
@@ -69,6 +70,9 @@ class ModeDashboardExecutionsExtractor(Extractor):
         :return: A RestApiQuery that provides Mode Dashboard execution (run)
         """
 
+        # TODO: revise this extractor once Mode team provides last execution timestamp in reports discovery api
+        # https://mode.com/developer/discovery-api/analytics/reports/
+
         spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
         params = ModeDashboardUtils.get_auth_params(conf=self._conf)
 
@@ -77,10 +81,16 @@ class ModeDashboardExecutionsExtractor(Extractor):
         url = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
         json_path = '(_embedded.reports[*].token) | (_embedded.reports[*]._links.last_run.href)'
         field_names = ['dashboard_id', 'last_run_resource_path']
+
+        # the spaces_query is authenticated with a bearer token,
+        # which returns spaces that may be beyond access of the user calling Mode main api.
+        # When this happens, 404 will be returned and hence should be skipped.
+        failure_handler = HttpFailureSkipOnStatus(status_codes_to_skip={404})
         last_run_resource_path_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=url, params=params,
                                                                  json_path=json_path, field_names=field_names,
                                                                  skip_no_result=True,
-                                                                 json_path_contains_or=True)
+                                                                 json_path_contains_or=True,
+                                                                 can_skip_failure=failure_handler.can_skip_failure)
 
         # https://mode.com/developer/api-reference/analytics/report-runs/#getReportRun
         url = 'https://app.mode.com{last_run_resource_path}'
