@@ -72,6 +72,8 @@ class ModeDashboardExecutionsExtractor(Extractor):
 
         # TODO: revise this extractor once Mode team provides last execution timestamp in reports discovery api
         # https://mode.com/developer/discovery-api/analytics/reports/
+        # Once we can fully switch to Mode discovery api,
+        # the performance of this extractor will be dramatically increased.
 
         spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
         params = ModeDashboardUtils.get_auth_params(conf=self._conf)
