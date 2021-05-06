@@ -17,8 +17,6 @@ class TestModeDashboardChartsBatchExtractor(unittest.TestCase):
     def setUp(self) -> None:
         config = ConfigFactory.from_dict({
             'extractor.mode_dashboard_chart_batch.organization': 'amundsen',
-            'extractor.mode_dashboard_chart_batch.mode_user_token': 'amundsen_user_token',
-            'extractor.mode_dashboard_chart_batch.mode_password_token': 'amundsen_password_token',
             'extractor.mode_dashboard_chart_batch.mode_bearer_token': 'amundsen_bearer_token',
         })
         self.config = config
@@ -27,7 +25,8 @@ class TestModeDashboardChartsBatchExtractor(unittest.TestCase):
         extractor = ModeDashboardChartsBatchExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.config, scope=extractor.get_scope()))
 
-        with patch('databuilder.rest_api.rest_api_query.requests.get'):
+        with patch('databuilder.rest_api.rest_api_query.RestApiQuery._send_request') as mock_request:
+            mock_request.return_value.json.return_value = {'charts': []}
             record = extractor.extract()
             self.assertIsNone(record)
 
