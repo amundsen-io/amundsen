@@ -76,11 +76,13 @@ class ModeDashboardChartsBatchExtractor(Extractor):
                        'chart_id',
                        'chart_name',
                        'chart_type']
+        max_record_size = 1000
         chart_batch_query = ModePaginatedRestApiQuery(query_to_join=seed_query,
                                                       url=chart_url_template,
                                                       params=params,
                                                       json_path=json_path,
                                                       pagination_json_path=json_path,
                                                       field_names=field_names,
-                                                      skip_no_result=True)
+                                                      skip_no_result=True,
+                                                      max_record_size=max_record_size)
         return chart_batch_query

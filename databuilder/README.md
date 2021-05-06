@@ -653,7 +653,7 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
-If your organization's mode account supports discovery feature(paid feature), you could leverage [ModeDashboardChartsBatchExtractor](./databuilder/extractor/dashboard/mode_analytics/batch/mode_dashboard_charts_batch_extractor.py) which does a batch call to mode API which is more performant. You need to generate a bearer account based on the API instruction.
+If your organization's mode account supports discovery feature(paid feature), you could leverage [ModeDashboardChartsBatchExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_batch_extractor.py) which does a batch call to mode API which is more performant. You need to generate a bearer account based on the API instruction.
 
 ```python
 extractor = ModeDashboardChartsBatchExtractor()
@@ -661,8 +661,6 @@ task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
 
 job_config = ConfigFactory.from_dict({
     '{}.{}'.format(extractor.get_scope(), ORGANIZATION): organization,
-    '{}.{}'.format(extractor.get_scope(), MODE_ACCESS_TOKEN): mode_token,
-    '{}.{}'.format(extractor.get_scope(), MODE_PASSWORD_TOKEN): mode_password,
     '{}.{}'.format(extractor.get_scope(), MODE_BEARER_TOKEN): mode_bearer_token,
 })
 
