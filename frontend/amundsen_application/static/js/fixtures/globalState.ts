@@ -178,18 +178,10 @@ const globalState: GlobalState = {
       watermarks: [],
       programmatic_descriptions: {},
     },
-    tableLineage: {
-      lineage: {
-        upstream_entities: [],
-        downstream_entities: [],
-      },
-      status: null,
-    },
     tableOwners: {
       isLoading: true,
       owners: {},
     },
-    columnLineageMap: {},
   },
   lastIndexed: { lastIndexed: 1555632106 },
   tags: {
@@ -265,6 +257,16 @@ const globalState: GlobalState = {
     },
   },
   ui: {},
+  lineage: {
+    lineage: {
+      lineageTree: {
+        upstream_entities: [],
+        downstream_entities: [],
+      },
+      status: null,
+    },
+    columnLineageMap: {},
+  },
 };
 
 export default globalState;
