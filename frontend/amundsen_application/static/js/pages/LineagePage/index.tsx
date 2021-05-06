@@ -135,8 +135,8 @@ export class LineagePage extends React.Component<
   render() {
     // const { isLoading, statusCode, tableData } = this.props;
     const { match, tableLineage, statusCode, isLoading } = this.props;
-    console.log("tableLineage", tableLineage)
-    console.log("statusCode", statusCode)
+    console.log('tableLineage', tableLineage);
+    console.log('statusCode', statusCode);
 
     const { params } = match;
     let innerContent;
@@ -186,7 +186,9 @@ export class LineagePage extends React.Component<
                 </Link>
               </div>
             </div>
-            <div className="header-section header-links">Cancel</div>
+            <div className="header-section header-links">
+              <button type="button" className="btn btn-close clear-button icon-header" />
+            </div>
           </header>
           <div className="graph-container">
             <LineageGraph lineage={tableLineage} />

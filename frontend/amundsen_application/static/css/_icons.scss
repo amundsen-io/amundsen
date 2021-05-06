@@ -181,6 +181,16 @@ img.icon {
     mask-image: url('../images/icons/Right.svg');
   }
 
+  &.icon-right-arrow {
+    -webkit-mask-image: url('../images/icons/RightArrow.svg');
+    mask-image: url('../images/icons/RightArrow.svg');
+  }
+
+  &.icon-left-arrow {
+    -webkit-mask-image: url('../images/icons/LeftArrow.svg');
+    mask-image: url('../images/icons/LeftArrow.svg');
+  }
+
   &.icon-search {
     -webkit-mask-image: url('../images/icons/Search.svg');
     mask-image: url('../images/icons/Search.svg');
@@ -209,6 +219,11 @@ img.icon {
   &.icon-more {
     -webkit-mask-image: url('../images/icons/More.svg');
     mask-image: url('../images/icons/More.svg');
+  }
+
+  &.icon-close {
+    -webkit-mask-image: url('../images/icons/Close.svg');
+    mask-image: url('../images/icons/Close.svg');
   }
 }
 

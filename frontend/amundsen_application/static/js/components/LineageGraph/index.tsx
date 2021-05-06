@@ -10,6 +10,8 @@ import { Lineage } from 'interfaces';
 
 import './styles.scss';
 
+import { LeftIcon } from 'components/SVGIcons';
+
 export interface LineageGraphProps {
   lineage: Lineage;
 }
@@ -45,10 +47,23 @@ export class LineageGraph extends React.Component<
     const totalHeight =
       dimensions.height || 1024 - (margin.top + margin.bottom);
 
-    d3.select(this.nodeRef.current)
+    const svgContainer = d3
+      .select(this.nodeRef.current)
       .append('svg')
       .attr('class', 'svg-container')
       .attr('viewBox', [0, 0, totalWidth, totalHeight]);
+
+    svgContainer
+      .append('foreignObject')
+        .attr('class', 'direction-label  upstream-label')
+        .attr('transform', `translate(${(totalWidth / 2) - 150 - margin.right}, ${margin.top})`)
+        .html('<img class="icon icon-left-arrow" /> Upstream')
+
+    svgContainer
+      .append('foreignObject')
+        .attr('class', 'direction-label downstream-label')
+        .attr('transform', `translate(${(totalWidth / 2) + margin.left}, ${margin.top})`)
+        .html('<img class="icon icon-right-arrow" /> downstream')
 
     this.drawTree(totalWidth / 2, totalHeight, margin);
   }

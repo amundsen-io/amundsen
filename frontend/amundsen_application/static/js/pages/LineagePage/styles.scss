@@ -18,11 +18,9 @@
     }
   }
 
-  //.graph-container {
-  //  display: flex;
-  //  height: calc(100% - 84px);
-  //  margin: auto;
-  //}
+  .lineage-graph-label {
+    margin-left: $spacer-2;
+  }
 
   .lineage-graph {
     display: flex;
