@@ -177,10 +177,10 @@ class RestApiQuery(BaseRestApiQuery):
                     if not sub_record or len(sub_record) != len(self._field_names):
                         # skip the record
                         continue
-                    record_dict = copy.deepcopy(record_dict)
+                    new_record_dict = copy.deepcopy(record_dict)
                     for field_name in self._field_names:
-                        record_dict[field_name] = sub_record.pop(0)
-                    yield record_dict
+                        new_record_dict[field_name] = sub_record.pop(0)
+                    yield new_record_dict
 
                 self._post_process(response)
 
