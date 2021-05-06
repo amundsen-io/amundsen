@@ -25,16 +25,16 @@ class TestModeDashboardLastModifiedTimestampExtractor(unittest.TestCase):
         extractor = ModeDashboardLastModifiedTimestampExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self.config, scope=extractor.get_scope()))
 
-        with patch(
-                'databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query.ModePaginatedRestApiQuery.execute'
-        ) as mock_execute:
-            mock_execute.return_value = iter([
-                {
-                    'dashboard_group_id': 'ggg',
-                    'dashboard_id': 'ddd',
-                    'last_modified_timestamp': '2021-02-05T21:20:09.019Z',
-                }
-            ])
+        with patch('databuilder.rest_api.rest_api_query.RestApiQuery._send_request') as mock_request:
+            mock_request.return_value.json.return_value = {
+                'reports': [
+                    {
+                        'space_token': 'ggg',
+                        'token': 'ddd',
+                        'edited_at': '2021-02-05T21:20:09.019Z',
+                    }
+                ]
+            }
 
             record = next(extractor.extract())
             self.assertIsInstance(record, DashboardLastModifiedTimestamp)
