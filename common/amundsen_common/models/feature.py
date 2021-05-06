@@ -29,7 +29,7 @@ class Feature:
     version: str  # ex: "1.2.0"
     status: str
     feature_group: str
-    entity: Optional[List[str]]
+    entity: List[str]
     data_type: Optional[str]
     availability: List[str]
     description: Optional[str] = attr.ib(default=None)
@@ -58,7 +58,7 @@ class FeatureSummary:
     name: str
     version: str
     availability: List[str]
-    entity: Optional[List[str]] = attr.ib(default=[])
+    entity: List[str]
     description: Optional[str] = attr.ib(default=None)
     badges: List[Badge]
     last_updated_timestamp: Optional[int]
