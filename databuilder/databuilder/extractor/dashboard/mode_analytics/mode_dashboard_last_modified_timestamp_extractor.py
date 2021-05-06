@@ -43,7 +43,7 @@ class ModeDashboardLastModifiedTimestampExtractor(ModeDashboardExecutionsExtract
 
     def _build_restapi_query(self) -> ModePaginatedRestApiQuery:
         """
-        Build REST API Query. To get Mode Dashboard last modified timestamp
+        Build REST API Query to get Mode Dashboard last modified timestamp
         :return: A RestApiQuery that provides Mode Dashboard last successful execution (run)
         """
 
