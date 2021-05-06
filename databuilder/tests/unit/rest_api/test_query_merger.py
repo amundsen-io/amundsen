@@ -11,7 +11,7 @@ from databuilder.rest_api.rest_api_query import RestApiQuery
 
 
 class TestQueryMerger(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         query_to_join_seed_record = [
             {'foo1': 'bar1', 'dashboard_id': 'd1'},
             {'foo2': 'bar2', 'dashboard_id': 'd3'}
@@ -21,7 +21,7 @@ class TestQueryMerger(unittest.TestCase):
         self.field_names = ['name_field']
         self.url = 'foobar'
 
-    def test_ensure_record_get_updated(self):
+    def test_ensure_record_get_updated(self) -> None:
         query_to_merge_seed_record = [
             {'organization': 'amundsen', 'dashboard_id': 'd1'},
             {'organization': 'amundsen-databuilder', 'dashboard_id': 'd2'},
@@ -49,7 +49,7 @@ class TestQueryMerger(unittest.TestCase):
                 results[1],
             )
 
-    def test_exception_rasied_with_duplicate_merge_key(self):
+    def test_exception_rasied_with_duplicate_merge_key(self) -> None:
         """
          Two records in query_to_merge results have {'dashboard_id': 'd2'},
          exception should be raised
@@ -72,7 +72,7 @@ class TestQueryMerger(unittest.TestCase):
                                  query_merger=query_merger)
             self.assertRaises(Exception, query.execute())
 
-    def test_exception_raised_with_missing_merge_key(self):
+    def test_exception_raised_with_missing_merge_key(self) -> None:
         """
          No record in query_to_merge results contains {'dashboard_id': 'd3'},
          exception should be raised

@@ -1,6 +1,10 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from typing import (
+    Any, Dict
+)
+
 from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 
 
@@ -35,7 +39,7 @@ class QueryMerger:
                  ) -> None:
         self._query_to_merge = query_to_merge
         self._merge_key = merge_key
-        self._computed_query_result = dict()
+        self._computed_query_result: Dict[Any, Any] = dict()
 
     def merge_into(self, record_dict: dict) -> None:
         """
@@ -54,7 +58,7 @@ class QueryMerger:
             raise Exception(f'{self._merge_key} {value_of_merge_key} not found in query_to_merge results')
         record_dict.update(record_dict_to_merge)
 
-    def _compute_query_result(self) -> dict:
+    def _compute_query_result(self) -> Dict[Any, Any]:
         """
         Transform the query result to a dictionary.
 
@@ -68,7 +72,7 @@ class QueryMerger:
 
         :return: a dictionary
         """
-        computed_query_results = dict()
+        computed_query_results: Dict[Any, Any] = dict()
         iterator = self._query_to_merge.execute()
 
         while True:
