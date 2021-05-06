@@ -4,7 +4,7 @@
 import * as React from 'react';
 
 import { ResourceType, TableResource } from 'interfaces/Resources';
-import { LineageItem } from 'interfaces/TableMetadata';
+import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
 
 export interface LineageListProps {

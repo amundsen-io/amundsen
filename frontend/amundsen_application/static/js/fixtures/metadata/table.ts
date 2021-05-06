@@ -188,6 +188,7 @@ export const tableLineage: Lineage = {
       name: 'table_name',
       schema: 'schema',
       usage: 1398,
+      parent: 'database://cluster.schema/parent_table_name',
     },
   ],
   upstream_entities: [
@@ -200,6 +201,7 @@ export const tableLineage: Lineage = {
       name: 'table_name',
       schema: 'schema',
       usage: 1398,
+      parent: 'database://cluster.schema/parent_table_name',
     },
   ],
 };

@@ -9,8 +9,8 @@ import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
 import * as d3 from 'd3';
 
-import { getTableLineage } from 'ducks/tableMetadata/reducer';
-import { GetTableLineageRequest } from 'ducks/tableMetadata/types';
+import { getTableLineage } from 'ducks/lineage/reducer';
+import { GetTableLineageRequest } from 'ducks/lineage/types';
 
 import { ResourceType, Lineage } from 'interfaces';
 
@@ -187,7 +187,10 @@ export class LineagePage extends React.Component<
               </div>
             </div>
             <div className="header-section header-links">
-              <button type="button" className="btn btn-close clear-button icon-header" />
+              <button
+                type="button"
+                className="btn btn-close clear-button icon-header"
+              />
             </div>
           </header>
           <div className="graph-container">
@@ -208,11 +211,11 @@ export class LineagePage extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => ({
-  isLoading: state.tableMetadata.tableLineage.status === null,
+  isLoading: state.lineage.lineage.status === null,
   // statusCode: state.tableMetadata.statusCode,
-  statusCode: state.tableMetadata.tableLineage.status,
+  statusCode: state.lineage.lineage.status,
   // tableData: state.tableMetadata.tableData,
-  tableLineage: state.tableMetadata.tableLineage.lineage,
+  tableLineage: state.lineage.lineage.lineageTree,
   // numRelatedDashboards: state.tableMetadata.dashboards
   //   ? state.tableMetadata.dashboards.dashboards.length
   //   : 0,
