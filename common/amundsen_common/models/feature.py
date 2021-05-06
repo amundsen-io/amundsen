@@ -10,6 +10,19 @@ from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class Query:
+    name: Optional[str]
+    text: str
+    url: Optional[str]
+
+
+class QuerySchema(AttrsSchema):
+    class Meta:
+        target = Query
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Feature:
     key: Optional[str] = attr.ib(default=None)
     name: str
@@ -54,17 +67,4 @@ class FeatureSummary:
 class FeatureSummarySchema(AttrsSchema):
     class Meta:
         target = FeatureSummary
-        register_as_scheme = True
-
-
-@attr.s(auto_attribs=True, kw_only=True)
-class Query:
-    name: Optional[str]
-    text: str
-    url: Optional[str]
-
-
-class QuerySchema(AttrsSchema):
-    class Meta:
-        target = Query
         register_as_scheme = True
