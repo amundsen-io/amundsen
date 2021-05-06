@@ -6,7 +6,6 @@ from amundsen_common.models.user import User
 from amundsen_common.models.badge import Badge
 from amundsen_common.models.tag import Tag
 from amundsen_common.models.table import Column, Stat, ProgrammaticDescription, Watermark
-from amundsen_common.models.dashboard import Query
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
@@ -55,4 +54,17 @@ class FeatureSummary:
 class FeatureSummarySchema(AttrsSchema):
     class Meta:
         target = FeatureSummary
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class Query:
+    name: Optional[str]
+    text: str
+    url: Optional[str]
+
+
+class QuerySchema(AttrsSchema):
+    class Meta:
+        target = Query
         register_as_scheme = True
