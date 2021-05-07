@@ -11,7 +11,6 @@ from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
 from databuilder.rest_api.query_merger import QueryMerger
-from databuilder.rest_api.rest_api_query import RestApiQuery
 from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
 from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
 from databuilder.transformer.template_variable_substitution_transformer import (
@@ -87,7 +86,7 @@ class ModeDashboardExtractor(Extractor):
     def get_scope(self) -> str:
         return 'extractor.mode_dashboard'
 
-    def _build_restapi_query(self) -> RestApiQuery:
+    def _build_restapi_query(self) -> ModePaginatedRestApiQuery:
         """
         Build REST API Query to get Mode Dashboard metadata
         :return: A RestApiQuery that provides Mode Dashboard metadata
