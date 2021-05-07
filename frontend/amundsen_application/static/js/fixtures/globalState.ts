@@ -262,6 +262,9 @@ const globalState: GlobalState = {
       lineageTree: {
         upstream_entities: [],
         downstream_entities: [],
+        key: '',
+        direction: 'both',
+        depth: 1,
       },
       status: null,
     },

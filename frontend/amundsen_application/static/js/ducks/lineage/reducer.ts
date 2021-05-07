@@ -15,13 +15,11 @@ export const initialLineageState = {
   lineageTree: {
     upstream_entities: [],
     downstream_entities: [],
+    depth: 0,
+    direction: 'both',
+    key: '',
   },
   status: null,
-};
-
-export const emptyLineageTree = {
-  upstream_entities: [],
-  downstream_entities: [],
 };
 
 export const initialState: LineageReducerState = {
@@ -31,10 +29,14 @@ export const initialState: LineageReducerState = {
 };
 
 /* ACTIONS */
-export function getTableLineage(key: string): GetTableLineageRequest {
+export function getTableLineage(
+  key: string,
+  depth: number = 1,
+  direction: string = 'both'
+): GetTableLineageRequest {
   return {
     type: GetTableLineage.REQUEST,
-    payload: { key },
+    payload: { key, depth, direction },
   };
 }
 
@@ -65,11 +67,13 @@ export function getTableLineageFailure(
 
 export function getColumnLineage(
   key: string,
-  columnName: string
+  columnName: string,
+  depth: number = 1,
+  direction: string = 'both'
 ): GetColumnLineageRequest {
   return {
     type: GetColumnLineage.REQUEST,
-    payload: { key, columnName },
+    payload: { key, depth, direction, columnName },
     meta: {
       analytics: {
         name: `getColumnLineage`,
@@ -198,7 +202,7 @@ export default function reducer(
         columnLineageMap: {
           ...state.columnLineageMap,
           [columnName]: {
-            lineage: emptyLineageTree,
+            lineage: initialLineageState.lineageTree,
             isLoading: true,
           },
         },

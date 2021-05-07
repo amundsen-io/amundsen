@@ -281,32 +281,28 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-      // -1 from length because we are passing the current table as parent
-      // that should not be count or displayed in the list view
-      if (tableLineage.upstream_entities.length - 1 > 0) {
+      if (tableLineage.upstream_entities.length > 0) {
         tabInfo.push({
           content: (
             <LineageList
               items={tableLineage.upstream_entities}
               direction="upstream"
-              tableKey={tableData.key}
             />
           ),
           key: Constants.TABLE_TAB.UPSTREAM,
-          title: `Upstream (${tableLineage.upstream_entities.length - 1})`,
+          title: `Upstream (${tableLineage.upstream_entities.length})`,
         });
       }
-      if (tableLineage.downstream_entities.length - 1 > 0) {
+      if (tableLineage.downstream_entities.length > 0) {
         tabInfo.push({
           content: (
             <LineageList
               items={tableLineage.downstream_entities}
               direction="downstream"
-              tableKey={tableData.key}
             />
           ),
           key: Constants.TABLE_TAB.DOWNSTREAM,
-          title: `Downstream (${tableLineage.downstream_entities.length - 1})`,
+          title: `Downstream (${tableLineage.downstream_entities.length})`,
         });
       }
     }

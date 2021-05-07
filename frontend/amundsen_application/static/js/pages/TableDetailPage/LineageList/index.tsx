@@ -10,28 +10,24 @@ import TableListItem from 'components/ResourceListItem/TableListItem';
 export interface LineageListProps {
   items: LineageItem[];
   direction: string;
-  tableKey: string;
 }
 
 const LineageList: React.FC<LineageListProps> = ({
   items,
   direction,
-  tableKey,
 }: LineageListProps) => (
   <div className="list-group">
     {items.map((table, index) => {
-      if (table.key !== tableKey) {
-        const logging = {
-          index,
-          source: `table_lineage_list_${direction}`,
-        };
-        const tableResource: TableResource = {
-          ...table,
-          type: ResourceType.table,
-          description: '',
-        };
-        return <TableListItem table={tableResource} logging={logging} />;
-      }
+      const logging = {
+        index,
+        source: `table_lineage_list_${direction}`,
+      };
+      const tableResource: TableResource = {
+        ...table,
+        type: ResourceType.table,
+        description: '',
+      };
+      return <TableListItem table={tableResource} logging={logging} />;
     })}
   </div>
 );

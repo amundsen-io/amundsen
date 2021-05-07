@@ -55,15 +55,21 @@ export class LineageGraph extends React.Component<
 
     svgContainer
       .append('foreignObject')
-        .attr('class', 'direction-label  upstream-label')
-        .attr('transform', `translate(${(totalWidth / 2) - 150 - margin.right}, ${margin.top})`)
-        .html('<img class="icon icon-left-arrow" /> Upstream')
+      .attr('class', 'direction-label  upstream-label')
+      .attr(
+        'transform',
+        `translate(${totalWidth / 2 - 150 - margin.right}, ${margin.top})`
+      )
+      .html('<img class="icon icon-left-arrow" /> Upstream');
 
     svgContainer
       .append('foreignObject')
-        .attr('class', 'direction-label downstream-label')
-        .attr('transform', `translate(${(totalWidth / 2) + margin.left}, ${margin.top})`)
-        .html('<img class="icon icon-right-arrow" /> downstream')
+      .attr('class', 'direction-label downstream-label')
+      .attr(
+        'transform',
+        `translate(${totalWidth / 2 + margin.left}, ${margin.top})`
+      )
+      .html('<img class="icon icon-right-arrow" /> downstream');
 
     this.drawTree(totalWidth / 2, totalHeight, margin);
   }
@@ -193,9 +199,7 @@ export class LineageGraph extends React.Component<
         // })
         .attr('cursor', 'pointer');
 
-      nodeUpdate
-        .select('text.plus')
-        .text((d) => (d._children ? '+' : ''));
+      nodeUpdate.select('text.plus').text((d) => (d._children ? '+' : ''));
 
       // Remove any exiting nodes
       const nodeExit = node

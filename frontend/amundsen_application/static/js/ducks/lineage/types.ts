@@ -9,6 +9,8 @@ export interface GetTableLineageRequest {
   type: GetTableLineage.REQUEST;
   payload: {
     key: string;
+    direction: string;
+    depth: number;
   };
 }
 export interface GetTableLineageResponse {
@@ -29,6 +31,8 @@ export interface GetColumnLineageRequest {
   payload: {
     key: string;
     columnName: string;
+    direction: string;
+    depth: number;
   };
   meta: {
     analytics: AnalyticsEvent;

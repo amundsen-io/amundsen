@@ -13,8 +13,24 @@ export interface LineageItem {
 }
 
 export interface Lineage {
+  key: string;
+  direction: string;
+  depth: number;
   downstream_entities: LineageItem[];
   upstream_entities: LineageItem[];
+}
+
+export interface TableLineageParams {
+  key: string;
+  direction: string;
+  depth: number;
+}
+
+export interface ColumnLineageParams {
+  key: string;
+  direction: string;
+  depth: number;
+  column: string;
 }
 
 // To keep the backward compatibility for the list based lineage
@@ -24,13 +40,4 @@ export interface ColumnLineageMap {
     lineage: Lineage;
     isLoading: boolean;
   };
-}
-
-export interface TableLineageParams {
-  key: string;
-}
-
-export interface ColumnLineageParams {
-  key: string;
-  column: string;
 }

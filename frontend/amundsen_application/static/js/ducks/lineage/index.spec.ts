@@ -48,6 +48,9 @@ describe('tableMetadata ducks', () => {
         },
       ],
       downstream_entities: [],
+      depth: 1,
+      direction: 'both',
+      key: testKey,
     };
 
     columnName = 'column_name';

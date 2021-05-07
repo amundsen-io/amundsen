@@ -5,7 +5,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { emptyLineageTree } from 'ducks/lineage/reducer';
+import { initialLineageState } from 'ducks/lineage/reducer';
 import { getColumnLineageLink } from 'config/config-utils';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { Lineage, LineageItem } from 'interfaces/Lineage';
@@ -140,7 +140,8 @@ export const mapStateToProps = (
   const { columnLineageMap } = state.lineage;
   const columnStateObject = columnLineageMap[ownProps.columnName];
   const lineage =
-    (columnStateObject && columnStateObject.lineage) || emptyLineageTree;
+    (columnStateObject && columnStateObject.lineage) ||
+    initialLineageState.lineageTree;
   const isLoading = columnStateObject && columnStateObject.isLoading;
   return {
     tableData,

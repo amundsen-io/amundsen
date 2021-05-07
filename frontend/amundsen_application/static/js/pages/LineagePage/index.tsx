@@ -9,8 +9,11 @@ import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
 import * as d3 from 'd3';
 
-import { getTableLineage } from 'ducks/lineage/reducer';
-import { GetTableLineageRequest } from 'ducks/lineage/types';
+import { getColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
+import {
+  GetColumnLineageRequest,
+  GetTableLineageRequest,
+} from 'ducks/lineage/types';
 
 import { ResourceType, Lineage } from 'interfaces';
 
@@ -38,7 +41,7 @@ export interface PropsFromState {
   // numRelatedDashboards: number;
   statusCode: number | null;
   // tableData: TableMetadata;
-  tableLineage: Lineage;
+  lineageTree: Lineage;
 }
 export interface DispatchFromProps {
   // getTableData: (
@@ -46,7 +49,17 @@ export interface DispatchFromProps {
   //   searchIndex?: string,
   //   source?: string
   // ) => GetTableDataRequest;
-  getTableLineageDispatch: (key: string) => GetTableLineageRequest;
+  getTableLineageDispatch: (
+    key: string,
+    depth?: number,
+    direction?: string
+  ) => GetTableLineageRequest;
+  getColumnLineageDispatch: (
+    key: string,
+    columnName: string,
+    depth?: number,
+    direction?: string
+  ) => GetColumnLineageRequest;
   // openRequestDescriptionDialog: (
   //   requestMetadataType: RequestMetadataType,
   //   columnName: string
@@ -84,18 +97,7 @@ export class LineagePage extends React.Component<
   componentDidMount() {
     const { getTableLineageDispatch } = this.props;
     this.key = this.getTableKey();
-    getTableLineageDispatch(this.key);
-
-    // // Centering the graph
-    // if (this.treeContainerRef.current) {
-    //   const dimensions = this.treeContainerRef.current!.getBoundingClientRect();
-    //   this.setState({
-    //     treeTranslate: {
-    //       x: dimensions.width / 2,
-    //       y: dimensions.height / 2,
-    //     },
-    //   });
-    // }
+    getTableLineageDispatch(this.key, 5);
     this.didComponentMount = true;
   }
 
@@ -104,7 +106,7 @@ export class LineagePage extends React.Component<
     const newKey = this.getTableKey();
     if (this.key !== newKey) {
       this.key = newKey;
-      getTableLineageDispatch(this.key);
+      getTableLineageDispatch(this.key, 5);
     }
   }
 
@@ -128,16 +130,9 @@ export class LineagePage extends React.Component<
     return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 
-  handleClick = (e) => {
-    console.log(e);
-  };
-
   render() {
     // const { isLoading, statusCode, tableData } = this.props;
-    const { match, tableLineage, statusCode, isLoading } = this.props;
-    console.log('tableLineage', tableLineage);
-    console.log('statusCode', statusCode);
-
+    const { match, lineageTree, statusCode, isLoading } = this.props;
     const { params } = match;
     let innerContent;
 
@@ -147,12 +142,22 @@ export class LineagePage extends React.Component<
     } else if (statusCode === SERVER_ERROR_CODE) {
       innerContent = <ErrorMessage />;
     } else {
-      const resourceData = {
+      const rootNodeData = {
+        parent: '',
+        source: params.database,
+        key: this.getTableKey(),
+        badges: [],
+        usage: 0,
         database: params.database,
         schema: params.schema,
         name: params.table,
         cluster: params.cluster,
+        level: 0,
       };
+      // This will be needed to generate the lineage graph.
+      lineageTree.upstream_entities.push(rootNodeData);
+      lineageTree.downstream_entities.push(rootNodeData);
+
       innerContent = (
         <div className="resource-detail-layout lineage-page">
           <header className="resource-header">
@@ -160,19 +165,16 @@ export class LineagePage extends React.Component<
               <span
                 className={
                   'icon icon-header ' +
-                  getSourceIconClass(resourceData.database, ResourceType.table)
+                  getSourceIconClass(rootNodeData.database, ResourceType.table)
                 }
               />
             </div>
             <div className="header-section header-title">
               <h1
                 className="header-title-text truncated"
-                title={`${resourceData.schema}.${resourceData.name}`}
+                title={`${rootNodeData.schema}.${rootNodeData.name}`}
               >
-                <Link to="/search" onClick={this.handleClick}>
-                  {resourceData.schema}
-                </Link>
-                .{resourceData.name}
+                {rootNodeData.schema}.{rootNodeData.name}
                 <span className="text-secondary lineage-graph-label">
                   Lineage Graph
                 </span>
@@ -180,21 +182,21 @@ export class LineagePage extends React.Component<
               <div className="body-2">
                 <Link
                   className="resource-list-item table-list-item"
-                  to={getLink(resourceData, 'table-lineage-page')}
+                  to={getLink(rootNodeData, 'table-lineage-page')}
                 >
                   Back to table details
                 </Link>
               </div>
             </div>
             <div className="header-section header-links">
-              <button
-                type="button"
+              <Link
+                to={getLink(rootNodeData, 'table-lineage-page')}
                 className="btn btn-close clear-button icon-header"
               />
             </div>
           </header>
           <div className="graph-container">
-            <LineageGraph lineage={tableLineage} />
+            <LineageGraph lineage={lineageTree} />
           </div>
         </div>
       );
@@ -215,7 +217,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   // statusCode: state.tableMetadata.statusCode,
   statusCode: state.lineage.lineage.status,
   // tableData: state.tableMetadata.tableData,
-  tableLineage: state.lineage.lineage.lineageTree,
+  lineageTree: state.lineage.lineage.lineageTree,
   // numRelatedDashboards: state.tableMetadata.dashboards
   //   ? state.tableMetadata.dashboards.dashboards.length
   //   : 0,
@@ -229,6 +231,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       // getTableData,
       getTableLineageDispatch: getTableLineage,
+      getColumnLineageDispatch: getColumnLineage,
       // openRequestDescriptionDialog,
       // searchSchema: (schemaText: string) =>
       //   updateSearchState({

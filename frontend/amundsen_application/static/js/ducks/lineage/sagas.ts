@@ -22,8 +22,9 @@ import {
 export function* getTableLineageWorker(
   action: GetTableLineageRequest
 ): SagaIterator {
+  const { key, depth, direction } = action.payload;
   try {
-    const response = yield call(API.getTableLineage, action.payload.key);
+    const response = yield call(API.getTableLineage, key, depth, direction);
     const { data, status } = response;
     yield put(getTableLineageSuccess(data, status));
   } catch (error) {
@@ -38,9 +39,15 @@ export function* getTableLineageWatcher(): SagaIterator {
 export function* getColumnLineageWorker(
   action: GetColumnLineageRequest
 ): SagaIterator {
-  const { key, columnName } = action.payload;
+  const { key, columnName, depth, direction } = action.payload;
   try {
-    const response = yield call(API.getColumnLineage, key, columnName);
+    const response = yield call(
+      API.getColumnLineage,
+      key,
+      columnName,
+      depth,
+      direction
+    );
     const { data, status } = response;
     yield put(getColumnLineageSuccess(data, status));
   } catch (error) {
@@ -58,7 +65,13 @@ export function* getTableColumnLineageWorker(
 ): SagaIterator {
   const { key, columnName } = action.payload;
   try {
-    const response = yield call(API.getColumnLineage, key, columnName);
+    const response = yield call(
+      API.getColumnLineage,
+      key,
+      columnName,
+      1,
+      'both'
+    );
     const { data, status } = response;
     yield put(getTableColumnLineageSuccess(data, columnName, status));
   } catch (error) {

@@ -1526,8 +1526,8 @@ class Neo4jProxy(BaseProxy):
 
         get_both_lineage_query = textwrap.dedent(u"""
         MATCH (source:{resource} {{key: $query_key}})
-        OPTIONAL MATCH dpath=(source)-[downstream_len:HAS_DOWNSTREAM*0..{depth}]->(downstream_entity:{resource})
-        OPTIONAL MATCH upath=(source)-[upstream_len:HAS_UPSTREAM*0..{depth}]->(upstream_entity:{resource})
+        OPTIONAL MATCH dpath=(source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
+        OPTIONAL MATCH upath=(source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
         WITH downstream_entity, upstream_entity, downstream_len, upstream_len, upath, dpath
         OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
         OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
@@ -1554,7 +1554,7 @@ class Neo4jProxy(BaseProxy):
 
         get_upstream_lineage_query = textwrap.dedent(u"""
         MATCH (source:{resource} {{key: $query_key}})
-        OPTIONAL MATCH path=(source)-[upstream_len:HAS_UPSTREAM*0..{depth}]->(upstream_entity:{resource})
+        OPTIONAL MATCH path=(source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
         WITH upstream_entity, upstream_len, path
         OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
         WITH CASE WHEN upstream_badge IS NULL THEN []
@@ -1571,7 +1571,7 @@ class Neo4jProxy(BaseProxy):
 
         get_downstream_lineage_query = textwrap.dedent(u"""
         MATCH (source:{resource} {{key: $query_key}})
-        OPTIONAL MATCH path=(source)-[downstream_len:HAS_DOWNSTREAM*0..{depth}]->(downstream_entity:{resource})
+        OPTIONAL MATCH path=(source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
         WITH downstream_entity, downstream_len, path
         OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
         WITH CASE WHEN downstream_badge IS NULL THEN []
@@ -1620,6 +1620,7 @@ class Neo4jProxy(BaseProxy):
                                                   "parent": upstream.get("parent", '')
                                                   }))
 
+        # ToDo: Add a root_entity as an item, which will make it easier for lineage graph
         return Lineage(**{"key": id,
                           "upstream_entities": upstream_tables,
                           "downstream_entities": downstream_tables,
