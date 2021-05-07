@@ -89,3 +89,12 @@ class UserTest(unittest.TestCase):
         :return:
         """
         self.assertEqual(UserSchema()._str_no_value(" "), True)
+
+    def test_extra_key_does_not_raise(self) -> None:
+        """
+        Handle extra keys in the user data
+        :return:
+        """
+        test_user = {"email": "test@test.com", "foo": "bar"}
+        with app.test_request_context():
+            self.assertEqual(UserSchema().load(test_user).email, "test@test.com")
