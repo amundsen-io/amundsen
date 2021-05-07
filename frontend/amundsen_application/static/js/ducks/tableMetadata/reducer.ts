@@ -4,6 +4,7 @@ import {
   PreviewData,
   TablePreviewQueryParams,
   TableMetadata,
+  TableQualityChecks,
   Tag,
 } from 'interfaces';
 
@@ -60,6 +61,17 @@ export const initialTableDataState: TableMetadata = {
   programmatic_descriptions: {},
 };
 
+export const initialQualityCheckState = {
+  status: null,
+  checks: {
+    external_url: '',
+    last_run_timestamp: 0,
+    num_checks_success: 0,
+    num_checks_failed: 0,
+    num_checks_total: 0,
+  },
+};
+
 export const initialState: TableMetadataReducerState = {
   isLoading: true,
   preview: initialPreviewState,
@@ -68,6 +80,7 @@ export const initialState: TableMetadataReducerState = {
   tableOwners: initialOwnersState,
   // tableLineage: initialTableLineageState,
   // columnLineageMap: {},
+  tableQualityChecks: initialQualityCheckState,
 };
 
 /* ACTIONS */
@@ -273,6 +286,10 @@ export interface TableMetadataReducerState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableOwners: TableOwnerReducerState;
+  tableQualityChecks: {
+    status: number | null;
+    checks: TableQualityChecks;
+  };
 }
 
 export default function reducer(

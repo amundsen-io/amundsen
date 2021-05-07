@@ -194,3 +194,51 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
       return Promise.reject({ data, status });
     });
 }
+
+export function getTableLineage(key: string) {
+  const tableQueryParams = getTableQueryParams({ key });
+  return axios({
+    url: `${API_PATH}/get_table_lineage?${tableQueryParams}`,
+    method: 'GET',
+  })
+    .then((response: AxiosResponse<LineageAPI>) => ({
+      data: response.data,
+      status: response.status,
+    }))
+    .catch((e: AxiosError<LineageAPI>) => {
+      const { response } = e;
+      const status = response ? response.status : null;
+      return Promise.reject({ status });
+    });
+}
+
+export function getColumnLineage(key: string, columnName: string) {
+  const tableQueryParams = getTableQueryParams({
+    key,
+    column_name: columnName,
+  });
+  return axios({
+    url: `${API_PATH}/get_column_lineage?${tableQueryParams}`,
+    method: 'GET',
+  })
+    .then((response: AxiosResponse<LineageAPI>) => ({
+      data: response.data,
+      status: response.status,
+    }))
+    .catch((e: AxiosError<LineageAPI>) => {
+      const { response } = e;
+      const status = response ? response.status : null;
+      return Promise.reject({ status });
+    });
+}
+
+export function getTableQualityChecks(key: string) {
+  // TODO - TEST CODE
+  return Promise.resolve({
+    external_url: 'https://google.com',
+    last_run_timestamp: Date.now() - 100000,
+    num_checks_success: 10,
+    num_checks_failed: 2,
+    num_checks_total: 12,
+  });
+}
