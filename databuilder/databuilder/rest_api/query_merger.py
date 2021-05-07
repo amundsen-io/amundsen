@@ -1,9 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import (
-    Any, Dict
-)
+from typing import Any, Dict
 
 from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
 
