@@ -526,7 +526,7 @@ Dashboard description (Report description)
 
 Other information such as report run, owner, chart name, query name is in separate extractor.
 
-It calls two APIs ([spaces API](https://mode.com/developer/api-reference/management/spaces/#listSpaces) and [reports API](https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace)) joining together.
+It calls two APIs ([spaces API](https://mode.com/developer/discovery-api/analytics/spaces/) and [reports API](https://mode.com/developer/discovery-api/analytics/reports/)) joining together.
 
 You can create Databuilder job config like this.
 ```python
@@ -539,8 +539,7 @@ relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_f
 
 job_config = ConfigFactory.from_dict({
     'extractor.mode_dashboard.{}'.format(ORGANIZATION): organization,
-    'extractor.mode_dashboard.{}'.format(MODE_ACCESS_TOKEN): mode_token,
-    'extractor.mode_dashboard.{}'.format(MODE_PASSWORD_TOKEN): mode_password,
+    'extractor.mode_dashboard.{}'.format(MODE_BEARER_TOKEN): mode_bearer_token,
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH): node_files_folder,
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH): relationship_files_folder,
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR): True,
