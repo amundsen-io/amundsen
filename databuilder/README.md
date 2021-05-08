@@ -685,8 +685,6 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
-If your organization's mode account supports discovery feature(paid feature), you could leverage  which does a batch call to mode API which is more performant. You need to generate a bearer account based on the API instruction.
-
 
 #### [ModeDashboardUserExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_user_extractor.py)
 A Extractor that extracts Mode user_id and then update User node.
