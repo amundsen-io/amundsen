@@ -664,28 +664,10 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
-#### [ModeDashboardChartsExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_extractor.py)
-A Extractor that extracts Mode Dashboard charts. Currently, Mode API response schema is undocumented and hard to be used for the schema seems different per chart type. For this reason, this extractor can only extracts Chart token, and Chart URL at this point.
+#### [ModeDashboardChartsBatchExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_batch_extractor.py)
+A Extractor that extracts Mode Dashboard charts metadata.
 
 You can create Databuilder job config like this. (configuration related to loader and publisher is omitted as it is mostly the same. Please take a look at this [example](#ModeDashboardExtractor) for the configuration that holds loader and publisher.
-
-```python
-extractor = ModeDashboardChartsExtractor()
-task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
-
-job_config = ConfigFactory.from_dict({
-    '{}.{}'.format(extractor.get_scope(), ORGANIZATION): organization,
-    '{}.{}'.format(extractor.get_scope(), MODE_ACCESS_TOKEN): mode_token,
-    '{}.{}'.format(extractor.get_scope(), MODE_PASSWORD_TOKEN): mode_password,
-})
-
-job = DefaultJob(conf=job_config,
-                 task=task,
-                 publisher=Neo4jCsvPublisher())
-job.launch()
-```
-
-If your organization's mode account supports discovery feature(paid feature), you could leverage [ModeDashboardChartsBatchExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_batch_extractor.py) which does a batch call to mode API which is more performant. You need to generate a bearer account based on the API instruction.
 
 ```python
 extractor = ModeDashboardChartsBatchExtractor()
@@ -701,6 +683,7 @@ job = DefaultJob(conf=job_config,
                  publisher=Neo4jCsvPublisher())
 job.launch()
 ```
+
 
 #### [ModeDashboardUserExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_user_extractor.py)
 A Extractor that extracts Mode user_id and then update User node.
