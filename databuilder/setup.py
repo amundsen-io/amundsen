@@ -4,7 +4,7 @@
 
 from setuptools import find_packages, setup
 
-__version__ = '4.3.1'
+__version__ = '4.4.0'
 
 
 requirements = [
