@@ -407,6 +407,14 @@ describe('getLogoTitle', () => {
   });
 });
 
+describe('getFooterLogoTitle', () => {
+  it('returns footerLogoTitle defined in config', () => {
+    const actual = ConfigUtils.getFooterLogoTitle();
+    const expected = AppConfig.footerLogoTitle;
+    expect(actual).toBe(expected);
+  });
+});
+
 describe('isTableListLineageEnabled', () => {
   it('returns isTableListLineageEnabled defined in config', () => {
     const actual = ConfigUtils.isTableListLineageEnabled();

@@ -18,6 +18,7 @@ export interface AppConfig {
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   logoTitle: string;
+  footerLogoTitle: string;
   documentTitle: string;
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
@@ -41,6 +42,7 @@ export interface AppConfigCustom {
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
   logoTitle?: string;
+  footerLogoTitle?: string;
   documentTitle?: string;
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;

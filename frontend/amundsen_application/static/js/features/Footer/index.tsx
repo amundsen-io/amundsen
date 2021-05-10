@@ -9,6 +9,7 @@ import { GlobalState } from 'ducks/rootReducer';
 import { getLastIndexed } from 'ducks/lastIndexed/reducer';
 import { GetLastIndexedRequest } from 'ducks/lastIndexed/types';
 
+import { getFooterLogoTitle } from 'config/config-utils';
 import { formatDateTimeLong } from 'utils/dateUtils';
 
 import './styles.scss';
@@ -46,7 +47,7 @@ export class Footer extends React.Component<FooterProps> {
     if (this.props.lastIndexed) {
       content = (
         <div>
-          {`Amundsen was last indexed on ${this.generateDateTimeString(
+          {`${getFooterLogoTitle()} was last indexed on ${this.generateDateTimeString(
             this.props.lastIndexed
           )}`}
         </div>

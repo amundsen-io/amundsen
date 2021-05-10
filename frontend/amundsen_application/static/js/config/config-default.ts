@@ -32,6 +32,7 @@ const configDefault: AppConfig = {
   },
   logoPath: null,
   logoTitle: 'AMUNDSEN',
+  footerLogoTitle: 'Amundsen',
   documentTitle: 'Amundsen - Data Discovery Portal',
   numberFormat: null,
   mailClientFeatures: {

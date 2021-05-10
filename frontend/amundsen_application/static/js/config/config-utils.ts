@@ -318,6 +318,13 @@ export function getLogoTitle(): string {
 }
 
 /**
+ * Returns footerLogoTitle.
+ */
+export function getFooterLogoTitle(): string {
+  return AppConfig.footerLogoTitle;
+}
+
+/**
  * Returns whether the in-app table lineage list is enabled.
  */
 export function isTableListLineageEnabled() {
