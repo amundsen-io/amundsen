@@ -1,4 +1,7 @@
-from typing import List, Optional
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
+from typing import List, Optional, Dict
 
 import attr
 
@@ -23,6 +26,32 @@ class QuerySchema(AttrsSchema):
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class ColumnItem:
+    column_name = column_name
+    column_type = column_type
+
+
+class ColumnItemSchema(AttrsSchema):
+    class Meta:
+        target = ColumnItem
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class DataSample:
+    # Modeled after preview data model in FE
+    columns: List[ColumnItem]
+    data: List[Dict]
+    error_text: str
+
+
+class DataSampleSchema(AttrsSchema):
+    class Meta:
+        target = DataSample
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Feature:
     key: Optional[str] = attr.ib(default=None)
     name: str
@@ -37,10 +66,8 @@ class Feature:
     badges: List[Badge]
     owner_tags: Optional[List[Tag]]  # non editable
     tags: List[Tag]  # editable
-    generation_code: Optional[Query]
     programmatic_descriptions: List[ProgrammaticDescription]
     watermarks: List[Watermark]
-    stats: List[Stat]
     last_updated_timestamp: Optional[int]
     created_timestamp: Optional[int]
     partition_column: Optional[Column]

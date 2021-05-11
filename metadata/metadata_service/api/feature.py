@@ -3,12 +3,13 @@ from http import HTTPStatus
 from flask import request
 from flask_restful import Resource, reqparse
 
-from amundsen_common.models.feature import FeatureSchema
+from amundsen_common.models.feature import FeatureSchema, QuerySchema
 
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
-
+from metadata_service.api.badge import BadgeCommon
+from metadata_service.api.tag import TagCommon
 
 class FeatureDetailAPI(Resource):
     """
@@ -30,49 +31,112 @@ class FeatureDetailAPI(Resource):
 
 
 class FeatureLineageAPI(Resource):
-    # TODO get
-    pass
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/table/lineage_get.yml')
+    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
 
 
 class FeatureStatsAPI(Resource):
-    # TODO get
-    pass
+
+    # TODO integrate stats source for FE
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/feature/detail_get.yml')
+    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
 
 
 class FeatureGenerationCodeAPI(Resource):
-    # TODO get
-    pass
+
+    # TODO use Query common model
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/feature/detail_get.yml')
+    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
 
 
 class FeatureSampleAPI(Resource):
-    # TODO get
-    pass
+
+    # TODO use DataSample common model
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/feature/detail_get.yml')
+    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
 
 
 class FeatureOwnerAPI(Resource):
-    # TODO put
-    # TODO delete
-    pass
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/table/owner_put.yml')
+    def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
+
+    @swag_from('swagger_doc/table/owner_delete.yml')
+    def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
 
 
 class FeatureDescriptionAPI(Resource):
-    # TODO get
-    # TODO put
-    pass
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        super(FeatureDescriptionAPI, self).__init__()
+
+    @swag_from('swagger_doc/common/description_get.yml')
+    def get(self, id: str) -> Iterable[Any]:
+        pass
+
+    @swag_from('swagger_doc/common/description_put.yml')
+    def put(self, id: str) -> Iterable[Any]:
+        pass
 
 
 class FeatureTagAPI(Resource):
     """
     Only for user tags not owner tags
     """
-    # TODO put
-    # TODO delete
-    pass
 
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('tag_type', type=str, required=False, default='default')
+        super(FeatureTagAPI, self).__init__()
+
+        self._tag_common = TagCommon(client=self.client)
+
+    @swag_from('swagger_doc/tag/tag_put.yml')
+    def put(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
+
+    @swag_from('swagger_doc/tag/tag_delete.yml')
+    def delete(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
 
 class FeatureBadgeAPI(Resource):
-    # TODO put
-    # TODO delete
-    pass
 
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('category', type=str, required=True)
+        super(FeatureBadgeAPI, self).__init__()
 
+        self._badge_common = BadgeCommon(client=self.client)
+
+    @swag_from('swagger_doc/badge/badge_put.yml')
+    def put(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
+
+    @swag_from('swagger_doc/badge/badge_delete.yml')
+    def delete(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
+        pass
