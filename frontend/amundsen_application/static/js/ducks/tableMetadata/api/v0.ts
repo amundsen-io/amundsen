@@ -10,6 +10,7 @@ import {
   Tag,
   Lineage,
   ResourceType,
+  TableQualityChecks,
 } from 'interfaces';
 
 /** HELPERS **/
@@ -41,6 +42,7 @@ export type RelatedDashboardDataAPI = {
   dashboards: DashboardResource[];
 } & MessageAPI;
 export type LineageAPI = { lineage: Lineage } & MessageAPI;
+export type TableQualityChecksAPI = { checks: TableQualityChecks } & MessageAPI;
 
 export function getTableData(key: string, index?: string, source?: string) {
   const tableQueryParams = getTableQueryParams({ key, index, source });
@@ -233,15 +235,20 @@ export function getColumnLineage(key: string, columnName: string) {
 }
 
 export function getTableQualityChecks(key: string) {
-  // TODO - TEST CODE
-  return Promise.resolve({
-    checks: {
-      external_url: 'https://google.com',
-      last_run_timestamp: 20210511001217,
-      num_checks_success: 10,
-      num_checks_failed: 2,
-      num_checks_total: 12,
-    },
-    status: 200,
+  const tableQueryParams = getTableQueryParams({
+    key,
   });
+  return axios({
+    url: `/api/data_quality_checks/v0?${tableQueryParams}`,
+    method: 'GET',
+  })
+    .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
+      checks: response.data,
+      status: response.status,
+    }))
+    .catch((e: AxiosError<TableQualityChecksAPI>) => {
+      const { response } = e;
+      const status = response ? response.status : null;
+      return Promise.reject({ status });
+    });
 }
