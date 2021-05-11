@@ -1,3 +1,19 @@
+## 4.4.0
+
+### Features
+* Column lineage implementation & sample ingest scripts (https://github.com/amundsen-io/amundsendatabuilder/pull/470)
+* Add mysql staleness removal task (https://github.com/amundsen-io/amundsendatabuilder/pull/474)
+* Add merge query results functionality to rest_api_query (https://github.com/amundsen-io/amundsen/pull/1058)
+
+### Bugfixes
+* Switch to discovery api for mode spaces (https://github.com/amundsen-io/amundsendatabuilder/pull/481)
+* Update ModeDashboardExtractor to Mode discovery api (https://github.com/amundsen-io/amundsen/pull/1063)
+* Updated redshift_metadata_extractor.py to extract external schema as well as local schema. (https://github.com/amundsen-io/amundsendatabuilder/pull/479)
+* Upgrade dependency of Amundsen-gremlin (https://github.com/amundsen-io/amundsendatabuilder/pull/473)
+* fix bug in rest_api_query (https://github.com/amundsen-io/amundsen/pull/1056)
+
+
+# Pre 4.4.0 changes
 ### Feature
 * Add support for tags based on atlas terms ([#466](https://github.com/amundsen-io/amundsendatabuilder/issues/466)) ([`cc1caf3`](https://github.com/amundsen-io/amundsendatabuilder/commit/cc1caf37f87b140a393aedfd0a07fd17c58e8ac4))
 * Make DescriptionMetadata inherit from GraphSerializable ([#461](https://github.com/amundsen-io/amundsendatabuilder/issues/461)) ([`7f095fb`](https://github.com/amundsen-io/amundsendatabuilder/commit/7f095fb368dc8b6fba5f65f3870c1dd2444b0413))
