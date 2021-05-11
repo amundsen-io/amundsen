@@ -514,7 +514,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.tableMetadata.isLoading,
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
-  tableLineage: state.lineage.lineage.lineageTree,
+  tableLineage: state.lineage.lineageTree,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,

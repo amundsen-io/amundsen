@@ -12,18 +12,17 @@ import {
 } from './types';
 
 export const initialLineageState = {
-  lineageTree: {
-    upstream_entities: [],
-    downstream_entities: [],
-    depth: 0,
-    direction: 'both',
-    key: '',
-  },
-  status: null,
+  upstream_entities: [],
+  downstream_entities: [],
+  depth: 0,
+  direction: 'both',
+  key: '',
 };
 
 export const initialState: LineageReducerState = {
-  lineage: initialLineageState,
+  lineageTree: initialLineageState,
+  statusCode: null,
+  isLoading: false,
   // ToDo: Please remove once list based view is deprecated
   columnLineageMap: {},
 };
@@ -42,25 +41,25 @@ export function getTableLineage(
 
 export function getTableLineageSuccess(
   data: Lineage,
-  status: number
+  statusCode: number
 ): GetTableLineageResponse {
   return {
     type: GetTableLineage.SUCCESS,
     payload: {
-      lineage: data,
-      status,
+      lineageTree: data,
+      statusCode,
     },
   };
 }
 
 export function getTableLineageFailure(
-  status: number
+  statusCode: number
 ): GetTableLineageResponse {
   return {
     type: GetTableLineage.FAILURE,
     payload: {
-      lineage: initialLineageState.lineageTree,
-      status,
+      lineageTree: initialLineageState,
+      statusCode,
     },
   };
 }
@@ -88,25 +87,25 @@ export function getColumnLineage(
 
 export function getColumnLineageSuccess(
   data: Lineage,
-  status: number
+  statusCode: number
 ): GetColumnLineageResponse {
   return {
     type: GetColumnLineage.SUCCESS,
     payload: {
-      lineage: data,
-      status,
+      lineageTree: data,
+      statusCode,
     },
   };
 }
 
 export function getColumnLineageFailure(
-  status: number
+  statusCode: number
 ): GetColumnLineageResponse {
   return {
     type: GetColumnLineage.FAILURE,
     payload: {
-      lineage: initialLineageState.lineageTree,
-      status,
+      lineageTree: initialLineageState,
+      statusCode,
     },
   };
 }
@@ -135,38 +134,37 @@ export function getTableColumnLineage(
 export function getTableColumnLineageSuccess(
   data: Lineage,
   columnName: string,
-  status: number
+  statusCode: number
 ): GetTableColumnLineageResponse {
   return {
     type: GetTableColumnLineage.SUCCESS,
     payload: {
       columnName,
-      status,
-      lineage: data,
+      statusCode,
+      lineageTree: data,
     },
   };
 }
 // ToDo: Please remove once list based view is deprecated
 export function getTableColumnLineageFailure(
   columnName: string,
-  status: number
+  statusCode: number
 ): GetTableColumnLineageResponse {
   return {
     type: GetTableColumnLineage.FAILURE,
     payload: {
       columnName,
-      lineage: initialLineageState.lineageTree,
-      status,
+      lineageTree: initialLineageState,
+      statusCode,
     },
   };
 }
 
 /* REDUCER */
 export interface LineageReducerState {
-  lineage: {
-    status: number | null;
-    lineageTree: Lineage;
-  };
+  statusCode: number | null;
+  lineageTree: Lineage;
+  isLoading: boolean;
   // ToDo: Please remove once list based view is deprecated
   columnLineageMap: ColumnLineageMap;
 }
@@ -180,19 +178,17 @@ export default function reducer(
     case GetTableLineage.FAILURE:
       return {
         ...state,
-        lineage: {
-          lineageTree: (<GetTableLineageResponse>action).payload.lineage,
-          status: (<GetTableLineageResponse>action).payload.status,
-        },
+        lineageTree: (<GetTableLineageResponse>action).payload.lineageTree,
+        statusCode: (<GetTableLineageResponse>action).payload.statusCode,
+        isLoading: false,
       };
     case GetColumnLineage.SUCCESS:
     case GetColumnLineage.FAILURE:
       return {
         ...state,
-        lineage: {
-          lineageTree: (<GetColumnLineageResponse>action).payload.lineage,
-          status: (<GetColumnLineageResponse>action).payload.status,
-        },
+        lineageTree: (<GetColumnLineageResponse>action).payload.lineageTree,
+        statusCode: (<GetColumnLineageResponse>action).payload.statusCode,
+        isLoading: false,
       };
     // ToDo: Please remove once list based view is deprecated
     case GetTableColumnLineage.REQUEST: {
@@ -202,7 +198,7 @@ export default function reducer(
         columnLineageMap: {
           ...state.columnLineageMap,
           [columnName]: {
-            lineage: initialLineageState.lineageTree,
+            lineageTree: initialLineageState,
             isLoading: true,
           },
         },
@@ -211,7 +207,7 @@ export default function reducer(
     // ToDo: Please remove once list based view is deprecated
     case GetTableColumnLineage.SUCCESS:
     case GetTableColumnLineage.FAILURE: {
-      const { columnName, lineage: columnLineage } = (<
+      const { columnName, lineageTree: columnLineage } = (<
         GetTableColumnLineageResponse
       >action).payload;
       return {
@@ -219,7 +215,7 @@ export default function reducer(
         columnLineageMap: {
           ...state.columnLineageMap,
           [columnName]: {
-            lineage: columnLineage,
+            lineageTree: columnLineage,
             isLoading: false,
           },
         },

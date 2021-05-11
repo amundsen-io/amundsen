@@ -37,7 +37,7 @@ export interface ColumnLineageParams {
 // ToDo: Please remove once list based view is deprecated
 export interface ColumnLineageMap {
   [columnName: string]: {
-    lineage: Lineage;
+    lineageTree: Lineage;
     isLoading: boolean;
   };
 }

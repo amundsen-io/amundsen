@@ -140,8 +140,7 @@ export const mapStateToProps = (
   const { columnLineageMap } = state.lineage;
   const columnStateObject = columnLineageMap[ownProps.columnName];
   const lineage =
-    (columnStateObject && columnStateObject.lineage) ||
-    initialLineageState.lineageTree;
+    (columnStateObject && columnStateObject.lineageTree) || initialLineageState;
   const isLoading = columnStateObject && columnStateObject.isLoading;
   return {
     tableData,

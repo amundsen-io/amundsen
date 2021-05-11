@@ -16,8 +16,8 @@ export interface GetTableLineageRequest {
 export interface GetTableLineageResponse {
   type: GetTableLineage.SUCCESS | GetTableLineage.FAILURE;
   payload: {
-    lineage: Lineage;
-    status: number;
+    lineageTree: Lineage;
+    statusCode: number;
   };
 }
 
@@ -41,8 +41,8 @@ export interface GetColumnLineageRequest {
 export interface GetColumnLineageResponse {
   type: GetColumnLineage.SUCCESS | GetColumnLineage.FAILURE;
   payload: {
-    lineage: Lineage;
-    status: number;
+    lineageTree: Lineage;
+    statusCode: number;
   };
 }
 
@@ -66,8 +66,8 @@ export interface GetTableColumnLineageRequest {
 export interface GetTableColumnLineageResponse {
   type: GetTableColumnLineage.SUCCESS | GetTableColumnLineage.FAILURE;
   payload: {
-    lineage: Lineage;
+    lineageTree: Lineage;
     columnName: string;
-    status: number;
+    statusCode: number;
   };
 }

@@ -7,7 +7,6 @@ import * as DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
-import * as d3 from 'd3';
 
 import { getColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
 import {
@@ -19,8 +18,6 @@ import { ResourceType, Lineage } from 'interfaces';
 
 import { getSourceIconClass } from 'config/config-utils';
 
-import { getLoggingParams } from 'utils/logUtils';
-
 import { GlobalState } from 'ducks/rootReducer';
 import LoadingSpinner from 'components/LoadingSpinner';
 import Breadcrumb from 'components/Breadcrumb';
@@ -31,24 +28,15 @@ import './styles.scss';
 
 import { getLink } from 'components/ResourceListItem/TableListItem';
 import * as Constants from './constants';
-// import {logClick} from "../../utils/analytics";
 
 const SERVER_ERROR_CODE = 500;
 
 export interface PropsFromState {
   isLoading: boolean;
-  // isLoadingDashboards: boolean;
-  // numRelatedDashboards: number;
   statusCode: number | null;
-  // tableData: TableMetadata;
   lineageTree: Lineage;
 }
 export interface DispatchFromProps {
-  // getTableData: (
-  //   key: string,
-  //   searchIndex?: string,
-  //   source?: string
-  // ) => GetTableDataRequest;
   getTableLineageDispatch: (
     key: string,
     depth?: number,
@@ -60,11 +48,6 @@ export interface DispatchFromProps {
     depth?: number,
     direction?: string
   ) => GetColumnLineageRequest;
-  // openRequestDescriptionDialog: (
-  //   requestMetadataType: RequestMetadataType,
-  //   columnName: string
-  // ) => OpenRequestAction;
-  // searchSchema: (schemaText: string) => UpdateSearchStateRequest;
 }
 
 export interface MatchProps {
@@ -131,7 +114,6 @@ export class LineagePage extends React.Component<
   }
 
   render() {
-    // const { isLoading, statusCode, tableData } = this.props;
     const { match, lineageTree, statusCode, isLoading } = this.props;
     const { params } = match;
     let innerContent;
@@ -179,7 +161,7 @@ export class LineagePage extends React.Component<
                   Lineage Graph
                 </span>
               </h1>
-              <div className="body-2">
+              <div className="text-body-w2">
                 <Link
                   className="resource-list-item table-list-item"
                   to={getLink(rootNodeData, 'table-lineage-page')}
@@ -213,33 +195,17 @@ export class LineagePage extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => ({
-  isLoading: state.lineage.lineage.status === null,
-  // statusCode: state.tableMetadata.statusCode,
-  statusCode: state.lineage.lineage.status,
-  // tableData: state.tableMetadata.tableData,
-  lineageTree: state.lineage.lineage.lineageTree,
-  // numRelatedDashboards: state.tableMetadata.dashboards
-  //   ? state.tableMetadata.dashboards.dashboards.length
-  //   : 0,
-  // isLoadingDashboards: state.tableMetadata.dashboards
-  //   ? state.tableMetadata.dashboards.isLoading
-  //   : true,
+  // FixMe (Verdan): This is temporary for development
+  isLoading: state.lineage.statusCode === null,
+  statusCode: state.lineage.statusCode,
+  lineageTree: state.lineage.lineageTree,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      // getTableData,
       getTableLineageDispatch: getTableLineage,
       getColumnLineageDispatch: getColumnLineage,
-      // openRequestDescriptionDialog,
-      // searchSchema: (schemaText: string) =>
-      //   updateSearchState({
-      //     filters: {
-      //       [ResourceType.table]: { schema: schemaText },
-      //     },
-      //     submitSearch: true,
-      //   }),
     },
     dispatch
   );

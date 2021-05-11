@@ -8,13 +8,11 @@ export type LineageAPI = { lineage: Lineage };
 
 export function getTableLineage(key: string, depth: number, direction: string) {
   const tableQueryParams = getQueryParams({ key, depth, direction });
-  return axios({
-    url: `${API_PATH}/get_table_lineage?${tableQueryParams}`,
-    method: 'GET',
-  })
+  return axios
+    .get(`${API_PATH}/get_table_lineage?${tableQueryParams}`)
     .then((response: AxiosResponse<LineageAPI>) => ({
       data: response.data,
-      status: response.status,
+      statusCode: response.status,
     }))
     .catch((e: AxiosError<LineageAPI>) => {
       const { response } = e;
@@ -35,13 +33,11 @@ export function getColumnLineage(
     direction,
     column_name: columnName,
   });
-  return axios({
-    url: `${API_PATH}/get_column_lineage?${tableQueryParams}`,
-    method: 'GET',
-  })
+  return axios
+    .get(`${API_PATH}/get_column_lineage?${tableQueryParams}`)
     .then((response: AxiosResponse<LineageAPI>) => ({
       data: response.data,
-      status: response.status,
+      statusCode: response.status,
     }))
     .catch((e: AxiosError<LineageAPI>) => {
       const { response } = e;

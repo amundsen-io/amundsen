@@ -258,16 +258,15 @@ const globalState: GlobalState = {
   },
   ui: {},
   lineage: {
-    lineage: {
-      lineageTree: {
-        upstream_entities: [],
-        downstream_entities: [],
-        key: '',
-        direction: 'both',
-        depth: 1,
-      },
-      status: null,
+    lineageTree: {
+      upstream_entities: [],
+      downstream_entities: [],
+      key: '',
+      direction: 'both',
+      depth: 1,
     },
+    statusCode: null,
+    isLoading: false,
     columnLineageMap: {},
   },
 };
