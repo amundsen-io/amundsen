@@ -1,0 +1,12 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+@import 'typography';
+
+.table-quality-checks {
+  .checks-status,
+  .last-run-timestamp {
+    @extend %text-body-w2;
+  }
+}

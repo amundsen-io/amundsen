@@ -4,6 +4,7 @@ import {
   PreviewData,
   TablePreviewQueryParams,
   TableMetadata,
+  TableQualityChecks,
   UpdateOwnerPayload,
   Tag,
 } from 'interfaces';
@@ -152,5 +153,24 @@ export interface UpdateTableOwnerResponse {
   type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
   payload: {
     owners: OwnerDict;
+  };
+}
+
+export enum GetTableQualityChecks {
+  REQUEST = 'amundsen/tableMetadata/GET_TABLE_QUALITY_CHECKS_REQUEST',
+  SUCCESS = 'amundsen/tableMetadata/GET_TABLE_QUALITY_CHECKS_SUCCESS',
+  FAILURE = 'amundsen/tableMetadata/GET_TABLE_QUALITY_CHECKS_FAILURE',
+}
+export interface GetTableQualityChecksRequest {
+  type: GetTableQualityChecks.REQUEST;
+  payload: {
+    key: string;
+  };
+}
+export interface GetTableQualityChecksResponse {
+  type: GetTableQualityChecks.SUCCESS | GetTableQualityChecks.FAILURE;
+  payload: {
+    status: number;
+    checks: TableQualityChecks;
   };
 }
