@@ -1275,9 +1275,9 @@ class AtlasProxy(BaseProxy):
 
         return entity
 
-    def _get_dashboard_summary(self, entity: AtlasEntity, executions: List[AtlasEntity]) -> Dict:
-        attributes = entity[CommonParams.attrs]
-        relationships = entity[CommonParams.rels]
+    def _get_dashboard_summary(self, entity: AtlasEntityWithExtInfo, executions: List[AtlasEntity]) -> Dict:
+        attributes = entity.entity[CommonParams.attrs]
+        relationships = entity.entity[CommonParams.rels]
 
         group = self._get_dashboard_group(relationships.get('group').get('guid'))[CommonParams.attrs]
 
@@ -1287,6 +1287,9 @@ class AtlasProxy(BaseProxy):
             last_successful_execution = successful_executions[0]
         except IndexError:
             last_successful_execution = dict(timestamp=0)
+
+        chart_names = [e[CommonParams.attrs]['name'] for _, e in entity['referredEntities'].items()
+                       if e['typeName'] == DashboardTypes.chart]
 
         result = dict(
             uri=attributes.get('qualifiedName', ''),
@@ -1298,7 +1301,7 @@ class AtlasProxy(BaseProxy):
             url=attributes.get('url', ''),
             last_successful_run_timestamp=last_successful_execution.get('timestamp', 0),
             description=attributes.get('description', ''),
-            chart_names=[c.get('displayText', '') for c in self._filter_active(relationships.get('charts', []))])
+            chart_names=chart_names)
 
         return result
 
@@ -1345,7 +1348,7 @@ class AtlasProxy(BaseProxy):
             owners = self._get_owners(relationships.get('ownedBy', []))
             readers = self._get_readers(entity.entity, User)
 
-            result = self._get_dashboard_summary(entity.entity, executions_attributes)
+            result = self._get_dashboard_summary(entity, executions_attributes)
 
             extra_spec = dict(
                 created_timestamp=attributes.get('createdTimestamp', 0),
@@ -1422,12 +1425,13 @@ class AtlasProxy(BaseProxy):
         """
         result = []
 
-        for dashboard in entities.entities:
+        for _dashboard in entities.entities:
             try:
-                if dashboard.status == Status.ACTIVE:
+                if _dashboard.status == Status.ACTIVE:
                     executions = [entities['referredEntities'].get(e.get('guid'))[CommonParams.attrs]
-                                  for e in
-                                  self._filter_active(dashboard[CommonParams.rels].get('executions', []))]
+                                  for e in self._filter_active(_dashboard[CommonParams.rels].get('executions', []))]
+
+                    dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
 
                     summary = DashboardSummary(**self._get_dashboard_summary(dashboard, executions))
 

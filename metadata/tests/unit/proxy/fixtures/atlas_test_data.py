@@ -380,8 +380,8 @@ class Data:
             'query_1': {
                 'typeName': 'DashboardQuery',
                 'attributes': {
-                    'qualifiedName': 'superset_dashboard://datalab.prod/1/chart/2/query/1',
-                    'url': 'https://prod.superset/dashboards/1/chart/2/query/1',
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/1',
+                    'url': 'https://prod.superset/dashboards/1/query/1',
                     'name': 'User Count By Time',
                     'queryText': 'SELECT date, COUNT(1) FROM db.table GROUP BY 1',
                     'id': 'user_count_by_time',
@@ -420,8 +420,8 @@ class Data:
             'query_2': {
                 'typeName': 'DashboardQuery',
                 'attributes': {
-                    'qualifiedName': 'superset_dashboard://datalab.prod/1/chart/1/query/1',
-                    'url': 'https://prod.superset/dashboards/1/chart/1/query/1',
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/2',
+                    'url': 'https://prod.superset/dashboards/1/query/2',
                     'name': 'Total Count',
                     'queryText': 'SELECT COUNT(1) FROM db.table',
                     'id': 'total_count'
@@ -434,7 +434,7 @@ class Data:
             'chart_2': {
                 'typeName': 'DashboardChart',
                 'attributes': {
-                    'qualifiedName': 'superset_dashboard://datalab.prod/1/chart/2',
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/2/chart/1',
                     'type': 'horizontal_bar',
                     'url': 'https://prod.superset/dashboards/1/chart/2',
                     'name': 'Count Users by Time'
@@ -447,7 +447,7 @@ class Data:
             'chart_1': {
                 'typeName': 'DashboardChart',
                 'attributes': {
-                    'qualifiedName': 'superset_dashboard://datalab.prod/1/chart/1',
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/1/chart/1',
                     'type': 'metric',
                     'url': 'https://prod.superset/dashboards/1/chart/1',
                     'name': 'Total Count'
