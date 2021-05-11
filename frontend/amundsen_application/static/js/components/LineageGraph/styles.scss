@@ -1,23 +1,37 @@
 @import 'variables';
 @import 'typography';
 
-.svg-container {
+.lineage-graph {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  //padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
   background: linear-gradient(90deg, $gray5 50%, $gray0 50%);
 
-  .direction-label {
-    font-family: $font-family-header !important;
-    font-weight: $font-weight-header-bold;
-    color: $gray30;
-    width: 150px;
-    height: 30px;
-    text-transform: uppercase;
+  .svg-content {
+    display: block;
+    margin: auto;
+    //position: absolute;
+    //top: 0;
+    //left: 0;
 
-    &.upstream-label {
-      direction: rtl;
-    }
+    .direction-label {
+      font-family: $font-family-header !important;
+      font-weight: $font-weight-header-bold;
+      color: $gray30;
+      width: 150px;
+      height: 30px;
+      text-transform: uppercase;
 
-    img.icon {
-      background-color: $gray30;
+      &.upstream-label {
+        direction: rtl;
+      }
+
+      img.icon {
+        background-color: $gray30;
+      }
     }
   }
 }

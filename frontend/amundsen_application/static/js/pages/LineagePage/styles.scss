@@ -3,6 +3,7 @@
 
 @import 'variables';
 @import 'typography';
+@import 'layouts';
 
 .lineage-page {
   .header-title-text {
@@ -24,7 +25,9 @@
 
   .lineage-graph {
     display: flex;
-    height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
+    height: calc(
+      100vh - #{$nav-bar-height + $footer-height + $resource-header-height}
+    );
     margin: auto;
   }
 }

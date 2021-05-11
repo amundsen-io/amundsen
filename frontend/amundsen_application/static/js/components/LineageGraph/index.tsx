@@ -41,18 +41,21 @@ export class LineageGraph extends React.Component<
       });
     }
 
-    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    const margin = { top: 20, right: 100, bottom: 20, left: 100 };
     // Setting up the dimensions/fallback dimensions
-    const totalWidth = dimensions.width || 1280 - (margin.left + margin.right);
+    const totalWidth =
+      (dimensions.width || 1280) - (margin.left + margin.right);
     const totalHeight =
       dimensions.height || 1024 - (margin.top + margin.bottom);
 
     const svgContainer = d3
       .select(this.nodeRef.current)
       .append('svg')
-      .attr('class', 'svg-container')
-      .attr('viewBox', [0, 0, totalWidth, totalHeight]);
-
+      .classed('svg-content', true)
+      // .attr('viewBox', [0, 0, totalWidth, totalHeight])
+      .attr('width', totalWidth)
+      .attr('height', totalHeight)
+      .attr('preserveAspectRatio', 'xMidYMin');
     svgContainer
       .append('foreignObject')
       .attr('class', 'direction-label  upstream-label')
@@ -70,11 +73,11 @@ export class LineageGraph extends React.Component<
         `translate(${totalWidth / 2 + margin.left}, ${margin.top})`
       )
       .html('<img class="icon icon-right-arrow" /> downstream');
-
-    this.drawTree(totalWidth / 2, totalHeight, margin);
+    this.drawTree(svgContainer, totalWidth, totalHeight, margin);
   }
 
-  _drawTree(width: number, height: number, margin) {
+  _drawTree(svgContainer, width: number, height: number, margin) {
+    const widthWithMargins = width - (margin.left + margin.right);
     const { lineage } = this.props;
 
     const stratify = d3
@@ -85,7 +88,7 @@ export class LineageGraph extends React.Component<
     let uniqueIdCounter = 0;
     const animationDuration = 500;
 
-    const treemap = d3.tree().size([height, width / 2]);
+    const treemap = d3.tree().size([height, widthWithMargins / 2]);
     const upstreamRoot = d3.hierarchy(
       stratify(lineage.upstream_entities),
       (d) => d.children
@@ -100,15 +103,33 @@ export class LineageGraph extends React.Component<
       y0: 0,
     };
 
-    const svg = d3
+    const g = d3
       .select('svg')
       .append('g')
-      .attr('transform', `translate(${width})`);
+      .attr('transform', `translate(${width / 2})`);
 
-    // Collapse after the second level
-    // upstreamRoot.children.forEach(collapse);
-    // downstreamRoot.children.forEach(collapse);
+    let transform;
+    transform = `translate(${width / 2})`;
 
+    const zoom = d3.zoom().on('zoom', (e) => {
+      transform = e.transform;
+      // By default make sure to place the graph in center
+      if (!e.sourceEvent) transform.x = width / 2;
+      g.attr('transform', transform);
+      g.style('stroke-width', 3 / Math.sqrt(transform.k));
+    });
+
+    svgContainer
+      .call(zoom)
+      .call(zoom.transform, d3.zoomIdentity)
+      .on('dblclick.zoom', () => {
+        svgContainer
+          .transition()
+          .duration(750)
+          .call(zoom.transform, d3.zoomIdentity);
+      });
+
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     update(root);
 
     function collapse(d) {
@@ -134,7 +155,7 @@ export class LineageGraph extends React.Component<
       const links = upNodes.slice(1).concat(downNodes.slice(1));
 
       // ****************** Nodes
-      const node = svg
+      const node = g
         .selectAll('g.node')
         // eslint-disable-next-line no-return-assign
         .data(nodes, (d) => d.id || (d.id = ++uniqueIdCounter));
@@ -155,15 +176,12 @@ export class LineageGraph extends React.Component<
       nodeEnter
         .append('text')
         .attr('dy', '.35em')
-        .attr('x', function (d) {
-          return d.children || d._children ? -13 : 13;
-        })
-        .attr('text-anchor', function (d) {
-          return d.children || d._children ? 'end' : 'start';
-        })
+        .attr('x', (d) => (d.y > 0 ? -15 : 15))
+        .attr('text-anchor', (d) => (d.y > 0 ? 'end' : 'start'))
         .text(function (d, index) {
           if (index === 0) return '';
-          return `${d.data.data.schema}.${d.data.data.name}`;
+          // return `${d.data.data.schema}.${d.data.data.name}`;
+          return `${d.data.data.name}`;
         });
 
       nodeEnter
@@ -194,9 +212,6 @@ export class LineageGraph extends React.Component<
       nodeUpdate
         .select('circle.node')
         .attr('r', (d) => (d.depth === 0 ? 12 : 8))
-        // .style('fill', function (d) {
-        //   return d._children ? 'lightsteelblue' : '#fff';
-        // })
         .attr('cursor', 'pointer');
 
       nodeUpdate.select('text.plus').text((d) => (d._children ? '+' : ''));
@@ -226,7 +241,7 @@ export class LineageGraph extends React.Component<
       }
 
       // Update the links...
-      const link = svg.selectAll('path.link').data(links, function (d) {
+      const link = g.selectAll('path.link').data(links, function (d) {
         return d.id;
       });
 
