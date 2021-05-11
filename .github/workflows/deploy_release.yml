@@ -1,15 +1,19 @@
-name: Publish Release
+name: Publish Release to PyPi
 on:
-  push:
-    branches:
-      - master
-    paths:
-      # triggered when version is bumped
-      - "setup.py"
-      - "CHANGELOG.md"
-jobs:
   release:
+    types: [published]
+jobs:
+  gather-info:
     runs-on: ubuntu-latest
+    steps:
+      - name: Get module for release
+        id: module_folder
+        run: echo "::set-output name=module_folder::$(awk '{print $1}' << "${{ github.event.release.title }}")"
+    outputs:
+      module_folder: ${{ steps.module_folder.outputs.module_folder }}
+  push-to-pypi:
+    runs-on: ubuntu-latest
+    needs: gather-info
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,31 +21,20 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.6
-      - name: Get version
-        id: vers
-        run: |
-          pip install python-semantic-release
-          echo ::set-output name=version::$(semantic-release print-version --current)
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.vers.outputs.version }}
-          release_name: New Features & Bug Fixes
-          body_path: ./CHANGELOG.md
       - name: Add wheel dependency
         run: pip install wheel
       - name: Generate dist
         run: python setup.py sdist bdist_wheel
+        working-directory: ${{ needs.gather-info.outputs.module_folder }}
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
           password: ${{ secrets.pypi_password }}
+          packages_dir: ${{ needs.gather-info.outputs.module_folder }}/dist
   build-and-publish-docker-image:
     name: Build and publish docker image
+    needs: gather-info
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
@@ -51,5 +44,7 @@ jobs:
       - name: Publish to Registry for latest
         if: success()
         run: make build-push-image-latest
+        working-directory: ${{ needs.gather-info.outputs.module_folder }}
       - name: Publish to Registry for version
         run: make build-push-image-version
+        working-directory: ${{ needs.gather-info.outputs.module_folder }}
