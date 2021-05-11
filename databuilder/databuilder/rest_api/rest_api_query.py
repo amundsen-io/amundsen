@@ -12,6 +12,7 @@ from jsonpath_rw import parse
 from retrying import retry
 
 from databuilder.rest_api.base_rest_api_query import BaseRestApiQuery
+from databuilder.rest_api.query_merger import QueryMerger
 
 LOGGER = logging.getLogger(__name__)
 
@@ -62,6 +63,7 @@ class RestApiQuery(BaseRestApiQuery):
                  skip_no_result: bool = False,
                  json_path_contains_or: bool = False,
                  can_skip_failure: Callable = None,
+                 query_merger: QueryMerger = None,
                  **kwargs: Any
                  ) -> None:
         """
@@ -101,6 +103,7 @@ class RestApiQuery(BaseRestApiQuery):
         :param json_path_contains_or: JSON Path expression accepts | ( OR ) operation, mostly to extract values in
         different level. In this case, JSON Path will extract the value from first expression and then second,
         and so forth.
+        :param query_merger: to update record_dict yield by this rest api query with the query_merger's query results.
 
         Example:
             JSON result:
@@ -130,6 +133,7 @@ class RestApiQuery(BaseRestApiQuery):
         self._json_path_contains_or = json_path_contains_or
         self._can_skip_failure = can_skip_failure
         self._more_pages = False
+        self._query_merger = query_merger
 
     def execute(self) -> Iterator[Dict[str, Any]]:  # noqa: C901
         self._authenticate()
@@ -180,6 +184,8 @@ class RestApiQuery(BaseRestApiQuery):
                     new_record_dict = copy.deepcopy(record_dict)
                     for field_name in self._field_names:
                         new_record_dict[field_name] = sub_record.pop(0)
+                    if self._query_merger:
+                        self._query_merger.merge_into(new_record_dict)
                     yield new_record_dict
 
                 self._post_process(response)

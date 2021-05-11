@@ -26,7 +26,6 @@ class ModeDashboardUtils(object):
         seed_query = RestApiQuerySeed(seed_record=seed_record)
         return seed_query
 
-    # TODO: Delete this get_spaces_query_api once everything is moved to use discovery api
     @staticmethod
     def get_spaces_query_api(conf: ConfigTree) -> BaseRestApiQuery:
         """
@@ -40,8 +39,7 @@ class ModeDashboardUtils(object):
         spaces_url_template = 'https://app.mode.com/batch/{organization}/spaces'
 
         # Seed query record for next query api to join with
-        seed_record = [{'organization': conf.get_string(ORGANIZATION)}]
-        seed_query = RestApiQuerySeed(seed_record=seed_record)
+        seed_query = ModeDashboardUtils.get_seed_query(conf=conf)
 
         # mode_bearer_token must be provided in the conf
         # the token is required to access discovery endpoint
