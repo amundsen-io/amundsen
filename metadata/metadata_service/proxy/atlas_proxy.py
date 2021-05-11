@@ -1204,3 +1204,6 @@ class AtlasProxy(BaseProxy):
     def get_lineage(self, *,
                     id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
         pass
+
+    def get_feature(self, *, feature_uri: str) -> Feature:
+        pass

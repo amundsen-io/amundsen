@@ -1741,6 +1741,9 @@ class AbstractGremlinProxy(BaseProxy):
                     id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
         pass
 
+    def get_feature(self, *, feature_uri: str) -> Feature:
+        pass
+
 
 class GenericGremlinProxy(AbstractGremlinProxy):
     """

@@ -1620,3 +1620,6 @@ class Neo4jProxy(BaseProxy):
                           "upstream_entities": upstream_tables,
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
+
+    def get_feature(self, *, feature_uri: str) -> Feature:
+        pass

@@ -1,5 +1,8 @@
 from http import HTTPStatus
 
+from flask import request
+from flask_restful import Resource, reqparse
+
 from amundsen_common.models.feature import FeatureSchema
 
 from metadata_service.entity.resource_type import ResourceType
@@ -16,11 +19,60 @@ class FeatureDetailAPI(Resource):
         self.client = get_proxy_client()
 
     @swag_from('swagger_doc/feature/detail_get.yml')
-    def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            table = self.client.get_table(table_uri=table_uri)
+            feature = self.client.get_feature(feature_uri=feature_uri)
             schema = FeatureSchema()
-            return schema.dump(table), HTTPStatus.OK
+            return schema.dump(feature), HTTPStatus.OK
 
         except NotFoundException:
-            return {'message': 'table_uri {} does not exist'.format(table_uri)}, HTTPStatus.NOT_FOUND
+            return {'message': 'feature_uri {} does not exist'.format(feature_uri)}, HTTPStatus.NOT_FOUND
+
+
+class FeatureLineageAPI(Resource):
+    # TODO get
+    pass
+
+
+class FeatureStatsAPI(Resource):
+    # TODO get
+    pass
+
+
+class FeatureGenerationCodeAPI(Resource):
+    # TODO get
+    pass
+
+
+class FeatureSampleAPI(Resource):
+    # TODO get
+    pass
+
+
+class FeatureOwnerAPI(Resource):
+    # TODO put
+    # TODO delete
+    pass
+
+
+class FeatureDescriptionAPI(Resource):
+    # TODO get
+    # TODO put
+    pass
+
+
+class FeatureTagAPI(Resource):
+    """
+    Only for user tags not owner tags
+    """
+    # TODO put
+    # TODO delete
+    pass
+
+
+class FeatureBadgeAPI(Resource):
+    # TODO put
+    # TODO delete
+    pass
+
+
