@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 
 import attr
 
@@ -41,7 +41,7 @@ class ColumnItemSchema(AttrsSchema):
 class DataSample:
     # Modeled after preview data model in FE
     columns: List[ColumnItem]
-    data: List[Dict]
+    data: List[Dict[str, Any]]
     error_text: str
 
 
