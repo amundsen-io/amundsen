@@ -21,13 +21,7 @@ class FeatureDetailAPI(Resource):
 
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        try:
-            feature = self.client.get_feature(feature_uri=feature_uri)
-            schema = FeatureSchema()
-            return schema.dump(feature), HTTPStatus.OK
-
-        except NotFoundException:
-            return {'message': 'feature_uri {} does not exist'.format(feature_uri)}, HTTPStatus.NOT_FOUND
+        pass
 
 
 class FeatureLineageAPI(Resource):
@@ -91,7 +85,6 @@ class FeatureDescriptionAPI(Resource):
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
-        super(FeatureDescriptionAPI, self).__init__()
 
     @swag_from('swagger_doc/common/description_get.yml')
     def get(self, id: str) -> Iterable[Any]:
@@ -111,7 +104,6 @@ class FeatureTagAPI(Resource):
         self.client = get_proxy_client()
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('tag_type', type=str, required=False, default='default')
-        super(FeatureTagAPI, self).__init__()
 
         self._tag_common = TagCommon(client=self.client)
 
@@ -129,7 +121,6 @@ class FeatureBadgeAPI(Resource):
         self.client = get_proxy_client()
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('category', type=str, required=True)
-        super(FeatureBadgeAPI, self).__init__()
 
         self._badge_common = BadgeCommon(client=self.client)
 
