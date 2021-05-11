@@ -1,5 +1,4 @@
 charts:
-  - name: amundsen
-    directory: amundsen-kube-helm/templates/helm
-    values: values.yaml
-
+- name: amundsen
+  directory: amundsen-kube-helm/templates/helm
+  values: values.yaml
