@@ -1,15 +1,12 @@
-from http import HTTPStatus
+from typing import Any, Iterable, Mapping, Union
 
-from flask import request
+from flasgger import swag_from
 from flask_restful import Resource, reqparse
 
-from amundsen_common.models.feature import FeatureSchema, QuerySchema
-
-from metadata_service.entity.resource_type import ResourceType
-from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
+
 
 class FeatureDetailAPI(Resource):
     """
@@ -114,6 +111,7 @@ class FeatureTagAPI(Resource):
     @swag_from('swagger_doc/tag/tag_delete.yml')
     def delete(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
         pass
+
 
 class FeatureBadgeAPI(Resource):
 

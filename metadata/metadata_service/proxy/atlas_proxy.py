@@ -15,6 +15,7 @@ from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, Tag,
                                           User, Watermark)
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.user import User as UserEntity
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,

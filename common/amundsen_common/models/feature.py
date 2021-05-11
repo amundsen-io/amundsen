@@ -8,7 +8,7 @@ import attr
 from amundsen_common.models.user import User
 from amundsen_common.models.badge import Badge
 from amundsen_common.models.tag import Tag
-from amundsen_common.models.table import Column, Stat, ProgrammaticDescription, Watermark
+from amundsen_common.models.table import Column, ProgrammaticDescription, Watermark
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
@@ -27,8 +27,8 @@ class QuerySchema(AttrsSchema):
 
 @attr.s(auto_attribs=True, kw_only=True)
 class ColumnItem:
-    column_name = column_name
-    column_type = column_type
+    column_name: str
+    column_type: str
 
 
 class ColumnItemSchema(AttrsSchema):
