@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Get module for release
         id: module_folder
-        run: echo "::set-output name=module_folder::$(awk '{print $1}' << "${{ github.event.release.title }}")"
+        run: echo "::set-output name=module_folder::$(awk '{print $1}' <<< "${{ github.event.release.name }}")"
     outputs:
       module_folder: ${{ steps.module_folder.outputs.module_folder }}
   push-to-pypi:
