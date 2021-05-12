@@ -1,0 +1,22 @@
+{{- if and .Values.neo4j.enabled .Values.neo4j.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: neo4j-pvc
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+  labels:
+    app: {{ template "amundsen.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ default "ReadWriteOnce" .Values.neo4j.persistence.accessMode }}
+  storageClassName: "{{ default "" .Values.neo4j.persistence.storageClass }}"
+  volumeName: neo4j-pv
+  resources:
+    requests:
+      storage: {{ default "3Gi" .Values.neo4j.persistence.size }}
+{{- end }}

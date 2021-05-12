@@ -1,0 +1,96 @@
+{{ if .Values.neo4j.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j
+  labels:
+    app: {{ template "amundsen.name" . }}
+    component: neo4j
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "amundsen.name" . }}
+      component: neo4j
+      release: {{ .Release.Name }}
+  replicas: 1
+  template:
+    metadata:
+      {{- with default .Values.podAnnotations .Values.neo4j.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "amundsen.name" . }}
+        component: neo4j
+        release: {{ .Release.Name }}
+    spec:
+      {{- with .Values.neo4j.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.neo4j.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.neo4j.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: init-neo4j-plugins
+          image: "appropriate/curl:latest"
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.3.0.4/apoc-3.3.0.4-all.jar -O
+              curl -L https://github.com/neo4j-contrib/neo4j-graph-algorithms/releases/download/3.3.5.0/graph-algorithms-algo-3.3.5.0.jar -O
+              curl -L https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-core/1.11.250/aws-java-sdk-core-1.11.250.jar -O
+              curl -L https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.250/aws-java-sdk-s3-1.11.250.jar -O
+              curl -L https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.4/httpclient-4.5.4.jar -O
+              curl -L https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.8/httpcore-4.4.8.jar -O
+              curl -L https://repo1.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar -O
+              chmod 755 *.jar
+              mv *.jar /var/lib/neo4j/plugins
+          volumeMounts:
+            - name: plugins
+              mountPath: /var/lib/neo4j/plugins
+      containers:
+      - name: neo4j
+        image: neo4j:{{ .Values.neo4j.version }}
+        ports:
+        - containerPort: 7474
+        - containerPort: 7687
+        - containerPort: 1337
+        env:
+          - name: NEO4J_CONF
+            value: "/conf"
+        volumeMounts:
+        - name: conf
+          mountPath: /conf
+        {{- if .Values.neo4j.persistence }}
+        - name: data
+          mountPath: /var/lib/neo4j/data
+        {{- end}}
+        - name: plugins
+          mountPath: /var/lib/neo4j/plugins
+        {{- with .Values.neo4j.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end}}
+      volumes:
+        - name: conf
+          configMap:
+            name: neo4j-configmap
+        {{- if .Values.neo4j.persistence }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: neo4j-pvc
+        {{- end}}
+        - name: plugins
+          emptyDir: {}
+{{ end }}

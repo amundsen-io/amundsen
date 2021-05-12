@@ -1,0 +1,26 @@
+version: 1
+update_configs:
+  - package_manager: "submodules"
+    directory: "/"
+    update_schedule: "weekly"
+    automerged_updates:
+      - match:
+          update_type: all
+  - package_manager: "python"
+    directory: "/common"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/databuilder"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/frontend"
+    update_schedule: "monthly"
+  - package_manager: "javascript"
+    directory: "/frontend/amundsen_application/static/"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/metadata"
+    update_schedule: "monthly"
+  - package_manager: "python"
+    directory: "/search"
+    update_schedule: "monthly"

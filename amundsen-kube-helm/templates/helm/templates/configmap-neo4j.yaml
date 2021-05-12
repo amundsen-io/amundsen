@@ -1,0 +1,42 @@
+  
+{{ if .Values.neo4j.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: neo4j-configmap
+  labels:
+    app: {{ template "amundsen.name" . }}
+    component: neo4j
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  neo4j.conf: |-
+    apoc.export.file.enabled=true
+    apoc.import.file.enabled=true
+    cypher.forbid_shortestpath_common_nodes=false
+    dbms.connector.bolt.enabled=true
+    dbms.connector.bolt.listen_address=:7687
+    dbms.connector.bolt.tls_level=OPTIONAL
+    dbms.connector.http.enabled=true
+    dbms.connector.https.enabled=true
+    dbms.connectors.default_listen_address=0.0.0.0
+    dbms.directories.import=/mnt
+    dbms.jvm.additional=-Djdk.tls.ephemeralDHKeySize=2048
+    dbms.jvm.additional=-Dunsupported.dbms.udc.source=tarball
+    dbms.jvm.additional=-XX:+AlwaysPreTouch
+    dbms.jvm.additional=-XX:+DisableExplicitGC
+    dbms.jvm.additional=-XX:+UseG1GC
+    dbms.logs.query.enabled=true
+    dbms.logs.query.rotation.keep_number=7
+    dbms.logs.query.rotation.size=20m
+    dbms.memory.heap.initial_size={{ .Values.neo4j.config.dbms.heap_initial_size }}
+    dbms.memory.heap.max_size={{ .Values.neo4j.config.dbms.heap_max_size }}
+    dbms.memory.pagecache.size={{ .Values.neo4j.config.dbms.pagecache_size }}
+    dbms.security.allow_csv_import_from_file_urls=true
+    dbms.security.auth_enabled=false
+    dbms.security.procedures.unrestricted=algo.*,apoc.*
+    dbms.shell.enabled=true
+    dbms.shell.host=0.0.0.0
+    dbms.windows_service_name=neo4j
+{{ end }}

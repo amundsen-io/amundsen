@@ -1,0 +1,33 @@
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: restore-neo4j-from-latest
+      annotations:
+        fill_in_here_with_correct_key: fill_in_here_with_correct_value
+    spec:
+      containers:
+      - name: restore-neo4j-from-latest
+        image: neo4j:3.3.0
+        command:
+         - "/bin/sh"
+         - "-c"
+         - |
+            apk -v --update add --no-cache --quiet curl python py-pip && pip install awscli -q
+            latest_backup=$(aws s3api list-objects-v2 --bucket "$BUCKET" --query 'reverse(sort_by(Contents, &LastModified))[:1].Key' --output=text)
+            aws s3 cp s3://$BUCKET/$latest_backup /tmp
+            tar -xf /tmp/$latest_backup -C /
+            data_file=`ls /data|grep \.data`
+            schema_file=`ls /data|grep \.schema`
+            ./bin/neo4j-shell -host neo4j -file /data/$schema_file
+            echo "CALL apoc.import.graphml('/data/$data_file', {useTypes: true, readLabels: true});" | /var/lib/neo4j/bin/neo4j-shell -host neo4j
+        env:
+          - name: BUCKET
+            value: s3://dev/null
+        volumeMounts:
+          - name: data
+            mountPath: /data
+      restartPolicy: OnFailure
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: neo4j-pvc

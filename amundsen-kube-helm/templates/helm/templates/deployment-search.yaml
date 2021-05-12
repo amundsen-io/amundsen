@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "amundsen.fullname" . }}-{{ .Values.search.serviceName }}
+  labels:
+    app: {{ template "amundsen.name" . }}
+    component: {{ .Values.search.serviceName }}
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "amundsen.name" . }}
+      component: {{ .Values.search.serviceName }}
+      release: {{ .Release.Name }}
+  replicas: {{ default 1 .Values.search.replicas }}
+  template:
+    metadata:
+      {{- with default .Values.podAnnotations .Values.search.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "amundsen.name" . }}
+        component: {{ .Values.search.serviceName }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- with default .Values.nodeSelector .Values.search.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.affinity .Values.search.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.tolerations .Values.search.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- if .Values.search.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.search.imagePullSecrets | indent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}
+        image: {{ .Values.search.image }}:{{ .Values.search.imageTag }}
+        ports:
+        - containerPort: 5001
+        env:
+        - name: PROXY_ENDPOINT
+          value: {{ if .Values.search.elasticsearchEndpoint }}{{ .Values.search.elasticsearchEndpoint }}{{ else }}{{ .Release.Name }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
+        {{- if and .Values.search.elasticSearchCredentials (not .Values.elasticsearch.enabled) }}
+        - name: CREDENTIALS_PROXY_USER
+          value: {{ .Values.search.elasticSearchCredentials.user }}
+        - name: CREDENTIALS_PROXY_PASSWORD
+          value: {{ .Values.search.elasticSearchCredentials.password }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: "/healthcheck"
+            port: 5001
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        {{- with .Values.search.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end }}

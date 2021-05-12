@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "amundsen.fullname" . }}-{{ .Values.metadata.serviceName }}
+  labels:
+    app: {{ template "amundsen.name" . }}
+    component: {{ .Values.metadata.serviceName }}
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "amundsen.name" . }}
+      component: {{ .Values.metadata.serviceName }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      {{- with default .Values.podAnnotations .Values.metadata.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "amundsen.name" . }}
+        component: {{ .Values.metadata.serviceName }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- with default .Values.nodeSelector .Values.metadata.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.affinity .Values.metadata.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with default .Values.tolerations .Values.metadata.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.frontEnd.oidcEnabled }}
+        - name: oidc-config
+          secret:
+            secretName: oidc-config
+      {{- end }}
+    {{- if .Values.metadata.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.metadata.imagePullSecrets | indent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
+        image: {{ .Values.metadata.image }}:{{ .Values.metadata.imageTag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5002
+        env:
+        - name: PROXY_HOST
+          value: {{ if .Values.metadata.neo4jEndpoint }}{{ .Values.metadata.neo4jEndpoint }}{{ else }}bolt://neo4j.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
+        {{- if .Values.frontEnd.oidcEnabled }}
+        - name: FLASK_OIDC_CLIENT_SECRETS
+          value: /etc/client_secrets.json
+        - name: FLASK_OIDC_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: oidc-config
+              key: OIDC_CLIENT_SECRET
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: "/healthcheck"
+            port: 5002
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        volumeMounts:
+        {{- if .Values.frontEnd.oidcEnabled }}
+          - name: oidc-config
+            mountPath: /etc/client_secrets.json
+            subPath: client_secrets.json
+        {{- end }}
+        {{- with .Values.metadata.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+        {{- end }}

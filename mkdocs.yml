@@ -1,0 +1,114 @@
+site_name: Amundsen
+repo_name: Amundsen
+repo_url: https://github.com/amundsen-io/amundsen
+site_description: "Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data."
+site_author: Amundsen Project Authors.
+site_url: https://www.amundsen.io/amundsen/
+remote_branch: gh-pages
+
+copyright: 'Copyright &copy; 2018-2020 Amundsen Project Authors.'
+
+theme:
+  name: 'material'
+  logo: img/logos/amundsen_mark_orange.svg
+  favicon: 'img/logos/amundsen_mark_orange.svg'
+  palette:
+    primary: '#2B1B81'
+    accent: '#2B1B81'
+  feature:
+    tabs: true
+  custom_dir: docs_overrides/
+
+-extra_css:
+  - 'css/app.css'
+
+
+markdown_extensions:
+  - admonition
+  - smarty
+  - codehilite:
+      guess_lang: false
+      linenums: True
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - tables
+
+
+extra:
+  # type is the name of the FontAwesome icon without the fa- prefix.
+  social:
+    - type: globe
+      link: https://www.amundsen.io/
+    - type: github-alt
+      link: https://github.com/amundsen-io
+    - type: twitter
+      link: https://twitter.com/amundsenio
+    - type: linkedin
+      link: https://www.linkedin.com/company/the-linux-foundation/
+
+nav:
+  - 'Overview': index.md
+  - 'Architecture': architecture.md
+  - 'Developer Guide':
+    - 'Overview': developer_guide.md
+    - 'Issue and Feature Labeling': issue_labeling.md
+    - 'Contributing Guide': CONTRIBUTING.md
+  - 'User Guide':
+    - 'Quick Start': 'installation.md'
+    - 'Tutorials':
+        - 'How to index metadata for real life databases': 'tutorials/index-postgres.md'
+        - 'How to setup a preview client with Apache Superset': 'tutorials/data-preview-with-superset.md'
+        - 'How to setup user profiles': 'tutorials/user-profiles.md'
+        - 'How to ingest Dashboard': 'databuilder/docs/dashboard_ingestion_guide.md'
+        - 'How to track user metric for Amundsen': 'tutorials/how-to-track-user-metric.md'
+        - 'How to add table level and column level badges': 'tutorials/badges.md'
+        - 'How to search Amundsen effectively': 'tutorials/how-to-search-effective.md'
+        - 'How to use Amundsen with Amazon Neptune': 'tutorials/how-to-use-amundsen-with-aws-neptune.md'
+    - 'Deployment':
+      - 'Authentication': 'authentication/oidc.md'
+      - 'AWS ECS Installation': 'installation-aws-ecs/aws-ecs-deployment.md'
+      - 'K8S Installation': 'k8s_install.md'
+  - 'Components':
+    - 'Frontend':
+        - 'Overview': 'frontend/README.md'
+        - 'Configuration':
+          - 'Application Config': 'frontend/docs/application_config.md'
+          - 'React Configuration': 'frontend/docs/configuration.md'
+          - 'Flask Configuration': 'frontend/docs/flask_config.md'
+          - 'Preview Client Setup': 'frontend/docs/examples/superset_preview_client.md'
+        - 'FE Developer Guide': 'frontend/docs/developer_guide.md'
+        - 'FE Installation Guide': 'frontend/docs/installation.md'
+        - 'Recommended Practices': 'frontend/docs/recommended_practices.md'
+    - 'Search':
+      - 'Overview': 'search/README.md'
+      - 'Proxy':
+        - 'Atlas Backend': 'search/docs/atlas-search.md'
+    - 'Metadata':
+      - 'Overview': 'metadata/README.md'
+      - 'Configuration':
+        - 'Overview': 'metadata/docs/configurations.md'
+      - 'Metadata API Structure': 'metadata/docs/structure.md'
+      - 'Proxy':
+        - 'Atlas Backend':
+            - 'Overview': 'metadata/docs/proxy/atlas_proxy.md'
+            - 'Popular Table': 'metadata/docs/proxy/atlas/popular_tables.md'
+        - 'Gremlin Backend': 'metadata/docs/proxy/gremlin.md'
+        - 'Neptune Backend': 'metadata/docs/proxy/neptune.md'
+    - 'Databuilder':
+      - 'Overview': 'databuilder/README.md'
+      - 'Models': 'databuilder/docs/models.md'
+      - 'Dashboard Ingestion guide': 'databuilder/docs/dashboard_ingestion_guide.md'
+    - 'Common':
+      - 'Overview': 'common/README.md'
+  - 'FAQ': faq.md
+  - 'Roadmap': roadmap.md

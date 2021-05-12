@@ -1,0 +1,36 @@
+{{ if .Values.neo4j.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: neo4j
+  labels:
+    app: {{ template "amundsen.name" . }}
+    run: neo4j
+    component: neo4j
+    chart: {{ template "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.neo4j.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end}}   
+spec:
+  type: {{ .Values.neo4j.serviceType }}
+  selector:
+    app: {{ template "amundsen.name" . }}
+    component: neo4j
+    release: {{ .Release.Name }}
+  ports:
+    - port: 7473
+      name: neo4j-{{ .Values.environment }}-https
+      targetPort: 7473
+    - port: 7474
+      name: neo4j-{{ .Values.environment }}-http
+      targetPort: 7474
+    - port: 7687
+      name: neo4j-{{ .Values.environment }}-bolt
+      targetPort: 7687
+    - port: 1337
+      name: neo4j-{{ .Values.environment }}-shell
+      targetPort: 1337
+{{ end }}

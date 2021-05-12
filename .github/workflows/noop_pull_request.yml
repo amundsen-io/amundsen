@@ -1,0 +1,36 @@
+# Because the mono-repo has different test suites for each sub-project,
+# it is challenging to use Github's required status checks. For example,
+# the front-end specifies node tests, and we'd like to gate PR on their passing.
+# However, none of the other projects have those tests. Thus, if you require
+# the front-end tests to pass, it will be impossible to land non-frontend PRs.
+# However, Github helpfully has the behavior where if there are multiple test
+# runners with a single name, if any of them fail, the whole PR will fail. Thus
+# this file specifies dummy tests that will always pass.
+
+# The matrix specified here must be a superset of the actual tests run. This
+# has the unfortunate side effect of making PRs appear like they have more
+# coverage than they actually do, but I think it's relatively minor
+
+# See also:
+# * https://github.community/t/github-actions-and-required-checks-in-a-monorepo-using-paths-to-limit-execution/16586/4
+# * https://github.community/t/feature-request-conditional-required-checks/16761/2
+
+name: no-op
+on: pull_request
+jobs:
+  test-unit-frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: Do nothing
+        run: exit 0
+  test-unit-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.6.x", "3.7.x", "3.8.x"]
+    steps:
+      - name: Do nothing
+        run: exit 0
