@@ -170,18 +170,6 @@ class AtlasSearchDataExtractor(Extractor):
         return self.conf.get(AtlasSearchDataExtractor.ENTITY_TYPE_KEY)
 
     @property
-    def basic_search_query(self) -> Dict:
-        query = {
-            'typeName': self.entity_type,
-            'excludeDeletedEntities': True,
-            'query': '*'
-        }
-
-        LOGGER.debug(f'Basic Search Query: {query}')
-
-        return query
-
-    @property
     def dsl_search_query(self) -> Dict:
         query = {
             'query': f'{self.entity_type} where __state = "ACTIVE"'
