@@ -68,7 +68,7 @@ SQLAlchemy==1.3.23
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common==0.9.0
+amundsen-common==0.10.0
 
 # Library for rest endpoints with Flask
 # Upstream url: https://github.com/flask-restful/flask-restful
