@@ -72,9 +72,7 @@ class AtlasSearchDataExtractorHelpers:
             _charts = query.get('relationshipAttributes', dict()).get('charts', [])
             charts += _charts
 
-        return AtlasSearchDataExtractorHelpers._filter_none(
-            [c.get('displayText') for c in charts
-             if c.get('entityStatus', '').lower() == 'active' and c.get('relationshipStatus', '').lower() == 'active'])
+        return AtlasSearchDataExtractorHelpers.get_from_display_text(charts)
 
 
 class AtlasSearchDataExtractor(Extractor):
