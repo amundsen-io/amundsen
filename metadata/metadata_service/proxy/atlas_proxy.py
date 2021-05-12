@@ -144,10 +144,10 @@ def make_table_qualified_name(table_name: str, cluster: Optional[Any] = None, db
     """
     qualified_name = table_name
     if db and db != DEFAULT_DB_CLUSTER:
-        qualified_name = '{}.{}'.format(db, qualified_name)
+        qualified_name = f'{db}.{qualified_name}'
 
     if cluster and cluster != DEFAULT_DB_CLUSTER:
-        qualified_name = '{}@{}'.format(qualified_name, cluster)
+        qualified_name = f'{qualified_name}@{cluster}'
 
     return qualified_name
 
@@ -271,8 +271,7 @@ class AtlasProxy(BaseProxy):
                                                               uniq_attributes=[(CommonParams.qn, table_qn)])
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
-            raise NotFoundException('Table URI( {table_uri} ) does not exist'
-                                    .format(table_uri=table_uri))
+            raise NotFoundException(f'Table URI( {table_uri} ) does not exist')
 
     def _get_user_entity(self, user_id: str) -> AtlasEntityWithExtInfo:
         """
@@ -284,8 +283,7 @@ class AtlasProxy(BaseProxy):
             return self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
                                                               uniq_attributes=[(CommonParams.qn, user_id)])
         except Exception as ex:
-            raise NotFoundException('(User {user_id}) does not exist'
-                                    .format(user_id=user_id))
+            raise NotFoundException(f'(User {user_id}) does not exist')
 
     def _create_bookmark(self, entity: AtlasEntityWithExtInfo, user_guid: str, bookmark_qn: str,
                          table_uri: str) -> None:
@@ -319,11 +317,13 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         table_info = self._extract_info_from_uri(table_uri=entity_uri)
-        bookmark_qn = '{}.{}.{}.{}.bookmark@{}'.format(table_info.get('db'),
-                                                       table_info.get('name'),
-                                                       table_info.get('entity'),
-                                                       user_id,
-                                                       table_info.get('cluster'))
+
+        db = table_info.get('db')
+        name = table_info.get('name')
+        entity = table_info.get('entity')
+        cluster = table_info.get('cluster')
+
+        bookmark_qn = f'{db}.{name}.{entity}.{user_id}.bookmark@{cluster}'
 
         try:
             bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.bookmark,
@@ -451,9 +451,8 @@ class AtlasProxy(BaseProxy):
                                 url=report_attrs['url']
                             )
                         )
-                except (KeyError, AttributeError) as ex:
-                    LOGGER.exception('Error while accessing table report: {}. {}'
-                                     .format(str(report_entity), str(ex)))
+                except (KeyError, AttributeError):
+                    LOGGER.exception(f'Error while accessing table report: {str(report_entity)}', exc_info=True)
 
         parsed_reports = app.config['RESOURCE_REPORT_CLIENT'](reports) \
             if app.config['RESOURCE_REPORT_CLIENT'] else reports
@@ -568,12 +567,9 @@ class AtlasProxy(BaseProxy):
                 watermarks=self._get_table_watermarks(table_details))
 
             return table
-        except KeyError as ex:
-            LOGGER.exception('Error while accessing table information. {}'
-                             .format(str(ex)))
-            raise BadRequest('Some of the required attributes '
-                             'are missing in : ( {table_uri} )'
-                             .format(table_uri=table_uri))
+        except KeyError:
+            LOGGER.exception('Error while accessing table information. {}', exc_info=True)
+            raise BadRequest(f'Some of the required attributes are missing in: {table_uri}')
 
     @staticmethod
     def _validate_date(text_date: str, date_format: str) -> Tuple[Optional[datetime.datetime], Optional[str]]:
@@ -674,9 +670,8 @@ class AtlasProxy(BaseProxy):
                     )
                 else:
                     raise BadRequest('You can not delete this owner.')
-            except Exception as ex:
-                LOGGER.exception('Error while removing table data owner. {}'
-                                 .format(str(ex)))
+            except Exception:
+                LOGGER.exception('Error while removing table data owner.', exc_info=True)
 
     def add_owner(self, *, table_uri: str, owner: str) -> None:
         """
@@ -719,10 +714,8 @@ class AtlasProxy(BaseProxy):
             self.client.relationship.create_relationship(relationship=relationship)
 
         except Exception as ex:
-            LOGGER.exception('Error while adding the owner information. {}'
-                             .format(str(ex)))
-            raise BadRequest(f'User {owner} is already added as a data owner for '
-                             f'table {table_uri}.')
+            LOGGER.exception('Error while adding the owner information. {}', exc_info=True)
+            raise BadRequest(f'User {owner} is already added as a data owner for table {table_uri}.')
 
     def get_table_description(self, *,
                               table_uri: str) -> Union[str, None]:
@@ -1029,7 +1022,7 @@ class AtlasProxy(BaseProxy):
                 # @todo finish this
                 pass
             else:
-                raise NotImplementedError('resource type {} is not supported'.format(resource_type))
+                raise NotImplementedError(f'resource type {resource_type} is not supported')
         return resources
 
     def _get_resources_owned_by_user(self, user_id: str, resource_type: str) \
@@ -1156,7 +1149,7 @@ class AtlasProxy(BaseProxy):
                                       resource_type: ResourceType) -> None:
 
         if resource_type is not ResourceType.Table:
-            raise NotImplementedError('resource type {} is not supported'.format(resource_type))
+            raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
         entity.entity[CommonParams.attrs][Status.ACTIVE.lower()] = True
@@ -1168,7 +1161,7 @@ class AtlasProxy(BaseProxy):
                                          relation_type: UserResourceRel,
                                          resource_type: ResourceType) -> None:
         if resource_type is not ResourceType.Table:
-            raise NotImplementedError('resource type {} is not supported'.format(resource_type))
+            raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
         entity.entity[CommonParams.attrs][Status.ACTIVE.lower()] = False
@@ -1315,7 +1308,6 @@ class AtlasProxy(BaseProxy):
             badges = self._serialize_badges(entity)
             tags = self._serialize_tags(entity)
 
-            _charts = []
             _executions = []
             _queries = []
 
@@ -1324,9 +1316,7 @@ class AtlasProxy(BaseProxy):
 
                 _attributes = v[CommonParams.attrs]
 
-                if entity_type == DashboardTypes.chart:
-                    _charts.append(_attributes)
-                elif entity_type == DashboardTypes.execution:
+                if entity_type == DashboardTypes.execution:
                     _executions.append(_attributes)
                 elif entity_type == DashboardTypes.query:
                     _queries.append(_attributes)
@@ -1437,8 +1427,7 @@ class AtlasProxy(BaseProxy):
 
                     result.append(summary)
             except (KeyError, AttributeError) as ex:
-                LOGGER.exception('Error while accessing table report: {}. {}'
-                                 .format(str(dashboard), str(ex)))
+                LOGGER.exception(f'Error while accessing table report: {str(dashboard)}.', exc_info=True)
 
         return result
 
