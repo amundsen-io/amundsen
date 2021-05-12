@@ -49,7 +49,7 @@ class AtlasSearchDataExtractorHelpers:
             [c.get('typeName') for c in classifications if c.get('entityStatus', '').lower() == 'active'])
 
     @staticmethod
-    def get_tags_from_glossary_terms(meanings: List) -> List:
+    def get_from_display_text(meanings: List) -> List:
         return AtlasSearchDataExtractorHelpers._filter_none(
             [c.get('displayText') for c in meanings if c.get('entityStatus', '').lower() == 'active'])
 
@@ -65,16 +65,16 @@ class AtlasSearchDataExtractorHelpers:
             return 0
 
     @staticmethod
-    def get_query_names(charts: List) -> List[str]:
-        queries = []
+    def get_chart_names(queries: List) -> List[str]:
+        charts = []
 
-        for chart in charts:
-            _queries = chart.get('relationshipAttributes', dict()).get('queries', [])
-            queries += _queries
+        for query in queries:
+            _charts = query.get('relationshipAttributes', dict()).get('charts', [])
+            charts += _charts
 
         return AtlasSearchDataExtractorHelpers._filter_none(
-            [q.get('displayText') for q in queries
-             if q.get('entityStatus', '').lower() == 'active' and q.get('relationshipStatus', '').lower() == 'active'])
+            [c.get('displayText') for c in charts
+             if c.get('entityStatus', '').lower() == 'active' and c.get('relationshipStatus', '').lower() == 'active'])
 
 
 class AtlasSearchDataExtractor(Extractor):
@@ -120,7 +120,7 @@ class AtlasSearchDataExtractor(Extractor):
             ('column_descriptions', 'relationshipAttributes.columns',
              lambda x: AtlasSearchDataExtractorHelpers.get_entity_descriptions(x), []),
             ('tags', 'relationshipAttributes.meanings',
-             lambda x: AtlasSearchDataExtractorHelpers.get_tags_from_glossary_terms(x), []),
+             lambda x: AtlasSearchDataExtractorHelpers.get_from_display_text(x), []),
             ('badges', 'classifications',
              lambda x: AtlasSearchDataExtractorHelpers.get_badges_from_classifications(x), []),
             ('display_name', 'attributes.qualifiedName', lambda x: x.split('@')[0], None),
@@ -135,17 +135,17 @@ class AtlasSearchDataExtractor(Extractor):
             ('product', 'attributes.product', None, None),
             ('cluster', 'attributes.cluster', None, None),
             ('group_description', 'relationshipAttributes.group.attributes.description', None, None),
-            ('query_names', 'relationshipAttributes.charts',
-             lambda x: AtlasSearchDataExtractorHelpers.get_query_names(x), []),
-            ('chart_names', 'relationshipAttributes.charts',
+            ('query_names', 'relationshipAttributes.queries',
              lambda x: AtlasSearchDataExtractorHelpers.get_entity_names(x), []),
+            ('chart_names', 'relationshipAttributes.queries',
+             lambda x: AtlasSearchDataExtractorHelpers.get_chart_names(x), []),
             ('group_url', 'relationshipAttributes.group.attributes.url', None, None),
             ('url', 'attributes.url', None, None),
             ('uri', 'attributes.qualifiedName', None, None),
             ('last_successful_run_timestamp', 'relationshipAttributes.executions',
              lambda x: AtlasSearchDataExtractorHelpers.get_last_successful_execution_timestamp(x), None),
             ('tags', 'relationshipAttributes.meanings',
-             lambda x: AtlasSearchDataExtractorHelpers.get_tags_from_glossary_terms(x), []),
+             lambda x: AtlasSearchDataExtractorHelpers.get_from_display_text(x), []),
             ('badges', 'classifications',
              lambda x: AtlasSearchDataExtractorHelpers.get_badges_from_classifications(x), [])
         ]
@@ -158,7 +158,7 @@ class AtlasSearchDataExtractor(Extractor):
 
     REQUIRED_RELATIONSHIPS_BY_TYPE = {
         'Table': ['columns'],
-        'Dashboard': ['group', 'charts', 'executions']
+        'Dashboard': ['group', 'charts', 'executions', 'queries']
     }
 
     def init(self, conf: ConfigTree) -> None:
