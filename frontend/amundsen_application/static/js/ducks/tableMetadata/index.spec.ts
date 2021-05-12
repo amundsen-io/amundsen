@@ -69,7 +69,6 @@ describe('tableMetadata ducks', () => {
   let testIndex: string;
   let testSource: string;
 
-  let columnName: string;
   let columnIndex: number;
   let emptyPreviewData: PreviewData;
   let newDescription: string;
@@ -99,7 +98,6 @@ describe('tableMetadata ducks', () => {
     testIndex = '3';
     testSource = 'search';
     columnIndex = 2;
-    columnName = 'column_name';
     emptyPreviewData = {
       columns: [],
       data: [],
