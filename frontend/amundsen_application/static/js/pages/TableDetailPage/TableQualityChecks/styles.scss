@@ -10,3 +10,20 @@
     @extend %text-body-w2;
   }
 }
+
+$title-line-height: 24px;
+$content-line-height: 18px;
+
+.shimmer-table-quality-checks {
+  margin-top: 40px;
+  height: 90px;
+
+  .shimmer-title-row {
+    height: $title-line-height;
+  }
+
+  .shimmer-content-row {
+    height: $content-line-height;
+    margin-top: $spacer-1;
+  }
+}

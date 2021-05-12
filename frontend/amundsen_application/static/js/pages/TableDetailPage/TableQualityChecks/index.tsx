@@ -6,8 +6,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { GetTableQualityChecksRequest } from 'ducks/tableMetadata/types';
-import { getTableQualityChecks } from 'ducks/tableMetadata/reducer';
+import {
+  ClickTableQualityLinkRequest,
+  GetTableQualityChecksRequest,
+} from 'ducks/tableMetadata/types';
+import {
+  clickDataQualityLink,
+  getTableQualityChecks,
+} from 'ducks/tableMetadata/reducer';
 import { TableQualityChecks } from 'interfaces/TableMetadata';
 import { formatDateTimeShort } from 'utils/dateUtils';
 import * as Constants from './constants';
@@ -22,6 +28,7 @@ export interface StateFromProps {
 
 export interface DispatchFromProps {
   getTableQualityChecksDispatch: (key: string) => GetTableQualityChecksRequest;
+  clickDataQualityLinkDispatch: () => ClickTableQualityLinkRequest;
 }
 
 export interface ComponentProps {
@@ -33,53 +40,64 @@ export type TableQualityChecksProps = StateFromProps &
   ComponentProps;
 
 const ShimmeringIssuesLoader: React.FC = () => (
-  <div className="shimmer-issues">
-    <div className="shimmer-issues-row shimmer-issues-line--1 is-shimmer-animated" />
-    <div className="shimmer-issues-row shimmer-issues-line--2 is-shimmer-animated" />
+  <div className="shimmer-table-quality-checks">
+    <div className="shimmer-title-row is-shimmer-animated" />
+    <div className="shimmer-content-row is-shimmer-animated" />
+    <div className="shimmer-content-row is-shimmer-animated" />
   </div>
 );
 
-export class TableQualityChecksLabel extends React.Component<TableQualityChecksProps> {
-  componentDidMount() {
-    const { getTableQualityChecksDispatch, tableKey } = this.props;
-    getTableQualityChecksDispatch(tableKey);
+export function generateChecksText(numFailed, numTotal) {
+  if (numFailed > 0) {
+    return `${numFailed} out of ${numTotal} checks failed`;
   }
+  return `All ${numTotal} checks passed`;
+}
 
-  render() {
-    const { isLoading, checks } = this.props;
-    if (isLoading) {
-      return <ShimmeringIssuesLoader />;
-    }
-    let checkText;
-    if (checks.num_checks_failed > 0) {
-      checkText = `${checks.num_checks_failed} out of ${checks.num_checks_total} checks failed`;
-    } else {
-      checkText = `All ${checks.num_checks_total} checks failed`;
-    }
-    return (
-      <section className="metadata-section table-quality-checks">
-        <div className="section-title">{Constants.COMPONENT_TITLE}</div>
-        <div className="checks-status">{checkText}</div>
+const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
+  getTableQualityChecksDispatch,
+  clickDataQualityLinkDispatch,
+  tableKey,
+  isLoading,
+  checks,
+}) => {
+  React.useEffect(() => {
+    getTableQualityChecksDispatch(tableKey);
+  }, []);
+
+  if (isLoading) {
+    return <ShimmeringIssuesLoader />;
+  }
+  const checkText = generateChecksText(
+    checks.num_checks_failed,
+    checks.num_checks_total
+  );
+  return (
+    <section className="metadata-section table-quality-checks">
+      <div className="section-title">{Constants.COMPONENT_TITLE}</div>
+      <div className="checks-status">{checkText}</div>
+      {checks.last_run_timestamp !== null && (
         <div className="last-run-timestamp">
-          Latest run at:
+          {Constants.LAST_RUN_LABEL}
           <time>
             {formatDateTimeShort({
               timestamp: checks.last_run_timestamp,
             })}
           </time>
         </div>
-        <a
-          href={checks.external_url}
-          className="body-link"
-          target="_blank"
-          rel="noreferrer"
-        >
-          {Constants.SEE_MORE_LABEL}
-        </a>
-      </section>
-    );
-  }
-}
+      )}
+      <a
+        href={checks.external_url}
+        className="body-link"
+        target="_blank"
+        rel="noreferrer"
+        onClick={clickDataQualityLinkDispatch}
+      >
+        {Constants.SEE_MORE_LABEL}
+      </a>
+    </section>
+  );
+};
 
 export const mapStateToProps = (state: GlobalState) => ({
   status: state.tableMetadata.tableQualityChecks.status,
@@ -89,7 +107,10 @@ export const mapStateToProps = (state: GlobalState) => ({
 
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
-    { getTableQualityChecksDispatch: getTableQualityChecks },
+    {
+      getTableQualityChecksDispatch: getTableQualityChecks,
+      clickDataQualityLinkDispatch: clickDataQualityLink,
+    },
     dispatch
   );
 

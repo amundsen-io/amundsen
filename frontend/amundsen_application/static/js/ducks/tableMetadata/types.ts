@@ -174,3 +174,13 @@ export interface GetTableQualityChecksResponse {
     checks: TableQualityChecks;
   };
 }
+
+export enum ClickTableQualityLink {
+  REQUEST = 'amundsen/tableMetadata/CLICK_TABLE_QUALITY_LINK',
+}
+export interface ClickTableQualityLinkRequest {
+  type: ClickTableQualityLink.REQUEST;
+  meta: {
+    analytics: AnalyticsEvent;
+  };
+}

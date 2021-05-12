@@ -9,6 +9,8 @@ import {
 } from 'interfaces';
 
 import {
+  ClickTableQualityLink,
+  ClickTableQualityLinkRequest,
   GetColumnDescription,
   GetColumnDescriptionRequest,
   GetColumnDescriptionResponse,
@@ -303,6 +305,22 @@ export function getTableQualityChecksFailure(
     payload: {
       status,
       checks: emptyQualityChecks,
+    },
+  };
+}
+
+export function clickDataQualityLink(): ClickTableQualityLinkRequest {
+  return {
+    type: ClickTableQualityLink.REQUEST,
+    meta: {
+      analytics: {
+        name: 'table/clickTableQualityLink',
+        payload: {
+          action: 'click',
+          category: 'table',
+          label: 'see more',
+        },
+      },
     },
   };
 }
