@@ -10,7 +10,7 @@ from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
-from databuilder.rest_api.rest_api_query import RestApiQuery
+from databuilder.rest_api.query_merger import QueryMerger
 from databuilder.transformer.base_transformer import ChainedTransformer, Transformer
 from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
 from databuilder.transformer.template_variable_substitution_transformer import (
@@ -86,24 +86,29 @@ class ModeDashboardExtractor(Extractor):
     def get_scope(self) -> str:
         return 'extractor.mode_dashboard'
 
-    def _build_restapi_query(self) -> RestApiQuery:
+    def _build_restapi_query(self) -> ModePaginatedRestApiQuery:
         """
-        Build REST API Query. To get Mode Dashboard metadata, it needs to call two APIs (spaces API and reports
-        API) joining together.
+        Build REST API Query to get Mode Dashboard metadata
         :return: A RestApiQuery that provides Mode Dashboard metadata
         """
-
-        # https://mode.com/developer/api-reference/analytics/reports/#listReportsInSpace
-        reports_url_template = 'https://app.mode.com/api/{organization}/spaces/{dashboard_group_id}/reports'
-
-        spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
-        params = ModeDashboardUtils.get_auth_params(conf=self._conf)
+        seed_query = ModeDashboardUtils.get_seed_query(conf=self._conf)
+        params = ModeDashboardUtils.get_auth_params(conf=self._conf, discover_auth=True)
 
         # Reports
-        # JSONPATH expression. it goes into array which is located in _embedded.reports and then extracts token, name,
-        # and description
-        json_path = '_embedded.reports[*].[token,name,description,created_at]'
-        field_names = ['dashboard_id', 'dashboard_name', 'description', 'created_timestamp']
-        reports_query = ModePaginatedRestApiQuery(query_to_join=spaces_query, url=reports_url_template, params=params,
-                                                  json_path=json_path, field_names=field_names, skip_no_result=True)
+        # https://mode.com/developer/discovery-api/analytics/reports/
+        url = 'https://app.mode.com/batch/{organization}/reports'
+        json_path = 'reports[*].[token, name, description, created_at, space_token]'
+        field_names = ['dashboard_id', 'dashboard_name', 'description', 'created_timestamp', 'dashboard_group_id']
+        max_record_size = 1000
+        pagination_json_path = 'reports[*]'
+
+        spaces_query = ModeDashboardUtils.get_spaces_query_api(conf=self._conf)
+        query_merger = QueryMerger(query_to_merge=spaces_query, merge_key='dashboard_group_id')
+
+        reports_query = ModePaginatedRestApiQuery(query_to_join=seed_query, url=url, params=params,
+                                                  json_path=json_path, field_names=field_names,
+                                                  skip_no_result=True, max_record_size=max_record_size,
+                                                  pagination_json_path=pagination_json_path,
+                                                  query_merger=query_merger)
+
         return reports_query
