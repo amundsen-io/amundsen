@@ -9,13 +9,13 @@ from random import randint
 from typing import Any, Dict, Generator, List, Optional, Pattern, Tuple, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, Tag,
                                           User, Watermark)
-from amundsen_common.models.feature import Feature
 from amundsen_common.models.user import User as UserEntity
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,

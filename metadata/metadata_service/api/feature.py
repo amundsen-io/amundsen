@@ -5,9 +5,9 @@ from flask_restful import Resource, reqparse
 # TODO change all imports to use common dependecy instead
 from upstream.common.amundsen_common.models.feature import FeatureSchema
 
-from metadata_service.proxy import get_proxy_client
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
+from metadata_service.proxy import get_proxy_client
 
 
 class FeatureDetailAPI(Resource):

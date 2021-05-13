@@ -4,8 +4,9 @@
 from typing import List, Optional
 
 import attr
+from amundsen_common.models.badge import Badge
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import Badge, Tag
+from amundsen_common.models.tag import Tag
 from amundsen_common.models.user import User
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
