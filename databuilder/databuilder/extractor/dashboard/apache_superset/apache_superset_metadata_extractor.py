@@ -44,7 +44,6 @@ class ApacheSupersetMetadataExtractor(ApacheSupersetBaseExtractor):
             yield DashboardMetadata(**dashboard_metadata)
 
             dashboard_last_modified = self.map_fields(entry, self.last_modified_field_mappings())
-
             dashboard_last_modified.update(**self.common_params)
 
             yield DashboardLastModifiedTimestamp(**dashboard_last_modified)

@@ -1,6 +1,5 @@
 import abc
 from functools import reduce
-from json import dumps
 from typing import (
     Any, Dict, Generator, Iterator, List, Tuple,
 )
@@ -53,8 +52,8 @@ class ApacheSupersetBaseExtractor(Extractor):
         APACHE_SUPERSET_EXTRACT_PUBLISHED_ONLY: False,
         PRODUCT: 'apache_superset',
         DASHBOARD_GROUP_DESCRIPTION: '',
-        DRIVER_TO_DATABASE_MAPPING: dumps(DEFAULT_DRIVER_TO_DATABASE_MAPPING),
-        DATABASE_TO_CLUSTER_MAPPING: '{}'
+        DRIVER_TO_DATABASE_MAPPING: DEFAULT_DRIVER_TO_DATABASE_MAPPING,
+        DATABASE_TO_CLUSTER_MAPPING: {}
     })
 
     def init(self, conf: ConfigTree) -> None:

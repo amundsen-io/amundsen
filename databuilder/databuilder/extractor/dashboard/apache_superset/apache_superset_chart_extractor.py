@@ -2,12 +2,22 @@ from typing import (
     Any, Dict, Iterator, List, Tuple, Union,
 )
 
-from databuilder.extractor.dashboard.apache_superset import ApacheSupersetBaseExtractor
+from databuilder.extractor.dashboard.apache_superset import ApacheSupersetBaseExtractor, type_fields_mapping
 from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 
 
 class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
+    def chart_field_mappings(self) -> type_fields_mapping:
+        result = [
+            ('chart_id', 'id', None, ''),
+            ('chart_name', 'slice_name', None, ''),
+            ('chart_type', 'viz_type', None, ''),
+            ('chart_url', 'url', None, ''),
+        ]
+
+        return result
+
     def _get_extract_iter(self) -> Iterator[Union[DashboardQuery, DashboardChart, None]]:
         ids = self._get_dashboard_ids()
 
@@ -20,10 +30,9 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
             # query node so we can connect charts to a dashboard
             dashboard_query_data = dict(dashboard_id=dashboard_id,
                                         query_name='default',
-                                        query_id='-1',
+                                        query_id=self.dummy_query_id,
                                         url='',
                                         query_text='')
-
             dashboard_query_data.update(**self.common_params)
 
             yield DashboardQuery(**dashboard_query_data)
@@ -32,16 +41,9 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
 
             for chart in charts:
                 if chart:
-                    dashboard_chart_data = dict(
-                        dashboard_id=dashboard_id,
-                        query_id='-1',
-                        chart_id=chart.get('id'),
-                        chart_name=chart.get('slice_name'),
-                        chart_type=chart.get('viz_type', '').lower(),
-                        chart_url=''
-                    )
-
-                    dashboard_chart_data.update(self.common_params)
+                    dashboard_chart_data = self.map_fields(chart, self.chart_field_mappings())
+                    dashboard_chart_data.update(**{**dict(dashboard_id=dashboard_id, query_id=self.dummy_query_id),
+                                                   **self.common_params})
 
                     yield DashboardChart(**dashboard_chart_data)
 
@@ -61,3 +63,7 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
         data = dashboard_id, dashboard_data, datasources_data
 
         return data
+
+    @property
+    def dummy_query_id(self) -> str:
+        return '-1'

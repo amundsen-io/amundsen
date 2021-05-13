@@ -1,5 +1,4 @@
 from functools import lru_cache
-from json import loads
 from typing import (
     Any, Dict, Iterator, List, Union,
 )
@@ -27,9 +26,10 @@ class ApacheSupersetTableExtractor(ApacheSupersetBaseExtractor):
             if database_id:
                 database_details = self._get_database_details(database_id)
 
-                is_view = self.get_nested_field(database_details, 'result.is_sqlab_view')
+                sql = self.get_nested_field(dataset_details, 'result.sql') or ''
 
-                if not is_view:
+                # if sql exists then table_name cannot be associated with physical table in db
+                if not len(sql) > 0:
                     uri = self.get_nested_field(database_details, 'result.sqlalchemy_uri')
                     database_spec = make_url(uri)
 
@@ -96,8 +96,8 @@ class ApacheSupersetTableExtractor(ApacheSupersetBaseExtractor):
 
     @property
     def driver_mapping(self) -> Dict[str, str]:
-        return loads(self.conf.get(self.DRIVER_TO_DATABASE_MAPPING))
+        return dict(self.conf.get(self.DRIVER_TO_DATABASE_MAPPING))
 
     @property
     def cluster_mapping(self) -> Dict[str, str]:
-        return loads(self.conf.get(self.DATABASE_TO_CLUSTER_MAPPING))
+        return dict(self.conf.get(self.DATABASE_TO_CLUSTER_MAPPING))
