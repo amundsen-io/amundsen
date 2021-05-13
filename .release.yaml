@@ -2,3 +2,6 @@ charts:
 - name: amundsen
   directory: amundsen-kube-helm/templates/helm
   values: values.yaml
+builds:
+- name: nginx
+  dokcerfile: Dockerfile.release
