@@ -3,7 +3,7 @@
 
 from typing import Optional, List
 
-from amundsen_common.models.table import Badge
+from amundsen_common.models.badge import Badge
 
 import attr
 from marshmallow3_annotations.ext.attrs import AttrsSchema
