@@ -12,7 +12,7 @@ import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
 
 # TODO change all imports to use common dependecy instead
-from upstream.common.amundsen_common.models.feature import Feature
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
@@ -1623,10 +1623,8 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
-    def _exec_feature_query(self, feature_key: str) -> None:
-        """
+    def _exec_feature_query(self, *, feature_key: str) -> Dict:
 
-        """
         # TODO change return type
         # TODO Should we show availability as a link from feature node to db node?
         feature_query = textwrap.dedent("""\
@@ -1710,8 +1708,6 @@ class Neo4jProxy(BaseProxy):
             'status': feature_node['status']
         }
 
-
-
     def get_feature(self, *, feature_uri: str) -> Feature:
         """
         :param feature_uri: uniquely identifying key for a feature node
@@ -1734,10 +1730,8 @@ class Neo4jProxy(BaseProxy):
             partition_column=feature_metadata['partition_column'],
             owner_tags=feature_metadata['owner_tags'],
             tags=feature_metadata['tags'],
-            programatic_descriptions=feature_metadata['programatic_descriptions'],
+            programmatic_descriptions=feature_metadata['programatic_descriptions'],
             last_updated_timestamp=feature_metadata['last_updated_timestamp'],
-            created_timestamp=feature_metadata['created_timestamp']
-            watermarks=feature_metadata['watermarks']
-            
-        )
-        pass
+            created_timestamp=None,
+            watermarks=feature_metadata['watermarks'])
+        return feature
