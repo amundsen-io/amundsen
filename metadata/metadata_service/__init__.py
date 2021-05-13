@@ -25,10 +25,8 @@ from metadata_service.api.feature import (FeatureBadgeAPI,
                                           FeatureDescriptionAPI,
                                           FeatureDetailAPI,
                                           FeatureGenerationCodeAPI,
-                                          FeatureLineageAPI,
-                                          FeatureOwnerAPI,
-                                          FeatureSampleAPI,
-                                          FeatureStatsAPI,
+                                          FeatureLineageAPI, FeatureOwnerAPI,
+                                          FeatureSampleAPI, FeatureStatsAPI,
                                           FeatureTagAPI)
 from metadata_service.api.healthcheck import healthcheck
 from metadata_service.api.popular_tables import PopularTablesAPI

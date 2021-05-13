@@ -3,9 +3,9 @@ from typing import Any, Iterable, Mapping, Union
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
 
-from metadata_service.proxy import get_proxy_client
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
+from metadata_service.proxy import get_proxy_client
 
 
 class FeatureDetailAPI(Resource):
