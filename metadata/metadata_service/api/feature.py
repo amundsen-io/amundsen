@@ -2,6 +2,8 @@ from typing import Any, Iterable, Mapping, Union
 
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
+# TODO change all imports to use common dependecy instead
+from upstream.common.amundsen_common.models.feature import FeatureSchema
 
 from metadata_service.proxy import get_proxy_client
 from metadata_service.api.badge import BadgeCommon
@@ -18,6 +20,8 @@ class FeatureDetailAPI(Resource):
 
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            feature = self.client.get_feature(feature_uri=feature_uri)
         pass
 
 

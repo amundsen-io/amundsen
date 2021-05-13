@@ -10,7 +10,9 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
-from amundsen_common.models.feature import Feature
+
+# TODO change all imports to use common dependecy instead
+from upstream.common.amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
@@ -1622,5 +1624,121 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
+    def _exec_feature_query(self, feature_key: str) -> None:
+        """
+
+        """
+        # TODO change return type
+        # TODO Should we show availability as a link from feature node to db node?
+        feature_query = textwrap.dedent("""\
+        MATCH (feat:Feature {key: $feature_key})
+        OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat) 
+        OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
+        OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
+        OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
+        OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
+        OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
+        OPTIONAL MATCH (feat)-[:DESCRIPTION]->(desc:Description)
+        OPTIONAL MATCH (feat)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+        OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(feat)
+        RETURN feat, collect(distinct wmk) as wmk_records,
+        t.last_updated_timestamp as last_updated_timestamp,
+        col as partition_column, desc,
+        collect(distinct db) as availability_records,
+        collect(distinct owner) as owner_records,
+        collect(distinct tag) as tag_records,
+        collect(distinct badge) as badge_records,
+        collect(distinct prog_descriptions) as prog_descriptions
+        """)
+        
+        feature_records = self._execute_cypher_query(statement=feature_query,
+                                                     param_dict={
+                                                         'feature_key': feature_key
+                                                     })
+        feature_records = feature_records.single()
+        watermarks = []
+        for record in feature_records['wmk_records']:
+             if record['key'] is not None:
+                watermark_type = record['key'].split('/')[-2]
+                watermarks.append(Watermark(watermark_type=watermark_type,
+                                            partition_key=record['partition_key'],
+                                            partition_value=record['partition_value'],
+                                            create_time=record['create_time']))
+        tags = []
+        owner_tags = []
+        if feature_records.get('tag_records'):
+            tag_records = feature_records['tag_records']
+            for record in tag_records:
+                current_tag_type = record['tag_type']
+                tag_result = Tag(tag_name=record['key'],
+                                 tag_type=record['tag_type'])
+                if current_tag_type == 'owner':
+                    owner_tags.append(tag_result)
+                else:
+                    tags.append(tag_result)
+
+        feature_node = feature_records['feat']
+
+        partition_column = None
+        if feature_records.get('partition_column'):
+            column_record = feature_records['partition_column']
+            partition_column = Column(name=column_record['name'],
+                                    key=f"{feature_node['key']}/{column_record['name']}",
+                                    col_type=column_record['col_type'],
+                                    sort_order=0,
+                                    stats=[],
+                                    badges=[Badge(badge_name='partition_column',
+                                                    category='column')])
+        availability_records = [db['name'] for db in feature_records['availability_records']]
+        return {
+            # TODO should I be doing .get() instead? or safe get for optionals
+            'key': feature_node['key'],
+            'name': feature_node['name'],
+            'version': feature_node['version'],
+            'feature_group': feature_node['feature_group'],
+            'data_type': feature_node['data_type'],
+            'entity': feature_node['entity'],
+            'description': self._safe_get(feature_node, 'desc', 'description'),
+            'programatic_descriptions': [],  # TODO
+            'last_updated_timestamp': feature_node['last_updated_timestamp'],
+            'watermarks': watermarks,
+            'availability': availability_records,
+            'owner_tags': owner_tags,
+            'tags': tags,
+            'badges': self._make_badges(feature_records.get('badge_records')),
+            'partition_column': partition_column,
+            'owners': [],  # TODO
+            'status': feature_node['status']
+        }
+
+
+
     def get_feature(self, *, feature_uri: str) -> Feature:
+        """
+        :param feature_uri: uniquely identifying key for a feature node
+        :return: a Feature object
+        """
+        feature_metadata = self._exec_feature_query(feature_key=feature_uri)
+        feature = Feature(
+            # TODO should I be doing .get() instead?
+            key=feature_metadata['key'],
+            name=feature_metadata['name'],
+            version=feature_metadata['version'],
+            status=feature_metadata['status'],
+            feature_group=feature_metadata['feature_group'],
+            entity=feature_metadata['entity'],
+            data_type=feature_metadata['data_type'],
+            availability=feature_metadata['availability'],
+            description=feature_metadata['description'],
+            owners=feature_metadata['owners'],
+            badges=feature_metadata['badges'],
+            partition_column=feature_metadata['partition_column'],
+            owner_tags=feature_metadata['owner_tags'],
+            tags=feature_metadata['tags'],
+            programatic_descriptions=feature_metadata['programatic_descriptions'],
+            last_updated_timestamp=feature_metadata['last_updated_timestamp'],
+            created_timestamp=feature_metadata['created_timestamp']
+            watermarks=feature_metadata['watermarks']
+            
+        )
         pass

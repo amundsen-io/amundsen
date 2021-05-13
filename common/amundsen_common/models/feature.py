@@ -56,9 +56,9 @@ class Feature:
     key: Optional[str] = attr.ib(default=None)
     name: str
     version: str  # ex: "1.2.0"
-    status: str
+    status: Optional[str]
     feature_group: str
-    entity: List[str]
+    entity: str
     data_type: Optional[str]
     availability: List[str]
     description: Optional[str] = attr.ib(default=None)
