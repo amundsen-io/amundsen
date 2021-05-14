@@ -1,5 +1,5 @@
 service:
-  name: frontend
+  name: amundsen-frontend
   externalPort: 5000
 ingress:
   hosts:
