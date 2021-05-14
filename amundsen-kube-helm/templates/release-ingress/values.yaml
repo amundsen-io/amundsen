@@ -1,0 +1,14 @@
+service:
+  name: frontend-service
+  externalPort: 5000
+ingress:
+  hosts:
+    - ${FRONTEND_INGRESS_HOST}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local

@@ -1,0 +1,14 @@
+apiVersion: v1
+description: Nginx Ingress
+name: release-ingress
+version: 2.1.0
+icon: https://avatars.githubusercontent.com/u/71455204?s=200&v=4
+home: https://releasehub.com
+maintainers:
+  - name: ReleaseHub
+    email: hello@releasehub.com
+sources:
+  - https://github.com/releasehub-com/helm-ingress
+keywords:
+  - helm
+  - ingress
