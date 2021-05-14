@@ -60,6 +60,7 @@ const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   tableKey,
   isLoading,
   checks,
+  status,
 }) => {
   React.useEffect(() => {
     getTableQualityChecksDispatch(tableKey);
@@ -67,6 +68,9 @@ const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
 
   if (isLoading) {
     return <ShimmeringIssuesLoader />;
+  }
+  if (status !== 200) {
+    return null;
   }
   const checkText = generateChecksText(
     checks.num_checks_failed,
