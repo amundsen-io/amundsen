@@ -1625,9 +1625,10 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:
+        """
+        Executes cypher query to get feature and related nodes
+        """
 
-        # TODO change return type
-        # TODO Should we show availability as a link from feature node to db node?
         feature_query = textwrap.dedent("""\
         MATCH (feat:Feature {key: $feature_key})
         OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat) 
@@ -1691,7 +1692,11 @@ class Neo4jProxy(BaseProxy):
                                     badges=[Badge(badge_name='partition_column',
                                                     category='column')])
         
-        availability_records = [db['name'] for db in feature_records['availability_records']]
+        availability_records = [db['name'] for db in feature_records.get('availability_records')]
+
+        description = None
+        if feature_records.get('desc'):
+            description = feature_records.get('desc')['description']
 
         programmatic_descriptions = []
         for pg in feature_records['prog_descriptions']:
@@ -1709,16 +1714,15 @@ class Neo4jProxy(BaseProxy):
         feature_node = feature_records['feat']
 
         return {
-            # TODO should I be doing .get() instead? or safe get for optionals
-            'key': feature_node['key'],
-            'name': feature_node['name'],
-            'version': feature_node['version'],
-            'feature_group': feature_node['feature_group'],
-            'data_type': feature_node['data_type'],
-            'entity': feature_node['entity'],
-            'description': self._safe_get(feature_node, 'desc', 'description'),
+            'key': feature_node.get('key'),
+            'name': feature_node.get('name'),
+            'version': feature_node.get('version'),
+            'feature_group': feature_node.get('feature_group'),
+            'data_type': feature_node.get('data_type'),
+            'entity': feature_node.get('entity'),
+            'description': description,
             'programmatic_descriptions': programmatic_descriptions,
-            'last_updated_timestamp': feature_node['last_updated_timestamp'],
+            'last_updated_timestamp': feature_node.get('last_updated_timestamp'),
             'watermarks': watermarks,
             'availability': availability_records,
             'owner_tags': owner_tags,
@@ -1726,7 +1730,7 @@ class Neo4jProxy(BaseProxy):
             'badges': self._make_badges(feature_records.get('badge_records')),
             'partition_column': partition_column,
             'owners': owners,
-            'status': feature_node['status']
+            'status': feature_node.get('status')
         }
 
     def get_feature(self, *, feature_uri: str) -> Feature:
@@ -1736,7 +1740,6 @@ class Neo4jProxy(BaseProxy):
         """
         feature_metadata = self._exec_feature_query(feature_key=feature_uri)
         feature = Feature(
-            # TODO should I be doing .get() instead?
             key=feature_metadata['key'],
             name=feature_metadata['name'],
             version=feature_metadata['version'],
