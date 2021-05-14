@@ -19,7 +19,7 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
             ('chart_id', 'id', lambda x: str(x), ''),
             ('chart_name', 'slice_name', None, ''),
             ('chart_type', 'viz_type', None, ''),
-            ('chart_url', 'url', None, ''),
+            ('chart_url', 'url', None, ''),  # currently not available in superset chart api
         ]
 
         return result
