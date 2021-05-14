@@ -6,7 +6,9 @@ from typing import (
     Any, Dict, Iterator, List, Tuple, Union,
 )
 
-from databuilder.extractor.dashboard.apache_superset import ApacheSupersetBaseExtractor, type_fields_mapping
+from databuilder.extractor.dashboard.apache_superset.apache_superset_extractor import (
+    ApacheSupersetBaseExtractor, type_fields_mapping,
+)
 from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 

@@ -9,7 +9,7 @@ from typing import (
 
 from sqlalchemy.engine.url import make_url
 
-from databuilder.extractor.dashboard.apache_superset import ApacheSupersetBaseExtractor
+from databuilder.extractor.dashboard.apache_superset.apache_superset_extractor import ApacheSupersetBaseExtractor
 from databuilder.models.dashboard.dashboard_table import DashboardTable
 from databuilder.models.table_metadata import TableMetadata
 

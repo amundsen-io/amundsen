@@ -6,7 +6,9 @@ from typing import (
     Any, Dict, Iterator, List, Union,
 )
 
-from databuilder.extractor.dashboard.apache_superset import ApacheSupersetBaseExtractor, type_fields_mapping
+from databuilder.extractor.dashboard.apache_superset.apache_superset_extractor import (
+    ApacheSupersetBaseExtractor, type_fields_mapping,
+)
 from databuilder.models.dashboard.dashboard_last_modified import DashboardLastModifiedTimestamp
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 
