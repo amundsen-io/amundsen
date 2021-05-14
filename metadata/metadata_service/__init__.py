@@ -151,7 +151,6 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/dashboard/<path:id>/tag/<tag>')
     api.add_resource(DashboardBadgeAPI,
                      '/dashboard/<path:id>/badge/<badge>')
-    logging.info("adding det api")
     api.add_resource(FeatureDetailAPI, '/feature/<path:feature_uri>')
     api.add_resource(FeatureDescriptionAPI,
                      '/feature/<path:id>/description')

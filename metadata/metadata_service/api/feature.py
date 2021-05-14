@@ -26,15 +26,12 @@ class FeatureDetailAPI(Resource):
 
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        LOGGER.info("HERE")
         try:
-            LOGGER.info(feature_uri)
-
             feature = self.client.get_feature(feature_uri=feature_uri)
             schema = FeatureSchema()
             return schema.dump(feature), HTTPStatus.OK
         except NotFoundException:
-            return {'message': f'table_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
+            return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
 
 
 class FeatureLineageAPI(Resource):

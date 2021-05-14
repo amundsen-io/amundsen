@@ -1623,6 +1623,7 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
+    @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:
 
         # TODO change return type
@@ -1631,7 +1632,7 @@ class Neo4jProxy(BaseProxy):
         MATCH (feat:Feature {key: $feature_key})
         OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat) 
         OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
-        OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
+        OPTIONAL MATCH (owner:User)<-[:OWNER]-(feat)
         OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
@@ -1647,12 +1648,17 @@ class Neo4jProxy(BaseProxy):
         collect(distinct badge) as badge_records,
         collect(distinct prog_descriptions) as prog_descriptions
         """)
-        
+
         feature_records = self._execute_cypher_query(statement=feature_query,
                                                      param_dict={
                                                          'feature_key': feature_key
                                                      })
+
         feature_records = feature_records.single()
+
+        if not feature_records:
+            raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
+
         watermarks = []
         for record in feature_records['wmk_records']:
              if record['key'] is not None:
@@ -1674,8 +1680,6 @@ class Neo4jProxy(BaseProxy):
                 else:
                     tags.append(tag_result)
 
-        feature_node = feature_records['feat']
-
         partition_column = None
         if feature_records.get('partition_column'):
             column_record = feature_records['partition_column']
@@ -1686,7 +1690,24 @@ class Neo4jProxy(BaseProxy):
                                     stats=[],
                                     badges=[Badge(badge_name='partition_column',
                                                     category='column')])
+        
         availability_records = [db['name'] for db in feature_records['availability_records']]
+
+        programmatic_descriptions = []
+        for pg in feature_records['prog_descriptions']:
+            source = pg['description_source']
+            if source is None:
+                LOGGER.error("A programmatic description with no source was found... skipping.")
+            else:
+                programmatic_descriptions.append(ProgrammaticDescription(source=source,
+                                                                         text=pg['description']))
+
+        owners = []
+        for owner in feature_records['owner_records']:
+            owners.append(User(email=owner['email']))
+
+        feature_node = feature_records['feat']
+
         return {
             # TODO should I be doing .get() instead? or safe get for optionals
             'key': feature_node['key'],
@@ -1696,7 +1717,7 @@ class Neo4jProxy(BaseProxy):
             'data_type': feature_node['data_type'],
             'entity': feature_node['entity'],
             'description': self._safe_get(feature_node, 'desc', 'description'),
-            'programatic_descriptions': [],  # TODO
+            'programmatic_descriptions': programmatic_descriptions,
             'last_updated_timestamp': feature_node['last_updated_timestamp'],
             'watermarks': watermarks,
             'availability': availability_records,
@@ -1704,7 +1725,7 @@ class Neo4jProxy(BaseProxy):
             'tags': tags,
             'badges': self._make_badges(feature_records.get('badge_records')),
             'partition_column': partition_column,
-            'owners': [],  # TODO
+            'owners': owners,
             'status': feature_node['status']
         }
 
@@ -1730,7 +1751,7 @@ class Neo4jProxy(BaseProxy):
             partition_column=feature_metadata['partition_column'],
             owner_tags=feature_metadata['owner_tags'],
             tags=feature_metadata['tags'],
-            programmatic_descriptions=feature_metadata['programatic_descriptions'],
+            programmatic_descriptions=feature_metadata['programmatic_descriptions'],
             last_updated_timestamp=feature_metadata['last_updated_timestamp'],
             created_timestamp=None,
             watermarks=feature_metadata['watermarks'])
