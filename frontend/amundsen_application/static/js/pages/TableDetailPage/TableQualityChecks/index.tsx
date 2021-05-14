@@ -39,7 +39,7 @@ export type TableQualityChecksProps = StateFromProps &
   DispatchFromProps &
   ComponentProps;
 
-const ShimmeringIssuesLoader: React.FC = () => (
+export const ShimmeringTableQualityChecks: React.FC = () => (
   <div className="shimmer-table-quality-checks">
     <div className="shimmer-title-row is-shimmer-animated" />
     <div className="shimmer-content-row is-shimmer-animated" />
@@ -54,7 +54,7 @@ export function generateChecksText(numFailed, numTotal) {
   return `All ${numTotal} checks passed`;
 }
 
-const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
+export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   getTableQualityChecksDispatch,
   clickDataQualityLinkDispatch,
   tableKey,
@@ -67,7 +67,7 @@ const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   }, []);
 
   if (isLoading) {
-    return <ShimmeringIssuesLoader />;
+    return <ShimmeringTableQualityChecks />;
   }
   if (status !== 200) {
     return null;
