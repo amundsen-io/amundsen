@@ -2,13 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { mount, shallow } from 'enzyme';
 
 import { GlobalState } from 'ducks/rootReducer';
-
 import globalState from 'fixtures/globalState';
 
-import { mount, shallow } from 'enzyme';
-import { ShimmeringTagItem } from 'components/ShimmeringTagListLoader';
 import {
   mapDispatchToProps,
   mapStateToProps,
@@ -16,7 +14,6 @@ import {
   TableQualityChecksProps,
   TableQualityChecksLabel,
 } from '.';
-import { TableIssueProps, TableIssues } from '../TableIssues';
 
 const setupShimmerTest = () => {
   const wrapper = mount<{}>(<ShimmeringTableQualityChecks />);
@@ -63,7 +60,6 @@ describe('TableQualityChecks', () => {
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
-    // @ts-ignore
     const wrapper = shallow<TableQualityChecksProps>(
       <TableQualityChecksLabel {...props} />
     );
@@ -85,7 +81,6 @@ describe('TableQualityChecks', () => {
     const { wrapper } = setup({ status: 404 });
     const expected = 0;
     const actual = wrapper.find('*').length;
-
     expect(actual).toEqual(expected);
   });
 

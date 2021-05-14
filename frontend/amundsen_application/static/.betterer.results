@@ -212,7 +212,7 @@ exports[`eslint`] = {
     "js/components/ResourceListItem/DashboardListItem/index.tsx:2194588229": [
       [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:1582455272": [
+    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:3348265572": [
       [45, 6, 25, "Use object destructuring.", "354229464"],
       [46, 6, 29, "Use object destructuring.", "2645724888"]
     ],
@@ -487,12 +487,12 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:1117631301": [
+    "js/config/config-default.ts:3310033717": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
-      [328, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [329, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [332, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [333, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
-    "js/config/config-utils.ts:3027580160": [
+    "js/config/config-utils.ts:1551051440": [
       [11, 0, 45, "\`../interfaces\` import should occur before import of \`./config-types\`", "3885176344"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
@@ -563,15 +563,15 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:488078374": [
-      [78, 8, 23, "Use object destructuring.", "1142306891"],
-      [137, 23, -4208, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:3967879790": [
+      [80, 8, 23, "Use object destructuring.", "1142306891"],
+      [139, 23, -4311, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/ducks/tableMetadata/index.spec.ts:2846530620": [
-      [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [506, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
-      [612, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [644, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
+    "js/ducks/tableMetadata/index.spec.ts:2905420907": [
+      [518, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [544, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
+      [650, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [682, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -579,6 +579,9 @@ exports[`eslint`] = {
     ],
     "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
+    ],
+    "js/ducks/tableMetadata/reducer.ts:1997714793": [
+      [415, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
     ],
     "js/ducks/tags/api/v0.ts:2781466514": [
       [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
@@ -976,11 +979,11 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:1985077033": [
-      [144, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [154, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [171, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [242, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+    "js/pages/TableDetailPage/index.tsx:1218341295": [
+      [145, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [155, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [172, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [243, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]
