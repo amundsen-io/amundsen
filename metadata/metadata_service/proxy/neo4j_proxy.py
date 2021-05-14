@@ -1684,7 +1684,7 @@ class Neo4jProxy(BaseProxy):
         if feature_records.get('partition_column'):
             column_record = feature_records['partition_column']
             partition_column = Column(name=column_record['name'],
-                                    key=f"{feature_node['key']}/{column_record['name']}",
+                                    key=f"{feature_key}/{column_record['name']}",
                                     col_type=column_record['col_type'],
                                     sort_order=0,
                                     stats=[],
