@@ -1,11 +1,10 @@
 import abc
 from functools import reduce
 from typing import (
-    Any, Dict, Generator, Iterator, List, Tuple,
+    Any, Dict, Iterator, List, Tuple,
 )
 
 import requests
-from bs4 import BeautifulSoup
 from dateutil import parser
 from pyhocon import ConfigFactory, ConfigTree
 
@@ -21,10 +20,10 @@ class ApacheSupersetBaseExtractor(Extractor):
     APACHE_SUPERSET_PROTOCOL = 'apache_superset_protocol'
     APACHE_SUPERSET_HOST = 'apache_superset_host'
     APACHE_SUPERSET_PORT = 'apache_superset_port'
-    APACHE_SUPERSET_USER = 'apache_superset_user'
-    APACHE_SUPERSET_PASSWORD = 'apache_superset_password'
+    APACHE_SUPERSET_SECURITY_SETTINGS_DICT = 'apache_superset_security_settings_dict'
     APACHE_SUPERSET_PAGE_SIZE = 'apache_superset_page_size'
     APACHE_SUPERSET_EXTRACT_PUBLISHED_ONLY = 'apache_superset_extract_published_only'
+    APACHE_SUPERSET_SECURITY_PROVIDER = 'apache_superset_security_provider'
 
     DASHBOARD_GROUP_NAME = 'dashboard_group_name'
     DASHBOARD_GROUP_ID = 'dashboard_group_id'
@@ -46,8 +45,6 @@ class ApacheSupersetBaseExtractor(Extractor):
         APACHE_SUPERSET_PROTOCOL: 'http',
         APACHE_SUPERSET_HOST: 'localhost',
         APACHE_SUPERSET_PORT: '8088',
-        APACHE_SUPERSET_USER: 'admin',
-        APACHE_SUPERSET_PASSWORD: 'admin',
         APACHE_SUPERSET_PAGE_SIZE: 20,
         APACHE_SUPERSET_EXTRACT_PUBLISHED_ONLY: False,
         PRODUCT: 'apache_superset',
@@ -57,7 +54,6 @@ class ApacheSupersetBaseExtractor(Extractor):
     })
 
     def init(self, conf: ConfigTree) -> None:
-        self.session = requests.Session()
         self.conf = conf.with_fallback(ApacheSupersetBaseExtractor.DEFAULT_CONFIG)
         self._extract_iter = self._get_extract_iter()
 
@@ -75,40 +71,28 @@ class ApacheSupersetBaseExtractor(Extractor):
             return None
 
     def authenticate(self) -> None:
-        # first request is to get csrf_token
-        login_form = self.session.get(self.build_full_url('login'))
+        security_settings = dict(self.conf.get(ApacheSupersetBaseExtractor.APACHE_SUPERSET_SECURITY_SETTINGS_DICT))
 
-        # get Cross-Site Request Forgery protection token
-        soup = BeautifulSoup(login_form.text, 'html.parser')
-        csrf_token = soup.find('input', {'id': 'csrf_token'})['value']
+        token = requests.post(self.build_full_url('api/v1/security/login'),
+                              json=security_settings)
 
-        # second request is to set session cookies with csrf token and user credentials
-        self.session.post(self.build_full_url('login'),
-                          data=dict(username=self.conf.get(ApacheSupersetBaseExtractor.APACHE_SUPERSET_USER),
-                                    password=self.conf.get(ApacheSupersetBaseExtractor.APACHE_SUPERSET_PASSWORD),
-                                    csrf_token=csrf_token))
+        self.token = token.json()['access_token']
 
     def build_full_url(self, endpoint: str) -> str:
         return f'{self.base_url}/{endpoint}'
 
     def execute_query(self, url: str, params: dict = {}) -> Dict:
         try:
-            return self.session.get(url, params=params).json()
+            data = requests.get(url, params=params, headers={'Authorization': f'Bearer {self.token}'})
+
+            if data.status_code == 401:
+                self.authenticate()
+
+                return self.execute_query(url, params)
+            else:
+                return data.json()
         except Exception:
             return {}
-
-    def execute_paginated_query(self, url: str) -> Generator:
-        page = 0
-
-        while True:
-            data = self.execute_query(url, params=dict(page=page, page_size=self.page_size))
-
-            if data:
-                page += 1
-
-                yield data
-            else:
-                break
 
     @property
     def base_url(self) -> str:
@@ -146,7 +130,13 @@ class ApacheSupersetBaseExtractor(Extractor):
     @staticmethod
     def parse_date(string_date: str) -> int:
         try:
-            return int(parser.parse(string_date).timestamp())
+            date_parsed = parser.parse(string_date)
+
+            # date returned by superset api does not contain timezone so to be timezone safe we need to assume it's utc
+            if not date_parsed.tzname():
+                return ApacheSupersetBaseExtractor.parse_date(f'{string_date}+0000')
+
+            return int(date_parsed.timestamp())
         except Exception:
             return 0
 

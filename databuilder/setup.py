@@ -85,10 +85,6 @@ rds = [
     'mysqlclient>=1.3.6,<3'
 ]
 
-superset = [
-    'beautifulsoup4'
-]
-
 all_deps = requirements + kafka + cassandra + glue + snowflake + athena + \
     bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds
 
@@ -119,8 +115,7 @@ setup(
         'delta': spark,
         'feast': feast,
         'atlas': atlas,
-        'rds': rds,
-        'superset': superset
+        'rds': rds
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
