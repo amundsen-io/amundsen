@@ -75,7 +75,7 @@ export function getColumnLineage(
     payload: { key, depth, direction, columnName },
     meta: {
       analytics: {
-        name: `getColumnLineage`,
+        name: `lineage/getColumnLineage`,
         payload: {
           category: 'lineage',
           label: `${key}/${columnName}`,
@@ -120,7 +120,7 @@ export function getTableColumnLineage(
     payload: { key, columnName },
     meta: {
       analytics: {
-        name: `getTableColumnLineage`,
+        name: `lineage/getTableColumnLineage`,
         payload: {
           category: 'lineage',
           label: `${key}/${columnName}`,
