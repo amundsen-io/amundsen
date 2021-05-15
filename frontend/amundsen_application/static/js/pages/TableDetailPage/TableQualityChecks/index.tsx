@@ -69,7 +69,7 @@ export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   if (isLoading) {
     return <ShimmeringTableQualityChecks />;
   }
-  if (status !== 200) {
+  if (status !== 200 || checks.num_checks_total === 0) {
     return null;
   }
   const checkText = generateChecksText(
