@@ -410,7 +410,8 @@ class Neo4jProxy(BaseProxy):
                                                              'key': uri})
 
             if not result.single():
-                raise NotFoundException('Failed to update the description as resource {uri} does not exist'.format(uri=uri))
+                raise NotFoundException('Failed to update the description as '
+                                        'resource {uri} does not exist'.format(uri=uri))
 
             # end neo4j transaction
             tx.commit()
@@ -507,8 +508,9 @@ class Neo4jProxy(BaseProxy):
 
             if not result.single():
                 raise NotFoundException('Failed to update the table {tbl} '
-                                   'column {col} description as either table or column does not exist'.format(tbl=table_uri,
-                                                                     col=column_uri))
+                                        'column {col} description as either '
+                                        'table or column does not exist'.format(tbl=table_uri,
+                                                                                col=column_uri))
 
             # end neo4j transaction
             tx.commit()
