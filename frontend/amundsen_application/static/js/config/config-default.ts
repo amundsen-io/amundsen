@@ -71,6 +71,10 @@ const configDefault: AppConfig = {
           displayName: 'Tableau',
           iconClass: 'icon-tableau',
         },
+        superset: {
+          displayName: 'Superset',
+          iconClass: 'icon-superset',
+        },
       },
       filterCategories: [
         {
