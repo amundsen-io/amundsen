@@ -74,7 +74,7 @@ class TestApacheSupersetChartExtractor(unittest.TestCase):
         self.assertIsInstance(record, DashboardQuery)
         self.assertEqual(record._query_name, 'default')
         self.assertEqual(record._query_id, '-1')
-        self.assertEqual(record._product, 'apache_superset')
+        self.assertEqual(record._product, 'superset')
         self.assertEqual(record._cluster, 'gold')
 
         record = extractor.extract()
