@@ -16,6 +16,8 @@ from apache_atlas.utils import type_coerce
 from werkzeug.exceptions import BadRequest
 
 from metadata_service import create_app
+from metadata_service.entity.dashboard_detail import DashboardDetail
+from metadata_service.entity.dashboard_query import DashboardQuery
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
@@ -254,7 +256,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
             self.proxy.add_tag(id=self.table_uri, tag=tag, tag_type='default')
             mock_execute.assert_called_with(
                 term.guid,
-                [AtlasRelatedObjectId({self.proxy.GUID_KEY: self.entity1['guid'],
+                [AtlasRelatedObjectId({'guid': self.entity1['guid'],
                                        "typeName": "Table"})]
             )
 
@@ -434,7 +436,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=entity_bulk_result)
 
         res = self.proxy._get_readers(dict(relationshipAttributes=dict(readers=[dict(guid=1, entityStatus='ACTIVE',
-                                                                                     relationshipStatus='ACTIVE')])), 1)
+                                                                                     relationshipStatus='ACTIVE')])),
+                                      Reader, 1)
 
         expected = [Reader(user=User(email='test_user_2', user_id='test_user_2'), read_count=150)]
 
@@ -550,6 +553,49 @@ class TestAtlasProxy(unittest.TestCase, Data):
                     low, _ = result
 
                     assert low.partition_value.startswith(low_date_prefix)
+
+    def test_get_dashboard(self) -> None:
+        self.proxy._get_dashboard = MagicMock(return_value=self.dashboard_data)  # type: ignore
+        self.proxy._get_dashboard_group = MagicMock(return_value=self.dashboard_group_data)  # type: ignore
+        self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=DottedDict({
+            'entities': [DottedDict(self.entity1)]}))
+
+        expected = DashboardDetail(uri='superset_dashboard://datalab.prod/1',
+                                   cluster='datalab',
+                                   group_name='prod superset',
+                                   group_url='https://superset.prod',
+                                   product='superset',
+                                   name='Prod Usage',
+                                   url='https://prod.superset/dashboards/1',
+                                   description='Robs famous dashboard',
+                                   created_timestamp=1619517099,
+                                   updated_timestamp=1619626531,
+                                   last_successful_run_timestamp=1619517099,
+                                   last_run_timestamp=1619517150,
+                                   last_run_state='failed',
+                                   owners=[User(user_id='lisa_salinas', email='lisa_salinas', first_name=None,
+                                                last_name=None, full_name=None, display_name=None, is_active=True,
+                                                github_username=None, team_name=None, slack_id=None, employee_type=None,
+                                                manager_fullname=None, manager_email=None, manager_id=None,
+                                                role_name=None, profile_url=None, other_key_values={})],
+                                   frequent_users=[],
+                                   chart_names=['Count Users by Time', 'Total Count'],
+                                   query_names=['User Count By Time', 'Total Count'],
+                                   queries=[DashboardQuery(name='User Count By Time',
+                                                           url='https://prod.superset/dashboards/1/query/1',
+                                                           query_text='SELECT date, COUNT(1) FROM db.table GROUP BY 1'),
+                                            DashboardQuery(name='Total Count',
+                                                           url='https://prod.superset/dashboards/1/query/2',
+                                                           query_text='SELECT COUNT(1) FROM db.table')],
+                                   tables=[PopularTable(database='hive_table', cluster='TEST_CLUSTER', schema='TEST_DB',
+                                                        name='Table1', description='Dummy Description')],
+                                   tags=[],
+                                   badges=[],
+                                   recent_view_count=0)
+
+        result = self.proxy.get_dashboard(id='superset_dashboard://datalab.prod/1')
+
+        self.assertEqual(expected, result)
 
 
 if __name__ == '__main__':
