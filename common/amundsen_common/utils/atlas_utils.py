@@ -10,6 +10,10 @@ class AtlasStatus:
     DELETED = "DELETED"
 
 
+class AtlasEntityOperation:
+    CREATE = 'CREATE'
+    UPDATE = 'UPDATE'
+
 
 class AtlasCommonParams:
     qualified_name = 'qualifiedName'
