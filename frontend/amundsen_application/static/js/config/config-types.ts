@@ -281,14 +281,15 @@ interface TableProfileConfig {
 interface TableLineageConfig {
   iconPath: string;
   isBeta: boolean;
-  isEnabled: boolean;
   urlGenerator: (
     database: string,
     cluster: string,
     schema: string,
     table: string
   ) => string;
+  externalEnabled: boolean;
   inAppListEnabled: boolean;
+  inAppPageEnabled: boolean;
 }
 
 /**
@@ -298,6 +299,7 @@ interface TableLineageConfig {
  */
 interface ColumnLineageConfig {
   inAppListEnabled: boolean;
+  inAppPageEnabled: boolean;
   urlGenerator: (
     database: string,
     cluster: string,

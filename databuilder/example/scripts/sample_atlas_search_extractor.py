@@ -14,7 +14,7 @@ from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
 
 entity_type = 'Table'
-extracted_search_data_path = '/tmp/search_data.json'
+extracted_search_data_path = f'/tmp/{entity_type.lower()}_search_data.json'
 process_pool_size = 5
 
 # atlas config
@@ -33,9 +33,9 @@ es = Elasticsearch([
 ])
 
 elasticsearch_client = es
-elasticsearch_new_index_key = 'tables-' + str(uuid.uuid4())
-elasticsearch_new_index_key_type = 'table'
-elasticsearch_index_alias = 'table_search_index'
+elasticsearch_new_index_key = f'{entity_type.lower()}-' + str(uuid.uuid4())
+elasticsearch_new_index_key_type = '_doc'
+elasticsearch_index_alias = f'{entity_type.lower()}_search_index'
 
 job_config = ConfigFactory.from_dict({
     'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_URL_CONFIG_KEY):

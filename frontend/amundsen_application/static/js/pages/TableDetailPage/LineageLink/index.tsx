@@ -16,11 +16,15 @@ const LineageLink: React.FC<LineageLinkProps> = ({
   tableData,
 }: LineageLinkProps) => {
   const config = AppConfig.tableLineage;
-  if (!config.isEnabled) return null;
+  if (!config.externalEnabled) {
+    return null;
+  }
 
   const { database, cluster, schema, name } = tableData;
   const href = config.urlGenerator(database, cluster, schema, name);
-  if (!href) return null;
+  if (!href) {
+    return null;
+  }
 
   const label = 'Lineage';
 

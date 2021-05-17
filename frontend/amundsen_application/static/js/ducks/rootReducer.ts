@@ -20,6 +20,7 @@ import ui, { UIReducerState } from './ui';
 import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
 import notification, { NotificationReducerState } from './notification/reducer';
 import issue, { IssueReducerState } from './issue/reducer';
+import lineage, { LineageReducerState } from './lineage/reducer';
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;
@@ -35,6 +36,7 @@ export interface GlobalState {
   tags: TagsReducerState;
   user: UserReducerState;
   ui: UIReducerState;
+  lineage: LineageReducerState;
 }
 
 const rootReducer = combineReducers<GlobalState>({
@@ -51,6 +53,7 @@ const rootReducer = combineReducers<GlobalState>({
   tags,
   user,
   ui,
+  lineage,
 });
 
 export default rootReducer;

@@ -71,6 +71,10 @@ const configDefault: AppConfig = {
           displayName: 'Tableau',
           iconClass: 'icon-tableau',
         },
+        superset: {
+          displayName: 'Superset',
+          iconClass: 'icon-superset',
+        },
       },
       filterCategories: [
         {
@@ -201,9 +205,11 @@ const configDefault: AppConfig = {
     },
   },
   tableLineage: {
+    inAppListEnabled: false,
+    inAppPageEnabled: false,
+    externalEnabled: false,
     iconPath: 'PATH_TO_ICON',
     isBeta: false,
-    isEnabled: false,
     urlGenerator: (
       database: string,
       cluster: string,
@@ -211,10 +217,10 @@ const configDefault: AppConfig = {
       table: string
     ) =>
       `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`,
-    inAppListEnabled: false,
   },
   columnLineage: {
     inAppListEnabled: false,
+    inAppPageEnabled: false,
     urlGenerator: (
       database: string,
       cluster: string,
