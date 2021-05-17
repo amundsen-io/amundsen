@@ -1642,12 +1642,13 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
+        OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_desc:Description)
         OPTIONAL MATCH (feat)-[:DESCRIPTION]->(desc:Description)
         OPTIONAL MATCH (feat)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
         OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(feat)
         RETURN feat, collect(distinct wmk) as wmk_records,
         t.last_updated_timestamp as last_updated_timestamp,
-        col as partition_column, desc,
+        col as partition_column, desc, col_desc,
         collect(distinct db) as availability_records,
         collect(distinct owner) as owner_records,
         collect(distinct tag) as tag_records,
@@ -1660,11 +1661,11 @@ class Neo4jProxy(BaseProxy):
                                                          'feature_key': feature_key
                                                      })
 
-        feature_records = feature_records.single()
-
         if not feature_records:
             raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
-
+        LOGGER.info(feature_records)
+        feature_records = feature_records.single()
+        LOGGER.info(feature_records)
         watermarks = []
         for record in feature_records['wmk_records']:
             if record['key'] is not None:
@@ -1689,14 +1690,17 @@ class Neo4jProxy(BaseProxy):
         partition_column = None
         if feature_records.get('partition_column'):
             column_record = feature_records['partition_column']
+            desc_node = feature_records.get('col_desc')
+            col_description = desc_node.get('description') if desc_node else None
             partition_column = Column(name=column_record['name'],
-                                    key=f"{feature_key}/{column_record['name']}",
-                                    col_type=column_record['col_type'],
-                                    sort_order=0,
-                                    stats=[],
-                                    badges=[Badge(badge_name='partition_column',
+                                      key=f"{feature_key}/{column_record['name']}",
+                                      col_type=column_record['col_type'],
+                                      sort_order=0,
+                                      stats=[],
+                                      description=col_description,
+                                      badges=[Badge(badge_name='partition_column',
                                                     category='column')])
-        
+
         availability_records = [db['name'] for db in feature_records.get('availability_records')]
 
         description = None
@@ -1728,6 +1732,7 @@ class Neo4jProxy(BaseProxy):
             'description': description,
             'programmatic_descriptions': programmatic_descriptions,
             'last_updated_timestamp': feature_node.get('last_updated_timestamp'),
+            'created_timestamp': feature_node.get('created_timestamp'),
             'watermarks': watermarks,
             'availability': availability_records,
             'owner_tags': owner_tags,
@@ -1761,6 +1766,6 @@ class Neo4jProxy(BaseProxy):
             tags=feature_metadata['tags'],
             programmatic_descriptions=feature_metadata['programmatic_descriptions'],
             last_updated_timestamp=feature_metadata['last_updated_timestamp'],
-            created_timestamp=None,
+            created_timestamp=feature_metadata['created_timestamp'],
             watermarks=feature_metadata['watermarks'])
         return feature
