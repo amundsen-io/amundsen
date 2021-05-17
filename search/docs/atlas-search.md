@@ -1,35 +1,58 @@
 # Atlas search investigation
+
 There are several approaches to integrate searching within [Apache Atlas](https://atlas.apache.org/ "Apache Atlas"), we describe multiple options below:
 
-- Use REST API's
+## Use Data Builder to fill Elasticsearch from Atlas
+
+Atlas search data extractor can be used to synchronize Atlas with Elasticsearch. This method requires you to:
+
+- deploy Elasticsearch
+- register a process that synchronizes the data between Atlas and Elasticsearch
+
+We suggest using Elasticsearch as backend for Atlas janusgraph (it's possible with latest Atlas version) and additionally sync data with databuilder
+to have indices compatible with Amundsen Elasticsearch Search Proxy. 
+
+Mixing Atlas Metadata Proxy with Elasticsearch Search Proxy is 100% safe and fully compatible.
+
+Raw janusgraph indices are not compatible with Amundsen Elasticsearch Search Proxy and it would require implementing custom class over Elasticsearch Search Proxy.
+
+**This is preferred way of handling Amundsen search.**
+
+### Advantages
+
+- The performance is 10-20x better (verified on production environment)
+- Possibility to search on many fields at the same time (and defining importance of each field)
+- Much better and flexible relevancy scoring
+
+### Disadvantages
+
+- Requires additional component (Elasticsearch) if Apache Solr is used for Atlas search backend
+- Requires scheduling (cron, airflow, kubernetes cron job) of databuilder app to synchronize the data periodically
+- The data in Elasticsearch is as fresh as frequent syncing app - there might be misalignment between Atlas Metadata and Elasticsearch index
+
+## Use Atlas REST API
 
 Directly using the Atlas API's is quick to implement and easy to setup for administrators. Atlas uses a search engine 
-underwater (embedded Solr) to perform search queries, thus in theory this method should scale up. Disadvantages are that 
-we are limited to the REST api that Atlas offers, we could potentially add functionality via pull requests and extend 
-the search capabilities. The [advanced search](https://atlas.apache.org/Search-Advanced.html "Apache Atlas Advanced Search") 
-provides a DSL which contains basic forms of aggregation and arithmetic.
+behind the scenes (Solr and Elasticsearch are fully supported) to perform search queries.
 
-- Use Data Builder to fill Elasticsearch from Atlas
+### Advantages
 
-Adopting Atlas within the Data Builder to fill Elasticsearch is a relatively straightforward way of staying 
-compatible with the Neo4j database. It could either be pulling data from Atlas or being pushed by Kafka. This method
-requires a setup of Elasticsearch and Airflow, which increases the amount of infrastructure and maintenance. 
-Another disadvantage is that with a big inflow of metadata this method might not scale as well as the other methods. 
+- Quicker way to achieve Amundsen <> Atlas integration
+- Data in search is available as soon as it's indexed in Atlas
+- Simpler setup (less components/applications)
 
-- Use underlying Solr or Elasticsearch from Apache Atlas
+### Disadvantages
 
-Within Atlas there is the possibility to open up either Solr or the experimental Elasticsearch. It depends on janusgraph
-(the behind the scenes graph database) which populates the search engine. Therefore the search engine would not be compatible with 
-the data builder setup. Adoption of such a search engine would require either new queries, some kind of transformer 
-within the search engine, or changes within Atlas itself.  
+- Atlas Search API is very limited in terms of multi-field search and relevancy tuning
+- Atlas Search API has suboptimal performance and doesn't really leverage underlying full text engine (it's heavily abstracted by janusgraph) 
+- Amundsen AtlasProxy for search might be lagging in features as it's not as popular as Elasticsearch Proxy
 
 ## Discussion
-Both the REST API approach and the data builder approach can be implemented and be configurable. Both approaches have 
+
+Both the REST API approach and the data builder approach can be configurable. Both approaches have 
 their own benefits, the data builder together provides a more fine-tuned search whereas the Atlas REST API comes out 
-of the box with Atlas. The last approach of using the underlying search engine from Atlas provides direct access
-to all the meta data with a decent search API. However, integration would be less straight forward as the indexes would
-differ from the data builders search engine loader.
+of the box with Atlas.
 
-
-The focus is initially to implement the REST API approach and afterwards potentially implement an Atlas data extractor 
-and importer within the Amundsen Data Builder. So that administrators have more flexibility in combining data sources.
+The focus was initially to implement the REST API approach but after several months on production we decided to introduce
+Atlas search data extractor and use Elasticsearch Proxy for Amundsen search. It proved to be much more robust and flexible solution. 
+The disadvantages were quickly eclipsed by advantages.

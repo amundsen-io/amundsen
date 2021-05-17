@@ -43,9 +43,7 @@ import { filterWatcher } from './search/filters/sagas';
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
 import {
   getTableDataWatcher,
-  getTableLineageWatcher,
   getColumnDescriptionWatcher,
-  getColumnLineageWatcher,
   getPreviewDataWatcher,
   getTableDescriptionWatcher,
   updateColumnDescriptionWatcher,
@@ -65,6 +63,13 @@ import {
   getUserReadWatcher,
   getUserWatcher,
 } from './user/sagas';
+
+// Lineage
+import {
+  getColumnLineageWatcher,
+  getTableLineageWatcher,
+  getTableColumnLineageWatcher,
+} from './lineage/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -103,9 +108,9 @@ export default function* rootSaga() {
     updateResourceTagsWatcher(),
     // TableDetail
     getTableDataWatcher(),
-    getTableLineageWatcher(),
+
     getColumnDescriptionWatcher(),
-    getColumnLineageWatcher(),
+
     getPreviewDataWatcher(),
     getTableDescriptionWatcher(),
     updateColumnDescriptionWatcher(),
@@ -118,5 +123,9 @@ export default function* rootSaga() {
     getUserWatcher(),
     getUserOwnWatcher(),
     getUserReadWatcher(),
+    // Lineage
+    getTableLineageWatcher(),
+    getColumnLineageWatcher(),
+    getTableColumnLineageWatcher(),
   ]);
 }

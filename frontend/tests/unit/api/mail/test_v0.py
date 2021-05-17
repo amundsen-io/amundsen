@@ -12,8 +12,6 @@ from flask import Response, jsonify, make_response
 from amundsen_application import create_app
 from amundsen_application.base.base_mail_client import BaseMailClient
 
-local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
-
 
 class MockMailClient(BaseMailClient):
     def __init__(self, status_code: int, recipients: List = []) -> None:
@@ -42,12 +40,20 @@ class MockBadClient(BaseMailClient):
 
 
 class MailTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+    def tearDown(self) -> None:
+        self.app_context.pop()
+
     def test_feedback_client_not_implemented(self) -> None:
         """
         Test mail client is not implemented, and endpoint should return appropriate code
         :return:
         """
-        with local_app.test_client() as test:
+        with self.app.test_client() as test:
             response = test.post('/api/mail/v0/feedback', json={
                 'rating': '10', 'comment': 'test'
             })
@@ -60,9 +66,9 @@ class MailTest(unittest.TestCase):
         """
         status_codes = [HTTPStatus.OK, HTTPStatus.ACCEPTED]
         for status_code in status_codes:
-            local_app.config['MAIL_CLIENT'] = MockMailClient(status_code=status_code)
+            self.app.config['MAIL_CLIENT'] = MockMailClient(status_code=status_code)
             with self.subTest():
-                with local_app.test_client() as test:
+                with self.app.test_client() as test:
                     response = test.post('/api/mail/v0/feedback', json={
                         'rating': '10', 'comment': 'test'
                     })
@@ -73,8 +79,8 @@ class MailTest(unittest.TestCase):
         Test failure due to incorrect implementation of base_mail_client
         :return:
         """
-        local_app.config['MAIL_CLIENT'] = MockBadClient()
-        with local_app.test_client() as test:
+        self.app.config['MAIL_CLIENT'] = MockBadClient()
+        with self.app.test_client() as test:
             response = test.post('/api/mail/v0/feedback', json={
                 'rating': '10', 'comment': 'test'
             })
@@ -87,8 +93,8 @@ class MailTest(unittest.TestCase):
         :return:
         """
         expected_code = HTTPStatus.BAD_REQUEST
-        local_app.config['MAIL_CLIENT'] = MockMailClient(status_code=expected_code)
-        with local_app.test_client() as test:
+        self.app.config['MAIL_CLIENT'] = MockMailClient(status_code=expected_code)
+        with self.app.test_client() as test:
             response = test.post('/api/mail/v0/feedback', json={
                 'rating': '10', 'comment': 'test'
             })
@@ -105,7 +111,7 @@ class MailTest(unittest.TestCase):
         test_notification_type = 'added'
         test_options: Dict = {}
 
-        with local_app.test_client() as test:
+        with self.app.test_client() as test:
             test.post('/api/mail/v0/notification', json={
                 'recipients': test_recipients,
                 'notificationType': test_notification_type,
@@ -115,7 +121,7 @@ class MailTest(unittest.TestCase):
                 notification_type=test_notification_type,
                 options=test_options,
                 recipients=test_recipients,
-                sender=local_app.config['AUTH_USER_METHOD'](local_app).email
+                sender=self.app.config['AUTH_USER_METHOD'](self.app).email
             )
 
     @unittest.mock.patch('amundsen_application.api.mail.v0.send_notification')
@@ -129,7 +135,7 @@ class MailTest(unittest.TestCase):
         test_sender = 'test2@test.com'
         test_options: Dict = {}
 
-        with local_app.test_client() as test:
+        with self.app.test_client() as test:
             response = test.post('/api/mail/v0/notification', json={
                 'recipients': test_recipients,
                 'sender': test_sender,
@@ -145,7 +151,7 @@ class MailTest(unittest.TestCase):
         and that send_notification is not called
         :return:
         """
-        with local_app.test_client() as test:
+        with self.app.test_client() as test:
             # generates error
             response = test.post('/api/mail/v0/notification', json=None)
 
