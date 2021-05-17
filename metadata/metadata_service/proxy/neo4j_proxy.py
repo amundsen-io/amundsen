@@ -10,7 +10,6 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
-# TODO change all imports to use common dependecy instead
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
