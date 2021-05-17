@@ -1631,7 +1631,7 @@ class Neo4jProxy(BaseProxy):
 
         feature_query = textwrap.dedent("""\
         MATCH (feat:Feature {key: $feature_key})
-        OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat) 
+        OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat)
         OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (owner:User)<-[:OWNER]-(feat)
         OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
@@ -1662,7 +1662,7 @@ class Neo4jProxy(BaseProxy):
 
         watermarks = []
         for record in feature_records['wmk_records']:
-             if record['key'] is not None:
+            if record['key'] is not None:
                 watermark_type = record['key'].split('/')[-2]
                 watermarks.append(Watermark(watermark_type=watermark_type,
                                             partition_key=record['partition_key'],

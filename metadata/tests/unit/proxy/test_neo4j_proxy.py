@@ -1130,6 +1130,61 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             actual = neo4j_proxy.get_lineage(id=key, resource_type=ResourceType.Table, direction="both", depth=1)
             self.assertEqual(expected.__repr__(), actual.__repr__())
+    
+    def test_get_feature_success(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.side_effect = [self.col_usage_return_value, [], self.table_level_return_value]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            table = neo4j_proxy.get_feature(feature_uri='dummy_uri')
+
+            expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
+                             tags=[Tag(tag_name='test', tag_type='default')],
+                             badges=[Badge(badge_name='golden', category='table_status')],
+                             table_readers=[], description='foo description',
+                             watermarks=[Watermark(watermark_type='high_watermark',
+                                                   partition_key='ds',
+                                                   partition_value='fake_value',
+                                                   create_time='fake_time'),
+                                         Watermark(watermark_type='low_watermark',
+                                                   partition_key='ds',
+                                                   partition_value='fake_value',
+                                                   create_time='fake_time')],
+                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                                             sort_order=0, stats=[Stat(start_epoch=1,
+                                                                       end_epoch=1,
+                                                                       stat_type='avg',
+                                                                       stat_val='1')], badges=[]),
+                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                             sort_order=1, stats=[Stat(start_epoch=2,
+                                                                       end_epoch=2,
+                                                                       stat_type='avg',
+                                                                       stat_val='2')],
+                                             badges=[Badge(badge_name='primary key', category='column')])],
+                             owners=[User(email='tester@example.com')],
+                             table_writer=Application(application_url=self.table_writer['application_url'],
+                                                      description=self.table_writer['description'],
+                                                      name=self.table_writer['name'],
+                                                      id=self.table_writer['id']),
+                             last_updated_timestamp=1,
+                             source=Source(source='/source_file_loc',
+                                           source_type='github'),
+                             is_view=False,
+                             programmatic_descriptions=[
+                                 ProgrammaticDescription(source='quality_report',
+                                                         text='Test Test'),
+                                 ProgrammaticDescription(source='s3_crawler',
+                                                         text='Test Test Test')
+                             ])
+
+            self.assertEqual(str(expected), str(table))
+        pass
+
+    def test_get_feature_not_found(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = None
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            self.assertRaises(NotFoundException, neo4j_proxy.get_feature, feature_uri='invalid_feat_uri')
 
 
 if __name__ == '__main__':
