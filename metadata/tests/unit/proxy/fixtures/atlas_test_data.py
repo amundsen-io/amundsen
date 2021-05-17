@@ -8,8 +8,8 @@ from typing import Dict, List
 class DottedDict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+    __setattr__ = dict.__setitem__  # type: ignore
+    __delattr__ = dict.__delitem__  # type: ignore
 
 
 class Data:
@@ -373,4 +373,248 @@ class Data:
                 'Notification:lastMessageProcessedTime': 1598342400000
             }
         }
+    })
+
+    dashboard_data = DottedDict({
+        'referredEntities': {
+            'query_1': {
+                'typeName': 'DashboardQuery',
+                'attributes': {
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/1',
+                    'url': 'https://prod.superset/dashboards/1/query/1',
+                    'name': 'User Count By Time',
+                    'queryText': 'SELECT date, COUNT(1) FROM db.table GROUP BY 1',
+                    'id': 'user_count_by_time',
+                    'chart': {
+                        'guid': 'beb07782-e6ed-4e18-abcf-669d69152cf1',
+                        'typeName': 'DashboardChart'
+                    }
+                },
+                'guid': 'query_1',
+                'status': 'ACTIVE'
+            },
+            'execution_1': {
+                'typeName': 'DashboardExecution',
+                'attributes': {
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/execution/1',
+                    'state': 'succeeded',
+                    'timestamp': 1619517099
+                },
+                'guid': 'execution_1',
+                'status': 'ACTIVE',
+                'createTime': 1620327423719,
+                'updateTime': 1620327423719
+            },
+            'execution_2': {
+                'typeName': 'DashboardExecution',
+                'attributes': {
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/execution/2',
+                    'state': 'failed',
+                    'timestamp': 1619517150
+                },
+                'guid': 'execution_2',
+                'status': 'ACTIVE',
+                'createTime': 1620327423720,
+                'updateTime': 1620327423730
+            },
+            'query_2': {
+                'typeName': 'DashboardQuery',
+                'attributes': {
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/2',
+                    'url': 'https://prod.superset/dashboards/1/query/2',
+                    'name': 'Total Count',
+                    'queryText': 'SELECT COUNT(1) FROM db.table',
+                    'id': 'total_count'
+                },
+                'guid': 'query_2',
+                'status': 'ACTIVE',
+                'createTime': 1620327423719,
+                'updateTime': 1620327423719
+            },
+            'chart_2': {
+                'typeName': 'DashboardChart',
+                'attributes': {
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/2/chart/1',
+                    'type': 'horizontal_bar',
+                    'url': 'https://prod.superset/dashboards/1/chart/2',
+                    'name': 'Count Users by Time'
+                },
+                'guid': 'chart_2',
+                'status': 'ACTIVE',
+                'createTime': 1620327423719,
+                'updateTime': 1620327423719
+            },
+            'chart_1': {
+                'typeName': 'DashboardChart',
+                'attributes': {
+                    'qualifiedName': 'superset_dashboard://datalab.prod/1/query/1/chart/1',
+                    'type': 'metric',
+                    'url': 'https://prod.superset/dashboards/1/chart/1',
+                    'name': 'Total Count'
+                },
+                'guid': 'chart_1',
+                'status': 'ACTIVE',
+                'createTime': 1620327423719,
+                'updateTime': 1620327423719
+            }
+        },
+        'entity': {
+            'typeName': 'Dashboard',
+            'attributes': {
+                'popularityScore': 0,
+                'cluster': 'datalab',
+                'product': 'superset',
+                'charts': [
+                    {
+                        'guid': 'chart_2',
+                        'typeName': 'DashboardChart'
+                    },
+                    {
+                        'guid': 'chart_1',
+                        'typeName': 'DashboardChart'
+                    }
+                ],
+                'qualifiedName': 'superset_dashboard://datalab.prod/1',
+                'createdTimestamp': 1619517099,
+                'description': 'Robs famous dashboard',
+                'url': 'https://prod.superset/dashboards/1',
+                'lastModifiedTimestamp': 1619626531,
+                'bookmarks': [],
+                'tables': [
+                    {
+                        'guid': 'table_1',
+                        'typeName': 'hive_table'
+                    }
+                ],
+                'executions': [
+                    {
+                        'guid': 'execution_1',
+                        'typeName': 'DashboardExecution'
+                    },
+                    {
+                        'guid': 'execution_2',
+                        'typeName': 'DashboardExecution'
+                    }
+                ],
+                'readers': [],
+                'name': 'Prod Usage',
+                'group': {
+                    'guid': 'group_1',
+                    'typeName': 'DashboardGroup'
+                }
+            },
+            'guid': 'dashboard_1',
+            'relationshipAttributes': {
+                'bookmarks': [],
+                'reports': [],
+                'tables': [
+                    {
+                        'guid': 'table_1',
+                        'typeName': 'hive_table',
+                        'entityStatus': 'ACTIVE',
+                        'displayText': 'carlson_group',
+                        'relationshipType': 'Table__Dashboard',
+                        'relationshipGuid': 'd0443458-18df-4ab6-8704-c3535f437072',
+                        'relationshipStatus': 'ACTIVE',
+                        'relationshipAttributes': {
+                            'typeName': 'Table__Dashboard'
+                        }
+                    }
+                ],
+                'charts': [
+                    {
+                        'guid': 'chart_2',
+                        'typeName': 'DashboardChart',
+                        'entityStatus': 'ACTIVE',
+                        'displayText': 'Count Users by Time',
+                        'relationshipType': 'Dashboard__DashboardChart',
+                        'relationshipGuid': '2eedcf38-fa26-4806-ae95-ab7596c72ea7',
+                        'relationshipStatus': 'ACTIVE',
+                        'relationshipAttributes': {
+                            'typeName': 'Dashboard__DashboardChart'
+                        }
+                    },
+                    {
+                        'guid': 'chart_1',
+                        'typeName': 'DashboardChart',
+                        'entityStatus': 'ACTIVE',
+                        'displayText': 'Total Count',
+                        'relationshipType': 'Dashboard__DashboardChart',
+                        'relationshipGuid': '7c645759-f464-41ea-b2ce-6157add585f5',
+                        'relationshipStatus': 'ACTIVE',
+                        'relationshipAttributes': {
+                            'typeName': 'Dashboard__DashboardChart'
+                        }
+                    }
+                ],
+                'executions': [
+                    {
+                        'guid': 'execution_1',
+                        'typeName': 'DashboardExecution',
+                        'entityStatus': 'ACTIVE',
+                        'displayText': 'superset_dashboard://datalab.prod/1/execution/1',
+                        'relationshipType': 'Dashboard__DashboardExecution',
+                        'relationshipGuid': '56d091b8-be4d-44fe-b7c5-85e6d2649825',
+                        'relationshipStatus': 'ACTIVE',
+                        'relationshipAttributes': {
+                            'typeName': 'Dashboard__DashboardExecution'
+                        }
+                    },
+                    {
+                        'guid': 'execution_2',
+                        'typeName': 'DashboardExecution',
+                        'entityStatus': 'ACTIVE',
+                        'displayText': 'superset_dashboard://datalab.prod/1/execution/2',
+                        'relationshipType': 'Dashboard__DashboardExecution',
+                        'relationshipGuid': '56d091b8-be4d-44fe-b7c5-85e6d2649825',
+                        'relationshipStatus': 'ACTIVE',
+                        'relationshipAttributes': {
+                            'typeName': 'Dashboard__DashboardExecution'
+                        }
+                    }
+                ],
+                'readers': [],
+                'ownedBy': [
+                    {
+                        'guid': '547d835a-e3fa-440d-aa3e-8383215d7e3c',
+                        'typeName': 'User',
+                        'entityStatus': 'ACTIVE',
+                        'displayText': 'lisa_salinas',
+                        'relationshipType': 'Dashboard_Users_Owner',
+                        'relationshipGuid': '4f67ea6d-5db4-429c-9ecd-69c751e78aed',
+                        'relationshipStatus': 'ACTIVE',
+                        'relationshipAttributes': {
+                            'typeName': 'Dashboard_Users_Owner'
+                        }
+                    }
+                ],
+                'meanings': [],
+                'group': {
+                    'guid': 'group_1',
+                    'typeName': 'DashboardGroup',
+                    'entityStatus': 'ACTIVE',
+                    'displayText': 'prod superset',
+                    'relationshipType': 'DashboardGroup__Dashboard',
+                    'relationshipGuid': '430291b7-e17d-4e46-8aae-0ff8c10ec675',
+                    'relationshipStatus': 'ACTIVE',
+                    'relationshipAttributes': {
+                        'typeName': 'DashboardGroup__Dashboard'
+                    }
+                }
+            },
+            'classifications': ['transactions'],
+            'meanings': [],
+            'labels': [],
+            'status': 'ACTIVE',
+            'createTime': 1620327423719,
+            'updateTime': 1620327423719
+        }
+    })
+
+    dashboard_group_data = DottedDict({
+        'attributes': {
+            'name': 'prod superset',
+            'url': 'https://superset.prod'
+        }
+
     })

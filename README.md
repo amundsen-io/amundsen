@@ -112,7 +112,7 @@ Please visit [Architecture](./docs/architecture.md#architecture) for Amundsen ar
 ### Table Connectors
 
 - [Amazon Athena](https://aws.amazon.com/athena/)
-- [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it (like Databricks Delta - which is a work in progress).
+- [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
 - [Apache Cassandra](https://cassandra.apache.org/)
 - [Apache Druid](https://druid.apache.org/)
@@ -180,6 +180,8 @@ Please visit [Roadmap](./docs/roadmap.md#amundsen-roadmap) if you are interested
 - Towards Enterprise Grade Data Discovery and Data Lineage with Apache Atlas and Amundsen by [Verdan Mahmood](https://github.com/verdan) and Marek Wiewiorka from ING {[slides](https://docs.google.com/presentation/d/1FixTTNd1dt_f3PAKhL1KLOeOLsIQq0iFvQA6qlpjIg0/edit#slide=id.p1), [talk](https://bigdatatechwarsaw.eu/agenda/)} (Big Data Technology Warsaw Summit 2020)
 - Airflow @ Lyft (which covers how we integrate Airflow and Amundsen) by [Tao Feng](https://github.com/feng-tao) {[slides](https://www.slideshare.net/taofung/airflow-at-lyft-airflow-summit2020) and [website](https://airflowsummit.org/sessions/how-airbnb-twitter-lyft-use-airflow/)} (Airflow Summit 2020)
 - Data DAGs with lineage for fun and for profit by [Bolke de Bruin](https://github.com/bolkedebruin) {[website](https://airflowsummit.org/sessions/data-dags-with-lineage/)} (Airflow Summit 2020)
+- Solving Data Discovery Challenges at Lyft with Amundsen, an Open-source Metadata Platform by [Tao Feng](https://github.com/feng-tao) ([Data+AI summit Europe 2020](https://databricks.com/session_eu20/solving-data-discovery-challenges-at-lyft-with-amundsen-an-open-source-metadata-platform))
+- Data Discovery at Databricks with Amundsen by [Tao Feng](https://github.com/feng-tao) and [Tianru Zhou](https://www.linkedin.com/in/tianru-zhou-134868132/) ([Data+AI summit NA 2021](https://databricks.com/session_na21/data-discovery-at-databricks-with-amundsen))
 
 ## Related Articles
 
@@ -250,6 +252,7 @@ Currently **officially** using Amundsen:
 1. [Rapido](https://rapido.bike/Careers?lan=en "India's largest bike taxi service")
 1. [REA Group](https://www.rea-group.com/)
 1. [Remitly](https://www.remitly.com/)
+1. [Snap](https://www.snap.com/en-US)
 1. [Square](https://squareup.com/us/en)
 1. [Tile](https://www.thetileapp.com)
 1. [WeTransfer](https://wetransfer.com)

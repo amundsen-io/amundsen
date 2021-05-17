@@ -14,6 +14,7 @@ from urllib.parse import unquote
 
 import gremlin_python
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column,
@@ -1739,6 +1740,9 @@ class AbstractGremlinProxy(BaseProxy):
 
     def get_lineage(self, *,
                     id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        pass
+
+    def get_feature(self, *, feature_uri: str) -> Feature:
         pass
 
 

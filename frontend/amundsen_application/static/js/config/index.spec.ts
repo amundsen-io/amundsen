@@ -423,6 +423,22 @@ describe('isColumnListLineageEnabled', () => {
   });
 });
 
+describe('isTableLineagePageEnabled', () => {
+  it('returns isTableLineagePageEnabled defined in config', () => {
+    const actual = ConfigUtils.isTableLineagePageEnabled();
+    const expected = AppConfig.tableLineage.inAppPageEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('isColumnLineagePageEnabled', () => {
+  it('returns isColumnLineagePageEnabled defined in config', () => {
+    const actual = ConfigUtils.isColumnLineagePageEnabled();
+    const expected = AppConfig.columnLineage.inAppPageEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
 describe('getColumnLineageLink', () => {
   it('calls the column lineage link with the right params', () => {
     const tableData = {

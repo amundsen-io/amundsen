@@ -124,35 +124,3 @@ export interface Watermark {
   partition_value: string;
   watermark_type: string;
 }
-
-export interface LineageItem {
-  badges: Badge[];
-  cluster: string;
-  database: string;
-  key: string;
-  level: number;
-  name: string;
-  schema: string;
-  usage: number;
-}
-
-export interface Lineage {
-  downstream_entities: LineageItem[];
-  upstream_entities: LineageItem[];
-}
-
-export interface ColumnLineageMap {
-  [columnName: string]: {
-    lineage: Lineage;
-    isLoading: boolean;
-  };
-}
-
-export interface TableLineageParams {
-  key: string;
-}
-
-export interface ColumnLineageParams {
-  key: string;
-  column: string;
-}

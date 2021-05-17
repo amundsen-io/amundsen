@@ -35,7 +35,8 @@ typing-extensions==3.7.4
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common>=0.9.0
+amundsen-common>=0.11.0
+
 amundsen-gremlin>=0.0.9
 
 boto3==1.17.23
@@ -51,7 +52,7 @@ gremlinpython==3.4.3
 itsdangerous==0.24
 Jinja2>=2.10.1
 jsonschema==2.6.0
-MarkupSafe==1.1 
+MarkupSafe==1.1
 pytz==2018.4
 Werkzeug==0.15.5
 wheel==0.33.1
