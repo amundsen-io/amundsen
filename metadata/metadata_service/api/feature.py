@@ -9,6 +9,7 @@ from flask_restful import Resource, reqparse
 
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 
@@ -136,8 +137,20 @@ class FeatureBadgeAPI(Resource):
 
     @swag_from('swagger_doc/badge/badge_put.yml')
     def put(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        category = args.get('category', '')
+
+        return self._badge_common.put(id=id,
+                                      resource_type=ResourceType.Feature,
+                                      badge_name=badge,
+                                      category=category)
 
     @swag_from('swagger_doc/badge/badge_delete.yml')
     def delete(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        category = args.get('category', '')
+
+        return self._badge_common.delete(id=id,
+                                         resource_type=ResourceType.Feature,
+                                         badge_name=badge,
+                                         category=category)

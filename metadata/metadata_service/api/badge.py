@@ -77,7 +77,7 @@ class BadgeCommon:
                                   category=category,
                                   resource_type=resource_type)
             return {'message': f'The badge {badge_name} with category {category} was '
-                               f'added successfully to resurce with id {id}'}, HTTPStatus.OK
+                               f'added successfully to resource with id {id}'}, HTTPStatus.OK
         except Exception as e:
             return {'message': f'The badge {badge_name} with category {category} '
                                f'for resource id {id} and resource_type {resource_type.name} failed to '
