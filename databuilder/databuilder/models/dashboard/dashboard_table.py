@@ -10,6 +10,10 @@ from typing import (
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTable as RDSDashboardTable
 
+from amundsen_common.utils.atlas_utils import AtlasDashboardTypes, AtlasTableKey, AtlasRelationshipTypes
+from databuilder.models.atlas_entity import AtlasEntity
+from databuilder.models.atlas_relationship import AtlasRelationship
+from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -20,7 +24,7 @@ from databuilder.models.table_serializable import TableSerializable
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardTable(GraphSerializable, TableSerializable):
+class DashboardTable(GraphSerializable, TableSerializable, AtlasSerializable):
     """
     A model that link Dashboard with the tables used in various charts of the dashboard.
     Note that it does not create new dashboard, table as it has insufficient information but it builds relation
@@ -47,6 +51,7 @@ class DashboardTable(GraphSerializable, TableSerializable):
 
         self._relation_iterator = self._create_relation_iterator()
         self._record_iterator = self._create_record_iterator()
+        self._atlas_relation_iterator = self._create_atlas_relation_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         return None
@@ -108,6 +113,32 @@ class DashboardTable(GraphSerializable, TableSerializable):
                         tbl=m.group(4)
                     )
                 )
+
+    def create_next_atlas_entity(self) -> Union[AtlasEntity, None]:
+        pass
+
+    def create_next_atlas_relation(self) -> Union[AtlasEntity, None]:
+        try:
+            return next(self._atlas_relation_iterator)
+        except StopIteration:
+            return None
+
+    def _create_atlas_relation_iterator(self) -> Iterator[AtlasRelationship]:
+        for table_id in self._table_ids:
+            table_key = AtlasTableKey(table_id)
+            table_relationship = AtlasRelationship(
+                relationshipType=AtlasRelationshipTypes.table_dashboard,
+                entityType1=table_key.get_details()['database'],
+                entityQualifiedName1=table_key.qualified_name,
+                entityType2=AtlasDashboardTypes.metadata,
+                entityQualifiedName2=DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                    product=self._product,
+                    cluster=self._cluster,
+                    dashboard_group=self._dashboard_group_id,
+                    dashboard_name=self._dashboard_id),
+                attributes={}
+            )
+            yield table_relationship
 
     def __repr__(self) -> str:
         return f'DashboardTable({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \
