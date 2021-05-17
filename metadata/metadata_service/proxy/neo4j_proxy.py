@@ -1628,6 +1628,19 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
+    def _classify_tags(self, tag_records) -> Tuple:
+        tags = []
+        owner_tags = []
+        for record in tag_records:
+            current_tag_type = record['tag_type']
+            tag_result = Tag(tag_name=record['key'],
+                             tag_type=record['tag_type'])
+            if current_tag_type == 'owner':
+                owner_tags.append(tag_result)
+            else:
+                tags.append(tag_result)
+        return tags, owner_tags
+
     @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:
         """
@@ -1674,18 +1687,6 @@ class Neo4jProxy(BaseProxy):
                                             partition_key=record['partition_key'],
                                             partition_value=record['partition_value'],
                                             create_time=record['create_time']))
-        tags = []
-        owner_tags = []
-        if feature_records.get('tag_records'):
-            tag_records = feature_records['tag_records']
-            for record in tag_records:
-                current_tag_type = record['tag_type']
-                tag_result = Tag(tag_name=record['key'],
-                                 tag_type=record['tag_type'])
-                if current_tag_type == 'owner':
-                    owner_tags.append(tag_result)
-                else:
-                    tags.append(tag_result)
 
         partition_column = None
         if feature_records.get('partition_column'):
@@ -1719,6 +1720,8 @@ class Neo4jProxy(BaseProxy):
         owners = []
         for owner in feature_records['owner_records']:
             owners.append(User(email=owner['email']))
+
+        tags, owner_tags = self._classify_tags(feature_records.get('tag_records'))
 
         feature_node = feature_records['feat']
 
