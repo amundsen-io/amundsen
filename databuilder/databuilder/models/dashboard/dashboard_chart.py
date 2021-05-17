@@ -8,6 +8,13 @@ from typing import (
 
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardChart as RDSDashboardChart
+from databuilder.models.atlas_entity import AtlasEntity
+
+from amundsen_common.utils.atlas_utils import AtlasCommonParams, AtlasSerializedEntityFields, AtlasRelationshipAttrs, AtlasDashboardTypes, AtlasEntityOperation
+from databuilder.models.atlas_relationship import AtlasRelationship
+
+
+from databuilder.models.atlas_serializable import AtlasSerializable
 
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 from databuilder.models.graph_node import GraphNode
@@ -18,7 +25,7 @@ from databuilder.models.table_serializable import TableSerializable
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardChart(GraphSerializable, TableSerializable):
+class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
     """
     A model that encapsulate Dashboard's charts
     """
@@ -52,6 +59,7 @@ class DashboardChart(GraphSerializable, TableSerializable):
         self._node_iterator = self._create_node_iterator()
         self._relation_iterator = self._create_relation_iterator()
         self._record_iterator = self._create_record_iterator()
+        self._atlas_entity_iterator = self._create_next_atlas_entity()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -140,6 +148,56 @@ class DashboardChart(GraphSerializable, TableSerializable):
             record.url = self._chart_url
 
         yield record
+
+    def create_next_atlas_entity(self) -> Union[AtlasEntity, None]:
+        try:
+            return next(self._atlas_entity_iterator)
+        except StopIteration:
+            return None
+
+    def create_next_atlas_relation(self) -> Union[AtlasRelationship, None]:
+        try:
+            StopIteration
+        except StopIteration:
+            return None
+
+    def _create_next_atlas_entity(self) -> Iterator[AtlasEntity]:
+        # Chart
+        attrs_mapping = [
+            (AtlasCommonParams.qualified_name, self._get_chart_node_key()),
+            (AtlasCommonParams.name, self._chart_name),
+            (AtlasCommonParams.type, self._chart_type),
+            (AtlasCommonParams.url, self._chart_url)
+        ]
+
+        chart_entity_attrs = dict()
+        for attr in attrs_mapping:
+            attr_key, attr_value = attr
+            chart_entity_attrs[attr_key] = attr_value
+
+        relationship_list = list()
+        """
+        relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
+        """
+        relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator
+                                 .join((AtlasRelationshipAttrs.query,
+                                        AtlasDashboardTypes.query,
+                                        DashboardQuery.DASHBOARD_QUERY_KEY_FORMAT.format(
+                                            product=self._product,
+                                            cluster=self._cluster,
+                                            dashboard_group_id=self._dashboard_group_id,
+                                            dashboard_id=self._dashboard_id,
+                                            query_id=self._query_id
+                                        ))))
+
+        chart_entity = AtlasEntity(
+            typeName=AtlasDashboardTypes.chart,
+            operation=AtlasEntityOperation.CREATE,
+            attributes=chart_entity_attrs,
+            relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list)
+        )
+
+        yield chart_entity
 
     def __repr__(self) -> str:
         return f'DashboardChart({self._dashboard_group_id!r}, {self._dashboard_id!r}, ' \

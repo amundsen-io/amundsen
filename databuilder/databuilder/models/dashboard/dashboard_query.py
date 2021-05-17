@@ -8,17 +8,23 @@ from typing import (
 
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardQuery as RDSDashboardQuery
+from databuilder.models.atlas_entity import AtlasEntity
 
+from databuilder.models.atlas_relationship import AtlasRelationship
+
+from amundsen_common.utils.atlas_utils import AtlasCommonParams, AtlasSerializedEntityFields, AtlasDashboardTypes, AtlasRelationshipAttrs, AtlasEntityOperation
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
+from databuilder.models.atlas_serializable import AtlasSerializable
+
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardQuery(GraphSerializable, TableSerializable):
+class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
     """
     A model that encapsulate Dashboard's query name
     """
@@ -50,6 +56,7 @@ class DashboardQuery(GraphSerializable, TableSerializable):
         self._node_iterator = self._create_node_iterator()
         self._relation_iterator = self._create_relation_iterator()
         self._record_iterator = self._create_record_iterator()
+        self._atlas_entity_iterator = self._create_next_atlas_entity()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -133,6 +140,55 @@ class DashboardQuery(GraphSerializable, TableSerializable):
             dashboard_id=self._dashboard_id,
             query_id=self._query_id
         )
+
+    def create_next_atlas_entity(self) -> Union[AtlasEntity, None]:
+        try:
+            return next(self._atlas_entity_iterator)
+        except StopIteration:
+            return None
+
+    def create_next_atlas_relation(self) -> Union[AtlasRelationship, None]:
+        try:
+            StopIteration
+        except StopIteration:
+            return None
+
+    def _create_next_atlas_entity(self) -> Iterator[AtlasEntity]:
+        # Query
+        attrs_mapping = [
+            (AtlasCommonParams.qualified_name, self._get_query_node_key()),
+            (AtlasCommonParams.name, self._query_name),
+            (AtlasCommonParams.id, self._query_id),
+            (AtlasCommonParams.url, self._url),
+            (AtlasCommonParams.query_text, self._query_text)
+        ]
+
+        query_entity_attrs = dict()
+        for attr in attrs_mapping:
+            attr_key, attr_value = attr
+            query_entity_attrs[attr_key] = attr_value
+
+        relationship_list = list()
+        """
+        relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
+        """
+        relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator
+                                 .join((AtlasRelationshipAttrs.dashboard,
+                                        AtlasDashboardTypes.metadata,
+                                        DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                                            product=self._product,
+                                            cluster=self._cluster,
+                                            dashboard_group=self._dashboard_group_id,
+                                            dashboard_name=self._dashboard_id
+                                        ))))
+
+        query_entity = AtlasEntity(
+            typeName=AtlasDashboardTypes.query,
+            operation=AtlasEntityOperation.CREATE,
+            attributes=query_entity_attrs,
+            relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list)
+        )
+        yield query_entity
 
     def __repr__(self) -> str:
         return f'DashboardQuery({self._dashboard_group_id!r}, {self._dashboard_id!r}, {self._query_name!r}, ' \
