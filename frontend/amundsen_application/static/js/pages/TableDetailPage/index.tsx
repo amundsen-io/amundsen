@@ -9,13 +9,12 @@ import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getTableData, getTableLineage } from 'ducks/tableMetadata/reducer';
+import { getTableData } from 'ducks/tableMetadata/reducer';
+import { getTableLineage } from 'ducks/lineage/reducer';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
-import {
-  GetTableDataRequest,
-  GetTableLineageRequest,
-} from 'ducks/tableMetadata/types';
+import { GetTableDataRequest } from 'ducks/tableMetadata/types';
+import { GetTableLineageRequest } from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 
@@ -513,7 +512,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.tableMetadata.isLoading,
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
-  tableLineage: state.tableMetadata.tableLineage.lineage,
+  tableLineage: state.lineage.lineageTree,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,
