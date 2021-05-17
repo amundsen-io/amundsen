@@ -34,7 +34,7 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         '95%': ('Quantile 95%', float),
         'chi_squared': ('Chi squared', lambda x: float(x.get('statistic'))),
         'count': ('Count', int),
-        'is_unique': ('Is unique', bool),
+        'is_unique': ('Unique', bool),
         'kurtosis': ('Kurtosis', float),
         'max': ('Maximum', float),
         'max_length': ('Maximum length', int),
@@ -43,8 +43,7 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         'median_length': ('Median length', int),
         'min': ('Minimum', float),
         'min_length': ('Minimum length', int),
-        'monotonic': ('Is monotonic', bool),
-        'n_category': ('Categories', int),
+        'monotonic': ('Monotonic', bool),
         'n_characters': ('Characters', int),
         'n_characters_distinct': ('Distinct characters', int),
         'n_distinct': ('Distinct values', int),
@@ -53,18 +52,17 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         'n_negative': ('Negative values', int),
         'n_unique': ('Unique values', int),
         'n_zeros': ('Zeros', int),
-        'p_distinct': ('Distinct values %', lambda x: f'{round(100 * x, 2)}%'),
-        'p_infinite': ('Infinite values %', lambda x: f'{round(100 * x, 2)}%'),
-        'p_missing': ('Missing values %', lambda x: f'{round(100 * x, 2)}%'),
-        'p_negative': ('Negative values %', lambda x: f'{round(100 * x, 2)}%'),
-        'p_unique': ('Unique values %', lambda x: f'{round(100 * x, 2)}%'),
-        'p_zeros': ('Zeros %', lambda x: f'{round(100 * x, 2)}%'),
-        'range': ('Range', int),
+        'p_distinct': ('Distinct values %', lambda x: float(x * 100)),
+        'p_infinite': ('Infinite values %', lambda x: float(x * 100)),
+        'p_missing': ('Missing values %', lambda x: float(x * 100)),
+        'p_negative': ('Negative values %', lambda x: float(x * 100)),
+        'p_unique': ('Unique values %', lambda x: float(x * 100)),
+        'p_zeros': ('Zeros %', lambda x: float(x * 100)),
+        'range': ('Range', float),
         'skewness': ('Skewness', float),
-        'std': ('Standard deviation', float),
+        'std': ('Std. deviation', float),
         'sum': ('Sum', float),
-        'type': ('Type', str),
-        'variance': ('Variance', int)
+        'variance': ('Variance', float)
         # Stats available in pandas-profiling but are not collected by default and require custom, conscious config..
         # 'block_alias_char_counts': ('',),
         # 'block_alias_counts': ('',),
@@ -89,16 +87,20 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         # 'monotonic_increase_strict': ('Strict monotonic increase', bool),
         # 'n': ('',),
         # 'n_block_alias': ('',),
+        # 'n_category': ('Categories', int),
         # 'n_scripts': ('',),
         # 'ordering': ('',),
         # 'script_char_counts': ('',),
         # 'script_counts': ('',),
         # 'value_counts_index_sorted': ('',),
         # 'value_counts_without_nan': ('',),
-        # 'word_counts': ('',)
+        # 'word_counts': ('',),
+        # 'type': ('Type', str)
     }
 
-    DEFAULT_CONFIG = ConfigFactory.from_dict({STAT_MAPPINGS: DEFAULT_STAT_MAPPINGS})
+    PRECISION = 'precision'
+
+    DEFAULT_CONFIG = ConfigFactory.from_dict({STAT_MAPPINGS: DEFAULT_STAT_MAPPINGS, PRECISION: 3})
 
     def get_scope(self) -> str:
         return 'extractor.pandas_profiling'
@@ -129,6 +131,9 @@ class PandasProfilingColumnStatsExtractor(Extractor):
                 if stat_spec:
                     stat_name, stat_modifier = stat_spec
                     stat_name = stat_name.lower().replace(' ', '_')
+
+                    if isinstance(stat_value, float):
+                        stat_value = self.round_value(stat_value)
 
                     stat = TableColumnStats(table_name=self.table_name, col_name=column_name, stat_name=stat_name,
                                             stat_val=stat_modifier(stat_value), start_epoch=report_time, end_epoch='0',
@@ -163,6 +168,9 @@ class PandasProfilingColumnStatsExtractor(Extractor):
                 pass
 
         return result
+
+    def round_value(self, value: float) -> float:
+        return round(value, self.conf.get(PandasProfilingColumnStatsExtractor.PRECISION))
 
     @property
     def stat_mappings(self) -> Dict[str, Tuple[str, Any]]:

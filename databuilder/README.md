@@ -1186,6 +1186,7 @@ It is run on pandas dataframe and results in json file containing (amongst other
 
 #### Optional input parameters
 
+- `PRECISION` - precision for metrics of `float` type. Defaults to `3` meaning up to 3 digits after decimal point.
 - `STAT_MAPPINGS` - if you wish to collect only selected set of metrics configure this option with dictionary of following format:
     - key - raw name of the stat in pandas-profiling
     - value - tuple of 2 elements:
