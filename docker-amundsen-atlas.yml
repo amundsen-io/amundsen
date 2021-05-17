@@ -41,6 +41,7 @@ services:
       - PROXY_PORT=21000
       - PROXY_ENCRYPTED=False
       - PROXY_CLIENT=ATLAS
+      - METADATA_SVC_CONFIG_MODULE_CLASS=metadata_service.config.AtlasConfig
   amundsenfrontend:
     build:
       context: ./frontend

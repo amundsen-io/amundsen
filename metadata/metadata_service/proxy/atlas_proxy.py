@@ -19,7 +19,8 @@ from amundsen_common.models.user import User as UserEntity
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,
                                          AtlasGlossaryTerm)
-from apache_atlas.model.instance import (AtlasEntityHeader,
+from apache_atlas.model.instance import (AtlasEntitiesWithExtInfo, AtlasEntity,
+                                         AtlasEntityHeader,
                                          AtlasEntityWithExtInfo,
                                          AtlasRelatedObjectId)
 from apache_atlas.model.relationship import AtlasRelationship
@@ -31,6 +32,7 @@ from werkzeug.exceptions import BadRequest
 
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
+from metadata_service.entity.dashboard_query import DashboardQuery
 from metadata_service.entity.description import Description
 from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
@@ -45,8 +47,34 @@ _ATLAS_PROXY_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
 
 class Status:
-    ACTIVE = "ACTIVE"
-    DELETED = "DELETED"
+    ACTIVE = 'ACTIVE'
+    DELETED = 'DELETED'
+
+
+class CommonParams:
+    qn = 'qualifiedName'
+    guid = 'guid'
+    attrs = 'attributes'
+    rels = 'relationshipAttributes'
+    uri = 'entityUri'
+
+
+class CommonTypes:
+    bookmark = 'Bookmark'
+    user = 'User'
+    reader = 'Reader'
+
+
+class TableTypes:
+    table = 'Table'
+
+
+class DashboardTypes:
+    metadata = 'Dashboard'
+    group = 'DashboardGroup'
+    query = 'DashboardQuery'
+    chart = 'DashboardChart'
+    execution = 'DashboardExecution'
 
 
 # TODO: Move this to amundsencommon
@@ -116,10 +144,10 @@ def make_table_qualified_name(table_name: str, cluster: Optional[Any] = None, db
     """
     qualified_name = table_name
     if db and db != DEFAULT_DB_CLUSTER:
-        qualified_name = '{}.{}'.format(db, qualified_name)
+        qualified_name = f'{db}.{qualified_name}'
 
     if cluster and cluster != DEFAULT_DB_CLUSTER:
-        qualified_name = '{}@{}'.format(qualified_name, cluster)
+        qualified_name = f'{qualified_name}@{cluster}'
 
     return qualified_name
 
@@ -130,19 +158,8 @@ class AtlasProxy(BaseProxy):
     Atlas Proxy client for the amundsen metadata
     {ATLAS_API_DOCS} = https://atlas.apache.org/api/v2/
     """
-    TABLE_ENTITY = 'Table'
     DB_ATTRIBUTE = 'db'
     STATISTICS_FORMAT_SPEC = app.config['STATISTICS_FORMAT_SPEC']
-    TABLE_TYPE = 'Table'
-    BOOKMARK_TYPE = 'Bookmark'
-    USER_TYPE = 'User'
-    READER_TYPE = 'Reader'
-    QN_KEY = 'qualifiedName'
-    BOOKMARK_ACTIVE_KEY = 'active'
-    GUID_KEY = 'guid'
-    ATTRS_KEY = 'attributes'
-    REL_ATTRS_KEY = 'relationshipAttributes'
-    ENTITY_URI_KEY = 'entityUri'
     # Qualified Name of the Glossary, that holds the user defined terms.
     # For Amundsen, we are using Glossary Terms as the Tags.
     AMUNDSEN_USER_TAGS = 'amundsen_user_tags'
@@ -226,6 +243,17 @@ class AtlasProxy(BaseProxy):
 
         return user_details
 
+    @classmethod
+    def _filter_active(cls, entities: List[dict]) -> List[dict]:
+        """
+        Filter out active entities based on entity end relationship status.
+        """
+        result = [e for e in entities
+                  if e.get('relationshipStatus') == Status.ACTIVE
+                  and e.get('entityStatus') == Status.ACTIVE]
+
+        return result
+
     def _get_table_entity(self, *, table_uri: str) -> AtlasEntityWithExtInfo:
         """
         Fetch information from table_uri and then find the appropriate entity
@@ -240,11 +268,10 @@ class AtlasProxy(BaseProxy):
 
         try:
             return self.client.entity.get_entity_by_attribute(type_name=table_info['entity'],
-                                                              uniq_attributes=[(self.QN_KEY, table_qn)])
+                                                              uniq_attributes=[(CommonParams.qn, table_qn)])
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
-            raise NotFoundException('Table URI( {table_uri} ) does not exist'
-                                    .format(table_uri=table_uri))
+            raise NotFoundException(f'Table URI( {table_uri} ) does not exist')
 
     def _get_user_entity(self, user_id: str) -> AtlasEntityWithExtInfo:
         """
@@ -253,11 +280,10 @@ class AtlasProxy(BaseProxy):
         :return: A User entity matching the user_id
         """
         try:
-            return self.client.entity.get_entity_by_attribute(type_name=self.USER_TYPE,
-                                                              uniq_attributes=[(self.QN_KEY, user_id)])
+            return self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
+                                                              uniq_attributes=[(CommonParams.qn, user_id)])
         except Exception as ex:
-            raise NotFoundException('(User {user_id}) does not exist'
-                                    .format(user_id=user_id))
+            raise NotFoundException(f'(User {user_id}) does not exist')
 
     def _create_bookmark(self, entity: AtlasEntityWithExtInfo, user_guid: str, bookmark_qn: str,
                          table_uri: str) -> None:
@@ -270,12 +296,12 @@ class AtlasProxy(BaseProxy):
 
         bookmark_entity = {
             'entity': {
-                'typeName': self.BOOKMARK_TYPE,
+                'typeName': CommonTypes.bookmark,
                 'attributes': {'qualifiedName': bookmark_qn,
-                               self.BOOKMARK_ACTIVE_KEY: True,
+                               Status.ACTIVE.lower(): True,
                                'entityUri': table_uri,
                                'user': {'guid': user_guid},
-                               'entity': {'guid': entity.entity[self.GUID_KEY]}}
+                               'entity': {'guid': entity.entity[CommonParams.guid]}}
             }
         }
 
@@ -291,15 +317,18 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         table_info = self._extract_info_from_uri(table_uri=entity_uri)
-        bookmark_qn = '{}.{}.{}.{}.bookmark@{}'.format(table_info.get('db'),
-                                                       table_info.get('name'),
-                                                       table_info.get('entity'),
-                                                       user_id,
-                                                       table_info.get('cluster'))
+
+        db = table_info.get('db')
+        name = table_info.get('name')
+        entity = table_info.get('entity')
+        cluster = table_info.get('cluster')
+
+        bookmark_qn = f'{db}.{name}.{entity}.{user_id}.bookmark@{cluster}'
 
         try:
-            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=self.BOOKMARK_TYPE,
-                                                                         uniq_attributes=[(self.QN_KEY, bookmark_qn)])
+            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.bookmark,
+                                                                         uniq_attributes=[(CommonParams.qn,
+                                                                                           bookmark_qn)])
         except Exception as ex:
             LOGGER.exception(f'Bookmark not found. {str(ex)}')
 
@@ -308,10 +337,11 @@ class AtlasProxy(BaseProxy):
             user_entity = self._get_user_entity(user_id)
             # Create bookmark entity with the user relation.
             self._create_bookmark(table_entity,
-                                  user_entity.entity[self.GUID_KEY], bookmark_qn, entity_uri)
+                                  user_entity.entity[CommonParams.guid], bookmark_qn, entity_uri)
             # Fetch bookmark entity after creating it.
-            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=self.BOOKMARK_TYPE,
-                                                                         uniq_attributes=[(self.QN_KEY, bookmark_qn)])
+            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.bookmark,
+                                                                         uniq_attributes=[(CommonParams.qn,
+                                                                                           bookmark_qn)])
 
         return bookmark_entity
 
@@ -324,10 +354,10 @@ class AtlasProxy(BaseProxy):
         """
         try:
             table_entity = self._get_table_entity(table_uri=table_uri)
-            columns = table_entity.entity[self.REL_ATTRS_KEY].get('columns')
+            columns = table_entity.entity[CommonParams.rels].get('columns')
             for column in columns or list():
-                col_details = table_entity.referredEntities[column[self.GUID_KEY]]
-                if column_name == col_details[self.ATTRS_KEY]['name']:
+                col_details = table_entity.referredEntities[column[CommonParams.guid]]
+                if column_name == col_details[CommonParams.attrs]['name']:
                     return col_details
 
             raise NotFoundException(f'Column not found: {column_name}')
@@ -347,14 +377,14 @@ class AtlasProxy(BaseProxy):
         else an empty list.
         """
         columns = list()
-        for column in entity.entity[self.REL_ATTRS_KEY].get('columns') or list():
+        for column in entity.entity[CommonParams.rels].get('columns') or list():
             column_status = column.get('entityStatus', 'inactive').lower()
 
             if column_status != 'active':
                 continue
 
-            col_entity = entity.referredEntities[column[self.GUID_KEY]]
-            col_attrs = col_entity[self.ATTRS_KEY]
+            col_entity = entity.referredEntities[column[CommonParams.guid]]
+            col_attrs = col_entity[CommonParams.attrs]
             statistics = list()
 
             badges = list()
@@ -421,9 +451,8 @@ class AtlasProxy(BaseProxy):
                                 url=report_attrs['url']
                             )
                         )
-                except (KeyError, AttributeError) as ex:
-                    LOGGER.exception('Error while accessing table report: {}. {}'
-                                     .format(str(report_entity), str(ex)))
+                except (KeyError, AttributeError):
+                    LOGGER.exception(f'Error while accessing table report: {str(report_entity)}', exc_info=True)
 
         parsed_reports = app.config['RESOURCE_REPORT_CLIENT'](reports) \
             if app.config['RESOURCE_REPORT_CLIENT'] else reports
@@ -433,12 +462,8 @@ class AtlasProxy(BaseProxy):
     def _get_owners(self, data_owners: list, fallback_owner: str = None) -> List[User]:
         owners_detail = list()
         active_owners_list = list()
-        active_owners = filter(lambda item:
-                               item['entityStatus'] == Status.ACTIVE and
-                               item['relationshipStatus'] == Status.ACTIVE,
-                               data_owners)
 
-        for owner in active_owners:
+        for owner in self._filter_active(data_owners):
             owner_qn = owner['displayText']
             owner_data = self._get_user_details(owner_qn)
             owners_detail.append(User(**owner_data))
@@ -460,6 +485,38 @@ class AtlasProxy(BaseProxy):
     def get_users(self) -> List[UserEntity]:
         pass
 
+    def _serialize_badges(self, entity: AtlasEntityWithExtInfo) -> List[Badge]:
+        """
+        Return list of Badges for entity. Badges in Amundsen <> Atlas integration are based on Atlas Classification.
+
+        :param entity: entity for which badges should be collected
+        :return : List of Amundsen Badge objects.
+        """
+        result = []
+
+        classifications = entity.get('classifications')
+
+        for classification in classifications or list():
+            result.append(Badge(badge_name=classification.get('typeName'), category='default'))
+
+        return result
+
+    def _serialize_tags(self, entity: AtlasEntityWithExtInfo) -> List[Tag]:
+        """
+        Return list of Tags for entity. Tags in Amundsen <> Atlas integration are based on Atlas Glossary.
+
+        :param entity: entity for which tags should be collected
+        :return : List of Amundsen Tag objects.
+        """
+        result = []
+
+        meanings = self._filter_active(entity.get(CommonParams.rels, dict()).get('meanings', []))
+
+        for term in meanings or list():
+            result.append(Tag(tag_name=term.get('displayText', ''), tag_type='default'))
+
+        return result
+
     def get_table(self, *, table_uri: str) -> Table:
         """
         Gathers all the information needed for the Table Detail Page.
@@ -471,34 +528,16 @@ class AtlasProxy(BaseProxy):
         table_details = entity.entity
 
         try:
-            attrs = table_details[self.ATTRS_KEY]
+            attrs = table_details[CommonParams.attrs]
 
             programmatic_descriptions = self._get_programmatic_descriptions(attrs.get('parameters', dict()))
 
             table_qn = parse_table_qualified_name(
-                qualified_name=attrs.get(self.QN_KEY)
+                qualified_name=attrs.get(CommonParams.qn)
             )
 
-            badges = []
-            # Using or in case, if the key 'classifications' is there with a None
-            for classification in table_details.get('classifications') or list():
-                badges.append(
-                    Badge(
-                        badge_name=classification.get('typeName'),
-                        category="default"
-                    )
-                )
-
-            tags = []
-            for term in table_details.get(self.REL_ATTRS_KEY).get("meanings") or list():
-                if term.get('entityStatus') == Status.ACTIVE and \
-                        term.get('relationshipStatus') == Status.ACTIVE:
-                    tags.append(
-                        Tag(
-                            tag_name=term.get("displayText"),
-                            tag_type="default"
-                        )
-                    )
+            badges = self._serialize_badges(table_details)
+            tags = self._serialize_tags(table_details)
 
             columns = self._serialize_columns(entity=entity)
 
@@ -507,7 +546,7 @@ class AtlasProxy(BaseProxy):
             table_type = attrs.get('tableType') or 'table'
             is_view = 'view' in table_type.lower()
 
-            readers = self._get_readers(table_details)
+            readers = self._get_readers(table_details, Reader)
 
             table = Table(
                 database=table_details.get('typeName'),
@@ -518,7 +557,7 @@ class AtlasProxy(BaseProxy):
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
                 owners=self._get_owners(
-                    table_details[self.REL_ATTRS_KEY].get('ownedBy', []), attrs.get('owner')),
+                    table_details[CommonParams.rels].get('ownedBy', []), attrs.get('owner')),
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 is_view=is_view,
@@ -528,12 +567,9 @@ class AtlasProxy(BaseProxy):
                 watermarks=self._get_table_watermarks(table_details))
 
             return table
-        except KeyError as ex:
-            LOGGER.exception('Error while accessing table information. {}'
-                             .format(str(ex)))
-            raise BadRequest('Some of the required attributes '
-                             'are missing in : ( {table_uri} )'
-                             .format(table_uri=table_uri))
+        except KeyError:
+            LOGGER.exception('Error while accessing table information. {}', exc_info=True)
+            raise BadRequest(f'Some of the required attributes are missing in: {table_uri}')
 
     @staticmethod
     def _validate_date(text_date: str, date_format: str) -> Tuple[Optional[datetime.datetime], Optional[str]]:
@@ -543,19 +579,20 @@ class AtlasProxy(BaseProxy):
             return None, None
 
     @staticmethod
-    def _select_watermark_format(partition_names: List[str]) -> Optional[str]:
+    def _select_watermark_format(partition_names: Optional[List[Any]]) -> Optional[str]:
         result = None
 
-        for partition_name in partition_names:
-            # Assume that all partitions for given table have the same date format. Only thing that needs to be done
-            # is establishing which format out of the supported ones it is and then we validate every partition
-            # against it.
-            for df in app.config['WATERMARK_DATE_FORMATS']:
-                _, result = AtlasProxy._validate_date(partition_name, df)
+        if partition_names:
+            for partition_name in partition_names:
+                # Assume that all partitions for given table have the same date format. Only thing that needs to be done
+                # is establishing which format out of the supported ones it is and then we validate every partition
+                # against it.
+                for df in app.config['WATERMARK_DATE_FORMATS']:
+                    _, result = AtlasProxy._validate_date(partition_name, df)
 
-                if result:
-                    LOGGER.debug('Established date format', extra=dict(date_format=result))
-                    return result
+                    if result:
+                        LOGGER.debug('Established date format', extra=dict(date_format=result))
+                        return result
 
         return result
 
@@ -578,9 +615,7 @@ class AtlasProxy(BaseProxy):
 
         _partitions = entity.get('relationshipAttributes', dict()).get('partitions', list())
 
-        names = [_partition.get('displayText') for _partition in _partitions
-                 if _partition.get('entityStatus') == Status.ACTIVE
-                 and _partition.get('relationshipStatus') == Status.ACTIVE]
+        names = [_partition.get('displayText') for _partition in self._filter_active(_partitions)]
 
         if not names:
             return []
@@ -623,21 +658,20 @@ class AtlasProxy(BaseProxy):
         table = self._get_table_entity(table_uri=table_uri)
         table_entity = table.entity
 
-        if table_entity[self.REL_ATTRS_KEY].get("ownedBy"):
+        if table_entity[CommonParams.rels].get("ownedBy"):
             try:
                 active_owners = filter(lambda item:
                                        item['relationshipStatus'] == Status.ACTIVE
                                        and item['displayText'] == owner,
-                                       table_entity[self.REL_ATTRS_KEY]['ownedBy'])
+                                       table_entity[CommonParams.rels]['ownedBy'])
                 if list(active_owners):
                     self.client.relationship.delete_relationship_by_guid(
                         guid=next(active_owners).get('relationshipGuid')
                     )
                 else:
                     raise BadRequest('You can not delete this owner.')
-            except Exception as ex:
-                LOGGER.exception('Error while removing table data owner. {}'
-                                 .format(str(ex)))
+            except Exception:
+                LOGGER.exception('Error while removing table data owner.', exc_info=True)
 
     def add_owner(self, *, table_uri: str, owner: str) -> None:
         """
@@ -680,10 +714,8 @@ class AtlasProxy(BaseProxy):
             self.client.relationship.create_relationship(relationship=relationship)
 
         except Exception as ex:
-            LOGGER.exception('Error while adding the owner information. {}'
-                             .format(str(ex)))
-            raise BadRequest(f'User {owner} is already added as a data owner for '
-                             f'table {table_uri}.')
+            LOGGER.exception('Error while adding the owner information. {}', exc_info=True)
+            raise BadRequest(f'User {owner} is already added as a data owner for table {table_uri}.')
 
     def get_table_description(self, *,
                               table_uri: str) -> Union[str, None]:
@@ -692,7 +724,7 @@ class AtlasProxy(BaseProxy):
         :return: The description of the table as a string
         """
         entity = self._get_table_entity(table_uri=table_uri)
-        return entity.entity[self.ATTRS_KEY].get('description')
+        return entity.entity[CommonParams.attrs].get('description')
 
     def put_table_description(self, *,
                               table_uri: str,
@@ -721,8 +753,8 @@ class AtlasProxy(BaseProxy):
         # Check if the user glossary already exists
         glossaries = self.client.glossary.get_all_glossaries()
         for glossary in glossaries:
-            if glossary.get(self.QN_KEY) == self.AMUNDSEN_USER_TAGS:
-                return glossary[self.GUID_KEY]
+            if glossary.get(CommonParams.qn) == self.AMUNDSEN_USER_TAGS:
+                return glossary[CommonParams.guid]
 
         # If not already exists, create one
         glossary_def = AtlasGlossary({"name": self.AMUNDSEN_USER_TAGS,
@@ -772,7 +804,7 @@ class AtlasProxy(BaseProxy):
         entity = self._get_table_entity(table_uri=id)
 
         term = self._get_create_glossary_term(tag)
-        related_entity = AtlasRelatedObjectId({self.GUID_KEY: entity.entity[self.GUID_KEY],
+        related_entity = AtlasRelatedObjectId({CommonParams.guid: entity.entity[CommonParams.guid],
                                                "typeName": resource_type.name})
         self.client.glossary.assign_term_to_entities(term.guid, [related_entity])
 
@@ -798,7 +830,7 @@ class AtlasProxy(BaseProxy):
         assigned_entities = self.client.glossary.get_entities_assigned_with_term(term.guid, "ASC", -1, 0)
 
         for item in assigned_entities or list():
-            if item.get(self.GUID_KEY) == entity.entity[self.GUID_KEY]:
+            if item.get(CommonParams.guid) == entity.entity[CommonParams.guid]:
                 related_entity = AtlasRelatedObjectId(item)
                 return self.client.glossary.disassociate_term_from_entities(term.guid, [related_entity])
 
@@ -820,7 +852,7 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        col_guid = column_detail[self.GUID_KEY]
+        col_guid = column_detail[CommonParams.guid]
 
         self.client.entity.partial_update_entity_by_guid(
             entity_guid=col_guid, attr_value=description, attr_name='description'
@@ -838,20 +870,21 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        return column_detail[self.ATTRS_KEY].get('description')
+        return column_detail[CommonParams.attrs].get('description')
 
-    def _serialize_popular_tables(self, entities: list) -> List[PopularTable]:
+    def _serialize_popular_tables(self, entities: AtlasEntitiesWithExtInfo) -> List[PopularTable]:
         """
         Gets a list of entities and serialize the popular tables.
         :param entities: List of entities from atlas client
         :return: a list of PopularTable objects
         """
         popular_tables = list()
-        for table in entities:
+
+        for table in entities.entities:
             table_attrs = table.attributes
 
             table_qn = parse_table_qualified_name(
-                qualified_name=table_attrs.get(self.QN_KEY)
+                qualified_name=table_attrs.get(CommonParams.qn)
             )
 
             table_name = table_qn.get("table_name") or table_attrs.get('name')
@@ -876,13 +909,14 @@ class AtlasProxy(BaseProxy):
         :param num_entries: Number of popular tables to fetch
         :return: A List of popular tables instances
         """
-        popular_query_params = {'typeName': 'Table',
+        popular_query_params = {'typeName': TableTypes.table,
                                 'sortBy': 'popularityScore',
                                 'sortOrder': 'DESCENDING',
                                 'excludeDeletedEntities': True,
                                 'limit': num_entries}
         search_results = self.client.discovery.faceted_search(search_parameters=popular_query_params)
-        return self._serialize_popular_tables(search_results.entities)
+
+        return self._serialize_popular_tables(search_results)
 
     def get_latest_updated_ts(self) -> int:
         date = None
@@ -943,14 +977,13 @@ class AtlasProxy(BaseProxy):
     def _get_resources_followed_by_user(self, user_id: str, resource_type: str) \
             -> List[Union[PopularTable, DashboardSummary]]:
         """
-        ToDo (Verdan): Dashboard still needs to be implemented.
         Helper function to get the resource, table, dashboard etc followed by a user.
         :param user_id: User ID of a user
         :param resource_type: Type of a resource that returns, could be table, dashboard etc.
         :return: A list of PopularTable, DashboardSummary or any other resource.
         """
         params = {
-            'typeName': self.BOOKMARK_TYPE,
+            'typeName': CommonTypes.bookmark,
             'offset': '0',
             'limit': '1000',
             'excludeDeletedEntities': True,
@@ -958,81 +991,86 @@ class AtlasProxy(BaseProxy):
                 'condition': 'AND',
                 'criterion': [
                     {
-                        'attributeName': self.QN_KEY,
+                        'attributeName': CommonParams.qn,
                         'operator': 'contains',
                         'attributeValue': f'.{user_id}.bookmark'
                     },
                     {
-                        'attributeName': self.BOOKMARK_ACTIVE_KEY,
+                        'attributeName': Status.ACTIVE.lower(),
                         'operator': 'eq',
                         'attributeValue': 'true'
                     }
                 ]
             },
-            'attributes': ['count', self.QN_KEY, self.ENTITY_URI_KEY]
+            'attributes': ['count', CommonParams.qn, CommonParams.uri]
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
 
-        resources = []
+        resources: List[Union[PopularTable, DashboardSummary]] = []
+
         for record in search_results.entities:
-            table_info = self._extract_info_from_uri(table_uri=record.attributes[self.ENTITY_URI_KEY])
-            res = self._parse_bookmark_qn(record.attributes[self.QN_KEY])
-            resources.append(PopularTable(
-                database=table_info['entity'],
-                cluster=res['cluster'],
-                schema=res['db'],
-                name=res['table']))
+            if resource_type == ResourceType.Table.name:
+                table_info = self._extract_info_from_uri(table_uri=record.attributes[CommonParams.uri])
+                res = self._parse_bookmark_qn(record.attributes[CommonParams.qn])
+                resources.append(PopularTable(
+                    database=table_info['entity'],
+                    cluster=res['cluster'],
+                    schema=res['db'],
+                    name=res['table']))
+            elif resource_type == ResourceType.Dashboard.name:
+                # @todo finish this
+                pass
+            else:
+                raise NotImplementedError(f'resource type {resource_type} is not supported')
         return resources
 
     def _get_resources_owned_by_user(self, user_id: str, resource_type: str) \
             -> List[Union[PopularTable, DashboardSummary, Any]]:
         """
-        ToDo (Verdan): Dashboard still needs to be implemented.
         Helper function to get the resource, table, dashboard etc owned by a user.
+
         :param user_id: User ID of a user
         :param resource_type: Type of a resource that returns, could be table, dashboard etc.
         :return: A list of PopularTable, DashboardSummary or any other resource.
         """
-        resources = list()
+        resources: List[Union[PopularTable, DashboardSummary, Any]] = list()
 
         if resource_type == ResourceType.Table.name:
             type_regex = "(.*)_table$"
-            entity_type = 'Table'
-        # elif resource_type == ResourceType.Dashboard.name:
-        #     type_regex = "Dashboard"
-        #     entity_type = 'Dashboard'
+            entity_type = TableTypes.table
+            serialize_function = self._serialize_popular_tables
+        elif resource_type == ResourceType.Dashboard.name:
+            type_regex = 'Dashboard'
+            entity_type = DashboardTypes.metadata
+            serialize_function = self._serialize_dashboard_summaries
         else:
-            LOGGER.exception(f'Resource Type ({resource_type}) is not yet implemented')
-            raise NotImplemented
+            raise NotImplementedError(f'Resource Type ({resource_type}) is not yet implemented')
 
-        user_entity = self.client.entity.get_entity_by_attribute(type_name=self.USER_TYPE,
-                                                                 uniq_attributes=[(self.QN_KEY, user_id)]).entity
+        user_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
+                                                                 uniq_attributes=[(CommonParams.qn, user_id)]).entity
 
         if not user_entity:
-            LOGGER.exception(f'User ({user_id}) not found in Atlas')
             raise NotFoundException(f'User {user_id} not found.')
 
         resource_guids = set()
-        for item in user_entity[self.REL_ATTRS_KEY].get('owns') or list():
-            if (item['entityStatus'] == Status.ACTIVE and
-                    item['relationshipStatus'] == Status.ACTIVE and
-                    re.compile(type_regex).match(item['typeName'])):
-                resource_guids.add(item[self.GUID_KEY])
+        for item in self._filter_active(user_entity[CommonParams.rels].get('owns')) or list():
+            if re.compile(type_regex).match(item['typeName']):
+                resource_guids.add(item[CommonParams.guid])
 
-        owned_tables_query = f'{entity_type} where owner like "{user_id.lower()}*" and __state = "ACTIVE"'
-        table_entities = self.client.discovery.dsl_search(owned_tables_query)
+        owned_resources_query = f'{entity_type} where owner like "{user_id.lower()}*" and __state = "ACTIVE"'
+        entities = self.client.discovery.dsl_search(owned_resources_query)
 
-        for table in table_entities.entities or list():
-            resource_guids.add(table.guid)
+        for entity in entities.entities or list():
+            resource_guids.add(entity.guid)
 
         if resource_guids:
             resource_guids_chunks = AtlasProxy.split_list_to_chunks(list(resource_guids), 100)
 
             for chunk in resource_guids_chunks:
                 entities = self.client.entity.get_entities_by_guids(guids=list(chunk), ignore_relationships=True)
-                if resource_type == ResourceType.Table.name:
-                    resources += self._serialize_popular_tables(entities.entities)
+
+                resources += serialize_function(entities)
         else:
             LOGGER.info(f'User ({user_id}) does not own any "{resource_type}"')
 
@@ -1044,38 +1082,45 @@ class AtlasProxy(BaseProxy):
         for i in range(0, len(input_list), n):
             yield input_list[i:i + n]
 
-    def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
-            -> Dict[str, List[DashboardSummary]]:
-        pass
+    def _get_resource_by_user_relation(self, user_email: str, relation_type: UserResourceRel,
+                                       resource_type: ResourceType) -> Dict[str, Any]:
+        resources: List[Union[PopularTable, DashboardSummary]] = list()
+
+        if resource_type.name == ResourceType.Table.name:
+            resource = ResourceType.Table.name.lower()
+        elif resource_type.name == ResourceType.Table.name:
+            resource = ResourceType.Dashboard.name.lower()
+        else:
+            raise NotImplementedError(f'Resource type {resource_type.name} not supported.')
+
+        if relation_type == UserResourceRel.follow:
+            resources = self._get_resources_followed_by_user(user_id=user_email,
+                                                             resource_type=resource_type.name)
+        elif relation_type == UserResourceRel.own:
+            resources = self._get_resources_owned_by_user(user_id=user_email,
+                                                          resource_type=resource_type.name)
+
+        return {resource: resources}
+
+    def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
+        return self._get_resource_by_user_relation(user_email, relation_type, ResourceType.Dashboard)
 
     def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
-        tables = list()
-        if relation_type == UserResourceRel.follow:
-            tables = self._get_resources_followed_by_user(user_id=user_email,
-                                                          resource_type=ResourceType.Table.name)
-        elif relation_type == UserResourceRel.own:
-            tables = self._get_resources_owned_by_user(user_id=user_email,
-                                                       resource_type=ResourceType.Table.name)
-
-        return {'table': tables}
+        return self._get_resource_by_user_relation(user_email, relation_type, ResourceType.Table)
 
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, List[PopularTable]]:
-        user = self.client.entity.get_entity_by_attribute(type_name=self.USER_TYPE,
-                                                          uniq_attributes=[(self.QN_KEY, user_email)]).entity
+        user = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
+                                                          uniq_attributes=[(CommonParams.qn, user_email)]).entity
 
         readers_guids = []
-        for user_reads in user['relationshipAttributes'].get('entityReads'):
-            entity_status = user_reads['entityStatus']
-            relationship_status = user_reads['relationshipStatus']
-
-            if entity_status == Status.ACTIVE and relationship_status == Status.ACTIVE:
-                readers_guids.append(user_reads['guid'])
+        for user_reads in self._filter_active(user['relationshipAttributes'].get('entityReads')):
+            readers_guids.append(user_reads.get('guid'))
 
         readers = self.client.entity.get_entities_by_guids(guids=list(readers_guids), ignore_relationships=True)
 
         _results = {}
         for reader in readers.entities or list():
-            entity_uri = reader.attributes.get(self.ENTITY_URI_KEY)
+            entity_uri = reader.attributes.get(CommonParams.uri)
             count = reader.attributes.get('count')
 
             if count:
@@ -1104,10 +1149,10 @@ class AtlasProxy(BaseProxy):
                                       resource_type: ResourceType) -> None:
 
         if resource_type is not ResourceType.Table:
-            raise NotImplemented('resource type {} is not supported'.format(resource_type))
+            raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
-        entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = True
+        entity.entity[CommonParams.attrs][Status.ACTIVE.lower()] = True
         entity.update()
 
     def delete_resource_relation_by_user(self, *,
@@ -1116,10 +1161,10 @@ class AtlasProxy(BaseProxy):
                                          relation_type: UserResourceRel,
                                          resource_type: ResourceType) -> None:
         if resource_type is not ResourceType.Table:
-            raise NotImplemented('resource type {} is not supported'.format(resource_type))
+            raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
-        entity.entity[self.ATTRS_KEY][self.BOOKMARK_ACTIVE_KEY] = False
+        entity.entity[CommonParams.attrs][Status.ACTIVE.lower()] = False
         entity.update()
 
     def _parse_date(self, date: int) -> Optional[int]:
@@ -1133,12 +1178,11 @@ class AtlasProxy(BaseProxy):
         except Exception:
             return None
 
-    def _get_readers(self, entity: AtlasEntityWithExtInfo, top: Optional[int] = 15) -> List[Reader]:
+    def _get_readers(self, entity: AtlasEntityWithExtInfo, model: Any = Reader, top: Optional[int] = 15) \
+            -> List[Union[Reader, User]]:
         _readers = entity.get('relationshipAttributes', dict()).get('readers', list())
 
-        guids = [_reader.get('guid') for _reader in _readers
-                 if _reader.get('entityStatus', 'INACTIVE') == Status.ACTIVE
-                 and _reader.get('relationshipStatus', 'INACTIVE') == Status.ACTIVE]
+        guids = [_reader.get('guid') for _reader in self._filter_active(_readers)]
 
         if not guids:
             return []
@@ -1153,11 +1197,22 @@ class AtlasProxy(BaseProxy):
             if read_count >= int(app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']):
                 reader_qn = _reader.relationshipAttributes['user']['displayText']
                 reader_details = self._get_user_details(reader_qn)
-                reader = Reader(user=User(**reader_details), read_count=read_count)
+
+                if model == Reader:
+                    reader = Reader(user=User(**reader_details), read_count=read_count)
+                elif model == User:
+                    reader = User(**reader_details)
+                else:
+                    return []
 
                 _result.append(reader)
 
-        result = sorted(_result, key=attrgetter('read_count'), reverse=True)[:top]
+        if model == Reader:
+            result = sorted(_result, key=attrgetter('read_count'), reverse=True)[:top]
+        else:
+            result = _result
+
+        result = result[:top]
 
         return result
 
@@ -1182,24 +1237,217 @@ class AtlasProxy(BaseProxy):
 
         return list(result.values())
 
-    def get_dashboard(self,
-                      dashboard_uri: str,
-                      ) -> DashboardDetailEntity:
-        pass
+    def _serialize_dashboard_queries(self, queries: List[Dict]) -> List[DashboardQuery]:
+        """
+        Renders DashboardQuery from attributes
 
-    def get_dashboard_description(self, *,
-                                  id: str) -> Description:
-        pass
+        :param queries: list of dicts with query attributes
+        :returns List of DashboardQuery objects.
+        """
+        result = []
+
+        for query in queries:
+            name = query.get('name', '')
+            query_text = query.get('queryText', '')
+            url = query.get('url', '')
+
+            dashboard_query = DashboardQuery(name=name, query_text=query_text, url=url)
+
+            result.append(dashboard_query)
+
+        return result
+
+    def _get_dashboard_group(self, group_guid: str) -> AtlasEntityWithExtInfo:
+        """
+        Return raw DashboardGroup entity.
+
+        :param group_guid: guid of dashboard group entity.
+        :return : Atlas DashboardGroup entity.
+        """
+        entity = self.client.entity.get_entities_by_guids(guids=[group_guid]).entities[0]
+
+        return entity
+
+    def _get_dashboard_summary(self, entity: AtlasEntityWithExtInfo, executions: List[AtlasEntity]) -> Dict:
+        attributes = entity.entity[CommonParams.attrs]
+        relationships = entity.entity[CommonParams.rels]
+
+        group = self._get_dashboard_group(relationships.get('group').get('guid'))[CommonParams.attrs]
+
+        successful_executions = [e for e in executions if e.get('state') == 'succeeded']
+
+        try:
+            last_successful_execution = successful_executions[0]
+        except IndexError:
+            last_successful_execution = dict(timestamp=0)
+
+        chart_names = [e[CommonParams.attrs]['name'] for _, e in entity['referredEntities'].items()
+                       if e['typeName'] == DashboardTypes.chart]
+
+        result = dict(
+            uri=attributes.get('qualifiedName', ''),
+            cluster=attributes.get('cluster', ''),
+            group_name=relationships.get('group', dict()).get('displayText', ''),
+            group_url=group.get('url', ''),
+            product=attributes.get('product', ''),
+            name=attributes.get('name', ''),
+            url=attributes.get('url', ''),
+            last_successful_run_timestamp=last_successful_execution.get('timestamp', 0),
+            description=attributes.get('description', ''),
+            chart_names=chart_names)
+
+        return result
+
+    def _get_dashboard_details(self, entity: AtlasEntityWithExtInfo) -> Dict:
+        try:
+            attributes = entity.entity[CommonParams.attrs]
+            relationships = entity.entity[CommonParams.rels]
+
+            referred_entities = entity['referredEntities']
+
+            badges = self._serialize_badges(entity)
+            tags = self._serialize_tags(entity)
+
+            _executions = []
+            _queries = []
+
+            for k, v in referred_entities.items():
+                entity_type = v.get('typeName')
+
+                _attributes = v[CommonParams.attrs]
+
+                if entity_type == DashboardTypes.execution:
+                    _executions.append(_attributes)
+                elif entity_type == DashboardTypes.query:
+                    _queries.append(_attributes)
+
+            queries = self._serialize_dashboard_queries(_queries)
+            query_names = [q.name for q in queries]
+
+            table_guids = [t.get('guid') for t in self._filter_active(relationships.get('tables', []))]
+            _tables = self.client.entity.get_entities_by_guids(guids=table_guids)
+            tables = self._serialize_popular_tables(_tables)
+
+            executions_attributes = sorted(_executions, key=lambda x: x.get('timestamp', 0), reverse=True)
+
+            try:
+                last_execution = executions_attributes[0]
+            except IndexError:
+                last_execution = dict(timestamp=0, state='n/a')
+
+            owners = self._get_owners(relationships.get('ownedBy', []))
+            readers = self._get_readers(entity.entity, User)
+
+            result = self._get_dashboard_summary(entity, executions_attributes)
+
+            extra_spec = dict(
+                created_timestamp=attributes.get('createdTimestamp', 0),
+                updated_timestamp=attributes.get('lastModifiedTimestamp', 0),
+                owners=owners,
+                last_run_timestamp=last_execution.get('timestamp', 0),
+                last_run_state=last_execution.get('state', 'n/a'),
+                query_names=query_names,
+                queries=queries,
+                tables=tables,
+                tags=tags,
+                badges=badges,
+                recent_view_count=attributes.get('popularityScore', 0),
+                frequent_users=readers)
+
+            result.update(extra_spec)
+
+            return result
+        except Exception as e:
+            raise e
+
+    def _get_dashboard(self, qualified_name: str) -> AtlasEntityWithExtInfo:
+        """
+        Return raw Dasboard entity.
+
+        :param qualified_name: qualified name of the dashboard
+        :return : Atlas Dashboard entity.
+        """
+        entity = self.client.entity.get_entity_by_attribute(type_name=DashboardTypes.metadata,
+                                                            uniq_attributes=[(CommonParams.qn, qualified_name)])
+
+        return entity
+
+    def get_dashboard(self, id: str) -> DashboardDetailEntity:
+        entity = self._get_dashboard(id)
+
+        attributes = self._get_dashboard_details(entity)
+
+        return DashboardDetailEntity(**attributes)
+
+    def get_dashboard_description(self, *, id: str) -> Description:
+        """
+        Return dashboard description.
+
+        :param id:
+        :return: The description of the dashboard as a string
+        """
+        entity = self.client.entity.get_entity_by_attribute(type_name=DashboardTypes.metadata,
+                                                            uniq_attributes=[(CommonParams.qn, id)])
+
+        return entity.entity[CommonParams.attrs].get('description')
 
     def put_dashboard_description(self, *,
                                   id: str,
                                   description: str) -> None:
-        pass
+        """
+        Update the description of the given dashboard.
+
+        :param id: dashboard id (uri)
+        :param description: Description string
+        :return: None
+        """
+        entity = self.client.entity.get_entity_by_attribute(type_name=DashboardTypes.metadata,
+                                                            uniq_attributes=[(CommonParams.qn, id)])
+
+        self.client.entity.partial_update_entity_by_guid(
+            entity_guid=entity.entity.get('guid'), attr_value=description, attr_name='description'
+        )
+
+    def _serialize_dashboard_summaries(self, entities: AtlasEntitiesWithExtInfo) -> List[DashboardSummary]:
+        """
+        Returns dashboards summary for dashboards using specific table.
+
+        """
+        result = []
+
+        for _dashboard in entities.entities:
+            try:
+                if _dashboard.status == Status.ACTIVE:
+                    executions = [entities['referredEntities'].get(e.get('guid'))[CommonParams.attrs]
+                                  for e in self._filter_active(_dashboard[CommonParams.rels].get('executions', []))]
+
+                    dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
+
+                    summary = DashboardSummary(**self._get_dashboard_summary(dashboard, executions))
+
+                    result.append(summary)
+            except (KeyError, AttributeError) as ex:
+                LOGGER.exception(f'Error while accessing table report: {str(dashboard)}.', exc_info=True)
+
+        return result
 
     def get_resources_using_table(self, *,
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
-        return {}
+        if resource_type == ResourceType.Dashboard:
+            resource = 'dashboards'
+            serialize_function = self._serialize_dashboard_summaries
+        else:
+            raise NotImplementedError(f'{resource_type} is not supported')
+
+        table = self._get_table_entity(table_uri=id)
+
+        guids = [d.get('guid') for d in self._filter_active(table.entity[CommonParams.rels].get(resource, []))]
+
+        entities = self.client.entity.get_entities_by_guids(guids=guids)
+        result = serialize_function(entities)
+
+        return {resource: result}
 
     def get_lineage(self, *,
                     id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
