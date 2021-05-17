@@ -39,7 +39,7 @@ class FeatureLineageAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
-    @swag_from('swagger_doc/table/lineage_get.yml')
+    @swag_from('swagger_doc/feature/lineage_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
         pass
 
@@ -82,11 +82,11 @@ class FeatureOwnerAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
-    @swag_from('swagger_doc/table/owner_put.yml')
+    @swag_from('swagger_doc/feature/owner_put.yml')
     def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         pass
 
-    @swag_from('swagger_doc/table/owner_delete.yml')
+    @swag_from('swagger_doc/feature/owner_delete.yml')
     def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         pass
 
@@ -119,11 +119,37 @@ class FeatureTagAPI(Resource):
 
     @swag_from('swagger_doc/tag/tag_put.yml')
     def put(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        # use tag_type to distinguish between tag and badge
+        tag_type = args.get('tag_type', 'default')
+
+        if tag_type == 'owner':
+            return \
+                {'message': f'The tag {tag} for id {id} with type {tag_type} '
+                            f'and resource_type {ResourceType.Feature.name} is '
+                            'not added successfully because owner tags are not editable'}, \
+                        HTTPStatus.CONFLICT
+
+        return self._tag_common.put(id=id,
+                                    resource_type=ResourceType.Feature,
+                                    tag=tag,
+                                    tag_type=tag_type)
 
     @swag_from('swagger_doc/tag/tag_delete.yml')
     def delete(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        tag_type = args.get('tag_type', 'default')
+        if tag_type == 'owner':
+            return \
+                {'message': f'The tag {tag} for id {id} with type {tag_type} '
+                            f'and resource_type {ResourceType.Feature.name} is '
+                            'not deleted because owner tags are not editable'}, \
+                        HTTPStatus.CONFLICT
+
+        return self._tag_common.delete(id=id,
+                                       resource_type=ResourceType.Table,
+                                       tag=tag,
+                                       tag_type=tag_type)
 
 
 class FeatureBadgeAPI(Resource):
