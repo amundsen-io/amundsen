@@ -1094,17 +1094,17 @@ class TestNeo4jProxy(unittest.TestCase):
             key = "alpha"
             mock_execute.return_value.single.side_effect = [{
                 "upstream_entities": [
-                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100},
+                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100, "parent": None},
                     {"key": "gamma", "source": "dyno", "level": 1,
                      "badges":
                         [
                             {"key": "badge1", "category": "default"},
                             {"key": "badge2", "category": "default"},
                         ],
-                     "usage": 200},
+                     "usage": 200, "parent": None},
                 ],
                 "downstream_entities": [
-                    {"key": "delta", "source": "gold", "level": 1, "badges": [], "usage": 50},
+                    {"key": "delta", "source": "gold", "level": 1, "badges": [], "usage": 50, "parent": None},
                 ]
             }]
 

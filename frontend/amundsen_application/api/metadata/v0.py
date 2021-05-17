@@ -800,7 +800,9 @@ def get_table_lineage() -> Response:
     try:
         table_endpoint = _get_table_endpoint()
         table_key = get_query_param(request.args, 'key')
-        url = f'{table_endpoint}/{table_key}/lineage'
+        depth = get_query_param(request.args, 'depth')
+        direction = get_query_param(request.args, 'direction')
+        url = f'{table_endpoint}/{table_key}/lineage?depth={depth}&direction={direction}'
         response = request_metadata(url=url, method=request.method)
         json = response.json()
         downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]

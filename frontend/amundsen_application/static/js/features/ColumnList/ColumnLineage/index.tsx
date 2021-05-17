@@ -5,9 +5,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { emptyLineage } from 'ducks/tableMetadata/reducer';
+import { initialLineageState } from 'ducks/lineage/reducer';
 import { getColumnLineageLink } from 'config/config-utils';
-import { Lineage, LineageItem, TableMetadata } from 'interfaces/TableMetadata';
+import { TableMetadata } from 'interfaces/TableMetadata';
+import { Lineage, LineageItem } from 'interfaces/Lineage';
 import { logClick } from 'utils/analytics';
 import ColumnLineageLoader from '../ColumnLineageLoader';
 import {
@@ -135,10 +136,11 @@ export const mapStateToProps = (
   state: GlobalState,
   ownProps: ColumnLineageListOwnProps
 ) => {
-  const { columnLineageMap, tableData } = state.tableMetadata;
+  const { tableData } = state.tableMetadata;
+  const { columnLineageMap } = state.lineage;
   const columnStateObject = columnLineageMap[ownProps.columnName];
   const lineage =
-    (columnStateObject && columnStateObject.lineage) || emptyLineage;
+    (columnStateObject && columnStateObject.lineageTree) || initialLineageState;
   const isLoading = columnStateObject && columnStateObject.isLoading;
   return {
     tableData,
