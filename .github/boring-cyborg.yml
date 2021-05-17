@@ -56,7 +56,7 @@ labelPRBasedOnFilePath:
     - search/search_service/models/**/*
 
   category:proxy:
-    - metadata/metadata_serivce/proxy/**/*
+    - metadata/metadata_service/proxy/**/*
     - search/search_service/proxy/**/*
 
 firstPRWelcomeComment: >
