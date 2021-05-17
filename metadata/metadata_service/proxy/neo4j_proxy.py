@@ -1674,9 +1674,9 @@ class Neo4jProxy(BaseProxy):
 
         if not feature_records:
             raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
-        LOGGER.info(feature_records)
+
         feature_records = feature_records.single()
-        LOGGER.info(feature_records)
+
         watermarks = []
         for record in feature_records['wmk_records']:
             if record['key'] is not None:
