@@ -1220,31 +1220,39 @@ Support for native execution of pandas-profiling on Spark Dataframe is currently
 import pandas as pd
 import pandas_profiling
 from pyhocon import ConfigFactory
+from sqlalchemy import create_engine
 
 from databuilder.extractor.pandas_profiling_column_stats_extractor import PandasProfilingColumnStatsExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
 from databuilder.task.task import DefaultTask
 
-table_file = '/tmp/transactions_table.csv'
+# Load table contents to pandas dataframe
+db_uri = 'postgresql://superset:superset@localhost:5432/superset'
+engine = create_engine(db_uri, echo=True)
+
+df = pd.read_sql_table(
+    'video_game_sales',
+    con=engine
+)
+
+# Calculate pandas-profiling report on a table
 report_file = '/tmp/table_report.json'
 
-df = pd.read_csv(table_file)
-
 report = df.profile_report(sort=None)
-
 report.to_file(report_file)
 
+# Run PandasProfilingColumnStatsExtractor on calculated report
 tmp_folder = f'/tmp/amundsen/column_stats'
 
 dict_config = {
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': False,
-    'extractor.pandas_profiling.table_name': 'transactions_table',
-    'extractor.pandas_profiling.schema_name': 'prod',
-    'extractor.pandas_profiling.database_name': 'hive',
-    'extractor.pandas_profiling.cluster_name': 'gold',
+    'extractor.pandas_profiling.table_name': 'video_game_sales',
+    'extractor.pandas_profiling.schema_name': 'superset',
+    'extractor.pandas_profiling.database_name': 'postgres',
+    'extractor.pandas_profiling.cluster_name': 'dev',
     'extractor.pandas_profiling.file_path': report_file
 }
 
