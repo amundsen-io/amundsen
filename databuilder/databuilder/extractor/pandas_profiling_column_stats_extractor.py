@@ -122,7 +122,7 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         report = self._load_report()
 
         variables = report.get('variables', dict())
-        report_time = self._get_report_time(report)
+        report_time = self.parse_date(report.get('analysis', dict()).get('date_start'))
 
         for column_name, column_stats in variables.items():
             for _stat_name, stat_value in column_stats.items():
@@ -155,19 +155,17 @@ class PandasProfilingColumnStatsExtractor(Extractor):
             return {}
 
     @staticmethod
-    def _get_report_time(report: Dict[str, Any]) -> str:
-        _date = report.get('analysis', dict()).get('date_start')
-        result = '0'
+    def parse_date(string_date: str) -> str:
+        try:
+            date_parsed = dateutil.parser.parse(string_date)
 
-        if _date:
-            _date = f'{_date}+0000'
+            # date from pandas-profiling doesn't contain timezone so to be timezone safe we need to assume it's utc
+            if not date_parsed.tzname():
+                return PandasProfilingColumnStatsExtractor.parse_date(f'{string_date}+0000')
 
-            try:
-                result = str(int(dateutil.parser.parse(_date).timestamp()))
-            except Exception:
-                pass
-
-        return result
+            return str(int(date_parsed.timestamp()))
+        except Exception:
+            return '0'
 
     def round_value(self, value: float) -> float:
         return round(value, self.conf.get(PandasProfilingColumnStatsExtractor.PRECISION))
