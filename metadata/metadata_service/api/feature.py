@@ -147,7 +147,7 @@ class FeatureTagAPI(Resource):
                         HTTPStatus.CONFLICT
 
         return self._tag_common.delete(id=id,
-                                       resource_type=ResourceType.Table,
+                                       resource_type=ResourceType.Feature,
                                        tag=tag,
                                        tag_type=tag_type)
 
