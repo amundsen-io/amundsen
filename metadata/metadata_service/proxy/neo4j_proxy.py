@@ -1628,7 +1628,7 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
-    def _classify_tags(self, tag_records) -> Tuple:
+    def _classify_tags(self, tag_records: List) -> Tuple:
         tags = []
         owner_tags = []
         for record in tag_records:
