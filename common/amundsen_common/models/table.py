@@ -6,6 +6,8 @@ from typing import List, Optional
 import attr
 
 from amundsen_common.models.user import User
+from amundsen_common.models.badge import Badge
+from amundsen_common.models.tag import Tag
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
@@ -18,30 +20,6 @@ class Reader:
 class ReaderSchema(AttrsSchema):
     class Meta:
         target = Reader
-        register_as_scheme = True
-
-
-@attr.s(auto_attribs=True, kw_only=True)
-class Tag:
-    tag_type: str
-    tag_name: str
-
-
-class TagSchema(AttrsSchema):
-    class Meta:
-        target = Tag
-        register_as_scheme = True
-
-
-@attr.s(auto_attribs=True, kw_only=True)
-class Badge:
-    badge_name: str = attr.ib()
-    category: str = attr.ib()
-
-
-class BadgeSchema(AttrsSchema):
-    class Meta:
-        target = Badge
         register_as_scheme = True
 
 

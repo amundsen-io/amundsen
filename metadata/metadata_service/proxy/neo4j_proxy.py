@@ -10,6 +10,7 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
@@ -410,8 +411,7 @@ class Neo4jProxy(BaseProxy):
                                                              'key': uri})
 
             if not result.single():
-                raise NotFoundException('Failed to update the description as '
-                                        'resource {uri} does not exist'.format(uri=uri))
+                raise NotFoundException(f'Failed to update the description as resource {uri} does not exist')
 
             # end neo4j transaction
             tx.commit()
@@ -507,10 +507,8 @@ class Neo4jProxy(BaseProxy):
                                                              'column_key': column_uri})
 
             if not result.single():
-                raise NotFoundException('Failed to update the table {tbl} '
-                                        'column {col} description as either '
-                                        'table or column does not exist'.format(tbl=table_uri,
-                                                                                col=column_uri))
+                raise NotFoundException(f'Failed to update the table {table_uri} column '
+                                        f'{column_uri} description as either table or column does not exist')
 
             # end neo4j transaction
             tx.commit()
@@ -1627,3 +1625,6 @@ class Neo4jProxy(BaseProxy):
                           "upstream_entities": upstream_tables,
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
+
+    def get_feature(self, *, feature_uri: str) -> Feature:
+        pass

@@ -48,7 +48,6 @@ components:
           type: integer
           description: 'Count of times used'
     Badge:
-    # TODO add column level badges later, probably will use this same object
         type: object
         properties:
           badge_name:
@@ -251,6 +250,66 @@ components:
           is_view:
             type: boolean
             description: 'If the table is a view'
+    FeatureDetail:
+      type: object
+      properties:
+        key:
+          type: string
+          description: 'Unique identifier for the feature'
+          example: 'test_feature_group_name/test_feature_name/1.2.0'
+        feature_name:
+          type: string
+          description: 'Name of the feature'
+        version:
+          type: string
+          description: 'Version of the feature'
+        feature_group:
+          type: string
+          description: 'Feature group the feature belongs to'
+        entity:
+          type: array
+          description: 'Way of grouping features semantically by using nouns'
+          items:
+            type: string
+        data_type:
+          type: string
+          description: 'Type of the dtaa in the feature'
+        availability:
+          type: array
+          description: 'Services where feature is available'
+          items:
+            type: string
+        description:
+          type: string
+          description: 'Feature description'
+        owner_tags:
+          type: array
+          description: 'Tags specified programmatically'
+          items:
+            $ref: '#/components/schemas/TagFields'
+        tags:
+          type: array
+          description: 'Tags attached to the feature'
+          items:
+            $ref: '#/components/schemas/TagFields'
+        badges:
+          type: array
+          description: 'Badges associated with the feature'
+          items:
+            $ref: '#/components/schemas/TagFields'
+        owners:
+          type: array
+          description: 'Owners of the feature'
+          items:
+            $ref: '#/components/schemas/UserFields'
+        watermarks:
+          type: array
+          description: 'Watermarks of the feature'
+          items:
+            $ref: '#/components/schemas/WatermarkFields'
+        last_updated_timestamp:
+          type: integer
+          description: 'Epoch timestamp of when it was last updated'
     Lineage:
       type: object
       properties:
@@ -271,7 +330,7 @@ components:
           description: 'upstream entities from key'
           items:
             $ref: '#/components/schemas/LineageItem'
-        upstream_entities:
+        downstream_entities:
           type: array
           description: 'downstream entities from key'
           items:

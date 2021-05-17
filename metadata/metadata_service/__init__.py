@@ -21,6 +21,13 @@ from metadata_service.api.dashboard import (DashboardBadgeAPI,
                                             DashboardDescriptionAPI,
                                             DashboardDetailAPI,
                                             DashboardTagAPI)
+from metadata_service.api.feature import (FeatureBadgeAPI,
+                                          FeatureDescriptionAPI,
+                                          FeatureDetailAPI,
+                                          FeatureGenerationCodeAPI,
+                                          FeatureLineageAPI, FeatureOwnerAPI,
+                                          FeatureSampleAPI, FeatureStatsAPI,
+                                          FeatureTagAPI)
 from metadata_service.api.healthcheck import healthcheck
 from metadata_service.api.popular_tables import PopularTablesAPI
 from metadata_service.api.system import Neo4jDetailAPI, StatisticsMetricsAPI
@@ -144,6 +151,23 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/dashboard/<path:id>/tag/<tag>')
     api.add_resource(DashboardBadgeAPI,
                      '/dashboard/<path:id>/badge/<badge>')
+    api.add_resource(FeatureDetailAPI, '/feature/<path:feature_uri>')
+    api.add_resource(FeatureDescriptionAPI,
+                     '/feature/<path:id>/description')
+    api.add_resource(FeatureTagAPI,
+                     '/feature/<path:id>/tag/<tag>')
+    api.add_resource(FeatureBadgeAPI,
+                     '/feature/<path:id>/badge/<badge>')
+    api.add_resource(FeatureLineageAPI,
+                     '/feature/<path:id>/lineage')
+    api.add_resource(FeatureOwnerAPI,
+                     '/feature/<path:feature_uri>/owner/<owner>')
+    api.add_resource(FeatureStatsAPI,
+                     '/feature/<path:id>/stats')
+    api.add_resource(FeatureSampleAPI,
+                     '/feature/<path:id>/sample_data')
+    api.add_resource(FeatureGenerationCodeAPI,
+                     '/feature/<path:id>/generation_code')
     app.register_blueprint(api_bp)
 
     if app.config.get('SWAGGER_ENABLED'):
