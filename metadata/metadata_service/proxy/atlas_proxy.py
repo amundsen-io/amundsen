@@ -1088,7 +1088,7 @@ class AtlasProxy(BaseProxy):
 
         if resource_type.name == ResourceType.Table.name:
             resource = ResourceType.Table.name.lower()
-        elif resource_type.name == ResourceType.Table.name:
+        elif resource_type.name == ResourceType.Dashboard.name:
             resource = ResourceType.Dashboard.name.lower()
         else:
             raise NotImplementedError(f'Resource type {resource_type.name} not supported.')
