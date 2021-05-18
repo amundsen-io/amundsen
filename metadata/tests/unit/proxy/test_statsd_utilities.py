@@ -58,7 +58,7 @@ class TestStatsdUtilities(unittest.TestCase):
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             neo4j_proxy.add_owner(table_uri='bogus_uri', owner='foo')
 
-            self.assertEqual(mock_success_incr.call_count, 1)
+            self.assertEqual(mock_success_incr.call_count, 2)
 
 
 if __name__ == '__main__':
