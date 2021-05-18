@@ -87,12 +87,25 @@ class FeatureOwnerAPI(Resource):
         self.client = get_proxy_client()
 
     @swag_from('swagger_doc/feature/owner_put.yml')
-    def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+    def put(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.add_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} '
+                               'was added successfully'}, HTTPStatus.OK
+        except Exception:
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} was '
+                               'not added successfully'}, HTTPStatus.INTERNAL_SERVER_ERROR
+
 
     @swag_from('swagger_doc/feature/owner_delete.yml')
-    def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+    def delete(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.delete_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} '
+                               'was deleted successfully'}, HTTPStatus.OK
+        except Exception:
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} '
+                               'was not deleted successfully'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureDescriptionAPI(Resource):

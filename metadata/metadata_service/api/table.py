@@ -74,7 +74,7 @@ class TableOwnerAPI(Resource):
     @swag_from('swagger_doc/table/owner_put.yml')
     def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.client.add_owner(table_uri=table_uri, owner=owner)
+            self.client.add_owner(uri=table_uri, resource_type=ResourceType.Table, owner=owner)
             return {'message': 'The owner {} for table_uri {} '
                                'is added successfully'.format(owner,
                                                               table_uri)}, HTTPStatus.OK
@@ -86,7 +86,7 @@ class TableOwnerAPI(Resource):
     @swag_from('swagger_doc/table/owner_delete.yml')
     def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.client.delete_owner(table_uri=table_uri, owner=owner)
+            self.client.delete_owner(uri=table_uri, resource_type=ResourceType.Table, owner=owner)
             return {'message': 'The owner {} for table_uri {} '
                                'is deleted successfully'.format(owner,
                                                                 table_uri)}, HTTPStatus.OK

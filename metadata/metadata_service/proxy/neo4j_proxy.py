@@ -529,7 +529,8 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def add_owner(self, *,
-                  table_uri: str,
+                  uri: str,
+                  resource_type: ResourceType,
                   owner: str) -> None:
         """
         Update table owner informations.
@@ -546,22 +547,22 @@ class Neo4jProxy(BaseProxy):
         """)
 
         upsert_owner_relation_query = textwrap.dedent("""
-        MATCH (n1:User {key: $user_email}), (n2:Table {key: $tbl_key})
+        MATCH (n1:User {{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
         MERGE (n1)-[r1:OWNER_OF]->(n2)-[r2:OWNER]->(n1)
         RETURN n1.key, n2.key
-        """)
+        """.format(resource_type=resource_type.name))
 
         try:
             tx = self._driver.session().begin_transaction()
             # upsert the node
             tx.run(create_owner_query, {'user_email': owner})
             result = tx.run(upsert_owner_relation_query, {'user_email': owner,
-                                                          'tbl_key': table_uri})
+                                                          'res_key': uri})
 
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
-                                   'owner {owner} and table {tbl}'.format(owner=owner,
-                                                                          tbl=table_uri))
+                                   'owner {owner} and resource {uri}'.format(owner=owner,
+                                                                          uri=uri))
             tx.commit()
         except Exception as e:
             if not tx.closed():
@@ -571,7 +572,8 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def delete_owner(self, *,
-                     table_uri: str,
+                     uri: str,
+                     resource_type: ResourceType,
                      owner: str) -> None:
         """
         Delete the owner / owned_by relationship.
@@ -580,15 +582,15 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
         delete_query = textwrap.dedent("""
-        MATCH (n1:User{key: $user_email}), (n2:Table {key: $tbl_key})
+        MATCH (n1:User{{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
         OPTIONAL MATCH (n1)-[r1:OWNER_OF]->(n2)
         OPTIONAL MATCH (n2)-[r2:OWNER]->(n1)
         DELETE r1,r2
-        """)
+        """.format(resource_type=resource_type.name))
         try:
             tx = self._driver.session().begin_transaction()
             tx.run(delete_query, {'user_email': owner,
-                                  'tbl_key': table_uri})
+                                  'res_key': uri})
         except Exception as e:
             # propagate the exception back to api
             if not tx.closed():
