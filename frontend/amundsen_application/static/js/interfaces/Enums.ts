@@ -62,6 +62,7 @@ export enum IconType {
   POSTGRES = 'icon-postgres',
   REDSHIFT = 'icon-redshift',
   SNOWFLAKE = 'icon-snowflake',
+  SUPERSET = 'icon-superset',
 }
 
 // Icon sizes

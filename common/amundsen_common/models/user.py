@@ -4,7 +4,7 @@
 from typing import Any, Optional, Dict
 
 import attr
-from marshmallow import ValidationError, validates_schema, pre_load
+from marshmallow import EXCLUDE, ValidationError, validates_schema, pre_load
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 """
@@ -46,6 +46,7 @@ class UserSchema(AttrsSchema):
     class Meta:
         target = User
         register_as_scheme = True
+        unknown = EXCLUDE
 
     # noinspection PyMethodMayBeStatic
     def _str_no_value(self, s: Optional[str]) -> bool:

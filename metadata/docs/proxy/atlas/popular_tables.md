@@ -13,7 +13,7 @@ The suggested formula to generate the popularity score is provided below and sho
 Popularity score = number of distinct readers * log(total number of reads)
 ``` 
 
-`Table` entity definition with `popularityScore` attribute [amundsenatlastypes==1.0.2](https://github.com/dwarszawski/amundsen-atlas-types/blob/master/amundsenatlastypes/schema/01_2_table_schema.json). 
+`Table` entity definition with `popularityScore` attribute [amundsenatlastypes==1.2.0](https://github.com/dwarszawski/amundsen-atlas-types/blob/master/amundsenatlastypes/schema/01_2_table_schema.json). 
 
 ```json
     {

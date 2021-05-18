@@ -5,6 +5,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
@@ -181,4 +182,8 @@ class BaseProxy(metaclass=ABCMeta):
         :param depth: the level of lineage requested (ex: 1 would mean only nodes directly connected
         to the current id in whatever direction is specified)
         """
+        pass
+
+    @abstractmethod
+    def get_feature(self, *, feature_uri: str) -> Feature:
         pass

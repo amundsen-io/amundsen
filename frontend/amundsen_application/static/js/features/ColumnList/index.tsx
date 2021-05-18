@@ -7,8 +7,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { OpenRequestAction } from 'ducks/notification/types';
-import { GetColumnLineageRequest } from 'ducks/tableMetadata/types';
-import { getColumnLineage } from 'ducks/tableMetadata/reducer';
 
 import EditableSection from 'components/EditableSection';
 import Table, {
@@ -36,6 +34,8 @@ import {
 import BadgeList from 'features/BadgeList';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 import { logAction } from 'utils/analytics';
+import { getTableColumnLineage } from 'ducks/lineage/reducer';
+import { GetTableColumnLineageRequest } from 'ducks/lineage/types';
 import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
@@ -67,7 +67,7 @@ export interface DispatchFromProps {
   getColumnLineageDispatch: (
     key: string,
     columnName: string
-  ) => GetColumnLineageRequest;
+  ) => GetTableColumnLineageRequest;
 }
 
 export type ColumnListProps = ComponentProps & DispatchFromProps;
@@ -373,7 +373,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
 };
 
 export const mapDispatchToProps = (dispatch: any) =>
-  bindActionCreators({ getColumnLineageDispatch: getColumnLineage }, dispatch);
+  bindActionCreators(
+    { getColumnLineageDispatch: getTableColumnLineage },
+    dispatch
+  );
 
 export default connect<{}, DispatchFromProps, ComponentProps>(
   null,

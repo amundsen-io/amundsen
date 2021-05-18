@@ -332,6 +332,20 @@ export function isColumnListLineageEnabled() {
 }
 
 /**
+ * Returns whether the in-app table lineage page is enabled.
+ */
+export function isTableLineagePageEnabled() {
+  return AppConfig.tableLineage.inAppPageEnabled;
+}
+
+/**
+ * Returns whether the in-app column lineage page is enabled.
+ */
+export function isColumnLineagePageEnabled() {
+  return AppConfig.columnLineage.inAppPageEnabled;
+}
+
+/**
  * Returns the lineage link for a given column
  */
 export function getColumnLineageLink(
