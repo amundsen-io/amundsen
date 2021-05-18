@@ -119,7 +119,7 @@ class FeatureDescriptionAPI(Resource):
         """
         try:
             description = self.client.get_resource_description(resource_type=ResourceType.Feature,
-                                                                uri=id).description
+                                                               uri=id).description
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
@@ -136,7 +136,7 @@ class FeatureDescriptionAPI(Resource):
         try:
             description = json.loads(request.data).get('description')
             self.client.put_resource_description(resource_type=ResourceType.Feature,
-                                                  uri=id, description=description)
+                                                 uri=id, description=description)
             return None, HTTPStatus.OK
 
         except NotFoundException:

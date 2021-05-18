@@ -1479,4 +1479,3 @@ class AtlasProxy(BaseProxy):
                               resource_type: ResourceType,
                               owner: str) -> None:
         pass
-

@@ -1768,6 +1768,7 @@ class AbstractGremlinProxy(BaseProxy):
                               owner: str) -> None:
         pass
 
+
 class GenericGremlinProxy(AbstractGremlinProxy):
     """
     A generic Gremlin proxy
