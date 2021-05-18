@@ -1456,3 +1456,15 @@ class AtlasProxy(BaseProxy):
 
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
+
+    def get_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str) -> Description:
+        pass
+
+    def put_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str,
+                                 description: str) -> None:
+        pass
+
