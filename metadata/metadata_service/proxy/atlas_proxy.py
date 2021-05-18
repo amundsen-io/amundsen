@@ -4,13 +4,15 @@
 import datetime
 import logging
 import re
+from collections import defaultdict
 from operator import attrgetter
 from random import randint
-from typing import Any, Dict, Generator, List, Optional, Pattern, Tuple, Union
+from typing import (Any, Dict, Generator, List, Optional, Set, Tuple, Type,
+                    Union)
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
-from amundsen_common.models.lineage import Lineage
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.query import Query
 from amundsen_common.models.table import (Badge, Column,
@@ -18,6 +20,11 @@ from amundsen_common.models.table import (Badge, Column,
                                           ResourceReport, Stat, Table, Tag,
                                           User, Watermark)
 from amundsen_common.models.user import User as UserEntity
+from amundsen_common.utils.atlas_utils import (AtlasColumnKey,
+                                               AtlasCommonParams,
+                                               AtlasCommonTypes,
+                                               AtlasDashboardTypes, AtlasTableTypes,
+                                               AtlasStatus, AtlasTableKey)
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,
                                          AtlasGlossaryTerm)
@@ -46,112 +53,6 @@ LOGGER = logging.getLogger(__name__)
 
 # Expire cache every 11 hours + jitter
 _ATLAS_PROXY_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
-
-
-class Status:
-    ACTIVE = 'ACTIVE'
-    DELETED = 'DELETED'
-
-
-class CommonParams:
-    qn = 'qualifiedName'
-    guid = 'guid'
-    attrs = 'attributes'
-    rels = 'relationshipAttributes'
-    uri = 'entityUri'
-
-
-class CommonTypes:
-    bookmark = 'Bookmark'
-    user = 'User'
-    reader = 'Reader'
-
-
-class TableTypes:
-    table = 'Table'
-
-
-class DashboardTypes:
-    metadata = 'Dashboard'
-    group = 'DashboardGroup'
-    query = 'DashboardQuery'
-    chart = 'DashboardChart'
-    execution = 'DashboardExecution'
-
-
-# TODO: Move this to amundsencommon
-DEFAULT_TABLE_QN_REGEX = re.compile(r"""
-    ^(?P<db_name>.*?)\.(?P<table_name>.*)@(?P<cluster_name>.*?)$
-    """, re.X)
-
-# TODO: Move this to amundsencommon
-DEFAULT_DB_CLUSTER = 'default'
-
-
-# TODO: Move this to amundsencommon
-def parse_table_qualified_name(qualified_name: str, qn_regex: Pattern = DEFAULT_TABLE_QN_REGEX) -> Dict:
-    """
-    Parses the Atlas' table qualified name
-    :param qualified_name: Qualified Name of the table
-    :param qn_regex: Default Qualified Name regex.
-    :return: A dictionary consisting of database name,
-    table name and cluster name of the table.
-    If database or cluster name not found,
-    then uses the 'atlas_default' as both of them.
-    """
-
-    def apply_qn_regex(name: str, table_qn_regex: Pattern) -> Any:
-        return table_qn_regex.match(name)
-
-    _regex_result = apply_qn_regex(qualified_name, qn_regex)
-
-    if not _regex_result:
-        qn_regex = re.compile(r"""
-        ^(?P<table_name>.*)@(?P<cluster_name>.*?)$
-        """, re.X)
-        _regex_result = apply_qn_regex(qualified_name, qn_regex)
-
-    if not _regex_result:
-        qn_regex = re.compile(r"""
-        ^(?P<db_name>.*?)\.(?P<table_name>.*)$
-        """, re.X)
-        _regex_result = apply_qn_regex(qualified_name, qn_regex)
-
-    if not _regex_result:
-        qn_regex = re.compile(r"""
-        ^(?P<table_name>.*)$
-        """, re.X)
-        _regex_result = apply_qn_regex(qualified_name, qn_regex)
-
-    _regex_result = _regex_result.groupdict()
-
-    qn_dict = {
-        'table_name': _regex_result.get('table_name', qualified_name),
-        'db_name': _regex_result.get('db_name', DEFAULT_DB_CLUSTER),
-        'cluster_name': _regex_result.get('cluster_name', DEFAULT_DB_CLUSTER),
-    }
-
-    return qn_dict
-
-
-# TODO: Move this to amundsencommon
-def make_table_qualified_name(table_name: str, cluster: Optional[Any] = None, db: Optional[Any] = None) -> str:
-    """
-    Based on the given parameters, generate the Atlas' table qualified Name
-    :param db: Database Name of the table
-    :param table_name: Table Name
-    :param cluster: Cluster Name of the table
-    :return: A string i.e., Qualified Name of the table
-    If database or cluster name are 'atlas_default', then simply strips that part.
-    """
-    qualified_name = table_name
-    if db and db != DEFAULT_DB_CLUSTER:
-        qualified_name = f'{db}.{qualified_name}'
-
-    if cluster and cluster != DEFAULT_DB_CLUSTER:
-        qualified_name = f'{qualified_name}@{cluster}'
-
-    return qualified_name
 
 
 # noinspection PyMethodMayBeStatic
@@ -183,29 +84,6 @@ class AtlasProxy(BaseProxy):
         protocol = 'https' if encrypted else 'http'
         self.client = AtlasClient(f'{protocol}://{host}:{port}', (user, password))
         self.client.session.verify = validate_ssl
-
-    def _extract_info_from_uri(self, *, table_uri: str) -> Dict:
-        """
-        Extracts the table information from table_uri coming from frontend.
-        :param table_uri:
-        :return: Dictionary object, containing following information:
-        entity: Type of entity example: rdbms_table, hive_table etc.
-        cluster: Cluster information
-        db: Database Name
-        name: Table Name
-        """
-        pattern = re.compile(r"""
-            ^   (?P<entity>.*?)
-            :\/\/
-                (?P<cluster>.*)
-            \.
-                (?P<db>.*?)
-            \/
-                (?P<name>.*?)
-            $
-        """, re.X)
-        result = pattern.match(table_uri)
-        return result.groupdict() if result else dict()
 
     def _parse_bookmark_qn(self, bookmark_qn: str) -> Dict:
         """
@@ -250,9 +128,10 @@ class AtlasProxy(BaseProxy):
         """
         Filter out active entities based on entity end relationship status.
         """
+        print(entities)
         result = [e for e in entities
-                  if e.get('relationshipStatus') == Status.ACTIVE
-                  and e.get('entityStatus') == Status.ACTIVE]
+                  if e.get('relationshipStatus') == AtlasStatus.ACTIVE
+                  and e.get('entityStatus') == AtlasStatus.ACTIVE]
 
         return result
 
@@ -262,15 +141,12 @@ class AtlasProxy(BaseProxy):
         :param table_uri: The table URI coming from Amundsen Frontend
         :return: A table entity matching the Qualified Name derived from table_uri
         """
-        table_info = self._extract_info_from_uri(table_uri=table_uri)
-        table_qn = make_table_qualified_name(table_info.get('name', ''),
-                                             table_info.get('cluster'),
-                                             table_info.get('db')
-                                             )
+        key = AtlasTableKey(table_uri)
 
         try:
-            return self.client.entity.get_entity_by_attribute(type_name=table_info['entity'],
-                                                              uniq_attributes=[(CommonParams.qn, table_qn)])
+            return self.client.entity.get_entity_by_attribute(type_name=key.get_details()['database'],
+                                                              uniq_attributes=[
+                                                                  (AtlasCommonParams.qn, key.qualified_name)])
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException(f'Table URI( {table_uri} ) does not exist')
@@ -282,9 +158,9 @@ class AtlasProxy(BaseProxy):
         :return: A User entity matching the user_id
         """
         try:
-            return self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
-                                                              uniq_attributes=[(CommonParams.qn, user_id)])
-        except Exception as ex:
+            return self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.user,
+                                                              uniq_attributes=[(AtlasCommonParams.qn, user_id)])
+        except Exception:
             raise NotFoundException(f'(User {user_id}) does not exist')
 
     def _create_bookmark(self, entity: AtlasEntityWithExtInfo, user_guid: str, bookmark_qn: str,
@@ -298,12 +174,12 @@ class AtlasProxy(BaseProxy):
 
         bookmark_entity = {
             'entity': {
-                'typeName': CommonTypes.bookmark,
+                'typeName': AtlasCommonTypes.bookmark,
                 'attributes': {'qualifiedName': bookmark_qn,
-                               Status.ACTIVE.lower(): True,
+                               AtlasStatus.ACTIVE.lower(): True,
                                'entityUri': table_uri,
                                'user': {'guid': user_guid},
-                               'entity': {'guid': entity.entity[CommonParams.guid]}}
+                               'entity': {'guid': entity.entity[AtlasCommonParams.guid]}}
             }
         }
 
@@ -318,7 +194,7 @@ class AtlasProxy(BaseProxy):
         :param user_id: Qualified Name of a user
         :return:
         """
-        table_info = self._extract_info_from_uri(table_uri=entity_uri)
+        table_info = AtlasTableKey(entity_uri).get_details()
 
         db = table_info.get('db')
         name = table_info.get('name')
@@ -328,8 +204,8 @@ class AtlasProxy(BaseProxy):
         bookmark_qn = f'{db}.{name}.{entity}.{user_id}.bookmark@{cluster}'
 
         try:
-            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.bookmark,
-                                                                         uniq_attributes=[(CommonParams.qn,
+            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
+                                                                         uniq_attributes=[(AtlasCommonParams.qn,
                                                                                            bookmark_qn)])
         except Exception as ex:
             LOGGER.exception(f'Bookmark not found. {str(ex)}')
@@ -339,10 +215,10 @@ class AtlasProxy(BaseProxy):
             user_entity = self._get_user_entity(user_id)
             # Create bookmark entity with the user relation.
             self._create_bookmark(table_entity,
-                                  user_entity.entity[CommonParams.guid], bookmark_qn, entity_uri)
+                                  user_entity.entity[AtlasCommonParams.guid], bookmark_qn, entity_uri)
             # Fetch bookmark entity after creating it.
-            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.bookmark,
-                                                                         uniq_attributes=[(CommonParams.qn,
+            bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
+                                                                         uniq_attributes=[(AtlasCommonParams.qn,
                                                                                            bookmark_qn)])
 
         return bookmark_entity
@@ -356,10 +232,10 @@ class AtlasProxy(BaseProxy):
         """
         try:
             table_entity = self._get_table_entity(table_uri=table_uri)
-            columns = table_entity.entity[CommonParams.rels].get('columns')
+            columns = table_entity.entity[AtlasCommonParams.rels].get('columns')
             for column in columns or list():
-                col_details = table_entity.referredEntities[column[CommonParams.guid]]
-                if column_name == col_details[CommonParams.attrs]['name']:
+                col_details = table_entity.referredEntities[column[AtlasCommonParams.guid]]
+                if column_name == col_details[AtlasCommonParams.attrs]['name']:
                     return col_details
 
             raise NotFoundException(f'Column not found: {column_name}')
@@ -379,19 +255,19 @@ class AtlasProxy(BaseProxy):
         else an empty list.
         """
         columns = list()
-        for column in entity.entity[CommonParams.rels].get('columns') or list():
+        for column in entity.entity[AtlasCommonParams.rels].get('columns') or list():
             column_status = column.get('entityStatus', 'inactive').lower()
 
             if column_status != 'active':
                 continue
 
-            col_entity = entity.referredEntities[column[CommonParams.guid]]
-            col_attrs = col_entity[CommonParams.attrs]
+            col_entity = entity.referredEntities[column[AtlasCommonParams.guid]]
+            col_attrs = col_entity[AtlasCommonParams.attrs]
             statistics = list()
 
             badges = list()
             for column_classification in col_entity.get('classifications') or list():
-                if column_classification.get('entityStatus') == Status.ACTIVE:
+                if column_classification.get('entityStatus') == AtlasStatus.ACTIVE:
                     name = column_classification.get('typeName')
 
                     badges.append(Badge(badge_name=name, category='default'))
@@ -445,7 +321,7 @@ class AtlasProxy(BaseProxy):
             report_entities = self.client.entity.get_entities_by_guids(guids=guids)
             for report_entity in report_entities.entities:
                 try:
-                    if report_entity.status == Status.ACTIVE:
+                    if report_entity.status == AtlasStatus.ACTIVE:
                         report_attrs = report_entity.attributes
                         reports.append(
                             ResourceReport(
@@ -512,7 +388,7 @@ class AtlasProxy(BaseProxy):
         """
         result = []
 
-        meanings = self._filter_active(entity.get(CommonParams.rels, dict()).get('meanings', []))
+        meanings = self._filter_active(entity.get(AtlasCommonParams.rels, dict()).get('meanings', []))
 
         for term in meanings or list():
             result.append(Tag(tag_name=term.get('displayText', ''), tag_type='default'))
@@ -530,13 +406,11 @@ class AtlasProxy(BaseProxy):
         table_details = entity.entity
 
         try:
-            attrs = table_details[CommonParams.attrs]
+            attrs = table_details[AtlasCommonParams.attrs]
 
             programmatic_descriptions = self._get_programmatic_descriptions(attrs.get('parameters', dict()))
 
-            table_qn = parse_table_qualified_name(
-                qualified_name=attrs.get(CommonParams.qn)
-            )
+            table_info = AtlasTableKey(attrs.get(AtlasCommonParams.qn)).get_details()
 
             badges = self._serialize_badges(table_details)
             tags = self._serialize_tags(table_details)
@@ -552,14 +426,14 @@ class AtlasProxy(BaseProxy):
 
             table = Table(
                 database=table_details.get('typeName'),
-                cluster=table_qn.get('cluster_name', ''),
-                schema=table_qn.get('db_name', ''),
-                name=attrs.get('name') or table_qn.get("table_name", ''),
+                cluster=table_info.get('cluster', ''),
+                schema=table_info.get('schema', ''),
+                name=attrs.get('name') or table_info.get("table_name", ''),
                 badges=badges,
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
                 owners=self._get_owners(
-                    table_details[CommonParams.rels].get('ownedBy', []), attrs.get('owner')),
+                    table_details[AtlasCommonParams.rels].get('ownedBy', []), attrs.get('owner')),
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 is_view=is_view,
@@ -660,12 +534,12 @@ class AtlasProxy(BaseProxy):
         table = self._get_table_entity(table_uri=table_uri)
         table_entity = table.entity
 
-        if table_entity[CommonParams.rels].get("ownedBy"):
+        if table_entity[AtlasCommonParams.rels].get("ownedBy"):
             try:
                 active_owners = filter(lambda item:
-                                       item['relationshipStatus'] == Status.ACTIVE
+                                       item['relationshipStatus'] == AtlasStatus.ACTIVE
                                        and item['displayText'] == owner,
-                                       table_entity[CommonParams.rels]['ownedBy'])
+                                       table_entity[AtlasCommonParams.rels]['ownedBy'])
                 if list(active_owners):
                     self.client.relationship.delete_relationship_by_guid(
                         guid=next(active_owners).get('relationshipGuid')
@@ -715,7 +589,7 @@ class AtlasProxy(BaseProxy):
             relationship = type_coerce(entity_def, AtlasRelationship)
             self.client.relationship.create_relationship(relationship=relationship)
 
-        except Exception as ex:
+        except Exception:
             LOGGER.exception('Error while adding the owner information. {}', exc_info=True)
             raise BadRequest(f'User {owner} is already added as a data owner for table {table_uri}.')
 
@@ -726,7 +600,7 @@ class AtlasProxy(BaseProxy):
         :return: The description of the table as a string
         """
         entity = self._get_table_entity(table_uri=table_uri)
-        return entity.entity[CommonParams.attrs].get('description')
+        return entity.entity[AtlasCommonParams.attrs].get('description')
 
     def put_table_description(self, *,
                               table_uri: str,
@@ -755,8 +629,8 @@ class AtlasProxy(BaseProxy):
         # Check if the user glossary already exists
         glossaries = self.client.glossary.get_all_glossaries()
         for glossary in glossaries:
-            if glossary.get(CommonParams.qn) == self.AMUNDSEN_USER_TAGS:
-                return glossary[CommonParams.guid]
+            if glossary.get(AtlasCommonParams.qn) == self.AMUNDSEN_USER_TAGS:
+                return glossary[AtlasCommonParams.guid]
 
         # If not already exists, create one
         glossary_def = AtlasGlossary({"name": self.AMUNDSEN_USER_TAGS,
@@ -806,7 +680,7 @@ class AtlasProxy(BaseProxy):
         entity = self._get_table_entity(table_uri=id)
 
         term = self._get_create_glossary_term(tag)
-        related_entity = AtlasRelatedObjectId({CommonParams.guid: entity.entity[CommonParams.guid],
+        related_entity = AtlasRelatedObjectId({AtlasCommonParams.guid: entity.entity[AtlasCommonParams.guid],
                                                "typeName": resource_type.name})
         self.client.glossary.assign_term_to_entities(term.guid, [related_entity])
 
@@ -832,7 +706,7 @@ class AtlasProxy(BaseProxy):
         assigned_entities = self.client.glossary.get_entities_assigned_with_term(term.guid, "ASC", -1, 0)
 
         for item in assigned_entities or list():
-            if item.get(CommonParams.guid) == entity.entity[CommonParams.guid]:
+            if item.get(AtlasCommonParams.guid) == entity.entity[AtlasCommonParams.guid]:
                 related_entity = AtlasRelatedObjectId(item)
                 return self.client.glossary.disassociate_term_from_entities(term.guid, [related_entity])
 
@@ -854,7 +728,7 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        col_guid = column_detail[CommonParams.guid]
+        col_guid = column_detail[AtlasCommonParams.guid]
 
         self.client.entity.partial_update_entity_by_guid(
             entity_guid=col_guid, attr_value=description, attr_name='description'
@@ -872,7 +746,7 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        return column_detail[CommonParams.attrs].get('description')
+        return column_detail[AtlasCommonParams.attrs].get('description')
 
     def _serialize_popular_tables(self, entities: AtlasEntitiesWithExtInfo) -> List[PopularTable]:
         """
@@ -885,18 +759,16 @@ class AtlasProxy(BaseProxy):
         for table in entities.entities:
             table_attrs = table.attributes
 
-            table_qn = parse_table_qualified_name(
-                qualified_name=table_attrs.get(CommonParams.qn)
-            )
+            table_info = AtlasTableKey(table_attrs.get(AtlasCommonParams.qn)).get_details()
 
-            table_name = table_qn.get("table_name") or table_attrs.get('name')
-            db_name = table_qn.get("db_name", '')
-            db_cluster = table_qn.get("cluster_name", '')
+            table_name = table_info.get('table') or table_attrs.get('name')
+            schema_name = table_info.get('schema', '')
+            db_cluster = table_info.get('cluster', '')
 
             popular_table = PopularTable(
                 database=table.typeName,
                 cluster=db_cluster,
-                schema=db_name,
+                schema=schema_name,
                 name=table_name,
                 description=table_attrs.get('description') or table_attrs.get('comment'))
             popular_tables.append(popular_table)
@@ -911,7 +783,7 @@ class AtlasProxy(BaseProxy):
         :param num_entries: Number of popular tables to fetch
         :return: A List of popular tables instances
         """
-        popular_query_params = {'typeName': TableTypes.table,
+        popular_query_params = {'typeName': AtlasTableTypes.table,
                                 'sortBy': 'popularityScore',
                                 'sortOrder': 'DESCENDING',
                                 'excludeDeletedEntities': True,
@@ -985,7 +857,7 @@ class AtlasProxy(BaseProxy):
         :return: A list of PopularTable, DashboardSummary or any other resource.
         """
         params = {
-            'typeName': CommonTypes.bookmark,
+            'typeName': AtlasCommonTypes.bookmark,
             'offset': '0',
             'limit': '1000',
             'excludeDeletedEntities': True,
@@ -993,18 +865,18 @@ class AtlasProxy(BaseProxy):
                 'condition': 'AND',
                 'criterion': [
                     {
-                        'attributeName': CommonParams.qn,
+                        'attributeName': AtlasCommonParams.qn,
                         'operator': 'contains',
                         'attributeValue': f'.{user_id}.bookmark'
                     },
                     {
-                        'attributeName': Status.ACTIVE.lower(),
+                        'attributeName': AtlasStatus.ACTIVE.lower(),
                         'operator': 'eq',
                         'attributeValue': 'true'
                     }
                 ]
             },
-            'attributes': ['count', CommonParams.qn, CommonParams.uri]
+            'attributes': ['count', AtlasCommonParams.qn, AtlasCommonParams.uri]
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
@@ -1013,10 +885,10 @@ class AtlasProxy(BaseProxy):
 
         for record in search_results.entities:
             if resource_type == ResourceType.Table.name:
-                table_info = self._extract_info_from_uri(table_uri=record.attributes[CommonParams.uri])
-                res = self._parse_bookmark_qn(record.attributes[CommonParams.qn])
+                table_info = AtlasTableKey(record.attributes[AtlasCommonParams.uri]).get_details()
+                res = self._parse_bookmark_qn(record.attributes[AtlasCommonParams.qn])
                 resources.append(PopularTable(
-                    database=table_info['entity'],
+                    database=table_info['database'],
                     cluster=res['cluster'],
                     schema=res['db'],
                     name=res['table']))
@@ -1040,25 +912,26 @@ class AtlasProxy(BaseProxy):
 
         if resource_type == ResourceType.Table.name:
             type_regex = "(.*)_table$"
-            entity_type = TableTypes.table
+            entity_type = AtlasTableTypes.table
             serialize_function = self._serialize_popular_tables
         elif resource_type == ResourceType.Dashboard.name:
             type_regex = 'Dashboard'
-            entity_type = DashboardTypes.metadata
+            entity_type = AtlasDashboardTypes.metadata
             serialize_function = self._serialize_dashboard_summaries
         else:
             raise NotImplementedError(f'Resource Type ({resource_type}) is not yet implemented')
 
-        user_entity = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
-                                                                 uniq_attributes=[(CommonParams.qn, user_id)]).entity
+        user_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.user,
+                                                                 uniq_attributes=[
+                                                                     (AtlasCommonParams.qn, user_id)]).entity
 
         if not user_entity:
             raise NotFoundException(f'User {user_id} not found.')
 
         resource_guids = set()
-        for item in self._filter_active(user_entity[CommonParams.rels].get('owns')) or list():
+        for item in self._filter_active(user_entity[AtlasCommonParams.rels].get('owns')) or list():
             if re.compile(type_regex).match(item['typeName']):
-                resource_guids.add(item[CommonParams.guid])
+                resource_guids.add(item[AtlasCommonParams.guid])
 
         owned_resources_query = f'{entity_type} where owner like "{user_id.lower()}*" and __state = "ACTIVE"'
         entities = self.client.discovery.dsl_search(owned_resources_query)
@@ -1111,8 +984,8 @@ class AtlasProxy(BaseProxy):
         return self._get_resource_by_user_relation(user_email, relation_type, ResourceType.Table)
 
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, List[PopularTable]]:
-        user = self.client.entity.get_entity_by_attribute(type_name=CommonTypes.user,
-                                                          uniq_attributes=[(CommonParams.qn, user_email)]).entity
+        user = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.user,
+                                                          uniq_attributes=[(AtlasCommonParams.qn, user_email)]).entity
 
         readers_guids = []
         for user_reads in self._filter_active(user['relationshipAttributes'].get('entityReads')):
@@ -1122,16 +995,16 @@ class AtlasProxy(BaseProxy):
 
         _results = {}
         for reader in readers.entities or list():
-            entity_uri = reader.attributes.get(CommonParams.uri)
+            entity_uri = reader.attributes.get(AtlasCommonParams.uri)
             count = reader.attributes.get('count')
 
             if count:
-                details = self._extract_info_from_uri(table_uri=entity_uri)
+                table_info = AtlasTableKey(entity_uri).get_details()
 
-                _results[count] = dict(cluster=details.get('cluster'),
-                                       name=details.get('name'),
-                                       schema=details.get('db'),
-                                       database=details.get('entity'))
+                _results[count] = dict(cluster=table_info.get('cluster'),
+                                       name=table_info.get('table'),
+                                       schema=table_info.get('schema'),
+                                       database=table_info.get('database'))
 
         sorted_counts = sorted(_results.keys())
 
@@ -1154,7 +1027,7 @@ class AtlasProxy(BaseProxy):
             raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
-        entity.entity[CommonParams.attrs][Status.ACTIVE.lower()] = True
+        entity.entity[AtlasCommonParams.attrs][AtlasStatus.ACTIVE.lower()] = True
         entity.update()
 
     def delete_resource_relation_by_user(self, *,
@@ -1166,7 +1039,7 @@ class AtlasProxy(BaseProxy):
             raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
-        entity.entity[CommonParams.attrs][Status.ACTIVE.lower()] = False
+        entity.entity[AtlasCommonParams.attrs][AtlasStatus.ACTIVE.lower()] = False
         entity.update()
 
     def _parse_date(self, date: int) -> Optional[int]:
@@ -1271,10 +1144,10 @@ class AtlasProxy(BaseProxy):
         return entity
 
     def _get_dashboard_summary(self, entity: AtlasEntityWithExtInfo, executions: List[AtlasEntity]) -> Dict:
-        attributes = entity.entity[CommonParams.attrs]
-        relationships = entity.entity[CommonParams.rels]
+        attributes = entity.entity[AtlasCommonParams.attrs]
+        relationships = entity.entity[AtlasCommonParams.rels]
 
-        group = self._get_dashboard_group(relationships.get('group').get('guid'))[CommonParams.attrs]
+        group = self._get_dashboard_group(relationships.get('group').get('guid'))[AtlasCommonParams.attrs]
 
         successful_executions = [e for e in executions if e.get('state') == 'succeeded']
 
@@ -1283,8 +1156,8 @@ class AtlasProxy(BaseProxy):
         except IndexError:
             last_successful_execution = dict(timestamp=0)
 
-        chart_names = [e[CommonParams.attrs]['name'] for _, e in entity['referredEntities'].items()
-                       if e['typeName'] == DashboardTypes.chart]
+        chart_names = [e[AtlasCommonParams.attrs]['name'] for _, e in entity['referredEntities'].items()
+                       if e['typeName'] == AtlasDashboardTypes.chart]
 
         result = dict(
             uri=attributes.get('qualifiedName', ''),
@@ -1302,8 +1175,8 @@ class AtlasProxy(BaseProxy):
 
     def _get_dashboard_details(self, entity: AtlasEntityWithExtInfo) -> Dict:
         try:
-            attributes = entity.entity[CommonParams.attrs]
-            relationships = entity.entity[CommonParams.rels]
+            attributes = entity.entity[AtlasCommonParams.attrs]
+            relationships = entity.entity[AtlasCommonParams.rels]
 
             referred_entities = entity['referredEntities']
 
@@ -1316,11 +1189,11 @@ class AtlasProxy(BaseProxy):
             for k, v in referred_entities.items():
                 entity_type = v.get('typeName')
 
-                _attributes = v[CommonParams.attrs]
+                _attributes = v[AtlasCommonParams.attrs]
 
-                if entity_type == DashboardTypes.execution:
+                if entity_type == AtlasDashboardTypes.execution:
                     _executions.append(_attributes)
-                elif entity_type == DashboardTypes.query:
+                elif entity_type == AtlasDashboardTypes.query:
                     _queries.append(_attributes)
 
             queries = self._serialize_dashboard_queries(_queries)
@@ -1369,8 +1242,8 @@ class AtlasProxy(BaseProxy):
         :param qualified_name: qualified name of the dashboard
         :return : Atlas Dashboard entity.
         """
-        entity = self.client.entity.get_entity_by_attribute(type_name=DashboardTypes.metadata,
-                                                            uniq_attributes=[(CommonParams.qn, qualified_name)])
+        entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
+                                                            uniq_attributes=[(AtlasCommonParams.qn, qualified_name)])
 
         return entity
 
@@ -1388,10 +1261,10 @@ class AtlasProxy(BaseProxy):
         :param id:
         :return: The description of the dashboard as a string
         """
-        entity = self.client.entity.get_entity_by_attribute(type_name=DashboardTypes.metadata,
-                                                            uniq_attributes=[(CommonParams.qn, id)])
+        entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
+                                                            uniq_attributes=[(AtlasCommonParams.qn, id)])
 
-        return entity.entity[CommonParams.attrs].get('description')
+        return entity.entity[AtlasCommonParams.attrs].get('description')
 
     def put_dashboard_description(self, *,
                                   id: str,
@@ -1403,8 +1276,8 @@ class AtlasProxy(BaseProxy):
         :param description: Description string
         :return: None
         """
-        entity = self.client.entity.get_entity_by_attribute(type_name=DashboardTypes.metadata,
-                                                            uniq_attributes=[(CommonParams.qn, id)])
+        entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
+                                                            uniq_attributes=[(AtlasCommonParams.qn, id)])
 
         self.client.entity.partial_update_entity_by_guid(
             entity_guid=entity.entity.get('guid'), attr_value=description, attr_name='description'
@@ -1419,16 +1292,17 @@ class AtlasProxy(BaseProxy):
 
         for _dashboard in entities.entities:
             try:
-                if _dashboard.status == Status.ACTIVE:
-                    executions = [entities['referredEntities'].get(e.get('guid'))[CommonParams.attrs]
-                                  for e in self._filter_active(_dashboard[CommonParams.rels].get('executions', []))]
+                if _dashboard.status == AtlasStatus.ACTIVE:
+                    executions = [entities['referredEntities'].get(e.get('guid'))[AtlasCommonParams.attrs]
+                                  for e in
+                                  self._filter_active(_dashboard[AtlasCommonParams.rels].get('executions', []))]
 
                     dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
 
                     summary = DashboardSummary(**self._get_dashboard_summary(dashboard, executions))
 
                     result.append(summary)
-            except (KeyError, AttributeError) as ex:
+            except (KeyError, AttributeError):
                 LOGGER.exception(f'Error while accessing table report: {str(dashboard)}.', exc_info=True)
 
         return result
@@ -1444,16 +1318,262 @@ class AtlasProxy(BaseProxy):
 
         table = self._get_table_entity(table_uri=id)
 
-        guids = [d.get('guid') for d in self._filter_active(table.entity[CommonParams.rels].get(resource, []))]
+        guids = [d.get('guid') for d in self._filter_active(table.entity[AtlasCommonParams.rels].get(resource, []))]
 
         entities = self.client.entity.get_entities_by_guids(guids=guids)
         result = serialize_function(entities)
 
         return {resource: result}
 
-    def get_lineage(self, *,
-                    id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
-        pass
+    @classmethod
+    def _generate_edges(cls, graph: Dict[str, List[str]]) -> List[Tuple[str, str]]:
+        """
+        Generates list of edge pairs from the graph.
+
+        :param graph: Graph of nodes
+        :return: List of tuples with graph edges
+        """
+        edges = []
+
+        # for each node in graph
+        for node in graph:
+            # for each neighbour node of a single node
+            for neighbour in graph[node]:
+                # if edge exists then append
+                edges.append((node, neighbour))
+        return edges
+
+    @classmethod
+    def _find_shortest_path(cls, graph: Dict[str, List[str]], start: str, end: str, path: List[Any] = []) -> List[str]:
+        """
+        Find shortest path between graph nodes. Used to calculate 'level' parameter
+
+        __source__='https://www.python.org/doc/essays/graphs/'
+        __author__='Guido van Rossum'
+
+        :param graph: Dictionary of str (node key) and List[str] (connected nodes)
+        :param start: Starting node for finding the path
+        :param end: Ending node for finding the path
+        :param path: Accumulator for recursive calls
+        :return: Shortest path between start and end nodes
+        """
+        path = path + [start]
+
+        if start == end:
+            return path
+        if not graph.get(start):
+            return []
+        shortest: List[str] = []
+        for node in graph[start]:
+            if node not in path:
+                newpath = AtlasProxy._find_shortest_path(graph, node, end, path)
+                if newpath:
+                    if not shortest or len(newpath) < len(shortest):
+                        shortest = newpath
+
+        return shortest
+
+    @staticmethod
+    def _find_parent_nodes(graph: Dict) -> Dict[str, Set[str]]:
+        """
+        Rewrite graph dict to the form that makes it possible to easily
+
+        :param graph: Dictionary of str (node key) and List[str]
+        :return: Dict with keys (node) and values (parents of a node)
+        """
+        relations: Dict[str, Set[str]] = {}
+
+        for parent, ancestors in graph.items():
+            for ancestor in ancestors:
+                if not relations.get(ancestor):
+                    relations[ancestor] = set()
+
+                relations[ancestor].add(parent)
+
+        return relations
+
+    def _get_lineage_graph(self, lineage: Dict, entity_type: str, key_class: Any) -> Dict[str, List[str]]:
+        """
+        Since Atlas bases lineage on additional entity (Process(input=A, output=B)) for capturing lineage
+        we need to create graph that has direct A > B relationships and removes Process entities.
+
+        :param lineage: Raw linage captured from Atlas
+        :param entity_type: Type of entity for which lineage is captured
+        :param key_class: Helper class used for Amundsen key <> Atlas qualified name serialization/deserialization
+        :return: Graph of nodes with relations.
+        """
+        processes: Dict[str, Dict[str, Any]] = dict()
+
+        entity_type = entity_type.lower()
+        entities = lineage.get('guidEntityMap', dict())
+        relations = lineage.get('relations', [])
+
+        for relation in relations:
+            input_guid = relation['fromEntityId']
+            input_type = entities.get(input_guid)['typeName'].lower()
+
+            output_guid = relation['toEntityId']
+            output_type = entities.get(output_guid)['typeName'].lower()
+
+            if input_type.endswith('process') and output_type.endswith(entity_type):
+                output_qn = entities.get(output_guid)[AtlasCommonParams.attrs][AtlasCommonParams.qn]
+                output_key = key_class(output_qn, output_type).amundsen_key  # type: ignore
+
+                if not processes.get(input_guid):
+                    processes[input_guid] = dict(inputs=set(), outputs=set())
+
+                processes[input_guid]['outputs'].add(output_key)
+
+            elif output_type.endswith('process') and input_type.endswith(entity_type):
+                input_qn = entities.get(input_guid)[AtlasCommonParams.attrs][AtlasCommonParams.qn]
+                input_key = key_class(input_qn, input_type).amundsen_key  # type: ignore
+
+                if not processes.get(output_guid):
+                    processes[output_guid] = dict(inputs=set(), outputs=set())
+
+                processes[output_guid]['inputs'].add(input_key)
+
+        graph: Dict[str, List[str]] = defaultdict(list)
+
+        for _, spec in processes.items():
+            for input_key in spec['inputs']:
+                for output_key in spec['outputs']:
+                    graph[input_key].append(output_key)
+
+        return dict(graph)
+
+    def _serialize_lineage_item(self, edge: Tuple[str, str], direction: str, key_class: Any,
+                                graph: Dict, root_node: str, parent_nodes: Dict[str, Set[str]]) -> LineageItem:
+        """
+        Renders LineageItem object.
+
+        :param edge: tuple containing two node keys that are connected with each other.
+        :param direction: Lineage direction upstream/downstream
+        :param key_class: Helper class used for managing Atlas <> Amundsen key formats.
+        :param: graph: Graph from which the edge was derived from. Used to find distance between edge node and entity
+        for which lineage is retrieved.
+        :param parent_nodes: Dict of keys (nodes) with set of keys (parents).
+        :return: Serialized LineageItem object.
+        """
+        if direction == 'upstream':
+            key, _ = edge
+            level = len(AtlasProxy._find_shortest_path(graph, key, root_node)) - 1
+        elif direction == 'downstream':
+            _, key = edge
+            level = len(AtlasProxy._find_shortest_path(graph, root_node, key)) - 1
+        else:
+            raise ValueError(f'Direction {direction} not supported!')
+
+        try:
+            parent = parent_nodes.get(key, set()).pop()
+        except KeyError:
+            parent = ''
+
+        badges: List[str] = []
+        usage = 0
+        source = key_class(key).get_details()['database']
+
+        spec = dict(key=key,
+                    parent=parent,
+                    source=source,
+                    badges=badges,
+                    usage=usage,
+                    level=level)
+
+        result = LineageItem(**spec)
+
+        return result
+
+    def _serialize_lineage(self, lineage: dict, entity_type: str, root_node: str, direction: str,
+                           key_class: Union[Type[AtlasTableKey], Type[AtlasColumnKey]]) -> List[LineageItem]:
+        """
+        Serializes lineage to Amundsen format based on Atlas lineage output.
+
+        The assumption for Atlas <> Amundsen lineage is that every Process entity in Atlas lineage contains at least
+        one entity of entity_type both in inputs and outputs.
+
+        If your lineage is A > B > C where:
+            A - is table
+            B - is file
+            C - is table
+        It won't render A > C table lineage in Amundsen.
+
+        The implementation follows simplified set of expectations and might be subject of change if such requirement
+        arises.
+
+        :param lineage: Raw lineage from Atlas
+        :param entity_type: Type of the entity for which lineage is being retrieved
+        :param root_node: key of entity for which lineage will be rendered. Required to calculate 'level' dynamically
+        based on nodes distance.
+        :param direction: upstream/downstream
+        :param key_class: Class for serializing entities keys
+        :return: The Lineage object with upstream & downstream lineage items
+        """
+        result: List[LineageItem] = []
+
+        graph = self._get_lineage_graph(lineage, entity_type, key_class)
+        edges = AtlasProxy._generate_edges(graph)
+        parent_nodes = self._find_parent_nodes(graph)
+
+        for edge in edges:
+            lineage_item = self._serialize_lineage_item(edge, direction, key_class, graph, root_node, parent_nodes)
+
+            result.append(lineage_item)
+
+        return result
+
+    def get_lineage(self, *, id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        """
+        Retrieves the lineage information for the specified resource type.
+
+        :param id: Key of entity for which lineage will be collected
+        :param resource_type: Type of the entity for which lineage is being retrieved
+        :param direction: Whether to get the upstream/downstream or both directions
+        :param depth: Depth or level of lineage information. 0=only parent, 1=immediate nodes, 2=...
+        :return: The Lineage object with upstream & downstream lineage items
+        """
+        lineage_spec: Dict[str, Any] = dict(key=id,
+                                            direction=direction,
+                                            depth=depth,
+                                            upstream_entities=[],
+                                            downstream_entities=[])
+
+        # Atlas returns complete lineage when depth=0. In Amundsen depth=0 means only parent.
+        if depth > 0:
+            key_class: Union[Type[AtlasTableKey], Type[AtlasColumnKey]]
+
+            if resource_type == ResourceType.Column:
+                key_class = AtlasColumnKey
+            elif resource_type == ResourceType.Table:
+                key_class = AtlasTableKey
+            else:
+                raise NotImplementedError(f'Resource {resource_type.name} not supported!')
+
+            key = key_class(id)  # type: ignore
+
+            entity = self.client.entity.get_entity_by_attribute(type_name=resource_type.name,
+                                                                uniq_attributes=[('qualifiedName', key.qualified_name)])
+
+            entity_guid = entity.entity.guid
+
+            _upstream: Dict[str, Any] = {}
+            _downstream: Dict[str, Any] = {}
+
+            if not direction == 'downstream':
+                _upstream = self.client.lineage.get_lineage_info(entity_guid, 'INPUT', depth)
+
+            if not direction == 'upstream':
+                _downstream = self.client.lineage.get_lineage_info(entity_guid, 'OUTPUT', depth)
+
+            upstream = self._serialize_lineage(_upstream, resource_type.name, id, 'upstream', key_class)
+            downstream = self._serialize_lineage(_downstream, resource_type.name, id, 'downstream', key_class)
+
+            lineage_spec['upstream_entities'] = upstream
+            lineage_spec['downstream_entities'] = downstream
+
+        lineage = Lineage(**lineage_spec)
+
+        return lineage
 
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass

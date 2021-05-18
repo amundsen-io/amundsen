@@ -618,3 +618,97 @@ class Data:
         }
 
     })
+
+    lineage_upstream_table_2 = {
+        'guidEntityMap': {
+            't0': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_0@demo'
+                }
+            },
+            't1': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_1@demo'
+                }
+            },
+            't2': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_2@demo'
+                }
+            },
+            't4': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_4@demo'
+                }
+            },
+            'p0_1': {
+                'typeName': 'spark_process'
+            },
+            'p1_2': {
+                'typeName': 'spark_process'
+            },
+            'p4_2': {
+                'typeName': 'spark_process'
+            }
+        },
+        'relations': [
+            {
+                'fromEntityId': 't0',
+                'toEntityId': 'p0_1'
+            },
+            {
+                'fromEntityId': 'p0_1',
+                'toEntityId': 't1'
+            },
+            {
+                'fromEntityId': 't1',
+                'toEntityId': 'p1_2'
+            },
+            {
+                'fromEntityId': 'p1_2',
+                'toEntityId': 't2'
+            },
+            {
+                'fromEntityId': 't4',
+                'toEntityId': 'p4_2'
+            },
+            {
+                'fromEntityId': 'p4_2',
+                'toEntityId': 't2'
+            }
+        ]
+    }
+
+    lineage_downstream_table_2 = {
+        'guidEntityMap': {
+            't2': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_2@demo'
+                }
+            },
+            't3': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_3@demo'
+                }
+            },
+            'p2_3': {
+                'typeName': 'spark_process'
+            }
+        },
+        'relations': [
+            {
+                'fromEntityId': 't2',
+                'toEntityId': 'p2_3'
+            },
+            {
+                'fromEntityId': 'p2_3',
+                'toEntityId': 't3'
+            }
+        ]
+    }
