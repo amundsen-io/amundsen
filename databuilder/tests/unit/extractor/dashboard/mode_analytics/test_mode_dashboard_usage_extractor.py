@@ -23,42 +23,43 @@ class TestModeDashboardUsageExtractor(unittest.TestCase):
         extractor.init(Scoped.get_scoped_conf(conf=self.config, scope=extractor.get_scope()))
 
         with patch('databuilder.rest_api.rest_api_query.RestApiQuery._send_request') as mock_request:
-            mock_request.return_value.json.side_effect = [
-                {
-                    'report_stats': [
-                        {
-                            'report_token': 'ddd',
-                            'view_count': 20,
-                        }
-                    ]
-                },
-                {
-                    'reports': [
-                        {
-                            'token': 'ddd',
-                            'space_token': 'ggg',
-                        }
-                    ]
-                },
-                {
-                    'spaces': [
-                        {
-                            'token': 'ggg',
-                            'name': 'dashboard group name',
-                            'description': 'dashboard group description'
-                        }
-                    ]
-                },
-            ]
+            with patch('databuilder.rest_api.rest_api_query.RestApiQuery._post_process') as mock_post_process:
+                mock_request.return_value.json.side_effect = [
+                    {
+                        'report_stats': [
+                            {
+                                'report_token': 'ddd',
+                                'view_count': 20,
+                            }
+                        ]
+                    },
+                    {
+                        'reports': [
+                            {
+                                'token': 'ddd',
+                                'space_token': 'ggg',
+                            }
+                        ]
+                    },
+                    {
+                        'spaces': [
+                            {
+                                'token': 'ggg',
+                                'name': 'dashboard group name',
+                                'description': 'dashboard group description'
+                            }
+                        ]
+                    },
+                ]
 
-            record = extractor.extract()
-            self.assertEqual(record['organization'], 'amundsen')
-            self.assertEqual(record['dashboard_id'], 'ddd')
-            self.assertEqual(record['accumulated_view_count'], 20)
-            self.assertEqual(record['dashboard_group_id'], 'ggg')
-            self.assertEqual(record['dashboard_group'], 'dashboard group name')
-            self.assertEqual(record['dashboard_group_description'], 'dashboard group description')
-            self.assertEqual(record['product'], 'mode')
+                record = extractor.extract()
+                self.assertEqual(record['organization'], 'amundsen')
+                self.assertEqual(record['dashboard_id'], 'ddd')
+                self.assertEqual(record['accumulated_view_count'], 20)
+                self.assertEqual(record['dashboard_group_id'], 'ggg')
+                self.assertEqual(record['dashboard_group'], 'dashboard group name')
+                self.assertEqual(record['dashboard_group_description'], 'dashboard group description')
+                self.assertEqual(record['product'], 'mode')
 
 
 if __name__ == '__main__':
