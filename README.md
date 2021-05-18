@@ -132,7 +132,7 @@ Please visit [Architecture](./architecture/) for Amundsen architecture overview.
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 
-### Table  Column metrics
+### Table Column Statistics
 
 - [Pandas Profiling](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/)
 
