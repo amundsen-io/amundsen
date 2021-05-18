@@ -228,8 +228,8 @@ exports[`eslint`] = {
       [146, 18, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [146, 25, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.tsx:2297434190": [
-      [16, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
+    "js/components/ResourceListItem/DashboardListItem/index.tsx:2194588229": [
+      [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
     "js/components/ResourceListItem/SchemaInfo/tests/index.spec.tsx:3506535360": [
       [34, 6, 25, "Use object destructuring.", "354229464"],
@@ -505,12 +505,12 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:3074333736": [
+    "js/config/config-default.ts:1497564975": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
-      [234, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [235, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [236, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [237, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
-    "js/config/config-utils.ts:2989233210": [
+    "js/config/config-utils.ts:2658622130": [
       [11, 0, 45, "\`../interfaces\` import should occur before import of \`./config-types\`", "3885176344"]
     ],
     "js/ducks/announcements/api/v0.ts:908063915": [
@@ -563,6 +563,10 @@ exports[`eslint`] = {
     "js/ducks/lastIndexed/sagas.ts:1498244597": [
       [7, 2, 29, "\'action\' is defined but never used.", "566797395"]
     ],
+    "js/ducks/lineage/api/v0.ts:63450243": [
+      [19, 13, 26, "Expected the Promise rejection reason to be an Error.", "875716520"],
+      [44, 13, 26, "Expected the Promise rejection reason to be an Error.", "875716520"]
+    ],
     "js/ducks/middlewares/analyticsMiddleware.ts:3943673455": [
       [11, 7, 8, "\'getState\' is defined but never used.", "1919118020"]
     ],
@@ -588,19 +592,17 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:1918235014": [
+    "js/ducks/tableMetadata/api/v0.ts:1722284731": [
       [75, 8, 23, "Use object destructuring.", "1142306891"],
       [78, 13, 39, "Expected the Promise rejection reason to be an Error.", "3871091426"],
       [125, 23, -4008, "Expected to return a value at the end of arrow function.", "5381"],
-      [181, 13, 32, "Expected the Promise rejection reason to be an Error.", "2773728948"],
-      [198, 13, 26, "Expected the Promise rejection reason to be an Error.", "875716520"],
-      [218, 13, 26, "Expected the Promise rejection reason to be an Error.", "875716520"]
+      [181, 13, 32, "Expected the Promise rejection reason to be an Error.", "2773728948"]
     ],
-    "js/ducks/tableMetadata/index.spec.ts:2722355878": [
-      [567, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [593, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
-      [699, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [731, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
+    "js/ducks/tableMetadata/index.spec.ts:2466548220": [
+      [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [506, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
+      [612, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [644, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -1034,11 +1036,11 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:1010332848": [
-      [136, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [146, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [159, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [239, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+    "js/pages/TableDetailPage/index.tsx:2009672874": [
+      [135, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [145, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [158, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [238, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

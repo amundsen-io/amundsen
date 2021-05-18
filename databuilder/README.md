@@ -444,6 +444,84 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [AtlasSearchDataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/atlas_search_data_extractor.py "AtlasSearchDataExtractor")
+An extractor that is extracting Atlas Data to index compatible with Elasticsearch Search Proxy.
+```python
+entity_type = 'Table'
+extracted_search_data_path = f'/tmp/{entity_type.lower()}_search_data.json'
+process_pool_size = 5
+
+# atlas config
+atlas_url = 'localhost'
+atlas_port = 21000
+atlas_protocol = 'http'
+atlas_verify_ssl = False
+atlas_username = 'admin'
+atlas_password = 'admin'
+atlas_search_chunk_size = 200
+atlas_details_chunk_size = 10
+
+# elastic config
+es = Elasticsearch([
+    {'host': 'localhost'},
+])
+
+elasticsearch_client = es
+elasticsearch_new_index_key = f'{entity_type.lower()}-' + str(uuid.uuid4())
+elasticsearch_new_index_key_type = '_doc'
+elasticsearch_index_alias = f'{entity_type.lower()}_search_index'
+
+job_config = ConfigFactory.from_dict({
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_URL_CONFIG_KEY):
+        atlas_url,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_PORT_CONFIG_KEY):
+        atlas_port,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_PROTOCOL_CONFIG_KEY):
+        atlas_protocol,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_VALIDATE_SSL_CONFIG_KEY):
+        atlas_verify_ssl,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_USERNAME_CONFIG_KEY):
+        atlas_username,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_PASSWORD_CONFIG_KEY):
+        atlas_password,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_SEARCH_CHUNK_SIZE_KEY):
+        atlas_search_chunk_size,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ATLAS_DETAILS_CHUNK_SIZE_KEY):
+        atlas_details_chunk_size,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.PROCESS_POOL_SIZE_KEY):
+        process_pool_size,
+    'extractor.atlas_search_data.{}'.format(AtlasSearchDataExtractor.ENTITY_TYPE_KEY):
+        entity_type,
+    'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY):
+        extracted_search_data_path,
+    'loader.filesystem.elasticsearch.{}'.format(FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY):
+        'w',
+    'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY):
+        extracted_search_data_path,
+    'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY):
+        'r',
+    'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY):
+        elasticsearch_client,
+    'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY):
+        elasticsearch_new_index_key,
+    'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY):
+        elasticsearch_new_index_key_type,
+    'publisher.elasticsearch.{}'.format(ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY):
+        elasticsearch_index_alias
+})
+
+if __name__ == "__main__":
+    task = DefaultTask(extractor=AtlasSearchDataExtractor(),
+                       transformer=NoopTransformer(),
+                       loader=FSElasticsearchJSONLoader())
+
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=ElasticsearchPublisher())
+
+    job.launch()
+```
+
 #### [VerticaMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/vertica_metadata_extractor.py "MysqlMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, column name and column datatype from a Vertica database.
 
@@ -931,6 +1009,171 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+### [ApacheSupersetMetadataExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_metadata_extractor.py)
+
+The included `ApacheSupersetMetadataExtractor` provides support for extracting basic metadata for Apache Superset dashboards.
+
+All Apache Superset extractors including this one use Apache Superset REST API (`/api/v1`) and were developed based on Apache Superset version `1.1`.
+
+##### Caution! 
+
+Apache Superset does not contain metadata fulfilling the concept of `DashboardGroup`. For that reasons, when configuring extractor following parameters must be provided:
+- dashboard_group_id (required)
+- dashboard_group_name (required)
+- cluster (required)
+- dashboard_group_description (optional)
+
+#### DashboardMetadata
+
+`ApacheSupersetMetadataExtractor` extracts metadata into `DashboardMetadata` model.
+
+##### Metadata available in REST API
+
+- Dashboard id (id)
+- Dashboard name (dashboard_title)
+- Dashboard URL (url)
+
+##### Metadata not available in Apache Superset REST API
+
+- Dashboard description
+- Dashboard creation timestamp
+
+#### DashboardLastModifiedTimestamp
+
+`ApacheSupersetLastModifiedTimestampExtractor` extracts metadata into `DashboardLastModifiedTimestamp` model.
+
+##### Available in REST API
+
+- Dashboard last modified timestamp (changed_on property of dashboard)
+
+###### Caution!
+
+`changed_on` value does not provide timezone info so we assume it's UTC.
+ 
+#### Sample job config
+
+```python
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_ID}': '1',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_NAME}': 'dashboard group',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_DESCRIPTION}': 'dashboard group description',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.CLUSTER}': 'gold',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.APACHE_SUPERSET_SECURITY_SETTINGS_DICT}': dict(
+        username='admin',
+        password='admin',
+        provider='db')
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ApacheSupersetMetadataExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+
+job.launch()
+```
+
+### [ApacheSupersetTableExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_table_extractor.py)
+
+The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`). 
+
+##### Caution! 
+
+As table information in Apache Superset is minimal, following configuration options enable parametrization required to achieve proper relationship information:
+- `driver_to_database_mapping` - mapping between sqlalchemy `drivername` and actual `database` property of `TableMetadata` model.
+- `database_to_cluster_mapping` - mapping between Apache Superset Database ID and `cluster` from `TableMedata` model (defaults to `cluster` config of `extractor.apache_superset`)
+
+#### DashboardTable
+
+##### Metadata available in REST API
+
+- Table keys
+
+#### Sample job config
+
+```python
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_ID}': '1',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_NAME}': 'dashboard group',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_DESCRIPTION}': 'dashboard group description',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.CLUSTER}': 'gold',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.APACHE_SUPERSET_SECURITY_SETTINGS_DICT}': dict(
+        username='admin',
+        password='admin',
+        provider='db')
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ApacheSupersetTableExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+
+job.launch()
+```
+
+### [ApacheSupersetChartExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_chart_extractor.py)
+
+The included `ApacheSupersetChartExtractor` provides support for extracting information on charts connected to given dashboard.
+
+##### Caution! 
+
+Currently there is no way to connect Apache Superset `Query` model to neither `Chart` nor `Dashboard` model. For that reason, to comply with Amundsen
+Databuilder data model, we register single `DashboardQuery` node serving as a bridge to which all the `DashboardChart` nodes are connected.
+
+#### DashboardChart
+
+##### Metadata available in REST API
+
+- Chart id (id)
+- Chart name (chart_name)
+- Chart type (viz_type)
+
+##### Metadata not available in REST API
+
+- Chart url
+
+#### Sample job config
+
+```python
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_ID}': '1',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_NAME}': 'dashboard group',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_DESCRIPTION}': 'dashboard group description',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.CLUSTER}': 'gold',
+    f'extractor.apache_superset.{ApacheSupersetBaseExtractor.APACHE_SUPERSET_SECURITY_SETTINGS_DICT}': dict(
+        username='admin',
+        password='admin',
+        provider='db')
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ApacheSupersetChartExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+
+job.launch()
+```
+
 ### [BamboohrUserExtractor](./databuilder/extractor/user/bamboohr/bamboohr_user_extractor.py)
 
 The included `BamboohrUserExtractor` provides support for extracting basic user metadata from [BambooHR](https://www.bamboohr.com/).  For companies and organizations that use BambooHR to store employee information such as email addresses, first names, last names, titles, and departments, use the `BamboohrUserExtractor` to populate Amundsen user data.
@@ -951,8 +1194,6 @@ job = DefaultJob(conf=job_config,
                  publisher=Neo4jCsvPublisher())
 job.launch()
 ```
-
-
 
 ## List of transformers
 

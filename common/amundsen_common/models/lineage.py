@@ -3,7 +3,7 @@
 
 from typing import Optional, List
 
-from amundsen_common.models.table import Badge
+from amundsen_common.models.badge import Badge
 
 import attr
 from marshmallow3_annotations.ext.attrs import AttrsSchema
@@ -16,6 +16,7 @@ class LineageItem:
     source: str  # database this resource is from
     badges: Optional[List[Badge]] = None
     usage: Optional[int] = None  # statistic to sort lineage items by
+    parent: Optional[str] = None  # key of the parent entity, used to create the relationships in graph
 
 
 class LineageItemSchema(AttrsSchema):

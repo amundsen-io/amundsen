@@ -8,6 +8,7 @@ from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
@@ -1094,17 +1095,17 @@ class TestNeo4jProxy(unittest.TestCase):
             key = "alpha"
             mock_execute.return_value.single.side_effect = [{
                 "upstream_entities": [
-                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100},
+                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100, "parent": None},
                     {"key": "gamma", "source": "dyno", "level": 1,
                      "badges":
                         [
                             {"key": "badge1", "category": "default"},
                             {"key": "badge2", "category": "default"},
                         ],
-                     "usage": 200},
+                     "usage": 200, "parent": None},
                 ],
                 "downstream_entities": [
-                    {"key": "delta", "source": "gold", "level": 1, "badges": [], "usage": 50},
+                    {"key": "delta", "source": "gold", "level": 1, "badges": [], "usage": 50, "parent": None},
                 ]
             }]
 
@@ -1130,6 +1131,132 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             actual = neo4j_proxy.get_lineage(id=key, resource_type=ResourceType.Table, direction="both", depth=1)
             self.assertEqual(expected.__repr__(), actual.__repr__())
+
+    def test_get_feature_success(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.side_effect = [{
+                'wmk_records': [
+                    {
+                        'key': 'hive://gold.test_schema/test_table/high_watermark/',
+                        'partition_key': 'ds',
+                        'partition_value': 'fake_value',
+                        'create_time': 'fake_time',
+                    },
+                    {
+                        'key': 'hive://gold.test_schema/test_table/low_watermark/',
+                        'partition_key': 'ds',
+                        'partition_value': 'fake_value',
+                        'create_time': 'fake_time',
+                    }
+                ],
+                'availability_records': [
+                    {
+                        'name': 'hive',
+                        'publisher_last_updated_epoch_ms': 1621250037268,
+                        'published_tag': '2021-05-16',
+                        'key': 'database://hive'
+                    },
+                    {
+                        'name': 'dynamodb',
+                        'publisher_last_updated_epoch_ms': 1621250037268,
+                        'published_tag': '2021-05-16',
+                        'key': 'database://dynamodb'
+                    }
+                ],
+                'prog_descriptions': [
+                    {
+                        'description_source': 'quality_report',
+                        'description': 'Test Test'
+                    }
+                ],
+                'owner_records': [
+                    {
+                        'key': 'tester@example.com',
+                        'email': 'tester@example.com'
+                    }
+                ],
+                'badge_records': [
+                    {
+                        'key': 'pii',
+                        'category': 'data'
+                    }
+                ],
+                'tag_records': [
+                    {
+                        'tag_type': 'default', 'key': 'test'
+                    },
+                    {
+                        'tag_type': 'owner', 'key': 'test_owner_tag'
+                    },
+                ],
+                'desc': {
+                    'description': 'test feature description',
+                    'key': 'hive://gold.core/test_feature_group/test_feature_name/1.2.3/_description',
+                    'description_source': 'description'
+                },
+                'feat': {
+                    'last_updated_timestamp': 1,
+                    'data_type': 'bigint',
+                    'name': 'test_feature_name',
+                    'created_timestamp': 1,
+                    'version': '1.2.3',
+                    'key': 'test_feature_group/test_feature_name/1.2.3',
+                    'feature_group': 'test_feature_group',
+                    'status': 'active',
+                    'entity': 'test_entity'
+                },
+                'partition_column': {
+                    'name': 'bar_id_1',
+                    'key': '',
+                    'col_type': 'varchar',
+                },
+                'col_desc': {
+                    'description': 'bar col description'
+                }
+            }]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            feature = neo4j_proxy.get_feature(feature_uri='dummy_uri')
+            expected = Feature(key='test_feature_group/test_feature_name/1.2.3',
+                               name='test_feature_name',
+                               version='1.2.3', status='active',
+                               feature_group='test_feature_group', entity='test_entity',
+                               data_type='bigint', availability=['hive', 'dynamodb'],
+                               description='test feature description',
+                               owners=[User(email='tester@example.com')],
+                               badges=[Badge(badge_name='pii', category='data')],
+                               owner_tags=[Tag(tag_name='test_owner_tag', tag_type='owner')],
+                               tags=[Tag(tag_name='test', tag_type='default')],
+                               programmatic_descriptions=[
+                                   ProgrammaticDescription(source='quality_report',
+                                                           text='Test Test'),
+                               ],
+                               watermarks=[Watermark(watermark_type='high_watermark',
+                                                     partition_key='ds',
+                                                     partition_value='fake_value',
+                                                     create_time='fake_time'),
+                                           Watermark(watermark_type='low_watermark',
+                                                     partition_key='ds',
+                                                     partition_value='fake_value',
+                                                     create_time='fake_time')],
+                               partition_column=Column(name='bar_id_1', description='bar col description',
+                                                       col_type='varchar', sort_order=0, stats=[],
+                                                       key='dummy_uri/bar_id_1',
+                                                       badges=[Badge(badge_name='partition_column',
+                                                                     category='column')]),
+                               last_updated_timestamp=1,
+                               created_timestamp=1,
+                               )
+
+            self.assertEqual(str(expected), str(feature))
+
+    def test_get_feature_not_found(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = None
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+
+            self.assertRaises(NotFoundException, neo4j_proxy._exec_feature_query, feature_key='invalid_feat_uri')
+            self.assertRaises(NotFoundException, neo4j_proxy.get_feature, feature_uri='invalid_feat_uri')
 
 
 if __name__ == '__main__':

@@ -33,14 +33,15 @@ class AtlasSearchDataExtractorHelpers:
         return list(filter(None, input_list))
 
     @staticmethod
-    def get_column_names(column_list: List) -> List:
+    def get_entity_names(entity_list: List) -> List:
         return AtlasSearchDataExtractorHelpers._filter_none(
-            [c.get('attributes').get('name') for c in column_list if c.get('status').lower() == 'active'])
+            [e.get('attributes').get('name') for e in entity_list if e.get('status').lower() == 'active'])
 
     @staticmethod
-    def get_column_descriptions(column_list: List) -> List:
+    def get_entity_descriptions(entity_list: List) -> List:
         return AtlasSearchDataExtractorHelpers._filter_none(
-            [c.get('attributes').get('description') for c in column_list if c.get('status').lower() == 'active'])
+            [e.get('attributes', dict()).get('description') for e in entity_list
+             if e.get('status').lower() == 'active'])
 
     @staticmethod
     def get_badges_from_classifications(classifications: List) -> List:
@@ -48,9 +49,30 @@ class AtlasSearchDataExtractorHelpers:
             [c.get('typeName') for c in classifications if c.get('entityStatus', '').lower() == 'active'])
 
     @staticmethod
-    def get_tags_from_glossary_terms(meanings: List) -> List:
+    def get_display_text(meanings: List) -> List:
         return AtlasSearchDataExtractorHelpers._filter_none(
             [c.get('displayText') for c in meanings if c.get('entityStatus', '').lower() == 'active'])
+
+    @staticmethod
+    def get_last_successful_execution_timestamp(executions: List) -> int:
+        successful_executions = AtlasSearchDataExtractorHelpers._filter_none(
+            [e.get('attributes').get('timestamp') for e in executions
+             if e.get('status', '').lower() == 'active' and e.get('attributes', dict()).get('state') == 'succeeded'])
+
+        try:
+            return max(successful_executions)
+        except ValueError:
+            return 0
+
+    @staticmethod
+    def get_chart_names(queries: List) -> List[str]:
+        charts = []
+
+        for query in queries:
+            _charts = query.get('relationshipAttributes', dict()).get('charts', [])
+            charts += _charts
+
+        return AtlasSearchDataExtractorHelpers.get_display_text(charts)
 
 
 class AtlasSearchDataExtractor(Extractor):
@@ -79,9 +101,6 @@ class AtlasSearchDataExtractor(Extractor):
                                               ATLAS_MAX_RETRIES_KEY: 2,
                                               PROCESS_POOL_SIZE_KEY: 10})
 
-    # @todo fill out below fields for TableESDocument
-    # tags: List[str],
-
     # es_document field, atlas field path, modification function, default_value
     FIELDS_MAPPING_SPEC: type_fields_mapping_spec = {
         'Table': [
@@ -95,25 +114,49 @@ class AtlasSearchDataExtractor(Extractor):
             ('total_usage', 'attributes.popularityScore', lambda x: int(x), 0),
             ('unique_usage', 'attributes.uniqueUsage', lambda x: int(x), 1),
             ('column_names', 'relationshipAttributes.columns',
-             lambda x: AtlasSearchDataExtractorHelpers.get_column_names(x), []),
+             lambda x: AtlasSearchDataExtractorHelpers.get_entity_names(x), []),
             ('column_descriptions', 'relationshipAttributes.columns',
-             lambda x: AtlasSearchDataExtractorHelpers.get_column_descriptions(x), []),
+             lambda x: AtlasSearchDataExtractorHelpers.get_entity_descriptions(x), []),
             ('tags', 'relationshipAttributes.meanings',
-             lambda x: AtlasSearchDataExtractorHelpers.get_tags_from_glossary_terms(x), []),
+             lambda x: AtlasSearchDataExtractorHelpers.get_display_text(x), []),
             ('badges', 'classifications',
              lambda x: AtlasSearchDataExtractorHelpers.get_badges_from_classifications(x), []),
             ('display_name', 'attributes.qualifiedName', lambda x: x.split('@')[0], None),
             ('schema_description', 'attributes.parameters.sourceDescription', None, None),
             ('programmatic_descriptions', 'attributes.parameters', lambda x: [str(s) for s in list(x.values())], {})
+        ],
+        'Dashboard': [
+            ('group_name', 'relationshipAttributes.group.attributes.name', None, None),
+            ('name', 'attributes.name', None, None),
+            ('description', 'attributes.description', None, None),
+            ('total_usage', 'attributes.popularityScore', lambda x: int(x), 0),
+            ('product', 'attributes.product', None, None),
+            ('cluster', 'attributes.cluster', None, None),
+            ('group_description', 'relationshipAttributes.group.attributes.description', None, None),
+            ('query_names', 'relationshipAttributes.queries',
+             lambda x: AtlasSearchDataExtractorHelpers.get_entity_names(x), []),
+            ('chart_names', 'relationshipAttributes.queries',
+             lambda x: AtlasSearchDataExtractorHelpers.get_chart_names(x), []),
+            ('group_url', 'relationshipAttributes.group.attributes.url', None, None),
+            ('url', 'attributes.url', None, None),
+            ('uri', 'attributes.qualifiedName', None, None),
+            ('last_successful_run_timestamp', 'relationshipAttributes.executions',
+             lambda x: AtlasSearchDataExtractorHelpers.get_last_successful_execution_timestamp(x), None),
+            ('tags', 'relationshipAttributes.meanings',
+             lambda x: AtlasSearchDataExtractorHelpers.get_display_text(x), []),
+            ('badges', 'classifications',
+             lambda x: AtlasSearchDataExtractorHelpers.get_badges_from_classifications(x), [])
         ]
     }
 
     ENTITY_MODEL_BY_TYPE = {
-        'Table': 'databuilder.models.table_elasticsearch_document.TableESDocument'
+        'Table': 'databuilder.models.table_elasticsearch_document.TableESDocument',
+        'Dashboard': 'databuilder.models.dashboard_elasticsearch_document.DashboardESDocument'
     }
 
     REQUIRED_RELATIONSHIPS_BY_TYPE = {
-        'Table': ['columns']
+        'Table': ['columns'],
+        'Dashboard': ['group', 'charts', 'executions', 'queries']
     }
 
     def init(self, conf: ConfigTree) -> None:
@@ -125,18 +168,6 @@ class AtlasSearchDataExtractor(Extractor):
     @property
     def entity_type(self) -> str:
         return self.conf.get(AtlasSearchDataExtractor.ENTITY_TYPE_KEY)
-
-    @property
-    def basic_search_query(self) -> Dict:
-        query = {
-            'typeName': self.entity_type,
-            'excludeDeletedEntities': True,
-            'query': '*'
-        }
-
-        LOGGER.debug(f'Basic Search Query: {query}')
-
-        return query
 
     @property
     def dsl_search_query(self) -> Dict:

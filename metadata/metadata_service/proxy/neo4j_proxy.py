@@ -10,6 +10,7 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
@@ -410,7 +411,7 @@ class Neo4jProxy(BaseProxy):
                                                              'key': uri})
 
             if not result.single():
-                raise NotFoundException('Failed to update the description as resource {uri} does not exist'.format(uri=uri))
+                raise NotFoundException(f'Failed to update the description as resource {uri} does not exist')
 
             # end neo4j transaction
             tx.commit()
@@ -506,9 +507,8 @@ class Neo4jProxy(BaseProxy):
                                                              'column_key': column_uri})
 
             if not result.single():
-                raise NotFoundException('Failed to update the table {tbl} '
-                                   'column {col} description as either table or column does not exist'.format(tbl=table_uri,
-                                                                     col=column_uri))
+                raise NotFoundException(f'Failed to update the table {table_uri} column '
+                                        f'{column_uri} description as either table or column does not exist')
 
             # end neo4j transaction
             tx.commit()
@@ -1526,63 +1526,63 @@ class Neo4jProxy(BaseProxy):
 
         get_both_lineage_query = textwrap.dedent(u"""
         MATCH (source:{resource} {{key: $query_key}})
-        OPTIONAL MATCH (source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
-        OPTIONAL MATCH (source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
-        WITH downstream_entity, upstream_entity, downstream_len, upstream_len
+        OPTIONAL MATCH dpath=(source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
+        OPTIONAL MATCH upath=(source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
+        WITH downstream_entity, upstream_entity, downstream_len, upstream_len, upath, dpath
         OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
         OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
         WITH CASE WHEN downstream_badge IS NULL THEN []
         ELSE collect(distinct {{key:downstream_badge.key,category:downstream_badge.category}})
         END AS downstream_badges, CASE WHEN upstream_badge IS NULL THEN []
         ELSE collect(distinct {{key:upstream_badge.key,category:upstream_badge.category}})
-        END AS upstream_badges, upstream_entity, downstream_entity, upstream_len, downstream_len
+        END AS upstream_badges, upstream_entity, downstream_entity, upstream_len, downstream_len, upath, dpath
         OPTIONAL MATCH (downstream_entity:{resource})-[downstream_read:READ_BY]->(:User)
-        WITH upstream_entity, downstream_entity, upstream_len, downstream_len,
+        WITH upstream_entity, downstream_entity, upstream_len, downstream_len, upath, dpath,
         downstream_badges, upstream_badges, sum(downstream_read.read_count) as downstream_read_count
         OPTIONAL MATCH (upstream_entity:{resource})-[upstream_read:READ_BY]->(:User)
         WITH upstream_entity, downstream_entity, upstream_len, downstream_len,
         downstream_badges, upstream_badges, downstream_read_count,
-        sum(upstream_read.read_count) as upstream_read_count
+        sum(upstream_read.read_count) as upstream_read_count, upath, dpath
         WITH CASE WHEN upstream_len IS NULL THEN []
         ELSE COLLECT(distinct{{level:SIZE(upstream_len), source:split(upstream_entity.key,'://')[0],
-        key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count}})
+        key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count, parent:nodes(upath)[-2].key}})
         END AS upstream_entities, CASE WHEN downstream_len IS NULL THEN []
         ELSE COLLECT(distinct{{level:SIZE(downstream_len), source:split(downstream_entity.key,'://')[0],
-        key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count}})
+        key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count, parent:nodes(dpath)[-2].key}})
         END AS downstream_entities RETURN downstream_entities, upstream_entities
         """).format(depth=depth, resource=resource_type.name)
 
         get_upstream_lineage_query = textwrap.dedent(u"""
         MATCH (source:{resource} {{key: $query_key}})
-        OPTIONAL MATCH (source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
-        WITH upstream_entity, upstream_len
+        OPTIONAL MATCH path=(source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource})
+        WITH upstream_entity, upstream_len, path
         OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
         WITH CASE WHEN upstream_badge IS NULL THEN []
         ELSE collect(distinct {{key:upstream_badge.key,category:upstream_badge.category}})
-        END AS upstream_badges, upstream_entity, upstream_len
+        END AS upstream_badges, upstream_entity, upstream_len, path
         OPTIONAL MATCH (upstream_entity:{resource})-[upstream_read:READ_BY]->(:User)
         WITH upstream_entity, upstream_len, upstream_badges,
-        sum(upstream_read.read_count) as upstream_read_count
+        sum(upstream_read.read_count) as upstream_read_count, path
         WITH CASE WHEN upstream_len IS NULL THEN []
         ELSE COLLECT(distinct{{level:SIZE(upstream_len), source:split(upstream_entity.key,'://')[0],
-        key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count}})
+        key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count, parent:nodes(path)[-2].key}})
         END AS upstream_entities RETURN upstream_entities
         """).format(depth=depth, resource=resource_type.name)
 
         get_downstream_lineage_query = textwrap.dedent(u"""
         MATCH (source:{resource} {{key: $query_key}})
-        OPTIONAL MATCH (source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
-        WITH downstream_entity, downstream_len
+        OPTIONAL MATCH path=(source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource})
+        WITH downstream_entity, downstream_len, path
         OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
         WITH CASE WHEN downstream_badge IS NULL THEN []
         ELSE collect(distinct {{key:downstream_badge.key,category:downstream_badge.category}})
-        END AS downstream_badges, downstream_entity, downstream_len
+        END AS downstream_badges, downstream_entity, downstream_len, path
         OPTIONAL MATCH (downstream_entity:{resource})-[downstream_read:READ_BY]->(:User)
         WITH downstream_entity, downstream_len, downstream_badges,
-        sum(downstream_read.read_count) as downstream_read_count
+        sum(downstream_read.read_count) as downstream_read_count, path
         WITH CASE WHEN downstream_len IS NULL THEN []
         ELSE COLLECT(distinct{{level:SIZE(downstream_len), source:split(downstream_entity.key,'://')[0],
-        key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count}})
+        key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count, parent:nodes(path)[-2].key}})
         END AS downstream_entities RETURN downstream_entities
         """).format(depth=depth, resource=resource_type.name)
 
@@ -1607,16 +1607,178 @@ class Neo4jProxy(BaseProxy):
                                                     "source": downstream["source"],
                                                     "level": downstream["level"],
                                                     "badges": self._make_badges(downstream["badges"]),
-                                                    "usage": downstream.get("usage", 0)}))
+                                                    "usage": downstream.get("usage", 0),
+                                                    "parent": downstream.get("parent", '')
+                                                    }))
 
         for upstream in result.get("upstream_entities") or []:
             upstream_tables.append(LineageItem(**{"key": upstream["key"],
                                                   "source": upstream["source"],
                                                   "level": upstream["level"],
                                                   "badges": self._make_badges(upstream["badges"]),
-                                                  "usage": upstream.get("usage", 0)}))
+                                                  "usage": upstream.get("usage", 0),
+                                                  "parent": upstream.get("parent", '')
+                                                  }))
 
+        # ToDo: Add a root_entity as an item, which will make it easier for lineage graph
         return Lineage(**{"key": id,
                           "upstream_entities": upstream_tables,
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
+
+    def _classify_tags(self, tag_records: List) -> Tuple:
+        tags = []
+        owner_tags = []
+        for record in tag_records:
+            current_tag_type = record['tag_type']
+            tag_result = Tag(tag_name=record['key'],
+                             tag_type=record['tag_type'])
+            if current_tag_type == 'owner':
+                owner_tags.append(tag_result)
+            else:
+                tags.append(tag_result)
+        return tags, owner_tags
+
+    def _create_watermarks(self, wmk_records: List) -> List[Watermark]:
+        watermarks = []
+        for record in wmk_records:
+            if record['key'] is not None:
+                watermark_type = record['key'].split('/')[-2]
+                watermarks.append(Watermark(watermark_type=watermark_type,
+                                            partition_key=record['partition_key'],
+                                            partition_value=record['partition_value'],
+                                            create_time=record['create_time']))
+        return watermarks
+
+    def _create_programmatic_descriptions(self, prog_desc_records: List) -> List[ProgrammaticDescription]:
+        programmatic_descriptions = []
+        for pg in prog_desc_records:
+            source = pg['description_source']
+            if source is None:
+                LOGGER.error("A programmatic description with no source was found... skipping.")
+            else:
+                programmatic_descriptions.append(ProgrammaticDescription(source=source,
+                                                                         text=pg['description']))
+        return programmatic_descriptions
+
+    def _create_owners(self, owner_records: List) -> List[User]:
+        owners = []
+        for owner in owner_records:
+            owners.append(User(email=owner['email']))
+        return owners
+
+    @timer_with_counter
+    def _exec_feature_query(self, *, feature_key: str) -> Dict:
+        """
+        Executes cypher query to get feature and related nodes
+        """
+
+        feature_query = textwrap.dedent("""\
+        MATCH (feat:Feature {key: $feature_key})
+        OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat)
+        OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
+        OPTIONAL MATCH (feat)-[:OWNER]->(owner:User)
+        OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
+        OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
+        OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
+        OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_desc:Description)
+        OPTIONAL MATCH (feat)-[:DESCRIPTION]->(desc:Description)
+        OPTIONAL MATCH (feat)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+        OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(feat)
+        RETURN feat, collect(distinct wmk) as wmk_records,
+        t.last_updated_timestamp as last_updated_timestamp,
+        col as partition_column, desc, col_desc,
+        collect(distinct db) as availability_records,
+        collect(distinct owner) as owner_records,
+        collect(distinct tag) as tag_records,
+        collect(distinct badge) as badge_records,
+        collect(distinct prog_descriptions) as prog_descriptions
+        """)
+
+        feature_records = self._execute_cypher_query(statement=feature_query,
+                                                     param_dict={
+                                                         'feature_key': feature_key
+                                                     })
+
+        if not feature_records:
+            raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
+
+        feature_records = feature_records.single()
+
+        watermarks = self._create_watermarks(wmk_records=feature_records['wmk_records'])
+
+        partition_column = None
+        if feature_records.get('partition_column'):
+            column_record = feature_records['partition_column']
+            desc_node = feature_records.get('col_desc')
+            col_description = desc_node.get('description') if desc_node else None
+            partition_column = Column(name=column_record['name'],
+                                      key=f"{feature_key}/{column_record['name']}",
+                                      col_type=column_record['col_type'],
+                                      sort_order=0,
+                                      stats=[],
+                                      description=col_description,
+                                      badges=[Badge(badge_name='partition_column',
+                                                    category='column')])
+
+        availability_records = [db['name'] for db in feature_records.get('availability_records')]
+
+        description = None
+        if feature_records.get('desc'):
+            description = feature_records.get('desc')['description']
+
+        programmatic_descriptions = self._create_programmatic_descriptions(feature_records['prog_descriptions'])
+
+        owners = self._create_owners(feature_records['owner_records'])
+
+        tags, owner_tags = self._classify_tags(feature_records.get('tag_records'))
+
+        feature_node = feature_records['feat']
+
+        return {
+            'key': feature_node.get('key'),
+            'name': feature_node.get('name'),
+            'version': feature_node.get('version'),
+            'feature_group': feature_node.get('feature_group'),
+            'data_type': feature_node.get('data_type'),
+            'entity': feature_node.get('entity'),
+            'description': description,
+            'programmatic_descriptions': programmatic_descriptions,
+            'last_updated_timestamp': feature_node.get('last_updated_timestamp'),
+            'created_timestamp': feature_node.get('created_timestamp'),
+            'watermarks': watermarks,
+            'availability': availability_records,
+            'owner_tags': owner_tags,
+            'tags': tags,
+            'badges': self._make_badges(feature_records.get('badge_records')),
+            'partition_column': partition_column,
+            'owners': owners,
+            'status': feature_node.get('status')
+        }
+
+    def get_feature(self, *, feature_uri: str) -> Feature:
+        """
+        :param feature_uri: uniquely identifying key for a feature node
+        :return: a Feature object
+        """
+        feature_metadata = self._exec_feature_query(feature_key=feature_uri)
+        feature = Feature(
+            key=feature_metadata['key'],
+            name=feature_metadata['name'],
+            version=feature_metadata['version'],
+            status=feature_metadata['status'],
+            feature_group=feature_metadata['feature_group'],
+            entity=feature_metadata['entity'],
+            data_type=feature_metadata['data_type'],
+            availability=feature_metadata['availability'],
+            description=feature_metadata['description'],
+            owners=feature_metadata['owners'],
+            badges=feature_metadata['badges'],
+            partition_column=feature_metadata['partition_column'],
+            owner_tags=feature_metadata['owner_tags'],
+            tags=feature_metadata['tags'],
+            programmatic_descriptions=feature_metadata['programmatic_descriptions'],
+            last_updated_timestamp=feature_metadata['last_updated_timestamp'],
+            created_timestamp=feature_metadata['created_timestamp'],
+            watermarks=feature_metadata['watermarks'])
+        return feature
