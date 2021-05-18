@@ -154,7 +154,7 @@ class FeatureTagAPI(Resource):
                 {'message': f'The tag {tag} for id {id} with type {tag_type} '
                             f'and resource_type {ResourceType.Feature.name} is '
                             'not added successfully because owner tags are not editable'}, \
-                        HTTPStatus.CONFLICT
+                HTTPStatus.CONFLICT
 
         return self._tag_common.put(id=id,
                                     resource_type=ResourceType.Feature,
@@ -170,7 +170,7 @@ class FeatureTagAPI(Resource):
                 {'message': f'The tag {tag} for id {id} with type {tag_type} '
                             f'and resource_type {ResourceType.Feature.name} is '
                             'not deleted because owner tags are not editable'}, \
-                        HTTPStatus.CONFLICT
+                HTTPStatus.CONFLICT
 
         return self._tag_common.delete(id=id,
                                        resource_type=ResourceType.Feature,
