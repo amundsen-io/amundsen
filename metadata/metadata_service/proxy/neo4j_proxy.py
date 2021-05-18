@@ -562,7 +562,7 @@ class Neo4jProxy(BaseProxy):
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
                                    'owner {owner} and resource {uri}'.format(owner=owner,
-                                                                          uri=uri))
+                                                                             uri=uri))
             tx.commit()
         except Exception as e:
             if not tx.closed():

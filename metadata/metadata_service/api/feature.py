@@ -96,7 +96,6 @@ class FeatureOwnerAPI(Resource):
             return {'message': f'The owner {owner} for feature_uri {feature_uri} was '
                                'not added successfully'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-
     @swag_from('swagger_doc/feature/owner_delete.yml')
     def delete(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
