@@ -23,7 +23,7 @@ class TestModeDashboardUsageExtractor(unittest.TestCase):
         extractor.init(Scoped.get_scoped_conf(conf=self.config, scope=extractor.get_scope()))
 
         with patch('databuilder.rest_api.rest_api_query.RestApiQuery._send_request') as mock_request:
-            with patch('databuilder.rest_api.rest_api_query.RestApiQuery._post_process') as mock_post_process:
+            with patch('databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query.ModePaginatedRestApiQuery._post_process'):  # noqa
                 mock_request.return_value.json.side_effect = [
                     {
                         'report_stats': [
