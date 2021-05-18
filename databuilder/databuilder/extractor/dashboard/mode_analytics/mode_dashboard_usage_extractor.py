@@ -8,8 +8,8 @@ from pyhocon import ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_utils import ModeDashboardUtils
-from databuilder.rest_api.query_merger import QueryMerger
 from databuilder.rest_api.mode_analytics.mode_paginated_rest_api_query import ModePaginatedRestApiQuery
+from databuilder.rest_api.query_merger import QueryMerger
 
 LOGGER = logging.getLogger(__name__)
 
