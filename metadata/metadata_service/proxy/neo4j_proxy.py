@@ -380,9 +380,9 @@ class Neo4jProxy(BaseProxy):
                                  uri: str,
                                  description: str) -> None:
         """
-        Update table description with one from user
-        :param table_uri: Table uri (key in Neo4j)
-        :param description: new value for table description
+        Update resource description with one from user
+        :param uri: Resource uri (key in Neo4j)
+        :param description: new value for resource description
         """
         # start neo4j transaction
         desc_key = uri + '/_description'

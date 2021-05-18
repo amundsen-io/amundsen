@@ -131,7 +131,7 @@ class FeatureDescriptionAPI(Resource):
     @swag_from('swagger_doc/common/description_put.yml')
     def put(self, id: str) -> Iterable[Any]:
         """
-        Updates table description (passed as a request body)
+        Updates feature description (passed as a request body)
         """
         try:
             description = json.loads(request.data).get('description')
@@ -140,7 +140,7 @@ class FeatureDescriptionAPI(Resource):
             return None, HTTPStatus.OK
 
         except NotFoundException:
-            return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+            return {'message': 'feature_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
 
 
 class FeatureTagAPI(Resource):

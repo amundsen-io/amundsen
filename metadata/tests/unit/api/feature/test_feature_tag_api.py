@@ -38,7 +38,7 @@ class TestFeatureTagAPI(FeatureTestCase):
                                                       tag_type='default',
                                                       resource_type=ResourceType.Feature)
 
-    def test_should_fail_to_delete_tag_when_table_not_found(self) -> None:
+    def test_should_fail_to_delete_tag_when_feature_not_found(self) -> None:
         self.mock_proxy.delete_tag.side_effect = NotFoundException(message='cannot find feature')
 
         response = self.app.test_client().delete(f'/feature/{FEATURE_URI}/tag/{TAG}')
