@@ -539,34 +539,10 @@ class Neo4jProxy(BaseProxy):
         :param owner:
         :return:
         """
-        create_owner_query = textwrap.dedent("""
-        MERGE (u:User {key: $user_email})
-        on CREATE SET u={email: $user_email, key: $user_email}
-        """)
 
-        upsert_owner_relation_query = textwrap.dedent("""
-        MATCH (n1:User {key: $user_email}), (n2:Table {key: $tbl_key})
-        MERGE (n1)-[r1:OWNER_OF]->(n2)-[r2:OWNER]->(n1)
-        RETURN n1.key, n2.key
-        """)
-
-        try:
-            tx = self._driver.session().begin_transaction()
-            # upsert the node
-            tx.run(create_owner_query, {'user_email': owner})
-            result = tx.run(upsert_owner_relation_query, {'user_email': owner,
-                                                          'tbl_key': table_uri})
-
-            if not result.single():
-                raise RuntimeError('Failed to create relation between '
-                                   'owner {owner} and table {tbl}'.format(owner=owner,
-                                                                          tbl=table_uri))
-            tx.commit()
-        except Exception as e:
-            if not tx.closed():
-                tx.rollback()
-            # propagate the exception back to api
-            raise e
+        self.add_resource_owner(uri=table_uri,
+                                resource_type=ResourceType.Table,
+                                owner=owner)
 
     @timer_with_counter
     def add_resource_owner(self, *,
@@ -621,23 +597,9 @@ class Neo4jProxy(BaseProxy):
         :param owner:
         :return:
         """
-        delete_query = textwrap.dedent("""
-        MATCH (n1:User{key: $user_email}), (n2:Table {key: $tbl_key})
-        OPTIONAL MATCH (n1)-[r1:OWNER_OF]->(n2)
-        OPTIONAL MATCH (n2)-[r2:OWNER]->(n1)
-        DELETE r1,r2
-        """)
-        try:
-            tx = self._driver.session().begin_transaction()
-            tx.run(delete_query, {'user_email': owner,
-                                  'tbl_key': table_uri})
-        except Exception as e:
-            # propagate the exception back to api
-            if not tx.closed():
-                tx.rollback()
-            raise e
-        finally:
-            tx.commit()
+        self.delete_resource_owner(uri=table_uri,
+                                   resource_type=ResourceType.Table,
+                                   owner=owner)
 
     @timer_with_counter
     def delete_resource_owner(self, *,
