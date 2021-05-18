@@ -348,3 +348,55 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         self.assertEqual(key.table, 'incidents_2008')
         self.assertEqual(key.email, 'your-user-here@test.com')
         self.assertEqual(value, 1)
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_count_tables_only_from_project_id_key_when_different_project(self, mock_build: Any) -> None:
+        """
+        Test result when COUNT_TABLES_ONLY_FROM_PROJECT_ID is enabled and referenced table's project is different
+        from the PROJECT_ID_KEY of the extractor
+        """
+        config_dict = {
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.COUNT_TABLES_ONLY_FROM_PROJECT_ID_KEY}': True,
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(CORRECT_DATA)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+
+        result = extractor.extract()
+        assert result is None
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_count_tables_only_from_project_id_when_same_project(self, mock_build: Any) -> None:
+        """
+        Test result when COUNT_TABLES_ONLY_FROM_PROJECT_ID is enabled and referenced table's project is same as the
+        PROJECT_ID_KEY of the extractor
+        """
+        config_dict = {
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.COUNT_TABLES_ONLY_FROM_PROJECT_ID_KEY}': True,
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(CORRECT_DATA)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+
+        result = extractor.extract()
+        assert result is not None
+        self.assertIsInstance(result, tuple)
+
+        (key, value) = result
+        self.assertIsInstance(key, TableColumnUsageTuple)
+        self.assertIsInstance(value, int)
+
+        self.assertEqual(key.database, 'bigquery')
+        self.assertEqual(key.cluster, 'bigquery-public-data')
+        self.assertEqual(key.schema, 'austin_incidents')
+        self.assertEqual(key.table, 'incidents_2008')
+        self.assertEqual(key.email, 'your-user-here@test.com')
+        self.assertEqual(value, 1)
