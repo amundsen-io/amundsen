@@ -23,8 +23,9 @@ from amundsen_common.models.user import User as UserEntity
 from amundsen_common.utils.atlas_utils import (AtlasColumnKey,
                                                AtlasCommonParams,
                                                AtlasCommonTypes,
-                                               AtlasDashboardTypes, AtlasTableTypes,
-                                               AtlasStatus, AtlasTableKey)
+                                               AtlasDashboardTypes,
+                                               AtlasStatus, AtlasTableKey,
+                                               AtlasTableTypes)
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,
                                          AtlasGlossaryTerm)
