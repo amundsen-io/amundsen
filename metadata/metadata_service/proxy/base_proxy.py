@@ -200,3 +200,17 @@ class BaseProxy(metaclass=ABCMeta):
                                  uri: str,
                                  description: str) -> None:
         pass
+
+    @abstractmethod
+    def add_resource_owner(self, *,
+                           uri: str,
+                           resource_type: ResourceType,
+                           owner: str) -> None:
+        pass
+
+    @abstractmethod
+    def delete_resource_owner(self, *,
+                              uri: str,
+                              resource_type: ResourceType,
+                              owner: str) -> None:
+        pass

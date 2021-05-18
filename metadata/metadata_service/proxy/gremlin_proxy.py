@@ -1756,6 +1756,17 @@ class AbstractGremlinProxy(BaseProxy):
                                  description: str) -> None:
         pass
 
+    def add_resource_owner(self, *,
+                           uri: str,
+                           resource_type: ResourceType,
+                           owner: str) -> None:
+        pass
+
+    def delete_resource_owner(self, *,
+                              uri: str,
+                              resource_type: ResourceType,
+                              owner: str) -> None:
+        pass
 
 class GenericGremlinProxy(AbstractGremlinProxy):
     """
