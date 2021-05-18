@@ -89,7 +89,7 @@ class FeatureOwnerAPI(Resource):
     @swag_from('swagger_doc/feature/owner_put.yml')
     def put(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.client.add_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
+            self.client.add_resource_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
             return {'message': f'The owner {owner} for feature_uri {feature_uri} '
                                'was added successfully'}, HTTPStatus.OK
         except Exception:
@@ -99,7 +99,7 @@ class FeatureOwnerAPI(Resource):
     @swag_from('swagger_doc/feature/owner_delete.yml')
     def delete(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            self.client.delete_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
+            self.client.delete_resource_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
             return {'message': f'The owner {owner} for feature_uri {feature_uri} '
                                'was deleted successfully'}, HTTPStatus.OK
         except Exception:
