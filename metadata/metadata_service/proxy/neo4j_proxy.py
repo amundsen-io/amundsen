@@ -1639,6 +1639,34 @@ class Neo4jProxy(BaseProxy):
                 tags.append(tag_result)
         return tags, owner_tags
 
+    def _create_watermarks(self, wmk_records: List) -> List[Watermark]:
+        watermarks = []
+        for record in wmk_records:
+            if record['key'] is not None:
+                watermark_type = record['key'].split('/')[-2]
+                watermarks.append(Watermark(watermark_type=watermark_type,
+                                            partition_key=record['partition_key'],
+                                            partition_value=record['partition_value'],
+                                            create_time=record['create_time']))
+        return watermarks
+
+    def _create_programmatic_descriptions(self, prog_desc_records: List) -> List[ProgrammaticDescription]:
+        programmatic_descriptions = []
+        for pg in prog_desc_records:
+            source = pg['description_source']
+            if source is None:
+                LOGGER.error("A programmatic description with no source was found... skipping.")
+            else:
+                programmatic_descriptions.append(ProgrammaticDescription(source=source,
+                                                                         text=pg['description']))
+        return programmatic_descriptions
+
+    def _create_owners(self, owner_records: List) -> List[User]:
+        owners = []
+        for owner in owner_records:
+            owners.append(User(email=owner['email']))
+        return owners
+
     @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:
         """
@@ -1649,7 +1677,7 @@ class Neo4jProxy(BaseProxy):
         MATCH (feat:Feature {key: $feature_key})
         OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat)
         OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
-        OPTIONAL MATCH (owner:User)<-[:OWNER]-(feat)
+        OPTIONAL MATCH (feat)-[:OWNER]->(owner:User)
         OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
@@ -1677,14 +1705,7 @@ class Neo4jProxy(BaseProxy):
 
         feature_records = feature_records.single()
 
-        watermarks = []
-        for record in feature_records['wmk_records']:
-            if record['key'] is not None:
-                watermark_type = record['key'].split('/')[-2]
-                watermarks.append(Watermark(watermark_type=watermark_type,
-                                            partition_key=record['partition_key'],
-                                            partition_value=record['partition_value'],
-                                            create_time=record['create_time']))
+        watermarks = self._create_watermarks(wmk_records=feature_records['wmk_records'])
 
         partition_column = None
         if feature_records.get('partition_column'):
@@ -1706,18 +1727,9 @@ class Neo4jProxy(BaseProxy):
         if feature_records.get('desc'):
             description = feature_records.get('desc')['description']
 
-        programmatic_descriptions = []
-        for pg in feature_records['prog_descriptions']:
-            source = pg['description_source']
-            if source is None:
-                LOGGER.error("A programmatic description with no source was found... skipping.")
-            else:
-                programmatic_descriptions.append(ProgrammaticDescription(source=source,
-                                                                         text=pg['description']))
+        programmatic_descriptions = self._create_programmatic_descriptions(feature_records['prog_descriptions'])
 
-        owners = []
-        for owner in feature_records['owner_records']:
-            owners.append(User(email=owner['email']))
+        owners = self._create_owners(feature_records['owner_records'])
 
         tags, owner_tags = self._classify_tags(feature_records.get('tag_records'))
 
