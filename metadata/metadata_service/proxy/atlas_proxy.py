@@ -147,7 +147,8 @@ class AtlasProxy(BaseProxy):
         try:
             return self.client.entity.get_entity_by_attribute(type_name=key.get_details()['database'],
                                                               uniq_attributes=[
-                                                                  (AtlasCommonParams.qn, key.qualified_name)])
+                                                                  (AtlasCommonParams.qualified_name,
+                                                                   key.qualified_name)])
         except Exception as ex:
             LOGGER.exception(f'Table not found. {str(ex)}')
             raise NotFoundException(f'Table URI( {table_uri} ) does not exist')
@@ -160,7 +161,8 @@ class AtlasProxy(BaseProxy):
         """
         try:
             return self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.user,
-                                                              uniq_attributes=[(AtlasCommonParams.qn, user_id)])
+                                                              uniq_attributes=[
+                                                                  (AtlasCommonParams.qualified_name, user_id)])
         except Exception:
             raise NotFoundException(f'(User {user_id}) does not exist')
 
@@ -206,8 +208,9 @@ class AtlasProxy(BaseProxy):
 
         try:
             bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
-                                                                         uniq_attributes=[(AtlasCommonParams.qn,
-                                                                                           bookmark_qn)])
+                                                                         uniq_attributes=[
+                                                                             (AtlasCommonParams.qualified_name,
+                                                                              bookmark_qn)])
         except Exception as ex:
             LOGGER.exception(f'Bookmark not found. {str(ex)}')
 
@@ -219,8 +222,9 @@ class AtlasProxy(BaseProxy):
                                   user_entity.entity[AtlasCommonParams.guid], bookmark_qn, entity_uri)
             # Fetch bookmark entity after creating it.
             bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
-                                                                         uniq_attributes=[(AtlasCommonParams.qn,
-                                                                                           bookmark_qn)])
+                                                                         uniq_attributes=[
+                                                                             (AtlasCommonParams.qualified_name,
+                                                                              bookmark_qn)])
 
         return bookmark_entity
 
@@ -233,10 +237,10 @@ class AtlasProxy(BaseProxy):
         """
         try:
             table_entity = self._get_table_entity(table_uri=table_uri)
-            columns = table_entity.entity[AtlasCommonParams.rels].get('columns')
+            columns = table_entity.entity[AtlasCommonParams.relationships].get('columns')
             for column in columns or list():
                 col_details = table_entity.referredEntities[column[AtlasCommonParams.guid]]
-                if column_name == col_details[AtlasCommonParams.attrs]['name']:
+                if column_name == col_details[AtlasCommonParams.attributes]['name']:
                     return col_details
 
             raise NotFoundException(f'Column not found: {column_name}')
@@ -256,14 +260,14 @@ class AtlasProxy(BaseProxy):
         else an empty list.
         """
         columns = list()
-        for column in entity.entity[AtlasCommonParams.rels].get('columns') or list():
+        for column in entity.entity[AtlasCommonParams.relationships].get('columns') or list():
             column_status = column.get('entityStatus', 'inactive').lower()
 
             if column_status != 'active':
                 continue
 
             col_entity = entity.referredEntities[column[AtlasCommonParams.guid]]
-            col_attrs = col_entity[AtlasCommonParams.attrs]
+            col_attrs = col_entity[AtlasCommonParams.attributes]
             statistics = list()
 
             badges = list()
@@ -389,7 +393,7 @@ class AtlasProxy(BaseProxy):
         """
         result = []
 
-        meanings = self._filter_active(entity.get(AtlasCommonParams.rels, dict()).get('meanings', []))
+        meanings = self._filter_active(entity.get(AtlasCommonParams.relationships, dict()).get('meanings', []))
 
         for term in meanings or list():
             result.append(Tag(tag_name=term.get('displayText', ''), tag_type='default'))
@@ -407,11 +411,11 @@ class AtlasProxy(BaseProxy):
         table_details = entity.entity
 
         try:
-            attrs = table_details[AtlasCommonParams.attrs]
+            attrs = table_details[AtlasCommonParams.attributes]
 
             programmatic_descriptions = self._get_programmatic_descriptions(attrs.get('parameters', dict()))
 
-            table_info = AtlasTableKey(attrs.get(AtlasCommonParams.qn)).get_details()
+            table_info = AtlasTableKey(attrs.get(AtlasCommonParams.qualified_name)).get_details()
 
             badges = self._serialize_badges(table_details)
             tags = self._serialize_tags(table_details)
@@ -434,7 +438,7 @@ class AtlasProxy(BaseProxy):
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
                 owners=self._get_owners(
-                    table_details[AtlasCommonParams.rels].get('ownedBy', []), attrs.get('owner')),
+                    table_details[AtlasCommonParams.relationships].get('ownedBy', []), attrs.get('owner')),
                 resource_reports=self._get_reports(guids=reports_guids),
                 columns=columns,
                 is_view=is_view,
@@ -535,12 +539,12 @@ class AtlasProxy(BaseProxy):
         table = self._get_table_entity(table_uri=table_uri)
         table_entity = table.entity
 
-        if table_entity[AtlasCommonParams.rels].get("ownedBy"):
+        if table_entity[AtlasCommonParams.relationships].get("ownedBy"):
             try:
                 active_owners = filter(lambda item:
                                        item['relationshipStatus'] == AtlasStatus.ACTIVE
                                        and item['displayText'] == owner,
-                                       table_entity[AtlasCommonParams.rels]['ownedBy'])
+                                       table_entity[AtlasCommonParams.relationships]['ownedBy'])
                 if list(active_owners):
                     self.client.relationship.delete_relationship_by_guid(
                         guid=next(active_owners).get('relationshipGuid')
@@ -601,7 +605,7 @@ class AtlasProxy(BaseProxy):
         :return: The description of the table as a string
         """
         entity = self._get_table_entity(table_uri=table_uri)
-        return entity.entity[AtlasCommonParams.attrs].get('description')
+        return entity.entity[AtlasCommonParams.attributes].get('description')
 
     def put_table_description(self, *,
                               table_uri: str,
@@ -630,7 +634,7 @@ class AtlasProxy(BaseProxy):
         # Check if the user glossary already exists
         glossaries = self.client.glossary.get_all_glossaries()
         for glossary in glossaries:
-            if glossary.get(AtlasCommonParams.qn) == self.AMUNDSEN_USER_TAGS:
+            if glossary.get(AtlasCommonParams.qualified_name) == self.AMUNDSEN_USER_TAGS:
                 return glossary[AtlasCommonParams.guid]
 
         # If not already exists, create one
@@ -747,7 +751,7 @@ class AtlasProxy(BaseProxy):
         column_detail = self._get_column(
             table_uri=table_uri,
             column_name=column_name)
-        return column_detail[AtlasCommonParams.attrs].get('description')
+        return column_detail[AtlasCommonParams.attributes].get('description')
 
     def _serialize_popular_tables(self, entities: AtlasEntitiesWithExtInfo) -> List[PopularTable]:
         """
@@ -760,7 +764,7 @@ class AtlasProxy(BaseProxy):
         for table in entities.entities:
             table_attrs = table.attributes
 
-            table_info = AtlasTableKey(table_attrs.get(AtlasCommonParams.qn)).get_details()
+            table_info = AtlasTableKey(table_attrs.get(AtlasCommonParams.qualified_name)).get_details()
 
             table_name = table_info.get('table') or table_attrs.get('name')
             schema_name = table_info.get('schema', '')
@@ -866,7 +870,7 @@ class AtlasProxy(BaseProxy):
                 'condition': 'AND',
                 'criterion': [
                     {
-                        'attributeName': AtlasCommonParams.qn,
+                        'attributeName': AtlasCommonParams.qualified_name,
                         'operator': 'contains',
                         'attributeValue': f'.{user_id}.bookmark'
                     },
@@ -877,7 +881,7 @@ class AtlasProxy(BaseProxy):
                     }
                 ]
             },
-            'attributes': ['count', AtlasCommonParams.qn, AtlasCommonParams.uri]
+            'attributes': ['count', AtlasCommonParams.qualified_name, AtlasCommonParams.uri]
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
@@ -887,7 +891,7 @@ class AtlasProxy(BaseProxy):
         for record in search_results.entities:
             if resource_type == ResourceType.Table.name:
                 table_info = AtlasTableKey(record.attributes[AtlasCommonParams.uri]).get_details()
-                res = self._parse_bookmark_qn(record.attributes[AtlasCommonParams.qn])
+                res = self._parse_bookmark_qn(record.attributes[AtlasCommonParams.qualified_name])
                 resources.append(PopularTable(
                     database=table_info['database'],
                     cluster=res['cluster'],
@@ -924,13 +928,15 @@ class AtlasProxy(BaseProxy):
 
         user_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.user,
                                                                  uniq_attributes=[
-                                                                     (AtlasCommonParams.qn, user_id)]).entity
+                                                                     (
+                                                                         AtlasCommonParams.qualified_name,
+                                                                         user_id)]).entity
 
         if not user_entity:
             raise NotFoundException(f'User {user_id} not found.')
 
         resource_guids = set()
-        for item in self._filter_active(user_entity[AtlasCommonParams.rels].get('owns')) or list():
+        for item in self._filter_active(user_entity[AtlasCommonParams.relationships].get('owns')) or list():
             if re.compile(type_regex).match(item['typeName']):
                 resource_guids.add(item[AtlasCommonParams.guid])
 
@@ -986,7 +992,8 @@ class AtlasProxy(BaseProxy):
 
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, List[PopularTable]]:
         user = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.user,
-                                                          uniq_attributes=[(AtlasCommonParams.qn, user_email)]).entity
+                                                          uniq_attributes=[
+                                                              (AtlasCommonParams.qualified_name, user_email)]).entity
 
         readers_guids = []
         for user_reads in self._filter_active(user['relationshipAttributes'].get('entityReads')):
@@ -1028,7 +1035,7 @@ class AtlasProxy(BaseProxy):
             raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
-        entity.entity[AtlasCommonParams.attrs][AtlasStatus.ACTIVE.lower()] = True
+        entity.entity[AtlasCommonParams.attributes][AtlasStatus.ACTIVE.lower()] = True
         entity.update()
 
     def delete_resource_relation_by_user(self, *,
@@ -1040,7 +1047,7 @@ class AtlasProxy(BaseProxy):
             raise NotImplementedError(f'resource type {resource_type} is not supported')
 
         entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
-        entity.entity[AtlasCommonParams.attrs][AtlasStatus.ACTIVE.lower()] = False
+        entity.entity[AtlasCommonParams.attributes][AtlasStatus.ACTIVE.lower()] = False
         entity.update()
 
     def _parse_date(self, date: int) -> Optional[int]:
@@ -1145,10 +1152,10 @@ class AtlasProxy(BaseProxy):
         return entity
 
     def _get_dashboard_summary(self, entity: AtlasEntityWithExtInfo, executions: List[AtlasEntity]) -> Dict:
-        attributes = entity.entity[AtlasCommonParams.attrs]
-        relationships = entity.entity[AtlasCommonParams.rels]
+        attributes = entity.entity[AtlasCommonParams.attributes]
+        relationships = entity.entity[AtlasCommonParams.relationships]
 
-        group = self._get_dashboard_group(relationships.get('group').get('guid'))[AtlasCommonParams.attrs]
+        group = self._get_dashboard_group(relationships.get('group').get('guid'))[AtlasCommonParams.attributes]
 
         successful_executions = [e for e in executions if e.get('state') == 'succeeded']
 
@@ -1157,7 +1164,7 @@ class AtlasProxy(BaseProxy):
         except IndexError:
             last_successful_execution = dict(timestamp=0)
 
-        chart_names = [e[AtlasCommonParams.attrs]['name'] for _, e in entity['referredEntities'].items()
+        chart_names = [e[AtlasCommonParams.attributes]['name'] for _, e in entity['referredEntities'].items()
                        if e['typeName'] == AtlasDashboardTypes.chart]
 
         result = dict(
@@ -1176,8 +1183,8 @@ class AtlasProxy(BaseProxy):
 
     def _get_dashboard_details(self, entity: AtlasEntityWithExtInfo) -> Dict:
         try:
-            attributes = entity.entity[AtlasCommonParams.attrs]
-            relationships = entity.entity[AtlasCommonParams.rels]
+            attributes = entity.entity[AtlasCommonParams.attributes]
+            relationships = entity.entity[AtlasCommonParams.relationships]
 
             referred_entities = entity['referredEntities']
 
@@ -1190,7 +1197,7 @@ class AtlasProxy(BaseProxy):
             for k, v in referred_entities.items():
                 entity_type = v.get('typeName')
 
-                _attributes = v[AtlasCommonParams.attrs]
+                _attributes = v[AtlasCommonParams.attributes]
 
                 if entity_type == AtlasDashboardTypes.execution:
                     _executions.append(_attributes)
@@ -1244,7 +1251,8 @@ class AtlasProxy(BaseProxy):
         :return : Atlas Dashboard entity.
         """
         entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
-                                                            uniq_attributes=[(AtlasCommonParams.qn, qualified_name)])
+                                                            uniq_attributes=[
+                                                                (AtlasCommonParams.qualified_name, qualified_name)])
 
         return entity
 
@@ -1263,9 +1271,9 @@ class AtlasProxy(BaseProxy):
         :return: The description of the dashboard as a string
         """
         entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
-                                                            uniq_attributes=[(AtlasCommonParams.qn, id)])
+                                                            uniq_attributes=[(AtlasCommonParams.qualified_name, id)])
 
-        return entity.entity[AtlasCommonParams.attrs].get('description')
+        return entity.entity[AtlasCommonParams.attributes].get('description')
 
     def put_dashboard_description(self, *,
                                   id: str,
@@ -1278,7 +1286,7 @@ class AtlasProxy(BaseProxy):
         :return: None
         """
         entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
-                                                            uniq_attributes=[(AtlasCommonParams.qn, id)])
+                                                            uniq_attributes=[(AtlasCommonParams.qualified_name, id)])
 
         self.client.entity.partial_update_entity_by_guid(
             entity_guid=entity.entity.get('guid'), attr_value=description, attr_name='description'
@@ -1294,9 +1302,10 @@ class AtlasProxy(BaseProxy):
         for _dashboard in entities.entities:
             try:
                 if _dashboard.status == AtlasStatus.ACTIVE:
-                    executions = [entities['referredEntities'].get(e.get('guid'))[AtlasCommonParams.attrs]
+                    executions = [entities['referredEntities'].get(e.get('guid'))[AtlasCommonParams.attributes]
                                   for e in
-                                  self._filter_active(_dashboard[AtlasCommonParams.rels].get('executions', []))]
+                                  self._filter_active(
+                                      _dashboard[AtlasCommonParams.relationships].get('executions', []))]
 
                     dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
 
@@ -1319,7 +1328,8 @@ class AtlasProxy(BaseProxy):
 
         table = self._get_table_entity(table_uri=id)
 
-        guids = [d.get('guid') for d in self._filter_active(table.entity[AtlasCommonParams.rels].get(resource, []))]
+        guids = [d.get('guid') for d in
+                 self._filter_active(table.entity[AtlasCommonParams.relationships].get(resource, []))]
 
         entities = self.client.entity.get_entities_by_guids(guids=guids)
         result = serialize_function(entities)
@@ -1417,7 +1427,7 @@ class AtlasProxy(BaseProxy):
             output_type = entities.get(output_guid)['typeName'].lower()
 
             if input_type.endswith('process') and output_type.endswith(entity_type):
-                output_qn = entities.get(output_guid)[AtlasCommonParams.attrs][AtlasCommonParams.qn]
+                output_qn = entities.get(output_guid)[AtlasCommonParams.attributes][AtlasCommonParams.qualified_name]
                 output_key = key_class(output_qn, output_type).amundsen_key  # type: ignore
 
                 if not processes.get(input_guid):
@@ -1426,7 +1436,7 @@ class AtlasProxy(BaseProxy):
                 processes[input_guid]['outputs'].add(output_key)
 
             elif output_type.endswith('process') and input_type.endswith(entity_type):
-                input_qn = entities.get(input_guid)[AtlasCommonParams.attrs][AtlasCommonParams.qn]
+                input_qn = entities.get(input_guid)[AtlasCommonParams.attributes][AtlasCommonParams.qualified_name]
                 input_key = key_class(input_qn, input_type).amundsen_key  # type: ignore
 
                 if not processes.get(output_guid):

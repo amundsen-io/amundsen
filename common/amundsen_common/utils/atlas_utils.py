@@ -11,10 +11,10 @@ class AtlasStatus:
 
 
 class AtlasCommonParams:
-    qn = 'qualifiedName'
+    qualified_name = 'qualifiedName'
     guid = 'guid'
-    attrs = 'attributes'
-    rels = 'relationshipAttributes'
+    attributes = 'attributes'
+    relationships = 'relationshipAttributes'
     uri = 'entityUri'
 
 
