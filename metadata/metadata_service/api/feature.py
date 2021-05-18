@@ -31,6 +31,8 @@ class FeatureDetailAPI(Resource):
             return schema.dump(feature), HTTPStatus.OK
         except NotFoundException:
             return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
+        except:
+            return {'message': 'Internal server error'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureLineageAPI(Resource):

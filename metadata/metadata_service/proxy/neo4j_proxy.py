@@ -1649,7 +1649,7 @@ class Neo4jProxy(BaseProxy):
         MATCH (feat:Feature {key: $feature_key})
         OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat)
         OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
-        OPTIONAL MATCH (owner:User)<-[:OWNER]-(feat)
+        OPTIONAL MATCH (feat)-[:OWNER]->(owner:User)
         OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
