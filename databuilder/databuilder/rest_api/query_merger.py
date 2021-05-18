@@ -54,7 +54,11 @@ class QueryMerger:
         record_dict_to_merge = self._computed_query_result.get(value_of_merge_key)
         if not record_dict_to_merge:
             raise Exception(f'{self._merge_key} {value_of_merge_key} not found in query_to_merge results')
-        record_dict.update(record_dict_to_merge)
+        # we don't want the query merger to overwrite values of existing keys in record_dict
+        filterd_record_dict_to_merge = {
+            key: record_dict_to_merge[key] for key in record_dict_to_merge if key not in record_dict
+        }
+        record_dict.update(filterd_record_dict_to_merge)
 
     def _compute_query_result(self) -> Dict[Any, Any]:
         """
