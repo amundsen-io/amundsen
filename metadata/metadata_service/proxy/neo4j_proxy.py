@@ -1660,7 +1660,7 @@ class Neo4jProxy(BaseProxy):
                 programmatic_descriptions.append(ProgrammaticDescription(source=source,
                                                                          text=pg['description']))
         return programmatic_descriptions
-    
+
     def _create_owners(self, owner_records: List) -> List[User]:
         owners = []
         for owner in owner_records:
