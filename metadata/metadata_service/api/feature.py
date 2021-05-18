@@ -1,3 +1,4 @@
+import json
 import logging
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
@@ -5,6 +6,7 @@ from typing import Any, Iterable, Mapping, Union
 # TODO change all imports to use common dependecy instead
 from amundsen_common.models.feature import FeatureSchema
 from flasgger import swag_from
+from flask import request
 from flask_restful import Resource, reqparse
 
 from metadata_service.api.badge import BadgeCommon
@@ -100,11 +102,33 @@ class FeatureDescriptionAPI(Resource):
 
     @swag_from('swagger_doc/common/description_get.yml')
     def get(self, id: str) -> Iterable[Any]:
-        pass
+        """
+        Returns description in Neo4j endpoint
+        """
+        try:
+            description = self.client._get_resource_description(resource_type=ResourceType.Feature,
+                                                                uri=id).description
+            return {'description': description}, HTTPStatus.OK
+
+        except NotFoundException:
+            return {'message': 'feature_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+
+        except Exception:
+            return {'message': 'Internal server error'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     @swag_from('swagger_doc/common/description_put.yml')
     def put(self, id: str) -> Iterable[Any]:
-        pass
+        """
+        Updates table description (passed as a request body)
+        """
+        try:
+            description = json.loads(request.data).get('description')
+            self.client._put_resource_description(resource_type=ResourceType.Feature,
+                                                  uri=id, description=description)
+            return None, HTTPStatus.OK
+
+        except NotFoundException:
+            return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
 
 
 class FeatureTagAPI(Resource):
