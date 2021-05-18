@@ -1,11 +1,18 @@
+import logging
+from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
 
+# TODO change all imports to use common dependecy instead
+from amundsen_common.models.feature import FeatureSchema
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
 
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
+from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FeatureDetailAPI(Resource):
@@ -18,7 +25,14 @@ class FeatureDetailAPI(Resource):
 
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        try:
+            feature = self.client.get_feature(feature_uri=feature_uri)
+            schema = FeatureSchema()
+            return schema.dump(feature), HTTPStatus.OK
+        except NotFoundException:
+            return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureLineageAPI(Resource):

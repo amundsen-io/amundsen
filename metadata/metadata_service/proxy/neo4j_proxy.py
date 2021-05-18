@@ -1626,5 +1626,159 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
+    def _classify_tags(self, tag_records: List) -> Tuple:
+        tags = []
+        owner_tags = []
+        for record in tag_records:
+            current_tag_type = record['tag_type']
+            tag_result = Tag(tag_name=record['key'],
+                             tag_type=record['tag_type'])
+            if current_tag_type == 'owner':
+                owner_tags.append(tag_result)
+            else:
+                tags.append(tag_result)
+        return tags, owner_tags
+
+    def _create_watermarks(self, wmk_records: List) -> List[Watermark]:
+        watermarks = []
+        for record in wmk_records:
+            if record['key'] is not None:
+                watermark_type = record['key'].split('/')[-2]
+                watermarks.append(Watermark(watermark_type=watermark_type,
+                                            partition_key=record['partition_key'],
+                                            partition_value=record['partition_value'],
+                                            create_time=record['create_time']))
+        return watermarks
+
+    def _create_programmatic_descriptions(self, prog_desc_records: List) -> List[ProgrammaticDescription]:
+        programmatic_descriptions = []
+        for pg in prog_desc_records:
+            source = pg['description_source']
+            if source is None:
+                LOGGER.error("A programmatic description with no source was found... skipping.")
+            else:
+                programmatic_descriptions.append(ProgrammaticDescription(source=source,
+                                                                         text=pg['description']))
+        return programmatic_descriptions
+
+    def _create_owners(self, owner_records: List) -> List[User]:
+        owners = []
+        for owner in owner_records:
+            owners.append(User(email=owner['email']))
+        return owners
+
+    @timer_with_counter
+    def _exec_feature_query(self, *, feature_key: str) -> Dict:
+        """
+        Executes cypher query to get feature and related nodes
+        """
+
+        feature_query = textwrap.dedent("""\
+        MATCH (feat:Feature {key: $feature_key})
+        OPTIONAL MATCH (db:Database)-[:FEATURE]->(feat)
+        OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
+        OPTIONAL MATCH (feat)-[:OWNER]->(owner:User)
+        OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
+        OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
+        OPTIONAL MATCH (feat)-[:COLUMN]->(col:Column)-[:HAS_BADGE]->(col_badge:Badge)
+        OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_desc:Description)
+        OPTIONAL MATCH (feat)-[:DESCRIPTION]->(desc:Description)
+        OPTIONAL MATCH (feat)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+        OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(feat)
+        RETURN feat, collect(distinct wmk) as wmk_records,
+        t.last_updated_timestamp as last_updated_timestamp,
+        col as partition_column, desc, col_desc,
+        collect(distinct db) as availability_records,
+        collect(distinct owner) as owner_records,
+        collect(distinct tag) as tag_records,
+        collect(distinct badge) as badge_records,
+        collect(distinct prog_descriptions) as prog_descriptions
+        """)
+
+        feature_records = self._execute_cypher_query(statement=feature_query,
+                                                     param_dict={
+                                                         'feature_key': feature_key
+                                                     })
+
+        if not feature_records:
+            raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
+
+        feature_records = feature_records.single()
+
+        watermarks = self._create_watermarks(wmk_records=feature_records['wmk_records'])
+
+        partition_column = None
+        if feature_records.get('partition_column'):
+            column_record = feature_records['partition_column']
+            desc_node = feature_records.get('col_desc')
+            col_description = desc_node.get('description') if desc_node else None
+            partition_column = Column(name=column_record['name'],
+                                      key=f"{feature_key}/{column_record['name']}",
+                                      col_type=column_record['col_type'],
+                                      sort_order=0,
+                                      stats=[],
+                                      description=col_description,
+                                      badges=[Badge(badge_name='partition_column',
+                                                    category='column')])
+
+        availability_records = [db['name'] for db in feature_records.get('availability_records')]
+
+        description = None
+        if feature_records.get('desc'):
+            description = feature_records.get('desc')['description']
+
+        programmatic_descriptions = self._create_programmatic_descriptions(feature_records['prog_descriptions'])
+
+        owners = self._create_owners(feature_records['owner_records'])
+
+        tags, owner_tags = self._classify_tags(feature_records.get('tag_records'))
+
+        feature_node = feature_records['feat']
+
+        return {
+            'key': feature_node.get('key'),
+            'name': feature_node.get('name'),
+            'version': feature_node.get('version'),
+            'feature_group': feature_node.get('feature_group'),
+            'data_type': feature_node.get('data_type'),
+            'entity': feature_node.get('entity'),
+            'description': description,
+            'programmatic_descriptions': programmatic_descriptions,
+            'last_updated_timestamp': feature_node.get('last_updated_timestamp'),
+            'created_timestamp': feature_node.get('created_timestamp'),
+            'watermarks': watermarks,
+            'availability': availability_records,
+            'owner_tags': owner_tags,
+            'tags': tags,
+            'badges': self._make_badges(feature_records.get('badge_records')),
+            'partition_column': partition_column,
+            'owners': owners,
+            'status': feature_node.get('status')
+        }
+
     def get_feature(self, *, feature_uri: str) -> Feature:
-        pass
+        """
+        :param feature_uri: uniquely identifying key for a feature node
+        :return: a Feature object
+        """
+        feature_metadata = self._exec_feature_query(feature_key=feature_uri)
+        feature = Feature(
+            key=feature_metadata['key'],
+            name=feature_metadata['name'],
+            version=feature_metadata['version'],
+            status=feature_metadata['status'],
+            feature_group=feature_metadata['feature_group'],
+            entity=feature_metadata['entity'],
+            data_type=feature_metadata['data_type'],
+            availability=feature_metadata['availability'],
+            description=feature_metadata['description'],
+            owners=feature_metadata['owners'],
+            badges=feature_metadata['badges'],
+            partition_column=feature_metadata['partition_column'],
+            owner_tags=feature_metadata['owner_tags'],
+            tags=feature_metadata['tags'],
+            programmatic_descriptions=feature_metadata['programmatic_descriptions'],
+            last_updated_timestamp=feature_metadata['last_updated_timestamp'],
+            created_timestamp=feature_metadata['created_timestamp'],
+            watermarks=feature_metadata['watermarks'])
+        return feature
