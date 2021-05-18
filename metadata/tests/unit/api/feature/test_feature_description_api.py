@@ -43,7 +43,7 @@ class TestFeatureDescriptionAPI(FeatureTestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.mock_proxy.put_resource_description.assert_called_with(resource_type=ResourceType.Feature,
-                                                                    uri=FEATURE_URI,description=DESCRIPTION)
+                                                                    uri=FEATURE_URI, description=DESCRIPTION)
 
     def test_should_fail_to_update_description_when_feature_not_found(self) -> None:
         self.mock_proxy.put_resource_description.side_effect = NotFoundException(message='cannot find feature')
