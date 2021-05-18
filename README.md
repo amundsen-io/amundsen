@@ -132,11 +132,16 @@ Please visit [Architecture](./architecture/) for Amundsen architecture overview.
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 
+### Table  Column metrics
+
+- [Pandas Profiling](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/)
+
 ### Dashboard Connectors
 
 - [Mode Analytics](https://mode.com/)
 - [Redash](https://redash.io/)
 - [Tableau](https://tableau.com/)
+- [Apache Superset](https://superset.apache.org/)
 
 ### ETL Orchestration
 
