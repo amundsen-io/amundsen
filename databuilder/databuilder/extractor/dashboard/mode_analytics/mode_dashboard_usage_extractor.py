@@ -71,4 +71,3 @@ class ModeDashboardUsageExtractor(Extractor):
                                                        query_merger=reports_query_merger)
 
         return report_stats_query
-
