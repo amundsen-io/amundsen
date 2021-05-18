@@ -10,7 +10,7 @@ from databuilder import Scoped
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_usage_extractor import ModeDashboardUsageExtractor
 
 
-class TestModeDashboardLastModifiedTimestampExtractor(unittest.TestCase):
+class TestModeDashboardUsageExtractor(unittest.TestCase):
     def setUp(self) -> None:
         config = ConfigFactory.from_dict({
             'extractor.mode_dashboard_usage.organization': 'amundsen',
