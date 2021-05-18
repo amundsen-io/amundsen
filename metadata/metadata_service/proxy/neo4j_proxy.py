@@ -340,9 +340,9 @@ class Neo4jProxy(BaseProxy):
         return _badges
 
     @timer_with_counter
-    def _get_resource_description(self, *,
-                                  resource_type: ResourceType,
-                                  uri: str) -> Description:
+    def get_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str) -> Description:
         """
         Get the resource description based on the uri. Any exception will propagate back to api server.
 
@@ -372,13 +372,13 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
 
-        return self._get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
+        return self.get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
 
     @timer_with_counter
-    def _put_resource_description(self, *,
-                                  resource_type: ResourceType,
-                                  uri: str,
-                                  description: str) -> None:
+    def put_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str,
+                                 description: str) -> None:
         """
         Update table description with one from user
         :param table_uri: Table uri (key in Neo4j)
@@ -438,9 +438,9 @@ class Neo4jProxy(BaseProxy):
         :param description: new value for table description
         """
 
-        self._put_resource_description(resource_type=ResourceType.Table,
-                                       uri=table_uri,
-                                       description=description)
+        self.put_resource_description(resource_type=ResourceType.Table,
+                                      uri=table_uri,
+                                      description=description)
 
     @timer_with_counter
     def get_column_description(self, *,
@@ -1523,7 +1523,7 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
 
-        return self._get_resource_description(resource_type=ResourceType.Dashboard, uri=id)
+        return self.get_resource_description(resource_type=ResourceType.Dashboard, uri=id)
 
     @timer_with_counter
     def put_dashboard_description(self, *,
@@ -1535,9 +1535,9 @@ class Neo4jProxy(BaseProxy):
         :param description: new value for Dashboard description
         """
 
-        self._put_resource_description(resource_type=ResourceType.Dashboard,
-                                       uri=id,
-                                       description=description)
+        self.put_resource_description(resource_type=ResourceType.Dashboard,
+                                      uri=id,
+                                      description=description)
 
     @timer_with_counter
     def get_resources_using_table(self, *,

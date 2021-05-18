@@ -118,7 +118,7 @@ class FeatureDescriptionAPI(Resource):
         Returns description in Neo4j endpoint
         """
         try:
-            description = self.client._get_resource_description(resource_type=ResourceType.Feature,
+            description = self.client.get_resource_description(resource_type=ResourceType.Feature,
                                                                 uri=id).description
             return {'description': description}, HTTPStatus.OK
 
@@ -135,7 +135,7 @@ class FeatureDescriptionAPI(Resource):
         """
         try:
             description = json.loads(request.data).get('description')
-            self.client._put_resource_description(resource_type=ResourceType.Feature,
+            self.client.put_resource_description(resource_type=ResourceType.Feature,
                                                   uri=id, description=description)
             return None, HTTPStatus.OK
 
