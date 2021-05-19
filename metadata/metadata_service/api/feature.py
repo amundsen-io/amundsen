@@ -119,7 +119,7 @@ class FeatureDescriptionAPI(Resource):
     @swag_from('swagger_doc/common/description_get.yml')
     def get(self, id: str) -> Iterable[Any]:
         """
-        Returns description in Neo4j endpoint
+        Returns description from proxy
         """
         try:
             description = self.client.get_resource_description(resource_type=ResourceType.Feature,
