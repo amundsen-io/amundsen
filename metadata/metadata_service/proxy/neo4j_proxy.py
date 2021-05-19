@@ -13,6 +13,7 @@ from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
+from amundsen_common.models.query import Query
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           Source, Stat, Table, Tag, User,
@@ -1815,3 +1816,23 @@ class Neo4jProxy(BaseProxy):
             created_timestamp=feature_metadata['created_timestamp'],
             watermarks=feature_metadata['watermarks'])
         return feature
+
+    def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> Query:
+        """
+        Executes cypher query to get query nodes associated with resource
+        """
+        neo4j_query = textwrap.dedent("""\
+        MATCH (feat:{resource_type} {{key: $resource_key}})
+        OPTIONAL MATCH (q:Query)-[:QUERY_OF]->(feat)
+        RETURN q as query_records
+        """.format(resource_type=resource_type.name))
+
+        records = self._execute_cypher_query(statement=neo4j_query,
+                                             param_dict={'resource_key': uri})
+
+        if not records:
+            raise NotFoundException(f'Resource URI( {uri} ) does not exist')
+
+        query_result = records.single()['query_records']
+
+        return Query(name=query_result['name'], text=query_result['query_text'], url=query_result['url'])
