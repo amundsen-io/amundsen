@@ -264,19 +264,20 @@ export class TableDetail extends React.Component<
           Dashboards <LoadingSpinner />
         </div>
       );
-
-      tabInfo.push({
-        content: (
-          <TableDashboardResourceList
-            itemsPerPage={DASHBOARDS_PER_PAGE}
-            source={TABLE_SOURCE}
-          />
-        ),
-        key: Constants.TABLE_TAB.DASHBOARD,
-        title: isLoadingDashboards
-          ? loadingTitle
-          : `Dashboards (${numRelatedDashboards})`,
-      });
+      if (numRelatedDashboards > 0) {
+        tabInfo.push({
+          content: (
+            <TableDashboardResourceList
+              itemsPerPage={DASHBOARDS_PER_PAGE}
+              source={TABLE_SOURCE}
+            />
+          ),
+          key: Constants.TABLE_TAB.DASHBOARD,
+          title: isLoadingDashboards
+            ? loadingTitle
+            : `Dashboards (${numRelatedDashboards})`,
+        });
+      }
     }
 
     if (isTableListLineageEnabled()) {
