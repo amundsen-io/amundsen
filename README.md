@@ -136,15 +136,13 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 - [Mode Analytics](https://mode.com/)
 - [Redash](https://redash.io/)
+- [Apache Superset](https://superset.apache.org/)
 - [Tableau](https://tableau.com/)
 
 ### ETL Orchestration
 
 - [Apache Airflow](https://airflow.apache.org/)
 
-### BI Viz Tool
-
-- [Apache Superset](https://superset.incubator.apache.org/)
 
 ## Installation
 
