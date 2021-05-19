@@ -1265,16 +1265,14 @@ class TestNeo4jProxy(unittest.TestCase):
                 {'query_records': {
                     'name': 'generation_query',
                     'query_text': 'SELECT * FROM test_table',
-                    'url': 'github.com/repo/file'
-                }
-            }
-            ]
+                    'url': 'github.com/repo/file'}}]
+
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             gen_code = neo4j_proxy.get_resource_generation_code(uri='dummy_uri',
                                                                 resource_type=ResourceType.Feature)
             expected = Query(name='generation_query',
-                            text='SELECT * FROM test_table',
-                            url='github.com/repo/file')
+                             text='SELECT * FROM test_table',
+                             url='github.com/repo/file')
         self.assertEqual(str(expected), str(gen_code))
 
     def test_get_resource_generation_code_not_found(self) -> None:
