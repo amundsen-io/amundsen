@@ -249,7 +249,7 @@ class DbtExtractor(Extractor):
                 desc, desc_src = self._get_table_descriptions(manifest_content)
                 tags, tbl_badges = self._get_table_tags_badges(manifest_content)
 
-                tbl_metedata = TableMetadata(
+                tbl_metadata = TableMetadata(
                     database=self._default_sanitize(self._database_name),
                     # The dbt "database" is the cluster here
                     cluster=self._default_sanitize(manifest_content['database']),
@@ -262,24 +262,24 @@ class DbtExtractor(Extractor):
                     description_source=desc_src
                 )
                 # Keep track for Lineage
-                dbt_id_to_table_key[tbl_node] = tbl_metedata._get_table_key()
+                dbt_id_to_table_key[tbl_node] = tbl_metadata._get_table_key()
 
                 # Optionally filter schemas in the output
                 yield_schema = self._can_yield_schema(manifest_content['schema'])
 
                 if self._extract_tables and yield_schema:
-                    yield tbl_metedata
+                    yield tbl_metadata
 
                 if self._extract_tags and tbl_badges and yield_schema:
                     yield BadgeMetadata(start_label=TableMetadata.TABLE_NODE_LABEL,
-                                        start_key=tbl_metedata._get_table_key(),
+                                        start_key=tbl_metadata._get_table_key(),
                                         badges=[Badge(badge, 'table') for badge in tbl_badges])
 
                 if self._source_url and yield_schema:
-                    yield TableSource(db_name=tbl_metedata.database,
-                                      cluster=tbl_metedata.cluster,
-                                      schema=tbl_metedata.schema,
-                                      table_name=tbl_metedata.name,
+                    yield TableSource(db_name=tbl_metadata.database,
+                                      cluster=tbl_metadata.cluster,
+                                      schema=tbl_metadata.schema,
+                                      table_name=tbl_metadata.name,
                                       source=os.path.join(self._source_url, manifest_content.get('original_file_path')))
 
         if self._extract_lineage:
@@ -296,7 +296,7 @@ class DbtExtractor(Extractor):
     def _get_column_values(self, manifest_columns: Dict, catalog_columns: Dict) -> List[ColumnMetadata]:
         """
         Iterates over the columns in the manifest file and creates a `ColumnMetadata` object
-        with the combined informatino from the manifest file as well as the catalog file.
+        with the combined information from the manifest file as well as the catalog file.
 
         :params manifest_columns: A dictionary of values from the manifest.json, the keys
             are column names and the values are column metadata
@@ -306,23 +306,24 @@ class DbtExtractor(Extractor):
         """
         tbl_columns = []
         for manifest_col_name, manifest_col_content in manifest_columns.items():
-            catalog_col_content = catalog_columns.get(manifest_col_name.upper(), {})
+            catalog_col_content = catalog_columns.get(manifest_col_name.upper())
 
-            col_desc = None
-            if self._extract_descriptions:
-                col_desc = manifest_col_content.get('description')
+            if catalog_col_content:
+                col_desc = None
+                if self._extract_descriptions:
+                    col_desc = manifest_col_content.get('description')
 
-            # Only extract column-level tags IF converting to badges, Amundsen does not have column-level tags
-            badges = None
-            if self._extract_tags and self._dbt_tag_as == DBT_TAG_AS.BADGE:
-                badges = manifest_col_content.get('tags')
+                # Only extract column-level tags IF converting to badges, Amundsen does not have column-level tags
+                badges = None
+                if self._extract_tags and self._dbt_tag_as == DBT_TAG_AS.BADGE:
+                    badges = manifest_col_content.get('tags')
 
-            col_metadata = ColumnMetadata(
-                name=self._default_sanitize(catalog_col_content['name']),
-                description=col_desc,
-                col_type=catalog_col_content['type'],
-                sort_order=catalog_col_content['index'],
-                badges=badges
-            )
-            tbl_columns.append(col_metadata)
+                col_metadata = ColumnMetadata(
+                    name=self._default_sanitize(catalog_col_content['name']),
+                    description=col_desc,
+                    col_type=catalog_col_content['type'],
+                    sort_order=catalog_col_content['index'],
+                    badges=badges
+                )
+                tbl_columns.append(col_metadata)
         return tbl_columns
