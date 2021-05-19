@@ -433,7 +433,7 @@ class AtlasProxy(BaseProxy):
                 database=table_details.get('typeName'),
                 cluster=table_info.get('cluster', ''),
                 schema=table_info.get('schema', ''),
-                name=attrs.get('name') or table_info.get("table_name", ''),
+                name=attrs.get('name') or table_info.get('table', ''),
                 badges=badges,
                 tags=tags,
                 description=attrs.get('description') or attrs.get('comment'),
