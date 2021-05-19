@@ -1270,8 +1270,7 @@ task = DefaultTask(extractor=extractor,
 
 job_config = ConfigFactory.from_dict({
     '{}.{}'.format(extractor.get_scope(), ORGANIZATION): organization,
-    '{}.{}'.format(MODE_ACCESS_TOKEN): mode_token,
-    '{}.{}'.format(MODE_PASSWORD_TOKEN): mode_password,
+    '{}.{}'.format(extractor.get_scope(), MODE_BEARER_TOKEN): mode_bearer_token,
     'loader.generic.callback_function': callback_function
 })
 
