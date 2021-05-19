@@ -341,9 +341,9 @@ class Neo4jProxy(BaseProxy):
         return _badges
 
     @timer_with_counter
-    def _get_resource_description(self, *,
-                                  resource_type: ResourceType,
-                                  uri: str) -> Description:
+    def get_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str) -> Description:
         """
         Get the resource description based on the uri. Any exception will propagate back to api server.
 
@@ -373,17 +373,17 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
 
-        return self._get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
+        return self.get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
 
     @timer_with_counter
-    def _put_resource_description(self, *,
-                                  resource_type: ResourceType,
-                                  uri: str,
-                                  description: str) -> None:
+    def put_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str,
+                                 description: str) -> None:
         """
-        Update table description with one from user
-        :param table_uri: Table uri (key in Neo4j)
-        :param description: new value for table description
+        Update resource description with one from user
+        :param uri: Resource uri (key in Neo4j)
+        :param description: new value for resource description
         """
         # start neo4j transaction
         desc_key = uri + '/_description'
@@ -439,9 +439,9 @@ class Neo4jProxy(BaseProxy):
         :param description: new value for table description
         """
 
-        self._put_resource_description(resource_type=ResourceType.Table,
-                                       uri=table_uri,
-                                       description=description)
+        self.put_resource_description(resource_type=ResourceType.Table,
+                                      uri=table_uri,
+                                      description=description)
 
     @timer_with_counter
     def get_column_description(self, *,
@@ -536,6 +536,24 @@ class Neo4jProxy(BaseProxy):
         Update table owner informations.
         1. Do a create if not exists query of the owner(user) node.
         2. Do a upsert of the owner/owned_by relation.
+        :param table_uri:
+        :param owner:
+        :return:
+        """
+
+        self.add_resource_owner(uri=table_uri,
+                                resource_type=ResourceType.Table,
+                                owner=owner)
+
+    @timer_with_counter
+    def add_resource_owner(self, *,
+                           uri: str,
+                           resource_type: ResourceType,
+                           owner: str) -> None:
+        """
+        Update table owner informations.
+        1. Do a create if not exists query of the owner(user) node.
+        2. Do a upsert of the owner/owned_by relation.
 
         :param table_uri:
         :param owner:
@@ -547,22 +565,22 @@ class Neo4jProxy(BaseProxy):
         """)
 
         upsert_owner_relation_query = textwrap.dedent("""
-        MATCH (n1:User {key: $user_email}), (n2:Table {key: $tbl_key})
+        MATCH (n1:User {{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
         MERGE (n1)-[r1:OWNER_OF]->(n2)-[r2:OWNER]->(n1)
         RETURN n1.key, n2.key
-        """)
+        """.format(resource_type=resource_type.name))
 
         try:
             tx = self._driver.session().begin_transaction()
             # upsert the node
             tx.run(create_owner_query, {'user_email': owner})
             result = tx.run(upsert_owner_relation_query, {'user_email': owner,
-                                                          'tbl_key': table_uri})
+                                                          'res_key': uri})
 
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
-                                   'owner {owner} and table {tbl}'.format(owner=owner,
-                                                                          tbl=table_uri))
+                                   'owner {owner} and resource {uri}'.format(owner=owner,
+                                                                             uri=uri))
             tx.commit()
         except Exception as e:
             if not tx.closed():
@@ -580,16 +598,31 @@ class Neo4jProxy(BaseProxy):
         :param owner:
         :return:
         """
+        self.delete_resource_owner(uri=table_uri,
+                                   resource_type=ResourceType.Table,
+                                   owner=owner)
+
+    @timer_with_counter
+    def delete_resource_owner(self, *,
+                              uri: str,
+                              resource_type: ResourceType,
+                              owner: str) -> None:
+        """
+        Delete the owner / owned_by relationship.
+        :param table_uri:
+        :param owner:
+        :return:
+        """
         delete_query = textwrap.dedent("""
-        MATCH (n1:User{key: $user_email}), (n2:Table {key: $tbl_key})
+        MATCH (n1:User{{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
         OPTIONAL MATCH (n1)-[r1:OWNER_OF]->(n2)
         OPTIONAL MATCH (n2)-[r2:OWNER]->(n1)
         DELETE r1,r2
-        """)
+        """.format(resource_type=resource_type.name))
         try:
             tx = self._driver.session().begin_transaction()
             tx.run(delete_query, {'user_email': owner,
-                                  'tbl_key': table_uri})
+                                  'res_key': uri})
         except Exception as e:
             # propagate the exception back to api
             if not tx.closed():
@@ -1453,7 +1486,7 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
 
-        return self._get_resource_description(resource_type=ResourceType.Dashboard, uri=id)
+        return self.get_resource_description(resource_type=ResourceType.Dashboard, uri=id)
 
     @timer_with_counter
     def put_dashboard_description(self, *,
@@ -1465,9 +1498,9 @@ class Neo4jProxy(BaseProxy):
         :param description: new value for Dashboard description
         """
 
-        self._put_resource_description(resource_type=ResourceType.Dashboard,
-                                       uri=id,
-                                       description=description)
+        self.put_resource_description(resource_type=ResourceType.Dashboard,
+                                      uri=id,
+                                      description=description)
 
     @timer_with_counter
     def get_resources_using_table(self, *,

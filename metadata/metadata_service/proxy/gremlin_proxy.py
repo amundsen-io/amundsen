@@ -1745,6 +1745,29 @@ class AbstractGremlinProxy(BaseProxy):
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
 
+    def get_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str) -> Description:
+        pass
+
+    def put_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str,
+                                 description: str) -> None:
+        pass
+
+    def add_resource_owner(self, *,
+                           uri: str,
+                           resource_type: ResourceType,
+                           owner: str) -> None:
+        pass
+
+    def delete_resource_owner(self, *,
+                              uri: str,
+                              resource_type: ResourceType,
+                              owner: str) -> None:
+        pass
+
 
 class GenericGremlinProxy(AbstractGremlinProxy):
     """

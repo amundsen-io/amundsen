@@ -1,3 +1,4 @@
+import json
 import logging
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
@@ -5,6 +6,7 @@ from typing import Any, Iterable, Mapping, Union
 from amundsen_common.models.feature import FeatureSchema
 from amundsen_common.models.query import QuerySchema
 from flasgger import swag_from
+from flask import request
 from flask_restful import Resource, reqparse
 
 from metadata_service.api.badge import BadgeCommon
@@ -31,8 +33,10 @@ class FeatureDetailAPI(Resource):
             schema = FeatureSchema()
             return schema.dump(feature), HTTPStatus.OK
         except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {feature_uri} does not exist')
             return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
         except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting feature details: {e}')
             return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
@@ -41,7 +45,7 @@ class FeatureLineageAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
-    @swag_from('swagger_doc/table/lineage_get.yml')
+    @swag_from('swagger_doc/feature/lineage_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
         pass
 
@@ -90,13 +94,27 @@ class FeatureOwnerAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
-    @swag_from('swagger_doc/table/owner_put.yml')
-    def put(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+    @swag_from('swagger_doc/feature/owner_put.yml')
+    def put(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.add_resource_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} '
+                               'was added successfully'}, HTTPStatus.OK
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when adding owner: {e}')
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} was '
+                               f'not added successfully. Message: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    @swag_from('swagger_doc/table/owner_delete.yml')
-    def delete(self, table_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+    @swag_from('swagger_doc/feature/owner_delete.yml')
+    def delete(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.delete_resource_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} '
+                               'was deleted successfully'}, HTTPStatus.OK
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when deleting owner: {e}')
+            return {'message': f'The owner {owner} for feature_uri {feature_uri} '
+                               f'was not deleted successfully. Message: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureDescriptionAPI(Resource):
@@ -106,11 +124,40 @@ class FeatureDescriptionAPI(Resource):
 
     @swag_from('swagger_doc/common/description_get.yml')
     def get(self, id: str) -> Iterable[Any]:
-        pass
+        """
+        Returns description from proxy
+        """
+        try:
+            description = self.client.get_resource_description(resource_type=ResourceType.Feature,
+                                                               uri=id).description
+            return {'description': description}, HTTPStatus.OK
+
+        except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {id} does not exist')
+            return {'message': f'feature_uri {id} does not exist'}, HTTPStatus.NOT_FOUND
+
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting description: {e}')
+            return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     @swag_from('swagger_doc/common/description_put.yml')
     def put(self, id: str) -> Iterable[Any]:
-        pass
+        """
+        Updates feature description (passed as a request body)
+        """
+        try:
+            description = json.loads(request.data).get('description')
+            self.client.put_resource_description(resource_type=ResourceType.Feature,
+                                                 uri=id, description=description)
+            return None, HTTPStatus.OK
+
+        except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {id} does not exist')
+            return {'message': 'feature_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when adding description: {e}')
+            return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureTagAPI(Resource):
@@ -127,11 +174,39 @@ class FeatureTagAPI(Resource):
 
     @swag_from('swagger_doc/tag/tag_put.yml')
     def put(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        # use tag_type to distinguish between tag and badge
+        tag_type = args.get('tag_type', 'default')
+
+        if tag_type == 'owner':
+            LOGGER.error(f'Invalid attempt to add owner tag')
+            return \
+                {'message': f'The tag {tag} for id {id} with type {tag_type} '
+                            f'and resource_type {ResourceType.Feature.name} is '
+                            'not added successfully because owner tags are not editable'}, \
+                HTTPStatus.CONFLICT
+
+        return self._tag_common.put(id=id,
+                                    resource_type=ResourceType.Feature,
+                                    tag=tag,
+                                    tag_type=tag_type)
 
     @swag_from('swagger_doc/tag/tag_delete.yml')
     def delete(self, id: str, tag: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        tag_type = args.get('tag_type', 'default')
+        if tag_type == 'owner':
+            LOGGER.error(f'Invalid attempt to delete owner tag')
+            return \
+                {'message': f'The tag {tag} for id {id} with type {tag_type} '
+                            f'and resource_type {ResourceType.Feature.name} is '
+                            'not deleted because owner tags are not editable'}, \
+                HTTPStatus.CONFLICT
+
+        return self._tag_common.delete(id=id,
+                                       resource_type=ResourceType.Feature,
+                                       tag=tag,
+                                       tag_type=tag_type)
 
 
 class FeatureBadgeAPI(Resource):
@@ -145,8 +220,20 @@ class FeatureBadgeAPI(Resource):
 
     @swag_from('swagger_doc/badge/badge_put.yml')
     def put(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        category = args.get('category', '')
+
+        return self._badge_common.put(id=id,
+                                      resource_type=ResourceType.Feature,
+                                      badge_name=badge,
+                                      category=category)
 
     @swag_from('swagger_doc/badge/badge_delete.yml')
     def delete(self, id: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        category = args.get('category', '')
+
+        return self._badge_common.delete(id=id,
+                                         resource_type=ResourceType.Feature,
+                                         badge_name=badge,
+                                         category=category)
