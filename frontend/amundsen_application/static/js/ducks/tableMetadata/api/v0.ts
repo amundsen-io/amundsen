@@ -239,7 +239,7 @@ export function getTableQualityChecks(key: string) {
     key,
   });
   return axios({
-    url: `/api/data_quality_checks/v0?${tableQueryParams}`,
+    url: `/api/quality/v0/table?${tableQueryParams}`,
     method: 'GET',
   })
     .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
