@@ -1,4 +1,5 @@
 import {
+  AnalyticsEvent,
   DashboardResource,
   OwnerDict,
   PreviewData,

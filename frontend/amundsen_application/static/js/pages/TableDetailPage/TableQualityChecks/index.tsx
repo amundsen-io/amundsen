@@ -14,8 +14,11 @@ import {
   clickDataQualityLink,
   getTableQualityChecks,
 } from 'ducks/tableMetadata/reducer';
+import { IconSizes } from 'interfaces';
 import { TableQualityChecks } from 'interfaces/TableMetadata';
 import { formatDateTimeShort } from 'utils/dateUtils';
+import { FailureIcon } from 'components/SVGIcons/FailureIcon';
+import { SuccessIcon } from 'components/SVGIcons/SuccessIcon';
 import * as Constants from './constants';
 
 import './styles.scss';
@@ -54,6 +57,13 @@ export function generateChecksText(numFailed, numTotal) {
   return `All ${numTotal} checks passed`;
 }
 
+function getStatusIcon(numFailed) {
+  if (numFailed > 0) {
+    return <FailureIcon size={IconSizes.SMALL} />;
+  }
+  return <SuccessIcon size={IconSizes.SMALL} />;
+}
+
 export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   getTableQualityChecksDispatch,
   clickDataQualityLinkDispatch,
@@ -79,7 +89,11 @@ export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   return (
     <section className="metadata-section table-quality-checks">
       <div className="section-title">{Constants.COMPONENT_TITLE}</div>
-      <div className="checks-status">{checkText}</div>
+      <div className="checks-status">
+        {getStatusIcon(checks.num_checks_failed)}
+        &nbsp;
+        {checkText}
+      </div>
       {checks.last_run_timestamp !== null && (
         <div className="last-run-timestamp">
           {Constants.LAST_RUN_LABEL}
