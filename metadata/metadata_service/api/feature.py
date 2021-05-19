@@ -9,6 +9,7 @@ from flask_restful import Resource, reqparse
 
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
+from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 
@@ -69,6 +70,8 @@ class FeatureGenerationCodeAPI(Resource):
                                                                        resource_type=ResourceType.Feature)
             schema = QuerySchema()
             return schema.dump(generation_code), HTTPStatus.OK
+        except Exception as e:
+            pass
 
 
 class FeatureSampleAPI(Resource):

@@ -1789,19 +1789,16 @@ class Neo4jProxy(BaseProxy):
         Executes cypher query to get query nodes associated with resource
         """
 
-        feature_query = textwrap.dedent("""\
-        MATCH (feat:Feature {key: $feature_key})
+        neo4j_query = textwrap.dedent("""\
+        MATCH (feat:Feature {key: $resource_key})
         OPTIONAL MATCH (q:Query)-[:QUERY_OF]->(feat)
         RETURN collect(distinct q) as query_records
         """)
 
-        feature_records = self._execute_cypher_query(statement=feature_query,
-                                                     param_dict={
-                                                         'feature_key': id
-                                                     })
+        records = self._execute_cypher_query(statement=neo4j_query,
+                                             param_dict={'resource_key': id})
 
-        if not feature_records:
-            raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
-        return Query(name=,
-                     text=,
-                     url=)
+        if not records:
+            raise NotFoundException(f'Feature URI( {id} ) does not exist')
+        queries = [Query(name=q['name'], text=q['query_text'], url=q['url']) for q in records['query_records']]
+        return queries
