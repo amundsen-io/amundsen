@@ -2,8 +2,8 @@ import logging
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
 
-# TODO change all imports to use common dependecy instead
 from amundsen_common.models.feature import FeatureSchema
+from amundsen_common.models.query import QuerySchema
 from flasgger import swag_from
 from flask_restful import Resource, reqparse
 
@@ -64,7 +64,11 @@ class FeatureGenerationCodeAPI(Resource):
 
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        try:
+            generation_code = self.client.get_resource_generation_code(id=feature_uri,
+                                                                       resource_type=ResourceType.Feature)
+            schema = QuerySchema()
+            return schema.dump(generation_code), HTTPStatus.OK
 
 
 class FeatureSampleAPI(Resource):

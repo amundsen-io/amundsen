@@ -19,6 +19,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
+from amundsen_common.models.query import Query
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
@@ -1782,3 +1783,25 @@ class Neo4jProxy(BaseProxy):
             created_timestamp=feature_metadata['created_timestamp'],
             watermarks=feature_metadata['watermarks'])
         return feature
+
+    def get_resource_generation_code(self, id: str, resource_type: ResourceType) -> Query:
+        """
+        Executes cypher query to get query nodes associated with resource
+        """
+
+        feature_query = textwrap.dedent("""\
+        MATCH (feat:Feature {key: $feature_key})
+        OPTIONAL MATCH (q:Query)-[:QUERY_OF]->(feat)
+        RETURN collect(distinct q) as query_records
+        """)
+
+        feature_records = self._execute_cypher_query(statement=feature_query,
+                                                     param_dict={
+                                                         'feature_key': id
+                                                     })
+
+        if not feature_records:
+            raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
+        return Query(name=,
+                     text=,
+                     url=)
