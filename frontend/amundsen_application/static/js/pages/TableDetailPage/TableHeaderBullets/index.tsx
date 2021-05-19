@@ -68,7 +68,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchDatabase: (databaseText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { database: { [databaseText]: true } },
+            [ResourceType.table]: { database: databaseText },
           },
           submitSearch: true,
         }),
