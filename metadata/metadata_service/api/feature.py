@@ -5,6 +5,7 @@ from typing import Any, Iterable, Mapping, Union
 
 # TODO change all imports to use common dependecy instead
 from amundsen_common.models.feature import FeatureSchema
+from amundsen_common.models.lineage import LineageSchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -44,10 +45,26 @@ class FeatureLineageAPI(Resource):
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('direction', type=str, required=False, default="both")
+        self.parser.add_argument('depth', type=int, required=False, default=1)
 
     @swag_from('swagger_doc/feature/lineage_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        args = self.parser.parse_args()
+        direction = args.get('direction')
+        depth = args.get('depth')
+        try:
+            lineage = self.client.get_lineage(id=feature_uri,
+                                              resource_type=ResourceType.Feature,
+                                              direction=direction,
+                                              depth=depth)
+            schema = LineageSchema()
+            return schema.dump(lineage), HTTPStatus.OK
+
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting feature lineage: {e}')
+            return {'message': f'Exception raised when getting lineage: {e}'}, HTTPStatus.NOT_FOUND
 
 
 class FeatureStatsAPI(Resource):
