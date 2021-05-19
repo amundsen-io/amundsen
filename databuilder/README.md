@@ -1206,8 +1206,8 @@ Complete set of available metrics is defined as DEFAULT_STAT_MAPPINGS attribute 
 #### Common usage patterns
 
 As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running 
-the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run t
-he report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows 
+the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the 
+report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows 
 to pandas dataframe beforehand and calculate the report on just a sample of original data.
 
 ##### Spark support
