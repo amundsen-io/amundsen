@@ -10,6 +10,7 @@ from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User
+from amundsen_common.models.query import Query
 
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
@@ -213,4 +214,10 @@ class BaseProxy(metaclass=ABCMeta):
                               uri: str,
                               resource_type: ResourceType,
                               owner: str) -> None:
+        pass
+
+    @abstractmethod
+    def get_resource_generation_code(self, *,
+                                     uri: str,
+                                     resource_type: ResourceType) -> Query:
         pass

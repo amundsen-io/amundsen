@@ -69,10 +69,15 @@ class FeatureGenerationCodeAPI(Resource):
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
-            generation_code = self.client.get_resource_generation_code(id=feature_uri,
+            generation_code = self.client.get_resource_generation_code(uri=feature_uri,
                                                                        resource_type=ResourceType.Feature)
             schema = QuerySchema()
             return schema.dump(generation_code), HTTPStatus.OK
+
+        except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {feature_uri} does not exist')
+            return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
+
         except Exception as e:
             LOGGER.info(f'Internal server error when getting feature generation code: {e}')
             return {'message': 'Internal Server Error'}, HTTPStatus.INTERNAL_SERVER_ERROR

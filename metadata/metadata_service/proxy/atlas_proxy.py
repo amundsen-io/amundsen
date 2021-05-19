@@ -17,6 +17,7 @@ from amundsen_common.models.table import (Badge, Column,
                                           ResourceReport, Stat, Table, Tag,
                                           User, Watermark)
 from amundsen_common.models.user import User as UserEntity
+from amundsen_common.models.query import Query
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,
                                          AtlasGlossaryTerm)
@@ -1478,4 +1479,9 @@ class AtlasProxy(BaseProxy):
                               uri: str,
                               resource_type: ResourceType,
                               owner: str) -> None:
+        pass
+
+    def get_resource_generation_code(self, *,
+                                     uri: str,
+                                     resource_type: ResourceType) -> Query:
         pass

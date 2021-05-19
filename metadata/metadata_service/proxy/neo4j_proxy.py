@@ -1817,7 +1817,7 @@ class Neo4jProxy(BaseProxy):
             watermarks=feature_metadata['watermarks'])
         return feature
 
-    def get_resource_generation_code(self, id: str, resource_type: ResourceType) -> Query:
+    def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> Query:
         """
         Executes cypher query to get query nodes associated with resource
         """
@@ -1828,10 +1828,10 @@ class Neo4jProxy(BaseProxy):
         """.format(resource_type=resource_type.name))
 
         records = self._execute_cypher_query(statement=neo4j_query,
-                                             param_dict={'resource_key': id})
+                                             param_dict={'resource_key': uri})
 
         if not records:
-            raise NotFoundException(f'Resource URI( {id} ) does not exist')
+            raise NotFoundException(f'Resource URI( {uri} ) does not exist')
         query_result = records.single()['query_records']
         queries = Query(name=query_result['name'], text=query_result['query_text'], url=query_result['url'])
         return queries
