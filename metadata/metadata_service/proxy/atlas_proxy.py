@@ -177,11 +177,12 @@ class AtlasProxy(BaseProxy):
         bookmark_entity = {
             'entity': {
                 'typeName': AtlasCommonTypes.bookmark,
-                'attributes': {'qualifiedName': bookmark_qn,
-                               AtlasStatus.ACTIVE.lower(): True,
-                               'entityUri': table_uri,
-                               'user': {'guid': user_guid},
-                               'entity': {'guid': entity.entity[AtlasCommonParams.guid]}}
+                AtlasCommonParams.attributes: {
+                    AtlasCommonParams.qualified_name: bookmark_qn,
+                    AtlasStatus.ACTIVE.lower(): True,
+                    'entityUri': table_uri,
+                    'user': {AtlasCommonParams.guid: user_guid},
+                    'entity': {AtlasCommonParams.guid: entity.entity[AtlasCommonParams.guid]}}
             }
         }
 
@@ -277,7 +278,7 @@ class AtlasProxy(BaseProxy):
                     badges.append(Badge(badge_name=name, category='default'))
 
             for stats in col_attrs.get('statistics') or list():
-                stats_attrs = stats['attributes']
+                stats_attrs = stats[AtlasCommonParams.attributes]
 
                 stat_type = stats_attrs.get('stat_name')
 
@@ -480,7 +481,7 @@ class AtlasProxy(BaseProxy):
     def _render_partition_key_name(entity: AtlasEntityWithExtInfo) -> Optional[str]:
         _partition_keys = []
 
-        for partition_key in entity.get('attributes', dict()).get('partitionKeys', []):
+        for partition_key in entity.get(AtlasCommonParams.attributes, dict()).get('partitionKeys', []):
             partition_key_column_name = partition_key.get('displayName')
 
             if partition_key_column_name:
@@ -493,7 +494,7 @@ class AtlasProxy(BaseProxy):
     def _get_table_watermarks(self, entity: AtlasEntityWithExtInfo) -> List[Watermark]:
         partition_value_format = '%Y-%m-%d %H:%M:%S'
 
-        _partitions = entity.get('relationshipAttributes', dict()).get('partitions', list())
+        _partitions = entity.get(AtlasCommonParams.relationships, dict()).get('partitions', list())
 
         names = [_partition.get('displayText') for _partition in self._filter_active(_partitions)]
 
@@ -655,7 +656,7 @@ class AtlasProxy(BaseProxy):
             'typeName': "AtlasGlossaryTerm",
             'excludeDeletedEntities': True,
             'includeSubTypes': True,
-            'attributes': ["assignedEntities", ],
+            AtlasCommonParams.attributes: ["assignedEntities", ],
             'entityFilters': {'condition': "AND",
                               'criterion': [{'attributeName': "name", 'operator': "=", 'attributeValue': term_name}]
                               }
@@ -824,7 +825,7 @@ class AtlasProxy(BaseProxy):
             'offset': 0,
             'excludeDeletedEntities': True,
             'includeSubTypes': True,
-            'attributes': ["assignedEntities", ]
+            AtlasCommonParams.attributes: ["assignedEntities", ]
         }
         glossary_terms = self.client.discovery.faceted_search(search_parameters=params)
         for item in glossary_terms.entities or list():
@@ -880,7 +881,7 @@ class AtlasProxy(BaseProxy):
                     }
                 ]
             },
-            'attributes': ['count', AtlasCommonParams.qualified_name, AtlasCommonParams.uri]
+            AtlasCommonParams.attributes: ['count', AtlasCommonParams.qualified_name, AtlasCommonParams.uri]
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
@@ -995,8 +996,8 @@ class AtlasProxy(BaseProxy):
                                                               (AtlasCommonParams.qualified_name, user_email)]).entity
 
         readers_guids = []
-        for user_reads in self._filter_active(user['relationshipAttributes'].get('entityReads')):
-            readers_guids.append(user_reads.get('guid'))
+        for user_reads in self._filter_active(user[AtlasCommonParams.relationships].get('entityReads')):
+            readers_guids.append(user_reads.get(AtlasCommonParams.guid))
 
         readers = self.client.entity.get_entities_by_guids(guids=list(readers_guids), ignore_relationships=True)
 
@@ -1062,9 +1063,9 @@ class AtlasProxy(BaseProxy):
 
     def _get_readers(self, entity: AtlasEntityWithExtInfo, model: Any = Reader, top: Optional[int] = 15) \
             -> List[Union[Reader, User]]:
-        _readers = entity.get('relationshipAttributes', dict()).get('readers', list())
+        _readers = entity.get(AtlasCommonParams.relationships, dict()).get('readers', list())
 
-        guids = [_reader.get('guid') for _reader in self._filter_active(_readers)]
+        guids = [_reader.get(AtlasCommonParams.guid) for _reader in self._filter_active(_readers)]
 
         if not guids:
             return []
@@ -1154,7 +1155,8 @@ class AtlasProxy(BaseProxy):
         attributes = entity.entity[AtlasCommonParams.attributes]
         relationships = entity.entity[AtlasCommonParams.relationships]
 
-        group = self._get_dashboard_group(relationships.get('group').get('guid'))[AtlasCommonParams.attributes]
+        group = self._get_dashboard_group(relationships.get('group').get(AtlasCommonParams.guid))[
+            AtlasCommonParams.attributes]
 
         successful_executions = [e for e in executions if e.get('state') == 'succeeded']
 
@@ -1167,7 +1169,7 @@ class AtlasProxy(BaseProxy):
                        if e['typeName'] == AtlasDashboardTypes.chart]
 
         result = dict(
-            uri=attributes.get('qualifiedName', ''),
+            uri=attributes.get(AtlasCommonParams.qualified_name, ''),
             cluster=attributes.get('cluster', ''),
             group_name=relationships.get('group', dict()).get('displayText', ''),
             group_url=group.get('url', ''),
@@ -1206,7 +1208,7 @@ class AtlasProxy(BaseProxy):
             queries = self._serialize_dashboard_queries(_queries)
             query_names = [q.name for q in queries]
 
-            table_guids = [t.get('guid') for t in self._filter_active(relationships.get('tables', []))]
+            table_guids = [t.get(AtlasCommonParams.guid) for t in self._filter_active(relationships.get('tables', []))]
             _tables = self.client.entity.get_entities_by_guids(guids=table_guids)
             tables = self._serialize_popular_tables(_tables)
 
@@ -1288,7 +1290,7 @@ class AtlasProxy(BaseProxy):
                                                             uniq_attributes=[(AtlasCommonParams.qualified_name, id)])
 
         self.client.entity.partial_update_entity_by_guid(
-            entity_guid=entity.entity.get('guid'), attr_value=description, attr_name='description'
+            entity_guid=entity.entity.get(AtlasCommonParams.guid), attr_value=description, attr_name='description'
         )
 
     def _serialize_dashboard_summaries(self, entities: AtlasEntitiesWithExtInfo) -> List[DashboardSummary]:
@@ -1301,10 +1303,11 @@ class AtlasProxy(BaseProxy):
         for _dashboard in entities.entities:
             try:
                 if _dashboard.status == AtlasStatus.ACTIVE:
-                    executions = [entities['referredEntities'].get(e.get('guid'))[AtlasCommonParams.attributes]
-                                  for e in
-                                  self._filter_active(
-                                      _dashboard[AtlasCommonParams.relationships].get('executions', []))]
+                    executions = [
+                        entities['referredEntities'].get(e.get(AtlasCommonParams.guid))[AtlasCommonParams.attributes]
+                        for e in
+                        self._filter_active(
+                            _dashboard[AtlasCommonParams.relationships].get('executions', []))]
 
                     dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
 
@@ -1327,7 +1330,7 @@ class AtlasProxy(BaseProxy):
 
         table = self._get_table_entity(table_uri=id)
 
-        guids = [d.get('guid') for d in
+        guids = [d.get(AtlasCommonParams.guid) for d in
                  self._filter_active(table.entity[AtlasCommonParams.relationships].get(resource, []))]
 
         entities = self.client.entity.get_entities_by_guids(guids=guids)
@@ -1562,7 +1565,8 @@ class AtlasProxy(BaseProxy):
             key = key_class(id)  # type: ignore
 
             entity = self.client.entity.get_entity_by_attribute(type_name=resource_type.name,
-                                                                uniq_attributes=[('qualifiedName', key.qualified_name)])
+                                                                uniq_attributes=[(AtlasCommonParams.qualified_name,
+                                                                                  key.qualified_name)])
 
             entity_guid = entity.entity.guid
 
