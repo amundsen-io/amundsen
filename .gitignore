@@ -8,3 +8,4 @@ venv/
 site/
 
 .vscode/
+.venv/
