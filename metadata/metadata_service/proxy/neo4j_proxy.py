@@ -1834,5 +1834,5 @@ class Neo4jProxy(BaseProxy):
             raise NotFoundException(f'Resource URI( {uri} ) does not exist')
 
         query_result = records.single()['query_records']
-        queries = Query(name=query_result['name'], text=query_result['query_text'], url=query_result['url'])
-        return queries
+
+        return Query(name=query_result['name'], text=query_result['query_text'], url=query_result['url'])
