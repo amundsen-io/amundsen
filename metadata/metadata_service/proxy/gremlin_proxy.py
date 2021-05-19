@@ -17,11 +17,11 @@ from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
+from amundsen_common.models.query import Query
 from amundsen_common.models.table import (Application, Column,
                                           ProgrammaticDescription, Reader,
                                           Source, Stat, Table, Tag, Watermark)
 from amundsen_common.models.user import User
-from amundsen_common.models.query import Query
 from amundsen_gremlin.gremlin_model import (EdgeType, EdgeTypes, VertexType,
                                             VertexTypes, WellKnownProperties)
 from amundsen_gremlin.gremlin_shared import \
