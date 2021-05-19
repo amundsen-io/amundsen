@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if page.edit_url %}
+  <a href="{{ page.edit_url
+    | replace('/amundsen/edit/master/docs/metadata/docs/','/amundsenmetadatalibrary/edit/master/docs/')
+    | replace('/amundsen/edit/master/docs/common/docs/','/amundsencommon/edit/master/docs/')
+    | replace('/amundsen/edit/master/docs/databuilder/docs/','/amundsendatabuilder/edit/master/docs/')
+    | replace('/amundsen/edit/master/docs/frontend/docs/','/amundsenfrontendlibrary/edit/master/docs/')
+    | replace('/amundsen/edit/master/docs/search/docs/','/amundsensearchlibrary/edit/master/docs/')
+    | replace('/amundsen/edit/master/docs/metadata/docs/','/amundsenmetadatalibrary/edit/master/docs/')
+    | replace('/amundsen/edit/master/docs/CONTRIBUTING.md','/amundsen/edit/master/CONTRIBUTING.md')
+    | replace('/amundsen/edit/master/docs/LICENSE','/amundsen/edit/master/LICENSE')
+    | replace('/amundsen/edit/master/docs/index.md','/amundsen/edit/master/README.md')
+    | replace('/amundsen/edit/master/docs/k8s_install.md','/amundsen/edit/master/amundsen-kube-helm/README.md')
+     }}" title="{{ lang.t('edit.link.title') }}" class="md-icon md-content__icon">
+    &#xE3C9;<!-- edit -->
+  </a>
+{% endif %}
+<!--
+  Hack: check whether the content contains a h1 headline. If it
+  doesn't, the page title (or respectively site name) is used
+  as the main headline.
+-->
+{% if not "\x3ch1" in page.content %}
+  <h1>{{ page.title | default(config.site_name, true)}}</h1>
+{% endif %}
+
+<!-- Content -->
+{{ page.content }}
+
+<!-- Source files -->
+{% block source %}
+  {% if page and page.meta and page.meta.source %}
+    <h2 id="__source">{{ lang.t("meta.source") }}</h2>
+    {% set repo = config.repo_url %}
+    {% if repo | last == "/" %}
+      {% set repo = repo[:-1] %}
+    {% endif %}
+    {% set path = page.meta.path | default([""]) %}
+    {% set file = page.meta.source %}
+    <a href="{{ [repo, path, file] | join('/') }}"
+        title="{{ file }}" class="md-source-file">
+      {{ file }}
+    </a>
+  {% endif %}
+{% endblock %}
+
+<!-- Support for mkdocs-git-revision-date-localized-plugin -->
+{% if page and page.meta and (
+      page.meta.git_revision_date_localized or
+      page.meta.revision_date
+) %}
+  {% set label = lang.t("source.revision.date") %}
+  <hr />
+  <div class="md-source-date">
+    <small>
+
+      <!-- mkdocs-git-revision-date-localized-plugin -->
+      {% if page.meta.git_revision_date_localized %}
+        {{ label }}: {{ page.meta.git_revision_date_localized }}
+
+      <!-- mkdocs-git-revision-date-plugin -->
+      {% elif page.meta.revision_date %}
+        {{ label }}: {{ page.meta.revision_date }}
+      {% endif %}
+    </small>
+  </div>
+{% endif %}
+{% endblock %}

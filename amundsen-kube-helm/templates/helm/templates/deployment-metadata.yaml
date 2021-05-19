@@ -43,6 +43,10 @@ spec:
           secret:
             secretName: oidc-config
       {{- end }}
+    {{- if .Values.metadata.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.metadata.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}
         image: {{ .Values.metadata.image }}:{{ .Values.metadata.imageTag }}

@@ -40,14 +40,15 @@ Amundsen is a data discovery and metadata engine for improving the productivity 
 
 Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/). It includes three microservices, one data ingestion library and one common library.
 
-- [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" />
-- [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" />
-- [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" />
+- [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenfrontendlibrary.svg" />
+- [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsensearchlibrary.svg" />
+- [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenmetadatalibrary.svg" />
 - [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
   Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
-  or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" />
-- [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" />
-- [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsengremlin.svg" />
+  or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsendatabuilder.svg" />
+- [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsencommon.svg" />
+- [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsengremlin.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsengremlin.svg" />
+- [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenrds.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenrds.svg" />
 
 ## Homepage
 
@@ -124,7 +125,8 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
 - [PostgreSQL](https://www.postgresql.org/)
-- [Presto](https://prestosql.io/)
+- [Trino (formerly Presto SQL)](https://trino.io/)
+- [Vertica](https://www.vertica.com/)
 - [Snowflake](https://www.snowflake.com/)
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
@@ -196,6 +198,9 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - [Cataloging Tools for Data Teams](https://towardsdatascience.com/cataloging-tools-for-data-teams-8d62d7a4cd95)
 - [An Overview of Data Discovery Platforms and Open Source Solutions](https://eugeneyan.com/writing/data-discovery-platforms/)
 - [Hacking Data Discovery in AWS with Amundsen at SEEK](https://medium.com/seek-blog/hacking-data-discovery-with-amundsen-c55d262014f4)
+- [A step-by-step guide deploying Amundsen on Google Cloud Platform](https://medium.com/talabat-tech/a-step-by-step-guide-deploying-amundsen-on-google-cloud-platform-ee4ef20d81f5)
+- [Machine Learning Features discovery with Feast and Amundsen](https://getindata.com/blog/machine-learning-features-discovery-feast-amundsen)
+- [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
 
 ## Community meetings
 
@@ -221,6 +226,7 @@ Currently **officially** using Amundsen:
 1. [Cimpress Technology](https://cimpress.com)
 1. [Coles Group](https://www.colesgroup.com.au/home/)
 1. [Convoy](https://www.convoy.com)
+1. [Databricks](https://www.databricks.com/)
 1. [Data Sprints](https://datasprints.com/)
 1. [Dcard](https://www.dcard.tw/)
 1. [Devoted Health](https://www.devoted.com/)
@@ -232,7 +238,9 @@ Currently **officially** using Amundsen:
 1. [ING](https://www.ing.com/Home.htm)
 1. [Instacart](https://www.instacart.com/)
 1. [iRobot](https://www.irobot.com)
+1. [Lett](https://lett.digital/)
 1. [LMC](https://www.lmc.eu/cs/)
+1. [Loft](https://loft.com.br)
 1. [Lyft](https://www.lyft.com/)
 1. [Merlin](https://merlinjobs.com)
 1. [PicPay](https://picpay.com.br)
@@ -242,6 +250,7 @@ Currently **officially** using Amundsen:
 1. [REA Group](https://www.rea-group.com/)
 1. [Remitly](https://www.remitly.com/)
 1. [Square](https://squareup.com/us/en)
+1. [Tile](https://www.thetileapp.com)
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
