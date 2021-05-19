@@ -9,10 +9,10 @@ from jsonpath_rw import parse
 
 from databuilder.rest_api.rest_api_query import RestApiQuery
 
-#  How many records considers as full and indicating there might be next page? In list reports on space API, it's 30.
-DEFAULT_MAX_RECORD_SIZE = 30
+#  How many records considers as full and indicating there might be next page?
+DEFAULT_MAX_RECORD_SIZE = 1000
 PAGE_SUFFIX_TEMPLATE = '?page={}'
-LIST_REPORTS_PAGINATION_JSON_PATH = '_embedded.reports[*]'  # So far this is the only paginated API that we need.
+LIST_REPORTS_PAGINATION_JSON_PATH = 'reports[*]'
 
 LOGGER = logging.getLogger(__name__)
 
