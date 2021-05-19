@@ -887,7 +887,7 @@ class AtlasProxy(BaseProxy):
 
         resources: List[Union[PopularTable, DashboardSummary]] = []
 
-        for record in search_results.entities:
+        for record in search_results.entities or []:
             if resource_type == ResourceType.Table.name:
                 table_info = AtlasTableKey(record.attributes[AtlasCommonParams.uri]).get_details()
                 res = self._parse_bookmark_qn(record.attributes[AtlasCommonParams.qualified_name])
