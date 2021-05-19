@@ -84,7 +84,7 @@ describe('TableDetail', () => {
 
     it('renders one tabs when dashboards are enabled but no dashboard exists', () => {
       mocked(indexDashboardsEnabled).mockImplementation(() => true);
-      mocked(props.numRelatedDashboards).mockImplementation(() => 0);
+      mocked(wrapper.props.numRelatedDashboards).mockImplementation(() => 0);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
       expect(
