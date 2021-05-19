@@ -62,10 +62,10 @@ class TestPandasProfilingColumnStatsExtractor(unittest.TestCase):
         expected = [
             {x: spec[x] for x in compare_params if x in spec} for spec in
             [
-                TableColumnStats(**{**dict(stat_name='mean', stat_val='5.12', col_name='column_1'), **common}).__dict__,
+                TableColumnStats(**{**dict(stat_name='Mean', stat_val='5.12', col_name='column_1'), **common}).__dict__,
                 TableColumnStats(
-                    **{**dict(stat_name='maximum', stat_val='15.235', col_name='column_1'), **common}).__dict__,
-                TableColumnStats(**{**dict(stat_name='mean', stat_val='10.0', col_name='column_2'), **common}).__dict__,
+                    **{**dict(stat_name='Maximum', stat_val='15.235', col_name='column_1'), **common}).__dict__,
+                TableColumnStats(**{**dict(stat_name='Mean', stat_val='10.0', col_name='column_2'), **common}).__dict__,
             ]
         ]
 

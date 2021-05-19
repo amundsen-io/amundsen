@@ -130,7 +130,6 @@ class PandasProfilingColumnStatsExtractor(Extractor):
 
                 if stat_spec:
                     stat_name, stat_modifier = stat_spec
-                    stat_name = stat_name.lower().replace(' ', '_')
 
                     if isinstance(stat_value, float):
                         stat_value = self.round_value(stat_value)
