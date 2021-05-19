@@ -3,8 +3,8 @@ import logging
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
 
-# TODO change all imports to use common dependecy instead
 from amundsen_common.models.feature import FeatureSchema
+from amundsen_common.models.query import QuerySchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -63,13 +63,24 @@ class FeatureStatsAPI(Resource):
 
 class FeatureGenerationCodeAPI(Resource):
 
-    # TODO use Query common model
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+        try:
+            generation_code = self.client.get_resource_generation_code(uri=feature_uri,
+                                                                       resource_type=ResourceType.Feature)
+            schema = QuerySchema()
+            return schema.dump(generation_code), HTTPStatus.OK
+
+        except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {feature_uri} does not exist')
+            return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
+
+        except Exception as e:
+            LOGGER.info(f'Internal server error when getting feature generation code: {e}')
+            return {'message': 'Internal Server Error'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureSampleAPI(Resource):

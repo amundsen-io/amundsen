@@ -167,7 +167,7 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(FeatureSampleAPI,
                      '/feature/<path:id>/sample_data')
     api.add_resource(FeatureGenerationCodeAPI,
-                     '/feature/<path:id>/generation_code')
+                     '/feature/<path:feature_uri>/generation_code')
     app.register_blueprint(api_bp)
 
     if app.config.get('SWAGGER_ENABLED'):
