@@ -15,6 +15,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Source,
                                           Stat, Table, Tag, User, Watermark)
 from amundsen_common.models.user import User as UserModel
+from amundsen_common.models.query import Query
 from neo4j import GraphDatabase
 
 from metadata_service import create_app
@@ -1257,6 +1258,34 @@ class TestNeo4jProxy(unittest.TestCase):
 
             self.assertRaises(NotFoundException, neo4j_proxy._exec_feature_query, feature_key='invalid_feat_uri')
             self.assertRaises(NotFoundException, neo4j_proxy.get_feature, feature_uri='invalid_feat_uri')
+
+    def test_get_resource_generation_code_success(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.side_effect = [
+                {'query_records': {
+                    'name': 'generation_query',
+                    'query_text': 'SELECT * FROM test_table',
+                    'url': 'github.com/repo/file'
+                }
+            }
+            ]
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            gen_code = neo4j_proxy.get_resource_generation_code(uri='dummy_uri',
+                                                                resource_type=ResourceType.Feature)
+            expected = Query(name='generation_query',
+                            text='SELECT * FROM test_table',
+                            url='github.com/repo/file')
+        self.assertEqual(str(expected), str(gen_code))
+
+    def test_get_resource_generation_code_not_found(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = None
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+
+            self.assertRaises(NotFoundException,
+                              neo4j_proxy.get_resource_generation_code,
+                              uri='invalid_feat_uri',
+                              resource_type=ResourceType.Feature)
 
 
 if __name__ == '__main__':
