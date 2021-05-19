@@ -187,3 +187,30 @@ class BaseProxy(metaclass=ABCMeta):
     @abstractmethod
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
+
+    @abstractmethod
+    def get_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str) -> Description:
+        pass
+
+    @abstractmethod
+    def put_resource_description(self, *,
+                                 resource_type: ResourceType,
+                                 uri: str,
+                                 description: str) -> None:
+        pass
+
+    @abstractmethod
+    def add_resource_owner(self, *,
+                           uri: str,
+                           resource_type: ResourceType,
+                           owner: str) -> None:
+        pass
+
+    @abstractmethod
+    def delete_resource_owner(self, *,
+                              uri: str,
+                              resource_type: ResourceType,
+                              owner: str) -> None:
+        pass
