@@ -42,7 +42,7 @@ const setup = (
     tableLineage,
     isLoading: false,
     isLoadingDashboards: false,
-    numRelatedDashboards: 0,
+    numRelatedDashboards: 1,
     statusCode: 200,
     tableData: tableMetadata,
     getTableData: jest.fn(),
@@ -73,7 +73,7 @@ describe('TableDetail', () => {
       ).toBeFalsy();
     });
 
-    it('renders two tabs when dashboards are enabled', () => {
+    it('renders two tabs when dashboards are enabled and at least one dashboard exists', () => {
       mocked(indexDashboardsEnabled).mockImplementation(() => true);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
@@ -81,6 +81,17 @@ describe('TableDetail', () => {
         tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
       ).toBeTruthy();
     });
+
+   it('renders one tabs when dashboards are enabled but no dashboard exists', () => {
+      mocked(indexDashboardsEnabled).mockImplementation(() => true);
+      mocked(props.numRelatedDashboards).mockImplementation(() => 0)
+      const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
+      const tabInfo = content.find(TabsComponent).props().tabs;
+      expect(
+        tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
+      ).toBeFalsy();
+    });
+
     it('does not render upstream and downstream tabs when disabled', () => {
       mocked(isTableListLineageEnabled).mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
