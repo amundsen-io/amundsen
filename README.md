@@ -147,10 +147,6 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 - [Apache Airflow](https://airflow.apache.org/)
 
-### BI Viz Tool
-
-- [Apache Superset](https://superset.incubator.apache.org/)
-
 ## Installation
 
 Please visit [Installation guideline](./installation) on how to install Amundsen.
