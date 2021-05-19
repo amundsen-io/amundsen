@@ -199,12 +199,12 @@ class AtlasProxy(BaseProxy):
         """
         table_info = AtlasTableKey(entity_uri).get_details()
 
-        db = table_info.get('db')
-        name = table_info.get('name')
-        entity = table_info.get('entity')
+        schema = table_info.get('schema')
+        table = table_info.get('table')
+        database = table_info.get('database')
         cluster = table_info.get('cluster')
 
-        bookmark_qn = f'{db}.{name}.{entity}.{user_id}.bookmark@{cluster}'
+        bookmark_qn = f'{schema}.{table}.{database}.{user_id}.bookmark@{cluster}'
 
         try:
             bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
