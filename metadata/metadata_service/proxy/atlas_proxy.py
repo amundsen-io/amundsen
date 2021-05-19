@@ -129,7 +129,6 @@ class AtlasProxy(BaseProxy):
         """
         Filter out active entities based on entity end relationship status.
         """
-        print(entities)
         result = [e for e in entities
                   if e.get('relationshipStatus') == AtlasStatus.ACTIVE
                   and e.get('entityStatus') == AtlasStatus.ACTIVE]
