@@ -63,7 +63,6 @@ class FeatureStatsAPI(Resource):
 
 class FeatureGenerationCodeAPI(Resource):
 
-    # TODO use Query common model
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
@@ -75,7 +74,8 @@ class FeatureGenerationCodeAPI(Resource):
             schema = QuerySchema()
             return schema.dump(generation_code), HTTPStatus.OK
         except Exception as e:
-            pass
+            LOGGER.info(f'Internal server error when getting feature generation code: {e}')
+            return {'message': 'Internal Server Error'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureSampleAPI(Resource):
