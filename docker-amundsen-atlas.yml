@@ -13,7 +13,7 @@ services:
       - ATLAS_KICKSTART_AMUNDSEN=true
   amundsensearch:
     build:
-      context: ./amundsensearchlibrary
+      context: ./search
       dockerfile: public.Dockerfile
     container_name: amundsensearch
     ports:
@@ -27,7 +27,7 @@ services:
       - amundsennet
   amundsenmetadata:
     build:
-      context: ./amundsenmetadatalibrary
+      context: ./metadata
       dockerfile: public.Dockerfile
     container_name: amundsenmetadata
     ports:
@@ -41,9 +41,10 @@ services:
       - PROXY_PORT=21000
       - PROXY_ENCRYPTED=False
       - PROXY_CLIENT=ATLAS
+      - METADATA_SVC_CONFIG_MODULE_CLASS=metadata_service.config.AtlasConfig
   amundsenfrontend:
     build:
-      context: ./amundsenfrontendlibrary
+      context: ./frontend
       args:
         SEARCHSERVICE_BASE: http://amundsensearch:5001
         METADATASERVICE_BASE: http://amundsenmetadata:5002

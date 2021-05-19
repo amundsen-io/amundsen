@@ -3,19 +3,21 @@
 ## How to select between Neo4j and Atlas as backend for Amundsen?
 
 ### Why Neo4j?
-1. Amundsen has direct influence over the data model if you use neo4j. This, at least initially, will benefit the speed by which new features in amundsen can arrive
-2. Atlas is developed with data governance in mind and not with data discovery. You could view "slapping amundsen on top of Atlas" as a kind of Frankenstein: never able to properly able to cater to your audience
-3. Atlas seems to have a slow development cycle and it's community is not very responsive although some small improvements have been made
-4. Atlas has the "Hadoop" era "smell" which isn't considered very sexy nowadays
-5. Neo4j for it is the market leader in Graph database and also was proven by Airbnb’s Data portal on their Data discovery tool.
+1. Amundsen has direct influence over the data model if you use neo4j. This, at least initially, will benefit the speed by which new features in amundsen can arrive.
+2. Neo4j for it is the market leader in Graph database and also was proven by Airbnb’s Data portal on their Data discovery tool.
 
 ### Why Atlas?
 1. Atlas has lineage support already available. It's been tried and tested.
-2. Tag propagation is supported
-3. It has a robust authentication and authorization system
-4. Atlas does data governance adding amundsen for discovery makes it best of both worlds
-5. It has support for push based due to its many plugins
-6. The free version of Neo4j does not have authorization support(Enterprise version does). Your question should actually be why use "neo4j over janusgraph" cause that is the right level of comparison. Atlas adds a whole bunch on top of the graph database.
+2. Tag/Badge propagation is supported.
+3. It has a robust authentication and authorization system.
+4. Atlas does data governance adding amundsen for discovery makes it best of both worlds.
+5. It has support for push based due to its many plugins.
+6. The free version of Neo4j does not have authorization support (Enterprise version does). Your question should actually be why use "neo4j over janusgraph" cause that is the right level of comparison. Atlas adds a whole bunch on top of the graph database.
+
+#### Why not Atlas?
+1. Atlas is developed with data governance in mind and not with data discovery.
+2. Atlas seems to have a slow development cycle and it's community is not very responsive although some small improvements have been made.
+3. Amundsen databuilder integration is not yet supported which puts more strain on the end user to populate the required entities.
 
 ##  What are the prerequisites to use Apache Atlas as backend for Amundsen?
 To run Amundsen with Atlas, latest versions of following components should be used:

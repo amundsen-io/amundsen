@@ -32,7 +32,7 @@ services:
         - ./.local/elasticsearch/data:/usr/share/elasticsearch/data
   amundsensearch:
       build:
-        context: ./amundsensearchlibrary
+        context: ./search
         dockerfile: public.Dockerfile
       container_name: amundsensearch
       ports:
@@ -45,7 +45,7 @@ services:
         - PROXY_ENDPOINT=es_amundsen
   amundsenmetadata:
       build:
-        context: ./amundsenmetadatalibrary
+        context: ./metadata
         dockerfile: public.Dockerfile
       container_name: amundsenmetadata
       depends_on:
@@ -58,7 +58,7 @@ services:
          - PROXY_HOST=bolt://neo4j_amundsen
   amundsenfrontend:
       build:
-        context: ./amundsenfrontendlibrary
+        context: ./frontend
         args:
           SEARCHSERVICE_BASE: http://amundsensearch:5001
           METADATASERVICE_BASE: http://amundsenmetadata:5002

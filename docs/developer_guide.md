@@ -75,7 +75,7 @@ rm -rf .local/neo4j
 
 ### Testing Amundsen frontend locally
 
-Amundsen has an instruction regarding local frontend launch [here](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/installation.md)
+Amundsen has an instruction regarding local frontend launch [here](/frontend/docs/installation.md)
 
 Here are some additional changes you might need for windows (OS Win 10):
 
@@ -260,7 +260,7 @@ First fill this two environment variables: `NEO4J_ENDPOINT` , `CREDENTIALS_NEO4J
 
 #### Standup Search service
 
-Follow this [instruction](https://github.com/amundsen-io/amundsensearchlibrary#instructions-to-start-the-search-service-from-source)
+Follow this [instruction](/search#instructions-to-start-the-search-service-from-source)
 
 Test the search API with this command:
 
