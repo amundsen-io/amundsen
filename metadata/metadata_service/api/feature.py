@@ -33,8 +33,10 @@ class FeatureDetailAPI(Resource):
             schema = FeatureSchema()
             return schema.dump(feature), HTTPStatus.OK
         except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {feature_uri} does not exist')
             return {'message': f'feature_uri {feature_uri} does not exist'}, HTTPStatus.NOT_FOUND
         except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting feature details: {e}')
             return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
@@ -92,9 +94,10 @@ class FeatureOwnerAPI(Resource):
             self.client.add_resource_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
             return {'message': f'The owner {owner} for feature_uri {feature_uri} '
                                'was added successfully'}, HTTPStatus.OK
-        except Exception:
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when adding owner: {e}')
             return {'message': f'The owner {owner} for feature_uri {feature_uri} was '
-                               'not added successfully'}, HTTPStatus.INTERNAL_SERVER_ERROR
+                               f'not added successfully. Message: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     @swag_from('swagger_doc/feature/owner_delete.yml')
     def delete(self, feature_uri: str, owner: str) -> Iterable[Union[Mapping, int, None]]:
@@ -102,9 +105,10 @@ class FeatureOwnerAPI(Resource):
             self.client.delete_resource_owner(uri=feature_uri, resource_type=ResourceType.Feature, owner=owner)
             return {'message': f'The owner {owner} for feature_uri {feature_uri} '
                                'was deleted successfully'}, HTTPStatus.OK
-        except Exception:
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when deleting owner: {e}')
             return {'message': f'The owner {owner} for feature_uri {feature_uri} '
-                               'was not deleted successfully'}, HTTPStatus.INTERNAL_SERVER_ERROR
+                               f'was not deleted successfully. Message: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureDescriptionAPI(Resource):
@@ -123,10 +127,12 @@ class FeatureDescriptionAPI(Resource):
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
-            return {'message': 'feature_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+            LOGGER.error(f'NotFoundException: feature_uri {id} does not exist')
+            return {'message': f'feature_uri {id} does not exist'}, HTTPStatus.NOT_FOUND
 
-        except Exception:
-            return {'message': 'Internal server error'}, HTTPStatus.INTERNAL_SERVER_ERROR
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting description: {e}')
+            return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     @swag_from('swagger_doc/common/description_put.yml')
     def put(self, id: str) -> Iterable[Any]:
@@ -140,7 +146,12 @@ class FeatureDescriptionAPI(Resource):
             return None, HTTPStatus.OK
 
         except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {id} does not exist')
             return {'message': 'feature_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when adding description: {e}')
+            return {'message': f'Internal server error: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureTagAPI(Resource):
@@ -162,6 +173,7 @@ class FeatureTagAPI(Resource):
         tag_type = args.get('tag_type', 'default')
 
         if tag_type == 'owner':
+            LOGGER.error(f'Invalid attempt to add owner tag')
             return \
                 {'message': f'The tag {tag} for id {id} with type {tag_type} '
                             f'and resource_type {ResourceType.Feature.name} is '
@@ -178,6 +190,7 @@ class FeatureTagAPI(Resource):
         args = self.parser.parse_args()
         tag_type = args.get('tag_type', 'default')
         if tag_type == 'owner':
+            LOGGER.error(f'Invalid attempt to delete owner tag')
             return \
                 {'message': f'The tag {tag} for id {id} with type {tag_type} '
                             f'and resource_type {ResourceType.Feature.name} is '
