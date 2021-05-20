@@ -59,7 +59,6 @@ class TestFeatureLineageAPI(FeatureTestCase):
                                                        direction="both")
         self.assertEqual(response.json, API_RESPONSE)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        
 
     def test_should_fail_when_feature_doesnt_exist(self) -> None:
         self.mock_proxy.get_lineage.side_effect = NotFoundException(message='feature not found')
