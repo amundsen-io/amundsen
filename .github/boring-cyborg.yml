@@ -8,6 +8,14 @@ labelPRBasedOnFilePath:
   area:docs:
     - docs/**/*
     - docs_overrides/**/*
+    - databuilder/docs/**/*
+    - databuilder/README.md
+    - frontend/docs/**/*
+    - frontend/README.md
+    - metadata/docs/**/*
+    - metadata/README.md
+    - search/docs/**/*
+    - search/README.md
 
   area:frontend:
     - frontend/**/*
@@ -68,4 +76,4 @@ firstPRMergeComment: >
   Awesome work, congrats on your first merged pull request!
 
 firstIssueWelcomeComment: >
-  Thanks for opening your first issue here! Be sure to follow the issue template!
+  Thanks for opening your first issue here!

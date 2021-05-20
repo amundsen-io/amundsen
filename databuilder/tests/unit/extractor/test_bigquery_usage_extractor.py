@@ -199,7 +199,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         Test Extraction using mock class
         """
         config_dict = {
-            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -225,7 +225,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_no_entries(self, mock_build: Any) -> None:
         config_dict = {
-            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -249,7 +249,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
             keyfile.write(base64.b64decode(KEYFILE_DATA))
             keyfile.flush()
             config_dict = {
-                f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+                f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
                 f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.KEY_PATH_KEY}': keyfile.name,
             }
             conf = ConfigFactory.from_dict(config_dict)
@@ -273,7 +273,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         PAGESIZE = 215
 
         config_dict = {
-            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
             f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.TIMESTAMP_KEY}': TIMESTAMP,
             f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PAGE_SIZE_KEY}': PAGESIZE,
         }
@@ -294,7 +294,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_failed_jobs_should_not_be_counted(self, mock_build: Any) -> None:
         config_dict = {
-            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
         }
         conf = ConfigFactory.from_dict(config_dict)
 
@@ -310,7 +310,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_email_filter_not_counted(self, mock_build: Any) -> None:
         config_dict = {
-            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
             f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.EMAIL_PATTERN}': 'emailFilter',
         }
         conf = ConfigFactory.from_dict(config_dict)
@@ -325,7 +325,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
     @patch('databuilder.extractor.base_bigquery_extractor.build')
     def test_email_filter_counted(self, mock_build: Any) -> None:
         config_dict = {
-            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'bigquery-public-data',
             f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.EMAIL_PATTERN}': '.*@test.com.*',
         }
         conf = ConfigFactory.from_dict(config_dict)
@@ -348,3 +348,21 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         self.assertEqual(key.table, 'incidents_2008')
         self.assertEqual(key.email, 'your-user-here@test.com')
         self.assertEqual(value, 1)
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_referenced_table_belonging_to_different_project(self, mock_build: Any) -> None:
+        """
+        Test result when referenced table belongs to a project different from the PROJECT_ID_KEY of the extractor
+        """
+        config_dict = {
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(CORRECT_DATA)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+
+        result = extractor.extract()
+        assert result is None
