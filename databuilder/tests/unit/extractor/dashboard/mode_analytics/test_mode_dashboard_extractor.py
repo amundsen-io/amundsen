@@ -16,7 +16,7 @@ class TestModeDashboardExtractor(unittest.TestCase):
         config = ConfigFactory.from_dict({
             'extractor.mode_dashboard.organization': 'amundsen',
             'extractor.mode_dashboard.mode_bearer_token': 'amundsen_bearer_token',
-            'extractor.mode_dashboard.dashboard_group_id_to_skip': ['ggg_to_skip'],
+            'extractor.mode_dashboard.dashboard_group_ids_to_skip': ['ggg_to_skip'],
         })
         self.config = config
 
