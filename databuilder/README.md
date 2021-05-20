@@ -1172,6 +1172,103 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+### [PandasProfilingColumnStatsExtractor](./databuilder/extractor/pandas_profiling_column_stats_extractor.py)
+
+[Pandas profiling](https://github.com/pandas-profiling/pandas-profiling) is a library commonly used by Data Engineer and Scientists to calculate advanced data profiles on data.
+It is run on pandas dataframe and results in json file containing (amongst other things) descriptive and quantile statistics on columns.
+
+#### Required input parameters
+- `FILE_PATH` - file path to pandas-profiling **json** report
+- `TABLE_NAME` - name of the table for which report was calculated
+- `SCHEMA_NAME` - name of the schema from which table originates
+- `DATABASE_NAME` - name of database technology from which table originates
+- `CLUSTER_NAME` - name of the cluster from which table originates
+
+#### Optional input parameters
+
+- `PRECISION` - precision for metrics of `float` type. Defaults to `3` meaning up to 3 digits after decimal point.
+- `STAT_MAPPINGS` - if you wish to collect only selected set of metrics configure this option with dictionary of following format:
+    - key - raw name of the stat in pandas-profiling
+    - value - tuple of 2 elements:
+        - first value of the tuple - full name of the stat (this influences what will be rendered for user in UI)
+        - second value of the tuple - function modifying the stat (by default we just do type casting)
+
+Such dictionary should in that case contain only keys of metrics you wish to collect.
+
+For example - if you want only min and max value of a column, provide extractor with configuration option:
+
+```python
+PandasProfilingColumnStatsExtractor.STAT_MAPPINGS = {'max': ('Maximum', float), 'min': ('Minimum', float)}
+```
+
+Complete set of available metrics is defined as DEFAULT_STAT_MAPPINGS attribute of PandasProfilingColumnStatsExtractor.
+
+#### Common usage patterns
+
+As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running 
+the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the 
+report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows 
+to pandas dataframe beforehand and calculate the report on just a sample of original data.
+
+##### Spark support
+
+Support for native execution of pandas-profiling on Spark Dataframe is currently worked on and should come in the future.
+
+#### Sample job config
+
+```python
+import pandas as pd
+import pandas_profiling
+from pyhocon import ConfigFactory
+from sqlalchemy import create_engine
+
+from databuilder.extractor.pandas_profiling_column_stats_extractor import PandasProfilingColumnStatsExtractor
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.task.task import DefaultTask
+
+table_name = 'video_game_sales'
+schema_name = 'superset'
+
+# Load table contents to pandas dataframe
+db_uri = f'postgresql://superset:superset@localhost:5432/{schema_name}'
+engine = create_engine(db_uri, echo=True)
+
+df = pd.read_sql_table(
+    table_name,
+    con=engine
+)
+
+# Calculate pandas-profiling report on a table
+report_file = '/tmp/table_report.json'
+
+report = df.profile_report(sort=None)
+report.to_file(report_file)
+
+# Run PandasProfilingColumnStatsExtractor on calculated report
+tmp_folder = f'/tmp/amundsen/column_stats'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': False,
+    'extractor.pandas_profiling.table_name': table_name,
+    'extractor.pandas_profiling.schema_name': schema_name,
+    'extractor.pandas_profiling.database_name': 'postgres',
+    'extractor.pandas_profiling.cluster_name': 'dev',
+    'extractor.pandas_profiling.file_path': report_file
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=PandasProfilingColumnStatsExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+
+job.launch()
+```
+
 ### [BamboohrUserExtractor](./databuilder/extractor/user/bamboohr/bamboohr_user_extractor.py)
 
 The included `BamboohrUserExtractor` provides support for extracting basic user metadata from [BambooHR](https://www.bamboohr.com/).  For companies and organizations that use BambooHR to store employee information such as email addresses, first names, last names, titles, and departments, use the `BamboohrUserExtractor` to populate Amundsen user data.
