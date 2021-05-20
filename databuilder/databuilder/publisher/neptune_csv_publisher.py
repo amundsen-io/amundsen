@@ -47,7 +47,7 @@ class NeptuneCSVPublisher(Publisher):
     # AWS CONFIGURATION
     AWS_REGION = 'aws_region'
     AWS_ACCESS_KEY = 'aws_access_key'
-    AWS_SECRET_ACCESS_KEY = 'aws_secret_acces_key'
+    AWS_SECRET_ACCESS_KEY = 'aws_secret_access_key'
     AWS_SESSION_TOKEN = 'aws_session_token'
     AWS_IAM_ROLE_NAME = 'aws_iam_role_name'
 
