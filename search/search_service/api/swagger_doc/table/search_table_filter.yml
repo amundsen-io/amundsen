@@ -3,7 +3,6 @@ This is used by the frontend API to search table information.
 ---
 tags:
   - 'search_table'
-# Edited: Removed paths, post and summary
 requestBody:
   description: The json data passed from the frontend API to execute a search.
   required: true
@@ -12,7 +11,6 @@ requestBody:
       schema:
         type: object
         properties:
-          # Edited: Removed index from properties
           page_index:
             type: integer
           query_term:
