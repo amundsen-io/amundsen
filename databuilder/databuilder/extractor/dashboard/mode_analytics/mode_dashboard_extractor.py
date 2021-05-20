@@ -20,6 +20,9 @@ from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME, Timest
 
 LOGGER = logging.getLogger(__name__)
 
+# a list of space tokens that we want to skip indexing
+DASHBOARD_GROUP_IDS_TO_SKIP = 'dashboard_group_ids_to_skip'
+
 
 class ModeDashboardExtractor(Extractor):
     """
@@ -37,6 +40,8 @@ class ModeDashboardExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         self._conf = conf
+
+        self.dashboard_group_ids_to_skip = self._conf.get_list(DASHBOARD_GROUP_IDS_TO_SKIP, [])
 
         restapi_query = self._build_restapi_query()
         self._extractor = ModeDashboardUtils.create_mode_rest_api_extractor(restapi_query=restapi_query,
@@ -78,6 +83,11 @@ class ModeDashboardExtractor(Extractor):
 
     def extract(self) -> Any:
         record = self._extractor.extract()
+
+        # determine whether we want to skip these records
+        while record and record.get('dashboard_group_id') in self.dashboard_group_ids_to_skip:
+            record = self._extractor.extract()
+
         if not record:
             return None
 

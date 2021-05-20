@@ -618,6 +618,7 @@ relationship_files_folder = '{tmp_folder}/relationships'.format(tmp_folder=tmp_f
 job_config = ConfigFactory.from_dict({
     'extractor.mode_dashboard.{}'.format(ORGANIZATION): organization,
     'extractor.mode_dashboard.{}'.format(MODE_BEARER_TOKEN): mode_bearer_token,
+    'extractor.mode_dashboard.{}'.format(DASHBOARD_GROUP_IDS_TO_SKIP): [space_token_1, space_token_2, ...],
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH): node_files_folder,
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH): relationship_files_folder,
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR): True,
