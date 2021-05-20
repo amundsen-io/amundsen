@@ -20,6 +20,7 @@ from databuilder.transformer.timestamp_string_to_epoch import FIELD_NAME, Timest
 
 LOGGER = logging.getLogger(__name__)
 
+# a list of space tokens that we want to skip indexing
 DASHBOARD_GROUP_ID_TO_SKIP = 'dashboard_group_id_to_skip'
 
 
