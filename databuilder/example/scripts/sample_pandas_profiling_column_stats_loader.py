@@ -11,10 +11,8 @@ from databuilder.task.task import DefaultTask
 table_name = 'test_table1'
 schema_name = 'test_schema'
 
-# Calculate pandas-profiling report on a table
 report_file = 'example/sample_data/pandas_profiling/table_report.json'
 
-# Run PandasProfilingColumnStatsExtractor on calculated report
 tmp_folder = f'/tmp/amundsen/column_staats'
 
 node_files_folder = f'{tmp_folder}/nodes'
