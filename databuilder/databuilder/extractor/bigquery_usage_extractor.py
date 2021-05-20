@@ -4,7 +4,9 @@
 import logging
 import re
 from collections import namedtuple
-from datetime import date, timedelta
+from datetime import (
+    datetime, timedelta, timezone,
+)
 from time import sleep
 from typing import (
     Any, Dict, Iterator, List, Optional, Tuple,
@@ -30,16 +32,16 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
     _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
     EMAIL_PATTERN = 'email_pattern'
     DELAY_TIME = 'delay_time'
+    TABLE_DECORATORS = ['$', '@']
 
     def init(self, conf: ConfigTree) -> None:
         BaseBigQueryExtractor.init(self, conf)
         self.timestamp = conf.get_string(
             BigQueryTableUsageExtractor.TIMESTAMP_KEY,
-            (date.today() - timedelta(days=1)).strftime('%Y-%m-%dT00:00:00Z'))
+            (datetime.now(timezone.utc) - timedelta(days=1)).strftime(BigQueryTableUsageExtractor.DATE_TIME_FORMAT))
 
         self.email_pattern = conf.get_string(BigQueryTableUsageExtractor.EMAIL_PATTERN, None)
         self.delay_time = conf.get_int(BigQueryTableUsageExtractor.DELAY_TIME, 100)
-
         self.table_usage_counts: Dict[TableColumnUsageTuple, int] = {}
         self._count_usage()
         self.iter = iter(self.table_usage_counts)
@@ -49,7 +51,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
         for entry in self._retrieve_records():
             count += 1
             if count % self.pagesize == 0:
-                LOGGER.info(f'Aggregated %i records', count)
+                LOGGER.info(f'Aggregated {count} records')
 
             if entry is None:
                 continue
@@ -99,29 +101,49 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             return
 
         for refResource in refResources:
-            key = TableColumnUsageTuple(database='bigquery',
-                                        cluster=refResource['projectId'],
-                                        schema=refResource['datasetId'],
-                                        table=refResource['tableId'],
-                                        column='*',
-                                        email=email)
+            tableId = refResource['tableId']
+            datasetId = refResource['datasetId']
+
+            if self._is_anonymous_dataset(datasetId) or self._is_wildcard_table(tableId):
+                continue
+
+            tableId = self._remove_table_decorators(tableId)
+
+            if self._is_sharded_table(tableId):
+                tableId = tableId[:-BigQueryTableUsageExtractor.DATE_LENGTH]
+
+            # GCP console allows running queries using tables from a project different from the one the extractor is
+            # used for; only usage metadata of referenced tables present in the given project_id_key for the
+            # extractor is taken into account and usage metadata of referenced tables from other projects is ignored.
+            if refResource['projectId'] == self.project_id:
+                key = TableColumnUsageTuple(database='bigquery',
+                                            cluster=refResource['projectId'],
+                                            schema=datasetId,
+                                            table=tableId,
+                                            column='*',
+                                            email=email)
+            else:
+                LOGGER.debug(f'Not counting usage for {refResource} since {tableId} '
+                             f'is not present in {self.project_id}')
+                continue
 
             new_count = self.table_usage_counts.get(key, 0) + 1
             self.table_usage_counts[key] = new_count
 
     def _retrieve_records(self) -> Iterator[Optional[Dict]]:
         """
-        Extracts bigquery log data by looking at the principalEmail in the
-        authenticationInfo block and referencedTables in the jobStatistics.
-
+        Extracts bigquery log data by looking at the principalEmail in the authenticationInfo block and
+        referencedTables in the jobStatistics and filters out log entries of metadata queries.
         :return: Provides a record or None if no more to extract
         """
         body = {
             'resourceNames': [f'projects/{self.project_id}'],
             'pageSize': self.pagesize,
-            'filter': 'resource.type="bigquery_resource" AND '
-                      'protoPayload.methodName="jobservice.jobcompleted" AND '
-                      f'timestamp >= "{self.timestamp}"'
+            'filter': 'protoPayload.methodName="jobservice.jobcompleted" AND '
+                      'resource.type="bigquery_resource" AND '
+                      'NOT protoPayload.serviceData.jobCompletedEvent.job.jobConfiguration.query.query:('
+                      'INFORMATION_SCHEMA OR __TABLES__) AND '
+                      f'timestamp >= "{self.timestamp}" AND timestamp < "{self.cutoff_time}"'
         }
         for page in self._page_over_results(body):
             for entry in page['entries']:
@@ -151,6 +173,18 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             except Exception:
                 # Add a delay when BQ quota exceeds limitation
                 sleep(self.delay_time)
+
+    def _remove_table_decorators(self, tableId: str) -> Optional[str]:
+        for decorator in BigQueryTableUsageExtractor.TABLE_DECORATORS:
+            tableId = tableId.split(decorator)[0]
+        return tableId
+
+    def _is_anonymous_dataset(self, datasetId: str) -> bool:
+        # temporary/cached results tables are stored in anonymous datasets that have names starting with '_'
+        return datasetId.startswith('_')
+
+    def _is_wildcard_table(self, tableId: str) -> bool:
+        return '*' in tableId
 
     def get_scope(self) -> str:
         return 'extractor.bigquery_table_usage'

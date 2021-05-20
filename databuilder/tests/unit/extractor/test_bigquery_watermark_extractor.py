@@ -262,3 +262,47 @@ class TestBigQueryWatermarkExtractor(unittest.TestCase):
         self.assertEqual(result.cluster, 'your-project-here')
         self.assertEqual(result.create_time, datetime.fromtimestamp(1557577779).strftime('%Y-%m-%d %H:%M:%S'))
         self.assertEqual(result.parts, [('__table__', '20190102')])
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_table_creation_time_after_cutoff_time(self, mock_build: Any) -> None:
+        config_dict = {
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.CUTOFF_TIME_KEY}': '2019-05-10T20:10:22Z'
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+        mock_build.return_value = MockBigQueryClient(ONE_DATASET, TIME_PARTITIONED, PARTITION_DATA)
+        extractor = BigQueryWatermarkExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+        self.assertIsNone(result)
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_table_creation_time_before_cutoff_time(self, mock_build: Any) -> None:
+        config_dict = {
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_watermarks.{BigQueryWatermarkExtractor.CUTOFF_TIME_KEY}': '2021-04-27T20:10:22Z'
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+        mock_build.return_value = MockBigQueryClient(ONE_DATASET, TIME_PARTITIONED, PARTITION_DATA)
+        extractor = BigQueryWatermarkExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+        assert result is not None
+        self.assertEqual(result.part_type, 'low_watermark')
+        self.assertEqual(result.database, 'bigquery')
+        self.assertEqual(result.schema, 'fdgdfgh')
+        self.assertEqual(result.table, 'other')
+        self.assertEqual(result.cluster, 'your-project-here')
+        self.assertEqual(result.create_time, datetime.fromtimestamp(1547512241).strftime('%Y-%m-%d %H:%M:%S'))
+        self.assertEqual(result.parts, [('_PARTITIONTIME', '20180802')])
+
+        result = extractor.extract()
+        self.assertEqual(result.part_type, 'high_watermark')
+        self.assertEqual(result.database, 'bigquery')
+        self.assertEqual(result.schema, 'fdgdfgh')
+        self.assertEqual(result.table, 'other')
+        self.assertEqual(result.cluster, 'your-project-here')
+        self.assertEqual(result.create_time, datetime.fromtimestamp(1547512241).strftime('%Y-%m-%d %H:%M:%S'))
+        self.assertEqual(result.parts, [('_PARTITIONTIME', '20180804')])
