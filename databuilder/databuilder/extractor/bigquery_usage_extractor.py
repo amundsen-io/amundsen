@@ -32,11 +32,6 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
     _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
     EMAIL_PATTERN = 'email_pattern'
     DELAY_TIME = 'delay_time'
-    # GCP console allows running queries using tables from a project different from the one the extractor is used for;
-    # if 'count_tables_only_from_project_id_key' is enabled only usage metadata of referenced tables
-    # in the given project_id_key for the extractor is taken into account and usage metadata of referenced tables
-    # from other projects is ignored.
-    COUNT_TABLES_ONLY_FROM_PROJECT_ID_KEY = 'count_tables_only_from_project_id_key'
     TABLE_DECORATORS = ['$', '@']
 
     def init(self, conf: ConfigTree) -> None:
@@ -47,9 +42,6 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
 
         self.email_pattern = conf.get_string(BigQueryTableUsageExtractor.EMAIL_PATTERN, None)
         self.delay_time = conf.get_int(BigQueryTableUsageExtractor.DELAY_TIME, 100)
-        self.count_tables_only_from_project_id = conf.get_bool(
-            BigQueryTableUsageExtractor.COUNT_TABLES_ONLY_FROM_PROJECT_ID_KEY, False)
-
         self.table_usage_counts: Dict[TableColumnUsageTuple, int] = {}
         self._count_usage()
         self.iter = iter(self.table_usage_counts)
@@ -120,25 +112,20 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             if self._is_sharded_table(tableId):
                 tableId = tableId[:-BigQueryTableUsageExtractor.DATE_LENGTH]
 
-            if self.count_tables_only_from_project_id:
-                if refResource['projectId'] == self.project_id:
-                    key = TableColumnUsageTuple(database='bigquery',
-                                                cluster=refResource['projectId'],
-                                                schema=datasetId,
-                                                table=tableId,
-                                                column='*',
-                                                email=email)
-                else:
-                    LOGGER.debug(f'Not counting usage for {refResource} since '
-                                 f'{BigQueryTableUsageExtractor.COUNT_TABLES_ONLY_FROM_PROJECT_ID_KEY} is True')
-                    continue
-            else:
+            # GCP console allows running queries using tables from a project different from the one the extractor is
+            # used for; only usage metadata of referenced tables present in the given project_id_key for the
+            # extractor is taken into account and usage metadata of referenced tables from other projects is ignored.
+            if refResource['projectId'] == self.project_id:
                 key = TableColumnUsageTuple(database='bigquery',
                                             cluster=refResource['projectId'],
                                             schema=datasetId,
                                             table=tableId,
                                             column='*',
                                             email=email)
+            else:
+                LOGGER.debug(f'Not counting usage for {refResource} since {tableId} '
+                             f'is not present in {self.project_id}')
+                continue
 
             new_count = self.table_usage_counts.get(key, 0) + 1
             self.table_usage_counts[key] = new_count
