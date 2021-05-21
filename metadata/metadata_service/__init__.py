@@ -7,10 +7,10 @@ import logging
 import logging.config
 import os
 import sys
-from typing import Any, Dict  # noqa: F401
+from typing import Any, Dict
 
 from flasgger import Swagger
-from flask import Blueprint, Flask
+from flask import Blueprint, Flask, Response
 from flask_cors import CORS
 from flask_restful import Api
 
@@ -172,4 +172,29 @@ def create_app(*, config_module_class: str) -> Flask:
 
     if app.config.get('SWAGGER_ENABLED'):
         Swagger(app, template_file=os.path.join(ROOT_DIR, app.config.get('SWAGGER_TEMPLATE_PATH')), parse=True)
+
+    setup_app_hooks(app)
+
     return app
+
+
+def setup_app_hooks(app: Flask) -> None:
+    if app.config['BEFORE_FIRST_REQUEST_HOOK']:
+        @app.before_first_request
+        def setup_before_first_request(*args: Any, **kwargs: Dict) -> None:
+            return app.config['BEFORE_FIRST_REQUEST_HOOK'](*args, **kwargs)
+
+    if app.config['BEFORE_REQUEST_HOOK']:
+        @app.before_request
+        def setup_before_request(*args: Any, **kwargs: Dict) -> None:
+            return app.config['BEFORE_REQUEST_HOOK'](*args, **kwargs)
+
+    if app.config['AFTER_REQUEST_HOOK']:
+        @app.after_request
+        def setup_after_request(*args: Any, **kwargs: Dict) -> Response:
+            return app.config['AFTER_REQUEST_HOOK'](*args, **kwargs)
+
+    if app.config['TEARDOWN_HOOK']:
+        @app.teardown_request
+        def setup_teardown_request(*args: Any, **kwargs: Dict) -> None:
+            return app.config['TEARDOWN_HOOK'](*args, **kwargs)

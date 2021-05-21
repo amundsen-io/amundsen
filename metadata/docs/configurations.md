@@ -4,7 +4,7 @@ Most of the configurations are set through Flask [Config Class](./../metadata_se
 In order to add a badge to a resource you should first add the combination of badge name and category to the in WHITELIST_BADGES [Config Class](./../metadata_service/config.py).
 
 Example:
-```python 
+```python
 
 WHITELIST_BADGES: List[Badge] = [Badge(badge_name='beta',
                                  category='table_status')]
@@ -16,7 +16,7 @@ Once this is done users will be able to add badge the badges in the whitelist by
 
 #### USER_DETAIL_METHOD `OPTIONAL`
 This is a method that can be used to get the user details from any third-party or custom system.
-This custom function takes user_id as a parameter, and returns a dictionary consisting user details' fields defined in [UserSchema](./../../common/amundsen_common/models/user.py). 
+This custom function takes user_id as a parameter, and returns a dictionary consisting user details' fields defined in [UserSchema](./../../common/amundsen_common/models/user.py).
 
 Example:
 ```python
@@ -32,6 +32,31 @@ def get_user_details(user_id):
     return user_info
 
 USER_DETAIL_METHOD = get_user_details
+```
+
+#### Flask Hooks
+
+Flask offers several hooks that can be used to execute before and after a request as well as before the first request and during app teardown. Amundsen allows you to provide an arbitrary function that can be called by these Flask hooks by providing the funtion as a configuration in your app.
+
+Note - some Flask hooks have required function signatures and the funciton you supply should match this requirement. For more information on each function signature visit Flask documentation for [before_first_request](https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.before_first_request), [before_request](https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.before_request), [after_request](https://flask.palletsprojects.com/en/2.0.x/api/#flask.Blueprint.after_request) and [teardown_request](https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.teardown_request).
+
+```python
+from flask import request
+
+def verify_headers():
+    my_auth = request.headers.get('Authorization')
+    print(my_auth)
+
+
+def streap_resp(resp):
+    resp_data = resp.json
+    stream_data_to_kafka(resp_data)
+    # After request hook MUST return a Flask Response object!
+    return resp
+
+# Flask Hooks
+BEFORE_REQUEST_HOOK = verify_headers
+AFTER_REQUEST_HOOK = streap_resp
 ```
 
 #### STATISTICS_FORMAT_SPEC `OPTIONAL`

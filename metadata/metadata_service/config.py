@@ -3,7 +3,7 @@
 
 import distutils.util
 import os
-from typing import Dict, List, Optional, Set  # noqa: F401
+from typing import Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
@@ -62,9 +62,15 @@ class Config:
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
-    USER_DETAIL_METHOD = None   # type: Optional[function]
+    USER_DETAIL_METHOD: Optional[Callable] = None
 
-    RESOURCE_REPORT_CLIENT = None   # type: Optional[function]
+    # Flask Hooks
+    BEFORE_FIRST_REQUEST_HOOK: Optional[Callable] = None
+    BEFORE_REQUEST_HOOK: Optional[Callable] = None
+    AFTER_REQUEST_HOOK: Optional[Callable] = None
+    TEARDOWN_HOOK: Optional[Callable] = None
+
+    RESOURCE_REPORT_CLIENT: Optional[Callable] = None
 
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
