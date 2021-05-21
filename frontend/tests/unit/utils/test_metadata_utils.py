@@ -1,13 +1,13 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict
 import unittest
+from typing import Dict
 
+from amundsen_application import create_app
 from amundsen_application.api.utils.metadata_utils import _convert_prog_descriptions, _sort_prog_descriptions, \
     _parse_editable_rule, is_table_editable, TableUri
 from amundsen_application.config import MatchRuleObject
-from amundsen_application import create_app
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
@@ -197,11 +197,21 @@ class TableEditabilityWrapper(unittest.TestCase):
 class TableUriObject(unittest.TestCase):
     def test_simple_constructor(self) -> None:
         uri = TableUri("db", "clstr", "schm", "tbl")
-        self.assertEqual(str(uri), 'db://clstr.schm/tbl')
+        self.assertEqual('db://clstr.schm/tbl', str(uri))
 
     def test_from_uri_factory(self) -> None:
-        uri = TableUri.from_uri("db://clstr.with.dots.schm/tbl/with/slashes")
-        self.assertEqual(uri.database, 'db')
-        self.assertEqual(uri.cluster, 'clstr.with.dots')
-        self.assertEqual(uri.schema, 'schm')
-        self.assertEqual(uri.table, 'tbl/with/slashes')
+        params = [
+            ('db', 'cluster', 'schema', 'table'),
+            ('db_underscore', 'cluster.with.dots', 'schema', 'table/with/slashes'),
+            ('db.dot', 'cluster.dot', 'schema', 'table.dot'),
+            ('hive_table', 'demo', 'test_schema', 'test_table')
+        ]
+
+        for db, cluster, schema, table in params:
+            with self.subTest():
+                _uri = f'{db}://{cluster}.{schema}/{table}'
+                uri = TableUri.from_uri(_uri)
+                self.assertEqual(db, uri.database)
+                self.assertEqual(cluster, uri.cluster)
+                self.assertEqual(schema, uri.schema)
+                self.assertEqual(table, uri.table)

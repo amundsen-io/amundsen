@@ -507,7 +507,8 @@ class ElasticsearchProxy(BaseProxy):
                                    "group_name.raw^15",
                                    "group_name^7",
                                    "description^3",
-                                   "query_names^3"]
+                                   "query_names^3",
+                                   "chart_names^2"]
                     }
                 },
                 "field_value_factor": {

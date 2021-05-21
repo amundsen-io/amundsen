@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import urllib.parse
 
 from dataclasses import dataclass
 from marshmallow import EXCLUDE
@@ -29,14 +28,16 @@ class TableUri:
 
     @classmethod
     def from_uri(cls, uri: str) -> 'TableUri':
-        parsed = urllib.parse.urlparse(uri)
-        cluster, schema = parsed.netloc.rsplit('.', 1)
-        return TableUri(
-            database=parsed.scheme,
-            cluster=cluster,
-            schema=schema,
-            table=parsed.path.lstrip('/')
-        )
+        """
+        TABLE_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}'
+        """
+        pattern = re.compile(r'^(?P<database>.*?)://(?P<cluster>.*)\.(?P<schema>.*?)/(?P<table>.*?)$', re.X)
+
+        groups = pattern.match(uri)
+
+        spec = groups.groupdict() if groups else {}
+
+        return TableUri(**spec)
 
 
 def marshall_table_partial(table_dict: Dict) -> Dict:
