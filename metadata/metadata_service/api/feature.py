@@ -50,21 +50,23 @@ class FeatureLineageAPI(Resource):
         self.parser.add_argument('depth', type=int, required=False, default=1)
 
     @swag_from('swagger_doc/feature/lineage_get.yml')
-    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def get(self, id: str) -> Iterable[Union[Mapping, int, None]]:
         args = self.parser.parse_args()
         direction = args.get('direction')
         depth = args.get('depth')
         try:
-            lineage = self.client.get_lineage(id=feature_uri,
+            lineage = self.client.get_lineage(id=id,
                                               resource_type=ResourceType.Feature,
                                               direction=direction,
                                               depth=depth)
             schema = LineageSchema()
             return schema.dump(lineage), HTTPStatus.OK
-
+        except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {id} lineage does not exist')
+            return {'message': f'feature_uri {id} lineage does not exist'}, HTTPStatus.NOT_FOUND
         except Exception as e:
             LOGGER.error(f'Internal server error occurred when getting feature lineage: {e}')
-            return {'message': f'Exception raised when getting lineage: {e}'}, HTTPStatus.NOT_FOUND
+            return {'message': f'Exception raised when getting lineage: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureStatsAPI(Resource):

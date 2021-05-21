@@ -159,7 +159,7 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(FeatureBadgeAPI,
                      '/feature/<path:id>/badge/<badge>')
     api.add_resource(FeatureLineageAPI,
-                     '/feature/<path:feature_uri>/lineage')
+                     '/feature/<path:id>/lineage')
     api.add_resource(FeatureOwnerAPI,
                      '/feature/<path:feature_uri>/owner/<owner>')
     api.add_resource(FeatureStatsAPI,
