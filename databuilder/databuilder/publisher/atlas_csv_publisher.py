@@ -10,7 +10,7 @@ from typing import List
 from apache_atlas.exceptions import AtlasServiceException
 from apache_atlas.model.instance import AtlasEntity, AtlasEntitiesWithExtInfo, AtlasRelatedObjectId, AtlasObjectId
 from apache_atlas.model.relationship import AtlasRelationship
-from common.amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedRelationshipFields, AtlasSerializedEntityFields, AtlasEntityOperation
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedRelationshipFields, AtlasSerializedEntityFields, AtlasEntityOperation
 
 from pyhocon import ConfigTree
 

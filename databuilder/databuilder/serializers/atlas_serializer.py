@@ -7,7 +7,7 @@ from typing import (
 
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
-from common.amundsen_common.utils.atlas import AtlasSerializedRelationshipFields, AtlasSerializedEntityFields
+from amundsen_common.utils.atlas import AtlasSerializedRelationshipFields, AtlasSerializedEntityFields
 
 
 def serialize_entity(entity: Optional[AtlasEntity]) -> Dict[str, Any]:
