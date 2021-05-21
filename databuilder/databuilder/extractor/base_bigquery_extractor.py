@@ -4,6 +4,7 @@
 import json
 import logging
 from collections import namedtuple
+from datetime import datetime, timezone
 from typing import (
     Any, Dict, Iterator, List,
 )
@@ -29,10 +30,13 @@ class BaseBigQueryExtractor(Extractor):
     CRED_KEY = 'project_cred'
     PAGE_SIZE_KEY = 'page_size'
     FILTER_KEY = 'filter'
+    # metadata for tables created after the cutoff time would not be extracted from bigquery.
+    CUTOFF_TIME_KEY = 'cutoff_time'
     _DEFAULT_SCOPES = ['https://www.googleapis.com/auth/bigquery.readonly']
     DEFAULT_PAGE_SIZE = 300
     NUM_RETRIES = 3
     DATE_LENGTH = 8
+    DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
     def init(self, conf: ConfigTree) -> None:
         # should use key_path, or cred_key if the former doesn't exist
@@ -43,6 +47,8 @@ class BaseBigQueryExtractor(Extractor):
             BaseBigQueryExtractor.PAGE_SIZE_KEY,
             BaseBigQueryExtractor.DEFAULT_PAGE_SIZE)
         self.filter = conf.get_string(BaseBigQueryExtractor.FILTER_KEY, '')
+        self.cutoff_time = conf.get_string(BaseBigQueryExtractor.CUTOFF_TIME_KEY,
+                                           datetime.now(timezone.utc).strftime(BaseBigQueryExtractor.DATE_TIME_FORMAT))
 
         if self.key_path:
             credentials = (
