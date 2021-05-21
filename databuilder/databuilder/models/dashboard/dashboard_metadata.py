@@ -21,7 +21,7 @@ from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TagMetadata
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
-from common.amundsen_common.utils.atlas_utils import AtlasCommonParams, AtlasDashboardTypes, AtlasSerializedEntityFields, AtlasEntityOperation
+from common.amundsen_common.utils.atlas import AtlasCommonParams, AtlasDashboardTypes, AtlasSerializedEntityFields, AtlasEntityOperation
 from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.atlas_serializable import AtlasSerializable
 

@@ -9,7 +9,7 @@ from typing import (
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTimestamp as RDSDashboardTimestamp
 
-from amundsen_common.utils.atlas_utils import AtlasDashboardTypes, AtlasCommonParams, AtlasEntityOperation
+from amundsen_common.utils.atlas import AtlasDashboardTypes, AtlasCommonParams, AtlasEntityOperation
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship

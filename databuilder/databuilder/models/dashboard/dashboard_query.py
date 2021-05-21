@@ -12,7 +12,7 @@ from databuilder.models.atlas_entity import AtlasEntity
 
 from databuilder.models.atlas_relationship import AtlasRelationship
 
-from amundsen_common.utils.atlas_utils import AtlasCommonParams, AtlasSerializedEntityFields, AtlasDashboardTypes, AtlasRelationshipAttrs, AtlasEntityOperation
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedEntityFields, AtlasDashboardTypes, AtlasRelationshipAttrs, AtlasEntityOperation
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship

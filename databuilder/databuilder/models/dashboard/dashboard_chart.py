@@ -10,7 +10,7 @@ from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardChart as RDSDashboardChart
 from databuilder.models.atlas_entity import AtlasEntity
 
-from amundsen_common.utils.atlas_utils import AtlasCommonParams, AtlasSerializedEntityFields, AtlasRelationshipAttrs, AtlasDashboardTypes, AtlasEntityOperation
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedEntityFields, AtlasRelationshipAttrs, AtlasDashboardTypes, AtlasEntityOperation
 from databuilder.models.atlas_relationship import AtlasRelationship
 
 
