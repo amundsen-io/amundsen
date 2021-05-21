@@ -16,7 +16,8 @@ from amundsen_application.log.action_log import action_logging
 from amundsen_application.models.user import load_user, dump_user
 
 from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial, \
-    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, marshall_feature_full, marshall_lineage_table, TableUri
+    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, marshall_feature_full, \
+    marshall_lineage_table, TableUri
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata, request_search
 
 
@@ -47,11 +48,13 @@ def _get_dashboard_endpoint() -> str:
         raise Exception('An request endpoint for dashboard resources must be configured')
     return dashboard_endpoint
 
+
 def _get_feature_endpoint() -> str:
     feature_endpoint = app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT
     if feature_endpoint is None:
         raise Exception('An request endpoint for feature resources must be configured')
     return feature_endpoint
+
 
 @metadata_blueprint.route('/popular_tables', methods=['GET'])
 def popular_tables() -> Response:
@@ -849,6 +852,7 @@ def get_column_lineage() -> Response:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
+
 @metadata_blueprint.route('/feature', methods=['GET'])
 def get_feature_metadata() -> Response:
     """
@@ -857,7 +861,6 @@ def get_feature_metadata() -> Response:
 
     """
     try:
-        
         feature_key = get_query_param(request.args, 'key')
         list_item_index = request.args.get('index', None)
         list_item_source = request.args.get('source', None)
@@ -868,6 +871,7 @@ def get_feature_metadata() -> Response:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
         return make_response(jsonify({'featureData': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
 
 @action_logging
 def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[str, Any]:

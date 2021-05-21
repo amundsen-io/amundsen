@@ -255,6 +255,7 @@ def _get_partition_data(watermarks: Dict) -> Dict:
         'is_partitioned': False
     }
 
+
 def marshall_feature_full(feature_dict: Dict) -> Dict:
     """
     Forms the full version of a table Dict, with additional and sanitized fields
