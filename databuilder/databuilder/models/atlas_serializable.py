@@ -5,6 +5,7 @@ import abc
 from typing import Union  # noqa: F401
 
 from amundsen_common.utils.atlas import AtlasCommonParams
+
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
 

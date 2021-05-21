@@ -5,6 +5,9 @@ from typing import (
     Any, Dict, Iterator, List, Optional, Set, Union,
 )
 
+from amundsen_common.utils.atlas import (
+    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation, AtlasSerializedEntityFields,
+)
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import (
     Dashboard as RDSDashboard, DashboardCluster as RDSDashboardCluster, DashboardDescription as RDSDashboardDescription,
@@ -13,17 +16,16 @@ from amundsen_rds.models.dashboard import (
 )
 from amundsen_rds.models.tag import Tag as RDSTag
 
+from databuilder.models.atlas_entity import AtlasEntity
+from databuilder.models.atlas_relationship import AtlasRelationship
+from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.cluster import cluster_constants
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 # TODO: We could separate TagMetadata from table_metadata to own module
 from databuilder.models.table_metadata import TagMetadata
-from databuilder.models.atlas_entity import AtlasEntity
-from databuilder.models.atlas_relationship import AtlasRelationship
-from amundsen_common.utils.atlas import AtlasCommonParams, AtlasDashboardTypes, AtlasSerializedEntityFields, AtlasEntityOperation
 from databuilder.models.table_serializable import TableSerializable
-from databuilder.models.atlas_serializable import AtlasSerializable
 
 
 class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable):

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from collections import namedtuple
+
 from amundsen_common.utils.atlas import AtlasSerializedEntityFields
 
 AtlasEntity = namedtuple(

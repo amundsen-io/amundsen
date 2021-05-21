@@ -6,20 +6,20 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
+from amundsen_common.utils.atlas import (
+    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation, AtlasRelationshipAttrs, AtlasSerializedEntityFields,
+)
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardQuery as RDSDashboardQuery
+
 from databuilder.models.atlas_entity import AtlasEntity
-
 from databuilder.models.atlas_relationship import AtlasRelationship
-
-from amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedEntityFields, AtlasDashboardTypes, AtlasRelationshipAttrs, AtlasEntityOperation
+from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
-from databuilder.models.atlas_serializable import AtlasSerializable
-
 
 LOGGER = logging.getLogger(__name__)
 

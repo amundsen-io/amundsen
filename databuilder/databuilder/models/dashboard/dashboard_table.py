@@ -7,10 +7,12 @@ from typing import (
     Any, Iterator, List, Optional, Union,
 )
 
+from amundsen_common.utils.atlas import (
+    AtlasDashboardTypes, AtlasRelationshipTypes, AtlasTableKey,
+)
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTable as RDSDashboardTable
 
-from amundsen_common.utils.atlas import AtlasDashboardTypes, AtlasTableKey, AtlasRelationshipTypes
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
 from databuilder.models.atlas_serializable import AtlasSerializable

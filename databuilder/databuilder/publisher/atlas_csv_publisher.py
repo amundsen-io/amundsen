@@ -1,17 +1,20 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import pandas
 import logging
 from os import listdir
 from os.path import isfile, join
 from typing import List
 
+import pandas
+from amundsen_common.utils.atlas import (
+    AtlasCommonParams, AtlasEntityOperation, AtlasSerializedEntityFields, AtlasSerializedRelationshipFields,
+)
 from apache_atlas.exceptions import AtlasServiceException
-from apache_atlas.model.instance import AtlasEntity, AtlasEntitiesWithExtInfo, AtlasRelatedObjectId, AtlasObjectId
+from apache_atlas.model.instance import (
+    AtlasEntitiesWithExtInfo, AtlasEntity, AtlasObjectId, AtlasRelatedObjectId,
+)
 from apache_atlas.model.relationship import AtlasRelationship
-from amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedRelationshipFields, AtlasSerializedEntityFields, AtlasEntityOperation
-
 from pyhocon import ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher

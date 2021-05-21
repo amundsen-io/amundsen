@@ -6,18 +6,20 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
+from amundsen_common.utils.atlas import (
+    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation,
+)
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTimestamp as RDSDashboardTimestamp
 
-from amundsen_common.utils.atlas import AtlasDashboardTypes, AtlasCommonParams, AtlasEntityOperation
+from databuilder.models.atlas_entity import AtlasEntity
+from databuilder.models.atlas_relationship import AtlasRelationship
+from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
-from databuilder.models.atlas_entity import AtlasEntity
-from databuilder.models.atlas_relationship import AtlasRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
-from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.timestamp import timestamp_constants
 
 LOGGER = logging.getLogger(__name__)

@@ -6,16 +6,15 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
+from amundsen_common.utils.atlas import (
+    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation, AtlasRelationshipAttrs, AtlasSerializedEntityFields,
+)
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardChart as RDSDashboardChart
+
 from databuilder.models.atlas_entity import AtlasEntity
-
-from amundsen_common.utils.atlas import AtlasCommonParams, AtlasSerializedEntityFields, AtlasRelationshipAttrs, AtlasDashboardTypes, AtlasEntityOperation
 from databuilder.models.atlas_relationship import AtlasRelationship
-
-
 from databuilder.models.atlas_serializable import AtlasSerializable
-
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
