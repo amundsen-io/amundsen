@@ -20,10 +20,8 @@ from amundsen_common.models.table import (Badge, Column,
                                           ResourceReport, Stat, Table, Tag,
                                           User, Watermark)
 from amundsen_common.models.user import User as UserEntity
-from amundsen_common.utils.atlas import (AtlasColumnKey,
-                                         AtlasCommonParams,
-                                         AtlasCommonTypes,
-                                         AtlasDashboardTypes,
+from amundsen_common.utils.atlas import (AtlasColumnKey, AtlasCommonParams,
+                                         AtlasCommonTypes, AtlasDashboardTypes,
                                          AtlasStatus, AtlasTableKey,
                                          AtlasTableTypes)
 from apache_atlas.client.base_client import AtlasClient
