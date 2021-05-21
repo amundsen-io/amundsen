@@ -1209,8 +1209,12 @@ class AtlasProxy(BaseProxy):
             query_names = [q.name for q in queries]
 
             table_guids = [t.get(AtlasCommonParams.guid) for t in self._filter_active(relationships.get('tables', []))]
-            _tables = self.client.entity.get_entities_by_guids(guids=table_guids)
-            tables = self._serialize_popular_tables(_tables)
+
+            if table_guids:
+                _tables = self.client.entity.get_entities_by_guids(guids=table_guids)
+                tables = self._serialize_popular_tables(_tables)
+            else:
+                tables = []
 
             executions_attributes = sorted(_executions, key=lambda x: x.get('timestamp', 0), reverse=True)
 
