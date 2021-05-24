@@ -1168,9 +1168,7 @@ class MetadataTest(unittest.TestCase):
             response = test.get(
                 '/api/metadata/v0/feature',
                 query_string=dict(
-                    key='test_feature_group/test_feature_name/1.4',
-                    index='0',
-                    source='test_source'
+                    key='test_feature_group/test_feature_name/1.4'
                 )
             )
             data = json.loads(response.data)
