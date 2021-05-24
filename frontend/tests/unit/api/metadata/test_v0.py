@@ -94,6 +94,7 @@ class MetadataTest(unittest.TestCase):
             'schema': 'test_schema',
             'name': 'test_table',
             'key': 'test_db://test_cluster.test_schema/test_table',
+            'created_timestamp': None,
             'description': 'This is a test',
             'tags': [],
             'table_readers': [
