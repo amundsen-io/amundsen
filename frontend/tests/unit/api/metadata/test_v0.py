@@ -1124,7 +1124,7 @@ class MetadataTest(unittest.TestCase):
     @responses.activate
     def test_get_feature_metadata_success(self) -> None:
         """
-        Test successful get_table_metadata request
+        Test successful get_feature_metadata request
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4'
@@ -1132,13 +1132,13 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.get(
-                '/api/metadata/v0/table',
+                '/api/metadata/v0/feature',
                 query_string=dict(
-                    key='db://cluster.schema/table',
+                    key='db://cluster.schema/feature',
                     index='0',
                     source='test_source'
                 )
             )
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertCountEqual(data.get('tableData'), self.expected_parsed_metadata)
+            self.assertCountEqual(data.get('featureData'), self.expected_parsed_metadata)
