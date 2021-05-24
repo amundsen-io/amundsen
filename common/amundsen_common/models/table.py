@@ -8,7 +8,6 @@ import attr
 from amundsen_common.models.user import User
 from amundsen_common.models.badge import Badge
 from amundsen_common.models.tag import Tag
-
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
