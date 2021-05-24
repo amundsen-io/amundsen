@@ -1191,6 +1191,32 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(response.json, expected)
 
     @responses.activate
+    def test_get_feature_metadata_failure(self) -> None:
+        """
+        Test get_feature_metadata API failure
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4'
+        responses.add(responses.GET, url, json=self.mock_feature_metadata, status=HTTPStatus.BAD_REQUEST)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/feature',
+                query_string=dict(
+                    key='test_feature_group/test_feature_name/1.4'
+                )
+            )
+            data = json.loads(response.data)
+            expected = {
+                'featureData': {},
+                'msg': 'Encountered error: Metadata request failed',
+                'status_code': 400
+            }
+
+            self.assertEqual(data, expected)
+
+
+    @responses.activate
     def test_get_feature_metadata_success(self) -> None:
         """
         Test successful get_feature_metadata request
