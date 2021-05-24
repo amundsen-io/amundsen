@@ -94,7 +94,6 @@ class MetadataTest(unittest.TestCase):
             'schema': 'test_schema',
             'name': 'test_table',
             'key': 'test_db://test_cluster.test_schema/test_table',
-            'created_timestamp': None,
             'description': 'This is a test',
             'tags': [],
             'table_readers': [
@@ -373,6 +372,7 @@ class MetadataTest(unittest.TestCase):
             },
             'entity': 'rider',
             'key': 'test_feature_group/test_feature_name/1.4',
+            'created_timestamp': None,
             'availability': ['hive'],
             'last_updated_timestamp': 1563872712,
             'owners': [],
