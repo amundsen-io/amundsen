@@ -326,6 +326,40 @@ class MetadataTest(unittest.TestCase):
             ],
             'dashboard': [],
         }
+        self.mock_feature_metadata = {
+            'partition_column': {
+                'name': 'ds',
+                'description': 'This is a test',
+                'col_type': 'bigint',
+                'sort_order': 0,
+                'badges': [
+                    {'category': 'column', 'badge_name': 'partition_column'}
+                ]
+            },
+            'entity': 'rider',
+            'key': 'test_feature_group/test_feature_name/1.4',
+            'availability': ['hive'],
+            'last_updated_timestamp': 1563872712,
+            'owners': [],
+            'name': 'test_feature_name',
+            'description': 'This is a test',
+            'status': None,
+            'programmatic_descriptions': [
+                {'source': 'c_1', 'text': 'description c'},
+                {'source': 'a_1', 'text': 'description a'},
+                {'source': 'b_1', 'text': 'description b'}
+            ],
+            'owner_tags': [],
+            'data_type': 'bigint',
+            'feature_group': 'test_feature_group',
+            'version': '1.4',
+            'tags': [],
+            'watermarks': [
+                {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
+                {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
+            ],
+            'badges': [{'category': 'data', 'badge_name': 'pii'}],
+        }
         self.mock_dashboard_metadata = {
             "badges": [],
             "chart_names": [],
@@ -1128,7 +1162,7 @@ class MetadataTest(unittest.TestCase):
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4'
-        responses.add(responses.GET, url, json=self.mock_metadata, status=HTTPStatus.OK)
+        responses.add(responses.GET, url, json=self.mock_feature_metadata, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.get(
