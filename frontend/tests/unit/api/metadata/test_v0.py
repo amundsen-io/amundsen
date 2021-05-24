@@ -10,7 +10,7 @@ from http import HTTPStatus
 
 from amundsen_application import create_app
 from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT,\
-    POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT
+    POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT, FEATURE_ENDPOINT
 from amundsen_application.config import MatchRuleObject
 
 from amundsen_application.tests.test_utils import TEST_USER_ID
@@ -1120,3 +1120,25 @@ class MetadataTest(unittest.TestCase):
                 'status_code': 400
             }
             self.assertEqual(response.json, expected)
+
+    @responses.activate
+    def test_get_feature_metadata_success(self) -> None:
+        """
+        Test successful get_table_metadata request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4'
+        responses.add(responses.GET, url, json=self.mock_metadata, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/table',
+                query_string=dict(
+                    key='db://cluster.schema/table',
+                    index='0',
+                    source='test_source'
+                )
+            )
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('tableData'), self.expected_parsed_metadata)
