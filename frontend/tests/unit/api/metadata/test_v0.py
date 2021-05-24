@@ -1215,7 +1215,6 @@ class MetadataTest(unittest.TestCase):
 
             self.assertEqual(data, expected)
 
-
     @responses.activate
     def test_get_feature_metadata_success(self) -> None:
         """
