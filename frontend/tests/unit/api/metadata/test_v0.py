@@ -10,7 +10,7 @@ from http import HTTPStatus
 
 from amundsen_application import create_app
 from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT,\
-    POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT
+    POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT, FEATURE_ENDPOINT
 from amundsen_application.config import MatchRuleObject
 
 from amundsen_application.tests.test_utils import TEST_USER_ID
@@ -325,6 +325,75 @@ class MetadataTest(unittest.TestCase):
                 },
             ],
             'dashboard': [],
+        }
+        self.mock_feature_metadata = {
+            'partition_column': {
+                'name': 'ds',
+                'description': 'This is a test',
+                'col_type': 'bigint',
+                'sort_order': 0,
+                'badges': [
+                    {'category': 'column', 'badge_name': 'partition_column'}
+                ]
+            },
+            'entity': 'rider',
+            'key': 'test_feature_group/test_feature_name/1.4',
+            'availability': ['hive'],
+            'last_updated_timestamp': 1563872712,
+            'owners': [],
+            'name': 'test_feature_name',
+            'description': 'This is a test',
+            'status': None,
+            'programmatic_descriptions': [
+                {'source': 'c_1', 'text': 'description c'},
+                {'source': 'a_1', 'text': 'description a'},
+                {'source': 'b_1', 'text': 'description b'}
+            ],
+            'owner_tags': [],
+            'data_type': 'bigint',
+            'feature_group': 'test_feature_group',
+            'version': '1.4',
+            'tags': [],
+            'watermarks': [
+                {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
+                {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
+            ],
+            'badges': [{'category': 'data', 'badge_name': 'pii'}],
+        }
+        self.expected_feature_metadata = {
+            'partition_column': {
+                'name': 'ds',
+                'description': 'This is a test',
+                'col_type': 'bigint',
+                'sort_order': 0,
+                'badges': [
+                    {'category': 'column', 'badge_name': 'partition_column'}
+                ]
+            },
+            'entity': 'rider',
+            'key': 'test_feature_group/test_feature_name/1.4',
+            'created_timestamp': None,
+            'availability': ['hive'],
+            'last_updated_timestamp': 1563872712,
+            'owners': [],
+            'name': 'test_feature_name',
+            'description': 'This is a test',
+            'status': None,
+            'programmatic_descriptions': [
+                {'source': 'c_1', 'text': 'description c'},
+                {'source': 'a_1', 'text': 'description a'},
+                {'source': 'b_1', 'text': 'description b'}
+            ],
+            'owner_tags': [],
+            'data_type': 'bigint',
+            'feature_group': 'test_feature_group',
+            'version': '1.4',
+            'tags': [],
+            'watermarks': [
+                {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
+                {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
+            ],
+            'badges': [{'category': 'data', 'badge_name': 'pii'}],
         }
         self.mock_dashboard_metadata = {
             "badges": [],
@@ -1120,3 +1189,48 @@ class MetadataTest(unittest.TestCase):
                 'status_code': 400
             }
             self.assertEqual(response.json, expected)
+
+    @responses.activate
+    def test_get_feature_metadata_failure(self) -> None:
+        """
+        Test get_feature_metadata API failure
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4'
+        responses.add(responses.GET, url, json=self.mock_feature_metadata, status=HTTPStatus.BAD_REQUEST)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/feature',
+                query_string=dict(
+                    key='test_feature_group/test_feature_name/1.4'
+                )
+            )
+            data = json.loads(response.data)
+            expected = {
+                'featureData': {},
+                'msg': 'Encountered error: Metadata request failed',
+                'status_code': 400
+            }
+
+            self.assertEqual(data, expected)
+
+    @responses.activate
+    def test_get_feature_metadata_success(self) -> None:
+        """
+        Test successful get_feature_metadata request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4'
+        responses.add(responses.GET, url, json=self.mock_feature_metadata, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/feature',
+                query_string=dict(
+                    key='test_feature_group/test_feature_name/1.4'
+                )
+            )
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertCountEqual(data.get('featureData'), self.expected_feature_metadata)
