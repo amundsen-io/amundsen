@@ -16,7 +16,8 @@ from amundsen_application.log.action_log import action_logging
 from amundsen_application.models.user import load_user, dump_user
 
 from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial, \
-    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, marshall_lineage_table, TableUri
+    marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, marshall_feature_full, \
+    marshall_lineage_table, TableUri
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata, request_search
 
 
@@ -32,6 +33,7 @@ POPULAR_TABLES_ENDPOINT = '/popular_tables'
 TAGS_ENDPOINT = '/tags/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
+FEATURE_ENDPOINT = '/feature'
 
 
 def _get_table_endpoint() -> str:
@@ -110,7 +112,7 @@ def popular_tables() -> Response:
 def get_table_metadata() -> Response:
     """
     call the metadata service endpoint and return matching results
-    :return: a json output containing a table metdata object as 'tableData'
+    :return: a json output containing a table metadata object as 'tableData'
 
     Schema Defined Here: https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/table.py
     TODO: Define type for this
@@ -978,3 +980,69 @@ def update_resource_owner() -> Response:
     except Exception as e:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/feature', methods=['GET'])
+def get_feature_metadata() -> Response:
+    """
+    call the metadata service endpoint and return matching results
+    :return: a json output containing a feature metadata object as 'featureData'
+
+    """
+    try:
+        feature_key = get_query_param(request.args, 'key')
+        list_item_index = request.args.get('index', None)
+        list_item_source = request.args.get('source', None)
+
+        results_dict = _get_feature_metadata(feature_key=feature_key, index=list_item_index, source=list_item_source)
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'featureData': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@action_logging
+def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[str, Any]:
+
+    results_dict = {
+        'featureData': {},
+        'msg': '',
+    }
+
+    try:
+        feature_endpoint = _get_feature_endpoint()
+        url = f'{feature_endpoint}/{feature_key}'
+        response = request_metadata(url=url)
+    except ValueError as e:
+        # envoy client BadResponse is a subclass of ValueError
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        logging.exception(message)
+        return results_dict
+
+    status_code = response.status_code
+    results_dict['status_code'] = status_code
+
+    if status_code != HTTPStatus.OK:
+        message = 'Encountered error: Metadata request failed'
+        results_dict['msg'] = message
+        logging.error(message)
+        return results_dict
+
+    try:
+        feature_data_raw: dict = response.json()
+
+        feature_data_raw['key'] = feature_key
+
+        results_dict['featureData'] = marshall_feature_full(feature_data_raw)
+        results_dict['msg'] = 'Success'
+        return results_dict
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
+        # explicitly raise the exception which will trigger 500 api response
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        return results_dict
