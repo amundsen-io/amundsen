@@ -883,7 +883,7 @@ def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[
 
     try:
         feature_endpoint = _get_feature_endpoint()
-        url = '{0}/{1}'.format(feature_endpoint, feature_key)
+        url = f'{feature_endpoint}/{feature_key}'
         response = request_metadata(url=url)
     except ValueError as e:
         # envoy client BadResponse is a subclass of ValueError
