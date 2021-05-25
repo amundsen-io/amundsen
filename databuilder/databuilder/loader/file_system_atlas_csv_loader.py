@@ -29,7 +29,7 @@ class FsAtlasCSVLoader(Loader):
     """
     # Config keys
     ENTITY_DIR_PATH = 'entity_dir_path'
-    RELATION_DIR_PATH = 'relationship_dir_path'
+    RELATIONSHIP_DIR_PATH = 'relationship_dir_path'
     FORCE_CREATE_DIR = 'force_create_directory'
     SHOULD_DELETE_CREATED_DIR = 'delete_created_directories'
 
@@ -56,7 +56,7 @@ class FsAtlasCSVLoader(Loader):
 
         self._entity_dir = conf.get_string(FsAtlasCSVLoader.ENTITY_DIR_PATH)
         self._relation_dir = \
-            conf.get_string(FsAtlasCSVLoader.RELATION_DIR_PATH)
+            conf.get_string(FsAtlasCSVLoader.RELATIONSHIP_DIR_PATH)
 
         self._delete_created_dir = \
             conf.get_bool(FsAtlasCSVLoader.SHOULD_DELETE_CREATED_DIR)
@@ -124,14 +124,14 @@ class FsAtlasCSVLoader(Loader):
         relation = csv_serializable.next_atlas_relation()
         while relation:
             relation_dict = atlas_serializer.serialize_relationship(relation)
-            key2 = (self._make_key(relation_dict),
+            keys = (self._make_key(relation_dict),
                     relation.entityType1,
                     relation.entityType2)
 
-            file_suffix = f'{key2[0]}_{key2[1]}_{key2[2]}'
+            file_suffix = '{}_{}_(}'.format(*keys)
             relation_writer = self._get_writer(relation_dict,
                                                self._relation_file_mapping,
-                                               key2,
+                                               keys,
                                                self._relation_dir,
                                                file_suffix)
             relation_writer.writerow(relation_dict)

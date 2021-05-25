@@ -6,9 +6,7 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
-from amundsen_common.utils.atlas import (
-    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation,
-)
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasDashboardTypes
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTimestamp as RDSDashboardTimestamp
 
@@ -21,6 +19,7 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.timestamp import timestamp_constants
+from databuilder.utils.atlas import AtlasSerializedEntityOperation
 
 LOGGER = logging.getLogger(__name__)
 
@@ -117,7 +116,7 @@ class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable, Atlas
 
         last_modified = AtlasEntity(
             typeName=AtlasDashboardTypes.metadata,
-            operation=AtlasEntityOperation.UPDATE,
+            operation=AtlasSerializedEntityOperation.UPDATE,
             relationships=None,
             attributes=dashboard_entity_attrs
         )

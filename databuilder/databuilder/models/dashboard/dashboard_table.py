@@ -7,9 +7,7 @@ from typing import (
     Any, Iterator, List, Optional, Union,
 )
 
-from amundsen_common.utils.atlas import (
-    AtlasDashboardTypes, AtlasRelationshipTypes, AtlasTableKey,
-)
+from amundsen_common.utils.atlas import AtlasDashboardTypes, AtlasTableKey
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTable as RDSDashboardTable
 
@@ -22,6 +20,7 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.table_serializable import TableSerializable
+from databuilder.utils.atlas import AtlasRelationshipTypes
 
 LOGGER = logging.getLogger(__name__)
 

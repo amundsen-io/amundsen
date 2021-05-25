@@ -7,9 +7,7 @@ from os.path import isfile, join
 from typing import List
 
 import pandas
-from amundsen_common.utils.atlas import (
-    AtlasCommonParams, AtlasEntityOperation, AtlasSerializedEntityFields, AtlasSerializedRelationshipFields,
-)
+from amundsen_common.utils.atlas import AtlasCommonParams
 from apache_atlas.exceptions import AtlasServiceException
 from apache_atlas.model.instance import (
     AtlasEntitiesWithExtInfo, AtlasEntity, AtlasObjectId, AtlasRelatedObjectId,
@@ -18,6 +16,9 @@ from apache_atlas.model.relationship import AtlasRelationship
 from pyhocon import ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
+from databuilder.utils.atlas import (
+    AtlasSerializedEntityFields, AtlasSerializedEntityOperation, AtlasSerializedRelationshipFields,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class AtlasCSVPublisher(Publisher):
     # A directory that contains CSV files for entities
     ENTITY_DIR_PATH = 'entity_files_directory'
     # A directory that contains CSV files for relationships
-    RELATION_DIR_PATH = 'relation_files_directory'
+    RELATIONSHIP_DIR_PATH = 'relationship_files_directory'
     # atlas create entity batch size
     ATLAS_ENTITY_CREATE_BATCH_SIZE = 'batch_size'
 
@@ -37,7 +38,7 @@ class AtlasCSVPublisher(Publisher):
 
     def init(self, conf: ConfigTree) -> None:
         self._entity_files = self._list_files(conf, AtlasCSVPublisher.ENTITY_DIR_PATH)
-        self._relationship_files = self._list_files(conf, AtlasCSVPublisher.RELATION_DIR_PATH)
+        self._relationship_files = self._list_files(conf, AtlasCSVPublisher.RELATIONSHIP_DIR_PATH)
         self._config = conf
         self._atlas_client = self._config.get(AtlasCSVPublisher.ATLAS_CLIENT)
 
@@ -143,9 +144,9 @@ class AtlasCSVPublisher(Publisher):
         entities_to_update = []
         with open(entity_file, 'r', encoding='utf8') as entity_csv:
             for entity_record in pandas.read_csv(entity_csv, na_filter=False).to_dict(orient='records'):
-                if entity_record[AtlasSerializedEntityFields.operation] == AtlasEntityOperation.CREATE:
+                if entity_record[AtlasSerializedEntityFields.operation] == AtlasSerializedEntityOperation.CREATE:
                     entities_to_create.append(self._create_entity_from_dict(entity_record))
-                if entity_record[AtlasSerializedEntityFields.operation] == AtlasEntityOperation.UPDATE:
+                if entity_record[AtlasSerializedEntityFields.operation] == AtlasSerializedEntityOperation.UPDATE:
                     entities_to_update.append(self._create_entity_from_dict(entity_record))
 
         return entities_to_create, entities_to_update

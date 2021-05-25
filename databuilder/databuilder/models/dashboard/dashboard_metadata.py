@@ -5,9 +5,7 @@ from typing import (
     Any, Dict, Iterator, List, Optional, Set, Union,
 )
 
-from amundsen_common.utils.atlas import (
-    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation, AtlasSerializedEntityFields,
-)
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasDashboardTypes
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import (
     Dashboard as RDSDashboard, DashboardCluster as RDSDashboardCluster, DashboardDescription as RDSDashboardDescription,
@@ -26,6 +24,7 @@ from databuilder.models.graph_serializable import GraphSerializable
 # TODO: We could separate TagMetadata from table_metadata to own module
 from databuilder.models.table_metadata import TagMetadata
 from databuilder.models.table_serializable import TableSerializable
+from databuilder.utils.atlas import AtlasSerializedEntityFields, AtlasSerializedEntityOperation
 
 
 class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
@@ -164,7 +163,7 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
 
         dashboard_group_entity = AtlasEntity(
             typeName=AtlasDashboardTypes.group,
-            operation=AtlasEntityOperation.CREATE,
+            operation=AtlasSerializedEntityOperation.CREATE,
             relationships=None,
             attributes=dashboard_group_entity_attrs
         )
@@ -192,13 +191,13 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
         relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
         """
         relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator
-                                 .join((AtlasCommonParams.group,
+                                 .join(('group',
                                         AtlasDashboardTypes.group,
                                         self._get_dashboard_group_key())))
 
         dashboard_entity = AtlasEntity(
             typeName=AtlasDashboardTypes.metadata,
-            operation=AtlasEntityOperation.CREATE,
+            operation=AtlasSerializedEntityOperation.CREATE,
             attributes=dashboard_entity_attrs,
             relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list)
         )

@@ -6,9 +6,7 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
-from amundsen_common.utils.atlas import (
-    AtlasCommonParams, AtlasDashboardTypes, AtlasEntityOperation, AtlasRelationshipAttrs, AtlasSerializedEntityFields,
-)
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasDashboardTypes
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardChart as RDSDashboardChart
 
@@ -20,6 +18,7 @@ from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
+from databuilder.utils.atlas import AtlasSerializedEntityFields, AtlasSerializedEntityOperation
 
 LOGGER = logging.getLogger(__name__)
 
@@ -179,7 +178,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
         relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
         """
         relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator
-                                 .join((AtlasRelationshipAttrs.query,
+                                 .join(('query',
                                         AtlasDashboardTypes.query,
                                         DashboardQuery.DASHBOARD_QUERY_KEY_FORMAT.format(
                                             product=self._product,
@@ -191,7 +190,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
 
         chart_entity = AtlasEntity(
             typeName=AtlasDashboardTypes.chart,
-            operation=AtlasEntityOperation.CREATE,
+            operation=AtlasSerializedEntityOperation.CREATE,
             attributes=chart_entity_attrs,
             relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list)
         )

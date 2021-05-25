@@ -3,8 +3,6 @@
 
 from collections import namedtuple
 
-from amundsen_common.utils.atlas import AtlasSerializedEntityFields
-
 AtlasEntity = namedtuple(
     'AtlasEntity',
     [
