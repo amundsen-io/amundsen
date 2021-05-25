@@ -924,6 +924,28 @@ def put_resource_description() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
+@metadata_blueprint.route('/get_resource_generation_code', methods=['GET'])
+def get_resource_generation_code() -> Response:
+    """
+    Call metadata service to fetch table generation code
+    :return:
+    """
+    try:
+        resource_type = get_query_param(request.args, 'type')
+        resource_key = get_query_param(request.args, 'key')
+
+        endpoint = _get_endpoint_from_resource_type(resource_type)
+
+        url = f'{endpoint}/{resource_key}/generation_code'
+        response = request_metadata(url=url, method=request.method)
+        payload = response.json()
+        return make_response(jsonify(payload), 200)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+
 @metadata_blueprint.route('/get_resource_lineage', methods=['GET'])
 def get_resource_lineage() -> Response:
     """
@@ -979,6 +1001,54 @@ def update_resource_owner() -> Response:
         return make_response(payload, status_code)
     except Exception as e:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+def _update_metadata_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
+    # TODO how do we handle owner tag updates?
+    url = f'{endpoint}/{resource_key}/tag/{tag}'
+    response = request_metadata(url=url, method=method)
+    status_code = response.status_code
+    if status_code != HTTPStatus.OK:
+        LOGGER.info(f'Fail to update tag in metadataservice, http status code: {status_code}')
+        LOGGER.debug(response.text)
+    return status_code
+
+
+def _update_search_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
+    # TODO when search service is updated
+    pass
+
+
+@metadata_blueprint.route('/update_resource_tags', methods=['PUT', 'DELETE'])
+def update_resource_tags() -> Response:
+    try:
+        args = request.get_json()
+        method = request.method
+        resource_type = get_query_param(request.args, 'type')
+        resource_key = get_query_param(request.args, 'key')
+        tag = get_query_param(args, 'tag')
+
+        endpoint = _get_endpoint_from_resource_type(resource_type)
+
+        metadata_status_code = _update_metadata_tag(table_key=resource_key, method=method, tag=tag)
+        search_status_code = _update_search_tag(table_key=resource_key, method=method, tag=tag)
+
+        http_status_code = HTTPStatus.OK
+        if metadata_status_code == HTTPStatus.OK and search_status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = f'Encountered error: {method} resource tag failed'
+            logging.error(message)
+            http_status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, http_status_code)
+
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        payload = jsonify({'msg': message})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
