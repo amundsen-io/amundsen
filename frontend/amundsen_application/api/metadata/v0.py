@@ -26,6 +26,7 @@ LOGGER = logging.getLogger(__name__)
 metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
 TABLE_ENDPOINT = '/table'
+FEATURE_ENDPOINT = '/feature'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
 POPULAR_TABLES_ENDPOINT = '/popular_tables'
 TAGS_ENDPOINT = '/tags/'
@@ -39,12 +40,30 @@ def _get_table_endpoint() -> str:
         raise Exception('An request endpoint for table resources must be configured')
     return table_endpoint
 
+def _get_feature_endpoint() -> str:
+    feature_endpoint = app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT
+    if feature_endpoint is None:
+        raise Exception('An request endpoint for feature resources must be configured')
+    return feature_endpoint
 
 def _get_dashboard_endpoint() -> str:
     dashboard_endpoint = app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT
     if dashboard_endpoint is None:
         raise Exception('An request endpoint for dashboard resources must be configured')
     return dashboard_endpoint
+
+
+def _get_endpoint_from_resource_type(resource_type: str) -> str:
+    type_map = {
+        'table': _get_table_endpoint(),
+        'feature': _get_feature_endpoint(),
+        'dashboard': _get_dashboard_endpoint(),
+    }
+
+    if resource_type not in type_map:
+        raise(Exception(f"Resource type '{resource_type}'' is not valid"))
+
+    return type_map[resource_type]
 
 
 @metadata_blueprint.route('/popular_tables', methods=['GET'])
@@ -839,6 +858,123 @@ def get_column_lineage() -> Response:
             'upstream_entities': upstream,
         }
         return make_response(jsonify(payload), 200)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/get_resource_description', methods=['GET'])
+def get_resource_description() -> Response:
+    try: 
+        resource_type = get_query_param(request.args, 'type')
+        resource_key = get_query_param(request.args, 'key')
+
+        endpoint = _get_endpoint_from_resource_type(resource_type)
+
+        url = '{0}/{1}/description'.format(endpoint, resource_key)
+
+        response = request_metadata(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+            description = response.json().get('description')
+        else:
+            message = 'Get resource description failed'
+            description = None
+
+        payload = jsonify({'description': description, 'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'description': None, 'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/put_resource_description', methods=['PUT'])
+def put_resource_description() -> Response:
+    try:
+        args = request.get_json()
+        resource_type = get_query_param(request.args, 'type')
+        resource_key = get_query_param(request.args, 'key')
+        description = get_query_param(args, 'description')
+        src = get_query_param(args, 'source')
+
+        endpoint = _get_endpoint_from_resource_type(resource_type)
+
+        table_uri = TableUri.from_uri(resource_key)
+        if not is_table_editable(table_uri.schema, table_uri.table):
+            return make_response('', HTTPStatus.FORBIDDEN)
+
+        url = '{0}/{1}/description'.format(endpoint, resource_key)
+
+        response = request_metadata(url=url, method='PUT', data=json.dumps({'description': description}))
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Update resource description failed'
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/get_resource_lineage', methods=['GET'])
+def get_resource_lineage() -> Response:
+    """
+    Call metadata service to fetch table lineage for a given resource
+    :return:
+    """
+    try:
+        resource_type = get_query_param(request.args, 'type')
+        resource_key = get_query_param(request.args, 'key')
+        depth = get_query_param(request.args, 'depth')
+        direction = get_query_param(request.args, 'direction')
+
+        endpoint = _get_endpoint_from_resource_type(resource_type)
+
+        url = f'{endpoint}/{resource_key}/lineage?depth={depth}&direction={direction}'
+        response = request_metadata(url=url, method=request.method)
+        json = response.json()
+        downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
+        upstream = [marshall_lineage_table(table) for table in json.get('upstream_entities')]
+
+        payload = {
+            'downstream_entities': downstream,
+            'upstream_entities': upstream,
+        }
+        return make_response(jsonify(payload), 200)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/update_resource_owner', methods=['PUT', 'DELETE'])
+def update_resource_owner() -> Response:
+    try:
+        args = request.get_json()
+        resource_type = get_query_param(request.args, 'type')
+        resource_key = get_query_param(request.args, 'key')
+        owner = get_query_param(args, 'owner')
+
+        endpoint = _get_endpoint_from_resource_type(resource_type)
+
+        url = '{0}/{1}/owner/{2}'.format(endpoint, resource_key, owner)
+        method = request.method
+
+        response = request_metadata(url=url, method=method)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Updated owner'
+        else:
+            message = 'There was a problem updating owner {0}'.format(owner)
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
     except Exception as e:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
