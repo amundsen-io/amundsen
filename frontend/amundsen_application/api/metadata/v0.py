@@ -42,11 +42,13 @@ def _get_table_endpoint() -> str:
         raise Exception('An request endpoint for table resources must be configured')
     return table_endpoint
 
+
 def _get_feature_endpoint() -> str:
     feature_endpoint = app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT
     if feature_endpoint is None:
         raise Exception('An request endpoint for feature resources must be configured')
     return feature_endpoint
+
 
 def _get_dashboard_endpoint() -> str:
     dashboard_endpoint = app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT
@@ -867,7 +869,7 @@ def get_column_lineage() -> Response:
 
 @metadata_blueprint.route('/get_resource_description', methods=['GET'])
 def get_resource_description() -> Response:
-    try: 
+    try:
         resource_type = get_query_param(request.args, 'type')
         resource_key = get_query_param(request.args, 'key')
 
@@ -899,7 +901,6 @@ def put_resource_description() -> Response:
         resource_type = get_query_param(request.args, 'type')
         resource_key = get_query_param(request.args, 'key')
         description = get_query_param(args, 'description')
-        src = get_query_param(args, 'source')
 
         endpoint = _get_endpoint_from_resource_type(resource_type)
 
@@ -943,7 +944,6 @@ def get_resource_generation_code() -> Response:
     except Exception as e:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
-
 
 
 @metadata_blueprint.route('/get_resource_lineage', methods=['GET'])
@@ -1031,8 +1031,12 @@ def update_resource_tags() -> Response:
 
         endpoint = _get_endpoint_from_resource_type(resource_type)
 
-        metadata_status_code = _update_metadata_tag(table_key=resource_key, method=method, tag=tag)
-        search_status_code = _update_search_tag(table_key=resource_key, method=method, tag=tag)
+        metadata_status_code = _update_metadata_resource_tag(endpoint=endpoint,
+                                                             table_key=resource_key,
+                                                             method=method, tag=tag)
+        search_status_code = _update_search_resource_tag(endpoint=endpoint,
+                                                         table_key=resource_key,
+                                                         method=method, tag=tag)
 
         http_status_code = HTTPStatus.OK
         if metadata_status_code == HTTPStatus.OK and search_status_code == HTTPStatus.OK:
