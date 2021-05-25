@@ -23,7 +23,7 @@ BASE = {
 }
 
 QUERY_RESPONSE = {
-    **BASE,
+    **BASE,  # type: ignore
     'description': 'test feature description',
     'partition_column': {
         'name': 'bar_id_1',
@@ -37,7 +37,7 @@ QUERY_RESPONSE = {
 }
 
 API_RESPONSE = {
-    **BASE,
+    **BASE,  # type: ignore
     'description': 'test feature description',
     'partition_column': {
         'name': 'bar_id_1',

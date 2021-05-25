@@ -1,6 +1,7 @@
-flake8==3.7.8
-mypy==0.812
-pytest>=4.6
-pytest-cov
-pytest-mock
-mock
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
+attrs
+Flask
+marshmallow
+marshmallow3-annotations

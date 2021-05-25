@@ -24,3 +24,7 @@ isort_check:
 
 .PHONY: test
 test: test_unit lint mypy isort_check
+
+.PHONY: install_deps
+install_deps:
+	pip3 install -e ".[all]"

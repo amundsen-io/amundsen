@@ -32,11 +32,11 @@ test: test_unit lint mypy isort_check
 
 .PHONY: image
 image:
-	docker build -f public.Dockerfile -t ${IMAGE}:latest .
+	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:latest .
 
 .PHONY: image-version
 image-version:
-	docker build -f public.Dockerfile -t ${IMAGE}:${VERSION} .
+	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:${VERSION} .
 
 .PHONY: push-image-version
 push-image-version:
@@ -61,3 +61,7 @@ push-oidc-image:
 .PHONY: build-push-image
 build-push-image-latest: image oidc-image push-image push-oidc-image
 build-push-image-version: image-version push-image-version
+
+.PHONY: install_deps
+install_deps:
+	pip3 install -e ".[all]"

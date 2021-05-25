@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip3 install -r requirements.txt && pip3 install .[all] && pip3 install codecov
+        run: make install_deps && pip3 uninstall amundsen-common && pip3 install ../common
         working-directory: ./frontend
       - name: Run python unit tests
         run: make test
