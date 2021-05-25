@@ -22,7 +22,6 @@ class User(Base, CommonUser):
     id: str
 
     def get_id(self) -> str:
-        # uses the user email as the document id in ES
         return self.id
 
     @classmethod
