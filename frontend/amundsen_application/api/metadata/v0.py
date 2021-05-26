@@ -1032,10 +1032,10 @@ def update_resource_tags() -> Response:
         endpoint = _get_endpoint_from_resource_type(resource_type)
 
         metadata_status_code = _update_metadata_resource_tag(endpoint=endpoint,
-                                                             table_key=resource_key,
+                                                             resource_key=resource_key,
                                                              method=method, tag=tag)
         search_status_code = _update_search_resource_tag(endpoint=endpoint,
-                                                         table_key=resource_key,
+                                                         resource_key=resource_key,
                                                          method=method, tag=tag)
 
         http_status_code = HTTPStatus.OK
