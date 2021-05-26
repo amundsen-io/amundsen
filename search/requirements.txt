@@ -24,7 +24,7 @@ pytest-cov==2.5.1
 pytest-env==0.6.2
 pytest-mock==1.1
 pytz==2021.1
-requests-aws4auth==1.0.1
+requests-aws4auth==1.1.0
 six==1.11.0
 statsd==3.2.1
 typing==3.6.4
