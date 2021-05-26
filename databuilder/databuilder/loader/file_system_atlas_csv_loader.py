@@ -128,7 +128,7 @@ class FsAtlasCSVLoader(Loader):
                     relation.entityType1,
                     relation.entityType2)
 
-            file_suffix = '{}_{}_(}'.format(*keys)
+            file_suffix = '{}_{}_{}'.format(*keys)
             relation_writer = self._get_writer(relation_dict,
                                                self._relation_file_mapping,
                                                keys,

@@ -163,9 +163,9 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
         # Chart
         attrs_mapping = [
             (AtlasCommonParams.qualified_name, self._get_chart_node_key()),
-            (AtlasCommonParams.name, self._chart_name),
-            (AtlasCommonParams.type, self._chart_type),
-            (AtlasCommonParams.url, self._chart_url)
+            ('name', self._chart_name),
+            ('type', self._chart_type),
+            ('url', self._chart_url)
         ]
 
         chart_entity_attrs = dict()

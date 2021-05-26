@@ -156,10 +156,10 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
         # Query
         attrs_mapping = [
             (AtlasCommonParams.qualified_name, self._get_query_node_key()),
-            (AtlasCommonParams.name, self._query_name),
-            (AtlasCommonParams.id, self._query_id),
-            (AtlasCommonParams.url, self._url),
-            (AtlasCommonParams.query_text, self._query_text)
+            ('name', self._query_name),
+            ('id', self._query_id),
+            ('url', self._url),
+            ('queryText', self._query_text)
         ]
 
         query_entity_attrs = dict()

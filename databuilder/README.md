@@ -1056,7 +1056,7 @@ tmp_folder = f'/tmp/amundsen/dashboard'
 
 dict_config = {
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
-    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
     f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_ID}': '1',
     f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_NAME}': 'dashboard group',
@@ -1101,7 +1101,7 @@ tmp_folder = f'/tmp/amundsen/dashboard'
 
 dict_config = {
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
-    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
     f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_ID}': '1',
     f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_NAME}': 'dashboard group',
@@ -1151,7 +1151,7 @@ tmp_folder = f'/tmp/amundsen/dashboard'
 
 dict_config = {
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': f'{tmp_folder}/nodes',
-    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': f'{tmp_folder}/relationships',
     f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
     f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_ID}': '1',
     f'extractor.apache_superset.{ApacheSupersetBaseExtractor.DASHBOARD_GROUP_NAME}': 'dashboard group',
@@ -1343,7 +1343,7 @@ Write node and relationship CSV file(s) that can be consumed by Neo4jCsvPublishe
 ```python
 job_config = ConfigFactory.from_dict({
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH): node_files_folder,
-    'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATIONSHIP_DIR_PATH): relationship_files_folder},)
+    'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH): relationship_files_folder},)
 
 job = DefaultJob(
     conf=job_config,
@@ -1406,7 +1406,7 @@ relationship_files_folder = '{tmp_folder}/relationships/'.format(tmp_folder=tmp_
 
 job_config = ConfigFactory.from_dict({
     'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.NODE_DIR_PATH): node_files_folder,
-    'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATIONSHIP_DIR_PATH): relationship_files_folder,
+    'loader.filesystem_csv_neo4j.{}'.format(FsNeo4jCSVLoader.RELATION_DIR_PATH): relationship_files_folder,
     'publisher.neo4j.{}'.format(neo4j_csv_publisher.NODE_FILES_DIR): node_files_folder,
     'publisher.neo4j.{}'.format(neo4j_csv_publisher.RELATION_FILES_DIR): relationship_files_folder,
     'publisher.neo4j.{}'.format(neo4j_csv_publisher.NEO4J_END_POINT_KEY): neo4j_endpoint,

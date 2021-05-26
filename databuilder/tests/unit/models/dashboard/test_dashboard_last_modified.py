@@ -11,7 +11,7 @@ from databuilder.models.graph_serializable import (
     RELATION_TYPE,
 )
 from databuilder.serializers import (
-    mysql_serializer, neo4_serializer, neptune_serializer,
+    atlas_serializer, mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
@@ -38,7 +38,6 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.expected_dashboard_key = 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id'
 
     def test_dashboard_timestamp_nodes(self) -> None:
-
         actual = self.dashboard_last_modified.create_next_node()
         actual_serialized = neo4_serializer.serialize_node(actual)
 
@@ -70,7 +69,6 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.assertDictEqual(actual_neptune_serialized, neptune_expected)
 
     def test_dashboard_owner_relations(self) -> None:
-
         actual = self.dashboard_last_modified.create_next_relation()
         actual_serialized = neo4_serializer.serialize_relationship(actual)
 
@@ -132,7 +130,6 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.assertIsNone(self.dashboard_last_modified.create_next_relation())
 
     def test_dashboard_timestamp_records(self) -> None:
-
         actual = self.dashboard_last_modified.create_next_record()
         actual_serialized = mysql_serializer.serialize_record(actual)
 
@@ -146,3 +143,19 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         assert actual is not None
         self.assertDictEqual(actual_serialized, expected)
         self.assertIsNone(self.dashboard_last_modified.create_next_record())
+
+    def test_dashboard_last_modified_relation_atlas(self) -> None:
+        actual = self.dashboard_last_modified.create_next_atlas_entity()
+        actual_serialized = atlas_serializer.serialize_entity(actual)
+
+        expected = {
+            "typeName": "Dashboard",
+            "operation": "UPDATE",
+            "relationships": None,
+            "qualifiedName": "product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id",
+            "lastModifiedTimestamp": 123456789
+        }
+
+        assert actual is not None
+        self.assertDictEqual(actual_serialized, expected)
+        self.assertIsNone(self.dashboard_last_modified.create_next_atlas_entity())

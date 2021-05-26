@@ -151,10 +151,10 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
         # dashboard group
         group_attrs_mapping = [
             (AtlasCommonParams.qualified_name, self._get_dashboard_group_key()),
-            (AtlasCommonParams.name, self.dashboard_group),
-            (AtlasCommonParams.id, self.dashboard_group_id),
-            (AtlasCommonParams.description, self.dashboard_group_description),
-            (AtlasCommonParams.url, self.dashboard_group_url)
+            ('name', self.dashboard_group),
+            ('id', self.dashboard_group_id),
+            ('description', self.dashboard_group_description),
+            ('url', self.dashboard_group_url)
         ]
         dashboard_group_entity_attrs = dict()
         for attr in group_attrs_mapping:
@@ -173,11 +173,11 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
         # dashboard
         attrs_mapping = [
             (AtlasCommonParams.qualified_name, self._get_dashboard_key()),
-            (AtlasCommonParams.name, self.dashboard_name),
-            (AtlasCommonParams.description, self.description),
-            (AtlasCommonParams.url, self.dashboard_url),
-            (AtlasCommonParams.cluster, self.cluster),
-            (AtlasCommonParams.product, self.product),
+            ('name', self.dashboard_name),
+            ('description', self.description),
+            ('url', self.dashboard_url),
+            ('cluster', self.cluster),
+            ('product', self.product),
             (AtlasCommonParams.created_timestamp, self.created_timestamp)
         ]
 
