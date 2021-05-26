@@ -95,7 +95,7 @@ Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) t
 
 ## Getting Started
 
-Please visit the Amundsen installation documentation for a [quick start](./installation/) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](./docs/installation.md) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
