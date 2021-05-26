@@ -3,11 +3,13 @@
 
 import distutils.util
 import os
+
 from typing import Dict, List, Optional, Set, Callable  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
 from flask import Flask  # noqa: F401
+
 from metadata_service.entity.badge import Badge
 
 # PROXY configuration keys
