@@ -58,3 +58,30 @@ class LocalConfig(Config):
         'title': 'Search Service',
         'uiversion': 3
     }
+
+
+class AwsSearchConfig(LocalConfig):
+    import boto3
+    from elasticsearch import Elasticsearch, RequestsHttpConnection
+    from requests_aws4auth import AWS4Auth
+
+    service = 'es'
+
+    host = os.environ.get('PROXY_ENDPOINT')
+    port = 443
+    use_ssl = True
+    verify_certs = True
+    region = os.environ.get('AWS_REGION')
+    credentials = boto3.Session().get_credentials()
+
+    aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
+
+    client = Elasticsearch(
+        hosts=[{'host': host, 'port': port}],
+        http_auth=aws_auth,
+        use_ssl=use_ssl,
+        verify_certs=verify_certs,
+        connection_class=RequestsHttpConnection
+    )
+
+    PROXY_CLIENT_KEY = client
