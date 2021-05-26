@@ -3,8 +3,7 @@
 
 import distutils.util
 import os
-
-from typing import Dict, List, Optional, Set, Callable  # noqa: F401
+from typing import Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
