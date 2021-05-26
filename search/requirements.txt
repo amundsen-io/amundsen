@@ -21,6 +21,7 @@ mock==2.0.0
 mypy==0.660
 pytest==3.5.1
 pytest-cov==2.5.1
+pytest-env==0.6.2
 pytest-mock==1.1
 pytz==2021.1
 requests-aws4auth==1.0.1

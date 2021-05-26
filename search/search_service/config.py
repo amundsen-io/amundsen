@@ -64,14 +64,14 @@ class AwsSearchConfig(LocalConfig):
     import boto3
     from elasticsearch import Elasticsearch, RequestsHttpConnection
     from requests_aws4auth import AWS4Auth
-    
+
     service = 'es'
 
     host = os.environ.get('PROXY_ENDPOINT')
     port = 443
     use_ssl = True
     verify_certs = True
-    region = os.environ.get('AWS_REGION', 'eu-west-1')
+    region = os.environ.get('AWS_REGION')
     credentials = boto3.Session().get_credentials()
 
     aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
