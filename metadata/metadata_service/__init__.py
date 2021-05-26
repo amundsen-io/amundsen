@@ -95,6 +95,11 @@ def create_app(*, config_module_class: str) -> Flask:
     logging.info('Created app with config name {}'.format(config_module_class))
     logging.info('Using backend {}'.format(app.config.get('PROXY_CLIENT')))
 
+    # Initialize custom extensions and routes
+    init_custom_ext_routes = app.config.get('INIT_CUSTOM_EXT_AND_ROUTES')
+    if init_custom_ext_routes:
+        init_custom_ext_routes(app)
+
     api_bp = Blueprint('api', __name__)
     api_bp.add_url_rule('/healthcheck', 'healthcheck', healthcheck)
 
