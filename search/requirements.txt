@@ -19,10 +19,10 @@ marshmallow>=3.0,<=3.6
 marshmallow3-annotations>=1.0.0
 mock==2.0.0
 mypy==0.660
-pytest==3.5.1
-pytest-cov==2.5.1
+pytest==6.2.2
+pytest-cov==2.11.1
 pytest-env==0.6.2
-pytest-mock==1.1
+pytest-mock==3.6.1
 pytz==2021.1
 requests-aws4auth==1.1.0
 six==1.11.0
