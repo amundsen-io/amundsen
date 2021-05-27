@@ -1005,7 +1005,6 @@ def update_resource_owner() -> Response:
 
 
 def _update_metadata_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
-    # TODO how do we handle owner tag updates?
     url = f'{endpoint}/{resource_key}/tag/{tag}'
     response = request_metadata(url=url, method=method)
     status_code = response.status_code
@@ -1016,7 +1015,7 @@ def _update_metadata_resource_tag(endpoint: str, resource_key: str, method: str,
 
 
 def _update_search_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
-    # TODO when search service is updated
+    # TODO when search service feature work is done
     pass
 
 
