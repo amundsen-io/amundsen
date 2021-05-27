@@ -6,4 +6,3 @@ elasticsearch==6.8.2
 elasticsearch-dsl==6.4.0
 boto3==1.14.63
 requests-aws4auth==1.1.0
-pytest-env==0.6.2
