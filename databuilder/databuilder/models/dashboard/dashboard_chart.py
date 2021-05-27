@@ -33,18 +33,19 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
     CHART_RELATION_TYPE = 'HAS_CHART'
     CHART_REVERSE_RELATION_TYPE = 'CHART_OF'
 
-    def __init__(self,
-                 dashboard_group_id: Optional[str],
-                 dashboard_id: Optional[str],
-                 query_id: str,
-                 chart_id: str,
-                 chart_name: Optional[str] = None,
-                 chart_type: Optional[str] = None,
-                 chart_url: Optional[str] = None,
-                 product: Optional[str] = '',
-                 cluster: str = 'gold',
-                 **kwargs: Any
-                 ) -> None:
+    def __init__(
+        self,
+        dashboard_group_id: Optional[str],
+        dashboard_id: Optional[str],
+        query_id: str,
+        chart_id: str,
+        chart_name: Optional[str] = None,
+        chart_type: Optional[str] = None,
+        chart_url: Optional[str] = None,
+        product: Optional[str] = '',
+        cluster: str = 'gold',
+        **kwargs: Any
+    ) -> None:
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
         self._query_id = query_id
@@ -67,7 +68,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
 
     def _create_node_iterator(self) -> Iterator[GraphNode]:
         node_attributes = {
-            'id': self._chart_id
+            'id': self._chart_id,
         }
 
         if self._chart_name:
@@ -82,7 +83,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
         node = GraphNode(
             key=self._get_chart_node_key(),
             label=DashboardChart.DASHBOARD_CHART_LABEL,
-            attributes=node_attributes
+            attributes=node_attributes,
         )
         yield node
 
@@ -100,13 +101,13 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
                 cluster=self._cluster,
                 dashboard_group_id=self._dashboard_group_id,
                 dashboard_id=self._dashboard_id,
-                query_id=self._query_id
+                query_id=self._query_id,
             ),
             end_label=DashboardChart.DASHBOARD_CHART_LABEL,
             end_key=self._get_chart_node_key(),
             type=DashboardChart.CHART_RELATION_TYPE,
             reverse_type=DashboardChart.CHART_REVERSE_RELATION_TYPE,
-            attributes={}
+            attributes={},
         )
         yield relationship
 
@@ -117,7 +118,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
             dashboard_group_id=self._dashboard_group_id,
             dashboard_id=self._dashboard_id,
             query_id=self._query_id,
-            chart_id=self._chart_id
+            chart_id=self._chart_id,
         )
 
     def create_next_record(self) -> Union[RDSModel, None]:
@@ -135,8 +136,8 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
                 cluster=self._cluster,
                 dashboard_group_id=self._dashboard_group_id,
                 dashboard_id=self._dashboard_id,
-                query_id=self._query_id
-            )
+                query_id=self._query_id,
+            ),
         )
         if self._chart_name:
             record.name = self._chart_name
@@ -154,10 +155,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
             return None
 
     def create_next_atlas_relation(self) -> Union[AtlasRelationship, None]:
-        try:
-            StopIteration
-        except StopIteration:
-            return None
+        return None
 
     def _create_next_atlas_entity(self) -> Iterator[AtlasEntity]:
         # Chart
@@ -165,7 +163,7 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
             (AtlasCommonParams.qualified_name, self._get_chart_node_key()),
             ('name', self._chart_name),
             ('type', self._chart_type),
-            ('url', self._chart_url)
+            ('url', self._chart_url),
         ]
 
         chart_entity_attrs = dict()
@@ -178,21 +176,23 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
         relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
         """
         relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator
-                                 .join(('query',
-                                        AtlasDashboardTypes.query,
-                                        DashboardQuery.DASHBOARD_QUERY_KEY_FORMAT.format(
-                                            product=self._product,
-                                            cluster=self._cluster,
-                                            dashboard_group_id=self._dashboard_group_id,
-                                            dashboard_id=self._dashboard_id,
-                                            query_id=self._query_id
-                                        ))))
+                                 .join((
+                                     'query',
+                                     AtlasDashboardTypes.query,
+                                     DashboardQuery.DASHBOARD_QUERY_KEY_FORMAT.format(
+                                         product=self._product,
+                                         cluster=self._cluster,
+                                         dashboard_group_id=self._dashboard_group_id,
+                                         dashboard_id=self._dashboard_id,
+                                         query_id=self._query_id,
+                                     ),
+                                 )))
 
         chart_entity = AtlasEntity(
             typeName=AtlasDashboardTypes.chart,
             operation=AtlasSerializedEntityOperation.CREATE,
             attributes=chart_entity_attrs,
-            relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list)
+            relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list),
         )
 
         yield chart_entity

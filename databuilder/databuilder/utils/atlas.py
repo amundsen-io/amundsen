@@ -15,14 +15,6 @@ class AtlasSerializedRelationshipFields:
     qualified_name_2 = 'entityQualifiedName2'
 
 
-class AtlasSerializedRelationshipFields:
-    relation_type = 'relationshipType'
-    entity_type_1 = 'entityType1'
-    qualified_name_1 = 'entityQualifiedName1'
-    entity_type_2 = 'entityType2'
-    qualified_name_2 = 'entityQualifiedName2'
-
-
 class AtlasSerializedEntityFields:
     operation = 'operation'
     relationships = 'relationships'

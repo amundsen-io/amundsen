@@ -33,17 +33,18 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
     DASHBOARD_QUERY_RELATION_TYPE = 'HAS_QUERY'
     QUERY_DASHBOARD_RELATION_TYPE = 'QUERY_OF'
 
-    def __init__(self,
-                 dashboard_group_id: Optional[str],
-                 dashboard_id: Optional[str],
-                 query_name: str,
-                 query_id: Optional[str] = None,
-                 url: Optional[str] = '',
-                 query_text: Optional[str] = None,
-                 product: Optional[str] = '',
-                 cluster: str = 'gold',
-                 **kwargs: Any
-                 ) -> None:
+    def __init__(
+        self,
+        dashboard_group_id: Optional[str],
+        dashboard_id: Optional[str],
+        query_name: str,
+        query_id: Optional[str] = None,
+        url: Optional[str] = '',
+        query_text: Optional[str] = None,
+        product: Optional[str] = '',
+        cluster: str = 'gold',
+        **kwargs: Any
+    ) -> None:
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
         self._query_name = query_name
@@ -78,7 +79,7 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
         node = GraphNode(
             key=self._get_query_node_key(),
             label=DashboardQuery.DASHBOARD_QUERY_LABEL,
-            attributes=node_attributes
+            attributes=node_attributes,
         )
 
         yield node
@@ -97,12 +98,12 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
                 product=self._product,
                 cluster=self._cluster,
                 dashboard_group=self._dashboard_group_id,
-                dashboard_name=self._dashboard_id
+                dashboard_name=self._dashboard_id,
             ),
             end_key=self._get_query_node_key(),
             type=DashboardQuery.DASHBOARD_QUERY_RELATION_TYPE,
             reverse_type=DashboardQuery.QUERY_DASHBOARD_RELATION_TYPE,
-            attributes={}
+            attributes={},
         )
         yield relationship
 
@@ -121,8 +122,8 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
                 product=self._product,
                 cluster=self._cluster,
                 dashboard_group=self._dashboard_group_id,
-                dashboard_name=self._dashboard_id
-            )
+                dashboard_name=self._dashboard_id,
+            ),
         )
         if self._url:
             record.url = self._url
@@ -137,7 +138,7 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
             cluster=self._cluster,
             dashboard_group_id=self._dashboard_group_id,
             dashboard_id=self._dashboard_id,
-            query_id=self._query_id
+            query_id=self._query_id,
         )
 
     def create_next_atlas_entity(self) -> Union[AtlasEntity, None]:
@@ -147,10 +148,7 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
             return None
 
     def create_next_atlas_relation(self) -> Union[AtlasRelationship, None]:
-        try:
-            StopIteration
-        except StopIteration:
-            return None
+        return None
 
     def _create_next_atlas_entity(self) -> Iterator[AtlasEntity]:
         # Query
@@ -159,7 +157,7 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
             ('name', self._query_name),
             ('id', self._query_id),
             ('url', self._url),
-            ('queryText', self._query_text)
+            ('queryText', self._query_text),
         ]
 
         query_entity_attrs = dict()
@@ -172,20 +170,22 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
         relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
         """
         relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator
-                                 .join(('dashboard',
-                                        AtlasDashboardTypes.metadata,
-                                        DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
-                                            product=self._product,
-                                            cluster=self._cluster,
-                                            dashboard_group=self._dashboard_group_id,
-                                            dashboard_name=self._dashboard_id
-                                        ))))
+                                 .join((
+                                     'dashboard',
+                                     AtlasDashboardTypes.metadata,
+                                     DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                                         product=self._product,
+                                         cluster=self._cluster,
+                                         dashboard_group=self._dashboard_group_id,
+                                         dashboard_name=self._dashboard_id,
+                                     ),
+                                 )))
 
         query_entity = AtlasEntity(
             typeName=AtlasDashboardTypes.query,
             operation=AtlasSerializedEntityOperation.CREATE,
             attributes=query_entity_attrs,
-            relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list)
+            relationships=AtlasSerializedEntityFields.relationships_separator.join(relationship_list),
         )
         yield query_entity
 

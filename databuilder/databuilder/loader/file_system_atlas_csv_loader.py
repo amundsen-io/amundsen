@@ -35,7 +35,7 @@ class FsAtlasCSVLoader(Loader):
 
     _DEFAULT_CONFIG = ConfigFactory.from_dict({
         SHOULD_DELETE_CREATED_DIR: True,
-        FORCE_CREATE_DIR: False
+        FORCE_CREATE_DIR: False,
     })
 
     def __init__(self) -> None:
@@ -113,37 +113,44 @@ class FsAtlasCSVLoader(Loader):
             entity_dict = atlas_serializer.serialize_entity(entity)
             key = (self._make_key(entity_dict), entity.typeName)
             file_suffix = '{}_{}'.format(*key)
-            entity_writer = self._get_writer(entity_dict,
-                                             self._entity_file_mapping,
-                                             key,
-                                             self._entity_dir,
-                                             file_suffix)
+            entity_writer = self._get_writer(
+                entity_dict,
+                self._entity_file_mapping,
+                key,
+                self._entity_dir,
+                file_suffix,
+            )
             entity_writer.writerow(entity_dict)
             entity = csv_serializable.next_atlas_entity()
 
         relation = csv_serializable.next_atlas_relation()
         while relation:
             relation_dict = atlas_serializer.serialize_relationship(relation)
-            keys = (self._make_key(relation_dict),
-                    relation.entityType1,
-                    relation.entityType2)
+            keys = (
+                self._make_key(relation_dict),
+                relation.entityType1,
+                relation.entityType2,
+            )
 
             file_suffix = '{}_{}_{}'.format(*keys)
-            relation_writer = self._get_writer(relation_dict,
-                                               self._relation_file_mapping,
-                                               keys,
-                                               self._relation_dir,
-                                               file_suffix)
+            relation_writer = self._get_writer(
+                relation_dict,
+                self._relation_file_mapping,
+                keys,
+                self._relation_dir,
+                file_suffix,
+            )
             relation_writer.writerow(relation_dict)
             relation = csv_serializable.next_atlas_relation()
 
-    def _get_writer(self,
-                    csv_record_dict: Dict[str, Any],
-                    file_mapping: Dict[Any, DictWriter],
-                    key: Any,
-                    dir_path: str,
-                    file_suffix: str
-                    ) -> DictWriter:
+    def _get_writer(
+        self,
+        csv_record_dict: Dict[str, Any],
+        file_mapping: Dict[Any, DictWriter],
+        key: Any,
+        dir_path: str,
+        file_suffix: str,
+    ) -> DictWriter:
         """
         Finds a writer based on csv record, key.
         If writer does not exist, it's creates a csv writer and update the
@@ -162,8 +169,11 @@ class FsAtlasCSVLoader(Loader):
         LOGGER.info('Creating file for %s', key)
 
         file_out = open(f'{dir_path}/{file_suffix}.csv', 'w', encoding='utf8')
-        writer = csv.DictWriter(file_out, fieldnames=csv_record_dict.keys(),
-                                quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.DictWriter(  # type: ignore
+            file_out,
+            fieldnames=csv_record_dict.keys(),
+            quoting=csv.QUOTE_NONNUMERIC,
+        )
 
         def file_out_close() -> None:
             LOGGER.info('Closing file IO %s', file_out)

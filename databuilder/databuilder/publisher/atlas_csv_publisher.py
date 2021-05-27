@@ -1,10 +1,11 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
 import logging
 from os import listdir
 from os.path import isfile, join
-from typing import List
+from typing import (
+    Any, Dict, Iterator, List, Tuple,
+)
 
 import pandas
 from amundsen_common.utils.atlas import AtlasCommonParams
@@ -34,7 +35,7 @@ class AtlasCSVPublisher(Publisher):
     ATLAS_ENTITY_CREATE_BATCH_SIZE = 'batch_size'
 
     def __init__(self) -> None:
-        super(AtlasCSVPublisher, self).__init__()
+        super().__init__()
 
     def init(self, conf: ConfigTree) -> None:
         self._entity_files = self._list_files(conf, AtlasCSVPublisher.ENTITY_DIR_PATH)
@@ -53,7 +54,7 @@ class AtlasCSVPublisher(Publisher):
             return []
 
         path = conf.get_string(path_key)
-        return sorted([join(path, f) for f in listdir(path) if isfile(join(path, f))])
+        return sorted(join(path, f) for f in listdir(path) if isfile(join(path, f)))
 
     def publish_impl(self) -> None:
         """
@@ -70,7 +71,7 @@ class AtlasCSVPublisher(Publisher):
         for relation_file in self._relationship_files:
             self._create_relations(relation_file=relation_file)
 
-    def _update_entities(self, entities_to_update) -> None:
+    def _update_entities(self, entities_to_update: List[AtlasEntity]) -> None:
         """
         Go over the entities list , create atlas relationships instances and sync them with atlas
         :param entities_to_update:
@@ -79,7 +80,7 @@ class AtlasCSVPublisher(Publisher):
         for entity_to_update in entities_to_update:
             existing_entity = self._atlas_client.entity.get_entity_by_attribute(
                 entity_to_update.attributes[AtlasCommonParams.type_name],
-                [(AtlasCommonParams.qualified_name, entity_to_update.attributes[AtlasCommonParams.qualified_name])]
+                [(AtlasCommonParams.qualified_name, entity_to_update.attributes[AtlasCommonParams.qualified_name])],
             )
             existing_entity.entity.attributes.update(entity_to_update.attributes)
             try:
@@ -94,7 +95,7 @@ class AtlasCSVPublisher(Publisher):
         :return:
         """
 
-        with open(relation_file, 'r', encoding='utf8') as relation_csv:
+        with open(relation_file, encoding='utf8') as relation_csv:
             for relation_record in pandas.read_csv(relation_csv, na_filter=False).to_dict(orient='records'):
                 relation = self._create_relation(relation_record)
                 try:
@@ -104,37 +105,48 @@ class AtlasCSVPublisher(Publisher):
                 except Exception as e:
                     LOGGER.error(e)
 
-    def _render_unique_attributes(self, entity_type, qualified_name):
+    def _render_unique_attributes(self, entity_type: str, qualified_name: str) -> Dict[Any, Any]:
         """
         Render uniqueAttributes dict, this struct is needed to identify AtlasObjects
         :param entity_type:
         :param qualified_name:
         :return: rendered uniqueAttributes dict
         """
-        return {AtlasCommonParams.type_name: entity_type, AtlasCommonParams.unique_attributes: {AtlasCommonParams.qualified_name: qualified_name}}
+        return {
+            AtlasCommonParams.type_name: entity_type,
+            AtlasCommonParams.unique_attributes: {
+                AtlasCommonParams.qualified_name: qualified_name,
+            },
+        }
 
-    def _get_atlas_related_object_id_by_qn(self, entity_type, qn) -> AtlasRelatedObjectId:
+    def _get_atlas_related_object_id_by_qn(self, entity_type: str, qn: str) -> AtlasRelatedObjectId:
         return AtlasRelatedObjectId(attrs=self._render_unique_attributes(entity_type, qn))
 
-    def _get_atlas_object_id_by_qn(self, entity_type, qn):
+    def _get_atlas_object_id_by_qn(self, entity_type: str, qn: str) -> AtlasObjectId:
         return AtlasObjectId(attrs=self._render_unique_attributes(entity_type, qn))
 
-    def _create_relation(self, relation_dict):
+    def _create_relation(self, relation_dict: Dict[str, str]) -> AtlasRelationship:
         """
         Go over the relation dictionary file and create atlas relationships instances
         :param relation_dict:
         :return:
         """
 
-        relation = AtlasRelationship({AtlasCommonParams.type_name: relation_dict[AtlasSerializedRelationshipFields.relation_type]})
-        relation.end1 = self._get_atlas_object_id_by_qn(relation_dict[AtlasSerializedRelationshipFields.entity_type_1],
-                                                        relation_dict[AtlasSerializedRelationshipFields.qualified_name_1])
-        relation.end2 = self._get_atlas_object_id_by_qn(relation_dict[AtlasSerializedRelationshipFields.entity_type_2],
-                                                        relation_dict[AtlasSerializedRelationshipFields.qualified_name_2])
+        relation = AtlasRelationship(
+            {AtlasCommonParams.type_name: relation_dict[AtlasSerializedRelationshipFields.relation_type]},
+        )
+        relation.end1 = self._get_atlas_object_id_by_qn(
+            relation_dict[AtlasSerializedRelationshipFields.entity_type_1],
+            relation_dict[AtlasSerializedRelationshipFields.qualified_name_1],
+        )
+        relation.end2 = self._get_atlas_object_id_by_qn(
+            relation_dict[AtlasSerializedRelationshipFields.entity_type_2],
+            relation_dict[AtlasSerializedRelationshipFields.qualified_name_2],
+        )
 
         return relation
 
-    def _create_entity_instances(self, entity_file: str) -> List[AtlasEntity]:
+    def _create_entity_instances(self, entity_file: str) -> Tuple[List[AtlasEntity], List[AtlasEntity]]:
         """
         Go over the entities file and try creating instances
         :param entity_file:
@@ -142,7 +154,7 @@ class AtlasCSVPublisher(Publisher):
         """
         entities_to_create = []
         entities_to_update = []
-        with open(entity_file, 'r', encoding='utf8') as entity_csv:
+        with open(entity_file, encoding='utf8') as entity_csv:
             for entity_record in pandas.read_csv(entity_csv, na_filter=False).to_dict(orient='records'):
                 if entity_record[AtlasSerializedEntityFields.operation] == AtlasSerializedEntityOperation.CREATE:
                     entities_to_create.append(self._create_entity_from_dict(entity_record))
@@ -151,7 +163,7 @@ class AtlasCSVPublisher(Publisher):
 
         return entities_to_create, entities_to_update
 
-    def _extract_entity_relations_details(self, relation_details):
+    def _extract_entity_relations_details(self, relation_details: str) -> Iterator[Tuple]:
         """
         Generate relation details from relation_attr#related_entity_type#related_qualified_name
         """
@@ -160,7 +172,7 @@ class AtlasCSVPublisher(Publisher):
             relation_split = relation.split(AtlasSerializedEntityFields.relationships_kv_separator)
             yield relation_split[0], relation_split[1], relation_split[2]
 
-    def _create_entity_from_dict(self, entity_dict) -> AtlasEntity:
+    def _create_entity_from_dict(self, entity_dict: Dict) -> AtlasEntity:
         """
         Create atlas entity instance from dict
         :param entity_dict:
@@ -171,14 +183,14 @@ class AtlasCSVPublisher(Publisher):
         entity.attributes = entity_dict
         relationships = entity_dict.get(AtlasSerializedEntityFields.relationships)
         if relationships:
-            relations = dict()
+            relations = {}
             for relation_attr, rel_type, rel_qn in self._extract_entity_relations_details(relationships):
                 related_obj = self._get_atlas_related_object_id_by_qn(rel_type, rel_qn)
                 relations[relation_attr] = related_obj
             entity.relationshipAttributes = relations
         return entity
 
-    def _chunks(self, lst):
+    def _chunks(self, lst: List) -> Iterator:
         """
         Yield successive n-sized chunks from lst.
         :param lst:
@@ -188,7 +200,7 @@ class AtlasCSVPublisher(Publisher):
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
 
-    def _sync_entities_to_atlas(self, entities):
+    def _sync_entities_to_atlas(self, entities: List[AtlasEntity]) -> None:
         """
         Sync entities instances with atlas
         :param entities: list of entities
