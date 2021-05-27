@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: make install_deps && pip3 uninstall amundsen-common
+        run: make install_deps && pip3 uninstall -y amundsen-common
         working-directory: ./common
       - name: Run python unit tests
         run: make test
