@@ -61,6 +61,41 @@ class LocalConfig(Config):
 
 
 class AwsSearchConfig(LocalConfig):
+    """
+    Class sets up special case of Elasticsearch client with AWS token-based authentication,
+    to enable usage of AWS Elasticsearch Service as a Elasticsearch Proxy backend.
+
+    To connect to AWS Elasticsearch domain set environmental variable PROXY_ENDPOINT 
+    to domain's VPC endpoint, without the leading protol part (i.e. https://).
+    Also, you need to set environmental variable AWS_REGION to the region in which your 
+    AWS Elasticsearch domain is running.
+
+    To assess AWS Elasticsearch domain correctly you need to setup AWS credentials with 
+    a role that enables reading and writting to Elasticsearch Service domain; 
+    see the sample CloudFormation IAM policy below::
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": [
+                    "arn:aws:iam::123456789012:user/test-user"
+                    ]
+                },
+                "Action": [
+                    "es:ESHttpGet",
+                    "es:ESHttpPut"
+                ],
+                "Resource": "arn:aws:es:us-west-1:987654321098:domain/test-domain/test-index/_search"
+                }
+            ]
+        }
+    
+    If you run Amundsen on Kubernetes use IAM roles for service accounts 
+    (https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).s
+    """
     import boto3
     from elasticsearch import Elasticsearch, RequestsHttpConnection
     from requests_aws4auth import AWS4Auth
