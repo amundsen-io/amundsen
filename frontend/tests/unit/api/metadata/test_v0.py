@@ -155,7 +155,9 @@ class MetadataTest(unittest.TestCase):
             ],
             'source': '/source',
             'is_editable': True,
-            'last_updated_timestamp': None
+            'last_updated_timestamp': None,
+            'common_filters': [],
+            'common_joins': []
         }
         self.expected_related_dashboard_response = {
             "dashboards": [{
