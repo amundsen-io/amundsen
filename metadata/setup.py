@@ -24,7 +24,7 @@ setup(
     zip_safe=False,
     install_requires=requirements,
     extras_require={
-        'oidc': ['flaskoidc==0.1.1'],
+        'oidc': ['flaskoidc==0.2.3'],
         'atlas': ['apache-atlas==0.0.11']
     },
     python_requires=">=3.6",
