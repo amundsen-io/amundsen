@@ -3,7 +3,7 @@
 
 # Common dependencies used by microservices (frontend, metadata, search) -----------------------------------------------
 
-amundsen-common>=0.11.0
+amundsen-common==0.12.0
 aniso8601==3.0.0
 attrs>=19.1.0
 click==7.0
