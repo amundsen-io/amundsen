@@ -13,7 +13,7 @@ WORKDIR /app
 RUN pip3 install gunicorn
 
 COPY --from=node-stage /app /app
-COPY databuilder/.venv/lib/python3.7/site-packages /app
+COPY ./frontend /app
 RUN pip3 install -e .
 
 CMD [ "python3",  "amundsen_application/wsgi.py" ]
