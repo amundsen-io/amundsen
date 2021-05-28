@@ -109,14 +109,15 @@ class AwsSearchConfig(LocalConfig):
     region = os.environ.get('AWS_REGION')
     credentials = boto3.Session().get_credentials()
 
-    aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
+    if all([host, region, credentials]):
+        aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
 
-    client = Elasticsearch(
-        hosts=[{'host': host, 'port': port}],
-        http_auth=aws_auth,
-        use_ssl=use_ssl,
-        verify_certs=verify_certs,
-        connection_class=RequestsHttpConnection
-    )
+        client = Elasticsearch(
+            hosts=[{'host': host, 'port': port}],
+            http_auth=aws_auth,
+            use_ssl=use_ssl,
+            verify_certs=verify_certs,
+            connection_class=RequestsHttpConnection
+        )
 
-    PROXY_CLIENT_KEY = client
+        PROXY_CLIENT_KEY = client
