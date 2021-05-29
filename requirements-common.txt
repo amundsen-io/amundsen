@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-# Common dependencies used by microservices (frontend, metadata, search) -----------------------------------------------
+# Common dependencies (common, frontend, metadata, search) -------------------------------------------------------------
 
 amundsen-common==0.12.0
 aniso8601==3.0.0
