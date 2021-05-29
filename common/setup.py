@@ -16,7 +16,7 @@ with open(requirements_path) as requirements_file:
 
 # avoid circular references
 requirements_common = [r for r in requirements_common if not r.startswith('amundsen-common')]
-print(requirements_common)
+
 all_deps = requirements_common + requirements_dev
 
 setup(
@@ -29,7 +29,7 @@ setup(
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
-    install_requires=requirements + requirements_common,
+    install_requires=requirements_common,
     extras_require={
         'all': all_deps,
         'dev': requirements_dev
