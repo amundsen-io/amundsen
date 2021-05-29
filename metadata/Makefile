@@ -32,11 +32,11 @@ test: test_unit lint mypy isort_check
 
 .PHONY: image
 image:
-	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:latest .
+	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:latest . && cd metadata
 
 .PHONY: image-version
 image-version:
-	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:${VERSION} .
+	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:${VERSION} . && cd metadata
 
 .PHONY: push-image-version
 push-image-version:
@@ -48,7 +48,7 @@ push-image:
 
 .PHONY: oidc-image
 oidc-image:
-	docker build -f public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} .
+	docker build -f public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} . && cd metadata
 	docker tag ${OIDC_IMAGE}:${VERSION} ${OIDC_IMAGE}:latest
 
 .PHONY: push-odic-image

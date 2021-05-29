@@ -25,11 +25,11 @@ test: test_unit lint mypy
 
 .PHONY: image
 image:
-	cd .. && docker build -f frontend.public.Dockerfile -t ${IMAGE}:latest .
+	cd .. && docker build -f frontend.public.Dockerfile -t ${IMAGE}:latest . && cd frontend
 
 .PHONY: image-version
 image-version:
-	cd .. && docker build -f frontend.public.Dockerfile -t ${IMAGE}:${VERSION} .
+	cd .. && docker build -f frontend.public.Dockerfile -t ${IMAGE}:${VERSION} . && cd frontend
 
 .PHONY: push-image-version
 push-image-version:
@@ -41,7 +41,7 @@ push-image:
 
 .PHONY: oidc-image
 oidc-image:
-	cd .. && docker build -f frontend.public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} .
+	cd .. && docker build -f frontend.public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} . && cd frontend
 	docker tag ${OIDC_IMAGE}:${VERSION} ${OIDC_IMAGE}:latest
 
 .PHONY: push-odic-image

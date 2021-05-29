@@ -32,11 +32,11 @@ test: test_unit lint mypy isort_check
 
 .PHONY: image
 image:
-	cd .. && docker build -f Dockerfile.search.public -t ${IMAGE}:latest .
+	cd .. && docker build -f Dockerfile.search.public -t ${IMAGE}:latest . && cd search
 
 .PHONY: image-version
 image-version:
-	cd .. && docker build -f Dockerfile.search.public -t ${IMAGE}:${VERSION} .
+	cd .. && docker build -f Dockerfile.search.public -t ${IMAGE}:${VERSION} . && cd search
 
 .PHONY: push-image-version
 push-image-version:

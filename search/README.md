@@ -29,7 +29,7 @@ For information about Amundsen and our other services, refer to this [README.md]
 $ venv_path=[path_for_virtual_environment]
 $ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
-$ pip3 install amundsen-search
+$ python3 setup.py install
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running
@@ -45,8 +45,7 @@ $ cd search
 $ venv_path=[path_for_virtual_environment]
 $ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
-$ pip3 install -r requirements.txt
-$ python3 setup.py install
+$ pip3 install -e ".[all]" .
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running
