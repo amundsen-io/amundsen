@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "databuilder/**"
+      - "requirements-dev.txt"
 jobs:
   test-unit-python:
     runs-on: ubuntu-18.04
