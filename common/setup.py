@@ -6,10 +6,6 @@ from setuptools import find_packages, setup
 
 __version__ = '0.13.0'
 
-requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
-with open(requirements_path) as requirements_file:
-    requirements = requirements_file.readlines()
-
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-common.txt')
 with open(requirements_path) as requirements_file:
     requirements_common = requirements_file.readlines()
@@ -21,7 +17,7 @@ with open(requirements_path) as requirements_file:
 # avoid circular references
 requirements_common = [r for r in requirements_common if not r.startswith('amundsen-common')]
 print(requirements_common)
-all_deps = requirements + requirements_common + requirements_dev
+all_deps = requirements_common + requirements_dev
 
 setup(
     name='amundsen-common',
