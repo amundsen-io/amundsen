@@ -1,7 +1,5 @@
-charts:
-- name: amundsen
-  directory: amundsen-kube-helm/templates/helm
-  values: values.yaml
+application_template: .release/application_template.yaml
+environment_variables: .release/environment_variables.yaml
 builds:
 - name: nginx
   dokcerfile: Dockerfile.release

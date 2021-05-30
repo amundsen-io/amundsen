@@ -1,0 +1,68 @@
+---
+app: amemsenennn
+auto_deploy: true
+context: release-handsup-us-east-1
+domain: amemsenennn.releaseapp.gethandsup.com
+mode: development
+repo_name: dustyspace/amundsen
+environment_templates:
+- name: ephemeral
+  datasets:
+  - name: fred-savage
+- name: permanent
+resources:
+  cpu:
+    limits: 1000m
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+hostnames:
+- frontend: frontend-${env_id}-${domain}
+services:
+- name: postgres
+  image: postgres:11
+- name: redis
+  image: redis
+- name: backend
+  image: dustyspace/amundsen/nginx
+  has_repo: true
+charts:
+- name: amundsen
+  directory: amundsen-kube-helm/templates/helm
+  values: values.yaml
+- name: ingress
+  directory: amundsen-kube-helm/templates/release-ingress
+  values: values.yaml
+builds:
+- name: nginx
+  dockerfile: Dockerfile.release
+jobs:
+- name: migrate
+  command:
+  - sh
+  - "-c"
+  - sleep 5
+  from_services: backend
+  halt_on_error: true
+workflows:
+- name: setup
+  parallelize:
+  - step: data
+    tasks:
+    - services.postgres
+    - services.redis
+  - step: migrate
+    tasks:
+    - jobs.migrate
+  - step: amundsen
+    tasks:
+    - charts.amundsen
+    - charts.ingress
+- name: patch
+  parallelize:
+  - step: amundsen
+    tasks:
+    - charts.amundsen
+
