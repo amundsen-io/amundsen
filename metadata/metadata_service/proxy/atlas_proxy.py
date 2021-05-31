@@ -191,7 +191,7 @@ class AtlasProxy(BaseProxy):
         """
         Fetch a Bookmark entity from parsing table uri and user id.
         If Bookmark is not present, create one for the user.
-        :param table_uri:
+        :param entity_uri:
         :param user_id: Qualified Name of a user
         :return:
         """
@@ -210,7 +210,7 @@ class AtlasProxy(BaseProxy):
                                                                              (AtlasCommonParams.qualified_name,
                                                                               bookmark_qn)])
         except Exception as ex:
-            LOGGER.exception(f'Bookmark not found. {str(ex)}')
+            LOGGER.info(f'Bookmark not found. {str(ex)}')
 
             table_entity = self._get_table_entity(table_uri=entity_uri)
             # Fetch user entity from user_id for relation
@@ -626,7 +626,7 @@ class AtlasProxy(BaseProxy):
         """
         This function look for a user defined glossary i.e., self.ATLAS_USER_DEFINED_TERMS
         If there is not one available, this will create a new glossary.
-        The meain reason to put this functionality into a separate function is to avoid
+        The main reason to put this functionality into a separate function is to avoid
         the lookup each time someone assigns a tag to a data source.
         :return: Glossary object, that holds the user defined terms.
         """
@@ -884,7 +884,6 @@ class AtlasProxy(BaseProxy):
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
-
         resources: List[Union[PopularTable, DashboardSummary]] = []
 
         for record in search_results.entities or []:
@@ -1276,7 +1275,6 @@ class AtlasProxy(BaseProxy):
         """
         entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
                                                             uniq_attributes=[(AtlasCommonParams.qualified_name, id)])
-
         return entity.entity[AtlasCommonParams.attributes].get('description')
 
     def put_dashboard_description(self, *,
@@ -1311,7 +1309,6 @@ class AtlasProxy(BaseProxy):
                         for e in
                         self._filter_active(
                             _dashboard[AtlasCommonParams.relationships].get('executions', []))]
-
                     dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
 
                     summary = DashboardSummary(**self._get_dashboard_summary(dashboard, executions))
