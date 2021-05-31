@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    Any, Dict, Optional,
+    Any, Dict, List, Optional, Tuple,
 )
 
 from databuilder.models.atlas_entity import AtlasEntity
@@ -39,3 +39,30 @@ def serialize_relationship(relationship: Optional[AtlasRelationship]) -> Dict[st
         relationship_dict[key] = value
 
     return relationship_dict
+
+
+def get_entity_attrs(attrs_mapping: List[Tuple[Any, Any]]) -> Dict:
+    entity_attrs = {}
+    for attr in attrs_mapping:
+        attr_key, attr_value = attr
+        entity_attrs[attr_key] = attr_value
+    return entity_attrs
+
+
+def add_entity_relationship(
+    relationship_list: List[str], relation_attribute: str,
+    relation_entity_type: str, related_object_qualified_name: str,
+) -> List[str]:
+    """
+    relationship in form 'relation_attribute#relation_entity_type#qualified_name_of_related_object
+    """
+    relationship_list.append(AtlasSerializedEntityFields.relationships_kv_separator.join(
+        (relation_attribute, relation_entity_type, related_object_qualified_name),
+    ))
+    return relationship_list
+
+
+def get_entity_relationships(relationship_list: List[str]) -> str:
+    return AtlasSerializedEntityFields \
+        .relationships_separator \
+        .join(relationship_list)

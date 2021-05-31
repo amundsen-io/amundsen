@@ -19,6 +19,7 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.timestamp import timestamp_constants
+from databuilder.serializers.atlas_serializer import get_entity_attrs
 from databuilder.utils.atlas import AtlasSerializedEntityOperation
 
 LOGGER = logging.getLogger(__name__)
@@ -101,18 +102,18 @@ class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable, Atlas
 
         # last modified
         attrs_mapping = [
-            (AtlasCommonParams.qualified_name, DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
-                product=self._product,
-                cluster=self._cluster,
-                dashboard_group=self._dashboard_group_id,
-                dashboard_name=self._dashboard_id)),
-            (AtlasCommonParams.last_modified_timestamp, self._last_modified_timestamp)
+            (
+                AtlasCommonParams.qualified_name, DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                    product=self._product,
+                    cluster=self._cluster,
+                    dashboard_group=self._dashboard_group_id,
+                    dashboard_name=self._dashboard_id
+                )
+            ),
+            (AtlasCommonParams.last_modified_timestamp, self._last_modified_timestamp),
         ]
 
-        dashboard_entity_attrs = dict()
-        for attr in attrs_mapping:
-            attr_key, attr_value = attr
-            dashboard_entity_attrs[attr_key] = attr_value
+        dashboard_entity_attrs = get_entity_attrs(attrs_mapping)
 
         last_modified = AtlasEntity(
             typeName=AtlasDashboardTypes.metadata,

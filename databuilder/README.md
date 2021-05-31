@@ -1014,7 +1014,7 @@ The included `ApacheSupersetMetadataExtractor` provides support for extracting b
 
 All Apache Superset extractors including this one use Apache Superset REST API (`/api/v1`) and were developed based on Apache Superset version `1.1`.
 
-##### Caution!
+##### Caution! 
 
 Apache Superset does not contain metadata fulfilling the concept of `DashboardGroup`. For that reasons, when configuring extractor following parameters must be provided:
 - dashboard_group_id (required)
@@ -1048,7 +1048,7 @@ Apache Superset does not contain metadata fulfilling the concept of `DashboardGr
 ###### Caution!
 
 `changed_on` value does not provide timezone info so we assume it's UTC.
-
+ 
 #### Sample job config
 
 ```python
@@ -1080,9 +1080,9 @@ job.launch()
 
 ### [ApacheSupersetTableExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_table_extractor.py)
 
-The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`).
+The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`). 
 
-##### Caution!
+##### Caution! 
 
 As table information in Apache Superset is minimal, following configuration options enable parametrization required to achieve proper relationship information:
 - `driver_to_database_mapping` - mapping between sqlalchemy `drivername` and actual `database` property of `TableMetadata` model.
@@ -1127,7 +1127,7 @@ job.launch()
 
 The included `ApacheSupersetChartExtractor` provides support for extracting information on charts connected to given dashboard.
 
-##### Caution!
+##### Caution! 
 
 Currently there is no way to connect Apache Superset `Query` model to neither `Chart` nor `Dashboard` model. For that reason, to comply with Amundsen
 Databuilder data model, we register single `DashboardQuery` node serving as a bridge to which all the `DashboardChart` nodes are connected.
@@ -1206,9 +1206,9 @@ Complete set of available metrics is defined as DEFAULT_STAT_MAPPINGS attribute 
 
 #### Common usage patterns
 
-As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running
-the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the
-report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows
+As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running 
+the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the 
+report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows 
 to pandas dataframe beforehand and calculate the report on just a sample of original data.
 
 ##### Spark support
@@ -1395,6 +1395,32 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [FsAtlasCSVLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
+Write node and relationship CSV file(s) that can be consumed by AtlasCsvPublisher. It assumes that the record it
+ consumes is instance of AtlasSerializable.
+
+```python
+from pyhocon import ConfigFactory
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_atlas_csv_loader import FsAtlasCSVLoader
+from databuilder.task.task import DefaultTask
+
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+job_config = ConfigFactory.from_dict({
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships'
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=AnyExtractor(),
+        loader=FsAtlasCSVLoader()),
+    publisher=AnyPublisher())
+job.launch()
+```
+
 ## List of publisher
 #### [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/neo4j_csv_publisher.py "Neo4jCsvPublisher")
 A Publisher takes two folders for input and publishes to Neo4j.
@@ -1449,6 +1475,41 @@ job = DefaultJob(
     publisher=ElasticsearchPublisher())
 job.launch()
 ```
+#### [AtlasCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/atlas_csv_publisher.py "AtlasCsvPublisher")
+A Publisher takes two folders for input and publishes to Atlas.
+One folder will contain CSV file(s) for Entity where the other folder will contain CSV file(s) for Relationship.
+
+##### Caution!!!
+Publisher assumes that all necessary data types are already defined in atlas, otherwise publishing will fail.
+
+```python
+from apache_atlas.client.base_client import AtlasClient
+from pyhocon import ConfigFactory
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_atlas_csv_loader import FsAtlasCSVLoader
+from databuilder.publisher.atlas_csv_publisher import AtlasCSVPublisher
+from databuilder.task.task import DefaultTask
+
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+job_config = ConfigFactory.from_dict({
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_CLIENT}': AtlasClient('http://localhost:21000', ('admin', 'admin')) ,
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': 10,
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=AnyExtractor(),
+        loader=FsAtlasCSVLoader()),
+    publisher=AtlasCSVPublisher())
+job.launch()
+```
+
 
 #### [Callback](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/callback/call_back.py "Callback")
 Callback interface is built upon a [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern "Observer pattern") where the participant want to take any action when target's state changes.

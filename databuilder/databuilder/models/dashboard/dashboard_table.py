@@ -35,15 +35,14 @@ class DashboardTable(GraphSerializable, TableSerializable, AtlasSerializable):
     DASHBOARD_TABLE_RELATION_TYPE = 'DASHBOARD_WITH_TABLE'
     TABLE_DASHBOARD_RELATION_TYPE = 'TABLE_OF_DASHBOARD'
 
-    def __init__(
-        self,
-        dashboard_group_id: str,
-        dashboard_id: str,
-        table_ids: List[str],
-        product: Optional[str] = '',
-        cluster: str = 'gold',
-        **kwargs: Any
-    ) -> None:
+    def __init__(self,
+                 dashboard_group_id: str,
+                 dashboard_id: str,
+                 table_ids: List[str],
+                 product: Optional[str] = '',
+                 cluster: str = 'gold',
+                 **kwargs: Any
+                 ) -> None:
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
         # A list of tables uri used in the dashboard
@@ -77,17 +76,17 @@ class DashboardTable(GraphSerializable, TableSerializable, AtlasSerializable):
                         product=self._product,
                         cluster=self._cluster,
                         dashboard_group=self._dashboard_group_id,
-                        dashboard_name=self._dashboard_id,
+                        dashboard_name=self._dashboard_id
                     ),
                     end_key=TableMetadata.TABLE_KEY_FORMAT.format(
                         db=m.group(1),
                         cluster=m.group(2),
                         schema=m.group(3),
-                        tbl=m.group(4),
+                        tbl=m.group(4)
                     ),
                     type=DashboardTable.DASHBOARD_TABLE_RELATION_TYPE,
                     reverse_type=DashboardTable.TABLE_DASHBOARD_RELATION_TYPE,
-                    attributes={},
+                    attributes={}
                 )
                 yield relationship
 
@@ -106,14 +105,14 @@ class DashboardTable(GraphSerializable, TableSerializable, AtlasSerializable):
                         product=self._product,
                         cluster=self._cluster,
                         dashboard_group=self._dashboard_group_id,
-                        dashboard_name=self._dashboard_id,
+                        dashboard_name=self._dashboard_id
                     ),
                     table_rk=TableMetadata.TABLE_KEY_FORMAT.format(
                         db=m.group(1),
                         cluster=m.group(2),
                         schema=m.group(3),
-                        tbl=m.group(4),
-                    ),
+                        tbl=m.group(4)
+                    )
                 )
 
     def create_next_atlas_entity(self) -> Union[AtlasEntity, None]:
@@ -137,9 +136,9 @@ class DashboardTable(GraphSerializable, TableSerializable, AtlasSerializable):
                     product=self._product,
                     cluster=self._cluster,
                     dashboard_group=self._dashboard_group_id,
-                    dashboard_name=self._dashboard_id,
+                    dashboard_name=self._dashboard_id
                 ),
-                attributes={},
+                attributes={}
             )
             yield table_relationship
 

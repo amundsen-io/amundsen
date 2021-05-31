@@ -38,6 +38,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.expected_dashboard_key = 'product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id'
 
     def test_dashboard_timestamp_nodes(self) -> None:
+
         actual = self.dashboard_last_modified.create_next_node()
         actual_serialized = neo4_serializer.serialize_node(actual)
 
@@ -69,6 +70,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.assertDictEqual(actual_neptune_serialized, neptune_expected)
 
     def test_dashboard_owner_relations(self) -> None:
+
         actual = self.dashboard_last_modified.create_next_relation()
         actual_serialized = neo4_serializer.serialize_relationship(actual)
 
@@ -130,6 +132,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.assertIsNone(self.dashboard_last_modified.create_next_relation())
 
     def test_dashboard_timestamp_records(self) -> None:
+
         actual = self.dashboard_last_modified.create_next_record()
         actual_serialized = mysql_serializer.serialize_record(actual)
 
@@ -145,6 +148,7 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         self.assertIsNone(self.dashboard_last_modified.create_next_record())
 
     def test_dashboard_last_modified_relation_atlas(self) -> None:
+
         actual = self.dashboard_last_modified.create_next_atlas_entity()
         actual_serialized = atlas_serializer.serialize_entity(actual)
 
