@@ -539,13 +539,14 @@ class AtlasProxy(BaseProxy):
 
         if table_entity[AtlasCommonParams.relationships].get("ownedBy"):
             try:
-                active_owners = filter(lambda item:
-                                       item['relationshipStatus'] == AtlasStatus.ACTIVE
-                                       and item['displayText'] == owner,
-                                       table_entity[AtlasCommonParams.relationships]['ownedBy'])
-                if list(active_owners):
+                active_owner = next(filter(lambda item:
+                                           item['relationshipStatus'] == AtlasStatus.ACTIVE
+                                           and item['displayText'] == owner,
+                                           table_entity[AtlasCommonParams.relationships]['ownedBy']), None)
+
+                if active_owner:
                     self.client.relationship.delete_relationship_by_guid(
-                        guid=next(active_owners).get('relationshipGuid')
+                        guid=active_owner.get('relationshipGuid')
                     )
                 else:
                     raise BadRequest('You can not delete this owner.')

@@ -280,6 +280,15 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
             )
 
+    def test_delete_owner(self) -> None:
+        owner = 'active_owned_by'
+        self._mock_get_table_entity()
+        self.proxy.client.call_api = MagicMock(return_value='DOESNT_MATTER')
+
+        with patch.object(self.proxy.client.relationship, 'delete_relationship_by_guid') as mock_execute:
+            self.proxy.delete_owner(table_uri=self.table_uri, owner=owner)
+            mock_execute.assert_called_with(guid="relationshipGuid-1")
+
     def test_get_column(self) -> None:
         self._mock_get_table_entity()
         response = self.proxy._get_column(

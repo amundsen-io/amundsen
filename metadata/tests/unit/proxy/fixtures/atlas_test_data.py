@@ -171,11 +171,13 @@ class Data:
                     "entityStatus": "ACTIVE",
                     "relationshipStatus": "ACTIVE",
                     "guid": "000",
+                    "relationshipGuid": "relationshipGuid-1",
                     "displayText": "active_owned_by"
                 },
                 {
                     "entityStatus": "ACTIVE",
                     "relationshipStatus": "DELETED",
+                    "relationshipGuid": "relationshipGuid-2",
                     "guid": "111",
                     "displayText": "deleted_owned_by"
                 }
