@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import unittest
 
-from amundsen_common.utils.atlas_utils import AtlasColumnKey, AtlasTableKey
+from amundsen_common.utils.atlas import AtlasColumnKey, AtlasTableKey
 
 
 class TestAtlasTableKey(unittest.TestCase):

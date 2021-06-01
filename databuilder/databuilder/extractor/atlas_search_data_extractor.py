@@ -33,28 +33,33 @@ class AtlasSearchDataExtractorHelpers:
         return list(filter(None, input_list))
 
     @staticmethod
-    def get_entity_names(entity_list: List) -> List:
+    def get_entity_names(entity_list: Optional[List]) -> List:
+        entity_list = entity_list or []
         return AtlasSearchDataExtractorHelpers._filter_none(
             [e.get('attributes').get('name') for e in entity_list if e.get('status').lower() == 'active'])
 
     @staticmethod
-    def get_entity_descriptions(entity_list: List) -> List:
+    def get_entity_descriptions(entity_list: Optional[List]) -> List:
+        entity_list = entity_list or []
         return AtlasSearchDataExtractorHelpers._filter_none(
             [e.get('attributes', dict()).get('description') for e in entity_list
              if e.get('status').lower() == 'active'])
 
     @staticmethod
-    def get_badges_from_classifications(classifications: List) -> List:
+    def get_badges_from_classifications(classifications: Optional[List]) -> List:
+        classifications = classifications or []
         return AtlasSearchDataExtractorHelpers._filter_none(
             [c.get('typeName') for c in classifications if c.get('entityStatus', '').lower() == 'active'])
 
     @staticmethod
-    def get_display_text(meanings: List) -> List:
+    def get_display_text(meanings: Optional[List]) -> List:
+        meanings = meanings or []
         return AtlasSearchDataExtractorHelpers._filter_none(
             [c.get('displayText') for c in meanings if c.get('entityStatus', '').lower() == 'active'])
 
     @staticmethod
-    def get_last_successful_execution_timestamp(executions: List) -> int:
+    def get_last_successful_execution_timestamp(executions: Optional[List]) -> int:
+        executions = executions or []
         successful_executions = AtlasSearchDataExtractorHelpers._filter_none(
             [e.get('attributes').get('timestamp') for e in executions
              if e.get('status', '').lower() == 'active' and e.get('attributes', dict()).get('state') == 'succeeded'])
@@ -65,7 +70,8 @@ class AtlasSearchDataExtractorHelpers:
             return 0
 
     @staticmethod
-    def get_chart_names(queries: List) -> List[str]:
+    def get_chart_names(queries: Optional[List]) -> List[str]:
+        queries = queries or []
         charts = []
 
         for query in queries:
