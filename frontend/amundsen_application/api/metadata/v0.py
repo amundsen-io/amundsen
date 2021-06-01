@@ -976,8 +976,8 @@ def get_resource_lineage() -> Response:
 def update_resource_owner() -> Response:
     try:
         args = request.get_json()
-        resource_type = get_query_param(request.args, 'type')
-        resource_key = get_query_param(request.args, 'key')
+        resource_type = get_query_param(args, 'type')
+        resource_key = get_query_param(args, 'key')
         owner = get_query_param(args, 'owner')
 
         endpoint = _get_endpoint_from_resource_type(resource_type)
@@ -1012,7 +1012,7 @@ def _update_metadata_resource_tag(endpoint: str, resource_key: str, method: str,
 
 def _update_search_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
     # TODO when search service feature work is done
-    pass
+    return HTTPStatus.OK
 
 
 @metadata_blueprint.route('/update_resource_tags', methods=['PUT', 'DELETE'])
@@ -1020,8 +1020,8 @@ def update_resource_tags() -> Response:
     try:
         args = request.get_json()
         method = request.method
-        resource_type = get_query_param(request.args, 'type')
-        resource_key = get_query_param(request.args, 'key')
+        resource_type = get_query_param(args, 'type')
+        resource_key = get_query_param(args, 'key')
         tag = get_query_param(args, 'tag')
 
         endpoint = _get_endpoint_from_resource_type(resource_type)

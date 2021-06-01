@@ -1235,10 +1235,6 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('featureData'), self.expected_feature_metadata)
 
-    def test_get_endpoint_from_resource_type(self) -> None:
-        # self.ass
-        pass
-
     @responses.activate
     def test_get_resource_description_success(self) -> None:
         """
@@ -1309,13 +1305,52 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(data.get('url'), 'github.com/repo/file')
 
     @responses.activate
-    def test_get_resource_lineage(self) -> None:
-        pass
-
-    @responses.activate
     def test_update_resource_owner(self) -> None:
-        pass
+        """
+        Test successful update_resource_owner request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/owner/test'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/update_resource_owner',
+                json={
+                    'type': 'feature',
+                    'key': 'test_feature_group/test_feature_name/1.4',
+                    'owner': 'test'
+                }
+            )
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
     def test_update_resource_tags(self) -> None:
-        pass
+        """
+        Test adding a tag on a resource like feature
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/tag/tag_5'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        searchservice_base = local_app.config['SEARCHSERVICE_BASE']
+        get_table_url = f'{searchservice_base}/search_table'
+        responses.add(responses.POST, get_table_url,
+                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
+                      status=HTTPStatus.OK)
+
+        # TODO when search implemented add search service response
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/update_resource_tags',
+                json={
+                    'type': 'feature',
+                    'key': 'test_feature_group/test_feature_name/1.4',
+                    'tag': 'tag_5'
+                }
+            )
+            self.assertEqual(response.status_code, HTTPStatus.OK)
