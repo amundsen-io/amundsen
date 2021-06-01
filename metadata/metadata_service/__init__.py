@@ -39,6 +39,7 @@ from metadata_service.api.tag import TagAPI
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
+from metadata_service.cli.rds_command import rds_cli
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -174,6 +175,9 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(FeatureGenerationCodeAPI,
                      '/feature/<path:feature_uri>/generation_code')
     app.register_blueprint(api_bp)
+
+    # cli registration
+    app.cli.add_command(rds_cli)
 
     if app.config.get('SWAGGER_ENABLED'):
         Swagger(app, template_file=os.path.join(ROOT_DIR, app.config.get('SWAGGER_TEMPLATE_PATH')), parse=True)
