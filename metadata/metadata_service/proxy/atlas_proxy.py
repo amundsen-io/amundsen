@@ -884,6 +884,7 @@ class AtlasProxy(BaseProxy):
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
+
         resources: List[Union[PopularTable, DashboardSummary]] = []
 
         for record in search_results.entities or []:
@@ -1275,6 +1276,7 @@ class AtlasProxy(BaseProxy):
         """
         entity = self.client.entity.get_entity_by_attribute(type_name=AtlasDashboardTypes.metadata,
                                                             uniq_attributes=[(AtlasCommonParams.qualified_name, id)])
+
         return entity.entity[AtlasCommonParams.attributes].get('description')
 
     def put_dashboard_description(self, *,
@@ -1309,6 +1311,7 @@ class AtlasProxy(BaseProxy):
                         for e in
                         self._filter_active(
                             _dashboard[AtlasCommonParams.relationships].get('executions', []))]
+
                     dashboard = AtlasEntityWithExtInfo(attrs=dict(entity=_dashboard, referredEntities={}))
 
                     summary = DashboardSummary(**self._get_dashboard_summary(dashboard, executions))

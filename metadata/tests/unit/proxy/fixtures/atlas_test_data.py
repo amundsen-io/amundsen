@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 class DottedDict(dict):
@@ -94,7 +94,7 @@ class Data:
         }},
     ]
 
-    db_entity = {
+    db_entity: Dict[str, Any] = {
         'guid': '-100',
         'updateTime': 2345678901234,
         'typeName': entity_type,
@@ -106,7 +106,7 @@ class Data:
         }
     }
 
-    partition_entity_1 = {
+    partition_entity_1: Dict[str, Any] = {
         'typeName': 'table_partition',
         'status': 'INACTIVE',
         'attributes': {
@@ -256,6 +256,110 @@ class Data:
         ]
     }
 
+    user_entity_1: Dict[str, Any] = {
+        "typeName": "User",
+        "attributes": {
+            "qualifiedName": "test_user_1"
+        },
+        "guid": "",
+        "status": "ACTIVE",
+        "displayText": 'test_user_1',
+        "classificationNames": [],
+        "meaningNames": [],
+        "meanings": [],
+        "relationshipAttributes": {
+            "owns": [
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "typeName": dashboard_type,
+                    "guid": 'dashboard_1'
+                },
+            ]
+        }
+
+    }
+
+    user_entity_2: Dict[str, Any] = {
+        "typeName": "User",
+        "attributes": {
+            "qualifiedName": "test_user_2"
+        },
+        "guid": "",
+        "status": "ACTIVE",
+        "displayText": 'test_user_2',
+        "classificationNames": [],
+        "meaningNames": [],
+        "meanings": [],
+        "relationshipAttributes": {
+            "entityReads": [
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "1"
+                },
+                {
+                    "entityStatus": "INACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "guid": "2"
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "INACTIVE",
+                    "guid": "3"
+                }
+            ],
+            "owns": [
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "typeName": entity_type,
+                    "guid": entity1["guid"]
+                },
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "DELETED",
+                    "typeName": entity_type,
+                    "guid": entity2["guid"]
+                }
+            ]
+        }
+    }
+
+    reader_entity_1 = {
+        "typeName": "Reader",
+        "attributes": {
+            "count": 5,
+            "qualifiedName": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user_1', cluster),
+            "entityUri": f"hive_table://{cluster}.{db}/Table1",
+        },
+        "guid": "1",
+        "status": "ACTIVE",
+        "displayText": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user', cluster),
+        "classificationNames": [],
+        "meaningNames": [],
+        "meanings": [],
+        "relationshipAttributes": {"user": user_entity_1}
+    }
+
+    reader_entity_2 = {
+        "typeName": "Reader",
+        "attributes": {
+            "count": 150,
+            "qualifiedName": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user_2', cluster),
+            "entityUri": f"hive_table://{cluster}.{db}/Table1",
+        },
+        "guid": "2",
+        "status": "ACTIVE",
+        "displayText": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user_2', cluster),
+        "classificationNames": [],
+        "meaningNames": [],
+        "meanings": [],
+        "relationshipAttributes": {"user": user_entity_2}
+    }
+
+    reader_entities = [DottedDict(reader_entity) for reader_entity in [reader_entity_1, reader_entity_2]]
+
     report_entity_1 = {
         'typeName': 'Report',
         'status': 'ACTIVE',
@@ -378,7 +482,7 @@ class Data:
                 'updateTime': 1620327423719
             }
         },
-        'entity': DottedDict({
+        'entity': {
             'typeName': 'Dashboard',
             'attributes': {
                 'popularityScore': 0,
@@ -528,7 +632,7 @@ class Data:
             'status': 'ACTIVE',
             'createTime': 1620327423719,
             'updateTime': 1620327423719
-        })
+        }
     })
 
     dashboard_group_data = DottedDict({
@@ -642,107 +746,3 @@ class Data:
         'guid': '2f341934-f18c-48b3-aa12-eaa0a2bfce86',
         'qualifiedName': 'amundsen_user_tags',
     })
-
-    user_entity_1 = {
-        "typeName": "User",
-        "attributes": {
-            "qualifiedName": "test_user_1"
-        },
-        "guid": "",
-        "status": "ACTIVE",
-        "displayText": 'test_user_1',
-        "classificationNames": [],
-        "meaningNames": [],
-        "meanings": [],
-        "relationshipAttributes": {
-            "owns": [
-                {
-                    "entityStatus": "ACTIVE",
-                    "relationshipStatus": "ACTIVE",
-                    "typeName": dashboard_type,
-                    "guid": dashboard_data.entity["guid"]
-                },
-            ]
-        }
-
-    }
-
-    user_entity_2 = {
-        "typeName": "User",
-        "attributes": {
-            "qualifiedName": "test_user_2"
-        },
-        "guid": "",
-        "status": "ACTIVE",
-        "displayText": 'test_user_2',
-        "classificationNames": [],
-        "meaningNames": [],
-        "meanings": [],
-        "relationshipAttributes": {
-            "entityReads": [
-                {
-                    "entityStatus": "ACTIVE",
-                    "relationshipStatus": "ACTIVE",
-                    "guid": "1"
-                },
-                {
-                    "entityStatus": "INACTIVE",
-                    "relationshipStatus": "ACTIVE",
-                    "guid": "2"
-                },
-                {
-                    "entityStatus": "ACTIVE",
-                    "relationshipStatus": "INACTIVE",
-                    "guid": "3"
-                }
-            ],
-            "owns": [
-                {
-                    "entityStatus": "ACTIVE",
-                    "relationshipStatus": "ACTIVE",
-                    "typeName": entity_type,
-                    "guid": entity1["guid"]
-                },
-                {
-                    "entityStatus": "ACTIVE",
-                    "relationshipStatus": "DELETED",
-                    "typeName": entity_type,
-                    "guid": entity2["guid"]
-                }
-            ]
-        }
-    }
-
-    reader_entity_1 = {
-        "typeName": "Reader",
-        "attributes": {
-            "count": 5,
-            "qualifiedName": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user_1', cluster),
-            "entityUri": f"hive_table://{cluster}.{db}/Table1",
-        },
-        "guid": "1",
-        "status": "ACTIVE",
-        "displayText": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user', cluster),
-        "classificationNames": [],
-        "meaningNames": [],
-        "meanings": [],
-        "relationshipAttributes": {"user": user_entity_1}
-    }
-
-    reader_entity_2 = {
-        "typeName": "Reader",
-        "attributes": {
-            "count": 150,
-            "qualifiedName": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user_2', cluster),
-            "entityUri": f"hive_table://{cluster}.{db}/Table1",
-        },
-        "guid": "2",
-        "status": "ACTIVE",
-        "displayText": '{}.{}.{}.reader@{}'.format(db, 'Table1', 'test_user_2', cluster),
-        "classificationNames": [],
-        "meaningNames": [],
-        "meanings": [],
-        "relationshipAttributes": {"user": user_entity_2}
-    }
-
-    reader_entities = [DottedDict(reader_entity) for reader_entity in [reader_entity_1, reader_entity_2]]

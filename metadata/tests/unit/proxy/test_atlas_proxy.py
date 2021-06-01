@@ -12,7 +12,8 @@ from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, User)
-from amundsen_common.utils.atlas_utils import AtlasCommonParams, AtlasCommonTypes
+from amundsen_common.utils.atlas_utils import (AtlasCommonParams,
+                                               AtlasCommonTypes)
 from apache_atlas.model.instance import AtlasRelatedObjectId
 from apache_atlas.model.relationship import AtlasRelationship
 from apache_atlas.utils import type_coerce
@@ -301,7 +302,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
     def test_add_owner_no_user(self) -> None:
         owner = "OWNER"
-        self.proxy._get_user_details = MagicMock(return_value={})
+        self.proxy._get_user_details = MagicMock(return_value={})  # type: ignore
         with self.assertRaises(NotFoundException):
             self.proxy.add_owner(table_uri=self.table_uri, owner=owner)
 
@@ -342,7 +343,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
     def test_get_bookmark_entity_not_found(self) -> None:
         user_entity = MagicMock()
         user_entity.entity = MagicMock(return_value=self.user_entity_1)
-        self.proxy._get_user_entity = MagicMock(return_value=user_entity)
+        self.proxy._get_user_entity = MagicMock(return_value=user_entity)  # type: ignore
         self._mock_get_table_entity()
         self.proxy.client.entity.get_entity_by_attribute = MagicMock(side_effect=[Exception('Mayday!'), None])
 
@@ -484,7 +485,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=unique_attr_response)
 
         entity_bulk_result = MagicMock()
-        entity_bulk_result.entities = [DottedDict(self.dashboard_data.entity)]
+        entity_bulk_result.entities = [DottedDict(self.dashboard_data['entity'])]
         self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=entity_bulk_result)
 
         res_dashboard = self.proxy._get_resources_owned_by_user(user_id='test_user_1',
@@ -516,8 +517,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                      last_successful_run_timestamp=1619517099, chart_names=[])]
 
         self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=DottedDict({
-            'entities': [DottedDict(self.dashboard_data.get('entity'))],
-            'referredEntities': self.dashboard_data.get('referredEntities')}))
+            'entities': [DottedDict(self.dashboard_data['entity'])],
+            'referredEntities': self.dashboard_data['referredEntities']}))
 
         result = self.proxy.get_resources_using_table(id='DOESNT_MATTER', resource_type=ResourceType.Dashboard)
 
@@ -588,7 +589,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         res = self.proxy._get_readers(dict(relationshipAttributes=dict(readers=[dict(guid=1, entityStatus='ACTIVE',
                                                                                      relationshipStatus='ACTIVE')])),
                                       'WRONG_MODEL', 1)
-        expected = []
+        expected = []  # type: ignore
         self.assertEqual(expected, res)
 
     def test_get_frequently_used_tables(self) -> None:
@@ -703,7 +704,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
                     assert low.partition_value.startswith(low_date_prefix)
 
     def test_get_table_watermarks_no_partitions(self) -> None:
-        expected = []
+        expected = []  # type: ignore
         result = self.proxy._get_table_watermarks(cast(dict, self.entity2))
         self.assertEqual(expected, result)
 
@@ -753,16 +754,16 @@ class TestAtlasProxy(unittest.TestCase, Data):
     def test_get_dashboard_description(self) -> None:
         self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=self.dashboard_data)  # type: ignore
         result = self.proxy.get_dashboard_description(id="DOESNT_MATTER")
-        expected = self.dashboard_data.entity[AtlasCommonParams.attributes].get('description')
+        expected = self.dashboard_data['entity'][AtlasCommonParams.attributes].get('description')
         self.assertEqual(expected, result)
 
     def test_put_dashboard_description(self) -> None:
-        dashboard_id = self.dashboard_data.entity.get('attributes').get('qualifiedName')
+        dashboard_id = self.dashboard_data['entity'].get('attributes').get('qualifiedName')
         dashboard_description = 'description_1'
         self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=self.dashboard_data)
         with patch.object(self.proxy.client.entity, 'partial_update_entity_by_guid') as mock_execute:
             self.proxy.put_dashboard_description(id=dashboard_id, description=dashboard_description)
-            expected_guid = self.dashboard_data.entity.get(AtlasCommonParams.guid)
+            expected_guid = self.dashboard_data['entity'].get(AtlasCommonParams.guid)
             expected_attr_value = dashboard_description
             expected_attr_name = 'description'
             mock_execute.assert_called_with(entity_guid=expected_guid,
@@ -850,7 +851,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         faceted_search_result = MagicMock
         faceted_search_result.approximateCount = 0
         self.proxy.client.discovery.faceted_search = MagicMock(return_value=faceted_search_result)
-        self.proxy._get_user_defined_glossary_guid = MagicMock(return_value=self.glossary_amundsen.guid)
+        self.proxy._get_user_defined_glossary_guid = MagicMock(return_value=self.glossary_amundsen.get('guid'))
         self.proxy.client.call_api = MagicMock(return_value=None)
 
         with patch.object(self.proxy.client.glossary, 'create_glossary_term') as mock_execute:
@@ -858,7 +859,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
             _, args, _ = mock_execute.mock_calls[0]
             self.assertIn('anchor', args[0])
             self.assertIn('glossaryGuid', args[0]['anchor'])
-            self.assertEqual(args[0]['anchor']['glossaryGuid'], self.glossary_amundsen.guid)
+            self.assertEqual(args[0]['anchor']['glossaryGuid'], self.glossary_amundsen.get('guid'))
 
 
 if __name__ == '__main__':
