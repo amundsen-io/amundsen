@@ -1,6 +1,6 @@
 # MySQL Proxy
 
-MySQL proxy works with [SQLAlehcmy ORM](https://docs.sqlalchemy.org/en/13/orm/) and [Amundsen RDS](https://github.com/amundsen-io/amundsenrds)
+MySQL proxy works with [SQLAlchemy ORM](https://docs.sqlalchemy.org/en/13/orm/) and [Amundsen RDS](https://github.com/amundsen-io/amundsenrds)
 containing all the ORM models used for Amundsen databuilder and metadataservice.
 
 # Requirements
@@ -13,8 +13,8 @@ The schema migration is managed by cli in metadata service and [alembic](https:/
 #### Add config for MySQL
 ```
 SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', {mysql_connection_string})
-......
 # other fileds used for mysql proxy
+......
 ``` 
 see metadata [config](https://github.com/amundsen-io/amundsen/blob/main/metadata/metadata_service/config.py)
 
