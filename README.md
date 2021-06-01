@@ -95,11 +95,11 @@ Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) t
 
 ## Getting Started
 
-Please visit the Amundsen installation documentation for a [quick start](./installation/) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](./docs/installation.md) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
-Please visit [Architecture](./architecture/) for Amundsen architecture overview.
+Please visit [Architecture](./docs/architecture.md) for Amundsen architecture overview.
 
 ## Supported Entities
 
@@ -149,11 +149,11 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 ## Installation
 
-Please visit [Installation guideline](./installation) on how to install Amundsen.
+Please visit [Installation guideline](./docs/installation.md) on how to install Amundsen.
 
 ## Roadmap
 
-Please visit [Roadmap](./roadmap/) if you are interested in Amundsen upcoming roadmap items.
+Please visit [Roadmap](./docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
 ## Blog Posts and Interviews
 

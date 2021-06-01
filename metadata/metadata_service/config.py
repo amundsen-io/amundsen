@@ -3,10 +3,11 @@
 
 import distutils.util
 import os
-from typing import Dict, List, Optional, Set  # noqa: F401
+from typing import Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
+from flask import Flask  # noqa: F401
 
 from metadata_service.entity.badge import Badge
 
@@ -62,9 +63,9 @@ class Config:
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
-    USER_DETAIL_METHOD = None   # type: Optional[function]
+    USER_DETAIL_METHOD = None  # type: Optional[function]
 
-    RESOURCE_REPORT_CLIENT = None   # type: Optional[function]
+    RESOURCE_REPORT_CLIENT = None  # type: Optional[function]
 
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
@@ -78,6 +79,9 @@ class Config:
     # Custom kwargs that will be passed to proxy client. Can be used to fine-tune parameters like timeout
     # or num of retries
     PROXY_CLIENT_KWARGS: Dict = dict()
+
+    # Initialize custom flask extensions and routes
+    INIT_CUSTOM_EXT_AND_ROUTES = None  # type: Callable[[Flask], None]
 
     SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
     SWAGGER = {
@@ -124,7 +128,7 @@ class NeptuneConfig(LocalGremlinConfig, LocalConfig):
 
     # PROXY_HOST FORMAT: wss://<NEPTUNE_URL>:<NEPTUNE_PORT>/gremlin
     PROXY_HOST = os.environ.get('PROXY_HOST', 'localhost')
-    PROXY_PORT = None   # type: ignore
+    PROXY_PORT = None  # type: ignore
 
     PROXY_CLIENT = PROXY_CLIENTS['NEPTUNE']
     PROXY_PASSWORD = boto3.session.Session(region_name=os.environ.get('AWS_REGION', 'us-east-1'))

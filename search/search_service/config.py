@@ -58,3 +58,66 @@ class LocalConfig(Config):
         'title': 'Search Service',
         'uiversion': 3
     }
+
+
+class AwsSearchConfig(LocalConfig):
+    """
+    Class sets up special case of Elasticsearch client with AWS token-based authentication,
+    to enable usage of AWS Elasticsearch Service as a Elasticsearch Proxy backend.
+
+    To connect to AWS Elasticsearch domain set environmental variable PROXY_ENDPOINT
+    to domain's VPC endpoint, without the leading protol part (i.e. https://).
+    Also, you need to set environmental variable AWS_REGION to the region in which your
+    AWS Elasticsearch domain is running.
+
+    To assess AWS Elasticsearch domain correctly you need to setup AWS credentials with
+    a role that enables reading and writting to Elasticsearch Service domain;
+    see the sample CloudFormation IAM policy below::
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": [
+                    "arn:aws:iam::123456789012:user/test-user"
+                    ]
+                },
+                "Action": [
+                    "es:ESHttpGet",
+                    "es:ESHttpPut"
+                ],
+                "Resource": "arn:aws:es:us-west-1:987654321098:domain/test-domain/test-index/_search"
+                }
+            ]
+        }
+
+    If you run Amundsen on Kubernetes use IAM roles for service accounts
+    (https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
+    """
+    import boto3
+    from elasticsearch import Elasticsearch, RequestsHttpConnection
+    from requests_aws4auth import AWS4Auth
+
+    service = 'es'
+
+    host = os.environ.get('PROXY_ENDPOINT')
+    port = 443
+    use_ssl = True
+    verify_certs = True
+    region = os.environ.get('AWS_REGION')
+    credentials = boto3.Session().get_credentials()
+
+    if all([host, region, credentials]):
+        aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
+
+        client = Elasticsearch(
+            hosts=[{'host': host, 'port': port}],
+            http_auth=aws_auth,
+            use_ssl=use_ssl,
+            verify_certs=verify_certs,
+            connection_class=RequestsHttpConnection
+        )
+
+        PROXY_CLIENT_KEY = client
