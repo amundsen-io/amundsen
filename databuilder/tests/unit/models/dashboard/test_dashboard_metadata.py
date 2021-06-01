@@ -8,7 +8,7 @@ from unittest.mock import ANY
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.serializers import (
-    mysql_serializer, neo4_serializer, neptune_serializer,
+    atlas_serializer, mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
@@ -580,6 +580,36 @@ class TestDashboardMetadata(unittest.TestCase):
             record = self.dashboard_metadata3.next_record()
 
         self.assertEqual(expected_records_without_description, actual)
+
+    def test_full_dashboard_example_atlas(self) -> None:
+
+        expected = [{'description': 'foo dashboard group description',
+                     'id': 'Product - Jobs.cz',
+                     'name': 'Product - Jobs.cz',
+                     'operation': 'CREATE',
+                     'qualifiedName': '_dashboard://gold.Product - Jobs.cz',
+                     'relationships': None,
+                     'typeName': 'DashboardGroup',
+                     'url': 'https://foo.bar/dashboard_group/foo'},
+                    {'cluster': 'gold',
+                     'createdTimestamp': 123456789,
+                     'description': 'Agent dashboard description',
+                     'name': 'Agent',
+                     'operation': 'CREATE',
+                     'product': '',
+                     'qualifiedName': '_dashboard://gold.Product - Jobs.cz/Agent',
+                     'relationships': 'group#DashboardGroup#_dashboard://gold.Product - Jobs.cz',
+                     'typeName': 'Dashboard',
+                     'url': 'https://foo.bar/dashboard_group/foo/dashboard/bar'}]
+
+        entity = self.full_dashboard_metadata.next_atlas_entity()
+        actual = []
+        while entity:
+            record_serialized = atlas_serializer.serialize_entity(entity)
+            actual.append(record_serialized)
+            entity = self.full_dashboard_metadata.next_atlas_entity()
+
+        self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':

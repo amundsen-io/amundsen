@@ -6,20 +6,26 @@ from typing import (
     Any, Iterator, Optional, Union,
 )
 
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasDashboardTypes
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.dashboard import DashboardTimestamp as RDSDashboardTimestamp
 
+from databuilder.models.atlas_entity import AtlasEntity
+from databuilder.models.atlas_relationship import AtlasRelationship
+from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_serializable import TableSerializable
 from databuilder.models.timestamp import timestamp_constants
+from databuilder.serializers.atlas_serializer import get_entity_attrs
+from databuilder.utils.atlas import AtlasSerializedEntityOperation
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable):
+class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable, AtlasSerializable):
     """
     A model that encapsulate Dashboard's last modified timestamp in epoch
     """
@@ -43,6 +49,7 @@ class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable):
         self._node_iterator = self._create_node_iterator()
         self._relation_iterator = self._create_relation_iterator()
         self._record_iterator = self._create_record_iterator()
+        self._atlas_entity_iterator = self._create_next_atlas_entity()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -84,6 +91,40 @@ class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable):
             attributes={}
         )
         yield relationship
+
+    def create_next_atlas_entity(self) -> Union[AtlasEntity, None]:
+        try:
+            return next(self._atlas_entity_iterator)
+        except StopIteration:
+            return None
+
+    def _create_next_atlas_entity(self) -> Iterator[AtlasEntity]:
+
+        # last modified
+        attrs_mapping = [
+            (
+                AtlasCommonParams.qualified_name, DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                    product=self._product,
+                    cluster=self._cluster,
+                    dashboard_group=self._dashboard_group_id,
+                    dashboard_name=self._dashboard_id
+                )
+            ),
+            (AtlasCommonParams.last_modified_timestamp, self._last_modified_timestamp),
+        ]
+
+        dashboard_entity_attrs = get_entity_attrs(attrs_mapping)
+
+        last_modified = AtlasEntity(
+            typeName=AtlasDashboardTypes.metadata,
+            operation=AtlasSerializedEntityOperation.UPDATE,
+            relationships=None,
+            attributes=dashboard_entity_attrs
+        )
+        yield last_modified
+
+    def create_next_atlas_relation(self) -> Union[AtlasRelationship, None]:
+        return None
 
     def create_next_record(self) -> Union[RDSModel, None]:
         try:

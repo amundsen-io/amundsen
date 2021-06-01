@@ -11,7 +11,7 @@ from databuilder.models.graph_serializable import (
     RELATION_TYPE,
 )
 from databuilder.serializers import (
-    mysql_serializer, neo4_serializer, neptune_serializer,
+    atlas_serializer, mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
@@ -146,3 +146,20 @@ class TestDashboardLastModifiedTimestamp(unittest.TestCase):
         assert actual is not None
         self.assertDictEqual(actual_serialized, expected)
         self.assertIsNone(self.dashboard_last_modified.create_next_record())
+
+    def test_dashboard_last_modified_relation_atlas(self) -> None:
+
+        actual = self.dashboard_last_modified.create_next_atlas_entity()
+        actual_serialized = atlas_serializer.serialize_entity(actual)
+
+        expected = {
+            "typeName": "Dashboard",
+            "operation": "UPDATE",
+            "relationships": None,
+            "qualifiedName": "product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id",
+            "lastModifiedTimestamp": 123456789
+        }
+
+        assert actual is not None
+        self.assertDictEqual(actual_serialized, expected)
+        self.assertIsNone(self.dashboard_last_modified.create_next_atlas_entity())
