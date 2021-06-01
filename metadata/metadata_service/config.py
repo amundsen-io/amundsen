@@ -28,6 +28,10 @@ PROXY_CLIENTS = {
     'MYSQL': 'metadata_service.proxy.mysql_proxy.MySQLProxy'
 }
 
+PROXY_CLIS = {
+    'MYSQL': 'metadata_service.cli.rds_command.rds_cli'
+}
+
 IS_STATSD_ON = 'IS_STATSD_ON'
 USER_OTHER_KEYS = 'USER_OTHER_KEYS'
 
@@ -144,6 +148,8 @@ class NeptuneConfig(LocalGremlinConfig, LocalConfig):
 
 class MySQLConfig(LocalConfig):
     PROXY_CLIENT = PROXY_CLIENTS['MYSQL']
+    PROXY_CLI = PROXY_CLIS['MYSQL']
+
     PROXY_HOST = None   # type: ignore
     PROXY_PORT = None   # type: ignore
     PROXY_USER = None   # type: ignore

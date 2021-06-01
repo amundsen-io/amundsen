@@ -13,6 +13,7 @@ from flasgger import Swagger
 from flask import Blueprint, Flask
 from flask_cors import CORS
 from flask_restful import Api
+from werkzeug.utils import import_string
 
 from metadata_service.api.badge import BadgeAPI
 from metadata_service.api.column import (ColumnBadgeAPI, ColumnDescriptionAPI,
@@ -39,7 +40,6 @@ from metadata_service.api.tag import TagAPI
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
-from metadata_service.cli.rds_command import rds_cli
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -177,7 +177,10 @@ def create_app(*, config_module_class: str) -> Flask:
     app.register_blueprint(api_bp)
 
     # cli registration
-    app.cli.add_command(rds_cli)
+    proxy_cli = app.config.get('PROXY_CLI')
+    if proxy_cli:
+        app.cli.add_command(import_string(proxy_cli))
+        logging.info('Using cli {}'.format(proxy_cli))
 
     if app.config.get('SWAGGER_ENABLED'):
         Swagger(app, template_file=os.path.join(ROOT_DIR, app.config.get('SWAGGER_TEMPLATE_PATH')), parse=True)
