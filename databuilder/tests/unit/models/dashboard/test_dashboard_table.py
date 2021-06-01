@@ -10,7 +10,7 @@ from databuilder.models.graph_serializable import (
     RELATION_TYPE,
 )
 from databuilder.serializers import (
-    mysql_serializer, neo4_serializer, neptune_serializer,
+    atlas_serializer, mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
@@ -137,3 +137,35 @@ class TestDashboardTable(unittest.TestCase):
         assert actual2 is not None
         self.assertDictEqual(expected2, actual2_serialized)
         self.assertIsNone(dashboard_table.create_next_record())
+
+    def test_create_next_atlas_relation(self) -> None:
+        dashboard_table = DashboardTable(
+            table_ids=['hive://gold.schema/table1', 'hive://gold.schema/table2'],
+            cluster='cluster_id', product='product_id',
+            dashboard_id='dashboard_id', dashboard_group_id='dashboard_group_id',
+        )
+
+        expected = [
+            {
+                "relationshipType": "Table__Dashboard",
+                "entityType1": "hive",
+                "entityQualifiedName1": "schema.table1@gold",
+                "entityType2": "Dashboard",
+                "entityQualifiedName2": "product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id",
+            },
+            {
+                "relationshipType": "Table__Dashboard",
+                "entityType1": "hive",
+                "entityQualifiedName1": "schema.table2@gold",
+                "entityType2": "Dashboard",
+                "entityQualifiedName2": "product_id_dashboard://cluster_id.dashboard_group_id/dashboard_id",
+            },
+        ]
+        relationship = dashboard_table.create_next_atlas_relation()  # type: ignore
+        actual = []
+        while relationship:
+            actual_serialized = atlas_serializer.serialize_relationship(relationship)
+            actual.append(actual_serialized)
+            relationship = dashboard_table.create_next_atlas_relation()
+
+        self.assertEqual(expected, actual)

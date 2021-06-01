@@ -1395,6 +1395,32 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [FsAtlasCSVLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
+Write node and relationship CSV file(s) that can be consumed by AtlasCsvPublisher. It assumes that the record it
+ consumes is instance of AtlasSerializable.
+
+```python
+from pyhocon import ConfigFactory
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_atlas_csv_loader import FsAtlasCSVLoader
+from databuilder.task.task import DefaultTask
+
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+job_config = ConfigFactory.from_dict({
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships'
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=AnyExtractor(),
+        loader=FsAtlasCSVLoader()),
+    publisher=AnyPublisher())
+job.launch()
+```
+
 ## List of publisher
 #### [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/neo4j_csv_publisher.py "Neo4jCsvPublisher")
 A Publisher takes two folders for input and publishes to Neo4j.
@@ -1449,6 +1475,41 @@ job = DefaultJob(
     publisher=ElasticsearchPublisher())
 job.launch()
 ```
+#### [AtlasCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/atlas_csv_publisher.py "AtlasCsvPublisher")
+A Publisher takes two folders for input and publishes to Atlas.
+One folder will contain CSV file(s) for Entity where the other folder will contain CSV file(s) for Relationship.
+
+##### Caution!!!
+Publisher assumes that all necessary data types are already defined in atlas, otherwise publishing will fail.
+
+```python
+from apache_atlas.client.base_client import AtlasClient
+from pyhocon import ConfigFactory
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_atlas_csv_loader import FsAtlasCSVLoader
+from databuilder.publisher.atlas_csv_publisher import AtlasCSVPublisher
+from databuilder.task.task import DefaultTask
+
+tmp_folder = f'/tmp/amundsen/dashboard'
+
+job_config = ConfigFactory.from_dict({
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_CLIENT}': AtlasClient('http://localhost:21000', ('admin', 'admin')) ,
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': 10,
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=AnyExtractor(),
+        loader=FsAtlasCSVLoader()),
+    publisher=AtlasCSVPublisher())
+job.launch()
+```
+
 
 #### [Callback](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/callback/call_back.py "Callback")
 Callback interface is built upon a [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern "Observer pattern") where the participant want to take any action when target's state changes.

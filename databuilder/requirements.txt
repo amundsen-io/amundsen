@@ -60,9 +60,10 @@ unidecode
 Jinja2>=2.10.0,<2.12
 pandas>=0.21.0,<1.2.0
 
-requests==2.23.0,<3.0
+requests==2.25.0,<3.0
 responses==0.10.6
 
 pyatlasclient==1.1.2
+apache-atlas>=0.0.11
 
 amundsen-rds>=0.0.4
