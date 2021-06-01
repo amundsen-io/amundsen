@@ -898,15 +898,11 @@ def get_resource_description() -> Response:
 def put_resource_description() -> Response:
     try:
         args = request.get_json()
-        resource_type = get_query_param(request.args, 'type')
-        resource_key = get_query_param(request.args, 'key')
+        resource_type = get_query_param(args, 'type')
+        resource_key = get_query_param(args, 'key')
         description = get_query_param(args, 'description')
 
         endpoint = _get_endpoint_from_resource_type(resource_type)
-
-        table_uri = TableUri.from_uri(resource_key)
-        if not is_table_editable(table_uri.schema, table_uri.table):
-            return make_response('', HTTPStatus.FORBIDDEN)
 
         url = '{0}/{1}/description'.format(endpoint, resource_key)
 

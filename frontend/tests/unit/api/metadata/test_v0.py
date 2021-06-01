@@ -1271,18 +1271,14 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.put(
                 '/api/metadata/v0/put_resource_description',
-                query_string=dict(key='test_feature_group/test_feature_name/1.4',
-                                  type='feature',
-                                  description='test',
-                    source='source')
-                # json={
-                #     'key': 'test_feature_group/test_feature_name/1.4',
-                #     'type': 'feature',
-                #     'description': 'test',
-                #     'source': 'source'
-                # }
+                json={
+                    'type': 'feature',
+                    'key': 'test_feature_group/test_feature_name/1.4',
+                    'description': 'test',
+                    'source': 'source'
+                }
             )
-            print(json.loads(response.data))
+
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
