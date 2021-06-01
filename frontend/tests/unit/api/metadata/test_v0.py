@@ -1236,7 +1236,7 @@ class MetadataTest(unittest.TestCase):
             self.assertCountEqual(data.get('featureData'), self.expected_feature_metadata)
 
     def test_get_endpoint_from_resource_type(self) -> None:
-        self.ass
+        # self.ass
         pass
 
     @responses.activate
@@ -1251,9 +1251,11 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get(
                 '/api/metadata/v0/get_resource_description',
-                query_string=dict(key='test_feature_group/test_feature_name/1.4')
+                query_string=dict(key='test_feature_group/test_feature_name/1.4',
+                                  type='feature')
             )
             data = json.loads(response.data)
+
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertEqual(data.get('description'), 'This is a test')
 
@@ -1269,12 +1271,18 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.put(
                 '/api/metadata/v0/put_resource_description',
-                json={
-                    'key': 'test_feature_group/test_feature_name/1.4',
-                    'description': 'test',
-                    'source': 'source'
-                }
+                query_string=dict(key='test_feature_group/test_feature_name/1.4',
+                                  type='feature',
+                                  description='test',
+                    source='source')
+                # json={
+                #     'key': 'test_feature_group/test_feature_name/1.4',
+                #     'type': 'feature',
+                #     'description': 'test',
+                #     'source': 'source'
+                # }
             )
+            print(json.loads(response.data))
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
@@ -1283,7 +1291,7 @@ class MetadataTest(unittest.TestCase):
         Test successful get_resource_generation_code request
         :return:
         """
-        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4/description'
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4/generation_code'
         responses.add(responses.GET, url, json={'name': 'generation_query',
                                                 'text': 'SELECT * FROM test_table',
                                                 'url': 'github.com/repo/file'}, status=HTTPStatus.OK)
@@ -1291,9 +1299,11 @@ class MetadataTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get(
                 '/api/metadata/v0/get_resource_generation_code',
-                query_string=dict(key='test_feature_group/test_feature_name/1.4')
+                query_string=dict(key='test_feature_group/test_feature_name/1.4',
+                                  type='feature')
             )
             data = json.loads(response.data)
+
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertEqual(data.get('name'), 'generation_query')
             self.assertEqual(data.get('text'), 'SELECT * FROM test_table')
