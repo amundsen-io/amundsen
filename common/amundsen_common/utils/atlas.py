@@ -16,6 +16,10 @@ class AtlasCommonParams:
     attributes = 'attributes'
     relationships = 'relationshipAttributes'
     uri = 'entityUri'
+    type_name = 'typeName'
+    unique_attributes = 'uniqueAttributes'
+    created_timestamp = 'createdTimestamp'
+    last_modified_timestamp = 'lastModifiedTimestamp'
 
 
 class AtlasCommonTypes:

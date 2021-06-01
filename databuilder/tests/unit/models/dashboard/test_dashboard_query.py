@@ -10,7 +10,7 @@ from databuilder.models.graph_serializable import (
     RELATION_START_LABEL, RELATION_TYPE,
 )
 from databuilder.serializers import (
-    mysql_serializer, neo4_serializer, neptune_serializer,
+    atlas_serializer, mysql_serializer, neo4_serializer, neptune_serializer,
 )
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
@@ -135,3 +135,22 @@ class TestDashboardQuery(unittest.TestCase):
         assert actual is not None
         self.assertDictEqual(expected, actual_serialized)
         self.assertIsNone(self.dashboard_query.create_next_record())
+
+    def test_create_next_atlas_entity(self) -> None:
+        actual = self.dashboard_query.create_next_atlas_entity()
+        actual_serialized = atlas_serializer.serialize_entity(actual)
+
+        expected = {
+            "typeName": "DashboardQuery",
+            "operation": "CREATE",
+            "relationships": "dashboard#Dashboard#_dashboard://gold.dg_id/d_id",
+            "qualifiedName": "_dashboard://gold.dg_id/d_id/query/q_id",
+            "name": "q_name",
+            "id": "q_id",
+            "url": "http://foo.bar/query/baz",
+            "queryText": "SELECT * FROM foo.bar"
+        }
+
+        assert actual is not None
+        self.assertDictEqual(expected, actual_serialized)
+        self.assertIsNone(self.dashboard_query.create_next_atlas_entity())
