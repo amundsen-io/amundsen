@@ -1245,7 +1245,8 @@ class MetadataTest(unittest.TestCase):
         Test successful get_resource_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4/description'
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/description'
         responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -1265,7 +1266,8 @@ class MetadataTest(unittest.TestCase):
         Test successful put_resource_description request
         :return:
         """
-        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4/description'
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/description'
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -1287,7 +1289,8 @@ class MetadataTest(unittest.TestCase):
         Test successful get_resource_generation_code request
         :return:
         """
-        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + '/test_feature_group/test_feature_name/1.4/generation_code'
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/generation_code'
         responses.add(responses.GET, url, json={'name': 'generation_query',
                                                 'text': 'SELECT * FROM test_table',
                                                 'url': 'github.com/repo/file'}, status=HTTPStatus.OK)
