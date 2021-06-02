@@ -67,3 +67,4 @@ pyatlasclient==1.1.2
 apache-atlas>=0.0.11
 
 amundsen-rds>=0.0.4
+amundsen-common>=0.13.0
