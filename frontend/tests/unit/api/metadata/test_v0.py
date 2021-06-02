@@ -1251,7 +1251,7 @@ class MetadataTest(unittest.TestCase):
                 query_string=dict(key='test_feature_group/test_feature_name/1.4')
             )
             data = json.loads(response.data)
-            print(f"data!!! {data}")
+
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertEqual(data.get('description'), 'This is a test')
 

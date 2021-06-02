@@ -37,7 +37,6 @@ DASHBOARD_ENDPOINT = '/dashboard'
 
 def _get_table_endpoint() -> str:
     metadata_service_base = app.config['METADATASERVICE_BASE']
-    print(f"SERVICE BASE!!! {metadata_service_base}")
     if metadata_service_base is None:
         raise Exception('METADATASERVICE_BASE must be configured')
     return metadata_service_base + TABLE_ENDPOINT
