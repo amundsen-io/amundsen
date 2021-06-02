@@ -1234,3 +1234,118 @@ class MetadataTest(unittest.TestCase):
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertCountEqual(data.get('featureData'), self.expected_feature_metadata)
+
+    @responses.activate
+    def test_get_feature_description_success(self) -> None:
+        """
+        Test successful get_feature_description request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/description'
+        responses.add(responses.GET, url, json={'description': 'This is a test'}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/get_feature_description',
+                query_string=dict(key='test_feature_group/test_feature_name/1.4')
+            )
+            data = json.loads(response.data)
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertEqual(data.get('description'), 'This is a test')
+
+    @responses.activate
+    def test_put_feature_description(self) -> None:
+        """
+        Test successful put_feature_description request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/description'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/put_feature_description',
+                json={
+                    'key': 'test_feature_group/test_feature_name/1.4',
+                    'description': 'test',
+                    'source': 'source'
+                }
+            )
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    def test_get_feature_generation_code(self) -> None:
+        """
+        Test successful get_feature_generation_code request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/generation_code'
+        responses.add(responses.GET, url, json={'name': 'generation_query',
+                                                'text': 'SELECT * FROM test_table',
+                                                'url': 'github.com/repo/file'}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/get_feature_generation_code',
+                query_string=dict(key='test_feature_group/test_feature_name/1.4')
+            )
+            data = json.loads(response.data)
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertEqual(data.get('name'), 'generation_query')
+            self.assertEqual(data.get('text'), 'SELECT * FROM test_table')
+            self.assertEqual(data.get('url'), 'github.com/repo/file')
+
+    @responses.activate
+    def test_update_feature_owner(self) -> None:
+        """
+        Test successful update_feature_owner request
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/owner/test'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/update_feature_owner',
+                json={
+                    'key': 'test_feature_group/test_feature_name/1.4',
+                    'owner': 'test'
+                }
+            )
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    def test_update_feature_tags(self) -> None:
+        """
+        Test adding a tag on a feature
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
+            '/test_feature_group/test_feature_name/1.4/tag/tag_5'
+        responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
+
+        searchservice_base = local_app.config['SEARCHSERVICE_BASE']
+        get_table_url = f'{searchservice_base}/search_table'
+        responses.add(responses.POST, get_table_url,
+                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
+                      status=HTTPStatus.OK)
+
+        # TODO when search implemented add search service response
+
+        with local_app.test_client() as test:
+            response = test.put(
+                '/api/metadata/v0/update_feature_tags',
+                json={
+                    'key': 'test_feature_group/test_feature_name/1.4',
+                    'tag': 'tag_5'
+                }
+            )
+            self.assertEqual(response.status_code, HTTPStatus.OK)
