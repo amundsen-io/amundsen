@@ -3,7 +3,11 @@
 
 import * as React from 'react';
 
-import { indexDashboardsEnabled, indexFeaturesEnabled, indexUsersEnabled } from 'config/config-utils';
+import {
+  indexDashboardsEnabled,
+  indexFeaturesEnabled,
+  indexUsersEnabled,
+} from 'config/config-utils';
 
 import { ResourceType } from 'interfaces';
 

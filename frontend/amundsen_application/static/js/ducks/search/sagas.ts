@@ -52,7 +52,6 @@ import {
 } from './reducer';
 import { initialFilterState } from './filters/reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
-import { features } from 'process';
 
 //  SEARCH SAGAS
 //  The actions that trigger these sagas are fired directly from components.
@@ -254,7 +253,12 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   const featureIndex = resource === ResourceType.feature ? pageIndex : 0;
 
   try {
-    const [tableResponse, userResponse, dashboardResponse, featureResponse] = yield all([
+    const [
+      tableResponse,
+      userResponse,
+      dashboardResponse,
+      featureResponse,
+    ] = yield all([
       call(
         API.searchResource,
         tableIndex,
@@ -286,7 +290,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
         term,
         state.filters[ResourceType.feature],
         searchType
-      )
+      ),
     ]);
     const searchAllResponse = {
       resource,
@@ -319,7 +323,12 @@ export function* searchAllWatcher(): SagaIterator {
 export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
   const { term } = action.payload;
   try {
-    const [dashboardResponse, tableResponse, userResponse, featureResponse] = yield all([
+    const [
+      dashboardResponse,
+      tableResponse,
+      userResponse,
+      featureResponse
+    ] = yield all([
       call(
         API.searchResource,
         0,

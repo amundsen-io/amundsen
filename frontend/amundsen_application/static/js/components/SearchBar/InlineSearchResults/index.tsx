@@ -272,7 +272,13 @@ export class InlineSearchResults extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const { isLoading, dashboards, features, tables, users } = state.search.inlineResults;
+  const {
+    isLoading,
+    dashboards,
+    features,
+    tables,
+    users
+  } = state.search.inlineResults;
   return {
     isLoading,
     dashboards,

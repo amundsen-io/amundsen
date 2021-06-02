@@ -47,7 +47,7 @@ export interface ResourceFilterReducerState {
 /* REDUCER */
 export const initialTableFilterState = {};
 export const initialDashboardFilterState = {};
-export const initialFeatureFilterState = {}
+export const initialFeatureFilterState = {};
 
 export const initialFilterState: FilterReducerState = {
   [ResourceType.dashboard]: initialDashboardFilterState,

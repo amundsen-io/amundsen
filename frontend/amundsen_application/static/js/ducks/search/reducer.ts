@@ -359,13 +359,20 @@ export default function reducer(
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, dashboards, tables, users } = (<
-        InlineSearchUpdate
-        >action).payload;
+      const {
+        searchTerm,
+        resource,
+        dashboards,
+        features,
+        tables,
+        users } = (<
+          InlineSearchUpdate
+          >action).payload;
       return {
         ...state,
         resource,
         dashboards,
+        features,
         tables,
         users,
         search_term: searchTerm,
