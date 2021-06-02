@@ -33,7 +33,6 @@ POPULAR_TABLES_ENDPOINT = '/popular_tables'
 TAGS_ENDPOINT = '/tags/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
-FEATURE_ENDPOINT = '/feature'
 
 
 def _get_table_endpoint() -> str:
@@ -55,19 +54,6 @@ def _get_dashboard_endpoint() -> str:
     if dashboard_endpoint is None:
         raise Exception('An request endpoint for dashboard resources must be configured')
     return dashboard_endpoint
-
-
-def _get_endpoint_from_resource_type(resource_type: str) -> str:
-    type_map = {
-        'table': _get_table_endpoint(),
-        'feature': _get_feature_endpoint(),
-        'dashboard': _get_dashboard_endpoint(),
-    }
-
-    if resource_type not in type_map:
-        raise(Exception(f"Resource type '{resource_type}'' is not valid"))
-
-    return type_map[resource_type]
 
 
 @metadata_blueprint.route('/popular_tables', methods=['GET'])
@@ -867,15 +853,14 @@ def get_column_lineage() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@metadata_blueprint.route('/get_resource_description', methods=['GET'])
-def get_resource_description() -> Response:
+@metadata_blueprint.route('/get_feature_description', methods=['GET'])
+def get_feature_description() -> Response:
     try:
-        resource_type = get_query_param(request.args, 'type')
-        resource_key = get_query_param(request.args, 'key')
+        feature_key = get_query_param(request.args, 'key')
 
-        endpoint = _get_endpoint_from_resource_type(resource_type)
+        endpoint = _get_feature_endpoint()
 
-        url = '{0}/{1}/description'.format(endpoint, resource_key)
+        url = '{0}/{1}/description'.format(endpoint, feature_key)
 
         response = request_metadata(url=url)
         status_code = response.status_code
@@ -884,7 +869,7 @@ def get_resource_description() -> Response:
             message = 'Success'
             description = response.json().get('description')
         else:
-            message = 'Get resource description failed'
+            message = 'Get feature description failed'
             description = None
 
         payload = jsonify({'description': description, 'msg': message})
@@ -894,17 +879,16 @@ def get_resource_description() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@metadata_blueprint.route('/put_resource_description', methods=['PUT'])
-def put_resource_description() -> Response:
+@metadata_blueprint.route('/put_feature_description', methods=['PUT'])
+def put_feature_description() -> Response:
     try:
         args = request.get_json()
-        resource_type = get_query_param(args, 'type')
-        resource_key = get_query_param(args, 'key')
+        feature_key = get_query_param(args, 'key')
         description = get_query_param(args, 'description')
 
-        endpoint = _get_endpoint_from_resource_type(resource_type)
+        endpoint = _get_feature_endpoint()
 
-        url = '{0}/{1}/description'.format(endpoint, resource_key)
+        url = '{0}/{1}/description'.format(endpoint, feature_key)
 
         response = request_metadata(url=url, method='PUT', data=json.dumps({'description': description}))
         status_code = response.status_code
@@ -912,7 +896,7 @@ def put_resource_description() -> Response:
         if status_code == HTTPStatus.OK:
             message = 'Success'
         else:
-            message = 'Update resource description failed'
+            message = 'Update feature description failed'
 
         payload = jsonify({'msg': message})
         return make_response(payload, status_code)
@@ -921,19 +905,18 @@ def put_resource_description() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@metadata_blueprint.route('/get_resource_generation_code', methods=['GET'])
-def get_resource_generation_code() -> Response:
+@metadata_blueprint.route('/get_feature_generation_code', methods=['GET'])
+def get_feature_generation_code() -> Response:
     """
-    Call metadata service to fetch table generation code
+    Call metadata service to fetch feature generation code
     :return:
     """
     try:
-        resource_type = get_query_param(request.args, 'type')
-        resource_key = get_query_param(request.args, 'key')
+        feature_key = get_query_param(request.args, 'key')
 
-        endpoint = _get_endpoint_from_resource_type(resource_type)
+        endpoint = _get_feature_endpoint()
 
-        url = f'{endpoint}/{resource_key}/generation_code'
+        url = f'{endpoint}/{feature_key}/generation_code'
         response = request_metadata(url=url, method=request.method)
         payload = response.json()
         return make_response(jsonify(payload), 200)
@@ -942,21 +925,20 @@ def get_resource_generation_code() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@metadata_blueprint.route('/get_resource_lineage', methods=['GET'])
-def get_resource_lineage() -> Response:
+@metadata_blueprint.route('/get_feature_lineage', methods=['GET'])
+def get_feature_lineage() -> Response:
     """
-    Call metadata service to fetch table lineage for a given resource
+    Call metadata service to fetch table lineage for a given feature
     :return:
     """
     try:
-        resource_type = get_query_param(request.args, 'type')
-        resource_key = get_query_param(request.args, 'key')
+        feature_key = get_query_param(request.args, 'key')
         depth = get_query_param(request.args, 'depth')
         direction = get_query_param(request.args, 'direction')
 
-        endpoint = _get_endpoint_from_resource_type(resource_type)
+        endpoint = _get_feature_endpoint()
 
-        url = f'{endpoint}/{resource_key}/lineage?depth={depth}&direction={direction}'
+        url = f'{endpoint}/{feature_key}/lineage?depth={depth}&direction={direction}'
         response = request_metadata(url=url, method=request.method)
         json = response.json()
         downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
@@ -972,17 +954,16 @@ def get_resource_lineage() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@metadata_blueprint.route('/update_resource_owner', methods=['PUT', 'DELETE'])
-def update_resource_owner() -> Response:
+@metadata_blueprint.route('/update_feature_owner', methods=['PUT', 'DELETE'])
+def update_feature_owner() -> Response:
     try:
         args = request.get_json()
-        resource_type = get_query_param(args, 'type')
-        resource_key = get_query_param(args, 'key')
+        feature_key = get_query_param(args, 'key')
         owner = get_query_param(args, 'owner')
 
-        endpoint = _get_endpoint_from_resource_type(resource_type)
+        endpoint = _get_feature_endpoint()
 
-        url = '{0}/{1}/owner/{2}'.format(endpoint, resource_key, owner)
+        url = '{0}/{1}/owner/{2}'.format(endpoint, feature_key, owner)
         method = request.method
 
         response = request_metadata(url=url, method=method)
@@ -1000,8 +981,8 @@ def update_resource_owner() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-def _update_metadata_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
-    url = f'{endpoint}/{resource_key}/tag/{tag}'
+def _update_metadata_feature_tag(endpoint: str, feature_key: str, method: str, tag: str) -> int:
+    url = f'{endpoint}/{feature_key}/tag/{tag}'
     response = request_metadata(url=url, method=method)
     status_code = response.status_code
     if status_code != HTTPStatus.OK:
@@ -1010,34 +991,33 @@ def _update_metadata_resource_tag(endpoint: str, resource_key: str, method: str,
     return status_code
 
 
-def _update_search_resource_tag(endpoint: str, resource_key: str, method: str, tag: str) -> int:
+def _update_search_feature_tag(endpoint: str, feature_key: str, method: str, tag: str) -> int:
     # TODO when search service feature work is done
     return HTTPStatus.OK
 
 
-@metadata_blueprint.route('/update_resource_tags', methods=['PUT', 'DELETE'])
-def update_resource_tags() -> Response:
+@metadata_blueprint.route('/update_feature_tags', methods=['PUT', 'DELETE'])
+def update_feature_tags() -> Response:
     try:
         args = request.get_json()
         method = request.method
-        resource_type = get_query_param(args, 'type')
-        resource_key = get_query_param(args, 'key')
+        feature_key = get_query_param(args, 'key')
         tag = get_query_param(args, 'tag')
 
-        endpoint = _get_endpoint_from_resource_type(resource_type)
+        endpoint = _get_feature_endpoint()
 
-        metadata_status_code = _update_metadata_resource_tag(endpoint=endpoint,
-                                                             resource_key=resource_key,
+        metadata_status_code = _update_metadata_feature_tag(endpoint=endpoint,
+                                                             feature_key=feature_key,
                                                              method=method, tag=tag)
-        search_status_code = _update_search_resource_tag(endpoint=endpoint,
-                                                         resource_key=resource_key,
+        search_status_code = _update_search_feature_tag(endpoint=endpoint,
+                                                         feature_key=feature_key,
                                                          method=method, tag=tag)
 
         http_status_code = HTTPStatus.OK
         if metadata_status_code == HTTPStatus.OK and search_status_code == HTTPStatus.OK:
             message = 'Success'
         else:
-            message = f'Encountered error: {method} resource tag failed'
+            message = f'Encountered error: {method} feature tag failed'
             logging.error(message)
             http_status_code = HTTPStatus.INTERNAL_SERVER_ERROR
 

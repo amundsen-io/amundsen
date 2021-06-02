@@ -1236,9 +1236,9 @@ class MetadataTest(unittest.TestCase):
             self.assertCountEqual(data.get('featureData'), self.expected_feature_metadata)
 
     @responses.activate
-    def test_get_resource_description_success(self) -> None:
+    def test_get_feature_description_success(self) -> None:
         """
-        Test successful get_resource_description request
+        Test successful get_feature_description request
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
@@ -1247,9 +1247,8 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.get(
-                '/api/metadata/v0/get_resource_description',
-                query_string=dict(key='test_feature_group/test_feature_name/1.4',
-                                  type='feature')
+                '/api/metadata/v0/get_feature_description',
+                query_string=dict(key='test_feature_group/test_feature_name/1.4')
             )
             data = json.loads(response.data)
 
@@ -1257,9 +1256,9 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(data.get('description'), 'This is a test')
 
     @responses.activate
-    def test_put_resource_description(self) -> None:
+    def test_put_feature_description(self) -> None:
         """
-        Test successful put_resource_description request
+        Test successful put_feature_description request
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
@@ -1268,9 +1267,8 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.put(
-                '/api/metadata/v0/put_resource_description',
+                '/api/metadata/v0/put_feature_description',
                 json={
-                    'type': 'feature',
                     'key': 'test_feature_group/test_feature_name/1.4',
                     'description': 'test',
                     'source': 'source'
@@ -1280,9 +1278,9 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
-    def test_get_resource_generation_code(self) -> None:
+    def test_get_feature_generation_code(self) -> None:
         """
-        Test successful get_resource_generation_code request
+        Test successful get_feature_generation_code request
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
@@ -1293,9 +1291,8 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.get(
-                '/api/metadata/v0/get_resource_generation_code',
-                query_string=dict(key='test_feature_group/test_feature_name/1.4',
-                                  type='feature')
+                '/api/metadata/v0/get_feature_generation_code',
+                query_string=dict(key='test_feature_group/test_feature_name/1.4')
             )
             data = json.loads(response.data)
 
@@ -1305,9 +1302,9 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(data.get('url'), 'github.com/repo/file')
 
     @responses.activate
-    def test_update_resource_owner(self) -> None:
+    def test_update_feature_owner(self) -> None:
         """
-        Test successful update_resource_owner request
+        Test successful update_feature_owner request
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
@@ -1316,9 +1313,8 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.put(
-                '/api/metadata/v0/update_resource_owner',
+                '/api/metadata/v0/update_feature_owner',
                 json={
-                    'type': 'feature',
                     'key': 'test_feature_group/test_feature_name/1.4',
                     'owner': 'test'
                 }
@@ -1327,9 +1323,9 @@ class MetadataTest(unittest.TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
     @responses.activate
-    def test_update_resource_tags(self) -> None:
+    def test_update_feature_tags(self) -> None:
         """
-        Test adding a tag on a resource like feature
+        Test adding a tag on a feature
         :return:
         """
         url = local_app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT + \
@@ -1346,9 +1342,8 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.put(
-                '/api/metadata/v0/update_resource_tags',
+                '/api/metadata/v0/update_feature_tags',
                 json={
-                    'type': 'feature',
                     'key': 'test_feature_group/test_feature_name/1.4',
                     'tag': 'tag_5'
                 }
