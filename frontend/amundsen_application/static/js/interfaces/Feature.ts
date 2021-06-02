@@ -16,7 +16,7 @@ export interface FeatureMetadata {
   entity?: string[];
   data_type?: string;
   availability: string[];
-  description?: string;
+  description: string;
   owners: User[];
   badges: Badge[];
   owner_tags?: Tag[];
@@ -24,7 +24,7 @@ export interface FeatureMetadata {
   programmatic_descriptions: ProgrammaticDescription[];
   watermarks: Watermark[];
   stats: FeatureStats[];
-  last_updated_timestamp?: number;
+  last_updated_timestamp: number;
   created_timestamp: number;
   partition_column?: TableColumn;
 }
@@ -35,7 +35,7 @@ export interface FeatureSummary {
   version: string;
   availability: string[];
   entity?: string[];
-  description?: string[];
+  description: string;
 }
 
 // TODO - Figure out if we can reuse ColumnStats

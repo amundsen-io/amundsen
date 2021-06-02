@@ -22,9 +22,10 @@ import { pageViewed } from 'ducks/ui';
 import rootReducer from 'ducks/rootReducer';
 import rootSaga from 'ducks/rootSaga';
 
-import DashboardPage from './pages/DashboardPage';
 import AnnouncementPage from './pages/AnnouncementPage';
 import BrowsePage from './pages/BrowsePage';
+import DashboardPage from './pages/DashboardPage';
+import FeaturePage from './pages/FeaturePage';
 import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import SearchPage from './pages/SearchPage';
@@ -64,6 +65,7 @@ const Routes: React.FC = () => {
         <Route path="/announcements" component={AnnouncementPage} />
         <Route path="/browse" component={BrowsePage} />
         <Route path="/dashboard/:uri" component={DashboardPage} />
+        <Route path="/feature/:group/:name/:version" component={FeaturePage} />
         <Route path="/search" component={SearchPage} />
         <Route
           path="/table_detail/:cluster/:database/:schema/:table"
