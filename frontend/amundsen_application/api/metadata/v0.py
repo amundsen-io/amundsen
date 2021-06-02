@@ -36,24 +36,25 @@ DASHBOARD_ENDPOINT = '/dashboard'
 
 
 def _get_table_endpoint() -> str:
-    table_endpoint = app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT
-    if table_endpoint is None:
-        raise Exception('An request endpoint for table resources must be configured')
-    return table_endpoint
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    print(f"SERVICE BASE!!! {metadata_service_base}")
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base + TABLE_ENDPOINT
 
 
 def _get_feature_endpoint() -> str:
-    feature_endpoint = app.config['METADATASERVICE_BASE'] + FEATURE_ENDPOINT
-    if feature_endpoint is None:
-        raise Exception('An request endpoint for feature resources must be configured')
-    return feature_endpoint
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base + FEATURE_ENDPOINT
 
 
 def _get_dashboard_endpoint() -> str:
-    dashboard_endpoint = app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT
-    if dashboard_endpoint is None:
-        raise Exception('An request endpoint for dashboard resources must be configured')
-    return dashboard_endpoint
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base +  DASHBOARD_ENDPOINT
 
 
 @metadata_blueprint.route('/popular_tables', methods=['GET'])
