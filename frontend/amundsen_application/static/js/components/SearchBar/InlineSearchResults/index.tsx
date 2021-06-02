@@ -8,6 +8,7 @@ import {
   getSourceDisplayName,
   getSourceIconClass,
   indexDashboardsEnabled,
+  indexFeaturesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
 import { buildDashboardURL } from 'utils/navigationUtils';
@@ -15,6 +16,7 @@ import { buildDashboardURL } from 'utils/navigationUtils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   DashboardSearchResults,
+  FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
 } from 'ducks/search/types';
@@ -36,6 +38,7 @@ import * as CONSTANTS from './constants';
 export interface StateFromProps {
   isLoading: boolean;
   dashboards: DashboardSearchResults;
+  features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
 }
@@ -248,6 +251,8 @@ export class InlineSearchResults extends React.Component<
         {this.renderResultsByResource(ResourceType.table)}
         {indexDashboardsEnabled() &&
           this.renderResultsByResource(ResourceType.dashboard)}
+        {indexFeaturesEnabled() &&
+          this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
       </>
     );
@@ -267,10 +272,11 @@ export class InlineSearchResults extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const { isLoading, dashboards, tables, users } = state.search.inlineResults;
+  const { isLoading, dashboards, features, tables, users } = state.search.inlineResults;
   return {
     isLoading,
     dashboards,
+    features,
     tables,
     users,
   };

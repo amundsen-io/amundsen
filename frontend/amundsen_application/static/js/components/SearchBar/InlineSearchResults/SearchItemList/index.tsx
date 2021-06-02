@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import { indexDashboardsEnabled, indexFeaturesEnabled, indexUsersEnabled } from 'config/config-utils';
 
 import { ResourceType } from 'interfaces';
 
@@ -21,6 +21,8 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
     switch (resourceType) {
       case ResourceType.dashboard:
         return CONSTANTS.DASHBOARD_ITEM_TEXT;
+      case ResourceType.feature:
+        return CONSTANTS.FEATURE_ITEM_TEXT;
       case ResourceType.table:
         return CONSTANTS.DATASETS_ITEM_TEXT;
       case ResourceType.user:
@@ -46,6 +48,14 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
             onItemSelect={onItemSelect}
             searchTerm={searchTerm}
             resourceType={ResourceType.dashboard}
+          />
+        )}
+        {indexFeaturesEnabled() && (
+          <SearchItem
+            listItemText={this.getListItemText(ResourceType.feature)}
+            onItemSelect={onItemSelect}
+            searchTerm={searchTerm}
+            resourceType={ResourceType.feature}
           />
         )}
         {indexUsersEnabled() && (

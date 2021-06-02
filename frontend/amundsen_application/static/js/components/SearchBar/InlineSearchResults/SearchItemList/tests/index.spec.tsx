@@ -7,7 +7,11 @@ import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
-import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import {
+  indexDashboardsEnabled,
+  indexFeaturesEnabled,
+  indexUsersEnabled
+} from 'config/config-utils';
 import SearchItemList, { SearchItemListProps } from '..';
 import SearchItem from '../SearchItem';
 
@@ -17,6 +21,7 @@ jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(),
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
+  indexFeaturesEnabled: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
