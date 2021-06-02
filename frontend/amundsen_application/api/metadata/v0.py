@@ -53,7 +53,7 @@ def _get_dashboard_endpoint() -> str:
     metadata_service_base = app.config['METADATASERVICE_BASE']
     if metadata_service_base is None:
         raise Exception('METADATASERVICE_BASE must be configured')
-    return metadata_service_base +  DASHBOARD_ENDPOINT
+    return metadata_service_base + DASHBOARD_ENDPOINT
 
 
 @metadata_blueprint.route('/popular_tables', methods=['GET'])
@@ -1007,11 +1007,11 @@ def update_feature_tags() -> Response:
         endpoint = _get_feature_endpoint()
 
         metadata_status_code = _update_metadata_feature_tag(endpoint=endpoint,
-                                                             feature_key=feature_key,
-                                                             method=method, tag=tag)
+                                                            feature_key=feature_key,
+                                                            method=method, tag=tag)
         search_status_code = _update_search_feature_tag(endpoint=endpoint,
-                                                         feature_key=feature_key,
-                                                         method=method, tag=tag)
+                                                        feature_key=feature_key,
+                                                        method=method, tag=tag)
 
         http_status_code = HTTPStatus.OK
         if metadata_status_code == HTTPStatus.OK and search_status_code == HTTPStatus.OK:
