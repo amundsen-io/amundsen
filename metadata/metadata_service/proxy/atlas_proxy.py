@@ -210,7 +210,7 @@ class AtlasProxy(BaseProxy):
                                                                              (AtlasCommonParams.qualified_name,
                                                                               bookmark_qn)])
         except Exception as ex:
-            LOGGER.info(f'Bookmark not found. {str(ex)}')
+            LOGGER.exception(f'Bookmark not found. {str(ex)}')
 
             table_entity = self._get_table_entity(table_uri=entity_uri)
             # Fetch user entity from user_id for relation
