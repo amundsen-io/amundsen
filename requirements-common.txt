@@ -3,7 +3,7 @@
 
 # Common dependencies (common, frontend, metadata, search) -------------------------------------------------------------
 
-amundsen-common==0.12.0
+amundsen-common==0.13.0
 aniso8601==3.0.0
 attrs>=19.1.0
 boto3==1.17.23
