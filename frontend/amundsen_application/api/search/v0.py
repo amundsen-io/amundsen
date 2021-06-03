@@ -337,8 +337,8 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = 'Success'
             results = response.json().get('results')
-            tables['results'] = [map_table_result(result) for result in results]
-            tables['total_results'] = response.json().get('total_results')
+            features['results'] = [map_table_result(result) for result in results]
+            features['total_results'] = response.json().get('total_results')
         else:
             message = 'Encountered error: Search request failed'
             results_dict['msg'] = message

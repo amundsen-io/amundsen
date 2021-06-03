@@ -277,7 +277,7 @@ export const mapStateToProps = (state: GlobalState) => {
     dashboards,
     features,
     tables,
-    users
+    users,
   } = state.search.inlineResults;
   return {
     isLoading,

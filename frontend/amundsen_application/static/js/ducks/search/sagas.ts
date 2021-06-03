@@ -327,7 +327,7 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
       dashboardResponse,
       tableResponse,
       userResponse,
-      featureResponse
+      featureResponse,
     ] = yield all([
       call(
         API.searchResource,
