@@ -361,7 +361,7 @@ export default function reducer(
     case InlineSearch.UPDATE:
       const { searchTerm, resource, dashboards, features, tables, users } = (<
         InlineSearchUpdate
-        >action).payload;
+      >action).payload;
       return {
         ...state,
         resource,
