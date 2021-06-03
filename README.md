@@ -40,15 +40,15 @@ Amundsen is a data discovery and metadata engine for improving the productivity 
 
 Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/). It includes three microservices, one data ingestion library and one common library.
 
-- [amundsenfrontendlibrary](https://github.com/amundsen-io/amundsenfrontendlibrary#amundsen-frontend-service): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" />
-- [amundsensearchlibrary](https://github.com/amundsen-io/amundsensearchlibrary#amundsen-search-service): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" />
-- [amundsenmetadatalibrary](https://github.com/amundsen-io/amundsenmetadatalibrary#amundsen-metadata-service): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" />
-- [amundsendatabuilder](https://github.com/amundsen-io/amundsendatabuilder#amundsen-databuilder): Data ingestion library for building metadata graph and search index.
-  Users could either load the data with [a python script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py) with the library
-  or with an [Airflow DAG](https://github.com/amundsen-io/amundsendatabuilder/tree/master/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" />
-- [amundsencommon](https://github.com/amundsen-io/amundsencommon): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" />
-- [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsengremlin.svg" />
-- [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenrds.svg" />
+- [amundsenfrontendlibrary](/frontend): Frontend service which is a Flask application with a React frontend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenfrontendlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenfrontendlibrary.svg" />
+- [amundsensearchlibrary](/search): Search service, which leverages Elasticsearch for search capabilities, is used to power frontend metadata searching. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsensearchlibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsensearchlibrary.svg" />
+- [amundsenmetadatalibrary](/metadata): Metadata service, which leverages Neo4j or Apache Atlas as the persistent layer, to provide various metadata. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenmetadatalibrary.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenmetadatalibrary.svg" />
+- [amundsendatabuilder](/databuilder): Data ingestion library for building metadata graph and search index.
+  Users could either load the data with [a python script](/databuilder/example/scripts/sample_data_loader.py) with the library
+  or with an [Airflow DAG](/databuilder/example/dags) importing the library. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsendatabuilder.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsendatabuilder.svg" />
+- [amundsencommon](/common): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsencommon.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsencommon.svg" />
+- [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsengremlin.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsengremlin.svg" />
+- [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases. <img src="https://img.shields.io/github/commit-activity/w/amundsen-io/amundsenrds.svg" /> <img src="https://img.shields.io/github/v/release/amundsen-io/amundsenrds.svg" />
 
 ## Homepage
 
@@ -91,15 +91,15 @@ Please note that the mock images only served as demonstration purpose.
 ## Get Involved in the Community
 
 Want help or want to help?
-Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/master/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](https://github.com/amundsen-io/amundsen/blob/master/SECURITY.md).
+Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](./CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](./SECURITY.md).
 
 ## Getting Started
 
-Please visit the Amundsen installation documentation for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](./docs/installation.md) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
-Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture) for Amundsen architecture overview.
+Please visit [Architecture](./docs/architecture.md) for Amundsen architecture overview.
 
 ## Supported Entities
 
@@ -112,12 +112,13 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 ### Table Connectors
 
 - [Amazon Athena](https://aws.amazon.com/athena/)
-- [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it (like Databricks Delta - which is a work in progress).
+- [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
 - [Apache Cassandra](https://cassandra.apache.org/)
 - [Apache Druid](https://druid.apache.org/)
 - [Apache Hive](https://hive.apache.org/)
 - CSV
+- [dbt](https://www.getdbt.com/)
 - [Delta Lake](https://delta.io/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
@@ -131,8 +132,13 @@ Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/master/
 
 Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy` interface (which most DBs provide).
 
+### Table Column Statistics
+
+- [Pandas Profiling](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/)
+
 ### Dashboard Connectors
 
+- [Apache Superset](https://superset.apache.org/)
 - [Mode Analytics](https://mode.com/)
 - [Redash](https://redash.io/)
 - [Tableau](https://tableau.com/)
@@ -141,17 +147,13 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 - [Apache Airflow](https://airflow.apache.org/)
 
-### BI Viz Tool
-
-- [Apache Superset](https://superset.incubator.apache.org/)
-
 ## Installation
 
-Please visit [Installation guideline](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md) on how to install Amundsen.
+Please visit [Installation guideline](./docs/installation.md) on how to install Amundsen.
 
 ## Roadmap
 
-Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/roadmap.md#amundsen-roadmap) if you are interested in Amundsen upcoming roadmap items.
+Please visit [Roadmap](./docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
 ## Blog Posts and Interviews
 
@@ -179,6 +181,8 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - Towards Enterprise Grade Data Discovery and Data Lineage with Apache Atlas and Amundsen by [Verdan Mahmood](https://github.com/verdan) and Marek Wiewiorka from ING {[slides](https://docs.google.com/presentation/d/1FixTTNd1dt_f3PAKhL1KLOeOLsIQq0iFvQA6qlpjIg0/edit#slide=id.p1), [talk](https://bigdatatechwarsaw.eu/agenda/)} (Big Data Technology Warsaw Summit 2020)
 - Airflow @ Lyft (which covers how we integrate Airflow and Amundsen) by [Tao Feng](https://github.com/feng-tao) {[slides](https://www.slideshare.net/taofung/airflow-at-lyft-airflow-summit2020) and [website](https://airflowsummit.org/sessions/how-airbnb-twitter-lyft-use-airflow/)} (Airflow Summit 2020)
 - Data DAGs with lineage for fun and for profit by [Bolke de Bruin](https://github.com/bolkedebruin) {[website](https://airflowsummit.org/sessions/data-dags-with-lineage/)} (Airflow Summit 2020)
+- Solving Data Discovery Challenges at Lyft with Amundsen, an Open-source Metadata Platform by [Tao Feng](https://github.com/feng-tao) ([Data+AI summit Europe 2020](https://databricks.com/session_eu20/solving-data-discovery-challenges-at-lyft-with-amundsen-an-open-source-metadata-platform))
+- Data Discovery at Databricks with Amundsen by [Tao Feng](https://github.com/feng-tao) and [Tianru Zhou](https://www.linkedin.com/in/tianru-zhou-134868132/) ([Data+AI summit NA 2021](https://databricks.com/session_na21/data-discovery-at-databricks-with-amundsen))
 
 ## Related Articles
 
@@ -200,6 +204,7 @@ Please visit [Roadmap](https://github.com/amundsen-io/amundsen/blob/master/docs/
 - [Hacking Data Discovery in AWS with Amundsen at SEEK](https://medium.com/seek-blog/hacking-data-discovery-with-amundsen-c55d262014f4)
 - [A step-by-step guide deploying Amundsen on Google Cloud Platform](https://medium.com/talabat-tech/a-step-by-step-guide-deploying-amundsen-on-google-cloud-platform-ee4ef20d81f5)
 - [Machine Learning Features discovery with Feast and Amundsen](https://getindata.com/blog/machine-learning-features-discovery-feast-amundsen)
+- [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
 
 ## Community meetings
 
@@ -248,6 +253,7 @@ Currently **officially** using Amundsen:
 1. [Rapido](https://rapido.bike/Careers?lan=en "India's largest bike taxi service")
 1. [REA Group](https://www.rea-group.com/)
 1. [Remitly](https://www.remitly.com/)
+1. [Snap](https://www.snap.com/en-US)
 1. [Square](https://squareup.com/us/en)
 1. [Tile](https://www.thetileapp.com)
 1. [WeTransfer](https://wetransfer.com)

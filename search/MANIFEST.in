@@ -1,0 +1,3 @@
+include requirements.txt
+include search_service/api/swagger_doc/*.yml
+include search_service/api/swagger_doc/*/*.yml

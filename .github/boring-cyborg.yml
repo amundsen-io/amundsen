@@ -1,0 +1,79 @@
+labelPRBasedOnFilePath:
+  area:common:
+    - common/**/*
+
+  area:databuilder:
+    - databuilder/**/*
+
+  area:docs:
+    - docs/**/*
+    - docs_overrides/**/*
+    - databuilder/docs/**/*
+    - databuilder/README.md
+    - frontend/docs/**/*
+    - frontend/README.md
+    - metadata/docs/**/*
+    - metadata/README.md
+    - search/docs/**/*
+    - search/README.md
+
+  area:frontend:
+    - frontend/**/*
+
+  area:helm:
+    - amundsen-kube-helm/**/*
+
+  area:metadata:
+    - metadata/**/*
+
+  area:search:
+    - search/**/*
+
+  area:dev-tools:
+    - .dependabot/**/*
+    - .github/**/*
+    - .editorconfig
+    - .gitignore
+    - .mailmap
+    - CODE_OF_CONDUCT.md
+    - CONTRIBUTING.md
+    - docker*yml
+    - deploy_website.sh
+    - GOVERNANCE.md
+    - LICENSE
+    - MAINTAINING.md
+    - mkdocs.yml
+    - NOTICE
+    - OWNERS.md
+    - README.md
+    - SECURITY.md
+
+  category:ui:
+    - frontend/amundsen_application/static/**/*
+
+  category:api:
+    - frontend/amundsen_application/api/**/*
+    - metadata/metadata_service/api/**/*
+    - search/search_service/api/**/*
+
+  category:models:
+    - common/amundsen_common/models/**/*
+    - databuilder/databuilder/models/**/*
+    - frontend/amundsen_application/models/**/*
+    - metadata/metadata_service/models/**/*
+    - search/search_service/models/**/*
+
+  category:proxy:
+    - metadata/metadata_service/proxy/**/*
+    - search/search_service/proxy/**/*
+
+firstPRWelcomeComment: >
+  Congratulations on your first Pull Request and welcome to Amundsen community!
+  If you have any issues or are unsure about any anything please check our
+  Contribution Guide (https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md)
+
+firstPRMergeComment: >
+  Awesome work, congrats on your first merged pull request!
+
+firstIssueWelcomeComment: >
+  Thanks for opening your first issue here!
