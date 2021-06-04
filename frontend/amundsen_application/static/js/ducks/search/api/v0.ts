@@ -1,10 +1,15 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import {
+  indexDashboardsEnabled,
+  indexFeaturesEnabled,
+  indexUsersEnabled,
+} from 'config/config-utils';
 import { ResourceType, SearchType } from 'interfaces';
 
 import {
   DashboardSearchResults,
+  FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
 } from '../types';
@@ -18,6 +23,7 @@ export interface SearchAPI {
   status_code: number;
   search_term: string;
   dashboards?: DashboardSearchResults;
+  features?: FeatureSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
 }
@@ -44,13 +50,15 @@ export function searchResource(
   if (
     (resource === ResourceType.dashboard && !indexDashboardsEnabled()) ||
     (resource === ResourceType.user &&
-      (!indexUsersEnabled() || term.length === 0))
+      (!indexUsersEnabled() || term.length === 0)) ||
+    (resource === ResourceType.feature && !indexFeaturesEnabled())
   ) {
     return Promise.resolve({});
   }
 
   /* Note: This logic must exist until query string endpoints are created for all resources */
-  if (resource === ResourceType.table || resource === ResourceType.dashboard) {
+  if (resource === ResourceType.table || resource === ResourceType.dashboard ||
+        resource === ResourceType.feature) {
     return axios
       .post(`${BASE_URL}/${resource}`, {
         filters,

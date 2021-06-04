@@ -25,6 +25,7 @@ import {
   Resource,
   ResourceType,
   DashboardResource,
+  FeatureResource,
   TableResource,
   UserResource,
 } from 'interfaces';
@@ -67,6 +68,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return CONSTANTS.DASHBOARDS;
+      case ResourceType.feature:
+        return CONSTANTS.FEATURES;
       case ResourceType.table:
         return CONSTANTS.DATASETS;
       case ResourceType.user:
@@ -80,6 +83,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return this.props.dashboards.total_results;
+      case ResourceType.feature:
+        return this.props.features.total_results;
       case ResourceType.table:
         return this.props.tables.total_results;
       case ResourceType.user:
@@ -93,6 +98,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return this.props.dashboards.results.slice(0, 2);
+      case ResourceType.feature:
+        return this.props.features.results.slice(0, 2);
       case ResourceType.table:
         return this.props.tables.results.slice(0, 2);
       case ResourceType.user:
@@ -127,6 +134,9 @@ export class InlineSearchResults extends React.Component<
         const dashboard = result as DashboardResource;
 
         return `${buildDashboardURL(dashboard.uri)}?${logParams}`;
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        return `/feature/${feature.feature_group}/${feature.name}/${feature.version}?${logParams}`;
       case ResourceType.table:
         const table = result as TableResource;
 
@@ -148,6 +158,10 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return getSourceIconClass(dashboard.product, resourceType);
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        const source = feature.availability.length > 0 ? feature.availability[0] : '';
+        return getSourceIconClass(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
         return getSourceIconClass(table.database, resourceType);
@@ -166,6 +180,9 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return dashboard.description;
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        return feature.description;
       case ResourceType.table:
         const table = result as TableResource;
         return table.description;
@@ -192,6 +209,13 @@ export class InlineSearchResults extends React.Component<
             </div>
           </div>
         );
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        return (
+          <div className="title-2 truncated">
+            {`${feature.feature_group}.${feature.name}`}
+          </div>
+        );
       case ResourceType.table:
         const table = result as TableResource;
         return (
@@ -213,6 +237,10 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return getSourceDisplayName(dashboard.product, resourceType);
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        const source = feature.availability.length > 0 ? feature.availability[0] : '';
+        return getSourceDisplayName(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
         return getSourceDisplayName(table.database, resourceType);

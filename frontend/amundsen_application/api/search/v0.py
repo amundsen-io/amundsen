@@ -16,7 +16,7 @@ from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.metadata_utils import marshall_dashboard_partial
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
 from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, \
-    map_table_result, transform_filters
+    map_feature_result, map_table_result, transform_filters
 from amundsen_application.models.user import load_user, dump_user
 
 LOGGER = logging.getLogger(__name__)
@@ -29,7 +29,8 @@ SEARCH_DASHBOARD_ENDPOINT = '/search_dashboard'
 SEARCH_DASHBOARD_FILTER_ENDPOINT = '/search_dashboard_filter'
 SEARCH_TABLE_ENDPOINT = '/search'
 SEARCH_TABLE_FILTER_ENDPOINT = '/search_table'
-SEARCH_FEATURE_FILTER_ENDPOINT = '/search_feature'
+SEARCH_FEATURE_ENDPOINT = '/search_feature'
+SEARCH_FEATURE_FILTER_ENDPOINT = '/search_feature_filter'
 SEARCH_USER_ENDPOINT = '/search_user'
 
 
@@ -279,6 +280,7 @@ def search_feature() -> Response:
     """
     try:
         request_json = request.get_json()
+        LOGGER.info(request_json)
 
         search_term = get_query_param(request_json, 'term', '"term" parameter expected in request data')
         page_index = get_query_param(request_json, 'pageIndex', '"pageIndex" parameter expected in request data')
@@ -287,7 +289,7 @@ def search_feature() -> Response:
 
         transformed_filters = transform_filters(filters=request_json.get('filters', {}), resource='feature')
 
-        results_dict = _search_table(filters=transformed_filters,
+        results_dict = _search_feature(filters=transformed_filters,
                                      search_term=search_term,
                                      page_index=page_index,
                                      search_type=search_type)
@@ -308,18 +310,32 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
     :return: a json output containing search results array as 'results'
     """
     # Default results
+    LOGGER.info("HERE!!!")
     features = {
         'page_index': int(page_index),
-        'results': [],
-        'total_results': 0,
+        'results': [
+            {
+                'type': 'feature',
+                'description': 'I am an ML feature',
+                'key': 'test_feature_group/test_feature_name/1.4',
+                'last_updated_timestamp': 946684799,
+                'name': 'test_feature_name',
+                'feature_group': 'test_feature_group',
+                'version': '1.4',
+                'availability': ['hive'],
+                'entity': 'test_entity',
+            }
+            ],
+        'total_results': 1,
     }
 
     results_dict = {
         'search_term': search_term,
-        'msg': '',
+        'msg': 'Success',
         'features': features,
     }
 
+    return results_dict
     try:
         if has_filters(filters=filters, resource='feature'):
             query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
@@ -329,7 +345,7 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
                                       method='POST',
                                       data=json.dumps(query_json))
         else:
-            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_TABLE_ENDPOINT  # TODO rename const?
+            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_ENDPOINT  # TODO rename const?
             url = f'{url_base}?query_term={search_term}&page_index={page_index}'
             response = request_search(url=url)
 
@@ -337,7 +353,7 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = 'Success'
             results = response.json().get('results')
-            features['results'] = [map_table_result(result) for result in results]
+            features['results'] = [map_feature_result(result) for result in results]
             features['total_results'] = response.json().get('total_results')
         else:
             message = 'Encountered error: Search request failed'
