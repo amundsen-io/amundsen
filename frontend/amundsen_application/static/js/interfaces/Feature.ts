@@ -29,6 +29,7 @@ export interface FeatureMetadata {
   partition_column?: TableColumn;
 }
 
+// TODO - duplicated with FeatureResource in Resources.ts. Might delete this.
 export interface FeatureSummary {
   key: string;
   name: string;

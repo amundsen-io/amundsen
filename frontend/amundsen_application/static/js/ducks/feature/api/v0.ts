@@ -5,7 +5,7 @@ import { FeatureMetadata } from 'interfaces/Feature';
 
 export type GetFeatureAPI = {
   msg: string;
-  feature: FeatureMetadata;
+  featureData: FeatureMetadata;
 };
 
 const FEATURE_BASE = '/api/metadata/v0';
@@ -17,7 +17,7 @@ export function getFeature(key: string, index?: string, source?: string) {
     .then((response: AxiosResponse<GetFeatureAPI>) => {
       const { data, status } = response;
       return {
-        feature: data.feature,
+        feature: data.featureData,
         statusCode: status,
       };
     })

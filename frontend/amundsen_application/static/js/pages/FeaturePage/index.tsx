@@ -14,6 +14,8 @@ import { GetFeatureRequest } from 'ducks/feature/types';
 import Breadcrumb from 'components/Breadcrumb';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
+import { getSourceDisplayName } from 'config/config-utils';
+import { ResourceType } from 'interfaces/Resources';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -67,14 +69,25 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
   if (isLoading) {
     return null;
   }
-  // @ts-ignore
+  const sourcesWithDisplay = feature.availability.map((source) =>
+    getSourceDisplayName(source, ResourceType.feature)
+  );
   return (
     <div className="resource-detail-layout dashboard-page">
       <header className="resource-header">
-        <div className="header-section">
+        <section className="header-section">
           <Breadcrumb />
           <span className="icon icon-header icon-database" />
-        </div>
+        </section>
+        <section className="header-section">
+          <h1 className="header-title-text truncated" title={feature.name}>
+            {feature.name}
+          </h1>
+          <div className="text-body-w3">
+            Feature &bull;&nbsp;
+            {sourcesWithDisplay.join(', ')}
+          </div>
+        </section>
       </header>
       <article className="column-layout-1">
         <aside className="left-panel">
@@ -108,10 +121,12 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
               </section>
             </section>
             <section className="right-panel">
-              <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Partition Key</h3>
-                {feature.partition_column}
-              </section>
+              {feature.partition_column !== null && (
+                <section className="metadata-section">
+                  <h3 className="section-title text-title-w3">Partition Key</h3>
+                  {feature.partition_column}
+                </section>
+              )}
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">version</h3>
                 {feature.version}
