@@ -25,7 +25,12 @@ setup(
     install_requires=requirements,
     extras_require={
         'oidc': ['flaskoidc==0.2.3'],
-        'atlas': ['apache-atlas==0.0.11']
+        'atlas': ['apache-atlas==0.0.11',
+                  'amundsenatlastypes==1.2.0'],
+        'rds': ['amundsen-rds==0.0.5',
+                'mysqlclient>=1.3.6,<3',
+                'sqlalchemy>=1.3.6,<1.4',
+                'alembic>=1.2,<2.0']
     },
     python_requires=">=3.6",
     classifiers=[
