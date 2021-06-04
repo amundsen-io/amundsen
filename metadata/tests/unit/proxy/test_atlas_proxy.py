@@ -12,8 +12,7 @@ from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, User)
-from amundsen_common.utils.atlas_utils import (AtlasCommonParams,
-                                               AtlasCommonTypes)
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasCommonTypes
 from apache_atlas.model.instance import AtlasRelatedObjectId
 from apache_atlas.model.relationship import AtlasRelationship
 from apache_atlas.utils import type_coerce
