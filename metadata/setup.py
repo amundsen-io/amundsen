@@ -27,7 +27,7 @@ rds = ['amundsen-rds==0.0.5',
        'sqlalchemy>=1.3.6,<1.4',
        'alembic>=1.2,<2.0']
 
-all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds + requirements_dev
+all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds
 
 setup(
     name='amundsen-metadata',
