@@ -6,9 +6,9 @@ from typing import (
 )
 
 from amundsen_rds.models import RDSModel
+from amundsen_rds.models.dashboard import DashboardOwner as RDSDashboardOwner
 from amundsen_rds.models.table import TableOwner as RDSTableOwner
 from amundsen_rds.models.user import User as RDSUser
-from amundsen_rds.models.dashboard import DashboardOwner as RDSDashboardOwner
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode

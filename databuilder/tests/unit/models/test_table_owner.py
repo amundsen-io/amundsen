@@ -8,8 +8,8 @@ from databuilder.models.graph_serializable import (
     NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
     RELATION_START_LABEL, RELATION_TYPE,
 )
-from databuilder.models.table_owner import TableOwner
 from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE, OWNER_RELATION_TYPE
+from databuilder.models.table_owner import TableOwner
 from databuilder.models.user import User
 from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,

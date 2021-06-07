@@ -2,16 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    Any, Dict, Iterator, List, Optional, Set
+    Any, Dict, Iterator, List, Optional, Set,
 )
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.table_metadata import TagMetadata
-from databuilder.models.table_metadata import TableMetadata
-from databuilder.models.table_metadata import DescriptionMetadata
-from databuilder.models.table_metadata import _format_as_list
+from databuilder.models.table_metadata import (
+    DescriptionMetadata, TableMetadata, TagMetadata, _format_as_list,
+)
 
 
 class FeatureMetadata(GraphSerializable):
@@ -100,7 +99,7 @@ class FeatureMetadata(GraphSerializable):
         except StopIteration:
             return None
 
-    def _create_next_node(self) -> Iterator[GraphNode]:
+    def _get_feature_node_attributes(self) -> Dict[str, Any]:
         feature_node_attrs: Dict[str, Any] = {
             FeatureMetadata.NAME_ATTR: self.name,
         }
@@ -119,10 +118,13 @@ class FeatureMetadata(GraphSerializable):
         if self.created_timestamp:
             feature_node_attrs[FeatureMetadata.CREATED_TIMESTAMP_ATTR] = self.created_timestamp
 
+        return feature_node_attrs
+
+    def _create_next_node(self) -> Iterator[GraphNode]:
         yield GraphNode(
             key=self._get_feature_key(),
             label=FeatureMetadata.NODE_LABEL,
-            attributes=feature_node_attrs
+            attributes=self._get_feature_node_attributes()
         )
 
         if self.feature_group:
