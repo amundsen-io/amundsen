@@ -280,7 +280,6 @@ def search_feature() -> Response:
     """
     try:
         request_json = request.get_json()
-        LOGGER.info(request_json)
 
         search_term = get_query_param(request_json, 'term', '"term" parameter expected in request data')
         page_index = get_query_param(request_json, 'pageIndex', '"pageIndex" parameter expected in request data')
@@ -293,7 +292,7 @@ def search_feature() -> Response:
                                      search_term=search_term,
                                      page_index=page_index,
                                      search_type=search_type)
-        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.OK))
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
@@ -310,7 +309,6 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
     :return: a json output containing search results array as 'results'
     """
     # Default results
-    LOGGER.info("HERE!!!")
     features = {
         'page_index': int(page_index),
         'results': [
@@ -336,34 +334,34 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
     }
 
     return results_dict
-    try:
-        if has_filters(filters=filters, resource='feature'):
-            query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
-            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_FILTER_ENDPOINT
-            response = request_search(url=url_base,
-                                      headers={'Content-Type': 'application/json'},
-                                      method='POST',
-                                      data=json.dumps(query_json))
-        else:
-            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_ENDPOINT  # TODO rename const?
-            url = f'{url_base}?query_term={search_term}&page_index={page_index}'
-            response = request_search(url=url)
+    # try:
+    #     if has_filters(filters=filters, resource='feature'):
+    #         query_json = generate_query_json(filters=filters, page_index=page_index, search_term=search_term)
+    #         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_FILTER_ENDPOINT
+    #         response = request_search(url=url_base,
+    #                                   headers={'Content-Type': 'application/json'},
+    #                                   method='POST',
+    #                                   data=json.dumps(query_json))
+    #     else:
+    #         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_ENDPOINT  # TODO rename const?
+    #         url = f'{url_base}?query_term={search_term}&page_index={page_index}'
+    #         response = request_search(url=url)
 
-        status_code = response.status_code
-        if status_code == HTTPStatus.OK:
-            results_dict['msg'] = 'Success'
-            results = response.json().get('results')
-            features['results'] = [map_feature_result(result) for result in results]
-            features['total_results'] = response.json().get('total_results')
-        else:
-            message = 'Encountered error: Search request failed'
-            results_dict['msg'] = message
-            logging.error(message)
+    #     status_code = response.status_code
+    #     if status_code == HTTPStatus.OK:
+    #         results_dict['msg'] = 'Success'
+    #         results = response.json().get('results')
+    #         features['results'] = [map_feature_result(result) for result in results]
+    #         features['total_results'] = response.json().get('total_results')
+    #     else:
+    #         message = 'Encountered error: Search request failed'
+    #         results_dict['msg'] = message
+    #         logging.error(message)
 
-        results_dict['status_code'] = status_code
-        return results_dict
-    except Exception as e:
-        message = 'Encountered exception: ' + str(e)
-        results_dict['msg'] = message
-        logging.exception(message)
-        return results_dict
+    #     results_dict['status_code'] = status_code
+    #     return results_dict
+    # except Exception as e:
+    #     message = 'Encountered exception: ' + str(e)
+    #     results_dict['msg'] = message
+    #     logging.exception(message)
+    #     return results_dict
