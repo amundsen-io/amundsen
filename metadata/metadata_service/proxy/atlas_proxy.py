@@ -191,7 +191,7 @@ class AtlasProxy(BaseProxy):
         """
         Fetch a Bookmark entity from parsing table uri and user id.
         If Bookmark is not present, create one for the user.
-        :param table_uri:
+        :param entity_uri:
         :param user_id: Qualified Name of a user
         :return:
         """
@@ -539,13 +539,14 @@ class AtlasProxy(BaseProxy):
 
         if table_entity[AtlasCommonParams.relationships].get("ownedBy"):
             try:
-                active_owners = filter(lambda item:
-                                       item['relationshipStatus'] == AtlasStatus.ACTIVE
-                                       and item['displayText'] == owner,
-                                       table_entity[AtlasCommonParams.relationships]['ownedBy'])
-                if list(active_owners):
+                active_owner = next(filter(lambda item:
+                                           item['relationshipStatus'] == AtlasStatus.ACTIVE
+                                           and item['displayText'] == owner,
+                                           table_entity[AtlasCommonParams.relationships]['ownedBy']), None)
+
+                if active_owner:
                     self.client.relationship.delete_relationship_by_guid(
-                        guid=next(active_owners).get('relationshipGuid')
+                        guid=active_owner.get('relationshipGuid')
                     )
                 else:
                     raise BadRequest('You can not delete this owner.')
@@ -625,7 +626,7 @@ class AtlasProxy(BaseProxy):
         """
         This function look for a user defined glossary i.e., self.ATLAS_USER_DEFINED_TERMS
         If there is not one available, this will create a new glossary.
-        The meain reason to put this functionality into a separate function is to avoid
+        The main reason to put this functionality into a separate function is to avoid
         the lookup each time someone assigns a tag to a data source.
         :return: Glossary object, that holds the user defined terms.
         """
