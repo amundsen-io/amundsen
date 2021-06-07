@@ -3,7 +3,7 @@
 
 import distutils.util
 import os
-from typing import Callable, Dict, List, Optional, Set  # noqa: F401
+from typing import Any, Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
@@ -24,7 +24,12 @@ PROXY_CLIENT_KWARGS = 'PROXY_CLIENT_KWARGS'
 PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
     'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy',
-    'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy'
+    'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy',
+    'MYSQL': 'metadata_service.proxy.mysql_proxy.MySQLProxy'
+}
+
+PROXY_CLIS = {
+    'MYSQL': 'metadata_service.cli.rds_command.rds_cli'
 }
 
 IS_STATSD_ON = 'IS_STATSD_ON'
@@ -139,3 +144,21 @@ class NeptuneConfig(LocalGremlinConfig, LocalConfig):
     }
 
     JANUS_GRAPH_URL = None
+
+
+class MySQLConfig(LocalConfig):
+    PROXY_CLIENT = PROXY_CLIENTS['MYSQL']
+    PROXY_CLI = PROXY_CLIS['MYSQL']
+
+    PROXY_HOST = None   # type: ignore
+    PROXY_PORT = None   # type: ignore
+    PROXY_USER = None   # type: ignore
+    PROXY_PASSWORD = None   # type: ignore
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'mysql://user:password@127.0.0.1:3306/amundsen')
+    PROXY_CLIENT_KWARGS: Dict[str, Any] = {
+        'echo': bool(distutils.util.strtobool(os.environ.get('ECHO', 'False'))),
+        'pool_size': os.environ.get('POOL_SIZE', 5),
+        'max_overflow': os.environ.get('MAX_OVERFLOW', 10),
+        'connect_args': dict()
+    }

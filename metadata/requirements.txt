@@ -35,7 +35,7 @@ typing-extensions==3.7.4
 
 # A common package that holds the models deifnition and schemas that are used
 # accross different amundsen repositories.
-amundsen-common>=0.11.0
+amundsen-common>=0.13.0
 
 amundsen-gremlin>=0.0.9
 
@@ -61,7 +61,6 @@ neotime==1.7.1
 pytz==2018.4
 requests-aws4auth==0.9
 statsd==3.3.0
-apache_atlas==0.0.11
 beaker>=1.10.0
 overrides==2.5
 typed-ast==1.4.2

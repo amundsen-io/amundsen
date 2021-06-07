@@ -6,11 +6,13 @@ import unittest
 from typing import Any, Dict, Optional, cast
 from unittest.mock import MagicMock, patch
 
+from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, User)
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasCommonTypes
 from apache_atlas.model.instance import AtlasRelatedObjectId
 from apache_atlas.model.relationship import AtlasRelationship
 from apache_atlas.utils import type_coerce
@@ -263,6 +265,23 @@ class TestAtlasProxy(unittest.TestCase, Data):
             mock_execute.assert_called_with(term.guid,
                                             [AtlasRelatedObjectId(self.entity1)])
 
+    def test_delete_tag_no_term(self) -> None:
+        tag = "TAG"
+        self._mock_get_table_entity()
+        self.proxy._get_create_glossary_term = MagicMock(return_value={})
+
+        with patch.object(self.proxy.client.glossary, 'disassociate_term_from_entities') as mock_execute:
+            self.proxy.delete_tag(id=self.table_uri, tag=tag, tag_type='default')
+            mock_execute.assert_not_called()
+
+    def test_get_badges(self) -> None:
+        expected = [Badge(badge_name=item, category="default") for item in
+                    self.metrics_data['tag'].get("tagEntities").keys()]
+
+        self.proxy.client.admin.get_metrics = MagicMock(return_value=self.metrics_data)
+        response = self.proxy.get_badges()
+        self.assertEqual(expected.__repr__(), response.__repr__())
+
     def test_add_owner(self) -> None:
         owner = "OWNER"
         user_guid = 123
@@ -279,6 +298,65 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                           'end2': {'guid': user_guid, 'typeName': 'User'}}, AtlasRelationship)
 
             )
+
+    def test_add_owner_no_user(self) -> None:
+        owner = "OWNER"
+        self.proxy._get_user_details = MagicMock(return_value={})  # type: ignore
+        with self.assertRaises(NotFoundException):
+            self.proxy.add_owner(table_uri=self.table_uri, owner=owner)
+
+    def test_add_owner_existing_owner(self) -> None:
+        owner = "OWNER"
+        user_guid = 123
+        self._mock_get_table_entity()
+        mocked_user_entity = MagicMock()
+        mocked_user_entity.guidAssignments = dict(user_guid=user_guid)
+        self.proxy.client.entity.create_entity = MagicMock(return_value=mocked_user_entity)
+        self.proxy.client.relationship.create_relationship = MagicMock(side_effect=Exception())
+
+        with self.assertRaises(BadRequest):
+            self.proxy.add_owner(table_uri=self.table_uri, owner=owner)
+
+    def test_delete_owner(self) -> None:
+        owner = 'active_owned_by'
+        self._mock_get_table_entity()
+        self.proxy.client.call_api = MagicMock(return_value='DOESNT_MATTER')
+
+        with patch.object(self.proxy.client.relationship, 'delete_relationship_by_guid') as mock_execute:
+            self.proxy.delete_owner(table_uri=self.table_uri, owner=owner)
+            mock_execute.assert_called_with(guid="relationshipGuid-1")
+
+    def test_get_user_entity(self) -> None:
+        user_id = '123'
+        with patch.object(self.proxy.client.entity, 'get_entity_by_attribute') as mock_execute:
+            self.proxy._get_user_entity(user_id)
+            mock_execute.assert_called_with(type_name=AtlasCommonTypes.user,
+                                            uniq_attributes=[(AtlasCommonParams.qualified_name, user_id)])
+
+    def test_get_user_entity_no_user(self) -> None:
+        user_id = '123'
+        self.proxy.client.entity.get_entity_by_attribute = MagicMock(side_effect=Exception())
+        with self.assertRaises(NotFoundException):
+            self.proxy._get_user_entity(user_id)
+
+    def test_get_bookmark_entity_not_found(self) -> None:
+        user_entity = MagicMock()
+        user_entity.entity = MagicMock(return_value=self.user_entity_1)
+        self.proxy._get_user_entity = MagicMock(return_value=user_entity)  # type: ignore
+        self._mock_get_table_entity()
+        self.proxy.client.entity.get_entity_by_attribute = MagicMock(side_effect=[Exception('Mayday!'), None])
+
+        with patch.object(self.proxy, '_create_bookmark') as mock_execute:
+            user_id = self.user_entity_1['attributes']['qualifiedName']
+            self.proxy._get_bookmark_entity(entity_uri=self.table_uri, user_id=user_id)
+
+            expected_table_entity = self.proxy._get_table_entity(table_uri=self.table_uri)
+            expected_user_guid = user_entity.entity[AtlasCommonParams.guid]
+            expected_bookmark_qn = f'{self.db}.{self.name}.{self.entity_type}.{user_id}.bookmark@{self.cluster}'
+            expected_table_uri = self.table_uri
+
+            mock_execute.assert_called_with(expected_table_entity, expected_user_guid, expected_bookmark_qn,
+                                            expected_table_uri)
 
     def test_get_column(self) -> None:
         self._mock_get_table_entity()
@@ -359,17 +437,13 @@ class TestAtlasProxy(unittest.TestCase, Data):
         entity_bulk_result.entities = [DottedDict(self.entity1)]
         self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=entity_bulk_result)
 
-        res = self.proxy._get_resources_owned_by_user(user_id='test_user_2',
-                                                      resource_type=ResourceType.Table.name)
-
-        self.assertEqual(len(res), 1)
-
+        res_table = self.proxy._get_resources_owned_by_user(user_id='test_user_2',
+                                                            resource_type=ResourceType.Table.name)
+        self.assertEqual(len(res_table), 1)
         ent1_attrs = cast(dict, self.entity1['attributes'])
-
-        expected = [PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
-                                 name=ent1_attrs['name'], description=ent1_attrs['description'])]
-
-        self.assertEqual(expected, res)
+        expected_table = [PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                                       name=ent1_attrs['name'], description=ent1_attrs['description'])]
+        self.assertEqual(expected_table, res_table)
 
     def test_get_resources_owned_by_user_no_user(self) -> None:
         unique_attr_response = MagicMock()
@@ -404,6 +478,60 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.assertEqual(len(res), 1)
 
+    def test_get_resources_owned_by_user_dashboard(self) -> None:
+        unique_attr_response = MagicMock()
+        unique_attr_response.entity = self.user_entity_1
+        self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=unique_attr_response)
+
+        entity_bulk_result = MagicMock()
+        entity_bulk_result.entities = [DottedDict(self.dashboard_data['entity'])]
+        self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=entity_bulk_result)
+
+        res_dashboard = self.proxy._get_resources_owned_by_user(user_id='test_user_1',
+                                                                resource_type=ResourceType.Dashboard.name)
+        self.assertEqual(len(res_dashboard), 1)
+        expected_dashboard = [
+            DashboardSummary(uri='superset_dashboard://datalab.prod/1', cluster='datalab', group_name='prod superset',
+                             group_url='https://prod.superset/dashboards/1', product='superset', name='Prod Usage',
+                             url='https://prod.superset/dashboards/1', description='Robs famous dashboard',
+                             last_successful_run_timestamp=0, chart_names=[])]
+        self.assertEqual(expected_dashboard, res_dashboard)
+
+    def test_get_resources_owned_by_user_unimplemented_resource(self) -> None:
+        user_id = '123'
+        resource_type = 'UNIMPLEMENTED'
+        with self.assertRaises(NotImplementedError):
+            self.proxy._get_resources_owned_by_user(user_id, resource_type)
+
+    def test_get_resources_using_table(self) -> None:
+        self._mock_get_table_entity()
+
+        expected_resource_type = 'dashboards'
+        expected_resources_count = 1
+        expected_resource_detail = [DashboardSummary(uri='superset_dashboard://datalab.prod/1', cluster='datalab',
+                                                     group_name='prod superset',
+                                                     group_url='https://prod.superset/dashboards/1', product='superset',
+                                                     name='Prod Usage', url='https://prod.superset/dashboards/1',
+                                                     description='Robs famous dashboard',
+                                                     last_successful_run_timestamp=1619517099, chart_names=[])]
+
+        self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=DottedDict({
+            'entities': [DottedDict(self.dashboard_data['entity'])],
+            'referredEntities': self.dashboard_data['referredEntities']}))
+
+        result = self.proxy.get_resources_using_table(id='DOESNT_MATTER', resource_type=ResourceType.Dashboard)
+
+        self.assertIn(expected_resource_type, result)
+        self.assertEqual(expected_resources_count, len(result[expected_resource_type]))
+        self.assertEqual(expected_resource_detail, result[expected_resource_type])
+
+    def test_get_resources_using_table_unimplemented_resource(self) -> None:
+        id = 'DOESNT_MATTER'
+        resource_type = 'UNIMPLEMENTED'
+
+        with self.assertRaises(NotImplementedError):
+            self.proxy.get_resources_using_table(id=id, resource_type=resource_type)  # type: ignore
+
     def test_add_resource_relation_by_user(self) -> None:
         bookmark_entity = self._mock_get_bookmark_entity()
         with patch.object(bookmark_entity, 'update') as mock_execute:
@@ -412,6 +540,15 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                      relation_type=UserResourceRel.follow,
                                                      resource_type=ResourceType.Table)
             mock_execute.assert_called_with()
+
+    def test_add_resource_relation_by_user_unimplemented_resource(self) -> None:
+        self._mock_get_bookmark_entity()
+        resource_type = 'UNIMPLEMENTED'
+        with self.assertRaises(NotImplementedError):
+            self.proxy.add_resource_relation_by_user(id=self.table_uri,
+                                                     user_id="test_user_id",
+                                                     relation_type=UserResourceRel.follow,
+                                                     resource_type=resource_type)  # type: ignore
 
     def test_delete_resource_relation_by_user(self) -> None:
         bookmark_entity = self._mock_get_bookmark_entity()
@@ -422,6 +559,15 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                         resource_type=ResourceType.Table)
             mock_execute.assert_called_with()
 
+    def test_delete_resource_relation_by_user_unimplemented_resource(self) -> None:
+        self._mock_get_bookmark_entity()
+        resource_type = 'UNIMPLEMENTED'
+        with self.assertRaises(NotImplementedError):
+            self.proxy.delete_resource_relation_by_user(id=self.table_uri,
+                                                        user_id="test_user_id",
+                                                        relation_type=UserResourceRel.follow,
+                                                        resource_type=resource_type)  # type: ignore
+
     def test_get_readers(self) -> None:
         entity_bulk_result = MagicMock()
         entity_bulk_result.entities = self.reader_entities
@@ -430,9 +576,19 @@ class TestAtlasProxy(unittest.TestCase, Data):
         res = self.proxy._get_readers(dict(relationshipAttributes=dict(readers=[dict(guid=1, entityStatus='ACTIVE',
                                                                                      relationshipStatus='ACTIVE')])),
                                       Reader, 1)
+        expected_readers = [Reader(user=User(email='test_user_2', user_id='test_user_2'), read_count=150)]
+        self.assertEqual(expected_readers, res)
 
-        expected = [Reader(user=User(email='test_user_2', user_id='test_user_2'), read_count=150)]
+        res = self.proxy._get_readers(dict(relationshipAttributes=dict(readers=[dict(guid=1, entityStatus='ACTIVE',
+                                                                                     relationshipStatus='ACTIVE')])),
+                                      User, 1)
+        expected_users = [User(email='test_user_1', user_id='test_user_1')]
+        self.assertEqual(expected_users, res)
 
+        res = self.proxy._get_readers(dict(relationshipAttributes=dict(readers=[dict(guid=1, entityStatus='ACTIVE',
+                                                                                     relationshipStatus='ACTIVE')])),
+                                      'WRONG_MODEL', 1)
+        expected = []  # type: ignore
         self.assertEqual(expected, res)
 
     def test_get_frequently_used_tables(self) -> None:
@@ -546,8 +702,13 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
                     assert low.partition_value.startswith(low_date_prefix)
 
+    def test_get_table_watermarks_no_partitions(self) -> None:
+        expected = []  # type: ignore
+        result = self.proxy._get_table_watermarks(cast(dict, self.entity2))
+        self.assertEqual(expected, result)
+
     def test_get_dashboard(self) -> None:
-        self.proxy._get_dashboard = MagicMock(return_value=self.dashboard_data)  # type: ignore
+        self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=self.dashboard_data)  # type: ignore
         self.proxy._get_dashboard_group = MagicMock(return_value=self.dashboard_group_data)  # type: ignore
         self.proxy.client.entity.get_entities_by_guids = MagicMock(return_value=DottedDict({
             'entities': [DottedDict(self.entity1)]}))
@@ -589,6 +750,25 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.assertEqual(expected, result)
 
+    def test_get_dashboard_description(self) -> None:
+        self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=self.dashboard_data)  # type: ignore
+        result = self.proxy.get_dashboard_description(id="DOESNT_MATTER")
+        expected = self.dashboard_data['entity'][AtlasCommonParams.attributes].get('description')
+        self.assertEqual(expected, result)
+
+    def test_put_dashboard_description(self) -> None:
+        dashboard_id = self.dashboard_data['entity'].get('attributes').get('qualifiedName')
+        dashboard_description = 'description_1'
+        self.proxy.client.entity.get_entity_by_attribute = MagicMock(return_value=self.dashboard_data)
+        with patch.object(self.proxy.client.entity, 'partial_update_entity_by_guid') as mock_execute:
+            self.proxy.put_dashboard_description(id=dashboard_id, description=dashboard_description)
+            expected_guid = self.dashboard_data['entity'].get(AtlasCommonParams.guid)
+            expected_attr_value = dashboard_description
+            expected_attr_name = 'description'
+            mock_execute.assert_called_with(entity_guid=expected_guid,
+                                            attr_value=expected_attr_value,
+                                            attr_name=expected_attr_name)
+
     def test_get_lineage_table(self) -> None:
         key = 'hive_table://demo.sample/table_2'
         resource_type = ResourceType.Table
@@ -623,6 +803,62 @@ class TestAtlasProxy(unittest.TestCase, Data):
 
         self.assertIsInstance(result, Lineage)
         self.assertEqual(expected, result)
+
+    def test_test_get_lineage_table_unimplemented_resource(self) -> None:
+        unimplemented_resource_type = ResourceType.Feature
+        key = 'hive_table://demo.sample/table_2'
+        direction = 'both'
+        depth = 3
+        with self.assertRaises(NotImplementedError):
+            self.proxy.get_lineage(resource_type=unimplemented_resource_type,
+                                   id=key,
+                                   direction=direction,
+                                   depth=depth)
+
+    def test_parse_bookmark_qn(self) -> None:
+        bookmark_qn = f'{self.db}.{self.name}.hive_table.test_user_id.bookmark@{self.cluster}'
+        expected = {'db': 'TEST_DB',
+                    'table': 'TEST_TABLE',
+                    'entity_type': 'hive_table',
+                    'user_id': 'test_user_id',
+                    'cluster': 'TEST_CLUSTER'}
+        result = self.proxy._parse_bookmark_qn(bookmark_qn)
+        self.assertEqual(expected, result)
+
+    def test_get_user_defined_glossary_guid(self) -> None:
+        has_amundsen_glossary = [self.glossary_1, self.glossary_amundsen]
+        no_amundsen_glossary = [self.glossary_1]
+        expected_guid = self.glossary_amundsen[AtlasCommonParams.guid]
+
+        self.proxy.client.glossary.get_all_glossaries = MagicMock(
+            side_effect=[has_amundsen_glossary, no_amundsen_glossary])
+
+        glossary_guid = self.proxy._get_user_defined_glossary_guid()
+        self.assertEqual(glossary_guid, expected_guid)
+
+        self.proxy._CACHE.invalidate(self.proxy._get_user_defined_glossary_guid, '_get_user_defined_glossary_guid')
+        with patch.object(self.proxy.client.glossary, 'create_glossary') as mock_execute:
+            self.proxy._get_user_defined_glossary_guid()
+            _, args, _ = mock_execute.mock_calls[0]
+            self.assertIn('name', args[0])
+            self.assertEqual(self.proxy.AMUNDSEN_USER_TAGS, args[0]['name'])
+
+            self.assertIn('shortDescription', args[0])
+            self.assertEqual('Amundsen User Defined Terms', args[0]['shortDescription'])
+
+    def test_get_create_glossary_term(self) -> None:
+        faceted_search_result = MagicMock
+        faceted_search_result.approximateCount = 0
+        self.proxy.client.discovery.faceted_search = MagicMock(return_value=faceted_search_result)
+        self.proxy._get_user_defined_glossary_guid = MagicMock(return_value=self.glossary_amundsen.get('guid'))
+        self.proxy.client.call_api = MagicMock(return_value=None)
+
+        with patch.object(self.proxy.client.glossary, 'create_glossary_term') as mock_execute:
+            self.proxy._get_create_glossary_term(term_name='DOESNT_MATTER')
+            _, args, _ = mock_execute.mock_calls[0]
+            self.assertIn('anchor', args[0])
+            self.assertIn('glossaryGuid', args[0]['anchor'])
+            self.assertEqual(args[0]['anchor']['glossaryGuid'], self.glossary_amundsen.get('guid'))
 
 
 if __name__ == '__main__':
