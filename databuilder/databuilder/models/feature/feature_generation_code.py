@@ -11,6 +11,10 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 
 
+# FeatureGenerationCode allows ingesting as text the generation code - whether sql or not -
+# which was used to create a feature. Unlike the Query node for Dashboards, it has no inherent
+# concept of name, url, id, or hierarchical structure. This allows for maximum flexibility to
+# ingest generation code regardless of source.
 class FeatureGenerationCode(GraphSerializable):
     NODE_LABEL = 'Feature_Generation_Code'
 

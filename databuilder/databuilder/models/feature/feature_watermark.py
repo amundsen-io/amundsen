@@ -10,6 +10,8 @@ from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.timestamp.timestamp_constants import TIMESTAMP_PROPERTY
 
 
+# Unlike Watermark, which concerns itself with table implementation specifics (like partition),
+# Feature_Watermark is more general and does not care how the feature is stored.
 class FeatureWatermark(GraphSerializable):
     """
     Represents the high and low timestamp of data in a Feature.

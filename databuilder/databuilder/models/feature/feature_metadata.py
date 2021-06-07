@@ -20,13 +20,6 @@ class FeatureMetadata(GraphSerializable):
     It implements GraphSerializable (TODO: implement TableSerializable)
     so that it can be serialized to produce Feature, Feature_Group, Tag,
     Database, Description and relations between those.
-
-    Other models (created independently) which may be related to Feature are:
-      - FeatureQuery
-      - FeatureWatermark
-      - Badge
-      - Owner
-      - Programmatic_Description
     """
 
     NODE_LABEL = 'Feature'
