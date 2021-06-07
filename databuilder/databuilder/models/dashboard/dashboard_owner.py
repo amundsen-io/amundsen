@@ -30,23 +30,18 @@ class DashboardOwner(Owner):
                  **kwargs: Any
                  ) -> None:
 
-        self._email = email
-        self._start_label = DashboardMetadata.DASHBOARD_NODE_LABEL
-        self._start_key = DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
-            product=product,
-            cluster=cluster,
-            dashboard_group=dashboard_group_id,
-            dashboard_name=dashboard_id
-        )
         Owner.__init__(
             self,
-            start_label=self._start_label,
-            start_key=self._start_key,
+            start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,
+            start_key=DashboardMetadata.DASHBOARD_KEY_FORMAT.format(
+                product=product,
+                cluster=cluster,
+                dashboard_group=dashboard_group_id,
+                dashboard_name=dashboard_id
+            ),
             owner_emails=[email]
         )
-
-        self._dashboard_group_id = dashboard_group_id
-        self._dashboard_id = dashboard_id
+        self._email = email
         self._record_iterator = self._create_record_iterator()
 
     # override this because we do not want to create new User nodes from this model
