@@ -11,14 +11,14 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 
 
-class FeatureQuery(GraphSerializable):
-    NODE_LABEL = 'Feature_Query'
+class FeatureGenerationCode(GraphSerializable):
+    NODE_LABEL = 'Feature_Generation_Code'
 
     TEXT_ATTR = 'text'
     LAST_EXECUTED_TIMESTAMP_ATTR = 'last_executed_timestamp'
 
-    FEATURE_QUERY_RELATION_TYPE = 'HAS_QUERY'
-    QUERY_FEATURE_RELATION_TYPE = 'QUERY_OF'
+    FEATURE_GENCODE_RELATION_TYPE = 'GENERATION_CODE'
+    GENCODE_FEATURE_RELATION_TYPE = 'GENERATION_CODE_OF'
 
     def __init__(self,
                  feature_group: str,
@@ -39,7 +39,7 @@ class FeatureQuery(GraphSerializable):
         self._relation_iterator = self._create_relation_iterator()
 
     def __repr__(self) -> str:
-        return f'Feature_Query({self.feature_group!r}, {self.feature_name!r}, {self.feature_version!r}, ' \
+        return f'Feature_Generation_Code({self.feature_group!r}, {self.feature_name!r}, {self.feature_version!r}, ' \
                f'{self.text!r}, {self.last_executed_timestamp!r})'
 
     def _get_feature_key(self) -> str:
@@ -47,8 +47,8 @@ class FeatureQuery(GraphSerializable):
                                                  name=self.feature_name,
                                                  version=self.feature_version)
 
-    def _get_query_key(self) -> str:
-        return f'{self._get_feature_key()}/_query'
+    def _get_generation_code_key(self) -> str:
+        return f'{self._get_feature_key()}/_generation_code'
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
@@ -58,14 +58,14 @@ class FeatureQuery(GraphSerializable):
 
     def _create_node_iterator(self) -> Iterator[GraphNode]:
         attrs = {
-            FeatureQuery.TEXT_ATTR: self.text,
+            FeatureGenerationCode.TEXT_ATTR: self.text,
         }
         if self.last_executed_timestamp:
-            attrs[FeatureQuery.LAST_EXECUTED_TIMESTAMP_ATTR] = self.last_executed_timestamp
+            attrs[FeatureGenerationCode.LAST_EXECUTED_TIMESTAMP_ATTR] = self.last_executed_timestamp
 
         yield GraphNode(
-            key=self._get_query_key(),
-            label=FeatureQuery.NODE_LABEL,
+            key=self._get_generation_code_key(),
+            label=FeatureGenerationCode.NODE_LABEL,
             attributes=attrs,
         )
 
@@ -78,10 +78,10 @@ class FeatureQuery(GraphSerializable):
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         yield GraphRelationship(
             start_label=FeatureMetadata.NODE_LABEL,
-            end_label=FeatureQuery.NODE_LABEL,
+            end_label=FeatureGenerationCode.NODE_LABEL,
             start_key=self._get_feature_key(),
-            end_key=self._get_query_key(),
-            type=FeatureQuery.FEATURE_QUERY_RELATION_TYPE,
-            reverse_type=FeatureQuery.QUERY_FEATURE_RELATION_TYPE,
+            end_key=self._get_generation_code_key(),
+            type=FeatureGenerationCode.FEATURE_GENCODE_RELATION_TYPE,
+            reverse_type=FeatureGenerationCode.GENCODE_FEATURE_RELATION_TYPE,
             attributes={},
         )

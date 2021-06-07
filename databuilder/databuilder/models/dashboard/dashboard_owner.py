@@ -45,6 +45,8 @@ class DashboardOwner(Owner):
             owner_emails=[email]
         )
 
+        self._dashboard_group_id = dashboard_group_id
+        self._dashboard_id = dashboard_id
         self._record_iterator = self._create_record_iterator()
 
     # override this because we do not want to create new User nodes from this model
