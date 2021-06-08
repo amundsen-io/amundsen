@@ -92,16 +92,6 @@ class TestBadge(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_bad_key_entity_match(self) -> None:
-        column_label = 'Column'
-        table_key = 'hive://default.base/test'
-
-        self.assertRaises(Exception,
-                          BadgeMetadata,
-                          start_label=column_label,
-                          start_key=table_key,
-                          badges=[badge1, badge2])
-
     def test_bad_entity_label(self) -> None:
         user_label = 'User'
         table_key = 'hive://default.base/test'
