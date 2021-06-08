@@ -89,9 +89,9 @@ class BaseBigQueryExtractor(Extractor):
         if len(suffix) < BaseBigQueryExtractor.DATE_LENGTH:
             return False
 
-        suffix_prefix = suffix[:BaseBigQueryExtractor.DATE_LENGTH]
+        suffix_date = suffix[:BaseBigQueryExtractor.DATE_LENGTH]
         try:
-            datetime.strptime(suffix_prefix, '%Y%m%d')
+            datetime.strptime(suffix_date, '%Y%m%d')
             return True
         except ValueError:
             return False
