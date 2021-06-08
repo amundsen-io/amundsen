@@ -53,10 +53,10 @@ def map_feature_result(result: Dict) -> Dict:
         'key': result.get('key', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
         'name': result.get('name', None),
-        'feature_group': 'test_feature_group',
-        'version': '1.4',
-        'availability': ['hive'],
-        'entity': 'test_entity',
+        'feature_group': result.get('feature_group', None),
+        'version': result.get('version', None),
+        'availability': result.get('availability', None),
+        'entity': result.get('entity', None),
         'badges': result.get('badges', None),
     }
 

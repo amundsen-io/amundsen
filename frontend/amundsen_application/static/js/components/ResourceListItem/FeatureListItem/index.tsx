@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 import { logClick } from 'utils/analytics';
 
+import BadgeList from 'features/BadgeList';
 import { ResourceType, FeatureResource } from 'interfaces';
 
 import { LoggingParams } from '../types';
@@ -64,9 +65,13 @@ class FeatureListItem extends React.Component<FeatureListItemProps, {}> {
             {getSourceDisplayName(source, feature.type)}
           </div>
           <div className="resource-badges">
-              <time className="body-secondary-3">
-                {feature.badges}
-              </time>
+        {!!feature.badges && feature.badges.length > 0 && (
+          <div>
+            <div className="body-secondary-3">
+              <BadgeList badges={feature.badges} />
+            </div>
+          </div>
+        )}
           </div>
           <div className="resource-entity">
             <div>
