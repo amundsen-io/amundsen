@@ -31,7 +31,7 @@ export interface SearchAPI {
 export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
   const ret = { searchTerm: data.search_term };
-  ['dashboards', 'tables', 'users'].forEach((key) => {
+  ['dashboards', 'features', 'tables', 'users'].forEach((key) => {
     if (data[key]) {
       ret[key] = data[key];
     }
@@ -57,8 +57,10 @@ export function searchResource(
   }
 
   /* Note: This logic must exist until query string endpoints are created for all resources */
-  if (resource === ResourceType.table || resource === ResourceType.dashboard ||
-        resource === ResourceType.feature) {
+  if (
+    resource === ResourceType.table ||
+    resource === ResourceType.dashboard ||
+    resource === ResourceType.feature) {
     return axios
       .post(`${BASE_URL}/${resource}`, {
         filters,

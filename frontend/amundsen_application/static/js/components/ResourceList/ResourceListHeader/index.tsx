@@ -11,6 +11,7 @@ import {
   SOURCE_HEADER_TITLE,
   BADGES_HEADER_TITLE,
   LAST_UPDATED_HEADER_TITLE,
+  ENTITY_HEADER_TITLE
 } from './constants';
 
 export interface ResourceListHeaderProps {
@@ -26,20 +27,54 @@ const contentHeaderTitle = (type: ResourceType): string => {
       return BADGES_HEADER_TITLE;
   }
 };
+
+const getResourceHeaders = (type: ResourceType) => {
+  switch (type) {
+    case ResourceType.dashboard:
+      return [
+        RESOURCE_HEADER_TITLE,
+        SOURCE_HEADER_TITLE,
+        LAST_UPDATED_HEADER_TITLE
+            ];
+    case ResourceType.feature:
+      return [
+        RESOURCE_HEADER_TITLE,
+        SOURCE_HEADER_TITLE,
+        BADGES_HEADER_TITLE,
+        ENTITY_HEADER_TITLE
+            ];
+    case ResourceType.table:
+      return [
+        RESOURCE_HEADER_TITLE,
+        SOURCE_HEADER_TITLE,
+        BADGES_HEADER_TITLE
+            ];
+    case ResourceType.user:
+      return [
+        RESOURCE_HEADER_TITLE,
+        SOURCE_HEADER_TITLE,
+        BADGES_HEADER_TITLE
+            ];
+  }
+};
+
 const ResourceListHeader: React.FC<ResourceListHeaderProps> = ({
   resourceTypes,
 }: ResourceListHeaderProps) => {
-  const contentHeader =
-    resourceTypes.length === 1 ? contentHeaderTitle(resourceTypes[0]) : '';
+  const headers = getResourceHeaders(resourceTypes[0]);
   return (
     <div className="resource-list-header">
-      <span className="resource">
-        <span className="resource-text">{RESOURCE_HEADER_TITLE}</span>
-      </span>
-      <span className="source">{SOURCE_HEADER_TITLE}</span>
-      <span className="badges">
-        <span className="badges-text">{contentHeader}</span>
-      </span>
+      {
+        headers?.map((header_text, index) => {
+          return(
+            <span className={`header-${index}`} key={`header-${index}`}>
+              <span className="header-text"></span>
+              {header_text}
+            </span>
+            );
+            }
+          )
+      }
     </div>
   );
 };

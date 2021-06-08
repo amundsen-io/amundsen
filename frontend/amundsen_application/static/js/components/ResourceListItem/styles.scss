@@ -91,4 +91,12 @@
       margin: 4px;
     }
   }
+  .resource-entity {
+    display: flex;
+    flex: 2;
+    flex-wrap: wrap;
+    margin-bottom: auto;
+    margin-left: 24px;
+    margin-top: auto;
+  }
 }

@@ -13,26 +13,37 @@
   height: $spacer-6;
   padding: $spacer-1 $spacer-3 $spacer-1;
 
-  .resource {
+  .header-0 {
     flex: 7;
     margin-right: $spacer-2;
 
-    .resource-text {
+    .header-text {
       margin-left: $spacer-5;
     }
   }
 
-  .source {
+  .header-1 {
     flex: 2;
   }
 
-  .badges {
+  .header-2 {
     display: flex;
     flex: 3;
     flex-wrap: wrap;
     margin-left: $spacer-3;
 
-    .badges-text {
+    .header-text {
+      margin-left: $spacer-3;
+    }
+  }
+
+  .header-3 {
+    display: flex;
+    flex: 2;
+    flex-wrap: wrap;
+    margin-left: $spacer-3;
+
+    .header-text {
       margin-left: $spacer-3;
     }
   }
