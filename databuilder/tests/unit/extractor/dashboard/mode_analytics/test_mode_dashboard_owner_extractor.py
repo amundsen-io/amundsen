@@ -8,6 +8,7 @@ from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.dashboard.mode_analytics.mode_dashboard_owner_extractor import ModeDashboardOwnerExtractor
+from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.dashboard.dashboard_owner import DashboardOwner
 
 
@@ -36,11 +37,9 @@ class TestModeDashboardLastModifiedTimestampExtractor(unittest.TestCase):
 
             record = extractor.extract()
             self.assertIsInstance(record, DashboardOwner)
-            self.assertEqual(record._dashboard_group_id, 'ggg')
-            self.assertEqual(record._dashboard_id, 'ddd')
-            self.assertEqual(record._email, 'amundsen@abc.com')
-            self.assertEqual(record._product, 'mode')
-            self.assertEqual(record._cluster, 'gold')
+            self.assertEqual(record.owner_emails, ['amundsen@abc.com'])
+            self.assertEqual(record.start_label, DashboardMetadata.DASHBOARD_NODE_LABEL)
+            self.assertEqual(record.start_key, 'mode_dashboard://gold.ggg/ddd')
 
 
 if __name__ == '__main__':
