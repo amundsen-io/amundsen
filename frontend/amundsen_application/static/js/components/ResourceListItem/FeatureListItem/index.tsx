@@ -19,9 +19,9 @@ export interface FeatureListItemProps {
 
 class FeatureListItem extends React.Component<FeatureListItemProps, {}> {
   getLink = () => {
-    const { feature } = this.props;
+    const { feature, logging } = this.props;
 
-    return `/feature/${feature.key}`;
+    return `/feature/${feature.key}?index=${logging.index}&source=${logging.source}`;
   };
 
   generateResourceIconClass = (
