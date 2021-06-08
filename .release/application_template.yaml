@@ -43,7 +43,7 @@ jobs:
   command:
   - sh
   - "-c"
-  - sleep 6
+  - sleep 5
   from_services: backend
   halt_on_error: true
 workflows:
