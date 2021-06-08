@@ -356,6 +356,39 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [SnowflakeUsageExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_usage_extractor.py "SnowflakeUsageExtractor")
+An extractor that extracts table popularity metadata from a custom created Snowflake table (created by a script that may look like [this scala script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/example/scripts/sample_snowflake_table_usage.scala "sample_snowflake_table_usage")). You can create a DAG using the [Databricks Operator](https://github.com/apache/airflow/blob/main/airflow/providers/databricks/operators/databricks.py) and run this script within Databricks or wherever you are able to run Scala.
+
+By default, `snowflake` is used as the database name. `ColumnReader` has the datasource as its `database` input, and database as its `cluster` input.
+
+The following inputs are related to where you create your Snowflake popularity table.
+
+By default, the Snowflake popularity database is set to `PROD`. To override this, set `POPULARITY_TABLE_DATABASE`
+to `WhateverNameOfYourDb`.
+
+By default, the Snowflake popularity schema is set to `SCHEMA`. To override this, set `POPULARTIY_TABLE_SCHEMA`
+to `WhateverNameOfYourSchema`.
+
+By default, the Snowflake popularity table is set to `TABLE`. To override this, set `POPULARITY_TABLE_NAME`
+to `WhateverNameOfYourTable`.
+
+The `where_clause_suffix` should define any filtering you'd like to include in your query. For example, this may include `user_email`s that you don't want to include in your popularity definition.
+
+```python
+job_config = ConfigFactory.from_dict({
+    f'extractor.snowflake.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+    f'extractor.snowflake.{SnowflakeUsageExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+    f'extractor.snowflake.{SnowflakeUsageExtractor.POPULARITY_TABLE_DATABASE}': 'WhateverNameOfYourDb',
+    f'extractor.snowflake.{SnowflakeUsageExtractor.POPULARTIY_TABLE_SCHEMA}': 'WhateverNameOfYourSchema',
+    f'extractor.snowflake.{SnowflakeUsageExtractor.POPULARITY_TABLE_NAME}': 'WhateverNameOfYourTable',
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=SnowflakeUsageExtractor(),
+        loader=AnyLoader()))
+job.launch()
+```
+
 #### [SnowflakeTableLastUpdatedExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_table_last_updated_extractor.py "SnowflakeTableLastUpdatedExtractor")
 An extractor that extracts table last updated timestamp from a Snowflake database.
 
@@ -1014,7 +1047,7 @@ The included `ApacheSupersetMetadataExtractor` provides support for extracting b
 
 All Apache Superset extractors including this one use Apache Superset REST API (`/api/v1`) and were developed based on Apache Superset version `1.1`.
 
-##### Caution! 
+##### Caution!
 
 Apache Superset does not contain metadata fulfilling the concept of `DashboardGroup`. For that reasons, when configuring extractor following parameters must be provided:
 - dashboard_group_id (required)
@@ -1048,7 +1081,7 @@ Apache Superset does not contain metadata fulfilling the concept of `DashboardGr
 ###### Caution!
 
 `changed_on` value does not provide timezone info so we assume it's UTC.
- 
+
 #### Sample job config
 
 ```python
@@ -1080,9 +1113,9 @@ job.launch()
 
 ### [ApacheSupersetTableExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_table_extractor.py)
 
-The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`). 
+The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`).
 
-##### Caution! 
+##### Caution!
 
 As table information in Apache Superset is minimal, following configuration options enable parametrization required to achieve proper relationship information:
 - `driver_to_database_mapping` - mapping between sqlalchemy `drivername` and actual `database` property of `TableMetadata` model.
@@ -1127,7 +1160,7 @@ job.launch()
 
 The included `ApacheSupersetChartExtractor` provides support for extracting information on charts connected to given dashboard.
 
-##### Caution! 
+##### Caution!
 
 Currently there is no way to connect Apache Superset `Query` model to neither `Chart` nor `Dashboard` model. For that reason, to comply with Amundsen
 Databuilder data model, we register single `DashboardQuery` node serving as a bridge to which all the `DashboardChart` nodes are connected.
@@ -1206,9 +1239,9 @@ Complete set of available metrics is defined as DEFAULT_STAT_MAPPINGS attribute 
 
 #### Common usage patterns
 
-As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running 
-the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the 
-report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows 
+As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running
+the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the
+report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows
 to pandas dataframe beforehand and calculate the report on just a sample of original data.
 
 ##### Spark support
