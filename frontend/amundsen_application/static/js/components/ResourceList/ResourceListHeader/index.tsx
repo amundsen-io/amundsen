@@ -11,22 +11,12 @@ import {
   SOURCE_HEADER_TITLE,
   BADGES_HEADER_TITLE,
   LAST_UPDATED_HEADER_TITLE,
-  ENTITY_HEADER_TITLE
+  ENTITY_HEADER_TITLE,
 } from './constants';
 
 export interface ResourceListHeaderProps {
   resourceTypes: ResourceType[];
 }
-
-const contentHeaderTitle = (type: ResourceType): string => {
-  switch (type) {
-    case ResourceType.dashboard:
-      return LAST_UPDATED_HEADER_TITLE;
-
-    default:
-      return BADGES_HEADER_TITLE;
-  }
-};
 
 const getResourceHeaders = (type: ResourceType) => {
   switch (type) {
@@ -34,27 +24,19 @@ const getResourceHeaders = (type: ResourceType) => {
       return [
         RESOURCE_HEADER_TITLE,
         SOURCE_HEADER_TITLE,
-        LAST_UPDATED_HEADER_TITLE
-            ];
+        LAST_UPDATED_HEADER_TITLE,
+      ];
     case ResourceType.feature:
       return [
         RESOURCE_HEADER_TITLE,
         SOURCE_HEADER_TITLE,
         BADGES_HEADER_TITLE,
-        ENTITY_HEADER_TITLE
-            ];
+        ENTITY_HEADER_TITLE,
+      ];
     case ResourceType.table:
-      return [
-        RESOURCE_HEADER_TITLE,
-        SOURCE_HEADER_TITLE,
-        BADGES_HEADER_TITLE
-            ];
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
     case ResourceType.user:
-      return [
-        RESOURCE_HEADER_TITLE,
-        SOURCE_HEADER_TITLE,
-        BADGES_HEADER_TITLE
-            ];
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
   }
 };
 
@@ -64,17 +46,13 @@ const ResourceListHeader: React.FC<ResourceListHeaderProps> = ({
   const headers = getResourceHeaders(resourceTypes[0]);
   return (
     <div className="resource-list-header">
-      {
-        headers?.map((header_text, index) => {
-          return(
-            <span className={`header-${index}`} key={`header-${index}`}>
-              <span className="header-text"></span>
-              {header_text}
-            </span>
-            );
-            }
-          )
-      }
+      {headers?.map((headerText, index) => {
+        return (
+          <span className={`header-${index}`} key={`header-${index}`}>
+            <span className="header-text">{headerText}</span>
+          </span>
+        );
+      })}
     </div>
   );
 };

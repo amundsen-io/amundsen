@@ -63,7 +63,7 @@ export const mapDispatchToProps = (dispatch: any) =>
           filters: {
             [ResourceType.dashboard]: { tag: tagName },
             [ResourceType.table]: { tag: tagName },
-            [ResourceType.feature]: {tag: tagName},
+            [ResourceType.feature]: { tag: tagName },
           },
           submitSearch: true,
         }),

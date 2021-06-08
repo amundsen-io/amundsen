@@ -32,7 +32,8 @@ class FeatureListItem extends React.Component<FeatureListItemProps, {}> {
 
   render() {
     const { feature, logging } = this.props;
-    const source = feature.availability.length > 0 ? feature.availability[0] : '';
+    const source =
+      feature.availability.length > 0 ? feature.availability[0] : '';
     return (
       <li className="list-group-item clickable">
         <Link
@@ -47,14 +48,11 @@ class FeatureListItem extends React.Component<FeatureListItemProps, {}> {
         >
           <div className="resource-info">
             <span
-              className={this.generateResourceIconClass(
-                source,
-                feature.type
-              )}
+              className={this.generateResourceIconClass(source, feature.type)}
             />
             <div className="resource-info-text my-auto">
               <div className="resource-name">
-                  {`${feature.feature_group}.${feature.name}`}
+                {`${feature.feature_group}.${feature.name}`}
               </div>
               <div className="body-secondary-3 truncated">
                 {feature.description}
@@ -65,20 +63,16 @@ class FeatureListItem extends React.Component<FeatureListItemProps, {}> {
             {getSourceDisplayName(source, feature.type)}
           </div>
           <div className="resource-badges">
-        {!!feature.badges && feature.badges.length > 0 && (
-          <div>
-            <div className="body-secondary-3">
-              <BadgeList badges={feature.badges} />
-            </div>
-          </div>
-        )}
+            {!!feature.badges && feature.badges.length > 0 && (
+              <div>
+                <div className="body-secondary-3">
+                  <BadgeList badges={feature.badges} />
+                </div>
+              </div>
+            )}
           </div>
           <div className="resource-entity">
-            <div>
-              <time className="body-secondary-3">
-                {feature.entity}
-              </time>
-            </div>
+            <div>{feature.entity}</div>
             <img className="icon icon-right" alt="" />
           </div>
         </Link>

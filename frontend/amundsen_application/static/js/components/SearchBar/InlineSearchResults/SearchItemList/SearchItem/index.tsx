@@ -71,7 +71,13 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
 }
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  const { isLoading, dashboards, features, tables, users } = state.search.inlineResults;
+  const {
+    isLoading,
+    dashboards,
+    features,
+    tables,
+    users,
+  } = state.search.inlineResults;
   let hasResults = false;
   switch (ownProps.resourceType) {
     case ResourceType.dashboard:

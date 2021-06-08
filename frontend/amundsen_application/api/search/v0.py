@@ -322,6 +322,7 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
                 'version': '1.4',
                 'availability': ['hive'],
                 'entity': 'test_entity',
+                'badges': [{"tag_name": "pii"}]
             }
             ],
         'total_results': 1,

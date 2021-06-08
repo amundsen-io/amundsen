@@ -60,7 +60,8 @@ export function searchResource(
   if (
     resource === ResourceType.table ||
     resource === ResourceType.dashboard ||
-    resource === ResourceType.feature) {
+    resource === ResourceType.feature
+  ) {
     return axios
       .post(`${BASE_URL}/${resource}`, {
         filters,
