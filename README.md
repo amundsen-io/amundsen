@@ -1,4 +1,3 @@
-
 <p align="center">
   <img
     src="https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
