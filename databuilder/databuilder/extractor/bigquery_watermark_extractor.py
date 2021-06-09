@@ -3,7 +3,6 @@
 
 import datetime
 import logging
-import re
 import textwrap
 import time
 from calendar import timegm
