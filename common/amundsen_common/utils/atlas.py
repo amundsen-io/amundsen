@@ -247,3 +247,47 @@ class AtlasColumnKey(AtlasKey):
             return self._raw_identifier
         else:
             raise ValueError(f'Value is neither qualified name nor amundsen key: {self._raw_identifier}')
+
+
+class AtlasDashboardKey(AtlasKey):
+    @property
+    def atlas_qualified_name_regex(self) -> Any:
+        return re.compile(r'^(?P<product>.*?)_dashboard\.(?P<dashboard_group>.*?)\.(?P<dashboard_id>.*?)@'
+                          r'(?P<cluster>.*?)$', re.X)
+
+    @property
+    def amundsen_key_regex(self) -> Any:
+        return re.compile(r'^(?P<product>.*?)_dashboard://(?P<cluster>.*)\.(?P<dashboard_group>.*?)\/'
+                          r'(?P<dashboard_id>.*?)$', re.X)
+
+    @property
+    def qualified_name(self) -> str:
+        if self.is_amundsen_key:
+            spec = self._get_details_from_key()
+
+            product = spec['product']
+            dashboard_group = spec['dashboard_group']
+            cluster = spec['cluster']
+            dashboard_id = spec['dashboard_id']
+
+            return f'{product}_dashboard.{dashboard_group}.{dashboard_id}@{cluster}'
+        elif self.is_qualified_name:
+            return self._raw_identifier
+        else:
+            raise ValueError(f'Value is neither qualified name nor amundsen key: {self._raw_identifier}')
+
+    @property
+    def amundsen_key(self) -> str:
+        if self.is_qualified_name:
+            spec = self._get_details_from_qualified_name()
+
+            product = spec['product']
+            dashboard_group = spec['dashboard_group']
+            cluster = spec['cluster']
+            dashboard_id = spec['dashboard_id']
+
+            return f'{product}_dashboard://{cluster}.{dashboard_group}/{dashboard_id}'
+        elif self.is_amundsen_key:
+            return self._raw_identifier
+        else:
+            raise ValueError(f'Value is neither qualified name nor amundsen key: {self._raw_identifier}')

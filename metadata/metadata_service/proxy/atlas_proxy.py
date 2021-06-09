@@ -21,9 +21,9 @@ from amundsen_common.models.table import (Badge, Column,
                                           User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.utils.atlas import (AtlasColumnKey, AtlasCommonParams,
-                                         AtlasCommonTypes, AtlasDashboardTypes,
-                                         AtlasStatus, AtlasTableKey,
-                                         AtlasTableTypes)
+                                         AtlasCommonTypes, AtlasDashboardKey,
+                                         AtlasDashboardTypes, AtlasStatus,
+                                         AtlasTableKey, AtlasTableTypes)
 from apache_atlas.client.base_client import AtlasClient
 from apache_atlas.model.glossary import (AtlasGlossary, AtlasGlossaryHeader,
                                          AtlasGlossaryTerm)
@@ -94,9 +94,9 @@ class AtlasProxy(BaseProxy):
         name: Table name
         """
         pattern = re.compile(r"""
-        ^(?P<db>[^.]*)
+        ^(?P<schema>[^.]*)
         \.
-        (?P<table>[^.]*)
+        (?P<identifier>[^.]*)
         \.
         (?P<entity_type>[^.]*)
         \.
@@ -164,7 +164,7 @@ class AtlasProxy(BaseProxy):
             raise NotFoundException(f'(User {user_id}) does not exist')
 
     def _create_bookmark(self, entity: AtlasEntityWithExtInfo, user_guid: str, bookmark_qn: str,
-                         table_uri: str) -> None:
+                         entity_uri: str, entity_name: str) -> None:
         """
         Creates a bookmark entity for a specific user and table uri.
         :param user_guid: User's guid
@@ -178,7 +178,8 @@ class AtlasProxy(BaseProxy):
                 AtlasCommonParams.attributes: {
                     AtlasCommonParams.qualified_name: bookmark_qn,
                     AtlasStatus.ACTIVE.lower(): True,
-                    'entityUri': table_uri,
+                    'entityUri': entity_uri,
+                    'entityName': entity_name,
                     'user': {AtlasCommonParams.guid: user_guid},
                     'entity': {AtlasCommonParams.guid: entity.entity[AtlasCommonParams.guid]}}
             }
@@ -187,7 +188,32 @@ class AtlasProxy(BaseProxy):
         bookmark_entity = type_coerce(bookmark_entity, AtlasEntityWithExtInfo)
         self.client.entity.create_entity(bookmark_entity)
 
-    def _get_bookmark_entity(self, entity_uri: str, user_id: str) -> AtlasEntityWithExtInfo:
+    def _render_bookmark_qn(self, entity_uri: str, user_id: str, resource_type: str = ResourceType.Table.name) -> str:
+        """
+        Render bookmark qualifiedName for given resource type
+        """
+
+        if resource_type == ResourceType.Table:
+            entity_info = AtlasTableKey(entity_uri).get_details()
+            schema = entity_info.get('schema')
+            table = entity_info.get('table')
+            database = entity_info.get('database')
+            cluster = entity_info.get('cluster')
+            qualified_name = f'{schema}.{table}.{database}.{user_id}.bookmark@{cluster}'
+        elif resource_type == ResourceType.Dashboard:
+            entity_info = AtlasDashboardKey(entity_uri).get_details()
+            dashboard_id = entity_info.get('dashboard_id')
+            dashboard_group = entity_info.get('dashboard_group')
+            product = entity_info.get('product')
+            cluster = entity_info.get('cluster')
+            qualified_name = f'{dashboard_group}.{dashboard_id}.{product}_dashboard.{user_id}.bookmark@{cluster}'
+        else:
+            raise NotFoundException(f'Bookmarks are not supported for type: {resource_type}')
+
+        return qualified_name
+
+    def _get_bookmark_entity(self, entity_uri: str, user_id: str,
+                             resource_type: str) -> AtlasEntityWithExtInfo:  # type: ignore
         """
         Fetch a Bookmark entity from parsing table uri and user id.
         If Bookmark is not present, create one for the user.
@@ -195,14 +221,8 @@ class AtlasProxy(BaseProxy):
         :param user_id: Qualified Name of a user
         :return:
         """
-        table_info = AtlasTableKey(entity_uri).get_details()
 
-        schema = table_info.get('schema')
-        table = table_info.get('table')
-        database = table_info.get('database')
-        cluster = table_info.get('cluster')
-
-        bookmark_qn = f'{schema}.{table}.{database}.{user_id}.bookmark@{cluster}'
+        bookmark_qn = self._render_bookmark_qn(entity_uri, user_id, resource_type)
 
         try:
             bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
@@ -212,12 +232,17 @@ class AtlasProxy(BaseProxy):
         except Exception as ex:
             LOGGER.exception(f'Bookmark not found. {str(ex)}')
 
-            table_entity = self._get_table_entity(table_uri=entity_uri)
+            bookmarked_entity = self._get_table_entity(table_uri=entity_uri) if resource_type == ResourceType.Table\
+                else self._get_dashboard(qualified_name=entity_uri)
             # Fetch user entity from user_id for relation
             user_entity = self._get_user_entity(user_id)
             # Create bookmark entity with the user relation.
-            self._create_bookmark(table_entity,
-                                  user_entity.entity[AtlasCommonParams.guid], bookmark_qn, entity_uri)
+
+            self._create_bookmark(bookmarked_entity,
+                                  user_entity.entity[AtlasCommonParams.guid],
+                                  bookmark_qn,
+                                  entity_uri,
+                                  bookmarked_entity.entity[AtlasCommonParams.attributes]['name'])
             # Fetch bookmark entity after creating it.
             bookmark_entity = self.client.entity.get_entity_by_attribute(type_name=AtlasCommonTypes.bookmark,
                                                                          uniq_attributes=[
@@ -871,7 +896,7 @@ class AtlasProxy(BaseProxy):
                     {
                         'attributeName': AtlasCommonParams.qualified_name,
                         'operator': 'contains',
-                        'attributeValue': f'.{user_id}.bookmark'
+                        'attributeValue': f'{resource_type.lower()}.{user_id}.bookmark'
                     },
                     {
                         'attributeName': AtlasStatus.ACTIVE.lower(),
@@ -880,7 +905,8 @@ class AtlasProxy(BaseProxy):
                     }
                 ]
             },
-            AtlasCommonParams.attributes: ['count', AtlasCommonParams.qualified_name, AtlasCommonParams.uri]
+            AtlasCommonParams.attributes: ['count', AtlasCommonParams.qualified_name,
+                                           AtlasCommonParams.uri, 'entityName']
         }
         # Fetches the bookmark entities based on filters
         search_results = self.client.discovery.faceted_search(search_parameters=params)
@@ -894,11 +920,21 @@ class AtlasProxy(BaseProxy):
                 resources.append(PopularTable(
                     database=table_info['database'],
                     cluster=res['cluster'],
-                    schema=res['db'],
-                    name=res['table']))
+                    schema=res['schema'],
+                    name=res['identifier']))
+
             elif resource_type == ResourceType.Dashboard.name:
-                # @todo finish this
-                pass
+
+                dashboard_info = AtlasDashboardKey(record.attributes[AtlasCommonParams.uri]).get_details()
+                resources.append(DashboardSummary(
+                    uri=record.attributes[AtlasCommonParams.uri],
+                    cluster=dashboard_info['cluster'],
+                    name=record.attributes['entityName'],
+                    group_name=dashboard_info['dashboard_group'],
+                    group_url='',
+                    product=dashboard_info['product'],
+                    url=''
+                ))
             else:
                 raise NotImplementedError(f'resource type {resource_type} is not supported')
         return resources
@@ -1030,24 +1066,24 @@ class AtlasProxy(BaseProxy):
                                       relation_type: UserResourceRel,
                                       resource_type: ResourceType) -> None:
 
-        if resource_type is not ResourceType.Table:
+        if resource_type not in [ResourceType.Table, ResourceType.Dashboard]:
             raise NotImplementedError(f'resource type {resource_type} is not supported')
 
-        entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
+        entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id, resource_type=resource_type)  # type: ignore
         entity.entity[AtlasCommonParams.attributes][AtlasStatus.ACTIVE.lower()] = True
-        entity.update()
+        self.client.entity.update_entity(entity)
 
     def delete_resource_relation_by_user(self, *,
                                          id: str,
                                          user_id: str,
                                          relation_type: UserResourceRel,
                                          resource_type: ResourceType) -> None:
-        if resource_type is not ResourceType.Table:
+        if resource_type not in [ResourceType.Table, ResourceType.Dashboard]:
             raise NotImplementedError(f'resource type {resource_type} is not supported')
 
-        entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id)
+        entity = self._get_bookmark_entity(entity_uri=id, user_id=user_id, resource_type=resource_type)  # type: ignore
         entity.entity[AtlasCommonParams.attributes][AtlasStatus.ACTIVE.lower()] = False
-        entity.update()
+        self.client.entity.update_entity(entity)
 
     def _parse_date(self, date: int) -> Optional[int]:
         try:
