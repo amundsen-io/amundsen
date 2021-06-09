@@ -132,7 +132,7 @@ class FeatureMetadata(GraphSerializable):
 
         if self.description:
             yield self.description.get_node(
-                node_key=self.description.get_description_default_key(
+                node_key=self.description.get_description_default_key(  # type: ignore
                     start_key=self._get_feature_key()),
             )
 

@@ -13,8 +13,8 @@ services:
       - ATLAS_KICKSTART_AMUNDSEN=true
   amundsensearch:
     build:
-      context: ./search
-      dockerfile: public.Dockerfile
+      context: .
+      dockerfile: Dockerfile.search.public
     container_name: amundsensearch
     ports:
       - 5001:5001
@@ -27,8 +27,8 @@ services:
       - amundsennet
   amundsenmetadata:
     build:
-      context: ./metadata
-      dockerfile: public.Dockerfile
+      context: .
+      dockerfile: Dockerfile.metadata.public
     container_name: amundsenmetadata
     ports:
       - 5002:5002
@@ -44,11 +44,11 @@ services:
       - METADATA_SVC_CONFIG_MODULE_CLASS=metadata_service.config.AtlasConfig
   amundsenfrontend:
     build:
-      context: ./frontend
+      context: .
       args:
         SEARCHSERVICE_BASE: http://amundsensearch:5001
         METADATASERVICE_BASE: http://amundsenmetadata:5002
-      dockerfile: local.Dockerfile
+      dockerfile: Dockerfile.frontend.local
     container_name: amundsenfrontend
     depends_on:
       - amundsenmetadata

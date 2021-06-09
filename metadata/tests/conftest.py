@@ -4,7 +4,8 @@
 from typing import List
 
 import pytest
-from _pytest.config import Config, Parser
+from _pytest.config import Config
+from _pytest.config.argparsing import Parser
 from _pytest.nodes import Item
 
 # This file configures the roundtrip pytest option and skips roundtrip tests without it

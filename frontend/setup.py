@@ -37,27 +37,36 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements = requirements_file.readlines()
 
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-common.txt')
+with open(requirements_path) as requirements_file:
+    requirements_common = requirements_file.readlines()
+
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
+with open(requirements_path) as requirements_file:
+    requirements_dev = requirements_file.readlines()
+
 __version__ = '3.7.0'
 
 oicd = ['flaskoidc==0.1.1']
 pyarrrow = ['pyarrow==3.0.0']
 bigquery_preview = ['google-cloud-bigquery>=2.13.1,<3.0.0', 'flatten-dict==0.3.0']
-all_deps = requirements + oicd + pyarrrow + bigquery_preview
+all_deps = requirements + requirements_common + requirements_dev + oicd + pyarrrow + bigquery_preview
 
 setup(
     name='amundsen-frontend',
     version=__version__,
     description='Web UI for Amundsen',
-    url='https://www.github.com/lyft/amundsenfrontendlibrary',
-    maintainer='Lyft',
-    maintainer_email='amundsen-dev@lyft.com',
+    url='https://www.github.com/amundsen-io/amundsen/tree/main/frontend',
+    maintainer='Amundsen TSC',
+    maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     dependency_links=[],
     setup_requires=['cython >= 0.29'],
-    install_requires=requirements,
+    install_requires=requirements + requirements_common,
     extras_require={
         'oidc': oicd,
+        'dev': requirements_dev,
         'pyarrow': pyarrrow,
         'bigquery_preview': bigquery_preview,
         'all': all_deps,

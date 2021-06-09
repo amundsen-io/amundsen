@@ -65,7 +65,7 @@ class FeatureGenerationCode(GraphSerializable):
             FeatureGenerationCode.TEXT_ATTR: self.text,
         }
         if self.last_executed_timestamp:
-            attrs[FeatureGenerationCode.LAST_EXECUTED_TIMESTAMP_ATTR] = self.last_executed_timestamp
+            attrs[FeatureGenerationCode.LAST_EXECUTED_TIMESTAMP_ATTR] = self.last_executed_timestamp  # type: ignore
 
         yield GraphNode(
             key=self._get_generation_code_key(),
