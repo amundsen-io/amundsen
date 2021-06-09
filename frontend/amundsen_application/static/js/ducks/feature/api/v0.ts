@@ -24,7 +24,7 @@ export function getFeature(key: string, index?: string, source?: string) {
     .catch((e) => {
       const { response } = e;
       const statusMessage = response.data?.msg;
-      const statusCode = response ? response.status || 500 : 500;
+      const statusCode = response?.status || 500;
       return Promise.reject({
         statusCode,
         statusMessage,

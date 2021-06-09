@@ -17,6 +17,8 @@ import { formatDateTimeShort } from 'utils/dateUtils';
 import { getSourceDisplayName } from 'config/config-utils';
 import { ResourceType } from 'interfaces/Resources';
 
+import './styles.scss';
+
 interface StateFromProps {
   isLoading: boolean;
   statusCode: number | null;
@@ -45,6 +47,77 @@ export function renderTabs() {
   return null;
 }
 
+const FeaturePageLoader: React.FC = () => (
+  <div className="resource-detail-layout feature-page">
+    <header className="resource-header">
+      <section className="header-section">
+        <div className="shimmer-page-title is-shimmer-animated" />
+        <div className="shimmer-page-subtitle is-shimmer-animated" />
+      </section>
+    </header>
+    <article className="column-layout-1">
+      <aside className="left-panel">
+        <section className="metadata-section">
+          <div className="shimmer-section-title is-shimmer-animated" />
+          <div className="shimmer-section-content is-shimmer-animated" />
+        </section>
+        <section className="column-layout-2">
+          <section className="left-panel">
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+          </section>
+          <section className="right-panel">
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+            <section className="metadata-section">
+              <div className="shimmer-section-title is-shimmer-animated" />
+              <div className="shimmer-section-content is-shimmer-animated" />
+            </section>
+          </section>
+        </section>
+      </aside>
+      <main className="right-panel">
+        <section className="metadata-section">
+          <div className="shimmer-tab-title">
+            <div className="shimmer-tab is-shimmer-animated" />
+            <div className="shimmer-tab is-shimmer-animated" />
+            <div className="shimmer-tab is-shimmer-animated" />
+          </div>
+          <div className="shimmer-tab-content is-shimmer-animated" />
+          <div className="shimmer-tab-content is-shimmer-animated" />
+          <div className="shimmer-tab-content is-shimmer-animated" />
+          <div className="shimmer-tab-content is-shimmer-animated" />
+          <div className="shimmer-tab-content is-shimmer-animated" />
+        </section>
+      </main>
+    </article>
+  </div>
+);
+
 const getFeatureKey = (group: string, name: string, version: string) =>
   `${group}/${name}/${version}`;
 
@@ -67,13 +140,13 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
   });
 
   if (isLoading) {
-    return null;
+    return <FeaturePageLoader />;
   }
   const sourcesWithDisplay = feature.availability.map((source) =>
     getSourceDisplayName(source, ResourceType.feature)
   );
   return (
-    <div className="resource-detail-layout dashboard-page">
+    <div className="resource-detail-layout feature-page">
       <header className="resource-header">
         <section className="header-section">
           <Breadcrumb />
