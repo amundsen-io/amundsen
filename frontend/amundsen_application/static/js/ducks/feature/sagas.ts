@@ -7,8 +7,8 @@ import { GetFeature } from './types';
 
 export function* getFeatureWorker(action): SagaIterator {
   try {
-    const { key, searchIndex, source } = action.payload;
-    const response = yield call(API.getFeature, key, searchIndex, source);
+    const { key, index, source } = action.payload;
+    const response = yield call(API.getFeature, key, index, source);
 
     yield put(getFeatureSuccess(response));
   } catch (error) {
