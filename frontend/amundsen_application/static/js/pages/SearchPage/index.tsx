@@ -92,8 +92,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
         );
       case ResourceType.feature:
         return this.getTabContent(this.props.features, ResourceType.feature);
+      default:
+        return null;
     }
-    return null;
   };
 
   generateTabLabel = (tab: ResourceType): string => {
