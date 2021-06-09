@@ -14,8 +14,8 @@ pytest-env>=0.6.2
 pytest-mock>=3.6.1
 typed-ast>=1.4.3
 typing-extensions~=3.10.0
-types-Flask
-types-pkg_resources
-types-mock
-types-tornado
-types-requests
+types-Flask>=0.1.2
+types-pkg_resources>=0.1.2
+types-mock>=0.1.1
+types-tornado>=0.1.0
+types-requests>=0.1.8
