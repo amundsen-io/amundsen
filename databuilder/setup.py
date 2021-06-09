@@ -81,7 +81,7 @@ rds = [
 ]
 
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas
 
 setup(
     name='amundsen-databuilder',
