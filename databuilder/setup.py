@@ -70,10 +70,12 @@ feast = [
 ]
 
 atlas = [
-    'pyatlasclient==1.1.2'
+    'pyatlasclient==1.1.2',
+    'apache-atlas>=0.0.11'
 ]
 
 rds = [
+    'amundsen-rds>=0.0.4',
     'sqlalchemy>=1.3.6,<1.4',
     'mysqlclient>=1.3.6,<3'
 ]
