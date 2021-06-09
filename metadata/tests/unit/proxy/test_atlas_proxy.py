@@ -355,10 +355,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
             expected_user_guid = user_entity.entity[AtlasCommonParams.guid]
             expected_bookmark_qn = f'{self.db}.{self.name}.{self.entity_type}.{user_id}.bookmark@{self.cluster}'
             expected_table_uri = self.table_uri
-            expected_table_name = 'Table1'
 
             mock_execute.assert_called_with(expected_table_entity, expected_user_guid, expected_bookmark_qn,
-                                            expected_table_uri, expected_table_name)
+                                            expected_table_uri)
 
     def test_get_column(self) -> None:
         self._mock_get_table_entity()
@@ -541,8 +540,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                      user_id="test_user_id",
                                                      relation_type=UserResourceRel.follow,
                                                      resource_type=ResourceType.Table)
-            las_call = str(mock_execute.mock_calls[1]).split('__')[-1]
-            self.assertEqual("('active', True)", las_call)
+            set_call = str(mock_execute.mock_calls[1]).split('__')[-1]
+            self.assertEqual("('active', True)", set_call)
 
     def test_add_resource_relation_by_user_unimplemented_resource(self) -> None:
         self._mock_get_bookmark_entity()
@@ -562,8 +561,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                                         relation_type=UserResourceRel.follow,
                                                         resource_type=ResourceType.Table)
 
-            las_call = str(mock_execute.mock_calls[1]).split('__')[-1]
-            self.assertEqual("('active', False)", las_call)
+            set_call = str(mock_execute.mock_calls[1]).split('__')[-1]
+            self.assertEqual("('active', False)", set_call)
 
     def test_delete_resource_relation_by_user_unimplemented_resource(self) -> None:
         self._mock_get_bookmark_entity()
@@ -821,14 +820,25 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                    direction=direction,
                                    depth=depth)
 
-    def test_parse_bookmark_qn(self) -> None:
+    def test_parse_table_bookmark_qn(self) -> None:
         bookmark_qn = f'{self.db}.{self.name}.hive_table.test_user_id.bookmark@{self.cluster}'
-        expected = {'schema': 'TEST_DB',
-                    'identifier': 'TEST_TABLE',
+        expected = {'db': 'TEST_DB',
+                    'table': 'TEST_TABLE',
                     'entity_type': 'hive_table',
                     'user_id': 'test_user_id',
                     'cluster': 'TEST_CLUSTER'}
-        result = self.proxy._parse_bookmark_qn(bookmark_qn)
+        result = self.proxy._parse_table_bookmark_qn(bookmark_qn)
+        self.assertEqual(expected, result)
+
+    def test_parse_dashboard_bookmark_qn(self) -> None:
+        bookmark_qn = f'superset_dashboard://{self.cluster}.{self.name}/dashboard_id/dashboard/bookmark/test_user_id'
+        expected = {'cluster': 'TEST_CLUSTER',
+                    'dashboard_group': 'TEST_TABLE',
+                    'dashboard_id': 'dashboard_id',
+                    'product': 'superset',
+                    'type': 'dashboard',
+                    'user_id': 'test_user_id'}
+        result = self.proxy._parse_dashboard_bookmark_qn(bookmark_qn)
         self.assertEqual(expected, result)
 
     def test_get_user_defined_glossary_guid(self) -> None:
