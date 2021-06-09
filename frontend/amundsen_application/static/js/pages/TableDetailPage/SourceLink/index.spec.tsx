@@ -68,6 +68,9 @@ describe('render SourceLink', () => {
         [ResourceType.dashboard]: {
           displayName: 'Dashboards',
         },
+        [ResourceType.feature]: {
+          displayName: 'ML Features',
+        },
         [ResourceType.user]: {
           displayName: 'Users',
         },

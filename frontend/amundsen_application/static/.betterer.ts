@@ -22,7 +22,6 @@ export default {
     'no-useless-return': 'error',
     'no-void': 'error',
     'prefer-destructuring': 'error',
-    'prefer-promise-reject-errors': 'error',
     'react/button-has-type': 'error',
     'react/destructuring-assignment': 'error',
     'react/jsx-boolean-value': 'error',
