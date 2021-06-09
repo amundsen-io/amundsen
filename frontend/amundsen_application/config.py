@@ -90,6 +90,8 @@ class Config:
     ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool
     # Max issues to display at a time
     ISSUE_TRACKER_MAX_RESULTS = None  # type: int
+    # Override issue type ID for cloud Jira deployments
+    ISSUE_TRACKER_ISSUE_TYPE_ID = None
 
     # Programmatic Description configuration. Please see docs/flask_config.md
     PROGRAMMATIC_DISPLAY = None  # type: Optional[Dict]
