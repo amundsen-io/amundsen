@@ -52,7 +52,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
                     # ( e.g. ga_sessions_20190101, ga_sessions_20190102, etc. )
                     # We use these dates in the suffixes to determine high and low watermarks
                     if self._is_sharded_table(table_id):
-                        suffix = re.search(r'\d+$', table_id).group()
+                        suffix = self._get_sharded_table_suffix(table_id)
                         prefix = table_id[:-len(suffix)]
                         date = suffix[:BaseBigQueryExtractor.DATE_LENGTH]
 

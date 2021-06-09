@@ -80,12 +80,12 @@ class BaseBigQueryExtractor(Extractor):
 
     def _is_sharded_table(self, table_id: str) -> bool:
         """
-        Validate if the numeric suffix starts with a date string
+        Table with a numeric suffix starting with a date string
+        will be considered as a sharded table
         :param table_id:
         :return:
         """
-        suffix_match = re.search(r'\d+$', table_id)
-        suffix = suffix_match.group() if suffix_match else ''
+        suffix = self._get_sharded_table_suffix(table_id)
         if len(suffix) < BaseBigQueryExtractor.DATE_LENGTH:
             return False
 
@@ -95,6 +95,11 @@ class BaseBigQueryExtractor(Extractor):
             return True
         except ValueError:
             return False
+
+    def _get_sharded_table_suffix(self, table_id: str) -> str:
+        suffix_match = re.search(r'\d+$', table_id)
+        suffix = suffix_match.group() if suffix_match else ''
+        return suffix
 
     def _iterate_over_tables(self) -> Any:
         for dataset in self._retrieve_datasets():

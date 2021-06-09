@@ -111,7 +111,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
 
             if self._is_sharded_table(tableId):
                 # Use the prefix of the sharded table as tableId
-                tableId = tableId[:-len(re.search(r'\d+$', tableId).group())]
+                tableId = tableId[:-len(self._get_sharded_table_suffix(tableId))]
 
             # GCP console allows running queries using tables from a project different from the one the extractor is
             # used for; only usage metadata of referenced tables present in the given project_id_key for the

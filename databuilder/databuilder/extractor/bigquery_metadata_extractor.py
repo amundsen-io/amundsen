@@ -48,7 +48,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                 if self._is_sharded_table(table_id):
                     # Sharded tables have numeric suffix starting with a date string
                     # and then we only need one schema definition
-                    table_prefix = table_id[:-len(re.search(r'\d+$', table_id).group())]
+                    table_prefix = table_id[:-len(self._get_sharded_table_suffix(table_id))]
                     if table_prefix in grouped_tables:
                         # If one table in the date range is processed, then ignore other ones
                         # (it adds too much metadata)
