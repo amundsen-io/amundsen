@@ -33,7 +33,7 @@ class BigQueryWatermarkExtractor(BaseBigQueryExtractor):
     def _retrieve_tables(self,
                          dataset: DatasetRef
                          ) -> Iterator[Watermark]:
-        sharded_table_watermarks: Dict[str, Dict[str, Union[str, Dict[str, Any]]]] = {}
+        sharded_table_watermarks: Dict[str, Dict[str, Union[str, Any]]] = {}
         cutoff_time_in_epoch = timegm(time.strptime(self.cutoff_time, BigQueryWatermarkExtractor.DATE_TIME_FORMAT))
 
         for page in self._page_table_list_results(dataset):
