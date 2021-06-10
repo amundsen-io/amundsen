@@ -356,7 +356,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [SnowflakeUsageExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_usage_extractor.py "SnowflakeUsageExtractor")
+#### [GenericUsageExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/generic_usage_extractor.py "GenericUsageExtractor")
 An extractor that extracts table popularity metadata from a custom created Snowflake table (created by a script that may look like [this scala script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/example/scripts/sample_snowflake_table_usage.scala "sample_snowflake_table_usage")). You can create a DAG using the [Databricks Operator](https://github.com/apache/airflow/blob/main/airflow/providers/databricks/operators/databricks.py) and run this script within Databricks or wherever you are able to run Scala.
 
 By default, `snowflake` is used as the database name. `ColumnReader` has the datasource as its `database` input, and database as its `cluster` input.
@@ -377,14 +377,14 @@ The `where_clause_suffix` should define any filtering you'd like to include in y
 ```python
 job_config = ConfigFactory.from_dict({
     f'extractor.snowflake.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
-    f'extractor.snowflake.{SnowflakeUsageExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
-    f'extractor.snowflake.{SnowflakeUsageExtractor.POPULARITY_TABLE_DATABASE}': 'WhateverNameOfYourDb',
-    f'extractor.snowflake.{SnowflakeUsageExtractor.POPULARTIY_TABLE_SCHEMA}': 'WhateverNameOfYourSchema',
-    f'extractor.snowflake.{SnowflakeUsageExtractor.POPULARITY_TABLE_NAME}': 'WhateverNameOfYourTable',
+    f'extractor.snowflake.{GenericUsageExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+    f'extractor.snowflake.{GenericUsageExtractor.POPULARITY_TABLE_DATABASE}': 'WhateverNameOfYourDb',
+    f'extractor.snowflake.{GenericUsageExtractor.POPULARTIY_TABLE_SCHEMA}': 'WhateverNameOfYourSchema',
+    f'extractor.snowflake.{GenericUsageExtractor.POPULARITY_TABLE_NAME}': 'WhateverNameOfYourTable',
 job = DefaultJob(
     conf=job_config,
     task=DefaultTask(
-        extractor=SnowflakeUsageExtractor(),
+        extractor=GenericUsageExtractor(),
         loader=AnyLoader()))
 job.launch()
 ```
