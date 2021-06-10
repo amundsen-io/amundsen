@@ -3,7 +3,6 @@
 
 import logging
 import time
-from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from amundsen_common.models.dashboard import DashboardSummary

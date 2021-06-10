@@ -4,7 +4,6 @@
 import logging
 import textwrap
 import time
-from random import randint
 from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
                     Union, no_type_check)
 
