@@ -78,7 +78,7 @@ from metadata_service.util import UserResourceRel
 _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 
 # Expire cache every 11 hours + jitter
-_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
+_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = app.config['POPULAR_TABLE_CACHE_EXPIRY_SEC']
 
 resource_relation_model = {
     ResourceType.Table: {

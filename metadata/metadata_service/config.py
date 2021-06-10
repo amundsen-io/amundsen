@@ -75,6 +75,9 @@ class Config:
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
 
+    # Number of seconds until popular table cache refreshes
+    POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
+
     # Number of minimum reader count to qualify for popular table
     POPULAR_TABLE_MINIMUM_READER_COUNT = 10  # type: int
 
