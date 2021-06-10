@@ -22,7 +22,7 @@ from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from flask import current_app as app, has_app_context
+from flask import current_app, has_app_context
 from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service import config
@@ -41,7 +41,7 @@ from metadata_service.util import UserResourceRel
 _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 
 # Expire cache every 11 hours + jitter
-_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = app.config['POPULAR_TABLE_CACHE_EXPIRY_SEC']
+_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = current_app.config['POPULAR_TABLE_CACHE_EXPIRY_SEC']
 
 
 CREATED_EPOCH_MS = 'publisher_created_epoch_ms'
