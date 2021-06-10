@@ -309,11 +309,6 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     # unique name of new index in Elasticsearch
     elasticsearch_new_index_key = '{}_'.format(elasticsearch_doc_type_key) + str(uuid.uuid4())
     publisher = ElasticsearchPublisher()
-    session = boto3.Session()
-    aws_creds = session.get_credentials()
-    aws_access_key = aws_creds.access_key
-    aws_access_secret = aws_creds.secret_key
-    aws_token = aws_creds.token
 
     job_config = ConfigFactory.from_dict({
         extractor.get_scope(): {
