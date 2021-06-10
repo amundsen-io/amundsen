@@ -72,6 +72,12 @@ NEPTUNE_ENDPOINT = '{}:{}'.format(neptune_host, neptune_port)
 
 LOGGER = logging.getLogger(__name__)
 
+session = boto3.Session()
+aws_creds = session.get_credentials()
+aws_access_key = aws_creds.access_key
+aws_access_secret = aws_creds.secret_key
+aws_token = aws_creds.token
+
 
 def run_csv_job(file_loc, job_name, model):
     tmp_folder = '/var/tmp/amundsen/{job_name}'.format(job_name=job_name)
@@ -103,7 +109,11 @@ def run_csv_job(file_loc, job_name, model):
             NeptuneCSVPublisher.AWS_S3_BUCKET_NAME: S3_BUCKET_NAME,
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
-            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name
+            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token
         },
     })
 
@@ -141,7 +151,11 @@ def run_table_column_job(table_path, column_path):
             NeptuneCSVPublisher.AWS_S3_BUCKET_NAME: S3_BUCKET_NAME,
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
-            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name
+            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token
         }
     })
     job = DefaultJob(
@@ -181,6 +195,10 @@ def create_last_updated_job():
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
             NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token,
             'job_publish_tag': 'unique_lastupdated_tag'
         }
     })
@@ -244,7 +262,11 @@ def create_dashboard_tables_job():
             NeptuneCSVPublisher.AWS_S3_BUCKET_NAME: S3_BUCKET_NAME,
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
-            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name
+            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token
         }
     })
 
@@ -287,11 +309,6 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     # unique name of new index in Elasticsearch
     elasticsearch_new_index_key = '{}_'.format(elasticsearch_doc_type_key) + str(uuid.uuid4())
     publisher = ElasticsearchPublisher()
-    session = boto3.Session()
-    aws_creds = session.get_credentials()
-    aws_access_key = aws_creds.access_key
-    aws_access_secret = aws_creds.secret_key
-    aws_token = aws_creds.token
 
     job_config = ConfigFactory.from_dict({
         extractor.get_scope(): {
