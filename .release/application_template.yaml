@@ -7,8 +7,6 @@ mode: development
 repo_name: dustyspace/amundsen
 environment_templates:
 - name: ephemeral
-  datasets:
-  - name: fred-savage
 - name: permanent
 resources:
   cpu:
