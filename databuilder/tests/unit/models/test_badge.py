@@ -111,6 +111,27 @@ class TestBadge(unittest.TestCase):
                           start_key=table_key,
                           badges=[badge1, badge2])
 
+    def test_allow_num_underscore_as_db_name(self) -> None:
+        # not raise if we have numbers or underscores in db name
+        table_label = 'Table'
+        allowed_table_key = 'a123b_staging://default.base/test'
+        BadgeMetadata(start_label=table_label, start_key=allowed_table_key, badges=[badge1, badge2])
+
+        # raise if db name contains dot or hyphen
+        failed_table_key_1 = 'a123b-staging://default.base/test'
+        self.assertRaises(Exception,
+                          BadgeMetadata,
+                          start_label=table_label,
+                          start_key=failed_table_key_1,
+                          badges=[badge1, badge2])
+
+        failed_table_key_2 = 'a123b.staging://default.base/test'
+        self.assertRaises(Exception,
+                          BadgeMetadata,
+                          start_label=table_label,
+                          start_key=failed_table_key_2,
+                          badges=[badge1, badge2])
+
     def test_create_relation(self) -> None:
         actual = []
         relation = self.badge_metada.create_next_relation()

@@ -49,9 +49,11 @@ class BadgeMetadata(GraphSerializable, TableSerializable):
                  ):
         self.badges = badges
 
-        table_key_pattern = re.compile('[a-z]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
-        dashboard_key_pattern = re.compile('[a-z]+_dashboard://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
-        column_key_pattern = re.compile('[a-z]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
+        table_key_pattern = re.compile('[a-zA-Z0-9_]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
+        dashboard_key_pattern = re.compile('[a-zA-Z0-9_]+_dashboard://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
+        column_key_pattern = re.compile(
+            '[a-zA-Z0-9_]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+'
+        )
         map_label_to_key_pattern = {
             'Table': table_key_pattern,
             'Dashboard': dashboard_key_pattern,
