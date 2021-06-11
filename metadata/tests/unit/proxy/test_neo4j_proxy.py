@@ -1205,8 +1205,8 @@ class TestNeo4jProxy(unittest.TestCase):
                     'status': 'active',
                     'entity': 'test_entity'
                 },
-                'fq': {
-                    'feature_group': 'test_feature_group',
+                'fg': {
+                    'name': 'test_feature_group',
                 }
             }]
 
