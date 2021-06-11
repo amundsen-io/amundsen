@@ -11,9 +11,9 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           Source, Stat, Table, Tag, User,

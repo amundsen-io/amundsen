@@ -12,9 +12,9 @@ from typing import (Any, Dict, Generator, List, Optional, Set, Tuple, Type,
 
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, Tag,

@@ -4,8 +4,8 @@ from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
 
 from amundsen_common.models.feature import FeatureSchema
-from amundsen_common.models.lineage import LineageSchema
 from amundsen_common.models.generation_code import GenerationCodeSchema
+from amundsen_common.models.lineage import LineageSchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
