@@ -8,7 +8,7 @@ from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.query import Query
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User
 
@@ -219,5 +219,5 @@ class BaseProxy(metaclass=ABCMeta):
     @abstractmethod
     def get_resource_generation_code(self, *,
                                      uri: str,
-                                     resource_type: ResourceType) -> Query:
+                                     resource_type: ResourceType) -> GenerationCode:
         pass

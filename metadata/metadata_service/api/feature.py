@@ -5,7 +5,7 @@ from typing import Any, Iterable, Mapping, Union
 
 from amundsen_common.models.feature import FeatureSchema
 from amundsen_common.models.lineage import LineageSchema
-from amundsen_common.models.query import QuerySchema
+from amundsen_common.models.generation_code import GenerationCodeSchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -90,7 +90,7 @@ class FeatureGenerationCodeAPI(Resource):
         try:
             generation_code = self.client.get_resource_generation_code(uri=feature_uri,
                                                                        resource_type=ResourceType.Feature)
-            schema = QuerySchema()
+            schema = GenerationCodeSchema()
             return schema.dump(generation_code), HTTPStatus.OK
 
         except NotFoundException:

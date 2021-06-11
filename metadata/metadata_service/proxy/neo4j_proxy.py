@@ -13,7 +13,7 @@ from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.query import Query
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           Source, Stat, Table, Tag, User,
@@ -1803,7 +1803,7 @@ class Neo4jProxy(BaseProxy):
             watermarks=feature_metadata['watermarks'])
         return feature
 
-    def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> Query:
+    def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> GenerationCode:
         """
         Executes cypher query to get query nodes associated with resource
         """
@@ -1821,4 +1821,7 @@ class Neo4jProxy(BaseProxy):
 
         query_result = records.single()['query_records']
         # TODO replace with Feature Generation model
-        return Query(name=query_result['key'], text=query_result['text'], url=query_result['url'])
+        return GenerationCode(key=query_result['key'],
+                              text=query_result['text'],
+                              source=query_result['source'],
+                              url=query_result['url'])
