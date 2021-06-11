@@ -11,6 +11,7 @@ import BadgeList from 'features/BadgeList';
 import { ResourceType, FeatureResource } from 'interfaces';
 
 import { LoggingParams } from '../types';
+import { RightIcon } from 'components/SVGIcons';
 
 export interface FeatureListItemProps {
   feature: FeatureResource;
@@ -54,19 +55,19 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
             </div>
           </div>
         </div>
-        <div className="resource-type">
+        <div className="resource-type resource-source">
           {getSourceDisplayName(source, feature.type)}
         </div>
         <div className="resource-badges">
           {!!feature.badges && feature.badges.length > 0 && (
-            <div className="body-secondary-3">
-              <BadgeList badges={feature.badges} />
-            </div>
+            <BadgeList badges={feature.badges} />
           )}
         </div>
         <div className="resource-entity">
-          <div>{feature.entity}</div>
-          <img className="icon icon-right" alt="" />
+          <p className="resource-type">{feature.entity}</p>
+          <span className="icon-right">
+            <RightIcon />
+          </span>
         </div>
       </Link>
     </li>

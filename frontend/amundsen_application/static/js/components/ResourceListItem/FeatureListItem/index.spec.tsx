@@ -13,6 +13,7 @@ import { featureSummary } from 'fixtures/metadata/feature';
 import FeatureListItem, {
   FeatureListItemProps,
 } from 'components/ResourceListItem/FeatureListItem';
+import { RightIcon } from 'components/SVGIcons';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
@@ -86,10 +87,10 @@ describe('FeatureListItem', () => {
       });
     });
 
-    describe('renders resource-type section', () => {
+    describe('renders resource-source section', () => {
       let resourceType;
       beforeAll(() => {
-        resourceType = wrapper.find('.resource-type');
+        resourceType = wrapper.find('.resource-source');
       });
 
       it('renders resource type', () => {
@@ -122,7 +123,7 @@ describe('FeatureListItem', () => {
     describe('renders resource-entity section', () => {
       let resourceEntity;
       beforeAll(() => {
-        resourceEntity = wrapper.find('.resource-entity');
+        resourceEntity = wrapper.find('.resource-entity').find('.resource-type');
       });
 
       it('renders default text if it doesnt exist', () => {
@@ -130,10 +131,10 @@ describe('FeatureListItem', () => {
       });
 
       it('renders correct end icon', () => {
-        const expectedClassName = 'icon icon-right';
-        expect(resourceEntity.find('img').props().className).toEqual(
-          expectedClassName
-        );
+        const actual = resourceEntity.find(RightIcon).length;
+        const expected = 1;
+
+        expect(actual).toEqual(expected);
       });
     });
   });
