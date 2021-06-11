@@ -1,5 +1,8 @@
 server:
 
+  extraEnvironmentVars:
+    AWS_ROLE_SESSION_NAME: s3vault
+
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::443786448530:role/release/iam_for_vaults3bucket
