@@ -10,7 +10,9 @@ import * as ConfigUtils from 'config/config-utils';
 
 import { featureSummary } from 'fixtures/metadata/feature';
 
-import FeatureListItem, { FeatureListItemProps } from './index';
+import FeatureListItem, {
+  FeatureListItemProps,
+} from 'components/ResourceListItem/FeatureListItem';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
@@ -27,23 +29,12 @@ describe('FeatureListItem', () => {
       feature: featureSummary,
       ...propOverrides,
     };
-    const wrapper = shallow<FeatureListItem>(
+    const wrapper = shallow<typeof FeatureListItem>(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <FeatureListItem {...props} />
     );
     return { props, wrapper };
   };
-
-  describe('getLink', () => {
-    it('getLink returns correct string', () => {
-      const { props, wrapper } = setup();
-      const expectedURL =
-        '/feature/test_feature_group/test_feature_name/1.4?index=0&source=src';
-      const actual = wrapper.instance().getLink();
-
-      expect(actual).toEqual(expectedURL);
-    });
-  });
 
   describe('render', () => {
     let props: FeatureListItemProps;
@@ -57,8 +48,10 @@ describe('FeatureListItem', () => {
     });
 
     it('renders item as Link with correct redirection', () => {
-      element = wrapper.find(Link);
-      expect(element.props().to).toEqual(wrapper.instance().getLink());
+      const actual = wrapper.find(Link).length;
+      const expected = 1;
+
+      expect(actual).toEqual(expected);
     });
 
     describe('renders resource-info section', () => {

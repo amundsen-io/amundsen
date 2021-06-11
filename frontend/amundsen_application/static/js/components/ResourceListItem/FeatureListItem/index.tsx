@@ -24,15 +24,13 @@ const getLink = (feature: FeatureResource, logging: LoggingParams) => {
 const generateResourceIconClass = (
   featureId: string,
   featureType: ResourceType
-): string =>
-  `icon resource-icon ${getSourceIconClass(featureId, featureType)}`;
+): string => `icon resource-icon ${getSourceIconClass(featureId, featureType)}`;
 
 const FeatureListItem: React.FC<FeatureListItemProps> = ({
   feature,
-  logging
+  logging,
 }: FeatureListItemProps) => {
-  const source =
-    feature.availability.length > 0 ? feature.availability[0] : '';
+  const source = feature.availability.length > 0 ? feature.availability[0] : '';
   return (
     <li className="list-group-item clickable">
       <Link
@@ -46,9 +44,7 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
         }
       >
         <div className="resource-info">
-          <span
-            className={generateResourceIconClass(source, feature.type)}
-          />
+          <span className={generateResourceIconClass(source, feature.type)} />
           <div className="resource-info-text my-auto">
             <div className="resource-name">
               {`${feature.feature_group}.${feature.name}`}
@@ -63,10 +59,8 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
         </div>
         <div className="resource-badges">
           {!!feature.badges && feature.badges.length > 0 && (
-            <div>
-              <div className="body-secondary-3">
-                <BadgeList badges={feature.badges} />
-              </div>
+            <div className="body-secondary-3">
+              <BadgeList badges={feature.badges} />
             </div>
           )}
         </div>

@@ -204,8 +204,8 @@ export class InlineSearchResults extends React.Component<
         const dashboard = result as DashboardResource;
         return (
           <div className="dashboard-title">
-            <div className="title-2 dashboard-name">{dashboard.name}</div>
-            <div className="title-2 dashboard-group truncated">
+            <div className="text-title-w2 dashboard-name">{dashboard.name}</div>
+            <div className="text-title-w2 dashboard-group truncated">
               {dashboard.group_name}
             </div>
           </div>
@@ -213,20 +213,20 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.feature:
         const feature = result as FeatureResource;
         return (
-          <div className="title-2 truncated">
+          <div className="text-title-w2 truncated">
             {`${feature.feature_group}.${feature.name}`}
           </div>
         );
       case ResourceType.table:
         const table = result as TableResource;
         return (
-          <div className="title-2 truncated">{`${table.schema}.${table.name}`}</div>
+          <div className="text-title-w2 truncated">{`${table.schema}.${table.name}`}</div>
         );
       case ResourceType.user:
         const user = result as UserResource;
-        return <div className="title-2 truncated">{user.display_name}</div>;
+        return <div className="text-title-w2 truncated">{user.display_name}</div>;
       default:
-        return <div className="title-2 truncated" />;
+        return <div className="text-title-w2 truncated" />;
     }
   };
 
