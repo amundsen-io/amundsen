@@ -1202,17 +1202,11 @@ class TestNeo4jProxy(unittest.TestCase):
                     'created_timestamp': 1,
                     'version': '1.2.3',
                     'key': 'test_feature_group/test_feature_name/1.2.3',
-                    'feature_group': 'test_feature_group',
                     'status': 'active',
                     'entity': 'test_entity'
                 },
-                'partition_column': {
-                    'name': 'bar_id_1',
-                    'key': '',
-                    'col_type': 'varchar',
-                },
-                'col_desc': {
-                    'description': 'bar col description'
+                'fq': {
+                    'feature_group': 'test_feature_group',
                 }
             }]
 
@@ -1240,11 +1234,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                      partition_key='ds',
                                                      partition_value='fake_value',
                                                      create_time='fake_time')],
-                               partition_column=Column(name='bar_id_1', description='bar col description',
-                                                       col_type='varchar', sort_order=0, stats=[],
-                                                       key='dummy_uri/bar_id_1',
-                                                       badges=[Badge(badge_name='partition_column',
-                                                                     category='column')]),
+                               partition_column=None,
                                last_updated_timestamp=1,
                                created_timestamp=1,
                                )
