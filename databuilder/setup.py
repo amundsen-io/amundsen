@@ -75,7 +75,6 @@ atlas = [
 ]
 
 rds = [
-    'amundsen-rds>=0.0.4',
     'sqlalchemy>=1.3.6,<1.4',
     'mysqlclient>=1.3.6,<3'
 ]

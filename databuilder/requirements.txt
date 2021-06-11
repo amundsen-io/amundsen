@@ -26,3 +26,4 @@ pandas>=0.21.0,<1.2.0
 responses>=0.10.6
 
 amundsen-common>=0.13.0
+amundsen-rds>=0.0.4
