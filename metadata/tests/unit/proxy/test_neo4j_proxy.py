@@ -1264,7 +1264,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.side_effect = [
                 {'query_records': {
                     'key': 'test_feature_group/test_feature_name/1.2.3/_generation_code',
-                    'query_text': 'SELECT * FROM test_table',
+                    'text': 'SELECT * FROM test_table',
                     'source': 'github.com/repo/file'}}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
