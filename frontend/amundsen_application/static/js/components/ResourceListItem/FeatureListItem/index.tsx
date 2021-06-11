@@ -46,9 +46,9 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
         <div className="resource-info">
           <span className={generateResourceIconClass(source, feature.type)} />
           <div className="resource-info-text my-auto">
-            <div className="resource-name">
+            <h3 className="resource-name">
               {`${feature.feature_group}.${feature.name}`}
-            </div>
+            </h3>
             <div className="body-secondary-3 truncated">
               {feature.description}
             </div>
