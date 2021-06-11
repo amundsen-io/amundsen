@@ -1,4 +1,7 @@
 server:
+  serviceAccount:
+    annotations: |
+       eks.amazonaws.com/role-arn: arn:aws:iam::443786448530:role/release/iam_for_vaults3bucket
   affinity: ""
   ha:
     enabled: true
