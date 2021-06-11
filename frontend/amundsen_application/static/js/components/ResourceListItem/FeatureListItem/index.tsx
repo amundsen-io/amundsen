@@ -50,7 +50,7 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
             <h3 className="resource-name">
               {`${feature.feature_group}.${feature.name}`}
             </h3>
-            <div className="body-secondary-3 truncated">
+            <div className="text-body-w3 text-secondary truncated">
               {feature.description}
             </div>
           </div>

@@ -123,7 +123,9 @@ describe('FeatureListItem', () => {
     describe('renders resource-entity section', () => {
       let resourceEntity;
       beforeAll(() => {
-        resourceEntity = wrapper.find('.resource-entity').find('.resource-type');
+        resourceEntity = wrapper
+          .find('.resource-entity')
+          .find('.resource-type');
       });
 
       it('renders default text if it doesnt exist', () => {
