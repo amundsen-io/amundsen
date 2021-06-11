@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    Any, Iterator, Optional, Union, Dict,
+    Any, Dict, Iterator, Optional, Union,
 )
 
 from databuilder.models.feature.feature_metadata import FeatureMetadata
