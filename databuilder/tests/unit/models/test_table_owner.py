@@ -8,6 +8,7 @@ from databuilder.models.graph_serializable import (
     NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
     RELATION_START_LABEL, RELATION_TYPE,
 )
+from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE, OWNER_RELATION_TYPE
 from databuilder.models.table_owner import TableOwner
 from databuilder.models.user import User
 from databuilder.serializers import (
@@ -25,6 +26,7 @@ db = 'hive'
 SCHEMA = 'BASE'
 TABLE = 'TEST'
 CLUSTER = 'DEFAULT'
+TABLE_KEY = 'hive://DEFAULT.BASE/TEST'
 owner1 = 'user1@1'
 owner2 = 'user2@2'
 
@@ -38,14 +40,6 @@ class TestTableOwner(unittest.TestCase):
                                       table_name=TABLE,
                                       cluster=CLUSTER,
                                       owners="user1@1, user2@2 ")
-
-    def test_get_owner_model_key(self) -> None:
-        owner = self.table_owner.get_owner_model_key(owner1)
-        self.assertEqual(owner, owner1)
-
-    def test_get_metadata_model_key(self) -> None:
-        metadata = self.table_owner.get_metadata_model_key()
-        self.assertEqual(metadata, 'hive://DEFAULT.BASE/TEST')
 
     def test_create_nodes(self) -> None:
         expected_node1 = {
@@ -99,20 +93,20 @@ class TestTableOwner(unittest.TestCase):
 
     def test_create_relation(self) -> None:
         expected_relation1 = {
-            RELATION_START_KEY: owner1,
-            RELATION_START_LABEL: User.USER_NODE_LABEL,
-            RELATION_END_KEY: self.table_owner.get_metadata_model_key(),
-            RELATION_END_LABEL: 'Table',
-            RELATION_TYPE: TableOwner.OWNER_TABLE_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: TableOwner.TABLE_OWNER_RELATION_TYPE
+            RELATION_START_KEY: TABLE_KEY,
+            RELATION_START_LABEL: 'Table',
+            RELATION_END_KEY: owner1,
+            RELATION_END_LABEL: User.USER_NODE_LABEL,
+            RELATION_TYPE: OWNER_RELATION_TYPE,
+            RELATION_REVERSE_TYPE: OWNER_OF_OBJECT_RELATION_TYPE,
         }
         expected_relation2 = {
-            RELATION_START_KEY: owner2,
-            RELATION_START_LABEL: User.USER_NODE_LABEL,
-            RELATION_END_KEY: self.table_owner.get_metadata_model_key(),
-            RELATION_END_LABEL: 'Table',
-            RELATION_TYPE: TableOwner.OWNER_TABLE_RELATION_TYPE,
-            RELATION_REVERSE_TYPE: TableOwner.TABLE_OWNER_RELATION_TYPE
+            RELATION_START_KEY: TABLE_KEY,
+            RELATION_START_LABEL: 'Table',
+            RELATION_END_KEY: owner2,
+            RELATION_END_LABEL: User.USER_NODE_LABEL,
+            RELATION_TYPE: OWNER_RELATION_TYPE,
+            RELATION_REVERSE_TYPE: OWNER_OF_OBJECT_RELATION_TYPE,
         }
         expected = [expected_relation1, expected_relation2]
 
@@ -130,74 +124,74 @@ class TestTableOwner(unittest.TestCase):
             [
                 {
                     NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="User:" + owner1,
-                        to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        label=TableOwner.OWNER_TABLE_RELATION_TYPE
+                        from_vertex_id="Table:" + TABLE_KEY,
+                        to_vertex_id="User:" + owner1,
+                        label=OWNER_RELATION_TYPE
                     ),
                     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="User:" + owner1,
-                        to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        label=TableOwner.OWNER_TABLE_RELATION_TYPE
+                        from_vertex_id="Table:" + TABLE_KEY,
+                        to_vertex_id="User:" + owner1,
+                        label=OWNER_RELATION_TYPE
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "User:" + owner1,
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + self.table_owner.get_metadata_model_key(),
-                    NEPTUNE_HEADER_LABEL: TableOwner.OWNER_TABLE_RELATION_TYPE,
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + TABLE_KEY,
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: "User:" + owner1,
+                    NEPTUNE_HEADER_LABEL: OWNER_RELATION_TYPE,
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
                     NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        to_vertex_id="User:" + owner1,
-                        label=TableOwner.TABLE_OWNER_RELATION_TYPE
+                        from_vertex_id="User:" + owner1,
+                        to_vertex_id="Table:" + TABLE_KEY,
+                        label=OWNER_OF_OBJECT_RELATION_TYPE
                     ),
                     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        to_vertex_id="User:" + owner1,
-                        label=TableOwner.TABLE_OWNER_RELATION_TYPE
+                        from_vertex_id="User:" + owner1,
+                        to_vertex_id="Table:" + TABLE_KEY,
+                        label=OWNER_OF_OBJECT_RELATION_TYPE
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + self.table_owner.get_metadata_model_key(),
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: "User:" + owner1,
-                    NEPTUNE_HEADER_LABEL: TableOwner.TABLE_OWNER_RELATION_TYPE,
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "User:" + owner1,
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + TABLE_KEY,
+                    NEPTUNE_HEADER_LABEL: OWNER_OF_OBJECT_RELATION_TYPE,
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-                }
+                },
             ],
             [
                 {
                     NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="User:" + owner2,
-                        to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        label=TableOwner.OWNER_TABLE_RELATION_TYPE
+                        from_vertex_id="Table:" + TABLE_KEY,
+                        to_vertex_id="User:" + owner2,
+                        label=OWNER_RELATION_TYPE
                     ),
                     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="User:" + owner2,
-                        to_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        label=TableOwner.OWNER_TABLE_RELATION_TYPE
+                        from_vertex_id="Table:" + TABLE_KEY,
+                        to_vertex_id="User:" + owner2,
+                        label=OWNER_RELATION_TYPE
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "User:" + owner2,
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + self.table_owner.get_metadata_model_key(),
-                    NEPTUNE_HEADER_LABEL: TableOwner.OWNER_TABLE_RELATION_TYPE,
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + TABLE_KEY,
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: "User:" + owner2,
+                    NEPTUNE_HEADER_LABEL: OWNER_RELATION_TYPE,
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
                 },
                 {
                     NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        to_vertex_id="User:" + owner2,
-                        label=TableOwner.TABLE_OWNER_RELATION_TYPE
+                        from_vertex_id="User:" + owner2,
+                        to_vertex_id="Table:" + TABLE_KEY,
+                        label=OWNER_OF_OBJECT_RELATION_TYPE
                     ),
                     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                        from_vertex_id="Table:" + self.table_owner.get_metadata_model_key(),
-                        to_vertex_id="User:" + owner2,
-                        label=TableOwner.TABLE_OWNER_RELATION_TYPE
+                        from_vertex_id="User:" + owner2,
+                        to_vertex_id="Table:" + TABLE_KEY,
+                        label=OWNER_OF_OBJECT_RELATION_TYPE
                     ),
-                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "Table:" + self.table_owner.get_metadata_model_key(),
-                    NEPTUNE_RELATIONSHIP_HEADER_TO: "User:" + owner2,
-                    NEPTUNE_HEADER_LABEL: TableOwner.TABLE_OWNER_RELATION_TYPE,
+                    NEPTUNE_RELATIONSHIP_HEADER_FROM: "User:" + owner2,
+                    NEPTUNE_RELATIONSHIP_HEADER_TO: "Table:" + TABLE_KEY,
+                    NEPTUNE_HEADER_LABEL: OWNER_OF_OBJECT_RELATION_TYPE,
                     NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-                }
+                },
             ]
         ]
 
@@ -217,7 +211,7 @@ class TestTableOwner(unittest.TestCase):
                 'email': owner1
             },
             {
-                'table_rk': self.table_owner.get_metadata_model_key(),
+                'table_rk': TABLE_KEY,
                 'user_rk': owner1
             },
             {
@@ -225,7 +219,7 @@ class TestTableOwner(unittest.TestCase):
                 'email': owner2
             },
             {
-                'table_rk': self.table_owner.get_metadata_model_key(),
+                'table_rk': TABLE_KEY,
                 'user_rk': owner2
             }
         ]

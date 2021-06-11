@@ -11,10 +11,13 @@ import {
 
 // Dashboard
 import { getDashboardWatcher } from 'ducks/dashboard/sagas';
+import { getFeatureWatcher } from 'ducks/feature/sagas';
 import { getAnnouncementsWatcher } from './announcements/sagas';
 
 // Notifications
 import { submitNotificationWatcher } from './notification/sagas';
+
+// Feature
 
 // FeedbackForm
 import { submitFeedbackWatcher } from './feedback/sagas';
@@ -84,6 +87,8 @@ export default function* rootSaga() {
     getDashboardWatcher(),
     // Notification
     submitNotificationWatcher(),
+    // Feature
+    getFeatureWatcher(),
     // FeedbackForm
     submitFeedbackWatcher(),
     // Issues

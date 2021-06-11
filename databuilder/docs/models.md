@@ -214,3 +214,38 @@ A model that encapsulate Dashboard's charts where chart is associated with query
 
 #### Extraction
 [ModeDashboardChartsExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_extractor.py)   
+
+## Feature models
+Feature models include [FeatureMetadata](../databuilder/models/feature/feature_metadata.py), which encapsulates the basic feature details, 
+and supplemental models [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py) and 
+[Feature_Watermark](../databuilder/models/feature/feature_watermark.py) for adding extra metadata. 
+In addition, the Tag, Badge, Owner, and Programmatic_Description models work with features.
+
+### [FeatureMetadata](../databuilder/models/feature/feature_metadata.py)
+
+#### Description
+A baseline of Feature metadata. This model needs to be ingested first as other models build relations to it.
+
+#### Extraction
+No specific extractors are provided at this time. We expect users will either write custom extractors, 
+or use generic extractors (e.g. SQLAlchemyExtractor). 
+
+### [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py)
+
+#### Description
+Allows ingesting the text of the generation code (SQL or otherwise) which was used to create a feature.  
+
+#### Extraction
+No specific extractors are provided at this time. We expect users will either write custom extractors, 
+or use generic extractors (e.g. SQLAlchemyExtractor). 
+
+### [Feature_Watermark](../databuilder/models/feature/feature_watermark.py)
+
+#### Description
+Allows ingesting the high and low data range of a feature. Unlike [Watermark](../databuilder/models/watermark.py), 
+which is specific to tables (requires a partition, for example), Feature_Watermark is more general and does not 
+care about how the feature is stored.
+
+#### Extraction
+No specific extractors are provided at this time. We expect users will either write custom extractors, 
+or use generic extractors (e.g. SQLAlchemyExtractor).
