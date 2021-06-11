@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    Any, Iterator, Optional, Union,
+    Any, Dict, Iterator, Optional, Union,
 )
 
 from databuilder.models.feature.feature_metadata import FeatureMetadata
@@ -20,6 +20,7 @@ class FeatureGenerationCode(GraphSerializable):
 
     TEXT_ATTR = 'text'
     LAST_EXECUTED_TIMESTAMP_ATTR = 'last_executed_timestamp'
+    SOURCE_ATTR = 'source'
 
     FEATURE_GENCODE_RELATION_TYPE = 'GENERATION_CODE'
     GENCODE_FEATURE_RELATION_TYPE = 'GENERATION_CODE_OF'
@@ -29,6 +30,7 @@ class FeatureGenerationCode(GraphSerializable):
                  feature_name: str,
                  feature_version: str,
                  text: str,
+                 source: Optional[str] = None,
                  last_executed_timestamp: Optional[int] = None,
                  **kwargs: Any
                  ) -> None:
@@ -37,6 +39,7 @@ class FeatureGenerationCode(GraphSerializable):
         self.feature_name = feature_name
         self.feature_version = feature_version
         self.text = text
+        self.source = source
         self.last_executed_timestamp = last_executed_timestamp
 
         self._node_iterator = self._create_node_iterator()
@@ -44,7 +47,7 @@ class FeatureGenerationCode(GraphSerializable):
 
     def __repr__(self) -> str:
         return f'Feature_Generation_Code({self.feature_group!r}, {self.feature_name!r}, {self.feature_version!r}, ' \
-               f'{self.text!r}, {self.last_executed_timestamp!r})'
+               f'{self.text!r}, {self.source!r}, {self.last_executed_timestamp!r})'
 
     def _get_feature_key(self) -> str:
         return FeatureMetadata.KEY_FORMAT.format(feature_group=self.feature_group,
@@ -61,11 +64,14 @@ class FeatureGenerationCode(GraphSerializable):
             return None
 
     def _create_node_iterator(self) -> Iterator[GraphNode]:
-        attrs = {
+        attrs: Dict[str, Any] = {
             FeatureGenerationCode.TEXT_ATTR: self.text,
         }
         if self.last_executed_timestamp:
-            attrs[FeatureGenerationCode.LAST_EXECUTED_TIMESTAMP_ATTR] = self.last_executed_timestamp  # type: ignore
+            attrs[FeatureGenerationCode.LAST_EXECUTED_TIMESTAMP_ATTR] = self.last_executed_timestamp
+
+        if self.source:
+            attrs[FeatureGenerationCode.SOURCE_ATTR] = self.source
 
         yield GraphNode(
             key=self._get_generation_code_key(),

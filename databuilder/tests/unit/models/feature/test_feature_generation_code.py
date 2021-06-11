@@ -14,14 +14,16 @@ class TestFeatureGenerationCode(unittest.TestCase):
             feature_name='feat_name_123',
             feature_version='2.0.0',
             text='select * from hive.schema.table',
+            source='foobar',
             last_executed_timestamp=1622596581,
         )
 
         self.expected_nodes = [
             {
-                'KEY': 'feature://group1/feat_name_123/2.0.0/_generation_code',
+                'KEY': 'group1/feat_name_123/2.0.0/_generation_code',
                 'LABEL': 'Feature_Generation_Code',
                 'text': 'select * from hive.schema.table',
+                'source': 'foobar',
                 'last_executed_timestamp:UNQUOTED': 1622596581,
             }
         ]
@@ -30,8 +32,8 @@ class TestFeatureGenerationCode(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Feature_Generation_Code',
-                'START_KEY': 'feature://group1/feat_name_123/2.0.0',
-                'END_KEY': 'feature://group1/feat_name_123/2.0.0/_generation_code',
+                'START_KEY': 'group1/feat_name_123/2.0.0',
+                'END_KEY': 'group1/feat_name_123/2.0.0/_generation_code',
                 'TYPE': 'GENERATION_CODE',
                 'REVERSE_TYPE': 'GENERATION_CODE_OF',
             }

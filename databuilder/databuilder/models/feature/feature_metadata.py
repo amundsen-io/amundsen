@@ -23,7 +23,7 @@ class FeatureMetadata(GraphSerializable):
     """
 
     NODE_LABEL = 'Feature'
-    KEY_FORMAT = 'feature://{feature_group}/{name}/{version}'
+    KEY_FORMAT = '{feature_group}/{name}/{version}'
 
     NAME_ATTR = 'name'
     VERSION_ATTR = 'version'
@@ -31,9 +31,10 @@ class FeatureMetadata(GraphSerializable):
     ENTITY_ATTR = 'entity'
     DATA_TYPE_ATTR = 'data_type'
     CREATED_TIMESTAMP_ATTR = 'created_timestamp'
+    LAST_UPDATED_TIMESTAMP_ATTR = 'last_updated_timestamp'
 
     GROUP_NODE_LABEL = 'Feature_Group'
-    GROUP_KEY_FORMAT = 'feature_group://{feature_group}'
+    GROUP_KEY_FORMAT = '{feature_group}'
     GROUP_FEATURE_RELATION_TYPE = 'GROUPS'
     FEATURE_GROUP_RELATION_TYPE = 'GROUPED_BY'
 
@@ -54,6 +55,7 @@ class FeatureMetadata(GraphSerializable):
                  description: Optional[str] = None,
                  tags: List[str] = None,
                  created_timestamp: Optional[int] = None,
+                 last_updated_timestamp: Optional[int] = None,
                  **kwargs: Any
                  ) -> None:
 
@@ -68,6 +70,7 @@ class FeatureMetadata(GraphSerializable):
         self.description = DescriptionMetadata.create_description_metadata(text=description)
         self.tags = _format_as_list(tags)
         self.created_timestamp = created_timestamp
+        self.last_updated_timestamp = last_updated_timestamp
 
         self._node_iterator = self._create_next_node()
         self._relation_iterator = self._create_next_relation()
@@ -76,7 +79,7 @@ class FeatureMetadata(GraphSerializable):
         return f'FeatureMetadata(' \
                f'{self.feature_group!r}, {self.name!r}, {self.version!r}, {self.status!r}, ' \
                f'{self.entity!r}, {self.data_type!r}, {self.availability!r}, {self.description!r}, ' \
-               f'{self.tags!r}, {self.created_timestamp!r})'
+               f'{self.tags!r}, {self.created_timestamp!r}, {self.last_updated_timestamp!r})'
 
     def _get_feature_key(self) -> str:
         return FeatureMetadata.KEY_FORMAT.format(feature_group=self.feature_group,
@@ -110,6 +113,9 @@ class FeatureMetadata(GraphSerializable):
 
         if self.created_timestamp:
             feature_node_attrs[FeatureMetadata.CREATED_TIMESTAMP_ATTR] = self.created_timestamp
+
+        if self.last_updated_timestamp:
+            feature_node_attrs[FeatureMetadata.LAST_UPDATED_TIMESTAMP_ATTR] = self.last_updated_timestamp
 
         return feature_node_attrs
 
