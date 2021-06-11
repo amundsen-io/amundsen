@@ -13,7 +13,7 @@
   height: $spacer-6;
   padding: $spacer-1 $spacer-3 $spacer-1;
 
-  .header-0 {
+  .resource-header {
     flex: 7;
     margin-right: $spacer-2;
 
@@ -22,11 +22,11 @@
     }
   }
 
-  .header-1 {
+  .source-header {
     flex: 2;
   }
 
-  .header-2 {
+  .badge-last-run-header {
     display: flex;
     flex: 3;
     flex-wrap: wrap;
@@ -37,7 +37,7 @@
     }
   }
 
-  .header-3 {
+  .entity-header {
     display: flex;
     flex: 2;
     flex-wrap: wrap;

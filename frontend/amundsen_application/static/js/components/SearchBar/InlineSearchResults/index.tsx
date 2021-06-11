@@ -224,7 +224,9 @@ export class InlineSearchResults extends React.Component<
         );
       case ResourceType.user:
         const user = result as UserResource;
-        return <div className="text-title-w2 truncated">{user.display_name}</div>;
+        return (
+          <div className="text-title-w2 truncated">{user.display_name}</div>
+        );
       default:
         return <div className="text-title-w2 truncated" />;
     }
