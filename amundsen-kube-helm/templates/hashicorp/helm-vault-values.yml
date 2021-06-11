@@ -18,6 +18,10 @@ server:
 
         service_registration "kubernetes" {}
 
+        storage "raft" {
+          path    = "/vault/data"
+        }
+
         seal "awskms" {
           region     = "us-east-1"
           kms_key_id = "arn:aws:kms:us-east-1:443786448530:alias/release/release-handsup-us-east-1"
