@@ -10,7 +10,6 @@ class GenerationCode:
     key: Optional[str]
     text: str
     source: Optional[str]
-    url: Optional[str]
 
 
 class GenerationCodeSchema(AttrsSchema):
