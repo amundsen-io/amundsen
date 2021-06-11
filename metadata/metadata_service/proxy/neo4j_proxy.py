@@ -1739,20 +1739,6 @@ class Neo4jProxy(BaseProxy):
 
         watermarks = self._create_watermarks(wmk_records=feature_records['wmk_records'])
 
-        # partition_column = None
-        # if feature_records.get('partition_column'):
-        #     column_record = feature_records['partition_column']
-        #     desc_node = feature_records.get('col_desc')
-        #     col_description = desc_node.get('description') if desc_node else None
-        #     partition_column = Column(name=column_record['name'],
-        #                               key=f"{feature_key}/{column_record['name']}",
-        #                               col_type=column_record['col_type'],
-        #                               sort_order=0,
-        #                               stats=[],
-        #                               description=col_description,
-        #                               badges=[Badge(badge_name='partition_column',
-        #                                             category='column')])
-
         availability_records = [db['name'] for db in feature_records.get('availability_records')]
 
         description = None
