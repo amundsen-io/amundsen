@@ -1823,5 +1823,4 @@ class Neo4jProxy(BaseProxy):
         # TODO replace with Feature Generation model
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],
-                              source=query_result['source'],
-                              url=query_result['url'])
+                              source=query_result['source'])
