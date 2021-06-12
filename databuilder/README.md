@@ -1428,7 +1428,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [FsAtlasCSVLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
+#### [FsAtlasCSVLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_atlas_csv_loader.py "FileSystemCSVLoader")
 Write node and relationship CSV file(s) that can be consumed by AtlasCsvPublisher. It assumes that the record it
  consumes is instance of AtlasSerializable.
 
@@ -1508,7 +1508,7 @@ job = DefaultJob(
     publisher=ElasticsearchPublisher())
 job.launch()
 ```
-#### [AtlasCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/atlas_csv_publisher.py "AtlasCsvPublisher")
+#### [AtlasCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/atlas_csv_publisher.py "AtlasCsvPublisher")
 A Publisher takes two folders for input and publishes to Atlas.
 One folder will contain CSV file(s) for Entity where the other folder will contain CSV file(s) for Relationship.
 
