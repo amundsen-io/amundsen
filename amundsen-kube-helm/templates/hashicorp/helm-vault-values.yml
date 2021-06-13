@@ -22,6 +22,7 @@ server:
 
       seal "awskms" {
         region     = "us-east-1"
-        kms_key_id = "release/release-handsup-us-east-1"
+        kms_key_id = "arn:aws:kms:us-east-1:443786448530:key/5fef8ee0-f5df-4acb-af52-038d28a544bd"
+        # kms_key_id = "release/release-handsup-us-east-1"
         # kms_key_id = "arn:aws:kms:us-east-1:443786448530:alias/release/release-handsup-us-east-1"
       }
