@@ -16,7 +16,7 @@ server:
       service_registration "kubernetes" {}
 
       storage "consul" {
-        path = "vault"
+        path = "vault/"
         address = "HOST_IP:8500"
       }
 
