@@ -1,0 +1,34 @@
+server:
+
+  extraEnvironmentVars:
+    AWS_ROLE_SESSION_NAME: s3vault
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::443786448530:role/release/iam_for_vaults3bucket
+
+  affinity: ""
+  ha:
+    enabled: true
+    raft:
+      enabled: false
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+
+      storage "s3" {
+        bucket = "release-handsup-us-east-1-vault-storage"
+        kms_key_id = "arn:aws:kms:us-east-1:443786448530:alias/release/release-handsup-us-east-1"
+      }
+
+      service_registration "kubernetes" {}
+
+      seal "awskms" {
+        region     = "us-east-1"
+        kms_key_id = "arn:aws:kms:us-east-1:443786448530:alias/release/release-handsup-us-east-1"
+      }
