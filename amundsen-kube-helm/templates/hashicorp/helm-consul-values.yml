@@ -1,5 +1,6 @@
 global:
-  datacenter: vault-kubernetes-tutorial
+  name: consul
+  datacenter: stemma-vault
 
 client:
   enabled: true
