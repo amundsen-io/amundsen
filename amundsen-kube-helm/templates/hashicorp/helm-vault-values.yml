@@ -5,7 +5,7 @@ server:
 
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::443786448530:role/release/iam_for_vaults3bucket
+      eks.amazonaws.com/role-arn: arn:aws:iam::443786448530:role/release/release-handsup-us-east-1-vault-unseal
 
   affinity: ""
   ha:
@@ -22,5 +22,5 @@ server:
 
       seal "awskms" {
         region     = "us-east-1"
-        kms_key_id = "arn:aws:kms:us-east-1:443786448530:alias/release/release-handsup-us-east-1"
+        kms_key_id = "release/release-handsup-us-east-1"
       }
