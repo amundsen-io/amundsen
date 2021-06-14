@@ -10,7 +10,7 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 
 import neo4j
 from amundsen_common.models.dashboard import DashboardSummary
-from amundsen_common.models.feature import Feature
+from amundsen_common.models.feature import Feature, FeatureWatermark
 from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
@@ -1660,19 +1660,6 @@ class Neo4jProxy(BaseProxy):
                           "downstream_entities": downstream_tables,
                           "direction": direction, "depth": depth})
 
-    def _classify_tags(self, tag_records: List) -> Tuple:
-        tags = []
-        owner_tags = []
-        for record in tag_records:
-            current_tag_type = record['tag_type']
-            tag_result = Tag(tag_name=record['key'],
-                             tag_type=record['tag_type'])
-            if current_tag_type == 'owner':
-                owner_tags.append(tag_result)
-            else:
-                tags.append(tag_result)
-        return tags, owner_tags
-
     def _create_watermarks(self, wmk_records: List) -> List[Watermark]:
         watermarks = []
         for record in wmk_records:
@@ -1682,6 +1669,15 @@ class Neo4jProxy(BaseProxy):
                                             partition_key=record['partition_key'],
                                             partition_value=record['partition_value'],
                                             create_time=record['create_time']))
+        return watermarks
+
+    def _create_feature_watermarks(self, wmk_records: List) -> List[Watermark]:
+        watermarks = []
+        for record in wmk_records:
+            if record['key'] is not None:
+                watermark_type = record['key'].split('/')[-1]
+                watermarks.append(FeatureWatermark(watermark_type=watermark_type,
+                                                   time=record['time']))
         return watermarks
 
     def _create_programmatic_descriptions(self, prog_desc_records: List) -> List[ProgrammaticDescription]:
@@ -1707,19 +1703,29 @@ class Neo4jProxy(BaseProxy):
         Executes cypher query to get feature and related nodes
         """
 
+        validation_query = 'MATCH (n:Feature {key: $key}) return n'
+        try:
+            feat_result = self._execute_cypher_query(statement=validation_query,
+                                                     param_dict={
+                                                         'key': feature_key
+                                                     })
+            if not feat_result.single():
+                raise NotFoundException('id {} does not exist'.format(id))
+        except Exception as e:
+            raise e
+
         feature_query = textwrap.dedent("""\
         MATCH (feat:Feature {key: $feature_key})
         OPTIONAL MATCH (db:Database)-[:AVAILABLE_FEATURE]->(feat)
         OPTIONAL MATCH (fg:Feature_Group)-[:GROUPS]->(feat)
-        OPTIONAL MATCH (feat)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (feat)-[:OWNER]->(owner:User)
         OPTIONAL MATCH (feat)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (feat)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (feat)-[:DESCRIPTION]->(desc:Description)
         OPTIONAL MATCH (feat)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
         OPTIONAL MATCH (wmk:Feature_Watermark)-[:BELONG_TO_FEATURE]->(feat)
-        RETURN feat, collect(distinct wmk) as wmk_records,
-        t.last_updated_timestamp as last_updated_timestamp, desc, fg,
+        RETURN feat, desc, fg,
+        collect(distinct wmk) as wmk_records,
         collect(distinct db) as availability_records,
         collect(distinct owner) as owner_records,
         collect(distinct tag) as tag_records,
@@ -1732,12 +1738,9 @@ class Neo4jProxy(BaseProxy):
                                                          'feature_key': feature_key
                                                      })
 
-        if not feature_records:
-            raise NotFoundException('Feature URI( {feature_uri} ) does not exist')
-
         feature_records = feature_records.single()
 
-        watermarks = self._create_watermarks(wmk_records=feature_records['wmk_records'])
+        watermarks = self._create_feature_watermarks(wmk_records=feature_records['wmk_records'])
 
         availability_records = [db['name'] for db in feature_records.get('availability_records')]
 
@@ -1749,12 +1752,16 @@ class Neo4jProxy(BaseProxy):
 
         owners = self._create_owners(feature_records['owner_records'])
 
-        tags, owner_tags = self._classify_tags(feature_records.get('tag_records'))
+        tags = []
+        for record in feature_records.get('tag_records'):
+            tag_result = Tag(tag_name=record['key'],
+                             tag_type=record['tag_type'])
+            tags.append(tag_result)
 
         feature_node = feature_records['feat']
 
         feature_group = feature_records['fg']
-
+        LOGGER.info(feature_node)
         return {
             'key': feature_node.get('key'),
             'name': feature_node.get('name'),
@@ -1768,10 +1775,8 @@ class Neo4jProxy(BaseProxy):
             'created_timestamp': feature_node.get('created_timestamp'),
             'watermarks': watermarks,
             'availability': availability_records,
-            'owner_tags': owner_tags,
             'tags': tags,
             'badges': self._make_badges(feature_records.get('badge_records')),
-            'partition_column': None,
             'owners': owners,
             'status': feature_node.get('status')
         }
@@ -1782,6 +1787,7 @@ class Neo4jProxy(BaseProxy):
         :return: a Feature object
         """
         feature_metadata = self._exec_feature_query(feature_key=feature_uri)
+        LOGGER.info(feature_metadata)
         feature = Feature(
             key=feature_metadata['key'],
             name=feature_metadata['name'],
@@ -1794,8 +1800,6 @@ class Neo4jProxy(BaseProxy):
             description=feature_metadata['description'],
             owners=feature_metadata['owners'],
             badges=feature_metadata['badges'],
-            partition_column=feature_metadata['partition_column'],
-            owner_tags=feature_metadata['owner_tags'],
             tags=feature_metadata['tags'],
             programmatic_descriptions=feature_metadata['programmatic_descriptions'],
             last_updated_timestamp=feature_metadata['last_updated_timestamp'],
@@ -1807,6 +1811,15 @@ class Neo4jProxy(BaseProxy):
         """
         Executes cypher query to get query nodes associated with resource
         """
+        validation_query = "MATCH (n:{resource_type} {{key: $key}}) return n".format(resource_type=resource_type.name)
+        try:
+            resource_result = self._execute_cypher_query(statement=validation_query,
+                                                         param_dict={'key': uri})
+            if not resource_result.single():
+                raise NotFoundException('id {} does not exist'.format(id))
+        except Exception as e:
+            raise e
+
         neo4j_query = textwrap.dedent("""\
         MATCH (feat:{resource_type} {{key: $resource_key}})
         OPTIONAL MATCH (q:Feature_Generation_Code)-[:GENERATION_CODE_OF]->(feat)
@@ -1816,11 +1829,11 @@ class Neo4jProxy(BaseProxy):
         records = self._execute_cypher_query(statement=neo4j_query,
                                              param_dict={'resource_key': uri})
 
-        if not records:
-            raise NotFoundException(f'Resource URI( {uri} ) does not exist')
+        if records.single()['query_records'] is None:
+            raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
         query_result = records.single()['query_records']
-        # TODO replace with Feature Generation model
+
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],
                               source=query_result['source'])
