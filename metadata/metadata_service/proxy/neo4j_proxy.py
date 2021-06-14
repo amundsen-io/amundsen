@@ -1703,15 +1703,6 @@ class Neo4jProxy(BaseProxy):
         Executes cypher query to get feature and related nodes
         """
 
-        validation_query = 'MATCH (n:Feature {key: $key}) return n'
-        try:
-            with self._driver.session() as session:
-                resource_result = session.run(validation_query, **{'key': feature_key})
-                if not resource_result.single():
-                    raise NotFoundException('id {} does not exist'.format(id))
-        except Exception as e:
-            raise e
-
         feature_query = textwrap.dedent("""\
         MATCH (feat:Feature {key: $feature_key})
         OPTIONAL MATCH (db:Database)-[:AVAILABLE_FEATURE]->(feat)
@@ -1732,11 +1723,11 @@ class Neo4jProxy(BaseProxy):
         """)
 
         feature_records = self._execute_cypher_query(statement=feature_query,
-                                                     param_dict={
-                                                         'feature_key': feature_key
-                                                     })
-
+                                                        param_dict={'feature_key': feature_key})
         feature_records = feature_records.single()
+
+        if feature_records is None:
+            raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
 
         watermarks = self._create_feature_watermarks(wmk_records=feature_records['wmk_records'])
 
@@ -1809,14 +1800,6 @@ class Neo4jProxy(BaseProxy):
         """
         Executes cypher query to get query nodes associated with resource
         """
-        validation_query = "MATCH (n:{resource_type} {{key: $key}}) return n".format(resource_type=resource_type.name)
-        try:
-            with self._driver.session() as session:
-                resource_result = session.run(validation_query, **{'key': uri})
-                if not resource_result.single():
-                    raise NotFoundException('id {} does not exist'.format(id))
-        except Exception as e:
-            raise e
 
         neo4j_query = textwrap.dedent("""\
         MATCH (feat:{resource_type} {{key: $resource_key}})
@@ -1826,7 +1809,6 @@ class Neo4jProxy(BaseProxy):
 
         records = self._execute_cypher_query(statement=neo4j_query,
                                              param_dict={'resource_key': uri})
-
         if records.single()['query_records'] is None:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
