@@ -1705,12 +1705,10 @@ class Neo4jProxy(BaseProxy):
 
         validation_query = 'MATCH (n:Feature {key: $key}) return n'
         try:
-            feat_result = self._execute_cypher_query(statement=validation_query,
-                                                     param_dict={
-                                                         'key': feature_key
-                                                     })
-            if not feat_result.single():
-                raise NotFoundException('id {} does not exist'.format(id))
+            with self._driver.session() as session:
+                resource_result = session.run(validation_query, **{'key': feature_key})
+                if not resource_result.single():
+                    raise NotFoundException('id {} does not exist'.format(id))
         except Exception as e:
             raise e
 
@@ -1813,10 +1811,10 @@ class Neo4jProxy(BaseProxy):
         """
         validation_query = "MATCH (n:{resource_type} {{key: $key}}) return n".format(resource_type=resource_type.name)
         try:
-            resource_result = self._execute_cypher_query(statement=validation_query,
-                                                         param_dict={'key': uri})
-            if not resource_result.single():
-                raise NotFoundException('id {} does not exist'.format(id))
+            with self._driver.session() as session:
+                resource_result = session.run(validation_query, **{'key': uri})
+                if not resource_result.single():
+                    raise NotFoundException('id {} does not exist'.format(id))
         except Exception as e:
             raise e
 
