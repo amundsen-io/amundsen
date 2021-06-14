@@ -159,11 +159,15 @@ export class SearchPage extends React.Component<SearchPageProps> {
           slicedItems={results.results}
           source={SEARCH_SOURCE_NAME}
           totalItemsCount={total_results}
+          onItemClick={this.handleItemClick}
         />
       </div>
     );
   };
 
+  handleItemClick = () => {
+    console.log("A CLICK!")
+  };
   renderContent = () => {
     if (this.props.isLoading) {
       return <ShimmeringResourceLoader numItems={RESULTS_PER_PAGE} />;

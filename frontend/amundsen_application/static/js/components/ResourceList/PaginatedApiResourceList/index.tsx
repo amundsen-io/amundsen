@@ -17,6 +17,7 @@ export interface PaginatedApiResourceListProps {
   slicedItems: Resource[];
   totalItemsCount: number;
   source: string;
+  onItemClick: () => void;
 }
 
 class PaginatedApiResourceList extends React.Component<
@@ -31,6 +32,11 @@ class PaginatedApiResourceList extends React.Component<
     const activePage = rawPageNum - 1;
 
     this.props.onPagination(activePage);
+  };
+
+  handleItemClick = (source: string, index: number) => {
+    const { onItemClick } = this.props;
+    onItemClick();
   };
 
   render() {
@@ -55,7 +61,10 @@ class PaginatedApiResourceList extends React.Component<
               {slicedItems.map((item, idx) => {
                 const logging = { source, index: startIndex + idx };
                 return (
-                  <ResourceListItem item={item} logging={logging} key={idx} />
+                  <ResourceListItem item={item}
+                  logging={logging}
+                  key={idx}
+                  onItemClick={this.handleItemClick.bind(this, source, startIndex + idx)}/>
                 );
               })}
             </ul>
