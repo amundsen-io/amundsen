@@ -1138,11 +1138,11 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.side_effect = [{
                 'wmk_records': [
                     {
-                        'key': 'test_feature_group/test_feature_name/1.2.3/high_watermark/',
+                        'key': 'test_feature_group/test_feature_name/1.2.3/high_watermark',
                         'time': 'fake_time',
                     },
                     {
-                        'key': 'test_feature_group/test_feature_name/1.2.3/low_watermark/',
+                        'key': 'test_feature_group/test_feature_name/1.2.3/low_watermark',
                         'time': 'fake_time',
                     }
                 ],
@@ -1219,11 +1219,11 @@ class TestNeo4jProxy(unittest.TestCase):
                                                            text='Test Test'),
                                ],
                                watermarks=[FeatureWatermark(
-                                   key='test_feature_group/test_feature_name/1.2.3/high_watermark/',
+                                   key='test_feature_group/test_feature_name/1.2.3/high_watermark',
                                    watermark_type='high_watermark',
                                    time='fake_time'),
                                    FeatureWatermark(
-                                       key='test_feature_group/test_feature_name/1.2.3/low_watermark/',
+                                       key='test_feature_group/test_feature_name/1.2.3/low_watermark',
                                        watermark_type='low_watermark',
                                        time='fake_time')],
                                last_updated_timestamp=1,

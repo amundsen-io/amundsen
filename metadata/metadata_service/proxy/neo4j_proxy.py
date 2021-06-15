@@ -1675,7 +1675,7 @@ class Neo4jProxy(BaseProxy):
         watermarks = []
         for record in wmk_records:
             if record['key'] is not None:
-                watermark_type = record['key'].split('/')[-2]
+                watermark_type = record['key'].split('/')[-1]
 
                 watermarks.append(FeatureWatermark(key=record['key'],
                                                    watermark_type=watermark_type,
@@ -1755,7 +1755,7 @@ class Neo4jProxy(BaseProxy):
         feature_node = feature_records['feat']
 
         feature_group = feature_records['fg']
-        LOGGER.info(feature_node)
+
         return {
             'key': feature_node.get('key'),
             'name': feature_node.get('name'),
@@ -1781,7 +1781,7 @@ class Neo4jProxy(BaseProxy):
         :return: a Feature object
         """
         feature_metadata = self._exec_feature_query(feature_key=feature_uri)
-        LOGGER.info(feature_metadata)
+
         feature = Feature(
             key=feature_metadata['key'],
             name=feature_metadata['name'],
