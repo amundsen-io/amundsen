@@ -3,7 +3,6 @@ import { Badge } from 'interfaces/Badges';
 import { Tag } from 'interfaces/Tags';
 import {
   ProgrammaticDescription,
-  TableColumn,
   Watermark,
 } from 'interfaces/TableMetadata';
 
@@ -13,7 +12,7 @@ export interface FeatureMetadata {
   version: string;
   status: string;
   feature_group: string;
-  entity?: string[];
+  entity?: string;
   data_type?: string;
   availability: string[];
   description: string;
@@ -26,7 +25,7 @@ export interface FeatureMetadata {
   stats: FeatureStats[];
   last_updated_timestamp: number;
   created_timestamp: number;
-  partition_column?: TableColumn;
+  partition_column?: string;
 }
 
 // TODO - duplicated with FeatureResource in Resources.ts. Might delete this.

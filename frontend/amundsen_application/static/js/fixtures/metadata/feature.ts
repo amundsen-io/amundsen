@@ -1,38 +1,35 @@
-import { FeatureMetadata, FeatureSummary } from 'interfaces/Feature';
+import { FeatureResource, ResourceType } from 'interfaces';
 
-export const featureSummary: FeatureSummary = {
-  key: 'test key',
-  name: 'test feature name',
-  version: '1.02.0',
-  availability: ['source 1', 'source 2'],
-  entity: ['entity 1', 'entity 2'],
-  description: 'test feature description',
+export const featureSummary: FeatureResource = {
+  type: ResourceType.feature,
+  description: 'I am an ML feature',
+  key: 'test_feature_group/test_feature_name/1.4',
+  last_updated_timestamp: 946684799,
+  name: 'test_feature_name',
+  feature_group: 'test_feature_group',
+  version: '1.4',
+  availability: ['hive'],
+  entity: 'test_entity',
+  badges: [{ tag_name: 'pii' }],
 };
 
-export const featureMetadata: FeatureMetadata = {
-  key: 'test key',
-  name: 'test feature name',
-  version: '1.02.0',
-  status: 'status',
-  feature_group: 'feature group',
-  entity: ['entity 1', 'entity 2'],
-  data_type: 'string',
-  availability: ['source 1', 'source 2'],
-  description: 'test feature description',
-  owners: [
-    {
-      display_name: 'test',
-      email: 'test@email.com',
-      profile_url: 'profile_url',
-      user_id: 'user_id',
-    },
-  ],
+export const featureMetadata = {
+  availability: ['hive'],
   badges: [],
-  owner_tags: [],
-  tags: [],
+  created_timestamp: 946683711,
+  description: 'I am an ML feature',
+  entity: 'test_entity',
+  feature_group: 'test_feature_group',
+  key: 'test_feature_group/test_feature_name/1.4',
+  last_updated_timestamp: 946684799,
+  name: 'test_feature_name',
+  owners: [],
+  partition_column: 'ds',
   programmatic_descriptions: [],
-  watermarks: [],
+  status: 'active',
   stats: [],
-  last_updated_timestamp: 0,
-  created_timestamp: 0,
+  tags: [],
+  type: ResourceType.feature,
+  version: '1.4',
+  watermarks: [],
 };
