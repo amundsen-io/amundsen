@@ -1675,8 +1675,10 @@ class Neo4jProxy(BaseProxy):
         watermarks = []
         for record in wmk_records:
             if record['key'] is not None:
-                watermark_type = record['key'].split('/')[-1]
-                watermarks.append(FeatureWatermark(watermark_type=watermark_type,
+                watermark_type = record['key'].split('/')[-2]
+
+                watermarks.append(FeatureWatermark(key=record['key'],
+                                                   watermark_type=watermark_type,
                                                    time=record['time']))
         return watermarks
 
@@ -1722,10 +1724,13 @@ class Neo4jProxy(BaseProxy):
         collect(distinct prog_descriptions) as prog_descriptions
         """)
 
-        feature_records = self._execute_cypher_query(statement=feature_query,
-                                                        param_dict={'feature_key': feature_key})
-        feature_records = feature_records.single()
+        results = self._execute_cypher_query(statement=feature_query,
+                                             param_dict={'feature_key': feature_key})
 
+        if results is None:
+            raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
+
+        feature_records = results.single()
         if feature_records is None:
             raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
 
@@ -1809,10 +1814,12 @@ class Neo4jProxy(BaseProxy):
 
         records = self._execute_cypher_query(statement=neo4j_query,
                                              param_dict={'resource_key': uri})
-        if records.single()['query_records'] is None:
+        if records is None:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
         query_result = records.single()['query_records']
+        if query_result is None:
+            raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],

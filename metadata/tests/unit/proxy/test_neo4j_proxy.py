@@ -8,7 +8,7 @@ from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.dashboard import DashboardSummary
-from amundsen_common.models.feature import Feature
+from amundsen_common.models.feature import Feature, FeatureWatermark
 from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
@@ -1138,16 +1138,12 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.side_effect = [{
                 'wmk_records': [
                     {
-                        'key': 'hive://gold.test_schema/test_table/high_watermark/',
-                        'partition_key': 'ds',
-                        'partition_value': 'fake_value',
-                        'create_time': 'fake_time',
+                        'key': 'test_feature_group/test_feature_name/1.2.3/high_watermark/',
+                        'time': 'fake_time',
                     },
                     {
-                        'key': 'hive://gold.test_schema/test_table/low_watermark/',
-                        'partition_key': 'ds',
-                        'partition_value': 'fake_value',
-                        'create_time': 'fake_time',
+                        'key': 'test_feature_group/test_feature_name/1.2.3/low_watermark/',
+                        'time': 'fake_time',
                     }
                 ],
                 'availability_records': [
@@ -1186,13 +1182,10 @@ class TestNeo4jProxy(unittest.TestCase):
                     {
                         'tag_type': 'default', 'key': 'test'
                     },
-                    {
-                        'tag_type': 'owner', 'key': 'test_owner_tag'
-                    },
                 ],
                 'desc': {
                     'description': 'test feature description',
-                    'key': 'hive://gold.core/test_feature_group/test_feature_name/1.2.3/_description',
+                    'key': 'test_feature_group/test_feature_name/1.2.3/_description',
                     'description_source': 'description'
                 },
                 'feat': {
@@ -1220,21 +1213,19 @@ class TestNeo4jProxy(unittest.TestCase):
                                description='test feature description',
                                owners=[User(email='tester@example.com')],
                                badges=[Badge(badge_name='pii', category='data')],
-                               owner_tags=[Tag(tag_name='test_owner_tag', tag_type='owner')],
                                tags=[Tag(tag_name='test', tag_type='default')],
                                programmatic_descriptions=[
                                    ProgrammaticDescription(source='quality_report',
                                                            text='Test Test'),
                                ],
-                               watermarks=[Watermark(watermark_type='high_watermark',
-                                                     partition_key='ds',
-                                                     partition_value='fake_value',
-                                                     create_time='fake_time'),
-                                           Watermark(watermark_type='low_watermark',
-                                                     partition_key='ds',
-                                                     partition_value='fake_value',
-                                                     create_time='fake_time')],
-                               partition_column=None,
+                               watermarks=[FeatureWatermark(
+                                   key='test_feature_group/test_feature_name/1.2.3/high_watermark/',
+                                   watermark_type='high_watermark',
+                                   time='fake_time'),
+                                   FeatureWatermark(
+                                       key='test_feature_group/test_feature_name/1.2.3/low_watermark/',
+                                       watermark_type='low_watermark',
+                                       time='fake_time')],
                                last_updated_timestamp=1,
                                created_timestamp=1,
                                )
