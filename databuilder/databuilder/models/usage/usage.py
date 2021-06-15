@@ -1,14 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import (
-    Iterator, Optional
-)
+from typing import Iterator, Optional
 
 from amundsen_rds.models import RDSModel
-from amundsen_rds.models.user import User as RDSUser
-from amundsen_rds.models.table import TableUsage as RDSTableUsage
 from amundsen_rds.models.dashboard import DashboardUsage as RDSDashboardUsage
+from amundsen_rds.models.table import TableUsage as RDSTableUsage
+from amundsen_rds.models.user import User as RDSUser
 
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.graph_node import GraphNode
@@ -16,8 +14,9 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.table_serializable import TableSerializable
-from databuilder.models.usage.usage_constants import READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE, \
-    READ_RELATION_COUNT_PROPERTY
+from databuilder.models.usage.usage_constants import (
+    READ_RELATION_COUNT_PROPERTY, READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE,
+)
 from databuilder.models.user import User
 
 

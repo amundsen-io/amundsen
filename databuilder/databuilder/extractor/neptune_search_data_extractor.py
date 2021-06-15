@@ -23,8 +23,9 @@ from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE
 from databuilder.models.schema.schema_constant import SCHEMA_REVERSE_RELATION_TYPE
 from databuilder.models.table_metadata import DescriptionMetadata, TableMetadata
 from databuilder.models.timestamp.timestamp_constants import LASTUPDATED_RELATION_TYPE, TIMESTAMP_PROPERTY
-from databuilder.models.usage.usage_constants import READ_RELATION_COUNT_PROPERTY, READ_REVERSE_RELATION_TYPE, \
-    READ_RELATION_TYPE
+from databuilder.models.usage.usage_constants import (
+    READ_RELATION_COUNT_PROPERTY, READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE,
+)
 from databuilder.models.user import User
 from databuilder.serializers.neptune_serializer import METADATA_KEY_PROPERTY_NAME
 

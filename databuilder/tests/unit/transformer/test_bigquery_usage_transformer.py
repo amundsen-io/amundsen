@@ -7,7 +7,6 @@ from pyhocon import ConfigFactory
 
 from databuilder.extractor.bigquery_usage_extractor import TableColumnUsageTuple
 from databuilder.models.table_column_usage import TableColumnUsage
-from databuilder.models.table_metadata import TableMetadata
 from databuilder.transformer.bigquery_usage_transformer import BigqueryUsageTransformer
 
 
