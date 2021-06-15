@@ -40,19 +40,9 @@ class TestTableColumnUsage(unittest.TestCase):
             actual.append(neo4_serializer.serialize_node(node_row))
             node_row = self.table_col_usage.next_node()
 
-        expected = [{'first_name': '',
-                     'last_name': '',
-                     'full_name': '',
-                     'employee_type': '',
-                     'is_active:UNQUOTED': True,
-                     'updated_at:UNQUOTED': 0,
-                     'LABEL': 'User',
-                     'slack_id': '',
+        expected = [{'LABEL': 'User',
                      'KEY': 'john@example.com',
-                     'github_username': '',
-                     'team_name': '',
-                     'email': 'john@example.com',
-                     'role_name': ''}]
+                     'email': 'john@example.com'}]
         self.assertEqual(expected, actual)
 
         rel_row = self.table_col_usage.next_relation()
@@ -124,17 +114,7 @@ class TestTableColumnUsage(unittest.TestCase):
             record = table_col_usage.next_record()
 
         expected_user = {'rk': 'john@example.com',
-                         'first_name': '',
-                         'last_name': '',
-                         'full_name': '',
-                         'employee_type': '',
-                         'is_active': True,
-                         'updated_at': 0,
-                         'slack_id': '',
-                         'github_username': '',
-                         'team_name': '',
-                         'email': 'john@example.com',
-                         'role_name': ''}
+                         'email': 'john@example.com'}
         expected_usage = {'table_rk': 'db://gold.scm/foo',
                           'user_rk': 'john@example.com',
                           'read_count': 1}

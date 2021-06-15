@@ -118,5 +118,5 @@ class TestDashboardOwner(unittest.TestCase):
         with self.assertRaises(Exception) as e:
             record = feature_owner.create_next_record()
             while record:
-                record = feature_owner.next_record()
+                record = feature_owner.create_next_record()
         self.assertEqual(e.exception.args, ('Feature<>Owner relationship is not table serializable',))
