@@ -376,11 +376,11 @@ The `where_clause_suffix` should define any filtering you'd like to include in y
 
 ```python
 job_config = ConfigFactory.from_dict({
-    f'extractor.snowflake.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
-    f'extractor.snowflake.{GenericUsageExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
-    f'extractor.snowflake.{GenericUsageExtractor.POPULARITY_TABLE_DATABASE}': 'WhateverNameOfYourDb',
-    f'extractor.snowflake.{GenericUsageExtractor.POPULARTIY_TABLE_SCHEMA}': 'WhateverNameOfYourSchema',
-    f'extractor.snowflake.{GenericUsageExtractor.POPULARITY_TABLE_NAME}': 'WhateverNameOfYourTable',
+    f'extractor.generic_usage.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+    f'extractor.generic_usage.{GenericUsageExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+    f'extractor.generic_usage.{GenericUsageExtractor.POPULARITY_TABLE_DATABASE}': 'WhateverNameOfYourDb',
+    f'extractor.generic_usage.{GenericUsageExtractor.POPULARTIY_TABLE_SCHEMA}': 'WhateverNameOfYourSchema',
+    f'extractor.generic_usage.{GenericUsageExtractor.POPULARITY_TABLE_NAME}': 'WhateverNameOfYourTable',
 job = DefaultJob(
     conf=job_config,
     task=DefaultTask(
