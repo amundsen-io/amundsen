@@ -18,9 +18,8 @@ export interface FeatureListItemProps {
   logging: LoggingParams;
 }
 
-const getLink = (feature: FeatureResource, logging: LoggingParams) => {
-  return `/feature/${feature.key}?index=${logging.index}&source=${logging.source}`;
-};
+const getLink = (feature: FeatureResource, logging: LoggingParams) =>
+  `/feature/${feature.key}?index=${logging.index}&source=${logging.source}`;
 
 const generateResourceIconClass = (
   featureId: string,
