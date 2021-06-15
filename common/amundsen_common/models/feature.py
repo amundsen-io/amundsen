@@ -8,7 +8,7 @@ import attr
 from amundsen_common.models.user import User
 from amundsen_common.models.badge import Badge
 from amundsen_common.models.tag import Tag
-from amundsen_common.models.table import ProgrammaticDescription, Watermark
+from amundsen_common.models.table import ProgrammaticDescription
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
