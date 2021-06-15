@@ -1,10 +1,7 @@
 import { User } from 'interfaces/User';
 import { Badge } from 'interfaces/Badges';
 import { Tag } from 'interfaces/Tags';
-import {
-  ProgrammaticDescription,
-  Watermark,
-} from 'interfaces/TableMetadata';
+import { ProgrammaticDescription } from 'interfaces/TableMetadata';
 
 export interface FeatureMetadata {
   key: string;
@@ -21,7 +18,7 @@ export interface FeatureMetadata {
   owner_tags?: Tag[];
   tags: Tag[];
   programmatic_descriptions: ProgrammaticDescription[];
-  watermarks: Watermark[];
+  watermarks: FeatureWatermark[];
   stats: FeatureStats[];
   last_updated_timestamp: number;
   created_timestamp: number;
@@ -41,4 +38,10 @@ export interface FeatureSummary {
 // TODO - Figure out if we can reuse ColumnStats
 export interface FeatureStats {
   name: string;
+}
+
+export interface FeatureWatermark {
+  key: string;
+  watermark_type: string;
+  time: string;
 }
