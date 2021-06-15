@@ -8,7 +8,7 @@ import attr
 from amundsen_common.models.user import User
 from amundsen_common.models.badge import Badge
 from amundsen_common.models.tag import Tag
-from amundsen_common.models.table import Column, ProgrammaticDescription, Watermark
+from amundsen_common.models.table import ProgrammaticDescription, Watermark
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 
@@ -39,6 +39,19 @@ class DataSampleSchema(AttrsSchema):
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class FeatureWatermark:
+    key: Optional[str]
+    watermark_type: Optional[str]
+    time: str
+
+
+class FeatureWatermarkSchema(AttrsSchema):
+    class Meta:
+        target = FeatureWatermark
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Feature:
     key: Optional[str] = attr.ib(default=None)
     name: str
@@ -51,13 +64,11 @@ class Feature:
     description: Optional[str] = attr.ib(default=None)
     owners: List[User]
     badges: List[Badge]
-    owner_tags: Optional[List[Tag]]  # non editable
-    tags: List[Tag]  # editable
+    tags: List[Tag]
     programmatic_descriptions: List[ProgrammaticDescription]
-    watermarks: List[Watermark]
+    watermarks: List[FeatureWatermark]
     last_updated_timestamp: Optional[int]
     created_timestamp: Optional[int]
-    partition_column: Optional[Column]
 
 
 class FeatureSchema(AttrsSchema):
