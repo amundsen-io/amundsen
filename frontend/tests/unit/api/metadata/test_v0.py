@@ -329,15 +329,6 @@ class MetadataTest(unittest.TestCase):
             'dashboard': [],
         }
         self.mock_feature_metadata = {
-            'partition_column': {
-                'name': 'ds',
-                'description': 'This is a test',
-                'col_type': 'bigint',
-                'sort_order': 0,
-                'badges': [
-                    {'category': 'column', 'badge_name': 'partition_column'}
-                ]
-            },
             'entity': 'rider',
             'key': 'test_feature_group/test_feature_name/1.4',
             'availability': ['hive'],
@@ -351,27 +342,17 @@ class MetadataTest(unittest.TestCase):
                 {'source': 'a_1', 'text': 'description a'},
                 {'source': 'b_1', 'text': 'description b'}
             ],
-            'owner_tags': [],
             'data_type': 'bigint',
             'feature_group': 'test_feature_group',
             'version': '1.4',
             'tags': [],
             'watermarks': [
-                {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
-                {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
+                {'key': 'test_key', 'watermark_type': 'high_watermark', 'time': ''},
+                {'key': 'test_key', 'watermark_type': 'low_watermark', 'time': ''},
             ],
             'badges': [{'category': 'data', 'badge_name': 'pii'}],
         }
         self.expected_feature_metadata = {
-            'partition_column': {
-                'name': 'ds',
-                'description': 'This is a test',
-                'col_type': 'bigint',
-                'sort_order': 0,
-                'badges': [
-                    {'category': 'column', 'badge_name': 'partition_column'}
-                ]
-            },
             'entity': 'rider',
             'key': 'test_feature_group/test_feature_name/1.4',
             'created_timestamp': None,
@@ -386,14 +367,13 @@ class MetadataTest(unittest.TestCase):
                 {'source': 'a_1', 'text': 'description a'},
                 {'source': 'b_1', 'text': 'description b'}
             ],
-            'owner_tags': [],
             'data_type': 'bigint',
             'feature_group': 'test_feature_group',
             'version': '1.4',
             'tags': [],
             'watermarks': [
-                {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
-                {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
+                {'key': 'test_key', 'watermark_type': 'high_watermark', 'time': ''},
+                {'key': 'test_key', 'watermark_type': 'low_watermark', 'time': ''},
             ],
             'badges': [{'category': 'data', 'badge_name': 'pii'}],
         }
