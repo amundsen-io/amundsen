@@ -8,7 +8,7 @@ server:
       eks.amazonaws.com/role-arn: ${RELEASE_VAULT_ROLE_ARN}
 
   affinity: ""
-  ha:
+  standalone:
     enabled: true
     config: |
       ui = true
