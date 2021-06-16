@@ -65,7 +65,7 @@ Here are the settings and what they should be set to
     ISSUE_TRACKER_CLIENT = None  # type: str (Fully qualified class name and path)
     ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool (Enabling the feature, must be set to True)
     ISSUE_TRACKER_MAX_RESULTS = None  # type: int (Max issues to display at a time)
-
+    ISSUE_TRACKER_ISSUE_TYPE_ID = None # type: int (Jira only: Override default issue tracker ID whenever needed for cloud/hosted deployments)
 ```
 ## Programmatic Descriptions
 Amundsen supports configuring other mark down supported non-editable description boxes on the table page.
@@ -84,7 +84,7 @@ Programmatic descriptions are referred to by a "description source" which is a u
 In the UI, they will appear on the table page under structured metadata.
 
 In config.py you can then configure the descriptions to have a custom order, as well as whether or not they should exist in the left column or right column.
-```    
+```
 PROGRAMMATIC_DISPLAY = {
     'RIGHT': {
       "test3" : {},

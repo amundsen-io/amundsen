@@ -21,13 +21,13 @@ BASE = {
 }
 
 QUERY_RESPONSE = {
-    **BASE,
+    **BASE,  # type: ignore
     'description': 'test feature description',
     'programmatic_descriptions': []
 }
 
 API_RESPONSE = {
-    **BASE,
+    **BASE,  # type: ignore
     'description': 'test feature description',
     'programmatic_descriptions': []
 }

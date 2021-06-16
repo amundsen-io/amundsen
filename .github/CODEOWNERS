@@ -17,5 +17,5 @@ common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin 
 databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @dorianj @verdan @mgorsk1
 frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @dikshathakur3119 @feng-tao @dorianj
 frontend/*.py    @ttannis @feng-tao @dikshathakur3119 @allisonsuarez @dorianj @verdan
-metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1
-search/*.py      @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1
+metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1 @dorianj
+search/*.py      @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1 @dorianj

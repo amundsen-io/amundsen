@@ -227,6 +227,7 @@ Currently **officially** using Amundsen:
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Brex](https://www.brex.com/)
 1. [Cameo](https://www.cameo.com)
+1. [Chan Zuckerberg Initiative](https://chanzuckerberg.com/)
 1. [Cimpress Technology](https://cimpress.com)
 1. [Coles Group](https://www.colesgroup.com.au/home/)
 1. [Convoy](https://www.convoy.com)
