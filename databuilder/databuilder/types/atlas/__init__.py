@@ -61,10 +61,9 @@ class AtlasEntityInitializer:
             else:
                 LOGGER.info("ReadTimeout Exception - Cancelling Operation: {0}".format(str(ex)))
         except Exception as ex:
-            LOGGER.info(f"Something wrong happened: {str(ex)}")
+            LOGGER.info(f"Error creating/updating {info} Entity Definition", exc_info=True)
         finally:
             LOGGER.info(f"Applied {info} Entity Definition")
-            LOGGER.info(f"\n----------")
 
     def get_schema_dict(self, schema: str) -> Dict:
         return json.loads(schema)
