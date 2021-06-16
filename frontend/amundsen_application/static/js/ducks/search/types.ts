@@ -2,6 +2,7 @@ import { Search as UrlSearch } from 'history';
 
 import {
   DashboardResource,
+  FeatureResource,
   Resource,
   ResourceType,
   SearchType,
@@ -20,23 +21,27 @@ export interface SearchResults<T extends Resource> {
   results: T[];
 }
 export type DashboardSearchResults = SearchResults<DashboardResource>;
+export type FeatureSearchResults = SearchResults<FeatureResource>;
 export type TableSearchResults = SearchResults<TableResource>;
 export type UserSearchResults = SearchResults<UserResource>;
 
 export interface SearchResponsePayload {
   search_term: string;
   dashboards?: DashboardSearchResults;
+  features?: FeatureSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
 }
 export interface SearchAllResponsePayload extends SearchResponsePayload {
   resource: ResourceType;
   dashboards: DashboardSearchResults;
+  features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
 }
 export interface InlineSearchResponsePayload {
   dashboards: DashboardSearchResults;
+  features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
 }
@@ -44,6 +49,7 @@ export interface InlineSearchUpdatePayload {
   searchTerm: string;
   resource: ResourceType;
   dashboards: DashboardSearchResults;
+  features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
 }

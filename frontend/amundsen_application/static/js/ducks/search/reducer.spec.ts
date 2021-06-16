@@ -81,6 +81,11 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
+    features: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     tables: {
       page_index: 0,
       results: [
@@ -110,6 +115,11 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
+    features: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     tables: {
       page_index: 0,
       results: [],
@@ -126,6 +136,11 @@ describe('search reducer', () => {
     searchTerm: 'testName',
     resource: ResourceType.table,
     dashboards: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    features: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -311,6 +326,7 @@ describe('search reducer', () => {
         filters: testState.filters,
         inlineResults: {
           dashboards: expectedSearchAllResults.dashboards,
+          features: expectedSearchAllResults.features,
           tables: expectedSearchAllResults.tables,
           users: expectedSearchAllResults.users,
           isLoading: false,
@@ -359,6 +375,7 @@ describe('search reducer', () => {
         searchTerm,
         resource,
         dashboards,
+        features,
         tables,
         users,
       } = inlineUpdatePayload;
@@ -368,6 +385,7 @@ describe('search reducer', () => {
         ...testState,
         resource,
         dashboards,
+        features,
         tables,
         users,
         search_term: searchTerm,
@@ -377,13 +395,14 @@ describe('search reducer', () => {
 
     describe('InlineSearch', () => {
       it('should handle InlineSearch.SUCCESS', () => {
-        const { dashboards, tables, users } = expectedInlineResults;
+        const { dashboards, features, tables, users } = expectedInlineResults;
         expect(
           reducer(testState, getInlineResultsSuccess(expectedInlineResults))
         ).toEqual({
           ...testState,
           inlineResults: {
             dashboards,
+            features,
             tables,
             users,
             isLoading: false,
@@ -404,6 +423,7 @@ describe('search reducer', () => {
           ...testState,
           inlineResults: {
             dashboards: initialInlineResultsState.dashboards,
+            features: initialInlineResultsState.features,
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
             isLoading: true,
@@ -417,6 +437,7 @@ describe('search reducer', () => {
           ...testState,
           inlineResults: {
             dashboards: initialInlineResultsState.dashboards,
+            features: initialInlineResultsState.features,
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
             isLoading: true,

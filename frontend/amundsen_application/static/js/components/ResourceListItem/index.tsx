@@ -7,12 +7,14 @@ import {
   Resource,
   ResourceType,
   DashboardResource,
+  FeatureResource,
   TableResource,
   UserResource,
 } from 'interfaces';
 
 import { LoggingParams } from './types';
 import DashboardListItem from './DashboardListItem';
+import FeatureListItem from './FeatureListItem';
 import TableListItem from './TableListItem';
 import UserListItem from './UserListItem';
 
@@ -21,30 +23,40 @@ import './styles.scss';
 export interface ListItemProps {
   logging: LoggingParams;
   item: Resource;
+  onItemClick: () => void;
 }
 
 export default class ResourceListItem extends React.Component<ListItemProps> {
   render() {
-    switch (this.props.item.type) {
+    const {item, logging, onItemClick} = this.props;
+    switch (item.type) {
       case ResourceType.dashboard:
         return (
           <DashboardListItem
-            dashboard={this.props.item as DashboardResource}
-            logging={this.props.logging}
+            dashboard={item as DashboardResource}
+            logging={logging}
+          />
+        );
+      case ResourceType.feature:
+        return (
+          <FeatureListItem
+            feature={item as FeatureResource}
+            logging={logging}
+            onItemClick={onItemClick}
           />
         );
       case ResourceType.table:
         return (
           <TableListItem
-            table={this.props.item as TableResource}
-            logging={this.props.logging}
+            table={item as TableResource}
+            logging={logging}
           />
         );
       case ResourceType.user:
         return (
           <UserListItem
-            user={this.props.item as UserResource}
-            logging={this.props.logging}
+            user={item as UserResource}
+            logging={logging}
           />
         );
       default:

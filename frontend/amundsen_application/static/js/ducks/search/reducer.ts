@@ -39,6 +39,7 @@ import {
   UpdateSearchState,
   UrlDidUpdateRequest,
   UrlDidUpdate,
+  FeatureSearchResults,
 } from './types';
 
 export interface SearchReducerState {
@@ -46,6 +47,7 @@ export interface SearchReducerState {
   resource: ResourceType;
   isLoading: boolean;
   dashboards: DashboardSearchResults;
+  features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
   inlineResults: {
@@ -53,6 +55,7 @@ export interface SearchReducerState {
     dashboards: DashboardSearchResults;
     tables: TableSearchResults;
     users: UserSearchResults;
+    features: FeatureSearchResults;
   };
   filters: FilterReducerState;
 }
@@ -236,6 +239,11 @@ export const initialInlineResultsState = {
     results: [],
     total_results: 0,
   },
+  features: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   tables: {
     page_index: 0,
     results: [],
@@ -262,6 +270,11 @@ export const initialState: SearchReducerState = {
     total_results: 0,
   },
   users: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  features: {
     page_index: 0,
     results: [],
     total_results: 0,
@@ -325,6 +338,7 @@ export default function reducer(
         filters: state.filters,
         inlineResults: {
           dashboards: newState.dashboards,
+          features: newState.features,
           tables: newState.tables,
           users: newState.users,
           isLoading: false,
@@ -345,13 +359,14 @@ export default function reducer(
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, dashboards, tables, users } = (<
+      const { searchTerm, resource, dashboards, features, tables, users } = (<
         InlineSearchUpdate
       >action).payload;
       return {
         ...state,
         resource,
         dashboards,
+        features,
         tables,
         users,
         search_term: searchTerm,
@@ -368,6 +383,7 @@ export default function reducer(
         ...state,
         inlineResults: {
           dashboards: inlineResults.dashboards,
+          features: inlineResults.features,
           tables: inlineResults.tables,
           users: inlineResults.users,
           isLoading: false,

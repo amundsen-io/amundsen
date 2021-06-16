@@ -20,6 +20,9 @@ const configCustom: AppConfigCustom = {
   indexUsers: {
     enabled: false,
   },
+  indexFeatures: {
+    enabled: false,
+  },
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
