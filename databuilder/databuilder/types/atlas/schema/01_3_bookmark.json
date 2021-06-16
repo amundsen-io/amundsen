@@ -26,6 +26,15 @@
           "typeName": "string",
           "cardinality": "SINGLE",
           "valuesMinCount": 0
+        },
+        {
+          "name": "entityName",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0
         }
       ]
     }
