@@ -22,6 +22,7 @@ class TestFeatureWatermark(unittest.TestCase):
                 'KEY': 'group1/feat_name_123/2.0.0/low_watermark',
                 'LABEL': 'Feature_Watermark',
                 'timestamp:UNQUOTED': 1622596581,
+                'watermark_type': 'low_watermark',
             }
         ]
 

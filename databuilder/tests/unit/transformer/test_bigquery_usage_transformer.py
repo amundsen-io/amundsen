@@ -19,6 +19,7 @@ class TestBigQueryUsageTransform(unittest.TestCase):
     COLUMN = '*'
     EMAIL = 'your-user-here@test.com'
     READ_COUNT = 305
+    TABLE_KEY = 'bigquery://your-project-here.dataset/table'
 
     def test_transform_function(self) -> None:
         config = ConfigFactory.from_dict({})
@@ -41,11 +42,8 @@ class TestBigQueryUsageTransform(unittest.TestCase):
         col_readers = list(xformed.col_readers)
         self.assertEqual(len(col_readers), 1)
         col_reader = col_readers[0]
-        self.assertEqual(col_reader.cluster, TestBigQueryUsageTransform.CLUSTER)
-        self.assertEqual(col_reader.database, TestBigQueryUsageTransform.DATABASE)
-        self.assertEqual(col_reader.schema, TestBigQueryUsageTransform.DATASET)
-        self.assertEqual(col_reader.table, TestBigQueryUsageTransform.TABLE)
-        self.assertEqual(col_reader.column, TestBigQueryUsageTransform.COLUMN)
+        self.assertEqual(col_reader.start_label, 'Table')
+        self.assertEqual(col_reader.start_key, TestBigQueryUsageTransform.TABLE_KEY)
         self.assertEqual(col_reader.user_email, TestBigQueryUsageTransform.EMAIL)
         self.assertEqual(col_reader.read_count, TestBigQueryUsageTransform.READ_COUNT)
 
