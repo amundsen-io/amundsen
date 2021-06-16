@@ -13,40 +13,22 @@ BASE = {
     'name': 'test_feature_name',
     'version': '1.2.3',
     'data_type': 'bigint',
-    'owner_tags': [{'tag_type': 'owner', 'tag_name': 'test_owner_tag'}],
     'tags': [{'tag_type': 'default', 'tag_name': 'test'}],
     'badges': [{'badge_name': 'pii', 'category': 'data'}],
     'owners': [{'email': 'mmcgonagall@hogwarts.com', 'first_name': None, 'last_name': None}],
-    'watermarks': [
-        {'watermark_type': 'type', 'partition_key': 'key', 'partition_value': 'value', 'create_time': '1570581861'}],
+    'watermarks': [],
     'last_updated_timestamp': 1570581861,
 }
 
 QUERY_RESPONSE = {
     **BASE,  # type: ignore
     'description': 'test feature description',
-    'partition_column': {
-        'name': 'bar_id_1',
-        'description': 'bar col description',
-        'col_type': 'varchar',
-        'sort_order': 0,
-        'stats': [],
-        'badges': [{'badge_name': 'partition_column', 'category': 'column'}]
-    },
     'programmatic_descriptions': []
 }
 
 API_RESPONSE = {
     **BASE,  # type: ignore
     'description': 'test feature description',
-    'partition_column': {
-        'name': 'bar_id_1',
-        'description': 'bar col description',
-        'col_type': 'varchar',
-        'sort_order': 0,
-        'stats': [],
-        'badges': [{'badge_name': 'partition_column', 'category': 'column'}]
-    },
     'programmatic_descriptions': []
 }
 
