@@ -4,6 +4,7 @@ import re
 from typing import Dict
 
 from apache_atlas.client.base_client import AtlasClient
+from apache_atlas.exceptions import AtlasServiceException
 from apache_atlas.model.misc import SearchFilter
 from apache_atlas.model.typedef import AtlasTypesDef
 from requests import Timeout
@@ -44,22 +45,22 @@ class AtlasEntityInitializer:
         try:
             LOGGER.info(f"Trying to create {info} Entity")
             self.driver.typedef.create_atlas_typedefs(AtlasTypesDef(attrs=typedef_dict))
-        except Exception:
+        except AtlasServiceException:
             LOGGER.info(f"Already Exists, updating {info} Entity")
             try:
                 self.driver.typedef.update_atlas_typedefs(AtlasTypesDef(attrs=typedef_dict))
             except Exception:
                 # This is a corner case, for Atlas Sample Data
-                LOGGER.info(f"Something wrong happened: {str(ex)}")
+                LOGGER.warn(f"Error updating {info} Entity.", exc_info=True)
 
         except Timeout:
             # Sometimes on local atlas instance you do get ReadTimeout a lot.
             # This will try to apply definition 3 times and then cancel
             if attempt < 4:
-                LOGGER.info("ReadTimeout - Another Try: {0}".format(str(ex)))
+                LOGGER.info("ReadTimeout - Another Try.")
                 self.create_or_update(typedef_dict, info, attempt + 1)
             else:
-                LOGGER.info("ReadTimeout Exception - Cancelling Operation: {0}".format(str(ex)))
+                LOGGER.info(f"ReadTimeout Exception - Cancelling Operation: {attempt}", exc_info=True)
         except Exception:
             LOGGER.info(f"Error creating/updating {info} Entity Definition", exc_info=True)
         finally:
