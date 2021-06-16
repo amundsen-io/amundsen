@@ -31,19 +31,9 @@ class TestDashboardOwner(unittest.TestCase):
         actual = dashboard_usage.create_next_node()
         actual_serialized = neo4_serializer.serialize_node(actual)
         expected: Dict[str, Any] = {
-            'is_active:UNQUOTED': True,
-            'last_name': '',
-            'full_name': '',
-            'employee_type': '',
-            'first_name': '',
-            'updated_at:UNQUOTED': 0,
             'LABEL': 'User',
-            'slack_id': '',
             'KEY': 'foo@bar.com',
-            'github_username': '',
-            'team_name': '',
             'email': 'foo@bar.com',
-            'role_name': ''
         }
 
         assert actual is not None
@@ -137,16 +127,6 @@ class TestDashboardOwner(unittest.TestCase):
         expected1 = {
             'rk': 'foo@bar.com',
             'email': 'foo@bar.com',
-            'is_active': True,
-            'first_name': '',
-            'last_name': '',
-            'full_name': '',
-            'github_username': '',
-            'team_name': '',
-            'employee_type': '',
-            'slack_id': '',
-            'role_name': '',
-            'updated_at': 0
         }
 
         assert actual1 is not None
