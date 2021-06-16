@@ -104,6 +104,47 @@ const configDefault: AppConfig = {
       ],
       notices: {},
     },
+    [ResourceType.feature]: {
+      displayName: 'ML Features',
+      supportedSources: {
+        bigquery: {
+          displayName: 'BigQuery',
+          iconClass: 'icon-bigquery',
+        },
+        delta: {
+          displayName: 'Delta',
+          iconClass: 'icon-delta',
+        },
+        dremio: {
+          displayName: 'Dremio',
+          iconClass: 'icon-dremio',
+        },
+        druid: {
+          displayName: 'Druid',
+          iconClass: 'icon-druid',
+        },
+        hive: {
+          displayName: 'Hive',
+          iconClass: 'icon-hive',
+        },
+        presto: {
+          displayName: 'Presto',
+          iconClass: 'icon-presto',
+        },
+        postgres: {
+          displayName: 'Postgres',
+          iconClass: 'icon-postgres',
+        },
+        redshift: {
+          displayName: 'Redshift',
+          iconClass: 'icon-redshift',
+        },
+        snowflake: {
+          displayName: 'Snowflake',
+          iconClass: 'icon-snowflake',
+        },
+      },
+    },
     [ResourceType.table]: {
       displayName: 'Datasets',
       supportedSources: {

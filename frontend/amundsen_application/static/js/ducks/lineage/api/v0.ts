@@ -6,7 +6,11 @@ export const API_PATH = '/api/metadata/v0';
 
 export type LineageAPI = { lineage: Lineage };
 
-export function getTableLineage(key: string, depth: number, direction: string) {
+export function getTableLineage(
+  key: string,
+  depth: number = 1,
+  direction: string = 'both'
+) {
   const tableQueryParams = getQueryParams({ key, depth, direction });
   return axios
     .get(`${API_PATH}/get_table_lineage?${tableQueryParams}`)

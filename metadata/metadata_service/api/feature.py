@@ -4,7 +4,8 @@ from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
 
 from amundsen_common.models.feature import FeatureSchema
-from amundsen_common.models.query import QuerySchema
+from amundsen_common.models.generation_code import GenerationCodeSchema
+from amundsen_common.models.lineage import LineageSchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -44,10 +45,28 @@ class FeatureLineageAPI(Resource):
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('direction', type=str, required=False, default="both")
+        self.parser.add_argument('depth', type=int, required=False, default=1)
 
     @swag_from('swagger_doc/feature/lineage_get.yml')
-    def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
-        pass
+    def get(self, id: str) -> Iterable[Union[Mapping, int, None]]:
+        args = self.parser.parse_args()
+        direction = args.get('direction')
+        depth = args.get('depth')
+        try:
+            lineage = self.client.get_lineage(id=id,
+                                              resource_type=ResourceType.Feature,
+                                              direction=direction,
+                                              depth=depth)
+            schema = LineageSchema()
+            return schema.dump(lineage), HTTPStatus.OK
+        except NotFoundException:
+            LOGGER.error(f'NotFoundException: feature_uri {id} lineage does not exist')
+            return {'message': f'feature_uri {id} lineage does not exist'}, HTTPStatus.NOT_FOUND
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting feature lineage: {e}')
+            return {'message': f'Exception raised when getting lineage: {e}'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class FeatureStatsAPI(Resource):
@@ -71,7 +90,7 @@ class FeatureGenerationCodeAPI(Resource):
         try:
             generation_code = self.client.get_resource_generation_code(uri=feature_uri,
                                                                        resource_type=ResourceType.Feature)
-            schema = QuerySchema()
+            schema = GenerationCodeSchema()
             return schema.dump(generation_code), HTTPStatus.OK
 
         except NotFoundException:

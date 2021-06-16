@@ -225,6 +225,7 @@ interface ResourceConfig {
   [ResourceType.dashboard]: BaseResourceConfig;
   [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
+  [ResourceType.feature]: BaseResourceConfig;
 }
 
 /**
