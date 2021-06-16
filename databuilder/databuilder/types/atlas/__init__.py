@@ -48,11 +48,11 @@ class AtlasEntityInitializer:
             LOGGER.info(f"Already Exists, updating {info} Entity")
             try:
                 self.driver.typedef.update_atlas_typedefs(AtlasTypesDef(attrs=typedef_dict))
-            except Exception as ex:
+            except Exception:
                 # This is a corner case, for Atlas Sample Data
                 LOGGER.info(f"Something wrong happened: {str(ex)}")
 
-        except Timeout as ex:
+        except Timeout:
             # Sometimes on local atlas instance you do get ReadTimeout a lot.
             # This will try to apply definition 3 times and then cancel
             if attempt < 4:
@@ -60,7 +60,7 @@ class AtlasEntityInitializer:
                 self.create_or_update(typedef_dict, info, attempt + 1)
             else:
                 LOGGER.info("ReadTimeout Exception - Cancelling Operation: {0}".format(str(ex)))
-        except Exception as ex:
+        except Exception:
             LOGGER.info(f"Error creating/updating {info} Entity Definition", exc_info=True)
         finally:
             LOGGER.info(f"Applied {info} Entity Definition")
