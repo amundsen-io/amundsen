@@ -352,7 +352,7 @@ class MetadataTest(unittest.TestCase):
             ],
             'badges': [{'category': 'data', 'badge_name': 'pii'}],
         }
-        self.expected_feature_metadata = {
+        self.expected_feature_metadata: dict = {
             'entity': 'rider',
             'key': 'test_feature_group/test_feature_name/1.4',
             'created_timestamp': None,
