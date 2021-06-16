@@ -25,12 +25,10 @@ class ColumnReader(Usage):
                  cluster: str,
                  schema: str,
                  table: str,
-                 column: str,
+                 column: str,  # not used: per-column usage not yet implemented
                  user_email: str,
                  read_count: int = 1
                  ) -> None:
-        if column != '*':
-            raise NotImplementedError(f'Column usage is not supported yet')
 
         Usage.__init__(
             self,
