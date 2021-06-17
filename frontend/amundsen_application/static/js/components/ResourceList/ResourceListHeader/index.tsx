@@ -56,18 +56,17 @@ const ResourceListHeader: React.FC<ResourceListHeaderProps> = ({
   if (headers.length === 0) {
     return null;
   }
+
   return (
     <div className="resource-list-header">
-      {headers?.map((headerText, index) => {
-        return (
-          <span
-            className={`${resourceTypeToHeaderClassMap[index]}`}
-            key={`${resourceTypeToHeaderClassMap[index]}`}
-          >
-            <span className="header-text">{headerText}</span>
-          </span>
-        );
-      })}
+      {headers?.map((headerText, index) => (
+        <span
+          className={`resource-header ${resourceTypeToHeaderClassMap[index]}`}
+          key={`${resourceTypeToHeaderClassMap[index]}`}
+        >
+          <span className="header-text">{headerText}</span>
+        </span>
+      ))}
     </div>
   );
 };
