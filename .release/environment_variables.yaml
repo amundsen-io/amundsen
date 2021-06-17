@@ -2,5 +2,7 @@
 defaults:
 - key: POSTGRES_HOST_AUTH_METHOD
   value: trust
+- key: TEST_ENV
+  value: true
 services: {}
 
