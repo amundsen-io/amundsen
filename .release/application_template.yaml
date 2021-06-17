@@ -60,7 +60,7 @@ workflows:
     - charts.ingress
 - name: patch
   parallelize:
-  - step: amundsen
+  - step: amundsen-step
     tasks:
     - charts.amundsen
 
