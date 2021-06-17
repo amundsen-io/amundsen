@@ -27,6 +27,7 @@ export const mapDispatchToProps = (dispatch: any) =>
         updateSearchState({
           filters: {
             [ResourceType.table]: { badges: badgeText },
+            [ResourceType.feature]: { badges: badgeText },
           },
           submitSearch: true,
         }),
