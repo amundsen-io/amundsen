@@ -215,19 +215,19 @@ const configDefault: AppConfig = {
         {
           categoryId: 'entity',
           displayName: 'Entity',
-          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          helpText: 'Enter exact entity name or a regex wildcard pattern',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'name',
           displayName: 'Feature Name',
-          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          helpText: 'Enter exact feature name or a regex wildcard pattern',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'group',
           displayName: 'Feature Group',
-          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          helpText: 'Enter exact feature group name or a regex wildcard pattern',
           type: FilterType.INPUT_SELECT,
         },
         {
