@@ -123,16 +123,19 @@ describe('FeatureListItem', () => {
       let resourceEntity;
       beforeAll(() => {
         resourceEntity = wrapper
-          .find('.resource-entity')
-          .find('.resource-type');
+          .find('.resource-entity');
       });
 
       it('renders default text if it doesnt exist', () => {
-        expect(resourceEntity.text()).toBe('test_entity');
+        expect(resourceEntity
+          .find('.resource-type')
+          .text()).toBe('test_entity');
       });
 
       it('renders correct end icon', () => {
         const actual = resourceEntity.find(RightIcon).length;
+        console.log(resourceEntity.find(RightIcon));
+        console.log(resourceEntity);
         const expected = 1;
 
         expect(actual).toEqual(expected);
