@@ -80,6 +80,7 @@ export const allResourcesExample = {
         availability: ['hive'],
         entity: 'test_entity',
         type: ResourceType.feature,
+        badges: [],
       },
     ],
     total_results: 1,

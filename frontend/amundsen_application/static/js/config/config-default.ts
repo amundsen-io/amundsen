@@ -268,7 +268,8 @@ const configDefault: AppConfig = {
         {
           categoryId: 'group',
           displayName: 'Feature Group',
-          helpText: 'Enter exact feature group name or a regex wildcard pattern',
+          helpText:
+            'Enter exact feature group name or a regex wildcard pattern',
           type: FilterType.INPUT_SELECT,
         },
         {
