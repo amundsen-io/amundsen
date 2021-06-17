@@ -133,8 +133,6 @@ describe('FeatureListItem', () => {
 
       it('renders correct end icon', () => {
         const actual = resourceEntity.find(RightIcon).length;
-        console.log(resourceEntity.find(RightIcon));
-        console.log(resourceEntity);
         const expected = 1;
 
         expect(actual).toEqual(expected);
