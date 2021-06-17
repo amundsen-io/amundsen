@@ -126,6 +126,7 @@ Please visit [Architecture](./docs/architecture.md) for Amundsen architecture ov
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
 - [PostgreSQL](https://www.postgresql.org/)
+- [PrestoDB](http://prestodb.io/)
 - [Trino (formerly Presto SQL)](https://trino.io/)
 - [Vertica](https://www.vertica.com/)
 - [Snowflake](https://www.snowflake.com/)
