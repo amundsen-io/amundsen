@@ -11,35 +11,62 @@ import {
   SOURCE_HEADER_TITLE,
   BADGES_HEADER_TITLE,
   LAST_UPDATED_HEADER_TITLE,
+  ENTITY_HEADER_TITLE,
 } from './constants';
 
 export interface ResourceListHeaderProps {
   resourceTypes: ResourceType[];
 }
 
-const contentHeaderTitle = (type: ResourceType): string => {
+const resourceTypeToHeaderClassMap = {
+  0: 'resource-header',
+  1: 'source-header',
+  2: 'badge-last-run-header',
+  3: 'entity-header',
+};
+
+const getResourceHeaders = (type: ResourceType) => {
   switch (type) {
     case ResourceType.dashboard:
-      return LAST_UPDATED_HEADER_TITLE;
-
+      return [
+        RESOURCE_HEADER_TITLE,
+        SOURCE_HEADER_TITLE,
+        LAST_UPDATED_HEADER_TITLE,
+      ];
+    case ResourceType.feature:
+      return [
+        RESOURCE_HEADER_TITLE,
+        SOURCE_HEADER_TITLE,
+        BADGES_HEADER_TITLE,
+        ENTITY_HEADER_TITLE,
+      ];
+    case ResourceType.table:
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
+    case ResourceType.user:
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
     default:
-      return BADGES_HEADER_TITLE;
+      return [];
   }
 };
+
 const ResourceListHeader: React.FC<ResourceListHeaderProps> = ({
   resourceTypes,
 }: ResourceListHeaderProps) => {
-  const contentHeader =
-    resourceTypes.length === 1 ? contentHeaderTitle(resourceTypes[0]) : '';
+  const headers = getResourceHeaders(resourceTypes[0]);
+  if (headers.length === 0) {
+    return null;
+  }
+
   return (
     <div className="resource-list-header">
-      <span className="resource">
-        <span className="resource-text">{RESOURCE_HEADER_TITLE}</span>
-      </span>
-      <span className="source">{SOURCE_HEADER_TITLE}</span>
-      <span className="badges">
-        <span className="badges-text">{contentHeader}</span>
-      </span>
+      {headers?.map((headerText, index) => (
+        <span
+          className={`resource-header ${resourceTypeToHeaderClassMap[index]}`}
+          key={`${resourceTypeToHeaderClassMap[index]}`}
+        >
+          <span className="header-text">{headerText}</span>
+        </span>
+      ))}
     </div>
   );
 };

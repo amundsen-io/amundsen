@@ -26,6 +26,9 @@ const configDefault: AppConfig = {
   indexUsers: {
     enabled: false,
   },
+  indexFeatures: {
+    enabled: false,
+  },
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
@@ -239,6 +242,43 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
+      notices: {},
+    },
+    [ResourceType.feature]: {
+      displayName: 'ML Features',
+      supportedSources: {
+        hive: {
+          displayName: 'Hive',
+          iconClass: 'icon-hive',
+        },
+      },
+      filterCategories: [
+        {
+          categoryId: 'entity',
+          displayName: 'Entity',
+          helpText: 'Enter exact entity name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'name',
+          displayName: 'Feature Name',
+          helpText: 'Enter exact feature name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'group',
+          displayName: 'Feature Group',
+          helpText:
+            'Enter exact feature group name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
       notices: {},
     },
     [ResourceType.user]: {

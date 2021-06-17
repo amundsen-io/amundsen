@@ -53,7 +53,7 @@ export const initialFeatureState: FeatureMetadata = {
   version: '',
   status: '',
   feature_group: '',
-  entity: [],
+  entity: '',
   data_type: '',
   availability: [],
   description: '',

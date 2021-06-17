@@ -74,7 +74,7 @@ const globalState: GlobalState = {
       version: '',
       status: '',
       feature_group: '',
-      entity: [],
+      entity: '',
       data_type: '',
       availability: [],
       description: '',
@@ -134,6 +134,11 @@ const globalState: GlobalState = {
       results: [],
       total_results: 0,
     },
+    features: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     tables: {
       page_index: 0,
       results: [
@@ -168,6 +173,11 @@ const globalState: GlobalState = {
         total_results: 0,
       },
       users: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
+      features: {
         page_index: 0,
         results: [],
         total_results: 0,
