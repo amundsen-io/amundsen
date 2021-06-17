@@ -11,27 +11,28 @@ import { ResourceType } from 'interfaces';
 import { OwnerEditor, OwnerEditorProps } from '.';
 import * as Constants from './constants';
 
-describe('OwnerEditor', () => {
-  const setup = (propOverrides?: Partial<OwnerEditorProps>) => {
-    const props: OwnerEditorProps = {
-      errorText: null,
-      isLoading: false,
-      itemProps: {},
-      isEditing: undefined,
-      setEditMode: jest.fn(),
-      onUpdateList: jest.fn(),
-      readOnly: undefined,
-      resourceType: ResourceType.table,
-      ...propOverrides,
-    };
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    const wrapper = mount<OwnerEditor>(<OwnerEditor {...props} />);
-    return {
-      props,
-      wrapper,
-    };
+const setup = (propOverrides?: Partial<OwnerEditorProps>) => {
+  const props: OwnerEditorProps = {
+    errorText: null,
+    isLoading: false,
+    itemProps: {},
+    isEditing: undefined,
+    setEditMode: jest.fn(),
+    onUpdateList: jest.fn(),
+    readOnly: undefined,
+    resourceType: ResourceType.table,
+    ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  const wrapper = mount<OwnerEditor>(<OwnerEditor {...props} />);
 
+  return {
+    props,
+    wrapper,
+  };
+};
+
+describe('OwnerEditor', () => {
   describe('render', () => {
     describe('when no owners', () => {
       it('renders text if readOnly', () => {

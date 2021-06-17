@@ -7,6 +7,11 @@ export const isLoadingExample = {
     results: [],
     total_results: 0,
   },
+  features: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   tables: {
     page_index: 0,
     results: [],
@@ -22,6 +27,11 @@ export const isLoadingExample = {
 export const noResultsExample = {
   isLoading: false,
   dashboards: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  features: {
     page_index: 0,
     results: [],
     total_results: 0,
@@ -53,6 +63,24 @@ export const allResourcesExample = {
         url: 'product/name',
         cluster: 'cluster',
         last_successful_run_timestamp: 1585062593,
+      },
+    ],
+    total_results: 1,
+  },
+  features: {
+    page_index: 0,
+    results: [
+      {
+        description: 'I am an ML feature',
+        key: 'test_feature_group/test_feature_name/1.4',
+        last_updated_timestamp: 946684799,
+        name: 'test_feature_name',
+        feature_group: 'test_feature_group',
+        version: '1.4',
+        availability: ['hive'],
+        entity: 'test_entity',
+        type: ResourceType.feature,
+        badges: [],
       },
     ],
     total_results: 1,

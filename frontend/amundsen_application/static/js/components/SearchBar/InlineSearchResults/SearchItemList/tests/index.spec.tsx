@@ -7,7 +7,11 @@ import { mocked } from 'ts-jest/utils';
 import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
-import { indexDashboardsEnabled, indexUsersEnabled } from 'config/config-utils';
+import {
+  indexDashboardsEnabled,
+  indexFeaturesEnabled,
+  indexUsersEnabled,
+} from 'config/config-utils';
 import SearchItemList, { SearchItemListProps } from '..';
 import SearchItem from '../SearchItem';
 
@@ -17,6 +21,7 @@ jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(),
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
+  indexFeaturesEnabled: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -154,6 +159,42 @@ describe('SearchItemList', () => {
           .find('SearchItem')
           .findWhere(
             (item) => item.prop('resourceType') === ResourceType.dashboard
+          );
+        expect(item.exists()).toBe(false);
+      });
+    });
+    describe('renders ResourceType.feature SearchItem based on config', () => {
+      it('when indexFeaturesEnabled = true, renders SearchItem', () => {
+        mocked(indexFeaturesEnabled).mockImplementation(() => true);
+        setUpResult = setup();
+        props = setUpResult.props;
+        wrapper = setUpResult.wrapper;
+        mockListItemText = 'Hello';
+        getListItemTextSpy = jest
+          .spyOn(wrapper.instance(), 'getListItemText')
+          .mockImplementation(() => mockListItemText);
+        wrapper.instance().forceUpdate();
+
+        const item = wrapper
+          .find('SearchItem')
+          .findWhere(
+            (item) => item.prop('resourceType') === ResourceType.feature
+          );
+        const itemProps = item.props();
+        expect(getListItemTextSpy).toHaveBeenCalledWith(ResourceType.feature);
+        expect(itemProps.listItemText).toEqual(mockListItemText);
+        expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
+        expect(itemProps.searchTerm).toEqual(props.searchTerm);
+        expect(itemProps.resourceType).toEqual(ResourceType.feature);
+      });
+
+      it('when indexFeaturesEnabled = false, does not render SearchItem', () => {
+        mocked(indexFeaturesEnabled).mockImplementation(() => false);
+        wrapper = setup().wrapper;
+        const item = wrapper
+          .find('SearchItem')
+          .findWhere(
+            (item) => item.prop('resourceType') === ResourceType.feature
           );
         expect(item.exists()).toBe(false);
       });

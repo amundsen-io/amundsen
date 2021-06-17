@@ -8,6 +8,7 @@ import {
   getSourceDisplayName,
   getSourceIconClass,
   indexDashboardsEnabled,
+  indexFeaturesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
 import { buildDashboardURL } from 'utils/navigationUtils';
@@ -15,6 +16,7 @@ import { buildDashboardURL } from 'utils/navigationUtils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   DashboardSearchResults,
+  FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
 } from 'ducks/search/types';
@@ -23,6 +25,7 @@ import {
   Resource,
   ResourceType,
   DashboardResource,
+  FeatureResource,
   TableResource,
   UserResource,
 } from 'interfaces';
@@ -36,6 +39,7 @@ import * as CONSTANTS from './constants';
 export interface StateFromProps {
   isLoading: boolean;
   dashboards: DashboardSearchResults;
+  features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
 }
@@ -64,6 +68,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return CONSTANTS.DASHBOARDS;
+      case ResourceType.feature:
+        return CONSTANTS.FEATURES;
       case ResourceType.table:
         return CONSTANTS.DATASETS;
       case ResourceType.user:
@@ -77,6 +83,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return this.props.dashboards.total_results;
+      case ResourceType.feature:
+        return this.props.features.total_results;
       case ResourceType.table:
         return this.props.tables.total_results;
       case ResourceType.user:
@@ -90,6 +98,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return this.props.dashboards.results.slice(0, 2);
+      case ResourceType.feature:
+        return this.props.features.results.slice(0, 2);
       case ResourceType.table:
         return this.props.tables.results.slice(0, 2);
       case ResourceType.user:
@@ -124,6 +134,9 @@ export class InlineSearchResults extends React.Component<
         const dashboard = result as DashboardResource;
 
         return `${buildDashboardURL(dashboard.uri)}?${logParams}`;
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        return `/feature/${feature.feature_group}/${feature.name}/${feature.version}?${logParams}`;
       case ResourceType.table:
         const table = result as TableResource;
 
@@ -145,6 +158,11 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return getSourceIconClass(dashboard.product, resourceType);
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        const source =
+          feature.availability.length > 0 ? feature.availability[0] : '';
+        return getSourceIconClass(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
         return getSourceIconClass(table.database, resourceType);
@@ -163,6 +181,9 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return dashboard.description;
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        return feature.description;
       case ResourceType.table:
         const table = result as TableResource;
         return table.description;
@@ -183,22 +204,31 @@ export class InlineSearchResults extends React.Component<
         const dashboard = result as DashboardResource;
         return (
           <div className="dashboard-title">
-            <div className="title-2 dashboard-name">{dashboard.name}</div>
-            <div className="title-2 dashboard-group truncated">
+            <div className="text-title-w2 dashboard-name">{dashboard.name}</div>
+            <div className="text-title-w2 dashboard-group truncated">
               {dashboard.group_name}
             </div>
+          </div>
+        );
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        return (
+          <div className="text-title-w2 truncated">
+            {`${feature.feature_group}.${feature.name}`}
           </div>
         );
       case ResourceType.table:
         const table = result as TableResource;
         return (
-          <div className="title-2 truncated">{`${table.schema}.${table.name}`}</div>
+          <div className="text-title-w2 truncated">{`${table.schema}.${table.name}`}</div>
         );
       case ResourceType.user:
         const user = result as UserResource;
-        return <div className="title-2 truncated">{user.display_name}</div>;
+        return (
+          <div className="text-title-w2 truncated">{user.display_name}</div>
+        );
       default:
-        return <div className="title-2 truncated" />;
+        return <div className="text-title-w2 truncated" />;
     }
   };
 
@@ -210,6 +240,11 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return getSourceDisplayName(dashboard.product, resourceType);
+      case ResourceType.feature:
+        const feature = result as FeatureResource;
+        const source =
+          feature.availability.length > 0 ? feature.availability[0] : '';
+        return getSourceDisplayName(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
         return getSourceDisplayName(table.database, resourceType);
@@ -248,6 +283,8 @@ export class InlineSearchResults extends React.Component<
         {this.renderResultsByResource(ResourceType.table)}
         {indexDashboardsEnabled() &&
           this.renderResultsByResource(ResourceType.dashboard)}
+        {indexFeaturesEnabled() &&
+          this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
       </>
     );
@@ -267,10 +304,17 @@ export class InlineSearchResults extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const { isLoading, dashboards, tables, users } = state.search.inlineResults;
+  const {
+    isLoading,
+    dashboards,
+    features,
+    tables,
+    users,
+  } = state.search.inlineResults;
   return {
     isLoading,
     dashboards,
+    features,
     tables,
     users,
   };

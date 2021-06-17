@@ -10,6 +10,9 @@ export const PEOPLE_ITEM_TEXT = `in ${PEOPLE}`;
 export const DASHBOARDS = getDisplayNameByResource(ResourceType.dashboard);
 export const DASHBOARD_ITEM_TEXT = `in ${DASHBOARDS}`;
 
+export const FEATURES = getDisplayNameByResource(ResourceType.feature);
+export const FEATURE_ITEM_TEXT = `in ${FEATURES}`;
+
 export const PEOPLE_USER_TYPE = 'User';
 export const USER_ICON_CLASS = 'icon-users';
 

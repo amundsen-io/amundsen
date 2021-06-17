@@ -37,8 +37,10 @@ export interface FeatureResource extends Resource {
   name: string;
   version: string;
   availability: string[];
-  entity?: string[];
+  entity: string;
   description: string;
+  feature_group: string;
+  badges: Badge[];
 }
 
 export interface TableResource extends Resource {

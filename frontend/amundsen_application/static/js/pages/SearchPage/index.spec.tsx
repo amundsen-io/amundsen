@@ -49,6 +49,7 @@ const setup = (
     resource: ResourceType.table,
     isLoading: false,
     dashboards: globalState.search.dashboards,
+    features: globalState.search.features,
     tables: globalState.search.tables,
     users: globalState.search.users,
     setPageIndex: jest.fn(),
