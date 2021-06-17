@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "common/**"
+      - "requirements*txt"
 jobs:
   test-unit-python:
     runs-on: ubuntu-18.04
@@ -17,7 +18,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip3 install -r requirements.txt && pip3 install codecov && pip install .
+        run: make install_deps && pip3 uninstall -y amundsen-common
         working-directory: ./common
       - name: Run python unit tests
         run: make test

@@ -13,6 +13,7 @@ from flasgger import Swagger
 from flask import Blueprint, Flask
 from flask_cors import CORS
 from flask_restful import Api
+from werkzeug.utils import import_string
 
 from metadata_service.api.badge import BadgeAPI
 from metadata_service.api.column import (ColumnBadgeAPI, ColumnDescriptionAPI,
@@ -95,6 +96,11 @@ def create_app(*, config_module_class: str) -> Flask:
     logging.info('Created app with config name {}'.format(config_module_class))
     logging.info('Using backend {}'.format(app.config.get('PROXY_CLIENT')))
 
+    # Initialize custom extensions and routes
+    init_custom_ext_routes = app.config.get('INIT_CUSTOM_EXT_AND_ROUTES')
+    if init_custom_ext_routes:
+        init_custom_ext_routes(app)
+
     api_bp = Blueprint('api', __name__)
     api_bp.add_url_rule('/healthcheck', 'healthcheck', healthcheck)
 
@@ -169,6 +175,12 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(FeatureGenerationCodeAPI,
                      '/feature/<path:feature_uri>/generation_code')
     app.register_blueprint(api_bp)
+
+    # cli registration
+    proxy_cli = app.config.get('PROXY_CLI')
+    if proxy_cli:
+        app.cli.add_command(import_string(proxy_cli))
+        logging.info('Using cli {}'.format(proxy_cli))
 
     if app.config.get('SWAGGER_ENABLED'):
         Swagger(app, template_file=os.path.join(ROOT_DIR, app.config.get('SWAGGER_TEMPLATE_PATH')), parse=True)

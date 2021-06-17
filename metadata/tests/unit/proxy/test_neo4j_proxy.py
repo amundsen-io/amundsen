@@ -8,10 +8,10 @@ from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.dashboard import DashboardSummary
-from amundsen_common.models.feature import Feature
+from amundsen_common.models.feature import Feature, FeatureWatermark
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.query import Query
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Source,
                                           Stat, Table, Tag, User, Watermark)
@@ -1138,16 +1138,12 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.side_effect = [{
                 'wmk_records': [
                     {
-                        'key': 'hive://gold.test_schema/test_table/high_watermark/',
-                        'partition_key': 'ds',
-                        'partition_value': 'fake_value',
-                        'create_time': 'fake_time',
+                        'key': 'test_feature_group/test_feature_name/1.2.3/high_watermark',
+                        'time': 'fake_time',
                     },
                     {
-                        'key': 'hive://gold.test_schema/test_table/low_watermark/',
-                        'partition_key': 'ds',
-                        'partition_value': 'fake_value',
-                        'create_time': 'fake_time',
+                        'key': 'test_feature_group/test_feature_name/1.2.3/low_watermark',
+                        'time': 'fake_time',
                     }
                 ],
                 'availability_records': [
@@ -1186,13 +1182,10 @@ class TestNeo4jProxy(unittest.TestCase):
                     {
                         'tag_type': 'default', 'key': 'test'
                     },
-                    {
-                        'tag_type': 'owner', 'key': 'test_owner_tag'
-                    },
                 ],
                 'desc': {
                     'description': 'test feature description',
-                    'key': 'hive://gold.core/test_feature_group/test_feature_name/1.2.3/_description',
+                    'key': 'test_feature_group/test_feature_name/1.2.3/_description',
                     'description_source': 'description'
                 },
                 'feat': {
@@ -1202,17 +1195,11 @@ class TestNeo4jProxy(unittest.TestCase):
                     'created_timestamp': 1,
                     'version': '1.2.3',
                     'key': 'test_feature_group/test_feature_name/1.2.3',
-                    'feature_group': 'test_feature_group',
                     'status': 'active',
                     'entity': 'test_entity'
                 },
-                'partition_column': {
-                    'name': 'bar_id_1',
-                    'key': '',
-                    'col_type': 'varchar',
-                },
-                'col_desc': {
-                    'description': 'bar col description'
+                'fg': {
+                    'name': 'test_feature_group',
                 }
             }]
 
@@ -1226,25 +1213,19 @@ class TestNeo4jProxy(unittest.TestCase):
                                description='test feature description',
                                owners=[User(email='tester@example.com')],
                                badges=[Badge(badge_name='pii', category='data')],
-                               owner_tags=[Tag(tag_name='test_owner_tag', tag_type='owner')],
                                tags=[Tag(tag_name='test', tag_type='default')],
                                programmatic_descriptions=[
                                    ProgrammaticDescription(source='quality_report',
                                                            text='Test Test'),
                                ],
-                               watermarks=[Watermark(watermark_type='high_watermark',
-                                                     partition_key='ds',
-                                                     partition_value='fake_value',
-                                                     create_time='fake_time'),
-                                           Watermark(watermark_type='low_watermark',
-                                                     partition_key='ds',
-                                                     partition_value='fake_value',
-                                                     create_time='fake_time')],
-                               partition_column=Column(name='bar_id_1', description='bar col description',
-                                                       col_type='varchar', sort_order=0, stats=[],
-                                                       key='dummy_uri/bar_id_1',
-                                                       badges=[Badge(badge_name='partition_column',
-                                                                     category='column')]),
+                               watermarks=[FeatureWatermark(
+                                   key='test_feature_group/test_feature_name/1.2.3/high_watermark',
+                                   watermark_type='high_watermark',
+                                   time='fake_time'),
+                                   FeatureWatermark(
+                                       key='test_feature_group/test_feature_name/1.2.3/low_watermark',
+                                       watermark_type='low_watermark',
+                                       time='fake_time')],
                                last_updated_timestamp=1,
                                created_timestamp=1,
                                )
@@ -1263,16 +1244,16 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.side_effect = [
                 {'query_records': {
-                    'name': 'generation_query',
-                    'query_text': 'SELECT * FROM test_table',
-                    'url': 'github.com/repo/file'}}]
+                    'key': 'test_feature_group/test_feature_name/1.2.3/_generation_code',
+                    'text': 'SELECT * FROM test_table',
+                    'source': 'test_source'}}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             gen_code = neo4j_proxy.get_resource_generation_code(uri='dummy_uri',
                                                                 resource_type=ResourceType.Feature)
-            expected = Query(name='generation_query',
-                             text='SELECT * FROM test_table',
-                             url='github.com/repo/file')
+            expected = GenerationCode(key='test_feature_group/test_feature_name/1.2.3/_generation_code',
+                                      text='SELECT * FROM test_table',
+                                      source='test_source')
         self.assertEqual(str(expected), str(gen_code))
 
     def test_get_resource_generation_code_not_found(self) -> None:

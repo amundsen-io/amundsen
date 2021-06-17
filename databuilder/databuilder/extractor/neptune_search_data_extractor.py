@@ -16,15 +16,16 @@ from databuilder import Scoped
 from databuilder.clients.neptune_client import NeptuneSessionClient
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.cluster.cluster_constants import CLUSTER_REVERSE_RELATION_TYPE
-from databuilder.models.column_usage_model import ColumnUsageModel
 from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
+from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE
 from databuilder.models.schema.schema_constant import SCHEMA_REVERSE_RELATION_TYPE
 from databuilder.models.table_metadata import DescriptionMetadata, TableMetadata
-from databuilder.models.table_owner import TableOwner
 from databuilder.models.timestamp.timestamp_constants import LASTUPDATED_RELATION_TYPE, TIMESTAMP_PROPERTY
-from databuilder.models.usage.usage_constants import READ_RELATION_COUNT_PROPERTY, READ_REVERSE_RELATION_TYPE
+from databuilder.models.usage.usage_constants import (
+    READ_RELATION_COUNT_PROPERTY, READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE,
+)
 from databuilder.models.user import User
 from databuilder.serializers.neptune_serializer import METADATA_KEY_PROPERTY_NAME
 
@@ -81,10 +82,10 @@ def _table_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Di
         ).values('description').fold()
     )  # column_descriptions
     traversal = traversal.by(__.coalesce(
-        __.outE(ColumnUsageModel.TABLE_USER_RELATION_TYPE).values('read_count'),
+        __.outE(READ_REVERSE_RELATION_TYPE).values('read_count'),
         __.constant(0)).sum()
     )  # total_usage
-    traversal = traversal.by(__.outE(ColumnUsageModel.TABLE_USER_RELATION_TYPE).count())  # unique_usage
+    traversal = traversal.by(__.outE(READ_REVERSE_RELATION_TYPE).count())  # unique_usage
     traversal = traversal.by(
         __.inE(TableMetadata.TAG_TABLE_RELATION_TYPE).outV().values(METADATA_KEY_PROPERTY_NAME).fold()
     )  # tags
@@ -134,10 +135,10 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
     traversal = traversal.by('is_active')  # is_active
     traversal = traversal.by('role_name')  # role_name
     traversal = traversal.by(__.coalesce(
-        __.outE(ColumnUsageModel.USER_TABLE_RELATION_TYPE).values('read_count'),
+        __.outE(READ_RELATION_TYPE).values('read_count'),
         __.constant(0)
     ).sum())  # total_read
-    traversal = traversal.by(__.outE(TableOwner.OWNER_TABLE_RELATION_TYPE).fold().count())  # total_own
+    traversal = traversal.by(__.outE(OWNER_OF_OBJECT_RELATION_TYPE).fold().count())  # total_own
     traversal = traversal.by(__.outE('FOLLOWED_BY').fold().count())  # total_follow
     traversal = traversal.order().by(__.select('email'), Order.asc)
     return traversal.toList()

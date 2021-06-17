@@ -3,10 +3,11 @@
 
 import distutils.util
 import os
-from typing import Dict, List, Optional, Set  # noqa: F401
+from typing import Any, Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from amundsen_gremlin.config import LocalGremlinConfig
+from flask import Flask  # noqa: F401
 
 from metadata_service.entity.badge import Badge
 
@@ -23,7 +24,12 @@ PROXY_CLIENT_KWARGS = 'PROXY_CLIENT_KWARGS'
 PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
     'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy',
-    'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy'
+    'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy',
+    'MYSQL': 'metadata_service.proxy.mysql_proxy.MySQLProxy'
+}
+
+PROXY_CLIS = {
+    'MYSQL': 'metadata_service.cli.rds_command.rds_cli'
 }
 
 IS_STATSD_ON = 'IS_STATSD_ON'
@@ -62,9 +68,9 @@ class Config:
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
-    USER_DETAIL_METHOD = None   # type: Optional[function]
+    USER_DETAIL_METHOD = None  # type: Optional[function]
 
-    RESOURCE_REPORT_CLIENT = None   # type: Optional[function]
+    RESOURCE_REPORT_CLIENT = None  # type: Optional[function]
 
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
@@ -78,6 +84,9 @@ class Config:
     # Custom kwargs that will be passed to proxy client. Can be used to fine-tune parameters like timeout
     # or num of retries
     PROXY_CLIENT_KWARGS: Dict = dict()
+
+    # Initialize custom flask extensions and routes
+    INIT_CUSTOM_EXT_AND_ROUTES = None  # type: Callable[[Flask], None]
 
     SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
     SWAGGER = {
@@ -124,7 +133,7 @@ class NeptuneConfig(LocalGremlinConfig, LocalConfig):
 
     # PROXY_HOST FORMAT: wss://<NEPTUNE_URL>:<NEPTUNE_PORT>/gremlin
     PROXY_HOST = os.environ.get('PROXY_HOST', 'localhost')
-    PROXY_PORT = None   # type: ignore
+    PROXY_PORT = None  # type: ignore
 
     PROXY_CLIENT = PROXY_CLIENTS['NEPTUNE']
     PROXY_PASSWORD = boto3.session.Session(region_name=os.environ.get('AWS_REGION', 'us-east-1'))
@@ -135,3 +144,21 @@ class NeptuneConfig(LocalGremlinConfig, LocalConfig):
     }
 
     JANUS_GRAPH_URL = None
+
+
+class MySQLConfig(LocalConfig):
+    PROXY_CLIENT = PROXY_CLIENTS['MYSQL']
+    PROXY_CLI = PROXY_CLIS['MYSQL']
+
+    PROXY_HOST = None   # type: ignore
+    PROXY_PORT = None   # type: ignore
+    PROXY_USER = None   # type: ignore
+    PROXY_PASSWORD = None   # type: ignore
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'mysql://user:password@127.0.0.1:3306/amundsen')
+    PROXY_CLIENT_KWARGS: Dict[str, Any] = {
+        'echo': bool(distutils.util.strtobool(os.environ.get('ECHO', 'False'))),
+        'pool_size': os.environ.get('POOL_SIZE', 5),
+        'max_overflow': os.environ.get('MAX_OVERFLOW', 10),
+        'connect_args': dict()
+    }

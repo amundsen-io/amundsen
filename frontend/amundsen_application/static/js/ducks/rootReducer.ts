@@ -4,6 +4,7 @@
 import { combineReducers } from 'redux';
 
 import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
+import feature, { FeatureReducerState } from 'ducks/feature/reducer';
 import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
 import popularTables, {
@@ -26,6 +27,7 @@ export interface GlobalState {
   announcements: AnnouncementsReducerState;
   bookmarks: BookmarkReducerState;
   dashboard: DashboardReducerState;
+  feature: FeatureReducerState;
   feedback: FeedbackReducerState;
   issue: IssueReducerState;
   notification: NotificationReducerState;
@@ -43,6 +45,7 @@ const rootReducer = combineReducers<GlobalState>({
   announcements,
   bookmarks,
   dashboard,
+  feature,
   feedback,
   issue,
   notification,

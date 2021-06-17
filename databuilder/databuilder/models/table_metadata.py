@@ -50,6 +50,9 @@ class TagMetadata(GraphSerializable, TableSerializable):
     DASHBOARD_TYPE = 'dashboard'
     METRIC_TYPE = 'metric'
 
+    TAG_ENTITY_RELATION_TYPE = 'TAG'
+    ENTITY_TAG_RELATION_TYPE = 'TAGGED_BY'
+
     def __init__(self,
                  name: str,
                  tag_type: str = 'default',
@@ -317,8 +320,8 @@ class TableMetadata(GraphSerializable, TableSerializable):
     TABLE_COL_RELATION_TYPE = 'COLUMN'
     COL_TABLE_RELATION_TYPE = 'COLUMN_OF'
 
-    TABLE_TAG_RELATION_TYPE = 'TAGGED_BY'
-    TAG_TABLE_RELATION_TYPE = 'TAG'
+    TABLE_TAG_RELATION_TYPE = TagMetadata.ENTITY_TAG_RELATION_TYPE
+    TAG_TABLE_RELATION_TYPE = TagMetadata.TAG_ENTITY_RELATION_TYPE
 
     # Only for deduping database, cluster, and schema (table and column will be always processed)
     serialized_nodes_keys: Set[Any] = set()

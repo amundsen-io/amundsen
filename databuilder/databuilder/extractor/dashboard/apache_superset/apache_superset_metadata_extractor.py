@@ -17,6 +17,7 @@ class ApacheSupersetMetadataExtractor(ApacheSupersetBaseExtractor):
     def last_modified_field_mappings(self) -> type_fields_mapping:
         result = [
             ('dashboard_id', 'result.id', lambda x: str(x), ''),
+            ('dashboard_name', 'result.dashboard_title', None, ''),
             ('last_modified_timestamp', 'result.changed_on',
              lambda _date: self.parse_date(_date), 0)
         ]

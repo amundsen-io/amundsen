@@ -41,13 +41,13 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                 tableRef = table['tableReference']
                 table_id = tableRef['tableId']
 
-                # BigQuery tables that have 8 digits as last characters are
-                # considered date range tables and are grouped together in the UI.
+                # BigQuery tables that have numeric suffix starting with a date string will be
+                # considered date range tables.
                 # ( e.g. ga_sessions_20190101, ga_sessions_20190102, etc. )
                 if self._is_sharded_table(table_id):
-                    # If the last eight characters are digits, we assume the table is of a table date range type
+                    # Sharded tables have numeric suffix starting with a date string
                     # and then we only need one schema definition
-                    table_prefix = table_id[:-BigQueryMetadataExtractor.DATE_LENGTH]
+                    table_prefix = table_id[:-len(self._get_sharded_table_suffix(table_id))]
                     if table_prefix in grouped_tables:
                         # If one table in the date range is processed, then ignore other ones
                         # (it adds too much metadata)

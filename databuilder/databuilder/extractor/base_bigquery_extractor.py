@@ -3,6 +3,7 @@
 
 import json
 import logging
+import re
 from collections import namedtuple
 from datetime import datetime, timezone
 from typing import (
@@ -78,8 +79,27 @@ class BaseBigQueryExtractor(Extractor):
             return None
 
     def _is_sharded_table(self, table_id: str) -> bool:
-        suffix = table_id[-BaseBigQueryExtractor.DATE_LENGTH:]
-        return suffix.isdigit()
+        """
+        Table with a numeric suffix starting with a date string
+        will be considered as a sharded table
+        :param table_id:
+        :return:
+        """
+        suffix = self._get_sharded_table_suffix(table_id)
+        if len(suffix) < BaseBigQueryExtractor.DATE_LENGTH:
+            return False
+
+        suffix_date = suffix[:BaseBigQueryExtractor.DATE_LENGTH]
+        try:
+            datetime.strptime(suffix_date, '%Y%m%d')
+            return True
+        except ValueError:
+            return False
+
+    def _get_sharded_table_suffix(self, table_id: str) -> str:
+        suffix_match = re.search(r'\d+$', table_id)
+        suffix = suffix_match.group() if suffix_match else ''
+        return suffix
 
     def _iterate_over_tables(self) -> Any:
         for dataset in self._retrieve_datasets():

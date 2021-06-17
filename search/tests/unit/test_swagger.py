@@ -30,13 +30,13 @@ class TestSwagger(unittest.TestCase):
     def test_should_have_a_component_from_each_reference(self) -> None:
         response = self.app.test_client().get('/apispec_1.json')
 
-        for reference in list(TestSwagger.find('$ref', response.json)):
+        for reference in list(TestSwagger.find('$ref', response.json)):  # type: ignore
             path_to_component = reference[2:].split('/')
 
             json_response_to_reduce = response.json
             for key in path_to_component:
                 try:
-                    json_response_to_reduce = json_response_to_reduce[key]
+                    json_response_to_reduce = json_response_to_reduce[key]  # type: ignore
                 except KeyError:
                     self.fail(f'The following $ref does not have a valid component to reference. $ref: {reference}')
 
@@ -44,7 +44,7 @@ class TestSwagger(unittest.TestCase):
     def test_should_have_type_for_each_query_parameter(self) -> None:
         response = self.app.test_client().get('/apispec_1.json')
 
-        for request_params in list(TestSwagger.find('parameters', response.json)):
+        for request_params in list(TestSwagger.find('parameters', response.json)):  # type: ignore
             for param in request_params:
                 if param['in'] == 'query' and 'type' not in param.keys():
                     self.fail(f'The following query parameter is missing a type: {param}')
@@ -55,7 +55,7 @@ class TestSwagger(unittest.TestCase):
 
         response = self.app.test_client().get('/apispec_1.json')
 
-        paths_in_swagger = response.json.get('paths').keys()
+        paths_in_swagger = response.json.get('paths').keys()  # type: ignore
         for endpoint in [rule.rule for rule in self.app.url_map.iter_rules()]:
             endpoint = endpoint.replace('<', '{').replace('>', '}')
             if endpoint not in paths_excluded_from_swagger and endpoint not in paths_in_swagger:

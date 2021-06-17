@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from jira import JIRA, JIRAError, Issue
+from jira import JIRA, JIRAError, Issue, User
 from typing import List
 
 from flask import current_app as app
@@ -83,17 +83,31 @@ class JiraClient(BaseIssueTrackerClient):
             else:
                 raise Exception('AUTH_USER_METHOD must be configured to set the JIRA issue reporter')
 
+            reporter = {'name': jira_id}
+
+            # Detected by the jira client based on API version & deployment.
+            if self.jira_client.deploymentType == 'Cloud':
+                try:
+                    user = self.jira_client._fetch_pages(User, None, "user/search", 0, 1, {'query': user_email})[0]
+                    reporter = {'accountId': user.accountId}
+                except IndexError:
+                    raise Exception('Could not find the reporting user in our Jira installation.')
+
+            issue_type_id = ISSUE_TYPE_ID
+            if app.config['ISSUE_TRACKER_ISSUE_TYPE_ID']:
+                issue_type_id = app.config['ISSUE_TRACKER_ISSUE_TYPE_ID']
+
             issue = self.jira_client.create_issue(fields=dict(project={
                 'id': self.jira_project_id
             }, issuetype={
-                'id': ISSUE_TYPE_ID,
+                'id': issue_type_id,
                 'name': ISSUE_TYPE_NAME,
             }, labels=self.issue_labels,
                 summary=title,
                 description=(f'{description} '
                              f'\n Reported By: {user_email} '
                              f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE]'),
-                reporter={'name': jira_id}))
+                reporter=reporter))
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
             logging.exception(str(e))
