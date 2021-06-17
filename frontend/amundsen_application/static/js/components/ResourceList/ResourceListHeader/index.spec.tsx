@@ -13,6 +13,7 @@ const setup = (propOverrides?: Partial<ResourceListHeaderProps>) => {
     ...propOverrides,
   };
   const wrapper = mount<ResourceListHeaderProps>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <ResourceListHeader {...props} />
   );
 

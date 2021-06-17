@@ -12,6 +12,7 @@ const setup = (propOverrides?: Partial<BlockProps>) => {
     title: 'testTitle',
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount<BlockProps>(<StorySection {...props} />);
 
   return { props, wrapper };
