@@ -10,8 +10,8 @@ import { logClick } from 'utils/analytics';
 import BadgeList from 'features/BadgeList';
 import { ResourceType, FeatureResource } from 'interfaces';
 
-import { LoggingParams } from '../types';
 import { RightIcon } from 'components/SVGIcons';
+import { LoggingParams } from '../types';
 
 export interface FeatureListItemProps {
   feature: FeatureResource;

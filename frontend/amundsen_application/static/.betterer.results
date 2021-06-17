@@ -231,10 +231,9 @@ exports[`eslint`] = {
     "js/components/ResourceListItem/DashboardListItem/index.tsx:2194588229": [
       [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:619819525": [
-      [38, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [54, 6, 25, "Use object destructuring.", "354229464"],
-      [55, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:186178824": [
+      [45, 6, 25, "Use object destructuring.", "354229464"],
+      [46, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/ResourceListItem/SchemaInfo/tests/index.spec.tsx:3506535360": [
       [34, 6, 25, "Use object destructuring.", "354229464"],
@@ -333,7 +332,7 @@ exports[`eslint`] = {
       [192, 8, 25, "Use object destructuring.", "1230260048"],
       [196, 13, 4, "\'item\' is already declared in the upper scope.", "2087854480"]
     ],
-    "js/components/SearchBar/InlineSearchResults/index.tsx:4188616229": [
+    "js/components/SearchBar/InlineSearchResults/index.tsx:1733781188": [
       [31, 0, 46, "Dependency cycle detected.", "3506421300"],
       [84, 15, 21, "Must use destructuring props assignment", "1352381626"],
       [86, 15, 19, "Must use destructuring props assignment", "4761610"],
@@ -359,13 +358,13 @@ exports[`eslint`] = {
       [213, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
       [220, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
       [225, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [238, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [241, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
-      [242, 8, 88, "Unexpected lexical declaration in case block.", "1136723614"],
-      [246, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [263, 24, 23, "Must use destructuring props assignment", "1919697041"],
-      [265, 22, 21, "Must use destructuring props assignment", "65539885"],
-      [275, 8, 20, "Must use destructuring props assignment", "2826313809"]
+      [240, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [243, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
+      [244, 8, 88, "Unexpected lexical declaration in case block.", "1136723614"],
+      [248, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [265, 24, 23, "Must use destructuring props assignment", "1919697041"],
+      [267, 22, 21, "Must use destructuring props assignment", "65539885"],
+      [277, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
     "js/components/SearchBar/InlineSearchResults/tests/index.spec.tsx:2744306554": [
       [66, 6, 25, "Use object destructuring.", "1230260048"],
@@ -474,7 +473,7 @@ exports[`eslint`] = {
       [96, 8, 29, "Use object destructuring.", "2645724888"],
       [97, 8, 25, "Use object destructuring.", "354229464"]
     ],
-    "js/components/Tags/TagInfo/index.tsx:4068833804": [
+    "js/components/Tags/TagInfo/index.tsx:2254577413": [
       [6, 28, 10, "\'SearchType\' is defined but never used.", "3759589107"],
       [31, 17, 15, "Must use destructuring props assignment", "4222917373"],
       [36, 4, 20, "Must use destructuring props assignment", "2474846161"],
@@ -526,16 +525,13 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:2919432335": [
+    "js/config/config-default.ts:3629797417": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
-      [279, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [280, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [321, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [322, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/config/config-utils.ts:1968487936": [
       [11, 0, 45, "\`../interfaces\` import should occur before import of \`./config-types\`", "3885176344"]
-    ],
-    "js/ducks/announcements/api/v0.ts:908063915": [
-      [30, 13, 64, "Expected the Promise rejection reason to be an Error.", "3665078104"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
@@ -563,8 +559,7 @@ exports[`eslint`] = {
       [0, 16, 13, "\'AxiosResponse\' is defined but never used.", "1743879434"]
     ],
     "js/ducks/dashboard/api/v0.ts:2755958463": [
-      [38, 28, 104, "Do not nest ternary expressions.", "1163212497"],
-      [45, 13, 68, "Expected the Promise rejection reason to be an Error.", "2764124112"]
+      [38, 28, 104, "Do not nest ternary expressions.", "1163212497"]
     ],
     "js/ducks/issue/reducer.ts:1774302197": [
       [119, 6, 56, "Unexpected lexical declaration in case block.", "2031834906"]
@@ -578,15 +573,8 @@ exports[`eslint`] = {
       [250, 8, 31, "Use object destructuring.", "507617405"],
       [251, 8, 45, "Use object destructuring.", "244310461"]
     ],
-    "js/ducks/lastIndexed/api/v0.ts:100101993": [
-      [18, 13, 44, "Expected the Promise rejection reason to be an Error.", "107682302"]
-    ],
     "js/ducks/lastIndexed/sagas.ts:1498244597": [
       [7, 2, 29, "\'action\' is defined but never used.", "566797395"]
-    ],
-    "js/ducks/lineage/api/v0.ts:3039942947": [
-      [23, 13, 26, "Expected the Promise rejection reason to be an Error.", "875716520"],
-      [48, 13, 26, "Expected the Promise rejection reason to be an Error.", "875716520"]
     ],
     "js/ducks/middlewares/analyticsMiddleware.ts:3943673455": [
       [11, 7, 8, "\'getState\' is defined but never used.", "1919118020"]
@@ -595,8 +583,8 @@ exports[`eslint`] = {
       [111, 6, 191, "Unexpected lexical declaration in case block.", "1433271452"],
       [117, 6, 59, "Unexpected lexical declaration in case block.", "3993269111"]
     ],
-    "js/ducks/search/filters/reducer.ts:4089663982": [
-      [63, 6, 56, "Unexpected lexical declaration in case block.", "1729617587"]
+    "js/ducks/search/filters/reducer.ts:615717922": [
+      [60, 6, 56, "Unexpected lexical declaration in case block.", "1729617587"]
     ],
     "js/ducks/search/reducer.ts:4060029949": [
       [202, 2, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
@@ -615,9 +603,7 @@ exports[`eslint`] = {
     ],
     "js/ducks/tableMetadata/api/v0.ts:1722284731": [
       [75, 8, 23, "Use object destructuring.", "1142306891"],
-      [78, 13, 39, "Expected the Promise rejection reason to be an Error.", "3871091426"],
-      [125, 23, -4008, "Expected to return a value at the end of arrow function.", "5381"],
-      [181, 13, 32, "Expected the Promise rejection reason to be an Error.", "2773728948"]
+      [125, 23, -4008, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/ducks/tableMetadata/index.spec.ts:2466548220": [
       [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
@@ -635,7 +621,7 @@ exports[`eslint`] = {
     "js/ducks/tags/api/v0.ts:3312435566": [
       [20, 16, -551, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
     ],
-    "js/features/BadgeList/index.tsx:1824613239": [
+    "js/features/BadgeList/index.tsx:4066532183": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
@@ -1027,7 +1013,7 @@ exports[`eslint`] = {
       [208, 14, 151, "A control must be associated with a text label.", "1015004405"],
       [218, 12, 432, "A control must be associated with a text label.", "534436217"]
     ],
-    "js/pages/TableDetailPage/SourceLink/index.spec.tsx:900314717": [
+    "js/pages/TableDetailPage/SourceLink/index.spec.tsx:3686659452": [
       [19, 55, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
