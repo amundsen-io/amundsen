@@ -1,0 +1,35 @@
+server:
+
+  extraEnvironmentVars:
+    AWS_ROLE_SESSION_NAME: s3vault
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: ${RELEASE_VAULT_ROLE_ARN}
+
+  affinity: ""
+  ha:
+    enabled: true
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+
+      storage "dynamodb" {
+        ha_enabled = "true"
+        access_key = "${RELEASE_VAULT_AWS_ACCESS_KEY_ID}"
+        access_key = "${RELEASE_VAULT_AWS_SECRET_ACCESS_KEY}"
+        table      = "${RELEASE_VAULT_DATABASE}"
+        region     = "${RELEASE_CLUSTER_REGION}"
+      }
+
+      service_registration "kubernetes" {}
+
+      seal "awskms" {
+        kms_key_id = "${RELEASE_VAULT_KMS_ARN}"
+        region     = "${RELEASE_CLUSTER_REGION}"
+      }
