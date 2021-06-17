@@ -40,7 +40,6 @@ describe('FeatureListItem', () => {
   describe('render', () => {
     let props: FeatureListItemProps;
     let wrapper;
-    let element;
 
     beforeAll(() => {
       const setupResult = setup();

@@ -7,7 +7,6 @@ import { ResourceType, SendingState } from 'interfaces';
 import { defaultEmptyFilters } from './search/filters';
 
 import { dashboardMetadata } from './metadata/dashboard';
-import { featureMetadata } from './metadata/feature';
 
 const globalState: GlobalState = {
   announcements: {
