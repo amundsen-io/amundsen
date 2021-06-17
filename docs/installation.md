@@ -16,7 +16,7 @@ The following instructions are for setting up a version of Amundsen using Docker
     # For Atlas
     $ docker-compose -f docker-amundsen-atlas.yml up
     ```
-    If it's your first time, you may want to proactively go through [troubleshooting](troubleshooting) steps, especially the first one related to heap memory for ElasticSearch and Docker engine memory allocation (leading to Docker error 137).
+    If it's your first time, you may want to proactively go through [troubleshooting](#troubleshooting) steps, especially the first one related to heap memory for ElasticSearch and Docker engine memory allocation (leading to Docker error 137).
 4. Ingest provided sample data into Neo4j by doing the following: _(Please skip if you are using Atlas backend)_
 
    * In a separate terminal window, change directory to [databuilder](https://github.com/amundsen-io/amundsen/tree/main/databuilder).

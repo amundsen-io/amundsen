@@ -49,23 +49,23 @@ Depending on the datastore of your dataset, you would extract this by:
 - a query for the minimum and maximum record of a given timestamp column
 
 
-### [ColumnUsageModel](../databuilder/models/column_usage_model.py)
+### [TableColumnUsage](../databuilder/models/table_column_usage.py)
 
+#### Description
 *How many queries is a given column getting? By which users?*
 
-Has query counts per a given column per a user. This can help identify 
-#### Description
+Has query counts per a given table per a user. This can help identify 
 who uses given datasets so people can contact them if they have questions
 on how to use a given dataset or if a dataset is changing. It is also used as a 
 search boost so that the most used tables are put to the top of the search results.
 
-For more traditional databases, there should be system tables where you can obtain 
 #### Extraction
+For more traditional databases, there should be system tables where you can obtain 
 these sorts of usage statistics.
 
 In other cases, you may need to use audit logs which could require a custom solution.
 
-Finally, for none traditional data lakes, getting this information exactly maybe difficult and you may need to rely
+Finally, for non-traditional data lakes, getting this information exactly maybe difficult and you may need to rely
 on a heuristic.
 
 ### [User](../databuilder/models/user.py)

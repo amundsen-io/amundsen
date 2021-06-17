@@ -31,6 +31,16 @@ export interface DashboardResource extends Resource {
   badges?: Badge[];
 }
 
+export interface FeatureResource extends Resource {
+  type: ResourceType.feature;
+  key: string;
+  name: string;
+  version: string;
+  availability: string[];
+  entity?: string[];
+  description: string;
+}
+
 export interface TableResource extends Resource {
   type: ResourceType.table;
   cluster: string;

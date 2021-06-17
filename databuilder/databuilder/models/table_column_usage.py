@@ -6,19 +6,18 @@ from typing import (
 )
 
 from amundsen_rds.models import RDSModel
-from amundsen_rds.models.table import TableUsage as RDSTableUsage
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.table_serializable import TableSerializable
-from databuilder.models.user import User
+from databuilder.models.usage.usage import Usage
 
 
-class ColumnReader(object):
+class ColumnReader(Usage):
     """
-    A class represent user's read action on column. Implicitly assumes that read count is one.
+    Represent user's read action on a table - and eventually on a column.
     """
 
     def __init__(self,
@@ -26,44 +25,32 @@ class ColumnReader(object):
                  cluster: str,
                  schema: str,
                  table: str,
-                 column: str,
+                 column: str,  # not used: per-column usage not yet implemented
                  user_email: str,
                  read_count: int = 1
                  ) -> None:
-        self.database = database
-        self.cluster = cluster
-        self.schema = schema
-        self.table = table
-        self.column = column
-        self.user_email = user_email
-        self.read_count = int(read_count)
 
-    def __repr__(self) -> str:
-        return f"ColumnReader(database={self.database!r}, cluster={self.cluster!r}, " \
-               f"schema={self.schema!r}, table={self.table!r}, column={self.column!r}, " \
-               f"user_email={self.user_email!r}, read_count={self.read_count!r})"
+        Usage.__init__(
+            self,
+            start_label=TableMetadata.TABLE_NODE_LABEL,
+            start_key=TableMetadata.TABLE_KEY_FORMAT.format(
+                db=database,
+                cluster=cluster,
+                schema=schema,
+                tbl=table),
+            user_email=user_email,
+            read_count=read_count,
+        )
 
 
 class TableColumnUsage(GraphSerializable, TableSerializable):
     """
-    A model represents user <--> column graph model
-    Currently it only support to serialize to table level
+    Represents an iterable of read actions.
     """
-    TABLE_NODE_LABEL = TableMetadata.TABLE_NODE_LABEL
-    TABLE_NODE_KEY_FORMAT = TableMetadata.TABLE_KEY_FORMAT
-
-    USER_TABLE_RELATION_TYPE = 'READ'
-    TABLE_USER_RELATION_TYPE = 'READ_BY'
-
-    # Property key for relationship read, readby relationship
-    READ_RELATION_COUNT = 'read_count'
 
     def __init__(self, col_readers: Iterable[ColumnReader]) -> None:
-        for col_reader in col_readers:
-            if col_reader.column != '*':
-                raise NotImplementedError(f'Column is not supported yet {col_readers}')
-
         self.col_readers = col_readers
+
         self._node_iterator = self._create_node_iterator()
         self._rel_iter = self._create_rel_iterator()
         self._record_iter = self._create_record_iterator()
@@ -75,11 +62,11 @@ class TableColumnUsage(GraphSerializable, TableSerializable):
             return None
 
     def _create_node_iterator(self) -> Iterator[GraphNode]:
-        for col_reader in self.col_readers:
-            if col_reader.column == '*':
-                # using yield for better memory efficiency
-                user_node = User(email=col_reader.user_email).get_user_node()
-                yield user_node
+        for usage in self.col_readers:
+            node = usage.create_next_node()
+            while node is not None:
+                yield node
+                node = usage.create_next_node()
 
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
@@ -88,19 +75,11 @@ class TableColumnUsage(GraphSerializable, TableSerializable):
             return None
 
     def _create_rel_iterator(self) -> Iterator[GraphRelationship]:
-        for col_reader in self.col_readers:
-            relationship = GraphRelationship(
-                start_label=TableMetadata.TABLE_NODE_LABEL,
-                start_key=self._get_table_key(col_reader),
-                end_label=User.USER_NODE_LABEL,
-                end_key=self._get_user_key(col_reader.user_email),
-                type=TableColumnUsage.TABLE_USER_RELATION_TYPE,
-                reverse_type=TableColumnUsage.USER_TABLE_RELATION_TYPE,
-                attributes={
-                    TableColumnUsage.READ_RELATION_COUNT: col_reader.read_count
-                }
-            )
-            yield relationship
+        for usage in self.col_readers:
+            rel = usage.create_next_relation()
+            while rel is not None:
+                yield rel
+                rel = usage.create_next_relation()
 
     def create_next_record(self) -> Union[RDSModel, None]:
         try:
@@ -109,24 +88,11 @@ class TableColumnUsage(GraphSerializable, TableSerializable):
             return None
 
     def _create_record_iterator(self) -> Iterator[RDSModel]:
-        for col_reader in self.col_readers:
-            if col_reader.column == '*':
-                user_record = User(email=col_reader.user_email).get_user_record()
-                yield user_record
-
-            table_usage_record = RDSTableUsage(user_rk=self._get_user_key(col_reader.user_email),
-                                               table_rk=self._get_table_key(col_reader),
-                                               read_count=col_reader.read_count)
-            yield table_usage_record
-
-    def _get_table_key(self, col_reader: ColumnReader) -> str:
-        return TableMetadata.TABLE_KEY_FORMAT.format(db=col_reader.database,
-                                                     cluster=col_reader.cluster,
-                                                     schema=col_reader.schema,
-                                                     tbl=col_reader.table)
-
-    def _get_user_key(self, email: str) -> str:
-        return User.get_user_model_key(email=email)
+        for usage in self.col_readers:
+            record = usage.create_next_record()
+            while record is not None:
+                yield record
+                record = usage.create_next_record()
 
     def __repr__(self) -> str:
         return f'TableColumnUsage(col_readers={self.col_readers!r})'

@@ -17,3 +17,7 @@ mypy:
 
 
 test: test_unit lint mypy
+
+.PHONY: install_deps
+install_deps:
+	pip3 install -e ".[all]"

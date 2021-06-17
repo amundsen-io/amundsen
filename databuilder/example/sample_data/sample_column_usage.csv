@@ -1,4 +1,4 @@
-database,cluster,schema,table_name,column_name,user_email,read_count
+database,cluster,schema,table,column,user_email,read_count
 hive,gold,test_schema,test_table1,col1,roald.amundsen@example.org,500
 hive,gold,test_schema,test_table1,col1,aoald0@example.org,100
 hive,gold,test_schema,test_table1,col1,boald1@example.org,100

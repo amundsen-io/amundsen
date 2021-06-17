@@ -51,7 +51,7 @@ Job is the highest level component in Databuilder, and it orchestrates task, and
 Models are abstractions representing the domain.
 
 ## List of extractors
-#### [DBAPIExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/db_api_extractor.py "DBAPIExtractor")
+#### [DBAPIExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db_api_extractor.py "DBAPIExtractor")
 An extractor that uses [Python Database API](https://www.python.org/dev/peps/pep-0249/ "Python Database API") interface. DBAPI requires three information, connection object that conforms DBAPI spec, a SELECT SQL statement, and a [model class](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "model class") that correspond to the output of each row of SQL statement.
 
 ```python
@@ -69,10 +69,10 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [GenericExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/generic_extractor.py "GenericExtractor")
+#### [GenericExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/generic_extractor.py "GenericExtractor")
 An extractor that takes list of dict from user through config.
 
-#### [HiveTableLastUpdatedExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/hive_table_last_updated_extractor.py "HiveTableLastUpdatedExtractor")
+#### [HiveTableLastUpdatedExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/hive_table_last_updated_extractor.py "HiveTableLastUpdatedExtractor")
 An extractor that extracts last updated time from Hive metastore and underlying file system. Although, hive metastore has a parameter called "last_modified_time", but it cannot be used as it provides DDL timestamp not DML timestamp.
 For this reason, HiveTableLastUpdatedExtractor is utilizing underlying file of Hive to fetch latest updated date. However, it is not efficient to poke all files in Hive, and it only pokes underlying storage for non-partitioned table. For partitioned table, it will fetch partition created timestamp, and it's close enough for last updated timestamp.
 
@@ -98,7 +98,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [HiveTableMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/hive_table_metadata_extractor.py "HiveTableMetadataExtractor")
+#### [HiveTableMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/hive_table_metadata_extractor.py "HiveTableMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from Hive metastore database.
 ```python
 job_config = ConfigFactory.from_dict({
@@ -112,7 +112,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [CassandraExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/cassandra_extractor.py "CassandraExtractor")
+#### [CassandraExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/cassandra_extractor.py "CassandraExtractor")
 An extractor that extracts table and column metadata including keyspace, table name, column name and column type from Apache Cassandra databases
 
 ```python
@@ -148,7 +148,7 @@ config = ConfigFactory.from_dict({
 Cluster([127.0.0.1], **kwargs)
 ```
 
-#### [GlueExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/glue_extractor.py "GlueExtractor")
+#### [GlueExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/glue_extractor.py "GlueExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from AWS Glue metastore.
 
 Before running make sure you have a working AWS profile configured and have access to search tables on Glue
@@ -176,7 +176,7 @@ If using the filters option here is the input format
 ]
 ```
 
-#### [Delta-Lake-MetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/delta_lake_metadata_extractor.py)
+#### [Delta-Lake-MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/delta_lake_metadata_extractor.py)
 An extractor that runs on a spark cluster and obtains delta-lake metadata using spark sql commands.
 This custom solution is currently necessary because the hive metastore does not contain all metadata information for delta-lake tables.
 For simplicity, this extractor can also be used for all hive tables as well.
@@ -197,7 +197,7 @@ job.launch()
 
 You can check out the sample deltalake metadata script for a full example.
 
-#### [DremioMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/dremio_metadata_extractor.py)
+#### [DremioMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/dremio_metadata_extractor.py)
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from [Dremio](https://www.dremio.com).
 
 Before running make sure that you have the Dremio ODBC driver installed. Default config values assume the default driver name for the [MacBook install](https://docs.dremio.com/drivers/mac-odbc.html).
@@ -214,7 +214,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [DruidMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/druid_metadata_extractor.py)
+#### [DruidMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/druid_metadata_extractor.py)
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a [Druid](https://druid.apache.org/) DB.
 
 The `where_clause_suffix` could be defined, normally you would like to filter out the in `INFORMATION_SCHEMA`.
@@ -236,7 +236,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [PostgresMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor")
+#### [PostgresMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Postgres or Redshift database.
 
 By default, the Postgres/Redshift database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
@@ -244,7 +244,7 @@ to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
 
 The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/dags/postgres_sample_dag.py) for an example).
 
-The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py)
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/postgres_metadata_extractor.py)
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -259,7 +259,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [MSSQLMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/mssql_metadata_extractor.py "PostgresMetadataExtractor")
+#### [MSSQLMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/mssql_metadata_extractor.py "PostgresMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Microsoft SQL database.
 
 By default, the Microsoft SQL Server Database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
@@ -267,9 +267,9 @@ to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
 
 The `where_clause_suffix` below should define which schemas you'd like to query (`"('dbo','sys')"`).
 
-The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/mssql_metadata_extractor.py)
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/mssql_metadata_extractor.py)
 
-This extractor is highly derived from [PostgresMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor").
+This extractor is highly derived from [PostgresMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/postgres_metadata_extractor.py "PostgresMetadataExtractor").
 ```python
 job_config = ConfigFactory.from_dict({
     'extractor.mssql_metadata.{}'.format(MSSQLMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY): where_clause_suffix,
@@ -283,7 +283,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [MysqlMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/mysql_metadata_extractor.py "MysqlMetadataExtractor")
+#### [MysqlMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/mysql_metadata_extractor.py "MysqlMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a MYSQL database.
 
 By default, the MYSQL database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
@@ -291,7 +291,7 @@ to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
 
 The `where_clause_suffix` below should define which schemas you'd like to query.
 
-The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/mysql_metadata_extractor.py)
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/mysql_metadata_extractor.py)
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -304,12 +304,12 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
-#### [Db2MetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/db2_metadata_extractor.py "Db2MetadataExtractor")
+#### [Db2MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db2_metadata_extractor.py "Db2MetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Unix, Windows or Linux Db2 database or BigSQL.
 
 The `where_clause_suffix` below should define which schemas you'd like to query or those that you would not (see [the sample data loader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/sample_db2_data_loader.py) for an example).
 
-The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/db2_metadata_extractor.py)
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db2_metadata_extractor.py)
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -323,7 +323,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [SnowflakeMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_metadata_extractor.py "SnowflakeMetadataExtractor")
+#### [SnowflakeMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/snowflake_metadata_extractor.py "SnowflakeMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Snowflake database.
 
 By default, the Snowflake database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
@@ -340,7 +340,7 @@ Differences are defined [here](https://docs.snowflake.com/en/sql-reference/accou
 
 The `where_clause_suffix` should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_snowflake_data_loader.py) for an example).
 
-The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_metadata_extractor.py)
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/snowflake_metadata_extractor.py)
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -356,12 +356,45 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [SnowflakeTableLastUpdatedExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_table_last_updated_extractor.py "SnowflakeTableLastUpdatedExtractor")
+#### [GenericUsageExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/generic_usage_extractor.py "GenericUsageExtractor")
+An extractor that extracts table popularity metadata from a custom created Snowflake table (created by a script that may look like [this scala script](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/example/scripts/sample_snowflake_table_usage.scala "sample_snowflake_table_usage")). You can create a DAG using the [Databricks Operator](https://github.com/apache/airflow/blob/main/airflow/providers/databricks/operators/databricks.py) and run this script within Databricks or wherever you are able to run Scala.
+
+By default, `snowflake` is used as the database name. `ColumnReader` has the datasource as its `database` input, and database as its `cluster` input.
+
+The following inputs are related to where you create your Snowflake popularity table.
+
+By default, the Snowflake popularity database is set to `PROD`. To override this, set `POPULARITY_TABLE_DATABASE`
+to `WhateverNameOfYourDb`.
+
+By default, the Snowflake popularity schema is set to `SCHEMA`. To override this, set `POPULARTIY_TABLE_SCHEMA`
+to `WhateverNameOfYourSchema`.
+
+By default, the Snowflake popularity table is set to `TABLE`. To override this, set `POPULARITY_TABLE_NAME`
+to `WhateverNameOfYourTable`.
+
+The `where_clause_suffix` should define any filtering you'd like to include in your query. For example, this may include `user_email`s that you don't want to include in your popularity definition.
+
+```python
+job_config = ConfigFactory.from_dict({
+    f'extractor.generic_usage.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
+    f'extractor.generic_usage.{GenericUsageExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
+    f'extractor.generic_usage.{GenericUsageExtractor.POPULARITY_TABLE_DATABASE}': 'WhateverNameOfYourDb',
+    f'extractor.generic_usage.{GenericUsageExtractor.POPULARTIY_TABLE_SCHEMA}': 'WhateverNameOfYourSchema',
+    f'extractor.generic_usage.{GenericUsageExtractor.POPULARITY_TABLE_NAME}': 'WhateverNameOfYourTable',
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=GenericUsageExtractor(),
+        loader=AnyLoader()))
+job.launch()
+```
+
+#### [SnowflakeTableLastUpdatedExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/snowflake_table_last_updated_extractor.py "SnowflakeTableLastUpdatedExtractor")
 An extractor that extracts table last updated timestamp from a Snowflake database.
 
 It uses same configs as the `SnowflakeMetadataExtractor` described above.
 
-The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/snowflake_table_last_updated_extractor.py)
+The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/snowflake_table_last_updated_extractor.py)
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -377,10 +410,10 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [BigQueryMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/bigquery_metadata_extractor.py "BigQuery Metdata Extractor")
+#### [BigQueryMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/bigquery_metadata_extractor.py "BigQuery Metdata Extractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Bigquery database.
 
-The API calls driving the extraction is defined [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/bigquery_metadata_extractor.py)
+The API calls driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/bigquery_metadata_extractor.py)
 
 You will need to create a service account for reading metadata and grant it "BigQuery Metadata Viewer" access to all of your datasets. This can all be done via the bigquery ui.
 
@@ -407,10 +440,10 @@ You can configure bigquery like this. You can optionally set a label filter if y
 job.launch()
 ```
 
-#### [Neo4jEsLastUpdatedExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/neo4j_es_last_updated_extractor.py "Neo4jEsLastUpdatedExtractor")
+#### [Neo4jEsLastUpdatedExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/neo4j_es_last_updated_extractor.py "Neo4jEsLastUpdatedExtractor")
 An extractor that basically get current timestamp and passes it GenericExtractor. This extractor is basically being used to create timestamp for "Amundsen was last indexed on ..." in Amundsen web page's footer.
 
-#### [Neo4jExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/neo4j_extractor.py "Neo4jExtractor")
+#### [Neo4jExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/neo4j_extractor.py "Neo4jExtractor")
 An extractor that extracts records from Neo4j based on provided [Cypher query](https://neo4j.com/developer/cypher/ "Cypher query"). One example is to extract data from Neo4j so that it can transform and publish to Elasticsearch.
 ```python
 job_config = ConfigFactory.from_dict({
@@ -427,7 +460,7 @@ job = DefaultJob(
         loader=AnyLoader()))
 job.launch()
 ```
-#### [Neo4jSearchDataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/neo4j_search_data_extractor.py "Neo4jSearchDataExtractor")
+#### [Neo4jSearchDataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/neo4j_search_data_extractor.py "Neo4jSearchDataExtractor")
 An extractor that is extracting Neo4j utilizing Neo4jExtractor where CYPHER query is already embedded in it.
 ```python
 job_config = ConfigFactory.from_dict({
@@ -444,7 +477,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [AtlasSearchDataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/atlas_search_data_extractor.py "AtlasSearchDataExtractor")
+#### [AtlasSearchDataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/atlas_search_data_extractor.py "AtlasSearchDataExtractor")
 An extractor that is extracting Atlas Data to index compatible with Elasticsearch Search Proxy.
 ```python
 entity_type = 'Table'
@@ -522,16 +555,16 @@ if __name__ == "__main__":
     job.launch()
 ```
 
-#### [VerticaMetadataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/vertica_metadata_extractor.py "MysqlMetadataExtractor")
+#### [VerticaMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/vertica_metadata_extractor.py "MysqlMetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, column name and column datatype from a Vertica database.
 
-A sample loading script for Vertica is provided [here](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/databuilder/example/scripts/sample_vertica_loader.py)
+A sample loading script for Vertica is provided [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/databuilder/example/scripts/sample_vertica_loader.py)
 
 By default, the Vertica database name is used as the cluster name. The `where_clause_suffix` in the example can be used to define which schemas you would like to query.
 
 
 
-#### [SQLAlchemyExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/sql_alchemy_extractor.py "SQLAlchemyExtractor")
+#### [SQLAlchemyExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/sql_alchemy_extractor.py "SQLAlchemyExtractor")
 An extractor utilizes [SQLAlchemy](https://www.sqlalchemy.org/ "SQLAlchemy") to extract record from any database that support SQL Alchemy.
 ```python
 job_config = ConfigFactory.from_dict({
@@ -546,7 +579,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [DbtExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/dbt_extractor.py "SQLAlchemyExtractor")
+#### [DbtExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/dbt_extractor.py "SQLAlchemyExtractor")
 This extractor utilizes the [dbt](https://www.getdbt.com/ "dbt") output files `catalog.json` and `manifest.json` to extract metadata and ingest it into Amundsen. The `catalog.json` and `manifest.json` can both be generated by running `dbt docs generate` in your dbt project. Visit the [dbt artifacts page](https://docs.getdbt.com/reference/artifacts/dbt-artifacts "dbt artifacts") for more information.
 
 The `DbtExtractor` can currently create the following:
@@ -1014,7 +1047,7 @@ The included `ApacheSupersetMetadataExtractor` provides support for extracting b
 
 All Apache Superset extractors including this one use Apache Superset REST API (`/api/v1`) and were developed based on Apache Superset version `1.1`.
 
-##### Caution! 
+##### Caution!
 
 Apache Superset does not contain metadata fulfilling the concept of `DashboardGroup`. For that reasons, when configuring extractor following parameters must be provided:
 - dashboard_group_id (required)
@@ -1048,7 +1081,7 @@ Apache Superset does not contain metadata fulfilling the concept of `DashboardGr
 ###### Caution!
 
 `changed_on` value does not provide timezone info so we assume it's UTC.
- 
+
 #### Sample job config
 
 ```python
@@ -1080,9 +1113,9 @@ job.launch()
 
 ### [ApacheSupersetTableExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_table_extractor.py)
 
-The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`). 
+The included `ApacheSupersetTableExtractor` provides support for extracting relationships between dashboards and tables. All Apache Superset extractors including this one use Apache Superset REST API (`api/v1`).
 
-##### Caution! 
+##### Caution!
 
 As table information in Apache Superset is minimal, following configuration options enable parametrization required to achieve proper relationship information:
 - `driver_to_database_mapping` - mapping between sqlalchemy `drivername` and actual `database` property of `TableMetadata` model.
@@ -1127,7 +1160,7 @@ job.launch()
 
 The included `ApacheSupersetChartExtractor` provides support for extracting information on charts connected to given dashboard.
 
-##### Caution! 
+##### Caution!
 
 Currently there is no way to connect Apache Superset `Query` model to neither `Chart` nor `Dashboard` model. For that reason, to comply with Amundsen
 Databuilder data model, we register single `DashboardQuery` node serving as a bridge to which all the `DashboardChart` nodes are connected.
@@ -1206,9 +1239,9 @@ Complete set of available metrics is defined as DEFAULT_STAT_MAPPINGS attribute 
 
 #### Common usage patterns
 
-As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running 
-the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the 
-report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows 
+As pandas profiling is executed on top of pandas dataframe, it is up to the user to populate the dataframe before running
+the report calculation (and subsequently the extractor). While doing so remember that it might not be a good idea to run the
+report on a complete set of rows if your tables are very sparse. In such case it is recommended to dump a subset of rows
 to pandas dataframe beforehand and calculate the report on just a sample of original data.
 
 ##### Spark support
@@ -1293,16 +1326,16 @@ job.launch()
 
 ## List of transformers
 
-Transformers are implemented by subclassing [Transformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L12 "Transformer") and implementing `transform(self, record)`. A transformer can:
+Transformers are implemented by subclassing [Transformer](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/transformer/base_transformer.py#L12 "Transformer") and implementing `transform(self, record)`. A transformer can:
 
 - Modify a record and return it,
 - Return `None` to filter a record out,
 - Yield multiple records. This is useful for e.g. inferring metadata (such as ownership) from table descriptions.
 
-#### [ChainedTransformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
+#### [ChainedTransformer](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/transformer/base_transformer.py#L41 "ChainedTransformer")
 A chanined transformer that can take multiple transformers, passing each record through the chain.
 
-#### [RegexStrReplaceTransformer](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/transformer/regex_str_replace_transformer.py "RegexStrReplaceTransformer")
+#### [RegexStrReplaceTransformer](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/transformer/regex_str_replace_transformer.py "RegexStrReplaceTransformer")
 Generic string replacement transformer using REGEX. User can pass list of tuples where tuple contains regex and replacement pair.
 ```python
 job_config = ConfigFactory.from_dict({
@@ -1337,7 +1370,7 @@ Adds the same set of tags to all tables produced by the job.
 Transforms dictionary based on callback function that user provides.
 
 ## List of loader
-#### [FsNeo4jCSVLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
+#### [FsNeo4jCSVLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
 Write node and relationship CSV file(s) that can be consumed by Neo4jCsvPublisher. It assumes that the record it consumes is instance of Neo4jCsvSerializable.
 
 ```python
@@ -1376,7 +1409,7 @@ job.launch()
 ```
 
 
-#### [FSElasticsearchJSONLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_elasticsearch_json_loader.py "FSElasticsearchJSONLoader")
+#### [FSElasticsearchJSONLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_elasticsearch_json_loader.py "FSElasticsearchJSONLoader")
 Write Elasticsearch document in JSON format which can be consumed by ElasticsearchPublisher. It assumes that the record it consumes is instance of ElasticsearchDocument.
 
 ```python
@@ -1395,7 +1428,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [FsAtlasCSVLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
+#### [FsAtlasCSVLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_atlas_csv_loader.py "FileSystemCSVLoader")
 Write node and relationship CSV file(s) that can be consumed by AtlasCsvPublisher. It assumes that the record it
  consumes is instance of AtlasSerializable.
 
@@ -1422,7 +1455,7 @@ job.launch()
 ```
 
 ## List of publisher
-#### [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/neo4j_csv_publisher.py "Neo4jCsvPublisher")
+#### [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/neo4j_csv_publisher.py "Neo4jCsvPublisher")
 A Publisher takes two folders for input and publishes to Neo4j.
 One folder will contain CSV file(s) for Node where the other folder will contain CSV file(s) for Relationship. Neo4j follows Label Node properties Graph and refer to [here](https://neo4j.com/docs/developer-manual/current/introduction/graphdb-concepts/ "here") for more information
 
@@ -1450,7 +1483,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-#### [ElasticsearchPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/elasticsearch_publisher.py "ElasticsearchPublisher")
+#### [ElasticsearchPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/elasticsearch_publisher.py "ElasticsearchPublisher")
 Elasticsearch Publisher uses Bulk API to load data from JSON file. Elasticsearch publisher supports atomic operation by utilizing alias in Elasticsearch.
 A new index is created and data is uploaded into it. After the upload is complete, index alias is swapped to point to new index from old index and traffic is routed to new index.
 ```python
@@ -1475,7 +1508,7 @@ job = DefaultJob(
     publisher=ElasticsearchPublisher())
 job.launch()
 ```
-#### [AtlasCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/atlas_csv_publisher.py "AtlasCsvPublisher")
+#### [AtlasCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/atlas_csv_publisher.py "AtlasCsvPublisher")
 A Publisher takes two folders for input and publishes to Atlas.
 One folder will contain CSV file(s) for Entity where the other folder will contain CSV file(s) for Relationship.
 
@@ -1511,12 +1544,12 @@ job.launch()
 ```
 
 
-#### [Callback](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/callback/call_back.py "Callback")
+#### [Callback](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/callback/call_back.py "Callback")
 Callback interface is built upon a [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern "Observer pattern") where the participant want to take any action when target's state changes.
 
-Publisher is the first one adopting Callback where registered Callback will be called either when publish succeeded or when publish failed. In order to register callback, Publisher provides [register_call_back](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/base_publisher.py#L50 "register_call_back") method.
+Publisher is the first one adopting Callback where registered Callback will be called either when publish succeeded or when publish failed. In order to register callback, Publisher provides [register_call_back](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/base_publisher.py#L50 "register_call_back") method.
 
-One use case is for Extractor that needs to commit when job is finished (e.g: Kafka). Having Extractor register a callback to Publisher to commit when publish is successful, extractor can safely commit by implementing commit logic into [on_success](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/callback/call_back.py#L18 "on_success") method.
+One use case is for Extractor that needs to commit when job is finished (e.g: Kafka). Having Extractor register a callback to Publisher to commit when publish is successful, extractor can safely commit by implementing commit logic into [on_success](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/callback/call_back.py#L18 "on_success") method.
 
 ### REST API Query
 Databuilder now has a generic REST API Query capability that can be joined each other.
@@ -1527,10 +1560,10 @@ The challenges come with REST API is that:
  1. there's no explicit standard in REST API. Here, we need to conform to majority of cases (HTTP call with JSON payload & response) but open for extension for different authentication scheme, and different way of pagination, etc.
  2. It is hardly the case that you would get what you want from one REST API call. It is usually the case that you need to snitch (JOIN) multiple REST API calls together to get the information you want.
 
-To solve this challenges, we introduce [RestApiQuery](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/rest_api/rest_api_query.py)
+To solve this challenges, we introduce [RestApiQuery](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/rest_api/rest_api_query.py)
 
 RestAPIQuery is:
- 1. Assuming that REST API is using HTTP(S) call with GET method -- RestAPIQuery intention's is **read**, not write -- where basic HTTP auth is supported out of the box. There's extension point on other authentication scheme such as Oauth, and pagination, etc. (See [ModePaginatedRestApiQuery](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/rest_api/mode_analytics/mode_paginated_rest_api_query.py) for pagination)
+ 1. Assuming that REST API is using HTTP(S) call with GET method -- RestAPIQuery intention's is **read**, not write -- where basic HTTP auth is supported out of the box. There's extension point on other authentication scheme such as Oauth, and pagination, etc. (See [ModePaginatedRestApiQuery](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/rest_api/mode_analytics/mode_paginated_rest_api_query.py) for pagination)
  2. Usually, you want the subset of the response you get from the REST API call -- value extraction. To extract the value you want, RestApiQuery uses [JSONPath](https://goessner.net/articles/JsonPath/) which is similar product as XPATH of XML.
  3. You can JOIN multiple RestApiQuery together.
 
@@ -1540,14 +1573,14 @@ More detail on JOIN operation in RestApiQuery:
 With this pattern RestApiQuery supports 1:1 and 1:N JOIN relationship.
 (GROUP BY or any other aggregation, sub-query join is not supported)
 
-To see in action, take a peek at [ModeDashboardExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/dashboard/mode_analytics/mode_dashboard_extractor.py)
+To see in action, take a peek at [ModeDashboardExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/dashboard/mode_analytics/mode_dashboard_extractor.py)
 Also, take a look at how it extends to support pagination at [ModePaginatedRestApiQuery](./databuilder/rest_api/mode_analytics/mode_paginated_rest_api_query.py).
 
-### Removing stale data in Neo4j -- [Neo4jStalenessRemovalTask](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/task/neo4j_staleness_removal_task.py):
+### Removing stale data in Neo4j -- [Neo4jStalenessRemovalTask](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/task/neo4j_staleness_removal_task.py):
 
 As Databuilder ingestion mostly consists of either INSERT OR UPDATE, there could be some stale data that has been removed from metadata source but still remains in Neo4j database. Neo4jStalenessRemovalTask basically detects staleness and removes it.
 
-In [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/neo4j_csv_publisher.py), it adds attributes "published_tag" and "publisher_last_updated_epoch_ms" on every nodes and relations. You can use either of these two attributes to detect staleness and remove those stale node or relation from the database.
+In [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/neo4j_csv_publisher.py), it adds attributes "published_tag" and "publisher_last_updated_epoch_ms" on every nodes and relations. You can use either of these two attributes to detect staleness and remove those stale node or relation from the database.
 
 #### Using "published_tag" to remove stale data
 Use *published_tag* to remove stale data, when it is certain that non-matching tag is stale once all the ingestion is completed. For example, suppose that you use current date (or execution date in Airflow) as a *published_tag*, "2020-03-31". Once Databuilder ingests all tables and all columns, all table nodes and column nodes should have *published_tag* as "2020-03-31". It is safe to assume that table nodes and column nodes whose *published_tag* is different -- such as "2020-03-30" or "2020-02-10" -- means that it is deleted from the source metadata. You can use Neo4jStalenessRemovalTask to delete those stale data.

@@ -251,7 +251,7 @@ if __name__ == "__main__":
     run_csv_job('example/sample_data/sample_table_owner.csv', 'test_table_owner_metadata',
                 'databuilder.models.table_owner.TableOwner')
     run_csv_job('example/sample_data/sample_column_usage.csv', 'test_usage_metadata',
-                'databuilder.models.column_usage_model.ColumnUsageModel')
+                'databuilder.models.table_column_usage.ColumnReader')
     run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
                 'databuilder.models.application.Application')
     run_csv_job('example/sample_data/sample_source.csv', 'test_source_metadata',
