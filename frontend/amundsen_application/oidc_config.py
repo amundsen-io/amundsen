@@ -21,7 +21,7 @@ def get_access_headers(app: Flask) -> Optional[Dict]:
         access_token = json.dumps(app.auth_client.token)
         return {'Authorization': 'Bearer {}'.format(access_token)}
     except Exception:
-        pass
+        return {}
 
 
 def get_auth_user(app: Flask) -> User:
