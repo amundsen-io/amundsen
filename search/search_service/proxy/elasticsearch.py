@@ -31,36 +31,35 @@ DEFAULT_ES_INDEX = 'table_search_index'
 
 LOGGING = logging.getLogger(__name__)
 
-# mapping to translate request for table resources
-TABLE_MAPPING = {
-    'badges': 'badges',
-    'tag': 'tags',
-    'schema': 'schema.raw',
-    'table': 'name.raw',
-    'column': 'column_names.raw',
-    'database': 'database.raw',
-    'cluster': 'cluster.raw'
-}
-
-# Maps payload to a class
-TAG_MAPPING = {
-    'badges': Tag,
-    'tags': Tag
-}
-
-# mapping to translate request for dashboard resources
-DASHBOARD_MAPPING = {
-    'group_name': 'group_name.raw',
-    'name': 'name.raw',
-    'product': 'product',
-    'tag': 'tags',
-}
-
 
 class ElasticsearchProxy(BaseProxy):
     """
     ElasticSearch connection handler
     """
+    # mapping to translate request for table resources
+    TABLE_MAPPING = {
+        'badges': 'badges',
+        'tag': 'tags',
+        'schema': 'schema.raw',
+        'table': 'name.raw',
+        'column': 'column_names.raw',
+        'database': 'database.raw',
+        'cluster': 'cluster.raw'
+    }
+
+    # Maps payload to a class
+    TAG_MAPPING = {
+        'badges': Tag,
+        'tags': Tag
+    }
+
+    # mapping to translate request for dashboard resources
+    DASHBOARD_MAPPING = {
+        'group_name': 'group_name.raw',
+        'name': 'name.raw',
+        'product': 'product',
+        'tag': 'tags',
+    }
 
     def __init__(self, *,
                  host: str = None,
@@ -87,6 +86,87 @@ class ElasticsearchProxy(BaseProxy):
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
         self.page_size = page_size
+
+    def get_user_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["full_name.raw^30",
+                                   "full_name^5",
+                                   "first_name.raw^5",
+                                   "last_name.raw^5",
+                                   "first_name^3",
+                                   "last_name^3",
+                                   "email^3"],
+                        "operator": "and"
+                    }
+                }
+            }
+        }
+
+    def get_table_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["display_name^1000",
+                                   "name.raw^75",
+                                   "name^5",
+                                   "schema^3",
+                                   "description^3",
+                                   "column_names^2",
+                                   "column_descriptions",
+                                   "tags",
+                                   "badges",
+                                   "programmatic_descriptions"],
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_dashboard_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["name.raw^75",
+                                   "name^7",
+                                   "group_name.raw^15",
+                                   "group_name^7",
+                                   "description^3",
+                                   "query_names^3",
+                                   "chart_names^2"]
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_filter_search_query(self, query_string: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "query_string": {
+                        "query": query_string
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
 
     def _get_search_result(self, page_index: int,
                            client: Search,
@@ -162,9 +242,9 @@ class ElasticsearchProxy(BaseProxy):
                                    results=results)
 
     def _get_instance(self, attr: str, val: Any) -> Any:
-        if attr in TAG_MAPPING:
+        if attr in self.TAG_MAPPING:
             # maps a given badge or tag to a tag class
-            return [TAG_MAPPING[attr](tag_name=property_val) for property_val in val]  # type: ignore
+            return [self.TAG_MAPPING[attr](tag_name=property_val) for property_val in val]  # type: ignore
         else:
             return val
 
@@ -215,29 +295,7 @@ class ElasticsearchProxy(BaseProxy):
             return SearchTableResult(total_results=0, results=[])
 
         s = Search(using=self.elasticsearch, index=current_index)
-        query_name = {
-            "function_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_term,
-                        "fields": ["display_name^1000",
-                                   "name.raw^75",
-                                   "name^5",
-                                   "schema^3",
-                                   "description^3",
-                                   "column_names^2",
-                                   "column_descriptions",
-                                   "tags",
-                                   "badges",
-                                   "programmatic_descriptions"],
-                    }
-                },
-                "field_value_factor": {
-                    "field": "total_usage",
-                    "modifier": "log2p"
-                }
-            }
-        }
+        query_name = self.get_table_search_query(query_term)
 
         return self._search_helper(page_index=page_index,
                                    client=s,
@@ -256,14 +314,13 @@ class ElasticsearchProxy(BaseProxy):
 
         raise Exception('Unable to map given index to a valid model')
 
-    @staticmethod
-    def parse_filters(filter_list: Dict,
-                      index: str) -> str:
+    @classmethod
+    def parse_filters(cls, filter_list: Dict, index: str) -> str:
         query_list = []  # type: List[str]
         if index == TABLE_INDEX:
-            mapping = TABLE_MAPPING
+            mapping = cls.TABLE_MAPPING
         elif index == DASHBOARD_INDEX:
-            mapping = DASHBOARD_MAPPING
+            mapping = cls.DASHBOARD_MAPPING
         else:
             raise Exception(f'index {index} doesnt exist nor support search filter')
         for category, item_list in filter_list.items():
@@ -417,19 +474,7 @@ class ElasticsearchProxy(BaseProxy):
 
         s = Search(using=self.elasticsearch, index=current_index)
 
-        query_name = {
-            "function_score": {
-                "query": {
-                    "query_string": {
-                        "query": query_string
-                    }
-                },
-                "field_value_factor": {
-                    "field": "total_usage",
-                    "modifier": "log2p"
-                }
-            }
-        }
+        query_name = self.get_filter_search_query(query_string)
 
         model = self.get_model_by_index(current_index)
         return self._search_helper(page_index=page_index,
@@ -452,23 +497,7 @@ class ElasticsearchProxy(BaseProxy):
         s = Search(using=self.elasticsearch, index=index)
 
         # Don't use any weight(total_follow, total_own, total_use)
-        query_name = {
-            "function_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_term,
-                        "fields": ["full_name.raw^30",
-                                   "full_name^5",
-                                   "first_name.raw^5",
-                                   "last_name.raw^5",
-                                   "first_name^3",
-                                   "last_name^3",
-                                   "email^3"],
-                        "operator": "and"
-                    }
-                }
-            }
-        }
+        query_name = self.get_user_search_query(query_term)
 
         return self._search_helper(page_index=page_index,
                                    client=s,
@@ -497,26 +526,7 @@ class ElasticsearchProxy(BaseProxy):
             return SearchDashboardResult(total_results=0, results=[])
         s = Search(using=self.elasticsearch, index=current_index)
 
-        query_name = {
-            "function_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_term,
-                        "fields": ["name.raw^75",
-                                   "name^7",
-                                   "group_name.raw^15",
-                                   "group_name^7",
-                                   "description^3",
-                                   "query_names^3",
-                                   "chart_names^2"]
-                    }
-                },
-                "field_value_factor": {
-                    "field": "total_usage",
-                    "modifier": "log2p"
-                }
-            }
-        }
+        query_name = self.get_dashboard_search_query(query_term)
 
         return self._search_helper(page_index=page_index,
                                    client=s,
