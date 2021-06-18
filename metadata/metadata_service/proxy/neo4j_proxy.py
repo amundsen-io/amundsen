@@ -191,7 +191,8 @@ class Neo4jProxy(BaseProxy):
                                                          param_dict={'tbl_key': table_uri})
         readers = []  # type: List[Reader]
         for usage_neo4j_record in usage_neo4j_records:
-            reader = Reader(user=User(email=usage_neo4j_record['email']),
+            reader_data = self._get_user_details(user_id=usage_neo4j_record['email'])
+            reader = Reader(user=User(**reader_data),
                             read_count=usage_neo4j_record['read_count'])
             readers.append(reader)
 
@@ -271,7 +272,8 @@ class Neo4jProxy(BaseProxy):
         owner_record = []
 
         for owner in table_records.get('owner_records', []):
-            owner_record.append(User(email=owner['email']))
+            owner_data = self._get_user_details(user_id=owner['email'])
+            owner_record.append(User(**owner_data))
 
         src = None
 
@@ -1440,7 +1442,12 @@ class Neo4jProxy(BaseProxy):
         if not dashboard_record:
             raise NotFoundException('No dashboard exist with URI: {}'.format(id))
 
-        owners = [self._build_user_from_record(record=owner) for owner in dashboard_record['owners']]
+        owners = []
+
+        for owner in dashboard_record.get('owners', []):
+            owner_data = self._get_user_details(user_id=owner['email'], user_data=owner)
+            owners.append(User(**owner_data))
+
         tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in dashboard_record['tags']]
 
         badges = self._make_badges(dashboard_record['badges'])
