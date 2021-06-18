@@ -35,6 +35,11 @@ class TestBadge(unittest.TestCase):
                                           start_key='hive://default.base/test/ds',
                                           badges=[badge1, badge2])
 
+    def test_badge_name_category_are_lower_cases(self):
+        uppercase_badge = Badge('BadGe3', 'COLUMN_3')
+        self.assertEqual(uppercase_badge.name, 'badge3')
+        self.assertEqual(uppercase_badge.category, 'column_3')
+
     def test_get_badge_key(self) -> None:
         badge_key = self.badge_metada.get_badge_key(badge1.name)
         self.assertEqual(badge_key, badge1.name)
