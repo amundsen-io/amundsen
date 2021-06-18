@@ -13,9 +13,9 @@
 
 /amundsen-kube-helm/ @feng-tao @jornh @javamonkey79
 
-common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj
-databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @dorianj @verdan @mgorsk1
-frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @dikshathakur3119 @feng-tao @dorianj
-frontend/*.py    @ttannis @feng-tao @dikshathakur3119 @allisonsuarez @dorianj @verdan
-metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1 @dorianj
-search/*.py      @feng-tao @jinhyukchang @allisonsuarez @dikshathakur3119 @verdan @bolkedebruin @mgorsk1 @dorianj
+common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd
+databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dorianj @verdan @mgorsk1 @youngyjd
+frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj
+frontend/*.py    @ttannis @feng-tao @allisonsuarez @dorianj @verdan
+metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd
+search/*.py      @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd
