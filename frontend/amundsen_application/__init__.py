@@ -29,13 +29,14 @@ FLASK_APP_KWARGS_DICT_STR = os.getenv('FLASK_APP_KWARGS_DICT') or os.getenv('APP
 
 # Deprecation Warnings
 warnings.simplefilter('always', DeprecationWarning)
-if os.getenv('APP_WRAPPER') and os.getenv('APP_WRAPPER_CLASS'):
+if os.getenv('APP_WRAPPER') or os.getenv('APP_WRAPPER_CLASS'):
     warnings.warn("'APP_WRAPPER' and 'APP_WRAPPER_CLASS' variables is deprecated. "
-                  "Please use 'FLASK_APP_MODULE_NAME' and 'FLASK_APP_CLASS_NAME' instead", DeprecationWarning)
+                  "Please use 'FLASK_APP_MODULE_NAME' and 'FLASK_APP_CLASS_NAME' instead",
+                  DeprecationWarning)
 
 if os.getenv('APP_WRAPPER_ARGS'):
-    warnings.warn("'APP_WRAPPER_ARGS' variable is deprecated. Please use 'FLASK_APP_KWARGS_DICT' instead",
-                  DeprecationWarning)
+    warnings.warn("'APP_WRAPPER_ARGS' variable is deprecated. "
+                  "Please use 'FLASK_APP_KWARGS_DICT' instead", DeprecationWarning)
 
 """ Support for importing a subclass of flask.Flask, via env variables """
 if FLASK_APP_MODULE_NAME and FLASK_APP_CLASS_NAME:

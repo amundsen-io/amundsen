@@ -22,8 +22,8 @@ Once you have `flaskoidc` installed and configured for each microservice, please
 
 - amundsenfrontendlibrary (`amundsen/frontend`):
 ```bash
-    APP_WRAPPER: flaskoidc
-    APP_WRAPPER_CLASS: FlaskOIDC
+    FLASK_APP_MODULE_NAME: flaskoidc
+    FLASK_APP_CLASS_NAME: FlaskOIDC
 ```
 
 - amundsenmetadatalibrary (`amundsen/metadata`):
