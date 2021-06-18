@@ -11,6 +11,7 @@ routing PRs, questions, etc. to the right place.
 - Diksha Thakur (https://github.com/dikshathakur3119)
 - Dorian Johnson (https://github.com/dorianj)
 - Jin Hyuk Chang (https://github.com/jinhyukchang)
+- Junda Yang (https://github.com/youngyjd)
 - Marcos Iglesias (https://github.com/golodhros)
 - Mariusz Gorski (https://github.com/mgorsk1)
 - Mark Grover (https://github.com/markgrover)
