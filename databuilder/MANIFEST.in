@@ -1,1 +1,3 @@
 include requirements.txt
+
+global-include requirements-dev.txt

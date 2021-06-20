@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import re
 from typing import (
     Iterator, List, Optional, Union,
 )
@@ -17,8 +16,12 @@ from databuilder.models.table_serializable import TableSerializable
 
 class Badge:
     def __init__(self, name: str, category: str):
-        self.name = name
-        self.category = category
+        # Amundsen UI always formats badge display with first letter capitalized while other letters are lowercase.
+        # Clicking table badges in UI always results in searching lower cases badges
+        # https://github.com/amundsen-io/amundsen/blob/6ec9b398634264e52089bb9e1b7d76a6fb6a35a4/frontend/amundsen_application/static/js/components/BadgeList/index.tsx#L56
+        # If badges stored in neo4j are not lowercase, they won't be searchable in UI.
+        self.name = name.lower()
+        self.category = category.lower()
 
     def __repr__(self) -> str:
         return f'Badge({self.name!r}, {self.category!r})'
@@ -42,39 +45,27 @@ class BadgeMetadata(GraphSerializable, TableSerializable):
     BADGE_RELATION_TYPE = 'HAS_BADGE'
     INVERSE_BADGE_RELATION_TYPE = 'BADGE_FOR'
 
+    LABELS_PERMITTED_TO_HAVE_BADGE = ['Table', 'Dashboard', 'Column', 'Feature']
+
     def __init__(self,
-                 start_label: str,  # Table, Dashboard, Column
+                 start_label: str,
                  start_key: str,
                  badges: List[Badge],
                  ):
+        if start_label not in BadgeMetadata.LABELS_PERMITTED_TO_HAVE_BADGE:
+            raise Exception(f'badges for {start_label} are not supported')
+        self.start_label = start_label
+        self.start_key = start_key
         self.badges = badges
-
-        table_key_pattern = re.compile('[a-z]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
-        dashboard_key_pattern = re.compile('[a-z]+_dashboard://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
-        column_key_pattern = re.compile('[a-z]+://[a-zA-Z0-9_.-]+.[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+')
-        map_label_to_key_pattern = {
-            'Table': table_key_pattern,
-            'Dashboard': dashboard_key_pattern,
-            'Column': column_key_pattern,
-        }
-        if start_label in map_label_to_key_pattern.keys():
-            self.start_label = start_label
-            if map_label_to_key_pattern[start_label].match(start_key):
-                self.start_key = start_key
-            else:
-                raise Exception(start_key + ' does not match the key pattern for a ' + start_label)
-        else:
-            raise Exception(start_label + ' is not a valid start_label for a Badge relation')
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
         self._record_iter = self._create_record_iterator()
 
     def __repr__(self) -> str:
-        return f'BadgeMetadata({self.start_label!r}, {self.start_key!r})'
+        return f'BadgeMetadata({self.start_label!r}, {self.start_key!r}, {self.badges!r})'
 
     def create_next_node(self) -> Optional[GraphNode]:
-        # return the string representation of the data
         try:
             return next(self._node_iter)
         except StopIteration:
@@ -97,9 +88,6 @@ class BadgeMetadata(GraphSerializable, TableSerializable):
         if not name:
             return ''
         return BadgeMetadata.BADGE_KEY_FORMAT.format(badge=name)
-
-    def get_metadata_model_key(self) -> str:
-        return self.start_key
 
     def get_badge_nodes(self) -> List[GraphNode]:
         nodes = []

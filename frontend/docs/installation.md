@@ -16,8 +16,7 @@ $ cd ../../
 # Install python resources
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install -r requirements.txt
-$ python3 setup.py install
+$ pip3 install -e ".[all]" .
 
 # Start server
 $ python3 amundsen_application/wsgi.py

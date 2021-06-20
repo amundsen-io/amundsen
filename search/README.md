@@ -7,6 +7,11 @@
 
 Amundsen Search service serves a Restful API and is responsible for searching metadata. The service leverages [Elasticsearch](https://www.elastic.co/products/elasticsearch "Elasticsearch") for most of it's search capabilites.
 
+By default, it creates in total 3 indexes:
+* table_search_index
+* user_search_index
+* dashboard_search_index
+
 For information about Amundsen and our other services, refer to this [README.md](./../README.md). Please also see our instructions for a [quick start](./../docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](./../docs/architecture.md#architecture).
 
 ## Requirements
@@ -24,7 +29,7 @@ For information about Amundsen and our other services, refer to this [README.md]
 $ venv_path=[path_for_virtual_environment]
 $ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
-$ pip3 install amundsen-search
+$ python3 setup.py install
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running
@@ -40,8 +45,7 @@ $ cd search
 $ venv_path=[path_for_virtual_environment]
 $ python3 -m venv $venv_path
 $ source $venv_path/bin/activate
-$ pip3 install -r requirements.txt
-$ python3 setup.py install
+$ pip3 install -e ".[all]" .
 $ python3 search_service/search_wsgi.py
 
 # In a different terminal, verify the service is up by running

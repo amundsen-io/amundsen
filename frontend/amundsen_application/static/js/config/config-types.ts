@@ -14,6 +14,7 @@ export interface AppConfig {
   editableText: EditableTextConfig;
   indexDashboards: IndexDashboardsConfig;
   indexUsers: IndexUsersConfig;
+  indexFeatures: IndexFeaturesConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
@@ -37,6 +38,7 @@ export interface AppConfigCustom {
   editableText?: EditableTextConfig;
   indexDashboards?: IndexDashboardsConfig;
   indexUsers?: IndexUsersConfig;
+  indexFeatures?: IndexFeaturesConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
@@ -225,6 +227,7 @@ interface ResourceConfig {
   [ResourceType.dashboard]: BaseResourceConfig;
   [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
+  [ResourceType.feature]: BaseResourceConfig;
 }
 
 /**
@@ -334,6 +337,16 @@ interface IndexDashboardsConfig {
  * enabled - Enables/disables this feature in the frontend only
  */
 interface IndexUsersConfig {
+  enabled: boolean;
+}
+
+/**
+ * IndexFeaturesConfig - When enabled, ML features will be avaialable as searchable resources. This requires
+ * feature objects to be ingested via Databuilder and made available in the metadata and serch services.
+ *
+ * enabled - Enables/disables this feature in the frontend only
+ */
+interface IndexFeaturesConfig {
   enabled: boolean;
 }
 

@@ -1,31 +1,24 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
+import os
 
 from setuptools import find_packages, setup
 
-__version__ = '4.4.1'
+__version__ = '5.0.0'
 
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
+with open(requirements_path) as requirements_file:
+    requirements = requirements_file.readlines()
 
-requirements = [
-    "neo4j-driver>=1.7.2,<4.0",
-    "pytz>=2018.4",
-    "statsd>=3.2.1",
-    "retrying>=1.3.3",
-    "requests>=2.23.0,<3.0",
-    "elasticsearch>=6.2.0,<7.0",
-    "pyhocon>=0.3.42",
-    "unidecode",
-    "Jinja2>=2.10.0,<2.12",
-    "pandas>=0.21.0,<1.2.0",
-    "amundsen-rds>=0.0.4"
-]
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
+with open(requirements_path) as requirements_file:
+    requirements_dev = requirements_file.readlines()
 
 kafka = ['confluent-kafka==1.0.0']
 
 cassandra = ['cassandra-driver==3.20.1']
 
-glue = ['boto3==1.10.1']
+glue = ['boto3==1.17.23']
 
 snowflake = [
     'snowflake-connector-python',
@@ -66,10 +59,10 @@ neptune = [
     'amundsen-gremlin>=0.0.9',
     'Flask==1.0.2',
     'gremlinpython==3.4.3',
-    'requests-aws4auth==0.9',
+    'requests-aws4auth==1.1.0',
     'typing-extensions==3.7.4',
     'overrides==2.5',
-    'boto3==1.10.1'
+    'boto3==1.17.23'
 ]
 
 feast = [
@@ -77,7 +70,8 @@ feast = [
 ]
 
 atlas = [
-    'pyatlasclient==1.1.2'
+    'pyatlasclient==1.1.2',
+    'apache-atlas>=0.0.11'
 ]
 
 rds = [
@@ -85,14 +79,14 @@ rds = [
     'mysqlclient>=1.3.6,<3'
 ]
 
-all_deps = requirements + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds
+all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas
 
 setup(
     name='amundsen-databuilder',
     version=__version__,
     description='Amundsen Data builder',
-    url='https://www.github.com/amundsen-io/amundsendatabuilder',
+    url='https://www.github.com/amundsen-io/amundsen/tree/main/databuilder',
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
@@ -101,6 +95,7 @@ setup(
     python_requires='>=3.6',
     extras_require={
         'all': all_deps,
+        'dev': requirements_dev,
         'kafka': kafka,  # To use with Kafka source extractor
         'cassandra': cassandra,
         'glue': glue,

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 class DottedDict(dict):
@@ -15,6 +15,7 @@ class DottedDict(dict):
 class Data:
     entity_type = 'hive_table'
     column_type = 'hive_column'
+    dashboard_type = 'Dashboard'
     cluster = 'TEST_CLUSTER'
     db = 'TEST_DB'
     name = 'TEST_TABLE'
@@ -93,7 +94,7 @@ class Data:
         }},
     ]
 
-    db_entity = {
+    db_entity: Dict[str, Any] = {
         'guid': '-100',
         'updateTime': 2345678901234,
         'typeName': entity_type,
@@ -105,7 +106,7 @@ class Data:
         }
     }
 
-    partition_entity_1 = {
+    partition_entity_1: Dict[str, Any] = {
         'typeName': 'table_partition',
         'status': 'INACTIVE',
         'attributes': {
@@ -161,7 +162,8 @@ class Data:
                 'spark.sql.param': 1
             },
             'reports': [{'guid': '23'}, {'guid': '121212'}, {'guid': '2344'}],
-            'tableType': 'MANAGED_TABLE'
+            'tableType': 'MANAGED_TABLE',
+            'partitionKeys': [{'displayName': 'test_column'}]
         },
         'relationshipAttributes': {
             'db': db_entity,
@@ -171,18 +173,21 @@ class Data:
                     "entityStatus": "ACTIVE",
                     "relationshipStatus": "ACTIVE",
                     "guid": "000",
+                    "relationshipGuid": "relationshipGuid-1",
                     "displayText": "active_owned_by"
                 },
                 {
                     "entityStatus": "ACTIVE",
                     "relationshipStatus": "DELETED",
+                    "relationshipGuid": "relationshipGuid-2",
                     "guid": "111",
                     "displayText": "deleted_owned_by"
                 }
             ],
             'partitions': [dict(displayText=p.get('attributes', dict()).get('name'),
                                 entityStatus=p.get('status'),
-                                relationshipStatus='ACTIVE') for p in partitions]
+                                relationshipStatus='ACTIVE') for p in partitions],
+            'dashboards': [{'guid': 'dashboard_1'}]
         },
     }
     entity1.update(classification_entity)
@@ -251,7 +256,7 @@ class Data:
         ]
     }
 
-    user_entity_1 = {
+    user_entity_1: Dict[str, Any] = {
         "typeName": "User",
         "attributes": {
             "qualifiedName": "test_user_1"
@@ -261,10 +266,21 @@ class Data:
         "displayText": 'test_user_1',
         "classificationNames": [],
         "meaningNames": [],
-        "meanings": []
+        "meanings": [],
+        "relationshipAttributes": {
+            "owns": [
+                {
+                    "entityStatus": "ACTIVE",
+                    "relationshipStatus": "ACTIVE",
+                    "typeName": dashboard_type,
+                    "guid": 'dashboard_1'
+                },
+            ]
+        }
+
     }
 
-    user_entity_2 = {
+    user_entity_2: Dict[str, Any] = {
         "typeName": "User",
         "attributes": {
             "qualifiedName": "test_user_2"
@@ -305,7 +321,8 @@ class Data:
                     "relationshipStatus": "DELETED",
                     "typeName": entity_type,
                     "guid": entity2["guid"]
-                }]
+                }
+            ]
         }
     }
 
@@ -371,6 +388,13 @@ class Data:
         'general': {
             'stats': {
                 'Notification:lastMessageProcessedTime': 1598342400000
+            }
+        },
+        'tag': {
+            'tagEntities': {
+                'tag1': 3,
+                'tag2': 2,
+                'tag3': 1
             }
         }
     })
@@ -617,4 +641,108 @@ class Data:
             'url': 'https://superset.prod'
         }
 
+    })
+
+    lineage_upstream_table_2 = {
+        'guidEntityMap': {
+            't0': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_0@demo'
+                }
+            },
+            't1': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_1@demo'
+                }
+            },
+            't2': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_2@demo'
+                }
+            },
+            't4': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_4@demo'
+                }
+            },
+            'p0_1': {
+                'typeName': 'spark_process'
+            },
+            'p1_2': {
+                'typeName': 'spark_process'
+            },
+            'p4_2': {
+                'typeName': 'spark_process'
+            }
+        },
+        'relations': [
+            {
+                'fromEntityId': 't0',
+                'toEntityId': 'p0_1'
+            },
+            {
+                'fromEntityId': 'p0_1',
+                'toEntityId': 't1'
+            },
+            {
+                'fromEntityId': 't1',
+                'toEntityId': 'p1_2'
+            },
+            {
+                'fromEntityId': 'p1_2',
+                'toEntityId': 't2'
+            },
+            {
+                'fromEntityId': 't4',
+                'toEntityId': 'p4_2'
+            },
+            {
+                'fromEntityId': 'p4_2',
+                'toEntityId': 't2'
+            }
+        ]
+    }
+
+    lineage_downstream_table_2 = {
+        'guidEntityMap': {
+            't2': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_2@demo'
+                }
+            },
+            't3': {
+                'typeName': 'hive_table',
+                'attributes': {
+                    'qualifiedName': 'sample.table_3@demo'
+                }
+            },
+            'p2_3': {
+                'typeName': 'spark_process'
+            }
+        },
+        'relations': [
+            {
+                'fromEntityId': 't2',
+                'toEntityId': 'p2_3'
+            },
+            {
+                'fromEntityId': 'p2_3',
+                'toEntityId': 't3'
+            }
+        ]
+    }
+
+    glossary_1 = DottedDict({
+        'guid': '2f341934-f18c-48b3-aa12-eaa0a2bfce85',
+        'qualifiedName': 'glossary_1',
+    })
+
+    glossary_amundsen = DottedDict({
+        'guid': '2f341934-f18c-48b3-aa12-eaa0a2bfce86',
+        'qualifiedName': 'amundsen_user_tags',
     })

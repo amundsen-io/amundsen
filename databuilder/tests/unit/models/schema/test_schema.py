@@ -208,3 +208,15 @@ class TestSchemaDescription(unittest.TestCase):
                                                                   'description_source': 'bar',
                                                                   'description': 'foo',
                                                                   'schema_rk': 'db://cluster.schema'})
+
+    def test_get_cluster_key(self) -> None:
+        schema_key = 'a123b_staging://cluster.schema'
+        schema_name = 'schema_name'
+        schema = SchemaModel(schema_key=schema_key, schema=schema_name)
+        assert schema._get_cluster_key(schema_key) == 'a123b_staging://cluster'
+
+        failed_schema_key_1 = 'a123b.staging://cluster.schema'
+        self.assertRaises(Exception, SchemaModel, schema_key=failed_schema_key_1, schema_name=schema_name)
+
+        failed_schema_key_2 = 'a123b-staging://cluster.schema'
+        self.assertRaises(Exception, SchemaModel, schema_key=failed_schema_key_2, schema_name=schema_name)

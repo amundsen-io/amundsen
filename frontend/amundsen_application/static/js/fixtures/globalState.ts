@@ -65,6 +65,30 @@ const globalState: GlobalState = {
     statusCode: 200,
     dashboard: dashboardMetadata,
   },
+  feature: {
+    statusCode: 200,
+    isLoading: false,
+    feature: {
+      key: '',
+      name: '',
+      version: '',
+      status: '',
+      feature_group: '',
+      entity: '',
+      data_type: '',
+      availability: [],
+      description: '',
+      owners: [],
+      badges: [],
+      owner_tags: [],
+      tags: [],
+      programmatic_descriptions: [],
+      watermarks: [],
+      stats: [],
+      last_updated_timestamp: 0,
+      created_timestamp: 0,
+    },
+  },
   feedback: {
     sendState: SendingState.IDLE,
   },
@@ -110,6 +134,11 @@ const globalState: GlobalState = {
       results: [],
       total_results: 0,
     },
+    features: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     tables: {
       page_index: 0,
       results: [
@@ -144,6 +173,11 @@ const globalState: GlobalState = {
         total_results: 0,
       },
       users: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
+      features: {
         page_index: 0,
         results: [],
         total_results: 0,

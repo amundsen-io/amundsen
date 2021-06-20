@@ -95,11 +95,11 @@ Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) t
 
 ## Getting Started
 
-Please visit the Amundsen installation documentation for a [quick start](./installation/) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](./docs/installation.md) to bootstrap a default version of Amundsen with dummy data.
 
 ## Architecture Overview
 
-Please visit [Architecture](./architecture/) for Amundsen architecture overview.
+Please visit [Architecture](./docs/architecture.md) for Amundsen architecture overview.
 
 ## Supported Entities
 
@@ -126,6 +126,7 @@ Please visit [Architecture](./architecture/) for Amundsen architecture overview.
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
 - [PostgreSQL](https://www.postgresql.org/)
+- [PrestoDB](http://prestodb.io/)
 - [Trino (formerly Presto SQL)](https://trino.io/)
 - [Vertica](https://www.vertica.com/)
 - [Snowflake](https://www.snowflake.com/)
@@ -149,11 +150,11 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 ## Installation
 
-Please visit [Installation guideline](./installation) on how to install Amundsen.
+Please visit [Installation guideline](./docs/installation.md) on how to install Amundsen.
 
 ## Roadmap
 
-Please visit [Roadmap](./roadmap/) if you are interested in Amundsen upcoming roadmap items.
+Please visit [Roadmap](./docs/roadmap.md) if you are interested in Amundsen upcoming roadmap items.
 
 ## Blog Posts and Interviews
 
@@ -227,6 +228,7 @@ Currently **officially** using Amundsen:
 1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
 1. [Brex](https://www.brex.com/)
 1. [Cameo](https://www.cameo.com)
+1. [Chan Zuckerberg Initiative](https://chanzuckerberg.com/)
 1. [Cimpress Technology](https://cimpress.com)
 1. [Coles Group](https://www.colesgroup.com.au/home/)
 1. [Convoy](https://www.convoy.com)

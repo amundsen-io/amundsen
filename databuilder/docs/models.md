@@ -49,23 +49,23 @@ Depending on the datastore of your dataset, you would extract this by:
 - a query for the minimum and maximum record of a given timestamp column
 
 
-### [ColumnUsageModel](../databuilder/models/column_usage_model.py)
+### [TableColumnUsage](../databuilder/models/table_column_usage.py)
 
+#### Description
 *How many queries is a given column getting? By which users?*
 
-Has query counts per a given column per a user. This can help identify 
-#### Description
+Has query counts per a given table per a user. This can help identify 
 who uses given datasets so people can contact them if they have questions
 on how to use a given dataset or if a dataset is changing. It is also used as a 
 search boost so that the most used tables are put to the top of the search results.
 
-For more traditional databases, there should be system tables where you can obtain 
 #### Extraction
+For more traditional databases, there should be system tables where you can obtain 
 these sorts of usage statistics.
 
 In other cases, you may need to use audit logs which could require a custom solution.
 
-Finally, for none traditional data lakes, getting this information exactly maybe difficult and you may need to rely
+Finally, for non-traditional data lakes, getting this information exactly maybe difficult and you may need to rely
 on a heuristic.
 
 ### [User](../databuilder/models/user.py)
@@ -214,3 +214,38 @@ A model that encapsulate Dashboard's charts where chart is associated with query
 
 #### Extraction
 [ModeDashboardChartsExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_extractor.py)   
+
+## Feature models
+Feature models include [FeatureMetadata](../databuilder/models/feature/feature_metadata.py), which encapsulates the basic feature details, 
+and supplemental models [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py) and 
+[Feature_Watermark](../databuilder/models/feature/feature_watermark.py) for adding extra metadata. 
+In addition, the Tag, Badge, Owner, and Programmatic_Description models work with features.
+
+### [FeatureMetadata](../databuilder/models/feature/feature_metadata.py)
+
+#### Description
+A baseline of Feature metadata. This model needs to be ingested first as other models build relations to it.
+
+#### Extraction
+No specific extractors are provided at this time. We expect users will either write custom extractors, 
+or use generic extractors (e.g. SQLAlchemyExtractor). 
+
+### [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py)
+
+#### Description
+Allows ingesting the text of the generation code (SQL or otherwise) which was used to create a feature.  
+
+#### Extraction
+No specific extractors are provided at this time. We expect users will either write custom extractors, 
+or use generic extractors (e.g. SQLAlchemyExtractor). 
+
+### [Feature_Watermark](../databuilder/models/feature/feature_watermark.py)
+
+#### Description
+Allows ingesting the high and low data range of a feature. Unlike [Watermark](../databuilder/models/watermark.py), 
+which is specific to tables (requires a partition, for example), Feature_Watermark is more general and does not 
+care about how the feature is stored.
+
+#### Extraction
+No specific extractors are provided at this time. We expect users will either write custom extractors, 
+or use generic extractors (e.g. SQLAlchemyExtractor).

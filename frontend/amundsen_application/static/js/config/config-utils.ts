@@ -58,6 +58,9 @@ export function getSourceIconClass(
     if (resource === ResourceType.table) {
       return DEFAULT_DATABASE_ICON_CLASS;
     }
+    if (resource === ResourceType.feature) {
+      return DEFAULT_DATABASE_ICON_CLASS;
+    }
     return '';
   }
 
@@ -146,6 +149,13 @@ export function announcementsEnabled(): boolean {
  */
 export function indexDashboardsEnabled(): boolean {
   return AppConfig.indexDashboards.enabled;
+}
+
+/**
+ * Returns whether or not ML features should be shown
+ */
+export function indexFeaturesEnabled(): boolean {
+  return AppConfig.indexFeatures.enabled;
 }
 
 /**

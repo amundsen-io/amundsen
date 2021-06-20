@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import urllib.parse
 
 from dataclasses import dataclass
 from marshmallow import EXCLUDE
 from typing import Any, Dict, List
 
 from amundsen_common.models.dashboard import DashboardSummary, DashboardSummarySchema
+from amundsen_common.models.feature import Feature, FeatureSchema
 from amundsen_common.models.popular_table import PopularTable, PopularTableSchema
 from amundsen_common.models.table import Table, TableSchema
 from amundsen_application.models.user import load_user, dump_user
@@ -29,14 +29,16 @@ class TableUri:
 
     @classmethod
     def from_uri(cls, uri: str) -> 'TableUri':
-        parsed = urllib.parse.urlparse(uri)
-        cluster, schema = parsed.netloc.rsplit('.', 1)
-        return TableUri(
-            database=parsed.scheme,
-            cluster=cluster,
-            schema=schema,
-            table=parsed.path.lstrip('/')
-        )
+        """
+        TABLE_KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}'
+        """
+        pattern = re.compile(r'^(?P<database>.*?)://(?P<cluster>.*)\.(?P<schema>.*?)/(?P<table>.*?)$', re.X)
+
+        groups = pattern.match(uri)
+
+        spec = groups.groupdict() if groups else {}
+
+        return TableUri(**spec)
 
 
 def marshall_table_partial(table_dict: Dict) -> Dict:
@@ -252,3 +254,26 @@ def _get_partition_data(watermarks: Dict) -> Dict:
     return {
         'is_partitioned': False
     }
+
+
+def marshall_feature_full(feature_dict: Dict) -> Dict:
+    """
+    Forms the full version of a table Dict, with additional and sanitized fields
+    :param table_dict: Table Dict from metadata service
+    :return: Table Dict with sanitized fields
+    """
+
+    schema = FeatureSchema()
+    feature: Feature = schema.load(feature_dict)
+    results: Dict[str, Any] = schema.dump(feature)
+
+    # TODO do we need this for Features?
+    # is_editable = is_table_editable(results['schema'], results['name'])
+    # results['is_editable'] = is_editable
+
+    results['owners'] = [_map_user_object_to_schema(owner) for owner in results['owners']]
+
+    prog_descriptions = results['programmatic_descriptions']
+    results['programmatic_descriptions'] = _convert_prog_descriptions(prog_descriptions)
+
+    return results
