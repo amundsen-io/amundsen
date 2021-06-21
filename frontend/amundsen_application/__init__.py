@@ -41,9 +41,8 @@ if os.getenv('APP_WRAPPER_ARGS'):
 
 """ Support for importing a subclass of flask.Flask, via env variables """
 if FLASK_APP_MODULE_NAME and FLASK_APP_CLASS_NAME:
-    if FLASK_APP_MODULE_NAME and FLASK_APP_CLASS_NAME:
-        print('Using requested Flask module {module_name} and class {class_name}'
-              .format(module_name=FLASK_APP_MODULE_NAME, class_name=FLASK_APP_CLASS_NAME), file=sys.stderr)
+    print('Using requested Flask module {module_name} and class {class_name}'
+          .format(module_name=FLASK_APP_MODULE_NAME, class_name=FLASK_APP_CLASS_NAME), file=sys.stderr)
     moduleName = os.getenv('APP_WRAPPER', '')
     module = importlib.import_module(moduleName)
     moduleClass = os.getenv('APP_WRAPPER_CLASS', '')
