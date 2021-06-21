@@ -43,9 +43,9 @@ if os.getenv('APP_WRAPPER_ARGS'):
 if FLASK_APP_MODULE_NAME and FLASK_APP_CLASS_NAME:
     print('Using requested Flask module {module_name} and class {class_name}'
           .format(module_name=FLASK_APP_MODULE_NAME, class_name=FLASK_APP_CLASS_NAME), file=sys.stderr)
-    moduleName = os.getenv('APP_WRAPPER', '')
+    moduleName = FLASK_APP_MODULE_NAME
     module = importlib.import_module(moduleName)
-    moduleClass = os.getenv('APP_WRAPPER_CLASS', '')
+    moduleClass = FLASK_APP_CLASS_NAME
     app_wrapper_class = getattr(module, moduleClass)  # type: ignore
 else:
     app_wrapper_class = Flask
