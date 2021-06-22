@@ -20,6 +20,7 @@ import os
 import sys
 import uuid
 
+from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,7 +38,6 @@ from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExt
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from databuilder.publisher.elasticsearch_constants import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask

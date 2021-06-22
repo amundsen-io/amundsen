@@ -25,6 +25,7 @@ import os
 import sys
 import uuid
 
+from amundsen_common.models.index_map import USER_INDEX_MAP, DASHBOARD_ELASTICSEARCH_INDEX_MAPPING
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,9 +38,7 @@ from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExt
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from databuilder.publisher.elasticsearch_constants import (
-    DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_ELASTICSEARCH_INDEX_MAPPING,
-)
+
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask
@@ -411,7 +410,7 @@ if __name__ == "__main__":
         elasticsearch_doc_type_key='user',
         model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
         entity_type='user',
-        elasticsearch_mapping=USER_ELASTICSEARCH_INDEX_MAPPING)
+        elasticsearch_mapping=USER_INDEX_MAP)
     job_es_user.launch()
 
     job_es_dashboard = create_es_publisher_sample_job(
