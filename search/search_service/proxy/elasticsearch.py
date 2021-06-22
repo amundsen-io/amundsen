@@ -66,10 +66,10 @@ class ElasticsearchProxy(BaseProxy):
         'tag': 'tags',
     }
 
-    # mapping to translate request for dashboard resources
+    # mapping to translate request for feature resources
     FEATURE_MAPPING = {
-        'feature_group': 'group_name.raw',
-        'feature_name': 'name.raw',
+        'feature_group': 'feature_group.raw',
+        'feature_name': 'feature_name.raw',
         'entity': 'entity',
         'status': 'status',
         'version': 'version',
