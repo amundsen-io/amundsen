@@ -295,6 +295,9 @@ FEATURE_INDEX_MAP = textwrap.dedent(
               "type": "keyword",
               "normalizer": "lowercase_normalizer"
             },
+            "key": {
+              "type": "keyword"
+            },
             "total_usage":{
               "type": "long"
             },
