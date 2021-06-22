@@ -11,6 +11,7 @@ from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User
+from flask import current_app as app
 
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
@@ -24,6 +25,21 @@ class BaseProxy(metaclass=ABCMeta):
     Base Proxy, which behaves like an interface for all
     the proxy clients available in the amundsen metadata service
     """
+    def _get_user_details(self, user_id: str, user_data: Optional[Dict] = None) -> Dict:
+        """
+        Helper function to help get the user details if the `USER_DETAIL_METHOD` is configured,
+        else uses the user_id for both email and user_id properties.
+        :param user_id: The Unique user id of a user entity
+        :return: a dictionary of user details
+        """
+        if app.config.get('USER_DETAIL_METHOD'):
+            user_details = app.config.get('USER_DETAIL_METHOD')(user_id)  # type: ignore
+        elif user_data:
+            user_details = user_data
+        else:
+            user_details = {'email': user_id, 'user_id': user_id}
+
+        return user_details
 
     @abstractmethod
     def get_user(self, *, id: str) -> Union[User, None]:
