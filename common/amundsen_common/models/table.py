@@ -157,13 +157,13 @@ class SqlJoinSchema(AttrsSchema):
 
 
 @attr.s(auto_attribs=True, kw_only=True)
-class SqlWnere:
+class SqlWhere:
     where_clause: str
 
 
 class SqlWhereSchema(AttrsSchema):
     class Meta:
-        target = SqlWnere
+        target = SqlWhere
         register_as_scheme = True
 
 
@@ -188,7 +188,7 @@ class Table:
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
     programmatic_descriptions: List[ProgrammaticDescription] = []
     common_joins: Optional[List[SqlJoin]] = None
-    common_filters: Optional[List[SqlWnere]] = None
+    common_filters: Optional[List[SqlWhere]] = None
 
 
 class TableSchema(AttrsSchema):

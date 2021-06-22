@@ -16,7 +16,8 @@ from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
-                                          Source, Stat, Table, Tag, User,
+                                          Source, SqlJoin, SqlWhere, Stat,
+                                          Table, TableSummary, Tag, User,
                                           Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
@@ -109,6 +110,8 @@ class Neo4jProxy(BaseProxy):
         wmk_results, table_writer, timestamp_value, owners, tags, source, badges, prog_descs = \
             self._exec_table_query(table_uri)
 
+        joins, filters = self._exec_table_query_query(table_uri)
+
         table = Table(database=last_neo4j_record['db']['name'],
                       cluster=last_neo4j_record['clstr']['name'],
                       schema=last_neo4j_record['schema']['name'],
@@ -124,7 +127,9 @@ class Neo4jProxy(BaseProxy):
                       last_updated_timestamp=timestamp_value,
                       source=source,
                       is_view=self._safe_get(last_neo4j_record, 'tbl', 'is_view'),
-                      programmatic_descriptions=prog_descs
+                      programmatic_descriptions=prog_descs,
+                      common_joins=joins,
+                      common_filters=filters
                       )
 
         return table
@@ -285,6 +290,75 @@ class Neo4jProxy(BaseProxy):
 
         return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions
 
+    @timer_with_counter
+    def _exec_table_query_query(self, table_uri: str) -> Tuple:
+        """
+        Queries one Cypher record with results that contain information about queries
+        and entities (e.g. joins, where clauses, etc.) associated to queries that are executed
+        on the table.
+        """
+
+        # Return Value: (Watermark Results, Table Writer, Last Updated Timestamp, owner records, tag records)
+        table_query_level_query = textwrap.dedent("""
+        MATCH (tbl:Table {key: $tbl_key})
+        OPTIONAL MATCH (tbl)-[:COLUMN]->(col:Column)-[COLUMN_JOINS_WITH]->(j:Join)
+        OPTIONAL MATCH (j)-[JOIN_OF_COLUMN]->(col2:Column)
+        OPTIONAL MATCH (j)-[JOIN_OF_QUERY]->(jq:Query)-[:HAS_EXECUTION]->(exec:Execution)
+        WITH tbl, j, col, col2,
+            sum(coalesce(exec.execution_count, 0)) as join_exec_cnt
+        ORDER BY join_exec_cnt desc
+        LIMIT 5
+        WITH tbl,
+            COLLECT(DISTINCT {
+            join: {
+                joined_on_table: {
+                    database: case when j.left_table_key = $tbl_key
+                              then j.right_database
+                              else j.left_database
+                              end,
+                    cluster: case when j.left_table_key = $tbl_key
+                             then j.right_cluster
+                             else j.left_cluster
+                             end,
+                    schema: case when j.left_table_key = $tbl_key
+                            then j.right_schema
+                            else j.left_schema
+                            end,
+                    name: case when j.left_table_key = $tbl_key
+                          then j.right_table
+                          else j.left_table
+                          end
+                },
+                joined_on_column: col2.name,
+                column: col.name,
+                join_type: j.join_type,
+                join_sql: j.join_sql
+            },
+            join_exec_cnt: join_exec_cnt
+        }) as joins
+        WITH tbl, joins
+        OPTIONAL MATCH (tbl)-[:COLUMN]->(col:Column)-[USES_WHERE_CLAUSE]->(whr:Where)
+        OPTIONAL MATCH (whr)-[WHERE_CLAUSE_OF]->(wq:Query)-[:HAS_EXECUTION]->(whrexec:Execution)
+        WITH tbl, joins,
+            whr, sum(coalesce(whrexec.execution_count, 0)) as where_exec_cnt
+        ORDER BY where_exec_cnt desc
+        LIMIT 5
+        RETURN tbl, joins,
+          COLLECT(DISTINCT {
+            where_clause: whr.where_clause,
+            where_exec_cnt: where_exec_cnt
+          }) as filters
+        """)
+
+        query_records = self._execute_cypher_query(statement=table_query_level_query, param_dict={'tbl_key': table_uri})
+
+        table_query_records = query_records.single()
+
+        joins = self._extract_joins_from_query(table_query_records.get('joins', [{}]))
+        filters = self._extract_filters_from_query(table_query_records.get('filters', [{}]))
+
+        return joins, filters
+
     def _extract_programmatic_descriptions_from_query(self, raw_prog_descriptions: dict) -> list:
         prog_descriptions = []
         for prog_description in raw_prog_descriptions:
@@ -295,6 +369,27 @@ class Neo4jProxy(BaseProxy):
                 prog_descriptions.append(ProgrammaticDescription(source=source, text=prog_description['description']))
         prog_descriptions.sort(key=lambda x: x.source)
         return prog_descriptions
+
+    def _extract_joins_from_query(self, joins: List[Dict]) -> List[Dict]:
+        valid_joins = []
+        for join in joins:
+            join_data = join['join']
+            if all(join_data.values()):
+                new_sql_join = SqlJoin(join_sql=join_data['join_sql'],
+                                       join_type=join_data['join_type'],
+                                       joined_on_column=join_data['joined_on_column'],
+                                       joined_on_table=TableSummary(**join_data['joined_on_table']),
+                                       column=join_data['column'])
+                valid_joins.append(new_sql_join)
+        return valid_joins
+
+    def _extract_filters_from_query(self, filters: List[Dict]) -> List[Dict]:
+        return_filters = []
+        for filt in filters:
+            filter_where = filt.get('where_clause')
+            if filter_where:
+                return_filters.append(SqlWhere(where_clause=filter_where))
+        return return_filters
 
     @no_type_check
     def _safe_get(self, dct, *keys):
