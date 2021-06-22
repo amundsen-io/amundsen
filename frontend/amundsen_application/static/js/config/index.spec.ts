@@ -68,42 +68,63 @@ describe('getDisplayNameByResource', () => {
 });
 
 describe('getResourceNotices', () => {
-  describe('when there is a notice', () => {
-    AppConfig.resourceConfig[ResourceType.table].notices = {
-      testName: {
-        severity: NoticeSeverity.WARNING,
-        messageHtml: 'testMessage',
-      },
-    };
+  describe('when resource is a table', () => {
+    describe('when there is a notice', () => {
+      AppConfig.resourceConfig[ResourceType.table].notices = {
+        testName: {
+          severity: NoticeSeverity.WARNING,
+          messageHtml: 'testMessage',
+        },
+      };
 
-    it('returns the notice', () => {
-      const expected = 'testMessage';
-      const notice = ConfigUtils.getResourceNotices(
-        ResourceType.table,
-        'testName'
-      );
-      const actual = notice && notice.messageHtml;
+      it('returns the notice', () => {
+        const expected = 'testMessage';
+        const notice = ConfigUtils.getResourceNotices(
+          ResourceType.table,
+          'testName'
+        );
+        const actual = notice && notice.messageHtml;
 
-      expect(actual).toEqual(expected);
+        expect(actual).toEqual(expected);
+      });
     });
-  });
 
-  describe('when there is no notice', () => {
-    AppConfig.resourceConfig[ResourceType.table].notices = {
-      testName: {
-        severity: NoticeSeverity.WARNING,
-        messageHtml: 'testMessage',
-      },
-    };
+    describe('when there is no notice', () => {
+      AppConfig.resourceConfig[ResourceType.table].notices = {
+        testName: {
+          severity: NoticeSeverity.WARNING,
+          messageHtml: 'testMessage',
+        },
+      };
 
-    it('returns false', () => {
-      const expected = false;
-      const actual = ConfigUtils.getResourceNotices(
-        ResourceType.table,
-        'testNameNoThere'
-      );
+      it('returns false', () => {
+        const expected = false;
+        const actual = ConfigUtils.getResourceNotices(
+          ResourceType.table,
+          'testNameNoThere'
+        );
 
-      expect(actual).toEqual(expected);
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when there is a wildcard', () => {
+      AppConfig.resourceConfig[ResourceType.table].notices = {
+        '*.hive.core.fact_rides': {
+          severity: NoticeSeverity.WARNING,
+          messageHtml: 'testMessage',
+        },
+      };
+
+      it('returns notice', () => {
+        const expected = 'testMessage';
+        const actual = ConfigUtils.getResourceNotices(
+          ResourceType.table,
+          'gold.hive.core.fact_rides'
+        ).messageHtml;
+
+        expect(actual).toEqual(expected);
+      });
     });
   });
 

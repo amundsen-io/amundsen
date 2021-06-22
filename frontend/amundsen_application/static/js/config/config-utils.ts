@@ -75,6 +75,27 @@ export function getResourceNotices(
   resourceName: string
 ): NoticeType | false {
   const { notices } = AppConfig.resourceConfig[resourceType];
+  // const wildcardNoticesKeys = Object.keys(notices).filter(
+  //   (n) => n.indexOf('*') > -1
+  // );
+  // if (wildcardNoticesKeys.length) {
+  //   wildcardNoticesKeys.forEach((key) => {
+  //     const decomposedKey = key.split('.');
+  //     const decomposedResource = resourceName.split('.');
+  //     for (let i = 0; i < 4; i++) {
+  //       if (
+  //         decomposedKey[i] === decomposedResource[i] ||
+  //         decomposedKey[i] === '*'
+  //       ) {
+  //         if (i === 3) {
+  //           return notices[key];
+  //         }
+  //         continue;
+  //       }
+  //       break;
+  //     }
+  //   });
+  // }
 
   if (notices && notices[resourceName]) {
     return notices[resourceName];
