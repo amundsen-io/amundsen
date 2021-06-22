@@ -68,7 +68,7 @@ class Config:
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
-    USER_DETAIL_METHOD = None  # type: Optional[function]
+    USER_DETAIL_METHOD = None   # type: Optional[function]
 
     RESOURCE_REPORT_CLIENT = None  # type: Optional[function]
 

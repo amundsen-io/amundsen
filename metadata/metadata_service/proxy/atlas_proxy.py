@@ -108,20 +108,6 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(bookmark_qn)
         return result.groupdict() if result else dict()
 
-    def _get_user_details(self, user_id: str) -> Dict:
-        """
-        Helper function to help get the user details if the `USER_DETAIL_METHOD` is configured,
-        else uses the user_id for both email and user_id properties.
-        :param user_id: The Unique user id of a user entity
-        :return: a dictionary of user details
-        """
-        if app.config.get('USER_DETAIL_METHOD'):
-            user_details = app.config.get('USER_DETAIL_METHOD')(user_id)  # type: ignore
-        else:
-            user_details = {'email': user_id, 'user_id': user_id}
-
-        return user_details
-
     @classmethod
     def _filter_active(cls, entities: List[dict]) -> List[dict]:
         """
