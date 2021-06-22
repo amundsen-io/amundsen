@@ -302,10 +302,10 @@ FEATURE_INDEX_MAP = textwrap.dedent(
               "type": "keyword"
             },
             "entity": {
-              "type": "keyword",
+              "type": "keyword"
             },
             "description": {
-              "type": "text",
+              "type": "text"
             },
             "availability": {
               "type": "text",
