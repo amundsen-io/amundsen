@@ -47,17 +47,17 @@ def map_table_result(result: Dict) -> Dict:
 
 def map_feature_result(result: Dict) -> Dict:
     return {
-        #  TODO finish up when real data exists
         'type': 'feature',
         'description': result.get('description', None),
         'key': result.get('key', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
-        'name': result.get('name', None),
+        'name': result.get('feature_name', None),
         'feature_group': result.get('feature_group', None),
         'version': result.get('version', None),
         'availability': result.get('availability', None),
         'entity': result.get('entity', None),
         'badges': result.get('badges', None),
+        'status': result.get('status', None),
     }
 
 

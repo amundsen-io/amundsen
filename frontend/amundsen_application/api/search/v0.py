@@ -330,7 +330,7 @@ def _search_feature(*, search_term: str, page_index: int, filters: Dict, search_
                                       method='POST',
                                       data=json.dumps(query_json))
         else:
-            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_ENDPOINT  # TODO rename const?
+            url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_FEATURE_ENDPOINT
             url = f'{url_base}?query_term={search_term}&page_index={page_index}'
             response = request_search(url=url)
 
