@@ -1,12 +1,20 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import * as qs from 'simple-query-string';
 
-import { FeatureMetadata } from 'interfaces/Feature';
+import {
+  PreviewData,
+  FeatureMetadata,
+  FeatureSampleQueryParams,
+} from 'interfaces';
 
 export type GetFeatureAPI = {
   msg: string;
   featureData: FeatureMetadata;
 };
+
+type MessageAPI = { msg: string };
+
+export type PreviewDataAPI = { previewData: PreviewData } & MessageAPI;
 
 const FEATURE_BASE = '/api/metadata/v0';
 
@@ -29,5 +37,26 @@ export function getFeature(key: string, index?: string, source?: string) {
         statusCode,
         statusMessage,
       });
+    });
+}
+
+export function getPreviewData(queryParams: FeatureSampleQueryParams) {
+  return axios({
+    url: '/api/preview/v0/feature_preview',
+    method: 'POST',
+    data: queryParams,
+  })
+    .then((response: AxiosResponse<PreviewDataAPI>) => ({
+      data: response.data.previewData,
+      status: response.status,
+    }))
+    .catch((e: AxiosError<PreviewDataAPI>) => {
+      const { response } = e;
+      let data = {};
+      if (response && response.data && response.data.previewData) {
+        data = response.data.previewData;
+      }
+      const status = response ? response.status : null;
+      return Promise.reject({ data, status });
     });
 }

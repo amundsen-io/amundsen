@@ -2,6 +2,7 @@ export * from './Analytics';
 export * from './Announcements';
 export * from './Badges';
 export * from './Enums';
+export * from './Feature';
 export * from './Feedback';
 export * from './Issue';
 export * from './Notifications';
