@@ -1,14 +1,20 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { TableResource } from 'interfaces';
+import { PopularResource, ResourceDict, ResourceType } from 'interfaces';
+import { indexDashboardsEnabled } from 'config/config-utils';
 
 export type PopularTablesAPI = {
   msg: string;
-  results: TableResource[];
+  results: ResourceDict<PopularResource[]>;
 };
 
-export function getPopularTables() {
+export function getPopularResources() {
+  let resourceType = `${ResourceType.table}`;
+
+  if (indexDashboardsEnabled()) {
+    resourceType += `,${ResourceType.dashboard}`;
+  }
   return axios
-    .get('/api/metadata/v0/popular_tables')
+    .get(`/api/metadata/v0/popular_resources`)
     .then((response: AxiosResponse<PopularTablesAPI>) => response.data.results);
 }

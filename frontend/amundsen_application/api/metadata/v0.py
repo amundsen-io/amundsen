@@ -56,10 +56,11 @@ def _get_dashboard_endpoint() -> str:
     return metadata_service_base + DASHBOARD_ENDPOINT
 
 
-@metadata_blueprint.route('/popular_tables', methods=['GET'])
-def popular_tables() -> Response:
+@metadata_blueprint.route('/popular_resources', methods=['GET'])
+def popular_resources() -> Response:
     """
-    call the metadata service endpoint to get the current popular tables
+    call the metadata service endpoint to get the current popular tables, dashboards etc.
+    this takes a required query parameter "types", that is a comma separated string of requested resource types
     :return: a json output containing an array of popular table metadata as 'popular_tables'
 
     Schema Defined Here:
@@ -71,23 +72,31 @@ def popular_tables() -> Response:
         else:
             user_id = ''
 
+        resource_types = get_query_param(request.args, 'types')
+
         service_base = app.config['METADATASERVICE_BASE']
         count = app.config['POPULAR_TABLE_COUNT']
-        url = f'{service_base}{POPULAR_TABLES_ENDPOINT}/{user_id}?limit={count}'
+        url = f'{service_base}{POPULAR_TABLES_ENDPOINT}/{user_id}?limit={count}&types={resource_types}'
 
         response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
             message = 'Success'
-            response_list = response.json().get('popular_tables')
-            popular_tables = [marshall_table_partial(result) for result in response_list]
+            tables = response.json().get('popular_tables', [])
+            popular_tables = [marshall_table_partial(result) for result in tables]
+            dashboards = response.json().get('popular_dashboards', [])
+            popular_dashboards = [marshall_dashboard_partial(dashboard) for dashboard in dashboards]
+            all_popular_resources = {
+                'table': popular_tables,
+                'dashboard': popular_dashboards
+            }
         else:
             message = 'Encountered error: Request to metadata service failed with status code ' + str(status_code)
             logging.error(message)
-            popular_tables = [{}]
+            all_popular_resources = [{}]
 
-        payload = jsonify({'results': popular_tables, 'msg': message})
+        payload = jsonify({'results': all_popular_resources, 'msg': message})
         return make_response(payload, status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)

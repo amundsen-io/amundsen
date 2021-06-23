@@ -7,8 +7,8 @@ import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
 import feature, { FeatureReducerState } from 'ducks/feature/reducer';
 import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
-import popularTables, {
-  PopularTablesReducerState,
+import popularResources, {
+  PopularResourcesReducerState,
 } from './popularTables/reducer';
 import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, {
@@ -31,7 +31,7 @@ export interface GlobalState {
   feedback: FeedbackReducerState;
   issue: IssueReducerState;
   notification: NotificationReducerState;
-  popularTables: PopularTablesReducerState;
+  popularResources: PopularResourcesReducerState;
   search: SearchReducerState;
   tableMetadata: TableMetadataReducerState;
   lastIndexed: LastIndexedReducerState;
@@ -49,7 +49,7 @@ const rootReducer = combineReducers<GlobalState>({
   feedback,
   issue,
   notification,
-  popularTables,
+  popularResources,
   search,
   tableMetadata,
   lastIndexed,

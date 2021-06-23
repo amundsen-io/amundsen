@@ -2,18 +2,21 @@ import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
 import * as API from './api/v0';
-import { getPopularTablesFailure, getPopularTablesSuccess } from './reducer';
-import { GetPopularTables } from './types';
+import {
+  getPopularResourcesFailure,
+  getPopularResourcesSuccess,
+} from './reducer';
+import { GetPopularResources } from './types';
 
-export function* getPopularTablesWorker(): SagaIterator {
+export function* getPopularResourcesWorker(): SagaIterator {
   try {
-    const popularTables = yield call(API.getPopularTables);
-    yield put(getPopularTablesSuccess(popularTables));
+    const popularResources = yield call(API.getPopularResources);
+    yield put(getPopularResourcesSuccess(popularResources));
   } catch (e) {
-    yield put(getPopularTablesFailure());
+    yield put(getPopularResourcesFailure());
   }
 }
 
-export function* getPopularTablesWatcher(): SagaIterator {
-  yield takeEvery(GetPopularTables.REQUEST, getPopularTablesWorker);
+export function* getPopularResourcesWatcher(): SagaIterator {
+  yield takeEvery(GetPopularResources.REQUEST, getPopularResourcesWorker);
 }

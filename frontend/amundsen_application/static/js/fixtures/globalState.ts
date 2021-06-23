@@ -102,28 +102,30 @@ const globalState: GlobalState = {
     requestIsOpen: false,
     sendState: SendingState.IDLE,
   },
-  popularTables: {
-    popularTablesIsLoaded: true,
-    popularTables: [
-      {
-        cluster: 'testCluster',
-        database: 'testDatabase',
-        description: 'I have a lot of users',
-        key: 'testDatabase://testCluster.testSchema/testName',
-        name: 'testName',
-        schema: 'testSchema',
-        type: ResourceType.table,
-      },
-      {
-        cluster: 'testCluster',
-        database: 'testDatabase',
-        description: 'I also have a lot of users',
-        key: 'testDatabase://testCluster.testSchema/otherName',
-        name: 'otherName',
-        schema: 'testSchema',
-        type: ResourceType.table,
-      },
-    ],
+  popularResources: {
+    popularResourcesIsLoaded: true,
+    popularResources: {
+      [ResourceType.table]: [
+        {
+          cluster: 'testCluster',
+          database: 'testDatabase',
+          description: 'I have a lot of users',
+          key: 'testDatabase://testCluster.testSchema/testName',
+          name: 'testName',
+          schema: 'testSchema',
+          type: ResourceType.table,
+        },
+        {
+          cluster: 'testCluster',
+          database: 'testDatabase',
+          description: 'I also have a lot of users',
+          key: 'testDatabase://testCluster.testSchema/otherName',
+          name: 'otherName',
+          schema: 'testSchema',
+          type: ResourceType.table,
+        },
+      ],
+    },
   },
   search: {
     search_term: 'testName',

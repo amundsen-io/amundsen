@@ -1,54 +1,57 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { TableResource } from 'interfaces';
+import { PopularResource, ResourceDict, ResourceType } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
 import * as API from './api/v0';
 import reducer, {
-  getPopularTables,
-  getPopularTablesFailure,
-  getPopularTablesSuccess,
-  PopularTablesReducerState,
+  getPopularResources,
+  getPopularResourcesFailure,
+  getPopularResourcesSuccess,
+  PopularResourcesReducerState,
 } from './reducer';
-import { getPopularTablesWorker, getPopularTablesWatcher } from './sagas';
-import { GetPopularTables } from './types';
+import { getPopularResourcesWorker, getPopularResourcesWatcher } from './sagas';
+import { GetPopularResources } from './types';
 
-describe('popularTables ducks', () => {
-  let expectedTables: TableResource[];
+describe('popularResources ducks', () => {
+  let expectedResources: ResourceDict<PopularResource[]>;
 
   beforeAll(() => {
-    expectedTables = globalState.popularTables.popularTables;
+    expectedResources = globalState.popularResources.popularResources;
   });
 
   describe('actions', () => {
-    it('getPopularTables - returns the action to get popular tables', () => {
-      const action = getPopularTables();
-      expect(action.type).toBe(GetPopularTables.REQUEST);
+    it('getPopularResources - returns the action to get popular resources', () => {
+      const action = getPopularResources();
+      expect(action.type).toBe(GetPopularResources.REQUEST);
     });
 
-    it('getPopularTablesFailure - returns the action to process failure', () => {
-      const action = getPopularTablesFailure();
+    it('getPopularResourcesFailure - returns the action to process failure', () => {
+      const action = getPopularResourcesFailure();
       const { payload } = action;
-      expect(action.type).toBe(GetPopularTables.FAILURE);
-      expect(payload.tables).toEqual([]);
+      expect(action.type).toBe(GetPopularResources.FAILURE);
+      expect(payload.popularResources).toEqual([]);
     });
 
-    it('getPopularTablesSuccess - returns the action to process success', () => {
-      const action = getPopularTablesSuccess(expectedTables);
+    it('getPopularResourcesSuccess - returns the action to process success', () => {
+      const action = getPopularResourcesSuccess(expectedResources);
       const { payload } = action;
-      expect(action.type).toBe(GetPopularTables.SUCCESS);
-      expect(payload.tables).toBe(expectedTables);
+      expect(action.type).toBe(GetPopularResources.SUCCESS);
+      expect(payload.popularResources).toBe(expectedResources);
     });
   });
 
   describe('reducer', () => {
-    let testState: PopularTablesReducerState;
+    let testState: PopularResourcesReducerState;
 
     beforeAll(() => {
       testState = {
-        popularTablesIsLoaded: false,
-        popularTables: [],
+        popularResourcesIsLoaded: false,
+        popularResources: {
+          [ResourceType.table]: [],
+          [ResourceType.dashboard]: [],
+        },
       };
     });
 
@@ -56,52 +59,54 @@ describe('popularTables ducks', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
 
-    it('should handle GetPopularTables.SUCCESS', () => {
-      const expected = expectedTables;
-      const actual = reducer(testState, getPopularTablesSuccess(expectedTables))
-        .popularTables;
+    it('should handle GetPopularResources.SUCCESS', () => {
+      const expected = expectedResources;
+      const actual = reducer(
+        testState,
+        getPopularResourcesSuccess(expectedResources)
+      ).popularResources;
 
       expect(actual).toEqual(expected);
     });
 
-    it('should handle GetPopularTables.FAILURE', () => {
+    it('should handle GetPopularResources.FAILURE', () => {
       const expected = {
-        popularTables: [],
-        popularTablesIsLoaded: true,
+        popularResources: [],
+        popularResourcesIsLoaded: true,
       };
-      const actual = reducer(testState, getPopularTablesFailure());
+      const actual = reducer(testState, getPopularResourcesFailure());
 
       expect(actual).toEqual(expected);
     });
   });
 
   describe('sagas', () => {
-    describe('getPopularTablesWatcher', () => {
-      it('takes every GetPopularTables.REQUEST with getPopularTablesWorker', () => {
-        testSaga(getPopularTablesWatcher)
+    describe('getPopularResourcesWatcher', () => {
+      it('takes every GetPopularResources.REQUEST with getPopularResourcesWorker', () => {
+        testSaga(getPopularResourcesWatcher)
           .next()
-          .takeEvery(GetPopularTables.REQUEST, getPopularTablesWorker)
+          .takeEvery(GetPopularResources.REQUEST, getPopularResourcesWorker)
           .next()
           .isDone();
       });
     });
 
-    describe('getPopularTablesWorker', () => {
+    describe('getPopularResourcesWorker', () => {
       it('executes flow for returning tables', () => {
-        testSaga(getPopularTablesWorker)
+        testSaga(getPopularResourcesWorker)
           .next()
-          .call(API.getPopularTables)
-          .next(expectedTables)
-          .put(getPopularTablesSuccess(expectedTables))
+          .call(API.getPopularResources)
+          .next(expectedResources)
+          .put(getPopularResourcesSuccess(expectedResources))
           .next()
           .isDone();
       });
 
       it('handles request error', () => {
-        testSaga(getPopularTablesWorker)
+        testSaga(getPopularResourcesWorker)
           .next()
           .throw(new Error())
-          .put(getPopularTablesFailure())
+          .put(getPopularResourcesFailure())
           .next()
           .isDone();
       });

@@ -1,51 +1,66 @@
-import { TableResource } from 'interfaces';
+import { PopularResource, ResourceDict, ResourceType } from 'interfaces';
 
 import {
-  GetPopularTables,
-  GetPopularTablesRequest,
-  GetPopularTablesResponse,
+  GetPopularResources,
+  GetPopularResourcesRequest,
+  GetPopularResourcesResponse,
 } from './types';
 
+export const initialPopularResourcesState = {
+  [ResourceType.table]: [],
+  [ResourceType.dashboard]: [],
+};
+
 /* ACTIONS */
-export function getPopularTables(): GetPopularTablesRequest {
-  return { type: GetPopularTables.REQUEST };
+export function getPopularResources(): GetPopularResourcesRequest {
+  return { type: GetPopularResources.REQUEST };
 }
-export function getPopularTablesFailure(): GetPopularTablesResponse {
-  return { type: GetPopularTables.FAILURE, payload: { tables: [] } };
+export function getPopularResourcesFailure(): GetPopularResourcesResponse {
+  return {
+    type: GetPopularResources.FAILURE,
+    payload: {
+      popularResources: {
+        ...initialPopularResourcesState,
+      },
+    },
+  };
 }
-export function getPopularTablesSuccess(
-  tables: TableResource[]
-): GetPopularTablesResponse {
-  return { type: GetPopularTables.SUCCESS, payload: { tables } };
+export function getPopularResourcesSuccess(
+  popularResources: ResourceDict<PopularResource[]>
+): GetPopularResourcesResponse {
+  return { type: GetPopularResources.SUCCESS, payload: { popularResources } };
 }
 
 /* REDUCER */
-export interface PopularTablesReducerState {
-  popularTables: TableResource[];
-  popularTablesIsLoaded: boolean;
+export interface PopularResourcesReducerState {
+  popularResources: ResourceDict<PopularResource[]>;
+  popularResourcesIsLoaded: boolean;
 }
 
-const initialState: PopularTablesReducerState = {
-  popularTables: [],
-  popularTablesIsLoaded: false,
+const initialState: PopularResourcesReducerState = {
+  popularResources: {
+    ...initialPopularResourcesState,
+  },
+  popularResourcesIsLoaded: false,
 };
 
 export default function reducer(
-  state: PopularTablesReducerState = initialState,
+  state: PopularResourcesReducerState = initialState,
   action
-): PopularTablesReducerState {
+): PopularResourcesReducerState {
   switch (action.type) {
-    case GetPopularTables.REQUEST:
+    case GetPopularResources.REQUEST:
       return {
         ...state,
         ...initialState,
       };
-    case GetPopularTables.SUCCESS:
-    case GetPopularTables.FAILURE:
+    case GetPopularResources.SUCCESS:
+    case GetPopularResources.FAILURE:
       return {
         ...state,
-        popularTables: (<GetPopularTablesResponse>action).payload.tables,
-        popularTablesIsLoaded: true,
+        popularResources: (<GetPopularResourcesResponse>action).payload
+          .popularResources,
+        popularResourcesIsLoaded: true,
       };
     default:
       return state;
