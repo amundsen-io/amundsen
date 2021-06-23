@@ -26,7 +26,7 @@ import os
 import sys
 import uuid
 
-from amundsen_common.models.index_map import USER_INDEX_MAP, DASHBOARD_ELASTICSEARCH_INDEX_MAPPING
+from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_INDEX_MAP
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 
@@ -36,7 +36,6 @@ from databuilder.extractor.mysql_search_data_extractor import MySQLSearchDataExt
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_mysql_csv_loader import FSMySQLCSVLoader
-
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.mysql_csv_publisher import MySQLCSVPublisher
 from databuilder.task.task import DefaultTask
