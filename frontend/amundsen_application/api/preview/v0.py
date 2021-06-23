@@ -68,6 +68,7 @@ def get_table_preview() -> Response:
         payload = jsonify({'previewData': {}, 'msg': message})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
+
 @preview_blueprint.route('/feature_preview', methods=['POST'])
 def get_feature_preview() -> Response:
     global PREVIEW_CLIENT_INSTANCE
