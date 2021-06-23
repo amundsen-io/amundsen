@@ -52,6 +52,7 @@ export const isResourceIndexed = (resource: ResourceType) => {
   if (resource === ResourceType.feature) {
     return indexFeaturesEnabled();
   }
+  return false;
 };
 
 export function searchResource(
