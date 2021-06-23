@@ -16,7 +16,7 @@ theme:
     primary: '#2B1B81'
     accent: '#2B1B81'
   feature:
-    tabs: true
+    - navigation.tabs
   custom_dir: docs_overrides/
 
 -extra_css:
@@ -47,14 +47,15 @@ markdown_extensions:
 extra:
   # type is the name of the FontAwesome icon without the fa- prefix.
   social:
-    - type: globe
+    - icon: fontawesome/globe
       link: https://www.amundsen.io/
-    - type: github-alt
+    - icon: fontawesome/brands/github-alt
       link: https://github.com/amundsen-io
-    - type: twitter
+    - icon: fontawesome/brands/twitter
       link: https://twitter.com/amundsenio
-    - type: linkedin
+    - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/the-linux-foundation/
+
 
 nav:
   - 'Overview': index.md
