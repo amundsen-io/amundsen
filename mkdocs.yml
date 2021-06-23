@@ -47,7 +47,7 @@ markdown_extensions:
 extra:
   # type is the name of the FontAwesome icon without the fa- prefix.
   social:
-    - icon: fontawesome/globe
+    - icon: fontawesome/solid/globe
       link: https://www.amundsen.io/
     - icon: fontawesome/brands/github-alt
       link: https://github.com/amundsen-io
