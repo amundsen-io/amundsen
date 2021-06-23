@@ -90,6 +90,7 @@ setup(
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
+    include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
     python_requires='>=3.6',
