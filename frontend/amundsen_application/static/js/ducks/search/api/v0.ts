@@ -42,8 +42,16 @@ export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
 };
 
 export const resourceIndexed = (resource: ResourceType) => {
-  if (resource === ResourceType.dashboard) return indexDashboardsEnabled();
-  if (resource === ResourceType.feature) return indexFeaturesEnabled();
+  if (resource === ResourceType.dashboard) {
+    return indexDashboardsEnabled();
+  }
+  if (resource === ResourceType.feature) {
+    return indexFeaturesEnabled();
+  }
+  // table is always configured and user has a separate case
+  if (resource === ResourceType.table || resource === ResourceType.user) {
+    return true;
+  }
 };
 
 export function searchResource(
@@ -60,7 +68,7 @@ export function searchResource(
   ) {
     return Promise.resolve({});
   }
-  if (resource !== ResourceType.table && !resourceIndexed(resource)) {
+  if (!resourceIndexed(resource)) {
     return Promise.resolve({});
   }
 
