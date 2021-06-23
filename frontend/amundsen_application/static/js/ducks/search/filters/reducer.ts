@@ -37,6 +37,7 @@ export type FilterOptions = { [id: string]: boolean };
 export interface FilterReducerState {
   [ResourceType.dashboard]?: ResourceFilterReducerState;
   [ResourceType.table]?: ResourceFilterReducerState;
+  [ResourceType.feature]?: ResourceFilterReducerState;
 }
 
 export interface ResourceFilterReducerState {
@@ -46,10 +47,12 @@ export interface ResourceFilterReducerState {
 /* REDUCER */
 export const initialTableFilterState = {};
 export const initialDashboardFilterState = {};
+export const initialFeatureFilterState = {};
 
 export const initialFilterState: FilterReducerState = {
   [ResourceType.dashboard]: initialDashboardFilterState,
   [ResourceType.table]: initialTableFilterState,
+  [ResourceType.feature]: initialFeatureFilterState,
 };
 
 export default function reducer(
