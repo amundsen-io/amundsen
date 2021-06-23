@@ -17,6 +17,7 @@ from apache_atlas.model.relationship import AtlasRelationship
 from pyhocon import ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
+from databuilder.types.atlas import AtlasEntityInitializer
 from databuilder.utils.atlas import (
     AtlasSerializedEntityFields, AtlasSerializedEntityOperation, AtlasSerializedRelationshipFields,
 )
@@ -33,6 +34,8 @@ class AtlasCSVPublisher(Publisher):
     RELATIONSHIP_DIR_PATH = 'relationship_files_directory'
     # atlas create entity batch size
     ATLAS_ENTITY_CREATE_BATCH_SIZE = 'batch_size'
+    # whether entity types should be registered before data is synced to Atlas
+    REGISTER_ENTITY_TYPES = 'register_entity_types'
 
     def __init__(self) -> None:
         super().__init__()
@@ -42,6 +45,18 @@ class AtlasCSVPublisher(Publisher):
         self._relationship_files = self._list_files(conf, AtlasCSVPublisher.RELATIONSHIP_DIR_PATH)
         self._config = conf
         self._atlas_client = self._config.get(AtlasCSVPublisher.ATLAS_CLIENT)
+        self._register_entity_types = self._config.get_bool(AtlasCSVPublisher.REGISTER_ENTITY_TYPES, True)
+
+        if self._register_entity_types:
+            LOGGER.info('Registering Atlas Entity Types.')
+
+            try:
+                init = AtlasEntityInitializer(self._atlas_client)
+                init.create_required_entities()
+
+                LOGGER.info('Registered Atlas Entity Types.')
+            except Exception:
+                LOGGER.error('Failed to register Atlas Entity Types.', exc_info=True)
 
     def _list_files(self, conf: ConfigTree, path_key: str) -> List[str]:
         """
