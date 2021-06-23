@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import * as ReactMarkdown from 'react-markdown';
 
-import { FeatureMetadata } from 'interfaces/Feature';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import Breadcrumb from 'components/Breadcrumb';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
@@ -15,16 +16,15 @@ import {
   getFeatureCode,
 } from 'ducks/feature/reducer';
 import { GetFeatureCodeRequest, GetFeatureRequest } from 'ducks/feature/types';
-import Breadcrumb from 'components/Breadcrumb';
+import { FeatureMetadata } from 'interfaces/Feature';
+import { ResourceType } from 'interfaces/Resources';
+import { logAction } from 'utils/analytics';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getSourceDisplayName } from 'config/config-utils';
-import { ResourceType } from 'interfaces/Resources';
 
-import './styles.scss';
-import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { GenerationCode } from './GenerationCode';
-import { logAction } from '../../utils/analytics';
+import './styles.scss';
 
 interface StateFromProps {
   isLoading: boolean;

@@ -15,8 +15,8 @@ const setup = (propOverrides?: Partial<QueryListItemProps>) => {
     name: 'testName',
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount(<QueryListItem {...props} />);
-
   return { props, wrapper };
 };
 

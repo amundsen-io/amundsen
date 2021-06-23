@@ -12,7 +12,7 @@ describe('getFeature', () => {
     const mockStatus = 200;
     const mockResponse = {
       data: {
-        featureData: featureCode,
+        featureData: featureMetadata,
         msg: 'success',
       },
       status: mockStatus,
@@ -23,7 +23,7 @@ describe('getFeature', () => {
     expect.assertions(2);
     await API.getFeature('testUri').then((processedResponse) => {
       expect(processedResponse).toEqual({
-        feature: featureCode,
+        feature: featureMetadata,
         statusCode: mockStatus,
       });
     });
@@ -60,11 +60,7 @@ describe('getFeatureCode', () => {
   it('resolves with object containing feature code and status code', async () => {
     const mockStatus = 200;
     const mockResponse = {
-      data: {
-        key: 'testKey',
-        source: 'testSource',
-        text: 'testText',
-      },
+      data: featureCode,
       status: mockStatus,
     };
     axiosMockGet = jest

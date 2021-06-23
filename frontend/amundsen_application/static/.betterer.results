@@ -771,10 +771,9 @@ exports[`eslint`] = {
     "js/pages/DashboardPage/QueryList/index.tsx:2324422660": [
       [14, 0, 516, "Component should be written as a pure function", "698708664"]
     ],
-    "js/pages/DashboardPage/QueryListItem/index.spec.tsx:3940842462": [
-      [17, 39, 10, "Prop spreading is forbidden", "480399587"],
-      [89, 25, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [100, 27, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/pages/DashboardPage/QueryListItem/index.spec.tsx:2568041930": [
+      [82, 25, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [93, 27, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
     "js/pages/DashboardPage/index.spec.tsx:3159805396": [
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
