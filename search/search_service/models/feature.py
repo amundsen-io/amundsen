@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import time
 from typing import (
     List, Optional, Set,
 )
@@ -22,14 +21,15 @@ class Feature(Base):
     feature_group: str
     feature_name: str
     version: str
+    key: str
     total_usage: int = 0
-    status: str = None
-    entity: str = None
-    description: str = None
-    availability:  Optional[List[str]] = None
+    status: Optional[str] = None
+    entity: Optional[str] = None
+    description: Optional[str] = None
+    availability: Optional[List[str]] = None
     badges: Optional[List[Tag]] = None
     tags: Optional[List[Tag]] = None
-    last_updated_timestamp: int = None
+    last_updated_timestamp: Optional[int] = None
 
     def get_id(self) -> str:
         return self.id
@@ -51,6 +51,7 @@ class Feature(Base):
             'feature_group',
             'feature_name',
             'version',
+            'key',
             'total_usage',
             'status',
             'entity',

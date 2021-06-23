@@ -16,7 +16,7 @@ from flask_restful import Api
 
 from search_service.api.dashboard import SearchDashboardAPI, SearchDashboardFilterAPI
 from search_service.api.document import (
-    DocumentTableAPI, DocumentTablesAPI, DocumentUserAPI, DocumentUsersAPI, DocumentFeatureAPI, DocumentFeaturesAPI,
+    DocumentFeatureAPI, DocumentFeaturesAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUserAPI, DocumentUsersAPI,
 )
 from search_service.api.feature import SearchFeatureAPI, SearchFeatureFilterAPI
 from search_service.api.healthcheck import healthcheck

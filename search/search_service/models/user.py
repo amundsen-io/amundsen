@@ -24,6 +24,9 @@ class User(Base, CommonUser):
     def get_id(self) -> str:
         return self.id
 
+    def get_attrs_dict(self) -> dict:
+        return self.__dict__.copy()
+
     @classmethod
     def get_attrs(cls) -> Set:
         return {

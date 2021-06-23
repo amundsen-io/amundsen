@@ -9,9 +9,7 @@ from mock import Mock, patch
 from search_service import create_app
 from search_service.api.feature import FEATURE_INDEX
 from search_service.models.feature import SearchFeatureResult
-from tests.unit.api.feature.fixtures import (
-    default_json_response, mock_default_proxy_results, mock_json_response, mock_proxy_results,
-)
+from tests.unit.api.feature.fixtures import mock_json_response, mock_proxy_results
 
 
 class TestSearchFeatureAPI(TestCase):
@@ -30,7 +28,8 @@ class TestSearchFeatureAPI(TestCase):
 
     def test_should_get_result_for_search(self) -> None:
         result = mock_proxy_results()
-        self.mock_proxy.fetch_feature_search_results.return_value = SearchFeatureResult(total_results=1, results=[result])
+        self.mock_proxy.fetch_feature_search_results.return_value = \
+            SearchFeatureResult(total_results=1, results=[result])
 
         response = self.app.test_client().get('/search_feature?query_term=searchterm')
 
@@ -54,20 +53,6 @@ class TestSearchFeatureAPI(TestCase):
             "total_results": 0,
             "results": []
         }
-        self.assertEqual(response.json, expected_response)
-
-    def test_should_get_default_response_values_when_values_not_in_proxy_response(self) -> None:
-        self.mock_proxy.fetch_feature_search_results.return_value = \
-            SearchFeatureResult(total_results=1,
-                                results=[mock_default_proxy_results()])
-
-        response = self.app.test_client().get('/search_feature?query_term=searchterm')
-
-        expected_response = {
-            "total_results": 1,
-            "results": [default_json_response()]
-        }
-
         self.assertEqual(response.json, expected_response)
 
     def test_should_fail_without_query_term(self) -> None:

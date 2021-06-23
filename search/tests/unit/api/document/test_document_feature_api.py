@@ -33,5 +33,4 @@ class TestDocumentFeatureAPI(unittest.TestCase):
 
     def test_should_not_reach_delete_without_id(self) -> None:
         response = self.app.test_client().delete('/document_feature')
-
         self.assertEqual(response.status_code, 405)

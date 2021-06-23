@@ -51,4 +51,3 @@ class SearchFeatureFilterTest(unittest.TestCase):
 
         response = self.app.test_client().post(self.url)
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-

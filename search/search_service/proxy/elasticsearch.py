@@ -8,7 +8,9 @@ from typing import (
     Any, Dict, List, Union,
 )
 
-from amundsen_common.models.index_map import TABLE_INDEX_MAP, USER_INDEX_MAP, DASHBOARD_ELASTICSEARCH_INDEX_MAPPING
+from amundsen_common.models.index_map import (
+    FEATURE_INDEX_MAP, TABLE_INDEX_MAP, USER_INDEX_MAP,
+)
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch_dsl import Search, query
@@ -32,9 +34,6 @@ from search_service.proxy.statsd_utilities import timer_with_counter
 DEFAULT_ES_INDEX = 'table_search_index'
 
 LOGGING = logging.getLogger(__name__)
-
-# just here for testing
-FEATURE_INDEX_MAP = "an es mapping"
 
 
 class ElasticsearchProxy(BaseProxy):
@@ -74,8 +73,8 @@ class ElasticsearchProxy(BaseProxy):
         'status': 'status',
         'version': 'version',
         'availability': 'availability.raw',
-        'tag': 'tags',
-        'badge': 'badges'
+        'tags': 'tags',
+        'badges': 'badges'
     }
 
     def __init__(self, *,
@@ -709,7 +708,8 @@ class ElasticsearchProxy(BaseProxy):
 
         return index
 
-    def _build_index_actions(self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
+    def _build_index_actions(
+            self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
         for item in data:
             index_action = {'index': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}}
@@ -717,7 +717,8 @@ class ElasticsearchProxy(BaseProxy):
             actions.append(item.get_attrs_dict())
         return actions
 
-    def _build_update_actions(self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
+    def _build_update_actions(
+            self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
 
         for item in data:
@@ -756,6 +757,7 @@ class ElasticsearchProxy(BaseProxy):
 
     def _create_index_helper(self, alias: str) -> str:
         def _get_mapping(alias: str) -> str:
+            # dashboard does not support the document API and is therefore not listed
             if alias is USER_INDEX:
                 return USER_INDEX_MAP
             elif alias is TABLE_INDEX:

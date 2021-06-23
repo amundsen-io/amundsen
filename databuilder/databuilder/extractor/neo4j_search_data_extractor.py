@@ -128,6 +128,7 @@ class Neo4jSearchDataExtractor(Extractor):
          fg.name as feature_group,
          feature.name as feature_name,
          feature.version as version,
+         feature.key as key,
          SUM(read.read_count) AS total_usage,
          feature.status as status,
          feature.entity as entity,

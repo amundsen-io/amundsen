@@ -15,6 +15,7 @@ class FeatureESDocument(ElasticsearchDocument):
                  feature_group: str,
                  feature_name: str,
                  version: str,
+                 key: str,
                  total_usage: int,
                  status: Optional[str] = None,
                  entity: Optional[str] = None,
@@ -27,6 +28,7 @@ class FeatureESDocument(ElasticsearchDocument):
         self.feature_group = feature_group
         self.feature_name = feature_name
         self.version = version
+        self.key = key
         self.total_usage = total_usage
         self.status = status
         self.entity = entity

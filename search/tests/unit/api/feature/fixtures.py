@@ -6,10 +6,11 @@ from search_service.models.feature import Feature
 
 def mock_json_response() -> dict:
     return {
-        'id': 'feat_id_1',
+        'id': '123aaabbb',
         'feature_group': 'group1',
         'feature_name': 'name1',
         'version': 'v2',
+        'key': 'group1/name1/v2',
         'total_usage': 42,
         'status': 'active',
         'entity': 'listing',
@@ -21,26 +22,5 @@ def mock_json_response() -> dict:
     }
 
 
-def default_json_response() -> dict:
-    return {
-        'id': '',
-        'feature_group': '',
-        'feature_name': '',
-        'version': '',
-        'total_usage': 0,
-        'status': '',
-        'entity': '',
-        'description': '',
-        'availability': [],
-        'badges': [],
-        'tags': [],
-        'last_updated_timestamp': None,
-    }
-
-
 def mock_proxy_results() -> Feature:
     return Feature(**mock_json_response())
-
-
-def mock_default_proxy_results() -> Feature:
-    return Feature(**default_json_response())

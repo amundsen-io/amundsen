@@ -197,6 +197,10 @@ components:
           type: string
           description: 'version as string'
           example: 'v1.1.5'
+        key:
+          type: string
+          description: 'key format: {feature_group}/{feature_name}/{version}'
+          example: 'realtime_post_processed_group/ml_feature_420_abcd/v1.1.5'
         total_usage:
           type: int
           description: 'total usage'

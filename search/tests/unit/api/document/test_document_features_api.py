@@ -51,20 +51,22 @@ class TestDocumentFeaturesAPI(unittest.TestCase):
         mock_proxy = get_proxy.return_value = Mock()
         input_data = [
             json.dumps({
-                'id': 'feat1',
+                'id': '123aaabbb',
                 'feature_group': 'group1',
                 'feature_name': 'name1',
                 'version': '7',
+                'key': 'group1/name1/7',
                 'total_usage': 12,
                 'description': 'friendly description of a feature',
                 'last_updated_timestamp': 12345678,
                 'tags': [{'tag_name': 'tag1'}, {'tag_name': 'tag2'}]
             }),
             json.dumps({
-                'id': 'feat2',
+                'id': '456bbbccc',
                 'feature_group': 'group1',
                 'feature_name': 'name2',
                 'version': 'v1.0.0',
+                'key': 'group1/name2/v1.0.0',
                 'total_usage': 0,
                 'availability': ['postgres'],
                 'last_updated_timestamp': 12345678,
@@ -73,11 +75,12 @@ class TestDocumentFeaturesAPI(unittest.TestCase):
         ]
         RequestParser().parse_args.return_value = dict(data=input_data, index='fake_index')
 
-        expected_data = [Feature(id='feat1', feature_group='group1', feature_name='name1', version='7', total_usage=12,
-                                 description='friendly description of a feature',
+        expected_data = [Feature(id='123aaabbb', feature_group='group1', feature_name='name1', version='7',
+                                 key='group1/name1/7', total_usage=12, description='friendly description of a feature',
                                  last_updated_timestamp=12345678, tags=[Tag(tag_name='tag1'), Tag(tag_name='tag2')]),
-                         Feature(id='feat2', feature_group='group1', feature_name='name2', version='v1.0.0',
-                                 total_usage=0, availability=['postgres'], last_updated_timestamp=12345678,
+                         Feature(id='456bbbccc', feature_group='group1', feature_name='name2', version='v1.0.0',
+                                 key='group1/name2/v1.0.0', total_usage=0, availability=['postgres'],
+                                 last_updated_timestamp=12345678,
                                  badges=[Tag(tag_name='badge1'), Tag(tag_name='badge2')])]
 
         response = DocumentFeaturesAPI().put()
