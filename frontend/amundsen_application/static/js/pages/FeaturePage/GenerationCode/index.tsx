@@ -5,13 +5,16 @@ import * as React from 'react';
 import { FeatureCode } from 'interfaces/Feature';
 
 import './styles.scss';
+import 'features/CodeBlock/styles.scss';
 
-type GenerationCodeProps = {
+export type GenerationCodeProps = {
   isLoading: boolean;
   featureCode: FeatureCode;
 };
 
-const LazyComponent = React.lazy(() => import('features/CodeBlock/index'));
+export const LazyCodeBlock = React.lazy(
+  () => import('features/CodeBlock/index')
+);
 
 export const GenerationCodeLoader = () => (
   <div className="shimmer-block">
@@ -34,7 +37,7 @@ export const GenerationCode: React.FC<GenerationCodeProps> = ({
   return (
     <div className="generation-code">
       <React.Suspense fallback={<GenerationCodeLoader />}>
-        <LazyComponent text={featureCode.text} />
+        <LazyCodeBlock text={featureCode.text} />
       </React.Suspense>
     </div>
   );

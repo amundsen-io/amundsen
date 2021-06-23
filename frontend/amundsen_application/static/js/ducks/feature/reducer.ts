@@ -74,7 +74,7 @@ export function getFeatureCodeFailure(
 export interface FeatureCodeState {
   featureCode: FeatureCode;
   isLoading: boolean;
-  status: number | null;
+  statusCode: number | null;
 }
 
 export interface FeatureReducerState {
@@ -114,7 +114,7 @@ export const emptyFeatureCode: FeatureCode = {
 export const initialFeatureCodeState: FeatureCodeState = {
   featureCode: emptyFeatureCode,
   isLoading: false,
-  status: null,
+  statusCode: null,
 };
 
 export const initialState: FeatureReducerState = {
@@ -155,7 +155,7 @@ export default function reducer(
         featureCode: {
           featureCode: emptyFeatureCode,
           isLoading: true,
-          status: null,
+          statusCode: null,
         },
       };
     case GetFeatureCode.FAILURE:
@@ -164,7 +164,7 @@ export default function reducer(
         featureCode: {
           featureCode: emptyFeatureCode,
           isLoading: false,
-          status: action.payload.statusCode,
+          statusCode: action.payload.statusCode,
         },
       };
     case GetFeatureCode.SUCCESS:
@@ -172,7 +172,7 @@ export default function reducer(
         ...state,
         featureCode: {
           featureCode: action.payload.featureCode,
-          status: action.payload.statusCode,
+          statusCode: action.payload.statusCode,
           isLoading: false,
         },
       };

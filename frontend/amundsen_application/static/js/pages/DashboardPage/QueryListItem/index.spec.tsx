@@ -74,13 +74,6 @@ describe('QueryListItem', () => {
 
         expect(actual).toEqual(expected);
       });
-
-      it('should show the go to dashboard button', () => {
-        const expected = 1;
-        const actual = wrapper.find('.code-block-link').length;
-
-        expect(actual).toEqual(expected);
-      });
     });
   });
 

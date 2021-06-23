@@ -90,7 +90,7 @@ const globalState: GlobalState = {
     },
     featureCode: {
       isLoading: false,
-      status: null,
+      statusCode: null,
       featureCode: {
         text: '',
         source: '',

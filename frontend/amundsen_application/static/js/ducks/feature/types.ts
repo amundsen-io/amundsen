@@ -1,4 +1,4 @@
-import { FeatureMetadata } from 'interfaces/Feature';
+import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
 
 export enum GetFeature {
   REQUEST = 'amundsen/feature/GET_FEATURE_REQUEST',
@@ -45,7 +45,7 @@ export interface GetFeatureCodeResponse {
 }
 
 export interface GetFeatureCodePayload {
-  text: string;
+  featureCode?: FeatureCode;
   statusCode?: number;
   statusMessage?: string;
 }

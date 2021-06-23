@@ -9,6 +9,7 @@ import { ResourceType } from 'interfaces';
 import { getSourceDisplayName } from 'config/config-utils';
 
 import './styles.scss';
+import 'features/CodeBlock/styles.scss';
 
 export interface QueryListItemProps {
   name: string;
@@ -24,8 +25,7 @@ type GoToDashboardLinkProps = {
 
 const QUERY_LABEL = 'Query';
 const LINK_TOOLTIP_TEXT = 'View in';
-
-const LazyComponent = React.lazy(() => import('features/CodeBlock/index'));
+const LazyCodeBlock = React.lazy(() => import('features/CodeBlock/index'));
 
 const GoToDashboardLink = ({ product, url }: GoToDashboardLinkProps) => {
   const productName = getSourceDisplayName(product, ResourceType.dashboard);
@@ -92,9 +92,9 @@ const QueryListItem = ({ product, name, text, url }: QueryListItemProps) => {
             {QUERY_LABEL}:
             <div className="query-list-query-content">
               <React.Suspense fallback={<QueryBlockShimmer />}>
-                <LazyComponent text={text}>
+                <LazyCodeBlock text={text}>
                   <GoToDashboardLink product={product} url={url} />
-                </LazyComponent>
+                </LazyCodeBlock>
               </React.Suspense>
             </div>
           </label>
