@@ -9,9 +9,8 @@ from typing import (
 import attr
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
+from search_service.models.base import Base
 from search_service.models.tag import Tag
-
-from .base import Base
 
 
 @attr.s(auto_attribs=True, kw_only=True)
