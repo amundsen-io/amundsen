@@ -18,6 +18,8 @@ import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v0';
 
+const RESOURCE_TYPES = ['dashboards', 'features', 'tables', 'users'];
+
 export interface SearchAPI {
   msg: string;
   status_code: number;
@@ -31,12 +33,17 @@ export interface SearchAPI {
 export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
   const ret = { searchTerm: data.search_term };
-  ['dashboards', 'features', 'tables', 'users'].forEach((key) => {
+  RESOURCE_TYPES.forEach((key) => {
     if (data[key]) {
       ret[key] = data[key];
     }
   });
   return ret;
+};
+
+export const resourceIndexed = (resource: ResourceType) => {
+  if (resource === ResourceType.dashboard) return indexDashboardsEnabled();
+  if (resource === ResourceType.feature) return indexFeaturesEnabled();
 };
 
 export function searchResource(
@@ -46,22 +53,19 @@ export function searchResource(
   filters: ResourceFilterReducerState = {},
   searchType: SearchType
 ) {
-  /* If resource support is not configured or if there is no search term for non-filter supported resources */
+  /* If resource support is not configured or if there is no search term for non-filter supported resources*/
   if (
-    (resource === ResourceType.dashboard && !indexDashboardsEnabled()) ||
-    (resource === ResourceType.user &&
-      (!indexUsersEnabled() || term.length === 0)) ||
-    (resource === ResourceType.feature && !indexFeaturesEnabled())
+    resource === ResourceType.user &&
+    (!indexUsersEnabled() || term.length === 0)
   ) {
+    return Promise.resolve({});
+  }
+  if (resource !== ResourceType.table && !resourceIndexed(resource)) {
     return Promise.resolve({});
   }
 
   /* Note: This logic must exist until query string endpoints are created for all resources */
-  if (
-    resource === ResourceType.table ||
-    resource === ResourceType.dashboard ||
-    resource === ResourceType.feature
-  ) {
+  if (resource !== ResourceType.user) {
     return axios
       .post(`${BASE_URL}/${resource}`, {
         filters,
