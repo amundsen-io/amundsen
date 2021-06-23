@@ -51,3 +51,9 @@ export interface FeatureSampleQueryParams {
   feature_group: string;
   version: string;
 }
+
+export interface FeatureCode {
+  key: string;
+  source: string;
+  text: string;
+}

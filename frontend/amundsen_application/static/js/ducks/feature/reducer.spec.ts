@@ -4,6 +4,7 @@ import reducer, {
   getFeatureSuccess,
   FeatureReducerState,
   initialFeatureState,
+  initialFeatureCodeState,
 } from 'ducks/feature/reducer';
 import { featureMetadata } from '../../fixtures/metadata/feature';
 
@@ -14,6 +15,7 @@ describe('feature reducer', () => {
       isLoading: false,
       statusCode: 200,
       feature: initialFeatureState,
+      featureCode: initialFeatureCodeState,
     };
   });
 

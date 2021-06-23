@@ -77,7 +77,7 @@ describe('QueryListItem', () => {
 
       it('should show the go to dashboard button', () => {
         const expected = 1;
-        const actual = wrapper.find('.query-list-query-link').length;
+        const actual = wrapper.find('.code-block-link').length;
 
         expect(actual).toEqual(expected);
       });

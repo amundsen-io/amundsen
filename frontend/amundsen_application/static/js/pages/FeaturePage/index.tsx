@@ -9,8 +9,12 @@ import * as ReactMarkdown from 'react-markdown';
 
 import { FeatureMetadata } from 'interfaces/Feature';
 import { GlobalState } from 'ducks/rootReducer';
-import { getFeature } from 'ducks/feature/reducer';
-import { GetFeatureRequest } from 'ducks/feature/types';
+import {
+  FeatureCodeState,
+  getFeature,
+  getFeatureCode,
+} from 'ducks/feature/reducer';
+import { GetFeatureCodeRequest, GetFeatureRequest } from 'ducks/feature/types';
 import Breadcrumb from 'components/Breadcrumb';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
@@ -18,11 +22,15 @@ import { getSourceDisplayName } from 'config/config-utils';
 import { ResourceType } from 'interfaces/Resources';
 
 import './styles.scss';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { GenerationCode } from './GenerationCode';
+import { logAction } from '../../utils/analytics';
 
 interface StateFromProps {
   isLoading: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
+  featureCode: FeatureCodeState;
 }
 
 export interface DispatchFromProps {
@@ -31,6 +39,7 @@ export interface DispatchFromProps {
     index: string,
     source: string
   ) => GetFeatureRequest;
+  getFeatureCodeDispatch: (key: string) => GetFeatureCodeRequest;
 }
 
 interface FeatureRouteParams {
@@ -42,10 +51,6 @@ interface FeatureRouteParams {
 export type FeaturePageProps = RouteComponentProps<FeatureRouteParams> &
   StateFromProps &
   DispatchFromProps;
-
-export function renderTabs() {
-  return null;
-}
 
 const FeaturePageLoader: React.FC = () => (
   <div className="resource-detail-layout feature-page">
@@ -118,13 +123,42 @@ const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
+export function renderTabs(featureCode) {
+  const tabInfo: TabInfo[] = [];
+  tabInfo.push({
+    content: (
+      <GenerationCode
+        isLoading={featureCode.isLoading}
+        featureCode={featureCode.featureCode}
+      />
+    ),
+    key: 'featureCode',
+    title: 'Generation Code',
+  });
+  return (
+    <TabsComponent
+      tabs={tabInfo}
+      defaultTab="featureCode"
+      onSelect={(key) => {
+        logAction({
+          command: 'click',
+          target_id: 'feature_page_tab',
+          label: key,
+        });
+      }}
+    />
+  );
+}
+
 const getFeatureKey = (group: string, name: string, version: string) =>
   `${group}/${name}/${version}`;
 
 const FeaturePage: React.FC<FeaturePageProps> = ({
   isLoading,
   feature,
+  featureCode,
   getFeatureDispatch,
+  getFeatureCodeDispatch,
   location,
   match,
 }: FeaturePageProps) => {
@@ -136,6 +170,7 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
       const { index, source } = getLoggingParams(location.search);
       setKey(newKey);
       getFeatureDispatch(newKey, index, source);
+      getFeatureCodeDispatch(newKey);
     }
   });
 
@@ -217,7 +252,7 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
             </section>
           </section>
         </aside>
-        <main className="right-panel">{renderTabs()}</main>
+        <main className="right-panel">{renderTabs(featureCode)}</main>
       </article>
     </div>
   );
@@ -227,10 +262,17 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.feature.isLoading,
   statusCode: state.feature.statusCode,
   feature: state.feature.feature,
+  featureCode: state.feature.featureCode,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
-  bindActionCreators({ getFeatureDispatch: getFeature }, dispatch);
+  bindActionCreators(
+    {
+      getFeatureDispatch: getFeature,
+      getFeatureCodeDispatch: getFeatureCode,
+    },
+    dispatch
+  );
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

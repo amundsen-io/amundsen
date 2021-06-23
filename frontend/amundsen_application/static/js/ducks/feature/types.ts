@@ -25,3 +25,27 @@ export interface GetFeaturePayload {
   statusCode?: number;
   statusMessage?: string;
 }
+
+export enum GetFeatureCode {
+  REQUEST = 'amundsen/feature/GET_FEATURE_CODE_REQUEST',
+  SUCCESS = 'amundsen/feature/GET_FEATURE_CODE_SUCCESS',
+  FAILURE = 'amundsen/feature/GET_FEATURE_CODE_FAILURE',
+}
+
+export interface GetFeatureCodeRequest {
+  type: GetFeatureCode.REQUEST;
+  payload: {
+    key: string;
+  };
+}
+
+export interface GetFeatureCodeResponse {
+  type: GetFeatureCode.SUCCESS | GetFeatureCode.FAILURE;
+  payload: GetFeatureCodePayload;
+}
+
+export interface GetFeatureCodePayload {
+  text: string;
+  statusCode?: number;
+  statusMessage?: string;
+}
