@@ -19,6 +19,13 @@ valid_search_fields = {
         'name',
         'product',
         'tag'
+    },
+    'feature': {
+        'badges',
+        'entity',
+        'name',
+        'group',
+        'tag'
     }
 }
 
@@ -35,6 +42,22 @@ def map_table_result(result: Dict) -> Dict:
         'schema_description': result.get('schema_description', None),
         'badges': result.get('badges', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
+    }
+
+
+def map_feature_result(result: Dict) -> Dict:
+    return {
+        'type': 'feature',
+        'description': result.get('description', None),
+        'key': result.get('key', None),
+        'last_updated_timestamp': result.get('last_updated_timestamp', None),
+        'name': result.get('feature_name', None),
+        'feature_group': result.get('feature_group', None),
+        'version': result.get('version', None),
+        'availability': result.get('availability', None),
+        'entity': result.get('entity', None),
+        'badges': result.get('badges', None),
+        'status': result.get('status', None),
     }
 
 
