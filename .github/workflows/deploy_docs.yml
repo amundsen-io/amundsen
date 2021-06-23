@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - vm/fix-docs
 
 jobs:
   build:
