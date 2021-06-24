@@ -13,7 +13,10 @@ import { ResourceType } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
+const WILDCARD_SIGN = '*';
+const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
+const hasWildcard = (n) => n.indexOf(WILDCARD_SIGN) > -1;
 
 /**
  * Returns the display name for a given source id for a given resource type.
@@ -75,30 +78,44 @@ export function getResourceNotices(
   resourceName: string
 ): NoticeType | false {
   const { notices } = AppConfig.resourceConfig[resourceType];
-  // const wildcardNoticesKeys = Object.keys(notices).filter(
-  //   (n) => n.indexOf('*') > -1
-  // );
-  // if (wildcardNoticesKeys.length) {
-  //   wildcardNoticesKeys.forEach((key) => {
-  //     const decomposedKey = key.split('.');
-  //     const decomposedResource = resourceName.split('.');
-  //     for (let i = 0; i < 4; i++) {
-  //       if (
-  //         decomposedKey[i] === decomposedResource[i] ||
-  //         decomposedKey[i] === '*'
-  //       ) {
-  //         if (i === 3) {
-  //           return notices[key];
-  //         }
-  //         continue;
-  //       }
-  //       break;
-  //     }
-  //   });
-  // }
 
   if (notices && notices[resourceName]) {
-    return notices[resourceName];
+    const thisNotice = notices[resourceName];
+    if (typeof thisNotice.messageHtml !== 'string') {
+      thisNotice.messageHtml = thisNotice.messageHtml(resourceName);
+    }
+    return thisNotice;
+  }
+
+  const wildcardNoticesKeys = Object.keys(notices).filter(hasWildcard);
+  if (wildcardNoticesKeys.length) {
+    let noticeFromWildcard: NoticeType | null = null;
+
+    wildcardNoticesKeys.forEach((key) => {
+      const decomposedKey = key.split(RESOURCE_SEPARATOR);
+      const decomposedResource = resourceName.split(RESOURCE_SEPARATOR);
+
+      for (let i = 0; i < decomposedKey.length; i++) {
+        if (
+          decomposedKey[i] === decomposedResource[i] ||
+          decomposedKey[i] === WILDCARD_SIGN
+        ) {
+          if (i === decomposedKey.length - 1) {
+            noticeFromWildcard = notices[key];
+          }
+          continue;
+        }
+        break;
+      }
+    });
+    if (noticeFromWildcard) {
+      if (typeof noticeFromWildcard.messageHtml !== 'string') {
+        noticeFromWildcard.messageHtml = noticeFromWildcard.messageHtml(
+          resourceName
+        );
+      }
+      return noticeFromWildcard;
+    }
   }
 
   return false;
