@@ -75,7 +75,7 @@ class PreviewTest(unittest.TestCase):
             self.assertEqual(post_response.json, expected_response_json)
 
     @unittest.mock.patch(PREVIEW_CLIENT_CLASS + '.get_feature_preview_data')
-    def test_good_client_response(self, mock_get_preview_data: unittest.mock.Mock) -> None:
+    def test_good_client_response_feature(self, mock_get_preview_data: unittest.mock.Mock) -> None:
         """
         """
         expected_response_json = {
@@ -95,7 +95,7 @@ class PreviewTest(unittest.TestCase):
             self.assertEqual(post_response.json, expected_response_json)
 
     @unittest.mock.patch(PREVIEW_CLIENT_CLASS + '.get_feature_preview_data')
-    def test_bad_client_response(self, mock_get_preview_data: unittest.mock.Mock) -> None:
+    def test_bad_client_response_feature(self, mock_get_preview_data: unittest.mock.Mock) -> None:
         """
         """
         expected_response_json = {
