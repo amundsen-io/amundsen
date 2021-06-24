@@ -3,7 +3,7 @@
 
 # Common dependencies (common, frontend, metadata, search) -------------------------------------------------------------
 
-amundsen-common>=0.15.2
+amundsen-common>=0.15.3
 attrs>=19.1.0
 boto3>=1.17.23
 click>=7.0
