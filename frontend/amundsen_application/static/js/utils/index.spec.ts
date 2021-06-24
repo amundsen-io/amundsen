@@ -1,10 +1,13 @@
+import { API_PATH } from 'ducks/tableMetadata/api/v0';
 import { ResourceType } from 'interfaces/Resources';
+import { UpdateMethod } from 'interfaces/Enums';
 
 import * as DateUtils from './dateUtils';
 import * as LogUtils from './logUtils';
 import * as NavigationUtils from './navigationUtils';
-import * as TextUtils from './textUtils';
 import * as NumberUtils from './numberUtils';
+import * as TextUtils from './textUtils';
+import * as OwnerUtils from './ownerUtils';
 import * as StatUtils from './stats';
 
 jest.mock('config/config-utils', () => ({
@@ -669,6 +672,50 @@ describe('stats utils', () => {
       const actual = StatUtils.getStatsInfoText();
 
       expect(actual).toEqual(expected);
+    });
+  });
+});
+
+describe('ownerUtils', () => {
+  describe('createOwnerUpdatePayload', () => {
+    it('creates the right update payload', () => {
+      const testId = 'testId@test.com';
+      const testKey = 'testKey';
+      const testMethod = UpdateMethod.PUT;
+      expect(
+        OwnerUtils.createOwnerUpdatePayload(ResourceType.table, testKey, {
+          method: testMethod,
+          id: testId,
+        })
+      ).toMatchObject({
+        method: testMethod,
+        url: `${API_PATH}/update_table_owner`,
+        data: {
+          key: testKey,
+          owner: testId,
+        },
+      });
+    });
+  });
+
+  describe('getOwnersDictFromUsers ', () => {
+    it('correctly reformats users into the owners dict', () => {
+      const mockUsers = [
+        {
+          display_name: 'test',
+          profile_url: 'test.io',
+          email: 'test@test.com',
+          user_id: 'test',
+        },
+      ];
+      expect(OwnerUtils.getOwnersDictFromUsers(mockUsers)).toEqual({
+        test: {
+          display_name: 'test',
+          profile_url: 'test.io',
+          email: 'test@test.com',
+          user_id: 'test',
+        },
+      });
     });
   });
 });

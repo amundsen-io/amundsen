@@ -1,16 +1,9 @@
+import axios from 'axios';
 import { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 
-import {
-  UpdateTableOwner,
-  UpdateTableOwnerRequest,
-} from 'ducks/tableMetadata/types';
-import {
-  updateTableOwnerFailure,
-  updateTableOwnerSuccess,
-} from 'ducks/tableMetadata/owners/reducer';
 import { ResourceType } from 'interfaces/Resources';
-import axios from 'axios';
+import { createOwnerUpdatePayload } from 'utils/ownerUtils';
 import * as API from './api/v0';
 import {
   getFeatureSuccess,
@@ -33,7 +26,6 @@ import {
   UpdateFeatureOwner,
   UpdateFeatureOwnerRequest,
 } from './types';
-import { createOwnerUpdatePayload } from '../../utils/ownerUtils';
 
 export function* getFeatureWorker(action): SagaIterator {
   try {

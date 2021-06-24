@@ -15,16 +15,16 @@ import {
 /** HELPERS **/
 import { indexDashboardsEnabled } from 'config/config-utils';
 import {
+  createOwnerUpdatePayload,
+  getOwnersDictFromUsers,
+} from 'utils/ownerUtils';
+import {
   getTableQueryParams,
   getRelatedDashboardSlug,
   getTableDataFromResponseData,
   createOwnerNotificationData,
   shouldSendNotification,
 } from './helpers';
-import {
-  createOwnerUpdatePayload,
-  getOwnersDictFromUsers,
-} from '../../../utils/ownerUtils';
 
 export const API_PATH = '/api/metadata/v0';
 

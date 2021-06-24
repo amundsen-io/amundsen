@@ -4,12 +4,10 @@ import { filterFromObj } from 'ducks/utilMethods';
 
 import {
   NotificationType,
-  OwnerDict,
   PeopleUser,
   TableMetadata,
   UpdateMethod,
   UpdateOwnerPayload,
-  User,
 } from 'interfaces';
 import * as API from './v0';
 

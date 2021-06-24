@@ -20,7 +20,8 @@ describe('feature reducer', () => {
   beforeEach(() => {
     testState = {
       isLoading: false,
-      statusCode: null,
+      isLoadingOwners: false,
+      statusCode: 200,
       feature: initialFeatureState,
       featureCode: initialFeatureCodeState,
     };
@@ -48,6 +49,7 @@ describe('feature reducer', () => {
         })
       )
     ).toEqual({
+      ...testState,
       isLoading: false,
       statusCode: 202,
       feature: featureMetadata,
@@ -64,6 +66,7 @@ describe('feature reducer', () => {
         })
       )
     ).toEqual({
+      ...testState,
       isLoading: false,
       statusCode: 500,
       feature: initialFeatureState,
