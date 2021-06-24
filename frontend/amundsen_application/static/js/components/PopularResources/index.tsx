@@ -57,7 +57,9 @@ const generateTabTitle = (
 
 export class PopularResources extends React.Component<PopularResourcesProps> {
   componentDidMount() {
-    this.props.getPopularResources();
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const { getPopularResources } = this.props;
+    getPopularResources();
   }
 
   generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
