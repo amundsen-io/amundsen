@@ -57,21 +57,20 @@ const generateTabTitle = (
 
 export class PopularResources extends React.Component<PopularResourcesProps> {
   componentDidMount() {
-    const { getPopularResources } = this.props;
-
-    getPopularResources();
+    this.props.getPopularResources();
   }
 
   generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
-    const popularResources = this.props.popularResources[resource];
+    const { popularResources } = this.props;
+    const resources = popularResources[resource];
 
-    if (!popularResources) {
+    if (!resources) {
       return undefined;
     }
 
     return (
       <PaginatedResourceList
-        allItems={popularResources}
+        allItems={resources}
         emptyText={EMPTY_POPULAR_RESOURCES_MESSAGE}
         itemsPerPage={POPULAR_RESOURCES_PER_PAGE}
         source={POPULAR_RESOURCES_SOURCE_NAME}
