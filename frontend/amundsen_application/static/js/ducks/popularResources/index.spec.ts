@@ -31,7 +31,7 @@ describe('popularResources ducks', () => {
       const action = getPopularResourcesFailure();
       const { payload } = action;
       expect(action.type).toBe(GetPopularResources.FAILURE);
-      expect(payload.popularResources).toEqual([]);
+      expect(payload.popularResources).toEqual({ dashboard: [], table: [] });
     });
 
     it('getPopularResourcesSuccess - returns the action to process success', () => {
@@ -71,7 +71,10 @@ describe('popularResources ducks', () => {
 
     it('should handle GetPopularResources.FAILURE', () => {
       const expected = {
-        popularResources: [],
+        popularResources: {
+          dashboard: [],
+          table: [],
+        },
         popularResourcesIsLoaded: true,
       };
       const actual = reducer(testState, getPopularResourcesFailure());

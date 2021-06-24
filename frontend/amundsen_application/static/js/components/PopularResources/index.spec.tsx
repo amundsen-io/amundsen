@@ -7,6 +7,7 @@ import { shallow } from 'enzyme';
 import InfoButton from 'components/InfoButton';
 import PaginatedResourceList from 'components/ResourceList/PaginatedResourceList';
 import globalState from 'fixtures/globalState';
+import { ResourceType } from 'interfaces/Resources';
 import {
   POPULAR_RESOURCES_INFO_TEXT,
   POPULAR_RESOURCES_LABEL,
@@ -46,7 +47,7 @@ describe('popularResources', () => {
     beforeAll(() => {
       ({ wrapper, props } = setup());
 
-      getpopularResourcesSpy = jest.spyOn(props, 'getpopularResources');
+      getpopularResourcesSpy = jest.spyOn(props, 'getPopularResources');
     });
 
     it('calls getpopularResources', () => {
@@ -71,8 +72,8 @@ describe('popularResources', () => {
       result = mapDispatchToProps(dispatch);
     });
 
-    it('sets getpopularResources on the props', () => {
-      expect(result.getpopularResources).toBeInstanceOf(Function);
+    it('sets getPopularResources on the props', () => {
+      expect(result.getPopularResources).toBeInstanceOf(Function);
     });
   });
 
@@ -107,17 +108,23 @@ describe('popularResources', () => {
     });
 
     describe('when loaded', () => {
+      let givenResource;
+      let content;
       beforeAll(() => {
         ({ wrapper, props } = setup({
           isLoaded: true,
           popularResources: globalState.popularResources.popularResources,
         }));
+        givenResource = ResourceType.table;
+        content = shallow(
+          <div>{wrapper.instance().generateTabContent(givenResource)}</div>
+        );
       });
 
       it('renders PaginatedResourceList with correct props', () => {
-        const actual = wrapper.children().find(PaginatedResourceList).props();
+        const actual = content.find(PaginatedResourceList).props();
         const expected = {
-          allItems: props.popularResources,
+          allItems: props.popularResources[givenResource],
           itemsPerPage: POPULAR_RESOURCES_PER_PAGE,
           source: POPULAR_RESOURCES_SOURCE_NAME,
         };
