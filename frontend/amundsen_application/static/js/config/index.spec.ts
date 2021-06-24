@@ -83,172 +83,251 @@ describe('getResourceNotices', () => {
           'testName'
         );
         const actual = notice && notice.messageHtml;
-        expect(actual).toEqual(expected);
-      });
-    });
-
-    describe('when there is a simple wildcard in gold position', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          '*.hive.core.fact_rides': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
 
         expect(actual).toEqual(expected);
       });
     });
 
-    describe('when there is a simple wildcard in hive position', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          'gold.*.core.fact_rides': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+    describe('when there are wildcards ', () => {
+      describe('when there is a wildcard in cluster position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            '*.hive.core.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
       });
-    });
 
-    describe('when there is a simple wildcard in schema position', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          'gold.hive.*.fact_rides': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+      describe("when there is a wildcard in cluster position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            '*.hive.coco.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
       });
-    });
 
-    describe('when there is a simple wildcard in table position', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          'gold.hive.core.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+      describe('when there is a wildcard in datasource position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.*.core.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
       });
-    });
 
-    describe('when there are 2 wildcards in schema/table positions', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          'gold.hive.*.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+      describe("when there is a wildcard in datasource position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.*.coco.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
       });
-    });
 
-    describe('when there are 2 notices that match', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          'gold.hive.*.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-          'gold.hive.core.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage2',
-          },
-        };
-        const expected = 'testMessage2';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+      describe('when there is a wildcard in schema position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.*.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
       });
-    });
 
-    describe('when there are 2 notices, but only one matches', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          'gold.hive.core.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage2',
-          },
-          'gold.hive.shadow.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage2';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+      describe("when there is a wildcard in schema position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.*.dimension_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
       });
-    });
 
-    describe('when there are 4 wildcards', () => {
-      it('returns notice', () => {
-        AppConfig.resourceConfig[ResourceType.table].notices = {
-          '*.*.*.*': {
-            severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
-          },
-        };
-        const expected = 'testMessage';
-        const notice = ConfigUtils.getResourceNotices(
-          ResourceType.table,
-          'gold.hive.core.fact_rides'
-        );
-        const actual = notice && notice.messageHtml;
+      describe('when there is a wildcard in table position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
 
-        expect(actual).toEqual(expected);
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe("when there is a wildcard in table position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.coco.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 2 wildcards in schema/table positions', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 2 notices that match', () => {
+        it('returns the last matched notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage2',
+            },
+          };
+          const expected = 'testMessage2';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 2 notices, but only one matches', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage2',
+            },
+            'gold.hive.shadow.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage2';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 4 wildcards', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.table].notices = {
+            '*.*.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.table,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
       });
     });
 
     describe('when there is a notice with a dynamic message', () => {
-      it('returns notice', () => {
+      it('returns notice with dynamic message', () => {
         AppConfig.resourceConfig[ResourceType.table].notices = {
           'gold.hive.core.fact_rides': {
             severity: NoticeSeverity.WARNING,
@@ -272,7 +351,7 @@ describe('getResourceNotices', () => {
     });
 
     describe('when there is a notice with a wildcard and dynamic message', () => {
-      it('returns notice', () => {
+      it('returns notice with dynamic message', () => {
         AppConfig.resourceConfig[ResourceType.table].notices = {
           'gold.hive.core.*': {
             severity: NoticeSeverity.WARNING,
@@ -315,18 +394,303 @@ describe('getResourceNotices', () => {
 
   describe('when resource is a dashboard', () => {
     describe('when there is a notice', () => {
-      AppConfig.resourceConfig[ResourceType.dashboard].notices = {
-        testName: {
-          severity: NoticeSeverity.WARNING,
-          messageHtml: 'testMessage',
-        },
-      };
-
       it('returns the notice', () => {
+        AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+          testName: {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+        };
         const expected = 'testMessage';
         const notice = ConfigUtils.getResourceNotices(
           ResourceType.dashboard,
           'testName'
+        );
+        const actual = notice && notice.messageHtml;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when there are wildcards ', () => {
+      describe('when there is a wildcard in cluster position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            '*.hive.core.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe("when there is a wildcard in cluster position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            '*.hive.coco.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there is a wildcard in datasource position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.*.core.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe("when there is a wildcard in datasource position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.*.coco.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there is a wildcard in schema position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.*.fact_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe("when there is a wildcard in schema position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.*.dimension_rides': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there is a wildcard in table position', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe("when there is a wildcard in table position that doesn't match", () => {
+        it('returns false', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.coco.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = false;
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 2 wildcards in schema/table positions', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 2 notices that match', () => {
+        it('returns the last matched notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage2',
+            },
+          };
+          const expected = 'testMessage2';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 2 notices, but only one matches', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage2',
+            },
+            'gold.hive.shadow.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage2';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('when there are 4 wildcards', () => {
+        it('returns notice', () => {
+          AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+            '*.*.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage';
+          const notice = ConfigUtils.getResourceNotices(
+            ResourceType.dashboard,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+    });
+
+    describe('when there is a notice with a dynamic message', () => {
+      it('returns notice with dynamic message', () => {
+        AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+          'gold.hive.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: (resourceName) => {
+              const [cluster, datasource, schema, table] = resourceName.split(
+                '.'
+              );
+              return `${cluster}, ${datasource}, ${schema}, ${table}`;
+            },
+          },
+        };
+        const expected = 'gold, hive, core, fact_rides';
+        const notice = ConfigUtils.getResourceNotices(
+          ResourceType.dashboard,
+          'gold.hive.core.fact_rides'
+        );
+        const actual = notice && notice.messageHtml;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when there is a notice with a wildcard and dynamic message', () => {
+      it('returns notice with dynamic message', () => {
+        AppConfig.resourceConfig[ResourceType.dashboard].notices = {
+          'gold.hive.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: (resourceName) => {
+              const [cluster, datasource, schema, table] = resourceName.split(
+                '.'
+              );
+              return `${cluster}, ${datasource}, ${schema}, ${table}`;
+            },
+          },
+        };
+        const expected = 'gold, hive, core, fact_rides';
+        const notice = ConfigUtils.getResourceNotices(
+          ResourceType.dashboard,
+          'gold.hive.core.fact_rides'
         );
         const actual = notice && notice.messageHtml;
 
