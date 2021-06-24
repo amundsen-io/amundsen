@@ -91,14 +91,19 @@ export function getFeatureCode(key: string) {
     });
 }
 
+export type GetFeatureDescriptionAPI = {
+  msg: string;
+  description: string;
+};
+
 export function getFeatureDescription(key: string) {
   const queryParams = qs.stringify({ key });
   return axios
     .get(`${FEATURE_BASE}/get_feature_description?${queryParams}`)
-    .then((response: AxiosResponse<GetFeatureAPI>) => {
+    .then((response: AxiosResponse<GetFeatureDescriptionAPI>) => {
       const { data, status } = response;
       return {
-        feature: data.featureData,
+        description: data.description,
         statusCode: status,
       };
     })

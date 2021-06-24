@@ -53,7 +53,8 @@ export function* getFeatureDescriptionWorker(
   const { feature } = state.feature;
   let { description } = feature;
   try {
-    description = yield call(API.getFeatureDescription, feature.key);
+    const response = yield call(API.getFeatureDescription, feature.key);
+    description = response.description;
     yield put(getFeatureDescriptionSuccess(description));
     if (payload.onSuccess) {
       yield call(payload.onSuccess);
