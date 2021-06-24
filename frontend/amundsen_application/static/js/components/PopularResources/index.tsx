@@ -42,9 +42,26 @@ export interface DispatchFromProps {
 
 export type PopularResourcesProps = StateFromProps & DispatchFromProps;
 
+const generateTabKey = (resource: ResourceType) =>
+  `popularresourcetab:${resource}`;
+
+const generateTabTitle = (
+  resource: ResourceType,
+  popularResources: ResourceDict<PopularResource[]>
+): string => {
+  const resources = popularResources[resource];
+  if (!resources) {
+    return '';
+  }
+
+  return `${getDisplayNameByResource(resource)} (${resources.length})`;
+};
+
 export class PopularResources extends React.Component<PopularResourcesProps> {
   componentDidMount() {
-    this.props.getPopularResources();
+    const { getPopularResources } = this.props;
+
+    getPopularResources();
   }
 
   generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
@@ -64,32 +81,33 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
     );
   };
 
-  generateTabKey = (resource: ResourceType) => `popularresourcetab:${resource}`;
-
-  generateTabTitle = (resource: ResourceType): string => {
-    const popularResources = this.props.popularResources[resource];
-
-    if (!popularResources) {
-      return '';
-    }
-
-    return `${getDisplayNameByResource(resource)} (${popularResources.length})`;
-  };
+  // generateTabKey = (resource: ResourceType) => `popularresourcetab:${resource}`;
+  //
+  // generateTabTitle = (resource: ResourceType): string => {
+  //   const popularResources = this.props.popularResources[resource];
+  //
+  //   if (!popularResources) {
+  //     return '';
+  //   }
+  //
+  //   return `${getDisplayNameByResource(resource)} (${popularResources.length})`;
+  // };
 
   generateTabInfo = (): TabInfo[] => {
     const tabInfo: TabInfo[] = [];
+    const { popularResources } = this.props;
 
     tabInfo.push({
       content: this.generateTabContent(ResourceType.table),
-      key: this.generateTabKey(ResourceType.table),
-      title: this.generateTabTitle(ResourceType.table),
+      key: generateTabKey(ResourceType.table),
+      title: generateTabTitle(ResourceType.table, popularResources),
     });
 
     if (indexDashboardsEnabled()) {
       tabInfo.push({
         content: this.generateTabContent(ResourceType.dashboard),
-        key: this.generateTabKey(ResourceType.dashboard),
-        title: this.generateTabTitle(ResourceType.dashboard),
+        key: generateTabKey(ResourceType.dashboard),
+        title: generateTabTitle(ResourceType.dashboard, popularResources),
       });
     }
 
@@ -106,7 +124,7 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
       content = (
         <TabsComponent
           tabs={this.generateTabInfo()}
-          defaultTab={this.generateTabKey(ResourceType.table)}
+          defaultTab={generateTabKey(ResourceType.table)}
         />
       );
     }
