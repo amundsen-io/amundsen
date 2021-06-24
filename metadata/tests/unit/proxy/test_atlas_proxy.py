@@ -33,7 +33,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
         self.app.config['PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS'] = ['spark.*']
         self.app.config['WATERMARK_DATE_FORMATS'] = ''
-        self.app.config['POPULAR_TABLE_MINIMUM_READER_COUNT'] = 0
+        self.app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT'] = 0
         self.app_context = self.app.app_context()
         self.app_context.push()
 

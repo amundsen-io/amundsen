@@ -26,7 +26,7 @@ import { submitFeedbackWatcher } from './feedback/sagas';
 import { createIssueWatcher, getIssuesWatcher } from './issue/sagas';
 
 // PopularResources
-import { getPopularResourcesWatcher } from './popularTables/sagas';
+import { getPopularResourcesWatcher } from './popularResources/sagas';
 // Search
 import {
   inlineSearchWatcher,

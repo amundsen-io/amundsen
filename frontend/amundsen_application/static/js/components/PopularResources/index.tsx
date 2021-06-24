@@ -14,10 +14,8 @@ import {
   indexDashboardsEnabled,
 } from 'config/config-utils';
 
-import popularResources, {
-  getPopularResources,
-} from 'ducks/popularTables/reducer';
-import { GetPopularResourcesRequest } from 'ducks/popularTables/types';
+import { getPopularResources } from 'ducks/popularResources/reducer';
+import { GetPopularResourcesRequest } from 'ducks/popularResources/types';
 import { GlobalState } from 'ducks/rootReducer';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -80,18 +78,6 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
       />
     );
   };
-
-  // generateTabKey = (resource: ResourceType) => `popularresourcetab:${resource}`;
-  //
-  // generateTabTitle = (resource: ResourceType): string => {
-  //   const popularResources = this.props.popularResources[resource];
-  //
-  //   if (!popularResources) {
-  //     return '';
-  //   }
-  //
-  //   return `${getDisplayNameByResource(resource)} (${popularResources.length})`;
-  // };
 
   generateTabInfo = (): TabInfo[] => {
     const tabInfo: TabInfo[] = [];

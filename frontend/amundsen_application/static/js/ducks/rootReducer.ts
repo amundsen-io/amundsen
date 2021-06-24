@@ -9,7 +9,7 @@ import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
 import popularResources, {
   PopularResourcesReducerState,
-} from './popularTables/reducer';
+} from './popularResources/reducer';
 import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, {
   TableMetadataReducerState,
