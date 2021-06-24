@@ -1,7 +1,7 @@
-import { User } from 'interfaces/User';
-import { Badge } from 'interfaces/Badges';
-import { Tag } from 'interfaces/Tags';
-import { ProgrammaticDescription } from 'interfaces/TableMetadata';
+import { User } from './User';
+import { Badge } from './Badges';
+import { Tag } from './Tags';
+import { ProgrammaticDescription } from './TableMetadata';
 
 export interface FeatureMetadata {
   key: string;
@@ -44,4 +44,10 @@ export interface FeatureWatermark {
   key: string;
   watermark_type: string;
   time: string;
+}
+
+export interface FeatureSampleQueryParams {
+  feature_name: string;
+  feature_group: string;
+  version: string;
 }
