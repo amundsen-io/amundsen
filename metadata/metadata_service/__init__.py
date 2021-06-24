@@ -41,6 +41,7 @@ from metadata_service.api.tag import TagAPI
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
+from metadata_service.deprecations import process_deprecations
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -189,4 +190,9 @@ def create_app(*, config_module_class: str) -> Flask:
 
     if app.config.get('SWAGGER_ENABLED'):
         Swagger(app, template_file=os.path.join(ROOT_DIR, app.config.get('SWAGGER_TEMPLATE_PATH')), parse=True)
+
+    # handles the deprecation warnings
+    # and process any config/environment variables accordingly
+    process_deprecations(app)
+
     return app

@@ -1062,7 +1062,7 @@ class AtlasProxy(BaseProxy):
         for _reader in readers.entities or list():
             read_count = _reader.attributes['count']
 
-            if read_count >= int(app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']):
+            if read_count >= int(app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']):
                 reader_qn = _reader.relationshipAttributes['user']['displayText']
                 reader_details = self._get_user_details(reader_qn)
 

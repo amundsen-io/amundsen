@@ -677,6 +677,49 @@ class TestNeo4jProxy(unittest.TestCase):
 
             self.assertEqual(actual.__repr__(), expected.__repr__())
 
+    def test_get_popular_resources_table(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_get_popular_tables') as mock_execute:
+            mock_execute.return_value = [
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'foo',
+                                'description': 'test description'}),
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table"])
+
+            expected = {
+                ResourceType.Table.name: [
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='foo',
+                                 description='test description'),
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='bar')
+                ]
+            }
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
+
+    def test_get_popular_resources_table_dashboard(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_get_popular_tables') as mock_execute:
+            mock_execute.return_value = [
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'foo',
+                                'description': 'test description'}),
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table", "dashboard"])
+
+            expected = {
+                ResourceType.Table.name: [
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='foo',
+                                 description='test description'),
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='bar')
+                ],
+                ResourceType.Dashboard.name: []
+            }
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
+
     def test_get_user(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = {

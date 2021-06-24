@@ -68,7 +68,7 @@ def popular_resources() -> Response:
     https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/popular_tables.py
     """
     try:
-        if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_TABLE_PERSONALIZATION']:
+        if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_RESOURCES_PERSONALIZATION']:
             user_id = app.config['AUTH_USER_METHOD'](app).user_id
         else:
             user_id = ''
@@ -76,7 +76,7 @@ def popular_resources() -> Response:
         resource_types = get_query_param(request.args, 'types')
 
         service_base = app.config['METADATASERVICE_BASE']
-        count = app.config['POPULAR_TABLE_COUNT']
+        count = app.config['POPULAR_RESOURCES_COUNT']
         url = f'{service_base}{POPULAR_RESOURCES_ENDPOINT}/{user_id}?limit={count}&types={resource_types}'
 
         response = request_metadata(url=url)

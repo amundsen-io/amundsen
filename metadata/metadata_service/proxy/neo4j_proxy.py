@@ -1025,7 +1025,7 @@ class Neo4jProxy(BaseProxy):
         ORDER BY score DESC LIMIT $num_entries;
         """).format(resource_type=resource_type.name)
         LOGGER.info('Querying popular tables URIs')
-        num_readers = current_app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']
+        num_readers = current_app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']
         records = self._execute_cypher_query(statement=query,
                                              param_dict={'num_readers': num_readers,
                                                          'num_entries': num_entries})
@@ -1057,7 +1057,7 @@ class Neo4jProxy(BaseProxy):
         ORDER BY score DESC LIMIT $num_entries;
         """).format(resource_type=resource_type.name)
         LOGGER.info('Querying popular tables URIs')
-        num_readers = current_app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']
+        num_readers = current_app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']
         records = self._execute_cypher_query(statement=statement,
                                              param_dict={'user_id': user_id,
                                                          'num_readers': num_readers,

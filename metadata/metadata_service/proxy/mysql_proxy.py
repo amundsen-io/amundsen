@@ -704,7 +704,7 @@ class MySQLProxy(BaseProxy):
         """
         LOGGER.info('Querying global popular tables URIs')
 
-        num_readers = app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']
+        num_readers = app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']
         with self.client.create_session() as session:
             readers = func.count(RDSTableUsage.user_rk).label('readers')
 
@@ -735,7 +735,7 @@ class MySQLProxy(BaseProxy):
         """
         LOGGER.info('Querying personal popular tables URIs')
 
-        num_readers = app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']
+        num_readers = app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']
         with self.client.create_session() as session:
             readers = func.count(RDSTableUsage.user_rk).label('readers')
 
