@@ -10,6 +10,8 @@ import {
   FeatureSampleQueryParams,
   PreviewData,
 } from 'interfaces';
+import { API_PATH } from 'ducks/tableMetadata/api/v0';
+import { getQueryParams } from 'ducks/utilMethods';
 
 export type GetFeatureAPI = {
   msg: string;
@@ -140,4 +142,14 @@ export function updateFeatureDescription(key: string, description: string) {
         statusMessage,
       });
     });
+}
+
+export function getFeatureOwners(key: string) {
+  const queryParams = getQueryParams({ key });
+  return axios
+    .get(`${API_PATH}/feature?${queryParams}`)
+    .then(
+      (response: AxiosResponse<GetFeatureAPI>) =>
+        response.data.featureData.owners
+    );
 }

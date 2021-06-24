@@ -1,4 +1,6 @@
 import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
+import { User } from 'interfaces/User';
 
 export enum GetFeature {
   REQUEST = 'amundsen/feature/GET_FEATURE_REQUEST',
@@ -99,4 +101,24 @@ export interface UpdateFeatureDescriptionPayload {
   description?: string;
   statusCode?: number;
   statusMessage?: string;
+}
+
+export enum UpdateFeatureOwner {
+  REQUEST = 'amundsen/featureMetadata/UPDATE_FEATURE_OWNER_REQUEST',
+  SUCCESS = 'amundsen/featureMetadata/UPDATE_FEATURE_OWNER_SUCCESS',
+  FAILURE = 'amundsen/featureMetadata/UPDATE_FEATURE_OWNER_FAILURE',
+}
+export interface UpdateFeatureOwnerRequest {
+  type: UpdateFeatureOwner.REQUEST;
+  payload: {
+    updateArray: UpdateOwnerPayload[];
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+export interface UpdateFeatureOwnerResponse {
+  type: UpdateFeatureOwner.SUCCESS | UpdateFeatureOwner.FAILURE;
+  payload: {
+    owners: User[];
+  };
 }

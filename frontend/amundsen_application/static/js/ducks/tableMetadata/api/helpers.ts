@@ -47,22 +47,6 @@ export function getTableDataFromResponseData(
 }
 
 /**
- * Parses the response for table metadata to return the array of table owners
- */
-export function getTableOwnersFromResponseData(
-  responseData: API.TableDataAPI
-): OwnerDict {
-  const ownerObj = responseData.tableData.owners.reduce(
-    (resultObj, currentOwner) => {
-      resultObj[currentOwner.user_id] = currentOwner as User;
-      return resultObj;
-    },
-    {}
-  );
-  return ownerObj;
-}
-
-/**
  * Creates post data for sending a notification to owners when they are added/removed
  */
 export function createOwnerNotificationData(
@@ -79,23 +63,6 @@ export function createOwnerNotificationData(
       resource_path: `/table_detail/${tableData.cluster}/${tableData.database}/${tableData.schema}/${tableData.name}`,
     },
     recipients: [payload.id],
-  };
-}
-
-/**
- * Creates axios payload for the request to update an owner
- */
-export function createOwnerUpdatePayload(
-  payload: UpdateOwnerPayload,
-  tableKey: string
-) {
-  return {
-    method: payload.method,
-    url: `${API.API_PATH}/update_table_owner`,
-    data: {
-      key: tableKey,
-      owner: payload.id,
-    },
   };
 }
 

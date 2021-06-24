@@ -9,6 +9,7 @@ import {
   User,
   Tag,
   Lineage,
+  ResourceType,
 } from 'interfaces';
 
 /** HELPERS **/
@@ -17,11 +18,13 @@ import {
   getTableQueryParams,
   getRelatedDashboardSlug,
   getTableDataFromResponseData,
-  getTableOwnersFromResponseData,
-  createOwnerUpdatePayload,
   createOwnerNotificationData,
   shouldSendNotification,
 } from './helpers';
+import {
+  createOwnerUpdatePayload,
+  getOwnersDictFromUsers,
+} from '../../../utils/ownerUtils';
 
 export const API_PATH = '/api/metadata/v0';
 
@@ -46,7 +49,7 @@ export function getTableData(key: string, index?: string, source?: string) {
 
   return tableRequest.then((tableResponse: AxiosResponse<TableDataAPI>) => ({
     data: getTableDataFromResponseData(tableResponse.data),
-    owners: getTableOwnersFromResponseData(tableResponse.data),
+    owners: getOwnersDictFromUsers(tableResponse.data.tableData.owners),
     tags: tableResponse.data.tableData.tags,
     statusCode: tableResponse.status,
   }));
@@ -106,7 +109,7 @@ export function getTableOwners(key: string) {
   return axios
     .get(`${API_PATH}/table?${tableParams}`)
     .then((response: AxiosResponse<TableDataAPI>) =>
-      getTableOwnersFromResponseData(response.data)
+      getOwnersDictFromUsers(response.data.tableData.owners)
     );
 }
 
@@ -116,13 +119,22 @@ export function generateOwnerUpdateRequests(
   tableData: TableMetadata
 ): any {
   /* Return the list of requests to be executed */
-  return updateArray.map((item) => {
-    const updatePayload = createOwnerUpdatePayload(item, tableData.key);
-    const notificationData = createOwnerNotificationData(item, tableData);
+  return updateArray.map((updateOwnerPayload) => {
+    const updatePayload = createOwnerUpdatePayload(
+      ResourceType.table,
+      tableData.key,
+      updateOwnerPayload
+    );
+    const notificationData = createOwnerNotificationData(
+      updateOwnerPayload,
+      tableData
+    );
 
     /* Chain requests to send notification on success to desired users */
     return axios(updatePayload)
-      .then(() => axios.get(`/api/metadata/v0/user?user_id=${item.id}`))
+      .then(() =>
+        axios.get(`/api/metadata/v0/user?user_id=${updateOwnerPayload.id}`)
+      )
       .then((response) => {
         if (shouldSendNotification(response.data.user)) {
           return axios.post('/api/mail/v0/notification', notificationData);

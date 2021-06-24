@@ -18,8 +18,13 @@ import {
   UpdateFeatureDescriptionPayload,
   UpdateFeatureDescriptionResponse,
   UpdateFeatureDescription,
+  UpdateFeatureOwnerRequest,
+  UpdateFeatureOwnerResponse,
+  UpdateFeatureOwner,
 } from 'ducks/feature/types';
 import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
+import { User } from 'interfaces/User';
 
 /* Actions */
 
@@ -145,6 +150,41 @@ export function updateFeatureDescriptionFailure(
   };
 }
 
+export function updateFeatureOwner(
+  updateArray: UpdateOwnerPayload[],
+  onSuccess?: () => any,
+  onFailure?: () => any
+): UpdateFeatureOwnerRequest {
+  return {
+    payload: {
+      onSuccess,
+      onFailure,
+      updateArray,
+    },
+    type: UpdateFeatureOwner.REQUEST,
+  };
+}
+export function updateFeatureOwnerFailure(
+  owners: User[]
+): UpdateFeatureOwnerResponse {
+  return {
+    type: UpdateFeatureOwner.FAILURE,
+    payload: {
+      owners,
+    },
+  };
+}
+export function updateFeatureOwnerSuccess(
+  owners: User[]
+): UpdateFeatureOwnerResponse {
+  return {
+    type: UpdateFeatureOwner.SUCCESS,
+    payload: {
+      owners,
+    },
+  };
+}
+
 /* Reducer */
 export interface FeatureCodeState {
   featureCode: FeatureCode;
@@ -154,6 +194,7 @@ export interface FeatureCodeState {
 
 export interface FeatureReducerState {
   isLoading: boolean;
+  isLoadingOwners: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
@@ -193,7 +234,8 @@ export const initialFeatureCodeState: FeatureCodeState = {
 };
 
 export const initialState: FeatureReducerState = {
-  isLoading: true,
+  isLoading: false,
+  isLoadingOwners: false,
   statusCode: null,
   feature: initialFeatureState,
   featureCode: initialFeatureCodeState,
@@ -267,6 +309,18 @@ export default function reducer(
         feature: {
           ...state.feature,
           description: action.payload.description,
+        },
+      };
+    case UpdateFeatureOwner.REQUEST:
+      return { ...state, isLoadingOwners: true };
+    case UpdateFeatureOwner.FAILURE:
+    case UpdateFeatureOwner.SUCCESS:
+      return {
+        ...state,
+        isLoadingOwners: false,
+        feature: {
+          ...state.feature,
+          owners: (<UpdateFeatureOwnerResponse>action).payload.owners,
         },
       };
     default:

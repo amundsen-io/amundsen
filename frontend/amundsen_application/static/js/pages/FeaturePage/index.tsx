@@ -43,6 +43,8 @@ import {
 } from './constants';
 
 import './styles.scss';
+// import { OWNER_HEADER_TEXT } from '../DashboardPage/constants';
+import FeatureOwnerEditor from './FeatureOwnerEditor';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -263,6 +265,9 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
               </EditableSection>
             </section>
             <section className="right-panel">
+              <EditableSection title="Owners">
+                <FeatureOwnerEditor resourceType={ResourceType.feature} />
+              </EditableSection>
               {feature.partition_column !== null && (
                 <section className="metadata-section">
                   <h3 className="section-title text-title-w3">

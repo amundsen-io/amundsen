@@ -11,18 +11,23 @@ import OwnerEditor, {
 } from 'components/OwnerEditor';
 
 import { getOwnerItemPropsFromUsers } from 'utils/ownerUtils';
+import { bindActionCreators } from 'redux';
+import { updateFeatureOwner } from 'ducks/feature/reducer';
 
-export const DASHBOARD_OWNER_SOURCE = 'dashboard_page_owner';
+export const FEATURE_OWNER_SOURCE = 'feature_page_owner';
 
 export const mapStateToProps = (state: GlobalState) => ({
   isLoading: false,
   itemProps: getOwnerItemPropsFromUsers(
-    state.dashboard.dashboard.owners,
-    DASHBOARD_OWNER_SOURCE
+    state.feature.feature.owners,
+    FEATURE_OWNER_SOURCE
   ),
 });
 
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ onUpdateList: updateFeatureOwner }, dispatch);
+
 export default connect<StateFromProps, {}, ComponentProps>(
   mapStateToProps,
-  {}
+  mapDispatchToProps
 )(OwnerEditor);
