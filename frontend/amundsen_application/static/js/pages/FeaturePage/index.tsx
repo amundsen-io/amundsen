@@ -5,12 +5,12 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import * as ReactMarkdown from 'react-markdown';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import Breadcrumb from 'components/Breadcrumb';
-import TagInput from 'components/Tags/TagInput';
 import EditableSection from 'components/EditableSection';
+import TagInput from 'components/Tags/TagInput';
+import BadgeList from 'features/BadgeList';
 import { getMaxLength, getSourceDisplayName } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
@@ -206,12 +206,17 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
           <span className="icon icon-header icon-database" />
         </section>
         <section className="header-section">
-          <h1 className="header-title-text truncated" title={feature.name}>
+          <h1
+            className="header-title-text text-headline-w2 truncated"
+            title={feature.name}
+          >
             {feature.name}
           </h1>
           <div className="text-body-w3">
-            Feature &bull;&nbsp;
+            Feature
+            {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
             {sourcesWithDisplay.join(', ')}
+            {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
           </div>
         </section>
       </header>
@@ -250,14 +255,14 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
                   })}
                 </time>
               </section>
-            </section>
-            <section className="right-panel">
               <EditableSection title="Tags">
                 <TagInput
                   resourceType={ResourceType.feature}
                   uriKey={feature.key}
                 />
               </EditableSection>
+            </section>
+            <section className="right-panel">
               {feature.partition_column !== null && (
                 <section className="metadata-section">
                   <h3 className="section-title text-title-w3">
