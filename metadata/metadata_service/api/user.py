@@ -7,6 +7,7 @@ from http import HTTPStatus
 from typing import (Any, Dict, Iterable, List, Mapping, Optional,  # noqa: F401
                     Union)
 
+from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.dashboard import DashboardSummarySchema
 from amundsen_common.models.popular_table import PopularTableSchema
 from amundsen_common.models.user import UserSchema
@@ -17,8 +18,6 @@ from flask_restful import Resource
 from marshmallow.exceptions import ValidationError as SchemaValidationError
 
 from metadata_service.api import BaseAPI
-from metadata_service.entity.resource_type import (ResourceType,
-                                                   to_resource_type)
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.util import UserResourceRel
