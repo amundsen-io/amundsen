@@ -151,7 +151,7 @@ exports[`eslint`] = {
     "js/components/Inputs/CheckBoxItem/index.tsx:360935175": [
       [26, 6, 163, "A control must be associated with a text label.", "3374264857"]
     ],
-    "js/components/OwnerEditor/index.spec.tsx:871220739": [
+    "js/components/OwnerEditor/index.spec.tsx:3522945449": [
       [11, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
     "js/components/OwnerEditor/index.tsx:2188228583": [
@@ -231,7 +231,7 @@ exports[`eslint`] = {
     "js/components/ResourceListItem/DashboardListItem/index.tsx:2194588229": [
       [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:2508428579": [
+    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:1582455272": [
       [45, 6, 25, "Use object destructuring.", "354229464"],
       [46, 6, 29, "Use object destructuring.", "2645724888"]
     ],
@@ -583,8 +583,8 @@ exports[`eslint`] = {
       [111, 6, 191, "Unexpected lexical declaration in case block.", "1433271452"],
       [117, 6, 59, "Unexpected lexical declaration in case block.", "3993269111"]
     ],
-    "js/ducks/search/filters/reducer.ts:615717922": [
-      [60, 6, 56, "Unexpected lexical declaration in case block.", "1729617587"]
+    "js/ducks/search/filters/reducer.ts:4089663982": [
+      [63, 6, 56, "Unexpected lexical declaration in case block.", "1729617587"]
     ],
     "js/ducks/search/reducer.ts:4060029949": [
       [202, 2, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
@@ -621,7 +621,7 @@ exports[`eslint`] = {
     "js/ducks/tags/api/v0.ts:3312435566": [
       [20, 16, -551, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
     ],
-    "js/features/BadgeList/index.tsx:4066532183": [
+    "js/features/BadgeList/index.tsx:1824613239": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [

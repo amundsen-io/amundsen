@@ -26,6 +26,7 @@ import os
 import uuid
 
 import boto3
+from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_INDEX_MAP
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,9 +38,6 @@ from databuilder.extractor.neptune_search_data_extractor import NeptuneSearchDat
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neptune_csv_loader import FSNeptuneCSVLoader
-from databuilder.publisher.elasticsearch_constants import (
-    DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_ELASTICSEARCH_INDEX_MAPPING,
-)
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neptune_csv_publisher import NeptuneCSVPublisher
 from databuilder.task.task import DefaultTask
@@ -403,7 +401,7 @@ if __name__ == "__main__":
         elasticsearch_doc_type_key='user',
         model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
         entity_type='user',
-        elasticsearch_mapping=USER_ELASTICSEARCH_INDEX_MAPPING
+        elasticsearch_mapping=USER_INDEX_MAP
     )
     job_es_user.launch()
 

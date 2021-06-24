@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '5.0.0'
+__version__ = '5.2.0'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -90,6 +90,7 @@ setup(
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
+    include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
     python_requires='>=3.6',

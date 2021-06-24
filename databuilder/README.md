@@ -1512,9 +1512,32 @@ job.launch()
 A Publisher takes two folders for input and publishes to Atlas.
 One folder will contain CSV file(s) for Entity where the other folder will contain CSV file(s) for Relationship.
 
-##### Caution!!!
-Publisher assumes that all necessary data types are already defined in atlas, otherwise publishing will fail.
+##### Amundsen <> Atlas Types
+Atlas publisher requires registering appropriate entity types in Atlas. This can be achieved in two ways:
 
+###### Register entity types directly in publisher
+By default publisher will register proper entity types for you. This is achieved with `register_entity_types` configuration option of the publisher, which defaults to `True`.
+
+If your metadata synchronization job consists of several extractors leveraging `AtlasCSVPublisher` it is recommended to have this option turned on only for the first extractor.
+
+###### Register entity types using standalone script
+You can register entity types separately - below script might serve as a baseline and will probably need adjusting AtlasClient to your environment.
+```python3
+from apache_atlas.client.base_client import AtlasClient
+
+from databuilder.types.atlas import AtlasEntityInitializer
+
+client = AtlasClient('http://localhost:21000', ('admin', 'admin'))
+
+init = AtlasEntityInitializer(client)
+
+init.create_required_entities()
+```
+
+###### Caution!
+Whenever you upgrade your databuilder version it is important to re-run `AtlasEntityInitializer` as there might be new changes to entity types required for Atlas integration to work properly.
+
+##### Sample script
 ```python
 from apache_atlas.client.base_client import AtlasClient
 from pyhocon import ConfigFactory
@@ -1532,6 +1555,7 @@ job_config = ConfigFactory.from_dict({
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': 10,
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': True
 })
 
 job = DefaultJob(

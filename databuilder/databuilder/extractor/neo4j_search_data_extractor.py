@@ -114,11 +114,38 @@ class Neo4jSearchDataExtractor(Extractor):
         """
     )
 
-    # todo: we will add more once we add more entities
+    DEFAULT_NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
+        """
+         MATCH (feature:Feature)
+         {publish_tag_filter}
+         OPTIONAL MATCH (fg:Feature_Group)-[:GROUPS]->(feature)
+         OPTIONAL MATCH (db:Database)-[:AVAILABLE_FEATURE]->(feature)
+         OPTIONAL MATCH (feature)-[:DESCRIPTION]->(desc:Description)
+         OPTIONAL MATCH (feature)-[:TAGGED_BY]->(tag:Tag)
+         OPTIONAL MATCH (feature)-[:HAS_BADGE]->(badge:Badge)
+         OPTIONAL MATCH (feature)-[read:READ_BY]->(user:User)
+         RETURN
+         fg.name as feature_group,
+         feature.name as feature_name,
+         feature.version as version,
+         feature.key as key,
+         SUM(read.read_count) AS total_usage,
+         feature.status as status,
+         feature.entity as entity,
+         desc.description as description,
+         db.name as availability,
+         COLLECT(DISTINCT badge.key) as badges,
+         COLLECT(DISTINCT tag.key) as tags,
+         toInteger(feature.last_updated_timestamp) as last_updated_timestamp
+         order by fg.name, feature.name, feature.version
+        """
+    )
+
     DEFAULT_QUERY_BY_ENTITY = {
         'table': DEFAULT_NEO4J_TABLE_CYPHER_QUERY,
         'user': DEFAULT_NEO4J_USER_CYPHER_QUERY,
-        'dashboard': DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY
+        'dashboard': DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY,
+        'feature': DEFAULT_NEO4J_FEATURE_CYPHER_QUERY,
     }
 
     def init(self, conf: ConfigTree) -> None:

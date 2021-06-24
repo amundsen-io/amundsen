@@ -11,6 +11,7 @@ By default, it creates in total 3 indexes:
 * table_search_index
 * user_search_index
 * dashboard_search_index
+* feature_search_index
 
 For information about Amundsen and our other services, refer to this [README.md](./../README.md). Please also see our instructions for a [quick start](./../docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](./../docs/architecture.md#architecture).
 
