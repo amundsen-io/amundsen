@@ -9,6 +9,9 @@ import * as ReactMarkdown from 'react-markdown';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import Breadcrumb from 'components/Breadcrumb';
+import TagInput from 'components/Tags/TagInput';
+import EditableSection from 'components/EditableSection';
+import { getMaxLength, getSourceDisplayName } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
@@ -21,10 +24,10 @@ import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getSourceDisplayName } from 'config/config-utils';
 
+import FeatureDescEditableText from './FeatureDescEditableText';
 import { GenerationCode } from './GenerationCode';
-import './styles.scss';
+
 import {
   DATA_TYPE_TITLE,
   DESCRIPTION_TITLE,
@@ -38,6 +41,8 @@ import {
   SOURCE_TITLE,
   VERSION_TITLE,
 } from './constants';
+
+import './styles.scss';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -212,12 +217,13 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
       </header>
       <article className="column-layout-1">
         <aside className="left-panel">
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">{DESCRIPTION_TITLE}</h3>
-            <div className="markdown-wrapper">
-              <ReactMarkdown>{feature.description}</ReactMarkdown>
-            </div>
-          </section>
+          <EditableSection title={DESCRIPTION_TITLE}>
+            <FeatureDescEditableText
+              maxLength={getMaxLength('tableDescLength')}
+              value={feature.description}
+              editable
+            />
+          </EditableSection>
           <section className="column-layout-2">
             <section className="left-panel">
               <section className="metadata-section">
@@ -246,6 +252,12 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
               </section>
             </section>
             <section className="right-panel">
+              <EditableSection title="Tags">
+                <TagInput
+                  resourceType={ResourceType.feature}
+                  uriKey={feature.key}
+                />
+              </EditableSection>
               {feature.partition_column !== null && (
                 <section className="metadata-section">
                   <h3 className="section-title text-title-w3">

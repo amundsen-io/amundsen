@@ -49,3 +49,54 @@ export interface GetFeatureCodePayload {
   statusCode?: number;
   statusMessage?: string;
 }
+
+export enum GetFeatureDescription {
+  REQUEST = 'amundsen/feature/GET_FEATURE_DESCRIPTION_REQUEST',
+  SUCCESS = 'amundsen/feature/GET_FEATURE_DESCRIPTION_SUCCESS',
+  FAILURE = 'amundsen/feature/GET_FEATURE_DESCRIPTION_FAILURE',
+}
+
+export interface GetFeatureDescriptionRequest {
+  type: GetFeatureDescription.REQUEST;
+  payload: {
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+
+export interface GetFeatureDescriptionResponse {
+  type: GetFeatureDescription.SUCCESS | GetFeatureDescription.FAILURE;
+  payload: GetFeatureDescriptionPayload;
+}
+
+export interface GetFeatureDescriptionPayload {
+  description?: string;
+  statusCode?: number;
+  statusMessage?: string;
+}
+
+export enum UpdateFeatureDescription {
+  REQUEST = 'amundsen/feature/UPDATE_FEATURE_DESCRIPTION_REQUEST',
+  SUCCESS = 'amundsen/feature/UPDATE_FEATURE_DESCRIPTION_SUCCESS',
+  FAILURE = 'amundsen/feature/UPDATE_FEATURE_DESCRIPTION_FAILURE',
+}
+
+export interface UpdateFeatureDescriptionRequest {
+  type: UpdateFeatureDescription.REQUEST;
+  payload: {
+    newValue: string;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+
+export interface UpdateFeatureDescriptionResponse {
+  type: UpdateFeatureDescription.SUCCESS | UpdateFeatureDescription.FAILURE;
+  payload: UpdateFeatureDescriptionPayload;
+}
+
+export interface UpdateFeatureDescriptionPayload {
+  description?: string;
+  statusCode?: number;
+  statusMessage?: string;
+}

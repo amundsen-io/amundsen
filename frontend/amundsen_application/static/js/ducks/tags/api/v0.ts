@@ -1,9 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { sortTagsAlphabetical } from 'ducks/utilMethods';
 import { ResourceType, Tag } from 'interfaces';
-import { API_PATH, TableDataAPI } from 'ducks/tableMetadata/api/v0';
 import { GetDashboardAPI } from 'ducks/dashboard/api/v0';
+import { GetFeatureAPI } from 'ducks/feature/api/v0';
+import { API_PATH, TableDataAPI } from 'ducks/tableMetadata/api/v0';
+import { sortTagsAlphabetical } from 'ducks/utilMethods';
 
 export type AllTagsAPI = {
   msg: string;
@@ -33,6 +34,13 @@ export function getResourceTags(resourceType, uriKey: string) {
         (response.data.dashboard.tags || []).sort(sortTagsAlphabetical)
       );
   }
+  if (resourceType === ResourceType.feature) {
+    return axios
+      .get(`${API_PATH}/feature?key=${uriKey}`)
+      .then((response: AxiosResponse<GetFeatureAPI>) =>
+        (response.data.featureData.tags || []).sort(sortTagsAlphabetical)
+      );
+  }
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that needs more dedicated debugging */
@@ -47,6 +55,8 @@ export function updateTableTag(
     url = `${API_PATH}/update_table_tags`;
   } else if (resourceType === ResourceType.dashboard) {
     url = `${API_PATH}/update_dashboard_tags`;
+  } else if (resourceType === ResourceType.feature) {
+    url = `${API_PATH}/update_feature_tags`;
   }
   return axios({
     url,
