@@ -162,7 +162,8 @@ export class InlineSearchResults extends React.Component<
         const feature = result as FeatureResource;
         let source = '';
         if (feature.availability) {
-          source = feature.availability.length > 0 ? feature.availability[0] : '';
+          source =
+            feature.availability.length > 0 ? feature.availability[0] : '';
         }
         return getSourceIconClass(source, resourceType);
       case ResourceType.table:
@@ -244,8 +245,11 @@ export class InlineSearchResults extends React.Component<
         return getSourceDisplayName(dashboard.product, resourceType);
       case ResourceType.feature:
         const feature = result as FeatureResource;
-        const source =
-          feature.availability.length > 0 ? feature.availability[0] : '';
+        let source = '';
+        if (feature.availability) {
+          source =
+            feature.availability.length > 0 ? feature.availability[0] : '';
+        }
         return getSourceDisplayName(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
