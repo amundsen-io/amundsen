@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { FeatureCode } from 'interfaces/Feature';
+import { EMPTY_CODE_MESSAGE } from './constants';
 
 import './styles.scss';
 import 'features/CodeBlock/styles.scss';
@@ -37,7 +38,7 @@ export const GenerationCode: React.FC<GenerationCodeProps> = ({
   if (featureCode?.text === undefined) {
     return (
       <div className="generation-code">
-        <div className="empty-message">Not Available</div>
+        <div className="empty-message">{EMPTY_CODE_MESSAGE}</div>
       </div>
     );
   }
