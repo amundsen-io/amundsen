@@ -44,7 +44,6 @@ import {
 } from './constants';
 
 import './styles.scss';
-// import { OWNER_HEADER_TEXT } from '../DashboardPage/constants';
 import FeatureOwnerEditor from './FeatureOwnerEditor';
 
 interface StateFromProps {
@@ -215,12 +214,12 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
           >
             {feature.name}
           </h1>
-          <div className="text-body-w3">
+          <p className="header-subtitle text-body-w3">
             Feature
             {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
             {sourcesWithDisplay.join(', ')}
             {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
-          </div>
+          </p>
         </section>
       </header>
       <article className="column-layout-1">
@@ -266,26 +265,21 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
               </EditableSection>
             </section>
             <section className="right-panel">
-              <EditableSection title="Owners">
+              <EditableSection title={OWNERS_TITLE}>
                 <FeatureOwnerEditor resourceType={ResourceType.feature} />
               </EditableSection>
-              {feature.partition_column !== null && (
-                <section className="metadata-section">
-                  <h3 className="section-title text-title-w3">
-                    {PARTITION_KEY_TITLE}
-                  </h3>
-                  {feature.partition_column}
-                </section>
-              )}
+              {feature.partition_column !== null &&
+                feature.partition_column !== undefined && (
+                  <section className="metadata-section">
+                    <h3 className="section-title text-title-w3">
+                      {PARTITION_KEY_TITLE}
+                    </h3>
+                    {feature.partition_column}
+                  </section>
+                )}
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
                 {feature.version}
-              </section>
-              <section className="metadata-section">
-                <h3 className="section-title text-title-w3">{OWNERS_TITLE}</h3>
-                {feature.owners.map((owner) => (
-                  <div>{owner.email}</div>
-                ))}
               </section>
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">
