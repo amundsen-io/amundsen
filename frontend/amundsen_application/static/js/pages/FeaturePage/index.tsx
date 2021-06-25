@@ -25,6 +25,19 @@ import { getSourceDisplayName } from 'config/config-utils';
 
 import { GenerationCode } from './GenerationCode';
 import './styles.scss';
+import {
+  DATA_TYPE_TITLE,
+  DESCRIPTION_TITLE,
+  ENTITY_TITLE,
+  FEATURE_GROUP_TITLE,
+  FEATURE_TAB,
+  GEN_CODE_TAB_TITLE,
+  LAST_UPDATED_TITLE,
+  OWNERS_TITLE,
+  PARTITION_KEY_TITLE,
+  SOURCE_TITLE,
+  VERSION_TITLE,
+} from './constants';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -132,13 +145,13 @@ export function renderTabs(featureCode) {
         featureCode={featureCode.featureCode}
       />
     ),
-    key: 'featureCode',
-    title: 'Generation Code',
+    key: FEATURE_TAB.GEN_CODE,
+    title: GEN_CODE_TAB_TITLE,
   });
   return (
     <TabsComponent
       tabs={tabInfo}
-      defaultTab="featureCode"
+      defaultTab={FEATURE_TAB.GEN_CODE}
       onSelect={(key) => {
         logAction({
           command: 'click',
@@ -200,7 +213,7 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
       <article className="column-layout-1">
         <aside className="left-panel">
           <section className="metadata-section">
-            <h3 className="section-title text-title-w3">Description</h3>
+            <h3 className="section-title text-title-w3">{DESCRIPTION_TITLE}</h3>
             <div className="markdown-wrapper">
               <ReactMarkdown>{feature.description}</ReactMarkdown>
             </div>
@@ -208,19 +221,23 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
           <section className="column-layout-2">
             <section className="left-panel">
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Entity</h3>
+                <h3 className="section-title text-title-w3">{ENTITY_TITLE}</h3>
                 {feature.entity}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Data Type</h3>
+                <h3 className="section-title text-title-w3">
+                  {DATA_TYPE_TITLE}
+                </h3>
                 {feature.data_type}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Source</h3>
+                <h3 className="section-title text-title-w3">{SOURCE_TITLE}</h3>
                 {feature.availability}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Last Updated</h3>
+                <h3 className="section-title text-title-w3">
+                  {LAST_UPDATED_TITLE}
+                </h3>
                 <time>
                   {formatDateTimeShort({
                     epochTimestamp: feature.last_updated_timestamp,
@@ -231,22 +248,26 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
             <section className="right-panel">
               {feature.partition_column !== null && (
                 <section className="metadata-section">
-                  <h3 className="section-title text-title-w3">Partition Key</h3>
+                  <h3 className="section-title text-title-w3">
+                    {PARTITION_KEY_TITLE}
+                  </h3>
                   {feature.partition_column}
                 </section>
               )}
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">version</h3>
+                <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
                 {feature.version}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Owners</h3>
+                <h3 className="section-title text-title-w3">{OWNERS_TITLE}</h3>
                 {feature.owners.map((owner) => (
                   <div>{owner.email}</div>
                 ))}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Feature Group</h3>
+                <h3 className="section-title text-title-w3">
+                  {FEATURE_GROUP_TITLE}
+                </h3>
                 {feature.feature_group}
               </section>
             </section>

@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { User } from './User';
 import { Badge } from './Badges';
 import { Tag } from './Tags';

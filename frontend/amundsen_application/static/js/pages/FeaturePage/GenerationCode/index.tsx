@@ -34,6 +34,13 @@ export const GenerationCode: React.FC<GenerationCodeProps> = ({
   if (isLoading) {
     return <GenerationCodeLoader />;
   }
+  if (featureCode?.text === undefined) {
+    return (
+      <div className="generation-code">
+        <div className="empty-message">Not Available</div>
+      </div>
+    );
+  }
   return (
     <div className="generation-code">
       <React.Suspense fallback={<GenerationCodeLoader />}>

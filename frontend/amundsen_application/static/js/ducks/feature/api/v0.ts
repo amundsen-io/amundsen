@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import * as qs from 'simple-query-string';
 

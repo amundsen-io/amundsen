@@ -4,5 +4,11 @@
 @import 'variables';
 
 .generation-code {
-  padding: 16px;
+  padding: $spacer-2;
+
+  .empty-message {
+    color: $text-secondary;
+    padding-top: $spacer-3;
+    text-align: center;
+  }
 }
