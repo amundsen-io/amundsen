@@ -89,7 +89,8 @@ export function getResourceNotices(
 
   const wildcardNoticesKeys = Object.keys(notices).filter(hasWildcard);
   if (wildcardNoticesKeys.length) {
-    let noticeFromWildcard: NoticeType | null = null;
+    const wildcardNoticesArray = new Array(1);
+    let hasNotice: boolean = false;
 
     wildcardNoticesKeys.forEach((key) => {
       const decomposedKey = key.split(RESOURCE_SEPARATOR);
@@ -101,14 +102,16 @@ export function getResourceNotices(
           decomposedKey[i] === WILDCARD_SIGN
         ) {
           if (i === decomposedKey.length - 1) {
-            noticeFromWildcard = notices[key];
+            wildcardNoticesArray[0] = notices[key];
+            hasNotice = true;
           }
           continue;
         }
         break;
       }
     });
-    if (noticeFromWildcard) {
+    if (hasNotice) {
+      const noticeFromWildcard: NoticeType = wildcardNoticesArray[0];
       if (typeof noticeFromWildcard.messageHtml === 'function') {
         noticeFromWildcard.messageHtml = noticeFromWildcard.messageHtml(
           resourceName
