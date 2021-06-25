@@ -31,7 +31,11 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
   feature,
   logging,
 }: FeatureListItemProps) => {
-  const source = feature.availability.length > 0 ? feature.availability[0] : '';
+  let source = '';
+  if (feature.availability) {
+    source = feature.availability.length > 0 ? feature.availability[0] : '';
+  }
+
   return (
     <li className="list-group-item clickable">
       <Link
