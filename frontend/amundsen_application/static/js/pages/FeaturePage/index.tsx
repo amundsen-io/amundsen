@@ -39,6 +39,7 @@ import {
   OWNERS_TITLE,
   PARTITION_KEY_TITLE,
   SOURCE_TITLE,
+  TAG_TITLE,
   VERSION_TITLE,
 } from './constants';
 
@@ -257,7 +258,7 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
                   })}
                 </time>
               </section>
-              <EditableSection title="Tags">
+              <EditableSection title={TAG_TITLE}>
                 <TagInput
                   resourceType={ResourceType.feature}
                   uriKey={feature.key}

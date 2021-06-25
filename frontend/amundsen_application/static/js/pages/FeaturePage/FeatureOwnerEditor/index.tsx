@@ -17,7 +17,7 @@ import { updateFeatureOwner } from 'ducks/feature/reducer';
 export const FEATURE_OWNER_SOURCE = 'feature_page_owner';
 
 export const mapStateToProps = (state: GlobalState) => ({
-  isLoading: false,
+  isLoading: state.feature.isLoadingOwners,
   itemProps: getOwnerItemPropsFromUsers(
     state.feature.feature.owners,
     FEATURE_OWNER_SOURCE

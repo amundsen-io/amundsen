@@ -11,7 +11,7 @@ export const OWNERS_TITLE = 'Owners';
 export const PARTITION_KEY_TITLE = 'Partition Key';
 export const SOURCE_TITLE = 'Source';
 export const TAG_TITLE = 'Tags';
-export const VERSION_TITLE = 'Tags';
+export const VERSION_TITLE = 'Version';
 
 export const DATA_SAMPLE_TAB_TITLE = 'Data Sample';
 export const GEN_CODE_TAB_TITLE = 'Generation Code';
