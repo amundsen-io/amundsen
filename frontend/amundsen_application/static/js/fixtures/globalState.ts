@@ -88,6 +88,15 @@ const globalState: GlobalState = {
       last_updated_timestamp: 0,
       created_timestamp: 0,
     },
+    featureCode: {
+      isLoading: false,
+      statusCode: null,
+      featureCode: {
+        text: '',
+        source: '',
+        key: '',
+      },
+    },
   },
   feedback: {
     sendState: SendingState.IDLE,

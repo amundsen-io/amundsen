@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 export const ERROR_MESSAGE = 'Something went wrong...';
 export const EDIT_DESC_TEXT = 'Click to edit description in';
 export const EDIT_OWNERS_TEXT = 'Click to edit owners in';

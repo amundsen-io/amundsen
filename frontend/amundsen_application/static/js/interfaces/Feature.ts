@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { User } from './User';
 import { Badge } from './Badges';
 import { Tag } from './Tags';
@@ -50,4 +53,10 @@ export interface FeatureSampleQueryParams {
   feature_name: string;
   feature_group: string;
   version: string;
+}
+
+export interface FeatureCode {
+  key: string;
+  source: string;
+  text: string;
 }
