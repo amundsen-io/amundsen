@@ -33,7 +33,7 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
 }: FeatureListItemProps) => {
   let source = ''
   if (feature.availability) {
-    const source = feature.availability.length > 0 ? feature.availability[0] : ''
+    source = feature.availability.length > 0 ? feature.availability[0] : ''
   }
 
   return (

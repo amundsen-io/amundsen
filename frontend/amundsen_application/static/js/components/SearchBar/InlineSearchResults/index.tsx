@@ -160,8 +160,10 @@ export class InlineSearchResults extends React.Component<
         return getSourceIconClass(dashboard.product, resourceType);
       case ResourceType.feature:
         const feature = result as FeatureResource;
-        const source =
-          feature.availability.length > 0 ? feature.availability[0] : '';
+        let source = '';
+        if (feature.availability) {
+          source = feature.availability.length > 0 ? feature.availability[0] : '';
+        }
         return getSourceIconClass(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
