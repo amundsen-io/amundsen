@@ -7,22 +7,43 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import * as ReactMarkdown from 'react-markdown';
 
-import { FeatureMetadata } from 'interfaces/Feature';
-import { GlobalState } from 'ducks/rootReducer';
-import { getFeature } from 'ducks/feature/reducer';
-import { GetFeatureRequest } from 'ducks/feature/types';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import Breadcrumb from 'components/Breadcrumb';
+import { GlobalState } from 'ducks/rootReducer';
+import {
+  FeatureCodeState,
+  getFeature,
+  getFeatureCode,
+} from 'ducks/feature/reducer';
+import { GetFeatureCodeRequest, GetFeatureRequest } from 'ducks/feature/types';
+import { FeatureMetadata } from 'interfaces/Feature';
+import { ResourceType } from 'interfaces/Resources';
+import { logAction } from 'utils/analytics';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getSourceDisplayName } from 'config/config-utils';
-import { ResourceType } from 'interfaces/Resources';
 
+import { GenerationCode } from './GenerationCode';
 import './styles.scss';
+import {
+  DATA_TYPE_TITLE,
+  DESCRIPTION_TITLE,
+  ENTITY_TITLE,
+  FEATURE_GROUP_TITLE,
+  FEATURE_TAB,
+  GEN_CODE_TAB_TITLE,
+  LAST_UPDATED_TITLE,
+  OWNERS_TITLE,
+  PARTITION_KEY_TITLE,
+  SOURCE_TITLE,
+  VERSION_TITLE,
+} from './constants';
 
 interface StateFromProps {
   isLoading: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
+  featureCode: FeatureCodeState;
 }
 
 export interface DispatchFromProps {
@@ -31,6 +52,7 @@ export interface DispatchFromProps {
     index: string,
     source: string
   ) => GetFeatureRequest;
+  getFeatureCodeDispatch: (key: string) => GetFeatureCodeRequest;
 }
 
 interface FeatureRouteParams {
@@ -42,10 +64,6 @@ interface FeatureRouteParams {
 export type FeaturePageProps = RouteComponentProps<FeatureRouteParams> &
   StateFromProps &
   DispatchFromProps;
-
-export function renderTabs() {
-  return null;
-}
 
 const FeaturePageLoader: React.FC = () => (
   <div className="resource-detail-layout feature-page">
@@ -118,13 +136,42 @@ const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
+export function renderTabs(featureCode) {
+  const tabInfo: TabInfo[] = [];
+  tabInfo.push({
+    content: (
+      <GenerationCode
+        isLoading={featureCode.isLoading}
+        featureCode={featureCode.featureCode}
+      />
+    ),
+    key: FEATURE_TAB.GEN_CODE,
+    title: GEN_CODE_TAB_TITLE,
+  });
+  return (
+    <TabsComponent
+      tabs={tabInfo}
+      defaultTab={FEATURE_TAB.GEN_CODE}
+      onSelect={(key) => {
+        logAction({
+          command: 'click',
+          target_id: 'feature_page_tab',
+          label: key,
+        });
+      }}
+    />
+  );
+}
+
 const getFeatureKey = (group: string, name: string, version: string) =>
   `${group}/${name}/${version}`;
 
 const FeaturePage: React.FC<FeaturePageProps> = ({
   isLoading,
   feature,
+  featureCode,
   getFeatureDispatch,
+  getFeatureCodeDispatch,
   location,
   match,
 }: FeaturePageProps) => {
@@ -136,6 +183,7 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
       const { index, source } = getLoggingParams(location.search);
       setKey(newKey);
       getFeatureDispatch(newKey, index, source);
+      getFeatureCodeDispatch(newKey);
     }
   });
 
@@ -165,7 +213,7 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
       <article className="column-layout-1">
         <aside className="left-panel">
           <section className="metadata-section">
-            <h3 className="section-title text-title-w3">Description</h3>
+            <h3 className="section-title text-title-w3">{DESCRIPTION_TITLE}</h3>
             <div className="markdown-wrapper">
               <ReactMarkdown>{feature.description}</ReactMarkdown>
             </div>
@@ -173,19 +221,23 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
           <section className="column-layout-2">
             <section className="left-panel">
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Entity</h3>
+                <h3 className="section-title text-title-w3">{ENTITY_TITLE}</h3>
                 {feature.entity}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Data Type</h3>
+                <h3 className="section-title text-title-w3">
+                  {DATA_TYPE_TITLE}
+                </h3>
                 {feature.data_type}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Source</h3>
+                <h3 className="section-title text-title-w3">{SOURCE_TITLE}</h3>
                 {feature.availability}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Last Updated</h3>
+                <h3 className="section-title text-title-w3">
+                  {LAST_UPDATED_TITLE}
+                </h3>
                 <time>
                   {formatDateTimeShort({
                     epochTimestamp: feature.last_updated_timestamp,
@@ -196,28 +248,32 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
             <section className="right-panel">
               {feature.partition_column !== null && (
                 <section className="metadata-section">
-                  <h3 className="section-title text-title-w3">Partition Key</h3>
+                  <h3 className="section-title text-title-w3">
+                    {PARTITION_KEY_TITLE}
+                  </h3>
                   {feature.partition_column}
                 </section>
               )}
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">version</h3>
+                <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
                 {feature.version}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Owners</h3>
+                <h3 className="section-title text-title-w3">{OWNERS_TITLE}</h3>
                 {feature.owners.map((owner) => (
                   <div>{owner.email}</div>
                 ))}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">Feature Group</h3>
+                <h3 className="section-title text-title-w3">
+                  {FEATURE_GROUP_TITLE}
+                </h3>
                 {feature.feature_group}
               </section>
             </section>
           </section>
         </aside>
-        <main className="right-panel">{renderTabs()}</main>
+        <main className="right-panel">{renderTabs(featureCode)}</main>
       </article>
     </div>
   );
@@ -227,10 +283,17 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.feature.isLoading,
   statusCode: state.feature.statusCode,
   feature: state.feature.feature,
+  featureCode: state.feature.featureCode,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
-  bindActionCreators({ getFeatureDispatch: getFeature }, dispatch);
+  bindActionCreators(
+    {
+      getFeatureDispatch: getFeature,
+      getFeatureCodeDispatch: getFeatureCode,
+    },
+    dispatch
+  );
 
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,

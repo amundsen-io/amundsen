@@ -1,10 +1,14 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import * as qs from 'simple-query-string';
 
 import {
-  PreviewData,
+  FeatureCode,
   FeatureMetadata,
   FeatureSampleQueryParams,
+  PreviewData,
 } from 'interfaces';
 
 export type GetFeatureAPI = {
@@ -58,5 +62,31 @@ export function getPreviewData(queryParams: FeatureSampleQueryParams) {
       }
       const status = response ? response.status : null;
       return Promise.reject({ data, status });
+    });
+}
+
+export type GetFeatureCodeAPI = {
+  msg: string;
+  featureCode: FeatureCode;
+};
+export function getFeatureCode(key: string) {
+  const queryParams = qs.stringify({ key });
+  return axios
+    .get(`${FEATURE_BASE}/get_feature_generation_code?${queryParams}`)
+    .then((response: AxiosResponse<GetFeatureCodeAPI>) => {
+      const { data, status } = response;
+      return {
+        featureCode: data,
+        statusCode: status,
+      };
+    })
+    .catch((e) => {
+      const { response } = e;
+      const statusMessage = response.data?.msg;
+      const statusCode = response?.status || 500;
+      return Promise.reject({
+        statusCode,
+        statusMessage,
+      });
     });
 }

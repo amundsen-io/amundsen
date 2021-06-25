@@ -1,9 +1,17 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import reducer, {
   getFeature,
   getFeatureFailure,
   getFeatureSuccess,
   FeatureReducerState,
   initialFeatureState,
+  initialFeatureCodeState,
+  emptyFeatureCode,
+  getFeatureCode,
+  getFeatureCodeSuccess,
+  getFeatureCodeFailure,
 } from 'ducks/feature/reducer';
 import { featureMetadata } from '../../fixtures/metadata/feature';
 
@@ -12,8 +20,9 @@ describe('feature reducer', () => {
   beforeEach(() => {
     testState = {
       isLoading: false,
-      statusCode: 200,
+      statusCode: null,
       feature: initialFeatureState,
+      featureCode: initialFeatureCodeState,
     };
   });
 
@@ -42,6 +51,7 @@ describe('feature reducer', () => {
       isLoading: false,
       statusCode: 202,
       feature: featureMetadata,
+      featureCode: initialFeatureCodeState,
     });
   });
 
@@ -57,6 +67,60 @@ describe('feature reducer', () => {
       isLoading: false,
       statusCode: 500,
       feature: initialFeatureState,
+      featureCode: initialFeatureCodeState,
+    });
+  });
+
+  it('should handle getFeatureCode.REQUEST', () => {
+    expect(reducer(testState, getFeatureCode('testKey'))).toEqual({
+      ...testState,
+      featureCode: {
+        isLoading: true,
+        statusCode: null,
+        featureCode: emptyFeatureCode,
+      },
+    });
+  });
+
+  it('should handle GetFeatureCode.SUCCESS', () => {
+    const response = {
+      featureCode: {
+        key: 'testKey',
+        source: 'testSource',
+        text: 'testText',
+      },
+      statusCode: 202,
+    };
+
+    expect(reducer(testState, getFeatureCodeSuccess(response))).toEqual({
+      isLoading: false,
+      statusCode: null,
+      feature: initialFeatureState,
+      featureCode: {
+        featureCode: response.featureCode,
+        statusCode: response.statusCode,
+        isLoading: false,
+      },
+    });
+  });
+
+  it('should handle GetFeatureCode.FAILURE', () => {
+    expect(
+      reducer(
+        testState,
+        getFeatureCodeFailure({
+          statusCode: 500,
+        })
+      )
+    ).toEqual({
+      isLoading: false,
+      statusCode: null,
+      feature: initialFeatureState,
+      featureCode: {
+        featureCode: emptyFeatureCode,
+        statusCode: 500,
+        isLoading: false,
+      },
     });
   });
 });
