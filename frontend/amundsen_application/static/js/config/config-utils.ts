@@ -81,7 +81,7 @@ export function getResourceNotices(
 
   if (notices && notices[resourceName]) {
     const thisNotice = notices[resourceName];
-    if (typeof thisNotice.messageHtml !== 'string') {
+    if (typeof thisNotice.messageHtml === 'function') {
       thisNotice.messageHtml = thisNotice.messageHtml(resourceName);
     }
     return thisNotice;
@@ -109,7 +109,7 @@ export function getResourceNotices(
       }
     });
     if (noticeFromWildcard) {
-      if (typeof noticeFromWildcard.messageHtml !== 'string') {
+      if (typeof noticeFromWildcard.messageHtml === 'function') {
         noticeFromWildcard.messageHtml = noticeFromWildcard.messageHtml(
           resourceName
         );
