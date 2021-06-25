@@ -154,13 +154,13 @@ export class InlineSearchResults extends React.Component<
     resourceType: ResourceType,
     result: Resource
   ): string => {
+    let source = '';
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return getSourceIconClass(dashboard.product, resourceType);
       case ResourceType.feature:
         const feature = result as FeatureResource;
-        let source = '';
         if (feature.availability) {
           source =
             feature.availability.length > 0 ? feature.availability[0] : '';
@@ -239,13 +239,13 @@ export class InlineSearchResults extends React.Component<
     resourceType: ResourceType,
     result: Resource
   ): string => {
+    let source = '';
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
         return getSourceDisplayName(dashboard.product, resourceType);
       case ResourceType.feature:
         const feature = result as FeatureResource;
-        let source = '';
         if (feature.availability) {
           source =
             feature.availability.length > 0 ? feature.availability[0] : '';
