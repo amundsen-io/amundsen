@@ -1,8 +1,8 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
+import logging
 from typing import Dict, List  # noqa: F401
-
+LOGGER = logging.getLogger(__name__)
 
 # These can move to a configuration when we have custom use cases outside of these default values
 valid_search_fields = {
@@ -23,9 +23,9 @@ valid_search_fields = {
     'feature': {
         'badges',
         'entity',
-        'name',
-        'group',
-        'tag'
+        'feature_name',
+        'feature_group',
+        'tags'
     }
 }
 
@@ -68,6 +68,7 @@ def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/dashboard/search_dashboard_filter.yml
     """
+    LOGGER.info(filters)
     filter_payload = {}
     for category in valid_search_fields.get(resource, {}):
         values = filters.get(category)
