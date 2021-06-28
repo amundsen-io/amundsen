@@ -17,6 +17,12 @@ const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
 const hasWildcard = (n) => n.indexOf(WILDCARD_SIGN) > -1;
+const withComputedMessage = (notice: NoticeType, resourceName) => {
+  if (typeof notice.messageHtml === 'function') {
+    notice.messageHtml = notice.messageHtml(resourceName);
+  }
+  return notice;
+};
 
 /**
  * Returns the display name for a given source id for a given resource type.
@@ -81,10 +87,7 @@ export function getResourceNotices(
 
   if (notices && notices[resourceName]) {
     const thisNotice = notices[resourceName];
-    if (typeof thisNotice.messageHtml === 'function') {
-      thisNotice.messageHtml = thisNotice.messageHtml(resourceName);
-    }
-    return thisNotice;
+    return withComputedMessage(thisNotice, resourceName);
   }
 
   const wildcardNoticesKeys = Object.keys(notices).filter(hasWildcard);
@@ -112,12 +115,7 @@ export function getResourceNotices(
     });
     if (hasNotice) {
       const noticeFromWildcard: NoticeType = wildcardNoticesArray[0];
-      if (typeof noticeFromWildcard.messageHtml === 'function') {
-        noticeFromWildcard.messageHtml = noticeFromWildcard.messageHtml(
-          resourceName
-        );
-      }
-      return noticeFromWildcard;
+      return withComputedMessage(noticeFromWildcard, resourceName);
     }
   }
 
