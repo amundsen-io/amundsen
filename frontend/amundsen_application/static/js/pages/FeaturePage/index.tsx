@@ -72,7 +72,7 @@ export type FeaturePageProps = RouteComponentProps<FeatureRouteParams> &
   StateFromProps &
   DispatchFromProps;
 
-const FeaturePageLoader: React.FC = () => (
+export const FeaturePageLoader: React.FC = () => (
   <div className="resource-detail-layout feature-page">
     <header className="resource-header">
       <section className="header-section">
@@ -173,7 +173,7 @@ export function renderTabs(featureCode) {
 const getFeatureKey = (group: string, name: string, version: string) =>
   `${group}/${name}/${version}`;
 
-const FeaturePage: React.FC<FeaturePageProps> = ({
+export const FeaturePage: React.FC<FeaturePageProps> = ({
   isLoading,
   feature,
   featureCode,

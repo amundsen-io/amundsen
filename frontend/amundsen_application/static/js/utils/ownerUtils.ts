@@ -46,13 +46,13 @@ export function createOwnerUpdatePayload(
   resourceKey: string,
   payload: UpdateOwnerPayload
 ) {
-  let url;
-  if (resourceType === ResourceType.table) {
-    url = `${API.API_PATH}/update_table_owner`;
-  } else if (resourceType === ResourceType.feature) {
-    url = `${API.API_PATH}/update_feature_owner`;
-  } else {
-    throw new Error(`${resourceType} is not supported`);
+  const updateOwnerEndpointMap = {
+    [ResourceType.table]: `${API.API_PATH}/update_table_owner`,
+    [ResourceType.feature]: `${API.API_PATH}/update_feature_owner`,
+  };
+  const url = updateOwnerEndpointMap[resourceType];
+  if (url === undefined) {
+    throw new Error(`Update Owner not supported for ${resourceType}`);
   }
   return {
     url,

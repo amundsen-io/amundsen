@@ -31,7 +31,7 @@ export function* updateResourceTagsWorker(
     const { tagArray, resourceType, uriKey } = action.payload;
     yield all(
       tagArray.map((tagObject) =>
-        call(API.updateTableTag, tagObject, resourceType, uriKey)
+        call(API.updateResourceTag, tagObject, resourceType, uriKey)
       )
     );
     const newTags = yield call(API.getResourceTags, resourceType, uriKey);

@@ -45,18 +45,19 @@ export function getResourceTags(resourceType, uriKey: string) {
 
 /* TODO: Typing this method generates redux-saga related type errors that needs more dedicated debugging */
 // TODO - Unify this API and split the logic in the Flask layer.
-export function updateTableTag(
+export function updateResourceTag(
   tagObject,
   resourceType: ResourceType,
   uriKey: string
 ) {
-  let url = '';
-  if (resourceType === ResourceType.table) {
-    url = `${API_PATH}/update_table_tags`;
-  } else if (resourceType === ResourceType.dashboard) {
-    url = `${API_PATH}/update_dashboard_tags`;
-  } else if (resourceType === ResourceType.feature) {
-    url = `${API_PATH}/update_feature_tags`;
+  const updateTagEndpointMap = {
+    [ResourceType.table]: `${API_PATH}/update_table_tags`,
+    [ResourceType.dashboard]: `${API_PATH}/update_dashboard_tags`,
+    [ResourceType.feature]: `${API_PATH}/update_feature_tags`,
+  };
+  const url = updateTagEndpointMap[resourceType];
+  if (url === undefined) {
+    throw new Error(`Update Tag not supported for ${resourceType}`);
   }
   return axios({
     url,

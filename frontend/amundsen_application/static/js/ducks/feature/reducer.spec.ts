@@ -12,6 +12,7 @@ import reducer, {
   getFeatureCode,
   getFeatureCodeSuccess,
   getFeatureCodeFailure,
+  getFeatureDescriptionSuccess,
 } from 'ducks/feature/reducer';
 import { featureMetadata } from '../../fixtures/metadata/feature';
 
@@ -96,9 +97,7 @@ describe('feature reducer', () => {
     };
 
     expect(reducer(testState, getFeatureCodeSuccess(response))).toEqual({
-      isLoading: false,
-      statusCode: null,
-      feature: initialFeatureState,
+      ...testState,
       featureCode: {
         featureCode: response.featureCode,
         statusCode: response.statusCode,
@@ -116,13 +115,39 @@ describe('feature reducer', () => {
         })
       )
     ).toEqual({
-      isLoading: false,
-      statusCode: null,
-      feature: initialFeatureState,
+      ...testState,
       featureCode: {
         featureCode: emptyFeatureCode,
         statusCode: 500,
         isLoading: false,
+      },
+    });
+  });
+
+  it('should handle GetFeatureDescription.SUCCESS', () => {
+    const response = {
+      description: 'testDescription',
+      statusCode: 200,
+    };
+    expect(reducer(testState, getFeatureDescriptionSuccess(response))).toEqual({
+      ...testState,
+      feature: {
+        ...testState.feature,
+        description: response.description,
+      },
+    });
+  });
+
+  it('should handle GetFeatureCode.FAILURE', () => {
+    const response = {
+      description: 'testDescription',
+      statusCode: 500,
+    };
+    expect(reducer(testState, getFeatureDescriptionSuccess(response))).toEqual({
+      ...testState,
+      feature: {
+        ...testState.feature,
+        description: response.description,
       },
     });
   });

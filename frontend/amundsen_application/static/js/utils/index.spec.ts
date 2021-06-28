@@ -718,4 +718,28 @@ describe('ownerUtils', () => {
       });
     });
   });
+  describe('createOwnerUpdatePayload ', () => {
+    it('correctly reformats users into the owners dict', () => {
+      const mockResourceType = ResourceType.table;
+      const mockKey = 'testKey';
+      const mockPayload = {
+        id: 'testId',
+        method: UpdateMethod.PUT,
+      };
+      expect(
+        OwnerUtils.createOwnerUpdatePayload(
+          mockResourceType,
+          mockKey,
+          mockPayload
+        )
+      ).toEqual({
+        url: `${API_PATH}/update_table_owner`,
+        method: mockPayload.method,
+        data: {
+          key: mockKey,
+          owner: mockPayload.id,
+        },
+      });
+    });
+  });
 });
