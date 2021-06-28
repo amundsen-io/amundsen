@@ -29,12 +29,14 @@ export function getOwnerItemPropsFromUsers(
       isExternalLink = false;
       profileLink = `/user/${user_id}?source=${profileLinkSource}`;
     }
-    obj[user_id] = {
-      label: display_name,
-      link: profileLink,
-      isExternal: isExternalLink,
+    return {
+      ...obj,
+      [user_id]: {
+        label: display_name,
+        link: profileLink,
+        isExternal: isExternalLink,
+      },
     };
-    return obj;
   }, {});
 }
 
