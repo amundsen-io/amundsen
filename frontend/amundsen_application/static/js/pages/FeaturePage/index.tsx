@@ -170,7 +170,7 @@ export function renderTabs(featureCode) {
   );
 }
 
-const getFeatureKey = (group: string, name: string, version: string) =>
+export const getFeatureKey = (group: string, name: string, version: string) =>
   `${group}/${name}/${version}`;
 
 export const FeaturePage: React.FC<FeaturePageProps> = ({

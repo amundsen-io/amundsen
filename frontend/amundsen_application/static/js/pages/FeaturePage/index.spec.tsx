@@ -6,12 +6,16 @@ import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
 import { featureCode, featureMetadata } from 'fixtures/metadata/feature';
+import { emptyFeatureCode } from 'ducks/feature/reducer';
+import TabsComponent from 'components/TabsComponent';
 import {
   FeaturePageLoader,
   FeaturePage,
   FeaturePageProps,
   mapDispatchToProps,
   mapStateToProps,
+  getFeatureKey,
+  renderTabs,
 } from './index';
 
 const setupLoader = () => {
@@ -40,6 +44,14 @@ describe('FeaturePageLoader', () => {
   });
 });
 
+describe('renderTabs', () => {
+  it('returns returns a tabs component', () => {
+    const mockFeatureCode = featureCode;
+    const result: JSX.Element = renderTabs(mockFeatureCode);
+    expect(shallow(result).find(TabsComponent).exists).toBeTruthy();
+  });
+});
+
 const setup = (
   propOverrides?: Partial<FeaturePageProps>,
   location?: Partial<History.Location>
@@ -57,6 +69,27 @@ const setup = (
   const wrapper = shallow<FeaturePage>(<FeaturePage {...props} />);
   return { props, wrapper };
 };
+
+// TODO - expand test coverage of this component
+describe('FeaturePage', () => {
+  it('does not throw', () => {
+    const { props, wrapper } = setup();
+    expect(() => {
+      setup();
+    }).not.toThrow();
+  });
+});
+
+describe('getFeatureKey', () => {
+  it('returns the expected key format', () => {
+    const mockGroup = 'test_group';
+    const mockName = 'test_name';
+    const mockVersion = '2';
+    const expected = 'test_group/test_name/2';
+    const actual = getFeatureKey(mockGroup, mockName, mockVersion);
+    expect(actual).toEqual(expected);
+  });
+});
 
 describe('mapStateToProps', () => {
   it('returns expected props', () => {
