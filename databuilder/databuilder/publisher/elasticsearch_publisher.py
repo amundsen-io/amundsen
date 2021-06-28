@@ -5,11 +5,11 @@ import json
 import logging
 from typing import List
 
+from amundsen_common.models.index_map import TABLE_INDEX_MAP
 from elasticsearch.exceptions import NotFoundError
 from pyhocon import ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
-from databuilder.publisher.elasticsearch_constants import TABLE_ELASTICSEARCH_INDEX_MAPPING
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class ElasticsearchPublisher(Publisher):
     # config to control how many max documents to publish at a time
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
 
-    DEFAULT_ELASTICSEARCH_INDEX_MAPPING = TABLE_ELASTICSEARCH_INDEX_MAPPING
+    DEFAULT_ELASTICSEARCH_INDEX_MAPPING = TABLE_INDEX_MAP
 
     def __init__(self) -> None:
         super(ElasticsearchPublisher, self).__init__()

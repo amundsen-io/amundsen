@@ -18,6 +18,8 @@ class FeatureWatermark(GraphSerializable):
     """
     NODE_LABEL = 'Feature_Watermark'
 
+    TYPE_ATTR = 'watermark_type'
+
     WATERMARK_FEATURE_RELATION = 'BELONG_TO_FEATURE'
     FEATURE_WATERMARK_RELATION = 'WATERMARK'
 
@@ -67,6 +69,7 @@ class FeatureWatermark(GraphSerializable):
             label=FeatureWatermark.NODE_LABEL,
             attributes={
                 TIMESTAMP_PROPERTY: self.timestamp,
+                FeatureWatermark.TYPE_ATTR: self.wm_type,
             }
         )
 

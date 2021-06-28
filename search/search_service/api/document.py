@@ -10,8 +10,10 @@ from flasgger import swag_from
 from flask_restful import Resource, reqparse
 from marshmallow.exceptions import ValidationError
 
+from search_service.api.feature import FEATURE_INDEX
 from search_service.api.table import TABLE_INDEX
 from search_service.api.user import USER_INDEX
+from search_service.models.feature import FeatureSchema
 from search_service.models.table import TableSchema
 from search_service.models.user import UserSchema
 from search_service.proxy import get_proxy_client
@@ -64,12 +66,11 @@ class BaseDocumentsAPI(Resource):
         args = self.parser.parse_args()
 
         try:
-            table_dict_list = [literal_eval(table_str) for table_str in args.get('data')]
+            data_list = [literal_eval(item) for item in args.get('data')]
             try:
-                data = self.schema(many=True).load(table_dict_list)
+                data = self.schema(many=True).load(data_list)
             except ValidationError as e:
                 logging.warning("Invalid input: %s", e.messages)
-
                 raise ValidationError("Invalid input")
 
             results = self.proxy.create_document(data=data, index=args.get('index'))
@@ -91,9 +92,9 @@ class BaseDocumentsAPI(Resource):
         args = self.parser.parse_args()
 
         try:
-            table_dict_list = [literal_eval(table_str) for table_str in args.get('data')]
+            data_list = [literal_eval(item) for item in args.get('data')]
             try:
-                data = self.schema(many=True).load(table_dict_list)
+                data = self.schema(many=True).load(data_list)
             except ValidationError as e:
                 logging.warning("Invalid input: %s", e.messages)
 
@@ -118,17 +119,6 @@ class DocumentTableAPI(BaseDocumentAPI):
         return super().delete(document_id=document_id)
 
 
-class DocumentUserAPI(BaseDocumentAPI):
-
-    def __init__(self) -> None:
-        super().__init__(schema=UserSchema, proxy=get_proxy_client())
-        self.parser.add_argument('index', required=False, default=USER_INDEX, type=str)
-
-    @swag_from('swagger_doc/document/user_delete.yml')
-    def delete(self, *, document_id: str) -> Tuple[Any, int]:
-        return super().delete(document_id=document_id)
-
-
 class DocumentTablesAPI(BaseDocumentsAPI):
 
     def __init__(self) -> None:
@@ -144,6 +134,17 @@ class DocumentTablesAPI(BaseDocumentsAPI):
         return super().put()
 
 
+class DocumentUserAPI(BaseDocumentAPI):
+
+    def __init__(self) -> None:
+        super().__init__(schema=UserSchema, proxy=get_proxy_client())
+        self.parser.add_argument('index', required=False, default=USER_INDEX, type=str)
+
+    @swag_from('swagger_doc/document/user_delete.yml')
+    def delete(self, *, document_id: str) -> Tuple[Any, int]:
+        return super().delete(document_id=document_id)
+
+
 class DocumentUsersAPI(BaseDocumentsAPI):
 
     def __init__(self) -> None:
@@ -155,5 +156,31 @@ class DocumentUsersAPI(BaseDocumentsAPI):
         return super().post()
 
     @swag_from('swagger_doc/document/user_put.yml')
+    def put(self) -> Tuple[Any, int]:
+        return super().put()
+
+
+class DocumentFeatureAPI(BaseDocumentAPI):
+
+    def __init__(self) -> None:
+        super().__init__(schema=FeatureSchema, proxy=get_proxy_client())
+        self.parser.add_argument('index', required=False, default=FEATURE_INDEX, type=str)
+
+    @swag_from('swagger_doc/document/feature_delete.yml')
+    def delete(self, *, document_id: str) -> Tuple[Any, int]:
+        return super().delete(document_id=document_id)
+
+
+class DocumentFeaturesAPI(BaseDocumentsAPI):
+
+    def __init__(self) -> None:
+        super().__init__(schema=FeatureSchema, proxy=get_proxy_client())
+        self.parser.add_argument('index', required=False, default=FEATURE_INDEX, type=str)
+
+    @swag_from('swagger_doc/document/feature_post.yml')
+    def post(self) -> Tuple[Any, int]:
+        return super().post()
+
+    @swag_from('swagger_doc/document/feature_put.yml')
     def put(self) -> Tuple[Any, int]:
         return super().put()

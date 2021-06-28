@@ -8,7 +8,9 @@ from typing import (
     Any, Dict, List, Union,
 )
 
-from amundsen_common.models.index_map import TABLE_INDEX_MAP, USER_INDEX_MAP
+from amundsen_common.models.index_map import (
+    FEATURE_INDEX_MAP, TABLE_INDEX_MAP, USER_INDEX_MAP,
+)
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch_dsl import Search, query
@@ -16,9 +18,11 @@ from flask import current_app
 
 from search_service import config
 from search_service.api.dashboard import DASHBOARD_INDEX
+from search_service.api.feature import FEATURE_INDEX
 from search_service.api.table import TABLE_INDEX
 from search_service.api.user import USER_INDEX
 from search_service.models.dashboard import Dashboard, SearchDashboardResult
+from search_service.models.feature import Feature, SearchFeatureResult
 from search_service.models.search_result import SearchResult
 from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
@@ -31,36 +35,47 @@ DEFAULT_ES_INDEX = 'table_search_index'
 
 LOGGING = logging.getLogger(__name__)
 
-# mapping to translate request for table resources
-TABLE_MAPPING = {
-    'badges': 'badges',
-    'tag': 'tags',
-    'schema': 'schema.raw',
-    'table': 'name.raw',
-    'column': 'column_names.raw',
-    'database': 'database.raw',
-    'cluster': 'cluster.raw'
-}
-
-# Maps payload to a class
-TAG_MAPPING = {
-    'badges': Tag,
-    'tags': Tag
-}
-
-# mapping to translate request for dashboard resources
-DASHBOARD_MAPPING = {
-    'group_name': 'group_name.raw',
-    'name': 'name.raw',
-    'product': 'product',
-    'tag': 'tags',
-}
-
 
 class ElasticsearchProxy(BaseProxy):
     """
     ElasticSearch connection handler
     """
+    # mapping to translate request for table resources
+    TABLE_MAPPING = {
+        'badges': 'badges',
+        'tag': 'tags',
+        'schema': 'schema.raw',
+        'table': 'name.raw',
+        'column': 'column_names.raw',
+        'database': 'database.raw',
+        'cluster': 'cluster.raw'
+    }
+
+    # Maps payload to a class
+    TAG_MAPPING = {
+        'badges': Tag,
+        'tags': Tag
+    }
+
+    # mapping to translate request for dashboard resources
+    DASHBOARD_MAPPING = {
+        'group_name': 'group_name.raw',
+        'name': 'name.raw',
+        'product': 'product',
+        'tag': 'tags',
+    }
+
+    # mapping to translate request for feature resources
+    FEATURE_MAPPING = {
+        'feature_group': 'feature_group.raw',
+        'feature_name': 'feature_name.raw',
+        'entity': 'entity',
+        'status': 'status',
+        'version': 'version',
+        'availability': 'availability.raw',
+        'tags': 'tags',
+        'badges': 'badges'
+    }
 
     def __init__(self, *,
                  host: str = None,
@@ -87,6 +102,112 @@ class ElasticsearchProxy(BaseProxy):
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
         self.page_size = page_size
+
+    def get_user_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["full_name.raw^30",
+                                   "full_name^5",
+                                   "first_name.raw^5",
+                                   "last_name.raw^5",
+                                   "first_name^3",
+                                   "last_name^3",
+                                   "email^3"],
+                        "operator": "and"
+                    }
+                }
+            }
+        }
+
+    def get_table_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["display_name^1000",
+                                   "name.raw^75",
+                                   "name^5",
+                                   "schema^3",
+                                   "description^3",
+                                   "column_names^2",
+                                   "column_descriptions",
+                                   "tags",
+                                   "badges",
+                                   "programmatic_descriptions"],
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_dashboard_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["name.raw^75",
+                                   "name^7",
+                                   "group_name.raw^15",
+                                   "group_name^7",
+                                   "description^3",
+                                   "query_names^3",
+                                   "chart_names^2"]
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_feature_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["feature_name.raw^25",
+                                   "feature_name^7",
+                                   "feature_group.raw^15",
+                                   "feature_group^7",
+                                   "version^7",
+                                   "description^3",
+                                   "status",
+                                   "entity",
+                                   "tags",
+                                   "badges"]
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_filter_search_query(self, query_string: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "query_string": {
+                        "query": query_string
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
 
     def _get_search_result(self, page_index: int,
                            client: Search,
@@ -138,7 +259,7 @@ class ElasticsearchProxy(BaseProxy):
                         'badges': [],
                         'total_usage': 0
                     },
-                    'mata': {
+                    'meta': {
                         'index': 'table index',
                         'id': 'table id',
                         'type': 'type'
@@ -162,9 +283,9 @@ class ElasticsearchProxy(BaseProxy):
                                    results=results)
 
     def _get_instance(self, attr: str, val: Any) -> Any:
-        if attr in TAG_MAPPING:
+        if attr in self.TAG_MAPPING:
             # maps a given badge or tag to a tag class
-            return [TAG_MAPPING[attr](tag_name=property_val) for property_val in val]  # type: ignore
+            return [self.TAG_MAPPING[attr](tag_name=property_val) for property_val in val]  # type: ignore
         else:
             return val
 
@@ -195,56 +316,6 @@ class ElasticsearchProxy(BaseProxy):
                                        model=model,
                                        search_result_model=search_result_model)
 
-    @timer_with_counter
-    def fetch_table_search_results(self, *,
-                                   query_term: str,
-                                   page_index: int = 0,
-                                   index: str = '') -> SearchTableResult:
-        """
-        Query Elasticsearch and return results as list of Table objects
-
-        :param query_term: search query term
-        :param page_index: index of search page user is currently on
-        :param index: current index for search. Provide different index for different resource.
-        :return: SearchResult Object
-        """
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
-        if not query_term:
-            # return empty result for blank query term
-            return SearchTableResult(total_results=0, results=[])
-
-        s = Search(using=self.elasticsearch, index=current_index)
-        query_name = {
-            "function_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_term,
-                        "fields": ["display_name^1000",
-                                   "name.raw^75",
-                                   "name^5",
-                                   "schema^3",
-                                   "description^3",
-                                   "column_names^2",
-                                   "column_descriptions",
-                                   "tags",
-                                   "badges",
-                                   "programmatic_descriptions"],
-                    }
-                },
-                "field_value_factor": {
-                    "field": "total_usage",
-                    "modifier": "log2p"
-                }
-            }
-        }
-
-        return self._search_helper(page_index=page_index,
-                                   client=s,
-                                   query_name=query_name,
-                                   model=Table,
-                                   search_result_model=SearchTableResult)
-
     @staticmethod
     def get_model_by_index(index: str) -> Any:
         if index == TABLE_INDEX:
@@ -253,17 +324,20 @@ class ElasticsearchProxy(BaseProxy):
             return User
         elif index == DASHBOARD_INDEX:
             return Dashboard
+        elif index == FEATURE_INDEX:
+            return Feature
 
         raise Exception('Unable to map given index to a valid model')
 
-    @staticmethod
-    def parse_filters(filter_list: Dict,
-                      index: str) -> str:
+    @classmethod
+    def parse_filters(cls, filter_list: Dict, index: str) -> str:
         query_list = []  # type: List[str]
         if index == TABLE_INDEX:
-            mapping = TABLE_MAPPING
+            mapping = cls.TABLE_MAPPING
         elif index == DASHBOARD_INDEX:
-            mapping = DASHBOARD_MAPPING
+            mapping = cls.DASHBOARD_MAPPING
+        elif index == FEATURE_INDEX:
+            mapping = cls.FEATURE_MAPPING
         else:
             raise Exception(f'index {index} doesnt exist nor support search filter')
         for category, item_list in filter_list.items():
@@ -313,6 +387,15 @@ class ElasticsearchProxy(BaseProxy):
                          f'OR tags:(*{query_term}*) OR tags:({query_term}) ' \
                          f'OR badges:(*{query_term}*) OR badges:({query_term}) ' \
                          f'OR product:(*{query_term}*) OR product:({query_term}))'
+        elif index == FEATURE_INDEX:
+            query_term = f'(feature_name:(*{query_term}*) OR feature_name:({query_term}) ' \
+                         f'OR feature_group:(*{query_term}*) OR feature_group:({query_term}) ' \
+                         f'OR version:(*{query_term}*) OR version:({query_term}) ' \
+                         f'OR description:(*{query_term}*) OR description:({query_term}) ' \
+                         f'OR status:(*{query_term}*) OR status:({query_term}) ' \
+                         f'OR entity:(*{query_term}*) OR entity:({query_term}) ' \
+                         f'OR badges:(*{query_term}*) OR badges:({query_term}) ' \
+                         f'OR tags:(*{query_term}*) OR tags:({query_term}))'
         else:
             raise Exception(f'index {index} doesnt exist nor support search filter')
         return query_term
@@ -386,9 +469,10 @@ class ElasticsearchProxy(BaseProxy):
                                          search_request: dict,
                                          page_index: int = 0,
                                          index: str = '') -> Union[SearchDashboardResult,
-                                                                   SearchTableResult]:
+                                                                   SearchTableResult,
+                                                                   SearchFeatureResult]:
         """
-        Query Elasticsearch and return results as list of Table objects
+        Query Elasticsearch with filtering and return list of objects
         :param search_request: A json representation of search request
         :param page_index: index of search page user is currently on
         :param index: current index for search. Provide different index for different resource.
@@ -400,6 +484,8 @@ class ElasticsearchProxy(BaseProxy):
             search_model = SearchDashboardResult  # type: Any
         elif current_index == TABLE_INDEX:
             search_model = SearchTableResult
+        elif current_index == FEATURE_INDEX:
+            search_model = SearchFeatureResult
         else:
             raise RuntimeError(f'the {index} doesnt have search filter support')
         if not search_request:
@@ -417,19 +503,7 @@ class ElasticsearchProxy(BaseProxy):
 
         s = Search(using=self.elasticsearch, index=current_index)
 
-        query_name = {
-            "function_score": {
-                "query": {
-                    "query_string": {
-                        "query": query_string
-                    }
-                },
-                "field_value_factor": {
-                    "field": "total_usage",
-                    "modifier": "log2p"
-                }
-            }
-        }
+        query_name = self.get_filter_search_query(query_string)
 
         model = self.get_model_by_index(current_index)
         return self._search_helper(page_index=page_index,
@@ -437,6 +511,34 @@ class ElasticsearchProxy(BaseProxy):
                                    query_name=query_name,
                                    model=model,
                                    search_result_model=search_model)
+
+    @timer_with_counter
+    def fetch_table_search_results(self, *,
+                                   query_term: str,
+                                   page_index: int = 0,
+                                   index: str = '') -> SearchTableResult:
+        """
+        Query Elasticsearch and return results as list of Table objects
+
+        :param query_term: search query term
+        :param page_index: index of search page user is currently on
+        :param index: current index for search. Provide different index for different resource.
+        :return: SearchResult Object
+        """
+        current_index = index if index else \
+            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
+        if not query_term:
+            # return empty result for blank query term
+            return SearchTableResult(total_results=0, results=[])
+
+        s = Search(using=self.elasticsearch, index=current_index)
+        query_name = self.get_table_search_query(query_term)
+
+        return self._search_helper(page_index=page_index,
+                                   client=s,
+                                   query_name=query_name,
+                                   model=Table,
+                                   search_result_model=SearchTableResult)
 
     @timer_with_counter
     def fetch_user_search_results(self, *,
@@ -452,23 +554,7 @@ class ElasticsearchProxy(BaseProxy):
         s = Search(using=self.elasticsearch, index=index)
 
         # Don't use any weight(total_follow, total_own, total_use)
-        query_name = {
-            "function_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_term,
-                        "fields": ["full_name.raw^30",
-                                   "full_name^5",
-                                   "first_name.raw^5",
-                                   "last_name.raw^5",
-                                   "first_name^3",
-                                   "last_name^3",
-                                   "email^3"],
-                        "operator": "and"
-                    }
-                }
-            }
-        }
+        query_name = self.get_user_search_query(query_term)
 
         return self._search_helper(page_index=page_index,
                                    client=s,
@@ -497,26 +583,7 @@ class ElasticsearchProxy(BaseProxy):
             return SearchDashboardResult(total_results=0, results=[])
         s = Search(using=self.elasticsearch, index=current_index)
 
-        query_name = {
-            "function_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_term,
-                        "fields": ["name.raw^75",
-                                   "name^7",
-                                   "group_name.raw^15",
-                                   "group_name^7",
-                                   "description^3",
-                                   "query_names^3",
-                                   "chart_names^2"]
-                    }
-                },
-                "field_value_factor": {
-                    "field": "total_usage",
-                    "modifier": "log2p"
-                }
-            }
-        }
+        query_name = self.get_dashboard_search_query(query_term)
 
         return self._search_helper(page_index=page_index,
                                    client=s,
@@ -524,9 +591,36 @@ class ElasticsearchProxy(BaseProxy):
                                    model=Dashboard,
                                    search_result_model=SearchDashboardResult)
 
+    @timer_with_counter
+    def fetch_feature_search_results(self, *,
+                                     query_term: str,
+                                     page_index: int = 0,
+                                     index: str = '') -> SearchFeatureResult:
+        """
+        Query Elasticsearch and return results as list of Feature objects
+
+        :param query_term: search query term
+        :param page_index: index of search page user is currently on
+        :param index: current index for search. Provide different index for different resource.
+        :return: SearchFeatureResult
+        """
+        current_index = index if index else FEATURE_INDEX
+        if not query_term:
+            # return empty result for blank query term
+            return SearchFeatureResult(total_results=0, results=[])
+
+        s = Search(using=self.elasticsearch, index=current_index)
+        query_name = self.get_feature_search_query(query_term)
+
+        return self._search_helper(page_index=page_index,
+                                   client=s,
+                                   query_name=query_name,
+                                   model=Feature,
+                                   search_result_model=SearchFeatureResult)
+
     # The following methods are related to document API that needs to update
     @timer_with_counter
-    def create_document(self, *, data: List[Table], index: str) -> str:
+    def create_document(self, *, data: Union[List[Table], List[User], List[Feature]], index: str) -> str:
         """
         Creates new index in elasticsearch, then routes traffic to the new index
         instead of the old one
@@ -536,13 +630,13 @@ class ElasticsearchProxy(BaseProxy):
         if not index:
             raise Exception('Index cant be empty for creating document')
         if not data:
-            LOGGING.warn('Received no data to upload to Elasticsearch')
+            LOGGING.warn('Received no data to create in Elasticsearch')
             return ''
 
         return self._create_document_helper(data=data, index=index)
 
     @timer_with_counter
-    def update_document(self, *, data: List[Table], index: str) -> str:
+    def update_document(self, *, data: Union[List[Table], List[User], List[Feature]], index: str) -> str:
         """
         Updates the existing index in elasticsearch
         :return: str
@@ -550,7 +644,7 @@ class ElasticsearchProxy(BaseProxy):
         if not index:
             raise Exception('Index cant be empty for updating document')
         if not data:
-            LOGGING.warn('Received no data to upload to Elasticsearch')
+            LOGGING.warn('Received no data to update in Elasticsearch')
             return ''
 
         return self._update_document_helper(data=data, index=index)
@@ -560,12 +654,12 @@ class ElasticsearchProxy(BaseProxy):
         if not index:
             raise Exception('Index cant be empty for deleting document')
         if not data:
-            LOGGING.warn('Received no data to upload to Elasticsearch')
+            LOGGING.warn('Received no data to delete in Elasticsearch')
             return ''
 
         return self._delete_document_helper(data=data, index=index)
 
-    def _create_document_helper(self, data: List[Table], index: str) -> str:
+    def _create_document_helper(self, data: Union[List[Table], List[User], List[Feature]], index: str) -> str:
         # fetch indices that use our chosen alias (should only ever return one in a list)
         indices = self._fetch_old_index(index)
 
@@ -578,7 +672,7 @@ class ElasticsearchProxy(BaseProxy):
 
         return index
 
-    def _update_document_helper(self, data: List[Table], index: str) -> str:
+    def _update_document_helper(self, data: Union[List[Table], List[User], List[Feature]], index: str) -> str:
         # fetch indices that use our chosen alias (should only ever return one in a list)
         indices = self._fetch_old_index(index)
 
@@ -596,7 +690,14 @@ class ElasticsearchProxy(BaseProxy):
         indices = self._fetch_old_index(index)
 
         # set the document type
-        type = User.get_type() if index is USER_INDEX else Table.get_type()
+        if index == USER_INDEX:
+            type = User.get_type()
+        elif index == TABLE_INDEX:
+            type = Table.get_type()
+        elif index == FEATURE_INDEX:
+            type = Feature.get_type()
+        else:
+            raise Exception(f'document deletion not supported for index {index}')
 
         for i in indices:
             # build a list of elasticsearch actions for bulk deletion
@@ -607,7 +708,8 @@ class ElasticsearchProxy(BaseProxy):
 
         return index
 
-    def _build_index_actions(self, data: List[Table], index_key: str) -> List[Dict[str, Any]]:
+    def _build_index_actions(
+            self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
         for item in data:
             index_action = {'index': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}}
@@ -615,7 +717,8 @@ class ElasticsearchProxy(BaseProxy):
             actions.append(item.get_attrs_dict())
         return actions
 
-    def _build_update_actions(self, data: List[Table], index_key: str) -> List[Dict[str, Any]]:
+    def _build_update_actions(
+            self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
 
         for item in data:
@@ -654,10 +757,13 @@ class ElasticsearchProxy(BaseProxy):
 
     def _create_index_helper(self, alias: str) -> str:
         def _get_mapping(alias: str) -> str:
+            # dashboard does not support the document API and is therefore not listed
             if alias is USER_INDEX:
                 return USER_INDEX_MAP
             elif alias is TABLE_INDEX:
                 return TABLE_INDEX_MAP
+            elif alias is FEATURE_INDEX:
+                return FEATURE_INDEX_MAP
             return ''
         index_key = str(uuid.uuid4())
         mapping: str = _get_mapping(alias=alias)

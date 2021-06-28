@@ -74,9 +74,9 @@
     }
   }
 
-  .resource-type {
+  .resource-source {
     flex: 2;
-    margin: auto 24px;
+    margin: auto $spacer-3;
   }
 
   .resource-badges {
@@ -84,11 +84,20 @@
     flex: 3;
     flex-wrap: wrap;
     margin-bottom: auto;
-    margin-left: 24px;
+    margin-left: $spacer-3;
     margin-top: auto;
 
     .flag {
       margin: 4px;
     }
+  }
+
+  .resource-entity {
+    display: flex;
+    flex: 2;
+    flex-wrap: wrap;
+    margin-bottom: auto;
+    margin-left: $spacer-3;
+    margin-top: auto;
   }
 }

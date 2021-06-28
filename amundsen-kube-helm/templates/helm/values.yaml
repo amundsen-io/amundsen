@@ -54,7 +54,7 @@ search:
   # - name: "image-pull-secret"
 
   # search.imageTag -- The image tag of the search container.
-  imageTag: 2.5.1
+  imageTag: 2.6.0
 
   # search.replicas -- How many replicas of the search service to run.
   replicas: 1

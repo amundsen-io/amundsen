@@ -26,6 +26,7 @@ import os
 import uuid
 
 import boto3
+from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_INDEX_MAP
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,9 +38,6 @@ from databuilder.extractor.neptune_search_data_extractor import NeptuneSearchDat
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neptune_csv_loader import FSNeptuneCSVLoader
-from databuilder.publisher.elasticsearch_constants import (
-    DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_ELASTICSEARCH_INDEX_MAPPING,
-)
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.neptune_csv_publisher import NeptuneCSVPublisher
 from databuilder.task.task import DefaultTask
@@ -72,6 +70,12 @@ NEPTUNE_ENDPOINT = '{}:{}'.format(neptune_host, neptune_port)
 
 LOGGER = logging.getLogger(__name__)
 
+session = boto3.Session()
+aws_creds = session.get_credentials()
+aws_access_key = aws_creds.access_key
+aws_access_secret = aws_creds.secret_key
+aws_token = aws_creds.token
+
 
 def run_csv_job(file_loc, job_name, model):
     tmp_folder = '/var/tmp/amundsen/{job_name}'.format(job_name=job_name)
@@ -103,7 +107,11 @@ def run_csv_job(file_loc, job_name, model):
             NeptuneCSVPublisher.AWS_S3_BUCKET_NAME: S3_BUCKET_NAME,
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
-            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name
+            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token
         },
     })
 
@@ -141,7 +149,11 @@ def run_table_column_job(table_path, column_path):
             NeptuneCSVPublisher.AWS_S3_BUCKET_NAME: S3_BUCKET_NAME,
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
-            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name
+            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token
         }
     })
     job = DefaultJob(
@@ -181,6 +193,10 @@ def create_last_updated_job():
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
             NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token,
             'job_publish_tag': 'unique_lastupdated_tag'
         }
     })
@@ -244,7 +260,11 @@ def create_dashboard_tables_job():
             NeptuneCSVPublisher.AWS_S3_BUCKET_NAME: S3_BUCKET_NAME,
             NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH: S3_DATA_PATH,
             NeptuneCSVPublisher.NEPTUNE_HOST: NEPTUNE_ENDPOINT,
-            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name
+            NeptuneCSVPublisher.AWS_IAM_ROLE_NAME: neptune_iam_role_name,
+            NeptuneCSVPublisher.AWS_REGION: AWS_REGION,
+            NeptuneCSVPublisher.AWS_ACCESS_KEY: aws_access_key,
+            NeptuneCSVPublisher.AWS_SECRET_ACCESS_KEY: aws_access_secret,
+            NeptuneCSVPublisher.AWS_SESSION_TOKEN: aws_token
         }
     })
 
@@ -287,11 +307,6 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     # unique name of new index in Elasticsearch
     elasticsearch_new_index_key = '{}_'.format(elasticsearch_doc_type_key) + str(uuid.uuid4())
     publisher = ElasticsearchPublisher()
-    session = boto3.Session()
-    aws_creds = session.get_credentials()
-    aws_access_key = aws_creds.access_key
-    aws_access_secret = aws_creds.secret_key
-    aws_token = aws_creds.token
 
     job_config = ConfigFactory.from_dict({
         extractor.get_scope(): {
@@ -344,7 +359,7 @@ if __name__ == "__main__":
     run_csv_job('example/sample_data/sample_table_owner.csv', 'test_table_owner_metadata',
                 'databuilder.models.table_owner.TableOwner')
     run_csv_job('example/sample_data/sample_column_usage.csv', 'test_usage_metadata',
-                'databuilder.models.column_usage_model.ColumnUsageModel')
+                'databuilder.models.table_column_usage.ColumnReader')
     run_csv_job('example/sample_data/sample_user.csv', 'test_user_metadata',
                 'databuilder.models.user.User')
     run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
@@ -386,7 +401,7 @@ if __name__ == "__main__":
         elasticsearch_doc_type_key='user',
         model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
         entity_type='user',
-        elasticsearch_mapping=USER_ELASTICSEARCH_INDEX_MAPPING
+        elasticsearch_mapping=USER_INDEX_MAP
     )
     job_es_user.launch()
 

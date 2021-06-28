@@ -34,8 +34,7 @@ $ git clone https://github.com/amundsen-io/amundsenmetadatalibrary.git
 $ cd amundsenmetadatalibrary
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install -r requirements.txt
-$ python3 setup.py install
+$ pip3 install -e ".[all]" .
 $ python3 metadata_service/metadata_wsgi.py
 
 -- In a different terminal, verify getting HTTP/1.0 200 OK

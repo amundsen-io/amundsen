@@ -11,4 +11,4 @@ SCHEMA_REVERSE_RELATION_TYPE = 'SCHEMA_OF'
 DATABASE_SCHEMA_KEY_FORMAT = '{db}://{cluster}.{schema}'
 
 # pattern used to match a schema key, e.g., hive://gold.test_schema
-SCHEMA_KEY_PATTERN_REGEX = '([a-z]+://[a-zA-Z0-9_-]+).[a-zA-Z0-9_.-]+'
+SCHEMA_KEY_PATTERN_REGEX = '([a-zA-Z0-9_]+://[a-zA-Z0-9_-]+).[a-zA-Z0-9_.-]+'

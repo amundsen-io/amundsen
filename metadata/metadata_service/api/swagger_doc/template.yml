@@ -23,6 +23,27 @@ components:
         schema:
           description: 'Schema name'
           type: string
+        name:
+          description: 'Table name'
+          type: string
+        description:
+          description: 'Table description'
+          type: string
+        schema_description:
+          description: 'Schema description'
+          type: string
+    TableSummary:
+      type: object
+      properties:
+        database:
+          description: 'Database name'
+          type: string
+        cluster:
+          description: 'Cluster name'
+          type: string
+        schema:
+          description: 'Schema name'
+          type: string
         table_name:
           description: 'Table name'
           type: string

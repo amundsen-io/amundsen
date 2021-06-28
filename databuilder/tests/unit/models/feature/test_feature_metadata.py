@@ -34,7 +34,7 @@ class TestFeatureMetadata(unittest.TestCase):
 
         self.expected_nodes_full = [
             {
-                'KEY': 'feature://My Feature Group/feature_123/2.0.0',
+                'KEY': 'My Feature Group/feature_123/2.0.0',
                 'LABEL': 'Feature',
                 'name': 'feature_123',
                 'version': '2.0.0',
@@ -44,12 +44,12 @@ class TestFeatureMetadata(unittest.TestCase):
                 'created_timestamp:UNQUOTED': 1622596581,
             },
             {
-                'KEY': 'feature_group://My Feature Group',
+                'KEY': 'My Feature Group',
                 'LABEL': 'Feature_Group',
                 'name': 'My Feature Group',
             },
             {
-                'KEY': 'feature://My Feature Group/feature_123/2.0.0/_description',
+                'KEY': 'My Feature Group/feature_123/2.0.0/_description',
                 'LABEL': 'Description',
                 'description_source': 'description',
                 'description': 'My awesome feature',
@@ -80,23 +80,23 @@ class TestFeatureMetadata(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Feature_Group',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
-                'END_KEY': 'feature_group://My Feature Group',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
+                'END_KEY': 'My Feature Group',
                 'TYPE': 'GROUPED_BY',
                 'REVERSE_TYPE': 'GROUPS',
             },
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Description',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
-                'END_KEY': 'feature://My Feature Group/feature_123/2.0.0/_description',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
+                'END_KEY': 'My Feature Group/feature_123/2.0.0/_description',
                 'TYPE': 'DESCRIPTION',
                 'REVERSE_TYPE': 'DESCRIPTION_OF',
             },
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Database',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
                 'END_KEY': 'database://hive',
                 'TYPE': 'FEATURE_AVAILABLE_IN',
                 'REVERSE_TYPE': 'AVAILABLE_FEATURE',
@@ -104,7 +104,7 @@ class TestFeatureMetadata(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Database',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
                 'END_KEY': 'database://dynamo',
                 'TYPE': 'FEATURE_AVAILABLE_IN',
                 'REVERSE_TYPE': 'AVAILABLE_FEATURE',
@@ -112,7 +112,7 @@ class TestFeatureMetadata(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Tag',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
                 'END_KEY': 'qa passed',
                 'TYPE': 'TAGGED_BY',
                 'REVERSE_TYPE': 'TAG',
@@ -120,7 +120,7 @@ class TestFeatureMetadata(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Tag',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
                 'END_KEY': 'core',
                 'TYPE': 'TAGGED_BY',
                 'REVERSE_TYPE': 'TAG',
@@ -129,13 +129,13 @@ class TestFeatureMetadata(unittest.TestCase):
 
         self.expected_nodes_required_only = [
             {
-                'KEY': 'feature://My Feature Group/feature_123/2.0.0',
+                'KEY': 'My Feature Group/feature_123/2.0.0',
                 'LABEL': 'Feature',
                 'name': 'feature_123',
                 'version': '2.0.0',
             },
             {
-                'KEY': 'feature_group://My Feature Group',
+                'KEY': 'My Feature Group',
                 'LABEL': 'Feature_Group',
                 'name': 'My Feature Group',
             },
@@ -145,8 +145,8 @@ class TestFeatureMetadata(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Feature_Group',
-                'START_KEY': 'feature://My Feature Group/feature_123/2.0.0',
-                'END_KEY': 'feature_group://My Feature Group',
+                'START_KEY': 'My Feature Group/feature_123/2.0.0',
+                'END_KEY': 'My Feature Group',
                 'TYPE': 'GROUPED_BY',
                 'REVERSE_TYPE': 'GROUPS',
             },

@@ -101,6 +101,10 @@ TABLE_INDEX_MAP = textwrap.dedent(
             },
             "unique_usage": {
               "type": "long"
+            },
+            "programmatic_descriptions": {
+              "type": "text",
+              "analyzer": "simple"
             }
           }
         }
@@ -195,57 +199,139 @@ DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
     """
 )
 
-USER_INDEX_MAP = textwrap.dedent("""
-{
-"mappings":{
-    "user":{
-      "properties": {
-        "email": {
-          "type":"text",
-          "analyzer": "simple",
-          "fields": {
-            "raw": {
-              "type": "keyword"
+USER_INDEX_MAP = textwrap.dedent(
+    """
+    {
+    "mappings":{
+        "user":{
+          "properties": {
+            "email": {
+              "type":"text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "first_name": {
+              "type":"text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "last_name": {
+              "type":"text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "full_name": {
+              "type":"text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "total_read":{
+              "type": "long"
+            },
+            "total_own": {
+              "type": "long"
+            },
+            "total_follow": {
+              "type": "long"
             }
           }
-        },
-        "first_name": {
-          "type":"text",
-          "analyzer": "simple",
-          "fields": {
-            "raw": {
-              "type": "keyword"
-            }
-          }
-        },
-        "last_name": {
-          "type":"text",
-          "analyzer": "simple",
-          "fields": {
-            "raw": {
-              "type": "keyword"
-            }
-          }
-        },
-        "name": {
-          "type":"text",
-          "analyzer": "simple",
-          "fields": {
-            "raw": {
-              "type": "keyword"
-            }
-          }
-        },
-        "total_read":{
-          "type": "long"
-        },
-        "total_own": {
-          "type": "long"
-        },
-        "total_follow": {
-          "type": "long"
         }
       }
     }
-  }
-}""")
+    """
+)
+
+FEATURE_INDEX_MAP = textwrap.dedent(
+    """
+    {
+    "settings": {
+      "analysis": {
+        "normalizer": {
+          "lowercase_normalizer": {
+            "type": "custom",
+            "filter": ["lowercase"]
+          }
+        }
+      }
+    },
+    "mappings":{
+        "feature":{
+          "properties": {
+            "feature_group": {
+              "type":"text",
+              "fields": {
+                "raw": {
+                  "type": "keyword",
+                  "normalizer": "lowercase_normalizer"
+                }
+              }
+            },
+            "feature_name": {
+              "type":"text",
+              "fields": {
+                "raw": {
+                  "type": "keyword",
+                  "normalizer": "lowercase_normalizer"
+                }
+              }
+            },
+            "version": {
+              "type": "keyword",
+              "normalizer": "lowercase_normalizer"
+            },
+            "key": {
+              "type": "keyword"
+            },
+            "total_usage":{
+              "type": "long"
+            },
+            "status": {
+              "type": "keyword"
+            },
+            "entity": {
+              "type": "keyword"
+            },
+            "description": {
+              "type": "text"
+            },
+            "availability": {
+              "type": "text",
+              "analyzer": "simple",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "badges": {
+              "type": "keyword"
+            },
+            "tags": {
+              "type": "keyword"
+            },
+            "last_updated_timestamp": {
+              "type": "date",
+              "format": "epoch_second"
+            }
+          }
+        }
+      }
+    }
+    """
+)

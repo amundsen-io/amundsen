@@ -19,9 +19,10 @@ class TestFeatureWatermark(unittest.TestCase):
 
         self.expected_nodes = [
             {
-                'KEY': 'feature://group1/feat_name_123/2.0.0/low_watermark',
+                'KEY': 'group1/feat_name_123/2.0.0/low_watermark',
                 'LABEL': 'Feature_Watermark',
                 'timestamp:UNQUOTED': 1622596581,
+                'watermark_type': 'low_watermark',
             }
         ]
 
@@ -29,8 +30,8 @@ class TestFeatureWatermark(unittest.TestCase):
             {
                 'START_LABEL': 'Feature',
                 'END_LABEL': 'Feature_Watermark',
-                'START_KEY': 'feature://group1/feat_name_123/2.0.0',
-                'END_KEY': 'feature://group1/feat_name_123/2.0.0/low_watermark',
+                'START_KEY': 'group1/feat_name_123/2.0.0',
+                'END_KEY': 'group1/feat_name_123/2.0.0/low_watermark',
                 'TYPE': 'WATERMARK',
                 'REVERSE_TYPE': 'BELONG_TO_FEATURE',
             }

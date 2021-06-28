@@ -16,8 +16,12 @@ from databuilder.models.table_serializable import TableSerializable
 
 class Badge:
     def __init__(self, name: str, category: str):
-        self.name = name
-        self.category = category
+        # Amundsen UI always formats badge display with first letter capitalized while other letters are lowercase.
+        # Clicking table badges in UI always results in searching lower cases badges
+        # https://github.com/amundsen-io/amundsen/blob/6ec9b398634264e52089bb9e1b7d76a6fb6a35a4/frontend/amundsen_application/static/js/components/BadgeList/index.tsx#L56
+        # If badges stored in neo4j are not lowercase, they won't be searchable in UI.
+        self.name = name.lower()
+        self.category = category.lower()
 
     def __repr__(self) -> str:
         return f'Badge({self.name!r}, {self.category!r})'

@@ -4,18 +4,19 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.query import Query
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User
+from flask import current_app as app
 
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.util import UserResourceRel
 
 
@@ -24,6 +25,21 @@ class BaseProxy(metaclass=ABCMeta):
     Base Proxy, which behaves like an interface for all
     the proxy clients available in the amundsen metadata service
     """
+    def _get_user_details(self, user_id: str, user_data: Optional[Dict] = None) -> Dict:
+        """
+        Helper function to help get the user details if the `USER_DETAIL_METHOD` is configured,
+        else uses the user_id for both email and user_id properties.
+        :param user_id: The Unique user id of a user entity
+        :return: a dictionary of user details
+        """
+        if app.config.get('USER_DETAIL_METHOD'):
+            user_details = app.config.get('USER_DETAIL_METHOD')(user_id)  # type: ignore
+        elif user_data:
+            user_details = user_data
+        else:
+            user_details = {'email': user_id, 'user_id': user_id}
+
+        return user_details
 
     @abstractmethod
     def get_user(self, *, id: str) -> Union[User, None]:
@@ -103,6 +119,13 @@ class BaseProxy(metaclass=ABCMeta):
     def get_popular_tables(self, *,
                            num_entries: int,
                            user_id: Optional[str] = None) -> List[PopularTable]:
+        pass
+
+    @abstractmethod
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
         pass
 
     @abstractmethod
@@ -219,5 +242,5 @@ class BaseProxy(metaclass=ABCMeta):
     @abstractmethod
     def get_resource_generation_code(self, *,
                                      uri: str,
-                                     resource_type: ResourceType) -> Query:
+                                     resource_type: ResourceType) -> GenerationCode:
         pass

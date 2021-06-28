@@ -1,9 +1,16 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+import os
 
 from setuptools import find_packages, setup
 
-__version__ = '0.13.0'
+__version__ = '0.17.0'
+
+
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
+with open(requirements_path) as requirements_file:
+    requirements_dev = requirements_file.readlines()
+
 
 setup(
     name='amundsen-common',
@@ -11,7 +18,7 @@ setup(
     description='Common code library for Amundsen',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/amundsen-io/amundsencommon',
+    url='https://github.com/amundsen-io/amundsen/tree/main/common',
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
     packages=find_packages(exclude=['tests*']),
@@ -36,6 +43,9 @@ setup(
         'marshmallow>=3.0',
         'marshmallow3-annotations>=1.0.0'
     ],
+    extras_require={
+        'all': requirements_dev
+    },
     python_requires=">=3.6",
     package_data={'amundsen_common': ['py.typed']},
 )

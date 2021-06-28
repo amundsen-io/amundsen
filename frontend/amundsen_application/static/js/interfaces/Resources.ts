@@ -6,6 +6,7 @@ export enum ResourceType {
   user = 'user',
   dashboard = 'dashboard',
   query = 'query',
+  feature = 'feature',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -28,6 +29,18 @@ export interface DashboardResource extends Resource {
   // Bookmark logic is cleaner if all resources can settle on either "key" or "uri"
   key?: string;
   badges?: Badge[];
+}
+
+export interface FeatureResource extends Resource {
+  type: ResourceType.feature;
+  key: string;
+  name: string;
+  version: string;
+  availability: string[];
+  entity: string;
+  description: string;
+  feature_group: string;
+  badges: Badge[];
 }
 
 export interface TableResource extends Resource {
@@ -72,3 +85,4 @@ export interface ResourceDict<T> {
 
 // TODO - Consider just using the 'Resource' type instead
 export type Bookmark = TableResource | DashboardResource;
+export type PopularResource = TableResource | DashboardResource;

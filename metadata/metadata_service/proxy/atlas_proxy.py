@@ -10,11 +10,12 @@ from random import randint
 from typing import (Any, Dict, Generator, List, Optional, Set, Tuple, Type,
                     Union)
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
+from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.query import Query
 from amundsen_common.models.table import (Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Stat, Table, Tag,
@@ -42,7 +43,6 @@ from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.dashboard_query import DashboardQuery
 from metadata_service.entity.description import Description
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import BaseProxy
@@ -137,20 +137,6 @@ class AtlasProxy(BaseProxy):
         """, re.X)
         result = pattern.match(bookmark_qn)
         return result.groupdict() if result else dict()
-
-    def _get_user_details(self, user_id: str) -> Dict:
-        """
-        Helper function to help get the user details if the `USER_DETAIL_METHOD` is configured,
-        else uses the user_id for both email and user_id properties.
-        :param user_id: The Unique user id of a user entity
-        :return: a dictionary of user details
-        """
-        if app.config.get('USER_DETAIL_METHOD'):
-            user_details = app.config.get('USER_DETAIL_METHOD')(user_id)  # type: ignore
-        else:
-            user_details = {'email': user_id, 'user_id': user_id}
-
-        return user_details
 
     @classmethod
     def _filter_active(cls, entities: List[dict]) -> List[dict]:
@@ -1137,7 +1123,7 @@ class AtlasProxy(BaseProxy):
         for _reader in readers.entities or list():
             read_count = _reader.attributes['count']
 
-            if read_count >= int(app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']):
+            if read_count >= int(app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']):
                 reader_qn = _reader.relationshipAttributes['user']['displayText']
                 reader_details = self._get_user_details(reader_qn)
 
@@ -1681,5 +1667,11 @@ class AtlasProxy(BaseProxy):
 
     def get_resource_generation_code(self, *,
                                      uri: str,
-                                     resource_type: ResourceType) -> Query:
+                                     resource_type: ResourceType) -> GenerationCode:
+        pass
+
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
         pass

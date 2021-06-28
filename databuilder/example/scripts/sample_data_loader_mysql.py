@@ -26,6 +26,7 @@ import os
 import sys
 import uuid
 
+from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_INDEX_MAP
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 
@@ -35,9 +36,6 @@ from databuilder.extractor.mysql_search_data_extractor import MySQLSearchDataExt
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_mysql_csv_loader import FSMySQLCSVLoader
-from databuilder.publisher.elasticsearch_constants import (
-    DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_ELASTICSEARCH_INDEX_MAPPING,
-)
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.mysql_csv_publisher import MySQLCSVPublisher
 from databuilder.task.task import DefaultTask
@@ -251,7 +249,7 @@ if __name__ == "__main__":
     run_csv_job('example/sample_data/sample_table_owner.csv', 'test_table_owner_metadata',
                 'databuilder.models.table_owner.TableOwner')
     run_csv_job('example/sample_data/sample_column_usage.csv', 'test_usage_metadata',
-                'databuilder.models.column_usage_model.ColumnUsageModel')
+                'databuilder.models.table_column_usage.ColumnReader')
     run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
                 'databuilder.models.application.Application')
     run_csv_job('example/sample_data/sample_source.csv', 'test_source_metadata',
@@ -291,7 +289,7 @@ if __name__ == "__main__":
         elasticsearch_doc_type_key='user',
         model_name='databuilder.models.user_elasticsearch_document.UserESDocument',
         entity_type='user',
-        elasticsearch_mapping=USER_ELASTICSEARCH_INDEX_MAPPING)
+        elasticsearch_mapping=USER_INDEX_MAP)
     job_es_user.launch()
 
     job_es_dashboard = create_es_publisher_sample_job(

@@ -4,11 +4,12 @@
 import { combineReducers } from 'redux';
 
 import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
+import feature, { FeatureReducerState } from 'ducks/feature/reducer';
 import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
-import popularTables, {
-  PopularTablesReducerState,
-} from './popularTables/reducer';
+import popularResources, {
+  PopularResourcesReducerState,
+} from './popularResources/reducer';
 import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, {
   TableMetadataReducerState,
@@ -26,10 +27,11 @@ export interface GlobalState {
   announcements: AnnouncementsReducerState;
   bookmarks: BookmarkReducerState;
   dashboard: DashboardReducerState;
+  feature: FeatureReducerState;
   feedback: FeedbackReducerState;
   issue: IssueReducerState;
   notification: NotificationReducerState;
-  popularTables: PopularTablesReducerState;
+  popularResources: PopularResourcesReducerState;
   search: SearchReducerState;
   tableMetadata: TableMetadataReducerState;
   lastIndexed: LastIndexedReducerState;
@@ -43,10 +45,11 @@ const rootReducer = combineReducers<GlobalState>({
   announcements,
   bookmarks,
   dashboard,
+  feature,
   feedback,
   issue,
   notification,
-  popularTables,
+  popularResources,
   search,
   tableMetadata,
   lastIndexed,
