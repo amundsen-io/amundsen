@@ -62,6 +62,8 @@ export function* getTableDescriptionWorker(
   const state = yield select();
   let { tableData } = state.tableMetadata;
   try {
+    // TODO - Cleanup this pattern of sending in the table metadata and then modifying it and sending it back.
+    // Should just fetch the description and send it back to the reducer.
     tableData = yield call(
       API.getTableDescription,
       state.tableMetadata.tableData

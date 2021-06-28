@@ -68,6 +68,7 @@ const globalState: GlobalState = {
   feature: {
     statusCode: 200,
     isLoading: false,
+    isLoadingOwners: false,
     feature: {
       key: '',
       name: '',

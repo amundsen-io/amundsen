@@ -1,12 +1,9 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 import * as React from 'react';
-import { Link, BrowserRouter } from 'react-router-dom';
 
 import { shallow } from 'enzyme';
 
-import { strict } from 'assert';
-import { all } from 'redux-saga/effects';
 import { allTestTags } from 'fixtures/metadata/tagsList';
 import TagsList, { TagsListProps } from '.';
 

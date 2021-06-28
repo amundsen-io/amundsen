@@ -1,9 +1,6 @@
 // BETTERER RESULTS V2.
 exports[`eslint`] = {
   value: `{
-    "js/components/Announcements/AnnouncementsList/index.spec.tsx:4181793549": [
-      [54, 25, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/Announcements/index.spec.tsx:2594822054": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"],
       [5, 9, 7, "\'shallow\' is defined but never used.", "3030293799"],
@@ -22,9 +19,6 @@ exports[`eslint`] = {
       [68, 47, 2, "Array.prototype.map() expects a value to be returned at the end of arrow function.", "5859494"],
       [68, 47, -1867, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/components/Bookmark/BookmarkIcon/index.spec.tsx:2656193229": [
-      [29, 56, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/components/Bookmark/BookmarkIcon/index.tsx:2757285913": [
       [44, 8, 23, "Must use destructuring props assignment", "2039607050"],
       [45, 6, 25, "Must use destructuring props assignment", "2219705271"],
@@ -40,7 +34,6 @@ exports[`eslint`] = {
     ],
     "js/components/Bookmark/MyBookmarks/index.spec.tsx:816552653": [
       [26, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"],
-      [92, 54, 10, "Prop spreading is forbidden", "480399587"],
       [103, 6, 25, "Use object destructuring.", "354229464"],
       [104, 6, 29, "Use object destructuring.", "2645724888"],
       [138, 6, 25, "Use object destructuring.", "1230260048"],
@@ -55,7 +48,6 @@ exports[`eslint`] = {
       [85, 8, 19, "Must use destructuring props assignment", "2037903600"]
     ],
     "js/components/Breadcrumb/index.spec.tsx:1974034292": [
-      [16, 40, 10, "Prop spreading is forbidden", "480399587"],
       [27, 8, 25, "Use object destructuring.", "354229464"],
       [73, 8, 25, "Use object destructuring.", "354229464"]
     ],
@@ -63,9 +55,6 @@ exports[`eslint`] = {
       [44, 6, 99, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2951945087"],
       [44, 6, 99, "Static HTML elements with event handlers require a role.", "2951945087"],
       [45, 17, 24, "Must use destructuring props assignment", "2874142076"]
-    ],
-    "js/components/Card/index.spec.tsx:396628982": [
-      [15, 12, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/EditableSection/index.spec.tsx:4161767008": [
       [30, 23, 5, "\'props\' is assigned a value but never used.", "187023499"],
@@ -133,14 +122,10 @@ exports[`eslint`] = {
       [70, 38, 19, "Must use destructuring state assignment", "2871981746"]
     ],
     "js/components/EntityCard/index.spec.tsx:4051356684": [
-      [8, 0, 52, "\`./EntityCardSection\` import should occur before import of \`.\`", "1030164788"],
-      [31, 34, 10, "Prop spreading is forbidden", "480399587"]
+      [8, 0, 52, "\`./EntityCardSection\` import should occur before import of \`.\`", "1030164788"]
     ],
     "js/components/FlashMessage/index.spec.tsx:2134122939": [
       [42, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
-    ],
-    "js/components/InfoButton/index.spec.tsx:1921704347": [
-      [20, 34, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/Inputs/CheckBoxItem/index.spec.tsx:732301256": [
       [33, 6, 25, "Use object destructuring.", "354229464"],
@@ -181,7 +166,6 @@ exports[`eslint`] = {
       [32, 4, 23, "Must use destructuring props assignment", "2627253856"]
     ],
     "js/components/ResourceList/PaginatedResourceList/index.spec.tsx:571223128": [
-      [29, 29, 10, "Prop spreading is forbidden", "480399587"],
       [87, 6, 25, "Use object destructuring.", "354229464"],
       [88, 6, 29, "Use object destructuring.", "2645724888"],
       [92, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
@@ -284,7 +268,6 @@ exports[`eslint`] = {
       [69, 8, 184, "Static HTML elements with event handlers require a role.", "3208468016"]
     ],
     "js/components/SearchBar/InlineSearchResults/ResultItemList/tests/index.spec.tsx:875527071": [
-      [45, 60, 10, "Prop spreading is forbidden", "480399587"],
       [101, 6, 25, "Use object destructuring.", "1501943800"],
       [102, 6, 29, "Use object destructuring.", "1935870456"]
     ],
@@ -308,7 +291,6 @@ exports[`eslint`] = {
       [27, 12, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"],
       [27, 29, 18, "\'mapDispatchToProps\' is defined but never used.", "2926224796"],
       [27, 53, 10, "\'SearchItem\' is already declared in the upper scope.", "3758384126"],
-      [37, 60, 10, "Prop spreading is forbidden", "480399587"],
       [44, 6, 25, "Use object destructuring.", "1230260048"],
       [77, 6, 25, "Use object destructuring.", "1501943800"],
       [78, 6, 29, "Use object destructuring.", "1935870456"],
@@ -400,8 +382,6 @@ exports[`eslint`] = {
       [623, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/SearchBar/index.spec.tsx:3541693335": [
-      [40, 36, 10, "Prop spreading is forbidden", "480399587"],
-      [41, 38, 10, "Prop spreading is forbidden", "480399587"],
       [49, 6, 39, "Use object destructuring.", "1991804342"],
       [123, 6, 25, "Use object destructuring.", "354229464"],
       [124, 6, 29, "Use object destructuring.", "2645724888"],
@@ -444,7 +424,6 @@ exports[`eslint`] = {
     ],
     "js/components/Table/index.spec.tsx:2964078536": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"],
-      [20, 43, 10, "Prop spreading is forbidden", "480399587"],
       [870, 16, 34, "Use array destructuring.", "4232426022"],
       [1012, 16, 36, "Use array destructuring.", "3910325707"]
     ],
@@ -456,9 +435,6 @@ exports[`eslint`] = {
     ],
     "js/components/Table/testDataBuilder.tsx:2393767726": [
       [196, 29, 1, "\'i\' is defined but never used.", "177612"]
-    ],
-    "js/components/TabsComponent/index.spec.tsx:1677620301": [
-      [34, 37, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/Tags/TagInfo/index.spec.tsx:4185537358": [
       [44, 6, 25, "Use object destructuring.", "354229464"],
@@ -478,7 +454,7 @@ exports[`eslint`] = {
       [49, 10, 18, "Must use destructuring props assignment", "4080010090"],
       [50, 39, 15, "Must use destructuring props assignment", "4222917373"]
     ],
-    "js/components/Tags/TagInput/index.tsx:2927377327": [
+    "js/components/Tags/TagInput/index.tsx:1344555535": [
       [64, 2, 55, "batchEditSet should be placed after componentDidMount", "281322369"],
       [93, 4, 21, "Must use destructuring props assignment", "4236634811"],
       [103, 4, 15, "Must use destructuring props assignment", "4223491724"],
@@ -490,7 +466,6 @@ exports[`eslint`] = {
       [179, 6, 21, "Must use destructuring props assignment", "2890513821"],
       [226, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
       [226, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
-      [232, 40, 15, "Prop spreading is forbidden", "1697062181"],
       [245, 12, 15, "Must use destructuring props assignment", "4223491724"],
       [250, 12, 18, "Must use destructuring props assignment", "1044970797"],
       [250, 57, 15, "Must use destructuring props assignment", "4223491724"],
@@ -508,14 +483,6 @@ exports[`eslint`] = {
       [317, 51, 18, "Must use destructuring props assignment", "1044970797"],
       [329, 46, 15, "Must use destructuring props assignment", "4223491724"],
       [339, 16, 20, "Must use destructuring state assignment", "2976153148"]
-    ],
-    "js/components/Tags/TagsList/index.spec.tsx:308600799": [
-      [3, 9, 4, "\'Link\' is defined but never used.", "2089009317"],
-      [3, 15, 13, "\'BrowserRouter\' is defined but never used.", "1300984066"],
-      [7, 0, 32, "\`assert\` import should occur before import of \`react\`", "3388923450"],
-      [7, 9, 6, "\'strict\' is defined but never used.", "2141447438"],
-      [8, 9, 3, "\'all\' is defined but never used.", "193409860"],
-      [35, 53, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
@@ -596,9 +563,9 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:1722284731": [
-      [75, 8, 23, "Use object destructuring.", "1142306891"],
-      [125, 23, -4008, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:2598790694": [
+      [78, 8, 23, "Use object destructuring.", "1142306891"],
+      [137, 23, -4203, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/ducks/tableMetadata/index.spec.ts:2466548220": [
       [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
@@ -613,10 +580,10 @@ exports[`eslint`] = {
     "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
     ],
-    "js/ducks/tags/api/v0.ts:3312435566": [
-      [20, 16, -551, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
+    "js/ducks/tags/api/v0.ts:2781466514": [
+      [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
     ],
-    "js/features/BadgeList/index.tsx:1824613239": [
+    "js/features/BadgeList/index.tsx:4274393553": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
@@ -646,23 +613,16 @@ exports[`eslint`] = {
       [140, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
     "js/features/ColumnList/index.spec.tsx:3000446426": [
-      [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"],
-      [50, 18, 10, "Prop spreading is forbidden", "480399587"]
+      [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
-    ],
-    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.spec.tsx:1234861750": [
-      [31, 65, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:3281037041": [
       [25, 8, 63, "A control must be associated with a text label.", "4061596287"],
       [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
       [39, 10, 211, "A control must be associated with a text label.", "836174501"],
       [50, 10, 211, "A control must be associated with a text label.", "2015844771"]
-    ],
-    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.spec.tsx:3088814608": [
-      [29, 39, 10, "Prop spreading is forbidden", "480399587"]
     ],
     "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3588165124": [
       [24, 8, 132, "A control must be associated with a text label.", "2458117852"],
@@ -677,8 +637,7 @@ exports[`eslint`] = {
     ],
     "js/features/Feedback/FeedbackForm/index.spec.tsx:955911497": [
       [10, 0, 58, "\`./RatingFeedbackForm\` import should occur before import of \`.\`", "3652621138"],
-      [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"],
-      [36, 24, 10, "Prop spreading is forbidden", "480399587"]
+      [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"]
     ],
     "js/features/Feedback/FeedbackForm/index.tsx:1841353682": [
       [39, 4, 25, "Must use destructuring props assignment", "3149716880"],
@@ -689,7 +648,6 @@ exports[`eslint`] = {
     ],
     "js/features/Feedback/index.spec.tsx:2374067510": [
       [11, 0, 73, "\`./constants\` import should occur before import of \`.\`", "2308539722"],
-      [20, 48, 10, "Prop spreading is forbidden", "480399587"],
       [29, 6, 29, "Use object destructuring.", "2645724888"],
       [62, 6, 29, "Use object destructuring.", "2645724888"],
       [102, 8, 25, "Use object destructuring.", "354229464"],
@@ -710,16 +668,12 @@ exports[`eslint`] = {
       [124, 21, 23, "Must use destructuring state assignment", "2756986405"],
       [134, 13, 18, "Must use destructuring state assignment", "36119645"]
     ],
-    "js/features/Footer/index.spec.tsx:3822669087": [
-      [23, 30, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/features/Footer/index.tsx:3032041713": [
       [34, 12, 14, "\'getLastIndexed\' is already declared in the upper scope.", "1271465094"],
       [45, 8, 22, "Must use destructuring props assignment", "1925601400"],
       [49, 12, 22, "Must use destructuring props assignment", "1925601400"]
     ],
     "js/features/NavBar/index.spec.tsx:3828107224": [
-      [57, 44, 10, "Prop spreading is forbidden", "480399587"],
       [64, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [97, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [110, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
@@ -730,14 +684,10 @@ exports[`eslint`] = {
     "js/features/NavBar/index.tsx:2853766101": [
       [69, 8, 19, "Must use destructuring props assignment", "1779396464"]
     ],
-    "js/pages/AnnouncementPage/index.spec.tsx:4243097061": [
-      [37, 40, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/pages/BrowsePage/index.tsx:4021927425": [
       [12, 7, 453, "Component should be written as a pure function", "779515038"]
     ],
     "js/pages/DashboardPage/ChartList/index.spec.tsx:876473578": [
-      [15, 50, 10, "Prop spreading is forbidden", "480399587"],
       [21, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
     "js/pages/DashboardPage/ChartList/index.tsx:3648446060": [
@@ -751,7 +701,6 @@ exports[`eslint`] = {
     ],
     "js/pages/DashboardPage/ImagePreview/index.spec.tsx:3786232998": [
       [10, 0, 52, "\`.\` import should occur after import of \`./constants\`", "4162682623"],
-      [24, 54, 10, "Prop spreading is forbidden", "480399587"],
       [64, 10, 25, "Use object destructuring.", "1230260048"],
       [85, 10, 25, "Use object destructuring.", "354229464"],
       [86, 10, 29, "Use object destructuring.", "2645724888"],
@@ -762,8 +711,7 @@ exports[`eslint`] = {
       [95, 12, 352, "Non-interactive elements should not be assigned mouse or keyboard event listeners.", "257623345"]
     ],
     "js/pages/DashboardPage/QueryList/index.spec.tsx:194205473": [
-      [8, 0, 45, "\`../QueryListItem\` import should occur before import of \`.\`", "3768254234"],
-      [16, 48, 10, "Prop spreading is forbidden", "480399587"]
+      [8, 0, 45, "\`../QueryListItem\` import should occur before import of \`.\`", "3768254234"]
     ],
     "js/pages/DashboardPage/QueryList/index.tsx:2324422660": [
       [14, 0, 516, "Component should be written as a pure function", "698708664"]
@@ -775,7 +723,6 @@ exports[`eslint`] = {
     "js/pages/DashboardPage/index.spec.tsx:3159805396": [
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"],
-      [60, 56, 10, "Prop spreading is forbidden", "480399587"],
       [140, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [169, 16, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [185, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
@@ -793,7 +740,6 @@ exports[`eslint`] = {
       [364, 31, 14, "Must use destructuring state assignment", "1770565882"]
     ],
     "js/pages/HomePage/index.spec.tsx:2731110878": [
-      [26, 48, 10, "Prop spreading is forbidden", "480399587"],
       [33, 4, 25, "Use object destructuring.", "354229464"],
       [34, 4, 29, "Use object destructuring.", "2645724888"]
     ],
@@ -821,7 +767,6 @@ exports[`eslint`] = {
     ],
     "js/pages/SearchPage/ResourceSelector/index.spec.tsx:1940607497": [
       [12, 2, 20, "\'indexFeaturesEnabled\' is defined but never used.", "1945428697"],
-      [40, 64, 10, "Prop spreading is forbidden", "480399587"],
       [96, 6, 25, "Use object destructuring.", "354229464"],
       [97, 6, 29, "Use object destructuring.", "2645724888"],
       [104, 6, 19, "\'featureOptionConfig\' is assigned a value but never used.", "2233467640"]
@@ -908,7 +853,6 @@ exports[`eslint`] = {
       [14, 2, 112, "Multiline support is limited to browsers supporting ES5 only.", "2645164555"]
     ],
     "js/pages/SearchPage/index.spec.tsx:901773677": [
-      [59, 50, 10, "Prop spreading is forbidden", "480399587"],
       [146, 16, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [213, 8, 25, "Use object destructuring.", "354229464"],
       [214, 8, 29, "Use object destructuring.", "2645724888"],
@@ -948,7 +892,6 @@ exports[`eslint`] = {
       [62, 11, 26, "A form label must be associated with a control.", "2816972347"]
     ],
     "js/pages/TableDetailPage/ListSortingDropdown/index.spec.tsx:1478300175": [
-      [32, 25, 10, "Prop spreading is forbidden", "480399587"],
       [174, 14, 34, "Use array destructuring.", "2024515814"]
     ],
     "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:264838130": [
@@ -958,8 +901,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/ReportTableIssue/index.spec.tsx:3198818853": [
       [7, 7, 9, "\'AppConfig\' is defined but never used.", "1320620174"],
       [11, 2, 14, "\'ComponentProps\' is defined but never used.", "2554343108"],
-      [15, 2, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"],
-      [70, 64, 10, "Prop spreading is forbidden", "480399587"]
+      [15, 2, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"]
     ],
     "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2278973663": [
       [67, 4, 22, "Must use destructuring props assignment", "2426007440"],
@@ -1007,11 +949,7 @@ exports[`eslint`] = {
       [208, 14, 151, "A control must be associated with a text label.", "1015004405"],
       [218, 12, 432, "A control must be associated with a text label.", "534436217"]
     ],
-    "js/pages/TableDetailPage/SourceLink/index.spec.tsx:3686659452": [
-      [19, 55, 10, "Prop spreading is forbidden", "480399587"]
-    ],
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
-      [45, 28, 10, "Prop spreading is forbidden", "480399587"],
       [91, 6, 25, "Use object destructuring.", "354229464"],
       [92, 6, 29, "Use object destructuring.", "2645724888"]
     ],
@@ -1030,7 +968,6 @@ exports[`eslint`] = {
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/pages/TableDetailPage/WatermarkLabel/index.spec.tsx:1587893154": [
-      [33, 60, 10, "Prop spreading is forbidden", "480399587"],
       [64, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
