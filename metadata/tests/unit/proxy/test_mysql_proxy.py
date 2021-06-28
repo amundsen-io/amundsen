@@ -5,6 +5,7 @@ import unittest
 from typing import Any
 from unittest.mock import MagicMock, patch
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
@@ -47,7 +48,6 @@ from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
 from metadata_service.entity.dashboard_query import DashboardQuery
 from metadata_service.entity.description import Description
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.proxy import mysql_proxy
 from metadata_service.proxy.mysql_proxy import MySQLProxy

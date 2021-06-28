@@ -4,12 +4,12 @@
 from http import HTTPStatus
 from unittest.mock import MagicMock
 
+from amundsen_common.entity.resource_type import ResourceType
 from flask import current_app
 
 from metadata_service import create_app
 from metadata_service.api.tag import TagCommon
 from metadata_service.entity.badge import Badge
-from metadata_service.entity.resource_type import ResourceType
 from tests.unit.api.dashboard.dashboard_test_case import DashboardTestCase
 
 BADGE_NAME = 'foo'

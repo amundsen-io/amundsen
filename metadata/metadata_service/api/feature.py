@@ -3,6 +3,7 @@ import logging
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Union
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.feature import FeatureSchema
 from amundsen_common.models.generation_code import GenerationCodeSchema
 from amundsen_common.models.lineage import LineageSchema
@@ -12,7 +13,6 @@ from flask_restful import Resource, reqparse
 
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 

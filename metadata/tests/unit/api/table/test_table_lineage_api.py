@@ -3,7 +3,8 @@
 
 from http import HTTPStatus
 
-from metadata_service.entity.resource_type import ResourceType
+from amundsen_common.entity.resource_type import ResourceType
+
 from metadata_service.exception import NotFoundException
 from tests.unit.api.table.table_test_case import TableTestCase
 

@@ -2,21 +2,21 @@ import axios, { AxiosResponse } from 'axios';
 
 import globalState from 'fixtures/globalState';
 
-import { TableResource } from 'interfaces';
+import { PopularResource, ResourceDict } from 'interfaces';
 
 import * as API from '../v0';
 
 jest.mock('axios');
 
 describe('getPopularTables', () => {
-  let expectedTables: TableResource[];
+  let expectedResources: ResourceDict<PopularResource[]>;
   let mockGetResponse: AxiosResponse<API.PopularTablesAPI>;
 
   beforeAll(() => {
-    expectedTables = globalState.popularTables.popularTables;
+    expectedResources = globalState.popularResources.popularResources;
     mockGetResponse = {
       data: {
-        results: expectedTables,
+        results: expectedResources,
         msg: 'Success',
       },
       status: 200,
@@ -31,8 +31,8 @@ describe('getPopularTables', () => {
 
   it('resolves with array of table resources from response.data on success', async () => {
     expect.assertions(1);
-    await API.getPopularTables().then((results) => {
-      expect(results).toEqual(expectedTables);
+    await API.getPopularResources().then((results) => {
+      expect(results).toEqual(expectedResources);
     });
   });
 });

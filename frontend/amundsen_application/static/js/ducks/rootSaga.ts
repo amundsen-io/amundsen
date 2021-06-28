@@ -25,8 +25,8 @@ import { submitFeedbackWatcher } from './feedback/sagas';
 // Issues
 import { createIssueWatcher, getIssuesWatcher } from './issue/sagas';
 
-// PopularTables
-import { getPopularTablesWatcher } from './popularTables/sagas';
+// PopularResources
+import { getPopularResourcesWatcher } from './popularResources/sagas';
 // Search
 import {
   inlineSearchWatcher,
@@ -107,8 +107,8 @@ export default function* rootSaga() {
     submitSearchResourceWatcher(),
     updateSearchStateWatcher(),
     urlDidUpdateWatcher(),
-    // PopularTables
-    getPopularTablesWatcher(),
+    // PopularResources
+    getPopularResourcesWatcher(),
     // Tags
     getAllTagsWatcher(),
     updateResourceTagsWatcher(),
