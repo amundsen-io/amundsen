@@ -52,7 +52,7 @@ export interface DispatchFromProps {
   getAllTags: () => GetAllTagsRequest;
 }
 
-type TagInputProps = StateFromProps &
+export type TagInputProps = StateFromProps &
   OwnProps &
   DispatchFromProps &
   EditableSectionChildProps;
@@ -61,7 +61,7 @@ interface TagInputState {
   showModal: boolean;
 }
 
-class TagInput extends React.Component<TagInputProps, TagInputState> {
+export class TagInput extends React.Component<TagInputProps, TagInputState> {
   private batchEditSet: Map<string, BatchEditState> | {};
 
   public static defaultProps: TagInputProps = {

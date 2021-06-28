@@ -9,10 +9,19 @@ import {
   getFeatureCode,
   getFeatureCodeFailure,
   getFeatureCodeSuccess,
+  getFeatureDescription,
+  getFeatureDescriptionFailure,
+  getFeatureDescriptionSuccess,
   getFeatureFailure,
   getFeatureSuccess,
+  updateFeatureDescription,
 } from './reducer';
-import { GetFeature, GetFeatureCode } from './types';
+import {
+  GetFeature,
+  GetFeatureCode,
+  GetFeatureDescription,
+  UpdateFeatureDescription,
+} from './types';
 
 describe('feature sagas', () => {
   describe('getFeatureWatcher', () => {
@@ -92,6 +101,109 @@ describe('feature sagas', () => {
         // @ts-ignore
         .throw(mockResponse)
         .put(getFeatureCodeFailure(mockResponse))
+        .next()
+        .isDone();
+    });
+  });
+
+  describe('getFeatureDescriptionWatcher', () => {
+    it('takes every getFeatureDescription.REQUEST with getFeatureDescriptionWorker', () => {
+      testSaga(Sagas.getFeatureDescriptionWatcher)
+        .next()
+        .takeEvery(
+          GetFeatureDescription.REQUEST,
+          Sagas.getFeatureDescriptionWorker
+        );
+    });
+  });
+
+  describe('getFeatureDescription', () => {
+    it('executes flow for successfully getting feature description', () => {
+      const mockResponse = {
+        description: 'testDescription',
+        statusCode: 200,
+      };
+      const mockState = {
+        feature: {
+          feature: {
+            key: 'testUri',
+            description: 'test description',
+          },
+        },
+      };
+      testSaga(Sagas.getFeatureDescriptionWorker, getFeatureDescription())
+        .next()
+        .select()
+        .next(mockState)
+        .call(API.getFeatureDescription, 'testUri')
+        .next(mockResponse)
+        .put(getFeatureDescriptionSuccess(mockResponse))
+        .next()
+        .isDone();
+    });
+
+    it('executes flow for a failed request feature code', () => {
+      const mockResponse = {
+        statusCode: 500,
+        statusMessage: 'oops',
+      };
+      const mockState = {
+        feature: {
+          feature: {
+            key: 'testUri',
+            description: 'test description',
+          },
+        },
+      };
+      testSaga(Sagas.getFeatureDescriptionWorker, getFeatureDescription())
+        .next()
+        .select()
+        .next(mockState)
+        .call(API.getFeatureDescription, 'testUri')
+        // @ts-ignore
+        .throw(mockResponse)
+        .put(getFeatureDescriptionFailure({ description: 'test description' }))
+        .next()
+        .isDone();
+    });
+  });
+
+  describe('updateFeatureDescriptionWatcher', () => {
+    it('takes every updateFeatureDescription.REQUEST with updateFeatureDescriptionWorker', () => {
+      testSaga(Sagas.updateFeatureDescriptionWatcher)
+        .next()
+        .takeEvery(
+          UpdateFeatureDescription.REQUEST,
+          Sagas.updateFeatureDescriptionWorker
+        );
+    });
+  });
+
+  describe('updateFeatureDescriptionWorker', () => {
+    it('executes flow for successfully updating feature description', () => {
+      const mockResponse = {
+        description: 'test description',
+        statusCode: 200,
+      };
+      const mockState = {
+        feature: {
+          feature: {
+            key: 'testUri',
+            description: 'test description',
+          },
+        },
+      };
+      const onSuccess = jest.fn();
+      testSaga(
+        Sagas.updateFeatureDescriptionWorker,
+        updateFeatureDescription('new description', onSuccess)
+      )
+        .next()
+        .select()
+        .next(mockState)
+        .call(API.updateFeatureDescription, 'testUri', 'new description')
+        .next(mockResponse)
+        .call(onSuccess)
         .next()
         .isDone();
     });

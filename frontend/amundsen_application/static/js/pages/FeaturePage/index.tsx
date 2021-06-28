@@ -5,10 +5,13 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import * as ReactMarkdown from 'react-markdown';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import Breadcrumb from 'components/Breadcrumb';
+import EditableSection from 'components/EditableSection';
+import TagInput from 'components/Tags/TagInput';
+import BadgeList from 'features/BadgeList';
+import { getMaxLength, getSourceDisplayName } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
@@ -21,10 +24,10 @@ import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getSourceDisplayName } from 'config/config-utils';
 
+import FeatureDescEditableText from './FeatureDescEditableText';
 import { GenerationCode } from './GenerationCode';
-import './styles.scss';
+
 import {
   DATA_TYPE_TITLE,
   DESCRIPTION_TITLE,
@@ -36,8 +39,12 @@ import {
   OWNERS_TITLE,
   PARTITION_KEY_TITLE,
   SOURCE_TITLE,
+  TAG_TITLE,
   VERSION_TITLE,
 } from './constants';
+
+import './styles.scss';
+import FeatureOwnerEditor from './FeatureOwnerEditor';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -65,7 +72,7 @@ export type FeaturePageProps = RouteComponentProps<FeatureRouteParams> &
   StateFromProps &
   DispatchFromProps;
 
-const FeaturePageLoader: React.FC = () => (
+export const FeaturePageLoader: React.FC = () => (
   <div className="resource-detail-layout feature-page">
     <header className="resource-header">
       <section className="header-section">
@@ -163,10 +170,10 @@ export function renderTabs(featureCode) {
   );
 }
 
-const getFeatureKey = (group: string, name: string, version: string) =>
+export const getFeatureKey = (group: string, name: string, version: string) =>
   `${group}/${name}/${version}`;
 
-const FeaturePage: React.FC<FeaturePageProps> = ({
+export const FeaturePage: React.FC<FeaturePageProps> = ({
   isLoading,
   feature,
   featureCode,
@@ -201,23 +208,29 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
           <span className="icon icon-header icon-database" />
         </section>
         <section className="header-section">
-          <h1 className="header-title-text truncated" title={feature.name}>
+          <h1
+            className="header-title-text text-headline-w2 truncated"
+            title={feature.name}
+          >
             {feature.name}
           </h1>
-          <div className="text-body-w3">
-            Feature &bull;&nbsp;
+          <p className="header-subtitle text-body-w3">
+            Feature
+            {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
             {sourcesWithDisplay.join(', ')}
-          </div>
+            {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
+          </p>
         </section>
       </header>
       <article className="column-layout-1">
         <aside className="left-panel">
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">{DESCRIPTION_TITLE}</h3>
-            <div className="markdown-wrapper">
-              <ReactMarkdown>{feature.description}</ReactMarkdown>
-            </div>
-          </section>
+          <EditableSection title={DESCRIPTION_TITLE}>
+            <FeatureDescEditableText
+              maxLength={getMaxLength('tableDescLength')}
+              value={feature.description}
+              editable
+            />
+          </EditableSection>
           <section className="column-layout-2">
             <section className="left-panel">
               <section className="metadata-section">
@@ -244,25 +257,29 @@ const FeaturePage: React.FC<FeaturePageProps> = ({
                   })}
                 </time>
               </section>
+              <EditableSection title={TAG_TITLE}>
+                <TagInput
+                  resourceType={ResourceType.feature}
+                  uriKey={feature.key}
+                />
+              </EditableSection>
             </section>
             <section className="right-panel">
-              {feature.partition_column !== null && (
-                <section className="metadata-section">
-                  <h3 className="section-title text-title-w3">
-                    {PARTITION_KEY_TITLE}
-                  </h3>
-                  {feature.partition_column}
-                </section>
-              )}
+              <EditableSection title={OWNERS_TITLE}>
+                <FeatureOwnerEditor resourceType={ResourceType.feature} />
+              </EditableSection>
+              {feature.partition_column !== null &&
+                feature.partition_column !== undefined && (
+                  <section className="metadata-section">
+                    <h3 className="section-title text-title-w3">
+                      {PARTITION_KEY_TITLE}
+                    </h3>
+                    {feature.partition_column}
+                  </section>
+                )}
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
                 {feature.version}
-              </section>
-              <section className="metadata-section">
-                <h3 className="section-title text-title-w3">{OWNERS_TITLE}</h3>
-                {feature.owners.map((owner) => (
-                  <div>{owner.email}</div>
-                ))}
               </section>
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">
