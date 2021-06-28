@@ -5,9 +5,6 @@ from enum import Enum, auto
 
 
 class ResourceType(Enum):
-    """
-    DEPRECATED, Please use amundsen_common/entity/resource_type.py instead
-    """
     Table = auto()
     Dashboard = auto()
     User = auto()
@@ -17,3 +14,7 @@ class ResourceType(Enum):
 
 def to_resource_type(*, label: str) -> ResourceType:
     return ResourceType[label.title()]
+
+
+def to_label(*, resource_type: ResourceType) -> str:
+    return resource_type.name.lower()

@@ -11,6 +11,7 @@ from flask import Response, jsonify, make_response, request
 from flask import current_app as app
 from flask.blueprints import Blueprint
 
+from amundsen_common.entity.resource_type import ResourceType, to_label
 from amundsen_application.log.action_log import action_logging
 
 from amundsen_application.models.user import load_user, dump_user
@@ -29,7 +30,7 @@ metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v
 TABLE_ENDPOINT = '/table'
 FEATURE_ENDPOINT = '/feature'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
-POPULAR_TABLES_ENDPOINT = '/popular_tables'
+POPULAR_RESOURCES_ENDPOINT = '/popular_resources'
 TAGS_ENDPOINT = '/tags/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
@@ -56,38 +57,50 @@ def _get_dashboard_endpoint() -> str:
     return metadata_service_base + DASHBOARD_ENDPOINT
 
 
-@metadata_blueprint.route('/popular_tables', methods=['GET'])
-def popular_tables() -> Response:
+@metadata_blueprint.route('/popular_resources', methods=['GET'])
+def popular_resources() -> Response:
     """
-    call the metadata service endpoint to get the current popular tables
+    call the metadata service endpoint to get the current popular tables, dashboards etc.
+    this takes a required query parameter "types", that is a comma separated string of requested resource types
     :return: a json output containing an array of popular table metadata as 'popular_tables'
 
     Schema Defined Here:
     https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/popular_tables.py
     """
     try:
-        if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_TABLE_PERSONALIZATION']:
+        if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_RESOURCES_PERSONALIZATION']:
             user_id = app.config['AUTH_USER_METHOD'](app).user_id
         else:
             user_id = ''
 
+        resource_types = get_query_param(request.args, 'types')
+
         service_base = app.config['METADATASERVICE_BASE']
-        count = app.config['POPULAR_TABLE_COUNT']
-        url = f'{service_base}{POPULAR_TABLES_ENDPOINT}/{user_id}?limit={count}'
+        count = app.config['POPULAR_RESOURCES_COUNT']
+        url = f'{service_base}{POPULAR_RESOURCES_ENDPOINT}/{user_id}?limit={count}&types={resource_types}'
 
         response = request_metadata(url=url)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
             message = 'Success'
-            response_list = response.json().get('popular_tables')
-            popular_tables = [marshall_table_partial(result) for result in response_list]
+            json_response = response.json()
+            tables = json_response.get(ResourceType.Table.name, [])
+            popular_tables = [marshall_table_partial(result) for result in tables]
+            dashboards = json_response.get(ResourceType.Dashboard.name, [])
+            popular_dashboards = [marshall_dashboard_partial(dashboard) for dashboard in dashboards]
         else:
             message = 'Encountered error: Request to metadata service failed with status code ' + str(status_code)
             logging.error(message)
-            popular_tables = [{}]
+            popular_tables = []
+            popular_dashboards = []
 
-        payload = jsonify({'results': popular_tables, 'msg': message})
+        all_popular_resources = {
+            to_label(resource_type=ResourceType.Table): popular_tables,
+            to_label(resource_type=ResourceType.Dashboard): popular_dashboards
+        }
+
+        payload = jsonify({'results': all_popular_resources, 'msg': message})
         return make_response(payload, status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)

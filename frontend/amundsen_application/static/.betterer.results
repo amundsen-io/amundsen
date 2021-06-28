@@ -163,9 +163,6 @@ exports[`eslint`] = {
       [206, 23, 24, "Must use destructuring state assignment", "1659627107"],
       [208, 48, 24, "Must use destructuring state assignment", "1659627107"]
     ],
-    "js/components/PopularTables/index.tsx:252281305": [
-      [38, 4, 27, "Must use destructuring props assignment", "261221331"]
-    ],
     "js/components/Preloader/index.tsx:958787996": [
       [22, 4, 26, "Must use destructuring props assignment", "1492876559"],
       [23, 4, 23, "Must use destructuring props assignment", "3309761012"]
@@ -795,12 +792,12 @@ exports[`eslint`] = {
       [194, 10, 7, "A form label must be associated with a control.", "2729454337"],
       [364, 31, 14, "Must use destructuring state assignment", "1770565882"]
     ],
-    "js/pages/HomePage/index.spec.tsx:4057001982": [
+    "js/pages/HomePage/index.spec.tsx:2731110878": [
       [26, 48, 10, "Prop spreading is forbidden", "480399587"],
       [33, 4, 25, "Use object destructuring.", "354229464"],
       [34, 4, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/pages/HomePage/index.tsx:763024916": [
+    "js/pages/HomePage/index.tsx:2510324256": [
       [32, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
     "js/pages/ProfilePage/index.spec.tsx:1483823983": [

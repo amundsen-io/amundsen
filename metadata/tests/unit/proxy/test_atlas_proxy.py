@@ -6,6 +6,7 @@ import unittest
 from typing import Any, Dict, Optional, cast
 from unittest.mock import MagicMock, patch
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
@@ -21,7 +22,6 @@ from werkzeug.exceptions import BadRequest
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
 from metadata_service.entity.dashboard_query import DashboardQuery
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.util import UserResourceRel
@@ -33,7 +33,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
         self.app.config['PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS'] = ['spark.*']
         self.app.config['WATERMARK_DATE_FORMATS'] = ''
-        self.app.config['POPULAR_TABLE_MINIMUM_READER_COUNT'] = 0
+        self.app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT'] = 0
         self.app_context = self.app.app_context()
         self.app_context.push()
 

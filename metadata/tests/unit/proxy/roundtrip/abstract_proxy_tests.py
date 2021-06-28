@@ -8,11 +8,11 @@ from abc import ABC, abstractmethod
 from typing import (Any, Callable, Dict, Generic, List, Type, TypeVar,
                     no_type_check)
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import ProgrammaticDescription, Table
 from amundsen_common.tests.fixtures import Fixtures
 
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.proxy.shared import checkNotNone
 from metadata_service.util import UserResourceRel

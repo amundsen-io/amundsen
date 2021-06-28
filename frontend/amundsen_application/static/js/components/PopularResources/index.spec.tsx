@@ -7,28 +7,29 @@ import { shallow } from 'enzyme';
 import InfoButton from 'components/InfoButton';
 import PaginatedResourceList from 'components/ResourceList/PaginatedResourceList';
 import globalState from 'fixtures/globalState';
+import { ResourceType } from 'interfaces/Resources';
 import {
-  POPULAR_TABLES_INFO_TEXT,
-  POPULAR_TABLES_LABEL,
-  POPULAR_TABLES_PER_PAGE,
-  POPULAR_TABLES_SOURCE_NAME,
+  POPULAR_RESOURCES_INFO_TEXT,
+  POPULAR_RESOURCES_LABEL,
+  POPULAR_RESOURCES_PER_PAGE,
+  POPULAR_RESOURCES_SOURCE_NAME,
 } from './constants';
 import {
-  PopularTables,
-  PopularTablesProps,
+  PopularResources,
+  PopularResourcesProps,
   mapStateToProps,
   mapDispatchToProps,
 } from '.';
 
-const setup = (propOverrides?: Partial<PopularTablesProps>) => {
-  const props: PopularTablesProps = {
+const setup = (propOverrides?: Partial<PopularResourcesProps>) => {
+  const props: PopularResourcesProps = {
     isLoaded: false,
-    popularTables: jest.fn() as any,
-    getPopularTables: jest.fn(),
+    popularResources: jest.fn() as any,
+    getPopularResources: jest.fn(),
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
-  const wrapper = shallow<PopularTables>(<PopularTables {...props} />);
+  const wrapper = shallow<PopularResources>(<PopularResources {...props} />);
 
   return {
     props,
@@ -36,28 +37,28 @@ const setup = (propOverrides?: Partial<PopularTablesProps>) => {
   };
 };
 
-describe('PopularTables', () => {
+describe('popularResources', () => {
   let wrapper;
   let props;
 
   describe('componentDidMount', () => {
-    let getPopularTablesSpy;
+    let getpopularResourcesSpy;
 
     beforeAll(() => {
       ({ wrapper, props } = setup());
 
-      getPopularTablesSpy = jest.spyOn(props, 'getPopularTables');
+      getpopularResourcesSpy = jest.spyOn(props, 'getPopularResources');
     });
 
-    it('calls getPopularTables', () => {
-      expect(getPopularTablesSpy).toHaveBeenCalled();
+    it('calls getpopularResources', () => {
+      expect(getpopularResourcesSpy).toHaveBeenCalled();
     });
   });
 
   describe('mapStateToProps', () => {
-    it('sets popularTables on the props', () => {
-      const actual = mapStateToProps(globalState).popularTables;
-      const expected = globalState.popularTables.popularTables;
+    it('sets popularResources on the props', () => {
+      const actual = mapStateToProps(globalState).popularResources;
+      const expected = globalState.popularResources.popularResources;
 
       expect(actual).toEqual(expected);
     });
@@ -71,8 +72,8 @@ describe('PopularTables', () => {
       result = mapDispatchToProps(dispatch);
     });
 
-    it('sets getPopularTables on the props', () => {
-      expect(result.getPopularTables).toBeInstanceOf(Function);
+    it('sets getPopularResources on the props', () => {
+      expect(result.getPopularResources).toBeInstanceOf(Function);
     });
   });
 
@@ -82,7 +83,7 @@ describe('PopularTables', () => {
     });
 
     it('renders correct label for content', () => {
-      const expected = POPULAR_TABLES_LABEL;
+      const expected = POPULAR_RESOURCES_LABEL;
       const actual = wrapper
         .children()
         .find('.popular-tables-header-text')
@@ -93,7 +94,7 @@ describe('PopularTables', () => {
 
     it('renders InfoButton with correct props', () => {
       expect(wrapper.children().find(InfoButton).props()).toMatchObject({
-        infoText: POPULAR_TABLES_INFO_TEXT,
+        infoText: POPULAR_RESOURCES_INFO_TEXT,
       });
     });
 
@@ -107,19 +108,25 @@ describe('PopularTables', () => {
     });
 
     describe('when loaded', () => {
+      let givenResource;
+      let content;
       beforeAll(() => {
         ({ wrapper, props } = setup({
           isLoaded: true,
-          popularTables: globalState.popularTables.popularTables,
+          popularResources: globalState.popularResources.popularResources,
         }));
+        givenResource = ResourceType.table;
+        content = shallow(
+          <div>{wrapper.instance().generateTabContent(givenResource)}</div>
+        );
       });
 
       it('renders PaginatedResourceList with correct props', () => {
-        const actual = wrapper.children().find(PaginatedResourceList).props();
+        const actual = content.find(PaginatedResourceList).props();
         const expected = {
-          allItems: props.popularTables,
-          itemsPerPage: POPULAR_TABLES_PER_PAGE,
-          source: POPULAR_TABLES_SOURCE_NAME,
+          allItems: props.popularResources[givenResource],
+          itemsPerPage: POPULAR_RESOURCES_PER_PAGE,
+          source: POPULAR_RESOURCES_SOURCE_NAME,
         };
 
         expect(actual).toMatchObject(expected);

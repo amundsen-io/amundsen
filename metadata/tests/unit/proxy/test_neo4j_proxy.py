@@ -7,6 +7,7 @@ import unittest
 from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature, FeatureWatermark
 from amundsen_common.models.generation_code import GenerationCode
@@ -22,7 +23,6 @@ from neo4j import GraphDatabase
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
 from metadata_service.entity.dashboard_query import DashboardQuery
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
@@ -640,23 +640,23 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_popular_tables(self) -> None:
         # Test cache hit for global popular tables
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
+            mock_execute.return_value = [{'resource_key': 'foo'}, {'resource_key': 'bar'}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
 
             self.assertEqual(mock_execute.call_count, 1)
 
         # Test cache hit for personal popular tables
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
+            mock_execute.return_value = [{'resource_key': 'foo'}, {'resource_key': 'bar'}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'test_id'), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'test_id'), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'other_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'test_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'test_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'other_id'), ['foo', 'bar'])
 
             self.assertEqual(mock_execute.call_count, 2)
 
@@ -676,6 +676,49 @@ class TestNeo4jProxy(unittest.TestCase):
             ]
 
             self.assertEqual(actual.__repr__(), expected.__repr__())
+
+    def test_get_popular_resources_table(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_get_popular_tables') as mock_execute:
+            mock_execute.return_value = [
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'foo',
+                                'description': 'test description'}),
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table"])
+
+            expected = {
+                ResourceType.Table.name: [
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='foo',
+                                 description='test description'),
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='bar')
+                ]
+            }
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
+
+    def test_get_popular_resources_table_dashboard(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_get_popular_tables') as mock_execute:
+            mock_execute.return_value = [
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'foo',
+                                'description': 'test description'}),
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table", "dashboard"])
+
+            expected = {
+                ResourceType.Table.name: [
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='foo',
+                                 description='test description'),
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='bar')
+                ],
+                ResourceType.Dashboard.name: []
+            }
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
 
     def test_get_user(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:

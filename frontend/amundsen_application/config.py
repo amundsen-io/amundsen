@@ -36,10 +36,15 @@ class Config:
 
     UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES = []  # type: List[MatchRuleObject]
 
+    # DEPRECATED (since version 3.9.0): Please use `POPULAR_RESOURCES_COUNT`
     # Number of popular tables to be displayed on the index/search page
-    POPULAR_TABLE_COUNT = 4  # type: int
+    POPULAR_TABLE_COUNT = None
+    POPULAR_RESOURCES_COUNT = 4     # type: int
+
+    # DEPRECATED (since version 3.9.0): Please use `POPULAR_RESOURCES_PERSONALIZATION`
     # Personalize the popular tables response for the current authenticated user
-    POPULAR_TABLE_PERSONALIZATION = False  # type: bool
+    POPULAR_TABLE_PERSONALIZATION = None
+    POPULAR_RESOURCES_PERSONALIZATION = False  # type: bool
 
     # Request Timeout Configurations in Seconds
     REQUEST_SESSION_TIMEOUT_SEC = 3
@@ -163,7 +168,7 @@ class LocalConfig(Config):
 
 
 class TestConfig(LocalConfig):
-    POPULAR_TABLE_PERSONALIZATION = True
+    POPULAR_RESOURCES_PERSONALIZATION = True
     AUTH_USER_METHOD = get_test_user
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'test_url'

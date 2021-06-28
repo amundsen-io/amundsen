@@ -13,6 +13,7 @@ from typing import (Any, Callable, Dict, Iterable, List, Mapping, Optional,
 from urllib.parse import unquote
 
 import gremlin_python
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
@@ -57,7 +58,6 @@ from typing_extensions import Protocol  # TODO: it's in typing 3.8
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.statsd_utilities import timer_with_counter
@@ -1819,3 +1819,9 @@ class GenericGremlinProxy(AbstractGremlinProxy):
     @overrides
     def possibly_signed_ws_client_request_or_url(self) -> str:
         return self.url
+
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
+        pass
