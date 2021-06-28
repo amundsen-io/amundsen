@@ -10,8 +10,21 @@ import {
   GetFeatureCodePayload,
   GetFeatureCode,
   GetFeatureCodeResponse,
+  GetFeatureDescriptionRequest,
+  GetFeatureDescription,
+  GetFeatureDescriptionPayload,
+  GetFeatureDescriptionResponse,
+  UpdateFeatureDescriptionRequest,
+  UpdateFeatureDescriptionPayload,
+  UpdateFeatureDescriptionResponse,
+  UpdateFeatureDescription,
+  UpdateFeatureOwnerRequest,
+  UpdateFeatureOwnerResponse,
+  UpdateFeatureOwner,
 } from 'ducks/feature/types';
 import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
+import { User } from 'interfaces/User';
 
 /* Actions */
 
@@ -73,6 +86,105 @@ export function getFeatureCodeFailure(
   };
 }
 
+export function getFeatureDescription(
+  onSuccess?: () => any,
+  onFailure?: () => any
+): GetFeatureDescriptionRequest {
+  return {
+    payload: {
+      onSuccess,
+      onFailure,
+    },
+    type: GetFeatureDescription.REQUEST,
+  };
+}
+
+export function getFeatureDescriptionSuccess(
+  payload: GetFeatureDescriptionPayload
+) {
+  return {
+    payload,
+    type: GetFeatureDescription.SUCCESS,
+  };
+}
+
+export function getFeatureDescriptionFailure(
+  payload: GetFeatureDescriptionPayload
+): GetFeatureDescriptionResponse {
+  return {
+    payload,
+    type: GetFeatureDescription.FAILURE,
+  };
+}
+
+export function updateFeatureDescription(
+  newValue: string,
+  onSuccess?: () => any,
+  onFailure?: () => any
+): UpdateFeatureDescriptionRequest {
+  return {
+    payload: {
+      newValue,
+      onSuccess,
+      onFailure,
+    },
+    type: UpdateFeatureDescription.REQUEST,
+  };
+}
+
+export function updateFeatureDescriptionSuccess(
+  payload: UpdateFeatureDescriptionPayload
+) {
+  return {
+    payload,
+    type: UpdateFeatureDescription.SUCCESS,
+  };
+}
+
+export function updateFeatureDescriptionFailure(
+  payload: UpdateFeatureDescriptionPayload
+): UpdateFeatureDescriptionResponse {
+  return {
+    payload,
+    type: UpdateFeatureDescription.FAILURE,
+  };
+}
+
+export function updateFeatureOwner(
+  updateArray: UpdateOwnerPayload[],
+  onSuccess?: () => any,
+  onFailure?: () => any
+): UpdateFeatureOwnerRequest {
+  return {
+    payload: {
+      onSuccess,
+      onFailure,
+      updateArray,
+    },
+    type: UpdateFeatureOwner.REQUEST,
+  };
+}
+export function updateFeatureOwnerFailure(
+  owners: User[]
+): UpdateFeatureOwnerResponse {
+  return {
+    type: UpdateFeatureOwner.FAILURE,
+    payload: {
+      owners,
+    },
+  };
+}
+export function updateFeatureOwnerSuccess(
+  owners: User[]
+): UpdateFeatureOwnerResponse {
+  return {
+    type: UpdateFeatureOwner.SUCCESS,
+    payload: {
+      owners,
+    },
+  };
+}
+
 /* Reducer */
 export interface FeatureCodeState {
   featureCode: FeatureCode;
@@ -82,6 +194,7 @@ export interface FeatureCodeState {
 
 export interface FeatureReducerState {
   isLoading: boolean;
+  isLoadingOwners: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
@@ -121,7 +234,8 @@ export const initialFeatureCodeState: FeatureCodeState = {
 };
 
 export const initialState: FeatureReducerState = {
-  isLoading: true,
+  isLoading: false,
+  isLoadingOwners: false,
   statusCode: null,
   feature: initialFeatureState,
   featureCode: initialFeatureCodeState,
@@ -177,6 +291,36 @@ export default function reducer(
           featureCode: action.payload.featureCode,
           statusCode: action.payload.statusCode,
           isLoading: false,
+        },
+      };
+    case GetFeatureDescription.FAILURE:
+    case GetFeatureDescription.SUCCESS:
+      return {
+        ...state,
+        feature: {
+          ...state.feature,
+          description: action.payload.description,
+        },
+      };
+    case UpdateFeatureDescription.FAILURE:
+    case UpdateFeatureDescription.SUCCESS:
+      return {
+        ...state,
+        feature: {
+          ...state.feature,
+          description: action.payload.description,
+        },
+      };
+    case UpdateFeatureOwner.REQUEST:
+      return { ...state, isLoadingOwners: true };
+    case UpdateFeatureOwner.FAILURE:
+    case UpdateFeatureOwner.SUCCESS:
+      return {
+        ...state,
+        isLoadingOwners: false,
+        feature: {
+          ...state.feature,
+          owners: (<UpdateFeatureOwnerResponse>action).payload.owners,
         },
       };
     default:

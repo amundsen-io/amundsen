@@ -12,6 +12,9 @@ import reducer, {
   getFeatureCode,
   getFeatureCodeSuccess,
   getFeatureCodeFailure,
+  getFeatureDescriptionSuccess,
+  updateFeatureDescriptionSuccess,
+  updateFeatureDescriptionFailure,
 } from 'ducks/feature/reducer';
 import { featureMetadata } from '../../fixtures/metadata/feature';
 
@@ -20,7 +23,8 @@ describe('feature reducer', () => {
   beforeEach(() => {
     testState = {
       isLoading: false,
-      statusCode: null,
+      isLoadingOwners: false,
+      statusCode: 200,
       feature: initialFeatureState,
       featureCode: initialFeatureCodeState,
     };
@@ -48,6 +52,7 @@ describe('feature reducer', () => {
         })
       )
     ).toEqual({
+      ...testState,
       isLoading: false,
       statusCode: 202,
       feature: featureMetadata,
@@ -64,6 +69,7 @@ describe('feature reducer', () => {
         })
       )
     ).toEqual({
+      ...testState,
       isLoading: false,
       statusCode: 500,
       feature: initialFeatureState,
@@ -93,9 +99,7 @@ describe('feature reducer', () => {
     };
 
     expect(reducer(testState, getFeatureCodeSuccess(response))).toEqual({
-      isLoading: false,
-      statusCode: null,
-      feature: initialFeatureState,
+      ...testState,
       featureCode: {
         featureCode: response.featureCode,
         statusCode: response.statusCode,
@@ -113,13 +117,71 @@ describe('feature reducer', () => {
         })
       )
     ).toEqual({
-      isLoading: false,
-      statusCode: null,
-      feature: initialFeatureState,
+      ...testState,
       featureCode: {
         featureCode: emptyFeatureCode,
         statusCode: 500,
         isLoading: false,
+      },
+    });
+  });
+
+  it('should handle GetFeatureDescription.SUCCESS', () => {
+    const response = {
+      description: 'testDescription',
+      statusCode: 200,
+    };
+    expect(reducer(testState, getFeatureDescriptionSuccess(response))).toEqual({
+      ...testState,
+      feature: {
+        ...testState.feature,
+        description: response.description,
+      },
+    });
+  });
+
+  it('should handle GetFeatureDescription.FAILURE', () => {
+    const response = {
+      description: 'testDescription',
+      statusCode: 500,
+    };
+    expect(reducer(testState, getFeatureDescriptionSuccess(response))).toEqual({
+      ...testState,
+      feature: {
+        ...testState.feature,
+        description: response.description,
+      },
+    });
+  });
+
+  it('should handle UpdateFeatureDescription.SUCCESS', () => {
+    const response = {
+      description: 'testDescription',
+      statusCode: 200,
+    };
+    expect(
+      reducer(testState, updateFeatureDescriptionSuccess(response))
+    ).toEqual({
+      ...testState,
+      feature: {
+        ...testState.feature,
+        description: response.description,
+      },
+    });
+  });
+
+  it('should handle UpdateFeatureDescription.FAILURE', () => {
+    const response = {
+      description: 'testDescription',
+      statusCode: 200,
+    };
+    expect(
+      reducer(testState, updateFeatureDescriptionFailure(response))
+    ).toEqual({
+      ...testState,
+      feature: {
+        ...testState.feature,
+        description: response.description,
       },
     });
   });

@@ -93,17 +93,6 @@ describe('helpers', () => {
     });
   });
 
-  it('getTableOwnersFromResponseData', () => {
-    expect(Helpers.getTableOwnersFromResponseData(mockResponseData)).toEqual({
-      test: {
-        display_name: 'test',
-        profile_url: 'test.io',
-        email: 'test@test.com',
-        user_id: 'test',
-      },
-    });
-  });
-
   describe('createOwnerNotificationData', () => {
     let testData;
     let testId;
@@ -146,25 +135,6 @@ describe('helpers', () => {
         },
         recipients: [testId],
       });
-    });
-  });
-
-  it('createOwnerUpdatePayload', () => {
-    const testId = 'testId@test.com';
-    const testKey = 'testKey';
-    const testMethod = UpdateMethod.PUT;
-    expect(
-      Helpers.createOwnerUpdatePayload(
-        { method: testMethod, id: testId },
-        testKey
-      )
-    ).toMatchObject({
-      method: testMethod,
-      url: `${API.API_PATH}/update_table_owner`,
-      data: {
-        key: testKey,
-        owner: testId,
-      },
     });
   });
 
