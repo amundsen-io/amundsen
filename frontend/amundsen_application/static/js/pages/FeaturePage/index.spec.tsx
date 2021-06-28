@@ -6,7 +6,6 @@ import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
 import { featureCode, featureMetadata } from 'fixtures/metadata/feature';
-import { emptyFeatureCode } from 'ducks/feature/reducer';
 import TabsComponent from 'components/TabsComponent';
 import {
   FeaturePageLoader,
@@ -73,7 +72,6 @@ const setup = (
 // TODO - expand test coverage of this component
 describe('FeaturePage', () => {
   it('does not throw', () => {
-    const { props, wrapper } = setup();
     expect(() => {
       setup();
     }).not.toThrow();
