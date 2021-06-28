@@ -183,7 +183,9 @@ A notice is a small box with an icon and a message containing HTML markup (like 
   <img src='img/notices-alert-table.png' width='50%' />
 </figure>
 
-To set them up, we'll use the current configuration objects for the resources. In the event that we want to add the same notice to every table that follows a particular pattern, we use a wildcard character, *, for pattern matching. In addition, we can have dynamic HTML messages to allow for notices to change their message based on what table it is. For example, if company X wants to deprecate the use of one table or dashboard, they can opt to add new notices in their configuration file:
+To set them up, we'll use the current configuration objects for the resources. In the event that we want to add the same notice to every table that follows a particular pattern, we use a wildcard character, *, for pattern matching. In addition, we can have dynamic HTML messages to allow for notices to change their message based on what table it is. 
+
+For example, if company X wants to deprecate the use of one table or dashboard, they can opt to add new notices in their configuration file:
 
 ```
   resourceConfig: {
@@ -211,6 +213,8 @@ To set them up, we'll use the current configuration objects for the resources. I
 
 The above code will show a notice with a red exclamation icon whenever a final user visits the table's Table Detail page or the Dashboard Detail page.
 
+If you want to target several tables at once, you can use wildcards as shown below:
+
 ```
   resourceConfig: {
     [ResourceType.table]: {
@@ -237,6 +241,8 @@ The above code will show a notice with a red exclamation icon whenever a final u
 
 The above code will show a notice with a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname.
 
+If you want to use a dynamic HTML message that changes depending on the name of the resource, you can use string formatting as shown below:
+
 ```
   resourceConfig: {
     [ResourceType.table]: {
@@ -246,7 +252,7 @@ The above code will show a notice with a red exclamation icon whenever a final u
             severity: NoticeSeverity.ALERT,
             messageHtml: (resourceName) => {
               const [cluster, datasource, schema, table] = resourceName.split('.');
-              return `This schema is deprecated, please use <a href="https://amundsen.lyft.net/table_detail/${cluster}/${datasource}/SCHEMA/${table}">this table instead</a>`;
+              return `This schema is deprecated, please use <a href="https://amundsen.<company>.net/table_detail/${cluster}/${datasource}/SCHEMA/${table}">this table instead</a>`;
             },
           },
       },
