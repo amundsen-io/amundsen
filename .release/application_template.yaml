@@ -1,3 +1,4 @@
+##comment
 ---
 app: amemsenennn
 auto_deploy: true
@@ -60,7 +61,7 @@ workflows:
     - charts.ingress
 - name: patch
   parallelize:
-  - step: amundsen
+  - step: amundsen-stepz
     tasks:
     - charts.amundsen
 
