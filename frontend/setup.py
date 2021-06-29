@@ -65,10 +65,11 @@ setup(
     include_package_data=True,
     dependency_links=[],
     setup_requires=['cython >= 0.29'],
-    install_requires=requirements + requirements_common,
+    # install_requires=requirements + requirements_common,
+    install_requires=requirements,
     extras_require={
         'oidc': oidc,
-        'dev': requirements_dev,
+        # 'dev': requirements_dev,
         'pyarrow': pyarrrow,
         'bigquery_preview': bigquery_preview,
         'all': all_deps,
