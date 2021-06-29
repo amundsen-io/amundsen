@@ -9,7 +9,11 @@ import { bindActionCreators } from 'redux';
 
 import { getPreviewData } from 'ducks/tableMetadata/reducer';
 import { GlobalState } from 'ducks/rootReducer';
-import { PreviewData, PreviewQueryParams, TableMetadata } from 'interfaces';
+import {
+  PreviewData,
+  TablePreviewQueryParams,
+  TableMetadata,
+} from 'interfaces';
 import { logClick } from 'utils/analytics';
 import * as Constants from './constants';
 
@@ -32,7 +36,7 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  getPreviewData: (queryParams: PreviewQueryParams) => void;
+  getPreviewData: (queryParams: TablePreviewQueryParams) => void;
 }
 
 export interface ComponentProps {
