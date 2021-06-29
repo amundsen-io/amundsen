@@ -37,13 +37,13 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements = requirements_file.readlines()
 
-requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-common.txt')
-with open(requirements_path) as requirements_file:
-    requirements_common = requirements_file.readlines()
+# requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-common.txt')
+# with open(requirements_path) as requirements_file:
+#     requirements_common = requirements_file.readlines()
 
-requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
-with open(requirements_path) as requirements_file:
-    requirements_dev = requirements_file.readlines()
+# requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
+# with open(requirements_path) as requirements_file:
+#     requirements_dev = requirements_file.readlines()
 
 __version__ = '3.11.0'
 
