@@ -224,6 +224,36 @@ describe('navigationUtils', () => {
       expect(actual).toEqual(expected);
     });
   });
+
+  describe('buildLineageURL', () => {
+    it('builds a path to the lineage page from table metadata', () => {
+      const mockMetadata = {
+        cluster: 'cluster',
+        database: 'database',
+        schema: 'schema',
+        name: 'name',
+      };
+      const expected = `/lineage/table/cluster/database/schema/name`;
+      const actual = NavigationUtils.buildLineageURL(mockMetadata);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('buildTableKey', () => {
+    it('picks up url params and constructs a table key for backed interactions', () => {
+      const testMatch = {
+        cluster: 'cluster',
+        database: 'database',
+        schema: 'schema',
+        table: 'table',
+      };
+      const expected = 'database://cluster.schema/table';
+      const actual = NavigationUtils.buildTableKey(testMatch);
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });
 
 describe('dateUtils', () => {
