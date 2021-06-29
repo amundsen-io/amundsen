@@ -14,8 +14,6 @@ server:
 
       storage "dynamodb" {
         ha_enabled = "true"
-        access_key = "${RELEASE_VAULT_AWS_ACCESS_KEY_ID}"
-        secret_key = "${RELEASE_VAULT_AWS_SECRET_ACCESS_KEY}"
         table      = "${RELEASE_VAULT_DATABASE}"
         region     = "${RELEASE_CLUSTER_REGION}"
       }
@@ -23,8 +21,6 @@ server:
       service_registration "kubernetes" {}
 
       seal "awskms" {
-        access_key = "${RELEASE_VAULT_AWS_ACCESS_KEY_ID}"
-        secret_key = "${RELEASE_VAULT_AWS_SECRET_ACCESS_KEY}"
         kms_key_id = "${RELEASE_VAULT_KMS_ARN}"
         region     = "${RELEASE_CLUSTER_REGION}"
       }
