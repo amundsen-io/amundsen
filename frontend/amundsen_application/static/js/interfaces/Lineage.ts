@@ -8,14 +8,15 @@ export interface LineageItem {
   level: number;
   name: string;
   schema: string;
-  parent: string;
-  usage: number;
+  parent: string | null;
+  usage: number | null;
+  source?: string;
 }
 
 export interface Lineage {
-  key: string;
-  direction: string;
-  depth: number;
+  key?: string;
+  direction?: string;
+  depth?: number;
   downstream_entities: LineageItem[];
   upstream_entities: LineageItem[];
 }
