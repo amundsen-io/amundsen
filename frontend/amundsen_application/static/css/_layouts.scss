@@ -134,13 +134,6 @@ $screen-lg-container: 1440px;
       .markdown-wrapper {
         font-size: 16px;
 
-        // Remove extra margin form text elements
-        > p,
-        ul,
-        ol {
-          margin: 0;
-        }
-
         // Restrict max size of header elements
         h1,
         h2,

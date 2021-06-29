@@ -68,6 +68,7 @@ const globalState: GlobalState = {
   feature: {
     statusCode: 200,
     isLoading: false,
+    isLoadingOwners: false,
     feature: {
       key: '',
       name: '',
@@ -87,6 +88,15 @@ const globalState: GlobalState = {
       stats: [],
       last_updated_timestamp: 0,
       created_timestamp: 0,
+    },
+    featureCode: {
+      isLoading: false,
+      statusCode: null,
+      featureCode: {
+        text: '',
+        source: '',
+        key: '',
+      },
     },
   },
   feedback: {

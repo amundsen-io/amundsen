@@ -18,9 +18,8 @@ export interface FeatureListItemProps {
   logging: LoggingParams;
 }
 
-const getLink = (feature: FeatureResource, logging: LoggingParams) => {
-  return `/feature/${feature.key}?index=${logging.index}&source=${logging.source}`;
-};
+const getLink = (feature: FeatureResource, logging: LoggingParams) =>
+  `/feature/${feature.key}?index=${logging.index}&source=${logging.source}`;
 
 const generateResourceIconClass = (
   featureId: string,
@@ -31,7 +30,8 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
   feature,
   logging,
 }: FeatureListItemProps) => {
-  const source = feature.availability.length > 0 ? feature.availability[0] : '';
+  const source =
+    feature.availability?.length > 0 ? feature.availability[0] : '';
   return (
     <li className="list-group-item clickable">
       <Link

@@ -1,4 +1,5 @@
 import { FeatureResource, ResourceType } from 'interfaces';
+import { FeatureCode } from 'interfaces/Feature';
 
 export const featureSummary: FeatureResource = {
   type: ResourceType.feature,
@@ -31,4 +32,10 @@ export const featureMetadata = {
   type: ResourceType.feature,
   version: '1.4',
   watermarks: [],
+};
+
+export const featureCode: FeatureCode = {
+  source: 'testSource',
+  key: 'testKey',
+  text: 'testText',
 };
