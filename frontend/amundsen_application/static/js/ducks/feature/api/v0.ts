@@ -7,7 +7,7 @@ import * as qs from 'simple-query-string';
 import {
   FeatureCode,
   FeatureMetadata,
-  FeatureSampleQueryParams,
+  FeaturePreviewQueryParams,
   PreviewData,
 } from 'interfaces';
 import { API_PATH } from 'ducks/tableMetadata/api/v0';
@@ -46,7 +46,7 @@ export function getFeature(key: string, index?: string, source?: string) {
     });
 }
 
-export function getPreviewData(queryParams: FeatureSampleQueryParams) {
+export function getFeaturePreviewData(queryParams: FeaturePreviewQueryParams) {
   return axios({
     url: '/api/preview/v0/feature_preview',
     method: 'POST',

@@ -17,9 +17,14 @@ import {
   FeatureCodeState,
   getFeature,
   getFeatureCode,
+  getFeaturePreviewData,
 } from 'ducks/feature/reducer';
-import { GetFeatureCodeRequest, GetFeatureRequest } from 'ducks/feature/types';
-import { FeatureMetadata } from 'interfaces/Feature';
+import {
+  GetFeatureCodeRequest,
+  GetFeaturePreviewDataRequest,
+  GetFeatureRequest,
+} from 'ducks/feature/types';
+import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
 import { getLoggingParams } from 'utils/logUtils';
@@ -60,6 +65,9 @@ export interface DispatchFromProps {
     source: string
   ) => GetFeatureRequest;
   getFeatureCodeDispatch: (key: string) => GetFeatureCodeRequest;
+  getFeaturePreviewDispatch: (
+    payload: FeaturePreviewQueryParams
+  ) => GetFeaturePreviewDataRequest;
 }
 
 interface FeatureRouteParams {
@@ -179,6 +187,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
   featureCode,
   getFeatureDispatch,
   getFeatureCodeDispatch,
+  getFeaturePreviewDispatch,
   location,
   match,
 }: FeaturePageProps) => {
@@ -191,6 +200,11 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
       setKey(newKey);
       getFeatureDispatch(newKey, index, source);
       getFeatureCodeDispatch(newKey);
+      getFeaturePreviewDispatch({
+        version,
+        feature_group: group,
+        feature_name: name,
+      });
     }
   });
 
@@ -308,6 +322,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getFeatureDispatch: getFeature,
       getFeatureCodeDispatch: getFeatureCode,
+      getFeaturePreviewDispatch: getFeaturePreviewData,
     },
     dispatch
   );

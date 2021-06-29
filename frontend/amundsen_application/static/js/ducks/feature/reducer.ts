@@ -21,10 +21,18 @@ import {
   UpdateFeatureOwnerRequest,
   UpdateFeatureOwnerResponse,
   UpdateFeatureOwner,
+  GetFeaturePreviewDataRequest,
+  GetFeaturePreviewData,
+  GetFeaturePreviewDataResponse,
 } from 'ducks/feature/types';
-import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import {
+  FeatureCode,
+  FeatureMetadata,
+  FeaturePreviewQueryParams,
+} from 'interfaces/Feature';
 import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
 import { User } from 'interfaces/User';
+import { PreviewData } from 'interfaces/PreviewData';
 
 /* Actions */
 
@@ -83,6 +91,31 @@ export function getFeatureCodeFailure(
   return {
     payload,
     type: GetFeatureCode.FAILURE,
+  };
+}
+
+export function getFeaturePreviewData(
+  payload: FeaturePreviewQueryParams
+): GetFeaturePreviewDataRequest {
+  return {
+    payload,
+    type: GetFeaturePreviewData.REQUEST,
+  };
+}
+export function getFeaturePreviewDataSuccess(
+  payload: PreviewData
+): GetFeaturePreviewDataResponse {
+  return {
+    payload,
+    type: GetFeaturePreviewData.SUCCESS,
+  };
+}
+export function getFeaturePreviewDataFailure(
+  payload: PreviewData
+): GetFeaturePreviewDataResponse {
+  return {
+    payload,
+    type: GetFeaturePreviewData.FAILURE,
   };
 }
 
@@ -192,12 +225,19 @@ export interface FeatureCodeState {
   statusCode: number | null;
 }
 
+export interface FeaturePreviewDataState {
+  data: PreviewData;
+  isLoading: boolean;
+  status: number | null;
+}
+
 export interface FeatureReducerState {
   isLoading: boolean;
   isLoadingOwners: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
+  preview: FeaturePreviewDataState;
 }
 
 export const initialFeatureState: FeatureMetadata = {
@@ -227,6 +267,12 @@ export const emptyFeatureCode: FeatureCode = {
   key: '',
 };
 
+export const initialPreviewState = {
+  data: {},
+  isLoading: false,
+  status: null,
+};
+
 export const initialFeatureCodeState: FeatureCodeState = {
   featureCode: emptyFeatureCode,
   isLoading: false,
@@ -239,6 +285,7 @@ export const initialState: FeatureReducerState = {
   statusCode: null,
   feature: initialFeatureState,
   featureCode: initialFeatureCodeState,
+  preview: initialPreviewState,
 };
 
 export default function reducer(
@@ -291,6 +338,25 @@ export default function reducer(
           featureCode: action.payload.featureCode,
           statusCode: action.payload.statusCode,
           isLoading: false,
+        },
+      };
+    case GetFeaturePreviewData.REQUEST:
+      return {
+        ...state,
+        preview: {
+          isLoading: true,
+          data: {},
+          status: null,
+        },
+      };
+    case GetFeaturePreviewData.SUCCESS:
+    case GetFeaturePreviewData.FAILURE:
+      return {
+        ...state,
+        preview: {
+          isLoading: false,
+          data: action.payload.previewData,
+          status: action.payload.statusCode,
         },
       };
     case GetFeatureDescription.FAILURE:

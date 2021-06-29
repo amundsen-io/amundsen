@@ -1,4 +1,9 @@
-import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import {
+  FeatureCode,
+  FeatureMetadata,
+  FeaturePreviewQueryParams,
+} from 'interfaces/Feature';
+import { PreviewData } from 'interfaces/PreviewData';
 import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
 import { User } from 'interfaces/User';
 
@@ -7,7 +12,6 @@ export enum GetFeature {
   SUCCESS = 'amundsen/feature/GET_FEATURE_SUCCESS',
   FAILURE = 'amundsen/feature/GET_FEATURE_FAILURE',
 }
-
 export interface GetFeatureRequest {
   type: GetFeature.REQUEST;
   payload: {
@@ -16,12 +20,10 @@ export interface GetFeatureRequest {
     source?: string;
   };
 }
-
 export interface GetFeatureResponse {
   type: GetFeature.SUCCESS | GetFeature.FAILURE;
   payload: GetFeaturePayload;
 }
-
 export interface GetFeaturePayload {
   feature?: FeatureMetadata;
   statusCode?: number;
@@ -33,23 +35,34 @@ export enum GetFeatureCode {
   SUCCESS = 'amundsen/feature/GET_FEATURE_CODE_SUCCESS',
   FAILURE = 'amundsen/feature/GET_FEATURE_CODE_FAILURE',
 }
-
 export interface GetFeatureCodeRequest {
   type: GetFeatureCode.REQUEST;
   payload: {
     key: string;
   };
 }
-
 export interface GetFeatureCodeResponse {
   type: GetFeatureCode.SUCCESS | GetFeatureCode.FAILURE;
   payload: GetFeatureCodePayload;
 }
-
 export interface GetFeatureCodePayload {
   featureCode?: FeatureCode;
   statusCode?: number;
   statusMessage?: string;
+}
+
+export enum GetFeaturePreviewData {
+  REQUEST = 'amundsen/feature/GET_FEATURE_PREVIEW_DATA_REQUEST',
+  SUCCESS = 'amundsen/feature/GET_FEATURE_PREVIEW_DATA_SUCCESS',
+  FAILURE = 'amundsen/feature/GET_FEATURE_PREVIEW_DATA_FAILURE',
+}
+export interface GetFeaturePreviewDataRequest {
+  type: GetFeaturePreviewData.REQUEST;
+  payload: FeaturePreviewQueryParams;
+}
+export interface GetFeaturePreviewDataResponse {
+  type: GetFeaturePreviewData.SUCCESS | GetFeaturePreviewData.FAILURE;
+  payload: PreviewData;
 }
 
 export enum GetFeatureDescription {
