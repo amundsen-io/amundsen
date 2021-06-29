@@ -11,7 +11,11 @@ import Breadcrumb from 'components/Breadcrumb';
 import EditableSection from 'components/EditableSection';
 import TagInput from 'components/Tags/TagInput';
 import BadgeList from 'features/BadgeList';
-import { getMaxLength, getSourceDisplayName } from 'config/config-utils';
+import {
+  getDisplayNameByResource,
+  getMaxLength,
+  getSourceDisplayName,
+} from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
@@ -212,10 +216,10 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             className="header-title-text text-headline-w2 truncated"
             title={feature.name}
           >
-            {feature.name}
+            {feature.feature_group}.{feature.name}
           </h1>
           <p className="header-subtitle text-body-w3">
-            Feature
+            {getDisplayNameByResource(ResourceType.feature)}
             {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
             {sourcesWithDisplay.join(', ')}
             {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
