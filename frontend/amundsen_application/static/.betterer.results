@@ -563,11 +563,11 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:2598790694": [
+    "js/ducks/tableMetadata/api/v0.ts:488078374": [
       [78, 8, 23, "Use object destructuring.", "1142306891"],
-      [137, 23, -4203, "Expected to return a value at the end of arrow function.", "5381"]
+      [137, 23, -4208, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/ducks/tableMetadata/index.spec.ts:2466548220": [
+    "js/ducks/tableMetadata/index.spec.ts:2846530620": [
       [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
       [506, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
       [612, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
@@ -874,15 +874,15 @@ exports[`eslint`] = {
       [164, 24, 23, "Must use destructuring props assignment", "1307307490"],
       [175, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
-    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1227995903": [
-      [85, 4, 25, "Must use destructuring props assignment", "1403663841"],
-      [123, 8, 17, "Must use destructuring props assignment", "3871525209"],
-      [158, 8, 17, "Must use destructuring props assignment", "3871525209"],
-      [179, 12, 17, "Must use destructuring props assignment", "3871525209"],
-      [199, 8, 9, "\'iconClass\' is assigned a value but never used.", "2230586016"],
-      [209, 6, 191, "Missing an explicit type attribute for button", "1938977214"],
-      [244, 21, 20, "Must use destructuring state assignment", "2976153148"],
-      [246, 26, 21, "Must use destructuring props assignment", "2163940102"]
+    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1422860355": [
+      [89, 4, 25, "Must use destructuring props assignment", "1403663841"],
+      [109, 8, 17, "Must use destructuring props assignment", "3871525209"],
+      [113, 8, 17, "Must use destructuring props assignment", "3871525209"],
+      [134, 12, 17, "Must use destructuring props assignment", "3871525209"],
+      [154, 8, 9, "\'iconClass\' is assigned a value but never used.", "2230586016"],
+      [164, 6, 191, "Missing an explicit type attribute for button", "1938977214"],
+      [199, 21, 20, "Must use destructuring state assignment", "2976153148"],
+      [201, 26, 21, "Must use destructuring props assignment", "2163940102"]
     ],
     "js/pages/TableDetailPage/ExploreButton/index.tsx:1031745331": [
       [13, 0, 454, "Component should be written as a pure function", "1437366564"],

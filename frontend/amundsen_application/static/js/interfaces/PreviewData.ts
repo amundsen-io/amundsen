@@ -7,7 +7,7 @@ interface PreviewColumnItem {
 }
 
 interface PreviewDataItem {
-  id: string;
+  [columnName: string]: string;
 }
 
 export interface PreviewData {

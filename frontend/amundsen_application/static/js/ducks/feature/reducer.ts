@@ -24,6 +24,7 @@ import {
   GetFeaturePreviewDataRequest,
   GetFeaturePreviewData,
   GetFeaturePreviewDataResponse,
+  GetFeaturePreviewPayload,
 } from 'ducks/feature/types';
 import {
   FeatureCode,
@@ -103,7 +104,7 @@ export function getFeaturePreviewData(
   };
 }
 export function getFeaturePreviewDataSuccess(
-  payload: PreviewData
+  payload: GetFeaturePreviewPayload
 ): GetFeaturePreviewDataResponse {
   return {
     payload,
@@ -111,7 +112,7 @@ export function getFeaturePreviewDataSuccess(
   };
 }
 export function getFeaturePreviewDataFailure(
-  payload: PreviewData
+  payload: GetFeaturePreviewPayload
 ): GetFeaturePreviewDataResponse {
   return {
     payload,
@@ -356,7 +357,7 @@ export default function reducer(
         preview: {
           isLoading: false,
           previewData: action.payload.previewData,
-          status: action.payload.statusCode,
+          status: action.payload.status,
         },
       };
     case GetFeatureDescription.FAILURE:

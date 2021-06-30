@@ -5,6 +5,7 @@
 $header-row-height: 40px;
 $content-row-height: 32px;
 $shimmer-row-spacing: 4px;
+$preview-font-size: 12px;
 
 .preview-data {
   .grid {
@@ -25,11 +26,11 @@ $shimmer-row-spacing: 4px;
     border-bottom: 1px solid $stroke;
     display: flex;
     flex-grow: 1;
-    font-size: 12px;
+    font-size: $preview-font-size;
     height: $content-row-height;
     justify-content: center;
     min-width: 0;
-    padding: 8px;
+    padding: $spacer-1;
     text-align: center;
     white-space: nowrap;
   }

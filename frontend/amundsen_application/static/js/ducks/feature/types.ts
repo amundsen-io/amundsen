@@ -62,7 +62,11 @@ export interface GetFeaturePreviewDataRequest {
 }
 export interface GetFeaturePreviewDataResponse {
   type: GetFeaturePreviewData.SUCCESS | GetFeaturePreviewData.FAILURE;
-  payload: PreviewData;
+  payload: GetFeaturePreviewPayload;
+}
+export interface GetFeaturePreviewPayload {
+  previewData: PreviewData;
+  status: null | number;
 }
 
 export enum GetFeatureDescription {

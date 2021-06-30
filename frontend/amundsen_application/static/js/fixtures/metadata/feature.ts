@@ -1,4 +1,4 @@
-import { FeatureResource, PreviewData, ResourceType } from 'interfaces';
+import { FeatureResource, ResourceType } from 'interfaces';
 import { FeatureCode } from 'interfaces/Feature';
 
 export const featureSummary: FeatureResource = {

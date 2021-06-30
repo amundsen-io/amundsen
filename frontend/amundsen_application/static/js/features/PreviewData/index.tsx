@@ -12,7 +12,7 @@ import {
 
 import './styles.scss';
 
-interface PreviewDataProps {
+export interface PreviewDataProps {
   isLoading: boolean;
   previewData: PreviewData;
 }
@@ -31,7 +31,7 @@ export const PreviewDataLoader = () => (
   </div>
 );
 
-const getSanitizedValue = (value) => {
+export const getSanitizedValue = (value) => {
   let sanitizedValue = '';
   if (value === 0 || typeof value === 'boolean') {
     sanitizedValue = value.toString();
@@ -74,14 +74,14 @@ export const PreviewDataTable: React.FC<PreviewDataProps> = ({
           const fieldName = col.column_name;
           return (
             <div key={fieldName} id={fieldName} className="grid-column">
-              <div className="grid-cell grid-header subtitle-3">
+              <div className="grid-cell grid-header text-subtitle-w3">
                 {fieldName.toUpperCase()}
               </div>
               {(previewData.data || []).map((row, rowId) => {
                 const cellId = `${colId}:${rowId}`;
                 const dataItemValue = getSanitizedValue(row[fieldName]);
                 return (
-                  <div key={cellId} className="grid-cell">
+                  <div key={cellId} className="grid-cell grid-data-cell">
                     {dataItemValue}
                   </div>
                 );
