@@ -1,6 +1,11 @@
 import { testSaga } from 'redux-saga-test-plan';
 
 import { featureMetadata } from 'fixtures/metadata/feature';
+import {
+  previewDataError,
+  previewDataSuccess,
+} from 'fixtures/metadata/previewData';
+
 import * as API from './api/v0';
 import * as Sagas from './sagas';
 
@@ -13,6 +18,9 @@ import {
   getFeatureDescriptionFailure,
   getFeatureDescriptionSuccess,
   getFeatureFailure,
+  getFeaturePreviewData,
+  getFeaturePreviewDataFailure,
+  getFeaturePreviewDataSuccess,
   getFeatureSuccess,
   updateFeatureDescription,
 } from './reducer';
@@ -20,6 +28,7 @@ import {
   GetFeature,
   GetFeatureCode,
   GetFeatureDescription,
+  GetFeaturePreviewData,
   UpdateFeatureDescription,
 } from './types';
 
@@ -66,7 +75,7 @@ describe('feature sagas', () => {
   });
 
   describe('getFeatureCodeWatcher', () => {
-    it('takes every GetFeatureCode.REQUEST with getFeatureWorker', () => {
+    it('takes every GetFeatureCode.REQUEST with getFeatureCodeWorker', () => {
       testSaga(Sagas.getFeatureCodeWatcher)
         .next()
         .takeEvery(GetFeatureCode.REQUEST, Sagas.getFeatureCodeWorker)
@@ -101,6 +110,66 @@ describe('feature sagas', () => {
         // @ts-ignore
         .throw(mockResponse)
         .put(getFeatureCodeFailure(mockResponse))
+        .next()
+        .isDone();
+    });
+  });
+
+  describe('getFeaturePreviewDataWatcher', () => {
+    it('takes every GetFeaturePreviewData.REQUEST with getFeaturePreviewDataWorker', () => {
+      testSaga(Sagas.getFeaturePreviewDataWatcher)
+        .next()
+        .takeEvery(
+          GetFeaturePreviewData.REQUEST,
+          Sagas.getFeaturePreviewDataWorker
+        )
+        .next()
+        .isDone();
+    });
+  });
+
+  describe('getFeaturePreviewDataWorker', () => {
+    it('executes flow for successfully getting feature preview data', () => {
+      const mockParams = {
+        feature_name: 'name',
+        feature_group: 'group',
+        version: '3',
+      };
+      const mockResponse = {
+        previewData: previewDataSuccess,
+        status: 200,
+      };
+      testSaga(
+        Sagas.getFeaturePreviewDataWorker,
+        getFeaturePreviewData(mockParams)
+      )
+        .next()
+        .call(API.getFeaturePreviewData, mockParams)
+        .next(mockResponse)
+        .put(getFeaturePreviewDataSuccess(mockResponse))
+        .next()
+        .isDone();
+    });
+
+    it('executes flow for a failed feature preview data request', () => {
+      const mockParams = {
+        feature_name: 'name',
+        feature_group: 'group',
+        version: '3',
+      };
+      const mockResponse = {
+        previewData: previewDataError,
+        status: 500,
+      };
+      testSaga(
+        Sagas.getFeaturePreviewDataWorker,
+        getFeaturePreviewData(mockParams)
+      )
+        .next()
+        .call(API.getFeaturePreviewData, mockParams)
+        // @ts-ignore
+        .throw(mockResponse)
+        .put(getFeaturePreviewDataFailure(mockResponse))
         .next()
         .isDone();
     });

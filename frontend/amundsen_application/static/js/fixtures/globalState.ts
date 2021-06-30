@@ -98,6 +98,11 @@ const globalState: GlobalState = {
         key: '',
       },
     },
+    preview: {
+      isLoading: false,
+      previewData: {},
+      status: null,
+    },
   },
   feedback: {
     sendState: SendingState.IDLE,
