@@ -15,6 +15,7 @@ import reducer, {
   getFeatureDescriptionSuccess,
   updateFeatureDescriptionSuccess,
   updateFeatureDescriptionFailure,
+  initialFeatureLineageState,
 } from 'ducks/feature/reducer';
 import { featureMetadata } from '../../fixtures/metadata/feature';
 
@@ -27,6 +28,7 @@ describe('feature reducer', () => {
       statusCode: 200,
       feature: initialFeatureState,
       featureCode: initialFeatureCodeState,
+      featureLineage: initialFeatureLineageState,
     };
   });
 

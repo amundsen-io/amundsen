@@ -285,6 +285,9 @@ const configDefault: AppConfig = {
       displayName: 'People',
     },
   },
+  featureLineage: {
+    inAppListEnabled: false,
+  },
   tableLineage: {
     inAppListEnabled: false,
     inAppPageEnabled: false,

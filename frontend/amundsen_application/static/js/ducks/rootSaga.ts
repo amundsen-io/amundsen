@@ -15,6 +15,7 @@ import {
   getFeatureWatcher,
   getFeatureCodeWatcher,
   getFeatureDescriptionWatcher,
+  getFeatureLineageWatcher,
   updateFeatureDescriptionWatcher,
   updateFeatureOwnerWatcher,
 } from 'ducks/feature/sagas';
@@ -97,6 +98,7 @@ export default function* rootSaga() {
     // Feature
     getFeatureWatcher(),
     getFeatureCodeWatcher(),
+    getFeatureLineageWatcher(),
     getFeatureDescriptionWatcher(),
     updateFeatureDescriptionWatcher(),
     updateFeatureOwnerWatcher(),

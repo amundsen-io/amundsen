@@ -22,7 +22,14 @@ import {
   UpdateFeatureOwnerResponse,
   UpdateFeatureOwner,
 } from 'ducks/feature/types';
+import {
+  GetFeatureLineage,
+  GetFeatureLineageRequest,
+  GetFeatureLineageResponse,
+  GetFeatureLineagePayload,
+} from 'ducks/lineage/types';
 import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import { Lineage } from 'interfaces/Lineage';
 import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
 import { User } from 'interfaces/User';
 
@@ -58,6 +65,33 @@ export function getFeatureFailure(
   return {
     payload,
     type: GetFeature.FAILURE,
+  };
+}
+
+export function getFeatureLineage(key: string): GetFeatureLineageRequest {
+  return {
+    payload: {
+      key,
+      depth: 1,
+      direction: 'upstream',
+    },
+    type: GetFeatureLineage.REQUEST,
+  };
+}
+export function getFeatureLineageSuccess(
+  payload: GetFeatureLineagePayload
+): GetFeatureLineageResponse {
+  return {
+    payload,
+    type: GetFeatureLineage.SUCCESS,
+  };
+}
+export function getFeatureLineageFailure(
+  payload: GetFeatureLineagePayload
+): GetFeatureLineageResponse {
+  return {
+    payload,
+    type: GetFeatureLineage.FAILURE,
   };
 }
 
@@ -192,12 +226,19 @@ export interface FeatureCodeState {
   statusCode: number | null;
 }
 
+export interface FeatureLineageState {
+  featureLineage: Lineage;
+  isLoading: boolean;
+  statusCode: number | null;
+}
+
 export interface FeatureReducerState {
   isLoading: boolean;
   isLoadingOwners: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
+  featureLineage: FeatureLineageState;
 }
 
 export const initialFeatureState: FeatureMetadata = {
@@ -233,12 +274,27 @@ export const initialFeatureCodeState: FeatureCodeState = {
   statusCode: null,
 };
 
+export const emptyFeatureLineage: Lineage = {
+  upstream_entities: [],
+  downstream_entities: [],
+  depth: 1,
+  direction: 'upstream',
+  key: '',
+};
+
+export const initialFeatureLineageState: FeatureLineageState = {
+  featureLineage: emptyFeatureLineage,
+  isLoading: false,
+  statusCode: null,
+};
+
 export const initialState: FeatureReducerState = {
   isLoading: false,
   isLoadingOwners: false,
   statusCode: null,
   feature: initialFeatureState,
   featureCode: initialFeatureCodeState,
+  featureLineage: initialFeatureLineageState,
 };
 
 export default function reducer(
@@ -291,6 +347,33 @@ export default function reducer(
           featureCode: action.payload.featureCode,
           statusCode: action.payload.statusCode,
           isLoading: false,
+        },
+      };
+    case GetFeatureLineage.REQUEST:
+      return {
+        ...state,
+        featureLineage: {
+          featureLineage: emptyFeatureLineage,
+          isLoading: true,
+          statusCode: null,
+        },
+      };
+    case GetFeatureLineage.FAILURE:
+      return {
+        ...state,
+        featureLineage: {
+          featureLineage: emptyFeatureLineage,
+          isLoading: false,
+          statusCode: action.payload.statusCode,
+        },
+      };
+    case GetFeatureLineage.SUCCESS:
+      return {
+        ...state,
+        featureLineage: {
+          featureLineage: action.payload.data,
+          isLoading: false,
+          statusCode: action.payload.statusCode,
         },
       };
     case GetFeatureDescription.FAILURE:

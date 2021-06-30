@@ -11,14 +11,22 @@ import Breadcrumb from 'components/Breadcrumb';
 import EditableSection from 'components/EditableSection';
 import TagInput from 'components/Tags/TagInput';
 import BadgeList from 'features/BadgeList';
-import { getMaxLength, getSourceDisplayName } from 'config/config-utils';
+import LineageList from 'pages/TableDetailPage/LineageList';
+import {
+  getMaxLength,
+  getSourceDisplayName,
+  isFeatureListLineageEnabled,
+} from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
   getFeature,
   getFeatureCode,
+  getFeatureLineage,
+  FeatureLineageState,
 } from 'ducks/feature/reducer';
 import { GetFeatureCodeRequest, GetFeatureRequest } from 'ducks/feature/types';
+import { GetFeatureLineageRequest } from 'ducks/lineage/types';
 import { FeatureMetadata } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
@@ -41,6 +49,7 @@ import {
   SOURCE_TITLE,
   TAG_TITLE,
   VERSION_TITLE,
+  UPSTREAM_TAB_TITLE,
 } from './constants';
 
 import './styles.scss';
@@ -51,6 +60,7 @@ interface StateFromProps {
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
+  featureLineage: FeatureLineageState;
 }
 
 export interface DispatchFromProps {
@@ -60,6 +70,7 @@ export interface DispatchFromProps {
     source: string
   ) => GetFeatureRequest;
   getFeatureCodeDispatch: (key: string) => GetFeatureCodeRequest;
+  getFeatureLineageDispatch: (key: string) => GetFeatureLineageRequest;
 }
 
 interface FeatureRouteParams {
@@ -143,7 +154,7 @@ export const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
-export function renderTabs(featureCode) {
+export function renderTabs(featureCode, featureLineage) {
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
@@ -155,6 +166,16 @@ export function renderTabs(featureCode) {
     key: FEATURE_TAB.GEN_CODE,
     title: GEN_CODE_TAB_TITLE,
   });
+  if (isFeatureListLineageEnabled()) {
+    const upstreamItems = featureLineage.featureLineage.upstream_entities;
+    if (upstreamItems.length > 0) {
+      tabInfo.push({
+        content: <LineageList items={upstreamItems} direction="upstream" />,
+        key: UPSTREAM_TAB_TITLE,
+        title: `Upstream (${upstreamItems.length})`,
+      });
+    }
+  }
   return (
     <TabsComponent
       tabs={tabInfo}
@@ -177,8 +198,10 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
   isLoading,
   feature,
   featureCode,
+  featureLineage,
   getFeatureDispatch,
   getFeatureCodeDispatch,
+  getFeatureLineageDispatch,
   location,
   match,
 }: FeaturePageProps) => {
@@ -191,6 +214,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
       setKey(newKey);
       getFeatureDispatch(newKey, index, source);
       getFeatureCodeDispatch(newKey);
+      getFeatureLineageDispatch(newKey);
     }
   });
 
@@ -290,7 +314,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             </section>
           </section>
         </aside>
-        <main className="right-panel">{renderTabs(featureCode)}</main>
+        <main className="right-panel">
+          {renderTabs(featureCode, featureLineage)}
+        </main>
       </article>
     </div>
   );
@@ -301,6 +327,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   statusCode: state.feature.statusCode,
   feature: state.feature.feature,
   featureCode: state.feature.featureCode,
+  featureLineage: state.feature.featureLineage,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
@@ -308,6 +335,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getFeatureDispatch: getFeature,
       getFeatureCodeDispatch: getFeatureCode,
+      getFeatureLineageDispatch: getFeatureLineage,
     },
     dispatch
   );
