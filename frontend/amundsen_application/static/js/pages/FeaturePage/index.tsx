@@ -15,6 +15,7 @@ import { getMaxLength, getSourceDisplayName } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
+  FeaturePreviewDataState,
   getFeature,
   getFeatureCode,
   getFeaturePreviewData,
@@ -34,6 +35,7 @@ import FeatureDescEditableText from './FeatureDescEditableText';
 import { GenerationCode } from './GenerationCode';
 
 import {
+  PREVIEW_DATA_TAB_TITLE,
   DATA_TYPE_TITLE,
   DESCRIPTION_TITLE,
   ENTITY_TITLE,
@@ -50,12 +52,14 @@ import {
 
 import './styles.scss';
 import FeatureOwnerEditor from './FeatureOwnerEditor';
+import { FeaturePreviewData } from './FeaturePreviewData';
 
 interface StateFromProps {
   isLoading: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
+  preview: FeaturePreviewDataState;
 }
 
 export interface DispatchFromProps {
@@ -151,7 +155,7 @@ export const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
-export function renderTabs(featureCode) {
+export function renderTabs(featureCode, preview) {
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
@@ -163,6 +167,18 @@ export function renderTabs(featureCode) {
     key: FEATURE_TAB.GEN_CODE,
     title: GEN_CODE_TAB_TITLE,
   });
+
+  tabInfo.push({
+    content: (
+      <FeaturePreviewData
+        isLoading={preview.isLoading}
+        previewData={preview.previewData}
+      />
+    ),
+    key: FEATURE_TAB.PREVIEW_DATA,
+    title: PREVIEW_DATA_TAB_TITLE,
+  });
+
   return (
     <TabsComponent
       tabs={tabInfo}
@@ -185,6 +201,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
   isLoading,
   feature,
   featureCode,
+  preview,
   getFeatureDispatch,
   getFeatureCodeDispatch,
   getFeaturePreviewDispatch,
@@ -304,7 +321,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             </section>
           </section>
         </aside>
-        <main className="right-panel">{renderTabs(featureCode)}</main>
+        <main className="right-panel">{renderTabs(featureCode, preview)}</main>
       </article>
     </div>
   );
@@ -315,6 +332,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   statusCode: state.feature.statusCode,
   feature: state.feature.feature,
   featureCode: state.feature.featureCode,
+  preview: state.feature.preview,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

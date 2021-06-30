@@ -226,7 +226,7 @@ export interface FeatureCodeState {
 }
 
 export interface FeaturePreviewDataState {
-  data: PreviewData;
+  previewData: PreviewData;
   isLoading: boolean;
   status: number | null;
 }
@@ -268,7 +268,7 @@ export const emptyFeatureCode: FeatureCode = {
 };
 
 export const initialPreviewState = {
-  data: {},
+  previewData: {},
   isLoading: false,
   status: null,
 };
@@ -345,7 +345,7 @@ export default function reducer(
         ...state,
         preview: {
           isLoading: true,
-          data: {},
+          previewData: {},
           status: null,
         },
       };
@@ -355,7 +355,7 @@ export default function reducer(
         ...state,
         preview: {
           isLoading: false,
-          data: action.payload.previewData,
+          previewData: action.payload.previewData,
           status: action.payload.statusCode,
         },
       };

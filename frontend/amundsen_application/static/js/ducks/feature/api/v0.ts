@@ -53,17 +53,17 @@ export function getFeaturePreviewData(queryParams: FeaturePreviewQueryParams) {
     data: queryParams,
   })
     .then((response: AxiosResponse<PreviewDataAPI>) => ({
-      data: response.data.previewData,
+      previewData: response.data.previewData,
       status: response.status,
     }))
     .catch((e: AxiosError<PreviewDataAPI>) => {
       const { response } = e;
-      let data = {};
+      let previewData = {};
       if (response && response.data && response.data.previewData) {
-        data = response.data.previewData;
+        previewData = response.data.previewData;
       }
       const status = response ? response.status : null;
-      return Promise.reject({ data, status });
+      return Promise.reject({ previewData, status });
     });
 }
 
