@@ -42,9 +42,7 @@ Atlas would be ready once you'll have the following output in the docker output 
 
 ### Verify setup
 
-1. You can verify dummy data has been ingested into Neo4j by by visiting [`http://localhost:7474/browser/`](http://localhost:7474/browser/) and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see two tables:
-   1. `hive.test_schema.test_table1`
-   2. `hive.test_schema.test_table2`
+1. You can verify dummy data has been ingested into Neo4j by by visiting [`http://localhost:7474/browser/`](http://localhost:7474/browser/) and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see few tables.
 ![](img/neo4j-debug.png)
 2. You can verify the data has been loaded into the metadataservice by visiting:
    1. [`http://localhost:5000/table_detail/gold/hive/test_schema/test_table1`](http://localhost:5000/table_detail/gold/hive/test_schema/test_table1)
