@@ -1534,7 +1534,7 @@ class AtlasProxy(BaseProxy):
         while True:
             try:
                 parent = parents.pop()
-            except:
+            except Exception:
                 break
 
             badges: List[str] = []
