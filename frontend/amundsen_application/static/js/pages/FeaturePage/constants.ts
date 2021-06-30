@@ -13,13 +13,13 @@ export const SOURCE_TITLE = 'Source';
 export const TAG_TITLE = 'Tags';
 export const VERSION_TITLE = 'Version';
 
-export const DATA_SAMPLE_TAB_TITLE = 'Data Sample';
+export const PREVIEW_DATA_TAB_TITLE = 'Data Sample';
 export const GEN_CODE_TAB_TITLE = 'Generation Code';
 export const STATS_TAB_TITLE = 'Statistics';
 export const UPSTREAM_TAB_TITLE = 'Upstream';
 
 export enum FEATURE_TAB {
-  DATA_SAMPLE = 'data_sample',
+  PREVIEW_DATA = 'data_sample',
   GEN_CODE = 'generation_code',
   STATS = 'statistics',
   UPSTREAM = 'upstream',

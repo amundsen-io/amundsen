@@ -39,3 +39,9 @@ export const featureCode: FeatureCode = {
   key: 'testKey',
   text: 'testText',
 };
+
+export const previewData = {
+  isLoading: false,
+  data: {},
+  status: null,
+};
