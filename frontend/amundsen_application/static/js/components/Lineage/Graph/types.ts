@@ -24,4 +24,4 @@ export type TreeLineageItem = LineageItem & {
 
 export type TreeLineageNode = HierarchyPointNode<
   LineageItem & { id?: string; data: TreeLineageItem }
-> & { _children?: TreeLineageNode[]; x0?: number; y0: number; key?: string };
+> & { _children?: TreeLineageNode[]; x0?: number; y0?: number; key?: string };

@@ -2,11 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { GlobalState } from 'ducks/rootReducer';
-import { ResourceType, SendingState } from 'interfaces';
+import { LineageItem, ResourceType, SendingState } from 'interfaces';
 
 import { defaultEmptyFilters } from './search/filters';
 
 import { dashboardMetadata } from './metadata/dashboard';
+
+const sharedLineageItemCore = {
+  badges: [],
+  cluster: 'cluster',
+  database: 'h',
+  schema: 'schema',
+  source: 'source',
+  usage: 0,
+};
 
 const globalState: GlobalState = {
   announcements: {
@@ -321,7 +330,44 @@ const globalState: GlobalState = {
   ui: {},
   lineage: {
     lineageTree: {
-      upstream_entities: [],
+      upstream_entities: [
+        {
+          ...sharedLineageItemCore,
+          key: 'h/parent-3',
+          level: 3,
+          name: 'parent-3',
+          parent: '',
+        },
+        {
+          ...sharedLineageItemCore,
+          key: 'h/parent-1',
+          level: 1,
+          name: 'parent-1',
+          parent: 'h/parent-2-solo',
+        },
+        {
+          ...sharedLineageItemCore,
+          key: 'h/parent-1',
+          level: 1,
+          name: 'parent-1',
+          parent: 'h/parent-2',
+        },
+
+        {
+          ...sharedLineageItemCore,
+          key: 'h/parent-2',
+          level: 2,
+          name: 'parent-2',
+          parent: 'h/parent-3',
+        },
+        {
+          ...sharedLineageItemCore,
+          key: 'h/parent-2-solo',
+          level: 2,
+          name: 'parent-2-solo',
+          parent: '',
+        },
+      ] as LineageItem[],
       downstream_entities: [],
       key: '',
       direction: 'both',
