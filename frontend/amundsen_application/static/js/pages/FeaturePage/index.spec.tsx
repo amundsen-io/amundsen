@@ -5,7 +5,11 @@ import * as History from 'history';
 import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
-import { featureCode, featureMetadata } from 'fixtures/metadata/feature';
+import {
+  featureCode,
+  featureMetadata,
+  previewData,
+} from 'fixtures/metadata/feature';
 import TabsComponent from 'components/TabsComponent';
 import {
   FeaturePageLoader,
@@ -46,7 +50,8 @@ describe('FeaturePageLoader', () => {
 describe('renderTabs', () => {
   it('returns returns a tabs component', () => {
     const mockFeatureCode = featureCode;
-    const result: JSX.Element = renderTabs(mockFeatureCode);
+    const mockPreviewData = previewData;
+    const result: JSX.Element = renderTabs(mockFeatureCode, mockPreviewData);
     expect(shallow(result).find(TabsComponent).exists).toBeTruthy();
   });
 });

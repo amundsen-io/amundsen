@@ -25,6 +25,7 @@ import {
   GetFeaturePreviewDataRequest,
   GetFeatureRequest,
 } from 'ducks/feature/types';
+import { PreviewDataTable } from 'features/PreviewData';
 import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
@@ -32,6 +33,7 @@ import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import FeatureDescEditableText from './FeatureDescEditableText';
+import FeatureOwnerEditor from './FeatureOwnerEditor';
 import { GenerationCode } from './GenerationCode';
 
 import {
@@ -51,8 +53,6 @@ import {
 } from './constants';
 
 import './styles.scss';
-import FeatureOwnerEditor from './FeatureOwnerEditor';
-import { FeaturePreviewData } from './FeaturePreviewData';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -170,7 +170,7 @@ export function renderTabs(featureCode, preview) {
 
   tabInfo.push({
     content: (
-      <FeaturePreviewData
+      <PreviewDataTable
         isLoading={preview.isLoading}
         previewData={preview.previewData}
       />

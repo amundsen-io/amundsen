@@ -8,6 +8,7 @@ import reducer, {
   FeatureReducerState,
   initialFeatureState,
   initialFeatureCodeState,
+  initialPreviewState,
   emptyFeatureCode,
   getFeatureCode,
   getFeatureCodeSuccess,
@@ -27,6 +28,7 @@ describe('feature reducer', () => {
       statusCode: 200,
       feature: initialFeatureState,
       featureCode: initialFeatureCodeState,
+      preview: initialPreviewState,
     };
   });
 

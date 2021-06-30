@@ -2,30 +2,36 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+
 import { PreviewData } from 'interfaces/PreviewData';
+import {
+  NO_DATA_MESSAGE,
+  PREVIEW_COLUMN_MAX_LEN,
+  PREVIEW_COLUMN_MSG,
+} from './constants';
 
 import './styles.scss';
-import * as Constants from '../../TableDetailPage/DataPreviewButton/constants';
 
-export type FeaturePreviewDataProps = {
+interface PreviewDataProps {
   isLoading: boolean;
   previewData: PreviewData;
-};
+}
 
-export const FeaturePreviewLoader = () => (
-  <div className="shimmer-block">
-    <div className="shimmer-line shimmer-line--1 is-shimmer-animated" />
-    <div className="shimmer-line shimmer-line--2 is-shimmer-animated" />
-    <div className="shimmer-line shimmer-line--3 is-shimmer-animated" />
-    <div className="shimmer-line shimmer-line--4 is-shimmer-animated" />
-    <div className="shimmer-line shimmer-line--5 is-shimmer-animated" />
-    <div className="shimmer-line shimmer-line--6 is-shimmer-animated" />
+export const PreviewDataLoader = () => (
+  <div className="preview-data-loader">
+    <div className="shimmer-header-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
+    <div className="shimmer-row is-shimmer-animated" />
   </div>
 );
 
 const getSanitizedValue = (value) => {
-  // Display the string interpretation of the following "false-y" values
-  // return 'Data Exceeds Render Limit' msg if column is too long
   let sanitizedValue = '';
   if (value === 0 || typeof value === 'boolean') {
     sanitizedValue = value.toString();
@@ -35,30 +41,36 @@ const getSanitizedValue = (value) => {
     sanitizedValue = value;
   }
 
-  if (sanitizedValue.length > Constants.PREVIEW_COLUMN_MAX_LEN) {
-    return Constants.PREVIEW_COLUMN_MSG;
+  if (sanitizedValue.length > PREVIEW_COLUMN_MAX_LEN) {
+    return PREVIEW_COLUMN_MSG;
   }
   return sanitizedValue;
 };
 
-export const FeaturePreviewData: React.FC<FeaturePreviewDataProps> = ({
+export const PreviewDataTable: React.FC<PreviewDataProps> = ({
   isLoading,
   previewData,
 }) => {
   if (isLoading) {
-    return <FeaturePreviewLoader />;
+    return <PreviewDataLoader />;
   }
-  if (!previewData) {
+  if (
+    !previewData.columns ||
+    !previewData.data ||
+    previewData.columns.length === 0 ||
+    previewData.data.length === 0
+  ) {
     return (
-      <div className="feature-preview-data">
-        <div className="empty-message" />
+      <div className="preview-data">
+        <div className="error-message">{NO_DATA_MESSAGE}</div>
       </div>
     );
   }
+
   return (
-    <div className="feature-preview-data">
+    <div className="preview-data">
       <div className="grid">
-        {previewData.columns?.map((col, colId) => {
+        {previewData.columns.map((col, colId) => {
           const fieldName = col.column_name;
           return (
             <div key={fieldName} id={fieldName} className="grid-column">
