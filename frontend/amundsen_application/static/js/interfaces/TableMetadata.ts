@@ -8,15 +8,6 @@ interface PartitionData {
   value?: string;
 }
 
-interface PreviewColumnItem {
-  column_name: string;
-  column_type: string;
-}
-
-interface PreviewDataItem {
-  id: string;
-}
-
 export interface TableColumnStats {
   stat_type: string;
   stat_val: string;
@@ -49,17 +40,11 @@ export interface TableWriter {
   name: string;
 }
 
-export interface PreviewQueryParams {
+export interface TablePreviewQueryParams {
   database: string;
   schema: string;
   tableName: string;
   cluster: string;
-}
-
-export interface PreviewData {
-  columns?: PreviewColumnItem[];
-  data?: PreviewDataItem[];
-  error_text?: string;
 }
 
 export interface TableColumn {

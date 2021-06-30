@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 
 import {
   PreviewData,
-  PreviewQueryParams,
+  TablePreviewQueryParams,
   TableMetadata,
   DashboardResource,
   UpdateOwnerPayload,
@@ -174,7 +174,7 @@ export function updateColumnDescription(
   });
 }
 
-export function getPreviewData(queryParams: PreviewQueryParams) {
+export function getPreviewData(queryParams: TablePreviewQueryParams) {
   return axios({
     url: '/api/preview/v0/',
     method: 'POST',

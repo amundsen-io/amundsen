@@ -49,7 +49,7 @@ export interface FeatureWatermark {
   time: string;
 }
 
-export interface FeatureSampleQueryParams {
+export interface FeaturePreviewQueryParams {
   feature_name: string;
   feature_group: string;
   version: string;

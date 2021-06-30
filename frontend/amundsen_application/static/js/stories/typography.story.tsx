@@ -70,7 +70,7 @@ export const Typography = () => (
         <h1 className="title-3">Heading with .title-3</h1>
         <h1 className="subtitle-1">Heading with .subtitle-1</h1>
         <h1 className="subtitle-2">Heading with .subtitle-2</h1>
-        <h1 className="subtitle-3">Heading with .subtitle-3</h1>
+        <h1 className="text-subtitle-w3">Heading with .text-subtitle-w3</h1>
       </>
     </StorySection>
     <StorySection title="Body Text">
