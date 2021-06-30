@@ -63,6 +63,7 @@ export enum IconType {
   REDSHIFT = 'icon-redshift',
   SNOWFLAKE = 'icon-snowflake',
   SUPERSET = 'icon-superset',
+  ELASTICSEARCH = 'icon-elasticsearch',
 }
 
 // Icon sizes

@@ -7,7 +7,7 @@ import * as qs from 'simple-query-string';
 import {
   FeatureCode,
   FeatureMetadata,
-  FeatureSampleQueryParams,
+  FeaturePreviewQueryParams,
   PreviewData,
 } from 'interfaces';
 import { API_PATH } from 'ducks/tableMetadata/api/v0';
@@ -46,24 +46,21 @@ export function getFeature(key: string, index?: string, source?: string) {
     });
 }
 
-export function getPreviewData(queryParams: FeatureSampleQueryParams) {
+export function getFeaturePreviewData(queryParams: FeaturePreviewQueryParams) {
   return axios({
     url: '/api/preview/v0/feature_preview',
     method: 'POST',
     data: queryParams,
   })
     .then((response: AxiosResponse<PreviewDataAPI>) => ({
-      data: response.data.previewData,
+      previewData: response.data.previewData,
       status: response.status,
     }))
     .catch((e: AxiosError<PreviewDataAPI>) => {
       const { response } = e;
-      let data = {};
-      if (response && response.data && response.data.previewData) {
-        data = response.data.previewData;
-      }
+      const previewData = response?.data?.previewData || {};
       const status = response ? response.status : null;
-      return Promise.reject({ data, status });
+      return Promise.reject({ previewData, status });
     });
 }
 

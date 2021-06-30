@@ -18,6 +18,8 @@ import {
   getFeatureDescriptionFailure,
   updateFeatureOwnerSuccess,
   updateFeatureOwnerFailure,
+  getFeaturePreviewDataFailure,
+  getFeaturePreviewDataSuccess,
 } from './reducer';
 
 import {
@@ -25,6 +27,7 @@ import {
   GetFeatureCode,
   GetFeatureDescription,
   GetFeatureDescriptionRequest,
+  GetFeaturePreviewData,
   UpdateFeatureDescription,
   UpdateFeatureDescriptionRequest,
   UpdateFeatureOwner,
@@ -68,6 +71,18 @@ export function* getFeatureLineageWorker(action): SagaIterator {
 }
 export function* getFeatureLineageWatcher(): SagaIterator {
   yield takeEvery(GetFeatureLineage.REQUEST, getFeatureLineageWorker);
+}
+
+export function* getFeaturePreviewDataWorker(action): SagaIterator {
+  try {
+    const response = yield call(API.getFeaturePreviewData, action.payload);
+    yield put(getFeaturePreviewDataSuccess(response));
+  } catch (error) {
+    yield put(getFeaturePreviewDataFailure(error));
+  }
+}
+export function* getFeaturePreviewDataWatcher(): SagaIterator {
+  yield takeEvery(GetFeaturePreviewData.REQUEST, getFeaturePreviewDataWorker);
 }
 
 export function* getFeatureDescriptionWorker(

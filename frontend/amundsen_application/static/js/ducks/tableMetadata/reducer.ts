@@ -2,7 +2,7 @@ import {
   DashboardResource,
   OwnerDict,
   PreviewData,
-  PreviewQueryParams,
+  TablePreviewQueryParams,
   TableMetadata,
   Tag,
 } from 'interfaces';
@@ -229,7 +229,7 @@ export function updateColumnDescription(
 }
 
 export function getPreviewData(
-  queryParams: PreviewQueryParams
+  queryParams: TablePreviewQueryParams
 ): GetPreviewDataRequest {
   return { payload: { queryParams }, type: GetPreviewData.REQUEST };
 }

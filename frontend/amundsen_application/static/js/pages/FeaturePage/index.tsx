@@ -13,6 +13,7 @@ import TagInput from 'components/Tags/TagInput';
 import BadgeList from 'features/BadgeList';
 import LineageList from 'pages/TableDetailPage/LineageList';
 import {
+  getDisplayNameByResource,
   getMaxLength,
   getSourceDisplayName,
   isFeatureListLineageEnabled,
@@ -20,23 +21,32 @@ import {
 import { GlobalState } from 'ducks/rootReducer';
 import {
   FeatureCodeState,
+  FeaturePreviewDataState,
   getFeature,
   getFeatureCode,
   getFeatureLineage,
   FeatureLineageState,
+  getFeaturePreviewData,
 } from 'ducks/feature/reducer';
-import { GetFeatureCodeRequest, GetFeatureRequest } from 'ducks/feature/types';
+import {
+  GetFeatureCodeRequest,
+  GetFeaturePreviewDataRequest,
+  GetFeatureRequest,
+} from 'ducks/feature/types';
 import { GetFeatureLineageRequest } from 'ducks/lineage/types';
-import { FeatureMetadata } from 'interfaces/Feature';
+import { PreviewDataTable } from 'features/PreviewData';
+import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
 import { getLoggingParams } from 'utils/logUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import FeatureDescEditableText from './FeatureDescEditableText';
+import FeatureOwnerEditor from './FeatureOwnerEditor';
 import { GenerationCode } from './GenerationCode';
 
 import {
+  PREVIEW_DATA_TAB_TITLE,
   DATA_TYPE_TITLE,
   DESCRIPTION_TITLE,
   ENTITY_TITLE,
@@ -53,7 +63,6 @@ import {
 } from './constants';
 
 import './styles.scss';
-import FeatureOwnerEditor from './FeatureOwnerEditor';
 
 interface StateFromProps {
   isLoading: boolean;
@@ -61,6 +70,7 @@ interface StateFromProps {
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
   featureLineage: FeatureLineageState;
+  preview: FeaturePreviewDataState;
 }
 
 export interface DispatchFromProps {
@@ -71,6 +81,9 @@ export interface DispatchFromProps {
   ) => GetFeatureRequest;
   getFeatureCodeDispatch: (key: string) => GetFeatureCodeRequest;
   getFeatureLineageDispatch: (key: string) => GetFeatureLineageRequest;
+  getFeaturePreviewDispatch: (
+    payload: FeaturePreviewQueryParams
+  ) => GetFeaturePreviewDataRequest;
 }
 
 interface FeatureRouteParams {
@@ -154,7 +167,7 @@ export const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
-export function renderTabs(featureCode, featureLineage) {
+export function renderTabs(featureCode, featureLineage, preview) {
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
@@ -176,6 +189,17 @@ export function renderTabs(featureCode, featureLineage) {
       });
     }
   }
+  tabInfo.push({
+    content: (
+      <PreviewDataTable
+        isLoading={preview.isLoading}
+        previewData={preview.previewData}
+      />
+    ),
+    key: FEATURE_TAB.PREVIEW_DATA,
+    title: PREVIEW_DATA_TAB_TITLE,
+  });
+
   return (
     <TabsComponent
       tabs={tabInfo}
@@ -199,9 +223,11 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
   feature,
   featureCode,
   featureLineage,
+  preview,
+  getFeatureLineageDispatch,
   getFeatureDispatch,
   getFeatureCodeDispatch,
-  getFeatureLineageDispatch,
+  getFeaturePreviewDispatch,
   location,
   match,
 }: FeaturePageProps) => {
@@ -215,6 +241,11 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
       getFeatureDispatch(newKey, index, source);
       getFeatureCodeDispatch(newKey);
       getFeatureLineageDispatch(newKey);
+      getFeaturePreviewDispatch({
+        version,
+        feature_group: group,
+        feature_name: name,
+      });
     }
   });
 
@@ -236,10 +267,10 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             className="header-title-text text-headline-w2 truncated"
             title={feature.name}
           >
-            {feature.name}
+            {feature.feature_group}.{feature.name}
           </h1>
           <p className="header-subtitle text-body-w3">
-            Feature
+            {getDisplayNameByResource(ResourceType.feature)}
             {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
             {sourcesWithDisplay.join(', ')}
             {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
@@ -315,7 +346,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
           </section>
         </aside>
         <main className="right-panel">
-          {renderTabs(featureCode, featureLineage)}
+          {renderTabs(featureCode, featureLineage, preview)}
         </main>
       </article>
     </div>
@@ -328,6 +359,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   feature: state.feature.feature,
   featureCode: state.feature.featureCode,
   featureLineage: state.feature.featureLineage,
+  preview: state.feature.preview,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
@@ -336,6 +368,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       getFeatureDispatch: getFeature,
       getFeatureCodeDispatch: getFeatureCode,
       getFeatureLineageDispatch: getFeatureLineage,
+      getFeaturePreviewDispatch: getFeaturePreviewData,
     },
     dispatch
   );

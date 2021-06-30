@@ -25,11 +25,11 @@ export function* getTableLineageWorker(
   const { key, depth, direction } = action.payload;
   try {
     const response = yield call(API.getTableLineage, key, depth, direction);
-    const { data, status } = response;
-    yield put(getTableLineageSuccess(data, status));
+    const { data, statusCode } = response;
+    yield put(getTableLineageSuccess(data, statusCode));
   } catch (error) {
-    const { status } = error;
-    yield put(getTableLineageFailure(status));
+    const { statusCode } = error;
+    yield put(getTableLineageFailure(statusCode));
   }
 }
 export function* getTableLineageWatcher(): SagaIterator {
@@ -48,11 +48,11 @@ export function* getColumnLineageWorker(
       depth,
       direction
     );
-    const { data, status } = response;
-    yield put(getColumnLineageSuccess(data, status));
+    const { data, statusCode } = response;
+    yield put(getColumnLineageSuccess(data, statusCode));
   } catch (error) {
-    const { status } = error;
-    yield put(getColumnLineageFailure(status));
+    const { statusCode } = error;
+    yield put(getColumnLineageFailure(statusCode));
   }
 }
 export function* getColumnLineageWatcher(): SagaIterator {
@@ -72,11 +72,11 @@ export function* getTableColumnLineageWorker(
       1,
       'both'
     );
-    const { data, status } = response;
-    yield put(getTableColumnLineageSuccess(data, columnName, status));
+    const { data, statusCode } = response;
+    yield put(getTableColumnLineageSuccess(data, columnName, statusCode));
   } catch (error) {
-    const { status } = error;
-    yield put(getTableColumnLineageFailure(columnName, status));
+    const { statusCode } = error;
+    yield put(getTableColumnLineageFailure(columnName, statusCode));
   }
 }
 // ToDo: Please remove once list based view is deprecated

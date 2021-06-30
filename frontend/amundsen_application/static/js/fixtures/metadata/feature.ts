@@ -48,3 +48,9 @@ export const featureLineage: Lineage = {
   depth: 1,
   direction: 'upstream',
 };
+
+export const previewData = {
+  isLoading: false,
+  data: {},
+  status: null,
+};
