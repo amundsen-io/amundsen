@@ -15,3 +15,7 @@ def process_deprecations(app: Flask) -> None:
         warnings.warn("'POPULAR_TABLE_MINIMUM_READER_COUNT' variable is deprecated since version (3.6.0),"
                       "and will be removed in version 4."
                       "Please use 'POPULAR_TABLE_MINIMUM_READER_COUNT' instead", DeprecationWarning)
+
+
+def print_deprecation_warning(message: str) -> None:
+    warnings.warn(message, DeprecationWarning)
