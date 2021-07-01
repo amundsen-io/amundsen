@@ -407,6 +407,14 @@ describe('getLogoTitle', () => {
   });
 });
 
+describe('isFeatureListLineageEnabled', () => {
+  it('returns isFeatureListLineageEnabled defined in config', () => {
+    const actual = ConfigUtils.isFeatureListLineageEnabled();
+    const expected = AppConfig.featureLineage.inAppListEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
 describe('isTableListLineageEnabled', () => {
   it('returns isTableListLineageEnabled defined in config', () => {
     const actual = ConfigUtils.isTableListLineageEnabled();
