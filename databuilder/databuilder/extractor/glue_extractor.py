@@ -25,6 +25,7 @@ class GlueExtractor(Extractor):
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
         self._cluster = conf.get_string(GlueExtractor.CLUSTER_KEY)
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
+        self._max_results = 500
         self._glue = boto3.client('glue')
         self._extract_iter: Union[None, Iterator] = None
 
@@ -80,6 +81,7 @@ class GlueExtractor(Extractor):
         kwargs = {}
         if self._filters is not None:
             kwargs['Filters'] = self._filters
+            kwargs['MaxResults'] = self._max_results
         data = self._glue.search_tables(**kwargs)
         tables += data['TableList']
         while 'NextToken' in data:
