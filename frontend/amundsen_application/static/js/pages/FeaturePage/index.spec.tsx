@@ -55,7 +55,11 @@ describe('renderTabs', () => {
     const mockFeatureCode = featureCode;
     const mockFeatureLineage = featureLineage;
     const mockPreviewData = previewData;
-    const result: JSX.Element = renderTabs(mockFeatureCode, mockFeatureLineage, mockPreviewData);
+    const result: JSX.Element = renderTabs(
+      mockFeatureCode,
+      mockFeatureLineage,
+      mockPreviewData
+    );
     expect(shallow(result).find(TabsComponent).exists).toBeTruthy();
   });
 });
