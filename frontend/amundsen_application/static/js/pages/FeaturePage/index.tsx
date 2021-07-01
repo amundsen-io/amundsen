@@ -171,26 +171,6 @@ export function renderTabs(featureCode, featureLineage, preview) {
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
-      <GenerationCode
-        isLoading={featureCode.isLoading}
-        featureCode={featureCode.featureCode}
-      />
-    ),
-    key: FEATURE_TAB.GEN_CODE,
-    title: GEN_CODE_TAB_TITLE,
-  });
-  if (isFeatureListLineageEnabled()) {
-    const upstreamItems = featureLineage.featureLineage.upstream_entities;
-    if (upstreamItems.length) {
-      tabInfo.push({
-        content: <LineageList items={upstreamItems} direction="upstream" />,
-        key: UPSTREAM_TAB_TITLE,
-        title: `Upstream (${upstreamItems.length})`,
-      });
-    }
-  }
-  tabInfo.push({
-    content: (
       <PreviewDataTable
         isLoading={preview.isLoading}
         previewData={preview.previewData}
@@ -199,11 +179,31 @@ export function renderTabs(featureCode, featureLineage, preview) {
     key: FEATURE_TAB.PREVIEW_DATA,
     title: PREVIEW_DATA_TAB_TITLE,
   });
+  if (isFeatureListLineageEnabled()) {
+    const upstreamItems = featureLineage.featureLineage.upstream_entities;
+    if (upstreamItems.length) {
+      tabInfo.push({
+        content: <LineageList items={upstreamItems} direction="upstream" />,
+        key: FEATURE_TAB.UPSTREAM,
+        title: `${UPSTREAM_TAB_TITLE} (${upstreamItems.length})`,
+      });
+    }
+  }
+  tabInfo.push({
+    content: (
+      <GenerationCode
+        isLoading={featureCode.isLoading}
+        featureCode={featureCode.featureCode}
+      />
+    ),
+    key: FEATURE_TAB.GEN_CODE,
+    title: GEN_CODE_TAB_TITLE,
+  });
 
   return (
     <TabsComponent
       tabs={tabInfo}
-      defaultTab={FEATURE_TAB.GEN_CODE}
+      defaultTab={FEATURE_TAB.PREVIEW_DATA}
       onSelect={(key) => {
         logAction({
           command: 'click',
