@@ -6,6 +6,7 @@ export * from './Feature';
 export * from './Feedback';
 export * from './Issue';
 export * from './Notifications';
+export * from './PreviewData';
 export * from './Resources';
 export * from './TableMetadata';
 export * from './Tags';

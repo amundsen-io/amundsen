@@ -69,21 +69,21 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableLineage - returns the action to process failure', () => {
-      const status = 500;
-      const action = getTableLineageFailure(status);
+      const expectedStatus = 500;
+      const action = getTableLineageFailure(expectedStatus);
       const { payload } = action;
       expect(action.type).toBe(GetTableLineage.FAILURE);
       expect(payload.lineageTree).toBe(initialLineageState);
-      expect(payload.statusCode).toBe(status);
+      expect(payload.statusCode).toBe(expectedStatus);
     });
 
     it('getTableLineage - returns the action to process success', () => {
-      const status = 200;
-      const action = getTableLineageSuccess(testLineage, status);
+      const expectedStatus = 200;
+      const action = getTableLineageSuccess(testLineage, expectedStatus);
       const { payload } = action;
       expect(action.type).toBe(GetTableLineage.SUCCESS);
       expect(payload.lineageTree).toBe(testLineage);
-      expect(payload.statusCode).toBe(status);
+      expect(payload.statusCode).toBe(expectedStatus);
     });
 
     it('getColumnLineage - returns the action to get column lineage', () => {
@@ -96,45 +96,45 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getColumnLineage - returns the action to process failure', () => {
-      const status = 500;
-      const action = getColumnLineageFailure(status);
+      const expectedStatus = 500;
+      const action = getColumnLineageFailure(expectedStatus);
       const { payload } = action;
       expect(action.type).toBe(GetColumnLineage.FAILURE);
       expect(payload.lineageTree).toBe(initialLineageState);
-      expect(payload.statusCode).toBe(status);
+      expect(payload.statusCode).toBe(expectedStatus);
     });
 
     it('getColumnLineageSuccess - returns the action to process success', () => {
-      const status = 200;
-      const action = getColumnLineageSuccess(testLineage, status);
+      const expectedStatus = 200;
+      const action = getColumnLineageSuccess(testLineage, expectedStatus);
       const { payload } = action;
       expect(action.type).toBe(GetColumnLineage.SUCCESS);
       expect(payload.lineageTree).toBe(testLineage);
-      expect(payload.statusCode).toBe(status);
+      expect(payload.statusCode).toBe(expectedStatus);
     });
 
     it('getTableColumnLineageSuccess - returns the action to process success', () => {
-      const status = 200;
+      const expectedStatus = 200;
       const action = getTableColumnLineageSuccess(
         testLineage,
         columnName,
-        status
+        expectedStatus
       );
       const { payload } = action;
       expect(action.type).toBe(GetTableColumnLineage.SUCCESS);
       expect(payload.columnName).toBe(columnName);
       expect(payload.lineageTree).toBe(testLineage);
-      expect(payload.statusCode).toBe(status);
+      expect(payload.statusCode).toBe(expectedStatus);
     });
 
     it('getTableColumnLineage - returns the action to process failure', () => {
-      const status = 500;
-      const action = getTableColumnLineageFailure(columnName, status);
+      const expectedStatus = 500;
+      const action = getTableColumnLineageFailure(columnName, expectedStatus);
       const { payload } = action;
       expect(action.type).toBe(GetTableColumnLineage.FAILURE);
       expect(payload.columnName).toBe(columnName);
       expect(payload.lineageTree).toBe(initialLineageState);
-      expect(payload.statusCode).toBe(status);
+      expect(payload.statusCode).toBe(expectedStatus);
     });
   });
 
@@ -154,7 +154,7 @@ describe('tableMetadata ducks', () => {
         testSaga(getTableLineageWorker, getTableLineage(testKey))
           .next()
           .call(API.getTableLineage, testKey, 1, 'both')
-          .next({ data: testLineage, status: 200 })
+          .next({ data: testLineage, statusCode: 200 })
           .put(getTableLineageSuccess(testLineage, 200))
           .next()
           .isDone();
@@ -165,7 +165,7 @@ describe('tableMetadata ducks', () => {
           .next()
           .call(API.getTableLineage, testKey, 1, 'both')
           // @ts-ignore
-          .throw({ status: 500 })
+          .throw({ statusCode: 500 })
           .put(getTableLineageFailure(500))
           .next()
           .isDone();
@@ -187,7 +187,7 @@ describe('tableMetadata ducks', () => {
         testSaga(getColumnLineageWorker, getColumnLineage(testKey, columnName))
           .next()
           .call(API.getColumnLineage, testKey, columnName, 1, 'both')
-          .next({ data: testLineage, status: 200 })
+          .next({ data: testLineage, statusCode: 200 })
           .put(getColumnLineageSuccess(testLineage, 200))
           .next()
           .isDone();
@@ -198,7 +198,7 @@ describe('tableMetadata ducks', () => {
           .next()
           .call(API.getColumnLineage, testKey, columnName, 1, 'both')
           // @ts-ignore
-          .throw({ status: 500 })
+          .throw({ statusCode: 500 })
           .put(getColumnLineageFailure(500))
           .next()
           .isDone();

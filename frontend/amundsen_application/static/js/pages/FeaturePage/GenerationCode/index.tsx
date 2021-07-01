@@ -35,7 +35,7 @@ export const GenerationCode: React.FC<GenerationCodeProps> = ({
   if (isLoading) {
     return <GenerationCodeLoader />;
   }
-  if (featureCode?.text === undefined) {
+  if (!featureCode?.text) {
     return (
       <div className="generation-code">
         <div className="empty-message">{EMPTY_CODE_MESSAGE}</div>

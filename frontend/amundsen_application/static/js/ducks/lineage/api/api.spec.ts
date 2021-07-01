@@ -49,7 +49,7 @@ describe('getLineage', () => {
     await API.getTableLineage('testUri', 1, 'both').catch(
       (processedResponse) => {
         expect(processedResponse).toEqual({
-          status: mockStatus,
+          statusCode: mockStatus,
         });
       }
     );

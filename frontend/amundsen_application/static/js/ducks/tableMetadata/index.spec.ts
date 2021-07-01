@@ -2,7 +2,7 @@ import { testSaga } from 'redux-saga-test-plan';
 
 import {
   PreviewData,
-  PreviewQueryParams,
+  TablePreviewQueryParams,
   TableMetadata,
   Tag,
   User,
@@ -73,7 +73,7 @@ describe('tableMetadata ducks', () => {
   let emptyPreviewData: PreviewData;
   let newDescription: string;
   let previewData: PreviewData;
-  let queryParams: PreviewQueryParams;
+  let queryParams: TablePreviewQueryParams;
 
   beforeAll(() => {
     expectedData = globalState.tableMetadata.tableData;

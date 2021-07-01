@@ -5,6 +5,33 @@
 
 $loading-duration: 1s;
 $loading-curve: cubic-bezier(0.45, 0, 0.15, 1);
+$pulse-duration: 1.5s;
+$pulse-easing: linear;
+
+@keyframes pulse {
+  0% {
+    transform: scale(1.1);
+  }
+
+  50% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+%is-pulse-animated {
+  animation: pulse $pulse-duration $pulse-easing infinite;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.is-pulse-animated {
+  @extend %is-pulse-animated;
+}
 
 @keyframes shimmer {
   0% {

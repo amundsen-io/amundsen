@@ -8,6 +8,7 @@ import reducer, {
   FeatureReducerState,
   initialFeatureState,
   initialFeatureCodeState,
+  initialPreviewState,
   emptyFeatureCode,
   getFeatureCode,
   getFeatureCodeSuccess,
@@ -15,8 +16,12 @@ import reducer, {
   getFeatureDescriptionSuccess,
   updateFeatureDescriptionSuccess,
   updateFeatureDescriptionFailure,
+  initialFeatureLineageState,
+  getFeaturePreviewDataSuccess,
+  getFeaturePreviewDataFailure,
+  getFeaturePreviewData,
 } from 'ducks/feature/reducer';
-import { featureMetadata } from '../../fixtures/metadata/feature';
+import { featureMetadata } from 'fixtures/metadata/feature';
 
 describe('feature reducer', () => {
   let testState: FeatureReducerState;
@@ -27,6 +32,8 @@ describe('feature reducer', () => {
       statusCode: 200,
       feature: initialFeatureState,
       featureCode: initialFeatureCodeState,
+      featureLineage: initialFeatureLineageState,
+      preview: initialPreviewState,
     };
   });
 
@@ -122,6 +129,60 @@ describe('feature reducer', () => {
         featureCode: emptyFeatureCode,
         statusCode: 500,
         isLoading: false,
+      },
+    });
+  });
+
+  it('should handle GetFeaturePreviewData.REQUEST', () => {
+    const request = {
+      feature_name: 'name',
+      feature_group: 'group',
+      version: '3',
+    };
+    expect(reducer(testState, getFeaturePreviewData(request))).toEqual({
+      ...testState,
+      preview: {
+        isLoading: true,
+        previewData: {},
+        status: null,
+      },
+    });
+  });
+
+  it('should handle GetFeaturePreviewData.SUCCESS', () => {
+    const response = {
+      previewData: {
+        columns: [],
+        data: [],
+        error_text: '',
+      },
+      status: 202,
+    };
+
+    expect(reducer(testState, getFeaturePreviewDataSuccess(response))).toEqual({
+      ...testState,
+      preview: {
+        isLoading: false,
+        previewData: response.previewData,
+        status: response.status,
+      },
+    });
+  });
+
+  it('should handle GetFeaturePreviewData.FAILURE', () => {
+    const response = {
+      previewData: {
+        error_text: 'error message',
+      },
+      status: 502,
+    };
+
+    expect(reducer(testState, getFeaturePreviewDataFailure(response))).toEqual({
+      ...testState,
+      preview: {
+        isLoading: false,
+        previewData: response.previewData,
+        status: response.status,
       },
     });
   });

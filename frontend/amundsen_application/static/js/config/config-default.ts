@@ -187,6 +187,10 @@ const configDefault: AppConfig = {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
         },
+        elasticsearch: {
+          displayName: 'Elasticsearch',
+          iconClass: 'icon-elasticsearch',
+        },
       },
       filterCategories: [
         {
@@ -284,6 +288,9 @@ const configDefault: AppConfig = {
     [ResourceType.user]: {
       displayName: 'People',
     },
+  },
+  featureLineage: {
+    inAppListEnabled: false,
   },
   tableLineage: {
     inAppListEnabled: false,
