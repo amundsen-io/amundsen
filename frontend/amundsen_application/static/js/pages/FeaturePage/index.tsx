@@ -181,7 +181,7 @@ export function renderTabs(featureCode, featureLineage, preview) {
   });
   if (isFeatureListLineageEnabled()) {
     const upstreamItems = featureLineage.featureLineage.upstream_entities;
-    if (upstreamItems.length > 0) {
+    if (upstreamItems.length) {
       tabInfo.push({
         content: <LineageList items={upstreamItems} direction="upstream" />,
         key: UPSTREAM_TAB_TITLE,
