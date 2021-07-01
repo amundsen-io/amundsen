@@ -275,6 +275,7 @@ FEATURE_INDEX_MAP = textwrap.dedent(
           "properties": {
             "feature_group": {
               "type":"text",
+              "analyzer": "simple",
               "fields": {
                 "raw": {
                   "type": "keyword",
@@ -284,6 +285,7 @@ FEATURE_INDEX_MAP = textwrap.dedent(
             },
             "feature_name": {
               "type":"text",
+              "analyzer": "simple",
               "fields": {
                 "raw": {
                   "type": "keyword",
