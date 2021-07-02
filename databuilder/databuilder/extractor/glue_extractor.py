@@ -19,13 +19,14 @@ class GlueExtractor(Extractor):
 
     CLUSTER_KEY = 'cluster'
     FILTER_KEY = 'filters'
-    DEFAULT_CONFIG = ConfigFactory.from_dict({CLUSTER_KEY: 'gold', FILTER_KEY: None})
+    MAX_RESULTS_KEY = 'max_results'
+    DEFAULT_CONFIG = ConfigFactory.from_dict({CLUSTER_KEY: 'gold', FILTER_KEY: None, MAX_RESULTS_KEY: 500})
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
         self._cluster = conf.get_string(GlueExtractor.CLUSTER_KEY)
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
-        self._max_results = 500
+        self._max_results = conf.get(GlueExtractor.MAX_RESULTS_KEY)
         self._glue = boto3.client('glue')
         self._extract_iter: Union[None, Iterator] = None
 
