@@ -114,7 +114,8 @@ export function getResourceNotices(
       }
     });
     if (hasNotice) {
-      const noticeFromWildcard: NoticeType = wildcardNoticesArray[0];
+      // const noticeFromWildcard: NoticeType = wildcardNoticesArray[0];
+      const [noticeFromWildcard] = wildcardNoticesArray;
       return withComputedMessage(noticeFromWildcard, resourceName);
     }
   }
