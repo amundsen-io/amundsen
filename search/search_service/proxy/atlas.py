@@ -14,6 +14,7 @@ from atlasclient.models import Entity, EntityCollection
 from atlasclient.utils import parse_table_qualified_name
 
 from search_service.models.dashboard import SearchDashboardResult
+from search_service.models.feature import SearchFeatureResult
 from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
 from search_service.models.user import SearchUserResult
@@ -274,6 +275,18 @@ class AtlasProxy(BaseProxy):
                                   index: str = '') -> SearchUserResult:
         pass
 
+    def fetch_dashboard_search_results(self, *,
+                                       query_term: str,
+                                       page_index: int = 0,
+                                       index: str = '') -> SearchDashboardResult:
+        pass
+
+    def fetch_feature_search_results(self, *,
+                                     query_term: str,
+                                     page_index: int = 0,
+                                     index: str = '') -> SearchFeatureResult:
+        pass
+
     def update_document(self, *, data: List[Dict[str, Any]], index: str = '') -> str:
         raise NotImplementedError()
 
@@ -282,9 +295,3 @@ class AtlasProxy(BaseProxy):
 
     def delete_document(self, *, data: List[str], index: str = '') -> str:
         raise NotImplementedError()
-
-    def fetch_dashboard_search_results(self, *,
-                                       query_term: str,
-                                       page_index: int = 0,
-                                       index: str = '') -> SearchDashboardResult:
-        pass

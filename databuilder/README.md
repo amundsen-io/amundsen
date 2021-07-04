@@ -12,6 +12,7 @@ For information about Amundsen and our other services, visit the [main repositor
 
 ## Requirements
 - Python >= 3.6.x
+- elasticsearch 6.x (currently it doesn't support 7.x)
 
 ## Doc
 - https://www.amundsen.io/amundsen/
@@ -1303,6 +1304,114 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+### [ElasticsearchMetadataExtractor](./databuilder/extractor/es_metadata_extractor.py)
+
+The included `ElasticsearchMetadataExtractor` provides support for extracting basic metadata for Elasticsearch indexes.
+
+It extracts index metadata into `TableMetadata` model so the results are retrievable the same way as table metadata.
+
+Index properties (fields) are treated as `ColumnMetadata`.
+
+#### Technical indexes
+
+This extractor will collect metadata for all indexes of your Elasticsearch instance except for technical indices (which names start with `.`)
+
+#### Configuration
+
+Following configuration options are supported under `extractor.es_metadata` scope:
+- `cluster` (required) - name of the cluster of Elasticsearch instance we are extracting metadata from.
+- `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
+- `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
+- `extract_technical_details` (defaults to `False`) - if `True` index `aliases` and `settings` will be extracted as `Programmatic Descriptions`.
+
+#### Sample job config
+
+```python3
+import os
+
+from elasticsearch import Elasticsearch
+from pyhocon import ConfigFactory
+
+from databuilder.extractor.es_metadata_extractor import ElasticsearchMetadataExtractor
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.task.task import DefaultTask
+
+tmp_folder = '/tmp/es_metadata'
+
+node_files_folder = f'{tmp_folder}/nodes'
+relationship_files_folder = f'{tmp_folder}/relationships'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.es_metadata.{ElasticsearchMetadataExtractor.CLUSTER}': 'demo',
+    f'extractor.es_metadata.{ElasticsearchMetadataExtractor.SCHEMA}': 'dev',
+    f'extractor.es_metadata.{ElasticsearchMetadataExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY}': Elasticsearch()
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ElasticsearchMetadataExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+```
+
+### [ElasticsearchColumnStatsExtractor](./databuilder/extractor/es_column_stats_extractor.py)
+
+The included `ElasticsearchColumnStatsExtractor` provides support for extracting basic statistics on numerical properties of Elasticsearch indexes.
+
+It extracts statistics using [Elasticsearch aggregation `matrix_stats`](https://www.elastic.co/guide/en/elasticsearch/reference/master/search-aggregations-matrix-stats-aggregation.html). It disregards statistics named `covariance` and `correlation`.
+
+#### Technical indexes
+
+This extractor will collect metadata for all indexes of your Elasticsearch instance except for technical indices (which names start with `.`)
+
+#### Configuration
+
+Following configuration options are supported under `extractor.es_column_stats` scope:
+- `cluster` (required) - name of the cluster of Elasticsearch instance we are extracting metadata from.
+- `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
+- `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
+- `extract_technical_details` (defaults to `False`) - if `True` index `aliases` and `settings` will be extracted as `Programmatic Descriptions`.
+
+#### Sample job config
+
+```python3
+import os
+
+from elasticsearch import Elasticsearch
+from pyhocon import ConfigFactory
+
+from databuilder.extractor.es_column_stats_extractor import ElasticsearchColumnStatsExtractor
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.task.task import DefaultTask
+
+tmp_folder = '/tmp/es_column_stats'
+
+node_files_folder = f'{tmp_folder}/nodes'
+relationship_files_folder = f'{tmp_folder}/relationships'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.es_column_stats.{ElasticsearchColumnStatsExtractor.CLUSTER}': 'demo',
+    f'extractor.es_column_stats.{ElasticsearchColumnStatsExtractor.SCHEMA}': 'dev',
+    f'extractor.es_column_stats.{ElasticsearchColumnStatsExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY}': Elasticsearch()
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ElasticsearchColumnStatsExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+```
+
 ### [BamboohrUserExtractor](./databuilder/extractor/user/bamboohr/bamboohr_user_extractor.py)
 
 The included `BamboohrUserExtractor` provides support for extracting basic user metadata from [BambooHR](https://www.bamboohr.com/).  For companies and organizations that use BambooHR to store employee information such as email addresses, first names, last names, titles, and departments, use the `BamboohrUserExtractor` to populate Amundsen user data.
@@ -1512,9 +1621,32 @@ job.launch()
 A Publisher takes two folders for input and publishes to Atlas.
 One folder will contain CSV file(s) for Entity where the other folder will contain CSV file(s) for Relationship.
 
-##### Caution!!!
-Publisher assumes that all necessary data types are already defined in atlas, otherwise publishing will fail.
+##### Amundsen <> Atlas Types
+Atlas publisher requires registering appropriate entity types in Atlas. This can be achieved in two ways:
 
+###### Register entity types directly in publisher
+By default publisher will register proper entity types for you. This is achieved with `register_entity_types` configuration option of the publisher, which defaults to `True`.
+
+If your metadata synchronization job consists of several extractors leveraging `AtlasCSVPublisher` it is recommended to have this option turned on only for the first extractor.
+
+###### Register entity types using standalone script
+You can register entity types separately - below script might serve as a baseline and will probably need adjusting AtlasClient to your environment.
+```python3
+from apache_atlas.client.base_client import AtlasClient
+
+from databuilder.types.atlas import AtlasEntityInitializer
+
+client = AtlasClient('http://localhost:21000', ('admin', 'admin'))
+
+init = AtlasEntityInitializer(client)
+
+init.create_required_entities()
+```
+
+###### Caution!
+Whenever you upgrade your databuilder version it is important to re-run `AtlasEntityInitializer` as there might be new changes to entity types required for Atlas integration to work properly.
+
+##### Sample script
 ```python
 from apache_atlas.client.base_client import AtlasClient
 from pyhocon import ConfigFactory
@@ -1532,6 +1664,7 @@ job_config = ConfigFactory.from_dict({
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': 10,
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': True
 })
 
 job = DefaultJob(

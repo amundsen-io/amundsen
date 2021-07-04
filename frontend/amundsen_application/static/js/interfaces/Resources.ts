@@ -85,3 +85,4 @@ export interface ResourceDict<T> {
 
 // TODO - Consider just using the 'Resource' type instead
 export type Bookmark = TableResource | DashboardResource;
+export type PopularResource = TableResource | DashboardResource;

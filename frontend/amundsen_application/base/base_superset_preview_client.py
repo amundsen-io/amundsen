@@ -57,3 +57,6 @@ class BaseSupersetPreviewClient(BasePreviewClient):
                 return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)
         except Exception:
             return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+        pass

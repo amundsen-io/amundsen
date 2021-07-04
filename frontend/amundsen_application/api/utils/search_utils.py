@@ -1,8 +1,8 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
+import logging
 from typing import Dict, List  # noqa: F401
-
+LOGGER = logging.getLogger(__name__)
 
 # These can move to a configuration when we have custom use cases outside of these default values
 valid_search_fields = {
@@ -19,6 +19,13 @@ valid_search_fields = {
         'name',
         'product',
         'tag'
+    },
+    'feature': {
+        'badges',
+        'entity',
+        'feature_name',
+        'feature_group',
+        'tags'
     }
 }
 
@@ -38,6 +45,22 @@ def map_table_result(result: Dict) -> Dict:
     }
 
 
+def map_feature_result(result: Dict) -> Dict:
+    return {
+        'type': 'feature',
+        'description': result.get('description', None),
+        'key': result.get('key', None),
+        'last_updated_timestamp': result.get('last_updated_timestamp', None),
+        'name': result.get('feature_name', None),
+        'feature_group': result.get('feature_group', None),
+        'version': result.get('version', None),
+        'availability': result.get('availability', None),
+        'entity': result.get('entity', None),
+        'badges': result.get('badges', None),
+        'status': result.get('status', None),
+    }
+
+
 def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
     """
     Transforms the data shape of filters from the application to the data
@@ -45,6 +68,7 @@ def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/dashboard/search_dashboard_filter.yml
     """
+    LOGGER.info(filters)
     filter_payload = {}
     for category in valid_search_fields.get(resource, {}):
         values = filters.get(category)

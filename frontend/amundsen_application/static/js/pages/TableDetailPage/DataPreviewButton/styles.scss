@@ -24,33 +24,6 @@
       overflow-y: scroll;
       padding: 0;
       text-align: center;
-
-      .grid {
-        display: flex;
-      }
-
-      .grid-column {
-        flex-grow: 1;
-      }
-
-      .grid-header.grid-cell {
-        background-color: $body-bg-secondary;
-        height: 40px;
-      }
-
-      .grid-cell {
-        align-items: center;
-        border-bottom: 1px solid $stroke;
-        display: flex;
-        flex-grow: 1;
-        font-size: 12px;
-        height: 32px;
-        justify-content: center;
-        min-width: 0;
-        padding: 8px;
-        text-align: center;
-        white-space: nowrap;
-      }
     }
   }
 }

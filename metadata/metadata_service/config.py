@@ -68,15 +68,17 @@ class Config:
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
-    USER_DETAIL_METHOD = None  # type: Optional[function]
+    USER_DETAIL_METHOD = None   # type: Optional[function]
 
     RESOURCE_REPORT_CLIENT = None  # type: Optional[function]
 
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
 
-    # Number of minimum reader count to qualify for popular table
-    POPULAR_TABLE_MINIMUM_READER_COUNT = 10  # type: int
+    # DEPRECATED (since version 3.6.0): Please use `POPULAR_RESOURCES_MINIMUM_READER_COUNT`
+    # Number of minimum reader count to qualify for popular resources
+    POPULAR_TABLE_MINIMUM_READER_COUNT = None
+    POPULAR_RESOURCES_MINIMUM_READER_COUNT = 10  # type: int
 
     # List of regexes which will exclude certain parameters from appearing as Programmatic Descriptions
     PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS = []  # type: list

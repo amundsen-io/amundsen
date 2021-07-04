@@ -6,6 +6,7 @@ import time
 from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
@@ -68,7 +69,6 @@ from metadata_service.entity.dashboard_detail import \
 from metadata_service.entity.dashboard_query import \
     DashboardQuery as DashboardQueryEntity
 from metadata_service.entity.description import Description
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.base_proxy import BaseProxy
@@ -704,7 +704,7 @@ class MySQLProxy(BaseProxy):
         """
         LOGGER.info('Querying global popular tables URIs')
 
-        num_readers = app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']
+        num_readers = app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']
         with self.client.create_session() as session:
             readers = func.count(RDSTableUsage.user_rk).label('readers')
 
@@ -735,7 +735,7 @@ class MySQLProxy(BaseProxy):
         """
         LOGGER.info('Querying personal popular tables URIs')
 
-        num_readers = app.config['POPULAR_TABLE_MINIMUM_READER_COUNT']
+        num_readers = app.config['POPULAR_RESOURCES_MINIMUM_READER_COUNT']
         with self.client.create_session() as session:
             readers = func.count(RDSTableUsage.user_rk).label('readers')
 
@@ -1305,4 +1305,10 @@ class MySQLProxy(BaseProxy):
         pass
 
     def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> GenerationCode:
+        pass
+
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
         pass

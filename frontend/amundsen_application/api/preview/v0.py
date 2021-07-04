@@ -63,7 +63,50 @@ def get_table_preview() -> Response:
             payload = jsonify({'previewData': {'error_text': preview_data.get('error_text', '')}, 'msg': message})
         return make_response(payload, status_code)
     except Exception as e:
-        message = 'Encountered exception: ' + str(e)
+        message = f'Encountered exception: {str(e)}'
+        logging.exception(message)
+        payload = jsonify({'previewData': {}, 'msg': message})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@preview_blueprint.route('/feature_preview', methods=['POST'])
+def get_feature_preview() -> Response:
+    global PREVIEW_CLIENT_INSTANCE
+    global PREVIEW_CLIENT_CLASS
+    try:
+        if PREVIEW_CLIENT_INSTANCE is None:
+            if PREVIEW_CLIENT_CLASS is not None:
+                PREVIEW_CLIENT_INSTANCE = PREVIEW_CLIENT_CLASS()
+                logging.warn('Setting preview_client via entry_point is DEPRECATED and '
+                             'will be removed in a future version')
+            elif (app.config['PREVIEW_CLIENT_ENABLED']
+                    and app.config['PREVIEW_CLIENT'] is not None):
+                PREVIEW_CLIENT_CLASS = import_string(app.config['PREVIEW_CLIENT'])
+                PREVIEW_CLIENT_INSTANCE = PREVIEW_CLIENT_CLASS()
+            else:
+                payload = jsonify({'previewData': {}, 'msg': 'A client for the preview feature must be configured'})
+                return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
+
+        response = PREVIEW_CLIENT_INSTANCE.get_feature_preview_data(params=request.get_json())
+        status_code = response.status_code
+
+        preview_data = json.loads(response.data).get('preview_data')
+        if status_code == HTTPStatus.OK:
+            # validate the returned feature preview data
+            try:
+                data = PreviewDataSchema().load(preview_data)
+                payload = jsonify({'previewData': data, 'msg': 'Success'})
+            except ValidationError as err:
+                logging.error('Preview data dump returned errors: ' + str(err.messages))
+                raise Exception('The preview client did not return a valid PreviewData object')
+        else:
+            message = 'Encountered error: Preview client request failed with code ' + str(status_code)
+            logging.error(message)
+            # only necessary to pass the error text
+            payload = jsonify({'previewData': {'error_text': preview_data.get('error_text', '')}, 'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        message = f'Encountered exception: {str(e)}'
         logging.exception(message)
         payload = jsonify({'previewData': {}, 'msg': message})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

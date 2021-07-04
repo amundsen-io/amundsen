@@ -8,35 +8,18 @@ import { GlobalState } from 'ducks/rootReducer';
 import OwnerEditor, {
   ComponentProps,
   StateFromProps,
-  OwnerItemProps,
 } from 'components/OwnerEditor';
 
-import { User } from 'interfaces';
-
-import { indexUsersEnabled } from 'config/config-utils';
+import { getOwnerItemPropsFromUsers } from 'utils/ownerUtils';
 
 export const DASHBOARD_OWNER_SOURCE = 'dashboard_page_owner';
 
-const convertDashboardOwners = (owners: User[]): OwnerItemProps =>
-  owners.reduce((obj, user) => {
-    const { profile_url, user_id, display_name } = user;
-    let profileLink = profile_url;
-    let isExternalLink = true;
-    if (indexUsersEnabled()) {
-      isExternalLink = false;
-      profileLink = `/user/${user_id}?source=${DASHBOARD_OWNER_SOURCE}`;
-    }
-    obj[user_id] = {
-      label: display_name,
-      link: profileLink,
-      isExternal: isExternalLink,
-    };
-    return obj;
-  }, {});
-
 export const mapStateToProps = (state: GlobalState) => ({
   isLoading: false,
-  itemProps: convertDashboardOwners(state.dashboard.dashboard.owners),
+  itemProps: getOwnerItemPropsFromUsers(
+    state.dashboard.dashboard.owners,
+    DASHBOARD_OWNER_SOURCE
+  ),
 });
 
 export default connect<StateFromProps, {}, ComponentProps>(

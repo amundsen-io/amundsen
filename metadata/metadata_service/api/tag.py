@@ -4,11 +4,11 @@
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Tuple, Union
 
+from amundsen_common.entity.resource_type import ResourceType
 from flasgger import swag_from
 from flask import current_app as app
 from flask_restful import Resource, fields, marshal
 
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.proxy.base_proxy import BaseProxy

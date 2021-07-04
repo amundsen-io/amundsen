@@ -11,7 +11,16 @@ import {
 
 // Dashboard
 import { getDashboardWatcher } from 'ducks/dashboard/sagas';
-import { getFeatureWatcher } from 'ducks/feature/sagas';
+import {
+  getFeatureWatcher,
+  getFeatureCodeWatcher,
+  getFeatureDescriptionWatcher,
+  getFeatureLineageWatcher,
+  updateFeatureDescriptionWatcher,
+  updateFeatureOwnerWatcher,
+  getFeaturePreviewDataWatcher,
+} from 'ducks/feature/sagas';
+
 import { getAnnouncementsWatcher } from './announcements/sagas';
 
 // Notifications
@@ -25,8 +34,8 @@ import { submitFeedbackWatcher } from './feedback/sagas';
 // Issues
 import { createIssueWatcher, getIssuesWatcher } from './issue/sagas';
 
-// PopularTables
-import { getPopularTablesWatcher } from './popularTables/sagas';
+// PopularResources
+import { getPopularResourcesWatcher } from './popularResources/sagas';
 // Search
 import {
   inlineSearchWatcher,
@@ -89,6 +98,12 @@ export default function* rootSaga() {
     submitNotificationWatcher(),
     // Feature
     getFeatureWatcher(),
+    getFeatureCodeWatcher(),
+    getFeatureLineageWatcher(),
+    getFeaturePreviewDataWatcher(),
+    getFeatureDescriptionWatcher(),
+    updateFeatureDescriptionWatcher(),
+    updateFeatureOwnerWatcher(),
     // FeedbackForm
     submitFeedbackWatcher(),
     // Issues
@@ -106,8 +121,8 @@ export default function* rootSaga() {
     submitSearchResourceWatcher(),
     updateSearchStateWatcher(),
     urlDidUpdateWatcher(),
-    // PopularTables
-    getPopularTablesWatcher(),
+    // PopularResources
+    getPopularResourcesWatcher(),
     // Tags
     getAllTagsWatcher(),
     updateResourceTagsWatcher(),

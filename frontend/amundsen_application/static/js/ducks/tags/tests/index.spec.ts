@@ -275,7 +275,7 @@ describe('tags ducks', () => {
       /** TODO - fix syntax for testing `all` effect
       it('executes flow for updating tags and returning up to date tag array', () => {
         testSaga(updateResourceTagsWorker, updateTags(updatePayload, ResourceType.table, "test"))
-          .next().all(matchers.call.fn(API.updateTableTag), updatePayload, ResourceType.table, "test"))
+          .next().all(matchers.call.fn(API.updateResourceTag), updatePayload, ResourceType.table, "test"))
           .next().call(API.getResourceTags, ResourceType.table, "test")
           .next(expectedTags).put(updateTagsSuccess(expectedTags))
           .next().isDone();

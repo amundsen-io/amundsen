@@ -7,6 +7,7 @@ import unittest
 from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature, FeatureWatermark
 from amundsen_common.models.generation_code import GenerationCode
@@ -14,14 +15,14 @@ from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Source,
-                                          Stat, Table, Tag, User, Watermark)
+                                          SqlJoin, SqlWhere, Stat, Table,
+                                          TableSummary, Tag, User, Watermark)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
 from metadata_service.entity.dashboard_query import DashboardQuery
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.neo4j_proxy import Neo4jProxy
@@ -120,6 +121,36 @@ class TestNeo4jProxy(unittest.TestCase):
             ]
         }
 
+        table_common_usage = MagicMock()
+        table_common_usage.single.return_value = {
+            'joins': [
+                {
+                    'join_exec_cnt': 2,
+                    'join': {
+                        'join_sql': (
+                            'statewide_cases cases '
+                            'join statewide_testing tests on cases.newcountconfirmed <= tests.tested'
+                        ),
+                        'join_type': 'inner join',
+                        'joined_on_column': 'newcountconfirmed',
+                        'joined_on_table': {
+                            'schema': 'open_data',
+                            'cluster': 'ca_covid',
+                            'database': 'snowflake',
+                            'name': 'statewide_testing'
+                        },
+                        'column': 'newcountconfirmed'
+                    }
+                }
+            ],
+            'filters': [
+                {
+                    'where_clause': 'b.countnewestcases <= 15',
+                    'where_exec_cnt': 2
+                }
+            ]
+        }
+
         table_writer = {
             'application_url': 'airflow_host/admin/airflow/tree?dag_id=test_table',
             'description': 'DAG generating a table',
@@ -139,12 +170,20 @@ class TestNeo4jProxy(unittest.TestCase):
 
         self.last_updated_timestamp = last_updated_timestamp
 
+        self.table_common_usage = table_common_usage
+
     def tearDown(self) -> None:
         pass
 
     def test_get_table(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.side_effect = [self.col_usage_return_value, [], self.table_level_return_value]
+            mock_execute.side_effect = [
+                self.col_usage_return_value,
+                [],
+                self.table_level_return_value,
+                self.table_common_usage,
+                []
+            ]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             table = neo4j_proxy.get_table(table_uri='dummy_uri')
@@ -172,7 +211,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                        stat_type='avg',
                                                                        stat_val='2')],
                                              badges=[Badge(badge_name='primary key', category='column')])],
-                             owners=[User(email='tester@example.com')],
+                             owners=[User(email='tester@example.com', user_id='tester@example.com')],
                              table_writer=Application(application_url=self.table_writer['application_url'],
                                                       description=self.table_writer['description'],
                                                       name=self.table_writer['name'],
@@ -186,6 +225,26 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          text='Test Test'),
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
+                             ],
+                             common_joins=[
+                                 SqlJoin(
+                                     join_sql=(
+                                         'statewide_cases cases '
+                                         'join statewide_testing tests on cases.newcountconfirmed <= tests.tested'
+                                     ),
+                                     join_type='inner join',
+                                     joined_on_column='newcountconfirmed',
+                                     joined_on_table=TableSummary(
+                                         schema='open_data',
+                                         cluster='ca_covid',
+                                         database='snowflake',
+                                         name='statewide_testing'
+                                     ),
+                                     column='newcountconfirmed'
+                                 )
+                             ],
+                             common_filters=[
+                                 SqlWhere(where_clause='b.countnewestcases <= 15')
                              ])
 
             self.assertEqual(str(expected), str(table))
@@ -196,7 +255,13 @@ class TestNeo4jProxy(unittest.TestCase):
             col['tbl']['is_view'] = True
 
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.side_effect = [col_usage_return_value, [], self.table_level_return_value]
+            mock_execute.side_effect = [
+                col_usage_return_value,
+                [],
+                self.table_level_return_value,
+                self.table_common_usage,
+                []
+            ]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             table = neo4j_proxy.get_table(table_uri='dummy_uri')
@@ -224,7 +289,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                        stat_type='avg',
                                                                        stat_val='2')],
                                              badges=[Badge(badge_name='primary key', category='column')])],
-                             owners=[User(email='tester@example.com')],
+                             owners=[User(email='tester@example.com', user_id='tester@example.com')],
                              table_writer=Application(application_url=self.table_writer['application_url'],
                                                       description=self.table_writer['description'],
                                                       name=self.table_writer['name'],
@@ -238,6 +303,26 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          text='Test Test'),
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
+                             ],
+                             common_joins=[
+                                 SqlJoin(
+                                     join_sql=(
+                                         'statewide_cases cases '
+                                         'join statewide_testing tests on cases.newcountconfirmed <= tests.tested'
+                                     ),
+                                     join_type='inner join',
+                                     joined_on_column='newcountconfirmed',
+                                     joined_on_table=TableSummary(
+                                         schema='open_data',
+                                         cluster='ca_covid',
+                                         database='snowflake',
+                                         name='statewide_testing'
+                                     ),
+                                     column='newcountconfirmed'
+                                 )
+                             ],
+                             common_filters=[
+                                 SqlWhere(where_clause='b.countnewestcases <= 15')
                              ])
 
             self.assertEqual(str(expected), str(table))
@@ -555,23 +640,23 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_popular_tables(self) -> None:
         # Test cache hit for global popular tables
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
+            mock_execute.return_value = [{'resource_key': 'foo'}, {'resource_key': 'bar'}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_global_popular_tables_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
 
             self.assertEqual(mock_execute.call_count, 1)
 
         # Test cache hit for personal popular tables
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = [{'table_key': 'foo'}, {'table_key': 'bar'}]
+            mock_execute.return_value = [{'resource_key': 'foo'}, {'resource_key': 'bar'}]
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'test_id'), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'test_id'), ['foo', 'bar'])
-            self.assertEqual(neo4j_proxy._get_personal_popular_tables_uris(2, 'other_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'test_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'test_id'), ['foo', 'bar'])
+            self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'other_id'), ['foo', 'bar'])
 
             self.assertEqual(mock_execute.call_count, 2)
 
@@ -591,6 +676,49 @@ class TestNeo4jProxy(unittest.TestCase):
             ]
 
             self.assertEqual(actual.__repr__(), expected.__repr__())
+
+    def test_get_popular_resources_table(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_get_popular_tables') as mock_execute:
+            mock_execute.return_value = [
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'foo',
+                                'description': 'test description'}),
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table"])
+
+            expected = {
+                ResourceType.Table.name: [
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='foo',
+                                 description='test description'),
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='bar')
+                ]
+            }
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
+
+    def test_get_popular_resources_table_dashboard(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_get_popular_tables') as mock_execute:
+            mock_execute.return_value = [
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'foo',
+                                'description': 'test description'}),
+                TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table", "dashboard"])
+
+            expected = {
+                ResourceType.Table.name: [
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='foo',
+                                 description='test description'),
+                    TableSummary(database='db', cluster='clstr', schema='sch', name='bar')
+                ],
+                ResourceType.Dashboard.name: []
+            }
+
+            self.assertEqual(expected.__repr__(), actual.__repr__())
 
     def test_get_user(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
@@ -925,13 +1053,13 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     full_name='test_full_name', is_active=True,
                                                     github_username='test-github',
                                                     team_name='test_team', slack_id='test_id',
-                                                    employee_type='teamMember', manager_fullname=''),
+                                                    employee_type='teamMember', manager_fullname=None),
                                                User(email='test_email2', first_name='test_first_name2',
                                                     last_name='test_last_name2',
                                                     full_name='test_full_name2', is_active=True,
                                                     github_username='test-github2',
                                                     team_name='test_team2', slack_id='test_id2',
-                                                    employee_type='teamMember', manager_fullname='')],
+                                                    employee_type='teamMember', manager_fullname=None)],
                                        frequent_users=[], chart_names=['chart1', 'chart2'],
                                        query_names=['query1', 'query2'],
                                        queries=[DashboardQuery(name='query1'),

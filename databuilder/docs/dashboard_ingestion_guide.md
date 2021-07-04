@@ -111,7 +111,7 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
-*Note that `DASHBOARD_ELASTICSEARCH_INDEX_MAPPING` is defined [here](../databuilder/publisher/elasticsearch_constants.py).  
+*Note that `DASHBOARD_ELASTICSEARCH_INDEX_MAPPING` is defined [here](../../common/amundsen_common/models/index_map.py).  
 
 
 ### 4. Remove stale data
