@@ -6,24 +6,26 @@ import { MemoryRouter } from 'react-router-dom';
 import { mount } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
-
+import { LineageItem } from 'interfaces';
 import { GraphContainer } from './index';
+
+const item: LineageItem = {
+  badges: [],
+  cluster: 'cluster',
+  database: 'database',
+  key: 'h/root',
+  level: 0,
+  name: 'table',
+  parent: null,
+  schema: 'schema',
+  usage: null,
+};
 
 describe('GraphContainer', () => {
   const setup = () => {
     const props = {
       lineage: globalState.lineage.lineageTree,
-      rootNode: {
-        badges: [],
-        cluster: 'cluster',
-        database: 'database',
-        key: 'table-key',
-        level: 0,
-        name: 'table',
-        parent: null,
-        schema: 'schema',
-        usage: null,
-      },
+      rootNode: item,
     };
     const wrapper = mount(
       <MemoryRouter>
