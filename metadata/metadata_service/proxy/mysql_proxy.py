@@ -1311,4 +1311,4 @@ class MySQLProxy(BaseProxy):
                               num_entries: int,
                               resource_types: List[str],
                               user_id: Optional[str] = None) -> Dict[str, List]:
-        pass
+        raise NotImplementedError
