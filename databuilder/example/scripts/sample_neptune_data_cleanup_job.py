@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Shows how to set up a job that uses the neptune neptune staleness removal task
+Shows how to set up a job that uses the neptune staleness removal task
 """
 import logging
 import os
