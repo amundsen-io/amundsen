@@ -241,7 +241,7 @@ class AtlasSearchDataExtractor(Extractor):
 
         try:
             return admin_metrics[-1].entity
-        except Exception as e:
+        except Exception:
             return None
 
     def _get_count_of_active_entities(self) -> int:
@@ -365,4 +365,4 @@ class AtlasSearchDataExtractor(Extractor):
 
                 yield self.model_class(**model_dict)
             except Exception:
-                LOGGER.warning(f'Error building model object.', exc_info=True)
+                LOGGER.warning('Error building model object.', exc_info=True)

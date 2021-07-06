@@ -19,7 +19,7 @@ here = os.path.dirname(__file__)
 class TestMySQLPublish(unittest.TestCase):
 
     def setUp(self) -> None:
-        resource_path = os.path.join(here, f'../resources/mysql_csv_publisher')
+        resource_path = os.path.join(here, '../resources/mysql_csv_publisher')
         self.conf = ConfigFactory.from_dict(
             {
                 MySQLCSVPublisher.CONN_STRING: 'test_connection',
