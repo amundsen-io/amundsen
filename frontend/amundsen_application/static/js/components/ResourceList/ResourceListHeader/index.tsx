@@ -61,7 +61,7 @@ const ResourceListHeader: React.FC<ResourceListHeaderProps> = ({
     <div className="resource-list-header">
       {headers?.map((headerText, index) => (
         <span
-          className={`resource-header ${resourceTypeToHeaderClassMap[index]}`}
+          className={`${resourceTypeToHeaderClassMap[index]}`}
           key={`${resourceTypeToHeaderClassMap[index]}`}
         >
           <span className="header-text">{headerText}</span>
