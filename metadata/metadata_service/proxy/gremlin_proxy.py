@@ -1774,6 +1774,12 @@ class AbstractGremlinProxy(BaseProxy):
                                      resource_type: ResourceType) -> GenerationCode:
         pass
 
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
+        raise NotImplementedError
+
 
 class GenericGremlinProxy(AbstractGremlinProxy):
     """
