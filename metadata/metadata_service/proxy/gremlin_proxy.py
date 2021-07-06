@@ -1773,7 +1773,7 @@ class AbstractGremlinProxy(BaseProxy):
                                      uri: str,
                                      resource_type: ResourceType) -> GenerationCode:
         pass
-    
+
     def get_popular_resources(self, *,
                               num_entries: int,
                               resource_types: List[str],
