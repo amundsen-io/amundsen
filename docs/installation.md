@@ -80,3 +80,4 @@ Atlas would be ready once you'll have the following output in the docker output 
 5. If ES container crashed with Docker error 137 on the first call from the website (http://localhost:5000/), this is because you are using the default Docker engine memory allocation of 2GB. The minimum needed for all the containers to run with the loaded sample data is 3GB. To do this go to your `Docker -> Preferences -> Resources -> Advanced` and increase the `Memory`, then restart the Docker engine.
 ![](img/docker_memory_setup.jpg)
 
+6. [Windows Troubleshooting](windows_troubleshooting.md)
