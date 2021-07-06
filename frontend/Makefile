@@ -41,7 +41,7 @@ push-image:
 
 .PHONY: oidc-image
 oidc-image:
-	cd .. && docker build -f frontend.public.Dockerfile --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} . && cd frontend
+	cd .. && docker build -f Dockerfile.frontend.public --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} . && cd frontend
 	docker tag ${OIDC_IMAGE}:${VERSION} ${OIDC_IMAGE}:latest
 
 .PHONY: push-odic-image
