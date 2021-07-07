@@ -40,6 +40,7 @@ def search_table() -> Response:
     Parse the request arguments and call the helper method to execute a table search
     :return: a Response created with the results from the helper method
     """
+    results_dict = {}
     try:
         request_json = request.get_json()
 
@@ -122,6 +123,7 @@ def search_user() -> Response:
     Parse the request arguments and call the helper method to execute a user search
     :return: a Response created with the results from the helper method
     """
+    results_dict = {}
     try:
         search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
         page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
@@ -197,6 +199,7 @@ def search_dashboard() -> Response:
     Parse the request arguments and call the helper method to execute a dashboard search
     :return: a Response created with the results from the helper method
     """
+    results_dict = {}
     try:
         request_json = request.get_json()
 
@@ -278,6 +281,7 @@ def search_feature() -> Response:
     Parse the request arguments and call the helper method to execute a feature search
     :return: a Response created with the results from the helper method
     """
+    results_dict = {}
     try:
         request_json = request.get_json()
 
