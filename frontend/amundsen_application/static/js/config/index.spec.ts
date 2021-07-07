@@ -202,7 +202,8 @@ describe('getResourceNotices', () => {
         };
         const resources = [ResourceType.table, ResourceType.dashboard];
         for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
-          resources.forEach((resource) => {
+          for (let index = 0; index < resources.length; index++) {
+            const resource = resources[index];
             AppConfig.resourceConfig[resource].notices = {
               [noticeName]: noticeParams,
             };
@@ -214,7 +215,7 @@ describe('getResourceNotices', () => {
             const actual = notice && notice.messageHtml;
 
             expect(actual).toEqual(expected);
-          });
+          }
         }
       });
     });
@@ -281,7 +282,8 @@ describe('getResourceNotices', () => {
         };
         const resources = [ResourceType.table, ResourceType.dashboard];
         for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
-          resources.forEach((resource) => {
+          for (let index = 0; index < resources.length; index++) {
+            const resource = resources[index];
             AppConfig.resourceConfig[resource].notices = {
               [noticeName]: noticeParams,
             };
@@ -293,7 +295,7 @@ describe('getResourceNotices', () => {
             const actual = notice && notice.messageHtml;
 
             expect(actual).toEqual(expected);
-          });
+          }
         }
       });
     });
