@@ -153,7 +153,7 @@ export enum NoticeSeverity {
 }
 export interface NoticeType {
   severity: NoticeSeverity;
-  messageHtml: string;
+  messageHtml: string | ((resourceName: string) => string);
 }
 /**
  * Stats configuration options
