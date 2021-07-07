@@ -5,10 +5,10 @@
 The following instructions are for setting up a standalone version of the Amundsen application. This approach is ideal for local development.
 ```bash
 # Clone repo
-$ git clone https://github.com/lyft/amundsenfrontendlibrary.git
+$ git clone https://github.com/amundsen-io/amundsen.git
 
 # Build static content
-$ cd amundsenfrontendlibrary/amundsen_application/static
+$ cd amundsen/frontend/amundsen_application/static
 $ npm install
 $ npm run build # or npm run dev-build for un-minified source
 $ cd ../../
