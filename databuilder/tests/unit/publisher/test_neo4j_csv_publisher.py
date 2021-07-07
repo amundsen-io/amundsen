@@ -20,7 +20,7 @@ class TestPublish(unittest.TestCase):
 
     def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
-        self._resource_path = os.path.join(here, f'../resources/csv_publisher')
+        self._resource_path = os.path.join(here, '../resources/csv_publisher')
 
     def test_publisher(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:

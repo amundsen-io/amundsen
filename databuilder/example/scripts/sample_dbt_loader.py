@@ -65,7 +65,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def run_dbt_job(database_name, catalog_file_loc, manifest_file_loc, source_url=None):
-    tmp_folder = f'/var/tmp/amundsen/dbt_run'
+    tmp_folder = '/var/tmp/amundsen/dbt_run'
     node_files_folder = f'{tmp_folder}/nodes'
     relationship_files_folder = f'{tmp_folder}/relationships'
 

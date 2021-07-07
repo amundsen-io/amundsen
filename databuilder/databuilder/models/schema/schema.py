@@ -26,8 +26,8 @@ class SchemaModel(GraphSerializable, TableSerializable):
     def __init__(self,
                  schema_key: str,
                  schema: str,
-                 description: str=None,
-                 description_source: str=None,
+                 description: str = None,
+                 description_source: str = None,
                  **kwargs: Any
                  ) -> None:
         self._schema_key = schema_key

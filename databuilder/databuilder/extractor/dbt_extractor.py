@@ -121,7 +121,7 @@ class DbtExtractor(Extractor):
         except Exception:
             try:
                 with open(self._dbt_catalog, 'rb') as f:
-                        self._dbt_catalog = json.load(f)
+                    self._dbt_catalog = json.load(f)
             except Exception as e:
                 raise InvalidDbtInputs(
                     'Invalid content for a dbt catalog was provided. Must be a valid Python '

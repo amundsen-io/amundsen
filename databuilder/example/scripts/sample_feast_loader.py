@@ -53,7 +53,7 @@ def create_feast_job_config():
             f"publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}": neo4j_endpoint,
             f"publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}": neo4j_user,
             f"publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}": neo4j_password,
-            f"publisher.neo4j.job_publish_tag": "some_unique_tag",  # TO-DO unique tag must be added
+            "publisher.neo4j.job_publish_tag": "some_unique_tag",  # TO-DO unique tag must be added
         }
     )
     return job_config
