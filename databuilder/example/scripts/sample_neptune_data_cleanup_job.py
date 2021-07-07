@@ -8,10 +8,11 @@ import logging
 import os
 
 import boto3
+from pyhocon import ConfigFactory
+
 from databuilder.clients.neptune_client import NeptuneSessionClient
 from databuilder.job.job import DefaultJob
 from databuilder.task.neptune_staleness_removal_task import NeptuneStalenessRemovalTask
-from pyhocon import ConfigFactory
 
 session = boto3.Session()
 
