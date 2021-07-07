@@ -197,7 +197,7 @@ class Neo4jProxy(BaseProxy):
         readers = []  # type: List[Reader]
         for usage_neo4j_record in usage_neo4j_records:
             reader_data = self._get_user_details(user_id=usage_neo4j_record['email'])
-            reader = Reader(user=User(**reader_data),
+            reader = Reader(user=self._build_user_from_record(record=reader_data),
                             read_count=usage_neo4j_record['read_count'])
             readers.append(reader)
 
@@ -278,7 +278,7 @@ class Neo4jProxy(BaseProxy):
 
         for owner in table_records.get('owner_records', []):
             owner_data = self._get_user_details(user_id=owner['email'])
-            owner_record.append(User(**owner_data))
+            owner_record.append(self._build_user_from_record(record=owner_data))
 
         src = None
 
@@ -1302,7 +1302,7 @@ class Neo4jProxy(BaseProxy):
         return [self._build_user_from_record(record=rec) for rec in result['users']]
 
     @staticmethod
-    def _build_user_from_record(record: dict, manager_name: str = '') -> UserEntity:
+    def _build_user_from_record(record: dict, manager_name: Optional[str] = None) -> UserEntity:
         """
         Builds user record from Cypher query result. Other than the one defined in amundsen_common.models.user.User,
         you could add more fields from User node into the User model by specifying keys in config.USER_OTHER_KEYS
@@ -1317,10 +1317,11 @@ class Neo4jProxy(BaseProxy):
                     other_key_values[k] = record[k]
 
         return UserEntity(email=record['email'],
+                          user_id=record.get('user_id', record['email']),
                           first_name=record.get('first_name'),
                           last_name=record.get('last_name'),
                           full_name=record.get('full_name'),
-                          is_active=record.get('is_active', False),
+                          is_active=record.get('is_active', True),
                           github_username=record.get('github_username'),
                           team_name=record.get('team_name'),
                           slack_id=record.get('slack_id'),
@@ -1639,7 +1640,7 @@ class Neo4jProxy(BaseProxy):
 
         for owner in dashboard_record.get('owners', []):
             owner_data = self._get_user_details(user_id=owner['email'], user_data=owner)
-            owners.append(User(**owner_data))
+            owners.append(self._build_user_from_record(record=owner_data))
 
         tags = [Tag(tag_type=tag['tag_type'], tag_name=tag['key']) for tag in dashboard_record['tags']]
 
