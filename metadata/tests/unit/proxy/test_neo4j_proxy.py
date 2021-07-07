@@ -89,7 +89,8 @@ class TestNeo4jProxy(unittest.TestCase):
             'owner_records': [
                 {
                     'key': 'tester@example.com',
-                    'email': 'tester@example.com'
+                    'email': 'tester@example.com',
+                    'updated_at': 0,
                 }
             ],
             'tag_records': [
@@ -1048,13 +1049,15 @@ class TestNeo4jProxy(unittest.TestCase):
                                        last_successful_run_timestamp=9876543210,
                                        updated_timestamp=123456654321, last_run_timestamp=987654321,
                                        last_run_state='good_state',
-                                       owners=[User(email='test_email', first_name='test_first_name',
+                                       owners=[User(email='test_email', user_id='test_email',
+                                                    first_name='test_first_name',
                                                     last_name='test_last_name',
                                                     full_name='test_full_name', is_active=True,
                                                     github_username='test-github',
                                                     team_name='test_team', slack_id='test_id',
                                                     employee_type='teamMember', manager_fullname=None),
-                                               User(email='test_email2', first_name='test_first_name2',
+                                               User(email='test_email2', user_id='test_email2',
+                                                    first_name='test_first_name2',
                                                     last_name='test_last_name2',
                                                     full_name='test_full_name2', is_active=True,
                                                     github_username='test-github2',
