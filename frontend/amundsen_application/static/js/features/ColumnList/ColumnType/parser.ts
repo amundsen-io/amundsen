@@ -11,12 +11,15 @@ export interface NestedType {
 enum DatabaseId {
   Hive = 'hive',
   Presto = 'presto',
+  Delta = 'delta',
 }
 const SUPPORTED_TYPES = {
   // https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types#LanguageManualTypes-ComplexTypes
   [DatabaseId.Hive]: ['array', 'map', 'struct', 'uniontype'],
   // https://prestosql.io/docs/current/language/types.html#structural
   [DatabaseId.Presto]: ['array', 'map', 'row'],
+  // https://docs.databricks.com/spark/latest/spark-sql/language-manual/sql-ref-datatypes.html#data-types
+  [DatabaseId.Delta]: ['array', 'map', 'struct'],
 };
 const OPEN_DELIMETERS = {
   '(': ')',

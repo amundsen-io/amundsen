@@ -37,8 +37,16 @@ describe('isNestedType', () => {
     expect(Parser.isNestedType('struct<hello, goodbye>', 'xyz')).toEqual(false);
   });
 
-  it('returns falsde for non-complex types', () => {
+  it('returns false for non-complex types', () => {
     expect(Parser.isNestedType('string', 'hive')).toEqual(false);
+  });
+
+  it('returns true for complex delta types', () => {
+    expect(Parser.isNestedType('struct<col1:string>', 'delta')).toEqual(true);
+  });
+
+  it('returns false for non-complex delta types', () => {
+    expect(Parser.isNestedType('bigint', 'delta')).toEqual(false);
   });
 });
 
@@ -175,6 +183,47 @@ describe('parseNestedType', () => {
       };
 
       expect(Parser.parseNestedType(columnType, 'presto')).toEqual(expected);
+    });
+  });
+
+  describe('delta support', () => {
+    it('returns expected NestedType for struct', () => {
+      const columnType =
+        'struct_col:struct<col1:string,col2:bigint,col3:boolean,nested_col:struct<col1:string,col2:bigint>>';
+      const expected: Parser.NestedType = {
+        head: 'struct_col:struct<',
+        children: [
+          'col1:string,',
+          'col2:bigint,',
+          'col3:boolean,',
+          {
+            head: 'nested_col:struct<',
+            children: ['col1:string,', 'col2:bigint'],
+            tail: '>',
+          },
+        ],
+        tail: '>',
+      };
+
+      expect(Parser.parseNestedType(columnType, 'delta')).toEqual(expected);
+    });
+
+    it('returns expected NestedType for array', () => {
+      const columnType =
+        'array_col:array<elem:struct<col1:string,col2:bigint,col3:boolean>>';
+      const expected: Parser.NestedType = {
+        head: 'array_col:array<',
+        children: [
+          {
+            head: 'elem:struct<',
+            children: ['col1:string,', 'col2:bigint,', 'col3:boolean'],
+            tail: '>',
+          },
+        ],
+        tail: '>',
+      };
+
+      expect(Parser.parseNestedType(columnType, 'delta')).toEqual(expected);
     });
   });
 });
