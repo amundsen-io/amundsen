@@ -350,7 +350,7 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
         self.assertEqual(value, 1)
 
     @patch('databuilder.extractor.base_bigquery_extractor.build')
-    def test_referenced_table_belonging_to_different_project(self, mock_build: Any) -> None:
+    def test_not_counting_referenced_table_belonging_to_different_project(self, mock_build: Any) -> None:
         """
         Test result when referenced table belongs to a project different from the PROJECT_ID_KEY of the extractor
         """
@@ -366,3 +366,35 @@ class TestBigqueryUsageExtractor(unittest.TestCase):
 
         result = extractor.extract()
         assert result is None
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_counting_referenced_table_belonging_to_different_project(self, mock_build: Any) -> None:
+        """
+        Test result when referenced table belongs to a project different from the PROJECT_ID_KEY of the extractor
+        and COUNT_READS_ONLY_FROM_PROJECT is set to False
+        """
+        config_dict = {
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.PROJECT_ID_KEY}': 'your-project-here',
+            f'extractor.bigquery_table_usage.{BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY}': False,
+        }
+        conf = ConfigFactory.from_dict(config_dict)
+
+        mock_build.return_value = MockLoggingClient(CORRECT_DATA)
+        extractor = BigQueryTableUsageExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=conf,
+                                              scope=extractor.get_scope()))
+
+        result = extractor.extract()
+        assert result is not None
+        self.assertIsInstance(result, tuple)
+
+        (key, value) = result
+        self.assertIsInstance(key, TableColumnUsageTuple)
+        self.assertIsInstance(value, int)
+
+        self.assertEqual(key.database, 'bigquery')
+        self.assertEqual(key.cluster, 'bigquery-public-data')
+        self.assertEqual(key.schema, 'austin_incidents')
+        self.assertEqual(key.table, 'incidents_2008')
+        self.assertEqual(key.email, 'your-user-here@test.com')
+        self.assertEqual(value, 1)
