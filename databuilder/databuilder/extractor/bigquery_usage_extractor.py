@@ -46,8 +46,10 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
         self.table_usage_counts: Dict[TableColumnUsageTuple, int] = {}
         # GCP console allows running queries using tables from a project different from the one the extractor is
         # used for; only usage metadata of referenced tables present in the given project_id_key for the
-        # extractor is taken into account and usage metadata of referenced tables from other projects is ignored by "default".
-        self.count_reads_only_from_same_project = conf.get_bool(BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY, True)
+        # extractor is taken into account and usage metadata of referenced tables from other projects
+        # is ignored by "default".
+        self.count_reads_only_from_same_project = conf.get_bool(
+            BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY, True)
         self._count_usage()
         self.iter = iter(self.table_usage_counts)
 
@@ -118,8 +120,10 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
                 tableId = tableId[:-BigQueryTableUsageExtractor.DATE_LENGTH]
 
             if refResource['projectId'] != self.project_id and self.count_reads_only_from_same_project:
-                LOGGER.debug(f'Not counting usage for {refResource} since {tableId} '
-                            f'is not present in {self.project_id} and {BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY} is True')
+                LOGGER.debug(
+                    f'Not counting usage for {refResource} since {tableId} '
+                    f'is not present in {self.project_id} '
+                    f'and {BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY} is True')
                 continue
             else:
                 key = TableColumnUsageTuple(database='bigquery',
