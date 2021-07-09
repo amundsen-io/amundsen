@@ -33,6 +33,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
     EMAIL_PATTERN = 'email_pattern'
     DELAY_TIME = 'delay_time'
     TABLE_DECORATORS = ['$', '@']
+    COUNT_READS_ONLY_FROM_PROJECT_ID_KEY = 'count_reads_only_from_project_id_key'
 
     def init(self, conf: ConfigTree) -> None:
         BaseBigQueryExtractor.init(self, conf)
@@ -43,6 +44,10 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
         self.email_pattern = conf.get_string(BigQueryTableUsageExtractor.EMAIL_PATTERN, None)
         self.delay_time = conf.get_int(BigQueryTableUsageExtractor.DELAY_TIME, 100)
         self.table_usage_counts: Dict[TableColumnUsageTuple, int] = {}
+        # GCP console allows running queries using tables from a project different from the one the extractor is
+        # used for; only usage metadata of referenced tables present in the given project_id_key for the
+        # extractor is taken into account and usage metadata of referenced tables from other projects is ignored by "default".
+        self.count_reads_only_from_same_project = conf.get_bool(BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY, True)
         self._count_usage()
         self.iter = iter(self.table_usage_counts)
 
@@ -110,23 +115,19 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             tableId = self._remove_table_decorators(tableId)
 
             if self._is_sharded_table(tableId):
-                # Use the prefix of the sharded table as tableId
-                tableId = tableId[:-len(self._get_sharded_table_suffix(tableId))]
+                tableId = tableId[:-BigQueryTableUsageExtractor.DATE_LENGTH]
 
-            # GCP console allows running queries using tables from a project different from the one the extractor is
-            # used for; only usage metadata of referenced tables present in the given project_id_key for the
-            # extractor is taken into account and usage metadata of referenced tables from other projects is ignored.
-            if refResource['projectId'] == self.project_id:
+            if refResource['projectId'] != self.project_id and self.count_reads_only_from_same_project:
+                LOGGER.debug(f'Not counting usage for {refResource} since {tableId} '
+                            f'is not present in {self.project_id} and {BigQueryTableUsageExtractor.COUNT_READS_ONLY_FROM_PROJECT_ID_KEY} is True')
+                continue
+            else:
                 key = TableColumnUsageTuple(database='bigquery',
                                             cluster=refResource['projectId'],
                                             schema=datasetId,
                                             table=tableId,
                                             column='*',
                                             email=email)
-            else:
-                LOGGER.debug(f'Not counting usage for {refResource} since {tableId} '
-                             f'is not present in {self.project_id}')
-                continue
 
             new_count = self.table_usage_counts.get(key, 0) + 1
             self.table_usage_counts[key] = new_count
