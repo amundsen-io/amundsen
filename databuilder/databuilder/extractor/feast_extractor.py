@@ -26,6 +26,7 @@ class FeastExtractor(Extractor):
 
     FEAST_SERVICE_CONFIG_KEY = "instance_name"
     FEAST_ENDPOINT_CONFIG_KEY = "endpoint"
+    FEAST_SERVING_ENDPOINT_CONFIG_KEY = "serving_endpoint"
     DESCRIBE_FEATURE_TABLES = "describe_feature_tables"
     DEFAULT_CONFIG = ConfigFactory.from_dict(
         {FEAST_SERVICE_CONFIG_KEY: "main", DESCRIBE_FEATURE_TABLES: True}
@@ -38,7 +39,8 @@ class FeastExtractor(Extractor):
             FeastExtractor.DESCRIBE_FEATURE_TABLES
         )
         self._client = Client(
-            core_url=conf.get_string(FeastExtractor.FEAST_ENDPOINT_CONFIG_KEY)
+            core_url=conf.get_string(FeastExtractor.FEAST_ENDPOINT_CONFIG_KEY),
+            serving_url=conf.get_string(FeastExtractor.FEAST_SERVING_ENDPOINT_CONFIG_KEY),
         )
         self._extract_iter: Union[None, Iterator] = None
 
