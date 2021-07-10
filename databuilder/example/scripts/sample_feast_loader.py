@@ -28,7 +28,7 @@ from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.task.task import DefaultTask
 
 feast_endpoint = sys.argv[1]
-feast_serving_url = sys.argv[2]
+feast_serving_endpoint = sys.argv[2]
 neo4j_endpoint = sys.argv[3]
 es_url = sys.argv[4]
 es = Elasticsearch([es_url])
@@ -45,7 +45,7 @@ def create_feast_job_config():
     job_config = ConfigFactory.from_dict(
         {
             f"extractor.feast.{FeastExtractor.FEAST_ENDPOINT_CONFIG_KEY}": feast_endpoint,
-            f'extractor.feast.{FeastExtractor.FEAST_SERVING_ENDPOINT_CONFIG_KEY}': feast_serving_url,
+            f'extractor.feast.{FeastExtractor.FEAST_SERVING_ENDPOINT_CONFIG_KEY}': feast_serving_endpoint,
             f"loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}": node_files_folder,
             f"loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}": relationship_files_folder,
             f"publisher.neo4j.{neo4j_csv_publisher.NODE_FILES_DIR}": node_files_folder,
