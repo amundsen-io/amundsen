@@ -262,6 +262,11 @@ Currently **officially** using Amundsen:
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
-# License
 
-[Apache 2.0 License.](/LICENSE)
+## Contributors ✨
+
+Thanks goes to these incredible people:
+
+<a href="https://github.com/amundsen-io/amundsen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=amundsen-io/amundsen" />
+</a>
