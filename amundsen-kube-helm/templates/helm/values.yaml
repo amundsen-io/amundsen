@@ -147,7 +147,7 @@ frontEnd:
   # - name: "image-pull-secret"
 
   # frontEnd.imageTag -- The image tag of the frontend container.
-  imageTag: 3.7.0
+  imageTag: 3.11.1
 
   # frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   servicePort: 80
