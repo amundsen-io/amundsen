@@ -1508,7 +1508,7 @@ class AtlasProxy(BaseProxy):
     def _serialize_lineage_item(self, edge: Tuple[str, str], direction: str, key_class: Any,
                                 graph: Dict, root_node: str, parent_nodes: Dict[str, Set[str]]) -> List[LineageItem]:
         """
-        Renders LineageItem object.
+        Serializes LineageItem object.
 
         :param edge: tuple containing two node keys that are connected with each other.
         :param direction: Lineage direction upstream/downstream
@@ -1516,7 +1516,7 @@ class AtlasProxy(BaseProxy):
         :param: graph: Graph from which the edge was derived from. Used to find distance between edge node and entity
         for which lineage is retrieved.
         :param parent_nodes: Dict of keys (nodes) with set of keys (parents).
-        :return: Serialized LineageItem object.
+        :return: Serialized LineageItem list.
         """
         result: List[LineageItem] = []
 
