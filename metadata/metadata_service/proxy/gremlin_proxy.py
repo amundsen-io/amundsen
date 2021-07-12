@@ -38,6 +38,7 @@ from gremlin_python.driver.client import Client
 from gremlin_python.driver.driver_remote_connection import \
     DriverRemoteConnection
 from gremlin_python.driver.resultset import ResultSet
+from gremlin_python.driver.tornado.transport import TornadoTransport
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.process.graph_traversal import (GraphTraversal,
                                                     GraphTraversalSource, V,
@@ -869,6 +870,7 @@ class AbstractGremlinProxy(BaseProxy):
         # safe this for use in _submit
         self.remote_connection: DriverRemoteConnection = DriverRemoteConnection(
             url=self.possibly_signed_ws_client_request_or_url(),
+            transport_factory=lambda: TornadoTransport(read_timeout=None, write_timeout=None),
             **_properties_except(self.driver_remote_connection_options, 'url'))
 
         self._g: GraphTraversalSource = traversal().withRemote(self.remote_connection)
