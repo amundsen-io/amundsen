@@ -5,6 +5,7 @@ import logging
 import time
 from datetime import datetime
 from functools import wraps
+from multiprocessing.context import TimeoutError
 from multiprocessing.pool import ThreadPool
 from typing import (
     Any, Iterator, List, Union,
