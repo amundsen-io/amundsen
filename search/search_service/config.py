@@ -95,10 +95,6 @@ class AwsSearchConfig(LocalConfig):
 
     If you run Amundsen on Kubernetes use IAM roles for service accounts
     (https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
-
-    You MUST have the environment variables AWS_REGION and PROXY_ENDPOINT populated and boto3 must be able to get
-    credentials out of whatever environment you are running in. If any of these values turn out to be empty the config
-    will fail and the service will not start up.
     """
     import boto3
     from elasticsearch import Elasticsearch, RequestsHttpConnection
@@ -113,22 +109,15 @@ class AwsSearchConfig(LocalConfig):
     region = os.environ.get('AWS_REGION')
     credentials = boto3.Session().get_credentials()
 
-    if not all([host, region, credentials]):
-        raise Exception(f"""
-        error getting aws elasticsearch client. invalid input. \n
-        host: {host} \n
-        region: {region} \n
-        credentials: {credentials} \n
-        """)
+    if all([host, region, credentials]):
+        aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
 
-    aws_auth = AWS4Auth(region=region, service=service, refreshable_credentials=credentials)
+        client = Elasticsearch(
+            hosts=[{'host': host, 'port': port}],
+            http_auth=aws_auth,
+            use_ssl=use_ssl,
+            verify_certs=verify_certs,
+            connection_class=RequestsHttpConnection
+        )
 
-    client = Elasticsearch(
-        hosts=[{'host': host, 'port': port}],
-        http_auth=aws_auth,
-        use_ssl=use_ssl,
-        verify_certs=verify_certs,
-        connection_class=RequestsHttpConnection
-    )
-
-    PROXY_CLIENT_KEY = client
+        PROXY_CLIENT_KEY = client
