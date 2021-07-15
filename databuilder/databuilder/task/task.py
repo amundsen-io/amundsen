@@ -73,5 +73,6 @@ class DefaultTask(Task):
 
                 # Prepare the next record
                 record = self.extractor.extract()
+            LOGGER.info(f'Total extracted records: {count}')
         finally:
             self._closer.close()
