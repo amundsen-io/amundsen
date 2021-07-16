@@ -121,6 +121,7 @@ Please visit [Architecture](./docs/architecture.md) for Amundsen architecture ov
 - CSV
 - [dbt](https://www.getdbt.com/)
 - [Delta Lake](https://delta.io/)
+- [Elasticsearch](https://www.elastic.co/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
 - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
