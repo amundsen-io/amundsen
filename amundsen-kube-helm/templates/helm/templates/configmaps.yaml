@@ -22,9 +22,13 @@ data:
   {{ if .Values.flaskApp.class }}
   APP_WRAPPER_CLASS: {{ .Values.flaskApp.class }}
   {{ end }}
-{{ if .Values.oidc.enabled }}
+  {{ if .Values.oidc.enabled }}
+  FLASK_APP_MODULE_NAME: flaskoidc
+  FLASK_APP_CLASS_NAME: FlaskOIDC
+  FLASK_OIDC_CLIENT_ID: {{ .Values.oidc.frontend.client_id }}
+  FLASK_OIDC_CLIENT_SECRET: {{ .Values.oidc.frontend.client_secret }}
 {{ toYaml .Values.oidc.configs | indent 2 }}
-{{ end }}
+  {{ end }}
 {{ if .Values.frontEnd.envVars }}
 {{ toYaml .Values.frontEnd.envVars | indent 2 }}
 {{ end }}
@@ -56,9 +60,13 @@ data:
   {{ if .Values.flaskApp.class }}
   FLASK_APP_CLASS_NAME: {{ .Values.flaskApp.class }}
   {{ end }}
-{{ if .Values.oidc.enabled }}
+  {{ if .Values.oidc.enabled }}
+  FLASK_APP_MODULE_NAME: flaskoidc
+  FLASK_APP_CLASS_NAME: FlaskOIDC
+  FLASK_OIDC_CLIENT_ID: {{ .Values.oidc.metadata.client_id }}
+  FLASK_OIDC_CLIENT_SECRET: {{ .Values.oidc.metadata.client_secret }}
 {{ toYaml .Values.oidc.configs | indent 2 }}
-{{ end }}
+  {{ end }}
 {{ if .Values.metadata.envVars }}
 {{ toYaml .Values.metadata.envVars | indent 2 }}
 {{ end }}
@@ -88,9 +96,13 @@ data:
   {{ if .Values.flaskApp.class }}
   FLASK_APP_CLASS_NAME: {{ .Values.flaskApp.class }}
   {{ end }}
-{{ if .Values.oidc.enabled }}
+  {{ if .Values.oidc.enabled }}
+  FLASK_APP_MODULE_NAME: flaskoidc
+  FLASK_APP_CLASS_NAME: FlaskOIDC
+  FLASK_OIDC_CLIENT_ID: {{ .Values.oidc.search.client_id }}
+  FLASK_OIDC_CLIENT_SECRET: {{ .Values.oidc.search.client_secret }}
 {{ toYaml .Values.oidc.configs | indent 2 }}
-{{ end }}
+  {{ end }}
 {{ if .Values.search.envVars }}
 {{ toYaml .Values.search.envVars | indent 2 }}
 {{ end }}

@@ -31,23 +31,38 @@ tolerations: []
 podAnnotations: {}
 
 # Optional Flask App wrapper to wrap your Amundsen Microservices
+# Important: If you are using oidc.enabled=true, then you don't need to set this explicitly,
+# as this will be set for you.
 flaskApp:
-  #  flaskApp.module -- 'flaskoidc' if you want to enable OIDC
+  #  flaskApp.module -- Any custom flask module you may need to implement as a wrapper
   module: ""
-  #  flaskApp.class -- 'FlaskOIDC' if you want to enable OIDC
+  #  flaskApp.class -- The class name within the flaskApp.module
   class: ""
 
 # To enable OIDC,
-#     - please make sure to fill in the mandatory variables under 'envVars' for each service.
 #     - please make sure set frontend.config.class: amundsen_application.oidc_config.OidcConfig
-# Everything under oidc.configs will be parsed as environment variables for each service.
-# Following variables must be set under `envVars` for each service.
+# Following variables must be set for each service under the oidc.frontend, oidc.metadata and oidc.search.
 # - FLASK_OIDC_CLIENT_ID
 # - FLASK_OIDC_CLIENT_SECRET
 # More Information: https://github.com/verdan/flaskoidc#configurations
 oidc:
-  # oidc.enabled -- flag to enable/disable the OIDC. Once enabled, everything under oidc.configs will be parsed
-  enabled: false
+  # oidc.enabled -- flag to enable/disable the OIDC.
+  # Once enabled,
+  #   - everything under oidc.configs will be parsed
+  #   - flaskApp.module will be set as 'flaskoidc'
+  #   - flaskApp.class will be set as 'FlaskOIDC'
+  enabled: true
+  frontend:
+    client_id: ""
+    client_secret: ""
+  metadata:
+    client_id: ""
+    client_secret: ""
+  search:
+    client_id: ""
+    client_secret: ""
+
+  # Everything under oidc.configs will be parsed as environment variables for each service.
   configs:
     # oidc.configs.FLASK_OIDC_PROVIDER_NAME
     FLASK_OIDC_PROVIDER_NAME: google
@@ -126,9 +141,6 @@ search:
 
   # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.e
   envVars:
-    # No need to explicitly add the variables in values file or in configmap. You can pass these variables runtime
-    FLASK_OIDC_CLIENT_ID: ""
-    FLASK_OIDC_CLIENT_SECRET: ""
 
 # Configuration related to the metadata service.
 metadata:
@@ -192,9 +204,6 @@ metadata:
 
   # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.e
   envVars:
-    # No need to explicitly add the variables in values file or in configmap. You can pass these variables runtime
-    FLASK_OIDC_CLIENT_ID: ""
-    FLASK_OIDC_CLIENT_SECRET: ""
 
 # Configuration related to the frontEnd service.
 frontEnd:
@@ -253,9 +262,6 @@ frontEnd:
 
   # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
   envVars:
-    # No need to explicitly add the variables in values file or in configmap. You can pass these variables runtime
-    FLASK_OIDC_CLIENT_ID: ""
-    FLASK_OIDC_CLIENT_SECRET: ""
 
 # Configuration related to neo4j.
 neo4j:
