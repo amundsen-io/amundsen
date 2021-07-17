@@ -6,12 +6,15 @@ import logging
 from collections import namedtuple
 from datetime import datetime
 from typing import (  # noqa: F401
-    Dict, Iterator, List, Optional, Union,
+    Any, Dict, Iterator, List, Optional, Union,
 )
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
 from pyspark.sql import SparkSession
 from pyspark.sql.catalog import Table
+from pyspark.sql.types import (
+    ArrayType, MapType, StructType,
+)
 from pyspark.sql.utils import AnalysisException
 
 from databuilder.extractor.base_extractor import Extractor
@@ -120,6 +123,9 @@ class DeltaLakeMetadataExtractor(Extractor):
     Extracts Delta Lake Metadata.
     This requires a spark session to run that has a hive metastore populated with all of the delta tables
     that you are interested in.
+
+    By default, the extractor does not extract nested columns. Set the EXTRACT_NESTED_COLUMNS conf to True
+    if you would like nested columns extracted
     """
     # CONFIG KEYS
     DATABASE_KEY = "database"
@@ -136,6 +142,10 @@ class DeltaLakeMetadataExtractor(Extractor):
                                               DELTA_TABLES_ONLY: True})
     PARTITION_COLUMN_TAG = 'is_partition'
 
+    # For backwards compatibility, the delta lake extractor does not extract nested columns for indexing
+    # Set this to true in the conf if you would like nested columns & complex types fully extracted
+    EXTRACT_NESTED_COLUMNS = "extract_nested_columns"
+
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf.with_fallback(DeltaLakeMetadataExtractor.DEFAULT_CONFIG)
         self._extract_iter = None  # type: Union[None, Iterator]
@@ -144,6 +154,8 @@ class DeltaLakeMetadataExtractor(Extractor):
         self.exclude_list = self.conf.get_list(DeltaLakeMetadataExtractor.EXCLUDE_LIST_SCHEMAS_KEY)
         self.schema_list = self.conf.get_list(DeltaLakeMetadataExtractor.SCHEMA_LIST_KEY)
         self.delta_tables_only = self.conf.get_bool(DeltaLakeMetadataExtractor.DELTA_TABLES_ONLY)
+        self.extract_nested_columns = self.conf.get_bool(DeltaLakeMetadataExtractor.EXTRACT_NESTED_COLUMNS,
+                                                         default=False)
 
     def set_spark(self, spark: SparkSession) -> None:
         self.spark = spark
@@ -279,12 +291,16 @@ class DeltaLakeMetadataExtractor(Extractor):
         '''This fetches delta table columns, which unfortunately
         in the general case cannot rely on spark.catalog.listColumns.'''
         raw_columns = []
+        field_dict: Dict[str, Any] = {}
+        table_name = f"{schema}.{table}"
         try:
-            raw_columns = self.spark.sql(f"describe {schema}.{table}").collect()
+            raw_columns = self.spark.sql(f"describe {table_name}").collect()
+            for field in self.spark.table(f"{table_name}").schema:
+                field_dict[field.name] = field
         except AnalysisException as e:
             LOGGER.error(e)
             return raw_columns
-        parsed_columns = {}
+        parsed_columns: Dict[str, ScrapedColumnMetadata] = {}
         partition_cols = False
         sort_order = 0
         for row in raw_columns:
@@ -294,14 +310,20 @@ class DeltaLakeMetadataExtractor(Extractor):
                 partition_cols = True
                 continue
             if not partition_cols:
-                column = ScrapedColumnMetadata(
-                    name=row['col_name'],
-                    description=row['comment'] if row['comment'] else None,
-                    data_type=row['data_type'],
-                    sort_order=sort_order
-                )
-                parsed_columns[row['col_name']] = column
-                sort_order += 1
+                # Attempt to extract nested columns if conf value requests it
+                if self.extract_nested_columns \
+                        and col_name in field_dict \
+                        and self.is_complex_delta_type(field_dict[col_name].dataType):
+                    sort_order = self._iterate_nested_columns("", field_dict[col_name], parsed_columns, 1)
+                else:
+                    column = ScrapedColumnMetadata(
+                        name=row['col_name'],
+                        description=row['comment'] if row['comment'] else None,
+                        data_type=row['data_type'],
+                        sort_order=sort_order
+                    )
+                    parsed_columns[row['col_name']] = column
+                    sort_order += 1
             else:
                 if row['data_type'] in parsed_columns:
                     LOGGER.debug(f"Adding partition column table for {row['data_type']}")
@@ -310,6 +332,53 @@ class DeltaLakeMetadataExtractor(Extractor):
                     LOGGER.debug(f"Adding partition column table for {row['col_name']}")
                     parsed_columns[row['col_name']].set_is_partition(True)
         return list(parsed_columns.values())
+
+    def _iterate_nested_columns(self,
+                                parent: str,
+                                curr_field: Union[StructType, ArrayType, MapType],
+                                parsed_columns: Dict,
+                                total_cols: int) -> int:
+        if len(parent) > 0:
+            col_name = f"{parent}.{curr_field.name}"
+        else:
+            col_name = curr_field.name
+
+        if self.is_complex_delta_type(curr_field.dataType):
+            parsed_columns[col_name] = ScrapedColumnMetadata(
+                name=col_name,
+                data_type=curr_field.dataType.simpleString(),
+                sort_order=total_cols,
+                description=None,
+            )
+            total_cols += 1
+            if self.is_struct_type(curr_field.dataType):
+                total_cols = self._iterate_complex_type(curr_field.dataType, col_name, parsed_columns, total_cols)
+            elif self.is_array_type(curr_field.dataType) \
+                    and self.is_complex_delta_type(curr_field.dataType.elementType):
+                total_cols = self._iterate_complex_type(curr_field.dataType.elementType, col_name, parsed_columns,
+                                                        total_cols)
+            elif self.is_map_type(curr_field.dataType) \
+                    and self.is_complex_delta_type(curr_field.dataType.valueType):
+                total_cols = self._iterate_complex_type(curr_field.dataType.valueType, col_name, parsed_columns,
+                                                        total_cols)
+
+            return total_cols
+        else:
+            parsed_columns[col_name] = ScrapedColumnMetadata(
+                name=col_name,
+                data_type=curr_field.dataType.simpleString(),
+                sort_order=total_cols,
+                description=None,
+            )
+            return total_cols + 1
+
+    def _iterate_complex_type(self, delta_type: Any, col_name: str, parsed_columns: Dict, total_cols: int) -> int:
+        if self.is_struct_type(delta_type):
+            for field in delta_type:
+                total_cols = self._iterate_nested_columns(col_name, field, parsed_columns, total_cols)
+        else:
+            total_cols = self._iterate_nested_columns(col_name, delta_type, parsed_columns, total_cols)
+        return total_cols
 
     def create_table_metadata(self, table: ScrapedTableMetadata) -> TableMetadata:
         '''Creates the amundsen table metadata object from the ScrapedTableMetadata object.'''
@@ -342,3 +411,17 @@ class DeltaLakeMetadataExtractor(Extractor):
                                     cluster=self._cluster)
         else:
             return None
+
+    def is_complex_delta_type(self, delta_type: Any) -> bool:
+        return isinstance(delta_type, StructType) or \
+            isinstance(delta_type, ArrayType) or \
+            isinstance(delta_type, MapType)
+
+    def is_struct_type(self, delta_type: Any) -> bool:
+        return isinstance(delta_type, StructType)
+
+    def is_array_type(self, delta_type: Any) -> bool:
+        return isinstance(delta_type, ArrayType)
+
+    def is_map_type(self, delta_type: Any) -> bool:
+        return isinstance(delta_type, MapType)
