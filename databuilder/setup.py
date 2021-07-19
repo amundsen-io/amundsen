@@ -76,7 +76,8 @@ atlas = [
 
 rds = [
     'sqlalchemy>=1.3.6,<1.4',
-    'mysqlclient>=1.3.6,<3'
+    'mysqlclient>=1.3.6,<3',
+    'cx_Oracle==8.2.1'
 ]
 
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
