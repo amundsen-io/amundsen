@@ -17,8 +17,8 @@ FROM base as oidc-release
 RUN  pip3 install -e .&& \
      pip3 install -e .[oidc]
 
-ENV APP_WRAPPER flaskoidc
-ENV APP_WRAPPER_CLASS FlaskOIDC
+ENV FLASK_APP_MODULE_NAME flaskoidc
+ENV FLASK_APP_CLASS_NAME FlaskOIDC
 ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
 ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 
