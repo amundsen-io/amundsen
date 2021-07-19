@@ -101,7 +101,7 @@ class AtlasCSVPublisher(Publisher):
             try:
                 self._atlas_client.entity.update_entity(existing_entity)
             except AtlasServiceException:
-                LOGGER.error(f'Fail to update entity', exc_info=True)
+                LOGGER.error('Fail to update entity', exc_info=True)
 
     def _create_relations(self, relation_file: str) -> None:
         """
@@ -116,7 +116,7 @@ class AtlasCSVPublisher(Publisher):
                 try:
                     self._atlas_client.relationship.create_relationship(relation)
                 except AtlasServiceException:
-                    LOGGER.error(f'Fail to create atlas relationship', exc_info=True)
+                    LOGGER.error('Fail to create atlas relationship', exc_info=True)
                 except Exception as e:
                     LOGGER.error(e)
 
@@ -229,7 +229,7 @@ class AtlasCSVPublisher(Publisher):
             try:
                 self._atlas_client.entity.create_entities(chunk)
             except AtlasServiceException:
-                LOGGER.error(f'Error during entity syncing', exc_info=True)
+                LOGGER.error('Error during entity syncing', exc_info=True)
 
     def get_scope(self) -> str:
         return 'publisher.atlas_csv_publisher'

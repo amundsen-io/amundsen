@@ -121,6 +121,7 @@ Please visit [Architecture](./docs/architecture.md) for Amundsen architecture ov
 - CSV
 - [dbt](https://www.getdbt.com/)
 - [Delta Lake](https://delta.io/)
+- [Elasticsearch](https://www.elastic.co/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
 - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
@@ -262,6 +263,11 @@ Currently **officially** using Amundsen:
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
-# License
 
-[Apache 2.0 License.](/LICENSE)
+## Contributors ✨
+
+Thanks goes to these incredible people:
+
+<a href="https://github.com/amundsen-io/amundsen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=amundsen-io/amundsen" />
+</a>

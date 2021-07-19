@@ -58,7 +58,7 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
           <div className="body-secondary-3 truncated">{table.description}</div>
         </div>
       </div>
-      <div className="resource-type">
+      <div className="resource-type resource-source">
         {getSourceDisplayName(table.database, table.type)}
       </div>
       <div className="resource-badges">

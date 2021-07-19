@@ -12,6 +12,7 @@ For information about Amundsen and our other services, visit the [main repositor
 
 ## Requirements
 - Python >= 3.6.x
+- elasticsearch 6.x (currently it doesn't support 7.x)
 
 ## Doc
 - https://www.amundsen.io/amundsen/
@@ -194,8 +195,24 @@ job = DefaultJob(conf=job_config,
                  publisher=Neo4jCsvPublisher())
 job.launch()
 ```
+The delta lake extractor supports extraction of complex data types to be indexed and searchable. 
+```
+struct<a:int,b:string,c:array<struct<d:int,e:string>>,f:map<int,<struct<g:int,h:string>>>
+
+Will be extracted as:
+a     int
+b     string
+c     array<struct<d:int,e:string>>
+c.d   int
+c.e   string
+f     map<int,<struct<g:int,h:string>>
+f.g   int
+f.h   string
+```
+This functionality is behind a configuration value. Simply set EXTRACT_NESTED_COLUMNS to True in the job config.
 
 You can check out the sample deltalake metadata script for a full example.
+
 
 #### [DremioMetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/dremio_metadata_extractor.py)
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from [Dremio](https://www.dremio.com).

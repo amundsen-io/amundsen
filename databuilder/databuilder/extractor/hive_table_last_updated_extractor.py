@@ -225,7 +225,7 @@ class HiveTableLastUpdatedExtractor(Extractor):
                 table=non_partitioned_tbl_row['table_name'],
                 schema=non_partitioned_tbl_row['schema'],
                 storage_location=non_partitioned_tbl_row['location'])
-            LOGGER.info(f'Elapsed: %i seconds', time.time() - start)
+            LOGGER.info('Elapsed: %i seconds', time.time() - start)
 
             if table_last_updated:
                 yield table_last_updated
