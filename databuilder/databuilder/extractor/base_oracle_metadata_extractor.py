@@ -42,7 +42,7 @@ class BaseOracleMetadataExtractor(Extractor):
     @abc.abstractmethod
     def get_sql_statement(self, use_catalog_as_cluster_name: bool, where_clause_suffix: str) -> Any:
         """
-        :return: Provides a record or None if no more to extract
+        :return: Get SQL statement to extract Oracle metadata or None if there is no derived class
         """
         return None
 
