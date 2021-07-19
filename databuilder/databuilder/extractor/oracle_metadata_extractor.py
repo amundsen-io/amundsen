@@ -24,19 +24,19 @@ class OracleMetadataExtractor(BaseOracleMetadataExtractor):
         return """
         SELECT 
             {cluster_source} as "cluster",
-            lower(c.OWNER) as "schema",
-            lower(c.TABLE_NAME) as "name",
-            tc.COMMENTS as "description",
+            lower(c.owner) as "schema",
+            lower(c.table_name) as "name",
+            tc.comments as "description",
             lower(c.column_name) as "col_name",
-            lower(c.DATA_TYPE) as "col_type",
+            lower(c.data_type) as "col_type",
             cc.comments as "col_description",
             lower(c.column_id) as "col_sort_order"
         FROM
             all_tab_columns c
         LEFT JOIN
-            ALL_TAB_COMMENTS tc ON c.OWNER=tc.owner AND c.TABLE_NAME=tc.TABLE_NAME
+            all_tab_comments tc ON c.owner=tc.owner AND c.table_name=tc.table_name
         LEFT JOIN
-            ALL_col_comments cc ON c.owner=cc.owner AND c.TABLE_NAME=cc.TABLE_NAME AND c.column_name=cc.column_name
+            all_col_comments cc ON c.owner=cc.owner AND c.table_name=cc.table_name AND c.column_name=cc.column_name
         {where_clause_suffix}
         ORDER BY "cluster", "schema", "name", "col_sort_order" ;
         """.format(
