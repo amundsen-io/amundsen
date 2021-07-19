@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import attr
 from http import HTTPStatus
 from typing import Any, Dict
@@ -19,14 +22,14 @@ class HealthCheck:
     checks: Dict[str, Any] = dict()
 
     @status.validator
-    def vaildate_status(self, attribute, value):
+    def vaildate_status(self, attribute: str, value: Any) -> None:
         if value not in _ELIGIBLE_HEALTH_CHECKS:
             raise ValueError(f"status must be one of {_ELIGIBLE_HEALTH_CHECKS}")
 
-    def get_http_status(self):
+    def get_http_status(self) -> int:
         return _HEALTH_CHECK_HTTP_STATUS_MAP[self.status]
 
-    def dict(self):
+    def dict(self) -> Dict[str, Any]:
         return attr.asdict(self)
 
 
