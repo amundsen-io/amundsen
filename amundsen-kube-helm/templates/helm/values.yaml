@@ -54,12 +54,18 @@ oidc:
   enabled: true
   frontend:
     client_id: ""
+    # Do not paste the secret directly here, instead set this via env variable like
+    # `--set oidc.frontend.client_secret=$OIDC_FRONTEND_CLIENT_SECRET`
     client_secret: ""
   metadata:
     client_id: ""
+    # Do not paste the secret directly here, instead set this via env variable like
+    # `--set oidc.metadata.client_secret=$OIDC_METADATA_CLIENT_SECRET`
     client_secret: ""
   search:
     client_id: ""
+    # Do not paste the secret directly here, instead set this via env variable like
+    # `--set oidc.search.client_secret=$OIDC_SEARCH_CLIENT_SECRET`
     client_secret: ""
 
   # Everything under oidc.configs will be parsed as environment variables for each service.
@@ -139,8 +145,8 @@ search:
   # search.podAnnotations -- Search pod specific annotations.
   podAnnotations: {}
 
-  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.e
-  envVars:
+  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
+  envVars: {}
 
 # Configuration related to the metadata service.
 metadata:
@@ -202,8 +208,8 @@ metadata:
   # metadata.podAnnotations -- Metadata pod specific annotations.
   podAnnotations: {}
 
-  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.e
-  envVars:
+  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
+  envVars: {}
 
 # Configuration related to the frontEnd service.
 frontEnd:
@@ -261,7 +267,7 @@ frontEnd:
   podAnnotations: {}
 
   # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
-  envVars:
+  envVars: {}
 
 # Configuration related to neo4j.
 neo4j:
