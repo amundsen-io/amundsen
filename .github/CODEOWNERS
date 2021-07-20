@@ -11,7 +11,7 @@
 # review when someone opens a pull request.
 *       @amundsen-io/amundsen-committers
 
-/amundsen-kube-helm/ @feng-tao @jornh @javamonkey79
+/amundsen-kube-helm/ @feng-tao @jornh @javamonkey79 @mgorsk1 @verdan
 
 common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma
 databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dorianj @verdan @mgorsk1 @youngyjd @dechoma
