@@ -17,7 +17,7 @@ lint:
 
 .PHONY: mypy
 mypy:
-	mypy .
+	mypy --ignore-missing-imports --follow-imports=skip --strict-optional --warn-no-return .
 
 .PHONY: isort
 isort:
