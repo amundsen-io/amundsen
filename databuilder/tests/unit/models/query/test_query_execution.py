@@ -36,7 +36,7 @@ class TestQueryExecution(unittest.TestCase):
         self.query_join_metadata = QueryExecutionsMetadata(query_metadata=self.query_metadata,
                                                            start_time=10,
                                                            execution_count=7)
-        self._expected_key = '6caeee4c1c393848293d1aabea87355b-10'
+        self._expected_key = '748c28f86de411b1d2b9deb6ae105eba-10'
 
     def test_get_model_key(self) -> None:
         key = QueryExecutionsMetadata.get_key(query_key=self.query_metadata.get_key_self(), start_time=10)
