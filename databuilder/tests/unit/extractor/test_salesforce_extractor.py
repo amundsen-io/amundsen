@@ -3,7 +3,7 @@
 
 import unittest
 from collections import OrderedDict
-from typing import Dict
+from typing import Dict, Any
 
 from databuilder import Scoped
 
@@ -109,18 +109,15 @@ class TestSalesForceExtractor(unittest.TestCase):
         }
 
     @patch("databuilder.extractor.salesforce_extractor.Salesforce")
-    def test_extraction_one_object(self, mock_salesforce) -> None:
+    def test_extraction_one_object(self, mock_salesforce: Any) -> None:
         mock_salesforce.return_value = MockSalesForce()
-        conf = ConfigFactory.from_dict(
-            {
-                **self.config,
-                **{
-                    f"extractor.salesforce_metadata.{SalesForceExtractor.OBJECT_NAMES_KEY}": [
-                        "Account"
-                    ]
-                },
-            }
-        )
+        config_dict: Dict = {
+            f"extractor.salesforce_metadata.{SalesForceExtractor.OBJECT_NAMES_KEY}": [
+                "Account"
+            ],
+            **self.config,
+        }
+        conf = ConfigFactory.from_dict(config_dict)
 
         mock_salesforce.return_value = MockSalesForce()
         extractor = SalesForceExtractor()
@@ -147,19 +144,16 @@ class TestSalesForceExtractor(unittest.TestCase):
         self.assertIsNone(extractor.extract())
 
     @patch("databuilder.extractor.salesforce_extractor.Salesforce")
-    def test_extraction_multiple_objects(self, mock_salesforce) -> None:
+    def test_extraction_multiple_objects(self, mock_salesforce: Any) -> None:
         mock_salesforce.return_value = MockSalesForce()
-        conf = ConfigFactory.from_dict(
-            {
-                **self.config,
-                **{
-                    f"extractor.salesforce_metadata.{SalesForceExtractor.OBJECT_NAMES_KEY}": [
-                        "Account",
-                        "Profile",
-                    ]
-                },
-            }
-        )
+        config_dict: Dict = {
+            f"extractor.salesforce_metadata.{SalesForceExtractor.OBJECT_NAMES_KEY}": [
+                "Account",
+                "Profile",
+            ],
+            **self.config,
+        }
+        conf = ConfigFactory.from_dict(config_dict)
 
         mock_salesforce.return_value = MockSalesForce()
         extractor = SalesForceExtractor()
