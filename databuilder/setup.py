@@ -84,7 +84,7 @@ salesforce = [
 ]
 
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce
 
 setup(
     name='amundsen-databuilder',
