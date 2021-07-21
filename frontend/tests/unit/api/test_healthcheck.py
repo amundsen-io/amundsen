@@ -42,16 +42,8 @@ class HealthCheckTest(unittest.TestCase):
             expected = {
                 "status": "ok",
                 "checks": {
-                    "search_health": {
-                        "search": {
-                            "test": "check"
-                        }
-                    },
-                    "metadata_health": {
-                        "metadata": {
-                            "test": "check"
-                        }
-                    }
+                    "search_service": {'search': {'test': 'check'}},
+                    'metadata_service': {'metadata': {'test': 'check'}}
                 }
             }
             actual = test.get(self.healthcheck_endpoint)
@@ -85,16 +77,8 @@ class HealthCheckTest(unittest.TestCase):
             expected = {
                 "status": "fail",
                 "checks": {
-                    "search_health": {
-                        "search_service": {
-                            "status": "Could not get health from search"
-                        }
-                    },
-                    "metadata_health": {
-                        "metadata": {
-                            "test": "check"
-                        }
-                    }
+                    'search_service': {'status': 'Unable to connect.'},
+                    'metadata_service': {'metadata': {'test': 'check'}}
                 }
             }
             actual = test.get(self.healthcheck_endpoint)
@@ -130,16 +114,8 @@ class HealthCheckTest(unittest.TestCase):
             expected = {
                 "status": "fail",
                 "checks": {
-                    "search_health": {
-                        "search": {
-                            "some": "failure"
-                        }
-                    },
-                    "metadata_health": {
-                        "metadata": {
-                            "test": "check"
-                        }
-                    }
+                    'search_service': {'search': {'some': 'failure'}},
+                    'metadata_service': {'metadata': {'test': 'check'}}
                 }
             }
             actual = test.get(self.healthcheck_endpoint)
@@ -173,16 +149,8 @@ class HealthCheckTest(unittest.TestCase):
             expected = {
                 "status": "fail",
                 "checks": {
-                    "search_health": {
-                        "search": {
-                            "test": "check"
-                        }
-                    },
-                    "metadata_health": {
-                        "metadata_service": {
-                            "status": "Could not get health from metadata"
-                        }
-                    }
+                    'search_service': {'search': {'test': 'check'}},
+                    'metadata_service': {'status': 'Unable to connect.'}
                 }
             }
             actual = test.get(self.healthcheck_endpoint)
@@ -216,16 +184,8 @@ class HealthCheckTest(unittest.TestCase):
             expected = {
                 "status": "fail",
                 "checks": {
-                    "search_health": {
-                        "search": {
-                            "test": "check"
-                        }
-                    },
-                    "metadata_health": {
-                        "metadata": {
-                            "some": "failure"
-                        }
-                    }
+                    'search_service': {'search': {'test': 'check'}},
+                    'metadata_service': {'metadata': {'some': 'failure'}}
                 }
             }
             actual = test.get(self.healthcheck_endpoint)

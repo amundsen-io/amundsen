@@ -8,7 +8,7 @@ from flask import Flask, render_template
 import jinja2
 import os
 
-from .healthcheck import run_healthcheck
+from amundsen_application.api.healthcheck import run_healthcheck
 
 
 ENVIRONMENT = os.getenv('APPLICATION_ENV', 'development')
