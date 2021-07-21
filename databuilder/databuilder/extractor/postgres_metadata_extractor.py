@@ -22,7 +22,7 @@ class PostgresMetadataExtractor(BasePostgresMetadataExtractor):
             cluster_source = f"'{self._cluster}'"
 
         return """
-            SELECT 
+            SELECT
                 {cluster_source} as cluster,
                 st.schemaname as schema,
                 st.relname as name,
