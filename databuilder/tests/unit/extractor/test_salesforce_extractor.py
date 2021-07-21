@@ -3,9 +3,7 @@
 
 import unittest
 from collections import OrderedDict
-from typing import Any, Dict, List
-
-import pytest
+from typing import Dict
 
 from databuilder import Scoped
 
@@ -13,7 +11,7 @@ from pyhocon import ConfigFactory
 
 from databuilder.extractor.salesforce_extractor import SalesForceExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from mock import Mock, patch
+from mock import patch
 
 METADATA = {
     "Account": {
@@ -75,8 +73,7 @@ class MockSalesForce:
                                 [
                                     (
                                         "rowTemplate",
-                                        f"/services/data/v42.0/sobjects/{object_name}/"
-                                        + "{ID}",
+                                        f"/services/data/v42.0/sobjects/{object_name}/" + "{ID}",
                                     ),
                                     (
                                         "describe",
