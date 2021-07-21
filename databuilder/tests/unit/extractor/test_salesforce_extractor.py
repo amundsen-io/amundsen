@@ -3,15 +3,14 @@
 
 import unittest
 from collections import OrderedDict
-from typing import Dict, Any
+from typing import Any, Dict
+
+from mock import patch
 
 from databuilder import Scoped
-
-from pyhocon import ConfigFactory
-
 from databuilder.extractor.salesforce_extractor import SalesForceExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from mock import patch
+from pyhocon import ConfigFactory
 
 METADATA = {
     "Account": {
