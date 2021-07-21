@@ -302,7 +302,7 @@ class TestPostgresMetadataExtractorTableCatalogEnabled(unittest.TestCase):
         with patch.object(SQLAlchemyExtractor, '_get_connection'):
             extractor = PostgresMetadataExtractor()
             extractor.init(self.conf)
-            self.assertTrue('table_catalog' in extractor.sql_stmt)
+            self.assertTrue('current_database()' in extractor.sql_stmt)
             self.assertFalse(self.cluster_key in extractor.sql_stmt)
 
 
