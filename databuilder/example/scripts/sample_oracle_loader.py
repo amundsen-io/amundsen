@@ -14,7 +14,6 @@ import uuid
 
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
-from sqlalchemy.ext.declarative import declarative_base
 
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
@@ -39,10 +38,6 @@ if len(sys.argv) > 2:
 es = Elasticsearch([
     {'host': es_host if es_host else 'localhost'},
 ])
-
-DB_FILE = '/tmp/test.db'
-SQLITE_CONN_STRING = 'sqlite:////tmp/test.db'
-Base = declarative_base()
 
 NEO4J_ENDPOINT = f'bolt://{neo_host or "localhost"}:7687'
 
