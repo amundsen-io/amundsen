@@ -15,11 +15,8 @@ class OracleMetadataExtractor(BaseOracleMetadataExtractor):
     Extracts Oracle table and column metadata from underlying meta store database using SQLAlchemyExtractor
     """
 
-    def get_sql_statement(self, use_catalog_as_cluster_name: bool, where_clause_suffix: str) -> str:
-        if use_catalog_as_cluster_name:
-            cluster_source = "c.table_catalog"
-        else:
-            cluster_source = f"'{self._cluster}'"
+    def get_sql_statement(self, where_clause_suffix: str) -> str:
+        cluster_source = f"'{self._cluster}'"
 
         return """
         SELECT 

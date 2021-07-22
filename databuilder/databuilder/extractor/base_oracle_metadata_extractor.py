@@ -40,7 +40,7 @@ class BaseOracleMetadataExtractor(Extractor):
     )
 
     @abc.abstractmethod
-    def get_sql_statement(self, use_catalog_as_cluster_name: bool, where_clause_suffix: str) -> Any:
+    def get_sql_statement(self, where_clause_suffix: str) -> Any:
         """
         :return: Get SQL statement to extract Oracle metadata or None if there is no derived class
         """
@@ -48,12 +48,11 @@ class BaseOracleMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(BaseOracleMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = conf.get_string(BaseOracleMetadataExtractor.CLUSTER_KEY)
+        self._cluster = conf.get_string(BaseOracleMetadataExtractor.CLUSTER_KEY, default='oracle')
 
         self._database = conf.get_string(BaseOracleMetadataExtractor.DATABASE_KEY, default='oracle')
 
         self.sql_stmt = self.get_sql_statement(
-            use_catalog_as_cluster_name=conf.get_bool(BaseOracleMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME),
             where_clause_suffix=conf.get_string(BaseOracleMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
         )
 
