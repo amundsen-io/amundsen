@@ -6,11 +6,11 @@ from collections import OrderedDict
 from typing import Any, Dict
 
 from mock import patch
+from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.salesforce_extractor import SalesForceExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from pyhocon import ConfigFactory
 
 METADATA = {
     "Account": {

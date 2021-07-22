@@ -2,12 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import (Any, Dict, Iterator, List, Union)
+from typing import (
+    Any, Dict, Iterator, List, Union,
+)
+
+from pyhocon import ConfigTree
+from simple_salesforce import Salesforce
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from pyhocon import ConfigTree
-from simple_salesforce import Salesforce
 
 LOGGER = logging.getLogger(__name__)
 
