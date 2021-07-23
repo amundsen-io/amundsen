@@ -13,7 +13,7 @@ from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
 from pyspark.sql import SparkSession
 from pyspark.sql.catalog import Table
 from pyspark.sql.types import (
-    ArrayType, MapType, StructType,
+    ArrayType, MapType, StructField, StructType,
 )
 from pyspark.sql.utils import AnalysisException
 
@@ -314,7 +314,7 @@ class DeltaLakeMetadataExtractor(Extractor):
                 if self.extract_nested_columns \
                         and col_name in field_dict \
                         and self.is_complex_delta_type(field_dict[col_name].dataType):
-                    sort_order = self._iterate_nested_columns("", field_dict[col_name], parsed_columns, 1)
+                    sort_order = self._iterate_complex_type("", field_dict[col_name], parsed_columns, sort_order)
                 else:
                     column = ScrapedColumnMetadata(
                         name=row['col_name'],
@@ -333,17 +333,18 @@ class DeltaLakeMetadataExtractor(Extractor):
                     parsed_columns[row['col_name']].set_is_partition(True)
         return list(parsed_columns.values())
 
-    def _iterate_nested_columns(self,
-                                parent: str,
-                                curr_field: Union[StructType, ArrayType, MapType],
-                                parsed_columns: Dict,
-                                total_cols: int) -> int:
-        if len(parent) > 0:
-            col_name = f"{parent}.{curr_field.name}"
-        else:
-            col_name = curr_field.name
+    def _iterate_complex_type(self,
+                              parent: str,
+                              curr_field: Union[StructType, StructField, ArrayType, MapType],
+                              parsed_columns: Dict,
+                              total_cols: int) -> int:
+        col_name = parent
+        if self.is_struct_field(curr_field):
+            if len(parent) > 0:
+                col_name = f"{parent}.{curr_field.name}"
+            else:
+                col_name = curr_field.name
 
-        if self.is_complex_delta_type(curr_field.dataType):
             parsed_columns[col_name] = ScrapedColumnMetadata(
                 name=col_name,
                 data_type=curr_field.dataType.simpleString(),
@@ -351,33 +352,18 @@ class DeltaLakeMetadataExtractor(Extractor):
                 description=None,
             )
             total_cols += 1
-            if self.is_struct_type(curr_field.dataType):
-                total_cols = self._iterate_complex_type(curr_field.dataType, col_name, parsed_columns, total_cols)
-            elif self.is_array_type(curr_field.dataType) \
-                    and self.is_complex_delta_type(curr_field.dataType.elementType):
-                total_cols = self._iterate_complex_type(curr_field.dataType.elementType, col_name, parsed_columns,
-                                                        total_cols)
-            elif self.is_map_type(curr_field.dataType) \
-                    and self.is_complex_delta_type(curr_field.dataType.valueType):
-                total_cols = self._iterate_complex_type(curr_field.dataType.valueType, col_name, parsed_columns,
-                                                        total_cols)
+            if self.is_complex_delta_type(curr_field.dataType):
+                total_cols = self._iterate_complex_type(col_name, curr_field.dataType, parsed_columns, total_cols)
 
-            return total_cols
-        else:
-            parsed_columns[col_name] = ScrapedColumnMetadata(
-                name=col_name,
-                data_type=curr_field.dataType.simpleString(),
-                sort_order=total_cols,
-                description=None,
-            )
-            return total_cols + 1
+        if self.is_complex_delta_type(curr_field):
+            if self.is_struct_type(curr_field):
+                for field in curr_field:
+                    total_cols = self._iterate_complex_type(col_name, field, parsed_columns, total_cols)
+            elif self.is_array_type(curr_field) and self.is_complex_delta_type(curr_field.elementType):
+                total_cols = self._iterate_complex_type(col_name, curr_field.elementType, parsed_columns, total_cols)
+            elif self.is_map_type(curr_field) and self.is_complex_delta_type(curr_field.valueType):
+                total_cols = self._iterate_complex_type(col_name, curr_field.valueType, parsed_columns, total_cols)
 
-    def _iterate_complex_type(self, delta_type: Any, col_name: str, parsed_columns: Dict, total_cols: int) -> int:
-        if self.is_struct_type(delta_type):
-            for field in delta_type:
-                total_cols = self._iterate_nested_columns(col_name, field, parsed_columns, total_cols)
-        else:
-            total_cols = self._iterate_nested_columns(col_name, delta_type, parsed_columns, total_cols)
         return total_cols
 
     def create_table_metadata(self, table: ScrapedTableMetadata) -> TableMetadata:
@@ -419,6 +405,9 @@ class DeltaLakeMetadataExtractor(Extractor):
 
     def is_struct_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, StructType)
+
+    def is_struct_field(self, delta_type: Any) -> bool:
+        return isinstance(delta_type, StructField)
 
     def is_array_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, ArrayType)
