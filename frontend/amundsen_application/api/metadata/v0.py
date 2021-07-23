@@ -417,7 +417,8 @@ def _update_search_tag(key: str, resource_type: ResourceType, method: str, tag: 
     """
     call the search service endpoint to get whole entity information uniquely identified by the key
     update tags list, call search service endpoint again to write back the updated field
-    TODO: we should update dashboard tag in the future
+    TODO: we should update dashboard tag in the future. Note that dashboard ES schema doesn't have key field,
+    so that should be added.
     :param key: e.g. 'database://cluster.schema/table'
     :param method: PUT or DELETE
     :param tag: tag name to be added/deleted
@@ -450,8 +451,9 @@ def _update_search_tag(key: str, resource_type: ResourceType, method: str, tag: 
 
     raw_data_map = json.loads(search_response.text)
     # key should uniquely identify this resource
-    if len(raw_data_map['results']) > 1:
-        LOGGER.error(f'Error! Duplicate table key: {key}')
+    num_results = len(raw_data_map['results'])
+    if num_results != 1:
+        LOGGER.error(f'Expecting exactly one ES result for key {key} but got {num_results}')
         return HTTPStatus.INTERNAL_SERVER_ERROR
 
     resource = raw_data_map['results'][0]
@@ -462,18 +464,18 @@ def _update_search_tag(key: str, resource_type: ResourceType, method: str, tag: 
     resource['tags'] = new_tags_list
 
     # remove None values
-    pruned_table = {k: v for k, v in resource.items() if v is not None}
-    post_param_map = {"data": pruned_table}
-    update_table_response = request_search(
+    pruned_entity = {k: v for k, v in resource.items() if v is not None}
+    post_param_map = {"data": pruned_entity}
+    update_response = request_search(
         url=update_url,
         method='PUT',
         headers={'Content-Type': 'application/json'},
         data=json.dumps(post_param_map),
     )
-    if update_table_response.status_code != HTTPStatus.OK:
-        LOGGER.info(f'Fail to update tag in searchservice, http status code: {update_table_response.status_code}')
-        LOGGER.info(update_table_response.text)
-        return update_table_response.status_code
+    if update_response.status_code != HTTPStatus.OK:
+        LOGGER.info(f'Fail to update tag in searchservice, http status code: {update_response.status_code}')
+        LOGGER.info(update_response.text)
+        return update_response.status_code
 
     return HTTPStatus.OK
 
