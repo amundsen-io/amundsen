@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "metadata/**"
+      - "common/**"
       - "requirements*txt"
 jobs:
   test-unit-python:
