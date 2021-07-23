@@ -11,6 +11,7 @@ from typing import (
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
+from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
@@ -19,7 +20,7 @@ TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 LOGGER = logging.getLogger(__name__)
 
 
-class OracleMetadataExtractor():
+class OracleMetadataExtractor(Extractor):
     """
     Extracts Oracle table and column metadata from underlying meta store database using SQLAlchemyExtractor
     """
