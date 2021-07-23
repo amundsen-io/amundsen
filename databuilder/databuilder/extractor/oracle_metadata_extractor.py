@@ -126,7 +126,7 @@ class OracleMetadataExtractor(Extractor):
         LEFT JOIN
             all_col_comments cc ON c.owner=cc.owner AND c.table_name=cc.table_name AND c.column_name=cc.column_name
         {where_clause_suffix}
-        ORDER BY "cluster", "schema", "name", "col_sort_order" ;
+        ORDER BY "cluster", "schema", "name", "col_sort_order"
         """.format(
             cluster_source=cluster_source,
             where_clause_suffix=where_clause_suffix,
