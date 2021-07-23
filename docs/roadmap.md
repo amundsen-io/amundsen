@@ -72,7 +72,7 @@ _Status_: planning has not started
 
 #### Push ingest API
 
-_What_: Possible through [Kafka extractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/kafka_source_extractor.py), though Kafka topic schema is not well defined. And it requires client side SDK to support message pushing.
+_What_: Possible through [Kafka extractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/kafka_source_extractor.py), though Kafka topic schema is not well defined. And it requires client side SDK to support message pushing.
 
 _Status_: 50%
 
