@@ -65,7 +65,7 @@ def connection_string():
 
 def run_postgres_job():
     where_clause_suffix = textwrap.dedent("""
-        where table_schema = 'public'
+        schemaname = 'public'
     """)
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'

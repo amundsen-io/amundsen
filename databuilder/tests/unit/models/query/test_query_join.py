@@ -122,7 +122,7 @@ class TestQueryJoin(unittest.TestCase):
                 RELATION_END_KEY: self._expected_key,
                 RELATION_END_LABEL: QueryJoinMetadata.NODE_LABEL,
                 RELATION_REVERSE_TYPE: QueryJoinMetadata.INVERSE_QUERY_JOIN_RELATION_TYPE,
-                RELATION_START_KEY: '6caeee4c1c393848293d1aabea87355b',
+                RELATION_START_KEY: '748c28f86de411b1d2b9deb6ae105eba',
                 RELATION_START_LABEL: QueryMetadata.NODE_LABEL,
                 RELATION_TYPE: QueryJoinMetadata.QUERY_JOIN_RELATION_TYPE
             }
