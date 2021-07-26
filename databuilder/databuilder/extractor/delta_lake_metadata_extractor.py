@@ -299,7 +299,7 @@ class DeltaLakeMetadataExtractor(Extractor):
                 field_dict[field.name] = field
         except AnalysisException as e:
             LOGGER.error(e)
-            return raw_columns
+            return []
         parsed_columns: Dict[str, ScrapedColumnMetadata] = {}
         partition_cols = False
         sort_order = 0

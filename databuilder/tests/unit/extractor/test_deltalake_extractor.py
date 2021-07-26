@@ -158,6 +158,10 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         for a, b in zip(actual, expected):
             self.assertEqual(a, b)
 
+    def test_fetch_delta_columns_failure(self) -> None:
+        actual = self.dExtractor.fetch_columns("test_schema1", "nonexistent_table")
+        self.assertEquals(actual, [])
+
     def test_scrape_tables(self) -> None:
         table = Table(name="test_table1", database="test_schema1", description=None,
                       tableType="delta", isTemporary=False)
