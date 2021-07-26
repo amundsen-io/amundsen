@@ -1506,9 +1506,9 @@ class AtlasProxy(BaseProxy):
         return dict(graph)
 
     def _serialize_lineage_item(self, edge: Tuple[str, str], direction: str, key_class: Any,
-                                graph: Dict, root_node: str, parent_nodes: Dict[str, Set[str]]) -> LineageItem:
+                                graph: Dict, root_node: str, parent_nodes: Dict[str, Set[str]]) -> List[LineageItem]:
         """
-        Renders LineageItem object.
+        Serializes LineageItem object.
 
         :param edge: tuple containing two node keys that are connected with each other.
         :param direction: Lineage direction upstream/downstream
@@ -1516,8 +1516,10 @@ class AtlasProxy(BaseProxy):
         :param: graph: Graph from which the edge was derived from. Used to find distance between edge node and entity
         for which lineage is retrieved.
         :param parent_nodes: Dict of keys (nodes) with set of keys (parents).
-        :return: Serialized LineageItem object.
+        :return: Serialized LineageItem list.
         """
+        result: List[LineageItem] = []
+
         if direction == 'upstream':
             key, _ = edge
             level = len(AtlasProxy._find_shortest_path(graph, key, root_node)) - 1
@@ -1527,23 +1529,26 @@ class AtlasProxy(BaseProxy):
         else:
             raise ValueError(f'Direction {direction} not supported!')
 
-        try:
-            parent = parent_nodes.get(key, set()).pop()
-        except KeyError:
-            parent = ''
+        parents = parent_nodes.get(key, [''])
 
-        badges: List[str] = []
-        usage = 0
-        source = key_class(key).get_details()['database']
+        while True:
+            try:
+                parent = parents.pop()
+            except Exception:
+                break
 
-        spec = dict(key=key,
-                    parent=parent,
-                    source=source,
-                    badges=badges,
-                    usage=usage,
-                    level=level)
+            badges: List[str] = []
+            usage = 0
+            source = key_class(key).get_details()['database']
 
-        result = LineageItem(**spec)
+            spec = dict(key=key,
+                        parent=parent,
+                        source=source,
+                        badges=badges,
+                        usage=usage,
+                        level=level)
+
+            result.append(LineageItem(**spec))
 
         return result
 
@@ -1579,9 +1584,9 @@ class AtlasProxy(BaseProxy):
         parent_nodes = self._find_parent_nodes(graph)
 
         for edge in edges:
-            lineage_item = self._serialize_lineage_item(edge, direction, key_class, graph, root_node, parent_nodes)
+            lineage_items = self._serialize_lineage_item(edge, direction, key_class, graph, root_node, parent_nodes)
 
-            result.append(lineage_item)
+            result += lineage_items
 
         return result
 
@@ -1674,4 +1679,4 @@ class AtlasProxy(BaseProxy):
                               num_entries: int,
                               resource_types: List[str],
                               user_id: Optional[str] = None) -> Dict[str, List]:
-        pass
+        raise NotImplementedError

@@ -10,6 +10,7 @@ from typing import (
     Any, Dict, Generator, Iterator, List, Optional, Tuple,
 )
 
+from amundsen_common.utils.atlas import AtlasTableKey
 from atlasclient.client import Atlas
 from pyhocon import ConfigFactory, ConfigTree
 
@@ -18,8 +19,8 @@ from databuilder.extractor.base_extractor import Extractor
 LOGGER = logging.getLogger(__name__)
 
 # custom types
-type_fields_mapping_spec = Dict[str, List[Tuple[str, str, Any, Any]]]
-type_fields_mapping = List[Tuple[str, str, Any, Any]]
+type_fields_mapping_spec = Dict[str, List[Tuple[str, Any, Any, Any]]]
+type_fields_mapping = List[Tuple[str, Any, Any, Any]]
 
 # @todo document classes/methods
 # @todo write tests
@@ -37,6 +38,11 @@ class AtlasSearchDataExtractorHelpers:
         entity_list = entity_list or []
         return AtlasSearchDataExtractorHelpers._filter_none(
             [e.get('attributes').get('name') for e in entity_list if e.get('status').lower() == 'active'])
+
+    @staticmethod
+    def get_entity_uri(qualified_name: str, type_name: str) -> str:
+        key = AtlasTableKey(qualified_name, database=type_name)
+        return key.amundsen_key
 
     @staticmethod
     def get_entity_descriptions(entity_list: Optional[List]) -> List:
@@ -114,7 +120,8 @@ class AtlasSearchDataExtractor(Extractor):
             ('cluster', 'attributes.qualifiedName', lambda x: x.split('@')[-1], None),
             ('schema', 'relationshipAttributes.db.displayText', None, None),
             ('name', 'attributes.name', None, None),
-            ('key', 'attributes.qualifiedName', None, None),
+            ('key', ['attributes.qualifiedName', 'typeName'],
+             lambda x, y: AtlasSearchDataExtractorHelpers.get_entity_uri(x, y), None),
             ('description', 'attributes.description', None, None),
             ('last_updated_timestamp', 'updateTime', lambda x: int(x) / 1000, 0),
             ('total_usage', 'attributes.popularityScore', lambda x: int(x), 0),
@@ -234,7 +241,7 @@ class AtlasSearchDataExtractor(Extractor):
 
         try:
             return admin_metrics[-1].entity
-        except Exception as e:
+        except Exception:
             return None
 
     def _get_count_of_active_entities(self) -> int:
@@ -339,16 +346,23 @@ class AtlasSearchDataExtractor(Extractor):
                 data = atlas_entity.__dict__['_data']
 
                 for spec in self.field_mappings:
-                    model_field, atlas_field_path, _transform_spec, default_value = spec
+                    model_field, atlas_fields_paths, _transform_spec, default_value = spec
 
-                    atlas_value = reduce(lambda x, y: x.get(y, dict()), atlas_field_path.split('.'),
-                                         data) or default_value
+                    if not isinstance(atlas_fields_paths, list):
+                        atlas_fields_paths = [atlas_fields_paths]
+
+                    atlas_values = []
+                    for atlas_field_path in atlas_fields_paths:
+
+                        atlas_value = reduce(lambda x, y: x.get(y, dict()), atlas_field_path.split('.'),
+                                             data) or default_value
+                        atlas_values.append(atlas_value)
 
                     transform_spec = _transform_spec or (lambda x: x)
 
-                    es_entity_value = transform_spec(atlas_value)
+                    es_entity_value = transform_spec(*atlas_values)
                     model_dict[model_field] = es_entity_value
 
                 yield self.model_class(**model_dict)
             except Exception:
-                LOGGER.warning(f'Error building model object.', exc_info=True)
+                LOGGER.warning('Error building model object.', exc_info=True)

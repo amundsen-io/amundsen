@@ -5,8 +5,15 @@ import * as History from 'history';
 import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
-import { featureCode, featureMetadata } from 'fixtures/metadata/feature';
+import {
+  featureCode,
+  featureMetadata,
+  featureLineage,
+  previewData,
+} from 'fixtures/metadata/feature';
+import { previewDataSuccess } from 'fixtures/metadata/previewData';
 import TabsComponent from 'components/TabsComponent';
+
 import {
   FeaturePageLoader,
   FeaturePage,
@@ -15,7 +22,7 @@ import {
   mapStateToProps,
   getFeatureKey,
   renderTabs,
-} from './index';
+} from '.';
 
 const setupLoader = () => {
   const wrapper = shallow(<FeaturePageLoader />);
@@ -46,7 +53,13 @@ describe('FeaturePageLoader', () => {
 describe('renderTabs', () => {
   it('returns returns a tabs component', () => {
     const mockFeatureCode = featureCode;
-    const result: JSX.Element = renderTabs(mockFeatureCode);
+    const mockFeatureLineage = featureLineage;
+    const mockPreviewData = previewData;
+    const result: JSX.Element = renderTabs(
+      mockFeatureCode,
+      mockFeatureLineage,
+      mockPreviewData
+    );
     expect(shallow(result).find(TabsComponent).exists).toBeTruthy();
   });
 });
@@ -60,6 +73,7 @@ const setup = (
     featureCode,
     isLoading: false,
     feature: featureMetadata,
+    preview: previewDataSuccess,
     getFeatureDispatch: jest.fn(),
     getFeatureCodeDispatch: jest.fn(),
     ...propOverrides,

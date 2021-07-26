@@ -21,10 +21,26 @@ import {
   UpdateFeatureOwnerRequest,
   UpdateFeatureOwnerResponse,
   UpdateFeatureOwner,
+  GetFeaturePreviewDataRequest,
+  GetFeaturePreviewData,
+  GetFeaturePreviewDataResponse,
+  GetFeaturePreviewPayload,
 } from 'ducks/feature/types';
-import { FeatureCode, FeatureMetadata } from 'interfaces/Feature';
+import {
+  GetFeatureLineage,
+  GetFeatureLineageRequest,
+  GetFeatureLineageResponse,
+  GetFeatureLineagePayload,
+} from 'ducks/lineage/types';
+import {
+  FeatureCode,
+  FeatureMetadata,
+  FeaturePreviewQueryParams,
+} from 'interfaces/Feature';
+import { Lineage } from 'interfaces/Lineage';
 import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
 import { User } from 'interfaces/User';
+import { PreviewData } from 'interfaces/PreviewData';
 
 /* Actions */
 
@@ -61,6 +77,33 @@ export function getFeatureFailure(
   };
 }
 
+export function getFeatureLineage(key: string): GetFeatureLineageRequest {
+  return {
+    payload: {
+      key,
+      depth: 1,
+      direction: 'upstream',
+    },
+    type: GetFeatureLineage.REQUEST,
+  };
+}
+export function getFeatureLineageSuccess(
+  payload: GetFeatureLineagePayload
+): GetFeatureLineageResponse {
+  return {
+    payload,
+    type: GetFeatureLineage.SUCCESS,
+  };
+}
+export function getFeatureLineageFailure(
+  payload: GetFeatureLineagePayload
+): GetFeatureLineageResponse {
+  return {
+    payload,
+    type: GetFeatureLineage.FAILURE,
+  };
+}
+
 export function getFeatureCode(key: string): GetFeatureCodeRequest {
   return {
     payload: {
@@ -83,6 +126,31 @@ export function getFeatureCodeFailure(
   return {
     payload,
     type: GetFeatureCode.FAILURE,
+  };
+}
+
+export function getFeaturePreviewData(
+  payload: FeaturePreviewQueryParams
+): GetFeaturePreviewDataRequest {
+  return {
+    payload,
+    type: GetFeaturePreviewData.REQUEST,
+  };
+}
+export function getFeaturePreviewDataSuccess(
+  payload: GetFeaturePreviewPayload
+): GetFeaturePreviewDataResponse {
+  return {
+    payload,
+    type: GetFeaturePreviewData.SUCCESS,
+  };
+}
+export function getFeaturePreviewDataFailure(
+  payload: GetFeaturePreviewPayload
+): GetFeaturePreviewDataResponse {
+  return {
+    payload,
+    type: GetFeaturePreviewData.FAILURE,
   };
 }
 
@@ -192,12 +260,26 @@ export interface FeatureCodeState {
   statusCode: number | null;
 }
 
+export interface FeatureLineageState {
+  featureLineage: Lineage;
+  isLoading: boolean;
+  statusCode: number | null;
+}
+
+export interface FeaturePreviewDataState {
+  previewData: PreviewData;
+  isLoading: boolean;
+  status: number | null;
+}
+
 export interface FeatureReducerState {
   isLoading: boolean;
   isLoadingOwners: boolean;
   statusCode: number | null;
   feature: FeatureMetadata;
   featureCode: FeatureCodeState;
+  featureLineage: FeatureLineageState;
+  preview: FeaturePreviewDataState;
 }
 
 export const initialFeatureState: FeatureMetadata = {
@@ -227,8 +309,28 @@ export const emptyFeatureCode: FeatureCode = {
   key: '',
 };
 
+export const initialPreviewState = {
+  previewData: {},
+  isLoading: false,
+  status: null,
+};
+
 export const initialFeatureCodeState: FeatureCodeState = {
   featureCode: emptyFeatureCode,
+  isLoading: false,
+  statusCode: null,
+};
+
+export const emptyFeatureLineage: Lineage = {
+  upstream_entities: [],
+  downstream_entities: [],
+  depth: 1,
+  direction: 'upstream',
+  key: '',
+};
+
+export const initialFeatureLineageState: FeatureLineageState = {
+  featureLineage: emptyFeatureLineage,
   isLoading: false,
   statusCode: null,
 };
@@ -239,6 +341,8 @@ export const initialState: FeatureReducerState = {
   statusCode: null,
   feature: initialFeatureState,
   featureCode: initialFeatureCodeState,
+  featureLineage: initialFeatureLineageState,
+  preview: initialPreviewState,
 };
 
 export default function reducer(
@@ -291,6 +395,52 @@ export default function reducer(
           featureCode: action.payload.featureCode,
           statusCode: action.payload.statusCode,
           isLoading: false,
+        },
+      };
+    case GetFeatureLineage.REQUEST:
+      return {
+        ...state,
+        featureLineage: {
+          featureLineage: emptyFeatureLineage,
+          isLoading: true,
+          statusCode: null,
+        },
+      };
+    case GetFeatureLineage.FAILURE:
+      return {
+        ...state,
+        featureLineage: {
+          featureLineage: emptyFeatureLineage,
+          isLoading: false,
+          statusCode: action.payload.statusCode,
+        },
+      };
+    case GetFeatureLineage.SUCCESS:
+      return {
+        ...state,
+        featureLineage: {
+          featureLineage: action.payload.data,
+          isLoading: false,
+          statusCode: action.payload.statusCode,
+        },
+      };
+    case GetFeaturePreviewData.REQUEST:
+      return {
+        ...state,
+        preview: {
+          isLoading: true,
+          previewData: {},
+          status: null,
+        },
+      };
+    case GetFeaturePreviewData.SUCCESS:
+    case GetFeaturePreviewData.FAILURE:
+      return {
+        ...state,
+        preview: {
+          isLoading: false,
+          previewData: action.payload.previewData,
+          status: action.payload.status,
         },
       };
     case GetFeatureDescription.FAILURE:

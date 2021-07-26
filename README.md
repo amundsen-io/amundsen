@@ -25,7 +25,7 @@
   <a href="https://twitter.com/amundsenio">
     <img src="https://img.shields.io/twitter/follow/amundsenio?label=Follow&style=social" />
   </a>
-  <a href="https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk">
+  <a href="https://join.slack.com/t/amundsenworkspace/shared_invite/zt-s8f3srsx-_0b6_WA5~eYGrv_g63L2ng">
     <img src="https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social" alt="Slack" />
   </a>
 </p>
@@ -121,6 +121,7 @@ Please visit [Architecture](./docs/architecture.md) for Amundsen architecture ov
 - CSV
 - [dbt](https://www.getdbt.com/)
 - [Delta Lake](https://delta.io/)
+- [Elasticsearch](https://www.elastic.co/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
 - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
@@ -262,6 +263,11 @@ Currently **officially** using Amundsen:
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
-# License
 
-[Apache 2.0 License.](/LICENSE)
+## Contributors ✨
+
+Thanks goes to these incredible people:
+
+<a href="https://github.com/amundsen-io/amundsen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=amundsen-io/amundsen" />
+</a>

@@ -10,3 +10,5 @@ col3,"col3 description","string",3,dynamo,gold,test_schema,test_table2,
 col4,"col4 description","int",4,dynamo,gold,test_schema,test_table2,
 col1,"view col description","int",1,hive,gold,test_schema,test_view1,
 col1,"col1 description","int",1,hive,gold,test_schema,test_table3,
+col1,"col1 description","bigint",1,delta,gold,test_schema,delta_test_table
+col2,"col2 nested delta column","struct<col3:string,col4:bigint>",2,delta,gold,test_schema,delta_test_table

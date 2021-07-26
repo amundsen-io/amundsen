@@ -13,7 +13,16 @@ import { ResourceType } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
+const WILDCARD_SIGN = '*';
+const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
+const hasWildcard = (n) => n.indexOf(WILDCARD_SIGN) > -1;
+const withComputedMessage = (notice: NoticeType, resourceName) => {
+  if (typeof notice.messageHtml === 'function') {
+    notice.messageHtml = notice.messageHtml(resourceName);
+  }
+  return notice;
+};
 
 /**
  * Returns the display name for a given source id for a given resource type.
@@ -77,7 +86,38 @@ export function getResourceNotices(
   const { notices } = AppConfig.resourceConfig[resourceType];
 
   if (notices && notices[resourceName]) {
-    return notices[resourceName];
+    const thisNotice = notices[resourceName];
+    return withComputedMessage(thisNotice, resourceName);
+  }
+
+  const wildcardNoticesKeys = Object.keys(notices).filter(hasWildcard);
+  if (wildcardNoticesKeys.length) {
+    const wildcardNoticesArray = new Array(1);
+    let hasNotice: boolean = false;
+
+    wildcardNoticesKeys.forEach((key) => {
+      const decomposedKey = key.split(RESOURCE_SEPARATOR);
+      const decomposedResource = resourceName.split(RESOURCE_SEPARATOR);
+
+      for (let i = 0; i < decomposedKey.length; i++) {
+        if (
+          decomposedKey[i] === decomposedResource[i] ||
+          decomposedKey[i] === WILDCARD_SIGN
+        ) {
+          if (i === decomposedKey.length - 1) {
+            wildcardNoticesArray[0] = notices[key];
+            hasNotice = true;
+          }
+          continue;
+        }
+        break;
+      }
+    });
+    if (hasNotice) {
+      // const noticeFromWildcard: NoticeType = wildcardNoticesArray[0];
+      const [noticeFromWildcard] = wildcardNoticesArray;
+      return withComputedMessage(noticeFromWildcard, resourceName);
+    }
   }
 
   return false;
@@ -325,6 +365,13 @@ export function getDocumentTitle(): string {
  */
 export function getLogoTitle(): string {
   return AppConfig.logoTitle;
+}
+
+/**
+ * Returns whether the in-app table lineage list is enabled.
+ */
+export function isFeatureListLineageEnabled() {
+  return AppConfig.featureLineage.inAppListEnabled;
 }
 
 /**

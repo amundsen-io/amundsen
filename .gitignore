@@ -19,6 +19,7 @@ site/
 .*.swp
 venv/
 venv3/
+.venv/
 .cache/
 build/
 .vscode/

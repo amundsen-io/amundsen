@@ -77,7 +77,7 @@ class ElasticsearchPublisher(Publisher):
         After upload, swap alias from {old_index} to {new_index} in a atomic operation
         to route traffic to {new_index}
         """
-        actions = [json.loads(l) for l in self.file_handler.readlines()]
+        actions = [json.loads(line) for line in self.file_handler.readlines()]
         # ensure new data exists
         if not actions:
             LOGGER.warning("received no data to upload to Elasticsearch!")

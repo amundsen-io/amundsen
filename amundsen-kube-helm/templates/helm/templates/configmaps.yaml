@@ -22,6 +22,9 @@ data:
   {{ if .Values.flaskApp.class }}
   APP_WRAPPER_CLASS: {{ .Values.flaskApp.class }}
   {{ end }}
+  {{ if .Values.frontEnd.ALL_UNEDITABLE_SCHEMAS }}
+  ALL_UNEDITABLE_SCHEMAS: {{ .Values.frontEnd.ALL_UNEDITABLE_SCHEMAS }}
+  {{ end }}
   {{ if .Values.oidc.enabled }}
   FLASK_APP_MODULE_NAME: flaskoidc
   FLASK_APP_CLASS_NAME: FlaskOIDC

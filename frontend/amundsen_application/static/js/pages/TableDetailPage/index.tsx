@@ -45,6 +45,7 @@ import Alert from 'components/Alert';
 import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/dateUtils';
 import { getLoggingParams } from 'utils/logUtils';
+import { buildTableKey } from 'utils/navigationUtils';
 
 import {
   ProgrammaticDescription,
@@ -57,6 +58,7 @@ import {
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
+import LineageButton from './LineageButton';
 import FrequentUsers from './FrequentUsers';
 import LineageLink from './LineageLink';
 import LineageList from './LineageList';
@@ -145,8 +147,10 @@ export class TableDetail extends React.Component<
   componentDidMount() {
     const { location, getTableData, getTableLineageDispatch } = this.props;
     const { index, source } = getLoggingParams(location.search);
-
-    this.key = this.getTableKey();
+    const {
+      match: { params },
+    } = this.props;
+    this.key = buildTableKey(params);
     getTableData(this.key, index, source);
 
     if (isTableListLineageEnabled()) {
@@ -156,8 +160,13 @@ export class TableDetail extends React.Component<
   }
 
   componentDidUpdate() {
-    const { location, getTableData, getTableLineageDispatch } = this.props;
-    const newKey = this.getTableKey();
+    const {
+      location,
+      getTableData,
+      getTableLineageDispatch,
+      match: { params },
+    } = this.props;
+    const newKey = buildTableKey(params);
 
     if (this.key !== newKey) {
       const { index, source } = getLoggingParams(location.search);
@@ -176,18 +185,6 @@ export class TableDetail extends React.Component<
     const { params } = match;
 
     return `${params.schema}.${params.table}`;
-  }
-
-  getTableKey() {
-    /*
-    This 'key' is the `table_uri` format described in metadataservice. Because it contains the '/' character,
-    we can't pass it as a single URL parameter without encodeURIComponent which makes ugly URLs.
-    DO NOT CHANGE
-    */
-    const { match } = this.props;
-    const { params } = match;
-
-    return `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
   }
 
   handleClick = (e) => {
@@ -394,6 +391,7 @@ export class TableDetail extends React.Component<
               <SourceLink tableSource={data.source} />
             </div>
             <div className="header-section header-buttons">
+              <LineageButton tableData={data} />
               <TableReportsDropdown resourceReports={data.resource_reports} />
               <DataPreviewButton modalTitle={this.getDisplayName()} />
               <ExploreButton tableData={data} />

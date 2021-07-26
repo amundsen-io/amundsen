@@ -21,7 +21,7 @@ class TestCsvExtractor(unittest.TestCase):
         """
         config_dict = {
             f'extractor.csv.{CsvExtractor.FILE_LOCATION}': 'example/sample_data/sample_table.csv',
-            f'extractor.csv.model_class': 'databuilder.models.table_metadata.TableMetadata',
+            'extractor.csv.model_class': 'databuilder.models.table_metadata.TableMetadata',
         }
         self.conf = ConfigFactory.from_dict(config_dict)
         extractor = CsvExtractor()

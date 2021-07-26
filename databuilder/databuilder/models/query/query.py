@@ -2,19 +2,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import hashlib
-import textwrap
 from typing import (
     Iterator, List, Optional,
 )
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
-from databuilder.models.graph_serializable import GraphSerializable
+from databuilder.models.query.base import QueryBase
 from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.user import User as UserMetadata
 
 
-class QueryMetadata(GraphSerializable):
+class QueryMetadata(QueryBase):
     """
     Query model. This creates a Query object as well as relationships
     between the Query and the Table(s) that are used within the query.
@@ -78,19 +77,10 @@ class QueryMetadata(GraphSerializable):
 
     def _get_sql_hash(self, sql: str) -> str:
         """
-        Generates a unique SQL hash. Attempts to remove any formatting from the
+        Generates a deterministic SQL hash. Attempts to remove any formatting from the
         SQL code where possible.
         """
-        sql_no_fmt = (
-            textwrap.dedent(sql)
-            .replace('\n', '')
-            .replace(';', '')
-            .replace(' ', '')
-            .replace('"', '')
-            .replace("'", '')
-            .strip()
-            .lower()
-        )
+        sql_no_fmt = self._normalize(sql)
         return hashlib.md5(sql_no_fmt.encode('utf-8')).hexdigest()
 
     def create_next_node(self) -> Optional[GraphNode]:

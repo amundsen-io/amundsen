@@ -49,7 +49,7 @@ def create_delta_lake_job_config():
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_CREATE_ONLY_NODES}': [DESCRIPTION_NODE_LABEL],
-        f'publisher.neo4j.job_publish_tag': 'some_unique_tag'  # TO-DO unique tag must be added
+        'publisher.neo4j.job_publish_tag': 'some_unique_tag'  # TO-DO unique tag must be added
     })
     return job_config
 

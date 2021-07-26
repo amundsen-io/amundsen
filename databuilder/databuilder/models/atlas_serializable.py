@@ -49,7 +49,7 @@ class AtlasSerializable(object, metaclass=abc.ABCMeta):
             raise ValueError('Required header missing: attributes')
 
         if 'qualifiedName' not in attributes:
-            raise ValueError(f'Attribute qualifiedName is missing')
+            raise ValueError('Attribute qualifiedName is missing')
 
     def _validate_atlas_relation(self, relation: AtlasRelationship) -> None:
         relation_type, entity_type_1, qualified_name_1, entity_type_2, qualified_name_2, _ = relation

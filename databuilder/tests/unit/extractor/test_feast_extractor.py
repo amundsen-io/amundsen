@@ -166,6 +166,7 @@ class TestFeastExtractor(unittest.TestCase):
     def _init_extractor(self, programmatic_description_enabled: bool = True) -> None:
         conf = {
             f'extractor.feast.{FeastExtractor.FEAST_ENDPOINT_CONFIG_KEY}': 'feast-core.example.com:6565',
+            f'extractor.feast.{FeastExtractor.FEAST_SERVING_ENDPOINT_CONFIG_KEY}': 'feast-core.example.com:6566',
             f'extractor.feast.{FeastExtractor.FEAST_SERVICE_CONFIG_KEY}': 'unittest-feast-instance',
             f'extractor.feast.{FeastExtractor.DESCRIBE_FEATURE_TABLES}': programmatic_description_enabled,
         }
