@@ -288,7 +288,6 @@ class ElasticsearchProxy(BaseProxy):
         # This is to support ESv7.x, and newer version of elasticsearch_dsl
         if isinstance(response.hits.total, AttrDict):
             _total = response.hits.total.value
-            _total = response.hits.total.get("value")
         else:
             _total = response.hits.total
 
