@@ -19,6 +19,7 @@ from amundsen_application.api.log.v0 import log_blueprint
 from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
+from amundsen_application.api.freshness.v0 import freshness_blueprint
 from amundsen_application.api.quality.v0 import quality_blueprint
 from amundsen_application.api.search.v0 import search_blueprint
 from amundsen_application.api.preview.dashboard.v0 import dashboard_preview_blueprint
@@ -87,6 +88,7 @@ def create_app(config_module_class: str = None, template_folder: str = None) -> 
     app.register_blueprint(search_blueprint)
     app.register_blueprint(api_bp)
     app.register_blueprint(dashboard_preview_blueprint)
+    app.register_blueprint(freshness_blueprint)
     init_routes(app)
 
     init_custom_routes = app.config.get('INIT_CUSTOM_ROUTES')

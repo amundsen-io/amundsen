@@ -20,7 +20,7 @@ module.exports = {
     },
     './js/ducks': {
       branches: 60, // 75
-      functions: 80,
+      functions: 75,
       lines: 80,
       statements: 80,
     },

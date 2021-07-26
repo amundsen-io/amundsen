@@ -137,6 +137,25 @@ export interface GetPreviewDataResponse {
   };
 }
 
+export enum GetFreshnessData {
+  REQUEST = 'amundsen/freshness/GET_FRESHNESS_DATA_REQUEST',
+  SUCCESS = 'amundsen/freshness/GET_FRESHNESS_DATA_SUCCESS',
+  FAILURE = 'amundsen/freshness/GET_FRESHNESS_DATA_FAILURE',
+}
+export interface GetFreshnessDataRequest {
+  type: GetFreshnessData.REQUEST;
+  payload: {
+    queryParams: TablePreviewQueryParams;
+  };
+}
+export interface GetFreshnessDataResponse {
+  type: GetFreshnessData.SUCCESS | GetFreshnessData.FAILURE;
+  payload: {
+    data: PreviewData;
+    status: number | null;
+  };
+}
+
 export enum UpdateTableOwner {
   REQUEST = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_REQUEST',
   SUCCESS = 'amundsen/tableMetadata/UPDATE_TABLE_OWNER_SUCCESS',

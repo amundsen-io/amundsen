@@ -228,6 +228,10 @@ const globalState: GlobalState = {
       data: {},
       status: null,
     },
+    freshness: {
+      data: {},
+      status: null,
+    },
     statusCode: 200,
     tableData: {
       badges: [],

@@ -60,6 +60,7 @@ import {
   getTableDataWatcher,
   getColumnDescriptionWatcher,
   getPreviewDataWatcher,
+  getFreshnessDataWatcher,
   getTableDescriptionWatcher,
   getTableQualityChecksWatcher,
   updateColumnDescriptionWatcher,
@@ -136,6 +137,7 @@ export default function* rootSaga() {
     getColumnDescriptionWatcher(),
 
     getPreviewDataWatcher(),
+    getFreshnessDataWatcher(),
     getTableDescriptionWatcher(),
     getTableQualityChecksWatcher(),
     updateColumnDescriptionWatcher(),
