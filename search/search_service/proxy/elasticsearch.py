@@ -13,6 +13,7 @@ from amundsen_common.models.index_map import (
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch_dsl import Search, query
+from elasticsearch_dsl.utils import AttrDict
 from flask import current_app
 
 from search_service import config
@@ -284,7 +285,14 @@ class ElasticsearchProxy(BaseProxy):
             except Exception:
                 LOGGING.exception('The record doesnt contain specified field.')
 
-        return search_result_model(total_results=response.hits.total,
+        # This is to support ESv7.x, and newer version of elasticsearch_dsl
+        if isinstance(response.hits.total, AttrDict):
+            _total = response.hits.total.value
+            _total = response.hits.total.get("value")
+        else:
+            _total = response.hits.total
+
+        return search_result_model(total_results=_total,
                                    results=results)
 
     def _get_instance(self, attr: str, val: Any) -> Any:
@@ -311,6 +319,9 @@ class ElasticsearchProxy(BaseProxy):
         :param query_name: name of query to query the ES
         :return:
         """
+        # This is to support ESv7.x
+        # ref: https://www.elastic.co/guide/en/elasticsearch/reference/7.0/breaking-changes-7.0.html#track-total-hits-10000-default # noqa: E501
+        client = client.extra(track_total_hits=True)
 
         if query_name:
             q = query.Q(query_name)
