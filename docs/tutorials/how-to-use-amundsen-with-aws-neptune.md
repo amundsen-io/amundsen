@@ -3,7 +3,7 @@
 An alternative to Neo4j as Amundsen's database is [Amazon Neptune](https://docs.aws.amazon.com/neptune/latest/userguide/intro.html).
 
 This tutorial will go into setting up Amundsen to integrate with Neptune. If you want to find out how to set up a
-Neptune instance you can find that information at https://docs.aws.amazon.com/neptune/latest/userguide/neptune-setup.html.
+Neptune instance you can find that information at [Neptune Setup](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-setup.html).
 
 ## Configuring your Databuilder jobs to use Neptune
 
@@ -12,7 +12,7 @@ The Neptune integration follows the same pattern as the rest of Amundsen's datab
 
 Each job contains a task and a publisher and each task comprises of a extractor, transformer, and loader.
 
-The Neptune databuilder integration was built so that it was compatible with all the of the extractors 
+The Neptune databuilder integration was built so that it was compatible with all extractors 
 (and the models produced by those extractors) so that only the [loader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neptune_csv_loader.py) 
 and [publisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/neptune_csv_publisher.py)
 diverge from the Neo4j integration.
@@ -22,7 +22,7 @@ diverge from the Neo4j integration.
 ### Loading data into Neptune
 
 The [sample_data_loader_neptune.py](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader_neptune.py)
-script contains examples on how to ingest data into Neptune. However the main components are the 
+script contains an example on how to ingest data into Neptune. However, the main components are the 
 [FSNeptuneCSVLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_neptune_csv_loader.py)
 and the [NeptuneCSVPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/neptune_csv_publisher.py)
 
@@ -36,12 +36,12 @@ and [GraphRelationship](https://github.com/amundsen-io/amundsendatabuilder/blob/
 * `SHOULD_DELETE_CREATED_DIR` - Should the loader delete the files once the job is over (Default is True)
 * `JOB_PUBLISHER_TAG` - A tag that all models published by this job share. (should be unique)
 
-`NeptuneCSVPublisher` takes the csv files produced by the `FSNeptuneCSVLoader` and ingesting them into 
+`NeptuneCSVPublisher` takes the csv files produced by the `FSNeptuneCSVLoader` and ingest them into 
 Neptune. It achieves this by using the [Neptune's bulk loader API](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load.html).
 The flow of the `NeptuneCSVPublisher` is:
 
-1. Upload the csv files to S3. 
-2. Initiating a bulk loading request 
+1. Upload the csv files to S3
+2. Initiating a bulk loading request
 3. Poll on that status of the request till it reports a success or failure
 
 The `NeptuneCSVPublisher` has the following configuration keys:
@@ -55,19 +55,19 @@ The `NeptuneCSVPublisher` has the following configuration keys:
 * `AWS_ACCESS_KEY` - AWS access key (Optional)
 * `AWS_SECRET_ACCESS_KEY` - AWS access secret access key (Optional)
 * `AWS_SESSION_TOKEN` - AWS session token if you are using temporary credentials (Optional)
-* `AWS_IAM_ROLE_NAME` - IAM ROLE NAME used for the the bulk loading
+* `AWS_IAM_ROLE_NAME` - IAM ROLE NAME used for the bulk loading
 * `AWS_STS_ENDPOINT_URL` - AWS STS endpoint url, if not set the global endpoint will be used (Optional)
 * `FAIL_ON_ERROR` - If set to True an exception will be raised on failure (default False)
 * `STATUS_POLLING_PERIOD` - Period in seconds checking on the status of the bulk loading request
 
-### Publishing data to Search from Neptune
+### Publishing data from Neptune to Amundsen Search
 
 In order to have your entities searchable on the front end you need to extract the data from Neptune and push it
-into your elasticsearch cluster so the search service can query it. To achieve this the data builder comes with the
+into your elasticsearch cluster, so the search service can query it. To achieve this, the data builder comes with the
 [NeptuneSearchDataExtractor](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/extractor/neptune_search_data_extractor.py)
 which can be integrated with the [FSElasticsearchJSONLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/file_system_elasticsearch_json_loader.py)
 and the [ElasticsearchPublisher](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/publisher/elasticsearch_publisher.py).
-A example job can be found in the [sample_data_loader_neptune.py](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader_neptune.py) 
+An example job can be found in the [sample_data_loader_neptune.py](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader_neptune.py) 
 in the `create_es_publisher_sample_job` function.
 
 The `NeptuneSearchDataExtractor` supports extracting table, user, and dashboard models in a format that 
@@ -92,7 +92,7 @@ The `NeptuneSessionClient` supports the following configuration keys:
 
 ### Removing stale data from Neptune
 
-Metadata often changes so the [neptune_staleness_removal_task](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/task/neptune_staleness_removal_task.py)
+Metadata often changes, so the [neptune_staleness_removal_task](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/task/neptune_staleness_removal_task.py)
  is used to remove old nodes and relationships. The databuilder contains an example [script](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_neptune_data_cleanup_job.py)
 using the neptune_staleness_removal_task. 
 
@@ -112,5 +112,5 @@ The NeptuneConfig requires a few environment variables to be set these are:
 * `AWS_REGION` - The AWS region where the Neptune instance is located.
 * `S3_BUCKET_NAME`- The location where the proxy can upload S3 files for bulk uploader
 
-In addition to the Config the `IGNORE_NEPTUNE_SHARD` environment variable must be set to 'True'
+In addition to the Config parameters above, the `IGNORE_NEPTUNE_SHARD` environment variable must be set to 'True'
 if you are using the default databuilder integration.
