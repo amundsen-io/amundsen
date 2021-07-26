@@ -3,7 +3,8 @@
 
 from http import HTTPStatus
 
-from metadata_service.entity.resource_type import ResourceType
+from amundsen_common.entity.resource_type import ResourceType
+
 from tests.unit.api.feature.feature_test_case import FeatureTestCase
 
 FEATURE_URI = 'test_feature_uri'

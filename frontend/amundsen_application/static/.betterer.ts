@@ -26,7 +26,6 @@ export default {
     'react/destructuring-assignment': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-closing-tag-location': 'error',
-    'react/jsx-props-no-spreading': 'error',
     'react/no-access-state-in-setstate': 'error',
     'react/no-did-update-set-state': 'error',
     'react/prefer-stateless-function': 'error',

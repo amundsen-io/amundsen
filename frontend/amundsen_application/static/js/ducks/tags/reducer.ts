@@ -1,8 +1,8 @@
 import { UpdateTagData, Tag, ResourceType } from 'interfaces';
 
-import { GetTableData, GetTableDataResponse } from 'ducks/tableMetadata/types';
-
 import { GetDashboard, GetDashboardResponse } from 'ducks/dashboard/types';
+import { GetFeature, GetFeatureResponse } from 'ducks/feature/types';
+import { GetTableData, GetTableDataResponse } from 'ducks/tableMetadata/types';
 
 import {
   GetAllTags,
@@ -105,6 +105,7 @@ export default function reducer(
 
     case GetTableData.REQUEST:
     case GetDashboard.REQUEST:
+    case GetFeature.REQUEST:
       return {
         ...state,
         resourceTags: {
@@ -131,8 +132,18 @@ export default function reducer(
           tags: (<GetDashboardResponse>action).payload.dashboard?.tags || [],
         },
       };
+    case GetFeature.SUCCESS:
+      return {
+        ...state,
+        resourceTags: {
+          ...state.resourceTags,
+          isLoading: false,
+          tags: (<GetFeatureResponse>action).payload.feature?.tags || [],
+        },
+      };
     case GetTableData.FAILURE:
     case GetDashboard.FAILURE:
+    case GetFeature.FAILURE:
       return {
         ...state,
         resourceTags: {

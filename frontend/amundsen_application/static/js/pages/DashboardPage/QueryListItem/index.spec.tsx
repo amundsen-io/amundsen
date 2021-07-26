@@ -15,8 +15,8 @@ const setup = (propOverrides?: Partial<QueryListItemProps>) => {
     name: 'testName',
     ...propOverrides,
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount(<QueryListItem {...props} />);
-
   return { props, wrapper };
 };
 
@@ -71,13 +71,6 @@ describe('QueryListItem', () => {
       it('should show the query content', () => {
         const expected = 1;
         const actual = wrapper.find('.query-list-query-content').length;
-
-        expect(actual).toEqual(expected);
-      });
-
-      it('should show the go to dashboard button', () => {
-        const expected = 1;
-        const actual = wrapper.find('.query-list-query-link').length;
 
         expect(actual).toEqual(expected);
       });

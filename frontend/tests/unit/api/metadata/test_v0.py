@@ -10,10 +10,12 @@ from http import HTTPStatus
 
 from amundsen_application import create_app
 from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, LAST_INDEXED_ENDPOINT,\
-    POPULAR_TABLES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT, FEATURE_ENDPOINT
+    POPULAR_RESOURCES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT, FEATURE_ENDPOINT
 from amundsen_application.config import MatchRuleObject
 
 from amundsen_application.tests.test_utils import TEST_USER_ID
+
+from amundsen_common.entity.resource_type import ResourceType, to_label
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
@@ -21,7 +23,7 @@ local_app = create_app('amundsen_application.config.TestConfig', 'tests/template
 class MetadataTest(unittest.TestCase):
     def setUp(self) -> None:
         self.mock_popular_tables = {
-            'popular_tables': [
+            ResourceType.Table.name: [
                 {
                     'cluster': 'test_cluster',
                     'database': 'test_db',
@@ -522,55 +524,58 @@ class MetadataTest(unittest.TestCase):
         }
 
     @responses.activate
-    def test_popular_tables_success(self) -> None:
+    def test_popular_resources_success(self) -> None:
         """
-        Test successful popular_tables request
+        Test successful popular_resources request
         :return:
         """
         mock_url = local_app.config['METADATASERVICE_BASE'] \
-            + POPULAR_TABLES_ENDPOINT \
+            + POPULAR_RESOURCES_ENDPOINT \
             + f'/{TEST_USER_ID}'
         responses.add(responses.GET, mock_url,
                       json=self.mock_popular_tables, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
-            response = test.get('/api/metadata/v0/popular_tables')
+            response = test.get('/api/metadata/v0/popular_resources?types=table')
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertCountEqual(data.get('results'), self.expected_parsed_popular_tables)
+            _table_label = to_label(resource_type=ResourceType.Table)
+            _dashboard_label = to_label(resource_type=ResourceType.Dashboard)
+            self.assertCountEqual(data.get('results').get(_table_label), self.expected_parsed_popular_tables)
+            self.assertCountEqual(data.get('results').get(_dashboard_label), [])
 
     @responses.activate
-    def test_popular_tables_propagate_failure(self) -> None:
+    def test_popular_resources_propagate_failure(self) -> None:
         """
         Test that any error codes from the request are propagated through, to be
         returned to the React application
         :return:
         """
         mock_url = local_app.config['METADATASERVICE_BASE'] \
-            + POPULAR_TABLES_ENDPOINT \
+            + POPULAR_RESOURCES_ENDPOINT \
             + f'/{TEST_USER_ID}'
         responses.add(responses.GET, mock_url,
                       json=self.mock_popular_tables, status=HTTPStatus.BAD_REQUEST)
 
         with local_app.test_client() as test:
-            response = test.get('/api/metadata/v0/popular_tables')
+            response = test.get('/api/metadata/v0/popular_resources?types=table')
             self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
     @responses.activate
-    def test_popular_tables_catch_exception(self) -> None:
+    def test_popular_resources_catch_exception(self) -> None:
         """
-        Test catching exception if there is an issue processing the popular table
+        Test catching exception if there is an issue processing the popular resources
         results from the metadata service
         :return:
         """
         mock_url = local_app.config['METADATASERVICE_BASE'] \
-            + POPULAR_TABLES_ENDPOINT \
+            + POPULAR_RESOURCES_ENDPOINT \
             + f'/{TEST_USER_ID}'
         responses.add(responses.GET, mock_url,
-                      json={'popular_tables': None}, status=HTTPStatus.OK)
+                      json={ResourceType.Table.name: None}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
-            response = test.get('/api/metadata/v0/popular_tables')
+            response = test.get('/api/metadata/v0/popular_resources?types=table')
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @responses.activate
@@ -1315,12 +1320,13 @@ class MetadataTest(unittest.TestCase):
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
-        get_table_url = f'{searchservice_base}/search_table'
-        responses.add(responses.POST, get_table_url,
+        search_url = f'{searchservice_base}/search_feature_filter'
+        responses.add(responses.POST, search_url,
                       json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
                       status=HTTPStatus.OK)
 
-        # TODO when search implemented add search service response
+        search_update_url = f'{searchservice_base}/document_feature'
+        responses.add(responses.PUT, search_update_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.put(

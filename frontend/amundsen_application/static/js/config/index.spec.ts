@@ -68,63 +68,314 @@ describe('getDisplayNameByResource', () => {
 });
 
 describe('getResourceNotices', () => {
-  describe('when there is a notice', () => {
-    AppConfig.resourceConfig[ResourceType.table].notices = {
-      testName: {
-        severity: NoticeSeverity.WARNING,
-        messageHtml: 'testMessage',
-      },
-    };
-
-    it('returns the notice', () => {
-      const expected = 'testMessage';
-      const notice = ConfigUtils.getResourceNotices(
-        ResourceType.table,
-        'testName'
-      );
-      const actual = notice && notice.messageHtml;
-
-      expect(actual).toEqual(expected);
-    });
-  });
-
   describe('when there is no notice', () => {
-    AppConfig.resourceConfig[ResourceType.table].notices = {
-      testName: {
-        severity: NoticeSeverity.WARNING,
-        messageHtml: 'testMessage',
-      },
-    };
-
     it('returns false', () => {
-      const expected = false;
-      const actual = ConfigUtils.getResourceNotices(
-        ResourceType.table,
-        'testNameNoThere'
-      );
+      const resources = [ResourceType.table, ResourceType.dashboard];
+      resources.forEach((resource) => {
+        AppConfig.resourceConfig[resource].notices = {
+          testName: {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+        };
+        const expected = false;
+        const actual = ConfigUtils.getResourceNotices(
+          resource,
+          'testNameNoThere'
+        );
 
-      expect(actual).toEqual(expected);
+        expect(actual).toEqual(expected);
+      });
     });
   });
 
-  describe('when resource is a dashboard', () => {
-    describe('when there is a notice', () => {
-      AppConfig.resourceConfig[ResourceType.dashboard].notices = {
-        testName: {
-          severity: NoticeSeverity.WARNING,
-          messageHtml: 'testMessage',
-        },
-      };
-
-      it('returns the notice', () => {
+  describe('when there is a notice', () => {
+    it('returns the notice', () => {
+      const resources = [ResourceType.table, ResourceType.dashboard];
+      resources.forEach((resource) => {
+        AppConfig.resourceConfig[resource].notices = {
+          testName: {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+        };
         const expected = 'testMessage';
+        const notice = ConfigUtils.getResourceNotices(resource, 'testName');
+        const actual = notice && notice.messageHtml;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+  });
+
+  describe('when there is a notice with a dynamic message', () => {
+    it('returns notice with dynamic message', () => {
+      const resources = [ResourceType.table, ResourceType.dashboard];
+      resources.forEach((resource) => {
+        AppConfig.resourceConfig[resource].notices = {
+          'gold.hive.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: (resourceName) => {
+              const [cluster, datasource, schema, table] = resourceName.split(
+                '.'
+              );
+              return `${cluster}, ${datasource}, ${schema}, ${table}`;
+            },
+          },
+        };
+        const expected = 'gold, hive, core, fact_rides';
         const notice = ConfigUtils.getResourceNotices(
-          ResourceType.dashboard,
-          'testName'
+          resource,
+          'gold.hive.core.fact_rides'
         );
         const actual = notice && notice.messageHtml;
 
         expect(actual).toEqual(expected);
+      });
+    });
+  });
+
+  describe('when there are wildcards ', () => {
+    describe('when there are wildcard(s) that match', () => {
+      it('returns notice', () => {
+        const noticesDict = {
+          '*.hive.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.hive.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.hive.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.hive.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+        };
+        const resources = [ResourceType.table, ResourceType.dashboard];
+        for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
+          for (let index = 0; index < resources.length; index++) {
+            const resource = resources[index];
+            AppConfig.resourceConfig[resource].notices = {
+              [noticeName]: noticeParams,
+            };
+            const expected = 'testMessage';
+            const notice = ConfigUtils.getResourceNotices(
+              resource,
+              'gold.hive.core.fact_rides'
+            );
+            const actual = notice && notice.messageHtml;
+
+            expect(actual).toEqual(expected);
+          }
+        }
+      });
+    });
+
+    describe("when there are wildcard(s) that don't match", () => {
+      it('returns false', () => {
+        const noticesDict = {
+          '*.hive.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.core.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.hive.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.hive.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.*.fact_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.*.core.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.*.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.hive.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+        };
+        const resources = [ResourceType.table, ResourceType.dashboard];
+        for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
+          for (let index = 0; index < resources.length; index++) {
+            const resource = resources[index];
+            AppConfig.resourceConfig[resource].notices = {
+              [noticeName]: noticeParams,
+            };
+            const expected = false;
+            const notice = ConfigUtils.getResourceNotices(
+              resource,
+              'cluster.datasource.schema.table'
+            );
+            const actual = notice && notice.messageHtml;
+
+            expect(actual).toEqual(expected);
+          }
+        }
+      });
+    });
+
+    describe('when there are 2 notices that match', () => {
+      it('returns the last matched notice', () => {
+        const resources = [ResourceType.table, ResourceType.dashboard];
+        resources.forEach((resource) => {
+          AppConfig.resourceConfig[resource].notices = {
+            'gold.hive.*.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage2',
+            },
+          };
+          const expected = 'testMessage2';
+          const notice = ConfigUtils.getResourceNotices(
+            resource,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+    });
+
+    describe('when there are 2 notices, but only one matches', () => {
+      it('returns notice', () => {
+        const resources = [ResourceType.table, ResourceType.dashboard];
+        resources.forEach((resource) => {
+          AppConfig.resourceConfig[resource].notices = {
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage2',
+            },
+            'gold.hive.shadow.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: 'testMessage',
+            },
+          };
+          const expected = 'testMessage2';
+          const notice = ConfigUtils.getResourceNotices(
+            resource,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+    });
+
+    describe('when there is a notice with a wildcard and dynamic message', () => {
+      it('returns notice with dynamic message', () => {
+        const resources = [ResourceType.table, ResourceType.dashboard];
+        resources.forEach((resource) => {
+          AppConfig.resourceConfig[resource].notices = {
+            'gold.hive.core.*': {
+              severity: NoticeSeverity.WARNING,
+              messageHtml: (resourceName) => {
+                const [cluster, datasource, schema, table] = resourceName.split(
+                  '.'
+                );
+                return `${cluster}, ${datasource}, ${schema}, ${table}`;
+              },
+            },
+          };
+          const expected = 'gold, hive, core, fact_rides';
+          const notice = ConfigUtils.getResourceNotices(
+            resource,
+            'gold.hive.core.fact_rides'
+          );
+          const actual = notice && notice.messageHtml;
+
+          expect(actual).toEqual(expected);
+        });
       });
     });
   });
@@ -454,7 +705,12 @@ describe('getColumnLineageLink', () => {
       name: 'table_name',
       last_updated_timestamp: 12321312312,
       description: '',
-      table_writer: { application_url: '', description: '', id: '', name: '' },
+      table_writer: {
+        application_url: '',
+        description: '',
+        id: '',
+        name: '',
+      },
       partition: {
         is_partitioned: true,
         key: 'partition_key',

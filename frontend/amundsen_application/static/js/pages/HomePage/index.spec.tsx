@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 
 import Breadcrumb from 'components/Breadcrumb';
 import MyBookmarks from 'components/Bookmark/MyBookmarks';
-import PopularTables from 'components/PopularTables';
+import PopularTables from 'components/PopularResources';
 import SearchBar from 'components/SearchBar';
 import TagsListContainer from 'components/Tags';
 
@@ -54,7 +54,7 @@ describe('HomePage', () => {
       expect(wrapper.contains(<MyBookmarks />));
     });
 
-    it('contains PopularTables', () => {
+    it('contains PopularResources', () => {
       expect(wrapper.contains(<PopularTables />));
     });
   });

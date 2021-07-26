@@ -2,7 +2,7 @@ import {
   DashboardResource,
   OwnerDict,
   PreviewData,
-  PreviewQueryParams,
+  TablePreviewQueryParams,
   TableMetadata,
   UpdateOwnerPayload,
   Tag,
@@ -124,7 +124,7 @@ export enum GetPreviewData {
 export interface GetPreviewDataRequest {
   type: GetPreviewData.REQUEST;
   payload: {
-    queryParams: PreviewQueryParams;
+    queryParams: TablePreviewQueryParams;
   };
 }
 export interface GetPreviewDataResponse {

@@ -20,6 +20,25 @@ export function getTableLineage(
     }))
     .catch((e: AxiosError<LineageAPI>) => {
       const { response } = e;
+      const statusCode = response?.status;
+      return Promise.reject({ statusCode });
+    });
+}
+
+export function getFeatureLineage(
+  key: string,
+  depth: number = 1,
+  direction: string = 'upstream'
+) {
+  const tableQueryParams = getQueryParams({ key, depth, direction });
+  return axios
+    .get(`${API_PATH}/get_feature_lineage?${tableQueryParams}`)
+    .then((response: AxiosResponse<LineageAPI>) => ({
+      data: response.data,
+      statusCode: response.status,
+    }))
+    .catch((e: AxiosError<LineageAPI>) => {
+      const { response } = e;
       const status = response ? response.status : null;
       return Promise.reject({ status });
     });
@@ -45,7 +64,7 @@ export function getColumnLineage(
     }))
     .catch((e: AxiosError<LineageAPI>) => {
       const { response } = e;
-      const status = response ? response.status : null;
-      return Promise.reject({ status });
+      const statusCode = response?.status;
+      return Promise.reject({ statusCode });
     });
 }

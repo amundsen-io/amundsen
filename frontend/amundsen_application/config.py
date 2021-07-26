@@ -32,14 +32,24 @@ class Config:
 
     COLUMN_STAT_ORDER = None  # type: Dict[str, int]
 
+    # The following three variables control whether table descriptions can be edited via the UI
+    # ALL_UNEDITABLE_SCHEMAS: set environment variable to 'true' if you don't want any schemas to be able to be edited
+    # UNEDITABLE_SCHEMAS: a set of schema names whose tables will not be editable
+    # UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES: a list of regex rules for schema name, table name, or both
+    # See https://www.amundsen.io/amundsen/frontend/docs/flask_config/#uneditable-table-descriptions for more info!
+    ALL_UNEDITABLE_SCHEMAS = os.getenv('ALL_UNEDITABLE_SCHEMAS', 'false') == 'true'  # type: bool
     UNEDITABLE_SCHEMAS = set()  # type: Set[str]
-
     UNEDITABLE_TABLE_DESCRIPTION_MATCH_RULES = []  # type: List[MatchRuleObject]
 
+    # DEPRECATED (since version 3.9.0): Please use `POPULAR_RESOURCES_COUNT`
     # Number of popular tables to be displayed on the index/search page
-    POPULAR_TABLE_COUNT = 4  # type: int
+    POPULAR_TABLE_COUNT = None
+    POPULAR_RESOURCES_COUNT = 4     # type: int
+
+    # DEPRECATED (since version 3.9.0): Please use `POPULAR_RESOURCES_PERSONALIZATION`
     # Personalize the popular tables response for the current authenticated user
-    POPULAR_TABLE_PERSONALIZATION = False  # type: bool
+    POPULAR_TABLE_PERSONALIZATION = None
+    POPULAR_RESOURCES_PERSONALIZATION = False  # type: bool
 
     # Request Timeout Configurations in Seconds
     REQUEST_SESSION_TIMEOUT_SEC = 3
@@ -163,7 +173,7 @@ class LocalConfig(Config):
 
 
 class TestConfig(LocalConfig):
-    POPULAR_TABLE_PERSONALIZATION = True
+    POPULAR_RESOURCES_PERSONALIZATION = True
     AUTH_USER_METHOD = get_test_user
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'test_url'

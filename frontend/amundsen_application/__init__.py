@@ -7,11 +7,11 @@ import logging
 import logging.config
 import os
 import sys
-import warnings
 
 from flask import Flask, Blueprint
 from flask_restful import Api
 
+from amundsen_application.deprecations import process_deprecations
 from amundsen_application.api import init_routes
 from amundsen_application.api.v0 import blueprint
 from amundsen_application.api.announcements.v0 import announcements_blueprint
@@ -24,20 +24,10 @@ from amundsen_application.api.preview.dashboard.v0 import dashboard_preview_blue
 from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
 
 # For customized flask use below arguments to override.
+
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME') or os.getenv('APP_WRAPPER')
 FLASK_APP_CLASS_NAME = os.getenv('FLASK_APP_CLASS_NAME') or os.getenv('APP_WRAPPER_CLASS')
 FLASK_APP_KWARGS_DICT_STR = os.getenv('FLASK_APP_KWARGS_DICT') or os.getenv('APP_WRAPPER_ARGS')
-
-# Deprecation Warnings
-warnings.simplefilter('always', DeprecationWarning)
-if os.getenv('APP_WRAPPER') or os.getenv('APP_WRAPPER_CLASS'):
-    warnings.warn("'APP_WRAPPER' and 'APP_WRAPPER_CLASS' variables is deprecated. "
-                  "Please use 'FLASK_APP_MODULE_NAME' and 'FLASK_APP_CLASS_NAME' instead",
-                  DeprecationWarning)
-
-if os.getenv('APP_WRAPPER_ARGS'):
-    warnings.warn("'APP_WRAPPER_ARGS' variable is deprecated. "
-                  "Please use 'FLASK_APP_KWARGS_DICT' instead", DeprecationWarning)
 
 """ Support for importing a subclass of flask.Flask, via env variables """
 if FLASK_APP_MODULE_NAME and FLASK_APP_CLASS_NAME:
@@ -100,5 +90,9 @@ def create_app(config_module_class: str = None, template_folder: str = None) -> 
     init_custom_routes = app.config.get('INIT_CUSTOM_ROUTES')
     if init_custom_routes:
         init_custom_routes(app)
+
+    # handles the deprecation warnings
+    # and process any config/environment variables accordingly
+    process_deprecations(app)
 
     return app

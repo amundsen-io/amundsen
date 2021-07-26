@@ -56,7 +56,7 @@ class ApacheSupersetMetadataExtractor(ApacheSupersetBaseExtractor):
             yield DashboardLastModifiedTimestamp(**dashboard_last_modified)
 
     def _get_dashboard_ids(self) -> List[str]:
-        url = self.build_full_url(f'api/v1/dashboard')
+        url = self.build_full_url('api/v1/dashboard')
 
         data = self.execute_query(url)
 

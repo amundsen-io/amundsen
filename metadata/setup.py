@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '3.5.0'
+__version__ = '3.8.1'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -20,8 +20,7 @@ with open(requirements_path) as requirements_file:
     requirements_dev = requirements_file.readlines()
 
 oidc = ['flaskoidc==1.0.0']
-atlas = ['apache-atlas==0.0.11',
-         'amundsenatlastypes==1.2.2']
+atlas = ['apache-atlas==0.0.11']
 rds = ['amundsen-rds==0.0.5',
        'mysqlclient>=1.3.6,<3',
        'sqlalchemy>=1.3.6,<1.4',

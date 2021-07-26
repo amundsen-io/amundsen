@@ -35,7 +35,7 @@ describe('ResourceListHeader', () => {
     describe('when resourceType has a user', () => {
       it('renders three resource headers', () => {
         const { wrapper } = setup({ resourceTypes: [ResourceType.user] });
-        const actual = wrapper.find('.resource-header').length;
+        const actual = wrapper.find('.header-text').length;
         const expected = 3;
 
         expect(actual).toEqual(expected);
@@ -45,7 +45,7 @@ describe('ResourceListHeader', () => {
     describe('when resourceType has a table', () => {
       it('renders three resource headers', () => {
         const { wrapper } = setup({ resourceTypes: [ResourceType.table] });
-        const actual = wrapper.find('.resource-header').length;
+        const actual = wrapper.find('.header-text').length;
         const expected = 3;
 
         expect(actual).toEqual(expected);
@@ -55,7 +55,7 @@ describe('ResourceListHeader', () => {
     describe('when resourceType has a feature', () => {
       it('renders three resource headers', () => {
         const { wrapper } = setup({ resourceTypes: [ResourceType.feature] });
-        const actual = wrapper.find('.resource-header').length;
+        const actual = wrapper.find('.header-text').length;
         const expected = 4;
 
         expect(actual).toEqual(expected);
@@ -65,7 +65,7 @@ describe('ResourceListHeader', () => {
     describe('when resourceType has a dashboard', () => {
       it('renders three resource headers', () => {
         const { wrapper } = setup({ resourceTypes: [ResourceType.dashboard] });
-        const actual = wrapper.find('.resource-header').length;
+        const actual = wrapper.find('.header-text').length;
         const expected = 3;
 
         expect(actual).toEqual(expected);

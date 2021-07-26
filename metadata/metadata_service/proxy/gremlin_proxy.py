@@ -13,6 +13,7 @@ from typing import (Any, Callable, Dict, Iterable, List, Mapping, Optional,
 from urllib.parse import unquote
 
 import gremlin_python
+from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
@@ -37,6 +38,7 @@ from gremlin_python.driver.client import Client
 from gremlin_python.driver.driver_remote_connection import \
     DriverRemoteConnection
 from gremlin_python.driver.resultset import ResultSet
+from gremlin_python.driver.tornado.transport import TornadoTransport
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.process.graph_traversal import (GraphTraversal,
                                                     GraphTraversalSource, V,
@@ -57,7 +59,6 @@ from typing_extensions import Protocol  # TODO: it's in typing 3.8
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.statsd_utilities import timer_with_counter
@@ -869,6 +870,7 @@ class AbstractGremlinProxy(BaseProxy):
         # safe this for use in _submit
         self.remote_connection: DriverRemoteConnection = DriverRemoteConnection(
             url=self.possibly_signed_ws_client_request_or_url(),
+            transport_factory=lambda: TornadoTransport(read_timeout=None, write_timeout=None),
             **_properties_except(self.driver_remote_connection_options, 'url'))
 
         self._g: GraphTraversalSource = traversal().withRemote(self.remote_connection)
@@ -1774,6 +1776,12 @@ class AbstractGremlinProxy(BaseProxy):
                                      resource_type: ResourceType) -> GenerationCode:
         pass
 
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
+        raise NotImplementedError
+
 
 class GenericGremlinProxy(AbstractGremlinProxy):
     """
@@ -1819,3 +1827,9 @@ class GenericGremlinProxy(AbstractGremlinProxy):
     @overrides
     def possibly_signed_ws_client_request_or_url(self) -> str:
         return self.url
+
+    def get_popular_resources(self, *,
+                              num_entries: int,
+                              resource_types: List[str],
+                              user_id: Optional[str] = None) -> Dict[str, List]:
+        raise NotImplementedError

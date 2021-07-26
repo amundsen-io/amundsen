@@ -5,6 +5,7 @@ import json
 from http import HTTPStatus
 from typing import Iterable, Mapping, Optional, Union
 
+from amundsen_common.entity.resource_type import ResourceType
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -14,7 +15,6 @@ from metadata_service.api.badge import BadgeCommon
 from metadata_service.api.tag import TagCommon
 from metadata_service.entity.dashboard_detail import DashboardSchema
 from metadata_service.entity.description import DescriptionSchema
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 

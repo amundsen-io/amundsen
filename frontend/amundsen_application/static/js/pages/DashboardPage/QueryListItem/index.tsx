@@ -9,6 +9,7 @@ import { ResourceType } from 'interfaces';
 import { getSourceDisplayName } from 'config/config-utils';
 
 import './styles.scss';
+import 'features/CodeBlock/styles.scss';
 
 export interface QueryListItemProps {
   name: string;
@@ -24,8 +25,7 @@ type GoToDashboardLinkProps = {
 
 const QUERY_LABEL = 'Query';
 const LINK_TOOLTIP_TEXT = 'View in';
-
-const LazyComponent = React.lazy(() => import('./CodeBlock'));
+const LazyCodeBlock = React.lazy(() => import('features/CodeBlock/index'));
 
 const GoToDashboardLink = ({ product, url }: GoToDashboardLinkProps) => {
   const productName = getSourceDisplayName(product, ResourceType.dashboard);
@@ -40,7 +40,7 @@ const GoToDashboardLink = ({ product, url }: GoToDashboardLinkProps) => {
       overlay={popoverHoverFocus}
     >
       <a
-        className="query-list-query-link"
+        className="code-block-link"
         href={url}
         target="_blank"
         rel="noopener noreferrer"
@@ -91,9 +91,10 @@ const QueryListItem = ({ product, name, text, url }: QueryListItemProps) => {
           <label className="query-list-query-label section-title">
             {QUERY_LABEL}:
             <div className="query-list-query-content">
-              <GoToDashboardLink product={product} url={url} />
               <React.Suspense fallback={<QueryBlockShimmer />}>
-                <LazyComponent text={text} />
+                <LazyCodeBlock text={text}>
+                  <GoToDashboardLink product={product} url={url} />
+                </LazyCodeBlock>
               </React.Suspense>
             </div>
           </label>

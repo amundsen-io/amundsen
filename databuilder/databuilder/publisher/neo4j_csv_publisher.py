@@ -457,7 +457,7 @@ class Neo4jCsvPublisher(Publisher):
             CREATE CONSTRAINT ON (node:{{ LABEL }}) ASSERT node.key IS UNIQUE
         """).render(LABEL=label)
 
-        LOGGER.info(f'Trying to create index for label %s if not exist: %s', label, stmt)
+        LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
         with self._driver.session() as session:
             try:
                 session.run(stmt)

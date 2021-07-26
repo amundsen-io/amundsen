@@ -13,7 +13,7 @@ schema_name = 'test_schema'
 
 report_file = 'example/sample_data/pandas_profiling/table_report.json'
 
-tmp_folder = f'/tmp/amundsen/column_staats'
+tmp_folder = '/tmp/amundsen/column_staats'
 
 node_files_folder = f'{tmp_folder}/nodes'
 relationship_files_folder = f'{tmp_folder}/relationships'

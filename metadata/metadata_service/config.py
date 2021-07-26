@@ -75,8 +75,10 @@ class Config:
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
     USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
 
-    # Number of minimum reader count to qualify for popular table
-    POPULAR_TABLE_MINIMUM_READER_COUNT = 10  # type: int
+    # DEPRECATED (since version 3.6.0): Please use `POPULAR_RESOURCES_MINIMUM_READER_COUNT`
+    # Number of minimum reader count to qualify for popular resources
+    POPULAR_TABLE_MINIMUM_READER_COUNT = None
+    POPULAR_RESOURCES_MINIMUM_READER_COUNT = 10  # type: int
 
     # List of regexes which will exclude certain parameters from appearing as Programmatic Descriptions
     PROGRAMMATIC_DESCRIPTIONS_EXCLUDE_FILTERS = []  # type: list

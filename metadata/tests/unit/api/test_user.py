@@ -7,11 +7,12 @@ from http import HTTPStatus
 from unittest import mock
 from unittest.mock import MagicMock
 
+from amundsen_common.entity.resource_type import ResourceType
+
 from metadata_service import create_app
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
-from metadata_service.entity.resource_type import ResourceType
 from metadata_service.util import UserResourceRel
 
 

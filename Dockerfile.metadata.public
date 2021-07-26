@@ -23,9 +23,10 @@ ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
 ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 
 # You will need to set these environment variables in order to use the oidc image
-# FLASK_OIDC_CLIENT_SECRETS - a path to a client_secrets.json file
-# FLASK_OIDC_SECRET_KEY - A secret key from your oidc provider
-# You will also need to mount a volume for the clients_secrets.json file.
+# FLASK_OIDC_CONFIG_URL - url endpoint for your oidc provider config
+# FLASK_OIDC_PROVIDER_NAME - oidc provider name
+# FLASK_OIDC_CLIENT_ID - oidc client id
+# FLASK_OIDC_CLIENT_SECRET - oidc client secret
 
 FROM base as release
 RUN pip3 install -e .

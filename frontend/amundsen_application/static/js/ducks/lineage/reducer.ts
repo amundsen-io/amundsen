@@ -190,7 +190,13 @@ export default function reducer(
         statusCode: (<GetColumnLineageResponse>action).payload.statusCode,
         isLoading: false,
       };
-    // ToDo: Please remove once list based view is deprecated
+    case GetTableLineage.REQUEST: {
+      return {
+        ...state,
+        isLoading: true,
+        statusCode: null,
+      };
+    }
     case GetTableColumnLineage.REQUEST: {
       const { columnName } = (<GetTableColumnLineageRequest>action).payload;
       return {

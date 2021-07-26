@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '5.1.0'
+__version__ = '5.2.4'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -79,8 +79,12 @@ rds = [
     'mysqlclient>=1.3.6,<3'
 ]
 
+salesforce = [
+    'simple-salesforce>=1.11.2'
+]
+
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce
 
 setup(
     name='amundsen-databuilder',
@@ -111,7 +115,8 @@ setup(
         'delta': spark,
         'feast': feast,
         'atlas': atlas,
-        'rds': rds
+        'rds': rds,
+        'salesforce': salesforce,
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
