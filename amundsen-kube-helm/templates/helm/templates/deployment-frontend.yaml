@@ -64,6 +64,10 @@ spec:
             value: http://{{ .Chart.Name }}-{{ .Values.metadata.serviceName }}:5002
           - name: LONG_RANDOM_STRING
             value: {{ quote .Values.LONG_RANDOM_STRING }}
+        {{- if .Values.frontEnd.ALL_UNEDITABLE_SCHEMAS }}
+        - name: ALL_UNEDITABLE_SCHEMAS
+          value: {{ quote .Values.frontEnd.ALL_UNEDITABLE_SCHEMAS }}
+        {{- end }}
         {{- if .Values.frontEnd.oidcEnabled }}
           - name: FRONTEND_SVC_CONFIG_MODULE_CLASS
             value: amundsen_application.oidc_config.OidcConfig
@@ -81,10 +85,6 @@ spec:
           - name: OVERWRITE_REDIRECT_URI
             value: {{ .Values.frontEnd.OVERWRITE_REDIRECT_URI }}
           {{- end }}
-          {{ - if .Values.frontEnd.ALL_UNEDITABLE_SCHEMAS }}
-          - name: ALL_UNEDITABLE_SCHEMAS
-            value: {{ .Values.frontEnd.ALL_UNEDITABLE_SCHEMAS }}
-          {{ - end } }
           - name: FLASK_OIDC_SECRET_KEY
             valueFrom:
               secretKeyRef:
