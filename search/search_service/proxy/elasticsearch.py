@@ -726,7 +726,7 @@ class ElasticsearchProxy(BaseProxy):
         return [{'delete': {'_index': index_key, '_id': id, '_type': type}} for id in data]
 
     def _bulk_helper(self, actions: List[Dict[str, Any]]) -> None:
-        result = self.elasticsearch.bulk(actions)
+        result = self.elasticsearch.bulk(body=actions)
 
         if result['errors']:
             # ES's error messages are nested within elasticsearch objects and can
@@ -742,7 +742,7 @@ class ElasticsearchProxy(BaseProxy):
         :return: list of elasticsearch indices
         """
         try:
-            indices = self.elasticsearch.indices.get_alias(alias).keys()
+            indices = self.elasticsearch.indices.get_alias(index=alias).keys()
             return indices
         except NotFoundError:
             LOGGING.warn('Received index not found error from Elasticsearch', exc_info=True)
@@ -767,5 +767,5 @@ class ElasticsearchProxy(BaseProxy):
 
         # alias our new index
         index_actions = {'actions': [{'add': {'index': index_key, 'alias': alias}}]}
-        self.elasticsearch.indices.update_aliases(index_actions)
+        self.elasticsearch.indices.update_aliases(body=index_actions)
         return index_key
