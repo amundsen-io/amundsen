@@ -50,7 +50,7 @@ class NeptuneCSVPublisher(Publisher):
     AWS_SECRET_ACCESS_KEY = 'aws_secret_access_key'
     AWS_SESSION_TOKEN = 'aws_session_token'
     AWS_IAM_ROLE_NAME = 'aws_iam_role_name'
-
+    AWS_STS_ENDPOINT_URL = 'aws_sts_endpoint_url'
     FAIL_ON_ERROR = "fail_on_error"
     STATUS_POLLING_PERIOD = "status_polling_period"
 
@@ -80,7 +80,8 @@ class NeptuneCSVPublisher(Publisher):
             session=self._boto_session,
             endpoint_uri=neptune_bulk_endpoint_uri,
             s3_bucket_name=self.bucket_name,
-            iam_role_name=conf.get_string(NeptuneCSVPublisher.AWS_IAM_ROLE_NAME, default=None)
+            iam_role_name=conf.get_string(NeptuneCSVPublisher.AWS_IAM_ROLE_NAME, default=None),
+            sts_endpoint=conf.get_string(NeptuneCSVPublisher.AWS_STS_ENDPOINT_URL, default=None),
         )
         self.base_amundsen_data_path = conf.get_string(NeptuneCSVPublisher.AWS_BASE_S3_DATA_PATH)
         self.fail_on_error = conf.get_bool(NeptuneCSVPublisher.FAIL_ON_ERROR, default=False)
