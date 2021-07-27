@@ -87,11 +87,8 @@ class AtlasSearchDataExtractorHelpers:
         return AtlasSearchDataExtractorHelpers.get_display_text(charts)
 
     @staticmethod
-    def get_table_database(qualified_name: str) -> str:
-        try:
-            result = AtlasTableKey(qualified_name).get_details()['database']
-        except Exception:
-            result = 'hive_table'
+    def get_table_database(table_key: str) -> str:
+        result = AtlasTableKey(table_key).get_details().get('database', 'hive_table')
 
         return result
 
@@ -115,7 +112,7 @@ class AtlasSearchDataExtractorHelpers:
                                              dict()).get('entity',
                                                          dict()).get('relationshipStatus', '')
 
-            if reader_status == 'ACTIVE' and entity_status == 'ACTIVE' and relationship_status == 'ACTIVE':
+            if reader_status == entity_status == relationship_status == 'ACTIVE':
                 score += reader.get('attributes', dict()).get('count', 0)
 
                 if score > 0:
