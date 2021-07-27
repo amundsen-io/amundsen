@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "search/**"
+      - "common/**"
       - "requirements*txt"
 jobs:
   test-unit-python:
