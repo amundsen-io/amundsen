@@ -439,7 +439,10 @@ class MySQLProxy(BaseProxy):
         :return:
         """
         desc_key = table_uri + '/_description'
-        description = RDSTableDescription(rk=desc_key, description=description, table_rk=table_uri)
+        description = RDSTableDescription(rk=desc_key,
+                                          description_source='description',
+                                          description=description,
+                                          table_rk=table_uri)
         try:
             with self.client.create_session() as session:
                 session.merge(description)
@@ -608,7 +611,10 @@ class MySQLProxy(BaseProxy):
         """
         column_uri = table_uri + '/' + column_name
         desc_key = column_uri + '/_description'
-        description = RDSColumnDescription(rk=desc_key, description=description, column_rk=column_uri)
+        description = RDSColumnDescription(rk=desc_key,
+                                           description_source='description',
+                                           description=description,
+                                           column_rk=column_uri)
         try:
             with self.client.create_session() as session:
                 session.merge(description)

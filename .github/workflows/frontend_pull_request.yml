@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "frontend/**"
+      - "common/**"
       - "requirements*txt"
 jobs:
   test-unit-python:

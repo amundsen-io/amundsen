@@ -76,6 +76,13 @@ class TestDeltaLakeExtractor(unittest.TestCase):
                        "map<struct<b:array<struct<c:int,d:string>>,e:double>,struct<f:array<struct<g:int,h:string>>,"
                        "i:double>>) using delta")
 
+        self.spark.sql("create table if not exists complex_schema.array_of_array (a array<array<string>>) using "
+                       "delta")
+        self.spark.sql("create table if not exists complex_schema.map_of_map (a map<int,map<int,int>>) using "
+                       "delta")
+        self.spark.sql("create table if not exists complex_schema.map_of_array_of_structs (a map<int,"
+                       "array<struct<b:int,c:string>>>) using delta")
+
     def test_get_all_schemas(self) -> None:
         '''Tests getting all schemas'''
         actual_schemas = self.dExtractor.get_schemas([])
@@ -151,6 +158,10 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         for a, b in zip(actual, expected):
             self.assertEqual(a, b)
 
+    def test_fetch_delta_columns_failure(self) -> None:
+        actual = self.dExtractor.fetch_columns("test_schema1", "nonexistent_table")
+        self.assertEquals(actual, [])
+
     def test_scrape_tables(self) -> None:
         table = Table(name="test_table1", database="test_schema1", description=None,
                       tableType="delta", isTemporary=False)
@@ -192,7 +203,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 24)
+        self.assertEqual(len(ret), 30)
 
     def test_extract_with_only_specific_schemas(self) -> None:
         self.config_dict = {
@@ -227,7 +238,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 20)
+        self.assertEqual(len(ret), 26)
 
     def test_table_does_not_exist(self) -> None:
         table = Table(name="test_table5", database="test_schema1", description=None,
@@ -319,6 +330,18 @@ class TestDeltaLakeExtractor(unittest.TestCase):
                 ScrapedColumnMetadata(name="map_col.f.h", description=None, data_type="string", sort_order=4),
                 ScrapedColumnMetadata(name="map_col.i", description=None, data_type="double", sort_order=5),
             ],
+            "array_of_array": [
+                ScrapedColumnMetadata(name="a", description=None, data_type="array<array<string>>", sort_order=0),
+            ],
+            "map_of_map": [
+                ScrapedColumnMetadata(name="a", description=None, data_type="map<int,map<int,int>>", sort_order=0),
+            ],
+            "map_of_array_of_structs": [
+                ScrapedColumnMetadata(name="a", description=None, data_type="map<int,array<struct<b:int,c:string>>>",
+                                      sort_order=0),
+                ScrapedColumnMetadata(name="a.b", description=None, data_type="int", sort_order=1),
+                ScrapedColumnMetadata(name="a.c", description=None, data_type="string", sort_order=2),
+            ]
         }
         for table_name, expected in expected_dict.items():
             actual = self.dExtractor.fetch_columns(schema="complex_schema", table=table_name)
