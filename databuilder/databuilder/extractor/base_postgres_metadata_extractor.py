@@ -36,7 +36,7 @@ class BasePostgresMetadataExtractor(Extractor):
     DEFAULT_CLUSTER_NAME = 'master'
 
     DEFAULT_CONFIG = ConfigFactory.from_dict(
-        {WHERE_CLAUSE_SUFFIX_KEY: ' ', CLUSTER_KEY: DEFAULT_CLUSTER_NAME, USE_CATALOG_AS_CLUSTER_NAME: True}
+        {WHERE_CLAUSE_SUFFIX_KEY: 'true', CLUSTER_KEY: DEFAULT_CLUSTER_NAME, USE_CATALOG_AS_CLUSTER_NAME: True}
     )
 
     @abc.abstractmethod

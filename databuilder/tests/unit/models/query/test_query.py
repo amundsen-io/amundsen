@@ -49,7 +49,7 @@ class TestQuery(unittest.TestCase):
         self.query_metadata = QueryMetadata(sql=self.sql,
                                             tables=[self.table_metadata],
                                             user=self.user)
-        self._query_hash = 'f70ffda4d06ff36fa507ece37980ab66'
+        self._query_hash = 'da44ff72560e593a8eca9ffcee6a2696'
 
     def test_get_model_key(self) -> None:
         key = QueryMetadata.get_key(sql_hash=self.query_metadata.sql_hash)
@@ -99,3 +99,21 @@ class TestQuery(unittest.TestCase):
         ]
 
         self.assertEquals(expected_relations, actual)
+
+    def test_keys_of_query_containing_strings_with_spaces(self) -> None:
+        query_metadata1 = QueryMetadata(sql="select * from table a where a.field == 'xyz'",
+                                        tables=[self.table_metadata])
+
+        query_metadata2 = QueryMetadata(sql="select * from table a where a.field == 'x y z'",
+                                        tables=[self.table_metadata])
+
+        self.assertNotEqual(query_metadata1.get_key_self(), query_metadata2.get_key_self())
+
+    def test_keys_of_query_containing_strings_with_mixed_case(self) -> None:
+        query_metadata1 = QueryMetadata(sql="select * from table a where a.field == 'x Y z'",
+                                        tables=[self.table_metadata])
+
+        query_metadata2 = QueryMetadata(sql="select * from table a where a.field == 'x y z'",
+                                        tables=[self.table_metadata])
+
+        self.assertNotEqual(query_metadata1.get_key_self(), query_metadata2.get_key_self())

@@ -38,7 +38,7 @@ class TestQueryWhere(unittest.TestCase):
                                                        right_arg='3',
                                                        operator='>',
                                                        query_metadata=self.query_metadata)
-        self._expected_key_hash = '795a2a16184c09b88ae518cd5230cfb5-0db8c6650b77c7ae1a5dedb549a76cfb'
+        self._expected_key_hash = '795a2a16184c09b88ae518cd5230cfb5-be8634550905b354508dc8aba8008c14'
 
     def test_get_model_key(self) -> None:
         key = QueryWhereMetadata.get_key(table_hash=self.query_where_metadata._table_hash,
