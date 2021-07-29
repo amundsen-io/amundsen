@@ -267,7 +267,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             className="header-title-text text-headline-w2 truncated"
             title={feature.name}
           >
-            {feature.feature_group}.{feature.name}
+            {feature.feature_group}.{feature.name}.{feature.version}
           </h1>
           <p className="header-subtitle text-body-w3">
             {getDisplayNameByResource(ResourceType.feature)}
