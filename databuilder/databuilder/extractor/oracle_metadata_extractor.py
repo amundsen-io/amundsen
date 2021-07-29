@@ -110,7 +110,7 @@ class OracleMetadataExtractor(Extractor):
         cluster_source = f"'{self._cluster}'"
 
         return """
-        SELECT 
+        SELECT
             {cluster_source} as "cluster",
             lower(c.owner) as "schema",
             lower(c.table_name) as "name",
