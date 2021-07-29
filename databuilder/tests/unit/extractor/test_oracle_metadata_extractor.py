@@ -20,7 +20,6 @@ class TestOracleMetadataExtractor(unittest.TestCase):
         config_dict = {
             f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
             OracleMetadataExtractor.CLUSTER_KEY: 'MY_CLUSTER',
-            OracleMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False,
             OracleMetadataExtractor.DATABASE_KEY: 'oracle'
         }
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -247,7 +246,6 @@ class TestOracleMetadataExtractorClusterKeyNoTableCatalog(unittest.TestCase):
         config_dict = {
             OracleMetadataExtractor.CLUSTER_KEY: self.cluster_key,
             f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
-            OracleMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -268,7 +266,6 @@ class TestOracleMetadataExtractorNoClusterKeyNoTableCatalog(unittest.TestCase):
 
         config_dict = {
             f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
-            OracleMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: False
         }
         self.conf = ConfigFactory.from_dict(config_dict)
 
@@ -280,30 +277,6 @@ class TestOracleMetadataExtractorNoClusterKeyNoTableCatalog(unittest.TestCase):
             extractor = OracleMetadataExtractor()
             extractor.init(self.conf)
             self.assertTrue(OracleMetadataExtractor.DEFAULT_CLUSTER_NAME in extractor.sql_stmt)
-
-
-class TestOracleMetadataExtractorTableCatalogEnabled(unittest.TestCase):
-    # test when USE_CATALOG_AS_CLUSTER_NAME is true (CLUSTER_KEY should be ignored)
-    def setUp(self) -> None:
-        logging.basicConfig(level=logging.INFO)
-        self.cluster_key = "not_master"
-
-        config_dict = {
-            OracleMetadataExtractor.CLUSTER_KEY: self.cluster_key,
-            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': 'TEST_CONNECTION',
-            OracleMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME: True
-        }
-        self.conf = ConfigFactory.from_dict(config_dict)
-
-    def test_sql_statement(self) -> None:
-        """
-        Test Extraction with empty result from query
-        """
-        with patch.object(SQLAlchemyExtractor, '_get_connection'):
-            extractor = OracleMetadataExtractor()
-            extractor.init(self.conf)
-            self.assertTrue('table_catalog' in extractor.sql_stmt)
-            self.assertFalse(self.cluster_key in extractor.sql_stmt)
 
 
 if __name__ == '__main__':
