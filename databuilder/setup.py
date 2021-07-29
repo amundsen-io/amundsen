@@ -74,6 +74,10 @@ atlas = [
     'apache-atlas>=0.0.11'
 ]
 
+oracle = [
+    'cx_Oracle==8.2.1'
+]
+
 rds = [
     'sqlalchemy>=1.3.6,<1.4',
     'mysqlclient>=1.3.6,<3'
@@ -84,7 +88,7 @@ salesforce = [
 ]
 
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle
 
 setup(
     name='amundsen-databuilder',
@@ -117,6 +121,7 @@ setup(
         'atlas': atlas,
         'rds': rds,
         'salesforce': salesforce,
+        'oracle': oracle,
     },
     classifiers=[
         'Programming Language :: Python :: 3.6',
