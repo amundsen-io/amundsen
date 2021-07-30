@@ -18,7 +18,7 @@ services:
       networks:
         - amundsennet
   elasticsearch:
-      image: elasticsearch:6.7.0
+      image: elasticsearch:7.13.3
       container_name: es_amundsen
       ports:
           - 9200:9200
@@ -28,6 +28,8 @@ services:
         nofile:
           soft: 65536
           hard: 65536
+      environment:
+        - discovery.type=single-node
   amundsensearch:
       build:
         context: .

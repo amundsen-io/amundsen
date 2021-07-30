@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+from typing import Any, Optional
 
 ELASTICSEARCH_INDEX_KEY = 'ELASTICSEARCH_INDEX'
 SEARCH_PAGE_SIZE_KEY = 'SEARCH_PAGE_SIZE'
@@ -47,7 +48,7 @@ class LocalConfig(Config):
                                         PORT=PROXY_PORT)
                                     )
     PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'ELASTICSEARCH')]
-    PROXY_CLIENT_KEY = os.environ.get('PROXY_CLIENT_KEY')
+    PROXY_CLIENT_KEY = os.environ.get('PROXY_CLIENT_KEY')   # type: Optional[Any]
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'elastic')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'elastic')
 

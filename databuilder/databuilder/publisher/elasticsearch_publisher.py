@@ -90,7 +90,8 @@ class ElasticsearchPublisher(Publisher):
         cnt = 0
 
         # create new index with mapping
-        self.elasticsearch_client.indices.create(index=self.elasticsearch_new_index, body=self.elasticsearch_mapping)
+        self.elasticsearch_client.indices.create(index=self.elasticsearch_new_index, body=self.elasticsearch_mapping,
+                                                 params={'include_type_name': 'true'})
         for action in actions:
             index_row = dict(index=dict(_index=self.elasticsearch_new_index,
                                         _type=self.elasticsearch_type))
