@@ -41,15 +41,15 @@ that can be used for data exploration and it is what we leverage internally at L
 3. We could verify the content of the `films` table using superset's sqlab feature:
 ![](../img/tutorials/superset-sqllab-verify.png)
 
-4. Next, We need to build a preview client following this [guide](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/examples/superset_preview_client.md)
-and the [example client code](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/base/examples/example_superset_preview_client.py).
+1. Next, We need to build a preview client following this [guide](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/examples/superset_preview_client.md)
+and the [example client code](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/base/examples/example_superset_preview_client.py).
 There are a couple of things to keep in mind:
     - We could start with an unauthenticated Superset([example superset config](https://gist.github.com/feng-tao/b89e6faf7236372cef70a44f13615c39)),
     but in production, we will need to send the impersonate info to Superset
     to properly verify whether the given user could view the data.
     - When we build the client, we could need to configure the database id instead of the database name when send the request to superset.
 
-5. Once we configure the preview client, put it in the frontend service entry point ([example](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/configuration.md#python-entry-points)) and restart the frontend.
+5. Once we configure the preview client, put it in the frontend service entry point ([example](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/configuration.md#python-entry-points)) and restart the frontend.
 
 6. We could now view the preview data for the `films` table in Amundsen.
 ![](../img/tutorials/amundsen-preview1.png)
