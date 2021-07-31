@@ -46,8 +46,18 @@ push-image-version:
 push-image:
 	docker push ${IMAGE}:latest
 
+.PHONY: oidc-image
+oidc-image:
+	cd .. && docker build -f Dockerfile.search.public --target=oidc-release -t ${OIDC_IMAGE}:${VERSION} . && cd search
+	docker tag ${OIDC_IMAGE}:${VERSION} ${OIDC_IMAGE}:latest
+
+.PHONY: push-odic-image
+push-oidc-image:
+	docker push ${OIDC_IMAGE}:${VERSION}
+	docker push ${OIDC_IMAGE}:latest
+
 .PHONY: build-push-image
-build-push-image-latest: image push-image
+build-push-image-latest: image oidc-image push-image push-oidc-image
 build-push-image-version: image-version push-image-version
 
 .PHONY: install_deps
