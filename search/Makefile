@@ -46,8 +46,13 @@ push-image-version:
 push-image:
 	docker push ${IMAGE}:latest
 
+.PHONY: push-odic-image
+push-oidc-image:
+	docker push ${OIDC_IMAGE}:${VERSION}
+	docker push ${OIDC_IMAGE}:latest
+
 .PHONY: build-push-image
-build-push-image-latest: image push-image
+build-push-image-latest: image oidc-image push-image push-oidc-image
 build-push-image-version: image-version push-image-version
 
 .PHONY: install_deps
