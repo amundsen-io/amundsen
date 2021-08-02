@@ -199,6 +199,18 @@ describe('getResourceNotices', () => {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
+          'gold.hive.core.fact_*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.core.*_rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          'gold.hive.core.fact*rides': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
         };
         const resources = [ResourceType.table, ResourceType.dashboard];
         for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
@@ -276,6 +288,10 @@ describe('getResourceNotices', () => {
             messageHtml: 'testMessage',
           },
           '*.hive.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.b*.*.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
