@@ -23,7 +23,6 @@ const withComputedMessage = (notice: NoticeType, resourceName) => {
   }
   return notice;
 };
-//determines whether or not a resource 
 const resourceMatches = (key: string, resource: string) => {
   if (key === resource || key === WILDCARD_SIGN) {
     return true;
