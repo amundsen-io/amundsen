@@ -3,13 +3,13 @@ import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 import { convertText, CaseType } from 'utils/textUtils';
 
 import { TableMetadata } from 'interfaces/TableMetadata';
+import { ResourceType, TableSource } from '../interfaces';
 import {
   AnalyticsConfig,
   FilterConfig,
   LinkConfig,
   NoticeType,
 } from './config-types';
-import { ResourceType, TableSource } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
