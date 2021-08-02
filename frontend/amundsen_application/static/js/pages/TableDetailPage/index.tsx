@@ -24,6 +24,7 @@ import {
   getSourceIconClass,
   getResourceNotices,
   getTableSortCriterias,
+  getDescriptionEditUrl,
   indexDashboardsEnabled,
   issueTrackingEnabled,
   isTableListLineageEnabled,
@@ -343,7 +344,7 @@ export class TableDetail extends React.Component<
             data.source.source_type
           )}`
         : '';
-      const editUrl = data.source ? data.source.source : '';
+      const editUrl = data.source ? getDescriptionEditUrl(data.source) : '';
       const tableNotice = getResourceNotices(
         ResourceType.table,
         `${data.cluster}.${data.database}.${data.schema}.${data.name}`

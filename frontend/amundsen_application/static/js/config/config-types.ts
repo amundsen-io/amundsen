@@ -136,7 +136,11 @@ type SourcesConfig = {
  * Configures the UI for a given table description source
  */
 type DescriptionSourceConfig = {
-  [id: string]: { displayName: string; iconPath: string };
+  [id: string]: {
+    displayName: string;
+    iconPath: string;
+    renderEditButton: boolean;
+  };
 };
 
 /**

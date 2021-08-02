@@ -58,10 +58,12 @@ describe('render SourceLink', () => {
             xyz: {
               displayName: 'XYZ',
               iconPath: 'images/xyz.png',
+              renderEditButton: true,
             },
             abc: {
               displayName: 'ABC',
               iconPath: 'images/abc.png',
+              renderEditButton: true,
             },
           },
         },

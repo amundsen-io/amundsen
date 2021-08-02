@@ -734,3 +734,19 @@ describe('getColumnLineageLink', () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe('getDescriptionEditUrl', () => {
+  it('returns the edit url for a given table description source', () => {
+    const source = { source: 'https://github.com', source_type: 'github' };
+    const actual = ConfigUtils.getDescriptionEditUrl(source);
+    const expectedValue = source.source;
+    expect(actual).toBe(expectedValue);
+  });
+
+  it('returns empty string for a given table without a configured source', () => {
+    const source = { source: 'https://google.com', source_type: 'google' };
+    const actual = ConfigUtils.getDescriptionEditUrl(source);
+    const expectedValue = '';
+    expect(actual).toBe(expectedValue);
+  });
+});

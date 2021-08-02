@@ -9,7 +9,7 @@ import {
   LinkConfig,
   NoticeType,
 } from './config-types';
-import { ResourceType } from '../interfaces';
+import { ResourceType, TableSource } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
@@ -339,6 +339,26 @@ export function getDescriptionSourceIconPath(sourceId: string): string {
     config.supportedDescriptionSources[sourceId].iconPath
   ) {
     return config.supportedDescriptionSources[sourceId].iconPath;
+  }
+
+  return '';
+}
+
+/**
+ * Returns the edit button url for a given description source.
+ * If a configuration does not exist or edit buttons are disabled, empty string
+ * is returned.
+ */
+export function getDescriptionEditUrl(dataSource: TableSource): string | null {
+  const config = AppConfig.resourceConfig[ResourceType.table];
+  const sourceId = dataSource.source_type;
+  if (
+    config &&
+    config.supportedDescriptionSources &&
+    config.supportedDescriptionSources[sourceId] &&
+    config.supportedDescriptionSources[sourceId].renderEditButton
+  ) {
+    return dataSource.source;
   }
 
   return '';

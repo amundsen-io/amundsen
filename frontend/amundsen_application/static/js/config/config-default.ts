@@ -244,10 +244,12 @@ const configDefault: AppConfig = {
         dremio: {
           displayName: 'Dremio',
           iconPath: '/static/images/icons/logo-dremio.svg',
+          renderEditButton: true,
         },
         github: {
           displayName: 'Github',
           iconPath: '/static/images/github.png',
+          renderEditButton: true,
         },
       },
       notices: {},
