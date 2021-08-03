@@ -204,19 +204,19 @@ class TestElasticsearchProxy(unittest.TestCase):
     def test_health_elasticsearch(self) -> None:
         # ES pass
         mock_elasticsearch = self.es_proxy.elasticsearch
-        mock_elasticsearch.cluster.health.return_value = {'status': 'ok'}  # type: ignore
-        health_actual = self.es_proxy.health()
-        expected_checks = {'ElasticsearchProxy:connection': {'status': 'ok'}}
-        health_expected = health_check.HealthCheck(status='ok', checks=expected_checks)
-        self.assertEqual(health_actual.status, health_expected.status)
-        self.assertDictEqual(health_actual.checks, health_expected.checks)
+        with patch.object(mock_elasticsearch.cluster, 'health', return_value={'status': 'ok'}):
+            health_actual = self.es_proxy.health()
+            expected_checks = {'ElasticsearchProxy:connection': {'status': 'ok'}}
+            health_expected = health_check.HealthCheck(status='ok', checks=expected_checks)
+            self.assertEqual(health_actual.status, health_expected.status)
+            self.assertDictEqual(health_actual.checks, health_expected.checks)
         # ES Fail
-        mock_elasticsearch.cluster.health.return_value = {'status': 'red'}  # type: ignore
-        health_actual = self.es_proxy.health()
-        expected_checks = {'ElasticsearchProxy:connection': {'status': 'red'}}
-        health_expected = health_check.HealthCheck(status='fail', checks=expected_checks)
-        self.assertEqual(health_actual.status, health_expected.status)
-        self.assertDictEqual(health_actual.checks, health_expected.checks)
+        with patch.object(mock_elasticsearch.cluster, 'health', return_value={'status': 'red'}):
+            health_actual = self.es_proxy.health()
+            expected_checks = {'ElasticsearchProxy:connection': {'status': 'red'}}
+            health_expected = health_check.HealthCheck(status='fail', checks=expected_checks)
+            self.assertDictEqual(health_actual.checks, health_expected.checks)
+            self.assertEqual(health_actual.status, health_expected.status)
 
     @patch('elasticsearch_dsl.Search.execute')
     def test_search_with_empty_query_string(self, mock_search: MagicMock) -> None:
