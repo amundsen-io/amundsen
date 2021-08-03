@@ -23,6 +23,24 @@ const withComputedMessage = (notice: NoticeType, resourceName) => {
   }
   return notice;
 };
+const resourceMatches = (key: string, resource: string) => {
+  if (key === resource || key === WILDCARD_SIGN) {
+    return true;
+  }
+  if (key.includes(WILDCARD_SIGN)) {
+    const wildcardIndex = key.indexOf(WILDCARD_SIGN);
+    const inverseWildcardIndex = -1 * (key.length - wildcardIndex - 1);
+    if (
+      key.slice(0, wildcardIndex) === resource.slice(0, wildcardIndex) &&
+      (wildcardIndex === key.length - 1 ||
+        key.slice(inverseWildcardIndex) ===
+          resource.slice(inverseWildcardIndex))
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
 
 /**
  * Returns the display name for a given source id for a given resource type.
@@ -100,10 +118,7 @@ export function getResourceNotices(
       const decomposedResource = resourceName.split(RESOURCE_SEPARATOR);
 
       for (let i = 0; i < decomposedKey.length; i++) {
-        if (
-          decomposedKey[i] === decomposedResource[i] ||
-          decomposedKey[i] === WILDCARD_SIGN
-        ) {
+        if (resourceMatches(decomposedKey[i], decomposedResource[i])) {
           if (i === decomposedKey.length - 1) {
             wildcardNoticesArray[0] = notices[key];
             hasNotice = true;
@@ -114,7 +129,6 @@ export function getResourceNotices(
       }
     });
     if (hasNotice) {
-      // const noticeFromWildcard: NoticeType = wildcardNoticesArray[0];
       const [noticeFromWildcard] = wildcardNoticesArray;
       return withComputedMessage(noticeFromWildcard, resourceName);
     }
