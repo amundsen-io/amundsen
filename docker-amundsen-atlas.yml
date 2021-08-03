@@ -60,7 +60,7 @@ services:
       - METADATASERVICE_BASE=http://amundsenmetadata:5002
       - SEARCHSERVICE_BASE=http://amundsensearch:5001
   elasticsearch:
-    image: elasticsearch:6.7.0
+    image: elasticsearch:6.8.13
     container_name: es_amundsen_atlas
     ports:
       - 9200:9200

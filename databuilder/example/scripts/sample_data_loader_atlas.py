@@ -79,6 +79,25 @@ atlas_password = 'admin'
 LOGGER = logging.getLogger(__name__)
 
 
+def register_entity_types():
+    """
+    Register custom Atlas Entity Types.
+    """
+
+    job_config = ConfigFactory.from_dict({
+        f'{AtlasCSVPublisher.ATLAS_CLIENT}': AtlasClient(atlas_endpoint,
+                                                         (atlas_user, atlas_password)),
+        f'{AtlasCSVPublisher.ENTITY_DIR_PATH}': '/tmp',
+        f'{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': '/tmp',
+        f'{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': True
+    })
+
+    publisher = AtlasCSVPublisher()
+
+    publisher.init(job_config)
+
+
 def run_csv_job(file_loc, job_name, model):
     tmp_folder = f'/var/tmp/amundsen/{job_name}'
     node_files_folder = f'{tmp_folder}/nodes'
@@ -102,6 +121,7 @@ def run_csv_job(file_loc, job_name, model):
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': node_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': relationship_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': False
     })
 
     DefaultJob(conf=job_config,
@@ -129,6 +149,7 @@ def run_table_badge_job(table_path, badge_path):
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': node_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': relationship_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': False
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -156,6 +177,7 @@ def run_table_column_job(table_path, column_path):
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': node_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': relationship_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': False
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -182,6 +204,7 @@ def run_table_lineage_job(table_lineage_path):
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': node_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': relationship_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': False
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -208,6 +231,7 @@ def run_column_lineage_job(column_lineage_path):
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': node_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': relationship_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': False
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -252,6 +276,7 @@ def create_dashboard_tables_job():
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': node_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': relationship_files_folder,
         f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': ATLAS_CREATE_BATCH_SIZE,
+        f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.REGISTER_ENTITY_TYPES}': False
     })
 
     return DefaultJob(conf=job_config,
@@ -330,6 +355,9 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
     # logging.basicConfig(level=logging.INFO)
+
+    # Do not remove this step unless you already kickstarted your Atlas with custom entity types.
+    register_entity_types()
 
     run_table_column_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_col.csv')
     run_table_badge_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_badges.csv')
