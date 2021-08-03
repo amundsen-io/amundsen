@@ -795,7 +795,7 @@ class AtlasProxy(BaseProxy):
         """
         popular_tables = list()
 
-        for table in entities.entities:
+        for table in entities.entities or []:
             table_attrs = table.attributes
 
             table_info = AtlasTableKey(table_attrs.get(AtlasCommonParams.qualified_name)).get_details()
