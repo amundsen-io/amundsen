@@ -14,8 +14,10 @@ class AtlasRelationshipTypes:
     reader_user = 'Reader_Users'
 
     # These are just `virtual` relationship types which do not actually exist in Atlas.
-    # We use those constant values to distinguish Atlas Python Client methods which should be used for populating such data.
-    # Tags are published using Glossary API, badges using Classification API. Other entities are published using regular Entity API.
+    # We use those constant values to distinguish Atlas Python Client methods which should be used for populating
+    # such data.
+    # Tags are published using Glossary API, badges using Classification API. Other entities are published using regular
+    # Entity API.
     tag = 'AtlasGlossaryTerm'
     badge = 'AtlasClassification'
 
