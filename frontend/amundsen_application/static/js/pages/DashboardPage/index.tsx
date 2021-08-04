@@ -29,7 +29,7 @@ import {
   getResourceNotices,
 } from 'config/config-utils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams } from 'utils/logUtils';
+import { getLoggingParams } from 'utils/navigationUtils';
 
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';

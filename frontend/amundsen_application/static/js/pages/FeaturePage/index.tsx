@@ -38,7 +38,7 @@ import { PreviewDataTable } from 'features/PreviewData';
 import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
-import { getLoggingParams } from 'utils/logUtils';
+import { getLoggingParams } from 'utils/navigationUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import FeatureDescEditableText from './FeatureDescEditableText';

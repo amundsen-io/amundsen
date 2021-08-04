@@ -29,7 +29,7 @@ import {
   indexDashboardsEnabled,
 } from 'config/config-utils';
 
-import { getLoggingParams } from 'utils/logUtils';
+import { getLoggingParams } from 'utils/navigationUtils';
 
 import {
   AVATAR_SIZE,

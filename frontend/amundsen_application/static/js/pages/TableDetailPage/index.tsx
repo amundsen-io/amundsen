@@ -44,7 +44,7 @@ import Alert from 'components/Alert';
 
 import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams } from 'utils/logUtils';
+import { getLoggingParams } from 'utils/navigationUtils';
 import { buildTableKey } from 'utils/navigationUtils';
 
 import {

@@ -15,7 +15,7 @@ import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { ResourceType } from 'interfaces/Resources';
 
-import * as LogUtils from 'utils/logUtils';
+import * as NavigationUtils from 'utils/navigationUtils';
 
 import { indexDashboardsEnabled } from 'config/config-utils';
 import { AVATAR_SIZE } from './constants';
@@ -114,7 +114,10 @@ describe('ProfilePage', () => {
   describe('loadUserInfo', () => {
     it('calls getLoggingParams', () => {
       const { props, wrapper } = setup();
-      const getLoggingParamsSpy = jest.spyOn(LogUtils, 'getLoggingParams');
+      const getLoggingParamsSpy = jest.spyOn(
+        NavigationUtils,
+        'getLoggingParams'
+      );
 
       wrapper.instance().loadUserInfo('test');
 
