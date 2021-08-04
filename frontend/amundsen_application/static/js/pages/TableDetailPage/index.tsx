@@ -44,7 +44,7 @@ import Alert from 'components/Alert';
 
 import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams } from 'utils/navigationUtils';
+import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigationUtils';
 import { buildTableKey } from 'utils/navigationUtils';
 
 import {
@@ -237,6 +237,8 @@ export class TableDetail extends React.Component<
       tableLineage,
     } = this.props;
     const { sortedBy } = this.state;
+    const defaultTab = getUrlParam('tab') || Constants.TABLE_TAB.COLUMN;
+    this.setState({ currentTab: defaultTab });
 
     // Default Column content
     tabInfo.push({
@@ -306,9 +308,10 @@ export class TableDetail extends React.Component<
     return (
       <TabsComponent
         tabs={tabInfo}
-        defaultTab={Constants.TABLE_TAB.COLUMN}
+        defaultTab={defaultTab}
         onSelect={(key) => {
           this.setState({ currentTab: key });
+          setUrlParam('tab', key);
           logAction({
             command: 'click',
             target_id: 'table_detail_tab',

@@ -38,7 +38,7 @@ import { PreviewDataTable } from 'features/PreviewData';
 import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
-import { getLoggingParams } from 'utils/navigationUtils';
+import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigationUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import FeatureDescEditableText from './FeatureDescEditableText';
@@ -168,6 +168,7 @@ export const FeaturePageLoader: React.FC = () => (
 );
 
 export function renderTabs(featureCode, featureLineage, preview) {
+  const defaultTab = getUrlParam('tab') || FEATURE_TAB.PREVIEW_DATA;
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
@@ -203,8 +204,9 @@ export function renderTabs(featureCode, featureLineage, preview) {
   return (
     <TabsComponent
       tabs={tabInfo}
-      defaultTab={FEATURE_TAB.PREVIEW_DATA}
+      defaultTab={defaultTab}
       onSelect={(key) => {
+        setUrlParam('tab', key);
         logAction({
           command: 'click',
           target_id: 'feature_page_tab',

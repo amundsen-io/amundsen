@@ -126,3 +126,15 @@ export function getLoggingParams(
   }
   return { index, source };
 }
+
+export function getUrlParam(key: string): string {
+  const params = qs.parse(location.search);
+  return params[key];
+}
+
+export function setUrlParam(key: string, value: string) {
+  const params = qs.parse(location.search);
+  params[key] = value;
+  const queryString = qs.stringify(params);
+  BrowserHistory.replace(`${location.pathname}?${queryString}`);
+}
