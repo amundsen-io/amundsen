@@ -57,6 +57,7 @@ import {
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
+import DocumentationLink from './DocumentationLink';
 import ExploreButton from './ExploreButton';
 import LineageButton from './LineageButton';
 import FrequentUsers from './FrequentUsers';
@@ -389,6 +390,7 @@ export class TableDetail extends React.Component<
               <WriterLink tableWriter={data.table_writer} />
               <LineageLink tableData={data} />
               <SourceLink tableSource={data.source} />
+              <DocumentationLink tableDocumentation={data.table_documentation} />
             </div>
             <div className="header-section header-buttons">
               <LineageButton tableData={data} />
