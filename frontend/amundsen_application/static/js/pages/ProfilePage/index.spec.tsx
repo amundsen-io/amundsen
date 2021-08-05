@@ -195,16 +195,6 @@ describe('ProfilePage', () => {
     });
   });
 
-  describe('generateTabKey', () => {
-    it('returns string used for the tab keys', () => {
-      const { wrapper } = setup();
-      const givenResource = ResourceType.table;
-      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
-        `tab:${givenResource}`
-      );
-    });
-  });
-
   describe('generateTabTitle', () => {
     it('returns string for tab title according to UI designs', () => {
       const { wrapper } = setup();

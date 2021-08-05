@@ -13,15 +13,16 @@ import { GlobalState } from 'ducks/rootReducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { updateSearchState } from 'ducks/search/reducer';
 
+import Alert from 'components/Alert';
 import Breadcrumb from 'components/Breadcrumb';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import EditableSection from 'components/EditableSection';
 import LoadingSpinner from 'components/LoadingSpinner';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import ResourceStatusMarker from 'components/ResourceStatusMarker';
 import ResourceList from 'components/ResourceList';
 import TagInput from 'components/Tags/TagInput';
-import Alert from 'components/Alert';
 
 import {
   getSourceDisplayName,
@@ -29,7 +30,11 @@ import {
   getResourceNotices,
 } from 'config/config-utils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigationUtils';
+import {
+  getLoggingParams,
+  getUrlParam,
+  setUrlParam,
+} from 'utils/navigationUtils';
 
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';
@@ -42,7 +47,11 @@ import {
   DASHBOARD_SOURCE,
   TABLES_PER_PAGE,
   LAST_RUN_SUCCEEDED,
-  STATUS_TEXT, DASHBOARD_TAB, TABLES_TAB_TITLE, CHARTS_TAB_TITLE, QUERIES_TAB_TITLE,
+  STATUS_TEXT,
+  DASHBOARD_TAB,
+  TABLES_TAB_TITLE,
+  CHARTS_TAB_TITLE,
+  QUERIES_TAB_TITLE,
 } from './constants';
 import ChartList from './ChartList';
 import QueryList from './QueryList';
@@ -129,8 +138,8 @@ export class DashboardPage extends React.Component<
 
   renderTabs() {
     const tabInfo: TabInfo[] = [];
-    const { dashboard, location } = this.props;
-    const defaultTab = getUrlParam('tab') || DASHBOARD_TAB.TABLE;
+    const { dashboard } = this.props;
+    const defaultTab = getUrlParam(TAB_URL_PARAM) || DASHBOARD_TAB.TABLE;
 
     tabInfo.push({
       content: (
@@ -165,7 +174,7 @@ export class DashboardPage extends React.Component<
         tabs={tabInfo}
         defaultTab={defaultTab}
         onSelect={(key) => {
-          setUrlParam('tab', key);
+          setUrlParam(TAB_URL_PARAM, key);
           logAction({
             command: 'click',
             target_id: 'dashboard_page_tab',

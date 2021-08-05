@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import Breadcrumb from 'components/Breadcrumb';
 import EditableSection from 'components/EditableSection';
 import TagInput from 'components/Tags/TagInput';
@@ -38,7 +39,11 @@ import { PreviewDataTable } from 'features/PreviewData';
 import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
-import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigationUtils';
+import {
+  getLoggingParams,
+  getUrlParam,
+  setUrlParam,
+} from 'utils/navigationUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import FeatureDescEditableText from './FeatureDescEditableText';
@@ -168,7 +173,7 @@ export const FeaturePageLoader: React.FC = () => (
 );
 
 export function renderTabs(featureCode, featureLineage, preview) {
-  const defaultTab = getUrlParam('tab') || FEATURE_TAB.PREVIEW_DATA;
+  const defaultTab = getUrlParam(TAB_URL_PARAM) || FEATURE_TAB.PREVIEW_DATA;
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
@@ -206,7 +211,7 @@ export function renderTabs(featureCode, featureLineage, preview) {
       tabs={tabInfo}
       defaultTab={defaultTab}
       onSelect={(key) => {
-        setUrlParam('tab', key);
+        setUrlParam(TAB_URL_PARAM, key);
         logAction({
           command: 'click',
           target_id: 'feature_page_tab',

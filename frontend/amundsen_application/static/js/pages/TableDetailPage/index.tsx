@@ -33,19 +33,24 @@ import {
 import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
 
+import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/Breadcrumb';
-import TabsComponent, { TabInfo } from 'components/TabsComponent';
-import TagInput from 'components/Tags/TagInput';
-import EditableText from 'components/EditableText';
-import LoadingSpinner from 'components/LoadingSpinner';
 import EditableSection from 'components/EditableSection';
-import Alert from 'components/Alert';
+import EditableText from 'components/EditableText';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
+import TagInput from 'components/Tags/TagInput';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigationUtils';
-import { buildTableKey } from 'utils/navigationUtils';
+import {
+  buildTableKey,
+  getLoggingParams,
+  getUrlParam,
+  setUrlParam,
+} from 'utils/navigationUtils';
 
 import {
   ProgrammaticDescription,
@@ -237,7 +242,7 @@ export class TableDetail extends React.Component<
       tableLineage,
     } = this.props;
     const { sortedBy } = this.state;
-    const defaultTab = getUrlParam('tab') || Constants.TABLE_TAB.COLUMN;
+    const defaultTab = getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
     this.setState({ currentTab: defaultTab });
 
     // Default Column content
@@ -311,7 +316,7 @@ export class TableDetail extends React.Component<
         defaultTab={defaultTab}
         onSelect={(key) => {
           this.setState({ currentTab: key });
-          setUrlParam('tab', key);
+          setUrlParam(TAB_URL_PARAM, key);
           logAction({
             command: 'click',
             target_id: 'table_detail_tab',
