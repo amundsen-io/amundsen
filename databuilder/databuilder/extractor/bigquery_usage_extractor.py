@@ -108,8 +108,13 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             return
 
         for refResource in refResources:
-            tableId = refResource['tableId']
-            datasetId = refResource['datasetId']
+            tableId = refResource.get('tableId')
+            datasetId = refResource.get('datasetId')
+
+            if not datasetId or not tableId:
+                # handling case when the referenced table is an external table
+                # Which doesn't have a datasetId
+                continue
 
             if self._is_anonymous_dataset(datasetId) or self._is_wildcard_table(tableId):
                 continue
