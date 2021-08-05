@@ -111,7 +111,7 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             tableId = refResource.get('tableId')
             datasetId = refResource.get('datasetId')
 
-            if not datasetId or not tableId:
+            if not all([datasetId, tableId]):
                 # handling case when the referenced table is an external table
                 # Which doesn't have a datasetId
                 continue
