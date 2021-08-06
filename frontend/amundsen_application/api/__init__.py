@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any
+from typing import Any, Tuple
 import logging
 
 from flask import Flask, render_template
