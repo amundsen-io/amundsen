@@ -102,7 +102,6 @@ Calculate statistics that you care about such as min/max/average etc.
 
 #### Description
 This is used to provide users a way to find out what job/application is responsible for writing to this dataset.
-Currently the model assumes the application has to be in airflow, but in theory it could be generalized to other orchestration frameworks.
 
 #### Extraction
 TODO
