@@ -26,5 +26,6 @@ def index(path: str) -> Any:
         LOGGER.error("index.html template not found, have you built the front-end JS (npm run build in static/?")
         raise e
 
+
 def healthcheck() -> Tuple[str, int]:
     return '', 200  # pragma: no cover
