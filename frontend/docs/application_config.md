@@ -241,6 +241,34 @@ If you want to target several tables at once, you can use wildcards as shown bel
 
 The above code will show a notice with a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname.
 
+Wildcards can also replace individual parts of table names. If you want to add a notice to all resources whose names followed the pattern foo_*:
+
+```
+  resourceConfig: {
+    [ResourceType.table]: {
+      ... //Table Resource Configuration
+      notices: {
+          "<CLUSTER>.<DATABASE>.<SCHEMA>.foo_*": {
+            severity: NoticeSeverity.INFO,
+            messageHtml: `This table has information`,
+          },
+      },
+    },
+    [ResourceType.dashboard]: {
+      ... //Dashboard Resource Configuration
+      notices: {
+          "<PRODUCT>.<CLUSTER>.<GROUPNAME>.foo_*": {
+            severity: NoticeSeverity.INFO,
+            messageHtml: `This dashboard has information`,
+          },
+      },
+    },
+
+  },
+```
+
+The above code will show the message on any table with the specified cluster, database and schema whose table name starts with `foo_` or any dashboard with the specified product, cluster, and groupname whose dashboard name starts with `foo_`.
+
 If you want to use a dynamic HTML message that changes depending on the name of the resource, you can use string formatting as shown below:
 
 ```
