@@ -37,7 +37,7 @@ class AtlasSerializable(object, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def _validate_atlas_entity(self, entity: AtlasEntity) -> None:
-        entity_type, operation, relation, attributes = entity
+        operation, entity_type, relation, attributes = entity
 
         if entity_type is None:
             raise ValueError('Required header missing: entityType')
