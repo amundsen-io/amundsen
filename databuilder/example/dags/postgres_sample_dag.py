@@ -75,7 +75,7 @@ def connection_string():
 
 
 def create_table_extract_job():
-    where_clause_suffix = f'where table_schema in {SUPPORTED_SCHEMA_SQL_IN_CLAUSE}'
+    where_clause_suffix = f'st.schemaname in {SUPPORTED_SCHEMA_SQL_IN_CLAUSE}'
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'
     node_files_folder = f'{tmp_folder}/nodes/'
