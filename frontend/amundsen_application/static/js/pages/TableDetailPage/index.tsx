@@ -83,6 +83,7 @@ import ListSortingDropdown from './ListSortingDropdown';
 import * as Constants from './constants';
 
 import './styles.scss';
+import { COLUMN_URL_KEY } from './constants';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
@@ -146,7 +147,7 @@ export class TableDetail extends React.Component<
 
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
-    currentTab: Constants.TABLE_TAB.COLUMN,
+    currentTab: getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN,
   };
 
   componentDidMount() {
@@ -241,9 +242,8 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy } = this.state;
-    const defaultTab = getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
-    this.setState({ currentTab: defaultTab });
+    const { sortedBy, currentTab } = this.state;
+    const selectedColumn = getUrlParam(COLUMN_URL_KEY);
 
     // Default Column content
     tabInfo.push({
@@ -256,6 +256,7 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
+          selectedColumn={selectedColumn}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -313,7 +314,7 @@ export class TableDetail extends React.Component<
     return (
       <TabsComponent
         tabs={tabInfo}
-        defaultTab={defaultTab}
+        defaultTab={currentTab}
         onSelect={(key) => {
           this.setState({ currentTab: key });
           setUrlParam(TAB_URL_PARAM, key);

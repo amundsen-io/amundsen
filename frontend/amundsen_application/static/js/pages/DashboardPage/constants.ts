@@ -14,7 +14,7 @@ export const CHARTS_TAB_TITLE = 'Charts';
 export const QUERIES_TAB_TITLE = 'Queries';
 
 export enum DASHBOARD_TAB {
-  TABLE = 'table',
+  TABLE = 'tables',
   CHARTS = 'charts',
   QUERIES = 'queries',
 };

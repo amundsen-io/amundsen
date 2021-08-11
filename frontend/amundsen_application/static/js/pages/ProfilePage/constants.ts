@@ -22,7 +22,7 @@ export const FOOTER_TEXT_PREFIX = 'View all';
 export const NOT_ACTIVE_USER_TEXT = 'Alumni';
 
 export enum PROFILE_TAB {
-  TABLE = 'table',
-  DASHBOARD = 'dashboard',
-  FEATURE = 'feature',
+  TABLE = 'tables',
+  DASHBOARD = 'dashboards',
+  FEATURE = 'features',
 }

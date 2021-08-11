@@ -5,6 +5,7 @@ export const ERROR_MESSAGE = 'Something went wrong...';
 export const EDIT_DESC_TEXT = 'Click to edit description in';
 export const EDIT_OWNERS_TEXT = 'Click to edit owners in';
 
+export const COLUMN_URL_KEY = 'column';
 export const DATE_RANGE_TITLE = 'Date Range';
 export const DESCRIPTION_TITLE = 'Description';
 export const FREQ_USERS_TITLE = 'Frequent Users';
@@ -16,7 +17,7 @@ export const SORT_BY_MENU_TITLE_TEXT = 'Sort by';
 
 export enum TABLE_TAB {
   COLUMN = 'columns',
-  DASHBOARD = 'dashboard',
+  DASHBOARD = 'dashboards',
   DOWNSTREAM = 'downstream',
   UPSTREAM = 'upstream',
 }
