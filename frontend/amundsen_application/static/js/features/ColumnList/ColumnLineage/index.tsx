@@ -19,6 +19,8 @@ import {
 } from '../constants';
 
 import './styles.scss';
+import { TABLE_TAB } from '../../../pages/TableDetailPage/constants';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 
 interface ColumnLineageListOwnProps {
   columnName: string;
@@ -42,7 +44,12 @@ interface LineageListProps {
 
 const getLink = (table, direction) => {
   const { cluster, database, schema, name } = table;
-  return `/table_detail/${cluster}/${database}/${schema}/${name}?source=column_lineage_${direction}`;
+  // TODO - column lineage should return the column name as a separate field
+  const [tableName, columnName] = name.split('/');
+  return (
+    `/table_detail/${cluster}/${database}/${schema}/${tableName}` +
+    `?source=column_lineage_${direction}&${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
+  );
 };
 
 const renderLineageLinks = (entity, index, direction) => {

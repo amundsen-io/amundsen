@@ -204,11 +204,15 @@ const Table: React.FC<TableProps> = ({
   );
   const expandRowRef = useRef(null);
   useEffect(() => {
-    if (expandRowRef.current != null) {
+    if (expandRowRef.current !== null) {
       // @ts-ignore
       expandRowRef.current.scrollIntoView();
     }
-  });
+
+    if (preExpandRow !== undefined && onExpand !== undefined) {
+      onExpand(data[preExpandRow], preExpandRow);
+    }
+  }, []);
 
   let body: React.ReactNode = (
     <EmptyRow
@@ -233,7 +237,7 @@ const Table: React.FC<TableProps> = ({
           }`}
           key={`index:${index}`}
           style={rowStyles}
-          ref={index === preExpandRow ? expandRowRef  : null}
+          ref={index === preExpandRow ? expandRowRef : null}
         >
           <>
             {expandRow ? (

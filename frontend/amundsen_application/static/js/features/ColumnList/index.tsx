@@ -97,7 +97,6 @@ type FormattedDataType = {
   tableKey: string;
   sort_order: string;
   isEditable: boolean;
-  isSelected: boolean;
   badges: Badge[];
 };
 
@@ -219,9 +218,12 @@ const ColumnList: React.FC<ColumnListProps> = ({
   getColumnLineageDispatch,
 }: ColumnListProps) => {
   const hasColumnBadges = hasColumnWithBadge(columns);
+  let selectedIndex;
   const formattedData: FormattedDataType[] = columns.map((item, index) => {
     const hasItemStats = !!item.stats.length;
-
+    if (item.name === selectedColumn) {
+      selectedIndex = index;
+    }
     return {
       tableKey,
       content: {
@@ -240,7 +242,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
       action: item.name,
       name: item.name,
       isEditable: item.is_editable,
-      isSelected: item.name === selectedColumn,
       editText: editText || null,
       editUrl: editUrl || null,
       index,
@@ -371,7 +372,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         expandRow: ExpandedRowComponent,
         onExpand: handleRowExpand,
         tableClassName: 'table-detail-table',
-        preExpandRow: 10,
+        preExpandRow: selectedIndex,
       }}
     />
   );
