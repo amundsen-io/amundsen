@@ -49,7 +49,7 @@ import {
   buildTableKey,
   getLoggingParams,
   getUrlParam,
-  setUrlParam,
+  setUrlParam, TablePageParams,
 } from 'utils/navigationUtils';
 
 import {
@@ -243,6 +243,12 @@ export class TableDetail extends React.Component<
       tableLineage,
     } = this.props;
     const { sortedBy, currentTab } = this.state;
+    const tableParams: TablePageParams = {
+      cluster: tableData.cluster,
+      database: tableData.database,
+      table: tableData.name,
+      schema: tableData.schema,
+    };
     const selectedColumn = getUrlParam(COLUMN_URL_KEY);
 
     // Default Column content
@@ -252,7 +258,7 @@ export class TableDetail extends React.Component<
           openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
-          tableKey={tableData.key}
+          tableParams={tableParams}
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}

@@ -45,10 +45,13 @@ import {
   MORE_BUTTON_TEXT,
   REQUEST_DESCRIPTION_TEXT,
   EMPTY_MESSAGE,
-  EDITABLE_SECTION_TITLE,
+  EDITABLE_SECTION_TITLE, COPY_COLUMN_LINK_TEXT,
 } from './constants';
 
 import './styles.scss';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
+import { TABLE_TAB } from '../../pages/TableDetailPage/constants';
+import { buildTableKey, TablePageParams } from '../../utils/navigationUtils';
 
 export interface ComponentProps {
   columns: TableColumn[];
@@ -61,7 +64,7 @@ export interface ComponentProps {
   editUrl?: string;
   selectedColumn?: string;
   sortBy?: SortCriteria;
-  tableKey: string;
+  tableParams: TablePageParams;
 }
 
 export interface DispatchFromProps {
@@ -94,7 +97,7 @@ type FormattedDataType = {
   editUrl: string | null;
   index: number;
   name: string;
-  tableKey: string;
+  tableParams: TablePageParams;
   sort_order: string;
   isEditable: boolean;
   badges: Badge[];
@@ -156,6 +159,16 @@ const getUsageStat = (item) => {
   return null;
 };
 
+const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
+  const { cluster, database, schema, table } = tableParams;
+  return (
+    window.location.origin +
+    `/table_detail/${cluster}/${database}/${schema}/${table}` +
+    `?${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
+  );
+};
+
+
 // @ts-ignore
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
@@ -197,10 +210,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
         <ExpandableUniqueValues uniqueValues={uniqueValueStats} />
       )}
       {isColumnListLineageEnabled() && (
-        <ColumnLineage
-          tableKey={rowValue.tableKey}
-          columnName={rowValue.name}
-        />
+        <ColumnLineage columnName={rowValue.name} />
       )}
     </div>
   );
@@ -214,7 +224,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   openRequestDescriptionDialog,
   selectedColumn,
   sortBy = DEFAULT_SORTING,
-  tableKey,
+  tableParams,
   getColumnLineageDispatch,
 }: ColumnListProps) => {
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -225,7 +235,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
       selectedIndex = index;
     }
     return {
-      tableKey,
       content: {
         title: item.name,
         description: item.description,
@@ -244,6 +253,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
       isEditable: item.is_editable,
       editText: editText || null,
       editUrl: editUrl || null,
+      tableParams,
       index,
     };
   });
@@ -339,6 +349,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
                 >
                   {REQUEST_DESCRIPTION_TEXT}
                 </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    const link = getColumnLink(tableParams, name);
+                    navigator.clipboard.writeText(link);
+                  }}
+                >
+                  {COPY_COLUMN_LINK_TEXT}
+                </MenuItem>
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -359,7 +377,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
       target_id: `column::${rowValues.content.title}`,
       target_type: 'column stats',
     });
-    getColumnLineageDispatch(rowValues.tableKey, rowValues.name);
+    const tableKey = buildTableKey(rowValues.tableParams);
+    getColumnLineageDispatch(tableKey, rowValues.name);
   };
 
   return (

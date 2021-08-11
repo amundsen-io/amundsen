@@ -24,7 +24,6 @@ import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 
 interface ColumnLineageListOwnProps {
   columnName: string;
-  tableKey: string;
 }
 
 interface StateFromProps {
