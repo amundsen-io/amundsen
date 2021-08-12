@@ -7,10 +7,6 @@ import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
 import { UpIcon, DownIcon } from '../SVGIcons';
 
 import './styles.scss';
-import { useEffect, useRef } from 'react';
-
-// export type SortDirection = 'asc' | 'desc';
-// export type SortCriteria = { key: string; direction: SortDirection };
 
 export enum TextAlignmentValues {
   left = 'left',
@@ -202,8 +198,8 @@ const Table: React.FC<TableProps> = ({
   const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>(
     preExpandRow === undefined ? [] : [preExpandRow]
   );
-  const expandRowRef = useRef(null);
-  useEffect(() => {
+  const expandRowRef = React.useRef(null);
+  React.useEffect(() => {
     if (expandRowRef.current !== null) {
       // @ts-ignore
       expandRowRef.current.scrollIntoView();

@@ -17,4 +17,4 @@ export enum DASHBOARD_TAB {
   TABLE = 'tables',
   CHARTS = 'charts',
   QUERIES = 'queries',
-};
+}

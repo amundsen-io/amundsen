@@ -49,7 +49,8 @@ import {
   buildTableKey,
   getLoggingParams,
   getUrlParam,
-  setUrlParam, TablePageParams,
+  setUrlParam,
+  TablePageParams,
 } from 'utils/navigationUtils';
 
 import {

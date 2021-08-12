@@ -6,10 +6,13 @@ import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { initialLineageState } from 'ducks/lineage/reducer';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import { getColumnLineageLink } from 'config/config-utils';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { Lineage, LineageItem } from 'interfaces/Lineage';
+import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 import { logClick } from 'utils/analytics';
+
 import ColumnLineageLoader from '../ColumnLineageLoader';
 import {
   COLUMN_LINEAGE_LIST_SIZE,
@@ -19,8 +22,6 @@ import {
 } from '../constants';
 
 import './styles.scss';
-import { TABLE_TAB } from '../../../pages/TableDetailPage/constants';
-import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 
 interface ColumnLineageListOwnProps {
   columnName: string;
