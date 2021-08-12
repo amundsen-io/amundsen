@@ -84,7 +84,6 @@ import ListSortingDropdown from './ListSortingDropdown';
 import * as Constants from './constants';
 
 import './styles.scss';
-import { COLUMN_URL_KEY } from './constants';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
@@ -250,7 +249,7 @@ export class TableDetail extends React.Component<
       table: tableData.name,
       schema: tableData.schema,
     };
-    const selectedColumn = getUrlParam(COLUMN_URL_KEY);
+    const selectedColumn = getUrlParam(Constants.COLUMN_URL_KEY);
 
     // Default Column content
     tabInfo.push({
