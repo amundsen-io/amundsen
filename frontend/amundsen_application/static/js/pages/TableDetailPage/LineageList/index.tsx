@@ -27,7 +27,13 @@ const LineageList: React.FC<LineageListProps> = ({
         type: ResourceType.table,
         description: '',
       };
-      return <TableListItem table={tableResource} logging={logging} />;
+      return (
+        <TableListItem
+          table={tableResource}
+          logging={logging}
+          key={`lineage-item::${index}`}
+        />
+      );
     })}
   </div>
 );
