@@ -51,7 +51,7 @@ class TestApacheSupersetMetadataExtractor(unittest.TestCase):
     def test_extractor(self) -> None:
         extractor = self._get_extractor()
 
-        extractor.execute_query = Mock(side_effect=[{'ids': [2]}, dashboard_data_response])
+        extractor.execute_query = Mock(side_effect=[{'ids': [2]}, {'ids': []}, dashboard_data_response])
 
         record = extractor.extract()
 
