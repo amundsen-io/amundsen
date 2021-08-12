@@ -29,7 +29,7 @@ This is setup templates for deploying [amundsen](https://github.com/amundsen-io/
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `clusterDomain`          | Cluster domain                                                                                            | `cluster.local` |
+| clusterDomain | string  | `cluster.local` | Kubernetes Cluster Domain |
 | LONG_RANDOM_STRING | int | `1234` | A long random string. You should probably provide your own. This is needed for OIDC. |
 | affinity | object | `{}` | amundsen application wide configuration of affinity. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity) |
 | dnsZone | string | `"teamname.company.com"` | **DEPRECATED - its not standard to pre construct urls this way.** The dns zone (e.g. group-qa.myaccount.company.com) the app is running in. Used to construct dns hostnames (on aws only). |
