@@ -67,7 +67,7 @@ class TestApacheSupersetChartExtractor(unittest.TestCase):
     def test_extractor(self) -> None:
         extractor = self._get_extractor()
 
-        extractor.execute_query = Mock(side_effect=[{'ids': [1]}, dashboard_details_response])
+        extractor.execute_query = Mock(side_effect=[{'ids': [1]}, {'ids': []}, dashboard_details_response])
 
         record = extractor.extract()
 

@@ -4,7 +4,7 @@
 
 from functools import lru_cache
 from typing import (
-    Any, Dict, Iterator, List, Union,
+    Any, Dict, Iterator, Union,
 )
 
 from sqlalchemy.engine.url import make_url
@@ -18,7 +18,7 @@ class ApacheSupersetTableExtractor(ApacheSupersetBaseExtractor):
     def _get_extract_iter(self) -> Iterator[Union[DashboardTable, None]]:
         dashboards: Dict[str, set] = dict()
 
-        ids = self._get_dataset_ids()
+        ids = self._get_resource_ids('dataset')
 
         data = [(self._get_dataset_details(i), self._get_dataset_related_objects(i)) for i in ids]
 
@@ -68,13 +68,6 @@ class ApacheSupersetTableExtractor(ApacheSupersetBaseExtractor):
             result = DashboardTable(**table_metadata)
 
             yield result
-
-    def _get_dataset_ids(self) -> List[str]:
-        url = self.build_full_url('api/v1/dataset')
-
-        data = self.execute_query(url)
-
-        return data.get('ids', [])
 
     def _get_dataset_details(self, dataset_id: str) -> Dict[str, Any]:
         url = self.build_full_url(f'api/v1/dataset/{dataset_id}')

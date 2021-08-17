@@ -3,7 +3,7 @@
 
 
 from typing import (
-    Any, Dict, Iterator, List, Union,
+    Any, Dict, Iterator, Union,
 )
 
 from databuilder.extractor.dashboard.apache_superset.apache_superset_extractor import (
@@ -37,7 +37,7 @@ class ApacheSupersetMetadataExtractor(ApacheSupersetBaseExtractor):
         return result
 
     def _get_extract_iter(self) -> Iterator[Union[DashboardMetadata, DashboardLastModifiedTimestamp, None]]:
-        ids = self._get_dashboard_ids()
+        ids = self._get_resource_ids('dashboard')
 
         data = [self._get_dashboard_details(i) for i in ids]
 
@@ -54,13 +54,6 @@ class ApacheSupersetMetadataExtractor(ApacheSupersetBaseExtractor):
             dashboard_last_modified.update(**self.common_params)
 
             yield DashboardLastModifiedTimestamp(**dashboard_last_modified)
-
-    def _get_dashboard_ids(self) -> List[str]:
-        url = self.build_full_url('api/v1/dashboard')
-
-        data = self.execute_query(url)
-
-        return data.get('ids', [])
 
     def _get_dashboard_details(self, dashboard_id: str) -> Dict[str, Any]:
         url = self.build_full_url(f'api/v1/dashboard/{dashboard_id}')
