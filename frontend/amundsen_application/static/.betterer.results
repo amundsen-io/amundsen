@@ -563,7 +563,7 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:3967879790": [
+    "js/ducks/tableMetadata/api/v0.ts:499141138": [
       [80, 8, 23, "Use object destructuring.", "1142306891"],
       [139, 23, -4311, "Expected to return a value at the end of arrow function.", "5381"]
     ],

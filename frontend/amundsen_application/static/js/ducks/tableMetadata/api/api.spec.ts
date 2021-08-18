@@ -1,7 +1,7 @@
 import axios from 'axios';
 
+import { qualityChecks } from 'fixtures/metadata/table';
 import * as API from './v0';
-import { qualityChecks } from '../../../fixtures/metadata/table';
 
 jest.mock('axios');
 
