@@ -201,15 +201,13 @@ export function getTableQualityChecks(key: string) {
   const tableQueryParams = getTableQueryParams({
     key,
   });
-  return axios({
-    url: `/api/quality/v0/table?${tableQueryParams}`,
-    method: 'GET',
-  })
+  return axios
+    .get(`/api/quality/v0/table?${tableQueryParams}`)
     .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
       checks: response.data.checks,
       status: response.status,
     }))
-    .catch((e: AxiosError<TableQualityChecksAPI>) => {
+    .catch((e) => {
       const { response } = e;
       const status = response ? response.status : null;
       return Promise.reject({ status });

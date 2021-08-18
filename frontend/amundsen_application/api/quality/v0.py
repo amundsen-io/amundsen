@@ -12,8 +12,6 @@ from flask.blueprints import Blueprint
 from marshmallow import ValidationError
 from werkzeug.utils import import_string
 
-from amundsen_application.models.quality import TableQualityChecks
-
 LOGGER = logging.getLogger(__name__)
 QUALITY_CLIENT_CLASS = None
 QUALITY_CLIENT_INSTANCE = None
