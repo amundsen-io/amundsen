@@ -32,12 +32,7 @@ def get_table_quality_checks() -> Response:
     global QUALITY_CLIENT_CLASS
     try:
         if QUALITY_CLIENT_INSTANCE is None:
-            if QUALITY_CLIENT_CLASS is not None:
-                QUALITY_CLIENT_INSTANCE = QUALITY_CLIENT_CLASS()
-                logging.warn('Setting quality_client via entry_point is DEPRECATED and '
-                             'will be removed in a future version')
-            elif (app.config['QUALITY_CLIENT_ENABLED']
-                  and app.config['QUALITY_CLIENT'] is not None):
+            if (app.config['QUALITY_CLIENT_ENABLED'] and app.config['QUALITY_CLIENT'] is not None):
                 QUALITY_CLIENT_CLASS = import_string(app.config['QUALITY_CLIENT'])
                 QUALITY_CLIENT_INSTANCE = QUALITY_CLIENT_CLASS()
             else:
@@ -46,6 +41,11 @@ def get_table_quality_checks() -> Response:
         response = QUALITY_CLIENT_INSTANCE.get_table_quality_checks(params=request.args)
         status_code = response.status_code
         quality_checks = json.loads(response.data).get('checks')
+
+        print('--------------')
+        print(response.data)
+        print('--------------')
+
         if status_code == HTTPStatus.OK:
             # validate the returned table checks data
             try:

@@ -1106,10 +1106,3 @@ def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[
         # explicitly raise the exception which will trigger 500 api response
         results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
         return results_dict
-
-
-
-# TODO - this should return a 'not-implemented error'
-# @metadata_blueprint.route('/get_data_quality_checks', methods=['GET'])
-# def get_data_quality_checks() -> Response:
-
