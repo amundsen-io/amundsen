@@ -40,24 +40,19 @@ def get_table_quality_checks() -> Response:
                 return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
         response = QUALITY_CLIENT_INSTANCE.get_table_quality_checks(params=request.args)
         status_code = response.status_code
-        quality_checks = json.loads(response.data).get('checks')
-
-        print('--------------')
-        print(response.data)
-        print('--------------')
-
         if status_code == HTTPStatus.OK:
             # validate the returned table checks data
             try:
+                quality_checks = json.loads(response.data).get('checks')
                 payload = jsonify({'checks': quality_checks, 'msg': 'Success'})
             except ValidationError as err:
                 logging.error('Quality data dump returned errors: ' + str(err.messages))
-                raise Exception('The preview client did not return a valid PreviewData object')
+                raise Exception('The preview client did not return a valid Quality Checks object')
         else:
             message = 'Encountered error: Quality client request failed with code ' + str(status_code)
             logging.error(message)
             # only necessary to pass the error text
-            payload = jsonify({'checks': {'error_text': quality_checks.get('error_text', '')}, 'msg': message})
+            payload = jsonify({'checks': {}, 'msg': message})
         return make_response(payload, status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
