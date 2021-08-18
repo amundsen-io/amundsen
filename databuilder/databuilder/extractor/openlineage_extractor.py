@@ -3,7 +3,7 @@
 
 import json
 import logging
-from typing import Any, Generator, Dict
+from typing import Any, Dict, Iterator
 
 from pyhocon import ConfigTree
 
@@ -43,7 +43,7 @@ class OpenLineageTableLineageExtractor(Extractor):
         self.ol_namespace_override = conf.get_string(OpenLineageTableLineageExtractor.OL_DATASET_NAMESPACE_OVERRIDE, default=None)
         self._load_openlineage_event()
 
-    def _extract_dataset_info(self, openlineage_event: Generator[Any]) -> Generator[Dict]:
+    def _extract_dataset_info(self, openlineage_event: Any) -> Iterator[Dict]:
         """
         Yield input/output dict in form of amundsen table keys
         """
