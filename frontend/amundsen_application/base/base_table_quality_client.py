@@ -4,7 +4,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseTableQuality(metaclass=ABCMeta):
+class BaseTableQualityClient(metaclass=ABCMeta):
     """
     A Table Quality interface
     """
