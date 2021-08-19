@@ -862,8 +862,14 @@ If you are fine with `accumulated usage`, you could use TemplateVariableSubstitu
 
 #### [OpenLineageTableLineageExtractor](./databuilder/extractor/openlineage_extractor.py)
 A Extractor that extracts table lineage information from [OpenLineage](https://github.com/OpenLineage/OpenLineage) events.
-> :warning: Extractor expect input data in the form of **openLineage events in ndjson format**
+> :warning: Extractor expects input data in the form of **openLineage events in ndjson format**
 
+Custom Openlineage json extraction keys may be set by passing those values:<br>
+* OpenLineageTableLineageExtractor.OL_INPUTS_KEY - json key for inputs list
+* OpenLineageTableLineageExtractor.OL_OUTPUTS_KEY- json key for output list
+* OpenLineageTableLineageExtractor.OL_DATASET_NAMESPACE_KEY - json key for namespace name (inputs/outputs scope)
+* OpenLineageTableLineageExtractor.OL_DATASET_DATABASE_KEY - json key for database name (inputs/outputs scope)
+* OpenLineageTableLineageExtractor.OL_DATASET_NAME_KEY - json key for dataset name (inputs/outputs scope)
 ```python
 
 tmp_folder = f'/tmp/amundsen/lineage'

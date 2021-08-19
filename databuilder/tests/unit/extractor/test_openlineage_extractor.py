@@ -16,7 +16,8 @@ class TestOpenlineageExtractor(unittest.TestCase):
         Test _amundsen_dataset_key method
         """
         config_dict = {
-            f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.TABLE_LINEAGE_FILE_LOCATION}': 'example/sample_data/openlineage/sample_openlineage_events.ndjson',
+            f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.TABLE_LINEAGE_FILE_LOCATION}':
+                'example/sample_data/openlineage/sample_openlineage_events.ndjson',
             f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.CLUSTER_NAME}': 'datalab',
 
         }
@@ -38,7 +39,8 @@ class TestOpenlineageExtractor(unittest.TestCase):
         Test Extraction
         """
         config_dict = {
-            f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.TABLE_LINEAGE_FILE_LOCATION}': 'example/sample_data/openlineage/sample_openlineage_events.ndjson',
+            f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.TABLE_LINEAGE_FILE_LOCATION}':
+                'example/sample_data/openlineage/sample_openlineage_events.ndjson',
             f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.CLUSTER_NAME}': 'datalab',
 
         }
