@@ -25,12 +25,20 @@ class AthenaMetadataExtractor(Extractor):
     """
 
     SQL_STATEMENT = """
-    SELECT
-        {catalog_source} as cluster, table_schema as schema, table_name as name, column_name as col_name,
-        data_type as col_type,ordinal_position as col_sort_order,
-        comment as col_description, extra_info as extras from information_schema.columns
-        {where_clause_suffix}
+        select 
+	        es.databasename as cluster,        
+	        ec.schemaname as schema, 
+	        ec.tablename as name, 
+	        ec.columnname as col_name,
+	        ec.external_type as col_type,
+	        ec.columnnum as col_sort_order,
+	        NULL as col_description, 
+	        ec.is_nullable as extras         
+        from SVV_EXTERNAL_COLUMNS as ec
+        join SVV_EXTERNAL_SCHEMAS as es on ec.schemaname = es.schemaname
+         {where_clause_suffix}        
         ORDER by cluster, schema, name, col_sort_order ;
+
     """
 
     # CONFIG KEYS
