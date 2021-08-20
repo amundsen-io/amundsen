@@ -18,7 +18,6 @@ class BaseQualityClient(metaclass=ABCMeta):
         """
         raise NotImplementedError  # pragma: no cover
 
-
     @abstractmethod
     def get_table_quality_checks(self, *, table_key: str) -> bytes:
         """

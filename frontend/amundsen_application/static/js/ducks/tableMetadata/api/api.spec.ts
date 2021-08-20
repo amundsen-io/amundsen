@@ -19,12 +19,14 @@ describe('getTableQualityChecks', () => {
       .spyOn(axios, 'get')
       .mockImplementationOnce(() => Promise.resolve(mockResponse));
     expect.assertions(2);
-    await API.getTableQualityChecksSummary('testUri').then((processedResponse) => {
-      expect(processedResponse).toEqual({
-        checks: mockResponse.data.checks,
-        status: mockStatus,
-      });
-    });
+    await API.getTableQualityChecksSummary('testUri').then(
+      (processedResponse) => {
+        expect(processedResponse).toEqual({
+          checks: mockResponse.data.checks,
+          status: mockStatus,
+        });
+      }
+    );
     expect(axiosMockGet).toHaveBeenCalled();
   });
 
@@ -39,11 +41,13 @@ describe('getTableQualityChecks', () => {
       .spyOn(axios, 'get')
       .mockImplementationOnce(() => Promise.reject(mockResponse));
     expect.assertions(2);
-    await API.getTableQualityChecksSummary('testUri').catch((processedResponse) => {
-      expect(processedResponse).toEqual({
-        status: mockStatus,
-      });
-    });
+    await API.getTableQualityChecksSummary('testUri').catch(
+      (processedResponse) => {
+        expect(processedResponse).toEqual({
+          status: mockStatus,
+        });
+      }
+    );
     expect(axiosMockGet).toHaveBeenCalled();
   });
 });
