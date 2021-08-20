@@ -18,6 +18,7 @@ QUALITY_CLIENT_INSTANCE = None
 
 quality_blueprint = Blueprint('quality', __name__, url_prefix='/api/quality/v0')
 
+
 def get_quality_client():
     global QUALITY_CLIENT_INSTANCE
     if QUALITY_CLIENT_INSTANCE is None and app.config['QUALITY_CLIENT'] is not None:
@@ -26,13 +27,13 @@ def get_quality_client():
     return QUALITY_CLIENT_INSTANCE
 
 
-@quality_blueprint.route('/table', methods=['GET'])
-def get_table_quality_checks() -> Response:
+@quality_blueprint.route('/table/summary', methods=['GET'])
+def get_table_quality_checks_summary() -> Response:
     global QUALITY_CLIENT_INSTANCE
     try:
         client = get_quality_client()
         if client is not None:
-            return _get_dq_client_response()
+            return _get_dq_checks_summary_client()
         payload = jsonify({'checks': {}, 'msg': 'This feature is not implemented'})
         return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
     except Exception as e:
@@ -42,7 +43,7 @@ def get_table_quality_checks() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-def _get_dq_client_response() -> Response:
+def _get_dq_checks_summary_client() -> Response:
     client = get_quality_client()
     entity_key = get_query_param(request.args, 'key')
     response = client.get_minimal_checks(entity_key=entity_key)

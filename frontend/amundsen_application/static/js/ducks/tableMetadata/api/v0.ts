@@ -197,12 +197,12 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
     });
 }
 
-export function getTableQualityChecks(key: string) {
+export function getTableQualityChecksSummary(key: string) {
   const tableQueryParams = getTableQueryParams({
     key,
   });
   return axios
-    .get(`/api/quality/v0/table?${tableQueryParams}`)
+    .get(`/api/quality/v0/table/summary?${tableQueryParams}`)
     .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
       checks: response.data.checks,
       status: response.status,

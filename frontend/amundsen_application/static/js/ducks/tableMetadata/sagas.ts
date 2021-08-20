@@ -187,7 +187,7 @@ export function* getTableQualityChecksWorker(
 ): SagaIterator {
   const { key } = action.payload;
   try {
-    const response = yield call(API.getTableQualityChecks, key);
+    const response = yield call(API.getTableQualityChecksSummary, key);
     const { checks, status } = response;
     yield put(getTableQualityChecksSuccess(checks, status));
   } catch (error) {

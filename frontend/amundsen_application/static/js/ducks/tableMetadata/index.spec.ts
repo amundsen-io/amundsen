@@ -755,7 +755,7 @@ describe('tableMetadata ducks', () => {
       it('executes flow for getting table quality checks', () => {
         testSaga(getTableQualityChecksWorker, getTableQualityChecks(testKey))
           .next()
-          .call(API.getTableQualityChecks, testKey)
+          .call(API.getTableQualityChecksSummary, testKey)
           .next({ checks: testTableQualityChecks, status: 200 })
           .put(getTableQualityChecksSuccess(testTableQualityChecks, 200))
           .next()
@@ -765,7 +765,7 @@ describe('tableMetadata ducks', () => {
       it('handles request error', () => {
         testSaga(getTableQualityChecksWorker, getTableQualityChecks(testKey))
           .next()
-          .call(API.getTableQualityChecks, testKey)
+          .call(API.getTableQualityChecksSummary, testKey)
           // @ts-ignore
           .throw({ status: 500 })
           .put(getTableQualityChecksFailure(500))

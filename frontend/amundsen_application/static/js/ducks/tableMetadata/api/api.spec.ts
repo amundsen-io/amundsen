@@ -19,7 +19,7 @@ describe('getTableQualityChecks', () => {
       .spyOn(axios, 'get')
       .mockImplementationOnce(() => Promise.resolve(mockResponse));
     expect.assertions(2);
-    await API.getTableQualityChecks('testUri').then((processedResponse) => {
+    await API.getTableQualityChecksSummary('testUri').then((processedResponse) => {
       expect(processedResponse).toEqual({
         checks: mockResponse.data.checks,
         status: mockStatus,
@@ -39,7 +39,7 @@ describe('getTableQualityChecks', () => {
       .spyOn(axios, 'get')
       .mockImplementationOnce(() => Promise.reject(mockResponse));
     expect.assertions(2);
-    await API.getTableQualityChecks('testUri').catch((processedResponse) => {
+    await API.getTableQualityChecksSummary('testUri').catch((processedResponse) => {
       expect(processedResponse).toEqual({
         status: mockStatus,
       });
