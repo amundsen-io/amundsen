@@ -12,6 +12,7 @@ from marshmallow import ValidationError
 from werkzeug.utils import import_string
 
 from amundsen_application.api.utils.request_utils import get_query_param
+from amundsen_application.base.base_quality_client import BaseQualityClient
 
 LOGGER = logging.getLogger(__name__)
 QUALITY_CLIENT_INSTANCE = None
@@ -19,7 +20,7 @@ QUALITY_CLIENT_INSTANCE = None
 quality_blueprint = Blueprint('quality', __name__, url_prefix='/api/quality/v0')
 
 
-def get_quality_client():
+def get_quality_client() -> BaseQualityClient:
     global QUALITY_CLIENT_INSTANCE
     if QUALITY_CLIENT_INSTANCE is None and app.config['QUALITY_CLIENT'] is not None:
         quality_client_class = import_string(app.config['QUALITY_CLIENT'])
@@ -45,11 +46,10 @@ def get_table_quality_checks_summary() -> Response:
 
 def _get_dq_checks_summary_client() -> Response:
     client = get_quality_client()
-    entity_key = get_query_param(request.args, 'key')
-    response = client.get_minimal_checks(entity_key=entity_key)
+    table_key = get_query_param(request.args, 'key')
+    response = client.get_table_quality_checks_summary(table_key=table_key)
     status_code = response.status_code
     if status_code == HTTPStatus.OK:
-        # validate the returned table checks data
         try:
             quality_checks = json.loads(response.data).get('checks')
             payload = jsonify({'checks': quality_checks, 'msg': 'Success'})
