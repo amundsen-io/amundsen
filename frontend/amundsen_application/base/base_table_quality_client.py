@@ -10,7 +10,7 @@ class BaseTableQualityClient(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def get_table_quality_checks(self, *, table_key: str) -> bytes:
+    def get_minimal_checks(self, *, entity_key: str) -> bytes:
         """
         Returns table quality checks for a given table uri
         :param table_key: Table key for the table whose table quality

@@ -84,7 +84,6 @@ class Config:
     PREVIEW_CLIENT_CERTIFICATE = os.getenv('PREVIEW_CLIENT_CERTIFICATE')  # type: Optional[str]
 
     # Settings for Quality client
-    QUALITY_CLIENT_ENABLED = os.getenv('QUALITY_CLIENT_ENABLED') == 'true'  # type: bool
     QUALITY_CLIENT = os.getenv('QUALITY_CLIENT', None)  # type: Optional[str]
 
     # Settings for Announcement Client integration
