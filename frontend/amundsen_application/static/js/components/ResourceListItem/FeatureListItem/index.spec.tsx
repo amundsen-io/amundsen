@@ -75,7 +75,7 @@ describe('FeatureListItem', () => {
 
       it('renders feature group and name', () => {
         expect(resourceInfo.find('.resource-name').text()).toEqual(
-          `${props.feature.feature_group}.${props.feature.name}`
+          `${props.feature.feature_group}.${props.feature.name}.${props.feature.version}`
         );
       });
 

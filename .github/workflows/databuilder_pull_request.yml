@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "databuilder/**"
+      - "common/**"
       - "requirements-dev.txt"
 jobs:
   test-unit-python:

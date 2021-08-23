@@ -91,3 +91,50 @@ export const buildLineageURL = ({
  */
 export const buildDashboardURL = (URI: string) =>
   `/dashboard/${encodeURIComponent(URI)}`;
+
+/**
+ * Extracts and returns the "index" and "source" logging parameters from the URL.
+ * This also quietly removes these parameters from the url
+ * @param search
+ * @return { index, source }
+ */
+export function getLoggingParams(
+  search: string
+): { index: string; source: string } {
+  const params = qs.parse(search);
+  const { index } = params;
+  const { source } = params;
+
+  let queryString = '';
+  let isInitialParam = true;
+  Object.keys(params).forEach((key) => {
+    if (key !== 'index' && key !== 'source') {
+      queryString = isInitialParam
+        ? `?${key}=${params[key]}`
+        : `${queryString}&${key}=${params[key]}`;
+      isInitialParam = false;
+    }
+  });
+
+  // Remove logging params from URL
+  if (source !== undefined || index !== undefined) {
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.origin}${window.location.pathname}${queryString}`
+    );
+  }
+  return { index, source };
+}
+
+export function getUrlParam(key: string): string {
+  const params = qs.parse(location.search);
+  return params[key];
+}
+
+export function setUrlParam(key: string, value: string) {
+  const params = qs.parse(location.search);
+  params[key] = value;
+  const queryString = qs.stringify(params);
+  BrowserHistory.replace(`${location.pathname}?${queryString}`);
+}

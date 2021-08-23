@@ -166,3 +166,22 @@ class ApacheSupersetBaseExtractor(Extractor):
     @abc.abstractmethod
     def _get_extract_iter(self) -> Iterator[Any]:
         pass
+
+    def _get_resource_ids(self, resource: str) -> List[str]:
+        i = 0
+        result = []
+
+        while True:
+            url = self.build_full_url(f'api/v1/{resource}?q=(page_size:{self.page_size},page:{i},order_direction:desc)')
+
+            data = self.execute_query(url)
+
+            ids = data.get('ids', [])
+
+            if ids:
+                result += ids
+                i += 1
+            else:
+                break
+
+        return result

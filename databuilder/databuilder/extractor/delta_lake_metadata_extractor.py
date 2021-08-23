@@ -15,7 +15,7 @@ from pyspark.sql.catalog import Table
 from pyspark.sql.types import (
     ArrayType, MapType, StructField, StructType,
 )
-from pyspark.sql.utils import AnalysisException
+from pyspark.sql.utils import AnalysisException, ParseException
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_last_updated import TableLastUpdated
@@ -297,9 +297,9 @@ class DeltaLakeMetadataExtractor(Extractor):
             raw_columns = self.spark.sql(f"describe {table_name}").collect()
             for field in self.spark.table(f"{table_name}").schema:
                 field_dict[field.name] = field
-        except AnalysisException as e:
+        except (AnalysisException, ParseException) as e:
             LOGGER.error(e)
-            return raw_columns
+            return []
         parsed_columns: Dict[str, ScrapedColumnMetadata] = {}
         partition_cols = False
         sort_order = 0

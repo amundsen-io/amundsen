@@ -7,12 +7,14 @@ from typing import (
     Any, Dict, List, Union,
 )
 
+from amundsen_common.models.api import health_check
 from amundsen_common.models.index_map import (
     FEATURE_INDEX_MAP, TABLE_INDEX_MAP, USER_INDEX_MAP,
 )
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import NotFoundError
+from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, NotFoundError
 from elasticsearch_dsl import Search, query
+from elasticsearch_dsl.utils import AttrDict
 from flask import current_app
 
 from search_service import config
@@ -107,6 +109,24 @@ class ElasticsearchProxy(BaseProxy):
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
         self.page_size = page_size
+
+    def health(self) -> health_check.HealthCheck:
+        """
+        Returns the health of the Elastic search cluster
+        """
+        try:
+            if self.elasticsearch.ping():
+                health = self.elasticsearch.cluster.health()
+                # ES status vaues: green, yellow, red
+                status = health_check.OK if health['status'] != 'red' else health_check.FAIL
+            else:
+                health = {'status': 'Unable to connect'}
+                status = health_check.FAIL
+            checks = {f'{type(self).__name__}:connection': health}
+        except ElasticConnectionError:
+            status = health_check.FAIL
+            checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
+        return health_check.HealthCheck(status=status, checks=checks)
 
     def get_user_search_query(self, query_term: str) -> dict:
         return {
@@ -284,7 +304,13 @@ class ElasticsearchProxy(BaseProxy):
             except Exception:
                 LOGGING.exception('The record doesnt contain specified field.')
 
-        return search_result_model(total_results=response.hits.total,
+        # This is to support ESv7.x, and newer version of elasticsearch_dsl
+        if isinstance(response.hits.total, AttrDict):
+            _total = response.hits.total.value
+        else:
+            _total = response.hits.total
+
+        return search_result_model(total_results=_total,
                                    results=results)
 
     def _get_instance(self, attr: str, val: Any) -> Any:
@@ -311,6 +337,9 @@ class ElasticsearchProxy(BaseProxy):
         :param query_name: name of query to query the ES
         :return:
         """
+        # This is to support ESv7.x
+        # ref: https://www.elastic.co/guide/en/elasticsearch/reference/7.0/breaking-changes-7.0.html#track-total-hits-10000-default # noqa: E501
+        client = client.extra(track_total_hits=True)
 
         if query_name:
             q = query.Q(query_name)
@@ -716,7 +745,7 @@ class ElasticsearchProxy(BaseProxy):
         return [{'delete': {'_index': index_key, '_id': id, '_type': type}} for id in data]
 
     def _bulk_helper(self, actions: List[Dict[str, Any]]) -> None:
-        result = self.elasticsearch.bulk(actions)
+        result = self.elasticsearch.bulk(body=actions)
 
         if result['errors']:
             # ES's error messages are nested within elasticsearch objects and can
@@ -732,7 +761,7 @@ class ElasticsearchProxy(BaseProxy):
         :return: list of elasticsearch indices
         """
         try:
-            indices = self.elasticsearch.indices.get_alias(alias).keys()
+            indices = self.elasticsearch.indices.get_alias(index=alias).keys()
             return indices
         except NotFoundError:
             LOGGING.warn('Received index not found error from Elasticsearch', exc_info=True)
@@ -757,5 +786,5 @@ class ElasticsearchProxy(BaseProxy):
 
         # alias our new index
         index_actions = {'actions': [{'add': {'index': index_key, 'alias': alias}}]}
-        self.elasticsearch.indices.update_aliases(index_actions)
+        self.elasticsearch.indices.update_aliases(body=index_actions)
         return index_key

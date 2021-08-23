@@ -113,7 +113,7 @@ describe('getResourceNotices', () => {
       const resources = [ResourceType.table, ResourceType.dashboard];
       resources.forEach((resource) => {
         AppConfig.resourceConfig[resource].notices = {
-          'gold.hive.core.fact_rides': {
+          'cluster1.datasource1.schema1.table1': {
             severity: NoticeSeverity.WARNING,
             messageHtml: (resourceName) => {
               const [cluster, datasource, schema, table] = resourceName.split(
@@ -123,10 +123,10 @@ describe('getResourceNotices', () => {
             },
           },
         };
-        const expected = 'gold, hive, core, fact_rides';
+        const expected = 'cluster1, datasource1, schema1, table1';
         const notice = ConfigUtils.getResourceNotices(
           resource,
-          'gold.hive.core.fact_rides'
+          'cluster1.datasource1.schema1.table1'
         );
         const actual = notice && notice.messageHtml;
 
@@ -139,65 +139,77 @@ describe('getResourceNotices', () => {
     describe('when there are wildcard(s) that match', () => {
       it('returns notice', () => {
         const noticesDict = {
-          '*.hive.core.fact_rides': {
+          '*.datasource.schema.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.*.core.fact_rides': {
+          'cluster.*.schema.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.hive.*.fact_rides': {
+          'cluster.datasource.*.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.hive.core.*': {
+          'cluster.datasource.schema.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          '*.*.core.fact_rides': {
+          '*.*.schema.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          '*.hive.*.fact_rides': {
+          '*.datasource.*.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          '*.hive.core.*': {
+          '*.datasource.schema.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.*.*.fact_rides': {
+          'cluster.*.*.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.*.core.*': {
+          'cluster.*.schema.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.hive.*.*': {
+          'cluster.datasource.*.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          '*.*.*.fact_rides': {
+          '*.*.*.table': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          '*.*.core.*': {
+          '*.*.schema.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          'gold.*.*.*': {
+          'cluster.*.*.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
-          '*.hive.*.*': {
+          '*.datasource.*.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
           },
           '*.*.*.*': {
             severity: NoticeSeverity.WARNING,
-            messageHtml: 'testMessage',
+            messageHtml: 'testMessage1',
+          },
+          'cluster.datasource.schema.tab*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage1',
+          },
+          'cluster.datasource.schema.*able': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage1',
+          },
+          'cluster.datasource.schema.ta*le': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage1',
           },
         };
         const resources = [ResourceType.table, ResourceType.dashboard];
@@ -207,10 +219,10 @@ describe('getResourceNotices', () => {
             AppConfig.resourceConfig[resource].notices = {
               [noticeName]: noticeParams,
             };
-            const expected = 'testMessage';
+            const expected = 'testMessage1';
             const notice = ConfigUtils.getResourceNotices(
               resource,
-              'gold.hive.core.fact_rides'
+              'cluster.datasource.schema.table'
             );
             const actual = notice && notice.messageHtml;
 
@@ -223,59 +235,63 @@ describe('getResourceNotices', () => {
     describe("when there are wildcard(s) that don't match", () => {
       it('returns false', () => {
         const noticesDict = {
-          '*.hive.core.fact_rides': {
+          '*.datasource.schema.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.*.core.fact_rides': {
+          'cluster.*.schema.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.hive.*.fact_rides': {
+          'cluster.datasource.*.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.hive.core.*': {
+          'cluster.datasource.schema.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          '*.*.core.fact_rides': {
+          '*.*.schema.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          '*.hive.*.fact_rides': {
+          '*.datasource.*.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          '*.hive.core.*': {
+          '*.datasource.schema.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.*.*.fact_rides': {
+          'cluster.*.*.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.*.core.*': {
+          'cluster.*.schema.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.hive.*.*': {
+          'cluster.datasource.*.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          '*.*.*.fact_rides': {
+          '*.*.*.table': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          '*.*.core.*': {
+          '*.*.schema.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          'gold.*.*.*': {
+          'cluster.*.*.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
-          '*.hive.*.*': {
+          '*.datasource.*.*': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+          },
+          '*.b*.*.*': {
             severity: NoticeSeverity.WARNING,
             messageHtml: 'testMessage',
           },
@@ -290,7 +306,7 @@ describe('getResourceNotices', () => {
             const expected = false;
             const notice = ConfigUtils.getResourceNotices(
               resource,
-              'cluster.datasource.schema.table'
+              'cluster1.datasource1.schema1.table1'
             );
             const actual = notice && notice.messageHtml;
 
@@ -305,11 +321,11 @@ describe('getResourceNotices', () => {
         const resources = [ResourceType.table, ResourceType.dashboard];
         resources.forEach((resource) => {
           AppConfig.resourceConfig[resource].notices = {
-            'gold.hive.*.*': {
+            'cluster.datasource.*.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: 'testMessage',
             },
-            'gold.hive.core.*': {
+            'cluster.datasource.schema.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: 'testMessage2',
             },
@@ -317,7 +333,7 @@ describe('getResourceNotices', () => {
           const expected = 'testMessage2';
           const notice = ConfigUtils.getResourceNotices(
             resource,
-            'gold.hive.core.fact_rides'
+            'cluster.datasource.schema.table'
           );
           const actual = notice && notice.messageHtml;
 
@@ -331,11 +347,11 @@ describe('getResourceNotices', () => {
         const resources = [ResourceType.table, ResourceType.dashboard];
         resources.forEach((resource) => {
           AppConfig.resourceConfig[resource].notices = {
-            'gold.hive.core.*': {
+            'cluster.datasource.schema.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: 'testMessage2',
             },
-            'gold.hive.shadow.*': {
+            'cluster.datasource.schema1.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: 'testMessage',
             },
@@ -343,7 +359,7 @@ describe('getResourceNotices', () => {
           const expected = 'testMessage2';
           const notice = ConfigUtils.getResourceNotices(
             resource,
-            'gold.hive.core.fact_rides'
+            'cluster.datasource.schema.table'
           );
           const actual = notice && notice.messageHtml;
 
@@ -357,7 +373,7 @@ describe('getResourceNotices', () => {
         const resources = [ResourceType.table, ResourceType.dashboard];
         resources.forEach((resource) => {
           AppConfig.resourceConfig[resource].notices = {
-            'gold.hive.core.*': {
+            'cluster1.datasource1.schema1.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: (resourceName) => {
                 const [cluster, datasource, schema, table] = resourceName.split(
@@ -367,10 +383,10 @@ describe('getResourceNotices', () => {
               },
             },
           };
-          const expected = 'gold, hive, core, fact_rides';
+          const expected = 'cluster1, datasource1, schema1, table1';
           const notice = ConfigUtils.getResourceNotices(
             resource,
-            'gold.hive.core.fact_rides'
+            'cluster1.datasource1.schema1.table1'
           );
           const actual = notice && notice.messageHtml;
 

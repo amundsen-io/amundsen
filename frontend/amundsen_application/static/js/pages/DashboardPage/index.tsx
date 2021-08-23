@@ -13,15 +13,16 @@ import { GlobalState } from 'ducks/rootReducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { updateSearchState } from 'ducks/search/reducer';
 
+import Alert from 'components/Alert';
 import Breadcrumb from 'components/Breadcrumb';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import EditableSection from 'components/EditableSection';
 import LoadingSpinner from 'components/LoadingSpinner';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import ResourceStatusMarker from 'components/ResourceStatusMarker';
 import ResourceList from 'components/ResourceList';
 import TagInput from 'components/Tags/TagInput';
-import Alert from 'components/Alert';
 
 import {
   getSourceDisplayName,
@@ -29,7 +30,11 @@ import {
   getResourceNotices,
 } from 'config/config-utils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams } from 'utils/logUtils';
+import {
+  getLoggingParams,
+  getUrlParam,
+  setUrlParam,
+} from 'utils/navigationUtils';
 
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';
@@ -43,6 +48,10 @@ import {
   TABLES_PER_PAGE,
   LAST_RUN_SUCCEEDED,
   STATUS_TEXT,
+  DASHBOARD_TAB,
+  TABLES_TAB_TITLE,
+  CHARTS_TAB_TITLE,
+  QUERIES_TAB_TITLE,
 } from './constants';
 import ChartList from './ChartList';
 import QueryList from './QueryList';
@@ -130,6 +139,7 @@ export class DashboardPage extends React.Component<
   renderTabs() {
     const tabInfo: TabInfo[] = [];
     const { dashboard } = this.props;
+    const defaultTab = getUrlParam(TAB_URL_PARAM) || DASHBOARD_TAB.TABLE;
 
     tabInfo.push({
       content: (
@@ -139,15 +149,15 @@ export class DashboardPage extends React.Component<
           source={DASHBOARD_SOURCE}
         />
       ),
-      key: 'tables',
-      title: `Tables (${dashboard.tables.length})`,
+      key: DASHBOARD_TAB.TABLE,
+      title: `${TABLES_TAB_TITLE} (${dashboard.tables.length})`,
     });
 
     if (dashboard.chart_names.length > 0) {
       tabInfo.push({
         content: <ChartList charts={dashboard.chart_names} />,
-        key: 'charts',
-        title: `Charts (${dashboard.chart_names.length})`,
+        key: DASHBOARD_TAB.CHARTS,
+        title: `${CHARTS_TAB_TITLE} (${dashboard.chart_names.length})`,
       });
     }
 
@@ -155,15 +165,16 @@ export class DashboardPage extends React.Component<
       content: (
         <QueryList product={dashboard.product} queries={dashboard.queries} />
       ),
-      key: 'queries',
-      title: `Queries (${dashboard.queries.length})`,
+      key: DASHBOARD_TAB.QUERIES,
+      title: `${QUERIES_TAB_TITLE} (${dashboard.queries.length})`,
     });
 
     return (
       <TabsComponent
         tabs={tabInfo}
-        defaultTab="tables"
+        defaultTab={defaultTab}
         onSelect={(key) => {
+          setUrlParam(TAB_URL_PARAM, key);
           logAction({
             command: 'click',
             target_id: 'dashboard_page_tab',

@@ -20,7 +20,7 @@ services:
       networks:
         - amundsennet
   elasticsearch:
-      image: elasticsearch:6.7.0
+      image: elasticsearch:7.13.3
       container_name: es_amundsen
       ports:
           - 9200:9200
@@ -32,8 +32,10 @@ services:
         nofile:
           soft: 65536
           hard: 65536
+      environment:
+        - discovery.type=single-node
   amundsensearch:
-      image: amundsendev/amundsen-search:2.4.1
+      image: amundsendev/amundsen-search:2.11.1
       container_name: amundsensearch
       ports:
         - 5001:5000
@@ -45,7 +47,7 @@ services:
         - PROXY_ENDPOINT=es_amundsen
       command: gunicorn -w 2 --bind :5000 search_service.search_wsgi
   amundsenmetadata:
-      image: amundsendev/amundsen-metadata:3.3.0
+      image: amundsendev/amundsen-metadata:3.9.0
       container_name: amundsenmetadata
       depends_on:
         - neo4j
@@ -57,7 +59,7 @@ services:
          - PROXY_HOST=bolt://neo4j_amundsen
       command: gunicorn -w 2 --bind :5000 metadata_service.metadata_wsgi
   amundsenfrontend:
-      image: amundsendev/amundsen-frontend:3.1.0
+      image: amundsendev/amundsen-frontend:3.12.0
       container_name: amundsenfrontend
       depends_on:
         - amundsenmetadata

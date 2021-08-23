@@ -8,9 +8,6 @@ import { UpIcon, DownIcon } from '../SVGIcons';
 
 import './styles.scss';
 
-// export type SortDirection = 'asc' | 'desc';
-// export type SortCriteria = { key: string; direction: SortDirection };
-
 export enum TextAlignmentValues {
   left = 'left',
   right = 'right',
@@ -36,6 +33,7 @@ export interface TableOptions {
   isLoading?: boolean;
   numLoadingBlocks?: number;
   rowHeight?: number;
+  preExpandRow?: number;
   expandRow?: (rowValue: any, index: number) => React.ReactNode;
   onExpand?: (rowValues: any, index: number) => void;
   onCollapse?: (rowValues: any, index: number) => void;
@@ -193,10 +191,24 @@ const Table: React.FC<TableProps> = ({
     emptyMessage,
     onExpand,
     onCollapse,
+    preExpandRow,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
-  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>([]);
+  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>(
+    preExpandRow === undefined ? [] : [preExpandRow]
+  );
+  const expandRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (expandRowRef.current !== null) {
+      // @ts-ignore
+      expandRowRef.current.scrollIntoView();
+    }
+
+    if (preExpandRow !== undefined && onExpand !== undefined) {
+      onExpand(data[preExpandRow], preExpandRow);
+    }
+  }, []);
 
   let body: React.ReactNode = (
     <EmptyRow
@@ -221,6 +233,7 @@ const Table: React.FC<TableProps> = ({
           }`}
           key={`index:${index}`}
           style={rowStyles}
+          ref={index === preExpandRow ? expandRowRef : null}
         >
           <>
             {expandRow ? (

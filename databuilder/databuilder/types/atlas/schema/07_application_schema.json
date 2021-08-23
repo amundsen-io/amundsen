@@ -1,0 +1,65 @@
+{
+  "entityDefs": [
+    {
+      "superTypes": [
+        "DataSet"
+      ],
+      "name": "Application",
+      "serviceType": "amundsen",
+      "typeVersion": "2.0",
+      "attributeDefs": [
+        {
+          "name": "application_url",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0
+        },
+        {
+          "name": "id",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0
+        },
+        {
+          "name": "type",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0
+        }
+      ]
+    }
+  ],
+  "relationshipDefs": [
+    {
+      "name": "DataSet__Application",
+      "typeVersion": "2.0",
+      "relationshipCategory": "ASSOCIATION",
+      "relationshipLabel": "_DataSet.Application",
+      "endDef1": {
+        "type": "DataSet",
+        "name": "applications",
+        "isContainer": false,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "Application",
+        "name": "datasets",
+        "isContainer": false,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    }
+  ]
+}
+

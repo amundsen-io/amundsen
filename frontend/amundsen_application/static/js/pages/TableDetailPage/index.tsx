@@ -33,19 +33,25 @@ import {
 import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
 
+import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/Breadcrumb';
-import TabsComponent, { TabInfo } from 'components/TabsComponent';
-import TagInput from 'components/Tags/TagInput';
-import EditableText from 'components/EditableText';
-import LoadingSpinner from 'components/LoadingSpinner';
 import EditableSection from 'components/EditableSection';
-import Alert from 'components/Alert';
+import EditableText from 'components/EditableText';
+import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
+import TagInput from 'components/Tags/TagInput';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/dateUtils';
-import { getLoggingParams } from 'utils/logUtils';
-import { buildTableKey } from 'utils/navigationUtils';
+import {
+  buildTableKey,
+  getLoggingParams,
+  getUrlParam,
+  setUrlParam,
+  TablePageParams,
+} from 'utils/navigationUtils';
 
 import {
   ProgrammaticDescription,
@@ -141,7 +147,7 @@ export class TableDetail extends React.Component<
 
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
-    currentTab: Constants.TABLE_TAB.COLUMN,
+    currentTab: getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN,
   };
 
   componentDidMount() {
@@ -236,7 +242,14 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy } = this.state;
+    const { sortedBy, currentTab } = this.state;
+    const tableParams: TablePageParams = {
+      cluster: tableData.cluster,
+      database: tableData.database,
+      table: tableData.name,
+      schema: tableData.schema,
+    };
+    const selectedColumn = getUrlParam(Constants.COLUMN_URL_KEY);
 
     // Default Column content
     tabInfo.push({
@@ -245,10 +258,11 @@ export class TableDetail extends React.Component<
           openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
-          tableKey={tableData.key}
+          tableParams={tableParams}
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
+          selectedColumn={selectedColumn}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -306,9 +320,10 @@ export class TableDetail extends React.Component<
     return (
       <TabsComponent
         tabs={tabInfo}
-        defaultTab={Constants.TABLE_TAB.COLUMN}
+        defaultTab={currentTab}
         onSelect={(key) => {
           this.setState({ currentTab: key });
+          setUrlParam(TAB_URL_PARAM, key);
           logAction({
             command: 'click',
             target_id: 'table_detail_tab',

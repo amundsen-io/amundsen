@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
+import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import Breadcrumb from 'components/Breadcrumb';
 import EditableSection from 'components/EditableSection';
 import TagInput from 'components/Tags/TagInput';
@@ -38,7 +39,11 @@ import { PreviewDataTable } from 'features/PreviewData';
 import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
-import { getLoggingParams } from 'utils/logUtils';
+import {
+  getLoggingParams,
+  getUrlParam,
+  setUrlParam,
+} from 'utils/navigationUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
 
 import FeatureDescEditableText from './FeatureDescEditableText';
@@ -168,6 +173,7 @@ export const FeaturePageLoader: React.FC = () => (
 );
 
 export function renderTabs(featureCode, featureLineage, preview) {
+  const defaultTab = getUrlParam(TAB_URL_PARAM) || FEATURE_TAB.PREVIEW_DATA;
   const tabInfo: TabInfo[] = [];
   tabInfo.push({
     content: (
@@ -203,8 +209,9 @@ export function renderTabs(featureCode, featureLineage, preview) {
   return (
     <TabsComponent
       tabs={tabInfo}
-      defaultTab={FEATURE_TAB.PREVIEW_DATA}
+      defaultTab={defaultTab}
       onSelect={(key) => {
+        setUrlParam(TAB_URL_PARAM, key);
         logAction({
           command: 'click',
           target_id: 'feature_page_tab',
@@ -267,7 +274,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             className="header-title-text text-headline-w2 truncated"
             title={feature.name}
           >
-            {feature.feature_group}.{feature.name}
+            {feature.feature_group}.{feature.name}.{feature.version}
           </h1>
           <p className="header-subtitle text-body-w3">
             {getDisplayNameByResource(ResourceType.feature)}
