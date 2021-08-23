@@ -12,7 +12,7 @@ Models that extend Neo4jSerializable have methods to create:
 - the relationships
 
 In this way, amundsendatabuilder pipelines can create python objects that can then be loaded into neo4j / elastic search
-without developers needing to know the internals of the neo4j schema. 
+without developers needing to know the internals of the neo4j schema.
 
 -----
 
@@ -25,7 +25,7 @@ without developers needing to know the internals of the neo4j schema.
 #### Description
 This corresponds to a dataset in amundsen and is the core building block.
 In addition to ColumnMetadata, tableMetadata is one of the first datasets you should extract as
-almost everything else depends on these being populated. 
+almost everything else depends on these being populated.
 
 #### Extraction
 In general, for Table and Column Metadata, you should be able to use one of the pre-made extractors
@@ -54,18 +54,18 @@ Depending on the datastore of your dataset, you would extract this by:
 #### Description
 *How many queries is a given column getting? By which users?*
 
-Has query counts per a given table per a user. This can help identify 
+Has query counts per a given table per a user. This can help identify
 who uses given datasets so people can contact them if they have questions
-on how to use a given dataset or if a dataset is changing. It is also used as a 
+on how to use a given dataset or if a dataset is changing. It is also used as a
 search boost so that the most used tables are put to the top of the search results.
 
-This model also populates the Popular Resources section on the homepage. 
-A table must have at least 10 unique users to appear on the homepage. 
-This configuration is defined [here](https://github.com/amundsen-io/amundsen/blob/main/metadata/metadata_service/config.py#L81) 
+This model also populates the Popular Resources section on the homepage.
+A table must have at least 10 unique users to appear on the homepage.
+This configuration is defined [here](https://github.com/amundsen-io/amundsen/blob/main/metadata/metadata_service/config.py#L81)
 and can be changed if your usage is less.
 
 #### Extraction
-For more traditional databases, there should be system tables where you can obtain 
+For more traditional databases, there should be system tables where you can obtain
 these sorts of usage statistics.
 
 In other cases, you may need to use audit logs which could require a custom solution.
@@ -121,7 +121,7 @@ point of contact for a user inquiring about how to use a dataset.
 
 #### Extraction
 Although the main point of entry for owners is through the WebUI, you could in theory
-extract this information based on who created a given table. 
+extract this information based on who created a given table.
 
 
 ### [Table Source](../databuilder/models/table_source.py)
@@ -137,6 +137,50 @@ You will need a github/gitlab/your repository crawler in order to populate this 
 The idea there would be to search for a given table name or something else that is a unique identifier such that you can be confident
 that the source correctly matches to this table.
 
+Here is an example of how to populate a Snowflake table with source table information (Airflow being the workflow of choice here):
+```
+import os
+import pandas as pd
+import re
+from sqlalchemy import create_engine
+
+def find_dag_paths():
+    connection_string = get_connection_string()
+    engine = create_engine(connection_string)
+    connection = engine.connect()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    # Table that has all of the DAG IDs
+    sql = textwrap.dedent("""
+        SELECT
+            distinct(dag_id)
+        FROM
+            {database}.{schema}.{table}
+        WHERE
+            dag_id != ''
+    """).format(
+        database = database,
+        schema = schema,
+        table = table
+    )
+
+    results = connection.execute(sql).fetchall()
+    # Create new table that relates the DAG ID to its file in your Airflow repo
+    df = pd.DataFrame(columns=['dag_id', 'source'])
+
+    for row in results:
+        # Name of each file is the DAG ID
+        file_name = row[0] + ".py"
+        for root, _, files in os.walk(dir_path):
+            if file_name in files:
+                # All DAGs under dags folder
+                source_path = re.split("/dags/", os.path.join(root, file_name))[1]
+                full_source_path = "https://github.com/organization/repo/blob/main/airflow/dags/" + source_path
+                df = df.append(pd.DataFrame({"dag_id": row[0], "source": full_source_path}, index=[0]))
+
+    df.to_sql(name="github_dag_paths", schema="airflow", con=engine, if_exists='replace', index=False)
+```
+
 ### [TableLastUpdated](../databuilder/models/table_last_updated.py)
 
 * When was the last time this data was updated? Is this table stale or deprecated? *
@@ -148,10 +192,10 @@ It is a very useful value as it can help users identify if there are tables that
 #### Extraction
 There are some extractors available for this like [hive_table_last_updated_extractor](../databuilder/extractor/hive_table_last_updated_extractor.py)
 that you can refer to. But you will need access to history that provides information on when the last data write happened on a given table.
-If this data isn't available for your data source, you maybe able to approximate it by looking at the max of some timestamp column.  
+If this data isn't available for your data source, you maybe able to approximate it by looking at the max of some timestamp column.
 
 ## Dashboard models
-Dashboard models are normalized which means that the model is separated so that it can be easily decoupled with how data is extracted. (If model is denormalized, all metadata is in model, then one extraction needs to able to pull all the data which makes extraction hard and complex) There's trade off in this decision of normalized design where it can be inefficient in the case that some ingestion can be done in one job for metadata source happen to provide all data it need. However, to make model flexible for most of metadata, it is normalized.  
+Dashboard models are normalized which means that the model is separated so that it can be easily decoupled with how data is extracted. (If model is denormalized, all metadata is in model, then one extraction needs to able to pull all the data which makes extraction hard and complex) There's trade off in this decision of normalized design where it can be inefficient in the case that some ingestion can be done in one job for metadata source happen to provide all data it need. However, to make model flexible for most of metadata, it is normalized.
 
 
 ### [DashboardMetadata](../databuilder/models/dashboard/dashboard_metadata.py)
@@ -160,7 +204,7 @@ Dashboard models are normalized which means that the model is separated so that 
 A baseline of Dashboard metadata that consists of  dashboard group name, dashboard group description, dashboard description, etc. This model needs to be ingested first as other model builds relation to this.
 
 #### Extraction
-[ModeDashboardExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_extractor.py)  
+[ModeDashboardExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_extractor.py)
 
 
 #### [DashboardOwner](../databuilder/models/dashboard/dashboard_owner.py)
@@ -169,8 +213,8 @@ A baseline of Dashboard metadata that consists of  dashboard group name, dashboa
 A model that encapsulate Dashboard's owner. Note that it does not create new user as it has insufficient information about user but it builds relation between User and Dashboard
 
 #### Extraction
-[ModeDashboardOwnerExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_owner_extractor.py)  
- 
+[ModeDashboardOwnerExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_owner_extractor.py)
+
 
 #### [DashboardTable](../databuilder/models/dashboard/dashboard_table.py)
 A model that link Dashboard with the tables used in various charts of the dashboard. Note that it does not create new dashboard, table as it has insufficient information but it builds relation between Tables and Dashboard.
@@ -183,7 +227,7 @@ Supporting extractor: Currently there's no open sourced extractor for this. In L
 A model that encapsulate Dashboard usage between Dashboard and User
 
 #### Extraction
-You can use [ModeDashboardUsageExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) . However, currently Mode only provides accumulated view count where we need recent view counts (past 30, 60, or 90 days). To get recent view count, in Lyft, we use [ModeDashboardUsageExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) to extract accumulated view count and [GenericLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/generic_loader.py) to load its record (no publisher here and publisher is not mandatory in DefaultJob) as a event where event materialized as daily snapshot. Once it captures daily accumulated view count, ingest recent view count by querying the datastore. In Lyft, we query via [DBAPIExtractor](../databuilder/extractor/db_api_extractor.py) through Presto.  
+You can use [ModeDashboardUsageExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) . However, currently Mode only provides accumulated view count where we need recent view counts (past 30, 60, or 90 days). To get recent view count, in Lyft, we use [ModeDashboardUsageExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) to extract accumulated view count and [GenericLoader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/databuilder/loader/generic_loader.py) to load its record (no publisher here and publisher is not mandatory in DefaultJob) as a event where event materialized as daily snapshot. Once it captures daily accumulated view count, ingest recent view count by querying the datastore. In Lyft, we query via [DBAPIExtractor](../databuilder/extractor/db_api_extractor.py) through Presto.
 
 
 #### [DashboardLastModifiedTimestamp](../databuilder/models/dashboard/dashboard_last_modified.py)
@@ -192,7 +236,7 @@ You can use [ModeDashboardUsageExtractor](../databuilder/extractor/dashboard/mod
 A model that encapsulate Dashboard's last modified timestamp in epoch
 
 #### Extraction
-[ModeDashboardLastModifiedTimestampExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_last_modified_timestamp_extractor.py)   
+[ModeDashboardLastModifiedTimestampExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_last_modified_timestamp_extractor.py)
 
 
 #### [DashboardExecution](../databuilder/models/dashboard/dashboard_execution.py)
@@ -201,8 +245,8 @@ A model that encapsulate Dashboard's execution timestamp in epoch and execution 
 #### Extraction
 [ModeDashboardExecutionsExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_executions_extractor.py) which extracts last_execution.
 
-[ModeDashboardLastSuccessfulExecutionExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_last_successful_executions_extractor.py)  
- 
+[ModeDashboardLastSuccessfulExecutionExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_last_successful_executions_extractor.py)
+
 
 #### [DashboardQuery](../databuilder/models/dashboard/dashboard_query.py)
 
@@ -217,12 +261,12 @@ Supporting extractor: [ModeDashboardQueriesExtractor](../databuilder/extractor/d
 A model that encapsulate Dashboard's charts where chart is associated with query.
 
 #### Extraction
-[ModeDashboardChartsExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_extractor.py)   
+[ModeDashboardChartsExtractor](../databuilder/extractor/dashboard/mode_analytics/mode_dashboard_charts_extractor.py)
 
 ## Feature models
-Feature models include [FeatureMetadata](../databuilder/models/feature/feature_metadata.py), which encapsulates the basic feature details, 
-and supplemental models [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py) and 
-[Feature_Watermark](../databuilder/models/feature/feature_watermark.py) for adding extra metadata. 
+Feature models include [FeatureMetadata](../databuilder/models/feature/feature_metadata.py), which encapsulates the basic feature details,
+and supplemental models [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py) and
+[Feature_Watermark](../databuilder/models/feature/feature_watermark.py) for adding extra metadata.
 In addition, the Tag, Badge, Owner, and Programmatic_Description models work with features.
 
 ### [FeatureMetadata](../databuilder/models/feature/feature_metadata.py)
@@ -231,25 +275,25 @@ In addition, the Tag, Badge, Owner, and Programmatic_Description models work wit
 A baseline of Feature metadata. This model needs to be ingested first as other models build relations to it.
 
 #### Extraction
-No specific extractors are provided at this time. We expect users will either write custom extractors, 
-or use generic extractors (e.g. SQLAlchemyExtractor). 
+No specific extractors are provided at this time. We expect users will either write custom extractors,
+or use generic extractors (e.g. SQLAlchemyExtractor).
 
 ### [Feature_Generation_Code](../databuilder/models/feature/feature_generation_code.py)
 
 #### Description
-Allows ingesting the text of the generation code (SQL or otherwise) which was used to create a feature.  
+Allows ingesting the text of the generation code (SQL or otherwise) which was used to create a feature.
 
 #### Extraction
-No specific extractors are provided at this time. We expect users will either write custom extractors, 
-or use generic extractors (e.g. SQLAlchemyExtractor). 
+No specific extractors are provided at this time. We expect users will either write custom extractors,
+or use generic extractors (e.g. SQLAlchemyExtractor).
 
 ### [Feature_Watermark](../databuilder/models/feature/feature_watermark.py)
 
 #### Description
-Allows ingesting the high and low data range of a feature. Unlike [Watermark](../databuilder/models/watermark.py), 
-which is specific to tables (requires a partition, for example), Feature_Watermark is more general and does not 
+Allows ingesting the high and low data range of a feature. Unlike [Watermark](../databuilder/models/watermark.py),
+which is specific to tables (requires a partition, for example), Feature_Watermark is more general and does not
 care about how the feature is stored.
 
 #### Extraction
-No specific extractors are provided at this time. We expect users will either write custom extractors, 
+No specific extractors are provided at this time. We expect users will either write custom extractors,
 or use generic extractors (e.g. SQLAlchemyExtractor).
