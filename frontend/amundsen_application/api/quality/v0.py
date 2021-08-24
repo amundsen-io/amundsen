@@ -5,6 +5,7 @@ import json
 import logging
 
 from http import HTTPStatus
+from typing import cast
 
 from flask import Response, jsonify, make_response, request, current_app as app
 from flask.blueprints import Blueprint
@@ -25,7 +26,7 @@ def get_quality_client() -> BaseQualityClient:
     if QUALITY_CLIENT_INSTANCE is None and app.config['QUALITY_CLIENT'] is not None:
         quality_client_class = import_string(app.config['QUALITY_CLIENT'])
         QUALITY_CLIENT_INSTANCE = quality_client_class()
-    return QUALITY_CLIENT_INSTANCE
+    return cast(BaseQualityClient, QUALITY_CLIENT_INSTANCE)
 
 
 @quality_blueprint.route('/table/summary', methods=['GET'])
