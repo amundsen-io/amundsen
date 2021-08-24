@@ -14,8 +14,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Golang
-      uses: actions/setup-go@v2
+    - name: Set up Go 1.16
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.16
+      id: go
     - name: Install addlicense
       run: |
         export PATH=${PATH}:`go env GOPATH`/bin
