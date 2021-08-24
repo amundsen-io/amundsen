@@ -55,6 +55,7 @@ class Application(GraphSerializable, TableSerializable, AtlasSerializable):
                  schema: str = '',
                  table_name: str = '',
                  application_type: str = 'Airflow',
+                 exec_date: str = '',
                  ) -> None:
         # todo: need to modify this hack
         self.application_url = application_url_template.format(dag_id=dag_id)
