@@ -6,6 +6,7 @@ from typing import Optional
 import attr
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 
+
 @attr.s(auto_attribs=True, kw_only=True)
 class TableQualityChecksSummary:
     num_checks_success: int = attr.ib()
