@@ -10,6 +10,7 @@ import {
   Tag,
   Lineage,
   ResourceType,
+  TableQualityChecks,
 } from 'interfaces';
 
 /** HELPERS **/
@@ -41,6 +42,7 @@ export type RelatedDashboardDataAPI = {
   dashboards: DashboardResource[];
 } & MessageAPI;
 export type LineageAPI = { lineage: Lineage } & MessageAPI;
+export type TableQualityChecksAPI = { checks: TableQualityChecks } & MessageAPI;
 
 export function getTableData(key: string, index?: string, source?: string) {
   const tableQueryParams = getTableQueryParams({ key, index, source });
@@ -192,5 +194,22 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
       }
       const status = response ? response.status : null;
       return Promise.reject({ data, status });
+    });
+}
+
+export function getTableQualityChecksSummary(key: string) {
+  const tableQueryParams = getTableQueryParams({
+    key,
+  });
+  return axios
+    .get(`/api/quality/v0/table/summary?${tableQueryParams}`)
+    .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
+      checks: response.data.checks,
+      status: response.status,
+    }))
+    .catch((e) => {
+      const { response } = e;
+      const status = response ? response.status : null;
+      return Promise.reject({ status });
     });
 }
