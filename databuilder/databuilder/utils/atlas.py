@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 class AtlasRelationshipTypes:
     group_dashboard = 'DashboardGroup__Dashboard'
     resource_owner = 'DataSet_Users_Owner'
