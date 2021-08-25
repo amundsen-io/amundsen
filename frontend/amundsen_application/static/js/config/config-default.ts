@@ -338,6 +338,7 @@ const configDefault: AppConfig = {
   tableQualityChecks: {
     isEnabled: false,
   },
+  ProgrammaticDescriptionAllowDangerousHtml: false,
 };
 
 export default configDefault;

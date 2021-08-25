@@ -29,6 +29,7 @@ import {
   isTableListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
+  isProgrammaticDescAllowDangerousHtml,
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
@@ -216,7 +217,12 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText maxLength={999999} value={d.text} editable={false} />
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          allowDangerousHtml={isProgrammaticDescAllowDangerousHtml()}
+        />
       </EditableSection>
     ));
   };

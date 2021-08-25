@@ -438,3 +438,7 @@ export function getColumnLineageLink(
 export function isTableQualityCheckEnabled() {
   return AppConfig.tableQualityChecks.isEnabled;
 }
+
+export function isProgrammaticDescAllowDangerousHtml(): boolean {
+  return AppConfig.ProgrammaticDescriptionAllowDangerousHtml;
+}

@@ -29,6 +29,7 @@ export interface AppConfig {
   tableLineage: TableLineageConfig;
   columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
+  ProgrammaticDescriptionAllowDangerousHtml: boolean /* Enable rendering of dangerous HTML inside programmatic descriptions for the Tabel detail page */;
   tableQualityChecks: TableQualityChecksConfig;
 }
 
@@ -56,6 +57,7 @@ export interface AppConfigCustom {
   columnLineage?: ColumnLineageConfig;
   tableProfile?: TableProfileConfig;
   tableQualityChecks?: TableQualityChecksConfig;
+  ProgrammaticDescriptionAllowDangerousHtml?: boolean;
 }
 
 /**
