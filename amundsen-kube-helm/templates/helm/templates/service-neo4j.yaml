@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: neo4j
+  name: {{ .Release.Name }}-neo4j
   labels:
     app: {{ template "amundsen.name" . }}
     run: neo4j
