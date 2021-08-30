@@ -149,7 +149,7 @@ export class TableDetail extends React.Component<
 
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
-    currentTab: getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN,
+    currentTab: this.getDefaultTab(),
   };
 
   componentDidMount() {
@@ -185,7 +185,12 @@ export class TableDetail extends React.Component<
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key);
       }
+      this.setState({ currentTab: this.getDefaultTab() });
     }
+  }
+
+  getDefaultTab() {
+    return getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
   }
 
   getDisplayName() {
