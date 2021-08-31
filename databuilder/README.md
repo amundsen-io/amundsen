@@ -1865,6 +1865,28 @@ You can think this approach as TTL based eviction. This is particularly useful w
 
 Above configuration is trying to delete stale usage relation (READ, READ_BY), by deleting READ or READ_BY relation that has not been published past 3 days. If number of elements to be removed is more than 10% per type, this task will be aborted without executing any deletion.
 
+#### Using node and relation conditions to remove stale data
+You may want to remove stale nodes and relations that meet certain conditions rather than all of a given type. To do this, you can specify the inputs to be a list of **TargetWithCondition** objects that each define a target type and a condition. Only stale nodes or relations of that type and that meet the condition will be removed when using this type of input.
+
+    from databuilder.task.neo4j_staleness_removal_task import TargetWithCondition
+    
+    task = Neo4jStalenessRemovalTask()
+    job_config_dict = {
+        'job.identifier': 'remove_stale_data_job',
+        'task.remove_stale_data.neo4j_endpoint': neo4j_endpoint,
+        'task.remove_stale_data.neo4j_user': neo4j_user,
+        'task.remove_stale_data.neo4j_password': neo4j_password,
+        'task.remove_stale_data.staleness_max_pct': 10,
+        'task.remove_stale_data.target_nodes': [TargetWithCondition('Table', '(target)-[:COLUMN]->(:Column)'), TargetWithCondition('Column', '(target)-[]-(:Table) AND target.name=\'column_name\'')],
+        'task.remove_stale_data.target_relations': [TargetWithCondition('COLUMN', '(start_node:Table)-[target]->(end_node:Column)'), TargetWithCondition('COLUMN', '(start_node)-[target]-(end_node)')],
+        'task.remove_stale_data.milliseconds_to_expire': 86400000 * 3
+    }
+    job_config = ConfigFactory.from_dict(job_config_dict)
+    job = DefaultJob(conf=job_config, task=task)
+    job.launch()
+
+You can include multiple inputs of the same type with different conditions as seen in the **target_relations** list above. Attribute checks can also be added as shown in the **target_nodes** list.
+
 #### Dry run
 Deletion is always scary and it's better to perform dryrun before put this into action. You can use Dry run to see what sort of Cypher query will be executed.
 
