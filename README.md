@@ -208,6 +208,7 @@ Please visit [Roadmap](./docs/roadmap.md) if you are interested in Amundsen upco
 - [A step-by-step guide deploying Amundsen on Google Cloud Platform](https://medium.com/talabat-tech/a-step-by-step-guide-deploying-amundsen-on-google-cloud-platform-ee4ef20d81f5)
 - [Machine Learning Features discovery with Feast and Amundsen](https://getindata.com/blog/machine-learning-features-discovery-feast-amundsen)
 - [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
+- [Integrating Slack with Amundsen for Ease of Data Discovery](https://medium.com/convoy-tech/integrating-slack-with-amundsen-for-ease-of-data-discovery-ef3b54834da5)
 
 ## Community meetings
 
