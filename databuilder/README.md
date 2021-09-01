@@ -1868,6 +1868,8 @@ Above configuration is trying to delete stale usage relation (READ, READ_BY), by
 #### Using node and relation conditions to remove stale data
 You may want to remove stale nodes and relations that meet certain conditions rather than all of a given type. To do this, you can specify the inputs to be a list of **TargetWithCondition** objects that each define a target type and a condition. Only stale nodes or relations of that type and that meet the condition will be removed when using this type of input.
 
+Node conditions can make use of the predefined variable `target` which represents the node. Relation conditions can include the variables `target`, `start_node`, and `end_node` where `target` represents the relation and `start_node`/`end_node` represent the nodes on either side of the target relation. For some examples of conditions see below.
+
     from databuilder.task.neo4j_staleness_removal_task import TargetWithCondition
     
     task = Neo4jStalenessRemovalTask()
@@ -1877,8 +1879,10 @@ You may want to remove stale nodes and relations that meet certain conditions ra
         'task.remove_stale_data.neo4j_user': neo4j_user,
         'task.remove_stale_data.neo4j_password': neo4j_password,
         'task.remove_stale_data.staleness_max_pct': 10,
-        'task.remove_stale_data.target_nodes': [TargetWithCondition('Table', '(target)-[:COLUMN]->(:Column)'), TargetWithCondition('Column', '(target)-[]-(:Table) AND target.name=\'column_name\'')],
-        'task.remove_stale_data.target_relations': [TargetWithCondition('COLUMN', '(start_node:Table)-[target]->(end_node:Column)'), TargetWithCondition('COLUMN', '(start_node)-[target]-(end_node)')],
+        'task.remove_stale_data.target_nodes': [TargetWithCondition('Table', '(target)-[:COLUMN]->(:Column)'),  # All Table nodes that have a directional COLUMN relation to a Column node
+                                                TargetWithCondition('Column', '(target)-[]-(:Table) AND target.name=\'column_name\'')],  # All Column nodes named 'column_name' that have some relation to a Table node
+        'task.remove_stale_data.target_relations': [TargetWithCondition('COLUMN', '(start_node:Table)-[target]->(end_node:Column)'),  # All COLUMN relations that connect from a Table node to a Column node
+                                                    TargetWithCondition('COLUMN', '(start_node:Column)-[target]-(end_node)')],  # All COLUMN relations that connect any direction between a Column node and another node
         'task.remove_stale_data.milliseconds_to_expire': 86400000 * 3
     }
     job_config = ConfigFactory.from_dict(job_config_dict)
