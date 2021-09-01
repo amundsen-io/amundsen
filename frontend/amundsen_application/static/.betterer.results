@@ -464,8 +464,8 @@ exports[`eslint`] = {
       [136, 44, 13, "\'selectOptions\' is defined but never used.", "1076977309"],
       [175, 8, 21, "Must use destructuring props assignment", "2890513821"],
       [179, 6, 21, "Must use destructuring props assignment", "2890513821"],
-      [226, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
       [226, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
+      [226, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
       [245, 12, 15, "Must use destructuring props assignment", "4223491724"],
       [250, 12, 18, "Must use destructuring props assignment", "1044970797"],
       [250, 57, 15, "Must use destructuring props assignment", "4223491724"],
@@ -563,11 +563,11 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:499141138": [
+    "js/ducks/tableMetadata/api/v0.ts:4044823741": [
       [80, 8, 23, "Use object destructuring.", "1142306891"],
       [139, 23, -4311, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/ducks/tableMetadata/index.spec.ts:2905420907": [
+    "js/ducks/tableMetadata/index.spec.ts:4060478795": [
       [518, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
       [544, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
       [650, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
@@ -659,8 +659,8 @@ exports[`eslint`] = {
     ],
     "js/features/Feedback/index.tsx:1829853539": [
       [45, 15, 18, "Must use destructuring props assignment", "4076523716"],
-      [51, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [51, 29, 17, "Must use destructuring state assignment", "4230747098"],
+      [51, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [54, 40, 1, "\'e\' is defined but never used.", "177600"],
       [72, 8, 313, "Missing an explicit type attribute for button", "4022438992"],
       [74, 12, 17, "Must use destructuring state assignment", "4230747098"],
@@ -979,11 +979,12 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:1218341295": [
+    "js/pages/TableDetailPage/index.tsx:329400316": [
       [145, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [155, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
       [172, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [243, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+      [187, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [248, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]
