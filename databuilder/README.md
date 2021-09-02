@@ -6,7 +6,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://amundsenworkspace.slack.com/join/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
 
-Amundsen Databuilder is a data ingestion library, which is inspired by [Apache Gobblin](https://gobblin.apache.org/). It could be used in an orchestration framework(e.g. Apache Airflow) to build data from Amundsen. You could use the library either with an adhoc python script([example](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py)) or inside an Apache Airflow DAG([example](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/dags/hive_sample_dag.py)).
+Amundsen Databuilder is a data ingestion library, which is inspired by [Apache Gobblin](https://gobblin.apache.org/). It could be used in an orchestration framework(e.g. Apache Airflow) to build data from Amundsen. You could use the library either with an adhoc python script([example](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/scripts/sample_data_loader.py)) or inside an Apache Airflow DAG([example](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/dags/hive_sample_dag.py)).
 
 For information about Amundsen and our other services, visit the [main repository](https://github.com/amundsen-io/amundsen#amundsen) `README.md` . Please also see our instructions for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture).
 
@@ -27,33 +27,33 @@ In Databuilder, each components are highly modularized and each components are u
 ![Databuilder components](docs/assets/AmundsenDataBuilder.png?raw=true "Title")
 
 
-### [Extractor](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/extractor "Extractor")
-Extractor extracts record from the source. This does not neccessarily mean that it only supports [pull pattern](https://blogs.sap.com/2013/12/09/to-push-or-pull-that-is-the-question/ "pull pattern") in ETL. For example, extracting record from messaging bus make it a push pattern in ETL.
+### [Extractor](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/extractor "Extractor")
+An extractor extracts records from the source. This does not necessarily mean that it only supports [pull pattern](https://blogs.sap.com/2013/12/09/to-push-or-pull-that-is-the-question/ "pull pattern") in ETL. For example, extracting records from messaging bus makes it a push pattern in ETL.
 
-### [Transformer](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/transformer "Transformer")
-Transfomer takes record from either extractor or from transformer itself (via ChainedTransformer) to transform record.
+### [Transformer](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/transformer "Transformer")
+A transformer takes a record from either an extractor or from other transformers (via ChainedTransformer) to transform the record.
 
-### [Loader](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/loader "Loader")
-A loader takes record from transformer or from extractor directly and load it to sink, or staging area. As loader is operated in record level, it's not capable of supporting atomicity.
+### [Loader](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/loader "Loader")
+A loader takes a record from a transformer or from an extractor directly and loads it to a sink, or a staging area. As the loading operates at a record-level, it's not capable of supporting atomicity.
 
-### [Task](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/task "Task")
-A task orchestrates extractor, transformer, and loader to perform record level operation.
+### [Task](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/task "Task")
+A task orchestrates an extractor, a transformer, and a loader to perform a record-level operation.
 
-### [Record](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "Record")
-A record is represented by one of [models](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "models").
+### [Record](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/models "Record")
+A record is represented by one of [models](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/models "models").
 
-### [Publisher](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/publisher "Publisher")
-A publisher is an optional component. It's common usage is to support atomicity in job level and/or to easily support bulk load into the sink.
+### [Publisher](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/publisher "Publisher")
+A publisher is an optional component. Its common usage is to support atomicity in job level and/or to easily support bulk load into the sink.
 
-### [Job](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/job "Job")
-Job is the highest level component in Databuilder, and it orchestrates task, and publisher.
+### [Job](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/job "Job")
+A job is the highest level component in Databuilder, and it orchestrates a task and, if any, a publisher.
 
 ## [Model](docs/models.md)
 Models are abstractions representing the domain.
 
 ## List of extractors
 #### [DBAPIExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db_api_extractor.py "DBAPIExtractor")
-An extractor that uses [Python Database API](https://www.python.org/dev/peps/pep-0249/ "Python Database API") interface. DBAPI requires three information, connection object that conforms DBAPI spec, a SELECT SQL statement, and a [model class](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "model class") that correspond to the output of each row of SQL statement.
+An extractor that uses [Python Database API](https://www.python.org/dev/peps/pep-0249/ "Python Database API") interface. DBAPI requires three information, connection object that conforms DBAPI spec, a SELECT SQL statement, and a [model class](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/models "model class") that correspond to the output of each row of SQL statement.
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -278,7 +278,7 @@ An extractor that extracts table and column metadata including database, schema,
 By default, the Postgres/Redshift database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
 to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
 
-The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/dags/postgres_sample_dag.py) for an example).
+The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/dags/postgres_sample_dag.py) for an example).
 
 The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/postgres_metadata_extractor.py)
 
@@ -343,7 +343,7 @@ job.launch()
 #### [Db2MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db2_metadata_extractor.py "Db2MetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Unix, Windows or Linux Db2 database or BigSQL.
 
-The `where_clause_suffix` below should define which schemas you'd like to query or those that you would not (see [the sample data loader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/sample_db2_data_loader.py) for an example).
+The `where_clause_suffix` below should define which schemas you'd like to query or those that you would not (see [the sample data loader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/sample_db2_data_loader.py) for an example).
 
 The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db2_metadata_extractor.py)
 
@@ -374,7 +374,7 @@ to `WhateverNameOfYourSchema`.
 Note that `ACCOUNT_USAGE` is a separate schema which allows users to query a wider set of data at the cost of latency.
 Differences are defined [here](https://docs.snowflake.com/en/sql-reference/account-usage.html#differences-between-account-usage-and-information-schema)
 
-The `where_clause_suffix` should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_snowflake_data_loader.py) for an example).
+The `where_clause_suffix` should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/scripts/sample_snowflake_data_loader.py) for an example).
 
 The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/snowflake_metadata_extractor.py)
 
