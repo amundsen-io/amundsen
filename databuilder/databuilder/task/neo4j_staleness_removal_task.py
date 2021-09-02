@@ -72,28 +72,27 @@ class Neo4jStalenessRemovalTask(Task):
 
     delete_stale_nodes_statement = textwrap.dedent("""
         MATCH (target:{{type}})
-        {staleness_condition}{{extra_condition}}
+        WHERE {staleness_condition}{{extra_condition}}
         WITH target LIMIT $batch_size
         DETACH DELETE (target)
-        RETURN COUNT(*) as count;
+        RETURN count(*) as count
         """)
     delete_stale_relations_statement = textwrap.dedent("""
         MATCH (start_node)-[target:{{type}}]-(end_node)
-        {staleness_condition}{{extra_condition}}
+        WHERE {staleness_condition}{{extra_condition}}
         WITH target LIMIT $batch_size
         DELETE target
-        RETURN count(*) as count;
+        RETURN count(*) as count
         """)
     validate_node_staleness_statement = textwrap.dedent("""
         MATCH (target:{{type}})
-        {staleness_condition}{{extra_condition}}
-        WITH DISTINCT labels(target) as node, count(*) as count
-        RETURN head(node) as type, count
+        WHERE {staleness_condition}{{extra_condition}}
+        RETURN count(*) as count
         """)
     validate_relation_staleness_statement = textwrap.dedent("""
         MATCH (start_node)-[target:{{type}}]-(end_node)
-        {staleness_condition}{{extra_condition}}
-        RETURN type(target) as type, count(*) as count
+        WHERE {staleness_condition}{{extra_condition}}
+        RETURN count(*) as count
         """)
 
     def __init__(self) -> None:
@@ -168,11 +167,11 @@ class Neo4jStalenessRemovalTask(Task):
         """
         if self.ms_to_expire:
             return statement.format(staleness_condition=textwrap.dedent(f"""\
-            WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})
+            (target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})
             OR NOT EXISTS(target.publisher_last_updated_epoch_ms))"""))
 
         return statement.format(staleness_condition=textwrap.dedent(f"""\
-        WHERE (target.published_tag <> ${MARKER_VAR_NAME}
+        (target.published_tag <> ${MARKER_VAR_NAME}
         OR NOT EXISTS(target.published_tag))"""))
 
     def _delete_stale_relations(self) -> None:
@@ -229,65 +228,59 @@ class Neo4jStalenessRemovalTask(Task):
 
     def _validate_node_staleness_pct(self) -> None:
         total_nodes_statement = textwrap.dedent(
-            self.validate_node_staleness_statement.format(staleness_condition=''))
+            self.validate_node_staleness_statement.format(staleness_condition='true'))
         stale_nodes_statement = textwrap.dedent(
             self._decorate_staleness(self.validate_node_staleness_statement))
 
         for t in self.target_nodes:
             if isinstance(t, TargetWithCondition):
                 target_type = t.target_type
-                total_extra_condition = 'WHERE ' + t.condition
-                stale_extra_condition = ' AND ' + t.condition
+                extra_condition = ' AND ' + t.condition
             else:
                 target_type = t
-                total_extra_condition = ''
-                stale_extra_condition = ''
+                extra_condition = ''
 
             total_records = self._execute_cypher_query(
                 statement=total_nodes_statement.format(type=target_type,
-                                                       extra_condition=total_extra_condition))
+                                                       extra_condition=extra_condition))
             stale_records = self._execute_cypher_query(
                 statement=stale_nodes_statement.format(type=target_type,
-                                                       extra_condition=stale_extra_condition),
+                                                       extra_condition=extra_condition),
                 param_dict={MARKER_VAR_NAME: self.marker})
 
             total_record_value = next(iter(total_records), None)
             stale_record_value = next(iter(stale_records), None)
-            self._validate_staleness_pct(
-                total_record_count=total_record_value['count'] if total_record_value is not None else 0,
-                stale_record_count=stale_record_value['count'] if stale_record_value is not None else 0,
-                target_type=target_type)
+            self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
+                                         stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                         target_type=target_type)
 
     def _validate_relation_staleness_pct(self) -> None:
         total_relations_statement = textwrap.dedent(
-            self.validate_relation_staleness_statement.format(staleness_condition=''))
+            self.validate_relation_staleness_statement.format(staleness_condition='true'))
         stale_relations_statement = textwrap.dedent(
             self._decorate_staleness(self.validate_relation_staleness_statement))
 
         for t in self.target_relations:
             if isinstance(t, TargetWithCondition):
                 target_type = t.target_type
-                total_extra_condition = 'WHERE ' + t.condition
-                stale_extra_condition = ' AND ' + t.condition
+                extra_condition = ' AND ' + t.condition
             else:
                 target_type = t
-                total_extra_condition = ''
-                stale_extra_condition = ''
+                extra_condition = ''
 
             total_records = self._execute_cypher_query(
                 statement=total_relations_statement.format(type=target_type,
-                                                           extra_condition=total_extra_condition))
+                                                           extra_condition=extra_condition))
             stale_records = self._execute_cypher_query(
                 statement=stale_relations_statement.format(type=target_type,
-                                                           extra_condition=stale_extra_condition),
+                                                           extra_condition=extra_condition),
                 param_dict={MARKER_VAR_NAME: self.marker})
 
             total_record_value = next(iter(total_records), None)
             stale_record_value = next(iter(stale_records), None)
-            self._validate_staleness_pct(
-                total_record_count=total_record_value['count'] if total_record_value is not None else 0,
-                stale_record_count=stale_record_value['count'] if stale_record_value is not None else 0,
-                target_type=target_type)
+            self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
+                                         stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                         target_type=target_type)
 
     def _execute_cypher_query(self,
                               statement: str,

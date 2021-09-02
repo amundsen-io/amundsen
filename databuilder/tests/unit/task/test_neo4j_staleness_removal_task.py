@@ -141,18 +141,16 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_called()
             mock_execute.assert_any_call(statement=textwrap.dedent("""
             MATCH (target:Foo)
-            {}
-            WITH DISTINCT labels(target) as node, count(*) as count
-            RETURN head(node) as type, count
-            """.format(' ')))
+            WHERE true
+            RETURN count(*) as count
+            """))
 
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
             WHERE (target.published_tag <> $marker
             OR NOT EXISTS(target.published_tag))
-            WITH DISTINCT labels(target) as node, count(*) as count
-            RETURN head(node) as type, count
+            RETURN count(*) as count
             """))
 
             task._validate_relation_staleness_pct()
@@ -161,7 +159,7 @@ class TestRemoveStaleData(unittest.TestCase):
             MATCH (start_node)-[target:BAR]-(end_node)
             WHERE (target.published_tag <> $marker
             OR NOT EXISTS(target.published_tag))
-            RETURN type(target) as type, count(*) as count
+            RETURN count(*) as count
             """))
 
     def test_validation_statement_ms_to_expire(self) -> None:
@@ -185,18 +183,16 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_called()
             mock_execute.assert_any_call(statement=textwrap.dedent("""
             MATCH (target:Foo)
-            {}
-            WITH DISTINCT labels(target) as node, count(*) as count
-            RETURN head(node) as type, count
-            """.format(' ')))
+            WHERE true
+            RETURN count(*) as count
+            """))
 
             mock_execute.assert_any_call(param_dict={'marker': 9876543210},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
             WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(target.publisher_last_updated_epoch_ms))
-            WITH DISTINCT labels(target) as node, count(*) as count
-            RETURN head(node) as type, count
+            RETURN count(*) as count
             """))
 
             task._validate_relation_staleness_pct()
@@ -205,7 +201,7 @@ class TestRemoveStaleData(unittest.TestCase):
             MATCH (start_node)-[target:BAR]-(end_node)
             WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - $marker)
             OR NOT EXISTS(target.publisher_last_updated_epoch_ms))
-            RETURN type(target) as type, count(*) as count
+            RETURN count(*) as count
             """))
 
     def test_validation_statement_with_target_condition(self) -> None:
@@ -229,9 +225,8 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_called()
             mock_execute.assert_any_call(statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
-            WITH DISTINCT labels(target) as node, count(*) as count
-            RETURN head(node) as type, count
+            WHERE true AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
+            RETURN count(*) as count
             """))
 
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
@@ -239,8 +234,7 @@ class TestRemoveStaleData(unittest.TestCase):
             MATCH (target:Foo)
             WHERE (target.published_tag <> $marker
             OR NOT EXISTS(target.published_tag)) AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
-            WITH DISTINCT labels(target) as node, count(*) as count
-            RETURN head(node) as type, count
+            RETURN count(*) as count
             """))
 
             task._validate_relation_staleness_pct()
@@ -249,7 +243,7 @@ class TestRemoveStaleData(unittest.TestCase):
             MATCH (start_node)-[target:BAR]-(end_node)
             WHERE (target.published_tag <> $marker
             OR NOT EXISTS(target.published_tag)) AND (start_node:Foo)-[target]->(end_node:Foo)
-            RETURN type(target) as type, count(*) as count
+            RETURN count(*) as count
             """))
 
     def test_validation_receives_correct_counts(self) -> None:
@@ -270,13 +264,13 @@ class TestRemoveStaleData(unittest.TestCase):
             task.init(job_config)
 
             with patch.object(Neo4jStalenessRemovalTask, '_validate_staleness_pct') as mock_validate:
-                mock_execute.side_effect = [[{'type': 'Foo', 'count': 100}], [{'type': 'Foo', 'count': 50}]]
+                mock_execute.side_effect = [[{'count': 100}], [{'count': 50}]]
                 task._validate_node_staleness_pct()
                 mock_validate.assert_called_with(total_record_count=100,
                                                  stale_record_count=50,
                                                  target_type='Foo')
 
-                mock_execute.side_effect = [[{'type': 'BAR', 'count': 100}], [{'type': 'BAR', 'count': 50}]]
+                mock_execute.side_effect = [[{'count': 100}], [{'count': 50}]]
                 task._validate_relation_staleness_pct()
                 mock_validate.assert_called_with(total_record_count=100,
                                                  stale_record_count=50,
@@ -310,7 +304,7 @@ class TestRemoveStaleData(unittest.TestCase):
             OR NOT EXISTS(target.published_tag))
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
-            RETURN COUNT(*) as count;
+            RETURN count(*) as count
             """))
 
             mock_execute.assert_any_call(dry_run=False,
@@ -321,7 +315,7 @@ class TestRemoveStaleData(unittest.TestCase):
             OR NOT EXISTS(target.published_tag))
             WITH target LIMIT $batch_size
             DELETE target
-            RETURN count(*) as count;
+            RETURN count(*) as count
             """))
 
     def test_delete_statement_ms_to_expire(self) -> None:
@@ -352,7 +346,7 @@ class TestRemoveStaleData(unittest.TestCase):
             OR NOT EXISTS(target.publisher_last_updated_epoch_ms))
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
-            RETURN COUNT(*) as count;
+            RETURN count(*) as count
             """))
 
             mock_execute.assert_any_call(dry_run=False,
@@ -363,7 +357,7 @@ class TestRemoveStaleData(unittest.TestCase):
             OR NOT EXISTS(target.publisher_last_updated_epoch_ms))
             WITH target LIMIT $batch_size
             DELETE target
-            RETURN count(*) as count;
+            RETURN count(*) as count
             """))
 
     def test_delete_statement_with_target_condition(self) -> None:
@@ -394,7 +388,7 @@ class TestRemoveStaleData(unittest.TestCase):
             OR NOT EXISTS(target.published_tag)) AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
-            RETURN COUNT(*) as count;
+            RETURN count(*) as count
             """))
 
             mock_execute.assert_any_call(dry_run=False,
@@ -405,7 +399,7 @@ class TestRemoveStaleData(unittest.TestCase):
             OR NOT EXISTS(target.published_tag)) AND (start_node:Foo)-[target]->(end_node:Foo)
             WITH target LIMIT $batch_size
             DELETE target
-            RETURN count(*) as count;
+            RETURN count(*) as count
             """))
 
     def test_ms_to_expire_too_small(self) -> None:
