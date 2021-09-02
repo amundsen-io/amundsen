@@ -28,25 +28,25 @@ In Databuilder, each components are highly modularized and each components are u
 
 
 ### [Extractor](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/extractor "Extractor")
-Extractor extracts record from the source. This does not neccessarily mean that it only supports [pull pattern](https://blogs.sap.com/2013/12/09/to-push-or-pull-that-is-the-question/ "pull pattern") in ETL. For example, extracting record from messaging bus make it a push pattern in ETL.
+An extractor extracts records from the source. This does not necessarily mean that it only supports [pull pattern](https://blogs.sap.com/2013/12/09/to-push-or-pull-that-is-the-question/ "pull pattern") in ETL. For example, extracting records from messaging bus makes it a push pattern in ETL.
 
 ### [Transformer](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/transformer "Transformer")
-Transfomer takes record from either extractor or from transformer itself (via ChainedTransformer) to transform record.
+A transformer takes a record from either an extractor or from other transformers (via ChainedTransformer) to transform the record.
 
 ### [Loader](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/loader "Loader")
-A loader takes record from transformer or from extractor directly and load it to sink, or staging area. As loader is operated in record level, it's not capable of supporting atomicity.
+A loader takes a record from a transformer or from an extractor directly and loads it to a sink, or a staging area. As the loading operates at a record-level, it's not capable of supporting atomicity.
 
 ### [Task](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/task "Task")
-A task orchestrates extractor, transformer, and loader to perform record level operation.
+A task orchestrates an extractor, a transformer, and a loader to perform a record-level operation.
 
 ### [Record](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "Record")
 A record is represented by one of [models](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "models").
 
 ### [Publisher](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/publisher "Publisher")
-A publisher is an optional component. It's common usage is to support atomicity in job level and/or to easily support bulk load into the sink.
+A publisher is an optional component. Its common usage is to support atomicity in job level and/or to easily support bulk load into the sink.
 
 ### [Job](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/job "Job")
-Job is the highest level component in Databuilder, and it orchestrates task, and publisher.
+A job is the highest level component in Databuilder, and it orchestrates a task and, if any, a publisher.
 
 ## [Model](docs/models.md)
 Models are abstractions representing the domain.
