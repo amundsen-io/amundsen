@@ -78,17 +78,12 @@ class TestRemoveStaleData(unittest.TestCase):
             })
 
             task.init(job_config)
-            total_records = [{'type': 'foo', 'count': 100},
-                             {'type': 'bar', 'count': 100}]
-            stale_records = [{'type': 'foo', 'count': 50},
-                             {'type': 'bar', 'count': 3}]
-            total_count_dict = {record['type']: int(record['count']) for record in total_records}
-            for stale_record in stale_records:
-                target_type = stale_record['type']
-                stale_count = stale_record['count']
-                task._validate_staleness_pct(total_record_count=total_count_dict[target_type],
-                                             stale_record_count=stale_count,
-                                             target_type=target_type)
+            task._validate_staleness_pct(total_record_count=100,
+                                         stale_record_count=50,
+                                         target_type='foo')
+            task._validate_staleness_pct(total_record_count=100,
+                                         stale_record_count=3,
+                                         target_type='bar')
 
     def test_marker(self) -> None:
         with patch.object(GraphDatabase, 'driver'):
