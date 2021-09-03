@@ -5,7 +5,7 @@ import logging
 import textwrap
 import time
 from typing import (
-    Any, Dict, Iterable,
+    Any, Dict, Iterable, Union,
 )
 
 import neo4j
@@ -54,6 +54,12 @@ LOGGER = logging.getLogger(__name__)
 MARKER_VAR_NAME = 'marker'
 
 
+class TargetWithCondition:
+    def __init__(self, target_type: str, condition: str) -> None:
+        self.target_type = target_type
+        self.condition = condition
+
+
 class Neo4jStalenessRemovalTask(Task):
     """
     A Specific task that is to remove stale nodes and relations in Neo4j.
@@ -63,6 +69,31 @@ class Neo4jStalenessRemovalTask(Task):
     of relation to perform this deletion.
 
     """
+
+    delete_stale_nodes_statement = textwrap.dedent("""
+        MATCH (target:{{type}})
+        WHERE {staleness_condition}{{extra_condition}}
+        WITH target LIMIT $batch_size
+        DETACH DELETE (target)
+        RETURN count(*) as count
+        """)
+    delete_stale_relations_statement = textwrap.dedent("""
+        MATCH (start_node)-[target:{{type}}]-(end_node)
+        WHERE {staleness_condition}{{extra_condition}}
+        WITH target LIMIT $batch_size
+        DELETE target
+        RETURN count(*) as count
+        """)
+    validate_node_staleness_statement = textwrap.dedent("""
+        MATCH (target:{{type}})
+        WHERE {staleness_condition}{{extra_condition}}
+        RETURN count(*) as count
+        """)
+    validate_relation_staleness_statement = textwrap.dedent("""
+        MATCH (start_node)-[target:{{type}}]-(end_node)
+        WHERE {staleness_condition}{{extra_condition}}
+        RETURN count(*) as count
+        """)
 
     def __init__(self) -> None:
         pass
@@ -123,14 +154,8 @@ class Neo4jStalenessRemovalTask(Task):
         self._validate_relation_staleness_pct()
 
     def _delete_stale_nodes(self) -> None:
-        statement = textwrap.dedent("""
-        MATCH (n:{{type}})
-        WHERE {}
-        WITH n LIMIT $batch_size
-        DETACH DELETE (n)
-        RETURN COUNT(*) as count;
-        """)
-        self._batch_delete(statement=self._decorate_staleness(statement), targets=self.target_nodes)
+        self._batch_delete(statement=self._decorate_staleness(self.delete_stale_nodes_statement),
+                           targets=self.target_nodes)
 
     def _decorate_staleness(self,
                             statement: str
@@ -141,27 +166,21 @@ class Neo4jStalenessRemovalTask(Task):
         :return:
         """
         if self.ms_to_expire:
-            return statement.format(textwrap.dedent(f"""
-            n.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})
-            OR NOT EXISTS(n.publisher_last_updated_epoch_ms)"""))
+            return statement.format(staleness_condition=textwrap.dedent(f"""\
+            (target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})
+            OR NOT EXISTS(target.publisher_last_updated_epoch_ms))"""))
 
-        return statement.format(textwrap.dedent(f"""
-        n.published_tag <> ${MARKER_VAR_NAME}
-        OR NOT EXISTS(n.published_tag)"""))
+        return statement.format(staleness_condition=textwrap.dedent(f"""\
+        (target.published_tag <> ${MARKER_VAR_NAME}
+        OR NOT EXISTS(target.published_tag))"""))
 
     def _delete_stale_relations(self) -> None:
-        statement = textwrap.dedent("""
-        MATCH ()-[n:{{type}}]-()
-        WHERE {}
-        WITH n LIMIT $batch_size
-        DELETE n
-        RETURN count(*) as count;
-        """)
-        self._batch_delete(statement=self._decorate_staleness(statement), targets=self.target_relations)
+        self._batch_delete(statement=self._decorate_staleness(self.delete_stale_relations_statement),
+                           targets=self.target_relations)
 
     def _batch_delete(self,
                       statement: str,
-                      targets: Iterable[str]
+                      targets: Union[Iterable[str], Iterable[TargetWithCondition]]
                       ) -> None:
         """
         Performing huge amount of deletion could degrade Neo4j performance. Therefore, it's taking batch deletion here.
@@ -170,10 +189,18 @@ class Neo4jStalenessRemovalTask(Task):
         :return:
         """
         for t in targets:
-            LOGGER.info('Deleting stale data of %s with batch size %i', t, self.batch_size)
+            if isinstance(t, TargetWithCondition):
+                target_type = t.target_type
+                extra_condition = ' AND ' + t.condition
+            else:
+                target_type = t
+                extra_condition = ''
+
+            LOGGER.info('Deleting stale data of %s with batch size %i', target_type, self.batch_size)
             total_count = 0
             while True:
-                results = self._execute_cypher_query(statement=statement.format(type=t),
+                results = self._execute_cypher_query(statement=statement.format(type=target_type,
+                                                                                extra_condition=extra_condition),
                                                      param_dict={'batch_size': self.batch_size,
                                                                  MARKER_VAR_NAME: self.marker},
                                                      dry_run=self.dry_run)
@@ -182,75 +209,78 @@ class Neo4jStalenessRemovalTask(Task):
                 total_count = total_count + count
                 if count == 0:
                     break
-            LOGGER.info('Deleted %i stale data of %s', total_count, t)
+            LOGGER.info('Deleted %i stale data of %s', total_count, target_type)
 
     def _validate_staleness_pct(self,
-                                total_records: Iterable[Dict[str, Any]],
-                                stale_records: Iterable[Dict[str, Any]],
-                                types: Iterable[str]
+                                total_record_count: int,
+                                stale_record_count: int,
+                                target_type: str
                                 ) -> None:
-        total_count_dict = {record['type']: int(record['count']) for record in total_records}
+        if total_record_count == 0 or stale_record_count == 0:
+            return
 
-        for record in stale_records:
-            type_str = record['type']
-            if type_str not in types:
-                continue
+        stale_pct = stale_record_count * 100 / total_record_count
 
-            stale_count = record['count']
-            if stale_count == 0:
-                continue
-
-            node_count = total_count_dict[type_str]
-            stale_pct = stale_count * 100 / node_count
-
-            threshold = self.staleness_pct_dict.get(type_str, self.staleness_pct)
-            if stale_pct >= threshold:
-                raise Exception(f'Staleness percentage of {type_str} is {stale_pct} %. '
-                                f'Stopping due to over threshold {threshold} %')
+        threshold = self.staleness_pct_dict.get(target_type, self.staleness_pct)
+        if stale_pct >= threshold:
+            raise Exception(f'Staleness percentage of {target_type} is {stale_pct} %. '
+                            f'Stopping due to over threshold {threshold} %')
 
     def _validate_node_staleness_pct(self) -> None:
-        total_nodes_statement = textwrap.dedent("""
-        MATCH (n)
-        WITH DISTINCT labels(n) as node, count(*) as count
-        RETURN head(node) as type, count
-        """)
+        total_nodes_statement = textwrap.dedent(
+            self.validate_node_staleness_statement.format(staleness_condition='true'))
+        stale_nodes_statement = textwrap.dedent(
+            self._decorate_staleness(self.validate_node_staleness_statement))
 
-        stale_nodes_statement = textwrap.dedent("""
-        MATCH (n)
-        WHERE {}
-        WITH DISTINCT labels(n) as node, count(*) as count
-        RETURN head(node) as type, count
-        """)
+        for t in self.target_nodes:
+            if isinstance(t, TargetWithCondition):
+                target_type = t.target_type
+                extra_condition = ' AND ' + t.condition
+            else:
+                target_type = t
+                extra_condition = ''
 
-        stale_nodes_statement = textwrap.dedent(self._decorate_staleness(stale_nodes_statement))
+            total_records = self._execute_cypher_query(
+                statement=total_nodes_statement.format(type=target_type,
+                                                       extra_condition=extra_condition))
+            stale_records = self._execute_cypher_query(
+                statement=stale_nodes_statement.format(type=target_type,
+                                                       extra_condition=extra_condition),
+                param_dict={MARKER_VAR_NAME: self.marker})
 
-        total_records = self._execute_cypher_query(statement=total_nodes_statement)
-        stale_records = self._execute_cypher_query(statement=stale_nodes_statement,
-                                                   param_dict={MARKER_VAR_NAME: self.marker})
-        self._validate_staleness_pct(total_records=total_records,
-                                     stale_records=stale_records,
-                                     types=self.target_nodes)
+            total_record_value = next(iter(total_records), None)
+            stale_record_value = next(iter(stale_records), None)
+            self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
+                                         stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                         target_type=target_type)
 
     def _validate_relation_staleness_pct(self) -> None:
-        total_relations_statement = textwrap.dedent("""
-        MATCH ()-[r]-()
-        RETURN type(r) as type, count(*) as count;
-        """)
+        total_relations_statement = textwrap.dedent(
+            self.validate_relation_staleness_statement.format(staleness_condition='true'))
+        stale_relations_statement = textwrap.dedent(
+            self._decorate_staleness(self.validate_relation_staleness_statement))
 
-        stale_relations_statement = textwrap.dedent("""
-        MATCH ()-[n]-()
-        WHERE {}
-        RETURN type(n) as type, count(*) as count
-        """)
+        for t in self.target_relations:
+            if isinstance(t, TargetWithCondition):
+                target_type = t.target_type
+                extra_condition = ' AND ' + t.condition
+            else:
+                target_type = t
+                extra_condition = ''
 
-        stale_relations_statement = textwrap.dedent(self._decorate_staleness(stale_relations_statement))
+            total_records = self._execute_cypher_query(
+                statement=total_relations_statement.format(type=target_type,
+                                                           extra_condition=extra_condition))
+            stale_records = self._execute_cypher_query(
+                statement=stale_relations_statement.format(type=target_type,
+                                                           extra_condition=extra_condition),
+                param_dict={MARKER_VAR_NAME: self.marker})
 
-        total_records = self._execute_cypher_query(statement=total_relations_statement)
-        stale_records = self._execute_cypher_query(statement=stale_relations_statement,
-                                                   param_dict={MARKER_VAR_NAME: self.marker})
-        self._validate_staleness_pct(total_records=total_records,
-                                     stale_records=stale_records,
-                                     types=self.target_relations)
+            total_record_value = next(iter(total_records), None)
+            stale_record_value = next(iter(stale_records), None)
+            self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
+                                         stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                         target_type=target_type)
 
     def _execute_cypher_query(self,
                               statement: str,
