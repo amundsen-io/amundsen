@@ -14,8 +14,7 @@ from pyhocon import ConfigFactory
 
 from databuilder.publisher import neo4j_csv_publisher
 from databuilder.task import neo4j_staleness_removal_task
-from databuilder.task.neo4j_staleness_removal_task import Neo4jStalenessRemovalTask
-from databuilder.task.neo4j_staleness_removal_task import TargetWithCondition
+from databuilder.task.neo4j_staleness_removal_task import Neo4jStalenessRemovalTask, TargetWithCondition
 
 
 class TestRemoveStaleData(unittest.TestCase):

@@ -5,7 +5,7 @@ import logging
 import textwrap
 import time
 from typing import (
-    Any, Dict, Iterable, Union
+    Any, Dict, Iterable, Union,
 )
 
 import neo4j
