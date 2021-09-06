@@ -29,6 +29,8 @@ class ElasticsearchBaseExtractor(Extractor):
         self._extract_iter = self._get_extract_iter()
 
         self.es = self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY)
+        self.es_version = self.es.info().get('version', dict()).get('number', dict())
+        self.es_major_version = int(self.es_version[:self.es_version.find('.')])
 
     def _get_indexes(self) -> Dict:
         result = dict()
@@ -48,7 +50,10 @@ class ElasticsearchBaseExtractor(Extractor):
         mappings = index.get('mappings', dict())
 
         try:
-            properties = list(mappings.values())[0].get('properties', dict())
+            if self.es_major_version >= 7:
+                properties = mappings.get('properties', dict())
+            else:
+                properties = list(mappings.values())[0].get('properties', dict())
         except Exception:
             properties = dict()
 
