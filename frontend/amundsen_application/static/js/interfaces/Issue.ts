@@ -11,4 +11,5 @@ export interface CreateIssuePayload {
   key: string;
   title: string;
   description: string;
+  resource_path: string;
 }

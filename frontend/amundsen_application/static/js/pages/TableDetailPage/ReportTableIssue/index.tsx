@@ -70,13 +70,16 @@ export class ReportTableIssue extends React.Component<
   };
 
   getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
+    const { cluster, database, schema, name } = this.props.tableMetadata;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
+    const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
       title,
       description,
       key: this.props.tableKey,
+      resource_path: resourcePath,
     };
   };
 

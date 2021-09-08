@@ -66,12 +66,13 @@ class JiraClient(BaseIssueTrackerClient):
             logging.exception(str(e))
             raise e
 
-    def create_issue(self, table_uri: str, title: str, description: str) -> DataIssue:
+    def create_issue(self, table_uri: str, title: str, description: str, table_url: str) -> DataIssue:
         """
         Creates an issue in Jira
         :param description: Description of the Jira issue
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Jira ticket
+        :param table_url: Link to access the table
         :return: Metadata about the newly created issue
         """
         try:
@@ -106,7 +107,8 @@ class JiraClient(BaseIssueTrackerClient):
                 summary=title,
                 description=(f'{description} '
                              f'\n Reported By: {user_email} '
-                             f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE]'),
+                             f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE] '
+                             f'\n Table URL: {table_url}'),
                 reporter=reporter))
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
