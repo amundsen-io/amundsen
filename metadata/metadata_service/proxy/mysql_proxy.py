@@ -1001,9 +1001,6 @@ class MySQLProxy(BaseProxy):
 
             query = session.query(RDSDashboard).filter(RDSDashboard.rk.in_(dashboard_subquery)).options(
                 subqueryload(RDSDashboard.group).options(
-                    subqueryload(RDSDashboardGroup.description).options(
-                        load_only(RDSDashboardGroupDescription.description)
-                    ),
                     subqueryload(RDSDashboardGroup.cluster).options(
                         load_only(RDSDashboardCluster.name)
                     )
@@ -1416,9 +1413,6 @@ class MySQLProxy(BaseProxy):
 
             query = query.options(
                 subqueryload(RDSDashboard.group).options(
-                    subqueryload(RDSDashboardGroup.description).options(
-                        load_only(RDSDashboardGroupDescription.description)
-                    ),
                     subqueryload(RDSDashboardGroup.cluster).options(
                         load_only(RDSDashboardCluster.name)
                     )
