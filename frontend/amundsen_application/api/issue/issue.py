@@ -69,7 +69,7 @@ class IssueAPI(Resource):
                                                 table_uri=args['key'],
                                                 title=args['title'],
                                                 table_url=app.config['FRONTEND_BASE'] + args['resource_path']
-                                                if args['resource_path'] else app.config['FRONTEND_BASE'])
+                                                if args['resource_path'] else 'Not Found')
             return make_response(jsonify({'issue': response.serialize()}), HTTPStatus.OK)
 
         except IssueConfigurationException as e:
