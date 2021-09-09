@@ -38,6 +38,7 @@ const mockCreateIssuePayload = {
   key: 'key',
   title: 'title',
   description: 'description',
+  resource_path: '/table_detail/cluster/database/schema/table_name',
 };
 
 const mockNotificationPayload = {
