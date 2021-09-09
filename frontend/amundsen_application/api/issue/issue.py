@@ -68,7 +68,8 @@ class IssueAPI(Resource):
             response = self.client.create_issue(description=args['description'],
                                                 table_uri=args['key'],
                                                 title=args['title'],
-                                                table_url=app.config['FRONTEND_BASE'] + args['resource_path'])
+                                                table_url=app.config['FRONTEND_BASE'] + args['resource_path']
+                                                if args['resource_path'] else app.config['FRONTEND_BASE'])
             return make_response(jsonify({'issue': response.serialize()}), HTTPStatus.OK)
 
         except IssueConfigurationException as e:

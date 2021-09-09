@@ -70,7 +70,9 @@ export class ReportTableIssue extends React.Component<
   };
 
   getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
-    const { cluster, database, schema, name } = this.props.tableMetadata;
+    const {
+      tableMetadata: { cluster, database, schema, name },
+    } = this.props;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
@@ -84,7 +86,9 @@ export class ReportTableIssue extends React.Component<
   };
 
   getNotificationPayload = (): NotificationPayload => {
-    const { cluster, database, schema, name } = this.props.tableMetadata;
+    const {
+      tableMetadata: { cluster, database, schema, name },
+    } = this.props;
     const owners = this.props.tableOwners;
     const resourceName = `${schema}.${name}`;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
