@@ -1,6 +1,9 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
+import { NestedTableColumn, TableColumnStats } from 'interfaces/TableMetadata';
+import { Badge } from 'interfaces/Badges';
+
 export type ParsedType = string | NestedType;
 
 export interface NestedType {
@@ -12,6 +15,7 @@ enum DatabaseId {
   Hive = 'hive',
   Presto = 'presto',
   Delta = 'delta',
+  Default = 'default',
 }
 const SUPPORTED_TYPES = {
   // https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types#LanguageManualTypes-ComplexTypes
@@ -20,6 +24,7 @@ const SUPPORTED_TYPES = {
   [DatabaseId.Presto]: ['array', 'map', 'row'],
   // https://docs.databricks.com/spark/latest/spark-sql/language-manual/sql-ref-datatypes.html#data-types
   [DatabaseId.Delta]: ['array', 'map', 'struct'],
+  [DatabaseId.Default]: ['array', 'map', 'struct', 'row', 'uniontype'],
 };
 const OPEN_DELIMETERS = {
   '(': ')',
@@ -116,7 +121,10 @@ function parseNestedTypeHelper(
 /*
  * Returns whether or not a columnType string represents a complex type for the given database
  */
-export function isNestedType(columnType: string, databaseId: string): boolean {
+export function isNestedType(
+  columnType: string,
+  databaseId: string = DatabaseId.Default
+): boolean {
   const supportedTypes = SUPPORTED_TYPES[databaseId];
   let isNested = false;
   if (supportedTypes) {
@@ -137,7 +145,7 @@ export function isNestedType(columnType: string, databaseId: string): boolean {
  */
 export function parseNestedType(
   columnType: string,
-  databaseId: string
+  databaseId: string = DatabaseId.Default
 ): NestedType | null {
   // Presto includes un-needed "" characters
   if (databaseId === DatabaseId.Presto) {
@@ -149,6 +157,38 @@ export function parseNestedType(
   }
   return null;
 }
+
+/**
+ *
+ * @param nestedType
+ */
+export function convertNestedTypeToColumns(nestedType: NestedType, nestedLevel: number = 1): NestedTableColumn[] {
+  const { children } = nestedType;
+  const nestedColumns: NestedTableColumn[] = [];
+  children.forEach((child) => {
+    if (typeof child === 'string') {
+      const [columnName, colType] = child.split(' ');
+      if (colType !== undefined) {
+        nestedColumns.push({
+          col_type: colType,
+          description: '',
+          name: columnName,
+          sort_order: 0,
+          nested_level: nestedLevel,
+        });
+      }
+    } else {
+      const nestedChildren = convertNestedTypeToColumns(child, nestedLevel + 1);
+      nestedColumns.push(...nestedChildren);
+    }
+  });
+  // Need to re-establish the sort order since this is built recursively.
+  nestedColumns.forEach((column, index) => {
+    column.sort_order = index;
+  });
+  return nestedColumns;
+};
+
 
 /*
  * Returns the truncated string representation for a NestedType

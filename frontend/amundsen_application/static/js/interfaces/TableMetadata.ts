@@ -47,14 +47,25 @@ export interface TablePreviewQueryParams {
   cluster: string;
 }
 
+export type TableColumnType = TableColumn | NestedTableColumn;
+
 export interface TableColumn {
-  name: string;
+  badges: Badge[];
+  col_type: string;
+  children?: NestedTableColumn[];
   description: string;
   is_editable: boolean;
-  col_type: string;
+  name: string;
   sort_order: string;
   stats: TableColumnStats[];
-  badges: Badge[];
+}
+
+export interface NestedTableColumn {
+  col_type: string;
+  description: string;
+  name: string;
+  sort_order: number;
+  nested_level: number;
 }
 
 export interface TableOwners {
