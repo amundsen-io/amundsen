@@ -2,7 +2,7 @@
 
 This repository uses `git submodules` to link the code for all of Amundsen's libraries into a central location. This document offers guidance on how to develop locally with this setup.
 
-This workflow leverages `docker` and `docker-compose` in a very similar manner to our [installation documentation](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker), to spin up instances of all 3 of Amundsen's services connected with an instances of Neo4j and ElasticSearch which ingest dummy data.
+This workflow leverages `docker` and `docker-compose` in a very similar manner to our [installation documentation](https://github.com/amundsen-io/amundsen/blob/main/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker), to spin up instances of all 3 of Amundsen's services connected with an instances of Neo4j and ElasticSearch which ingest dummy data.
 
 ## Cloning the Repository
 
@@ -33,7 +33,7 @@ $ git submodule update --remote
 
 ### Building local changes
 
-1. First, be sure that you have first followed the [installation documentation](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) and can spin up a default version of Amundsen without any issues. If you have already completed this step, be sure to have stopped and removed those containers by running:
+1. First, be sure that you have first followed the [installation documentation](https://github.com/amundsen-io/amundsen/blob/main/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) and can spin up a default version of Amundsen without any issues. If you have already completed this step, be sure to have stopped and removed those containers by running:
     ```bash
     $ docker-compose -f docker-amundsen.yml down
     ```
@@ -88,7 +88,7 @@ Here are some additional changes you might need for windows (OS Win 10):
 Once you have a running frontend microservice, the rest of Amundsen components can be launched with docker-compose
 from the root Amundsen project (don't forget to remove frontend microservice section from docker-amundsen.yml):
 `docker-compose -f docker-amundsen.yml up`
-https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md
+https://github.com/amundsen-io/amundsen/blob/main/docs/installation.md
 
 ### Developing Dockerbuild file
 

@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data.
 name: amundsen
-version: 2.1.0
+version: 2.1.2
 icon: https://github.com/amundsen-io/amundsen/blob/master/docs/img/logos/amundsen_logo_on_light.svg
 home: https://github.com/amundsen-io/amundsen
 maintainers:

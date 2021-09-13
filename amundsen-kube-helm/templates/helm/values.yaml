@@ -1,5 +1,7 @@
 # Duplicate this file and put your customization here
 
+clusterDomain: cluster.local
+
 # common settings for all apps
 # NOTE - README table was generated with https://github.com/norwoodj/helm-docs
 # environment -- **DEPRECATED - its not standard to pre construct urls this way.** The environment the app is running in. Used to construct dns hostnames (on aws only) and ports.

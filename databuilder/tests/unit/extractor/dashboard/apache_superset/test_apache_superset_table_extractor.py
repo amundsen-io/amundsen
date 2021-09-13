@@ -91,7 +91,7 @@ class TestApacheSupersetTableExtractor(unittest.TestCase):
     def test_extractor(self) -> None:
         extractor = self._get_extractor()
 
-        extractor.execute_query = Mock(side_effect=[{'ids': [2, 3]},
+        extractor.execute_query = Mock(side_effect=[{'ids': [2, 3]}, {'ids': []},
                                                     dataset_data_response_1, dataset_objects_data_response_1,
                                                     dataset_data_response_2, dataset_objects_data_response_2,
                                                     database_data_response_1, database_data_response_2])

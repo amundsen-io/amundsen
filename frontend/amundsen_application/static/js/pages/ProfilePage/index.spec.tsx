@@ -15,10 +15,10 @@ import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { ResourceType } from 'interfaces/Resources';
 
-import * as LogUtils from 'utils/logUtils';
+import * as NavigationUtils from 'utils/navigationUtils';
 
 import { indexDashboardsEnabled } from 'config/config-utils';
-import { AVATAR_SIZE } from './constants';
+import { AVATAR_SIZE, PROFILE_TAB } from './constants';
 import {
   mapDispatchToProps,
   mapStateToProps,
@@ -114,7 +114,10 @@ describe('ProfilePage', () => {
   describe('loadUserInfo', () => {
     it('calls getLoggingParams', () => {
       const { props, wrapper } = setup();
-      const getLoggingParamsSpy = jest.spyOn(LogUtils, 'getLoggingParams');
+      const getLoggingParamsSpy = jest.spyOn(
+        NavigationUtils,
+        'getLoggingParams'
+      );
 
       wrapper.instance().loadUserInfo('test');
 
@@ -192,16 +195,6 @@ describe('ProfilePage', () => {
     });
   });
 
-  describe('generateTabKey', () => {
-    it('returns string used for the tab keys', () => {
-      const { wrapper } = setup();
-      const givenResource = ResourceType.table;
-      expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
-        `tab:${givenResource}`
-      );
-    });
-  });
-
   describe('generateTabTitle', () => {
     it('returns string for tab title according to UI designs', () => {
       const { wrapper } = setup();
@@ -218,7 +211,6 @@ describe('ProfilePage', () => {
     let props;
     let wrapper;
     let generateTabContentSpy;
-    let generateTabKeySpy;
     let generateTabTitleSpy;
 
     beforeAll(() => {
@@ -227,9 +219,6 @@ describe('ProfilePage', () => {
       generateTabContentSpy = jest
         .spyOn(wrapper.instance(), 'generateTabContent')
         .mockImplementation((input) => `${input}Content`);
-      generateTabKeySpy = jest
-        .spyOn(wrapper.instance(), 'generateTabKey')
-        .mockImplementation((input) => `${input}Key`);
       generateTabTitleSpy = jest
         .spyOn(wrapper.instance(), 'generateTabTitle')
         .mockImplementation((input) => `${input}Title`);
@@ -240,17 +229,12 @@ describe('ProfilePage', () => {
 
       beforeAll(() => {
         tabInfoArray = wrapper.instance().generateTabInfo();
-        tableTab = tabInfoArray.find((tab) => tab.key === 'tableKey');
+        tableTab = tabInfoArray.find((tab) => tab.key === PROFILE_TAB.TABLE);
       });
 
       it('generates content for table tab info', () => {
         expect(generateTabContentSpy).toHaveBeenCalledWith(ResourceType.table);
         expect(tableTab.content).toBe('tableContent');
-      });
-
-      it('generates key for table tab info', () => {
-        expect(generateTabKeySpy).toHaveBeenCalledWith(ResourceType.table);
-        expect(tableTab.key).toBe('tableKey');
       });
 
       it('generates title for table tab info', () => {
@@ -276,7 +260,9 @@ describe('ProfilePage', () => {
         beforeAll(() => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
           tabInfoArray = wrapper.instance().generateTabInfo();
-          dashboardTab = tabInfoArray.find((tab) => tab.key === 'dashboardKey');
+          dashboardTab = tabInfoArray.find(
+            (tab) => tab.key === PROFILE_TAB.DASHBOARD
+          );
         });
 
         it('generates content for table tab info', () => {
@@ -284,13 +270,6 @@ describe('ProfilePage', () => {
             ResourceType.dashboard
           );
           expect(dashboardTab.content).toBe('dashboardContent');
-        });
-
-        it('generates key for table tab info', () => {
-          expect(generateTabKeySpy).toHaveBeenCalledWith(
-            ResourceType.dashboard
-          );
-          expect(dashboardTab.key).toBe('dashboardKey');
         });
 
         it('generates title for table tab info', () => {
@@ -385,16 +364,12 @@ describe('ProfilePage', () => {
     });
 
     it('renders Tabs w/ correct props', () => {
-      const mockKey = 'test';
-      const generateTabKeySpy = jest
-        .spyOn(wrapper.instance(), 'generateTabKey')
-        .mockImplementation(() => mockKey);
       wrapper.instance().forceUpdate();
       expect(
         wrapper.find('.profile-body').find(TabsComponent).props()
       ).toMatchObject({
         tabs: wrapper.instance().generateTabInfo(),
-        defaultTab: mockKey,
+        defaultTab: PROFILE_TAB.TABLE,
       });
     });
 

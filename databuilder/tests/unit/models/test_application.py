@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from dataclasses import dataclass
+from typing import Dict, List
 from unittest.mock import ANY
 
 from databuilder.models.application import Application
@@ -22,18 +24,31 @@ from databuilder.serializers.neptune_serializer import (
 )
 
 
+@dataclass
+class ApplicationTestCase:
+    application: Application
+    expected_node_results: List[Dict]
+    expected_relation_results: List[Dict]
+    expected_records: List[Dict]
+
+
 class TestApplication(unittest.TestCase):
 
     def setUp(self) -> None:
         super(TestApplication, self).setUp()
 
-        self.application = Application(task_id='hive.default.test_table',
-                                       dag_id='event_test',
-                                       schema='default',
-                                       table_name='test_table',
-                                       application_url_template='airflow_host.net/admin/airflow/tree?dag_id={dag_id}')
+        self.test_cases = []
 
-        self.expected_node_results = [{
+        # Explicitly add test case for Airflow to verify backwards compatibility
+        airflow_application = Application(
+            task_id='hive.default.test_table',
+            dag_id='event_test',
+            schema='default',
+            table_name='test_table',
+            application_url_template='airflow_host.net/admin/airflow/tree?dag_id={dag_id}',
+        )
+
+        airflow_expected_node_results = [{
             NODE_KEY: 'application://gold.airflow/event_test/hive.default.test_table',
             NODE_LABEL: 'Application',
             'application_url': 'airflow_host.net/admin/airflow/tree?dag_id=event_test',
@@ -42,7 +57,7 @@ class TestApplication(unittest.TestCase):
             'description': 'Airflow with id event_test/hive.default.test_table'
         }]
 
-        self.expected_relation_results = [{
+        airflow_expected_relation_results = [{
             RELATION_START_KEY: 'hive://gold.default/test_table',
             RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
             RELATION_END_KEY: 'application://gold.airflow/event_test/hive.default.test_table',
@@ -51,125 +66,209 @@ class TestApplication(unittest.TestCase):
             RELATION_REVERSE_TYPE: 'GENERATES'
         }]
 
-    def test_get_table_model_key(self) -> None:
-        table = self.application.get_table_model_key()
-        self.assertEqual(table, 'hive://gold.default/test_table')
-
-    def test_get_application_model_key(self) -> None:
-        application = self.application.get_application_model_key()
-        self.assertEqual(application, self.expected_node_results[0][NODE_KEY])
-
-    def test_create_nodes(self) -> None:
-        actual = []
-        node = self.application.create_next_node()
-        while node:
-            serialized_next_node = neo4_serializer.serialize_node(node)
-            actual.append(serialized_next_node)
-            node = self.application.create_next_node()
-
-        self.assertEqual(actual, self.expected_node_results)
-
-    def test_create_nodes_neptune(self) -> None:
-        actual = []
-        next_node = self.application.create_next_node()
-        while next_node:
-            serialized_next_node = neptune_serializer.convert_node(next_node)
-            actual.append(serialized_next_node)
-            next_node = self.application.create_next_node()
-
-        node_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
-        node_key = 'application://gold.airflow/event_test/hive.default.test_table'
-        neptune_expected = [{
-            NEPTUNE_HEADER_ID: node_id,
-            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: node_key,
-            NEPTUNE_HEADER_LABEL: 'Application',
-            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-            NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
-            'application_url:String(single)': 'airflow_host.net/admin/airflow/tree?dag_id=event_test',
-            'id:String(single)': 'event_test/hive.default.test_table',
-            'name:String(single)': 'Airflow',
-            'description:String(single)': 'Airflow with id event_test/hive.default.test_table',
-        }]
-        self.assertEqual(neptune_expected, actual)
-
-    def test_create_relation(self) -> None:
-        actual = []
-        relation = self.application.create_next_relation()
-        while relation:
-            serialized_relation = neo4_serializer.serialize_relationship(relation)
-            actual.append(serialized_relation)
-            relation = self.application.create_next_relation()
-
-        self.assertEqual(actual, self.expected_relation_results)
-
-    def test_create_relations_neptune(self) -> None:
-        application_id = 'Application:application://gold.airflow/event_test/hive.default.test_table'
-        table_id = 'Table:hive://gold.default/test_table'
-        neptune_forward_expected = {
-            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id=table_id,
-                to_vertex_id=application_id,
-                label='DERIVED_FROM'
-            ),
-            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id=table_id,
-                to_vertex_id=application_id,
-                label='DERIVED_FROM'
-            ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: table_id,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: application_id,
-            NEPTUNE_HEADER_LABEL: 'DERIVED_FROM',
-            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-            NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-        }
-
-        neptune_reversed_expected = {
-            NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id=application_id,
-                to_vertex_id=table_id,
-                label='GENERATES'
-            ),
-            METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id=application_id,
-                to_vertex_id=table_id,
-                label='GENERATES'
-            ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM: application_id,
-            NEPTUNE_RELATIONSHIP_HEADER_TO: table_id,
-            NEPTUNE_HEADER_LABEL: 'GENERATES',
-            NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
-            NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
-        }
-        neptune_expected = [[neptune_forward_expected, neptune_reversed_expected]]
-
-        actual = []
-        next_relation = self.application.create_next_relation()
-        while next_relation:
-            serialized_next_relation = neptune_serializer.convert_relationship(next_relation)
-            actual.append(serialized_next_relation)
-            next_relation = self.application.create_next_relation()
-
-        self.assertEqual(actual, neptune_expected)
-
-    def test_create_records(self) -> None:
-        expected_application_record = {
+        airflow_expected_application_record = {
             'rk': 'application://gold.airflow/event_test/hive.default.test_table',
             'application_url': 'airflow_host.net/admin/airflow/tree?dag_id=event_test',
             'id': 'event_test/hive.default.test_table',
             'name': 'Airflow',
             'description': 'Airflow with id event_test/hive.default.test_table'
         }
-        expected_application_table_record = {
+
+        airflow_expected_application_table_record = {
             'rk': 'hive://gold.default/test_table',
             'application_rk': 'application://gold.airflow/event_test/hive.default.test_table'
         }
-        expected = [expected_application_record, expected_application_table_record]
 
-        actual = []
-        record = self.application.create_next_record()
-        while record:
-            serialized_record = mysql_serializer.serialize_record(record)
-            actual.append(serialized_record)
-            record = self.application.create_next_record()
+        airflow_expected_records = [
+            airflow_expected_application_record,
+            airflow_expected_application_table_record,
+        ]
 
-        self.assertEqual(expected, actual)
+        self.test_cases.append(
+            ApplicationTestCase(
+                airflow_application,
+                airflow_expected_node_results,
+                airflow_expected_relation_results,
+                airflow_expected_records,
+            ),
+        )
+
+        # Test several different potential application types
+        for application_type in ['Databricks', 'Snowflake', 'EMR']:
+            url = f'https://{application_type.lower()}.com/job/1234'
+            id = f'{application_type}.hive.test_table'
+            description = f'{application_type} application for hive.test_table'
+
+            # task_id and dag_id are irrelevant for non Airflow applcations for for backwards
+            # compatibility we do not want to remove the init arguements
+            application = Application(
+                task_id='',
+                dag_id='',
+                schema='default',
+                table_name='test_table',
+                application_url_template=url,
+                application_type=application_type,
+            )
+
+            expected_node_results = [{
+                NODE_KEY: f'application://{application_type}/hive/test_table',
+                NODE_LABEL: 'Application',
+                'application_url': url,
+                'id': id,
+                'name': application_type,
+                'description': description,
+            }]
+
+            expected_relation_results = [{
+                RELATION_START_KEY: 'hive://gold.default/test_table',
+                RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
+                RELATION_END_KEY: f'application://{application_type}/hive/test_table',
+                RELATION_END_LABEL: 'Application',
+                RELATION_TYPE: 'DERIVED_FROM',
+                RELATION_REVERSE_TYPE: 'GENERATES'
+            }]
+
+            expected_application_record = {
+                'rk': f'application://{application_type}/hive/test_table',
+                'application_url': url,
+                'id': id,
+                'name': application_type,
+                'description': description,
+            }
+
+            expected_application_table_record = {
+                'rk': 'hive://gold.default/test_table',
+                'application_rk': f'application://{application_type}/hive/test_table'
+            }
+
+            expected_records = [
+                expected_application_record,
+                expected_application_table_record
+            ]
+
+            self.test_cases.append(
+                ApplicationTestCase(
+                    application,
+                    expected_node_results,
+                    expected_relation_results,
+                    expected_records,
+                ),
+            )
+
+    def test_get_table_model_key(self) -> None:
+        for tc in self.test_cases:
+            table = tc.application.get_table_model_key()
+            self.assertEqual(table, 'hive://gold.default/test_table')
+
+    def test_get_application_model_key(self) -> None:
+        for tc in self.test_cases:
+            self.assertEqual(tc.application.application_key, tc.expected_node_results[0][NODE_KEY])
+
+    def test_create_nodes(self) -> None:
+        for tc in self.test_cases:
+            actual = []
+            node = tc.application.create_next_node()
+            while node:
+                serialized_next_node = neo4_serializer.serialize_node(node)
+                actual.append(serialized_next_node)
+                node = tc.application.create_next_node()
+
+            self.assertEqual(actual, tc.expected_node_results)
+
+    def test_create_nodes_neptune(self) -> None:
+        for tc in self.test_cases:
+            actual = []
+            next_node = tc.application.create_next_node()
+            while next_node:
+                serialized_next_node = neptune_serializer.convert_node(next_node)
+                actual.append(serialized_next_node)
+                next_node = tc.application.create_next_node()
+
+            node_id = f'Application:{tc.application.application_key}'
+            node_key = tc.application.application_key
+            neptune_expected = [{
+                NEPTUNE_HEADER_ID: node_id,
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: node_key,
+                NEPTUNE_HEADER_LABEL: 'Application',
+                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
+                'application_url:String(single)': tc.application.application_url,
+                'id:String(single)': tc.application.application_id,
+                'name:String(single)': tc.application.application_type,
+                'description:String(single)': tc.application.application_description,
+            }]
+            self.assertEqual(neptune_expected, actual)
+
+    def test_create_relation(self) -> None:
+        for tc in self.test_cases:
+            actual = []
+            relation = tc.application.create_next_relation()
+            while relation:
+                serialized_relation = neo4_serializer.serialize_relationship(relation)
+                actual.append(serialized_relation)
+                relation = tc.application.create_next_relation()
+
+            self.assertEqual(actual, tc.expected_relation_results)
+
+    def test_create_relations_neptune(self) -> None:
+        for tc in self.test_cases:
+            application_id = f'Application:{tc.application.application_key}'
+            table_id = 'Table:hive://gold.default/test_table'
+            neptune_forward_expected = {
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id=table_id,
+                    to_vertex_id=application_id,
+                    label='DERIVED_FROM'
+                ),
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id=table_id,
+                    to_vertex_id=application_id,
+                    label='DERIVED_FROM'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: table_id,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: application_id,
+                NEPTUNE_HEADER_LABEL: 'DERIVED_FROM',
+                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+            }
+
+            neptune_reversed_expected = {
+                NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id=application_id,
+                    to_vertex_id=table_id,
+                    label='GENERATES'
+                ),
+                METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
+                    from_vertex_id=application_id,
+                    to_vertex_id=table_id,
+                    label='GENERATES'
+                ),
+                NEPTUNE_RELATIONSHIP_HEADER_FROM: application_id,
+                NEPTUNE_RELATIONSHIP_HEADER_TO: table_id,
+                NEPTUNE_HEADER_LABEL: 'GENERATES',
+                NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
+                NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
+            }
+            neptune_expected = [[neptune_forward_expected, neptune_reversed_expected]]
+
+            actual = []
+            next_relation = tc.application.create_next_relation()
+            while next_relation:
+                serialized_next_relation = neptune_serializer.convert_relationship(next_relation)
+                actual.append(serialized_next_relation)
+                next_relation = tc.application.create_next_relation()
+
+            self.assertEqual(actual, neptune_expected)
+
+    def test_create_records(self) -> None:
+        for tc in self.test_cases:
+            expected = tc.expected_records
+
+            actual = []
+            record = tc.application.create_next_record()
+            while record:
+                serialized_record = mysql_serializer.serialize_record(record)
+                actual.append(serialized_record)
+                record = tc.application.create_next_record()
+
+            self.assertEqual(expected, actual)

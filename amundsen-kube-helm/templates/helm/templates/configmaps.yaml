@@ -47,7 +47,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  PROXY_HOST: {{ if .Values.metadata.proxy.host }}{{ .Values.metadata.proxy.host }}{{ else }}bolt://{{ .Release.Name }}-neo4j.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
+  PROXY_HOST: {{ if .Values.metadata.proxy.host }}{{ .Values.metadata.proxy.host }}{{ else }}bolt://{{ .Release.Name }}-neo4j.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}{{ end }}
   {{ if .Values.metadata.proxy.port }}
   PROXY_PORT: {{ .Values.metadata.proxy.port }}
   {{ end }}
@@ -85,7 +85,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  PROXY_ENDPOINT: {{ if .Values.search.proxy.endpoint }}{{ .Values.search.proxy.endpoint }}{{ else }}{{ .Release.Name }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local{{ end }}
+  PROXY_ENDPOINT: {{ if .Values.search.proxy.endpoint }}{{ .Values.search.proxy.endpoint }}{{ else }}{{ .Release.Name }}-elasticsearch-client.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}{{ end }}
   {{ if .Values.search.proxy.user }}
   CREDENTIALS_PROXY_USER: {{ .Values.search.proxy.user }}
   {{ end }}

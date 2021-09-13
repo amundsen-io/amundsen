@@ -121,6 +121,7 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
     elasticsearch_new_index_key = 'tables' + str(uuid.uuid4())
 
     job_config = ConfigFactory.from_dict({
+        'extractor.search_data.entity_type': 'table',
         f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': neo4j_endpoint,
         f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.MODEL_CLASS_CONFIG_KEY}': model_name,
         f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': neo4j_user,

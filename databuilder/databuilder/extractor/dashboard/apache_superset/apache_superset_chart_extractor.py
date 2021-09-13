@@ -3,7 +3,7 @@
 
 
 from typing import (
-    Any, Dict, Iterator, List, Tuple, Union,
+    Any, Dict, Iterator, Tuple, Union,
 )
 
 from databuilder.extractor.dashboard.apache_superset.apache_superset_extractor import (
@@ -25,7 +25,7 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
         return result
 
     def _get_extract_iter(self) -> Iterator[Union[DashboardQuery, DashboardChart, None]]:
-        ids = self._get_dashboard_ids()
+        ids = self._get_resource_ids('dashboard')
 
         data = [self._get_dashboard_details(i) for i in ids]
 
@@ -52,13 +52,6 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
                                                    **self.common_params})
 
                     yield DashboardChart(**dashboard_chart_data)
-
-    def _get_dashboard_ids(self) -> List[str]:
-        url = self.build_full_url('api/v1/dashboard')
-
-        data = self.execute_query(url)
-
-        return data.get('ids', [])
 
     def _get_dashboard_details(self, dashboard_id: str) -> Tuple[str, Dict[str, Any]]:
         url = self.build_full_url(f'api/v1/dashboard/export?q=[{dashboard_id}]')

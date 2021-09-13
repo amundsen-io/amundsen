@@ -4,6 +4,28 @@
       "name": "TablePartition",
       "superTypes": [
         "DataSet"
+      ],
+      "serviceType": "amundsen",
+      "attributeDefs": [
+        {
+          "name": "key",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0
+        },
+        {
+          "name": "create_time ",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0,
+          "defaultValue": 0
+        }
       ]
     }
   ],

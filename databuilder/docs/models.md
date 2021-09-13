@@ -59,6 +59,11 @@ who uses given datasets so people can contact them if they have questions
 on how to use a given dataset or if a dataset is changing. It is also used as a 
 search boost so that the most used tables are put to the top of the search results.
 
+This model also populates the Popular Resources section on the homepage. 
+A table must have at least 10 unique users to appear on the homepage. 
+This configuration is defined [here](https://github.com/amundsen-io/amundsen/blob/main/metadata/metadata_service/config.py#L81) 
+and can be changed if your usage is less.
+
 #### Extraction
 For more traditional databases, there should be system tables where you can obtain 
 these sorts of usage statistics.
@@ -102,7 +107,6 @@ Calculate statistics that you care about such as min/max/average etc.
 
 #### Description
 This is used to provide users a way to find out what job/application is responsible for writing to this dataset.
-Currently the model assumes the application has to be in airflow, but in theory it could be generalized to other orchestration frameworks.
 
 #### Extraction
 TODO

@@ -212,7 +212,7 @@ exports[`eslint`] = {
     "js/components/ResourceListItem/DashboardListItem/index.tsx:2194588229": [
       [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
     ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:1582455272": [
+    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:3348265572": [
       [45, 6, 25, "Use object destructuring.", "354229464"],
       [46, 6, 29, "Use object destructuring.", "2645724888"]
     ],
@@ -427,8 +427,8 @@ exports[`eslint`] = {
       [870, 16, 34, "Use array destructuring.", "4232426022"],
       [1012, 16, 36, "Use array destructuring.", "3910325707"]
     ],
-    "js/components/Table/index.tsx:2764735560": [
-      [291, 8, 65, "A control must be associated with a text label.", "1026764939"]
+    "js/components/Table/index.tsx:887322404": [
+      [304, 8, 65, "A control must be associated with a text label.", "1026764939"]
     ],
     "js/components/Table/table.story.tsx:3074937505": [
       [8, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -487,12 +487,12 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:1117631301": [
+    "js/config/config-default.ts:3310033717": [
       [2, 0, 72, "\`../interfaces\` import should occur before import of \`./config-types\`", "1449508543"],
-      [328, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [329, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+      [332, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [333, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
-    "js/config/config-utils.ts:2187516631": [
+    "js/config/config-utils.ts:1551051440": [
       [11, 0, 45, "\`../interfaces\` import should occur before import of \`./config-types\`", "3885176344"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
@@ -526,14 +526,14 @@ exports[`eslint`] = {
     "js/ducks/issue/reducer.ts:1774302197": [
       [119, 6, 56, "Unexpected lexical declaration in case block.", "2031834906"]
     ],
-    "js/ducks/issue/tests/index.spec.ts:1694016813": [
-      [134, 8, 20, "\'allIssuesUrl\' is already declared in the upper scope.", "3551613994"],
-      [135, 8, 13, "\'total\' is already declared in the upper scope.", "1110344606"],
-      [245, 10, 32, "\'allIssuesUrl\' is already declared in the upper scope.", "3851993612"],
-      [246, 10, 25, "\'total\' is already declared in the upper scope.", "1495122296"],
-      [249, 8, 33, "Use object destructuring.", "2386588093"],
-      [250, 8, 31, "Use object destructuring.", "507617405"],
-      [251, 8, 45, "Use object destructuring.", "244310461"]
+    "js/ducks/issue/tests/index.spec.ts:2407012752": [
+      [136, 8, 20, "\'allIssuesUrl\' is already declared in the upper scope.", "3551613994"],
+      [137, 8, 13, "\'total\' is already declared in the upper scope.", "1110344606"],
+      [248, 10, 32, "\'allIssuesUrl\' is already declared in the upper scope.", "3851993612"],
+      [249, 10, 25, "\'total\' is already declared in the upper scope.", "1495122296"],
+      [252, 8, 33, "Use object destructuring.", "2386588093"],
+      [253, 8, 31, "Use object destructuring.", "507617405"],
+      [254, 8, 45, "Use object destructuring.", "244310461"]
     ],
     "js/ducks/lastIndexed/sagas.ts:1498244597": [
       [7, 2, 29, "\'action\' is defined but never used.", "566797395"]
@@ -563,15 +563,15 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:488078374": [
-      [78, 8, 23, "Use object destructuring.", "1142306891"],
-      [137, 23, -4208, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:4044823741": [
+      [80, 8, 23, "Use object destructuring.", "1142306891"],
+      [139, 23, -4311, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/ducks/tableMetadata/index.spec.ts:2846530620": [
-      [480, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [506, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
-      [612, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
-      [644, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
+    "js/ducks/tableMetadata/index.spec.ts:4060478795": [
+      [518, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [544, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"],
+      [650, 22, 11, "\'mockSuccess\' is already declared in the upper scope.", "1120045516"],
+      [682, 22, 11, "\'mockFailure\' is already declared in the upper scope.", "692282639"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -579,6 +579,9 @@ exports[`eslint`] = {
     ],
     "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
+    ],
+    "js/ducks/tableMetadata/reducer.ts:1997714793": [
+      [415, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
     ],
     "js/ducks/tags/api/v0.ts:2781466514": [
       [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
@@ -602,17 +605,17 @@ exports[`eslint`] = {
       [107, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"],
       [125, 16, 20, "Must use destructuring state assignment", "2976153148"]
     ],
-    "js/features/ColumnList/ColumnType/parser.ts:1815713777": [
-      [48, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [49, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [72, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [74, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [98, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [99, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [102, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [140, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
+    "js/features/ColumnList/ColumnType/parser.ts:650405689": [
+      [51, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [52, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [75, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [77, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [101, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [102, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [105, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [143, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
-    "js/features/ColumnList/index.spec.tsx:3000446426": [
+    "js/features/ColumnList/index.spec.tsx:1172488593": [
       [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
@@ -729,15 +732,15 @@ exports[`eslint`] = {
       [203, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [243, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/DashboardPage/index.tsx:2805170953": [
-      [88, 20, 16, "Must use destructuring props assignment", "1899951550"],
-      [94, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
+    "js/pages/DashboardPage/index.tsx:4146582955": [
+      [97, 20, 16, "Must use destructuring props assignment", "1899951550"],
       [103, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
-      [106, 8, 14, "Must use destructuring state assignment", "1770565882"],
-      [108, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [114, 23, 20, "\'searchDashboardGroup\' is already declared in the upper scope.", "2919356688"],
-      [194, 10, 7, "A form label must be associated with a control.", "2729454337"],
-      [364, 31, 14, "Must use destructuring state assignment", "1770565882"]
+      [112, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
+      [115, 8, 14, "Must use destructuring state assignment", "1770565882"],
+      [117, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [123, 23, 20, "\'searchDashboardGroup\' is already declared in the upper scope.", "2919356688"],
+      [205, 10, 7, "A form label must be associated with a control.", "2729454337"],
+      [375, 31, 14, "Must use destructuring state assignment", "1770565882"]
     ],
     "js/pages/HomePage/index.spec.tsx:2731110878": [
       [33, 4, 25, "Use object destructuring.", "354229464"],
@@ -746,24 +749,23 @@ exports[`eslint`] = {
     "js/pages/HomePage/index.tsx:2510324256": [
       [32, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
-    "js/pages/ProfilePage/index.spec.tsx:1483823983": [
-      [224, 9, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [336, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [367, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
-      [388, 12, 17, "\'generateTabKeySpy\' is assigned a value but never used.", "4206744084"]
+    "js/pages/ProfilePage/index.spec.tsx:1332520872": [
+      [216, 9, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [315, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
+      [346, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/ProfilePage/index.tsx:1513493608": [
-      [97, 22, 17, "Must use destructuring state assignment", "3172298888"],
-      [101, 23, 16, "Must use destructuring props assignment", "1899951550"],
-      [103, 19, 17, "Must use destructuring state assignment", "3172298888"],
-      [104, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [110, 47, 19, "Must use destructuring props assignment", "1779396464"],
-      [111, 4, 22, "Must use destructuring props assignment", "1578096540"],
-      [112, 4, 21, "Must use destructuring props assignment", "2130232668"],
-      [113, 4, 22, "Must use destructuring props assignment", "1578665912"],
-      [114, 4, 30, "Must use destructuring props assignment", "3847331326"],
-      [122, 8, 28, "Must use destructuring props assignment", "1029230354"],
-      [166, 8, 28, "Must use destructuring props assignment", "1029230354"]
+    "js/pages/ProfilePage/index.tsx:832504677": [
+      [102, 22, 17, "Must use destructuring state assignment", "3172298888"],
+      [106, 23, 16, "Must use destructuring props assignment", "1899951550"],
+      [108, 19, 17, "Must use destructuring state assignment", "3172298888"],
+      [109, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [115, 47, 19, "Must use destructuring props assignment", "1779396464"],
+      [116, 4, 22, "Must use destructuring props assignment", "1578096540"],
+      [117, 4, 21, "Must use destructuring props assignment", "2130232668"],
+      [118, 4, 22, "Must use destructuring props assignment", "1578665912"],
+      [119, 4, 30, "Must use destructuring props assignment", "3847331326"],
+      [127, 8, 28, "Must use destructuring props assignment", "1029230354"],
+      [169, 8, 28, "Must use destructuring props assignment", "1029230354"]
     ],
     "js/pages/SearchPage/ResourceSelector/index.spec.tsx:1940607497": [
       [12, 2, 20, "\'indexFeaturesEnabled\' is defined but never used.", "1945428697"],
@@ -898,26 +900,25 @@ exports[`eslint`] = {
       [63, 25, 1, "\'_\' is defined but never used.", "177658"],
       [66, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.spec.tsx:3198818853": [
+    "js/pages/TableDetailPage/ReportTableIssue/index.spec.tsx:834656134": [
       [7, 7, 9, "\'AppConfig\' is defined but never used.", "1320620174"],
       [11, 2, 14, "\'ComponentProps\' is defined but never used.", "2554343108"],
       [15, 2, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2278973663": [
+    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:3621699541": [
       [67, 4, 22, "Must use destructuring props assignment", "2426007440"],
-      [78, 11, 19, "Must use destructuring props assignment", "987121924"],
-      [83, 48, 24, "Must use destructuring props assignment", "2122165662"],
-      [84, 19, 22, "Must use destructuring props assignment", "2201312961"],
-      [90, 14, 20, "Must use destructuring props assignment", "1598284208"],
-      [100, 9, 17, "Must use destructuring state assignment", "4230747098"],
-      [103, 29, 17, "Must use destructuring state assignment", "4230747098"],
-      [103, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [111, 15, 20, "Script URL is a form of eval.", "3959800777"],
-      [117, 9, 17, "Must use destructuring state assignment", "4230747098"],
-      [131, 16, 7, "A form label must be associated with a control.", "2729454337"],
-      [132, 16, 160, "A control must be associated with a text label.", "1834626670"],
-      [140, 16, 7, "A form label must be associated with a control.", "2729454337"],
-      [141, 16, 197, "A control must be associated with a text label.", "968313273"]
+      [82, 11, 19, "Must use destructuring props assignment", "987121924"],
+      [91, 19, 22, "Must use destructuring props assignment", "2201312961"],
+      [97, 14, 20, "Must use destructuring props assignment", "1598284208"],
+      [107, 9, 17, "Must use destructuring state assignment", "4230747098"],
+      [110, 29, 17, "Must use destructuring state assignment", "4230747098"],
+      [110, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [118, 15, 20, "Script URL is a form of eval.", "3959800777"],
+      [124, 9, 17, "Must use destructuring state assignment", "4230747098"],
+      [138, 16, 7, "A form label must be associated with a control.", "2729454337"],
+      [139, 16, 160, "A control must be associated with a text label.", "1834626670"],
+      [147, 16, 7, "A form label must be associated with a control.", "2729454337"],
+      [148, 16, 197, "A control must be associated with a text label.", "968313273"]
     ],
     "js/pages/TableDetailPage/RequestDescriptionText/index.spec.tsx:2570104867": [
       [7, 7, 11, "\'globalState\' is defined but never used.", "1130616505"],
@@ -977,11 +978,12 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:2519576402": [
-      [137, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [147, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [164, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [235, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+    "js/pages/TableDetailPage/index.tsx:329400316": [
+      [145, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [155, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [172, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [187, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [248, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]
