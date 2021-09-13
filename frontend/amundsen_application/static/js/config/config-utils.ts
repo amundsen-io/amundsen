@@ -370,7 +370,7 @@ export function getDescriptionEditUrl(dataSource: TableSource): string | null {
     config &&
     config.supportedDescriptionSources &&
     config.supportedDescriptionSources[sourceId] &&
-    config.supportedDescriptionSources[sourceId].renderEditButton
+    config.supportedDescriptionSources[sourceId].renderEditButton !== false
   ) {
     return dataSource.source;
   }

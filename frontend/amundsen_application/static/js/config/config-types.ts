@@ -141,7 +141,7 @@ type DescriptionSourceConfig = {
   [id: string]: {
     displayName: string;
     iconPath: string;
-    renderEditButton: boolean;
+    renderEditButton?: boolean;
   };
 };
 
