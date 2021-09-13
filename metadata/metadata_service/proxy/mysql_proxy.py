@@ -715,22 +715,18 @@ class MySQLProxy(BaseProxy):
             popular_resources[resource_type.name] = list()
             if user_id is None:
                 # Get global popular Table/Dashboard URIs
-                resource_uris = self._get_global_popular_resources_uris(num_entries,
+                resource_uris = self._get_global_popular_resources_uris(num_entries=num_entries,
                                                                         resource_type=resource_type)
             else:
                 # Get personalized popular Table/Dashboard URIs
-                resource_uris = self._get_personal_popular_resources_uris(num_entries,
-                                                                          user_id,
+                resource_uris = self._get_personal_popular_resources_uris(num_entries=num_entries,
+                                                                          user_id=user_id,
                                                                           resource_type=resource_type)
 
             if resource_type == ResourceType.Table:
-                popular_resources[resource_type.name] = self._get_popular_tables(
-                    table_uris=resource_uris
-                )
+                popular_resources[resource_type.name] = self._get_popular_tables(table_uris=resource_uris)
             elif resource_type == ResourceType.Dashboard:
-                popular_resources[resource_type.name] = self._get_popular_dashboards(
-                    dashboard_uris=resource_uris
-                )
+                popular_resources[resource_type.name] = self._get_popular_dashboards(dashboard_uris=resource_uris)
 
         return popular_resources
 
@@ -815,7 +811,7 @@ class MySQLProxy(BaseProxy):
 
         return [usage.res_key for usage in popular_usage]
 
-    def _get_popular_tables(self, *, table_uris: List[str]) -> List[PopularTable]:
+    def _get_popular_tables(self, *, table_uris: List[str]) -> List[TableSummary]:
         """
         Retrieve popular table with the given table uris
         :param table_uris:
@@ -865,7 +861,7 @@ class MySQLProxy(BaseProxy):
 
         return popular_tables
 
-    def _get_popular_dashboards(self, *, dashboard_uris: List[str]) -> List[PopularTable]:
+    def _get_popular_dashboards(self, *, dashboard_uris: List[str]) -> List[DashboardSummary]:
         """
         Retrieve popular dashboards with the given dashboard uris
         :param dashboard_uris:
