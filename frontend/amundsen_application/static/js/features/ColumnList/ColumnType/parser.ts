@@ -1,7 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { NestedTableColumn, TableColumnStats } from 'interfaces/TableMetadata';
+import { NestedTableColumn, TableColumn, TableColumnStats } from 'interfaces/TableMetadata';
 import { Badge } from 'interfaces/Badges';
 
 export type ParsedType = string | NestedType;
@@ -162,19 +162,25 @@ export function parseNestedType(
  *
  * @param nestedType
  */
-export function convertNestedTypeToColumns(nestedType: NestedType, nestedLevel: number = 1): NestedTableColumn[] {
+export function convertNestedTypeToColumns(
+  nestedType: NestedType,
+  nestedLevel: number = 1
+): TableColumn[] {
   const { children } = nestedType;
-  const nestedColumns: NestedTableColumn[] = [];
+  const nestedColumns: TableColumn[] = [];
   children.forEach((child) => {
     if (typeof child === 'string') {
       const [columnName, colType] = child.split(' ');
       if (colType !== undefined) {
         nestedColumns.push({
+          badges: [],
           col_type: colType,
           description: '',
           name: columnName,
           sort_order: 0,
           nested_level: nestedLevel,
+          is_editable: false,
+          stats: [],
         });
       }
     } else {

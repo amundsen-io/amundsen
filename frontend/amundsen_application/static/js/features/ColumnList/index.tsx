@@ -52,6 +52,8 @@ import {
 } from './constants';
 
 import './styles.scss';
+import { LeftArrowIcon } from 'components/SVGIcons';
+import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 
 export interface ComponentProps {
   columns: TableColumn[];
@@ -79,6 +81,7 @@ export type ColumnListProps = ComponentProps & DispatchFromProps;
 type ContentType = {
   title: string;
   description: string;
+  nestedLevel: number;
 };
 
 type DatatypeType = {
@@ -92,6 +95,7 @@ type FormattedDataType = {
   type: DatatypeType;
   usage: number | null;
   stats: TableColumnStats[] | null;
+  children?: TableColumn[];
   action: string;
   editText: string | null;
   editUrl: string | null;
@@ -100,6 +104,7 @@ type FormattedDataType = {
   tableParams: TablePageParams;
   sort_order: string;
   isEditable: boolean;
+  isExpandable: boolean;
   badges: Badge[];
 };
 
@@ -168,6 +173,7 @@ const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
   );
 };
 
+
 // @ts-ignore
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
@@ -226,9 +232,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
   tableParams,
   getColumnLineageDispatch,
 }: ColumnListProps) => {
-  const hasColumnBadges = hasColumnWithBadge(columns);
   let selectedIndex;
-  const formattedData: FormattedDataType[] = columns.map((item, index) => {
+  const hasColumnBadges = hasColumnWithBadge(columns);
+  const formatColumnData = (item, index) => {
     const hasItemStats = !!item.stats.length;
     if (item.name === selectedColumn) {
       selectedIndex = index;
@@ -237,12 +243,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
       content: {
         title: item.name,
         description: item.description,
+        nestedLevel: item.nested_level || 0,
       },
       type: {
         type: item.col_type,
         name: item.name,
         database,
       },
+      children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
       stats: hasItemStats ? item.stats : null,
@@ -250,32 +258,54 @@ const ColumnList: React.FC<ColumnListProps> = ({
       action: item.name,
       name: item.name,
       isEditable: item.is_editable,
+      isExpandable: !item.nested_level,
       editText: editText || null,
       editUrl: editUrl || null,
       tableParams,
       index,
     };
-  });
+  };
+  const formattedData: FormattedDataType[] = columns.map(formatColumnData);
   const statsCount = formattedData.filter((item) => !!item.stats).length;
   const hasUsageStat =
     getTableSortCriterias().usage && statsCount >= SHOW_STATS_THRESHOLD;
-  let formattedAndOrderedData = formattedData.sort(
+  let orderedData = formattedData.sort(
     getSortingFunction(formattedData, sortBy)
   );
   if (sortBy.direction === SortDirection.ascending) {
-    formattedAndOrderedData = formattedAndOrderedData.reverse();
+    orderedData = orderedData.reverse();
   }
+  const flattenedData: FormattedDataType[] = [];
+  // Flatten nested columns
+  orderedData.forEach((item, index) => {
+    flattenedData.push(item);
+    if (item.children !== undefined) {
+      flattenedData.push(...item.children.map(formatColumnData));
+    }
+  });
 
   let formattedColumns: ReusableTableColumn[] = [
     {
       title: 'Name',
       field: 'content',
-      component: ({ title, description }: ContentType) => (
-        <>
-          <div className="column-name">{title}</div>
-          <div className="column-desc truncated">{description}</div>
-        </>
-      ),
+      component: ({ title, description, nestedLevel }: ContentType) => {
+        let arrow;
+        if (nestedLevel === 1) {
+          arrow = <NestingArrow />;
+        } else if (nestedLevel > 1) {
+          // TODO add padding?
+          arrow = <NestingArrow />;
+        }
+        return (
+          <>
+            {arrow}
+            <div className="column-name-container">
+              <div className="column-name">{title}</div>
+              <div className="column-desc truncated">{description}</div>
+            </div>
+          </>
+        );
+      },
     },
     {
       title: 'Type',
@@ -383,7 +413,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   return (
     <Table
       columns={formattedColumns}
-      data={formattedAndOrderedData}
+      data={flattenedData}
       options={{
         rowHeight: 72,
         emptyMessage: EMPTY_MESSAGE,

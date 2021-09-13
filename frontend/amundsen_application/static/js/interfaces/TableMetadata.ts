@@ -56,8 +56,9 @@ export interface TableColumn {
   description: string;
   is_editable: boolean;
   name: string;
-  sort_order: string;
+  sort_order: number;
   stats: TableColumnStats[];
+  nested_level?: number;
 }
 
 export interface NestedTableColumn {
@@ -65,7 +66,7 @@ export interface NestedTableColumn {
   description: string;
   name: string;
   sort_order: number;
-  nested_level: number;
+
 }
 
 export interface TableOwners {
