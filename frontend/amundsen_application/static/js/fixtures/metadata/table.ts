@@ -19,7 +19,7 @@ export const tableMetadata: TableMetadata = {
       col_type: 'bigint',
       description: 'Test Value',
       is_editable: true,
-      sort_order: '0',
+      sort_order: 0,
       name: 'ride_id',
       stats: [
         {
@@ -48,7 +48,7 @@ export const tableMetadata: TableMetadata = {
       description:
         'ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds w',
       is_editable: true,
-      sort_order: '1',
+      sort_order: 1,
       name: 'ds',
       stats: [],
       badges: [],
@@ -57,7 +57,7 @@ export const tableMetadata: TableMetadata = {
       col_type: 'string',
       description: 'Route_id Description',
       is_editable: true,
-      sort_order: '2',
+      sort_order: 2,
       name: 'route_id',
       stats: [
         {

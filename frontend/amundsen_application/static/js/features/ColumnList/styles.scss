@@ -7,6 +7,8 @@
 $description-max-width: 650px;
 $description-max-width-med: 450px;
 $description-max-width-small: 300px;
+$nested-arrow-spacer: 24px;
+$nested-arrow-spacer-max: $nested-arrow-spacer * 4;
 
 .column-list {
   margin: 0;
@@ -54,6 +56,28 @@ $description-max-width-small: 300px;
           background-color: $icon-bg-dark;
         }
       }
+    }
+  }
+
+  .nesting-arrow-spacer {
+    height: 24px;
+    width: $nested-arrow-spacer-max;
+    display: inline-block;
+
+    &.spacer-1 {
+      width: $nested-arrow-spacer * 0;
+    }
+    &.spacer-2 {
+      width: $nested-arrow-spacer * 1;
+    }
+    &.spacer-3 {
+      width: $nested-arrow-spacer * 2;
+    }
+    &.spacer-4 {
+      width: $nested-arrow-spacer * 3;
+    }
+    &.spacer-5 {
+      width: $nested-arrow-spacer * 4;
     }
   }
 

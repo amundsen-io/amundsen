@@ -245,7 +245,9 @@ const Table: React.FC<TableProps> = ({
                 rowValues={item}
                 onClick={setExpandedRows}
               />
-            ) : <td></td>}
+            ) : (
+              <td />
+            )}
             {Object.entries(item)
               .filter(([key]) => fields.includes(key))
               .map(([key, value], rowIndex) => {
@@ -278,7 +280,7 @@ const Table: React.FC<TableProps> = ({
                   </td>
                 );
               })}
-          </td>
+          </>
         </tr>
         {expandRow ? (
           <tr

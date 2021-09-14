@@ -290,11 +290,13 @@ const ColumnList: React.FC<ColumnListProps> = ({
       field: 'content',
       component: ({ title, description, nestedLevel }: ContentType) => {
         let arrow;
-        if (nestedLevel === 1) {
-          arrow = <NestingArrow />;
-        } else if (nestedLevel > 1) {
-          // TODO add padding?
-          arrow = <NestingArrow />;
+        if (nestedLevel > 0) {
+          arrow = (
+            <>
+              <div className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
+              <NestingArrow />
+            </>
+          );
         }
         return (
           <>

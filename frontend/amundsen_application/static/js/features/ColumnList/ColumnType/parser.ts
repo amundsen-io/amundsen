@@ -1,8 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { NestedTableColumn, TableColumn, TableColumnStats } from 'interfaces/TableMetadata';
-import { Badge } from 'interfaces/Badges';
+import { TableColumn } from 'interfaces/TableMetadata';
 
 export type ParsedType = string | NestedType;
 
@@ -10,6 +9,8 @@ export interface NestedType {
   head: string;
   tail: string;
   children: ParsedType[];
+  col_type?: string;
+  name?: string;
 }
 enum DatabaseId {
   Hive = 'hive',
@@ -96,8 +97,15 @@ function parseNestedTypeHelper(
           nextStartIndex++;
         }
 
+        const nestedString = columnType.substring(
+          startIndex,
+          nextStartIndex - 1
+        );
+        const spaceIndex = nestedString.indexOf(' ');
         children.push({
           head: columnType.substring(startIndex, currentIndex + 1),
+          name: (spaceIndex !== -1) ? nestedString.substring(0, spaceIndex) : '',
+          col_type: nestedString.substring(spaceIndex + 1),
           tail: `${OPEN_DELIMETERS[currentChar]}${
             isLast ? '' : SEPARATOR_DELIMETER
           }`,
@@ -174,7 +182,7 @@ export function convertNestedTypeToColumns(
       if (colType !== undefined) {
         nestedColumns.push({
           badges: [],
-          col_type: colType,
+          col_type: colType.replace(SEPARATOR_DELIMETER, ''),
           description: '',
           name: columnName,
           sort_order: 0,
@@ -184,6 +192,17 @@ export function convertNestedTypeToColumns(
         });
       }
     } else {
+      console.log(child);
+      nestedColumns.push({
+        badges: [],
+        col_type: child.col_type || '',
+        description: '',
+        name: child.name || '',
+        sort_order: 0,
+        nested_level: nestedLevel,
+        is_editable: false,
+        stats: [],
+      });
       const nestedChildren = convertNestedTypeToColumns(child, nestedLevel + 1);
       nestedColumns.push(...nestedChildren);
     }
