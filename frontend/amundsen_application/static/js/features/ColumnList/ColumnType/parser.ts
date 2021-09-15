@@ -68,9 +68,8 @@ function parseNestedTypeHelper(
       };
     } else if (currentChar in OPEN_DELIMETERS) {
       /* Case 3: Beginning of a nested item */
-      if (
-        columnType.substring(startIndex, currentIndex).endsWith('timestamp')
-      ) {
+      const nestedType = columnType.substring(startIndex, currentIndex);
+      if (nestedType.endsWith('timestamp')) {
         /*
           Case 3.1: A non-supported item like timestamp() in Presto
           Advance until we reach the closing character for this item.
@@ -83,6 +82,12 @@ function parseNestedTypeHelper(
         }
         currentIndex++;
       } else {
+        if (columnType.indexOf('array(row(', startIndex) === 0) {
+          console.log(`currentIndex: ${currentIndex}`);
+          console.log(columnType);
+          currentIndex += 4;
+        }
+
         /* Case 3.2: A supported nested item */
         const parsedResults = parseNestedTypeHelper(
           columnType,
@@ -91,20 +96,20 @@ function parseNestedTypeHelper(
         );
         let isLast: boolean = true;
         let { nextStartIndex } = parsedResults;
-
+        const nestedString = columnType.substring(startIndex, nextStartIndex);
         if (columnType.charAt(nextStartIndex) === SEPARATOR_DELIMETER) {
           isLast = false;
           nextStartIndex++;
         }
 
-        const nestedString = columnType.substring(
-          startIndex,
-          nextStartIndex - 1
-        );
+        if (columnType.indexOf('array(row(total bigin') === 0) {
+          console.log('ahefuieajfajewf');
+        }
+
         const spaceIndex = nestedString.indexOf(' ');
         children.push({
           head: columnType.substring(startIndex, currentIndex + 1),
-          name: (spaceIndex !== -1) ? nestedString.substring(0, spaceIndex) : '',
+          name: spaceIndex !== -1 ? nestedString.substring(0, spaceIndex) : '',
           col_type: nestedString.substring(spaceIndex + 1),
           tail: `${OPEN_DELIMETERS[currentChar]}${
             isLast ? '' : SEPARATOR_DELIMETER
@@ -159,7 +164,8 @@ export function parseNestedType(
   if (databaseId === DatabaseId.Presto) {
     columnType = columnType.replace(/"/g, '');
   }
-
+  // columnType = columnType.replace(/array\(row\(/g, 'array-row');
+  // columnType = columnType.replace(/\)\)/g, '\)');
   if (isNestedType(columnType, databaseId)) {
     return parseNestedTypeHelper(columnType).results[0] as NestedType;
   }
@@ -192,7 +198,6 @@ export function convertNestedTypeToColumns(
         });
       }
     } else {
-      console.log(child);
       nestedColumns.push({
         badges: [],
         col_type: child.col_type || '',
@@ -212,8 +217,7 @@ export function convertNestedTypeToColumns(
     column.sort_order = index;
   });
   return nestedColumns;
-};
-
+}
 
 /*
  * Returns the truncated string representation for a NestedType
