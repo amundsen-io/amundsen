@@ -90,13 +90,18 @@ type DatatypeType = {
   type: string;
 };
 
+type ActionType = {
+  name: string;
+  isActionEnabled: boolean;
+};
+
 type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
   stats: TableColumnStats[] | null;
   children?: TableColumn[];
-  action: string;
+  action: ActionType;
   editText: string | null;
   editUrl: string | null;
   index: number;
@@ -255,7 +260,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
       usage: getUsageStat(item),
       stats: hasItemStats ? item.stats : null,
       badges: hasColumnBadges ? item.badges : [],
-      action: item.name,
+      action: {
+        name: item.name,
+        isActionEnabled: !item.nested_level,
+      },
       name: item.name,
       isEditable: item.is_editable,
       isExpandable: !item.nested_level,
@@ -358,40 +366,45 @@ const ColumnList: React.FC<ColumnListProps> = ({
         field: 'action',
         width: 80,
         horAlign: TextAlignmentValues.right,
-        component: (name, index) => (
-          <div className="actions">
-            <Dropdown
-              id={`detail-list-item-dropdown:${index}`}
-              pullRight
-              className="column-dropdown"
-            >
-              <Dropdown.Toggle noCaret>
-                <span className="sr-only">{MORE_BUTTON_TEXT}</span>
-                <img className="icon icon-more" alt="" />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <MenuItem
-                  onClick={() => {
-                    openRequestDescriptionDialog(
-                      RequestMetadataType.COLUMN_DESCRIPTION,
-                      name
-                    );
-                  }}
-                >
-                  {REQUEST_DESCRIPTION_TEXT}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    const link = getColumnLink(tableParams, name);
-                    navigator.clipboard.writeText(link);
-                  }}
-                >
-                  {COPY_COLUMN_LINK_TEXT}
-                </MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        ),
+        component: ({ name, isActionEnabled }, index) => {
+          if (!isActionEnabled) {
+            return null;
+          }
+          return (
+            <div className="actions">
+              <Dropdown
+                id={`detail-list-item-dropdown:${index}`}
+                pullRight
+                className="column-dropdown"
+              >
+                <Dropdown.Toggle noCaret>
+                  <span className="sr-only">{MORE_BUTTON_TEXT}</span>
+                  <img className="icon icon-more" alt="" />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <MenuItem
+                    onClick={() => {
+                      openRequestDescriptionDialog(
+                        RequestMetadataType.COLUMN_DESCRIPTION,
+                        name
+                      );
+                    }}
+                  >
+                    {REQUEST_DESCRIPTION_TEXT}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      const link = getColumnLink(tableParams, name);
+                      navigator.clipboard.writeText(link);
+                    }}
+                  >
+                    {COPY_COLUMN_LINK_TEXT}
+                  </MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          );
+        },
       },
     ];
   }

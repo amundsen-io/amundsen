@@ -103,7 +103,11 @@ function parseNestedTypeHelper(
         const spaceIndex = nestedString.indexOf(' ');
         let name = nestedString.substring(0, spaceIndex);
         let colType = nestedString.substring(spaceIndex + 1);
-        if (name.indexOf('(') > 0 || name.indexOf('<') || name.indexOf('[')) {
+        if (
+          name.indexOf('(') > 0 ||
+          name.indexOf('<') > 0 ||
+          name.indexOf('[') > 0
+        ) {
           name = '';
           colType = '';
         }
