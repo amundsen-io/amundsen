@@ -82,12 +82,6 @@ function parseNestedTypeHelper(
         }
         currentIndex++;
       } else {
-        if (columnType.indexOf('array(row(', startIndex) === 0) {
-          console.log(`currentIndex: ${currentIndex}`);
-          console.log(columnType);
-          currentIndex += 4;
-        }
-
         /* Case 3.2: A supported nested item */
         const parsedResults = parseNestedTypeHelper(
           columnType,
@@ -102,15 +96,22 @@ function parseNestedTypeHelper(
           nextStartIndex++;
         }
 
-        if (columnType.indexOf('array(row(total bigin') === 0) {
-          console.log('ahefuieajfajewf');
+        /*
+          Case 3.3: A double nested type such as ARRAY(ROW(...))
+          There is no column name for the nested ROW
+        */
+        const spaceIndex = nestedString.indexOf(' ');
+        let name = nestedString.substring(0, spaceIndex);
+        let colType = nestedString.substring(spaceIndex + 1);
+        if (name.indexOf('(') > 0 || name.indexOf('<') || name.indexOf('[')) {
+          name = '';
+          colType = '';
         }
 
-        const spaceIndex = nestedString.indexOf(' ');
         children.push({
+          name,
           head: columnType.substring(startIndex, currentIndex + 1),
-          name: spaceIndex !== -1 ? nestedString.substring(0, spaceIndex) : '',
-          col_type: nestedString.substring(spaceIndex + 1),
+          col_type: colType,
           tail: `${OPEN_DELIMETERS[currentChar]}${
             isLast ? '' : SEPARATOR_DELIMETER
           }`,
@@ -164,8 +165,6 @@ export function parseNestedType(
   if (databaseId === DatabaseId.Presto) {
     columnType = columnType.replace(/"/g, '');
   }
-  // columnType = columnType.replace(/array\(row\(/g, 'array-row');
-  // columnType = columnType.replace(/\)\)/g, '\)');
   if (isNestedType(columnType, databaseId)) {
     return parseNestedTypeHelper(columnType).results[0] as NestedType;
   }
@@ -198,17 +197,20 @@ export function convertNestedTypeToColumns(
         });
       }
     } else {
-      nestedColumns.push({
-        badges: [],
-        col_type: child.col_type || '',
-        description: '',
-        name: child.name || '',
-        sort_order: 0,
-        nested_level: nestedLevel,
-        is_editable: false,
-        stats: [],
-      });
-      const nestedChildren = convertNestedTypeToColumns(child, nestedLevel + 1);
+      if (child.name !== '') {
+        nestedColumns.push({
+          badges: [],
+          col_type: child.col_type || '',
+          description: '',
+          name: child.name || '',
+          sort_order: 0,
+          nested_level: nestedLevel,
+          is_editable: false,
+          stats: [],
+        });
+        nestedLevel++;
+      }
+      const nestedChildren = convertNestedTypeToColumns(child, nestedLevel);
       nestedColumns.push(...nestedChildren);
     }
   });
