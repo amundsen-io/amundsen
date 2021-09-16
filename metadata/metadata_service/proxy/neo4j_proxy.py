@@ -87,7 +87,7 @@ class Neo4jProxy(BaseProxy):
                                             connection_timeout=10,
                                             max_connection_lifetime=max_connection_lifetime_sec,
                                             auth=(user, password),
-                                            encrypted=encrypted,
+                                            encrypted=False,
                                             trust=trust)  # type: Driver
 
     def health(self) -> health_check.HealthCheck:

@@ -1,6 +1,6 @@
 // This file should be used to add new config variables or overwrite defaults from config-default.ts
 
-import { AppConfigCustom } from './config-types';
+import { AppConfigCustom, BadgeStyle } from './config-types';
 
 const configCustom: AppConfigCustom = {
   browse: {
@@ -26,6 +26,12 @@ const configCustom: AppConfigCustom = {
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
+  },
+  badges: {
+    pii: {
+      style: BadgeStyle.WARNING,
+      displayName: 'PII',
+    },
   },
 };
 

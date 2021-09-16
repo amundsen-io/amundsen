@@ -64,7 +64,10 @@ class Config:
     STATISTICS_FORMAT_SPEC: Dict[str, Dict] = {}
 
     # whitelist badges
-    WHITELIST_BADGES: List[Badge] = []
+    WHITELIST_BADGES: List[Badge] = [ 
+        Badge(badge_name='pii',
+          category='table_status'),
+          ]
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 

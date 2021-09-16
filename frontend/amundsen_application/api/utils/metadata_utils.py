@@ -108,6 +108,9 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     :param table_dict: Table Dict from metadata service
     :return: Table Dict with sanitized fields
     """
+    for column in table_dict["columns"]:
+        if not column['col_type']:
+            column['col_type'] = "string"
 
     schema = TableSchema()
     table: Table = schema.load(table_dict)

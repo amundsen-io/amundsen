@@ -1,10 +1,14 @@
 version: '3'
 services:
   neo4j:
-      image: neo4j:3.5.26
+      image: neo4j:4.2.0
       container_name: neo4j_amundsen
       environment:
+        - BACKUP_DIR=/var/lib/neo4j/backup
         - NEO4J_AUTH=neo4j/test
+        - NEO4J_USER=neo4j
+        - NEO4J_PASSWD=test
+        - NEO4JLABS_PLUGINS=["apoc"]
       ulimits:
         nofile:
           soft: 40000
@@ -13,23 +17,26 @@ services:
           - 7474:7474
           - 7687:7687
       volumes:
-          - ./example/docker/neo4j/conf:/var/lib/neo4j/conf
-          - ./.local/neo4j/data:/data
+          - .local/neo4j/conf:/var/lib/neo4j/conf
+          - .local/neo4j/data:/var/lib/neo4j/data
+          - .local/neo4j/import:/var/lib/neo4j/import
       networks:
+        - airflow
         - amundsennet
   elasticsearch:
-      image: elasticsearch:7.13.3
+      image: elasticsearch:6.7.0
       container_name: es_amundsen
       ports:
           - 9200:9200
       networks:
         - amundsennet
+        - airflow
       ulimits:
         nofile:
           soft: 65536
           hard: 65536
-      environment:
-        - discovery.type=single-node
+      volumes:
+        - ./.local/elasticsearch/data:/usr/share/elasticsearch/data
   amundsensearch:
       build:
         context: .
@@ -40,6 +47,7 @@ services:
       depends_on:
         - elasticsearch
       networks:
+        - airflow
         - amundsennet
       environment:
         - PROXY_ENDPOINT=es_amundsen
@@ -53,28 +61,33 @@ services:
       ports:
         - 5002:5002
       networks:
+        - airflow
         - amundsennet
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
-  amundsenfrontend:
-      build:
-        args:
-          SEARCHSERVICE_BASE: http://amundsensearch:5001
-          METADATASERVICE_BASE: http://amundsenmetadata:5002
-        context: .
-        dockerfile: Dockerfile.frontend.local
-      container_name: amundsenfrontend
-      depends_on:
-        - amundsenmetadata
-        - amundsensearch
-      ports:
-        - 5000:5000
-      networks:
-        - amundsennet
-      environment:
-        - SEARCHSERVICE_BASE=http://amundsensearch:5001
-        - METADATASERVICE_BASE=http://amundsenmetadata:5002
-        - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
+  # amundsenfrontend:
+  #     build:
+  #       args:
+  #         SEARCHSERVICE_BASE: http://amundsensearch:5001
+  #         METADATASERVICE_BASE: http://amundsenmetadata:5002
+  #       context: .
+  #       dockerfile: Dockerfile.frontend.local
+  #     container_name: amundsenfrontend
+  #     depends_on:
+  #       - amundsenmetadata
+  #       - amundsensearch
+  #     ports:
+  #       - 5000:5000
+  #     networks:
+  #       - airflow
+  #       - amundsennet
+  #     environment:
+  #       - SEARCHSERVICE_BASE=http://amundsensearch:5001
+  #       - METADATASERVICE_BASE=http://amundsenmetadata:5002
+  #       - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
 
 networks:
   amundsennet:
+  airflow:
+    external: true
+    name: docker_airflow
