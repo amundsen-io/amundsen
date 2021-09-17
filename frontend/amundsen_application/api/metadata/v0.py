@@ -601,7 +601,7 @@ def user_create() -> Response:
         user_id = get_query_param(request.args, 'user')
         user = request.get_json(force=True)
 
-        url = '{0}/user/{1}'.format(app.config['METADATASERVICE_BASE'], user_id)
+        url = '{0}/user_create'.format(app.config['METADATASERVICE_BASE'])
         method = request.method
         _log_user_create(method=method, user=user_id)
 
