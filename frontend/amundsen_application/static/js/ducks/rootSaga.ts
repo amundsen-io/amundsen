@@ -71,6 +71,7 @@ import { getAllTagsWatcher, updateResourceTagsWatcher } from './tags/sagas';
 
 // User
 import {
+  createUserWatcher,
   getLoggedInUserWatcher,
   getUserOwnWatcher,
   getUserReadWatcher,
@@ -141,6 +142,7 @@ export default function* rootSaga() {
     // LastIndexed
     getLastIndexedWatcher(),
     // User
+    createUserWatcher(),
     getLoggedInUserWatcher(),
     getUserWatcher(),
     getUserOwnWatcher(),

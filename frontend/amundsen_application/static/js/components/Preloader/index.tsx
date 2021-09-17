@@ -8,11 +8,14 @@ import { connect } from 'react-redux';
 import { getBookmarks } from 'ducks/bookmark/reducer';
 import { GetBookmarksRequest } from 'ducks/bookmark/types';
 
-import { getLoggedInUser } from 'ducks/user/reducer';
-import { GetLoggedInUserRequest } from 'ducks/user/types';
+import { createUser } from 'ducks/user/reducer';
+import { CreateUserRequest } from 'ducks/user/types';
+
+// Msal imports
+import { callMsGraph } from '../../utils/MsGraphApiCall';
 
 interface DispatchFromProps {
-  getLoggedInUser: () => GetLoggedInUserRequest;
+  createUser: (user: any) => CreateUserRequest;
   getBookmarks: () => GetBookmarksRequest;
 }
 
@@ -20,8 +23,18 @@ export type PreloaderProps = DispatchFromProps;
 
 export class Preloader extends React.Component<PreloaderProps> {
   componentDidMount() {
-    this.props.getLoggedInUser();
+    // this.props.getLoggedInUser();
     this.props.getBookmarks();
+    callMsGraph().then((response) => {
+      console.log('response from ad', response);
+      const user = {
+        last_login: new Date().toUTCString(),
+        name: response.displayName,
+        mail: response.mail,
+        id: response.id,
+      };
+      this.props.createUser(user);
+    });
   }
 
   render() {
@@ -30,7 +43,7 @@ export class Preloader extends React.Component<PreloaderProps> {
 }
 
 export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ getLoggedInUser, getBookmarks }, dispatch);
+  bindActionCreators({ createUser, getBookmarks }, dispatch);
 
 export default connect<{}, DispatchFromProps>(
   null,

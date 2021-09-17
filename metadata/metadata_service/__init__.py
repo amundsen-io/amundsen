@@ -38,7 +38,7 @@ from metadata_service.api.table import (TableBadgeAPI, TableDashboardAPI,
                                         TableLineageAPI, TableOwnerAPI,
                                         TableTagAPI)
 from metadata_service.api.tag import TagAPI
-from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
+from metadata_service.api.user import (UserDetailAPI, UserCreateAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
 from metadata_service.deprecations import process_deprecations
@@ -145,6 +145,8 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(UserDetailAPI,
                      '/user',
                      '/user/<path:id>')
+    api.add_resource(UserCreateAPI,
+                     '/user/<path:id>/')
     api.add_resource(UserFollowsAPI,
                      '/user/<path:user_id>/follow/')
     api.add_resource(UserFollowAPI,

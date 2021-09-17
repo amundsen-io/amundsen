@@ -9,7 +9,7 @@ import { Preloader, PreloaderProps, mapDispatchToProps } from '.';
 describe('Preloader', () => {
   const setup = (propOverrides?: Partial<PreloaderProps>) => {
     const props: PreloaderProps = {
-      getLoggedInUser: jest.fn(),
+      createUser: jest.fn(),
       getBookmarks: jest.fn(),
       ...propOverrides,
     };
@@ -22,13 +22,13 @@ describe('Preloader', () => {
   };
 
   describe('componentDidMount', () => {
-    it('calls props.getLoggedInUser', () => {
+    it('calls props.createUser', () => {
       const { props, wrapper } = setup();
       wrapper.instance().componentDidMount();
-      expect(props.getLoggedInUser).toHaveBeenCalled();
+      expect(props.createUser).toHaveBeenCalled();
     });
 
-    it('calls props.getLoggedInUser', () => {
+    it('calls props.getBookmarks', () => {
       const { props, wrapper } = setup();
       wrapper.instance().componentDidMount();
       expect(props.getBookmarks).toHaveBeenCalled();

@@ -7,6 +7,9 @@ import {
 } from 'interfaces';
 
 import {
+  CreateUser,
+  CreateUserRequest,
+  CreateUserResponse,
   GetLoggedInUser,
   GetLoggedInUserRequest,
   GetLoggedInUserResponse,
@@ -32,6 +35,16 @@ export function getLoggedInUserSuccess(
   user: LoggedInUser
 ): GetLoggedInUserResponse {
   return { type: GetLoggedInUser.SUCCESS, payload: { user } };
+}
+
+export function createUser(user: any): CreateUserRequest {
+  return { type: CreateUser.REQUEST, payload: { user } };
+}
+export function createUserFailure(): CreateUserResponse {
+  return { type: CreateUser.FAILURE };
+}
+export function createUserSuccess(user: LoggedInUser): CreateUserResponse {
+  return { type: CreateUser.SUCCESS, payload: { user } };
 }
 
 export function getUser(
@@ -124,6 +137,24 @@ export default function reducer(
         loggedInUser: payload.user,
       };
     }
+    case CreateUser.REQUEST:
+    case CreateUser.FAILURE:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          user: defaultUser,
+        },
+      };
+    case CreateUser.SUCCESS:
+      const { payload } = <CreateUserResponse>action;
+      if (payload === undefined) {
+        throw Error('payload must be set for CreateUserResponse.SUCCESS');
+      }
+      return {
+        ...state,
+        loggedInUser: payload.user,
+      };
     case GetUser.REQUEST:
     case GetUser.FAILURE:
       return {

@@ -1,0 +1,25 @@
+Update/create the user information
+---
+tags:
+  - 'user'
+parameters:
+  - name: id
+    in: path
+    example: 'roald9@example.org'
+    type: string
+    schema:
+      type: string
+    required: true
+responses:
+  200:
+    description: 'User was added successfully'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/MessageResponse'
+  500:
+    description: 'Internal server error'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

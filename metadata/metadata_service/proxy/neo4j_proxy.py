@@ -639,6 +639,36 @@ class Neo4jProxy(BaseProxy):
         finally:
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
+                
+    @timer_with_counter
+    def add_user(self, *,
+                  id: str, name: str, mail: str, login: str) -> None:
+        """
+        Update table user informations.
+        1. Do a create if not exists query of the user node.
+
+        :param table_uri:
+        :param user:
+        :return:
+        """
+        create_owner_query = textwrap.dedent("""
+        MERGE (u:User {key: $user_email})
+        on CREATE SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
+        on MATCH SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
+        """)
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            # upsert the node
+            tx.run(create_owner_query, {'user_email': mail, 'user_id': id, 'user_name': name, 'user_login': login})
+            
+
+            tx.commit()
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            # propagate the exception back to api
+            raise e
 
     @timer_with_counter
     def add_owner(self, *,

@@ -15,6 +15,24 @@ export interface GetLoggedInUserResponse {
   };
 }
 
+export enum CreateUser {
+  REQUEST = 'amundsen/user/CREATE_REQUEST',
+  SUCCESS = 'amundsen/user/CREATE_SUCCESS',
+  FAILURE = 'amundsen/user/CREATE_FAILURE',
+}
+export interface CreateUserRequest {
+  type: CreateUser.REQUEST;
+  payload: {
+    user: any;
+  };
+}
+export interface CreateUserResponse {
+  type: CreateUser.SUCCESS | CreateUser.FAILURE;
+  payload?: {
+    user: LoggedInUser;
+  };
+}
+
 export enum GetUser {
   REQUEST = 'amundsen/user/GET_REQUEST',
   SUCCESS = 'amundsen/user/GET_SUCCESS',

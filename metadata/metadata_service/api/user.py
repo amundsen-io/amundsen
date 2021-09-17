@@ -74,6 +74,32 @@ class UserDetailAPI(BaseAPI):
             LOGGER.exception('UserDetailAPI PUT Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+class UserCreateAPI(BaseAPI):
+
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        super().__init__(UserSchema, 'user', self.client)
+
+    @swag_from('swagger_doc/user/create.yml')
+    def put(self, id: str) -> Iterable[Union[Mapping, int, None]]:
+        """
+        Create the follow relationship between user and resources.
+
+        :param id:
+        :return:
+        """
+        try:
+            name = json.loads(request.data).get('name')
+            login = json.loads(request.data).get('last_login')
+            mail = json.loads(request.data).get('mail')
+            self.client.add_user(id=id, name=name, login=login, mail=mail )
+            return super().get(id=mail)
+        except Exception as e:
+            LOGGER.exception('UserCreateAPI PUT Failed')
+            return {'message': 'The user'
+                               'is not added successfully'.format(id)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
 
 class UserFollowsAPI(Resource):
     """

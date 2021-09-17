@@ -590,6 +590,35 @@ def get_user() -> Response:
         payload = jsonify({'msg': message})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
+@metadata_blueprint.route('/user_create', methods=['PUT'])
+def user_create() -> Response:
+
+    @action_logging
+    def _log_user_create(*, method: str, user: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        user_id = get_query_param(request.args, 'user')
+        user = request.get_json(force=True)
+
+        url = '{0}/user/{1}'.format(app.config['METADATASERVICE_BASE'], user_id)
+        method = request.method
+        _log_user_create(method=method, user=user_id)
+
+        response = request_metadata(url=url, method=method, data=json.dumps(user))
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Updated user'
+        else:
+            message = 'There was a problem updating user {0}'.format(user_id)
+
+        payload = jsonify({'msg': message, 'user': dump_user(load_user(response.json()))})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
 
 @metadata_blueprint.route('/user/bookmark', methods=['GET'])
 def get_bookmark() -> Response:
