@@ -82,7 +82,7 @@ class UserCreateAPI(BaseAPI):
         super().__init__(UserSchema, 'user', self.client)
 
     @swag_from('swagger_doc/user/create.yml')
-    def put(self, id: str) -> Iterable[Union[Mapping, int, None]]:
+    def put(self) -> Iterable[Union[Mapping, int, None]]:
         """
         Create the follow relationship between user and resources.
 
@@ -93,12 +93,15 @@ class UserCreateAPI(BaseAPI):
             name = json.loads(request.data).get('name')
             login = json.loads(request.data).get('last_login')
             mail = json.loads(request.data).get('mail')
-            self.client.add_user(id=id, name=name, login=login, mail=mail )
+            _id = json.loads(request.data).get('id')
+
+            self.client.add_user(id=_id, name=name, login=login, mail=mail )
+
             return super().get(id=mail)
         except Exception as e:
             LOGGER.exception('UserCreateAPI PUT Failed')
             return {'message': 'The user'
-                               'is not added successfully'.format(id)}, HTTPStatus.INTERNAL_SERVER_ERROR
+                               'is not added successfully'.format(_id)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class UserFollowsAPI(Resource):

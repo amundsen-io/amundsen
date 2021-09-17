@@ -146,7 +146,7 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/user',
                      '/user/<path:id>')
     api.add_resource(UserCreateAPI,
-                     '/user/<path:id>/')
+                     '/user_create')
     api.add_resource(UserFollowsAPI,
                      '/user/<path:user_id>/follow/')
     api.add_resource(UserFollowAPI,
