@@ -1,6 +1,7 @@
     apiVersion: v1
     kind: Pod
     metadata:
+      namespace: ztech-amundsen-test
       name: restore-neo4j-from-latest
       annotations:
         fill_in_here_with_correct_key: fill_in_here_with_correct_value

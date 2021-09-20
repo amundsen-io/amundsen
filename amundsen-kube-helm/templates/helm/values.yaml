@@ -1,6 +1,6 @@
 # Duplicate this file and put your customization here
 
-clusterDomain: cluster.local
+clusterDomain: gbl-aks-iguazu-env-001-0c8b8da5.683b6615-86ea-420b-b4b4-7176e9fb2add.privatelink.southcentralus.azmk8s.io
 
 # common settings for all apps
 # NOTE - README table was generated with https://github.com/norwoodj/helm-docs
@@ -53,7 +53,7 @@ oidc:
   #   - everything under oidc.configs will be parsed
   #   - flaskApp.module will be set as 'flaskoidc'
   #   - flaskApp.class will be set as 'FlaskOIDC'
-  enabled: true
+  enabled: false
   frontend:
     client_id: ""
     # Do not paste the secret directly here, instead set this via env variable like
@@ -95,6 +95,9 @@ search:
   # search.serviceName -- The search service name.
   serviceName: search
 
+  # search.serviceMappingName -- The search service name with namespace.
+  serviceMappingName: search.ztech-amundsen-test
+
   # search.serviceType -- The search service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   serviceType: ClusterIP
 
@@ -133,7 +136,7 @@ search:
   #    memory: 1Gi
 
   # search.nodeSelector -- Search pod specific nodeSelector.
-  nodeSelector: {}
+  nodeSelector: {app: amundsen-search}
 
   # search.affinity -- Search pod specific affinity.
   affinity: {}
@@ -154,6 +157,8 @@ search:
 metadata:
   # metadata.serviceName -- The metadata service name.
   serviceName: metadata
+
+  serviceMappingName: metadata.ztech-amundsen-test
 
   # metadata.serviceType -- The metadata service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   serviceType: ClusterIP
@@ -196,7 +201,7 @@ metadata:
   #    memory: 1Gi
 
   # metadata.nodeSelector -- Metadata pod specific nodeSelector.
-  nodeSelector: {}
+  nodeSelector: {app: amundsen-metadata}
 
   # metadata.affinity -- Metadata pod specific affinity.
   affinity: {}
@@ -258,7 +263,7 @@ frontEnd:
   #    memory: 1Gi
 
   # frontEnd.nodeSelector -- Frontend pod specific nodeSelector.
-  nodeSelector: {}
+  nodeSelector: {app: amundsen-frontend}
 
   # frontEnd.affinity -- Frontend pod specific affinity.
   affinity: {}

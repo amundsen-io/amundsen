@@ -18,14 +18,14 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   indexUsers: {
-    enabled: false,
+    enabled: true,
   },
   indexFeatures: {
     enabled: false,
   },
   userIdLabel: 'email address',
   issueTracking: {
-    enabled: false,
+    enabled: true,
   },
   badges: {
     pii: {
