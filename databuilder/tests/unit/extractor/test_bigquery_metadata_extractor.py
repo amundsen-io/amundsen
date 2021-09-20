@@ -383,4 +383,4 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
         self.assertEqual(second_col.type, 'RECORD')
         third_col = result.columns[2]
         self.assertEqual(third_col.name, 'nested.nested2.repeated')
-        self.assertEqual(third_col.type, 'REPEATED:STRING')
+        self.assertEqual(third_col.type, 'STRING:REPEATED')

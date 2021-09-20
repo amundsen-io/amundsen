@@ -89,7 +89,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                            column: Dict[str, str],
                            cols: List[ColumnMetadata],
                            total_cols: int) -> int:
-        get_column_type: Callable[[dict], str] = lambda column: column.get('mode') + ':' + column['type']\
+        get_column_type: Callable[[dict], str] = lambda column: column['type'] + ':' + column['mode']\
             if column.get('mode') else column['type']
         if len(parent) > 0:
             col_name = f'{parent}.{column["name"]}'
