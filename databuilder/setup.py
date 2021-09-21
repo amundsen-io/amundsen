@@ -31,9 +31,12 @@ athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 # License: Apache Software License
 # Upstream url: https://github.com/googleapis/google-api-python-client
 bigquery = [
-    'google-api-python-client>=1.6.0, <2.0.0dev',
+    'google-api-python-client>=1.6.0, <3.0.0dev',
     'google-auth-httplib2>=0.0.1',
-    'google-auth>=1.0.0, <2.0.0dev'
+    # Maintainers, please do not require google-api-core>=2.x.x
+    # Until this issue is closed
+    # https://github.com/googleapis/google-cloud-python/issues/10566
+    'google-auth>=1.0.0, <3.0.0dev'
 ]
 
 jsonpath = ['jsonpath_rw==1.4.0']
