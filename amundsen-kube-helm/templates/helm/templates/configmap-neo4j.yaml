@@ -15,6 +15,7 @@ data:
     apoc.export.file.enabled=true
     apoc.import.file.enabled=true
     cypher.forbid_shortestpath_common_nodes=false
+    dbms.active_database=amundsen.db
     dbms.connector.bolt.enabled=true
     dbms.connector.bolt.listen_address=:7687
     dbms.connector.bolt.tls_level=OPTIONAL
