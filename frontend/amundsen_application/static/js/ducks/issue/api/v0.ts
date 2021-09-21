@@ -32,6 +32,7 @@ export function createIssue(
       key: payload.key,
       title: payload.title,
       description: payload.description,
+      resource_path: payload.resource_path,
     })
     .then((response: AxiosResponse<IssueApi>) => {
       if (notificationsEnabled()) {
