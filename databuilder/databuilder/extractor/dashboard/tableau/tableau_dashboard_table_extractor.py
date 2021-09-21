@@ -63,7 +63,7 @@ class TableauGraphQLDashboardTableExtractor(TableauGraphQLApiExtractor):
                     # key is incorrect, so the "inner" schema from the table name is used instead.
                     if '.' in table['name']:
                         fully_qualified_name = ['table', 'schema', 'database']
-                        fully_qualified_name_dict = {fully_qualified_name[i]: j for i, j in enumerate(table.split('.')[::-1])}
+                        fully_qualified_name_dict = {fully_qualified_name[i]: j for i, j in enumerate(table['name'].split('.')[::-1])}
                         schema = fully_qualified_name_dict['schema']
                         name = fully_qualified_name_dict['table']
                     else:
