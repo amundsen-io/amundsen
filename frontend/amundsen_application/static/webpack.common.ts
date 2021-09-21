@@ -3,6 +3,7 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
+import * as dotenv from 'dotenv';
 import * as webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -55,6 +56,14 @@ const htmlWebpackPluginConfig = templatesList.map(
       inject: false,
     })
 );
+
+const env: any = dotenv.config().parsed;
+
+// reduce it to a nice object, the same as before
+const envKeys = Object.keys(env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(env[next]);
+  return prev;
+}, {});
 
 const config: webpack.Configuration = {
   entry: {
@@ -135,6 +144,7 @@ const config: webpack.Configuration = {
     new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
+    new webpack.DefinePlugin(envKeys),
   ],
   optimization: {
     moduleIds: 'deterministic',

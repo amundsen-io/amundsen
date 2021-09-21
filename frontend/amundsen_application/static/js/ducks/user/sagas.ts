@@ -4,6 +4,8 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import * as API from './api/v0';
 
 import {
+  CreateUser,
+  CreateUserRequest,
   GetLoggedInUser,
   GetUser,
   GetUserOwn,
@@ -14,6 +16,8 @@ import {
 } from './types';
 
 import {
+  createUserFailure,
+  createUserSuccess,
   getLoggedInUserFailure,
   getLoggedInUserSuccess,
   getUserFailure,
@@ -34,6 +38,19 @@ export function* getLoggedInUserWorker(): SagaIterator {
 }
 export function* getLoggedInUserWatcher(): SagaIterator {
   yield takeEvery(GetLoggedInUser.REQUEST, getLoggedInUserWorker);
+}
+
+export function* createUserWorker(action: CreateUserRequest): SagaIterator {
+  try {
+    const { payload } = action;
+    const user = yield call(API.createUser, payload.user);
+    yield put(createUserSuccess(user));
+  } catch (e) {
+    yield put(createUserFailure());
+  }
+}
+export function* createUserWatcher(): SagaIterator {
+  yield takeEvery(CreateUser.REQUEST, createUserWorker);
 }
 
 export function* getUserWorker(action: GetUserRequest): SagaIterator {

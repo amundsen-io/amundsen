@@ -24,7 +24,7 @@ def build_js() -> None:
         logging.error('npm must be available')
 
     try:
-        subprocess.check_call(['npm install'], cwd=PACKAGE_DIR, shell=True)
+        # subprocess.check_call(['npm install'], cwd=PACKAGE_DIR, shell=True)
         subprocess.check_call(['npm run build'], cwd=PACKAGE_DIR, shell=True)
     except Exception as e:
         logging.warn('Installation of npm dependencies failed')
@@ -75,6 +75,10 @@ setup(
     entry_points="""
         [action_log.post_exec.plugin]
         logging_action_log=amundsen_application.log.action_log_callback:logging_action_log
+        [announcement_client]
+        announcement_client_class = amundsen_application.base.examples.example_announcement_client:SQLAlchemyAnnouncementClient
+        [preview_client]
+        table_preview_client_class = amundsen_application.base.base_databricks_preview_client:DatabricksPreviewClient
     """,
     classifiers=[
         'Programming Language :: Python :: 3.6',

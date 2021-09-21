@@ -22,6 +22,15 @@ import { pageViewed } from 'ducks/ui';
 import rootReducer from 'ducks/rootReducer';
 import rootSaga from 'ducks/rootSaga';
 
+import {
+  PublicClientApplication,
+  EventType,
+  EventMessage,
+  AuthenticationResult,
+  InteractionType,
+} from '@azure/msal-browser';
+import { MsalProvider, MsalAuthenticationTemplate } from '@azure/msal-react';
+
 import AnnouncementPage from './pages/AnnouncementPage';
 import BrowsePage from './pages/BrowsePage';
 import DashboardPage from './pages/DashboardPage';
@@ -32,10 +41,34 @@ import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import TableDetail from './pages/TableDetailPage';
 import LineagePage from './pages/LineagePage';
+import ShimmeringDashboardLoader from './pages/DashboardPage/ShimmeringDashboardLoader';
 
 import Preloader from './components/Preloader';
 import Footer from './features/Footer';
 import NavBar from './features/NavBar';
+
+// MSAL imports
+import { msalConfig, loginRequest } from './authConfig';
+
+const authRequest = {
+  ...loginRequest,
+};
+
+export const msalInstance = new PublicClientApplication(msalConfig);
+
+// Account selection logic is app dependent. Adjust as needed for different use cases.
+const accounts = msalInstance.getAllAccounts();
+if (accounts.length > 0) {
+  msalInstance.setActiveAccount(accounts[0]);
+}
+
+msalInstance.addEventCallback((event: EventMessage) => {
+  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+    const payload = event.payload as AuthenticationResult;
+    const { account } = payload;
+    msalInstance.setActiveAccount(account);
+  }
+});
 
 const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(
@@ -88,11 +121,20 @@ ReactDOM.render(
   <DocumentTitle title={getDocumentTitle()}>
     <Provider store={store}>
       <Router history={BrowserHistory}>
-        <div id="main">
-          <Preloader />
-          <Routes />
-          <Footer />
-        </div>
+        <MsalProvider instance={msalInstance}>
+          <MsalAuthenticationTemplate
+            interactionType={InteractionType.Redirect}
+            authenticationRequest={authRequest}
+            errorComponent={NotFoundPage}
+            loadingComponent={ShimmeringDashboardLoader}
+          >
+            <div id="main">
+              <Preloader />
+              <Routes />
+              <Footer />
+            </div>
+          </MsalAuthenticationTemplate>
+        </MsalProvider>
       </Router>
     </Provider>
   </DocumentTitle>,

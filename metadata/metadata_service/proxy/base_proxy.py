@@ -74,6 +74,10 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def add_user(self, *, id: str, name: str, mail: str, login: str ) -> None:
+        pass
+
+    @abstractmethod
     def add_owner(self, *, table_uri: str, owner: str) -> None:
         pass
 

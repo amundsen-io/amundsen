@@ -13,8 +13,8 @@ data:
   {{ if .Values.frontEnd.config.class }}
   FRONTEND_SVC_CONFIG_MODULE_CLASS: {{ .Values.frontEnd.config.class }}
   {{ end }}
-  SEARCHSERVICE_BASE: http://{{ .Chart.Name }}-{{ .Values.search.serviceName }}:5001
-  METADATASERVICE_BASE: http://{{ .Chart.Name }}-{{ .Values.metadata.serviceName }}:5002
+  SEARCHSERVICE_BASE: http://{{ .Chart.Name }}-{{ .Values.search.serviceMappingName }}:5001
+  METADATASERVICE_BASE: http://{{ .Chart.Name }}-{{ .Values.metadata.serviceMappingName }}:5002
   LONG_RANDOM_STRING: {{ quote .Values.LONG_RANDOM_STRING }}
   {{ if .Values.flaskApp.module }}
   APP_WRAPPER: {{ .Values.flaskApp.module }}

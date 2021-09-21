@@ -14,6 +14,13 @@ export function getLoggedInUser() {
     .then((response: AxiosResponse<LoggedInUserAPI>) => response.data.user);
 }
 
+export function createUser(user: any) {
+  const queryParams = qs.stringify({ user: user.id });
+  return axios
+    .put(`/api/metadata/v0/user_create?${queryParams}`, user)
+    .then((response: AxiosResponse<LoggedInUserAPI>) => response.data.user);
+}
+
 export function getUser(userId: string, index?: string, source?: string) {
   const queryParams = qs.stringify({ index, source, user_id: userId });
 
