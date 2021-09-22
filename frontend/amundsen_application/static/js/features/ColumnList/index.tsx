@@ -52,7 +52,6 @@ import {
 } from './constants';
 
 import './styles.scss';
-import { LeftArrowIcon } from 'components/SVGIcons';
 import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 
 export interface ComponentProps {
@@ -177,7 +176,6 @@ const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
     `?${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
   );
 };
-
 
 // @ts-ignore
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (

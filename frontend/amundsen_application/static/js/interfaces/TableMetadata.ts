@@ -66,7 +66,6 @@ export interface NestedTableColumn {
   description: string;
   name: string;
   sort_order: number;
-
 }
 
 export interface TableOwners {
