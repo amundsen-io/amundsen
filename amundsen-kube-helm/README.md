@@ -149,8 +149,14 @@ helm install ./templates/helm --values impl/helm/dev/values.yaml
 For Helm 3 it's now mandatory to specify a [chart reference name](https://helm.sh/docs/intro/using_helm/#helm-install-installing-a-package) e.g. `my-amundsen`:
 
 ``` shell
-helm install my-amundsen ./templates/helm --values impl/helm/dev/values.yaml
+helm install amundsen ./templates/helm --values templates/helm/values.yaml -n ztech-amundsen-test
 ```
+
+``` shell
+helm uninstall amundsen -n ztech-amundsen-test
+```
+
+
 
 ## Other Notes
 

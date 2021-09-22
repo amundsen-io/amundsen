@@ -89,5 +89,5 @@ services:
 networks:
   amundsennet:
   airflow:
-    external: true
-    name: docker_airflow
+    # external: true
+    # name: docker_airflow

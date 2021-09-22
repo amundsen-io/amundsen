@@ -158,6 +158,7 @@ metadata:
   # metadata.serviceName -- The metadata service name.
   serviceName: metadata
 
+  # search.serviceMappingName -- The search service name with namespace.
   serviceMappingName: metadata.ztech-amundsen-test
 
   # metadata.serviceType -- The metadata service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
