@@ -15,6 +15,7 @@ import {
   NotificationPayload,
   NotificationType,
 } from 'interfaces';
+import { getIssueDescriptionTemplate } from 'config/config-utils';
 import * as Constants from './constants';
 
 import './styles.scss';
@@ -152,7 +153,9 @@ export class ReportTableIssue extends React.Component<
                   rows={5}
                   required
                   maxLength={2000}
-                />
+                >
+                  {getIssueDescriptionTemplate()}
+                </textarea>
               </div>
               <button className="btn btn-primary submit" type="submit">
                 Submit
