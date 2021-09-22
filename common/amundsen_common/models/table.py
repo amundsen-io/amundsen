@@ -43,6 +43,7 @@ class Stat:
     stat_val: Optional[str] = None
     start_epoch: Optional[int] = None
     end_epoch: Optional[int] = None
+    is_metric: Optional[bool] = None
 
 
 class StatSchema(AttrsSchema):
