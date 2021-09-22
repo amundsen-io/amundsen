@@ -24,3 +24,4 @@ spec:
     - name: {{ .Chart.Name }}-{{ .Values.metadata.serviceName }}-{{ .Values.environment }}-http
       port: 5002
       targetPort: 5002
+  clusterIP: 10.0.125.67

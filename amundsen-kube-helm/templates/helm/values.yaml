@@ -1,6 +1,7 @@
 # Duplicate this file and put your customization here
 
-clusterDomain: gbl-aks-iguazu-env-001-0c8b8da5.683b6615-86ea-420b-b4b4-7176e9fb2add.privatelink.southcentralus.azmk8s.io
+# clusterDomain: gbl-aks-iguazu-env-001-0c8b8da5.683b6615-86ea-420b-b4b4-7176e9fb2add.privatelink.southcentralus.azmk8s.io
+clusterDomain: cluster.local
 
 # common settings for all apps
 # NOTE - README table was generated with https://github.com/norwoodj/helm-docs
@@ -96,7 +97,7 @@ search:
   serviceName: search
 
   # search.serviceMappingName -- The search service name with namespace.
-  serviceMappingName: search.ztech-amundsen-test
+  serviceMappingName: search.ztech-amundsen-test.svc.cluster.local
 
   # search.serviceType -- The search service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   serviceType: ClusterIP
@@ -114,14 +115,14 @@ search:
     password:
 
   # search.image -- The image of the search container.
-  image: amundsendev/amundsen-search
+  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-search-ztech
 
   # search.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
   # search.imageTag -- The image tag of the search container.
-  imageTag: 2.6.0
+  imageTag: latest
 
   # search.replicas -- How many replicas of the search service to run.
   replicas: 1
@@ -159,7 +160,7 @@ metadata:
   serviceName: metadata
 
   # search.serviceMappingName -- The search service name with namespace.
-  serviceMappingName: metadata.ztech-amundsen-test
+  serviceMappingName: metadata.ztech-amundsen-test.svc.cluster.local
 
   # metadata.serviceType -- The metadata service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   serviceType: ClusterIP
@@ -180,14 +181,14 @@ metadata:
     password:
 
   # metadata.image -- The image of the metadata container.
-  image: amundsendev/amundsen-metadata
+  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-metadata-ztech
 
   # metadata.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
   # metadata.imageTag -- The image tag of the metadata container.
-  imageTag: 3.5.0
+  imageTag: latest
 
   # metadata.replicas -- How many replicas of the metadata service to run.
   replicas: 1
@@ -228,14 +229,14 @@ frontEnd:
   serviceType: ClusterIP
 
   # frontEnd.image -- The image of the frontend container.
-  image: amundsendev/amundsen-frontend
+  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-front-ztech-public
 
   # frontEnd.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
   # frontEnd.imageTag -- The image tag of the frontend container.
-  imageTag: 3.11.1
+  imageTag: latest
 
   # frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   servicePort: 80

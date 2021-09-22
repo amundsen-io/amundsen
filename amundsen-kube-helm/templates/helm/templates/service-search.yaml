@@ -24,3 +24,4 @@ spec:
     - name: {{ .Chart.Name }}-{{ .Values.search.serviceName }}-{{ .Values.environment }}-http
       port: 5001
       targetPort: 5001
+  clusterIP: 10.0.133.59

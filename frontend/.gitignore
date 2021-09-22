@@ -1,2 +1,3 @@
 .eggs
 dist
+.env
