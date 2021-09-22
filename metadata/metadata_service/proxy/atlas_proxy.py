@@ -846,6 +846,7 @@ class AtlasProxy(BaseProxy):
         # Not implemented
         pass
 
+    @_CACHE.cache('get_tags')
     def get_tags(self) -> List:
         """
         Fetch all the glossary terms from atlas, along with their assigned entities as this

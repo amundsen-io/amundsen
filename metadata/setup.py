@@ -19,7 +19,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-oidc = ['flaskoidc==1.0.0']
+oidc = ['flaskoidc>=1.0.0']
 atlas = ['apache-atlas==0.0.11']
 rds = ['amundsen-rds==0.0.5',
        'mysqlclient>=1.3.6,<3',

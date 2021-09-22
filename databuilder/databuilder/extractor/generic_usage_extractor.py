@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 """
 The Generic Usage Extractor allows you to populate the "Frequent Users" and "Popular Tables" features within
 Amundsen with the help of the TableColumnUsage class. Because this is a generic usage extractor, you need to create

@@ -3,6 +3,7 @@ import {
   DashboardResource,
   ResourceType,
   Lineage,
+  TableQualityChecks,
 } from '../../interfaces';
 
 export const tableMetadata: TableMetadata = {
@@ -250,3 +251,11 @@ export const relatedDashboards: DashboardResource[] = [
     url: 'https://app.mode.com/testCompany/reports/123566',
   },
 ];
+
+export const qualityChecks: TableQualityChecks = {
+  num_checks_failed: 2,
+  num_checks_success: 10,
+  num_checks_total: 12,
+  external_url: 'test_url',
+  last_run_timestamp: 1629304939877,
+};

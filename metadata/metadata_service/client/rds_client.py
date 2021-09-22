@@ -9,7 +9,6 @@ from typing import Dict
 import amundsen_rds
 from alembic import command, script
 from alembic.config import Config
-from alembic.runtime import migration
 from alembic.runtime.migration import MigrationContext
 from amundsen_rds.models.base import Base
 from sqlalchemy import create_engine
@@ -55,11 +54,11 @@ class RDSClient:
 
         Base.metadata.drop_all(self.engine)
 
-        with self.engine.connect() as connection:
-            migration_ctx = MigrationContext.configure(connection)
+        with self.engine.connect() as conn:
+            migration_ctx = MigrationContext.configure(conn)
             version = migration_ctx._version
-            if version.exists(connection):
-                version.drop(connection)
+            if version.exists(conn):
+                version.drop(conn)
 
     def validate_schema_version(self) -> bool:
         """
@@ -70,8 +69,8 @@ class RDSClient:
         config = self._get_alembic_config()
         script_directory = script.ScriptDirectory.from_config(config)
 
-        with self.engine.begin() as conn:
-            context = migration.MigrationContext.configure(conn)
+        with self.engine.connect() as conn:
+            context = MigrationContext.configure(conn)
             current_version = context.get_current_revision()
             current_head = script_directory.get_current_head()
 

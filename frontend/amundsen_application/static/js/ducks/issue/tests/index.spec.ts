@@ -89,6 +89,7 @@ describe('issue ducks', () => {
         key,
         title,
         description,
+        resource_path: resourcePath,
       };
       const notificationPayload = {
         sender,
@@ -106,6 +107,7 @@ describe('issue ducks', () => {
       expect(payload.createIssuePayload.key).toBe(key);
       expect(payload.createIssuePayload.title).toBe(title);
       expect(payload.createIssuePayload.description).toBe(description);
+      expect(payload.createIssuePayload.resource_path).toBe(resourcePath);
       expect(payload.notificationPayload.options.resource_name).toBe(
         resourceName
       );
@@ -184,6 +186,7 @@ describe('issue ducks', () => {
         key,
         title,
         description,
+        resource_path: resourcePath,
       };
       const notificationPayload = {
         sender,
@@ -284,6 +287,7 @@ describe('issue ducks', () => {
           key,
           title,
           description,
+          resource_path: resourcePath,
         };
         const notificationPayload = {
           sender,

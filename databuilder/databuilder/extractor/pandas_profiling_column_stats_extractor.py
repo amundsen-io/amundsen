@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 from typing import (
     Any, Dict, Tuple,
@@ -36,12 +39,12 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         'count': ('Count', int),
         'is_unique': ('Unique', bool),
         'kurtosis': ('Kurtosis', float),
-        'max': ('Maximum', float),
+        'max': ('Maximum', str),
         'max_length': ('Maximum length', int),
         'mean': ('Mean', float),
         'mean_length': ('Mean length', int),
         'median_length': ('Median length', int),
-        'min': ('Minimum', float),
+        'min': ('Minimum', str),
         'min_length': ('Minimum length', int),
         'monotonic': ('Monotonic', bool),
         'n_characters': ('Characters', int),
@@ -58,7 +61,7 @@ class PandasProfilingColumnStatsExtractor(Extractor):
         'p_negative': ('Negative values %', lambda x: float(x * 100)),
         'p_unique': ('Unique values %', lambda x: float(x * 100)),
         'p_zeros': ('Zeros %', lambda x: float(x * 100)),
-        'range': ('Range', float),
+        'range': ('Range', str),
         'skewness': ('Skewness', float),
         'std': ('Std. deviation', float),
         'sum': ('Sum', float),

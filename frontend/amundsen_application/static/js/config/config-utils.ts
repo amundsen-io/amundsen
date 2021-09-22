@@ -431,3 +431,10 @@ export function getColumnLineageLink(
     columnName
   );
 }
+
+/**
+ * Returns whether table data quality checks are enabled
+ */
+export function isTableQualityCheckEnabled() {
+  return AppConfig.tableQualityChecks.isEnabled;
+}
