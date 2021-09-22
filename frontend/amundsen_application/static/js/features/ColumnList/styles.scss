@@ -60,7 +60,7 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
   }
 
   .nesting-arrow-spacer {
-    height: 24px;
+    height: $nested-arrow-spacer;
     width: $nested-arrow-spacer-max;
     display: inline-block;
 

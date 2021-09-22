@@ -239,9 +239,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
   const hasColumnBadges = hasColumnWithBadge(columns);
   const formatColumnData = (item, index) => {
     const hasItemStats = !!item.stats.length;
-    if (item.name === selectedColumn) {
-      selectedIndex = index;
-    }
     return {
       content: {
         title: item.name,
@@ -287,6 +284,12 @@ const ColumnList: React.FC<ColumnListProps> = ({
     flattenedData.push(item);
     if (item.children !== undefined) {
       flattenedData.push(...item.children.map(formatColumnData));
+    }
+  });
+
+  flattenedData.forEach((item, index) => {
+    if (item.name === selectedColumn) {
+      selectedIndex = index;
     }
   });
 

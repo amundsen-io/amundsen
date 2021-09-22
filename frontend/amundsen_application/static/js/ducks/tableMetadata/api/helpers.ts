@@ -3,15 +3,18 @@ import * as qs from 'simple-query-string';
 import { filterFromObj } from 'ducks/utilMethods';
 
 import {
-  NestedTableColumn,
   NotificationType,
-  PeopleUser, TableColumn, TableColumnType,
+  PeopleUser,
+  TableColumn,
   TableMetadata,
   UpdateMethod,
   UpdateOwnerPayload,
 } from 'interfaces';
 import * as API from './v0';
-import { convertNestedTypeToColumns, isNestedType, parseNestedType } from 'features/ColumnList/ColumnType/parser';
+import {
+  convertNestedTypeToColumns,
+  parseNestedType,
+} from 'features/ColumnList/ColumnType/parser';
 
 export interface TableQueryParams {
   key: string;
@@ -38,12 +41,13 @@ export function getRelatedDashboardSlug(key: string): string {
  *
  * @param columns
  */
-export function parseNestedColumns(columns: TableColumn[]) {
-  columns.forEach((column) => {
+export function parseNestedColumns(columns: TableColumn[]): TableColumn[] {
+  return columns.map((column) => {
     const nestedType = parseNestedType(column.col_type);
-    if (nestedType !== null) {
-      column.children = convertNestedTypeToColumns(nestedType);
-    }
+    return {
+      ...column,
+      children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,
+    };
   });
 };
 
@@ -57,7 +61,7 @@ export function getTableDataFromResponseData(
     'owners',
     'tags',
   ]) as TableMetadata;
-  parseNestedColumns(responseData.tableData.columns);
+  tableData.columns = parseNestedColumns(tableData.columns);
   return tableData;
 }
 
