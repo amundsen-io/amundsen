@@ -311,8 +311,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
           <>
             {arrow}
             <div className="column-name-container">
-              <div className="column-name">{title}</div>
-              <div className="column-desc truncated">{description}</div>
+              <h3 className="column-name">{title}</h3>
+              <p className="column-desc truncated">{description}</p>
             </div>
           </>
         );

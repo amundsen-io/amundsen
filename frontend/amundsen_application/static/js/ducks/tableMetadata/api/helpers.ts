@@ -49,7 +49,7 @@ export function parseNestedColumns(columns: TableColumn[]): TableColumn[] {
       children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,
     };
   });
-};
+}
 
 /**
  * Parses the response for table metadata information to create a TableMetadata object

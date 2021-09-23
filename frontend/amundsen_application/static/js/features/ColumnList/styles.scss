@@ -112,6 +112,7 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
   .column-desc {
     @extend %text-body-w3;
 
+    margin: 0;
     max-width: $description-max-width-small;
 
     @media (min-width: $screen-md-max) {
