@@ -32,6 +32,7 @@ const configDefault: AppConfig = {
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
+    issueDescriptionTemplate: '',
   },
   logoPath: '/static/images/logo.png',
   logoTitle: '',

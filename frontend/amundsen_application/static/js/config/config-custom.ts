@@ -25,7 +25,8 @@ const configCustom: AppConfigCustom = {
   },
   userIdLabel: 'email address',
   issueTracking: {
-    enabled: true,
+    enabled: false,
+    issueDescriptionTemplate: '',
   },
   badges: {
     pii: {
