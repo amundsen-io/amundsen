@@ -93,11 +93,11 @@ class Config:
 
     # Settings for Issue tracker integration
     ISSUE_LABELS = ['Pharos']  # type: List[str]
-    ISSUE_TRACKER_API_TOKEN = 'W6kyxyH6qN0elga0AsY0F2F1'  # type: str
+    ISSUE_TRACKER_API_TOKEN = '{{token}}'  # type: str
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
     ISSUE_TRACKER_USER = 'bruno.costa@ztech.net'  # type: str
-    ISSUE_TRACKER_PASSWORD = 'W6kyxyH6qN0elga0AsY0F2F1'  # type: str
-    ISSUE_TRACKER_PROJECT_ID = 10258  # type: int
+    ISSUE_TRACKER_PASSWORD = '{{token}}'  # type: str
+    ISSUE_TRACKER_PROJECT_ID = 10311  # type: int
     # Maps to a class path and name
     # ISSUE_TRACKER_CLIENT = "amundsen_application.base.base_jira_issue_tracker_client:JiraIssueTrackerClient"  # type: str
     ISSUE_TRACKER_CLIENT = "amundsen_application.proxy.issue_tracker_clients.jira_client:JiraClient"  # type: str
@@ -105,7 +105,7 @@ class Config:
     # Max issues to display at a time
     ISSUE_TRACKER_MAX_RESULTS = 3  # type: int
     # Override issue type ID for cloud Jira deployments
-    ISSUE_TRACKER_ISSUE_TYPE_ID = 10874
+    ISSUE_TRACKER_ISSUE_TYPE_ID = 11103
 
     # Programmatic Description configuration. Please see docs/flask_config.md
     PROGRAMMATIC_DISPLAY = None  # type: Optional[Dict]
@@ -182,11 +182,11 @@ class TestConfig(LocalConfig):
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
     ISSUE_TRACKER_USER = 'bruno.costa@ztech.net'  # type: str
-    ISSUE_TRACKER_PASSWORD = 'W6kyxyH6qN0elga0AsY0F2F1'  # type: str
-    ISSUE_TRACKER_PROJECT_ID = 10258
+    ISSUE_TRACKER_PASSWORD = '{{token}}'  # type: str
+    ISSUE_TRACKER_PROJECT_ID = 10311
     ISSUE_TRACKER_CLIENT_ENABLED = True
     ISSUE_TRACKER_MAX_RESULTS = 3
-    ISSUE_TRACKER_ISSUE_TYPE_ID = 10874
+    ISSUE_TRACKER_ISSUE_TYPE_ID = 11103
 
 
 class TestNotificationsDisabledConfig(LocalConfig):

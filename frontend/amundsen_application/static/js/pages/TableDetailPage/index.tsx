@@ -522,9 +522,7 @@ export class TableDetail extends React.Component<
     }
 
     return (
-      <DocumentTitle
-        title={`${this.getDisplayName()} - Amundsen Table Details`}
-      >
+      <DocumentTitle title={`${this.getDisplayName()} - Pharos Table Details`}>
         {innerContent}
       </DocumentTitle>
     );

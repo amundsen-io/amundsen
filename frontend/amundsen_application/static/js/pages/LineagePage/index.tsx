@@ -94,7 +94,7 @@ export const LineagePage: React.FC<
   }
 
   return (
-    <DocumentTitle title={`${pageTitle} - Amundsen Table Details`}>
+    <DocumentTitle title={`${pageTitle} - Pharos Table Details`}>
       {content}
     </DocumentTitle>
   );
