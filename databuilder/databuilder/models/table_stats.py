@@ -3,7 +3,6 @@
 from typing import (
     Iterator, Optional, Union,
 )
-import logging
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.column import ColumnStat as RDSColumnStat
 
@@ -16,15 +15,15 @@ from databuilder.models.table_serializable import TableSerializable
 LABEL = 'Stat'
 STAT_RESOURCE_RELATION_TYPE = 'STAT_OF'
 RESOURCE_STAT_RELATION_TYPE = 'STAT'
-LOGGER = logging.getLogger(__name__)
+
+
 class TableStats(GraphSerializable, TableSerializable):
     """
     Table stats model.
     """
-    
+
     KEY_FORMAT = '{db}://{cluster}.{schema}' \
                  '/{table}/{stat_type}/'
-    
 
     def __init__(self,
                  table_name: str,
