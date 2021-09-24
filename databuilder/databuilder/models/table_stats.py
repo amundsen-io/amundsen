@@ -3,6 +3,7 @@
 from typing import (
     Iterator, Optional, Union,
 )
+
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.column import ColumnStat as RDSColumnStat
 
