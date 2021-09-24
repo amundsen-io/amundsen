@@ -33,9 +33,9 @@ const configDefault: AppConfig = {
   issueTracking: {
     enabled: false,
   },
-  logoPath: null,
-  logoTitle: 'AMUNDSEN',
-  documentTitle: 'Amundsen - Data Discovery Portal',
+  logoPath: '/static/images/logo.png',
+  logoTitle: '',
+  documentTitle: 'Pharos - Data Portal',
   numberFormat: null,
   mailClientFeatures: {
     feedbackEnabled: false,

@@ -50,7 +50,7 @@ class DatabricksPreviewClient(BasePreviewClient):
             _columns = cursor.fetchall()
 
             cursor = conn.cursor()
-            cursor.execute(f""" SELECT * FROM {table_name} LIMIT 20 """)
+            cursor.execute(f""" SELECT * FROM {table_name} LIMIT 10 """)
 
             column_names = [column[0] for column in cursor.description]
             results = []

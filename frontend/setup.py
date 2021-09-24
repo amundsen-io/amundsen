@@ -76,7 +76,7 @@ setup(
         [action_log.post_exec.plugin]
         logging_action_log=amundsen_application.log.action_log_callback:logging_action_log
         [announcement_client]
-        announcement_client_class = amundsen_application.base.examples.example_announcement_client:SQLAlchemyAnnouncementClient
+        announcement_client_class = amundsen_application.base.neo4j_announcement_client:Neo4jAnnouncementClient
         [preview_client]
         table_preview_client_class = amundsen_application.base.base_databricks_preview_client:DatabricksPreviewClient
     """,

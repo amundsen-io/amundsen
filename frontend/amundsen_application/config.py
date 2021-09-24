@@ -92,19 +92,20 @@ class Config:
     ANNOUNCEMENT_CLIENT = os.getenv('ANNOUNCEMENT_CLIENT', None)  # type: Optional[str]
 
     # Settings for Issue tracker integration
-    ISSUE_LABELS = []  # type: List[str]
-    ISSUE_TRACKER_API_TOKEN = None  # type: str
-    ISSUE_TRACKER_URL = None  # type: str
-    ISSUE_TRACKER_USER = None  # type: str
-    ISSUE_TRACKER_PASSWORD = None  # type: str
-    ISSUE_TRACKER_PROJECT_ID = None  # type: int
+    ISSUE_LABELS = ['Pharos']  # type: List[str]
+    ISSUE_TRACKER_API_TOKEN = 'W6kyxyH6qN0elga0AsY0F2F1'  # type: str
+    ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
+    ISSUE_TRACKER_USER = 'bruno.costa@ztech.net'  # type: str
+    ISSUE_TRACKER_PASSWORD = 'W6kyxyH6qN0elga0AsY0F2F1'  # type: str
+    ISSUE_TRACKER_PROJECT_ID = 10258  # type: int
     # Maps to a class path and name
-    ISSUE_TRACKER_CLIENT = None  # type: str
-    ISSUE_TRACKER_CLIENT_ENABLED = False  # type: bool
+    # ISSUE_TRACKER_CLIENT = "amundsen_application.base.base_jira_issue_tracker_client:JiraIssueTrackerClient"  # type: str
+    ISSUE_TRACKER_CLIENT = "amundsen_application.proxy.issue_tracker_clients.jira_client:JiraClient"  # type: str
+    ISSUE_TRACKER_CLIENT_ENABLED = True  # type: bool
     # Max issues to display at a time
-    ISSUE_TRACKER_MAX_RESULTS = None  # type: int
+    ISSUE_TRACKER_MAX_RESULTS = 3  # type: int
     # Override issue type ID for cloud Jira deployments
-    ISSUE_TRACKER_ISSUE_TYPE_ID = None
+    ISSUE_TRACKER_ISSUE_TYPE_ID = 10874
 
     # Programmatic Description configuration. Please see docs/flask_config.md
     PROGRAMMATIC_DISPLAY = None  # type: Optional[Dict]
@@ -179,12 +180,13 @@ class TestConfig(LocalConfig):
     POPULAR_RESOURCES_PERSONALIZATION = True
     AUTH_USER_METHOD = get_test_user
     NOTIFICATIONS_ENABLED = True
-    ISSUE_TRACKER_URL = 'test_url'
-    ISSUE_TRACKER_USER = 'test_user'
-    ISSUE_TRACKER_PASSWORD = 'test_password'
-    ISSUE_TRACKER_PROJECT_ID = 1
+    ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
+    ISSUE_TRACKER_USER = 'bruno.costa@ztech.net'  # type: str
+    ISSUE_TRACKER_PASSWORD = 'W6kyxyH6qN0elga0AsY0F2F1'  # type: str
+    ISSUE_TRACKER_PROJECT_ID = 10258
     ISSUE_TRACKER_CLIENT_ENABLED = True
     ISSUE_TRACKER_MAX_RESULTS = 3
+    ISSUE_TRACKER_ISSUE_TYPE_ID = 10874
 
 
 class TestNotificationsDisabledConfig(LocalConfig):

@@ -156,6 +156,10 @@ helm install amundsen ./templates/helm --values templates/helm/values.yaml -n zt
 helm uninstall amundsen -n ztech-amundsen-test
 ```
 
+``` shell
+helm upgrade amundsen ./templates/helm --values templates/helm/values.yaml -n ztech-amundsen-test
+```
+
 
 
 ## Other Notes

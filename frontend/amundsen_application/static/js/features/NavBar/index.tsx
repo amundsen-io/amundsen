@@ -83,7 +83,14 @@ export class NavBar extends React.Component<NavBarProps> {
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
     if (loggedInUser.display_name) {
-      avatar = <Avatar name={loggedInUser.display_name} size={32} round />;
+      avatar = (
+        <Avatar
+          color="#61C0BF"
+          name={loggedInUser.display_name}
+          size={32}
+          round
+        />
+      );
     }
 
     return (
@@ -100,7 +107,7 @@ export class NavBar extends React.Component<NavBarProps> {
                     alt=""
                   />
                 )}
-                <span className="title-3">{getLogoTitle()}</span>
+                {/* <span className="title-3">{getLogoTitle()}</span> */}
               </Link>
             </div>
             {this.renderSearchBar()}

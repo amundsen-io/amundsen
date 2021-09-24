@@ -9,7 +9,7 @@ TEST_USER_ID = 'test_user_id'
 
 def get_test_user(app: app) -> User:  # type: ignore
     user_info = {
-        'email': 'test@email.com',
+        'email': 'bruno.costa@ztech.net',
         'user_id': TEST_USER_ID,
         'first_name': 'Firstname',
         'last_name': 'Lastname',

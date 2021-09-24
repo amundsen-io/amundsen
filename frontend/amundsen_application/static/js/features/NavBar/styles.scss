@@ -24,12 +24,14 @@ $avatar-container-size: 40px;
   }
 
   .nav-bar-right {
+    align-items: center;
     display: flex;
     margin-left: auto;
 
     a {
       color: $white;
-      display: inline-block;
+      display: flex !important;
+      align-items: center;
       height: 100%;
       line-height: $navbar-item-line-height;
       padding: 0 $spacer-1;
@@ -92,7 +94,7 @@ $avatar-container-size: 40px;
 
   .logo-icon {
     margin-right: $spacer-2;
-    max-height: 32px;
+    max-height: 60px;
     max-width: 144px;
   }
 

@@ -7,6 +7,7 @@ jira==3.0.1
 asana==0.10.3
 retrying>=1.3.3,<2.0
 databricks-sql-connector
+neo4j==1.7.0
 
 # Backport of PEP 557, Data Classes for Python 3.6.
 # License: Apache 2.0

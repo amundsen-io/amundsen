@@ -5,11 +5,11 @@
 
 // TODO - consider using more descriptive names, or replacing with more specific variables.
 // Colors
-$brand-color-1: $indigo10 !default;
-$brand-color-2: $indigo20 !default;
-$brand-color-3: $indigo40 !default;
-$brand-color-4: $indigo60 !default;
-$brand-color-5: $indigo80 !default;
+$brand-color-1: $teal100 !default;
+$brand-color-2: $teal100 !default;
+$brand-color-3: $teal100 !default;
+$brand-color-4: $teal100 !default;
+$brand-color-5: $teal100 !default;
 
 $brand-primary: $brand-color-4 !default;
 
@@ -31,7 +31,7 @@ $text-tertiary: $gray40 !default;
 $text-placeholder: $gray40 !default;
 $text-inverse: $white !default;
 
-$column-name-color: $indigo70;
+$column-name-color: $teal100;
 $link-color: $brand-color-4;
 $link-hover-color: $brand-color-5;
 
@@ -94,8 +94,8 @@ $icon-bg-disabled: $gray20 !default;
 $red-triangle-warning: $sunset60;
 
 // Header, Body, & Footer
-$nav-bar-color: $indigo100;
-$nav-bar-height: 60px;
+$nav-bar-color: $black;
+$nav-bar-height: 80px;
 $body-min-width: 1048px;
 $footer-height: 60px;
 $navbar-item-line-height: 36px;
@@ -124,7 +124,7 @@ $tag-bg-hover: $gray10;
 $tag-border-radius: 4px;
 
 // TODO Temp Colors
-$resource-title-color: $indigo60;
+$resource-title-color: $teal100;
 
 // Spacing
 $spacer-size: 8px;
