@@ -24,7 +24,7 @@ class TableStats(GraphSerializable, TableSerializable):
     """
 
     KEY_FORMAT = '{db}://{cluster}.{schema}' \
-                 '/{table}/{stat_type}/'
+                 '/{table}/{stat_name}/'
 
     def __init__(self,
                  table_name: str,
@@ -46,8 +46,10 @@ class TableStats(GraphSerializable, TableSerializable):
         self.start_epoch = start_epoch
         self.end_epoch = end_epoch
         self.cluster = cluster
-        self.stat_type = stat_name
+        self.stat_name = stat_name
         self.stat_val = str(stat_val)
+        # metrics are about the table, stats are about the data in a table
+        # ex: table usage is a metric
         self.is_metric = is_metric
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
@@ -77,7 +79,7 @@ class TableStats(GraphSerializable, TableSerializable):
                                             cluster=self.cluster,
                                             schema=self.schema,
                                             table=self.table,
-                                            stat_type=self.stat_type,
+                                            stat_name=self.stat_name,
                                             is_metric=self.is_metric)
 
     def get_table_key(self) -> str:
@@ -97,7 +99,7 @@ class TableStats(GraphSerializable, TableSerializable):
             label=LABEL,
             attributes={
                 'stat_val': self.stat_val,
-                'stat_type': self.stat_type,
+                'stat_type': self.stat_name,
                 'start_epoch': self.start_epoch,
                 'end_epoch': self.end_epoch,
                 'is_metric': self.is_metric,
@@ -179,7 +181,7 @@ class TableColumnStats(GraphSerializable, TableSerializable):
         except StopIteration:
             return None
 
-    def get_table_stat_model_key(self) -> str:
+    def get_column_stat_model_key(self) -> str:
         return TableColumnStats.KEY_FORMAT.format(db=self.db,
                                                   cluster=self.cluster,
                                                   schema=self.schema,
@@ -201,7 +203,7 @@ class TableColumnStats(GraphSerializable, TableSerializable):
         :return:
         """
         node = GraphNode(
-            key=self.get_table_stat_model_key(),
+            key=self.get_column_stat_model_key(),
             label=LABEL,
             attributes={
                 'stat_val': self.stat_val,
@@ -218,7 +220,7 @@ class TableColumnStats(GraphSerializable, TableSerializable):
         :return:
         """
         relationship = GraphRelationship(
-            start_key=self.get_table_stat_model_key(),
+            start_key=self.get_column_stat_model_key(),
             start_label=LABEL,
             end_key=self.get_col_key(),
             end_label=ColumnMetadata.COLUMN_NODE_LABEL,
@@ -230,7 +232,7 @@ class TableColumnStats(GraphSerializable, TableSerializable):
 
     def _create_record_iterator(self) -> Iterator[RDSModel]:
         record = RDSColumnStat(
-            rk=self.get_table_stat_model_key(),
+            rk=self.get_column_stat_model_key(),
             stat_val=self.stat_val,
             stat_type=self.stat_type,
             start_epoch=self.start_epoch,
