@@ -95,7 +95,7 @@ def notification() -> Response:
     """
     try:
         data = request.get_json()
-
+        user_id = request.args.get('user_id')
         notification_type = data.get('notificationType')
         if notification_type is None:
             message = 'Encountered exception: notificationType must be provided in the request payload'
@@ -104,7 +104,7 @@ def notification() -> Response:
 
         sender = data.get('sender')
         if sender is None:
-            sender = app.config['AUTH_USER_METHOD'](app).email
+            sender = app.config['AUTH_USER_METHOD'](app, user_id).email
 
         options = data.get('options', {})
         recipients = data.get('recipients', [])

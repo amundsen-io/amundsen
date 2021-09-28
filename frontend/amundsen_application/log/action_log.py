@@ -81,9 +81,9 @@ def _build_metrics(func_name: str,
         'keyword_args_json': json.dumps(kwargs),
     }  # type: Dict[str, Any]
 
-    if flask_app.config['AUTH_USER_METHOD']:
-        metrics['user'] = flask_app.config['AUTH_USER_METHOD'](flask_app).email
-    else:
-        metrics['user'] = getpass.getuser()
+    # if flask_app.config['AUTH_USER_METHOD']:
+    #     metrics['user'] = flask_app.config['AUTH_USER_METHOD'](flask_app, user_id).email
+    # else:
+    metrics['user'] = getpass.getuser()
 
     return metrics

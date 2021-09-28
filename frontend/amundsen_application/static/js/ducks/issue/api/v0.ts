@@ -33,6 +33,7 @@ export function createIssue(
       title: payload.title,
       description: payload.description,
       resource_path: payload.resource_path,
+      user_id: payload.userId,
     })
     .then((response: AxiosResponse<IssueApi>) => {
       if (notificationsEnabled()) {

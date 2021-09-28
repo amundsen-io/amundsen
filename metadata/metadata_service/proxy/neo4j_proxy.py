@@ -1365,7 +1365,7 @@ class Neo4jProxy(BaseProxy):
                           user_id=record.get('user_id', record['email']),
                           first_name=record.get('first_name'),
                           last_name=record.get('last_name'),
-                          full_name=record.get('full_name'),
+                          full_name=record.get('display_name'),
                           is_active=record.get('is_active', True),
                           github_username=record.get('github_username'),
                           team_name=record.get('team_name'),

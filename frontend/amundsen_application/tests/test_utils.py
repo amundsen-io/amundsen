@@ -3,16 +3,15 @@
 
 from flask import current_app as app
 from amundsen_application.models.user import load_user, User
+from amundsen_application.api.utils.request_utils import request_metadata
 
-TEST_USER_ID = 'test_user_id'
+USER_ENDPOINT = '/user'
 
 
-def get_test_user(app: app) -> User:  # type: ignore
-    user_info = {
-        'email': 'bruno.costa@ztech.net',
-        'user_id': TEST_USER_ID,
-        'first_name': 'Firstname',
-        'last_name': 'Lastname',
-        'full_name': 'Firstname Lastname',
-    }
-    return load_user(user_info)
+def get_test_user(app: app, user_id: str) -> User:  # type: ignore
+
+    url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
+    response = request_metadata(url=url)
+    status_code = response.status_code
+   
+    return load_user(response.json())

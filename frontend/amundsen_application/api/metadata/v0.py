@@ -70,12 +70,9 @@ def popular_resources() -> Response:
     https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/popular_tables.py
     """
     try:
-        if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_RESOURCES_PERSONALIZATION']:
-            user_id = app.config['AUTH_USER_METHOD'](app).user_id
-        else:
-            user_id = ''
-
+        
         resource_types = get_query_param(request.args, 'types')
+        user_id = get_query_param(request.args, 'user_id')
 
         service_base = app.config['METADATASERVICE_BASE']
         count = app.config['POPULAR_RESOURCES_COUNT']
@@ -624,17 +621,12 @@ def user_create() -> Response:
 def get_bookmark() -> Response:
     """
     Call metadata service to fetch a specified user's bookmarks.
-    If no 'user_id' is specified, it will fetch the logged-in user's bookmarks
     :param user_id: (optional) the user whose bookmarks are fetched.
     :return: a JSON object with an array of bookmarks under 'bookmarks' key
     """
     try:
         user_id = request.args.get('user_id')
-        if user_id is None:
-            if app.config['AUTH_USER_METHOD']:
-                user_id = app.config['AUTH_USER_METHOD'](app).user_id
-            else:
-                raise Exception('AUTH_USER_METHOD is not configured')
+
 
         url = '{0}{1}/{2}/follow/'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
 
@@ -679,8 +671,9 @@ def update_bookmark() -> Response:
         pass  # pragma: no cover
 
     try:
+        user_id = request.args.get('user_id')
         if app.config['AUTH_USER_METHOD']:
-            user = app.config['AUTH_USER_METHOD'](app)
+            user = app.config['AUTH_USER_METHOD'](app, user_id)
         else:
             raise Exception('AUTH_USER_METHOD is not configured')
 

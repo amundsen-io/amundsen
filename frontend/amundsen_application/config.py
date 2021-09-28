@@ -95,7 +95,7 @@ class Config:
     ISSUE_LABELS = ['Pharos']  # type: List[str]
     ISSUE_TRACKER_API_TOKEN = '{{token}}'  # type: str
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
-    ISSUE_TRACKER_USER = 'bruno.costa@ztech.net'  # type: str
+    ISSUE_TRACKER_USER = 'data.engineer@ztech.net'  # type: str
     ISSUE_TRACKER_PASSWORD = '{{token}}'  # type: str
     ISSUE_TRACKER_PROJECT_ID = 10311  # type: int
     # Maps to a class path and name
@@ -181,8 +181,8 @@ class TestConfig(LocalConfig):
     AUTH_USER_METHOD = get_test_user
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
-    ISSUE_TRACKER_USER = 'bruno.costa@ztech.net'  # type: str
-    ISSUE_TRACKER_PASSWORD = '{{token}}'  # type: str
+    ISSUE_TRACKER_USER = 'data.engineer@ztech.net'  # type: str
+    ISSUE_TRACKER_PASSWORD = '{{token}} '  # type: str
     ISSUE_TRACKER_PROJECT_ID = 10311
     ISSUE_TRACKER_CLIENT_ENABLED = True
     ISSUE_TRACKER_MAX_RESULTS = 3

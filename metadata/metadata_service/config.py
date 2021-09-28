@@ -76,7 +76,7 @@ class Config:
     RESOURCE_REPORT_CLIENT = None  # type: Optional[function]
 
     # On User detail method, these keys will be added into amundsen_common.models.user.User.other_key_values
-    USER_OTHER_KEYS = {'mode_user_id'}  # type: Set[str]
+    USER_OTHER_KEYS = {'mode_user_id', 'last_login'}  # type: Set[str]
 
     # DEPRECATED (since version 3.6.0): Please use `POPULAR_RESOURCES_MINIMUM_READER_COUNT`
     # Number of minimum reader count to qualify for popular resources

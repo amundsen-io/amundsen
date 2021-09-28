@@ -22,8 +22,9 @@ blueprint = Blueprint('main', __name__, url_prefix='/api')
 @blueprint.route('/auth_user', methods=['GET'])
 def current_user() -> Response:
     try:
+        user_id = get_query_param(request.args, 'user_id')
         if app.config['AUTH_USER_METHOD']:
-            user = app.config['AUTH_USER_METHOD'](app)
+            user = app.config['AUTH_USER_METHOD'](app, user_id)
         else:
             raise Exception('AUTH_USER_METHOD is not configured')
 

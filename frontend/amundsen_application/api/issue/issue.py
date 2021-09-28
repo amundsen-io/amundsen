@@ -64,10 +64,13 @@ class IssueAPI(Resource):
             self.reqparse.add_argument('key', type=str, location='json')
             self.reqparse.add_argument('description', type=str, location='json')
             self.reqparse.add_argument('resource_path', type=str, location='json')
+            self.reqparse.add_argument('user_id', type=str, location='json')
+
             args = self.reqparse.parse_args()
             response = self.client.create_issue(description=args['description'],
                                                 table_uri=args['key'],
                                                 title=args['title'],
+                                                user_id=args['user_id'],
                                                 table_url=app.config['FRONTEND_BASE'] + args['resource_path']
                                                 if args['resource_path'] else 'Not Found')
             return make_response(jsonify({'issue': response.serialize()}), HTTPStatus.OK)

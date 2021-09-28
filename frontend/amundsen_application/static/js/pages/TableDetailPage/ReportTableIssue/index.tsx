@@ -77,12 +77,14 @@ export class ReportTableIssue extends React.Component<
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
+    const userId = this.props.userEmail;
 
     return {
       title,
       description,
       key: this.props.tableKey,
       resource_path: resourcePath,
+      userId,
     };
   };
 

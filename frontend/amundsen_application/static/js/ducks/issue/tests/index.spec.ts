@@ -90,6 +90,7 @@ describe('issue ducks', () => {
         title,
         description,
         resource_path: resourcePath,
+        userId: 'test',
       };
       const notificationPayload = {
         sender,
@@ -187,6 +188,7 @@ describe('issue ducks', () => {
         title,
         description,
         resource_path: resourcePath,
+        userId: 'test',
       };
       const notificationPayload = {
         sender,
@@ -288,6 +290,7 @@ describe('issue ducks', () => {
           title,
           description,
           resource_path: resourcePath,
+          userId: 'test',
         };
         const notificationPayload = {
           sender,

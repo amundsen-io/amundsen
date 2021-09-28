@@ -79,7 +79,7 @@ export class NavBar extends React.Component<NavBarProps> {
 
   render() {
     const { loggedInUser } = this.props;
-    const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
+    const userLink = `/user/${loggedInUser.email}?source=navbar`;
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
     if (loggedInUser.display_name) {

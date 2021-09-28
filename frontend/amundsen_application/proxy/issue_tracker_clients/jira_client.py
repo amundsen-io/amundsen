@@ -66,7 +66,7 @@ class JiraClient(BaseIssueTrackerClient):
             logging.exception(str(e))
             raise e
 
-    def create_issue(self, table_uri: str, title: str, description: str, table_url: str) -> DataIssue:
+    def create_issue(self, table_uri: str, title: str, description: str, table_url: str, user_id: str) -> DataIssue:
         """
         Creates an issue in Jira
         :param description: Description of the Jira issue
@@ -77,7 +77,7 @@ class JiraClient(BaseIssueTrackerClient):
         """
         try:
             if app.config['AUTH_USER_METHOD']:
-                user_email = app.config['AUTH_USER_METHOD'](app).email
+                user_email = app.config['AUTH_USER_METHOD'](app, user_id).email
                 # We currently cannot use the email directly because of the following issue:
                 # https://community.atlassian.com/t5/Answers-Developer-Questions/JIRA-Rest-API-find-JIRA-user-based-on-user-s-email-address/qaq-p/532715
                 jira_id = user_email.split('@')[0]
