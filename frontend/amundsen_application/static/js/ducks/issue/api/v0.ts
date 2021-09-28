@@ -32,6 +32,7 @@ export function createIssue(
       key: payload.key,
       title: payload.title,
       description: payload.description,
+      priority_name: payload.priority_name,
       resource_path: payload.resource_path,
     })
     .then((response: AxiosResponse<IssueApi>) => {

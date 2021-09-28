@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { GlobalState } from 'ducks/rootReducer';
@@ -40,6 +41,7 @@ export interface StateFromProps {
 
 interface ReportTableIssueState {
   isOpen: boolean;
+  issuePriority: string;
 }
 
 export type ReportTableIssueProps = StateFromProps &
@@ -53,7 +55,7 @@ export class ReportTableIssue extends React.Component<
   constructor(props) {
     super(props);
 
-    this.state = { isOpen: false };
+    this.state = { isOpen: false, issuePriority: Constants.PRIORITY.LOW };
   }
 
   submitForm = (event) => {
@@ -72,16 +74,20 @@ export class ReportTableIssue extends React.Component<
 
   getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
     const {
+      tableKey,
       tableMetadata: { cluster, database, schema, name },
     } = this.props;
+    const { issuePriority } = this.state;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
+    const priorityName = issuePriority;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
       title,
       description,
-      key: this.props.tableKey,
+      priority_name: priorityName,
+      key: tableKey,
       resource_path: resourcePath,
     };
   };
@@ -112,7 +118,13 @@ export class ReportTableIssue extends React.Component<
     this.setState({ isOpen: !this.state.isOpen });
   };
 
+  onPriorityChange = (event) => {
+    this.setState({ issuePriority: event });
+  };
+
   render() {
+    const { isOpen, issuePriority } = this.state;
+
     return (
       <>
         {/* eslint-disable jsx-a11y/anchor-is-valid */}
@@ -123,7 +135,7 @@ export class ReportTableIssue extends React.Component<
         >
           {Constants.REPORT_DATA_ISSUE_TEXT}
         </a>
-        {this.state.isOpen && (
+        {isOpen && (
           <div className="report-table-issue-modal">
             <h3 className="data-issue-header">
               {Constants.REPORT_DATA_ISSUE_TEXT}
@@ -157,9 +169,33 @@ export class ReportTableIssue extends React.Component<
                   {getIssueDescriptionTemplate()}
                 </textarea>
               </div>
-              <button className="btn btn-primary submit" type="submit">
-                Submit
-              </button>
+              <label htmlFor="priority">Priority</label>
+              <div>
+                <ToggleButtonGroup
+                  type="radio"
+                  name="priority"
+                  id="priority"
+                  className="priority-btn-group"
+                  value={issuePriority}
+                  onChange={this.onPriorityChange}
+                >
+                  <ToggleButton value={Constants.PRIORITY.LOW}>
+                    Low
+                  </ToggleButton>
+                  <ToggleButton value={Constants.PRIORITY.MEDIUM}>
+                    Medium
+                  </ToggleButton>
+                  <ToggleButton value={Constants.PRIORITY.HIGH}>
+                    High
+                  </ToggleButton>
+                </ToggleButtonGroup>
+                <button
+                  className="btn btn-primary issue-submit-btn submit"
+                  type="submit"
+                >
+                  Submit
+                </button>
+              </div>
             </form>
             <div className="data-owner-notification">
               {Constants.TABLE_OWNERS_NOTE}

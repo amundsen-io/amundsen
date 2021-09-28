@@ -26,5 +26,14 @@
   .data-owner-notification {
     font-size: 10px;
     margin: 5px 0 0;
+    float: left;
+  }
+
+  .priority-btn-group {
+    float: left;
+  }
+
+  .issue-submit-btn {
+    float: right;
   }
 }

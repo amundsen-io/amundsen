@@ -57,10 +57,16 @@ class AsanaClient(BaseIssueTrackerClient):
             all_issues_url=self._task_url(table_parent_task_gid),
         )
 
-    def create_issue(self, table_uri: str, title: str, description: str, table_url: str) -> DataIssue:
+    def create_issue(self,
+                     table_uri: str,
+                     title: str,
+                     description: str,
+                     priority_name: str,
+                     table_url: str) -> DataIssue:
         """
         Creates an issue in Asana
         :param description: Description of the Asana issue
+        :param priority_name: priority name for the ticket
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Asana ticket
         :param table_url: Link to access the table
