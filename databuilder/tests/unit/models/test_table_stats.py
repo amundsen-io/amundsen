@@ -50,8 +50,8 @@ class TestTableStats(unittest.TestCase):
             RELATION_REVERSE_TYPE: 'STAT'
         }]
 
-    def test_get_table_stat_model_key(self) -> None:
-        table_stats = self.table_stats.get_table_stat_model_key()
+    def test_get_column_stat_model_key(self) -> None:
+        table_stats = self.table_stats.get_column_stat_model_key()
         self.assertEqual(table_stats, 'hive://gold.base/test/col/avg/')
 
     def test_get_col_key(self) -> None:
