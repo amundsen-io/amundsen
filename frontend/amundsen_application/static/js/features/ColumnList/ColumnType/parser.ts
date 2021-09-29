@@ -38,6 +38,7 @@ const CLOSE_DELIMETERS = {
   ']': '[',
 };
 const SEPARATOR_DELIMETER = ',';
+const COLUMN_TYPE_SEPARATOR = /:| /;
 
 /*
  * Iterates through the columnType string and recursively creates a NestedType
@@ -100,7 +101,8 @@ function parseNestedTypeHelper(
           Case 3.3: A double nested type such as ARRAY(ROW(...))
           There is no column name for the nested ROW
         */
-        const spaceIndex = nestedString.indexOf(' ');
+        const match = COLUMN_TYPE_SEPARATOR.exec(nestedString);
+        const spaceIndex = match?.index || -1;
         let name = nestedString.substring(0, spaceIndex);
         let colType = nestedString.substring(spaceIndex + 1);
         if (
@@ -187,7 +189,7 @@ export function convertNestedTypeToColumns(
   const nestedColumns: TableColumn[] = [];
   children.forEach((child) => {
     if (typeof child === 'string') {
-      const [columnName, colType] = child.split(' ');
+      const [columnName, colType] = child.split(COLUMN_TYPE_SEPARATOR);
       if (colType !== undefined) {
         nestedColumns.push({
           badges: [],
