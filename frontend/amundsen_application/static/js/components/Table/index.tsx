@@ -236,7 +236,8 @@ const Table: React.FC<TableProps> = ({
           ref={index === preExpandRow ? expandRowRef : null}
         >
           <>
-            {expandRow ? (
+            {expandRow &&
+            (item.isExpandable || item.isExpandable === undefined) ? (
               <ExpandingCell
                 index={index}
                 expandedRows={expandedRows}
@@ -282,7 +283,7 @@ const Table: React.FC<TableProps> = ({
               })}
           </>
         </tr>
-        {expandRow ? (
+        {expandRow? (
           <tr
             className={`ams-table-expanded-row ${
               expandedRows.includes(index) ? 'is-expanded' : ''
