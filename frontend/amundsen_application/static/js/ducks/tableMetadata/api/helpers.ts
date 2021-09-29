@@ -10,11 +10,11 @@ import {
   UpdateMethod,
   UpdateOwnerPayload,
 } from 'interfaces';
-import * as API from './v0';
 import {
   convertNestedTypeToColumns,
   parseNestedType,
 } from 'features/ColumnList/ColumnType/parser';
+import * as API from './v0';
 
 export interface TableQueryParams {
   key: string;

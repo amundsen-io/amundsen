@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import EditableSection from 'components/EditableSection';
+import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
@@ -52,7 +53,6 @@ import {
 } from './constants';
 
 import './styles.scss';
-import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 
 export interface ComponentProps {
   columns: TableColumn[];
@@ -280,7 +280,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   }
   const flattenedData: FormattedDataType[] = [];
   // Flatten nested columns
-  orderedData.forEach((item, index) => {
+  orderedData.forEach((item) => {
     flattenedData.push(item);
     if (item.children !== undefined) {
       flattenedData.push(...item.children.map(formatColumnData));
