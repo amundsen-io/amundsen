@@ -3,7 +3,7 @@
 
 import logging
 from typing import (
-    Any, Dict, List, Set, cast,
+    Any, Callable, Dict, List, Set, cast,
 )
 
 from pyhocon import ConfigTree
@@ -89,6 +89,8 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                            column: Dict[str, str],
                            cols: List[ColumnMetadata],
                            total_cols: int) -> int:
+        get_column_type: Callable[[dict], str] = lambda column: column['type'] + ':' + column['mode']\
+            if column.get('mode') else column['type']
         if len(parent) > 0:
             col_name = f'{parent}.{column["name"]}'
         else:
@@ -98,7 +100,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
             col = ColumnMetadata(
                 name=col_name,
                 description=column.get('description', ''),
-                col_type=column['type'],
+                col_type=get_column_type(column),
                 sort_order=total_cols)
             cols.append(col)
             total_cols += 1
@@ -113,7 +115,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
             col = ColumnMetadata(
                 name=col_name,
                 description=column.get('description', ''),
-                col_type=column['type'],
+                col_type=get_column_type(column),
                 sort_order=total_cols)
             cols.append(col)
             return total_cols + 1

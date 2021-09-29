@@ -227,6 +227,15 @@ export function issueTrackingEnabled(): boolean {
 }
 
 /**
+ * Returns the string that will prepopulate the issue description
+ * text field with a template to suggest more detailed information
+ * to be provided by the user when an issue is reported
+ */
+export function getIssueDescriptionTemplate(): string {
+  return AppConfig.issueTracking.issueDescriptionTemplate;
+}
+
+/**
  * Returns whether or not notification features should be enabled
  */
 export function notificationsEnabled(): boolean {

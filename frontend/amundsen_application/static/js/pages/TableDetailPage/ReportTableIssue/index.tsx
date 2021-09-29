@@ -15,6 +15,7 @@ import {
   NotificationPayload,
   NotificationType,
 } from 'interfaces';
+import { getIssueDescriptionTemplate } from 'config/config-utils';
 import * as Constants from './constants';
 
 import './styles.scss';
@@ -70,18 +71,25 @@ export class ReportTableIssue extends React.Component<
   };
 
   getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
+    const {
+      tableMetadata: { cluster, database, schema, name },
+    } = this.props;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
+    const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
       title,
       description,
       key: this.props.tableKey,
+      resource_path: resourcePath,
     };
   };
 
   getNotificationPayload = (): NotificationPayload => {
-    const { cluster, database, schema, name } = this.props.tableMetadata;
+    const {
+      tableMetadata: { cluster, database, schema, name },
+    } = this.props;
     const owners = this.props.tableOwners;
     const resourceName = `${schema}.${name}`;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
@@ -145,7 +153,9 @@ export class ReportTableIssue extends React.Component<
                   rows={5}
                   required
                   maxLength={2000}
-                />
+                >
+                  {getIssueDescriptionTemplate()}
+                </textarea>
               </div>
               <button className="btn btn-primary submit" type="submit">
                 Submit

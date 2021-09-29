@@ -534,6 +534,16 @@ describe('issueTrackingEnabled', () => {
   });
 });
 
+describe('getIssueDescriptionTemplate', () => {
+  it('returns an issue description template string', () => {
+    AppConfig.issueTracking.issueDescriptionTemplate =
+      'This is a description template';
+    expect(ConfigUtils.getIssueDescriptionTemplate()).toBe(
+      AppConfig.issueTracking.issueDescriptionTemplate
+    );
+  });
+});
+
 describe('indexDashboardsEnabled', () => {
   it('returns whether or not the indexDashboards feature is enabled', () => {
     expect(ConfigUtils.indexDashboardsEnabled()).toBe(

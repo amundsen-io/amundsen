@@ -374,10 +374,12 @@ interface EditableTextConfig {
 /**
  * IssueTrackingConfig - configures whether to display the issue tracking feature
  * that allows users to display tickets associated with a table and create ones
- * linked to a table
+ * linked to a table, and allows a customized template that will be prepopulated
+ * in the description for reporting an issue
  */
 interface IssueTrackingConfig {
   enabled: boolean;
+  issueDescriptionTemplate: string;
 }
 
 export enum NumberStyle {

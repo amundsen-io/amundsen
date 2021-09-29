@@ -316,5 +316,5 @@ _TODO: Please add doc\*_
 
 ## Issue Tracking Features
 
-In order to enable Issue Tracking set `IssueTrackingConfig.enabled` to `true` to see UI features. Further configuration
-is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features)
+In order to enable Issue Tracking set `IssueTrackingConfig.enabled` to `true` to see UI features. If you wish to prepopulate the issue description text field with a template to suggest more detailed information to be provided by the user when an issue is reported, set `IssueTrackingConfig.issueDescriptionTemplate` with the desired string. Further configuration
+is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features).

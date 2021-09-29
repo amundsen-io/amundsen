@@ -57,12 +57,13 @@ class AsanaClient(BaseIssueTrackerClient):
             all_issues_url=self._task_url(table_parent_task_gid),
         )
 
-    def create_issue(self, table_uri: str, title: str, description: str) -> DataIssue:
+    def create_issue(self, table_uri: str, title: str, description: str, table_url: str) -> DataIssue:
         """
-        Creates an issue in Jira
-        :param description: Description of the Jira issue
+        Creates an issue in Asana
+        :param description: Description of the Asana issue
         :param table_uri: Table Uri ie databasetype://database/table
-        :param title: Title of the Jira ticket
+        :param title: Title of the Asana ticket
+        :param table_url: Link to access the table
         :return: Metadata about the newly created issue
         """
 
@@ -73,7 +74,7 @@ class AsanaClient(BaseIssueTrackerClient):
                 table_parent_task_gid,
                 {
                     'name': title,
-                    'notes': description,
+                    'notes': description + f'\n Table URL: {table_url}',
                 }
             )
         )
