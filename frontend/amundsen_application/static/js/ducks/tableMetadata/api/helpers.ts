@@ -41,9 +41,12 @@ export function getRelatedDashboardSlug(key: string): string {
  *
  * @param columns
  */
-export function parseNestedColumns(columns: TableColumn[]): TableColumn[] {
+export function parseNestedColumns(
+  columns: TableColumn[],
+  databaseId: string
+): TableColumn[] {
   return columns.map((column) => {
-    const nestedType = parseNestedType(column.col_type);
+    const nestedType = parseNestedType(column.col_type, databaseId);
     return {
       ...column,
       children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,
@@ -61,7 +64,7 @@ export function getTableDataFromResponseData(
     'owners',
     'tags',
   ]) as TableMetadata;
-  tableData.columns = parseNestedColumns(tableData.columns);
+  tableData.columns = parseNestedColumns(tableData.columns, tableData.database);
   return tableData;
 }
 
