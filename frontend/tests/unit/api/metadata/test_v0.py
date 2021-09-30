@@ -333,6 +333,7 @@ class MetadataTest(unittest.TestCase):
         self.mock_feature_metadata = {
             'entity': 'rider',
             'key': 'test_feature_group/test_feature_name/1.4',
+            'created_timestamp': None,
             'availability': ['hive'],
             'last_updated_timestamp': 1563872712,
             'owners': [],
