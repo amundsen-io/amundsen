@@ -45,7 +45,11 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
           className="resource-list-item user-list-item"
           to={this.getLink()}
           onClick={(e) =>
-            logClick(e, { target_id: 'user_list_item', value: logging.source })
+            logClick(e, {
+              target_id: 'user_list_item',
+              value: logging.source,
+              position: logging.index.toString(),
+            })
           }
         >
           <div className="resource-info">
