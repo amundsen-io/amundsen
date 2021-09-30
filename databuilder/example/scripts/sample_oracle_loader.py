@@ -70,7 +70,6 @@ def run_oracle_job():
 
     job_config = ConfigFactory.from_dict({
         f'extractor.oracle_metadata.{OracleMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause_suffix,
-        f'extractor.oracle_metadata.{OracleMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME}': True,
         f'extractor.oracle_metadata.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
         f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
         f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,

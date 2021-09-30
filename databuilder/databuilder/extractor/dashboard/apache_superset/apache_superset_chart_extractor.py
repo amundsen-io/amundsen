@@ -58,7 +58,7 @@ class ApacheSupersetChartExtractor(ApacheSupersetBaseExtractor):
 
         _data = self.execute_query(url)
 
-        dashboard_data = _data.get('dashboards', [])[0].get('__Dashboard__', dict())
+        dashboard_data = _data.get('dashboards', [dict()])[0].get('__Dashboard__', dict())
 
         data = dashboard_id, dashboard_data
 
