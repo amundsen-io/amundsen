@@ -61,18 +61,27 @@ describe('parseNestedType', () => {
         'array<struct<amount:bigint,column:struct<column_id:string,name:string,template:struct<code:string,currency:string>>,id:string>>';
       const expected: Parser.NestedType = {
         head: 'array<',
+        name: '',
+        col_type: '',
         children: [
           {
             head: 'struct<',
+            col_type: '',
+            name: '',
             children: [
               'amount:bigint,',
               {
                 head: 'column:struct<',
+                col_type:
+                  'struct<column_id:string,name:string,template:struct<code:string,currency:string>>',
+                name: 'column',
                 children: [
                   'column_id:string,',
                   'name:string,',
                   {
                     head: 'template:struct<',
+                    col_type: 'struct<code:string,currency:string>',
+                    name: 'template',
                     children: ['code:string,', 'currency:string'],
                     tail: '>',
                   },
@@ -97,10 +106,15 @@ describe('parseNestedType', () => {
         'row("c0_test" timestamp(3),"c1" row("c2" timestamp(3),"c3_test" varchar,"c4" double,"c5" double,"c6" row("c7" varchar,"c8" varchar),"c9" row("c10" varchar,"c11" varchar,"c12" row("c13_id" varchar,"c14" varchar)))';
       const expected: Parser.NestedType = {
         head: 'row(',
+        col_type: '',
+        name: '',
         children: [
           'c0_test timestamp(3),',
           {
             head: 'c1 row(',
+            name: 'c1',
+            col_type:
+              'row(c2 timestamp(3),c3_test varchar,c4 double,c5 double,c6 row(c7 varchar,c8 varchar),c9 row(c10 varchar,c11 varchar,c12 row(c13_id varchar,c14 varchar)))',
             children: [
               'c2 timestamp(3),',
               'c3_test varchar,',
@@ -108,16 +122,23 @@ describe('parseNestedType', () => {
               'c5 double,',
               {
                 head: 'c6 row(',
+                name: 'c6',
+                col_type: 'row(c7 varchar,c8 varchar)',
                 children: ['c7 varchar,', 'c8 varchar'],
                 tail: '),',
               },
               {
                 head: 'c9 row(',
+                name: 'c9',
+                col_type:
+                  'row(c10 varchar,c11 varchar,c12 row(c13_id varchar,c14 varchar))',
                 children: [
                   'c10 varchar,',
                   'c11 varchar,',
                   {
                     head: 'c12 row(',
+                    name: 'c12',
+                    col_type: 'row(c13_id varchar,c14 varchar)',
                     children: ['c13_id varchar,', 'c14 varchar'],
                     tail: ')',
                   },
@@ -139,18 +160,27 @@ describe('parseNestedType', () => {
         'array(row("total" bigint,"currency" varchar,"status" varchar,"payments" array(row("method" varchar,"payment" varchar,"amount" bigint,"authed" bigint,"id" varchar)),"id" varchar,"line_items" array(row("type" varchar,"amount" bigint,"id" varchar))))';
       const expected: Parser.NestedType = {
         head: 'array(',
+        name: '',
+        col_type: '',
         children: [
           {
             head: 'row(',
+            name: '',
+            col_type: '',
             children: [
               'total bigint,',
               'currency varchar,',
               'status varchar,',
               {
                 head: 'payments array(',
+                name: 'payments',
+                col_type:
+                  'array(row(method varchar,payment varchar,amount bigint,authed bigint,id varchar))',
                 children: [
                   {
                     head: 'row(',
+                    name: '',
+                    col_type: '',
                     children: [
                       'method varchar,',
                       'payment varchar,',
@@ -166,9 +196,13 @@ describe('parseNestedType', () => {
               'id varchar,',
               {
                 head: 'line_items array(',
+                name: 'line_items',
+                col_type: 'array(row(type varchar,amount bigint,id varchar))',
                 children: [
                   {
                     head: 'row(',
+                    name: '',
+                    col_type: '',
                     children: ['type varchar,', 'amount bigint,', 'id varchar'],
                     tail: ')',
                   },
@@ -192,12 +226,17 @@ describe('parseNestedType', () => {
         'struct_col:struct<col1:string,col2:bigint,col3:boolean,nested_col:struct<col1:string,col2:bigint>>';
       const expected: Parser.NestedType = {
         head: 'struct_col:struct<',
+        name: 'struct_col',
+        col_type:
+          'struct<col1:string,col2:bigint,col3:boolean,nested_col:struct<col1:string,col2:bigint>>',
         children: [
           'col1:string,',
           'col2:bigint,',
           'col3:boolean,',
           {
             head: 'nested_col:struct<',
+            name: 'nested_col',
+            col_type: 'struct<col1:string,col2:bigint>',
             children: ['col1:string,', 'col2:bigint'],
             tail: '>',
           },
@@ -213,9 +252,13 @@ describe('parseNestedType', () => {
         'array_col:array<elem:struct<col1:string,col2:bigint,col3:boolean>>';
       const expected: Parser.NestedType = {
         head: 'array_col:array<',
+        name: 'array_col',
+        col_type: 'array<elem:struct<col1:string,col2:bigint,col3:boolean>>',
         children: [
           {
             head: 'elem:struct<',
+            name: 'elem',
+            col_type: 'struct<col1:string,col2:bigint,col3:boolean>',
             children: ['col1:string,', 'col2:bigint,', 'col3:boolean'],
             tail: '>',
           },
@@ -225,5 +268,131 @@ describe('parseNestedType', () => {
 
       expect(Parser.parseNestedType(columnType, 'delta')).toEqual(expected);
     });
+  });
+});
+
+describe('convertNestedTypeToColumns', () => {
+  it('converts a nested type object into an columns', () => {
+    const nestedType: Parser.NestedType = {
+      head: 'array<',
+      name: '',
+      col_type: '',
+      children: [
+        {
+          head: 'struct<',
+          col_type: '',
+          name: '',
+          children: [
+            'amount:bigint,',
+            {
+              head: 'column:struct<',
+              col_type:
+                'struct<column_id:string,name:string,template:struct<code:string,currency:string>>',
+              name: 'column',
+              children: [
+                'column_id:string,',
+                'name:string,',
+                {
+                  head: 'template:struct<',
+                  col_type: 'struct<code:string,currency:string>',
+                  name: 'template',
+                  children: ['code:string,', 'currency:string'],
+                  tail: '>',
+                },
+              ],
+              tail: '>,',
+            },
+            'id:string',
+          ],
+          tail: '>',
+        },
+      ],
+      tail: '>',
+    };
+    const expected = [
+      {
+        badges: [],
+        col_type: 'bigint',
+        description: '',
+        name: 'amount',
+        sort_order: 0,
+        nested_level: 1,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type:
+          'struct<column_id:string,name:string,template:struct<code:string,currency:string>>',
+        description: '',
+        name: 'column',
+        sort_order: 1,
+        nested_level: 1,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type: 'string',
+        description: '',
+        name: 'column_id',
+        sort_order: 2,
+        nested_level: 2,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type: 'string',
+        description: '',
+        name: 'name',
+        sort_order: 3,
+        nested_level: 2,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type: 'struct<code:string,currency:string>',
+        description: '',
+        name: 'template',
+        sort_order: 4,
+        nested_level: 2,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type: 'string',
+        description: '',
+        name: 'code',
+        sort_order: 5,
+        nested_level: 3,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type: 'string',
+        description: '',
+        name: 'currency',
+        sort_order: 6,
+        nested_level: 3,
+        is_editable: false,
+        stats: [],
+      },
+      {
+        badges: [],
+        col_type: 'string',
+        description: '',
+        name: 'id',
+        sort_order: 7,
+        nested_level: 2,
+        is_editable: false,
+        stats: [],
+      },
+    ];
+    const result = Parser.convertNestedTypeToColumns(nestedType);
+    expect(result).toEqual(expected);
   });
 });

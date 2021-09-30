@@ -5,10 +5,15 @@ import { filterFromObj } from 'ducks/utilMethods';
 import {
   NotificationType,
   PeopleUser,
+  TableColumn,
   TableMetadata,
   UpdateMethod,
   UpdateOwnerPayload,
 } from 'interfaces';
+import {
+  convertNestedTypeToColumns,
+  parseNestedType,
+} from 'features/ColumnList/ColumnType/parser';
 import * as API from './v0';
 
 export interface TableQueryParams {
@@ -33,15 +38,35 @@ export function getRelatedDashboardSlug(key: string): string {
 }
 
 /**
+ *
+ * @param columns
+ */
+export function parseNestedColumns(
+  columns: TableColumn[],
+  databaseId?: string
+): TableColumn[] {
+  return columns.map((column) => {
+    const nestedType = parseNestedType(column.col_type, databaseId);
+
+    return {
+      ...column,
+      children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,
+    };
+  });
+}
+
+/**
  * Parses the response for table metadata information to create a TableMetadata object
  */
 export function getTableDataFromResponseData(
   responseData: API.TableDataAPI
 ): TableMetadata {
-  return filterFromObj(responseData.tableData, [
+  const tableData = filterFromObj(responseData.tableData, [
     'owners',
     'tags',
   ]) as TableMetadata;
+  tableData.columns = parseNestedColumns(tableData.columns, tableData.database);
+  return tableData;
 }
 
 /**

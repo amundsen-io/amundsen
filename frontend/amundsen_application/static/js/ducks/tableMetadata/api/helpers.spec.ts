@@ -138,6 +138,47 @@ describe('helpers', () => {
     });
   });
 
+  describe('parseNestedColumns', () => {
+    it('Adds a children array to a column with nested columns', () => {
+      const testColumn = [
+        {
+          badges: [],
+          col_type: 'row(col1 varchar, col2 varchar)',
+          description: '',
+          name: 'amount',
+          sort_order: 0,
+          nested_level: 0,
+          is_editable: false,
+          stats: [],
+        },
+      ];
+      const expectedChildren = [
+        {
+          badges: [],
+          col_type: 'varchar',
+          description: '',
+          name: 'col1',
+          sort_order: 0,
+          nested_level: 1,
+          is_editable: false,
+          stats: [],
+        },
+        {
+          badges: [],
+          col_type: 'varchar',
+          description: '',
+          name: 'col2',
+          sort_order: 1,
+          nested_level: 1,
+          is_editable: false,
+          stats: [],
+        },
+      ];
+      const actual = Helpers.parseNestedColumns(testColumn);
+      expect(actual[0].children).toEqual(expectedChildren);
+    });
+  });
+
   describe('shouldSendNotification', () => {
     it('returns false if alumni', () => {
       const testUser = {

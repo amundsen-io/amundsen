@@ -40,8 +40,6 @@ export class ColumnType extends React.Component<
     this.state = {
       showModal: false,
     };
-    const { database, type } = this.props;
-    this.nestedType = parseNestedType(type, database);
   }
 
   hideModal = (e) => {
@@ -90,8 +88,8 @@ export class ColumnType extends React.Component<
   };
 
   render = () => {
-    const { columnName, type } = this.props;
-
+    const { columnName, database, type } = this.props;
+    this.nestedType = parseNestedType(type, database);
     if (this.nestedType === null) {
       return <p className="column-type">{type}</p>;
     }

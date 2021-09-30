@@ -236,7 +236,8 @@ const Table: React.FC<TableProps> = ({
           ref={index === preExpandRow ? expandRowRef : null}
         >
           <>
-            {expandRow ? (
+            {expandRow &&
+            (item.isExpandable || item.isExpandable === undefined) ? (
               <ExpandingCell
                 index={index}
                 expandedRows={expandedRows}
@@ -245,7 +246,9 @@ const Table: React.FC<TableProps> = ({
                 rowValues={item}
                 onClick={setExpandedRows}
               />
-            ) : null}
+            ) : (
+              <td />
+            )}
             {Object.entries(item)
               .filter(([key]) => fields.includes(key))
               .map(([key, value], rowIndex) => {
