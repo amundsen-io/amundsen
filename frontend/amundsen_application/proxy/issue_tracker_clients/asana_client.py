@@ -61,12 +61,12 @@ class AsanaClient(BaseIssueTrackerClient):
                      table_uri: str,
                      title: str,
                      description: str,
-                     priority_name: str,
+                     priority_level: str,
                      table_url: str) -> DataIssue:
         """
         Creates an issue in Asana
         :param description: Description of the Asana issue
-        :param priority_name: priority name for the ticket
+        :param priority_level: priority level for the ticket
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Asana ticket
         :param table_url: Link to access the table
@@ -81,6 +81,7 @@ class AsanaClient(BaseIssueTrackerClient):
                 {
                     'name': title,
                     'notes': description + f'\n Table URL: {table_url}',
+                    'custom_fields': {self.priority_field_gid: {'enum_value': {'name': priority_level}}}
                 }
             )
         )

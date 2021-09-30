@@ -151,7 +151,7 @@ class JiraClientTest(unittest.TestCase):
                                          issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
                                          issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
                 jira_client.create_issue(description='desc',
-                                         priority_name='Major',
+                                         priority_level='P2',
                                          table_uri='key',
                                          title='title',
                                          table_url='http://table')
@@ -174,7 +174,7 @@ class JiraClientTest(unittest.TestCase):
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
                                      issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
             results = jira_client.create_issue(description='desc',
-                                               priority_name='Major',
+                                               priority_level='P2',
                                                table_uri='key',
                                                title='title',
                                                table_url='http://table')

@@ -99,7 +99,7 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
-                'priority_name': 'Major',
+                'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -117,7 +117,7 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
-                'priority_name': 'Major',
+                'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -131,7 +131,7 @@ class IssueTest(unittest.TestCase):
          """
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
-                'priority_name': 'Major',
+                'priority_level': 'P2',
                 'key': 'table_key',
                 'title': 'test title',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -146,7 +146,7 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
-                'priority_name': 'Major',
+                'priority_level': 'P2',
                 'title': 'test title',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
             })
@@ -160,7 +160,7 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
-                'priority_name': 'Major',
+                'priority_level': 'P2',
                 'key': 'table_key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
             })
@@ -174,7 +174,7 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
-                'priority_name': 'Major',
+                'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key'
             })
@@ -207,7 +207,7 @@ class IssueTest(unittest.TestCase):
                                  content_type='multipart/form-data',
                                  data={
                                      'description': 'test description',
-                                     'priority_name': 'Major',
+                                     'priority_level': 'P2',
                                      'title': 'title',
                                      'key': 'key',
                                      'resource_path': '/table_detail/cluster/database/schema/table_name'

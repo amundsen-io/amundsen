@@ -80,13 +80,13 @@ export class ReportTableIssue extends React.Component<
     const { issuePriority } = this.state;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const priorityName = issuePriority;
+    const priorityLevel = issuePriority;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
       title,
       description,
-      priority_name: priorityName,
+      priority_level: priorityLevel,
       key: tableKey,
       resource_path: resourcePath,
     };

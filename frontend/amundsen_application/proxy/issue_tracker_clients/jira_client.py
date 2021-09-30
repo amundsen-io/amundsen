@@ -66,11 +66,11 @@ class JiraClient(BaseIssueTrackerClient):
             logging.exception(str(e))
             raise e
 
-    def create_issue(self, table_uri: str, title: str, description: str, priority_name: str, table_url: str) -> DataIssue:
+    def create_issue(self, table_uri: str, title: str, description: str, priority_level: str, table_url: str) -> DataIssue:
         """
         Creates an issue in Jira
         :param description: Description of the Jira issue
-        :param priority_name: priority name for the ticket
+        :param priority_level: priority level for the ticket
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Jira ticket
         :param table_url: Link to access the table
@@ -86,7 +86,6 @@ class JiraClient(BaseIssueTrackerClient):
                 raise Exception('AUTH_USER_METHOD must be configured to set the JIRA issue reporter')
 
             reporter = {'name': jira_id}
-            # reporter = {'name': 'karmes'}
 
             # Detected by the jira client based on API version & deployment.
             if self.jira_client.deploymentType == 'Cloud':
@@ -112,7 +111,7 @@ class JiraClient(BaseIssueTrackerClient):
                              f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE] '
                              f'\n Table URL: {table_url}'),
                 priority={
-                    'name': priority_name
+                    'name': Priority.get_jira_severity_from_level(priority_level)
             }, reporter=reporter))
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
