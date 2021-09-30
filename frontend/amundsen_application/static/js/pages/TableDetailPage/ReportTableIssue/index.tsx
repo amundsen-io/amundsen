@@ -55,7 +55,7 @@ export class ReportTableIssue extends React.Component<
   constructor(props) {
     super(props);
 
-    this.state = { isOpen: false, issuePriority: Constants.PRIORITY.LOW };
+    this.state = { isOpen: false, issuePriority: Constants.PRIORITY.P2 };
   }
 
   submitForm = (event) => {
@@ -179,14 +179,17 @@ export class ReportTableIssue extends React.Component<
                   value={issuePriority}
                   onChange={this.onPriorityChange}
                 >
-                  <ToggleButton value={Constants.PRIORITY.LOW}>
-                    Low
+                  <ToggleButton value={Constants.PRIORITY.P3}>
+                    {Constants.PRIORITY.P3}
                   </ToggleButton>
-                  <ToggleButton value={Constants.PRIORITY.MEDIUM}>
-                    Medium
+                  <ToggleButton value={Constants.PRIORITY.P2}>
+                    {Constants.PRIORITY.P2}
                   </ToggleButton>
-                  <ToggleButton value={Constants.PRIORITY.HIGH}>
-                    High
+                  <ToggleButton value={Constants.PRIORITY.P1}>
+                    {Constants.PRIORITY.P1}
+                  </ToggleButton>
+                  <ToggleButton value={Constants.PRIORITY.P0}>
+                    {Constants.PRIORITY.P0}
                   </ToggleButton>
                 </ToggleButtonGroup>
                 <button
