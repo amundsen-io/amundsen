@@ -297,26 +297,20 @@ const ColumnList: React.FC<ColumnListProps> = ({
     {
       title: 'Name',
       field: 'content',
-      component: ({ title, description, nestedLevel }: ContentType) => {
-        let arrow;
-        if (nestedLevel > 0) {
-          arrow = (
+      component: ({ title, description, nestedLevel }: ContentType) => (
+        <>
+          {nestedLevel > 0 && (
             <>
               <div className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
               <NestingArrow />
             </>
-          );
-        }
-        return (
-          <>
-            {arrow}
-            <div className="column-name-container">
-              <h3 className="column-name">{title}</h3>
-              <p className="column-desc truncated">{description}</p>
-            </div>
-          </>
-        );
-      },
+          )}
+          <div className="column-name-container">
+            <h3 className="column-name">{title}</h3>
+            <p className="column-desc truncated">{description}</p>
+          </div>
+        </>
+      ),
     },
     {
       title: 'Type',

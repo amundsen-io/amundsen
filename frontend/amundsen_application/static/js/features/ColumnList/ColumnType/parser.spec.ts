@@ -1,5 +1,4 @@
 import * as Parser from './parser';
-import { convertNestedTypeToColumns, parseNestedType } from './parser';
 
 describe('getTruncatedText', () => {
   it('returns correct text', () => {
@@ -323,7 +322,8 @@ describe('convertNestedTypeToColumns', () => {
       },
       {
         badges: [],
-        col_type: 'struct<column_id:string,name:string,template:struct<code:string,currency:string>>',
+        col_type:
+          'struct<column_id:string,name:string,template:struct<code:string,currency:string>>',
         description: '',
         name: 'column',
         sort_order: 1,
@@ -392,7 +392,7 @@ describe('convertNestedTypeToColumns', () => {
         stats: [],
       },
     ];
-    const result = convertNestedTypeToColumns(nestedType);
+    const result = Parser.convertNestedTypeToColumns(nestedType);
     expect(result).toEqual(expected);
   });
 });

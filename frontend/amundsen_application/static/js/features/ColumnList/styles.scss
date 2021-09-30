@@ -64,27 +64,16 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
     width: $nested-arrow-spacer-max;
     display: inline-block;
 
-    &.spacer-1 {
-      width: $nested-arrow-spacer * 0;
-    }
-    &.spacer-2 {
-      width: $nested-arrow-spacer * 1;
-    }
-    &.spacer-3 {
-      width: $nested-arrow-spacer * 2;
-    }
-    &.spacer-4 {
-      width: $nested-arrow-spacer * 3;
-    }
-    &.spacer-5 {
-      width: $nested-arrow-spacer * 4;
+    @for $i from 0 through 4 {
+      &.spacer-#{$i + 1} {
+        width: $nested-arrow-spacer * $i;
+      }
     }
   }
 
   .column-name-container {
     display: inline-block;
   }
-
 
   .ams-table-header {
     background-color: white;

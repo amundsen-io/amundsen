@@ -47,6 +47,7 @@ export function parseNestedColumns(
 ): TableColumn[] {
   return columns.map((column) => {
     const nestedType = parseNestedType(column.col_type, databaseId);
+
     return {
       ...column,
       children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,

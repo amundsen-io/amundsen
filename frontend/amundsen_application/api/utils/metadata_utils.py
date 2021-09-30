@@ -266,9 +266,10 @@ def marshall_feature_full(feature_dict: Dict) -> Dict:
     :return: Table Dict with sanitized fields
     """
 
-    schema = FeatureSchema()
-    feature: Feature = schema.load(feature_dict)
-    results: Dict[str, Any] = schema.dump(feature)
+    # schema = FeatureSchema()
+    # feature: Feature = schema.load(feature_dict)
+    # results: Dict[str, Any] = schema.dump(feature)
+    results: Dict[str, Any] = feature_dict
 
     # TODO do we need this for Features?
     # is_editable = is_table_editable(results['schema'], results['name'])

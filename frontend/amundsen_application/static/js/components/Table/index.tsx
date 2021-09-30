@@ -283,7 +283,7 @@ const Table: React.FC<TableProps> = ({
               })}
           </>
         </tr>
-        {expandRow? (
+        {expandRow ? (
           <tr
             className={`ams-table-expanded-row ${
               expandedRows.includes(index) ? 'is-expanded' : ''
