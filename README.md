@@ -1,3 +1,43 @@
+## How to run locally
+
+### Requirements
+
+- Nodejs and npm
+	- ```sudo apt install nodejs```
+	- ```sudo apt install npm```
+- Python3.6
+	- ```sudo add-apt-repository ppa:deadsnakes/ppa```
+	- ```sudo apt update```
+	- ```sudo apt install python3.6```
+
+### Step-by-step
+
+- Run ```docker-compose -f docker-amundsen-local up -d --build``` from root folder
+	- if 'es_amundsen' service fails, run ```sudo sysctl -w vm.max_map_count=262144```
+
+- Create a venv with python 3.6 and activate it
+	- ```sudo apt install python3.6-venv```
+	- ```python3.6 -m venv amundsen```
+	- ```source amundsen/bin/activate```
+
+- From frontend folder run:
+	- ```pip install --upgrade pip```
+	- ```pip install -r requirements.txt```
+	- ```./start.sh ```
+
+- Open your brower on http://localhost:5000 to see the application running
+
+### Restore Neo4j
+- Insert the backup file in the .local/neo4j/import folder
+- Open http://localhost:7474/browser/ and run: ```CALL apoc.import.graphml("file:///graph.db-backup-2021-08-15-04:00:02.data", {readLabels: true})```
+
+### Sync Elasticsearch with Neo4j
+- Run airflow locally
+- change the es_amundsen and neo4j_amundsen connection host with your IP
+- set encrypted = false in neo4j driver inside dags/dependencies/amundsen/table_metadata_extractor_utils.py:
+	- ```"extractor.search_data.extractor.neo4j.{}".format(Neo4jExtractor.NEO4J_ENCRYPTED): False ```
+- run sync-neo4j dag
+
 <p align="center">
   <img
     src="https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
