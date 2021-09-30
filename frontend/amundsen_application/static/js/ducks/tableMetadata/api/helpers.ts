@@ -43,7 +43,7 @@ export function getRelatedDashboardSlug(key: string): string {
  */
 export function parseNestedColumns(
   columns: TableColumn[],
-  databaseId: string
+  databaseId?: string
 ): TableColumn[] {
   return columns.map((column) => {
     const nestedType = parseNestedType(column.col_type, databaseId);
