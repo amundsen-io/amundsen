@@ -53,7 +53,7 @@ const defaultConfig = {
       description: null,
       is_editable: true,
       name: 'simple_column_name_timestamp',
-      sort_order: 8,
+      sort_order: 3,
       stats: [
         {
           end_epoch: 1600473600,
@@ -89,7 +89,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_2',
-          sort_order: 1,
+          sort_order: 0,
           stats: [
             {
               end_epoch: 1600473600,
@@ -104,7 +104,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_3',
-          sort_order: 2,
+          sort_order: 1,
           stats: [
             {
               end_epoch: 1600473600,
@@ -120,7 +120,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_4',
-          sort_order: 3,
+          sort_order: 2,
           stats: [
             {
               end_epoch: 1600473600,
@@ -154,7 +154,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_2',
-          sort_order: 28,
+          sort_order: 1,
           stats: [],
         },
       ],
@@ -181,7 +181,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_2',
-          sort_order: 28,
+          sort_order: 1,
           stats: [],
         },
         {
@@ -190,7 +190,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_3',
-          sort_order: 28,
+          sort_order: 2,
           stats: [
             {
               end_epoch: 1600473600,
@@ -215,7 +215,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_2',
-          sort_order: 1,
+          sort_order: 0,
           stats: [
             {
               end_epoch: 1600473600,
@@ -230,7 +230,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_3',
-          sort_order: 2,
+          sort_order: 1,
           stats: [
             {
               end_epoch: 1600473600,
@@ -252,7 +252,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_4',
-          sort_order: 3,
+          sort_order: 2,
           stats: [
             {
               end_epoch: 1600473600,
@@ -277,7 +277,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_2',
-          sort_order: 1,
+          sort_order: 0,
           stats: [
             {
               end_epoch: 1600473600,
@@ -293,7 +293,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_3',
-          sort_order: 2,
+          sort_order: 1,
           stats: [
             {
               end_epoch: 1600473600,
@@ -321,7 +321,7 @@ function TestDataBuilder(config = {}) {
           description: null,
           is_editable: true,
           name: 'complex_column_name_4',
-          sort_order: 3,
+          sort_order: 2,
           stats: [
             {
               end_epoch: 1600473600,
