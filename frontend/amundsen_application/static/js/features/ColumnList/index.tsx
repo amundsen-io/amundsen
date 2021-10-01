@@ -184,7 +184,6 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   if (!rowValue.isExpandable) {
     return;
   }
-
   const shouldRenderDescription = () => {
     const { content, editText, editUrl, isEditable } = rowValue;
     if (content.description) {
