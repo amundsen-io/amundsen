@@ -106,7 +106,7 @@ type FormattedDataType = {
   index: number;
   name: string;
   tableParams: TablePageParams;
-  sort_order: string;
+  sort_order: number;
   isEditable: boolean;
   isExpandable: boolean;
   badges: Badge[];
@@ -181,9 +181,12 @@ const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
 ) => {
+  if (!rowValue.isExpandable) {
+    return;
+  }
+
   const shouldRenderDescription = () => {
     const { content, editText, editUrl, isEditable } = rowValue;
-
     if (content.description) {
       return true;
     }
@@ -206,7 +209,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
           editUrl={rowValue.editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnIndex={rowValue.index}
+            columnIndex={rowValue.sort_order}
             editable={rowValue.isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={rowValue.content.description}
