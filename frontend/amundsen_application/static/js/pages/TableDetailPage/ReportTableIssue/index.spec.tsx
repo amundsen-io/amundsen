@@ -24,6 +24,7 @@ const mockFormData = {
   key: 'val1',
   title: 'title',
   description: 'description',
+  priority_level: 'priority level',
   resource_name: 'resource name',
   resource_path: 'path',
   owners: 'test@test.com',
@@ -40,6 +41,7 @@ const mockCreateIssuePayload = {
   key: 'key',
   title: 'title',
   description: 'description',
+  priority_level: 'P2',
   resource_path: '/table_detail/cluster/database/schema/table_name',
 };
 

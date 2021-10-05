@@ -525,14 +525,14 @@ exports[`eslint`] = {
     "js/ducks/issue/reducer.ts:1774302197": [
       [119, 6, 56, "Unexpected lexical declaration in case block.", "2031834906"]
     ],
-    "js/ducks/issue/tests/index.spec.ts:2407012752": [
-      [136, 8, 20, "\'allIssuesUrl\' is already declared in the upper scope.", "3551613994"],
-      [137, 8, 13, "\'total\' is already declared in the upper scope.", "1110344606"],
-      [248, 10, 32, "\'allIssuesUrl\' is already declared in the upper scope.", "3851993612"],
-      [249, 10, 25, "\'total\' is already declared in the upper scope.", "1495122296"],
-      [252, 8, 33, "Use object destructuring.", "2386588093"],
-      [253, 8, 31, "Use object destructuring.", "507617405"],
-      [254, 8, 45, "Use object destructuring.", "244310461"]
+    "js/ducks/issue/tests/index.spec.ts:90187247": [
+      [140, 8, 20, "\'allIssuesUrl\' is already declared in the upper scope.", "3551613994"],
+      [141, 8, 13, "\'total\' is already declared in the upper scope.", "1110344606"],
+      [253, 10, 32, "\'allIssuesUrl\' is already declared in the upper scope.", "3851993612"],
+      [254, 10, 25, "\'total\' is already declared in the upper scope.", "1495122296"],
+      [257, 8, 33, "Use object destructuring.", "2386588093"],
+      [258, 8, 31, "Use object destructuring.", "507617405"],
+      [259, 8, 45, "Use object destructuring.", "244310461"]
     ],
     "js/ducks/lastIndexed/sagas.ts:1498244597": [
       [7, 2, 29, "\'action\' is defined but never used.", "566797395"]
@@ -903,19 +903,17 @@ exports[`eslint`] = {
       [63, 25, 1, "\'_\' is defined but never used.", "177658"],
       [66, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:90979507": [
-      [68, 4, 22, "Must use destructuring props assignment", "2426007440"],
-      [83, 11, 19, "Must use destructuring props assignment", "987121924"],
-      [92, 19, 22, "Must use destructuring props assignment", "2201312961"],
-      [98, 14, 20, "Must use destructuring props assignment", "1598284208"],
-      [108, 9, 17, "Must use destructuring state assignment", "4230747098"],
-      [111, 29, 17, "Must use destructuring state assignment", "4230747098"],
-      [111, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [119, 15, 20, "Script URL is a form of eval.", "3959800777"],
-      [125, 9, 17, "Must use destructuring state assignment", "4230747098"],
-      [139, 16, 7, "A form label must be associated with a control.", "2729454337"],
-      [140, 16, 160, "A control must be associated with a text label.", "1834626670"],
-      [148, 16, 7, "A form label must be associated with a control.", "2729454337"]
+    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:1702363396": [
+      [70, 4, 22, "Must use destructuring props assignment", "2426007440"],
+      [97, 19, 22, "Must use destructuring props assignment", "2201312961"],
+      [103, 14, 20, "Must use destructuring props assignment", "1598284208"],
+      [113, 9, 17, "Must use destructuring state assignment", "4230747098"],
+      [116, 29, 17, "Must use destructuring state assignment", "4230747098"],
+      [116, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [130, 15, 20, "Script URL is a form of eval.", "3959800777"],
+      [150, 16, 7, "A form label must be associated with a control.", "2729454337"],
+      [151, 16, 160, "A control must be associated with a text label.", "1834626670"],
+      [159, 16, 7, "A form label must be associated with a control.", "2729454337"]
     ],
     "js/pages/TableDetailPage/RequestDescriptionText/index.spec.tsx:2570104867": [
       [7, 7, 11, "\'globalState\' is defined but never used.", "1130616505"],
