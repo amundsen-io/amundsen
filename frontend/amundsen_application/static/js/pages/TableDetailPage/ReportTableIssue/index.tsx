@@ -80,13 +80,12 @@ export class ReportTableIssue extends React.Component<
     const { issuePriority } = this.state;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const priorityLevel = issuePriority;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
       title,
       description,
-      priority_level: priorityLevel,
+      priority_level: issuePriority,
       key: tableKey,
       resource_path: resourcePath,
     };
@@ -118,7 +117,7 @@ export class ReportTableIssue extends React.Component<
     this.setState({ isOpen: !this.state.isOpen });
   };
 
-  onPriorityChange = (event) => {
+  handlePriorityChange = (event) => {
     this.setState({ issuePriority: event });
   };
 
@@ -169,15 +168,14 @@ export class ReportTableIssue extends React.Component<
                   {getIssueDescriptionTemplate()}
                 </textarea>
               </div>
-              <label htmlFor="priority">Priority</label>
-              <div>
+              <label htmlFor="priority">{Constants.PRIORITY_LABEL}</label>
+              <div className="report-table-issue-buttons">
                 <ToggleButtonGroup
                   type="radio"
                   name="priority"
                   id="priority"
-                  className="priority-btn-group"
                   value={issuePriority}
-                  onChange={this.onPriorityChange}
+                  onChange={this.handlePriorityChange}
                 >
                   <ToggleButton value={Constants.PRIORITY.P3}>
                     {Constants.PRIORITY.P3}
@@ -192,11 +190,8 @@ export class ReportTableIssue extends React.Component<
                     {Constants.PRIORITY.P0}
                   </ToggleButton>
                 </ToggleButtonGroup>
-                <button
-                  className="btn btn-primary issue-submit-btn submit"
-                  type="submit"
-                >
-                  Submit
+                <button className="btn btn-primary submit" type="submit">
+                  {Constants.SUBMIT}
                 </button>
               </div>
             </form>

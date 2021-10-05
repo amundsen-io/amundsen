@@ -900,17 +900,17 @@ exports[`eslint`] = {
       [63, 25, 1, "\'_\' is defined but never used.", "177658"],
       [66, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:3480765765": [
+    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:4007069684": [
       [70, 4, 22, "Must use destructuring props assignment", "2426007440"],
-      [98, 19, 22, "Must use destructuring props assignment", "2201312961"],
-      [104, 14, 20, "Must use destructuring props assignment", "1598284208"],
-      [114, 9, 17, "Must use destructuring state assignment", "4230747098"],
-      [117, 29, 17, "Must use destructuring state assignment", "4230747098"],
-      [117, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [131, 15, 20, "Script URL is a form of eval.", "3959800777"],
-      [151, 16, 7, "A form label must be associated with a control.", "2729454337"],
-      [152, 16, 160, "A control must be associated with a text label.", "1834626670"],
-      [160, 16, 7, "A form label must be associated with a control.", "2729454337"]
+      [97, 19, 22, "Must use destructuring props assignment", "2201312961"],
+      [103, 14, 20, "Must use destructuring props assignment", "1598284208"],
+      [113, 9, 17, "Must use destructuring state assignment", "4230747098"],
+      [116, 29, 17, "Must use destructuring state assignment", "4230747098"],
+      [116, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
+      [130, 15, 20, "Script URL is a form of eval.", "3959800777"],
+      [150, 16, 7, "A form label must be associated with a control.", "2729454337"],
+      [151, 16, 160, "A control must be associated with a text label.", "1834626670"],
+      [159, 16, 7, "A form label must be associated with a control.", "2729454337"]
     ],
     "js/pages/TableDetailPage/RequestDescriptionText/index.spec.tsx:2570104867": [
       [7, 7, 11, "\'globalState\' is defined but never used.", "1130616505"],
