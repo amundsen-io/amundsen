@@ -191,7 +191,7 @@ export class ReportTableIssue extends React.Component<
                   </ToggleButton>
                 </ToggleButtonGroup>
                 <button className="btn btn-primary submit" type="submit">
-                  {Constants.SUBMIT}
+                  {Constants.SUBMIT_BUTTON_LABEL}
                 </button>
               </div>
             </form>
