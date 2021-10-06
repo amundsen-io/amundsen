@@ -27,13 +27,13 @@ import {
 
 export function* addBookmarkWorker(action: AddBookmarkRequest): SagaIterator {
   let response;
-  const { resourceKey, resourceType } = action.payload;
+  const { resourceKey, resourceType, userId } = action.payload;
 
   try {
-    yield call(API.addBookmark, resourceKey, resourceType);
+    yield call(API.addBookmark, resourceKey, resourceType, userId);
 
     // TODO - Consider adding the newly bookmarked resource directly to local store. This would save a round trip.
-    response = yield call(API.getBookmarks);
+    response = yield call(API.getBookmarks, userId);
     yield put(addBookmarkSuccess(response.bookmarks));
   } catch (e) {
     yield put(addBookmarkFailure());
@@ -47,9 +47,14 @@ export function* removeBookmarkWorker(
   action: RemoveBookmarkRequest
 ): SagaIterator {
   let response;
-  const { resourceKey, resourceType } = action.payload;
+  const { resourceKey, resourceType, userId } = action.payload;
   try {
-    response = yield call(API.removeBookmark, resourceKey, resourceType);
+    response = yield call(
+      API.removeBookmark,
+      resourceKey,
+      resourceType,
+      userId
+    );
     yield put(removeBookmarkSuccess(resourceKey, resourceType));
   } catch (e) {
     yield put(removeBookmarkFailure());
@@ -59,10 +64,10 @@ export function* removeBookmarkWatcher(): SagaIterator {
   yield takeEvery(RemoveBookmark.REQUEST, removeBookmarkWorker);
 }
 
-export function* getBookmarksWorker(): SagaIterator {
+export function* getBookmarksWorker(userId): SagaIterator {
   let response;
   try {
-    response = yield call(API.getBookmarks);
+    response = yield call(API.getBookmarks, userId);
     yield put(getBookmarksSuccess(response.bookmarks));
   } catch (e) {
     yield put(getBookmarksFailure());

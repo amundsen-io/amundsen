@@ -16,7 +16,7 @@ import { callMsGraph } from '../../utils/MsGraphApiCall';
 
 interface DispatchFromProps {
   createUser: (user: any) => CreateUserRequest;
-  getBookmarks: () => GetBookmarksRequest;
+  getBookmarks: (userId: string) => GetBookmarksRequest;
 }
 
 export type PreloaderProps = DispatchFromProps;
@@ -24,7 +24,6 @@ export type PreloaderProps = DispatchFromProps;
 export class Preloader extends React.Component<PreloaderProps> {
   componentDidMount() {
     // this.props.getLoggedInUser();
-    this.props.getBookmarks();
     callMsGraph().then((response) => {
       console.log('response from ad', response);
       const user = {
@@ -34,6 +33,7 @@ export class Preloader extends React.Component<PreloaderProps> {
         id: response.id,
       };
       this.props.createUser(user);
+      this.props.getBookmarks(response.mail);
     });
   }
 

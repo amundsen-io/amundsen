@@ -28,7 +28,7 @@ describe('addBookmark', () => {
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.addBookmark('test', givenResource).then((data) => {
+    await API.addBookmark('test', givenResource, 'test').then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
         type: givenResource,
         key: 'test',
@@ -39,7 +39,7 @@ describe('addBookmark', () => {
   it('returns response data', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.addBookmark('test', givenResource).then((data) => {
+    await API.addBookmark('test', givenResource, 'test').then((data) => {
       expect(data).toEqual(mockPutResponse.data);
     });
   });
@@ -79,7 +79,7 @@ describe('getBookmarks', () => {
 
   it('calls axios with correct parameters if userId not provided', async () => {
     expect.assertions(1);
-    await API.getBookmarks().then((data) => {
+    await API.getBookmarks('userId').then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`);
     });
   });
@@ -119,7 +119,7 @@ describe('removeBookmark', () => {
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.removeBookmark('testKey', givenResource).then((data) => {
+    await API.removeBookmark('testKey', givenResource, 'test').then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
         data: { type: givenResource, key: 'testKey' },
       });
@@ -129,7 +129,7 @@ describe('removeBookmark', () => {
   it('returns response data', async () => {
     expect.assertions(1);
     const givenResource = ResourceType.table;
-    await API.removeBookmark('test', givenResource).then((data) => {
+    await API.removeBookmark('test', givenResource, 'test').then((data) => {
       expect(data).toEqual(mockDeleteResponse.data);
     });
   });

@@ -15,6 +15,7 @@ export interface AddBookmarkRequest {
   payload: {
     resourceKey: string;
     resourceType: ResourceType;
+    userId: string;
   };
   meta: {
     analytics: AnalyticsEvent;
@@ -37,6 +38,7 @@ export interface RemoveBookmarkRequest {
   payload: {
     resourceKey: string;
     resourceType: ResourceType;
+    userId: string;
   };
   meta: {
     analytics: AnalyticsEvent;
@@ -58,6 +60,9 @@ export enum GetBookmarks {
 }
 export interface GetBookmarksRequest {
   type: GetBookmarks.REQUEST;
+  payload: {
+    userId: string;
+  };
 }
 export interface GetBookmarksResponse {
   type: GetBookmarks.SUCCESS | GetBookmarks.FAILURE;

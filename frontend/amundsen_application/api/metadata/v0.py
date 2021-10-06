@@ -671,11 +671,12 @@ def update_bookmark() -> Response:
         pass  # pragma: no cover
 
     try:
-        user_id = request.args.get('user_id')
-        if app.config['AUTH_USER_METHOD']:
-            user = app.config['AUTH_USER_METHOD'](app, user_id)
-        else:
-            raise Exception('AUTH_USER_METHOD is not configured')
+        email = request.args.get('user_id')
+        # logging.info('USER ID: '+ str(user_id))
+        # if app.config['AUTH_USER_METHOD']:
+        #     user = app.config['AUTH_USER_METHOD'](app, user_id)
+        # else:
+        #     raise Exception('AUTH_USER_METHOD is not configured')
 
         args = request.get_json()
         resource_type = get_query_param(args, 'type')
@@ -683,7 +684,7 @@ def update_bookmark() -> Response:
 
         url = '{0}{1}/{2}/follow/{3}/{4}'.format(app.config['METADATASERVICE_BASE'],
                                                  USER_ENDPOINT,
-                                                 user.user_id,
+                                                 email,
                                                  resource_type,
                                                  resource_key)
 

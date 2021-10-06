@@ -8,9 +8,9 @@ import {
 } from './reducer';
 import { GetPopularResources } from './types';
 
-export function* getPopularResourcesWorker(): SagaIterator {
+export function* getPopularResourcesWorker(userId): SagaIterator {
   try {
-    const popularResources = yield call(API.getPopularResources);
+    const popularResources = yield call(API.getPopularResources, userId);
     yield put(getPopularResourcesSuccess(popularResources));
   } catch (e) {
     yield put(getPopularResourcesFailure());

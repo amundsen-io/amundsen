@@ -154,6 +154,10 @@ export default function reducer(
       return {
         ...state,
         loggedInUser: payload.user,
+        profile: {
+          ...state.profile,
+          user: payload.user,
+        },
       };
     case GetUser.REQUEST:
     case GetUser.FAILURE:

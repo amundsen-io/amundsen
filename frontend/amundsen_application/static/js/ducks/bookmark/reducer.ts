@@ -18,12 +18,14 @@ import {
 /* ACTIONS */
 export function addBookmark(
   resourceKey: string,
-  resourceType: ResourceType
+  resourceType: ResourceType,
+  userId: string
 ): AddBookmarkRequest {
   return {
     payload: {
       resourceKey,
       resourceType,
+      userId,
     },
     meta: {
       analytics: {
@@ -48,12 +50,14 @@ export function addBookmarkSuccess(
 
 export function removeBookmark(
   resourceKey: string,
-  resourceType: ResourceType
+  resourceType: ResourceType,
+  userId: string
 ): RemoveBookmarkRequest {
   return {
     payload: {
       resourceKey,
       resourceType,
+      userId,
     },
     meta: {
       analytics: {
@@ -80,9 +84,12 @@ export function removeBookmarkSuccess(
   };
 }
 
-export function getBookmarks(): GetBookmarksRequest {
+export function getBookmarks(userId: string): GetBookmarksRequest {
   return {
     type: GetBookmarks.REQUEST,
+    payload: {
+      userId,
+    },
   };
 }
 export function getBookmarksFailure(): GetBookmarksResponse {

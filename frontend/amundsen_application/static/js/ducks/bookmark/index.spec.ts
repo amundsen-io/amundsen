@@ -71,7 +71,7 @@ describe('bookmark ducks', () => {
 
   describe('actions', () => {
     it('addBookmark - returns the action to add a bookmark', () => {
-      const action = addBookmark(testResourceKey, testResourceType);
+      const action = addBookmark(testResourceKey, testResourceType, testUserId);
       const { payload } = action;
       expect(action.type).toBe(AddBookmark.REQUEST);
       expect(payload.resourceKey).toBe(testResourceKey);
@@ -91,7 +91,7 @@ describe('bookmark ducks', () => {
     });
 
     it('getBookmarks - returns the action to get bookmarks', () => {
-      const action = getBookmarks();
+      const action = getBookmarks('userId');
       expect(action.type).toBe(GetBookmarks.REQUEST);
     });
 
@@ -129,7 +129,11 @@ describe('bookmark ducks', () => {
     });
 
     it('removeBookmark - returns the action to remove a bookmark', () => {
-      const action = removeBookmark(testResourceKey, testResourceType);
+      const action = removeBookmark(
+        testResourceKey,
+        testResourceType,
+        testUserId
+      );
       const { payload } = action;
       expect(action.type).toBe(RemoveBookmark.REQUEST);
       expect(payload.resourceKey).toBe(testResourceKey);
@@ -274,7 +278,7 @@ describe('bookmark ducks', () => {
     describe('addBookmarkWorker', () => {
       let action: AddBookmarkRequest;
       beforeAll(() => {
-        action = addBookmark(testResourceKey, testResourceType);
+        action = addBookmark(testResourceKey, testResourceType, testUserId);
       });
 
       it('adds a bookmark', () =>
@@ -308,13 +312,13 @@ describe('bookmark ducks', () => {
 
     describe('getBookmarksWorker', () => {
       it('gets bookmarks', () =>
-        expectSaga(getBookmarksWorker)
+        expectSaga(getBookmarksWorker, 'userId')
           .provide([[matchers.call.fn(API.getBookmarks), { bookmarks }]])
           .put(getBookmarksSuccess(bookmarks))
           .run());
 
       it('handles request error', () =>
-        expectSaga(getBookmarksWorker)
+        expectSaga(getBookmarksWorker, 'userId')
           .provide([
             [matchers.call.fn(API.getBookmarks), throwError(new Error())],
           ])
@@ -366,7 +370,7 @@ describe('bookmark ducks', () => {
     describe('removeBookmarkWorker', () => {
       let action: RemoveBookmarkRequest;
       beforeAll(() => {
-        action = removeBookmark(testResourceKey, testResourceType);
+        action = removeBookmark(testResourceKey, testResourceType, testUserId);
       });
 
       it('removes a bookmark', () =>

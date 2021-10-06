@@ -30,12 +30,13 @@ import {
 import './styles.scss';
 
 export interface StateFromProps {
+  userId: string;
   popularResources: ResourceDict<PopularResource[]>;
   isLoaded: boolean;
 }
 
 export interface DispatchFromProps {
-  getPopularResources: () => GetPopularResourcesRequest;
+  getPopularResources: (userId: string) => GetPopularResourcesRequest;
 }
 
 export type PopularResourcesProps = StateFromProps & DispatchFromProps;
@@ -58,8 +59,8 @@ const generateTabTitle = (
 export class PopularResources extends React.Component<PopularResourcesProps> {
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    const { getPopularResources } = this.props;
-    getPopularResources();
+    const { getPopularResources, userId } = this.props;
+    getPopularResources(userId);
   }
 
   generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
@@ -130,6 +131,7 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
   }
 }
 export const mapStateToProps = (state: GlobalState) => ({
+  userId: state.user.profile.user.email,
   popularResources: state.popularResources.popularResources,
   isLoaded: state.popularResources.popularResourcesIsLoaded,
 });

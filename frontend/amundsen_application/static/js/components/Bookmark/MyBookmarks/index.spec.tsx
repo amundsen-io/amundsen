@@ -28,6 +28,7 @@ describe('MyBookmarks', () => {
 
   const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
     const props: MyBookmarksProps = {
+      userId: 'userId',
       myBookmarks: {
         [ResourceType.table]: [
           {

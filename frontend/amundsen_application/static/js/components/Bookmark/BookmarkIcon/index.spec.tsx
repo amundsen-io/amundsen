@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
 
-import { ResourceType } from 'interfaces';
+import { PeopleUser, ResourceType } from 'interfaces';
 
 import {
   BookmarkIcon,
@@ -19,6 +19,7 @@ import {
 describe('BookmarkIcon', () => {
   const setup = (propOverrides?: Partial<BookmarkIconProps>) => {
     const props: BookmarkIconProps = {
+      user: globalState.user.profile.user,
       bookmarkKey: 'someKey',
       isBookmarked: true,
       large: false,
