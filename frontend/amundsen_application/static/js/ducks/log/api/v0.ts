@@ -7,6 +7,7 @@ export interface ActionLogParams {
   label?: string;
   location?: string;
   value?: string;
+  position?: string;
 }
 
 export interface ClickLogParams {
