@@ -12,7 +12,7 @@
 //
 // import Flag from 'components/Flag';
 //
-// import BadgeList, { BadgeListProps } from './index';
+// import { BadgeBrowseListShort, BadgeBrowseListLong } from '.';
 //
 // const columnBadges: Badge[] = [
 //   {
@@ -38,22 +38,7 @@
 // const logClickSpy = jest.spyOn(Analytics, 'logClick');
 // logClickSpy.mockImplementation(() => null);
 //
-// const setup = (propOverrides?: Partial<BadgeListProps>) => {
-//   const props = {
-//     badges,
-//     onBadgeClick: () => {},
-//     ...propOverrides,
-//   };
-//   // eslint-disable-next-line react/jsx-props-no-spreading
-//   const wrapper = mount<BadgeListProps>(<BadgeList {...props} />);
-//
-//   return {
-//     props,
-//     wrapper,
-//   };
-// };
-//
-// describe('BadgeList', () => {
+// describe('BadgeBrowseListShort', () => {
 //   const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
 //   getBadgeConfigSpy.mockImplementation((badgeName: string) => ({
 //     displayName: badgeName + ' test name',
@@ -61,7 +46,7 @@
 //   }));
 //
 //   describe('render', () => {
-//     describe('when no badges are passed', () => {
+//     describe('when ', () => {
 //       it('renders a badge-list element', () => {
 //         const { wrapper } = setup();
 //         const expected = 1;

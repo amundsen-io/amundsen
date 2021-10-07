@@ -10,7 +10,7 @@ import { getAllBadges } from 'ducks/badges/reducer';
 import { connect } from 'react-redux';
 import { GlobalState } from 'ducks/rootReducer';
 import { bindActionCreators } from 'redux';
-import {BadgeBrowseListLong, BadgeBrowseListShort} from "components/Badges/BadgeBrowseList";
+import BadgeBrowseList from 'components/Badges/BadgeBrowseList';
 
 interface OwnProps {
   shortBadgesList: boolean;
@@ -45,10 +45,7 @@ export class BadgesListContainer extends React.Component<BadgesListContainerProp
     const { badges, shortBadgesList } = this.props;
 
     return (
-      <div>
-         {shortBadgesList && <BadgeBrowseListShort badges={badges}/>}
-         {!shortBadgesList && <BadgeBrowseListLong badges={badges}/>}
-      </div>
+      <BadgeBrowseList shortBadgesList={shortBadgesList} badges={badges}/>
     );
   }
 }
