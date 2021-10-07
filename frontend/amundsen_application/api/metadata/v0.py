@@ -34,6 +34,7 @@ FEATURE_ENDPOINT = '/feature'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
 POPULAR_RESOURCES_ENDPOINT = '/popular_resources'
 TAGS_ENDPOINT = '/tags/'
+BADGES_ENDPOINT = '/badges/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
 
@@ -375,10 +376,8 @@ def put_column_description() -> Response:
 @metadata_blueprint.route('/tags')
 def get_tags() -> Response:
     """
-    call the metadata service endpoint to get the list of all tags from neo4j
+    call the metadata service endpoint to get the list of all tags from metadata proxy
     :return: a json output containing the list of all tags, as 'tags'
-
-    Schema Defined Here: https://github.com/lyft/amundsenmetadatalibrary/blob/master/metadata_service/api/tag.py
     """
     try:
         url = app.config['METADATASERVICE_BASE'] + TAGS_ENDPOINT
@@ -398,6 +397,34 @@ def get_tags() -> Response:
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         payload = jsonify({'tags': [], 'msg': message})
+        logging.exception(message)
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/badges')
+def get_badges() -> Response:
+    """
+    call the metadata service endpoint to get the list of all badges from metadata proxy
+    :return: a json output containing the list of all badges, as 'badges'
+    """
+    try:
+        url = app.config['METADATASERVICE_BASE'] + BADGES_ENDPOINT
+        response = request_metadata(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+            tags = response.json().get('badges')
+        else:
+            message = 'Encountered error: Tags Unavailable'
+            logging.error(message)
+            tags = []
+
+        payload = jsonify({'badges': tags, 'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        payload = jsonify({'badges': [], 'msg': message})
         logging.exception(message)
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 

@@ -84,6 +84,9 @@ import {
   getTableColumnLineageWatcher,
 } from './lineage/sagas';
 
+// Badge
+import { getAllBadgesWatcher } from 'ducks/badges/sagas';
+
 export default function* rootSaga() {
   yield all([
     // AnnouncementPage
@@ -149,5 +152,7 @@ export default function* rootSaga() {
     getTableLineageWatcher(),
     getColumnLineageWatcher(),
     getTableColumnLineageWatcher(),
+    // Badges
+    getAllBadgesWatcher(),
   ]);
 }

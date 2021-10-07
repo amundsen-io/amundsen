@@ -22,6 +22,7 @@ import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
 import notification, { NotificationReducerState } from './notification/reducer';
 import issue, { IssueReducerState } from './issue/reducer';
 import lineage, { LineageReducerState } from './lineage/reducer';
+import badges, { BadgesReducerState } from 'ducks/badges/reducer';
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;
@@ -36,6 +37,7 @@ export interface GlobalState {
   tableMetadata: TableMetadataReducerState;
   lastIndexed: LastIndexedReducerState;
   tags: TagsReducerState;
+  badges: BadgesReducerState;
   user: UserReducerState;
   ui: UIReducerState;
   lineage: LineageReducerState;
@@ -54,6 +56,7 @@ const rootReducer = combineReducers<GlobalState>({
   tableMetadata,
   lastIndexed,
   tags,
+  badges,
   user,
   ui,
   lineage,

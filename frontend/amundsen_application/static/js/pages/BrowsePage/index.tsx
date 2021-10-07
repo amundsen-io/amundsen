@@ -9,6 +9,7 @@ import TagsListContainer from 'components/Tags';
 import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 
 import './styles.scss';
+import BadgesListContainer from "components/Badges";
 
 export class BrowsePage extends React.Component {
   render() {
@@ -17,6 +18,9 @@ export class BrowsePage extends React.Component {
       <DocumentTitle title={BROWSE_PAGE_DOCUMENT_TITLE}>
         <main className="container">
           <div className="row">
+            <div className="col-xs-12 col-md-10 col-md-offset-1">
+              <BadgesListContainer shortBadgesList={false} />
+            </div>
             <div className="col-xs-12 col-md-10 col-md-offset-1">
               <TagsListContainer shortTagsList={false} />
             </div>
