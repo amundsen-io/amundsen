@@ -5,11 +5,11 @@ import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 
 import TagsListContainer from 'components/Tags';
+import BadgesListContainer from 'components/Badges';
 
 import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 
 import './styles.scss';
-import BadgesListContainer from 'components/Badges';
 
 export class BrowsePage extends React.Component {
   render() {

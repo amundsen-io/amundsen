@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 
 import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
 import feature, { FeatureReducerState } from 'ducks/feature/reducer';
+import badges, { BadgesReducerState } from 'ducks/badges/reducer';
 import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
 import popularResources, {
@@ -22,7 +23,6 @@ import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
 import notification, { NotificationReducerState } from './notification/reducer';
 import issue, { IssueReducerState } from './issue/reducer';
 import lineage, { LineageReducerState } from './lineage/reducer';
-import badges, { BadgesReducerState } from 'ducks/badges/reducer';
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;

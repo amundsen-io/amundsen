@@ -3,13 +3,13 @@
 
 import * as React from 'react';
 
-import { Badge } from 'interfaces/Badges';
+import {Badge} from 'interfaces/Badges';
 
-import { GetAllBadgesRequest } from 'ducks/badges/types';
-import { getAllBadges } from 'ducks/badges/reducer';
-import { connect } from 'react-redux';
-import { GlobalState } from 'ducks/rootReducer';
-import { bindActionCreators } from 'redux';
+import {GetAllBadgesRequest} from 'ducks/badges/types';
+import {getAllBadges} from 'ducks/badges/reducer';
+import {connect} from 'react-redux';
+import {GlobalState} from 'ducks/rootReducer';
+import {bindActionCreators} from 'redux';
 import BadgeBrowseList from 'components/Badges/BadgeBrowseList';
 
 interface OwnProps {
