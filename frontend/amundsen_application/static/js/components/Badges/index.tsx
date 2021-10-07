@@ -34,7 +34,9 @@ export interface DispatchFromProps {
   getAllBadges: () => GetAllBadgesRequest;
 }
 
-export type BadgesListContainerProps = StateFromProps & DispatchFromProps & OwnProps;
+export type BadgesListContainerProps = StateFromProps &
+  DispatchFromProps &
+  OwnProps;
 
 export class BadgesListContainer extends React.Component<BadgesListContainerProps> {
   componentDidMount() {
@@ -45,7 +47,7 @@ export class BadgesListContainer extends React.Component<BadgesListContainerProp
     const { badges, shortBadgesList } = this.props;
 
     return (
-      <BadgeBrowseList shortBadgesList={shortBadgesList} badges={badges}/>
+      <BadgeBrowseList shortBadgesList={shortBadgesList} badges={badges} />
     );
   }
 }

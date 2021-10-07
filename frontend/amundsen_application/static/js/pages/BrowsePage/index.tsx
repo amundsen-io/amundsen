@@ -9,7 +9,7 @@ import TagsListContainer from 'components/Tags';
 import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 
 import './styles.scss';
-import BadgesListContainer from "components/Badges";
+import BadgesListContainer from 'components/Badges';
 
 export class BrowsePage extends React.Component {
   render() {
