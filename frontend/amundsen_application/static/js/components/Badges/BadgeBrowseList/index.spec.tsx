@@ -12,16 +12,6 @@ import * as Analytics from 'utils/analytics';
 
 import BadgeBrowseList, { BadgeBrowseListProps } from '.';
 
-const columnBadges: Badge[] = [
-  {
-    badge_name: 'col badge 1',
-    category: 'column',
-  },
-  {
-    badge_name: 'col badge 2',
-    category: 'column',
-  },
-];
 const badges: Badge[] = [
   {
     badge_name: 'beta',
