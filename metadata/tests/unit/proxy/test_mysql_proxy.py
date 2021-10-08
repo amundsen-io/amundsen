@@ -651,6 +651,7 @@ class TestMySQLProxy(unittest.TestCase):
                                last_name='test_last_name',
                                full_name='test_full_name',
                                is_active=True,
+                               profile_url='test_profile',
                                github_username='test-github',
                                team_name='test_team',
                                slack_id='test_id',
