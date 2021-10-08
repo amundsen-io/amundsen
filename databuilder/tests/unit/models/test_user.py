@@ -101,6 +101,7 @@ class TestUser(unittest.TestCase):
                          manager_email='test_manager@email.com',
                          slack_id='slack',
                          is_active=True,
+                         profile_url='https://profile',
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)
@@ -121,6 +122,7 @@ class TestUser(unittest.TestCase):
                          manager_email='test_manager@email.com',
                          slack_id='slack',
                          is_active=True,
+                         profile_url='https://profile',
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)

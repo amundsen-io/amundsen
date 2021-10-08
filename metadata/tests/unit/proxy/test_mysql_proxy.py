@@ -620,6 +620,7 @@ class TestMySQLProxy(unittest.TestCase):
         user = RDSUser(employee_type='teamMember',
                        full_name='test_full_name',
                        is_active=True,
+                       profile_url='test_profile',
                        github_username='test-github',
                        slack_id='test_id',
                        last_name='test_last_name',

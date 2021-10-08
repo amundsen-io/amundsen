@@ -180,6 +180,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         record_attr_map = {
             RDSUser.email: self.email,
             RDSUser.is_active: self.is_active,
+            RDSUser.profile_url: self.profile_url or '',
             RDSUser.first_name: self.first_name or '',
             RDSUser.last_name: self.last_name or '',
             RDSUser.full_name: self.full_name or '',
@@ -242,6 +243,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
             ('manager_email', self.manager_email),
             ('slack_id', self.slack_id),
             ('is_active', self.is_active),
+            ('profile_url', self.profile_url),
             ('updated_at', self.updated_at),
             ('role_name', self.role_name),
             ('displayName', self.email)
