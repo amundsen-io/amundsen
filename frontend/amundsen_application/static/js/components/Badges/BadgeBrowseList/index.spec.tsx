@@ -59,9 +59,11 @@ describe('BadgeBrowseList', () => {
       it('renders component with browse header', () => {
         const { wrapper } = setup({ shortBadgesList: false });
         const expected = 1;
-        const actual = wrapper.find('.header-title').length;
+        const actualHeaders = wrapper.find('.header-title').length;
+        const actualHrs = wrapper.find('.header-hr').length;
 
-        expect(actual).toEqual(expected);
+        expect(actualHeaders).toEqual(expected);
+        expect(actualHrs).toEqual(expected);
       });
     });
 
@@ -69,9 +71,11 @@ describe('BadgeBrowseList', () => {
       it('renders component without browse header', () => {
         const { wrapper } = setup({ shortBadgesList: false });
         const expected = 0;
-        const actual = wrapper.find('.header-title').length;
+        const actualHeaders = wrapper.find('.header-title').length;
+        const actualHrs = wrapper.find('.header-hr').length;
 
-        expect(actual).toEqual(expected);
+        expect(actualHeaders).toEqual(expected);
+        expect(actualHrs).toEqual(expected);
       });
     });
 
