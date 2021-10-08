@@ -11,24 +11,23 @@ import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 
 import './styles.scss';
 
-export class BrowsePage extends React.Component {
-  render() {
-    return (
-      /* TODO: add expand/collapse behavior */
-      <DocumentTitle title={BROWSE_PAGE_DOCUMENT_TITLE}>
-        <main className="container">
-          <div className="row">
-            <div className="col-xs-12 col-md-10 col-md-offset-1">
-              <BadgesListContainer shortBadgesList={false} />
-            </div>
-            <div className="col-xs-12 col-md-10 col-md-offset-1">
-              <TagsListContainer shortTagsList={false} />
-            </div>
+const BrowsePage: React.FC<{}> = () => (
+  <>
+    <DocumentTitle title={BROWSE_PAGE_DOCUMENT_TITLE}>
+      <main className="container">
+        <div className="row browse-row">
+          <div className="col-xs-12 col-md-10 col-md-offset-1">
+            <BadgesListContainer shortBadgesList={false} />
           </div>
-        </main>
-      </DocumentTitle>
-    );
-  }
-}
+        </div>
+        <div className="row browse-row">
+          <div className="col-xs-12 col-md-10 col-md-offset-1">
+            <TagsListContainer shortTagsList={false} />
+          </div>
+        </div>
+      </main>
+    </DocumentTitle>
+  </>
+);
 
 export default BrowsePage;

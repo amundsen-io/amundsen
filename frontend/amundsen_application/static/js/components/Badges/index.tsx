@@ -40,6 +40,7 @@ export type BadgesListContainerProps = StateFromProps &
 
 export class BadgesListContainer extends React.Component<BadgesListContainerProps> {
   componentDidMount() {
+    // eslint-disable-next-line react/destructuring-assignment
     this.props.getAllBadges();
   }
 

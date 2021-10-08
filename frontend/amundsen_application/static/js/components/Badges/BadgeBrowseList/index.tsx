@@ -17,12 +17,21 @@ export interface BadgeBrowseListProps {
 
 const BadgeBrowseListShort: React.FC<BadgeBrowseListProps> = ({
   badges,
-}: BadgeBrowseListProps) => (
-  <article className="badges-browse-section badges-browse-section-short">
-    <h2 className="available-badges-header-title">{AVAILABLE_BADGES_TITLE}</h2>
-    <BadgeList badges={badges} />
-  </article>
-);
+}: BadgeBrowseListProps) => {
+  const hasBadges = badges.length > 0;
+  if (hasBadges) {
+    return (
+      <article className="badges-browse-section badges-browse-section-short">
+        <h2 className="available-badges-header-title">
+          {AVAILABLE_BADGES_TITLE}
+        </h2>
+        <BadgeList badges={badges} />
+      </article>
+    );
+  }
+  // do not show component at all if there are no badges to be shown
+  return null;
+};
 
 const BadgeBrowseListLong: React.FC<BadgeBrowseListProps> = ({
   badges,

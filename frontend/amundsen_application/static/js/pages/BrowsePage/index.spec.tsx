@@ -7,10 +7,10 @@ import * as DocumentTitle from 'react-document-title';
 import { shallow } from 'enzyme';
 
 import TagsListContainer from 'components/Tags';
-import { BrowsePage } from '.';
+import BrowsePage from '.';
 
 describe('BrowsePage', () => {
-  const setup = () => shallow<BrowsePage>(<BrowsePage />);
+  const setup = () => shallow<typeof BrowsePage>(<BrowsePage />);
   let wrapper;
 
   beforeAll(() => {
