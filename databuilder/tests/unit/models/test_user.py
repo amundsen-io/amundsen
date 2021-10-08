@@ -211,9 +211,9 @@ class TestUser(unittest.TestCase):
 
         self.assertDictEqual(neo4_serializer.serialize_node(test_user.create_next_node()),
                              {'KEY': 'test@email.com', 'LABEL': 'User', 'email': 'test@email.com',
-                              'is_active:UNQUOTED': True, 'profile_url': '', 'first_name': '', 'last_name': '', 'full_name': '',
-                              'github_username': '', 'team_name': '', 'employee_type': '', 'slack_id': '',
-                              'role_name': '', 'updated_at:UNQUOTED': 0, 'foo': 'bar'})
+                              'is_active:UNQUOTED': True, 'profile_url': '', 'first_name': '', 'last_name': '',
+                              'full_name': '', 'github_username': '', 'team_name': '', 'employee_type': '',
+                              'slack_id': '', 'role_name': '', 'updated_at:UNQUOTED': 0, 'foo': 'bar'})
 
         test_user2 = User(email='test@email.com',
                           foo='bar',

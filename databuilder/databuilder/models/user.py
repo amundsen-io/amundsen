@@ -275,4 +275,5 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
     def __repr__(self) -> str:
         return f'User({self.first_name!r}, {self.last_name!r}, {self.full_name!r}, {self.email!r}, ' \
                f'{self.github_username!r}, {self.team_name!r}, {self.slack_id!r}, {self.manager_email!r}, ' \
-               f'{self.employee_type!r}, {self.is_active!r}, {self.profile_url!r}, {self.updated_at!r}, {self.role_name!r})'
+               f'{self.employee_type!r}, {self.is_active!r}, {self.profile_url!r}, {self.updated_at!r}, ' \
+               f'{self.role_name!r})'
