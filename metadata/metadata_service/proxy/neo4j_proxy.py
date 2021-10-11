@@ -1337,6 +1337,7 @@ class Neo4jProxy(BaseProxy):
                           last_name=record.get('last_name'),
                           full_name=record.get('full_name'),
                           is_active=record.get('is_active', True),
+                          profile_url=record.get('profile_url'),
                           github_username=record.get('github_username'),
                           team_name=record.get('team_name'),
                           slack_id=record.get('slack_id'),

@@ -37,6 +37,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
     USER_NODE_MANAGER_EMAIL = 'manager_email'
     USER_NODE_SLACK_ID = 'slack_id'
     USER_NODE_IS_ACTIVE = 'is_active'  # bool value needs to be unquoted when publish to neo4j
+    USER_NODE_PROFILE_URL = 'profile_url'
     USER_NODE_UPDATED_AT = 'updated_at'
     USER_NODE_ROLE_NAME = 'role_name'
 
@@ -54,6 +55,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
                  manager_email: str = '',
                  slack_id: str = '',
                  is_active: bool = True,
+                 profile_url: str = '',
                  updated_at: int = 0,
                  role_name: str = '',
                  do_not_update_empty_attribute: bool = False,
@@ -71,6 +73,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         :param employee_type:
         :param manager_email:
         :param is_active:
+        :param profile_url:
         :param updated_at: everytime we update the node, we will push the timestamp.
                            then we will have a cron job to update the ex-employee nodes based on
                            the case if this timestamp hasn't been updated for two weeks.
@@ -92,6 +95,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         # this attr not available in team service, either update team service, update with FE
         self.slack_id = slack_id
         self.is_active = is_active
+        self.profile_url = profile_url
         self.updated_at = updated_at
         self.role_name = role_name
         self.do_not_update_empty_attribute = do_not_update_empty_attribute
@@ -138,6 +142,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         node_attributes = {
             User.USER_NODE_EMAIL: self.email,
             User.USER_NODE_IS_ACTIVE: self.is_active,
+            User.USER_NODE_PROFILE_URL: self.profile_url or '',
             User.USER_NODE_FIRST_NAME: self.first_name or '',
             User.USER_NODE_LAST_NAME: self.last_name or '',
             User.USER_NODE_FULL_NAME: self.full_name or '',
@@ -175,6 +180,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         record_attr_map = {
             RDSUser.email: self.email,
             RDSUser.is_active: self.is_active,
+            RDSUser.profile_url: self.profile_url or '',
             RDSUser.first_name: self.first_name or '',
             RDSUser.last_name: self.last_name or '',
             RDSUser.full_name: self.full_name or '',
@@ -237,6 +243,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
             ('manager_email', self.manager_email),
             ('slack_id', self.slack_id),
             ('is_active', self.is_active),
+            ('profile_url', self.profile_url),
             ('updated_at', self.updated_at),
             ('role_name', self.role_name),
             ('displayName', self.email)
@@ -268,4 +275,5 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
     def __repr__(self) -> str:
         return f'User({self.first_name!r}, {self.last_name!r}, {self.full_name!r}, {self.email!r}, ' \
                f'{self.github_username!r}, {self.team_name!r}, {self.slack_id!r}, {self.manager_email!r}, ' \
-               f'{self.employee_type!r}, {self.is_active!r}, {self.updated_at!r}, {self.role_name!r})'
+               f'{self.employee_type!r}, {self.is_active!r}, {self.profile_url!r}, {self.updated_at!r}, ' \
+               f'{self.role_name!r})'

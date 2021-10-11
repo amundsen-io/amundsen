@@ -110,6 +110,16 @@
           "valuesMaxCount": 1
         },
         {
+          "name": "profile_url",
+          "isOptional": true,
+          "isUnique": false,
+          "isIndexable": true,
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "valuesMinCount": 0,
+          "valuesMaxCount": 1
+        },
+        {
           "name": "updated_at",
           "isOptional": true,
           "isUnique": false,
