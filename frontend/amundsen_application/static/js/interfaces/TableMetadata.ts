@@ -52,6 +52,7 @@ export type TableColumnType = TableColumn | NestedTableColumn;
 export interface TableColumn {
   badges: Badge[];
   col_type: string;
+  col_index?: number;
   children?: NestedTableColumn[];
   description: string;
   is_editable: boolean;

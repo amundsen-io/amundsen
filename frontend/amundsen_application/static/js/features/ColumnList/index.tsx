@@ -103,6 +103,7 @@ type FormattedDataType = {
   action: ActionType;
   editText: string | null;
   editUrl: string | null;
+  col_index: number;
   index: number;
   name: string;
   tableParams: TablePageParams;
@@ -208,7 +209,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
           editUrl={rowValue.editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnIndex={rowValue.sort_order}
+            columnIndex={rowValue.col_index}
             editable={rowValue.isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={rowValue.content.description}
@@ -252,6 +253,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         name: item.name,
         database,
       },
+      col_index: item.col_index,
       children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
