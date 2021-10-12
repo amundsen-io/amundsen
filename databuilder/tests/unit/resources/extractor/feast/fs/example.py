@@ -1,4 +1,5 @@
-# This is an example feature definition file
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
 
 from datetime import datetime
 import pathlib
