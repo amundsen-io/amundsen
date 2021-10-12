@@ -14,13 +14,13 @@ from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 class FeastExtractor(Extractor):
     """
-    Extracts feature tables from Feast Core service. Since Feast is
+    Extracts feature tables from Feast feature store file. Since Feast is
     a metadata store (and not the database itself), it maps the
-    following atributes:
+    following attributes:
 
      * a database is name of feast project
-     * table name is a name of the feature table
-     * columns are features stored in the feature table
+     * table name is a name of the feature view
+     * columns are features stored in the feature view
     """
 
     FEAST_REPOSITORY_PATH = "/path/to/repository"
@@ -47,8 +47,8 @@ class FeastExtractor(Extractor):
         """
         For every feature table from Feast, a multiple objets are extracted:
 
-        1. TableMetadata with feature table description
-        2. Programmatic Description of the feature table, containing
+        1. TableMetadata with feature view description
+        2. Programmatic Description of the feature view, containing
            metadata - date of creation and labels
         3. Programmatic Description with Batch Source specification
         4. (if applicable) Programmatic Description with Stream Source
@@ -62,19 +62,18 @@ class FeastExtractor(Extractor):
             return None
 
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
-        for project in self._client.list_projects():
-            for feature_table in self._client.list_feature_tables(project=project):
-                yield from self._extract_feature_table(project, feature_table)
+        for feature_view in self._feast.list_feature_views():
+            yield from self._extract_feature_view(feature_view)
 
-    def _extract_feature_table(
-        self, project: str, feature_view: FeatureView
+    def _extract_feature_view(
+        self, feature_view: FeatureView
     ) -> Iterator[TableMetadata]:
         columns = []
         for index, entity_name in enumerate(feature_view.entities):
-            entity = self._feast.get_entity(entity_name, project=project)
+            entity = self._feast.get_entity(entity_name)
             columns.append(
                 ColumnMetadata(
-                    entity.name, entity.description, entity.value_type, index
+                    entity.name, entity.description, entity.value_type.name, index
                 )
             )
 
@@ -90,48 +89,50 @@ class FeastExtractor(Extractor):
 
         yield TableMetadata(
             "feast",
-            project,
             self._feast.config.provider,
+            self._feast.project,
             feature_view.name,
             None,
             columns,
         )
 
         if self._describe_feature_views:
-            created_at = datetime.utcfromtimestamp(
-                feature_view.created_timestamp.seconds
-            )
-            description = f"* Created at **{created_at}**\n"
+            description = str()
+            if feature_view.created_timestamp:
+                created_at = datetime.utcfromtimestamp(
+                    feature_view.created_timestamp.timestamp()
+                )
+                description = f"* Created at **{created_at}**\n"
 
-            if feature_view.labels:
-                description += "* Labels:\n"
-                for key, value in feature_view.labels.items():
+            if feature_view.tags:
+                description += "* Tags:\n"
+                for key, value in feature_view.tags.items():
                     description += f"    * {key}: **{value}**\n"
 
             yield TableMetadata(
                 "feast",
-                project,
                 self._feast.config.provider,
+                self._feast.project,
                 feature_view.name,
                 description,
-                description_source="feature_table_details",
+                description_source="feature_view_details",
             )
 
             yield TableMetadata(
                 "feast",
-                project,
                 self._feast.config.provider,
+                self._feast.project,
                 feature_view.name,
-                f'```\n{yaml.dump(feature_view.to_dict()["spec"]["batchSource"])}```',
+                f'```\n{str(feature_view.batch_source.to_proto())}```',
                 description_source="batch_source",
             )
 
             if feature_view.stream_source:
                 yield TableMetadata(
                     "feast",
-                    project,
                     self._feast.config.provider,
+                    self._feast.project,
                     feature_view.name,
-                    f'```\n{yaml.dump(feature_view.to_dict()["spec"]["streamSource"])}```',
+                    f'```\n{str(feature_view.stream_source.to_proto())}```',
                     description_source="stream_source",
                 )
