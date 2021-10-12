@@ -34,14 +34,18 @@ driver_hourly_stats_kafka_source = KafkaSource(
                  | {"name": "conv_rate", "type": "float"}, 
                  | {"name": "acc_rate", "type": "float"},
                  | {"name": "avg_daily_trips", "type": "int"},
-                 | {"name": "datetime", "type": {"type": "long", "logicalType": "timestamp-micros"}}]}'"""
-            )
-    )
+                 | {"name": "datetime", "type": {"type": "long", "logicalType": "timestamp-micros"}}]}'""",
+        )
+    ),
 )
 
 # Define an entity for the driver. You can think of entity as a primary key used to
 # fetch features.
-driver = Entity(name="driver_id", value_type=ValueType.INT64, description="Internal identifier of the driver", )
+driver = Entity(
+    name="driver_id",
+    value_type=ValueType.INT64,
+    description="Internal identifier of the driver",
+)
 
 # Our parquet files contain sample data that includes a driver_id column, timestamps and
 # three feature column. Here we define a Feature View that will allow us to serve this
@@ -58,9 +62,9 @@ driver_hourly_stats_view = FeatureView(
     online=True,
     stream_source=driver_hourly_stats_kafka_source,
     batch_source=driver_hourly_stats,
-    tags={
-        "is_pii": "true"
-    },
+    tags={"is_pii": "true"},
 )
 
-driver_hourly_stats_view.created_timestamp = datetime.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+driver_hourly_stats_view.created_timestamp = datetime.strptime(
+    "2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"
+)

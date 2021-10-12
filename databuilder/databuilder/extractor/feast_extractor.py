@@ -31,13 +31,13 @@ class FeastExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(FeastExtractor.DEFAULT_CONFIG)
-        self._feast_repository_path = conf.get_string(FeastExtractor.FEAST_REPOSITORY_PATH)
+        self._feast_repository_path = conf.get_string(
+            FeastExtractor.FEAST_REPOSITORY_PATH
+        )
         self._describe_feature_views = conf.get_bool(
             FeastExtractor.DESCRIBE_FEATURE_VIEWS
         )
-        self._feast = FeatureStore(
-            repo_path=self._feast_repository_path
-        )
+        self._feast = FeatureStore(repo_path=self._feast_repository_path)
         self._extract_iter: Union[None, Iterator] = None
 
     def get_scope(self) -> str:
@@ -123,7 +123,7 @@ class FeastExtractor(Extractor):
                 self._feast.config.provider,
                 self._feast.project,
                 feature_view.name,
-                f'```\n{str(feature_view.batch_source.to_proto())}```',
+                f"```\n{str(feature_view.batch_source.to_proto())}```",
                 description_source="batch_source",
             )
 
@@ -133,6 +133,6 @@ class FeastExtractor(Extractor):
                     self._feast.config.provider,
                     self._feast.project,
                     feature_view.name,
-                    f'```\n{str(feature_view.stream_source.to_proto())}```',
+                    f"```\n{str(feature_view.stream_source.to_proto())}```",
                     description_source="stream_source",
                 )
