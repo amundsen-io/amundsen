@@ -151,7 +151,7 @@ class ElasticsearchProxy(BaseProxy):
         return {
             "function_score": {
                 "query": {
-                    "multi_match": {
+                    "query_string": {
                         "query": query_term,
                         "fields": ["display_name^1000",
                                    "name.raw^75",
