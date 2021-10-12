@@ -1,24 +1,22 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import json
 import pathlib
 import re
 import unittest
 
-from feast.entity import Entity
-from feast.feature_table import FeatureTable
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.feast_extractor import FeastExtractor
 from databuilder.models.table_metadata import (
-    ColumnMetadata, DescriptionMetadata, TableMetadata,
+    ColumnMetadata,
+    DescriptionMetadata,
+    TableMetadata,
 )
 
 
 class TestFeastExtractor(unittest.TestCase):
-
     def test_feature_view_extraction(self) -> None:
         self._init_extractor(programmatic_description_enabled=False)
 
@@ -78,7 +76,6 @@ class TestFeastExtractor(unittest.TestCase):
             "batch_source",
         )
         self.assertEqual(expected.__repr__(), batch_source.description.__repr__())
-
 
     def test_feature_table_extraction_with_description_stream(self) -> None:
         self._init_extractor(programmatic_description_enabled=True)
@@ -140,11 +137,10 @@ class TestFeastExtractor(unittest.TestCase):
         )
         self.assertEqual(expected.__repr__(), stream_source.description.__repr__())
 
-
     def _init_extractor(self, programmatic_description_enabled: bool = True) -> None:
         conf = {
-            f'extractor.feast.{FeastExtractor.FEAST_REPOSITORY_PATH}': '../resources/extractor/feast/fs',
-            f'extractor.feast.{FeastExtractor.DESCRIBE_FEATURE_VIEWS}': programmatic_description_enabled,
+            f"extractor.feast.{FeastExtractor.FEAST_REPOSITORY_PATH}": "../resources/extractor/feast/fs",
+            f"extractor.feast.{FeastExtractor.DESCRIBE_FEATURE_VIEWS}": programmatic_description_enabled,
         }
         self.extractor = FeastExtractor()
         self.extractor.init(

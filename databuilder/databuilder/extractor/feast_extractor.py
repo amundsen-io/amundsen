@@ -4,7 +4,6 @@
 from datetime import datetime
 from typing import Iterator, Union
 
-import yaml
 from feast import FeatureStore, FeatureView
 from pyhocon import ConfigFactory, ConfigTree
 
