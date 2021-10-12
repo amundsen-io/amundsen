@@ -1,5 +1,7 @@
 # This is an example feature definition file
 
+import datetime
+import pathlib
 from google.protobuf.duration_pb2 import Duration
 
 from feast import Entity, Feature, FeatureView, FileSource, ValueType
@@ -7,8 +9,9 @@ from feast import Entity, Feature, FeatureView, FileSource, ValueType
 # Read data from parquet files. Parquet is convenient for local development mode. For
 # production, you can use your favorite DWH, such as BigQuery. See Feast documentation
 # for more info.
+root_path = pathlib.Path(__file__).parent.resolve()
 driver_hourly_stats = FileSource(
-    path="/home/amom/projects/amundsen/databuilder/example/sample_data/feasture_store/data/driver_stats.parquet",
+    path=f"{root_path}/data/driver_stats.parquet",
     event_timestamp_column="event_timestamp",
     created_timestamp_column="created",
 )
@@ -33,3 +36,5 @@ driver_hourly_stats_view = FeatureView(
     batch_source=driver_hourly_stats,
     tags={},
 )
+
+driver_hourly_stats_view.created_timestamp = datetime.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
