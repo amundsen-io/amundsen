@@ -20,13 +20,13 @@ import {
   UserSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
+import { logClick } from 'utils/analytics';
 import {
   DASHBOARD_RESOURCE_TITLE,
   FEATURE_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
 } from '../constants';
-import { logClick } from '../../../utils/analytics';
 
 const RESOURCE_SELECTOR_TITLE = 'Resource';
 
