@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: 'Search Service'
-  description: 'Used to communicate with elasticsearch or apache atlas to get search results. Used by the frontend service'
+  description: 'Used to communicate with elasticsearch to get search results. Used by the frontend service'
   version: '1.1.12'
 
 components:
