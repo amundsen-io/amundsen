@@ -26,6 +26,7 @@ import {
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
 } from '../constants';
+import { logClick } from '../../../utils/analytics';
 
 const RESOURCE_SELECTOR_TITLE = 'Resource';
 
@@ -52,6 +53,10 @@ interface ResourceOptionConfig {
 export class ResourceSelector extends React.Component<ResourceSelectorProps> {
   onChange = (event) => {
     this.props.setResource(event.target.value);
+    logClick(event, {
+      target_id: 'search_resource_selector',
+      value: event.target.value,
+    });
   };
 
   renderRadioOption = (option: ResourceOptionConfig, index: number) => (
