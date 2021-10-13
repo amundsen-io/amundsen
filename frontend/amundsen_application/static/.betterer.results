@@ -618,8 +618,8 @@ exports[`eslint`] = {
     "js/features/ColumnList/index.spec.tsx:1172488593": [
       [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"]
     ],
-    "js/features/ColumnList/index.tsx:3966671974": [
-      [200, 2, 872, "Arrow function expected no return value.", "2812379495"]
+    "js/features/ColumnList/index.tsx:632462402": [
+      [201, 2, 871, "Arrow function expected no return value.", "1083254797"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]

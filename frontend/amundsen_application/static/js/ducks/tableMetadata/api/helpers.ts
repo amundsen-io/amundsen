@@ -45,11 +45,12 @@ export function parseNestedColumns(
   columns: TableColumn[],
   databaseId?: string
 ): TableColumn[] {
-  return columns.map((column) => {
+  return columns.map((column, index) => {
     const nestedType = parseNestedType(column.col_type, databaseId);
 
     return {
       ...column,
+      col_index: index,
       children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,
     };
   });
