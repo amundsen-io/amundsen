@@ -51,7 +51,9 @@ interface ResourceOptionConfig {
 }
 
 export class ResourceSelector extends React.Component<ResourceSelectorProps> {
-  onChange = (event) => this.props.setResource(event.target.value);
+  onChange = (event) => {
+    this.props.setResource(event.target.value);
+  };
 
   renderRadioOption = (option: ResourceOptionConfig, index: number) => (
     <div key={`resource-radio-item:${index}`} className="radio">
@@ -61,10 +63,12 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
           name="resource"
           value={option.type}
           checked={this.props.resource === option.type}
-          onClick={(e) => logClick(e, {
-            target_id: 'search_resource_selector',
-            value: option.type,
-          })}
+          onClick={(e) =>
+            logClick(e, {
+              target_id: 'search_resource_selector',
+              value: option.type,
+            })
+          }
           onChange={this.onChange}
         />
         <span className="subtitle-2">{option.label}</span>
