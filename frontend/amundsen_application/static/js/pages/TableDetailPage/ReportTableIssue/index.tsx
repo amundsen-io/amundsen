@@ -35,6 +35,7 @@ export interface DispatchFromProps {
 
 export interface StateFromProps {
   tableOwners: string[];
+  frequentUsers: string[];
   userEmail: string;
   tableMetadata: TableMetadata;
 }
@@ -76,6 +77,8 @@ export class ReportTableIssue extends React.Component<
     const {
       tableKey,
       tableMetadata: { cluster, database, schema, name },
+      tableOwners,
+      frequentUsers,
     } = this.props;
     const { issuePriority } = this.state;
     const title = formData.get('title') as string;
@@ -85,6 +88,8 @@ export class ReportTableIssue extends React.Component<
     return {
       title,
       description,
+      owner_ids: tableOwners,
+      frequent_user_ids: frequentUsers,
       priority_level: issuePriority,
       key: tableKey,
       resource_path: resourcePath,
@@ -207,10 +212,14 @@ export class ReportTableIssue extends React.Component<
 export const mapStateToProps = (state: GlobalState) => {
   const ownerObj = state.tableMetadata.tableOwners.owners;
   const tableOwnersEmails = Object.keys(ownerObj);
+  const frequentUserIds = state.tableMetadata.tableData.table_readers.map(
+    (reader) => reader.user.user_id
+  );
   const userEmail = state.user.loggedInUser.email;
   return {
     userEmail,
     tableOwners: tableOwnersEmails,
+    frequentUsers: frequentUserIds,
     tableMetadata: state.tableMetadata.tableData,
   };
 };

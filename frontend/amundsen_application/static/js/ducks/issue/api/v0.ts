@@ -32,6 +32,8 @@ export function createIssue(
       key: payload.key,
       title: payload.title,
       description: payload.description,
+      owner_ids: payload.owner_ids,
+      frequent_user_ids: payload.frequent_user_ids,
       priority_level: payload.priority_level,
       resource_path: payload.resource_path,
     })

@@ -99,6 +99,8 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key',
@@ -117,6 +119,8 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key',
@@ -131,6 +135,8 @@ class IssueTest(unittest.TestCase):
          """
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'key': 'table_key',
                 'title': 'test title',
@@ -146,6 +152,8 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'title': 'test title',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -160,6 +168,8 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'key': 'table_key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -174,6 +184,8 @@ class IssueTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key'
@@ -182,12 +194,46 @@ class IssueTest(unittest.TestCase):
 
     def test_create_jira_issue_no_priority(self) -> None:
         """
-         Test request failure if resource path is missing
+         Test request failure if priority is missing
          :return:
          """
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
+                'title': 'test title',
+                'key': 'key',
+                'resource_path': '/table_detail/cluster/database/schema/table_name'
+            })
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def test_create_jira_issue_no_owner_ids(self) -> None:
+        """
+         Test request failure if owner ids are missing
+         :return:
+         """
+        with local_app.test_client() as test:
+            response = test.post('/api/issue/issue', data={
+                'description': 'test description',
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
+                'priority_level': 'P2',
+                'title': 'test title',
+                'key': 'key',
+                'resource_path': '/table_detail/cluster/database/schema/table_name'
+            })
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def test_create_jira_issue_no_frequent_user_ids(self) -> None:
+        """
+         Test request failure if frequent user ids are missing
+         :return:
+         """
+        with local_app.test_client() as test:
+            response = test.post('/api/issue/issue', data={
+                'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -207,6 +253,8 @@ class IssueTest(unittest.TestCase):
                                  content_type='multipart/form-data',
                                  data={
                                      'description': 'test description',
+                                     'owner_ids': ['user1@email.com', 'user2@email.com'],
+                                     'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                                      'priority_level': 'P2',
                                      'title': 'title',
                                      'key': 'key',

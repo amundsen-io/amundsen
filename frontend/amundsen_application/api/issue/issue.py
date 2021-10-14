@@ -1,15 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from flask import current_app as app
-from flask import jsonify, make_response, Response
-from flask_restful import Resource, reqparse
-from http import HTTPStatus
 import logging
+from http import HTTPStatus
 
 from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
 from amundsen_application.proxy.issue_tracker_clients import get_issue_tracker_client
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
+from flask import current_app as app
+from flask import jsonify, make_response, Response
+from flask_restful import Resource, reqparse
 
 LOGGER = logging.getLogger(__name__)
 
@@ -63,10 +63,14 @@ class IssueAPI(Resource):
             self.reqparse.add_argument('title', type=str, location='json')
             self.reqparse.add_argument('key', type=str, location='json')
             self.reqparse.add_argument('description', type=str, location='json')
+            self.reqparse.add_argument('owner_ids', type=list, location='json')
+            self.reqparse.add_argument('frequent_user_ids', type=list, location='json')
             self.reqparse.add_argument('priority_level', type=str, location='json')
             self.reqparse.add_argument('resource_path', type=str, location='json')
             args = self.reqparse.parse_args()
             response = self.client.create_issue(description=args['description'],
+                                                owner_ids=args['owner_ids'],
+                                                frequent_user_ids=args['frequent_user_ids'],
                                                 priority_level=args['priority_level'],
                                                 table_uri=args['key'],
                                                 title=args['title'],
