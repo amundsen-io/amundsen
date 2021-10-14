@@ -776,14 +776,13 @@ exports[`eslint`] = {
       [97, 6, 29, "Use object destructuring.", "2645724888"],
       [104, 6, 19, "\'featureOptionConfig\' is assigned a value but never used.", "2233467640"]
     ],
-    "js/pages/SearchPage/ResourceSelector/index.tsx:1032475941": [
-      [53, 4, 22, "Must use destructuring props assignment", "3282194885"],
-      [59, 8, 187, "A control must be associated with a text label.", "3436291130"],
-      [63, 19, 19, "Must use destructuring props assignment", "3960624135"],
-      [77, 15, 17, "Must use destructuring props assignment", "3767383680"],
-      [85, 15, 21, "Must use destructuring props assignment", "1352381626"],
-      [93, 15, 16, "Must use destructuring props assignment", "1927755215"],
-      [101, 15, 19, "Must use destructuring props assignment", "4761610"]
+    "js/pages/SearchPage/ResourceSelector/index.tsx:4162192754": [
+      [54, 4, 22, "Must use destructuring props assignment", "3282194885"],
+      [65, 19, 19, "Must use destructuring props assignment", "3960624135"],
+      [85, 15, 17, "Must use destructuring props assignment", "3767383680"],
+      [93, 15, 21, "Must use destructuring props assignment", "1352381626"],
+      [101, 15, 16, "Must use destructuring props assignment", "1927755215"],
+      [109, 15, 19, "Must use destructuring props assignment", "4761610"]
     ],
     "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.spec.tsx:464014135": [
       [57, 6, 25, "Use object destructuring.", "354229464"],

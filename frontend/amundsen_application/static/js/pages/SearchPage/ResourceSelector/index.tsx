@@ -62,6 +62,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
           type="radio"
           name="resource"
           value={option.type}
+          aria-label={option.type}
           checked={this.props.resource === option.type}
           onClick={(e) =>
             logClick(e, {
