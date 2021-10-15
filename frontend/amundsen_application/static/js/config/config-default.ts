@@ -339,7 +339,7 @@ const configDefault: AppConfig = {
   },
   tableQualityChecks: {
     isEnabled: false,
-  }
+  },
 };
 
 export default configDefault;

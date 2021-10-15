@@ -414,13 +414,13 @@ def get_badges() -> Response:
 
         if status_code == HTTPStatus.OK:
             message = 'Success'
-            tags = response.json().get('badges')
+            badges = response.json().get('badges')
         else:
-            message = 'Encountered error: Tags Unavailable'
+            message = 'Encountered error: Badges Unavailable'
             logging.error(message)
-            tags = []
+            badges = []
 
-        payload = jsonify({'badges': tags, 'msg': message})
+        payload = jsonify({'badges': badges, 'msg': message})
         return make_response(payload, status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
