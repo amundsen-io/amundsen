@@ -16,9 +16,10 @@ from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
-                                          ProgrammaticDescription, Source,
-                                          SqlJoin, SqlWhere, Stat, Table,
-                                          TableSummary, Tag, User, Watermark, ResourceReport)
+                                          ProgrammaticDescription,
+                                          ResourceReport, Source, SqlJoin,
+                                          SqlWhere, Stat, Table, TableSummary,
+                                          Tag, User, Watermark)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
