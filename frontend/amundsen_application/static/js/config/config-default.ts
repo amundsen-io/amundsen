@@ -7,6 +7,7 @@ const configDefault: AppConfig = {
   browse: {
     curatedTags: [],
     showAllTags: true,
+    showBadgesInHome: true,
   },
   date: {
     default: 'MMM DD, YYYY',
@@ -338,10 +339,7 @@ const configDefault: AppConfig = {
   },
   tableQualityChecks: {
     isEnabled: false,
-  },
-  browseBadges: {
-    inHomeEnabled: true,
-  },
+  }
 };
 
 export default configDefault;

@@ -30,7 +30,6 @@ export interface AppConfig {
   columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
-  browseBadges: BrowseBadgesConfig;
 }
 
 export interface AppConfigCustom {
@@ -77,6 +76,7 @@ export interface AnalyticsConfig {
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
+  showBadgesInHome: boolean;
 }
 
 /**
@@ -410,12 +410,4 @@ export interface NumberFormatConfig {
  */
 export interface TableQualityChecksConfig {
   isEnabled: boolean;
-}
-
-/**
- * TableQualityChecksConfig - configuration to query and display data quality check status from
- * an external provider. API must be configured.
- */
-export interface BrowseBadgesConfig {
-  inHomeEnabled: boolean;
 }

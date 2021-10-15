@@ -451,6 +451,6 @@ export function isTableQualityCheckEnabled() {
 /**
  * Returns whether Available badges section should be shown in Home Page
  */
-export function isBrowseBadgesInHomeEnabled() {
-  return AppConfig.browseBadges.inHomeEnabled;
+export function isShowBadgesInHomeEnabled() {
+  return AppConfig.browse.showBadgesInHome;
 }

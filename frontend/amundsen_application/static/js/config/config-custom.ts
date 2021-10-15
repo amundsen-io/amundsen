@@ -6,6 +6,7 @@ const configCustom: AppConfigCustom = {
   browse: {
     curatedTags: [],
     showAllTags: true,
+    showBadgesInHome: true,
   },
   analytics: {
     plugins: [],
