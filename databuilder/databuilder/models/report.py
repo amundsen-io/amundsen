@@ -3,9 +3,7 @@
 
 from typing import Iterator, Union
 
-from amundsen_common.utils.atlas import (
-    AtlasCommonParams, AtlasCommonTypes
-)
+from amundsen_common.utils.atlas import AtlasCommonParams, AtlasCommonTypes
 
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
@@ -55,7 +53,7 @@ class ResourceReport(GraphSerializable, AtlasSerializable):
         self._atlas_entity_iterator = self._create_next_atlas_entity()
         self._atlas_relation_iterator = self._create_atlas_relation_iterator()
 
-    def get_resource_model_key(self):
+    def get_resource_model_key(self) -> str:
         return ResourceReport.REPORT_KEY_FORMAT.format(resource_uri=self.resource_uri, report_name=self.report_name)
 
     def create_next_node(self) -> Union[GraphNode, None]:
