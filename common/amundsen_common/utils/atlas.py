@@ -37,6 +37,7 @@ class AtlasCommonTypes:
     # Entity API.
     tag = 'Tag'
     badge = 'Badge'
+    resource_report = 'Report'
 
 
 class AtlasTableTypes:
