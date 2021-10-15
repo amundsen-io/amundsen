@@ -447,3 +447,10 @@ export function getColumnLineageLink(
 export function isTableQualityCheckEnabled() {
   return AppConfig.tableQualityChecks.isEnabled;
 }
+
+/**
+ * Returns whether Available badges section should be shown in Home Page
+ */
+export function isBrowseBadgesInHomeEnabled() {
+  return AppConfig.browseBadges.inHomeEnabled;
+}

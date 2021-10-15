@@ -9,6 +9,7 @@ import {
   AVAILABLE_BADGES_TITLE,
   BROWSE_BADGES_TITLE,
 } from 'components/Badges/BadgeBrowseList/constants';
+import { isBrowseBadgesInHomeEnabled } from 'config/config-utils';
 
 export interface BadgeBrowseListProps {
   badges: Badge[];
@@ -19,7 +20,7 @@ const BadgeBrowseListShort: React.FC<BadgeBrowseListProps> = ({
   badges,
 }: BadgeBrowseListProps) => {
   const hasBadges = badges.length > 0;
-  if (hasBadges) {
+  if (hasBadges && isBrowseBadgesInHomeEnabled()) {
     return (
       <article className="badges-browse-section badges-browse-section-short">
         <h2 className="available-badges-header-title">

@@ -339,6 +339,9 @@ const configDefault: AppConfig = {
   tableQualityChecks: {
     isEnabled: false,
   },
+  browseBadges: {
+    inHomeEnabled: true,
+  },
 };
 
 export default configDefault;
