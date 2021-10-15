@@ -46,11 +46,9 @@ _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 # Expire cache every 11 hours + jitter
 _GET_POPULAR_RESOURCES_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
-
 CREATED_EPOCH_MS = 'publisher_created_epoch_ms'
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -311,7 +309,7 @@ class Neo4jProxy(BaseProxy):
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
         return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions, \
-               resource_reports
+            resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
