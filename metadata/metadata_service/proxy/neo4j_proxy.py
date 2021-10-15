@@ -21,7 +21,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           Source, SqlJoin, SqlWhere, Stat,
                                           Table, TableSummary, Tag, User,
-                                          Watermark)
+                                          Watermark, ResourceReport)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -122,7 +122,7 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, timestamp_value, owners, tags, source, badges, prog_descs = \
+        wmk_results, table_writer, timestamp_value, owners, tags, source, badges, prog_descs, resource_reports = \
             self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
@@ -144,7 +144,8 @@ class Neo4jProxy(BaseProxy):
                       is_view=self._safe_get(last_neo4j_record, 'tbl', 'is_view'),
                       programmatic_descriptions=prog_descs,
                       common_joins=joins,
-                      common_filters=filters
+                      common_filters=filters,
+                      resource_reports=resource_reports
                       )
 
         return table
@@ -237,6 +238,7 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (tbl)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (tbl)-[:SOURCE]->(src:Source)
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+        OPTIONAL MATCH (tbl)-[:HAS_REPORT]->(resource_reports:Report)
         RETURN collect(distinct wmk) as wmk_records,
         application,
         t.last_updated_timestamp as last_updated_timestamp,
@@ -244,7 +246,8 @@ class Neo4jProxy(BaseProxy):
         collect(distinct tag) as tag_records,
         collect(distinct badge) as badge_records,
         src,
-        collect(distinct prog_descriptions) as prog_descriptions
+        collect(distinct prog_descriptions) as prog_descriptions,
+        collect(distinct resource_reports) as resource_reports
         """)
 
         table_records = self._execute_cypher_query(statement=table_level_query,
@@ -305,7 +308,10 @@ class Neo4jProxy(BaseProxy):
             table_records.get('prog_descriptions', [])
         )
 
-        return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions
+        resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
+
+        return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions, \
+               resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -386,6 +392,18 @@ class Neo4jProxy(BaseProxy):
                 prog_descriptions.append(ProgrammaticDescription(source=source, text=prog_description['description']))
         prog_descriptions.sort(key=lambda x: x.source)
         return prog_descriptions
+
+    def _extract_resource_reports_from_query(self, raw_resource_reports: dict) -> list:
+        resource_reports = []
+        for resource_report in raw_resource_reports:
+            name = resource_report.get('name')
+            if name is None:
+                LOGGER.error("A report with no name found... skipping.")
+            else:
+                resource_reports.append(ResourceReport(name=name, url=resource_report['url']))
+
+        resource_reports.sort(key=lambda x: x.name)
+        return resource_reports
 
     def _extract_joins_from_query(self, joins: List[Dict]) -> List[Dict]:
         valid_joins = []
