@@ -872,6 +872,7 @@ class AtlasProxy(BaseProxy):
             )
         return tags
 
+    @_CACHE.cache('get_badges')
     def get_badges(self) -> List:
         badges = list()
 
