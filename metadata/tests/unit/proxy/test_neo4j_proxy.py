@@ -18,7 +18,7 @@ from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Source,
                                           SqlJoin, SqlWhere, Stat, Table,
-                                          TableSummary, Tag, User, Watermark)
+                                          TableSummary, Tag, User, Watermark, ResourceReport)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
@@ -87,6 +87,12 @@ class TestNeo4jProxy(unittest.TestCase):
                 'name': 'Airflow',
                 'id': 'dag/task_id'
             },
+            'resource_reports': [
+                {
+                    'name': 'test_report',
+                    'url': 'https://test.report/index.html'
+                }
+            ],
             'last_updated_timestamp': 1,
             'owner_records': [
                 {
@@ -263,6 +269,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
                              ],
+                             resource_reports=[
+                                 ResourceReport(name='test_report', url='https://test.report/index.html')
+                             ],
                              common_joins=[
                                  SqlJoin(
                                      join_sql=(
@@ -340,6 +349,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          text='Test Test'),
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
+                             ],
+                             resource_reports=[
+                                 ResourceReport(name='test_report', url='https://test.report/index.html')
                              ],
                              common_joins=[
                                  SqlJoin(
