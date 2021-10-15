@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 
 import dashboard, { DashboardReducerState } from 'ducks/dashboard/reducer';
 import feature, { FeatureReducerState } from 'ducks/feature/reducer';
+import badges, { BadgesReducerState } from 'ducks/badges/reducer';
 import announcements, { AnnouncementsReducerState } from './announcements';
 import feedback, { FeedbackReducerState } from './feedback/reducer';
 import popularResources, {
@@ -36,6 +37,7 @@ export interface GlobalState {
   tableMetadata: TableMetadataReducerState;
   lastIndexed: LastIndexedReducerState;
   tags: TagsReducerState;
+  badges: BadgesReducerState;
   user: UserReducerState;
   ui: UIReducerState;
   lineage: LineageReducerState;
@@ -54,6 +56,7 @@ const rootReducer = combineReducers<GlobalState>({
   tableMetadata,
   lastIndexed,
   tags,
+  badges,
   user,
   ui,
   lineage,

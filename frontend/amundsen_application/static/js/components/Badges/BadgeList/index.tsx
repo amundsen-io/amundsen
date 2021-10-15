@@ -40,7 +40,8 @@ const ActionableBadge: React.FC<ActionableBadgeProps> = ({
   displayName,
   action,
 }: ActionableBadgeProps) => (
-  <span className="actionable-badge" onClick={action}>
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <span className="actionable-badge" onClick={action} onKeyDown={action}>
     <StaticBadge style={style} displayName={displayName} />
   </span>
 );
@@ -97,6 +98,8 @@ export default class BadgeList extends React.Component<BadgeListProps> {
               />
             );
           }
+
+          return null;
         })}
       </span>
     );

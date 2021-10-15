@@ -10,14 +10,8 @@ exports[`eslint`] = {
       [33, 6, 25, "Use object destructuring.", "354229464"],
       [34, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/BadgeList/index.spec.tsx:3772320601": [
+    "js/components/Badges/BadgeList/index.spec.tsx:3772320601": [
       [153, 14, 36, "Use array destructuring.", "898356559"]
-    ],
-    "js/components/BadgeList/index.tsx:3233891211": [
-      [42, 2, 52, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2290783753"],
-      [42, 2, 52, "Static HTML elements with event handlers require a role.", "2290783753"],
-      [68, 47, 2, "Array.prototype.map() expects a value to be returned at the end of arrow function.", "5859494"],
-      [68, 47, -1867, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/components/Bookmark/BookmarkIcon/index.tsx:2757285913": [
       [44, 8, 23, "Must use destructuring props assignment", "2039607050"],
@@ -585,7 +579,7 @@ exports[`eslint`] = {
     "js/ducks/tags/api/v0.ts:2781466514": [
       [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
     ],
-    "js/features/BadgeList/index.tsx:4274393553": [
+    "js/features/BadgeList/index.tsx:2768467336": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
@@ -690,9 +684,6 @@ exports[`eslint`] = {
     "js/features/NavBar/index.tsx:2853766101": [
       [69, 8, 19, "Must use destructuring props assignment", "1779396464"]
     ],
-    "js/pages/BrowsePage/index.tsx:4021927425": [
-      [12, 7, 453, "Component should be written as a pure function", "779515038"]
-    ],
     "js/pages/DashboardPage/ChartList/index.spec.tsx:876473578": [
       [21, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
@@ -749,8 +740,8 @@ exports[`eslint`] = {
       [33, 4, 25, "Use object destructuring.", "354229464"],
       [34, 4, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/pages/HomePage/index.tsx:2510324256": [
-      [32, 4, 22, "Must use destructuring props assignment", "2151395318"]
+    "js/pages/HomePage/index.tsx:3641863187": [
+      [33, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
     "js/pages/ProfilePage/index.spec.tsx:1332520872": [
       [216, 9, 5, "\'props\' is assigned a value but never used.", "187023499"],
