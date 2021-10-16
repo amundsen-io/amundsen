@@ -1,0 +1,14 @@
+{
+	"name": "gatewayapi_post_new",
+	"version": "1.0.0",
+	"description": "lambda function that forwards requests from gateway-api to nodejs backend.",
+	"main": "index.js",
+	"scripts": {
+		"deploy": "npm ci",
+		"test": "echo Skipping tests"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^0.22.0"
+	}
+}
