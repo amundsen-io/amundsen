@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import pathlib
 import re
 import unittest
@@ -17,6 +18,10 @@ from databuilder.models.table_metadata import (
 
 
 class TestFeastExtractor(unittest.TestCase):
+    def setUp(self) -> None:
+        repo_path = pathlib.Path(__file__).parent.parent.resolve() / "resources/extractor/feast/fs"
+        os.system(f"cd {repo_path} && feast apply")
+
     def test_feature_view_extraction(self) -> None:
         self._init_extractor(programmatic_description_enabled=False)
 
@@ -138,8 +143,9 @@ class TestFeastExtractor(unittest.TestCase):
         self.assertEqual(expected.__repr__(), stream_source.description.__repr__())
 
     def _init_extractor(self, programmatic_description_enabled: bool = True) -> None:
+        repository_path = pathlib.Path(__file__).parent.parent.resolve() / "resources/extractor/feast/fs"
         conf = {
-            f"extractor.feast.{FeastExtractor.FEAST_REPOSITORY_PATH}": "../resources/extractor/feast/fs",
+            f"extractor.feast.{FeastExtractor.FEAST_REPOSITORY_PATH}": repository_path,
             f"extractor.feast.{FeastExtractor.DESCRIBE_FEATURE_VIEWS}": programmatic_description_enabled,
         }
         self.extractor = FeastExtractor()
@@ -152,6 +158,11 @@ class TestFeastExtractor(unittest.TestCase):
     @staticmethod
     def _strip_margin(text: str) -> str:
         return re.sub("\n[ \t]*\\|", "\n", text)
+
+    def tearDown(self) -> None:
+        root_path = pathlib.Path(__file__).parent.parent.resolve() / "resources/extractor/feast/fs/data"
+        # os.remove(root_path / "online_store.db")
+        # os.remove(root_path / "registry.db")
 
 
 if __name__ == "__main__":
