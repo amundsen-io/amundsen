@@ -161,8 +161,8 @@ class TestFeastExtractor(unittest.TestCase):
 
     def tearDown(self) -> None:
         root_path = pathlib.Path(__file__).parent.parent.resolve() / "resources/extractor/feast/fs/data"
-        # os.remove(root_path / "online_store.db")
-        # os.remove(root_path / "registry.db")
+        os.remove(root_path / "online_store.db")
+        os.remove(root_path / "registry.db")
 
 
 if __name__ == "__main__":
