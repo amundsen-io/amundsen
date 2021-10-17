@@ -4,7 +4,7 @@
 
 provider "aws" {
   assume_role {
-    role_arn     = "${TFAWS_ROLE_ARN}"
+    role_arn     = "${RELEASE_INFRA_ROLE_ARN}"
     session_name = "${RELEASE_ENV_ID}"
   }
 }
