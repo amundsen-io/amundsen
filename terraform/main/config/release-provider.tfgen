@@ -9,15 +9,15 @@ provider "aws" {
   }
 }
 
-terraform {
-  backend "s3" {
-    bucket         = "${TFSTATE_BUCKET}"
-    region         = "${TFSTATE_BUCKET_REGION}"
-    key            = "terraform-demo/${RELEASE_ENV_ID}"
-    acl            = "private"
-    encrypt        = true
+# terraform {
+#   backend "s3" {
+#     bucket         = "${TFSTATE_BUCKET}"
+#     region         = "${TFSTATE_BUCKET_REGION}"
+#     key            = "terraform-demo/${RELEASE_ENV_ID}"
+#     acl            = "private"
+#     encrypt        = true
 #     kms_key_id     = "${TFSTATE_KMS_KEY_ID}"
 #     role_arn       = "${TFSTATE_ROLE_ARN}"
 #     dynamodb_table = "${TFSTATE_DYNAMO_LOCK_TABLE_NAME}"
-  }
-}
+#   }
+# }
