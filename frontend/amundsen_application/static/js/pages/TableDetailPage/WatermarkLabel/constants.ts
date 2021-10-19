@@ -1,4 +1,4 @@
-export const NO_WATERMARK_LINE_1 = 'No partitions found';
+export const NO_WATERMARK_LINE_1 = 'No valid partitions found';
 export const NO_WATERMARK_LINE_2 = 'Unknown date range';
 export const LOW_WATERMARK_LABEL = 'From:';
 export const HIGH_WATERMARK_LABEL = 'To:';
