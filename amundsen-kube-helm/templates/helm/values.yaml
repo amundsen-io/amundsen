@@ -53,7 +53,7 @@ oidc:
   #   - everything under oidc.configs will be parsed
   #   - flaskApp.module will be set as 'flaskoidc'
   #   - flaskApp.class will be set as 'FlaskOIDC'
-  enabled: true
+  enabled: false
   frontend:
     client_id: ""
     # Do not paste the secret directly here, instead set this via env variable like
@@ -102,7 +102,8 @@ search:
   proxy:
     # search.proxy.endpoint -- Endpoint of the search proxy (i.e., ES endpoint etc.)
     # You should only need to change this, if you don't use the version in this chart.
-    endpoint:
+    # elasticsearch-master.user-pengfei.svc.cluster.local
+    endpoint: 
 
     # The user and password of the search proxy. This should only be set if you bring your own proxy or ES cluster in which case you must also set elasticsearch.enabled to false
     # search.proxy.user --
@@ -118,7 +119,7 @@ search:
   # - name: "image-pull-secret"
 
   # search.imageTag -- The image tag of the search container.
-  imageTag: 2.6.0
+  imageTag: latest
 
   # search.replicas -- How many replicas of the search service to run.
   replicas: 1
@@ -181,7 +182,7 @@ metadata:
   # - name: "image-pull-secret"
 
   # metadata.imageTag -- The image tag of the metadata container.
-  imageTag: 3.5.0
+  imageTag: latest
 
   # metadata.replicas -- How many replicas of the metadata service to run.
   replicas: 1
@@ -229,7 +230,7 @@ frontEnd:
   # - name: "image-pull-secret"
 
   # frontEnd.imageTag -- The image tag of the frontend container.
-  imageTag: 3.11.1
+  imageTag: latest
 
   # frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   servicePort: 80
@@ -350,30 +351,30 @@ neo4j:
 elasticsearch:
   # elasticsearch.enabled -- set this to false, if you want to provide your own ES instance.
   enabled: true
-  cluster:
-    env:
-      # elasticsearch.cluster.env.MINIMUM_MASTER_NODES -- required to match master.replicas
-      MINIMUM_MASTER_NODES: 1
-      # elasticsearch.cluster.env.EXPECTED_MASTER_NODES -- required to match master.replicas
-      EXPECTED_MASTER_NODES: 1
-      # elasticsearch.cluster.env.RECOVER_AFTER_MASTER_NODES -- required to match master.replicas
-      RECOVER_AFTER_MASTER_NODES: 1
-  master:
-    # elasticsearch.master.replicas -- only running amundsen on 1 master replica
-    replicas: 1
-  data:
-    # elasticsearch.data.replicas -- only running amundsen on 1 data replica
-    replicas: 1
-  client:
-    # elasticsearch.client.replicas -- only running amundsen on 1 client replica
-    replicas: 1
-  #  serviceType: LoadBalancer
-  #  serviceAnnotations:
-  #    external-dns.alpha.kubernetes.io/hostname: amundsen-elasticsearch.dev.teamname.company.com
-  #    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
-  #    service.beta.kubernetes.io/aws-load-balancer-type: nlb
-  #  nodeAffinity: high
-  #  resources:
-  #    limits:
-  #      cpu: 2
-  #      memory: 2Gi
+  # this is the service name of the elasticsearch 
+  fullnameOverride: "amundsen-elasticsearch-master"
+  # If this set to true, the es pod will require some admin privilege, which is not allowed in most case. So set it to false
+  sysctlInitContainer:
+    enabled: false
+  image: elasticsearch
+  esJavaOpts: -Xmx8g -Xms8g
+  resources:
+    limits:
+      memory: 10Gi
+    requests:
+      memory: 10Gi
+  
+    
+##############  Values for ingress ###############
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: amundsen-test.lab.sspcloud.fr
+      paths: [/]
+  tls: 
+    - hosts:
+        - amundsen-test.lab.sspcloud.fr
+     # secretName: chart-example-tls
