@@ -10,6 +10,7 @@ from amundsen_application.proxy.issue_tracker_clients.jira_client import JiraCli
 from amundsen_application.models.data_issue import DataIssue, Priority
 from amundsen_common.models.user import User
 from jira import JIRAError
+from types import SimpleNamespace
 from typing import Dict, List
 
 app = flask.Flask(__name__)
@@ -28,7 +29,7 @@ class MockJiraResultList(list):
 class JiraClientTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.mock_issue = {
+        issue = {
             'key': 'key',
             'title': 'some title',
             'url': 'http://somewhere',
@@ -36,7 +37,8 @@ class JiraClientTest(unittest.TestCase):
             'priority_name': 'Major',
             'priority_display_name': 'P2'
         }
-        result_list = MockJiraResultList(iterable=self.mock_issue, _total=0)
+        self.mock_issue = SimpleNamespace(**issue)
+        result_list = MockJiraResultList(iterable=issue, _total=0)
         self.mock_jira_issues = result_list
         self.mock_issue_instance = DataIssue(issue_key='key',
                                              title='some title',
@@ -322,5 +324,5 @@ class JiraClientTest(unittest.TestCase):
                                      title='title',
                                      table_url='http://table')
             mock_JIRA_client.return_value.add_comment.assert_called_with(
-                issue=self.mock_issue['key'],
+                issue=self.mock_issue.key,
                 body="CC Table Owners: [~test] \nCC Frequent Users: [~test] [~test] ")

@@ -127,7 +127,7 @@ class JiraClient(BaseIssueTrackerClient):
                             owners_comment_str = 'CC Table Owners: '
                         owners_comment_str += f'[~{owner.email.split("@")[0]}] '
                     else:
-                        owners_description_str += '\n ' + owner.full_name if owner.full_name else owner.email
+                        owners_description_str += f'\n {owner.full_name if owner.full_name else owner.email}'
 
                     # Append relevant alumni and manager information if the user is a person and inactive
                     if not owner.is_active and owner.full_name:
@@ -139,7 +139,7 @@ class JiraClient(BaseIssueTrackerClient):
             frequent_users_comment_str = ''
             for frequent_user_id in frequent_user_ids:
                 frequent_user = self._get_user_from_id(frequent_user_id)
-                if frequent_user and frequent_user.is_active:
+                if frequent_user and frequent_user.is_active and frequent_user.full_name:
                     if not frequent_users_comment_str:
                         frequent_users_comment_str = 'CC Frequent Users: '
                     frequent_users_comment_str += f'[~{frequent_user.email.split("@")[0]}] '
@@ -165,7 +165,7 @@ class JiraClient(BaseIssueTrackerClient):
                     comment_str = owners_comment_str + '\n' + frequent_users_comment_str
                 else:
                     comment_str = owners_comment_str if owners_comment_str else frequent_users_comment_str
-                self.jira_client.add_comment(issue=issue['key'], body=comment_str)
+                self.jira_client.add_comment(issue=issue.key, body=comment_str)
 
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
