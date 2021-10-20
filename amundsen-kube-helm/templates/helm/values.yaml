@@ -371,7 +371,7 @@ elasticsearch:
 ##############  Values for ingress ###############
 ingress:
   # --  set this to true, if you want a ingress that expose HTTP and HTTPS routes from outside the cluster to your amundsen services. Do not use this if you are in a public cloud such as AWS, GCP
-  enabled: true
+  enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
