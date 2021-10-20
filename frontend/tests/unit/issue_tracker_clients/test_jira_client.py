@@ -219,7 +219,7 @@ class JiraClientTest(unittest.TestCase):
                              "[test_full_name|https://profile] "),
                 priority={
                     'name': 'Major'
-                }, reporter={'name': 'test'}))
+            }, reporter={'name': 'test'}))
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
@@ -265,7 +265,7 @@ class JiraClientTest(unittest.TestCase):
                              "test_full_name (Alumni) \u2022 Manager: test_manager_name"),
                 priority={
                     'name': 'Major'
-                }, reporter={'name': 'test'}))
+            }, reporter={'name': 'test'}))
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
