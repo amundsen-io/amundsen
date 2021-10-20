@@ -210,17 +210,18 @@ export class ReportTableIssue extends React.Component<
   }
 }
 export const mapStateToProps = (state: GlobalState) => {
-  const ownerObj = state.tableMetadata.tableOwners.owners;
+  const { tableMetadata, user } = state;
+  const ownerObj = tableMetadata.tableOwners.owners;
   const tableOwnersEmails = Object.keys(ownerObj);
-  const frequentUserIds = state.tableMetadata.tableData.table_readers.map(
+  const frequentUserIds = tableMetadata.tableData.table_readers.map(
     (reader) => reader.user.user_id
   );
-  const userEmail = state.user.loggedInUser.email;
+  const userEmail = user.loggedInUser.email;
   return {
     userEmail,
     tableOwners: tableOwnersEmails,
     frequentUsers: frequentUserIds,
-    tableMetadata: state.tableMetadata.tableData,
+    tableMetadata: tableMetadata.tableData,
   };
 };
 
