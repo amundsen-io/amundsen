@@ -102,7 +102,6 @@ search:
   proxy:
     # search.proxy.endpoint -- Endpoint of the search proxy (i.e., ES endpoint etc.)
     # You should only need to change this, if you don't use the version in this chart.
-    # elasticsearch-master.user-pengfei.svc.cluster.local
     endpoint: 
 
     # The user and password of the search proxy. This should only be set if you bring your own proxy or ES cluster in which case you must also set elasticsearch.enabled to false
