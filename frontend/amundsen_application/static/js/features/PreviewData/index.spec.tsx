@@ -57,6 +57,13 @@ describe('getSanitizedValue', () => {
     expect(actual).toEqual(expected);
   });
 
+  it('returns undefined as empty string', () => {
+    const input = { 'key-1': 2 };
+    const expected = '';
+    const actual = getSanitizedValue(input['non-existent-key']);
+    expect(actual).toEqual(expected);
+  });
+
   it('returns a string as-is', () => {
     const input = 'hello';
     const expected = 'hello';
