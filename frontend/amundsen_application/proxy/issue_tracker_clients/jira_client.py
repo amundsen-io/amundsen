@@ -28,6 +28,7 @@ class JiraClient(BaseIssueTrackerClient):
                  issue_tracker_password: str,
                  issue_tracker_project_id: int,
                  issue_tracker_max_results: int) -> None:
+
         self.issue_labels = issue_labels
         self.jira_url = issue_tracker_url
         self.jira_user = issue_tracker_user

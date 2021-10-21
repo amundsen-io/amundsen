@@ -176,6 +176,7 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = 'Success'
             results = response.json().get('results', list())
+            logging.warning(results)
             users['results'] = [_map_user_result(result) for result in results]
             users['total_results'] = response.json().get('total_results', 0)
         else:
