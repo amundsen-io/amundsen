@@ -99,7 +99,7 @@ class JiraClient(BaseIssueTrackerClient):
             else:
                 raise Exception('AUTH_USER_METHOD must be configured to set the JIRA issue reporter')
 
-            reporter = {'name': 'karmes'}
+            reporter = {'name': jira_id}
 
             # Detected by the jira client based on API version & deployment.
             if self.jira_client.deploymentType == 'Cloud':
