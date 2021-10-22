@@ -3,7 +3,7 @@
 
 from http import HTTPStatus
 from jira import JIRA, JIRAError, Issue, User as JiraUser
-from typing import List, Tuple
+from typing import List
 
 from flask import current_app as app
 
@@ -99,7 +99,7 @@ class JiraClient(BaseIssueTrackerClient):
             else:
                 raise Exception('AUTH_USER_METHOD must be configured to set the JIRA issue reporter')
 
-            reporter = {'name': jira_id}
+            reporter = {'name': 'karmes'}
 
             # Detected by the jira client based on API version & deployment.
             if self.jira_client.deploymentType == 'Cloud':
@@ -113,8 +113,11 @@ class JiraClient(BaseIssueTrackerClient):
             if app.config['ISSUE_TRACKER_ISSUE_TYPE_ID']:
                 issue_type_id = app.config['ISSUE_TRACKER_ISSUE_TYPE_ID']
 
-            owners_description_str, owners_comment_str = self._generate_owners_description_and_comment_strs(owner_ids)
-            frequent_users_comment_str = self._generate_frequent_users_comment_str(frequent_user_ids)
+            owners = self._get_users_from_ids(owner_ids)
+            frequent_users = self._get_users_from_ids(frequent_user_ids)
+
+            owners_description_str = self._generate_owners_description_str(owners)
+            frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
 
             issue = self.jira_client.create_issue(fields=dict(project={
                 'id': self.jira_project_id
@@ -124,20 +127,16 @@ class JiraClient(BaseIssueTrackerClient):
             }, labels=self.issue_labels,
                 summary=title,
                 description=(f'{description} '
-                             f'\n Reported By: {user_email} '
-                             f'\n Table Key: {table_uri} [PLEASE DO NOT REMOVE] '
-                             f'\n Table URL: {table_url} '
-                             f'{owners_description_str}'),
+                             f'\n *Reported By:* {user_email} '
+                             f'\n *Table Key:* {table_uri} [PLEASE DO NOT REMOVE] '
+                             f'\n *Table URL:* {table_url} '
+                             f'\n\n *Owners and Frequent Users (added as Watchers):* '
+                             f'{owners_description_str + frequent_users_description_str}'),
                 priority={
                     'name': Priority.get_jira_severity_from_level(priority_level)
             }, reporter=reporter))
 
-            if owners_comment_str or frequent_users_comment_str:
-                if owners_comment_str and frequent_users_comment_str:
-                    comment_str = owners_comment_str + '\n' + frequent_users_comment_str
-                else:
-                    comment_str = owners_comment_str if owners_comment_str else frequent_users_comment_str
-                self.jira_client.add_comment(issue=issue.key, body=comment_str)
+            self._add_watchers_to_issue(issue_key=issue.key, users=owners + frequent_users)
 
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
@@ -210,56 +209,68 @@ class JiraClient(BaseIssueTrackerClient):
         return open + closed
 
     @staticmethod
-    def _get_user_from_id(user_id: str) -> User:
+    def _get_users_from_ids(user_ids: List[str]) -> User:
         """
         Calls get_user metadata API with a user id to retrieve user details.
-        :param user_id: String representing a user id
-        :return: User object
+        :param user_ids: List of strings representing user ids
+        :return: List of User objects
         """
-        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
-        response = request_metadata(url=url)
-        if response.status_code == HTTPStatus.OK:
-            return load_user(response.json())
+        users = []
+        for user_id in user_ids:
+            url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], USER_ENDPOINT, user_id)
+            response = request_metadata(url=url)
+            if response.status_code == HTTPStatus.OK:
+                user = load_user(response.json())
+                if user:
+                    users.append(load_user(response.json()))
+        return users
 
-    def _generate_owners_description_and_comment_strs(self, owner_ids: List[str]) -> Tuple[str, str]:
+    def _generate_owners_description_str(self, owners: List[User]) -> str:
         """
-        Build a list of table owner information to add to the description of the ticket, and a string of the
-        owners to tag in the comment on the ticket
-        :param owner_ids: List of strings representing owner ids
-        :return: String of owners to append in the description, and string for tagging owners in ticket comment
+        Build a list of table owner information to add to the description of the ticket
+        :param owners: List of users representing owners of the table
+        :return: String of owners to append in the description
         """
-        owners_description_str = '\n Table Owners:' if owner_ids else ''
-        owners_comment_str = ''
-        for owner_id in owner_ids:
-            owner = self._get_user_from_id(owner_id)
-            if owner:
-                if owner.profile_url:
-                    owners_description_str += (f'\n [{owner.full_name if owner.full_name else owner.email}'
-                                               f'|{owner.profile_url}] ')
-                    if not owners_comment_str:
-                        owners_comment_str = 'CC Table Owners: '
-                    owners_comment_str += f'[~{owner.email.split("@")[0]}] '
-                else:
-                    owners_description_str += f'\n {owner.full_name if owner.full_name else owner.email}'
+        owners_description_str = '\n Table Owners:' if owners else ''
+        user_details_list = []
+        inactive_user_details_list = []
+        for user in owners:
+            if user.is_active and user.profile_url:
+                user_details_list.append((f'[{user.full_name if user.full_name else user.email}'
+                                          f'|{user.profile_url}] '))
+                continue
+            else:
+                inactive_user_details = f'{user.full_name if user.full_name else user.email}'
 
-                # Append relevant alumni and manager information if the user is a person and inactive
-                if not owner.is_active and owner.full_name:
-                    owners_description_str += ' (Alumni) '
-                    if owner.manager_fullname:
-                        owners_description_str += f'\u2022 Manager: {owner.manager_fullname}'
-        return owners_description_str, owners_comment_str
+            # Append relevant alumni and manager information if the user is a person and inactive
+            if not user.is_active and user.full_name:
+                inactive_user_details += ' (Alumni) '
+                if user.manager_fullname:
+                    inactive_user_details += f'\u2022 Manager: {user.manager_fullname} '
+            inactive_user_details_list.append(inactive_user_details)
+        return '\n '.join(filter(None, [owners_description_str,
+                                        '\n '.join(user_details_list),
+                                        '\n '.join(inactive_user_details_list)]))
 
-    def _generate_frequent_users_comment_str(self, frequent_user_ids: List[str]) -> str:
+    def _generate_frequent_users_description_str(self, frequent_users: List[User]) -> str:
         """
-        Build a string of frequent users to tag in the comment on the ticket
-        :param frequent_user_ids: List of strings representing frequent user ids
-        :return: String for tagging frequent users in ticket comment
+        Build a list of table frequent user information to add to the description of the ticket
+        :param frequent_users: List of users representing frequent users of the table
+        :return: String of frequent users to append in the description
         """
-        frequent_users_comment_str = ''
-        for frequent_user_id in frequent_user_ids:
-            frequent_user = self._get_user_from_id(frequent_user_id)
-            if frequent_user and frequent_user.is_active and frequent_user.full_name:
-                if not frequent_users_comment_str:
-                    frequent_users_comment_str = 'CC Frequent Users: '
-                frequent_users_comment_str += f'[~{frequent_user.email.split("@")[0]}] '
-        return frequent_users_comment_str
+        frequent_users_description_str = '\n Frequent Users: ' if frequent_users else ''
+        user_details_list = []
+        inactive_user_details_list = []
+        for user in frequent_users:
+            if user.is_active and user.profile_url:
+                user_details_list.append((f'[{user.full_name if user.full_name else user.email}'
+                                          f'|{user.profile_url}]'))
+            else:
+                inactive_user_details_list.append(f'{user.full_name if user.full_name else user.email}')
+        return frequent_users_description_str + ', '.join(filter(None, [', '.join(user_details_list),
+                                                                        ', '.join(inactive_user_details_list)]))
+
+    def _add_watchers_to_issue(self, issue_key: str, users: List[User]) -> None:
+        for user in users:
+            if user.is_active and user.full_name:
+                self.jira_client.add_watcher(issue=issue_key, watcher=user.email.split("@")[0])

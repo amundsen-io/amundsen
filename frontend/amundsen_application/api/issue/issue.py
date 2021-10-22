@@ -1,15 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
+from flask import current_app as app
+from flask import jsonify, make_response, Response
+from flask_restful import Resource, reqparse
 from http import HTTPStatus
+import logging
 
 from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
 from amundsen_application.proxy.issue_tracker_clients import get_issue_tracker_client
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
-from flask import current_app as app
-from flask import jsonify, make_response, Response
-from flask_restful import Resource, reqparse
 
 LOGGER = logging.getLogger(__name__)
 

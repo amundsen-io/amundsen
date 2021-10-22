@@ -155,11 +155,11 @@ class JiraClientTest(unittest.TestCase):
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
-                         'JiraClient._get_user_from_id')
-    def test_create_returns_JIRAError(self, mock_get_user: Mock, mock_JIRA_client: Mock) -> None:
+                         'JiraClient._get_users_from_ids')
+    def test_create_returns_JIRAError(self, mock_get_users: Mock, mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.side_effect = JIRAError('Some exception')
         with app.test_request_context():
-            mock_get_user.return_value = self.mock_user
+            mock_get_users.return_value = [self.mock_user]
             try:
                 jira_client = JiraClient(issue_labels=[],
                                          issue_tracker_url=app.config['ISSUE_TRACKER_URL'],
@@ -182,10 +182,10 @@ class JiraClientTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
                          'JiraClient._get_issue_properties')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
-                         'JiraClient._get_user_from_id')
-    def test_create_issue(self, mock_get_user: Mock, mock_get_issue_properties: Mock, mock_JIRA_client: Mock) -> None:
+                         'JiraClient._get_users_from_ids')
+    def test_create_issue(self, mock_get_users: Mock, mock_get_issue_properties: Mock, mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.return_value = self.mock_issue
-        mock_get_user.return_value = self.mock_user
+        mock_get_users.return_value = [self.mock_user]
         mock_get_issue_properties.return_value = self.mock_issue_instance
         mock_labels = ['mock-label']
         with app.test_request_context():
@@ -212,11 +212,13 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "Reported By: test@email.com \n "
-                             "Table Key: key [PLEASE DO NOT REMOVE] \n "
-                             "Table URL: http://table \n "
+                             "*Reported By:* test@email.com \n "
+                             "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
+                             "*Table URL:* http://table \n\n "
+                             "*Owners and Frequent Users (added as Watchers):* \n "
                              "Table Owners:\n "
-                             "[test_full_name|https://profile] "),
+                             "[test_full_name|https://profile] \n "
+                             "Frequent Users: [test_full_name|https://profile]"),
                 priority={
                     'name': 'Major'
             }, reporter={'name': 'test'}))
@@ -225,13 +227,13 @@ class JiraClientTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
                          'JiraClient._get_issue_properties')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
-                         'JiraClient._get_user_from_id')
+                         'JiraClient._get_users_from_ids')
     def test_create_issue_with_inactive_owner(self,
-                                              mock_get_user: Mock,
+                                              mock_get_users: Mock,
                                               mock_get_issue_properties: Mock,
                                               mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.return_value = self.mock_issue
-        mock_get_user.return_value = self.mock_inactive_user
+        mock_get_users.return_value = [self.mock_inactive_user]
         mock_get_issue_properties.return_value = self.mock_issue_instance
         mock_labels = ['mock-label']
         with app.test_request_context():
@@ -258,11 +260,13 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "Reported By: test@email.com \n "
-                             "Table Key: key [PLEASE DO NOT REMOVE] \n "
-                             "Table URL: http://table \n "
+                             "*Reported By:* test@email.com \n "
+                             "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
+                             "*Table URL:* http://table \n\n "
+                             "*Owners and Frequent Users (added as Watchers):* \n "
                              "Table Owners:\n "
-                             "test_full_name (Alumni) \u2022 Manager: test_manager_name"),
+                             "test_full_name (Alumni) \u2022 Manager: test_manager_name \n "
+                             "Frequent Users: test_full_name"),
                 priority={
                     'name': 'Major'
             }, reporter={'name': 'test'}))
@@ -271,13 +275,13 @@ class JiraClientTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
                          'JiraClient._get_issue_properties')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
-                         'JiraClient._get_user_from_id')
-    def test_no_issue_comment(self,
-                              mock_get_user: Mock,
-                              mock_get_issue_properties: Mock,
-                              mock_JIRA_client: Mock) -> None:
+                         'JiraClient._get_users_from_ids')
+    def test_no_issue_watchers(self,
+                               mock_get_users: Mock,
+                               mock_get_issue_properties: Mock,
+                               mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.return_value = self.mock_issue
-        mock_get_user.return_value = self.mock_inactive_user
+        mock_get_users.return_value = [self.mock_inactive_user]
         mock_get_issue_properties.return_value = self.mock_issue_instance
         mock_labels = ['mock-label']
         with app.test_request_context():
@@ -294,19 +298,19 @@ class JiraClientTest(unittest.TestCase):
                                      table_uri='key',
                                      title='title',
                                      table_url='http://table')
-            mock_JIRA_client.return_value.add_comment.assert_not_called()
+            mock_JIRA_client.return_value.add_watcher.assert_not_called()
 
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
                          'JiraClient._get_issue_properties')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
-                         'JiraClient._get_user_from_id')
-    def test_issue_comment(self,
-                           mock_get_user: Mock,
-                           mock_get_issue_properties: Mock,
-                           mock_JIRA_client: Mock) -> None:
+                         'JiraClient._get_users_from_ids')
+    def test_add_issue_watchers(self,
+                                mock_get_users: Mock,
+                                mock_get_issue_properties: Mock,
+                                mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.return_value = self.mock_issue
-        mock_get_user.return_value = self.mock_user
+        mock_get_users.return_value = [self.mock_user]
         mock_get_issue_properties.return_value = self.mock_issue_instance
         mock_labels = ['mock-label']
         with app.test_request_context():
@@ -318,11 +322,11 @@ class JiraClientTest(unittest.TestCase):
                                      issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
             jira_client.create_issue(description='desc',
                                      owner_ids=['test@email.com'],
-                                     frequent_user_ids=['test@email.com', 'test@email.com'],
+                                     frequent_user_ids=[],
                                      priority_level='P2',
                                      table_uri='key',
                                      title='title',
                                      table_url='http://table')
-            mock_JIRA_client.return_value.add_comment.assert_called_with(
+            mock_JIRA_client.return_value.add_watcher.assert_called_with(
                 issue=self.mock_issue.key,
-                body="CC Table Owners: [~test] \nCC Frequent Users: [~test] [~test] ")
+                watcher='test')
