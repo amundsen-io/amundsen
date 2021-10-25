@@ -63,15 +63,15 @@ class GlueExtractor(Extractor):
                     ))
                     i += 1
 
-                yield TableMetadata(
-                    'glue',
-                    self._cluster,
-                    row['DatabaseName'],
-                    row['Name'],
-                    row.get('Description') or row.get('Parameters', {}).get('comment'),
-                    columns,
-                    row.get('TableType') == 'VIRTUAL_VIEW',
-                )
+            yield TableMetadata(
+                'glue',
+                self._cluster,
+                row['DatabaseName'],
+                row['Name'],
+                row.get('Description') or row.get('Parameters', {}).get('comment'),
+                columns,
+                row.get('TableType') == 'VIRTUAL_VIEW',
+            )
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
         """
@@ -87,6 +87,7 @@ class GlueExtractor(Extractor):
         if self._filters is not None:
             kwargs['Filters'] = self._filters
             kwargs['MaxResults'] = self._max_results
+        if self._resource_share_type:
             kwargs['ResourceShareType'] = self._resource_share_type
         data = self._glue.search_tables(**kwargs)
         tables += data['TableList']
