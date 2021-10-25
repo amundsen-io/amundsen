@@ -119,6 +119,14 @@ class JiraClient(BaseIssueTrackerClient):
             owners_description_str = self._generate_owners_description_str(owners)
             frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
 
+            table_users_description_title = ''
+            if owners_description_str and frequent_users_description_str:
+                table_users_description_title = '\n\n *Owners and Frequent Users (added as Watchers):* '
+            elif owners_description_str:
+                table_users_description_title = '\n\n *Owners (added as Watchers):* '
+            elif frequent_users_description_str:
+                table_users_description_title = '\n\n *Frequent Users (added as Watchers):* '
+
             issue = self.jira_client.create_issue(fields=dict(project={
                 'id': self.jira_project_id
             }, issuetype={
@@ -130,7 +138,7 @@ class JiraClient(BaseIssueTrackerClient):
                              f'\n *Reported By:* {user_email} '
                              f'\n *Table Key:* {table_uri} [PLEASE DO NOT REMOVE] '
                              f'\n *Table URL:* {table_url} '
-                             f'\n\n *Owners and Frequent Users (added as Watchers):* '
+                             f'{table_users_description_title}'
                              f'{owners_description_str + frequent_users_description_str}'),
                 priority={
                     'name': Priority.get_jira_severity_from_level(priority_level)
@@ -222,7 +230,7 @@ class JiraClient(BaseIssueTrackerClient):
             if response.status_code == HTTPStatus.OK:
                 user = load_user(response.json())
                 if user:
-                    users.append(load_user(response.json()))
+                    users.append(user)
         return users
 
     def _generate_owners_description_str(self, owners: List[User]) -> str:
@@ -254,23 +262,30 @@ class JiraClient(BaseIssueTrackerClient):
 
     def _generate_frequent_users_description_str(self, frequent_users: List[User]) -> str:
         """
-        Build a list of table frequent user information to add to the description of the ticket
+        Build a list of table frequent user information to add to the description of the ticket; this list will leave
+        out inactive frequent users
         :param frequent_users: List of users representing frequent users of the table
         :return: String of frequent users to append in the description
         """
         frequent_users_description_str = '\n Frequent Users: ' if frequent_users else ''
         user_details_list = []
-        inactive_user_details_list = []
         for user in frequent_users:
             if user.is_active and user.profile_url:
                 user_details_list.append((f'[{user.full_name if user.full_name else user.email}'
                                           f'|{user.profile_url}]'))
-            else:
-                inactive_user_details_list.append(f'{user.full_name if user.full_name else user.email}')
-        return frequent_users_description_str + ', '.join(filter(None, [', '.join(user_details_list),
-                                                                        ', '.join(inactive_user_details_list)]))
+        return frequent_users_description_str + ', '.join(user_details_list) if user_details_list else ''
 
     def _add_watchers_to_issue(self, issue_key: str, users: List[User]) -> None:
         for user in users:
             if user.is_active and user.full_name:
-                self.jira_client.add_watcher(issue=issue_key, watcher=user.email.split("@")[0])
+                # Detected by the jira client based on API version & deployment.
+                if self.jira_client.deploymentType == 'Cloud':
+                    try:
+                        jira_user = self.jira_client._fetch_pages(JiraUser, None, "user/search", 0, 1,
+                                                                  {'query': user.email})[0]
+                        self.jira_client.add_watcher(issue=issue_key, watcher=jira_user.accountId)
+                    except IndexError:
+                        logging.warn('Could not add frequent user {user_email} as a watcher on the issue.'
+                                     .format(user_email=user.email))
+                else:
+                    self.jira_client.add_watcher(issue=issue_key, watcher=user.email.split("@")[0])

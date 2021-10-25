@@ -244,8 +244,8 @@ class JiraClientTest(unittest.TestCase):
                                      issue_tracker_project_id=app.config['ISSUE_TRACKER_PROJECT_ID'],
                                      issue_tracker_max_results=app.config['ISSUE_TRACKER_MAX_RESULTS'])
             results = jira_client.create_issue(description='desc',
-                                               owner_ids=['test@email.com'],
-                                               frequent_user_ids=['test@email.com'],
+                                               owner_ids=['inactive@email.com'],
+                                               frequent_user_ids=['inactive@email.com'],
                                                priority_level='P2',
                                                table_uri='key',
                                                title='title',
@@ -263,10 +263,9 @@ class JiraClientTest(unittest.TestCase):
                              "*Reported By:* test@email.com \n "
                              "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
                              "*Table URL:* http://table \n\n "
-                             "*Owners and Frequent Users (added as Watchers):* \n "
+                             "*Owners (added as Watchers):* \n "
                              "Table Owners:\n "
-                             "test_full_name (Alumni) \u2022 Manager: test_manager_name \n "
-                             "Frequent Users: test_full_name"),
+                             "test_full_name (Alumni) \u2022 Manager: test_manager_name "),
                 priority={
                     'name': 'Major'
             }, reporter={'name': 'test'}))
