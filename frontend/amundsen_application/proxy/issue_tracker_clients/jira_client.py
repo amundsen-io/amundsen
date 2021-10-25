@@ -118,14 +118,8 @@ class JiraClient(BaseIssueTrackerClient):
 
             owners_description_str = self._generate_owners_description_str(owners)
             frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
-
-            table_users_description_title = ''
-            if owners_description_str and frequent_users_description_str:
-                table_users_description_title = '\n\n *Owners and Frequent Users (added as Watchers):* '
-            elif owners_description_str:
-                table_users_description_title = '\n\n *Owners (added as Watchers):* '
-            elif frequent_users_description_str:
-                table_users_description_title = '\n\n *Frequent Users (added as Watchers):* '
+            all_users_description_str = self._generate_all_table_users_description_str(owners_description_str,
+                                                                                       frequent_users_description_str)
 
             issue = self.jira_client.create_issue(fields=dict(project={
                 'id': self.jira_project_id
@@ -138,8 +132,7 @@ class JiraClient(BaseIssueTrackerClient):
                              f'\n *Reported By:* {user_email} '
                              f'\n *Table Key:* {table_uri} [PLEASE DO NOT REMOVE] '
                              f'\n *Table URL:* {table_url} '
-                             f'{table_users_description_title}'
-                             f'{owners_description_str + frequent_users_description_str}'),
+                             f'{all_users_description_str}'),
                 priority={
                     'name': Priority.get_jira_severity_from_level(priority_level)
             }, reporter=reporter))
@@ -275,7 +268,29 @@ class JiraClient(BaseIssueTrackerClient):
                                           f'|{user.profile_url}]'))
         return frequent_users_description_str + ', '.join(user_details_list) if user_details_list else ''
 
+    def _generate_all_table_users_description_str(self, owners_str: str, frequent_users_str: str) -> str:
+        """
+        Takes the generated owners and frequent users information and packages it up into one string for appending
+        to the ticket description
+        :param owners_str: Owner information
+        :param frequent_users_str: Frequent user information
+        :return: String including all table users (owners and frequent users) information to append to the description
+        """
+        table_users_description_title = ''
+        if owners_str and frequent_users_str:
+            table_users_description_title = '\n\n *Owners and Frequent Users (added as Watchers):* '
+        elif owners_str:
+            table_users_description_title = '\n\n *Owners (added as Watchers):* '
+        elif frequent_users_str:
+            table_users_description_title = '\n\n *Frequent Users (added as Watchers):* '
+        return table_users_description_title + owners_str + frequent_users_str
+
     def _add_watchers_to_issue(self, issue_key: str, users: List[User]) -> None:
+        """
+        Given an issue key and a list of users, add those users as watchers to the issue if they are active
+        :param issue_key: key representing an issue
+        :param users: list of users to add as watchers to the issue
+        """
         for user in users:
             if user.is_active and user.full_name:
                 # Detected by the jira client based on API version & deployment.
