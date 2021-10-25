@@ -10,6 +10,52 @@ from pyhocon import ConfigFactory
 from databuilder.extractor.glue_extractor import GlueExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
+test_table = {
+    'Name': 'test_table',
+    'DatabaseName': 'test_schema',
+    'Description': 'a table for testing',
+    'StorageDescriptor': {
+        'Columns': [
+            {
+                'Name': 'col_id1',
+                'Type': 'bigint',
+                'Comment': 'description of id1'
+            },
+            {
+                'Name': 'col_id2',
+                'Type': 'bigint',
+                'Comment': 'description of id2'
+            },
+            {
+                'Name': 'is_active',
+                'Type': 'boolean'
+            },
+            {
+                'Name': 'source',
+                'Type': 'varchar',
+                'Comment': 'description of source'
+            },
+            {
+                'Name': 'etl_created_at',
+                'Type': 'timestamp',
+                'Comment': 'description of etl_created_at'
+            },
+            {
+                'Name': 'ds',
+                'Type': 'varchar'
+            }
+        ]
+    },
+    'PartitionKeys': [
+        {
+            'Name': 'partition_key1',
+            'Type': 'string',
+            'Comment': 'description of partition_key1'
+        },
+    ],
+    'TableType': 'EXTERNAL_TABLE',
+}
+
 
 # patch whole class to avoid actually calling for boto3.client during tests
 @patch('databuilder.extractor.glue_extractor.boto3.client', lambda x: None)
@@ -98,51 +144,7 @@ class TestGlueExtractor(unittest.TestCase):
     def test_extraction_with_multiple_result(self) -> None:
         with patch.object(GlueExtractor, '_search_tables') as mock_search:
             mock_search.return_value = [
-                {
-                    'Name': 'test_table1',
-                    'DatabaseName': 'test_schema1',
-                    'Description': 'test table 1',
-                    'StorageDescriptor': {
-                        'Columns': [
-                            {
-                                'Name': 'col_id1',
-                                'Type': 'bigint',
-                                'Comment': 'description of col_id1'
-                            },
-                            {
-                                'Name': 'col_id2',
-                                'Type': 'bigint',
-                                'Comment': 'description of col_id2'
-                            },
-                            {
-                                'Name': 'is_active',
-                                'Type': 'boolean'
-                            },
-                            {
-                                'Name': 'source',
-                                'Type': 'varchar',
-                                'Comment': 'description of source'
-                            },
-                            {
-                                'Name': 'etl_created_at',
-                                'Type': 'timestamp',
-                                'Comment': 'description of etl_created_at'
-                            },
-                            {
-                                'Name': 'ds',
-                                'Type': 'varchar'
-                            }
-                        ]
-                    },
-                    'PartitionKeys': [
-                        {
-                            'Name': 'partition_key1',
-                            'Type': 'string',
-                            'Comment': 'description of partition_key1'
-                        },
-                    ],
-                    'TableType': 'EXTERNAL_TABLE',
-                },
+                test_table,
                 {
                     'Name': 'test_table2',
                     'DatabaseName': 'test_schema1',
@@ -243,51 +245,7 @@ class TestGlueExtractor(unittest.TestCase):
     def test_extraction_with_resource_link_result(self) -> None:
         with patch.object(GlueExtractor, '_search_tables') as mock_search:
             mock_search.return_value = [
-                {
-                    'Name': 'test_table',
-                    'DatabaseName': 'test_schema',
-                    'Description': 'a table for testing',
-                    'StorageDescriptor': {
-                        'Columns': [
-                            {
-                                'Name': 'col_id1',
-                                'Type': 'bigint',
-                                'Comment': 'description of id1'
-                            },
-                            {
-                                'Name': 'col_id2',
-                                'Type': 'bigint',
-                                'Comment': 'description of id2'
-                            },
-                            {
-                                'Name': 'is_active',
-                                'Type': 'boolean'
-                            },
-                            {
-                                'Name': 'source',
-                                'Type': 'varchar',
-                                'Comment': 'description of source'
-                            },
-                            {
-                                'Name': 'etl_created_at',
-                                'Type': 'timestamp',
-                                'Comment': 'description of etl_created_at'
-                            },
-                            {
-                                'Name': 'ds',
-                                'Type': 'varchar'
-                            }
-                        ]
-                    },
-                    'PartitionKeys': [
-                        {
-                            'Name': 'partition_key1',
-                            'Type': 'string',
-                            'Comment': 'description of partition_key1'
-                        },
-                    ],
-                    'TableType': 'EXTERNAL_TABLE',
-                },
+                test_table,
                 {
                     "Name": "test_resource_link",
                     "DatabaseName": "test_schema",
