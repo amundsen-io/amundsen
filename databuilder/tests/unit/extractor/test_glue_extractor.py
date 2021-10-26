@@ -210,9 +210,9 @@ class TestGlueExtractor(unittest.TestCase):
             extractor = GlueExtractor()
             extractor.init(self.conf)
 
-            expected = TableMetadata('glue', 'gold', 'test_schema1', 'test_table1', 'test table 1',
-                                     [ColumnMetadata('col_id1', 'description of col_id1', 'bigint', 0),
-                                      ColumnMetadata('col_id2', 'description of col_id2', 'bigint', 1),
+            expected = TableMetadata('glue', 'gold', 'test_schema', 'test_table', 'a table for testing',
+                                     [ColumnMetadata('col_id1', 'description of id1', 'bigint', 0),
+                                      ColumnMetadata('col_id2', 'description of id2', 'bigint', 1),
                                       ColumnMetadata('is_active', None, 'boolean', 2),
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
                                       ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
