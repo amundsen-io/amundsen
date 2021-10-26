@@ -292,15 +292,15 @@ class JiraClient(BaseIssueTrackerClient):
         :param users: list of users to add as watchers to the issue
         """
         for user in users:
-            if user.is_active and user.full_name:
-                # Detected by the jira client based on API version & deployment.
-                if self.jira_client.deploymentType == 'Cloud':
-                    try:
+            if user.is_active:
+                try:
+                    # Detected by the jira client based on API version & deployment.
+                    if self.jira_client.deploymentType == 'Cloud':
                         jira_user = self.jira_client._fetch_pages(JiraUser, None, "user/search", 0, 1,
                                                                   {'query': user.email})[0]
                         self.jira_client.add_watcher(issue=issue_key, watcher=jira_user.accountId)
-                    except IndexError:
-                        logging.warn('Could not add frequent user {user_email} as a watcher on the issue.'
-                                     .format(user_email=user.email))
-                else:
-                    self.jira_client.add_watcher(issue=issue_key, watcher=user.email.split("@")[0])
+                    else:
+                        self.jira_client.add_watcher(issue=issue_key, watcher=user.email.split("@")[0])
+                except (JIRAError, IndexError):
+                    logging.warning('Could not add user {user_email} as a watcher on the issue.'
+                                    .format(user_email=user.email))
