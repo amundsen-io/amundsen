@@ -52,16 +52,18 @@ class GlueExtractor(Extractor):
             columns, i = [], 0
 
             # Check if StorageDescriptor field is available in order to not break on resource links
-            if 'StorageDescriptor' in row:
-                for column in row['StorageDescriptor']['Columns'] \
-                        + row.get('PartitionKeys', []):
-                    columns.append(ColumnMetadata(
-                        column['Name'],
-                        column['Comment'] if 'Comment' in column else None,
-                        column['Type'],
-                        i
-                    ))
-                    i += 1
+            if not row.get('StorageDescriptor'):
+                continue
+
+            for column in row['StorageDescriptor']['Columns'] \
+                    + row.get('PartitionKeys', []):
+                columns.append(ColumnMetadata(
+                    column['Name'],
+                    column['Comment'] if 'Comment' in column else None,
+                    column['Type'],
+                    i
+                ))
+                i += 1
 
             yield TableMetadata(
                 'glue',
