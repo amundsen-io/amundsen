@@ -37,13 +37,13 @@ import {
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
   const { key, searchIndex, source } = action.payload;
   try {
-    const { data, owners, statusCode, tags } = yield call(
+    const { data, owners, stewards, statusCode, tags } = yield call(
       API.getTableData,
       key,
       searchIndex,
       source
     );
-    yield put(getTableDataSuccess(data, owners, statusCode, tags));
+    yield put(getTableDataSuccess(data, owners, stewards, statusCode, tags));
 
     try {
       const { dashboards } = yield call(API.getTableDashboards, key);

@@ -70,6 +70,7 @@ import FrequentUsers from './FrequentUsers';
 import LineageLink from './LineageLink';
 import LineageList from './LineageList';
 import TableOwnerEditor from './TableOwnerEditor';
+import TableStewardEditor from './TableStewardEditor';
 import SourceLink from './SourceLink';
 import TableDashboardResourceList from './TableDashboardResourceList';
 import TableDescEditableText from './TableDescEditableText';
@@ -365,6 +366,11 @@ export class TableDetail extends React.Component<
             data.source.source_type
           )}`
         : '';
+      const stewardEditText = data.source
+        ? `${Constants.EDIT_STEWARD_TEXT} ${getDescriptionSourceDisplayName(
+            data.source.source_type
+          )}`
+        : '';
       const editUrl = data.source ? data.source.source : '';
       const tableNotice = getResourceNotices(
         ResourceType.table,
@@ -464,7 +470,7 @@ export class TableDetail extends React.Component<
                       </time>
                     </section>
                   )}
-                  <section className="metadata-section">
+                  {/* <section className="metadata-section">
                     <div className="section-title">
                       {Constants.DATE_RANGE_TITLE}
                     </div>
@@ -475,6 +481,14 @@ export class TableDetail extends React.Component<
                       resourceType={ResourceType.table}
                       uriKey={tableData.key}
                     />
+                  </EditableSection> */}
+                  <EditableSection
+                    title={Constants.STEWARD_TITLE}
+                    readOnly={!data.is_editable}
+                    editText={stewardEditText}
+                    editUrl={editUrl || undefined}
+                  >
+                    <TableStewardEditor resourceType={ResourceType.table} />
                   </EditableSection>
                   {isTableQualityCheckEnabled() && (
                     <TableQualityChecksLabel tableKey={tableData.key} />

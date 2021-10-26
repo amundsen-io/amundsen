@@ -29,3 +29,4 @@ export interface PeopleUser {
 export type LoggedInUser = PeopleUser & {};
 
 export type OwnerDict = { [id: string]: User };
+export type StewardDict = { [id: string]: User };

@@ -10,6 +10,7 @@ import { UpdateTableOwner, UpdateTableOwnerRequest } from '../types';
 export function* updateTableOwnerWorker(
   action: UpdateTableOwnerRequest
 ): SagaIterator {
+  console.log('UpdateTableOwnerRequest', action);
   const { payload } = action;
   const state = yield select();
   const { tableData } = state.tableMetadata;

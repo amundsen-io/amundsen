@@ -253,6 +253,10 @@ const globalState: GlobalState = {
       isLoading: true,
       owners: {},
     },
+    tableStewards: {
+      isLoading: true,
+      stewards: {},
+    },
     tableQualityChecks: {
       status: null,
       isLoading: false,

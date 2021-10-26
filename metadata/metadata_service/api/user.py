@@ -210,7 +210,6 @@ class UserFollowAPI(Resource):
                                                                     resource_id,
                                                                     resource_type)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-
 class UserOwnsAPI(Resource):
     """
     Build get API to support user own resource features.
@@ -329,3 +328,91 @@ class UserReadsAPI(Resource):
         except Exception:
             LOGGER.exception('UserReadsAPI GET Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+class UserStewardsAPI(Resource):
+    """
+    Build get API to support user is resource's steward features.
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/user/steward_get.yml')
+    def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
+        """
+        Return a list of resources that user is steward
+
+        :param user_id:
+        :return:
+        """
+        try:
+            table_key = ResourceType.Table.name.lower()
+            dashboard_key = ResourceType.Dashboard.name.lower()
+            result = {
+                table_key: [],
+                dashboard_key: []
+            }  # type: Dict[str, List[Any]]
+
+            resources = self.client.get_table_by_user_relation(user_email=user_id,
+                                                               relation_type=UserResourceRel.steward)
+            if resources and table_key in resources and len(resources[table_key]) > 0:
+                result[table_key] = PopularTableSchema().dump(resources[table_key], many=True)
+
+            resources = self.client.get_dashboard_by_user_relation(user_email=user_id,
+                                                                   relation_type=UserResourceRel.steward)
+
+            if resources and dashboard_key in resources and len(resources[dashboard_key]) > 0:
+                result[dashboard_key] = DashboardSummarySchema().dump(resources[dashboard_key], many=True)
+
+            return result, HTTPStatus.OK
+
+        except NotFoundException:
+            return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
+
+        except Exception:
+            LOGGER.exception('UserOwnAPI GET Failed')
+            return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+class UserStewardAPI(Resource):
+    """
+    Build put / delete API to support user own resource features.
+    It will create a relationship(steward / steward_of) between user and resources(table, dashboard etc)
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/user/steward_put.yml')
+    def put(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        """
+        Create the follow relationship between user and resources.
+
+        :param user_id:
+        :param resource_type:
+        :param table_uri:
+        :return:
+        """
+        try:
+            self.client.add_steward(table_uri=table_uri, steward=user_id)
+            return {'message': 'The steward {} for table_uri {} '
+                               'is added successfully'.format(user_id,
+                                                              table_uri)}, HTTPStatus.OK
+        except Exception as e:
+            LOGGER.exception('UserStewardAPI PUT Failed')
+            return {'message': 'The steward {} for table_uri {} '
+                               'is not added successfully'.format(user_id,
+                                                                  table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+    @swag_from('swagger_doc/user/steward_delete.yml')
+    def delete(self, user_id: str, resource_type: str, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.delete_steward(table_uri=table_uri, steward=user_id)
+            return {'message': 'The steward {} for table_uri {} '
+                               'is deleted successfully'.format(user_id,
+                                                                table_uri)}, HTTPStatus.OK
+        except Exception:
+            LOGGER.exception('UserStewardAPI DELETE Failed')
+            return {'message': 'The steward {} for table_uri {} '
+                               'is not deleted successfully'.format(user_id,
+                                                                    table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR

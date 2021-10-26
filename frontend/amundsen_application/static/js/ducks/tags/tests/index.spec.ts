@@ -249,7 +249,7 @@ describe('tags ducks', () => {
       expect(
         reducer(
           testState,
-          getTableDataSuccess(mockTableData, {}, 200, expectedTags)
+          getTableDataSuccess(mockTableData, {}, {}, 200, expectedTags)
         )
       ).toEqual({
         ...testState,

@@ -67,6 +67,8 @@ class Config:
     WHITELIST_BADGES: List[Badge] = [ 
         Badge(badge_name='pii',
           category='table_status'),
+        Badge(badge_name='br',
+          category='table_status'),
           ]
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
