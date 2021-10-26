@@ -93,10 +93,10 @@ class Config:
 
     # Settings for Issue tracker integration
     ISSUE_LABELS = ['Pharos']  # type: List[str]
-    ISSUE_TRACKER_API_TOKEN = 'd2uQtWr67Yf11uYB31Vu589E'  # type: str
+    ISSUE_TRACKER_API_TOKEN = '********'  # type: str
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
     ISSUE_TRACKER_USER = 'data.engineer@ztech.net'  # type: str
-    ISSUE_TRACKER_PASSWORD = 'd2uQtWr67Yf11uYB31Vu589E'  # type: str
+    ISSUE_TRACKER_PASSWORD = '********'  # type: str
     ISSUE_TRACKER_PROJECT_ID = 10318  # type: int
     # Maps to a class path and name
     # ISSUE_TRACKER_CLIENT = "amundsen_application.base.base_jira_issue_tracker_client:JiraIssueTrackerClient"  # type: str
@@ -149,7 +149,7 @@ class LocalConfig(Config):
     LOG_LEVEL = 'DEBUG'
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
     ISSUE_TRACKER_USER = 'data.engineer@ztech.net'  # type: str
-    ISSUE_TRACKER_PASSWORD = 'd2uQtWr67Yf11uYB31Vu589E'  # type: str
+    ISSUE_TRACKER_PASSWORD = '********'  # type: str
     ISSUE_TRACKER_PROJECT_ID = 10318
     ISSUE_TRACKER_CLIENT_ENABLED = True
     ISSUE_TRACKER_MAX_RESULTS = 3
@@ -189,7 +189,7 @@ class TestConfig(LocalConfig):
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'https://z-tech.atlassian.net'  # type: str
     ISSUE_TRACKER_USER = 'data.engineer@ztech.net'  # type: str
-    ISSUE_TRACKER_PASSWORD = 'd2uQtWr67Yf11uYB31Vu589E'  # type: str
+    ISSUE_TRACKER_PASSWORD = '********'  # type: str
     ISSUE_TRACKER_PROJECT_ID = 10318
     ISSUE_TRACKER_CLIENT_ENABLED = True
     ISSUE_TRACKER_MAX_RESULTS = 3

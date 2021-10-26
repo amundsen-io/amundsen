@@ -61,7 +61,9 @@ class DatabricksPreviewClient(BasePreviewClient):
             i = 0
             columns = []
             for c in _columns:
-                columns.append(ColumnItem(c[0], c[1]))
+                if i < 7:
+                    columns.append(ColumnItem(c[0], c[1]))
+                i = i + 1
             preview_data = PreviewData(columns, results)
             try:
                 data = PreviewDataSchema().dump(preview_data)

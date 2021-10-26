@@ -51,6 +51,7 @@ export const PreviewDataTable: React.FC<PreviewDataProps> = ({
   isLoading,
   previewData,
 }) => {
+  console.log('previewData', previewData);
   if (isLoading) {
     return <PreviewDataLoader />;
   }
