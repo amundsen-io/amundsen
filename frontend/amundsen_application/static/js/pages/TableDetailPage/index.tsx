@@ -458,6 +458,15 @@ export class TableDetail extends React.Component<
               )}
               <section className="column-layout-2">
                 <section className="left-panel">
+                  <EditableSection
+                    title={Constants.STEWARD_TITLE}
+                    readOnly={!data.is_editable}
+                    editText={stewardEditText}
+                    editUrl={editUrl || undefined}
+                  >
+                    <TableStewardEditor resourceType={ResourceType.table} />
+                  </EditableSection>
+
                   {!!data.last_updated_timestamp && (
                     <section className="metadata-section">
                       <div className="section-title">
@@ -482,14 +491,7 @@ export class TableDetail extends React.Component<
                       uriKey={tableData.key}
                     />
                   </EditableSection> */}
-                  <EditableSection
-                    title={Constants.STEWARD_TITLE}
-                    readOnly={!data.is_editable}
-                    editText={stewardEditText}
-                    editUrl={editUrl || undefined}
-                  >
-                    <TableStewardEditor resourceType={ResourceType.table} />
-                  </EditableSection>
+
                   {isTableQualityCheckEnabled() && (
                     <TableQualityChecksLabel tableKey={tableData.key} />
                   )}

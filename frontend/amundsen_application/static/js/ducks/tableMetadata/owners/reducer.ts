@@ -69,7 +69,6 @@ export default function reducer(
         owners: (<GetTableDataResponse>action).payload.owners,
       };
     case UpdateTableOwner.REQUEST:
-      console.log('UpdateTableOwner.REQUEST:');
       return { ...state, isLoading: true };
     case UpdateTableOwner.FAILURE:
     case UpdateTableOwner.SUCCESS:

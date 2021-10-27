@@ -13,7 +13,6 @@ import { UpdateTableSteward, UpdateTableStewardRequest } from '../types';
 export function* updateTableStewardWorker(
   action: UpdateTableStewardRequest
 ): SagaIterator {
-  console.log('action steward', action);
   const { payload } = action;
   const state = yield select();
   const { tableData } = state.tableMetadata;
@@ -38,6 +37,5 @@ export function* updateTableStewardWorker(
   }
 }
 export function* updateTableStewardWatcher(): SagaIterator {
-  console.log('updateTableStewardWatcher');
   yield takeEvery(UpdateTableSteward.REQUEST, updateTableStewardWorker);
 }

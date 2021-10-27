@@ -16,7 +16,6 @@ import StewardEditor, {
 import { indexUsersEnabled } from 'config/config-utils';
 
 export const mapStateToProps = (state: GlobalState) => {
-  console.log(state.tableMetadata);
   const stewardObj = state.tableMetadata.tableStewards.stewards;
   const items = Object.keys(stewardObj).reduce((obj, stewardId) => {
     const { profile_url, user_id, display_name } = stewardObj[stewardId];

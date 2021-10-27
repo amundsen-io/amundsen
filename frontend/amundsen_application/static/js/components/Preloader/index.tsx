@@ -25,7 +25,6 @@ export class Preloader extends React.Component<PreloaderProps> {
   componentDidMount() {
     // this.props.getLoggedInUser();
     callMsGraph().then((response) => {
-      console.log('response from ad', response);
       const user = {
         last_login: new Date().toUTCString(),
         name: response.displayName,

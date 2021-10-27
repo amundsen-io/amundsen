@@ -14,7 +14,6 @@ export function updateTableSteward(
   onSuccess?: () => any,
   onFailure?: () => any
 ): UpdateTableStewardRequest {
-  console.log('updateTableSteward', updateArray);
   return {
     payload: {
       onSuccess,
@@ -70,7 +69,6 @@ export default function reducer(
         stewards: (<GetTableDataResponse>action).payload.stewards,
       };
     case UpdateTableSteward.REQUEST:
-      console.log('UpdateTableSteward.REQUEST:');
       return { ...state, isLoading: true };
     case UpdateTableSteward.FAILURE:
     case UpdateTableSteward.SUCCESS:
