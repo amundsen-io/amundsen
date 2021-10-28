@@ -28,6 +28,11 @@ const configCustom: AppConfigCustom = {
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
+    projectSelection: {
+      enabled: false,
+      title: 'Issue project key (optional)',
+      inputHint: '',
+    },
   },
 };
 

@@ -30,6 +30,7 @@ class BaseIssueTrackerClient(abc.ABC):
                      owner_ids: List[str],
                      frequent_user_ids: List[str],
                      priority_level: str,
+                     project_key: str,
                      table_url: str) -> DataIssue:
         """
         Given a title, description, and table key, creates a ticket in the configured project
@@ -39,6 +40,7 @@ class BaseIssueTrackerClient(abc.ABC):
         :param owner_ids: List of user ids that represent the owners of the table
         :param frequent_user_ids: List of user ids that represent the frequent users of the table
         :param priority_level: Priority level for the ticket
+        :param project_key: Issue tracking project key to specify where the ticket should be created
         :param table_uri: Table URI ie databasetype://database/table
         :param title: Title of the ticket
         :param table_url: Link to access the table

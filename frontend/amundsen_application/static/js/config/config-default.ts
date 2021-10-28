@@ -1,6 +1,5 @@
-import { AppConfig } from './config-types';
-
 import { FilterType, ResourceType, SortDirection } from '../interfaces';
+import { AppConfig } from './config-types';
 
 const configDefault: AppConfig = {
   badges: {},
@@ -34,6 +33,11 @@ const configDefault: AppConfig = {
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
+    projectSelection: {
+      enabled: false,
+      title: 'Issue project key (optional)',
+      inputHint: '',
+    },
   },
   logoPath: null,
   logoTitle: 'AMUNDSEN',

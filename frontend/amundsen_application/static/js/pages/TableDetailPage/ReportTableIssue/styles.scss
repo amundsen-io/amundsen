@@ -28,8 +28,9 @@
     margin: 5px 0 0;
   }
 
-  .report-table-issue-buttons {
+  .submit-row {
     display: flex;
+    gap: 40px;
     justify-content: space-between;
   }
 }

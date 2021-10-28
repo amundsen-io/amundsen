@@ -31,7 +31,10 @@ export interface GetIssuesResponse {
   payload: {
     issues: Issue[];
     total?: number;
+    openCount?: number;
     allIssuesUrl?: string;
+    openIssuesUrl?: string;
+    closedIssuesUrl?: string;
   };
 }
 

@@ -54,7 +54,10 @@ class AsanaClient(BaseIssueTrackerClient):
                 self._asana_task_to_amundsen_data_issue(task) for task in tasks
             ],
             total=len(tasks),
+            open_count=0,
             all_issues_url=self._task_url(table_parent_task_gid),
+            open_issues_url='',
+            closed_issues_url=''
         )
 
     def create_issue(self,
@@ -64,6 +67,7 @@ class AsanaClient(BaseIssueTrackerClient):
                      owner_ids: List[str],
                      frequent_user_ids: List[str],
                      priority_level: str,
+                     project_key: str,
                      table_url: str) -> DataIssue:
         """
         Creates an issue in Asana
@@ -71,6 +75,7 @@ class AsanaClient(BaseIssueTrackerClient):
         :param owner_ids: List of user ids that represent the owners of the table
         :param frequent_user_ids: List of user ids that represent the frequent users of the table
         :param priority_level: Priority level for the ticket
+        :param project_key: Issue tracking project key to specify where the ticket should be created
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Asana ticket
         :param table_url: Link to access the table
