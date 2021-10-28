@@ -1,0 +1,18 @@
+Table search
+This is used by the frontend API to search resources information.
+---
+tags:
+  - 'search_resources'
+responses:
+  200:
+    description: table result information with query string
+    content:
+      application/json:
+        schema:
+          type: object
+  500:
+    description: Exception encountered while searching
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
