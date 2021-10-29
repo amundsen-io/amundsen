@@ -11,7 +11,11 @@ import { getIssues } from 'ducks/issue/reducer';
 import { GetIssuesRequest } from 'ducks/issue/types';
 import { logClick } from 'utils/analytics';
 import ReportTableIssue from '../ReportTableIssue';
-import { ISSUES_TITLE, NO_DATA_ISSUES_TEXT, CREATE_ISSUE_ERROR_TEXT } from './constants';
+import {
+  ISSUES_TITLE,
+  NO_DATA_ISSUES_TEXT,
+  CREATE_ISSUE_ERROR_TEXT,
+} from './constants';
 import './styles.scss';
 
 export interface StateFromProps {
