@@ -108,7 +108,7 @@ $shimmer-loader-lines: 1, 2;
   margin-bottom: $spacer-1;
   margin-right: $spacer-1;
 
-  &.ml-1 {
+  &.last-item {
     margin-left: $spacer-1;
   }
 }
@@ -121,7 +121,7 @@ $shimmer-loader-lines: 1, 2;
 .table-report-new-issue {
   margin-bottom: $spacer-1;
 
-  &.ml-1 {
+  &.last-item {
     margin-left: $spacer-1;
   }
 }

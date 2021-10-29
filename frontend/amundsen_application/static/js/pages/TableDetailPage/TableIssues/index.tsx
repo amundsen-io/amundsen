@@ -11,7 +11,7 @@ import { getIssues } from 'ducks/issue/reducer';
 import { GetIssuesRequest } from 'ducks/issue/types';
 import { logClick } from 'utils/analytics';
 import ReportTableIssue from '../ReportTableIssue';
-import { NO_DATA_ISSUES_TEXT } from './constants';
+import { ISSUES_TITLE, NO_DATA_ISSUES_TEXT, CREATE_ISSUE_ERROR_TEXT } from './constants';
 import './styles.scss';
 
 export interface StateFromProps {
@@ -78,8 +78,8 @@ export class TableIssues extends React.Component<TableIssueProps> {
     const { createIssueFailure } = this.props;
 
     const createIssueErrorMsg = createIssueFailure ? (
-      <span className="section-title title-3 create-issue-error">
-        Could not create issue!
+      <span className="section-title create-issue-error">
+        {CREATE_ISSUE_ERROR_TEXT}
       </span>
     ) : (
       ''
@@ -87,7 +87,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
 
     return (
       <div className="table-issues-header">
-        <span className="section-title title-3">Issues</span>
+        <span className="section-title">{ISSUES_TITLE}</span>
         {createIssueErrorMsg}
       </div>
     );
@@ -119,7 +119,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
     const hasIssues = issues.length !== 0 || totalCount > 0;
 
     const reportIssueLink = (
-      <div className={`table-report-new-issue ${hasIssues ? 'ml-1' : ''}`}>
+      <div className={`table-report-new-issue ${hasIssues ? 'last-item' : ''}`}>
         <ReportTableIssue tableKey={tableKey} tableName={tableName} />
       </div>
     );
@@ -144,7 +144,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
           |
           <a
             id="closed-issues-link"
-            className="table-issue-more-issues ml-1"
+            className="table-issue-more-issues last-item"
             target="_blank"
             rel="noreferrer"
             href={closedIssuesUrl}
