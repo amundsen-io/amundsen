@@ -113,8 +113,8 @@ export class TableIssues extends React.Component<TableIssueProps> {
       total,
       openCount,
     } = this.props;
-    const totalCount = total ? total : 0;
-    const openIssueCount = openCount ? openCount : 0;
+    const totalCount = total || 0;
+    const openIssueCount = openCount || 0;
     const closedIssueCount = totalCount - openIssueCount;
     const hasIssues = issues.length !== 0 || totalCount > 0;
 
@@ -127,6 +127,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
     if (!hasIssues) {
       return reportIssueLink;
     }
+
     if (openIssuesUrl && closedIssuesUrl) {
       return (
         <span className="table-more-issues" key="more-issue-link">
@@ -154,23 +155,23 @@ export class TableIssues extends React.Component<TableIssueProps> {
           |{reportIssueLink}
         </span>
       );
-    } else {
-      return (
-        <span className="table-more-issues" key="more-issue-link">
-          <a
-            id="more-issues-link"
-            className="table-issue-more-issues"
-            target="_blank"
-            rel="noreferrer"
-            href={allIssuesUrl}
-            onClick={logClick}
-          >
-            View all {total} issues
-          </a>
-          |{reportIssueLink}
-        </span>
-      );
     }
+
+    return (
+      <span className="table-more-issues" key="more-issue-link">
+        <a
+          id="more-issues-link"
+          className="table-issue-more-issues"
+          target="_blank"
+          rel="noreferrer"
+          href={allIssuesUrl}
+          onClick={logClick}
+        >
+          View all {total} issues
+        </a>
+        |{reportIssueLink}
+      </span>
+    );
   };
 
   render() {
