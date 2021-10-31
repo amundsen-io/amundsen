@@ -33,7 +33,8 @@ athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 bigquery = [
     'google-api-python-client>=1.6.0, <2.0.0dev',
     'google-auth-httplib2>=0.0.1',
-    'google-auth>=1.0.0, <2.0.0dev'
+    'google-auth>=1.0.0, <2.0.0dev',
+    'google-cloud-bigquery>=2.29.0'
 ]
 
 jsonpath = ['jsonpath_rw==1.4.0']
