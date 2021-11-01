@@ -10,8 +10,9 @@
   .badge-list {
     display: block;
     font-weight: $font-weight-body-regular;
-    margin-top: $spacer-3;
+    margin-top: $spacer-2;
     margin-bottom: $spacer-2;
+    line-height: 2em;
   }
 }
 
