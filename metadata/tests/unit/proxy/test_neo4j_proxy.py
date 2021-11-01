@@ -16,9 +16,10 @@ from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
-                                          ProgrammaticDescription, Source,
-                                          SqlJoin, SqlWhere, Stat, Table,
-                                          TableSummary, Tag, User, Watermark)
+                                          ProgrammaticDescription,
+                                          ResourceReport, Source, SqlJoin,
+                                          SqlWhere, Stat, Table, TableSummary,
+                                          Tag, User, Watermark)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
@@ -87,6 +88,12 @@ class TestNeo4jProxy(unittest.TestCase):
                 'name': 'Airflow',
                 'id': 'dag/task_id'
             },
+            'resource_reports': [
+                {
+                    'name': 'test_report',
+                    'url': 'https://test.report/index.html'
+                }
+            ],
             'last_updated_timestamp': 1,
             'owner_records': [
                 {
@@ -263,6 +270,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
                              ],
+                             resource_reports=[
+                                 ResourceReport(name='test_report', url='https://test.report/index.html')
+                             ],
                              common_joins=[
                                  SqlJoin(
                                      join_sql=(
@@ -340,6 +350,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          text='Test Test'),
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
+                             ],
+                             resource_reports=[
+                                 ResourceReport(name='test_report', url='https://test.report/index.html')
                              ],
                              common_joins=[
                                  SqlJoin(
@@ -764,6 +777,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'employee_type': 'teamMember',
                     'full_name': 'test_full_name',
                     'is_active': 'True',
+                    'profile_url': 'test_profile',
                     'github_username': 'test-github',
                     'slack_id': 'test_id',
                     'last_name': 'test_last_name',
@@ -786,6 +800,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'employee_type': 'teamMember',
                     'full_name': 'test_full_name',
                     'is_active': 'True',
+                    'profile_url': 'test_profile',
                     'github_username': 'test-github',
                     'slack_id': 'test_id',
                     'last_name': 'test_last_name',
@@ -827,6 +842,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
                 'is_active': True,
+                'profile_url': 'test_profile',
                 'github_username': 'test-github',
                 'slack_id': 'test_id',
                 'last_name': 'test_last_name',
@@ -840,6 +856,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                       last_name='test_last_name',
                                       full_name='test_full_name',
                                       is_active=True,
+                                      profile_url='test_profile',
                                       github_username='test-github',
                                       team_name='test_team',
                                       slack_id='test_id',
@@ -854,6 +871,7 @@ class TestNeo4jProxy(unittest.TestCase):
             for attr in ['employee_type',
                          'full_name',
                          'is_active',
+                         'profile_url',
                          'github_username',
                          'slack_id',
                          'last_name',
@@ -996,6 +1014,7 @@ class TestNeo4jProxy(unittest.TestCase):
                             'employee_type': 'teamMember',
                             'full_name': 'test_full_name',
                             'is_active': True,
+                            'profile_url': 'test_profile',
                             'github_username': 'test-github',
                             'slack_id': 'test_id',
                             'last_name': 'test_last_name',
@@ -1007,6 +1026,7 @@ class TestNeo4jProxy(unittest.TestCase):
                             'employee_type': 'teamMember',
                             'full_name': 'test_full_name2',
                             'is_active': True,
+                            'profile_url': 'test_profile',
                             'github_username': 'test-github2',
                             'slack_id': 'test_id2',
                             'last_name': 'test_last_name2',
@@ -1089,6 +1109,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     first_name='test_first_name',
                                                     last_name='test_last_name',
                                                     full_name='test_full_name', is_active=True,
+                                                    profile_url='test_profile',
                                                     github_username='test-github',
                                                     team_name='test_team', slack_id='test_id',
                                                     employee_type='teamMember', manager_fullname=None),
@@ -1096,6 +1117,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     first_name='test_first_name2',
                                                     last_name='test_last_name2',
                                                     full_name='test_full_name2', is_active=True,
+                                                    profile_url='test_profile',
                                                     github_username='test-github2',
                                                     team_name='test_team2', slack_id='test_id2',
                                                     employee_type='teamMember', manager_fullname=None)],

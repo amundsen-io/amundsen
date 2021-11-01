@@ -20,6 +20,7 @@ import {
   UserSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
+import { logClick } from 'utils/analytics';
 import {
   DASHBOARD_RESOURCE_TITLE,
   FEATURE_RESOURCE_TITLE,
@@ -61,7 +62,14 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
           type="radio"
           name="resource"
           value={option.type}
+          aria-label={option.type}
           checked={this.props.resource === option.type}
+          onClick={(e) =>
+            logClick(e, {
+              target_id: 'search_resource_selector',
+              value: option.type,
+            })
+          }
           onChange={this.onChange}
         />
         <span className="subtitle-2">{option.label}</span>

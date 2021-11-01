@@ -1,0 +1,3 @@
+name,url,resource_uri,resource_label
+Advanced Profile,https://pandas-profiling.github.io/pandas-profiling/examples/master/census/census_report.html,hive://gold.test_schema/test_table1,Table
+

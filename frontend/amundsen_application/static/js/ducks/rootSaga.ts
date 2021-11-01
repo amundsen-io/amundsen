@@ -1,5 +1,8 @@
 import { all } from 'redux-saga/effects';
 
+// Badge
+import { getAllBadgesWatcher } from 'ducks/badges/sagas';
+
 // AnnouncementPage
 
 import {
@@ -153,5 +156,7 @@ export default function* rootSaga() {
     getTableLineageWatcher(),
     getColumnLineageWatcher(),
     getTableColumnLineageWatcher(),
+    // Badges
+    getAllBadgesWatcher(),
   ]);
 }

@@ -15,7 +15,7 @@
 
 common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk
 databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dorianj @verdan @mgorsk1 @youngyjd @dechoma @sewardgw @dkunitsk
-frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj @verdan @mgorsk1 @sewardgw @youngyjd
-frontend/*.py    @ttannis @feng-tao @allisonsuarez @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dkunitsk
+frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dechoma
+frontend/*.py    @ttannis @feng-tao @allisonsuarez @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dkunitsk @dechoma
 metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk
 search/*.py      @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk

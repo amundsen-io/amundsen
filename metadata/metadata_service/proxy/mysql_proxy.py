@@ -162,6 +162,7 @@ class MySQLProxy(BaseProxy):
                           last_name=user_record.last_name,
                           full_name=user_record.full_name,
                           is_active=user_record.is_active if user_record.is_active else False,
+                          profile_url=user_record.profile_url,
                           github_username=user_record.github_username,
                           team_name=user_record.team_name,
                           slack_id=user_record.slack_id,

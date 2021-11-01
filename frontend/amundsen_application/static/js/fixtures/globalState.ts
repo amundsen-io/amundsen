@@ -297,6 +297,16 @@ const globalState: GlobalState = {
       tags: [],
     },
   },
+  badges: {
+    allBadges: {
+      isLoading: false,
+      badges: [
+        {
+          badge_name: 'rangers_walker_badge',
+        },
+      ],
+    },
+  },
   user: {
     loggedInUser: {
       display_name: 'firstname lastname',
