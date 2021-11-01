@@ -21,7 +21,12 @@ class GlueExtractor(Extractor):
     FILTER_KEY = 'filters'
     MAX_RESULTS_KEY = 'max_results'
     RESOURCE_SHARE_TYPE = 'resource_share_type'
-    DEFAULT_CONFIG = ConfigFactory.from_dict({CLUSTER_KEY: 'gold', FILTER_KEY: None, MAX_RESULTS_KEY: 500, RESOURCE_SHARE_TYPE: "ALL"})
+    DEFAULT_CONFIG = ConfigFactory.from_dict({
+        CLUSTER_KEY: 'gold',
+        FILTER_KEY: None,
+        MAX_RESULTS_KEY: 500,
+        RESOURCE_SHARE_TYPE: "ALL"
+    })
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
@@ -56,7 +61,7 @@ class GlueExtractor(Extractor):
                 continue
 
             for column in row['StorageDescriptor']['Columns'] \
-                    + row.get('PartitionKeys', []):
+                          + row.get('PartitionKeys', []):
                 columns.append(ColumnMetadata(
                     column['Name'],
                     column['Comment'] if 'Comment' in column else None,
