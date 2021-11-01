@@ -40,6 +40,7 @@ export function getTableDataFromResponseData(
 ): TableMetadata {
   return filterFromObj(responseData.tableData, [
     'owners',
+    'stewards',
     'tags',
   ]) as TableMetadata;
 }
@@ -56,6 +57,23 @@ export function createOwnerNotificationData(
       payload.method === UpdateMethod.PUT
         ? NotificationType.OWNER_ADDED
         : NotificationType.OWNER_REMOVED,
+    options: {
+      resource_name: `${tableData.schema}.${tableData.name}`,
+      resource_path: `/table_detail/${tableData.cluster}/${tableData.database}/${tableData.schema}/${tableData.name}`,
+    },
+    recipients: [payload.id],
+  };
+}
+
+export function createStewardNotificationData(
+  payload: UpdateOwnerPayload,
+  tableData: TableMetadata
+) {
+  return {
+    notificationType:
+      payload.method === UpdateMethod.PUT
+        ? NotificationType.STEWARD_ADDED
+        : NotificationType.STEWARD_REMOVED,
     options: {
       resource_name: `${tableData.schema}.${tableData.name}`,
       resource_path: `/table_detail/${tableData.cluster}/${tableData.database}/${tableData.schema}/${tableData.name}`,

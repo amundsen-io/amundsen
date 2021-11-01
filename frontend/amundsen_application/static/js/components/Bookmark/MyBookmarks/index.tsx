@@ -24,6 +24,7 @@ import {
 import './styles.scss';
 
 interface StateFromProps {
+  userId: string;
   myBookmarks: ResourceDict<Bookmark[]>;
   isLoaded: boolean;
 }
@@ -102,6 +103,7 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
 }
 
 export const mapStateToProps = (state: GlobalState) => ({
+  userId: state.user.profile.user.email,
   myBookmarks: state.bookmarks.myBookmarks,
   isLoaded: state.bookmarks.myBookmarksIsLoaded,
 });

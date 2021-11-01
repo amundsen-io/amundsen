@@ -1,6 +1,7 @@
 import {
   DashboardResource,
   OwnerDict,
+  StewardDict,
   PreviewData,
   TablePreviewQueryParams,
   TableMetadata,
@@ -33,12 +34,18 @@ import {
   UpdateTableDescription,
   UpdateTableDescriptionRequest,
   UpdateTableOwner,
+  UpdateTableSteward,
 } from './types';
 
 import tableOwnersReducer, {
   initialOwnersState,
   TableOwnerReducerState,
 } from './owners/reducer';
+
+import tableStewardsReducer, {
+  initialStewardsState,
+  TableStewardReducerState,
+} from './stewards/reducer';
 
 export const initialPreviewState = {
   data: {},
@@ -86,6 +93,7 @@ export const initialState: TableMetadataReducerState = {
   statusCode: null,
   tableData: initialTableDataState,
   tableOwners: initialOwnersState,
+  tableStewards: initialStewardsState,
   tableQualityChecks: initialQualityChecksState,
 };
 
@@ -110,6 +118,7 @@ export function getTableDataFailure(): GetTableDataResponse {
     payload: {
       data: initialTableDataState,
       owners: {},
+      stewards: {},
       statusCode: 500,
       tags: [],
     },
@@ -118,6 +127,7 @@ export function getTableDataFailure(): GetTableDataResponse {
 export function getTableDataSuccess(
   data: TableMetadata,
   owners: OwnerDict,
+  stewards: StewardDict,
   statusCode: number,
   tags: Tag[]
 ): GetTableDataResponse {
@@ -126,6 +136,7 @@ export function getTableDataSuccess(
     payload: {
       data,
       owners,
+      stewards,
       statusCode,
       tags,
     },
@@ -340,6 +351,7 @@ export interface TableMetadataReducerState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableOwners: TableOwnerReducerState;
+  tableStewards: TableStewardReducerState;
   tableQualityChecks: {
     status: number | null;
     isLoading: boolean;
@@ -371,6 +383,7 @@ export default function reducer(
         statusCode: (<GetTableDataResponse>action).payload.statusCode,
         tableData: initialTableDataState,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
+        tableStewards: tableStewardsReducer(state.tableStewards, action),
       };
     case GetTableData.SUCCESS:
       return {
@@ -379,6 +392,7 @@ export default function reducer(
         statusCode: (<GetTableDataResponse>action).payload.statusCode,
         tableData: (<GetTableDataResponse>action).payload.data,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
+        tableStewards: tableStewardsReducer(state.tableStewards, action),
       };
     case GetTableDescription.FAILURE:
     case GetTableDescription.SUCCESS:
@@ -401,6 +415,11 @@ export default function reducer(
       return {
         ...state,
         tableOwners: tableOwnersReducer(state.tableOwners, action),
+      };
+    case UpdateTableSteward.SUCCESS:
+      return {
+        ...state,
+        tableStewards: tableStewardsReducer(state.tableStewards, action),
       };
     case GetTableQualityChecks.REQUEST:
       return {

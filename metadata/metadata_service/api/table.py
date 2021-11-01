@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+import logging
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Optional, Union
 
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.lineage import LineageSchema
 from amundsen_common.models.table import TableSchema
+from amundsen_common.models.user import UserSchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -32,8 +34,22 @@ class TableDetailAPI(Resource):
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             table = self.client.get_table(table_uri=table_uri)
+
+            userSchema = UserSchema()
+            stewards = vars(table)["stewards"]
+            logging.warning(stewards)
+            _stewards = []
+            for steward in stewards:
+                _stewards.append(vars(steward))
+
+            logging.warning(_stewards)
             schema = TableSchema()
-            return schema.dump(table), HTTPStatus.OK
+            returnObject = schema.dump(table)
+
+            # logging.warning(returnObject)
+            returnObject["stewards"] = _stewards
+            logging.warning(returnObject)
+            return returnObject, HTTPStatus.OK
 
         except NotFoundException:
             return {'message': 'table_uri {} does not exist'.format(table_uri)}, HTTPStatus.NOT_FOUND
@@ -93,6 +109,39 @@ class TableOwnerAPI(Resource):
         except Exception:
             return {'message': 'The owner {} for table_uri {} '
                                'is not deleted successfully'.format(owner,
+                                                                    table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+class TableStewardAPI(Resource):
+    """
+    TableOwner API to add / delete steward info
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+
+    @swag_from('swagger_doc/table/steward_put.yml')
+    def put(self, table_uri: str, steward: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.add_steward(table_uri=table_uri, steward=steward)
+            return {'message': 'The steward {} for table_uri {} '
+                               'is added successfully'.format(steward,
+                                                              table_uri)}, HTTPStatus.OK
+        except Exception:
+            return {'message': 'The steward {} for table_uri {} '
+                               'is not added successfully'.format(steward,
+                                                                  table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+    @swag_from('swagger_doc/table/steward_delete.yml')
+    def delete(self, table_uri: str, steward: str) -> Iterable[Union[Mapping, int, None]]:
+        try:
+            self.client.delete_steward(table_uri=table_uri, steward=steward)
+            return {'message': 'The steward {} for table_uri {} '
+                               'is deleted successfully'.format(steward,
+                                                                table_uri)}, HTTPStatus.OK
+        except Exception:
+            return {'message': 'The steward {} for table_uri {} '
+                               'is not deleted successfully'.format(steward,
                                                                     table_uri)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 

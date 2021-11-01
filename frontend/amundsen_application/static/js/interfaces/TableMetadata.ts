@@ -62,6 +62,11 @@ export interface TableOwners {
   owners: User[];
 }
 
+export interface TableStewards {
+  isLoading: boolean;
+  stewards: User[];
+}
+
 export interface ProgrammaticDescription {
   source: string;
   text: string;
@@ -99,6 +104,11 @@ export interface TableMetadata {
 }
 
 export interface UpdateOwnerPayload {
+  method: UpdateMethod;
+  id: string;
+}
+
+export interface UpdateStewardPayload {
   method: UpdateMethod;
   id: string;
 }

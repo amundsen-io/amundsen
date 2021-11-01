@@ -96,7 +96,7 @@ describe('popularResources ducks', () => {
 
     describe('getPopularResourcesWorker', () => {
       it('executes flow for returning tables', () => {
-        testSaga(getPopularResourcesWorker)
+        testSaga(getPopularResourcesWorker, 'userId')
           .next()
           .call(API.getPopularResources)
           .next(expectedResources)
@@ -106,7 +106,7 @@ describe('popularResources ducks', () => {
       });
 
       it('handles request error', () => {
-        testSaga(getPopularResourcesWorker)
+        testSaga(getPopularResourcesWorker, 'userId')
           .next()
           .throw(new Error())
           .put(getPopularResourcesFailure())

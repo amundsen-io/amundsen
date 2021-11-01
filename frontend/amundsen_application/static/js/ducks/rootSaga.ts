@@ -53,6 +53,7 @@ import { filterWatcher } from './search/filters/sagas';
 
 // TableDetail
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
+import { updateTableStewardWatcher } from './tableMetadata/stewards/sagas';
 import {
   getTableDataWatcher,
   getColumnDescriptionWatcher,
@@ -139,6 +140,7 @@ export default function* rootSaga() {
     updateColumnDescriptionWatcher(),
     updateTableDescriptionWatcher(),
     updateTableOwnerWatcher(),
+    updateTableStewardWatcher(),
     // LastIndexed
     getLastIndexedWatcher(),
     // User

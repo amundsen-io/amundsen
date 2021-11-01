@@ -112,7 +112,7 @@ class Neo4jProxy(BaseProxy):
         return health_check.HealthCheck(status=status, checks=final_checks)
 
     @timer_with_counter
-    def get_table(self, *, table_uri: str) -> Table:
+    def get_table(self, *, table_uri: str):
         """
         :param table_uri: Table URI
         :return:  A Table object
@@ -122,7 +122,7 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, timestamp_value, owners, tags, source, badges, prog_descs = \
+        wmk_results, table_writer, timestamp_value, owners, stewards, tags, source, badges, prog_descs = \
             self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
@@ -146,6 +146,8 @@ class Neo4jProxy(BaseProxy):
                       common_joins=joins,
                       common_filters=filters
                       )
+        # table['stewards'] = stewards
+        setattr(table, 'stewards', stewards)
 
         return table
 
@@ -233,6 +235,7 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (application:Application)-[:GENERATES]->(tbl)
         OPTIONAL MATCH (tbl)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
+        OPTIONAL MATCH (steward:User)<-[:STEWARD]-(tbl)
         OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(tag:Tag{tag_type: $tag_normal_type})
         OPTIONAL MATCH (tbl)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (tbl)-[:SOURCE]->(src:Source)
@@ -241,6 +244,7 @@ class Neo4jProxy(BaseProxy):
         application,
         t.last_updated_timestamp as last_updated_timestamp,
         collect(distinct owner) as owner_records,
+        collect(distinct steward) as steward_records,
         collect(distinct tag) as tag_records,
         collect(distinct badge) as badge_records,
         src,
@@ -290,10 +294,15 @@ class Neo4jProxy(BaseProxy):
         timestamp_value = table_records['last_updated_timestamp']
 
         owner_record = []
+        steward_record = []
 
         for owner in table_records.get('owner_records', []):
             owner_data = self._get_user_details(user_id=owner['email'])
             owner_record.append(self._build_user_from_record(record=owner_data))
+
+        for steward in table_records.get('steward_records', []):
+            steward_data = self._get_user_details(user_id=steward['email'])
+            steward_record.append(self._build_user_from_record(record=steward_data))
 
         src = None
 
@@ -305,7 +314,7 @@ class Neo4jProxy(BaseProxy):
             table_records.get('prog_descriptions', [])
         )
 
-        return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions
+        return wmk_results, table_writer, timestamp_value, owner_record, steward_record, tags, src, badges, prog_descriptions
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -764,6 +773,109 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session().begin_transaction()
             tx.run(delete_query, {'user_email': owner,
+                                  'res_key': uri})
+        except Exception as e:
+            # propagate the exception back to api
+            if not tx.closed():
+                tx.rollback()
+            raise e
+        finally:
+            tx.commit()
+
+    @timer_with_counter
+    def add_steward(self, *,
+                  table_uri: str,
+                  steward: str) -> None:
+        """
+        Update table steward informations.
+        1. Do a create if not exists query of the steward(user) node.
+        2. Do a upsert of the steward/steward_of relation.
+        :param table_uri:
+        :param steward:
+        :return:
+        """
+
+        self.add_resource_steward(uri=table_uri,
+                                resource_type=ResourceType.Table,
+                                steward=steward)
+
+    @timer_with_counter
+    def add_resource_steward(self, *,
+                           uri: str,
+                           resource_type: ResourceType,
+                           steward: str) -> None:
+        """
+        Update table steward informations.
+        1. Do a create if not exists query of the steward(user) node.
+        2. Do a upsert of the steward/steward_of relation.
+
+        :param table_uri:
+        :param steward:
+        :return:
+        """
+        create_steward_query = textwrap.dedent("""
+        MERGE (u:User {key: $user_email})
+        on CREATE SET u={email: $user_email, key: $user_email}
+        """)
+
+        upsert_steward_relation_query = textwrap.dedent("""
+        MATCH (n1:User {{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
+        MERGE (n1)-[r1:STEWARD_OF]->(n2)-[r2:STEWARD]->(n1)
+        RETURN n1.key, n2.key
+        """.format(resource_type=resource_type.name))
+
+        try:
+            tx = self._driver.session().begin_transaction()
+            # upsert the node
+            tx.run(create_steward_query, {'user_email': steward})
+            result = tx.run(upsert_steward_relation_query, {'user_email': steward,
+                                                          'res_key': uri})
+
+            if not result.single():
+                raise RuntimeError('Failed to create relation between '
+                                   'steward {steward} and resource {uri}'.format(steward=steward,
+                                                                             uri=uri))
+            tx.commit()
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            # propagate the exception back to api
+            raise e
+
+    @timer_with_counter
+    def delete_steward(self, *,
+                     table_uri: str,
+                     steward: str) -> None:
+        """
+        Delete the steward / steward_of relationship.
+        :param table_uri:
+        :param steward:
+        :return:
+        """
+        self.delete_resource_steward(uri=table_uri,
+                                   resource_type=ResourceType.Table,
+                                   steward=steward)
+
+    @timer_with_counter
+    def delete_resource_steward(self, *,
+                              uri: str,
+                              resource_type: ResourceType,
+                              steward: str) -> None:
+        """
+        Delete the steward / owned_by relationship.
+        :param table_uri:
+        :param steward:
+        :return:
+        """
+        delete_query = textwrap.dedent("""
+        MATCH (n1:User{{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
+        OPTIONAL MATCH (n1)-[r1:STEWARD_OF]->(n2)
+        OPTIONAL MATCH (n2)-[r2:STEWARD]->(n1)
+        DELETE r1,r2
+        """.format(resource_type=resource_type.name))
+        try:
+            tx = self._driver.session().begin_transaction()
+            tx.run(delete_query, {'user_email': steward,
                                   'res_key': uri})
         except Exception as e:
             # propagate the exception back to api
@@ -1402,6 +1514,9 @@ class Neo4jProxy(BaseProxy):
                        f'(resource{resource_matcher})'
         elif relation_type == UserResourceRel.own:
             relation = f'(resource{resource_matcher})-[r1:OWNER]->(usr{user_matcher})-[r2:OWNER_OF]->' \
+                       f'(resource{resource_matcher})'
+        elif relation_type == UserResourceRel.steward:
+            relation = f'(resource{resource_matcher})-[r1:STEWARD]->(usr{user_matcher})-[r2:STEWARD_OF]->' \
                        f'(resource{resource_matcher})'
         elif relation_type == UserResourceRel.read:
             relation = f'(resource{resource_matcher})-[r1:READ_BY]->(usr{user_matcher})-[r2:READ]->' \

@@ -1,0 +1,386 @@
+# Duplicate this file and put your customization here
+
+# clusterDomain: gbl-aks-iguazu-env-001-0c8b8da5.683b6615-86ea-420b-b4b4-7176e9fb2add.privatelink.southcentralus.azmk8s.io
+clusterDomain: cluster.local
+
+# common settings for all apps
+# NOTE - README table was generated with https://github.com/norwoodj/helm-docs
+# environment -- **DEPRECATED - its not standard to pre construct urls this way.** The environment the app is running in. Used to construct dns hostnames (on aws only) and ports.
+environment: "dev"
+
+# DEPRECATED - its not standard to pre construct urls this way
+# provider -- The cloud provider the app is running in. Used to construct dns hostnames (on aws only).
+provider: aws
+
+# dnsZone -- **DEPRECATED - its not standard to pre construct urls this way.** The dns zone (e.g. group-qa.myaccount.company.com) the app is running in. Used to construct dns hostnames (on aws only).
+dnsZone: teamname.company.com
+
+# dockerhubImagePath -- **DEPRECATED - this is not useful, it would be better to just allow the whole image to be swapped instead.** The image path for dockerhub.
+dockerhubImagePath: amundsendev
+
+# LONG_RANDOM_STRING -- A long random string. You should probably provide your own. This is needed for OIDC.
+LONG_RANDOM_STRING: 1234
+
+# nodeSelector -- amundsen application wide configuration of nodeSelector. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector)
+nodeSelector: {}
+
+# affinity -- amundsen application wide configuration of affinity. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity)
+affinity: {}
+
+# tolerations -- amundsen application wide configuration of tolerations. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature)
+tolerations: []
+
+# podAnnotations -- amundsen application wide configuration of podAnnotations. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
+podAnnotations: {}
+
+# Optional Flask App wrapper to wrap your Amundsen Microservices
+# Important: If you are using oidc.enabled=true, then you don't need to set this explicitly,
+# as this will be set for you.
+flaskApp:
+  #  flaskApp.module -- Any custom flask module you may need to implement as a wrapper
+  module: ""
+  #  flaskApp.class -- The class name within the flaskApp.module
+  class: ""
+
+# To enable OIDC,
+#     - please make sure set frontend.config.class: amundsen_application.oidc_config.OidcConfig
+# Following variables must be set for each service under the oidc.frontend, oidc.metadata and oidc.search.
+# - FLASK_OIDC_CLIENT_ID
+# - FLASK_OIDC_CLIENT_SECRET
+# More Information: https://github.com/verdan/flaskoidc#configurations
+oidc:
+  # oidc.enabled -- flag to enable/disable the OIDC.
+  # Once enabled,
+  #   - everything under oidc.configs will be parsed
+  #   - flaskApp.module will be set as 'flaskoidc'
+  #   - flaskApp.class will be set as 'FlaskOIDC'
+  enabled: false
+  frontend:
+    client_id: ""
+    # Do not paste the secret directly here, instead set this via env variable like
+    # `--set oidc.frontend.client_secret=$OIDC_FRONTEND_CLIENT_SECRET`
+    client_secret: ""
+  metadata:
+    client_id: ""
+    # Do not paste the secret directly here, instead set this via env variable like
+    # `--set oidc.metadata.client_secret=$OIDC_METADATA_CLIENT_SECRET`
+    client_secret: ""
+  search:
+    client_id: ""
+    # Do not paste the secret directly here, instead set this via env variable like
+    # `--set oidc.search.client_secret=$OIDC_SEARCH_CLIENT_SECRET`
+    client_secret: ""
+
+  # Everything under oidc.configs will be parsed as environment variables for each service.
+  configs:
+    # oidc.configs.FLASK_OIDC_PROVIDER_NAME
+    FLASK_OIDC_PROVIDER_NAME: google
+
+    # oidc.configs.FLASK_OIDC_SCOPES
+    FLASK_OIDC_SCOPES: "openid email profile"
+
+    # oidc.configs.FLASK_OIDC_USER_ID_FIELD
+    FLASK_OIDC_USER_ID_FIELD: email
+
+    # oidc.configs.FLASK_OIDC_REDIRECT_URI
+    FLASK_OIDC_REDIRECT_URI: "/auth"
+
+    # oidc.configs.FLASK_OIDC_CONFIG_URL
+    FLASK_OIDC_CONFIG_URL: "https://accounts.google.com/.well-known/openid-configuration"
+
+    # oidc.configs.FLASK_OIDC_WHITELISTED_ENDPOINTS
+    FLASK_OIDC_WHITELISTED_ENDPOINTS: "status,healthcheck,health"
+
+# Configuration related to the search service.
+search:
+  # search.serviceName -- The search service name.
+  serviceName: search
+
+  # search.serviceMappingName -- The search service name with namespace.
+  serviceMappingName: search.ztech-amundsen-test.svc.cluster.local
+
+  # search.serviceType -- The search service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  serviceType: ClusterIP
+
+  # Proxy information needed for the search
+  proxy:
+    # search.proxy.endpoint -- Endpoint of the search proxy (i.e., ES endpoint etc.)
+    # You should only need to change this, if you don't use the version in this chart.
+    endpoint:
+
+    # The user and password of the search proxy. This should only be set if you bring your own proxy or ES cluster in which case you must also set elasticsearch.enabled to false
+    # search.proxy.user --
+    user:
+    # search.proxy.password --
+    password:
+
+  # search.image -- The image of the search container.
+  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-search-ztech
+
+  # search.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
+  # search.imageTag -- The image tag of the search container.
+  imageTag: "1.1.7"
+
+  # search.replicas -- How many replicas of the search service to run.
+  replicas: 1
+
+  # search.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
+  resources: {}
+  #  limits:
+  #    cpu: 2
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 1
+  #    memory: 1Gi
+
+  # search.nodeSelector -- Search pod specific nodeSelector.
+  nodeSelector: {app: amundsen-search}
+
+  # search.affinity -- Search pod specific affinity.
+  affinity: {}
+
+  # search.tolerations -- Search pod specific tolerations.
+  tolerations: []
+
+  # search.annotations -- Search service specific tolerations.
+  annotations: {}
+
+  # search.podAnnotations -- Search pod specific annotations.
+  podAnnotations: {}
+
+  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
+  envVars: {}
+
+# Configuration related to the metadata service.
+metadata:
+  # metadata.serviceName -- The metadata service name.
+  serviceName: metadata
+
+  # search.serviceMappingName -- The search service name with namespace.
+  serviceMappingName: metadata.ztech-amundsen-test.svc.cluster.local
+
+  # metadata.serviceType -- The metadata service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  serviceType: ClusterIP
+
+  # Metadata proxy information including host, port, user and password.
+  proxy:
+
+    # metadata.proxy.host -- host name / URI of your proxy
+    host:
+
+    # metadata.proxy.port -- Port on which the proxy is running
+    port:
+
+    # metadata.proxy.user -- Credentials - Username of the proxy
+    user:
+
+    # metadata.proxy.password -- Credentials - Password of the proxy
+    password:
+
+  # metadata.image -- The image of the metadata container.
+  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-metadata-ztech
+
+  # metadata.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
+  # metadata.imageTag -- The image tag of the metadata container.
+  imageTag: "1.1.7"
+
+  # metadata.replicas -- How many replicas of the metadata service to run.
+  replicas: 1
+
+  # metadata.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
+  resources: {}
+  #  limits:
+  #    cpu: 2
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 1
+  #    memory: 1Gi
+
+  # metadata.nodeSelector -- Metadata pod specific nodeSelector.
+  nodeSelector: {app: amundsen-metadata}
+
+  # metadata.affinity -- Metadata pod specific affinity.
+  affinity: {}
+
+  # metadata.tolerations -- Metadata pod specific tolerations.
+  tolerations: []
+
+  # metadata.annotations -- Metadata service specific tolerations.
+  annotations: {}
+
+  # metadata.podAnnotations -- Metadata pod specific annotations.
+  podAnnotations: {}
+
+  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
+  envVars: {}
+
+# Configuration related to the frontEnd service.
+frontEnd:
+  # frontEnd.serviceName -- The frontend service name.
+  serviceName: frontend
+
+  # frontEnd.serviceType -- The frontend service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  serviceType: ClusterIP
+
+  # frontEnd.image -- The image of the frontend container.
+  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-front-ztech-public
+
+  # frontEnd.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
+  # frontEnd.imageTag -- The image tag of the frontend container.
+  imageTag: "1.1.7"
+
+  # frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
+  servicePort: 80
+
+  # frontEnd.replicas -- How many replicas of the frontend service to run.
+  replicas: 1
+
+  # frontEnd.baseUrl -- used by notifications util to provide links to amundsen pages in emails.
+  baseUrl: https://pharosnonprod.ztech.net
+
+  # frontEnd.config.class -- Optional Config class.
+  config:
+    class:
+
+  # frontEnd.ALL_UNEDITABLE_SCHEMAS -- Environment variable for allowing/disallowing editing schemas via the UI. All schemas are allowed to be edited by default. Set to 'true' to disallow.
+  # See https://www.amundsen.io/amundsen/frontend/docs/flask_config/#uneditable-table-descriptions for more
+  ALL_UNEDITABLE_SCHEMAS:
+
+  # frontEnd.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
+  resources: {}
+  #  limits:
+  #    cpu: 2
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 1
+  #    memory: 1Gi
+
+  # frontEnd.nodeSelector -- Frontend pod specific nodeSelector.
+  nodeSelector: {app: amundsen-frontend}
+
+  # frontEnd.affinity -- Frontend pod specific affinity.
+  affinity: {}
+
+  # frontEnd.tolerations -- Frontend pod specific tolerations.
+  tolerations: []
+
+  # frontEnd.annotations -- Frontend service specific tolerations.
+  annotations: {}
+
+  # frontEnd.podAnnotations -- Frontend pod specific annotations.
+  podAnnotations: {}
+
+  # Everything set under "envVars" during helm install/upgrade will be parsed as environment variable for this service.
+  envVars: {}
+
+# Configuration related to neo4j.
+neo4j:
+  # neo4j.enabled -- If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version.
+  enabled: true
+
+  # neo4j.version -- The neo4j application version used by amundsen.
+  version: 3.5
+
+  # neo4j.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
+  resources: {}
+  #resources:
+  #  limits:
+  #    cpu: 2
+  #    memory: 2Gi
+  # requests:
+  #    cpu: 1
+  #    memory: 1Gi
+
+  # neo4j.config -- Neo4j application specific configuration. This type of configuration is why the charts/stable version is not used. See [ref](https://github.com/helm/charts/issues/21439)
+  config:
+    # neo4j.config.dbms -- dbms config for neo4j
+    dbms:
+      # neo4j.config.dbms.heap_initial_size -- the initial java heap for neo4j
+      heap_initial_size: 1G
+      # neo4j.config.dbms.heap_max_size -- the max java heap for neo4j
+      heap_max_size: 2G
+      # neo4j.config.dbms.pagecache_size -- the page cache size for neo4j
+      pagecache_size: 2G
+
+  # neo4j.serviceType -- The neo4j service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+  serviceType: ClusterIP
+
+  # neo4j.persistence -- Neo4j persistence. Turn this on to keep your data between pod crashes, etc. This is also needed for backups.
+  persistence: {}
+  #  storageClass: gp2
+  #  size: 10Gi
+  #  accessMode: ReadWriteMany
+  #  efs:
+  #    dns:
+  #  path: "/"
+
+  # neo4j.backup -- If enabled is set to true, make sure and set the s3 path as well.
+  backup:
+    # neo4j.backup.enabled - Whether to include the backup neo4j cron pod. If set to true, s3Path is required.
+    enabled: false
+
+    # neo4j.backup.s3Path -- The s3path to write to for backups.
+    s3Path: "s3://dev/null"
+
+    # neo4j.backup.schedule -- The schedule to run backups on. Defaults to hourly.
+    schedule: "0 * * * *"
+    podAnnotations: {}
+
+  # neo4j.nodeSelector -- neo4j specific nodeSelector.
+  nodeSelector: {}
+
+  # neo4j.affinity -- neo4j specific affinity.
+  affinity: {}
+
+  # neo4j.tolerations -- neo4j specific tolerations.
+  tolerations: []
+
+  # neo4j.annotations -- neo4j service specific tolerations.
+  annotations: {}
+
+  # neo4j.podAnnotations -- neo4j pod specific annotations.
+  podAnnotations: {}
+
+# Configuration related to elasticsearch.
+# To add values to dependent charts, prefix the value with the chart name (e.g. elasticsearch)
+# By default, the ES chart runs with 3,3,2 nodes for master, data, client. Amundsen likely does not need so much,
+# so, this has been tuned down to 1,1,1.
+elasticsearch:
+  # elasticsearch.enabled -- set this to false, if you want to provide your own ES instance.
+  enabled: true
+  cluster:
+    env:
+      # elasticsearch.cluster.env.MINIMUM_MASTER_NODES -- required to match master.replicas
+      MINIMUM_MASTER_NODES: 1
+      # elasticsearch.cluster.env.EXPECTED_MASTER_NODES -- required to match master.replicas
+      EXPECTED_MASTER_NODES: 1
+      # elasticsearch.cluster.env.RECOVER_AFTER_MASTER_NODES -- required to match master.replicas
+      RECOVER_AFTER_MASTER_NODES: 1
+  master:
+    # elasticsearch.master.replicas -- only running amundsen on 1 master replica
+    replicas: 1
+  data:
+    # elasticsearch.data.replicas -- only running amundsen on 1 data replica
+    replicas: 1
+  client:
+    # elasticsearch.client.replicas -- only running amundsen on 1 client replica
+    replicas: 1
+  #  serviceType: LoadBalancer
+  #  serviceAnnotations:
+  #    external-dns.alpha.kubernetes.io/hostname: amundsen-elasticsearch.dev.teamname.company.com
+  #    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+  #    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  #  nodeAffinity: high
+  #  resources:
+  #    limits:
+  #      cpu: 2
+  #      memory: 2Gi

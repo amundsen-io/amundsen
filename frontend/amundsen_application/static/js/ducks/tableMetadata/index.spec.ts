@@ -69,6 +69,7 @@ import {
 describe('tableMetadata ducks', () => {
   let expectedData: TableMetadata;
   let expectedOwners: { [id: string]: User };
+  let expectedStewards: { [id: string]: User };
   let expectedTags: Tag[];
   let expectedStatus: number;
   let mockSuccess;
@@ -87,6 +88,14 @@ describe('tableMetadata ducks', () => {
   beforeAll(() => {
     expectedData = globalState.tableMetadata.tableData;
     expectedOwners = {
+      testId: {
+        display_name: 'test',
+        profile_url: 'test.io',
+        email: 'test@test.com',
+        user_id: 'testId',
+      },
+    };
+    expectedStewards = {
       testId: {
         display_name: 'test',
         profile_url: 'test.io',
@@ -161,6 +170,7 @@ describe('tableMetadata ducks', () => {
       const action = getTableDataSuccess(
         expectedData,
         expectedOwners,
+        expectedStewards,
         expectedStatus,
         expectedTags
       );
@@ -168,6 +178,7 @@ describe('tableMetadata ducks', () => {
       expect(action.type).toBe(GetTableData.SUCCESS);
       expect(payload.data).toBe(expectedData);
       expect(payload.owners).toEqual(expectedOwners);
+      expect(payload.stewards).toEqual(expectedStewards);
       expect(payload.statusCode).toBe(expectedStatus);
       expect(payload.tags).toEqual(expectedTags);
     });
@@ -410,6 +421,7 @@ describe('tableMetadata ducks', () => {
             getTableDataSuccess(
               expectedData,
               expectedOwners,
+              expectedStewards,
               expectedStatus,
               expectedTags
             )

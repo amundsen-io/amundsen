@@ -166,8 +166,12 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
 
         # Ideally the response should include 'key' to begin with
         table_data_raw['key'] = table_key
+        stewards = table_data_raw.pop('stewards', None)
+        for steward in stewards:
+            steward['display_name'] = steward['email']
 
         results_dict['tableData'] = marshall_table_full(table_data_raw)
+        results_dict['tableData']['stewards'] = stewards
         results_dict['msg'] = 'Success'
         return results_dict
     except Exception as e:
@@ -203,6 +207,38 @@ def update_table_owner() -> Response:
             message = 'Updated owner'
         else:
             message = 'There was a problem updating owner {0}'.format(owner)
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/update_table_steward', methods=['PUT', 'DELETE'])
+def update_table_steward() -> Response:
+
+    @action_logging
+    def _log_update_table_steward(*, table_key: str, method: str, steward: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        args = request.get_json()
+        table_key = get_query_param(args, 'key')
+        steward = get_query_param(args, 'steward')
+
+        table_endpoint = _get_table_endpoint()
+        url = '{0}/{1}/steward/{2}'.format(table_endpoint, table_key, steward)
+        method = request.method
+        _log_update_table_steward(table_key=table_key, method=method, steward=steward)
+
+        response = request_metadata(url=url, method=method)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Updated steward'
+        else:
+            message = 'There was a problem updating steward {0}'.format(steward)
 
         payload = jsonify({'msg': message})
         return make_response(payload, status_code)
@@ -671,11 +707,12 @@ def update_bookmark() -> Response:
         pass  # pragma: no cover
 
     try:
-        user_id = request.args.get('user_id')
-        if app.config['AUTH_USER_METHOD']:
-            user = app.config['AUTH_USER_METHOD'](app, user_id)
-        else:
-            raise Exception('AUTH_USER_METHOD is not configured')
+        email = request.args.get('user_id')
+        # logging.info('USER ID: '+ str(user_id))
+        # if app.config['AUTH_USER_METHOD']:
+        #     user = app.config['AUTH_USER_METHOD'](app, user_id)
+        # else:
+        #     raise Exception('AUTH_USER_METHOD is not configured')
 
         args = request.get_json()
         resource_type = get_query_param(args, 'type')
@@ -683,7 +720,7 @@ def update_bookmark() -> Response:
 
         url = '{0}{1}/{2}/follow/{3}/{4}'.format(app.config['METADATASERVICE_BASE'],
                                                  USER_ENDPOINT,
-                                                 user.user_id,
+                                                 email,
                                                  resource_type,
                                                  resource_key)
 
@@ -746,6 +783,35 @@ def get_user_own() -> Response:
             'dashboard': owned_dashboards
         }
         return make_response(jsonify({'msg': 'success', 'own': all_owned}), status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/user/steward', methods=['GET'])
+def get_user_steward() -> Response:
+    """
+    Calls metadata service to GET steward of resources
+    :return: a JSON object with an array of steward of resources
+    """
+    try:
+        user_id = get_query_param(request.args, 'user_id')
+
+        url = '{0}{1}/{2}/steward/'.format(app.config['METADATASERVICE_BASE'],
+                                       USER_ENDPOINT,
+                                       user_id)
+        response = request_metadata(url=url, method=request.method)
+        status_code = response.status_code
+        owned_tables_raw = response.json().get('table')
+        owned_tables = [marshall_table_partial(table) for table in owned_tables_raw]
+        dashboards = response.json().get('dashboard', [])
+        owned_dashboards = [marshall_dashboard_partial(dashboard) for dashboard in dashboards]
+        all_owned = {
+            'table': owned_tables,
+            'dashboard': owned_dashboards
+        }
+        return make_response(jsonify({'msg': 'success', 'steward': all_owned}), status_code)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)

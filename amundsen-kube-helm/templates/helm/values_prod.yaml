@@ -97,7 +97,7 @@ search:
   serviceName: search
 
   # search.serviceMappingName -- The search service name with namespace.
-  serviceMappingName: search.ztech-amundsen-test.svc.cluster.local
+  serviceMappingName: search.pharos.svc.cluster.local
 
   # search.serviceType -- The search service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   serviceType: ClusterIP
@@ -115,14 +115,14 @@ search:
     password:
 
   # search.image -- The image of the search container.
-  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-search-ztech
+  image: gblacriguazuprod001.azurecr.io/pharos/search
 
   # search.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
   # search.imageTag -- The image tag of the search container.
-  imageTag: "1.0"
+  imageTag: "1.0.1"
 
   # search.replicas -- How many replicas of the search service to run.
   replicas: 1
@@ -160,7 +160,7 @@ metadata:
   serviceName: metadata
 
   # search.serviceMappingName -- The search service name with namespace.
-  serviceMappingName: metadata.ztech-amundsen-test.svc.cluster.local
+  serviceMappingName: metadata.pharos.svc.cluster.local
 
   # metadata.serviceType -- The metadata service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
   serviceType: ClusterIP
@@ -181,14 +181,14 @@ metadata:
     password:
 
   # metadata.image -- The image of the metadata container.
-  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-metadata-ztech
+  image: gblacriguazuprod001.azurecr.io/pharos/metadata
 
   # metadata.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
   # metadata.imageTag -- The image tag of the metadata container.
-  imageTag: "1.0"
+  imageTag: "1.0.1"
 
   # metadata.replicas -- How many replicas of the metadata service to run.
   replicas: 1
@@ -229,14 +229,14 @@ frontEnd:
   serviceType: ClusterIP
 
   # frontEnd.image -- The image of the frontend container.
-  image: gblacriguazunonprod001.azurecr.io/new-amundsen/amundsen-front-ztech-public
+  image: gblacriguazuprod001.azurecr.io/pharos/front-public
 
   # frontEnd.imagePullSecrets -- Optional pod imagePullSecrets [ref](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
   # frontEnd.imageTag -- The image tag of the frontend container.
-  imageTag: "1.0"
+  imageTag: "1.0.1"
 
   # frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
   servicePort: 80
@@ -245,7 +245,7 @@ frontEnd:
   replicas: 1
 
   # frontEnd.baseUrl -- used by notifications util to provide links to amundsen pages in emails.
-  baseUrl: https://pharosnonprod.ztech.net
+  baseUrl: https://pharos.ztech.net
 
   # frontEnd.config.class -- Optional Config class.
   config:

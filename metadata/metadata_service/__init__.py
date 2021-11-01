@@ -36,11 +36,11 @@ from metadata_service.api.system import Neo4jDetailAPI, StatisticsMetricsAPI
 from metadata_service.api.table import (TableBadgeAPI, TableDashboardAPI,
                                         TableDescriptionAPI, TableDetailAPI,
                                         TableLineageAPI, TableOwnerAPI,
-                                        TableTagAPI)
+                                        TableTagAPI, TableStewardAPI)
 from metadata_service.api.tag import TagAPI
 from metadata_service.api.user import (UserDetailAPI, UserCreateAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
-                                       UserReadsAPI)
+                                       UserReadsAPI, UserStewardsAPI, UserStewardAPI)
 from metadata_service.deprecations import process_deprecations
 
 # For customized flask use below arguments to override.
@@ -126,6 +126,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/table/<path:id>/lineage')
     api.add_resource(TableOwnerAPI,
                      '/table/<path:table_uri>/owner/<owner>')
+    api.add_resource(TableStewardAPI,
+                     '/table/<path:table_uri>/steward/<steward>')
     api.add_resource(TableDashboardAPI,
                      '/table/<path:id>/dashboard/')
     api.add_resource(ColumnDescriptionAPI,
@@ -155,6 +157,10 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/user/<path:user_id>/own/')
     api.add_resource(UserOwnAPI,
                      '/user/<path:user_id>/own/<resource_type>/<path:table_uri>')
+    api.add_resource(UserStewardsAPI,
+                     '/user/<path:user_id>/steward/')
+    api.add_resource(UserStewardAPI,
+                     '/user/<path:user_id>/steward/<resource_type>/<path:table_uri>')
     api.add_resource(UserReadsAPI,
                      '/user/<path:user_id>/read/')
     api.add_resource(DashboardDetailAPI,

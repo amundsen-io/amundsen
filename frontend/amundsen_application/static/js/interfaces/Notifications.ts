@@ -1,6 +1,8 @@
 export enum NotificationType {
   OWNER_ADDED = 'owner_added',
   OWNER_REMOVED = 'owner_removed',
+  STEWARD_ADDED = 'steward_added',
+  STEWARD_REMOVED = 'steward_removed',
   METADATA_EDITED = 'metadata_edited',
   METADATA_REQUESTED = 'metadata_requested',
   DATA_ISSUE_REPORTED = 'data_issue_reported',

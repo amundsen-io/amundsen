@@ -1,6 +1,11 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { OwnerDict, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
+import {
+  OwnerDict,
+  StewardDict,
+  UpdateMethod,
+  UpdateOwnerPayload,
+} from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 
@@ -27,6 +32,7 @@ jest.spyOn(API, 'generateOwnerUpdateRequests').mockImplementation(() => []);
 
 describe('tableMetadata:owners ducks', () => {
   let expectedOwners: OwnerDict;
+  let expectedStewards: StewardDict;
   let updatePayload: UpdateOwnerPayload[];
   let mockSuccess;
   let mockFailure;
@@ -132,7 +138,13 @@ describe('tableMetadata:owners ducks', () => {
       expect(
         reducer(
           testState,
-          getTableDataSuccess(mockTableData, expectedOwners, 200, [])
+          getTableDataSuccess(
+            mockTableData,
+            expectedOwners,
+            expectedStewards,
+            200,
+            []
+          )
         )
       ).toEqual({
         ...testState,

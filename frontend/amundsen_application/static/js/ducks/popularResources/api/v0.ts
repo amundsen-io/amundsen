@@ -8,13 +8,15 @@ export type PopularTablesAPI = {
   results: ResourceDict<PopularResource[]>;
 };
 
-export function getPopularResources() {
+export function getPopularResources(userId: string) {
   let resourceType = `${ResourceType.table}`;
 
   if (indexDashboardsEnabled()) {
     resourceType += `,${ResourceType.dashboard}`;
   }
   return axios
-    .get(`/api/metadata/v0/popular_resources?types=${resourceType}`)
+    .get(
+      `/api/metadata/v0/popular_resources?user_id=${userId}&types=${resourceType}`
+    )
     .then((response: AxiosResponse<PopularTablesAPI>) => response.data.results);
 }

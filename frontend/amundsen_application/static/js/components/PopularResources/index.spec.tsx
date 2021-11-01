@@ -23,6 +23,7 @@ import {
 
 const setup = (propOverrides?: Partial<PopularResourcesProps>) => {
   const props: PopularResourcesProps = {
+    userId: 'userId',
     isLoaded: false,
     popularResources: jest.fn() as any,
     getPopularResources: jest.fn(),
