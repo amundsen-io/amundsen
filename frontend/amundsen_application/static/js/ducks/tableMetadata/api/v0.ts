@@ -6,6 +6,7 @@ import {
   TableMetadata,
   DashboardResource,
   UpdateOwnerPayload,
+  UpdateStewardPayload,
   User,
   Tag,
   Lineage,
@@ -20,10 +21,15 @@ import {
   getOwnersDictFromUsers,
 } from 'utils/ownerUtils';
 import {
+  createStewardUpdatePayload,
+  getStewardsDictFromUsers,
+} from 'utils/stewardUtils';
+import {
   getTableQueryParams,
   getRelatedDashboardSlug,
   getTableDataFromResponseData,
   createOwnerNotificationData,
+  createStewardNotificationData,
   shouldSendNotification,
 } from './helpers';
 
@@ -33,6 +39,7 @@ type MessageAPI = { msg: string };
 
 export type TableData = TableMetadata & {
   owners: User[];
+  stewards: User[];
   tags: Tag[];
 };
 export type DescriptionAPI = { description: string } & MessageAPI;
@@ -52,6 +59,7 @@ export function getTableData(key: string, index?: string, source?: string) {
   return tableRequest.then((tableResponse: AxiosResponse<TableDataAPI>) => ({
     data: getTableDataFromResponseData(tableResponse.data),
     owners: getOwnersDictFromUsers(tableResponse.data.tableData.owners),
+    stewards: getOwnersDictFromUsers(tableResponse.data.tableData.stewards),
     tags: tableResponse.data.tableData.tags,
     statusCode: tableResponse.status,
   }));
@@ -136,6 +144,44 @@ export function generateOwnerUpdateRequests(
     return axios(updatePayload)
       .then(() =>
         axios.get(`/api/metadata/v0/user?user_id=${updateOwnerPayload.id}`)
+      )
+      .then((response) => {
+        if (shouldSendNotification(response.data.user)) {
+          return axios.post('/api/mail/v0/notification', notificationData);
+        }
+      });
+  });
+}
+
+export function getTableStewards(key: string) {
+  const tableParams = getTableQueryParams({ key });
+  return axios
+    .get(`${API_PATH}/table?${tableParams}`)
+    .then((response: AxiosResponse<TableDataAPI>) =>
+      getStewardsDictFromUsers(response.data.tableData.stewards)
+    );
+}
+
+export function generateStewardUpdateRequests(
+  updateArray: UpdateStewardPayload[],
+  tableData: TableMetadata
+): any {
+  /* Return the list of requests to be executed */
+  return updateArray.map((updateStewardPayload) => {
+    const updatePayload = createStewardUpdatePayload(
+      ResourceType.table,
+      tableData.key,
+      updateStewardPayload
+    );
+    const notificationData = createStewardNotificationData(
+      updateStewardPayload,
+      tableData
+    );
+
+    /* Chain requests to send notification on success to desired users */
+    return axios(updatePayload)
+      .then(() =>
+        axios.get(`/api/metadata/v0/user?user_id=${updateStewardPayload.id}`)
       )
       .then((response) => {
         if (shouldSendNotification(response.data.user)) {

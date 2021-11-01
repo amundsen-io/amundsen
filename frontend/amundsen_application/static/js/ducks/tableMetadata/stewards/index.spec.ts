@@ -4,7 +4,7 @@ import {
   OwnerDict,
   StewardDict,
   UpdateMethod,
-  UpdateOwnerPayload,
+  UpdateStewardPayload,
 } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
@@ -12,11 +12,11 @@ import globalState from 'fixtures/globalState';
 import * as API from '../api/v0';
 
 import reducer, {
-  updateTableOwner,
-  updateTableOwnerFailure,
-  updateTableOwnerSuccess,
-  initialOwnersState,
-  TableOwnerReducerState,
+  updateTableSteward,
+  updateTableStewardFailure,
+  updateTableStewardSuccess,
+  initialStewardsState,
+  TableStewardReducerState,
 } from './reducer';
 import {
   getTableData,
@@ -24,20 +24,20 @@ import {
   getTableDataSuccess,
 } from '../reducer';
 
-import { updateTableOwnerWorker, updateTableOwnerWatcher } from './sagas';
+import { updateTableStewardWorker, updateTableStewardWatcher } from './sagas';
 
-import { UpdateTableOwner } from '../types';
+import { UpdateTableSteward } from '../types';
 
-jest.spyOn(API, 'generateOwnerUpdateRequests').mockImplementation(() => []);
+jest.spyOn(API, 'generateStewardUpdateRequests').mockImplementation(() => []);
 
-describe('tableMetadata:owners ducks', () => {
+describe('tableMetadata:stewards ducks', () => {
   let expectedOwners: OwnerDict;
   let expectedStewards: StewardDict;
-  let updatePayload: UpdateOwnerPayload[];
+  let updatePayload: UpdateStewardPayload[];
   let mockSuccess;
   let mockFailure;
   beforeAll(() => {
-    expectedOwners = {
+    expectedStewards = {
       testId: {
         display_name: 'test',
         profile_url: 'test.io',
@@ -51,44 +51,48 @@ describe('tableMetadata:owners ducks', () => {
   });
 
   describe('actions', () => {
-    it('updateTableOwner - returns the action to update table owners', () => {
-      const action = updateTableOwner(updatePayload, mockSuccess, mockFailure);
+    it('updateTableSteward - returns the action to update table stewards', () => {
+      const action = updateTableSteward(
+        updatePayload,
+        mockSuccess,
+        mockFailure
+      );
       const { payload } = action;
-      expect(action.type).toBe(UpdateTableOwner.REQUEST);
+      expect(action.type).toBe(UpdateTableSteward.REQUEST);
       expect(payload.updateArray).toBe(updatePayload);
       expect(payload.onSuccess).toBe(mockSuccess);
       expect(payload.onFailure).toBe(mockFailure);
     });
 
-    it('updateTableOwnerFailure - returns the action to process failure', () => {
-      const action = updateTableOwnerFailure(expectedOwners);
+    it('updateTableStewardFailure - returns the action to process failure', () => {
+      const action = updateTableStewardFailure(expectedStewards);
       const { payload } = action;
-      expect(action.type).toBe(UpdateTableOwner.FAILURE);
-      expect(payload.owners).toBe(expectedOwners);
+      expect(action.type).toBe(UpdateTableSteward.FAILURE);
+      expect(payload.stewards).toBe(expectedStewards);
     });
 
-    it('updateTableOwnerSuccess - returns the action to process success', () => {
-      const action = updateTableOwnerSuccess(expectedOwners);
+    it('updateTableStewardSuccess - returns the action to process success', () => {
+      const action = updateTableStewardSuccess(expectedStewards);
       const { payload } = action;
-      expect(action.type).toBe(UpdateTableOwner.SUCCESS);
-      expect(payload.owners).toBe(expectedOwners);
+      expect(action.type).toBe(UpdateTableSteward.SUCCESS);
+      expect(payload.stewards).toBe(expectedStewards);
     });
   });
 
   describe('reducer', () => {
-    let testState: TableOwnerReducerState;
+    let testState: TableStewardReducerState;
     beforeAll(() => {
-      testState = initialOwnersState;
+      testState = initialStewardsState;
     });
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
 
-    it('should handle UpdateTableOwner.REQUEST', () => {
+    it('should handle UpdateTableSteward.REQUEST', () => {
       expect(
         reducer(
           testState,
-          updateTableOwner(updatePayload, mockSuccess, mockFailure)
+          updateTableSteward(updatePayload, mockSuccess, mockFailure)
         )
       ).toEqual({
         ...testState,
@@ -96,23 +100,23 @@ describe('tableMetadata:owners ducks', () => {
       });
     });
 
-    it('should handle UpdateTableOwner.FAILURE', () => {
+    it('should handle UpdateTableSteward.FAILURE', () => {
       expect(
-        reducer(testState, updateTableOwnerFailure(expectedOwners))
+        reducer(testState, updateTableStewardFailure(expectedStewards))
       ).toEqual({
         ...testState,
         isLoading: false,
-        owners: expectedOwners,
+        stewards: expectedStewards,
       });
     });
 
-    it('should handle UpdateTableOwner.SUCCESS', () => {
+    it('should handle UpdateTableSteward.SUCCESS', () => {
       expect(
-        reducer(testState, updateTableOwnerSuccess(expectedOwners))
+        reducer(testState, updateTableStewardSuccess(expectedStewards))
       ).toEqual({
         ...testState,
         isLoading: false,
-        owners: expectedOwners,
+        stewards: expectedStewards,
       });
     });
 
@@ -120,7 +124,7 @@ describe('tableMetadata:owners ducks', () => {
       expect(reducer(testState, getTableData('testKey'))).toEqual({
         ...testState,
         isLoading: true,
-        owners: {},
+        stewards: {},
       });
     });
 
@@ -129,7 +133,7 @@ describe('tableMetadata:owners ducks', () => {
       expect(reducer(testState, action)).toEqual({
         ...testState,
         isLoading: false,
-        owners: action.payload.owners,
+        stewards: action.payload.stewards,
       });
     });
 
@@ -149,46 +153,49 @@ describe('tableMetadata:owners ducks', () => {
       ).toEqual({
         ...testState,
         isLoading: false,
-        owners: expectedOwners,
+        stewards: expectedStewards,
       });
     });
   });
 
   describe('sagas', () => {
-    describe('updateTableOwnerWatcher', () => {
-      it('takes every UpdateTableOwner.REQUEST with updateTableOwnerWorker', () => {
-        testSaga(updateTableOwnerWatcher)
+    describe('updateTableStewardWatcher', () => {
+      it('takes every UpdateTableSteward.REQUEST with updateTableStewardWorker', () => {
+        testSaga(updateTableStewardWatcher)
           .next()
-          .takeEvery(UpdateTableOwner.REQUEST, updateTableOwnerWorker);
+          .takeEvery(UpdateTableSteward.REQUEST, updateTableStewardWorker);
       });
     });
 
-    describe('updateTableOwnerWorker', () => {
-      describe('executes flow for updating owners and returning up to date owner dict', () => {
+    describe('updateTableStewardWorker', () => {
+      describe('executes flow for updating stewards and returning up to date steward dict', () => {
         let sagaTest;
         beforeAll(() => {
           sagaTest = (action) =>
-            testSaga(updateTableOwnerWorker, action)
+            testSaga(updateTableStewardWorker, action)
               .next()
               .select()
               .next(globalState)
               .all(
-                API.generateOwnerUpdateRequests(
+                API.generateStewardUpdateRequests(
                   updatePayload,
                   globalState.tableMetadata.tableData
                 )
               )
               .next()
-              .call(API.getTableOwners, globalState.tableMetadata.tableData.key)
-              .next(expectedOwners)
-              .put(updateTableOwnerSuccess(expectedOwners));
+              .call(
+                API.getTableStewards,
+                globalState.tableMetadata.tableData.key
+              )
+              .next(expectedStewards)
+              .put(updateTableStewardSuccess(expectedStewards));
         });
         it('without success callback', () => {
-          sagaTest(updateTableOwner(updatePayload)).next().isDone();
+          sagaTest(updateTableSteward(updatePayload)).next().isDone();
         });
 
         it('with success callback', () => {
-          sagaTest(updateTableOwner(updatePayload, mockSuccess, mockFailure))
+          sagaTest(updateTableSteward(updatePayload, mockSuccess, mockFailure))
             .next()
             .call(mockSuccess)
             .next()
@@ -200,23 +207,23 @@ describe('tableMetadata:owners ducks', () => {
         let sagaTest;
         beforeAll(() => {
           sagaTest = (action) =>
-            testSaga(updateTableOwnerWorker, action)
+            testSaga(updateTableStewardWorker, action)
               .next()
               .select()
               .next(globalState)
               .throw(new Error())
               .put(
-                updateTableOwnerFailure(
-                  globalState.tableMetadata.tableOwners.owners
+                updateTableStewardFailure(
+                  globalState.tableMetadata.tableStewards.stewards
                 )
               );
         });
         it('without failure callback', () => {
-          sagaTest(updateTableOwner(updatePayload)).next().isDone();
+          sagaTest(updateTableSteward(updatePayload)).next().isDone();
         });
 
         it('with failure callback', () => {
-          sagaTest(updateTableOwner(updatePayload, mockSuccess, mockFailure))
+          sagaTest(updateTableSteward(updatePayload, mockSuccess, mockFailure))
             .next()
             .call(mockFailure)
             .next()

@@ -41,7 +41,7 @@ export const getSanitizedValue = (value) => {
     sanitizedValue = value;
   }
 
-  if (sanitizedValue.length > PREVIEW_COLUMN_MAX_LEN) {
+  if (sanitizedValue && sanitizedValue.length > PREVIEW_COLUMN_MAX_LEN) {
     return PREVIEW_COLUMN_MSG;
   }
   return sanitizedValue;

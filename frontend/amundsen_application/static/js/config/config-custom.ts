@@ -30,8 +30,12 @@ const configCustom: AppConfigCustom = {
   },
   badges: {
     pii: {
-      style: BadgeStyle.WARNING,
+      style: BadgeStyle.DANGER,
       displayName: 'PII',
+    },
+    br: {
+      style: BadgeStyle.WARNING,
+      displayName: 'Business Rule',
     },
   },
 };

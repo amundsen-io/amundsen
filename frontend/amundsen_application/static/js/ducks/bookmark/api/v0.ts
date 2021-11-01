@@ -11,7 +11,6 @@ export function addBookmark(
   resourceType: ResourceType,
   userId: string
 ) {
-  console.log('userId', userId);
   return axios
     .put(`${API_PATH}/user/bookmark?user_id=${userId}`, {
       type: resourceType,

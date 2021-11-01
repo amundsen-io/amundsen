@@ -1,6 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
+import logging
 from http import HTTPStatus
 from typing import Any, Iterable
 
@@ -46,7 +46,8 @@ class SearchUserAPI(Resource):
                 page_index=args['page_index'],
                 index=args.get('index')
             )
-
+            logging.warning(results)
+            
             return SearchUserResultSchema().dump(results), HTTPStatus.OK
 
         except RuntimeError:

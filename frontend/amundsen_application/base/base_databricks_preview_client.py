@@ -39,9 +39,9 @@ class DatabricksPreviewClient(BasePreviewClient):
             table_name = f"{params['schema']}.{params['tableName']}"
 
             conn = sql.connect(
-                server_hostname='adb-7528584200420189.9.azuredatabricks.net',
-                http_path='sql/protocolv1/o/7528584200420189/1209-183735-pygmy152',
-                access_token='dapif03ea600a923e5f306c2d94855bb124a')
+                server_hostname='adb-8116994530892803.3.azuredatabricks.net',
+                http_path='sql/protocolv1/o/8116994530892803/1218-193400-vise273',
+                access_token='dapi76a31261d0ae9b67a2153875a748e4fc')
 
             # Run a SQL query by using the preceding connection.
             cursor = conn.cursor()

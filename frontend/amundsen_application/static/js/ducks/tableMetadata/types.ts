@@ -2,11 +2,13 @@ import {
   AnalyticsEvent,
   DashboardResource,
   OwnerDict,
+  StewardDict,
   PreviewData,
   TablePreviewQueryParams,
   TableMetadata,
   TableQualityChecks,
   UpdateOwnerPayload,
+  UpdateStewardPayload,
   Tag,
 } from 'interfaces';
 
@@ -29,6 +31,7 @@ export interface GetTableDataResponse {
     statusCode: number | null;
     data: TableMetadata;
     owners: OwnerDict;
+    stewards: StewardDict;
     tags: Tag[];
   };
 }
@@ -154,6 +157,26 @@ export interface UpdateTableOwnerResponse {
   type: UpdateTableOwner.SUCCESS | UpdateTableOwner.FAILURE;
   payload: {
     owners: OwnerDict;
+  };
+}
+
+export enum UpdateTableSteward {
+  REQUEST = 'amundsen/tableMetadata/UPDATE_TABLE_STEWARD_REQUEST',
+  SUCCESS = 'amundsen/tableMetadata/UPDATE_TABLE_STEWARD_SUCCESS',
+  FAILURE = 'amundsen/tableMetadata/UPDATE_TABLE_STEWARD_FAILURE',
+}
+export interface UpdateTableStewardRequest {
+  type: UpdateTableSteward.REQUEST;
+  payload: {
+    updateArray: UpdateStewardPayload[];
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+export interface UpdateTableStewardResponse {
+  type: UpdateTableSteward.SUCCESS | UpdateTableSteward.FAILURE;
+  payload: {
+    stewards: StewardDict;
   };
 }
 

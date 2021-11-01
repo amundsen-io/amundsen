@@ -27,6 +27,14 @@ describe('helpers', () => {
           user_id: 'test',
         },
       ],
+      stewards: [
+        {
+          display_name: 'test',
+          profile_url: 'test.io',
+          email: 'test@test.com',
+          user_id: 'test',
+        },
+      ],
       tags: [
         { tag_count: 2, tag_name: 'zname' },
         { tag_count: 1, tag_name: 'aname' },
