@@ -377,6 +377,8 @@ if __name__ == "__main__":
                 'databuilder.models.user.User')
     run_csv_job('example/sample_data/sample_application.csv', 'test_application_metadata',
                 'databuilder.models.application.Application')
+    run_csv_job('example/sample_data/sample_table_report.csv', 'test_report_metadata',
+                'databuilder.models.report.ResourceReport')
     run_csv_job('example/sample_data/sample_source.csv', 'test_source_metadata',
                 'databuilder.models.table_source.TableSource')
     run_csv_job('example/sample_data/sample_tags.csv', 'test_tag_metadata',

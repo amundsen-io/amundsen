@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import EditableSection from 'components/EditableSection';
+import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
@@ -79,6 +80,7 @@ export type ColumnListProps = ComponentProps & DispatchFromProps;
 type ContentType = {
   title: string;
   description: string;
+  nestedLevel: number;
 };
 
 type DatatypeType = {
@@ -87,19 +89,27 @@ type DatatypeType = {
   type: string;
 };
 
+type ActionType = {
+  name: string;
+  isActionEnabled: boolean;
+};
+
 type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
   stats: TableColumnStats[] | null;
-  action: string;
+  children?: TableColumn[];
+  action: ActionType;
   editText: string | null;
   editUrl: string | null;
+  col_index: number;
   index: number;
   name: string;
   tableParams: TablePageParams;
-  sort_order: string;
+  sort_order: number;
   isEditable: boolean;
+  isExpandable: boolean;
   badges: Badge[];
 };
 
@@ -172,9 +182,11 @@ const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
 ) => {
+  if (!rowValue.isExpandable) {
+    return;
+  }
   const shouldRenderDescription = () => {
     const { content, editText, editUrl, isEditable } = rowValue;
-
     if (content.description) {
       return true;
     }
@@ -197,7 +209,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
           editUrl={rowValue.editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnIndex={rowValue.index}
+            columnIndex={rowValue.col_index}
             editable={rowValue.isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={rowValue.content.description}
@@ -226,54 +238,81 @@ const ColumnList: React.FC<ColumnListProps> = ({
   tableParams,
   getColumnLineageDispatch,
 }: ColumnListProps) => {
-  const hasColumnBadges = hasColumnWithBadge(columns);
   let selectedIndex;
-  const formattedData: FormattedDataType[] = columns.map((item, index) => {
+  const hasColumnBadges = hasColumnWithBadge(columns);
+  const formatColumnData = (item, index) => {
     const hasItemStats = !!item.stats.length;
-    if (item.name === selectedColumn) {
-      selectedIndex = index;
-    }
     return {
       content: {
         title: item.name,
         description: item.description,
+        nestedLevel: item.nested_level || 0,
       },
       type: {
         type: item.col_type,
         name: item.name,
         database,
       },
+      col_index: item.col_index,
+      children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
       stats: hasItemStats ? item.stats : null,
       badges: hasColumnBadges ? item.badges : [],
-      action: item.name,
+      action: {
+        name: item.name,
+        isActionEnabled: !item.nested_level,
+      },
       name: item.name,
       isEditable: item.is_editable,
+      isExpandable: !item.nested_level,
       editText: editText || null,
       editUrl: editUrl || null,
       tableParams,
       index,
     };
-  });
+  };
+  const formattedData: FormattedDataType[] = columns.map(formatColumnData);
   const statsCount = formattedData.filter((item) => !!item.stats).length;
   const hasUsageStat =
     getTableSortCriterias().usage && statsCount >= SHOW_STATS_THRESHOLD;
-  let formattedAndOrderedData = formattedData.sort(
+  let orderedData = formattedData.sort(
     getSortingFunction(formattedData, sortBy)
   );
   if (sortBy.direction === SortDirection.ascending) {
-    formattedAndOrderedData = formattedAndOrderedData.reverse();
+    orderedData = orderedData.reverse();
   }
+  const flattenedData: FormattedDataType[] = [];
+  // Flatten nested columns
+  orderedData.forEach((item) => {
+    flattenedData.push(item);
+    if (item.children !== undefined) {
+      flattenedData.push(...item.children.map(formatColumnData));
+    }
+  });
+
+  flattenedData.forEach((item, index) => {
+    if (item.name === selectedColumn) {
+      selectedIndex = index;
+    }
+  });
 
   let formattedColumns: ReusableTableColumn[] = [
     {
       title: 'Name',
       field: 'content',
-      component: ({ title, description }: ContentType) => (
+      component: ({ title, description, nestedLevel }: ContentType) => (
         <>
-          <div className="column-name">{title}</div>
-          <div className="column-desc truncated">{description}</div>
+          {nestedLevel > 0 && (
+            <>
+              <div className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
+              <NestingArrow />
+            </>
+          )}
+          <div className="column-name-container">
+            <h3 className="column-name">{title}</h3>
+            <p className="column-desc truncated">{description}</p>
+          </div>
         </>
       ),
     },
@@ -326,40 +365,45 @@ const ColumnList: React.FC<ColumnListProps> = ({
         field: 'action',
         width: 80,
         horAlign: TextAlignmentValues.right,
-        component: (name, index) => (
-          <div className="actions">
-            <Dropdown
-              id={`detail-list-item-dropdown:${index}`}
-              pullRight
-              className="column-dropdown"
-            >
-              <Dropdown.Toggle noCaret>
-                <span className="sr-only">{MORE_BUTTON_TEXT}</span>
-                <img className="icon icon-more" alt="" />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <MenuItem
-                  onClick={() => {
-                    openRequestDescriptionDialog(
-                      RequestMetadataType.COLUMN_DESCRIPTION,
-                      name
-                    );
-                  }}
-                >
-                  {REQUEST_DESCRIPTION_TEXT}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    const link = getColumnLink(tableParams, name);
-                    navigator.clipboard.writeText(link);
-                  }}
-                >
-                  {COPY_COLUMN_LINK_TEXT}
-                </MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        ),
+        component: ({ name, isActionEnabled }, index) => {
+          if (!isActionEnabled) {
+            return null;
+          }
+          return (
+            <div className="actions">
+              <Dropdown
+                id={`detail-list-item-dropdown:${index}`}
+                pullRight
+                className="column-dropdown"
+              >
+                <Dropdown.Toggle noCaret>
+                  <span className="sr-only">{MORE_BUTTON_TEXT}</span>
+                  <img className="icon icon-more" alt="" />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <MenuItem
+                    onClick={() => {
+                      openRequestDescriptionDialog(
+                        RequestMetadataType.COLUMN_DESCRIPTION,
+                        name
+                      );
+                    }}
+                  >
+                    {REQUEST_DESCRIPTION_TEXT}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      const link = getColumnLink(tableParams, name);
+                      navigator.clipboard.writeText(link);
+                    }}
+                  >
+                    {COPY_COLUMN_LINK_TEXT}
+                  </MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          );
+        },
       },
     ];
   }
@@ -383,7 +427,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   return (
     <Table
       columns={formattedColumns}
-      data={formattedAndOrderedData}
+      data={flattenedData}
       options={{
         rowHeight: 72,
         emptyMessage: EMPTY_MESSAGE,

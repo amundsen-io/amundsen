@@ -37,7 +37,8 @@ def log_generic_action() -> Response:
                             target_type: str,
                             label: str,
                             location: str,
-                            value: str) -> None:
+                            value: str,
+                            position: str) -> None:
         pass  # pragma: no cover
 
     try:
@@ -50,7 +51,8 @@ def log_generic_action() -> Response:
             target_type=args.get('target_type', None),
             label=args.get('label', None),
             location=args.get('location', None),
-            value=args.get('value', None)
+            value=args.get('value', None),
+            position=args.get('position', None)
         )
         message = 'Logging of {} action successful'.format(command)
         return make_response(jsonify({'msg': message}), HTTPStatus.OK)

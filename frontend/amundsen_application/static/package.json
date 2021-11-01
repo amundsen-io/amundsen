@@ -543,6 +543,7 @@
         {
           "ignoreAtRules": [
             "function",
+            "for",
             "if",
             "each",
             "include",

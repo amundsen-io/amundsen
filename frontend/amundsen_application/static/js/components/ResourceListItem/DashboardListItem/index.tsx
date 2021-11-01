@@ -48,6 +48,7 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
             logClick(e, {
               target_id: 'dashboard_list_item',
               value: logging.source,
+              position: logging.index.toString(),
             })
           }
         >

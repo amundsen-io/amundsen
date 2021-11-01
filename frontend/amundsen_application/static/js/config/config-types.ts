@@ -76,6 +76,7 @@ export interface AnalyticsConfig {
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
+  showBadgesInHome: boolean;
 }
 
 /**

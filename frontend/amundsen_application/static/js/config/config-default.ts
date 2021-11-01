@@ -7,6 +7,7 @@ const configDefault: AppConfig = {
   browse: {
     curatedTags: [],
     showAllTags: true,
+    showBadgesInHome: true,
   },
   date: {
     default: 'MMM DD, YYYY',

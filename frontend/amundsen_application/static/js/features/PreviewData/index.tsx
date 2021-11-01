@@ -37,6 +37,8 @@ export const getSanitizedValue = (value) => {
     sanitizedValue = value.toString();
   } else if (typeof value === 'object') {
     sanitizedValue = JSON.stringify(value);
+  } else if (typeof value === 'undefined') {
+    sanitizedValue = '';
   } else {
     sanitizedValue = value;
   }

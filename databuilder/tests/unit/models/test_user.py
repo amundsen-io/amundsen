@@ -34,6 +34,7 @@ class TestUser(unittest.TestCase):
                          manager_email='test_manager@email.com',
                          slack_id='slack',
                          is_active=True,
+                         profile_url='https://profile',
                          updated_at=1,
                          role_name='swe')
 
@@ -47,6 +48,7 @@ class TestUser(unittest.TestCase):
             'KEY': 'test@email.com',
             'email': 'test@email.com',
             'is_active:UNQUOTED': True,
+            'profile_url': 'https://profile',
             'first_name': 'test_first',
             'last_name': 'test_last',
             'full_name': 'test_first test_last',
@@ -78,6 +80,7 @@ class TestUser(unittest.TestCase):
                          manager_email='test_manager@email.com',
                          slack_id='slack',
                          is_active=True,
+                         profile_url='https://profile',
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)
@@ -98,6 +101,7 @@ class TestUser(unittest.TestCase):
                          manager_email='test_manager@email.com',
                          slack_id='slack',
                          is_active=True,
+                         profile_url='https://profile',
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)
@@ -118,6 +122,7 @@ class TestUser(unittest.TestCase):
                          manager_email='test_manager@email.com',
                          slack_id='slack',
                          is_active=True,
+                         profile_url='https://profile',
                          updated_at=1,
                          role_name='swe',
                          enable_notify=True)
@@ -206,9 +211,9 @@ class TestUser(unittest.TestCase):
 
         self.assertDictEqual(neo4_serializer.serialize_node(test_user.create_next_node()),
                              {'KEY': 'test@email.com', 'LABEL': 'User', 'email': 'test@email.com',
-                              'is_active:UNQUOTED': True, 'first_name': '', 'last_name': '', 'full_name': '',
-                              'github_username': '', 'team_name': '', 'employee_type': '', 'slack_id': '',
-                              'role_name': '', 'updated_at:UNQUOTED': 0, 'foo': 'bar'})
+                              'is_active:UNQUOTED': True, 'profile_url': '', 'first_name': '', 'last_name': '',
+                              'full_name': '', 'github_username': '', 'team_name': '', 'employee_type': '',
+                              'slack_id': '', 'role_name': '', 'updated_at:UNQUOTED': 0, 'foo': 'bar'})
 
         test_user2 = User(email='test@email.com',
                           foo='bar',

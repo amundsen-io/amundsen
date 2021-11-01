@@ -24,6 +24,9 @@ const mockFormData = {
   key: 'val1',
   title: 'title',
   description: 'description',
+  owner_ids: ['owner@email'],
+  frequent_user_ids: ['frequent@email'],
+  priority_level: 'priority level',
   resource_name: 'resource name',
   resource_path: 'path',
   owners: 'test@test.com',
@@ -40,6 +43,9 @@ const mockCreateIssuePayload = {
   key: 'key',
   title: 'title',
   description: 'description',
+  owner_ids: ['owner@email'],
+  frequent_user_ids: ['frequent@email'],
+  priority_level: 'P2',
   resource_path: '/table_detail/cluster/database/schema/table_name',
 };
 
@@ -61,6 +67,7 @@ describe('ReportTableIssue', () => {
       tableKey: 'key',
       tableName: 'name',
       tableOwners: ['owner@email'],
+      frequentUsers: ['frequent@email'],
       tableMetadata: {
         ...globalState.tableMetadata.tableData,
         schema: 'schema',

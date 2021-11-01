@@ -126,6 +126,9 @@ components:
         is_active:
           type: boolean
           description: 'Is user active'
+        profile_url:
+          type: string
+          description: 'User profile url'
         github_username:
           type: string
           description: 'User github'
