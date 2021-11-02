@@ -31,7 +31,8 @@ LOGGER.setLevel(logging.INFO)
 # Disable snowflake logging
 # logging.getLogger("snowflake.connector.network").disabled = True
 
-BIGQUERY_DATABASE_KEY = 'YourSnowflakeDbName'
+BIGQUERY_PROJECT_KEY = 'YourBigqueryProjectId'
+BIGQUERY_TABLE_SCHEMA_KEY = 'YourBigqueryTableSchemaName'
 
 # set env NEO4J_HOST to override localhost
 NEO4J_ENDPOINT = f'bolt://{os.getenv("NEO4J_HOST", "localhost")}:7687'
@@ -59,7 +60,8 @@ def connection_string():
     # Refer this doc: https://github.com/googleapis/python-bigquery-sqlalchemy
     # for supported connection parameters and configurations
     project_id = ''
-    return f'bigquery://{project_id}'
+    credentials_path = ''
+    return (f'bigquery://{project_id}', credentials_path)
 
 
 def create_sample_bigquery_job():
@@ -79,9 +81,13 @@ def create_sample_bigquery_job():
     task = DefaultTask(extractor=sql_extractor,
                        loader=csv_loader)
 
+    connection_string, credentials_path = connection_string()
+
     job_config = ConfigFactory.from_dict({
-        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string(),
-        f'extractor.bigquery.{BigQueryMetadataExtractor.BIGQUERY_DATABASE_KEY}': BIGQUERY_DATABASE_KEY,
+        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string,
+        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CREDS_PATH}': credentials_path,
+        f'extractor.bigquery.{BigQueryMetadataExtractor.BIGQUERY_PROJECT_KEY}': BIGQUERY_PROJECT_KEY,
+        f'extractor.bigquery.{BigQueryMetadataExtractor.BIGQUERY_TABLE_SCHEMA_KEY}': BIGQUERY_TABLE_SCHEMA_KEY,
         f'extractor.bigquery.{BigQueryMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause,
         f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
         f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,

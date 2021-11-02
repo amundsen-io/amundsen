@@ -41,7 +41,7 @@ class BigQueryMetadataExtractor(Extractor):
             lower(TABLE_NAME) AS name,
             '' AS description,
             'false' AS is_view
-        FROM `{project_id}.{schema}.INFORMATION_SCHEMA`.COLUMNS
+        FROM `{project}.{table_schema}.{schema}`.COLUMNS
         {where_clause_suffix};
     """
 
@@ -51,9 +51,10 @@ class BigQueryMetadataExtractor(Extractor):
     USE_CATALOG_AS_CLUSTER_NAME = 'use_catalog_as_cluster_name'
     # Database Key, used to identify the database type in the UI.
     DATABASE_KEY = 'database_key'
-    # Snowflake Database Key, used to determine which Snowflake database to connect to.
-    BIGQUERY_DATABASE_KEY = 'bigquery_database'
-    # Snowflake Schema Key, used to determine which Snowflake schema to use.
+    # Bigquery Database Key, used to determine which Bigquery database to connect to.
+    BIGQUERY_PROJECT_KEY = 'bigquery_project'
+    # Bigquery Schema Key, used to determine which Bigquery schema to use.
+    BIGQUERY_TABLE_SCHEMA_KEY = 'bigquery_table_schema'
     BIGQUERY_SCHEMA_KEY = 'bigquery_schema'
 
     # Default values
@@ -64,7 +65,8 @@ class BigQueryMetadataExtractor(Extractor):
          CLUSTER_KEY: DEFAULT_CLUSTER_NAME,
          USE_CATALOG_AS_CLUSTER_NAME: True,
          DATABASE_KEY: 'bigquery',
-         BIGQUERY_DATABASE_KEY: 'prod',
+         BIGQUERY_PROJECT_KEY: 'prod',
+         BIGQUERY_TABLE_SCHEMA_KEY: ' ',
          BIGQUERY_SCHEMA_KEY: 'INFORMATION_SCHEMA'}
     )
 
@@ -79,14 +81,16 @@ class BigQueryMetadataExtractor(Extractor):
 
         self._database = conf.get_string(BigQueryMetadataExtractor.DATABASE_KEY)
         self._schema = conf.get_string(BigQueryMetadataExtractor.DATABASE_KEY)
-        self._snowflake_database = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_DATABASE_KEY)
-        self._snowflake_schema = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_SCHEMA_KEY)
+        self._bigquery_project = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_PROJECT_KEY)
+        self._bigquery_table_schema = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_TABLE_SCHEMA_KEY)
+        self._bigquery_schema = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_SCHEMA_KEY)
 
         self.sql_stmt = BigQueryMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(BigQueryMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
             cluster_source=cluster_source,
-            database=self._snowflake_database,
-            schema=self._snowflake_schema
+            project=self._bigquery_project,
+            table_schema=self._bigquery_table_schema,
+            schema=self._bigquery_schema
         )
 
         LOGGER.info('SQL for snowflake metadata: %s', self.sql_stmt)
