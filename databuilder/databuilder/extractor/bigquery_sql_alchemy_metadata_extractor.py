@@ -31,9 +31,17 @@ class BigQueryMetadataExtractor(Extractor):
     # https://cloud.google.com/bigquery/docs/information-schema-tables
     SQL_STATEMENT = """
         SELECT
-        * EXCEPT(is_generated, generation_expression, is_stored, is_updatable)
-        FROM
-        `{project_id}`.{schema}.INFORMATION_SCHEMA.COLUMNS
+            lower(COLUMN_NAME) AS col_name,
+            '' AS col_description,
+            lower(DATA_TYPE) AS col_type,
+            ORDINAL_POSITION AS col_sort_order,
+            lower(TABLE_CATALOG) AS database,
+            '' AS cluster,
+            lower(TABLE_SCHEMA) AS schema,
+            lower(TABLE_NAME) AS name,
+            '' AS description,
+            'false' AS is_view
+        FROM `{project_id}.{schema}.INFORMATION_SCHEMA`.COLUMNS
         {where_clause_suffix};
     """
 
@@ -44,9 +52,9 @@ class BigQueryMetadataExtractor(Extractor):
     # Database Key, used to identify the database type in the UI.
     DATABASE_KEY = 'database_key'
     # Snowflake Database Key, used to determine which Snowflake database to connect to.
-    SNOWFLAKE_DATABASE_KEY = 'snowflake_database'
+    BIGQUERY_DATABASE_KEY = 'bigquery_database'
     # Snowflake Schema Key, used to determine which Snowflake schema to use.
-    SNOWFLAKE_SCHEMA_KEY = 'snowflake_schema'
+    BIGQUERY_SCHEMA_KEY = 'bigquery_schema'
 
     # Default values
     DEFAULT_CLUSTER_NAME = 'master'
@@ -55,9 +63,9 @@ class BigQueryMetadataExtractor(Extractor):
         {WHERE_CLAUSE_SUFFIX_KEY: ' ',
          CLUSTER_KEY: DEFAULT_CLUSTER_NAME,
          USE_CATALOG_AS_CLUSTER_NAME: True,
-         DATABASE_KEY: 'snowflake',
-         SNOWFLAKE_DATABASE_KEY: 'prod',
-         SNOWFLAKE_SCHEMA_KEY: 'INFORMATION_SCHEMA'}
+         DATABASE_KEY: 'bigquery',
+         BIGQUERY_DATABASE_KEY: 'prod',
+         BIGQUERY_SCHEMA_KEY: 'INFORMATION_SCHEMA'}
     )
 
     def init(self, conf: ConfigTree) -> None:
@@ -71,8 +79,8 @@ class BigQueryMetadataExtractor(Extractor):
 
         self._database = conf.get_string(BigQueryMetadataExtractor.DATABASE_KEY)
         self._schema = conf.get_string(BigQueryMetadataExtractor.DATABASE_KEY)
-        self._snowflake_database = conf.get_string(BigQueryMetadataExtractor.SNOWFLAKE_DATABASE_KEY)
-        self._snowflake_schema = conf.get_string(BigQueryMetadataExtractor.SNOWFLAKE_SCHEMA_KEY)
+        self._snowflake_database = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_DATABASE_KEY)
+        self._snowflake_schema = conf.get_string(BigQueryMetadataExtractor.BIGQUERY_SCHEMA_KEY)
 
         self.sql_stmt = BigQueryMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(BigQueryMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
