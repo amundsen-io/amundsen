@@ -59,9 +59,8 @@ es = Elasticsearch([
 def connection_string():
     # Refer this doc: https://github.com/googleapis/python-bigquery-sqlalchemy
     # for supported connection parameters and configurations
-    project_id = ''
     credentials_path = ''
-    return (f'bigquery://{project_id}', credentials_path)
+    return (f'bigquery://{BIGQUERY_PROJECT_KEY}', credentials_path)
 
 
 def create_sample_bigquery_job():
