@@ -61,7 +61,7 @@ class GlueExtractor(Extractor):
                 continue
 
             for column in row['StorageDescriptor']['Columns'] \
-                          + row.get('PartitionKeys', []):
+                    + row.get('PartitionKeys', []):
                 columns.append(ColumnMetadata(
                     column['Name'],
                     column['Comment'] if 'Comment' in column else None,
