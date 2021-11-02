@@ -9,3 +9,4 @@ neotime==1.7.1
 apache_atlas==0.0.11
 beaker>=1.10.0
 overrides==2.5
+flaskoidc==0.2.3
