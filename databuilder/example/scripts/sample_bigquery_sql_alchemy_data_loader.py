@@ -34,6 +34,11 @@ LOGGER.setLevel(logging.INFO)
 BIGQUERY_PROJECT_KEY = 'YourBigqueryProjectId'
 BIGQUERY_TABLE_SCHEMA_KEY = 'YourBigqueryTableSchemaName'
 
+# Refer this doc: https://github.com/googleapis/python-bigquery-sqlalchemy
+# for supported connection parameters and configurations
+BIGQUERY_CONNECTION_STRING = f'bigquery://{BIGQUERY_PROJECT_KEY}'
+BIGQUERY_CREDENTIALS_PATH = ''
+
 # set env NEO4J_HOST to override localhost
 NEO4J_ENDPOINT = f'bolt://{os.getenv("NEO4J_HOST", "localhost")}:7687'
 neo4j_endpoint = NEO4J_ENDPOINT
@@ -55,14 +60,6 @@ es = Elasticsearch([
 ])
 
 
-# todo: connection string needs to change
-def connection_string():
-    # Refer this doc: https://github.com/googleapis/python-bigquery-sqlalchemy
-    # for supported connection parameters and configurations
-    credentials_path = ''
-    return (f'bigquery://{BIGQUERY_PROJECT_KEY}', credentials_path)
-
-
 def create_sample_bigquery_job():
     where_clause = f"WHERE c.TABLE_SCHEMA not in ({','.join(IGNORED_SCHEMAS)}) \
             AND c.TABLE_SCHEMA not like 'STAGE_%' \
@@ -80,11 +77,9 @@ def create_sample_bigquery_job():
     task = DefaultTask(extractor=sql_extractor,
                        loader=csv_loader)
 
-    connection_string, credentials_path = connection_string()
-
     job_config = ConfigFactory.from_dict({
-        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': connection_string,
-        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CREDS_PATH}': credentials_path,
+        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': BIGQUERY_CONNECTION_STRING,
+        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CREDS_PATH}': BIGQUERY_CREDENTIALS_PATH,
         f'extractor.bigquery.{BigQueryMetadataExtractor.BIGQUERY_PROJECT_KEY}': BIGQUERY_PROJECT_KEY,
         f'extractor.bigquery.{BigQueryMetadataExtractor.BIGQUERY_TABLE_SCHEMA_KEY}': BIGQUERY_TABLE_SCHEMA_KEY,
         f'extractor.bigquery.{BigQueryMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY}': where_clause,
