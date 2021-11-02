@@ -46,7 +46,7 @@ neo4j_endpoint = NEO4J_ENDPOINT
 neo4j_user = 'neo4j'
 neo4j_password = 'test'
 
-IGNORED_SCHEMAS = ['\'DVCORE\'', '\'INFORMATION_SCHEMA\'', '\'STAGE_ORACLE\'']
+# IGNORED_SCHEMAS = ['\'DVCORE\'', '\'INFORMATION_SCHEMA\'', '\'STAGE_ORACLE\'']
 
 es_host = None
 neo_host = None
@@ -61,12 +61,7 @@ es = Elasticsearch([
 
 
 def create_sample_bigquery_job():
-    where_clause = f"WHERE c.TABLE_SCHEMA not in ({','.join(IGNORED_SCHEMAS)}) \
-            AND c.TABLE_SCHEMA not like 'STAGE_%' \
-            AND c.TABLE_SCHEMA not like 'HIST_%' \
-            AND c.TABLE_SCHEMA not like 'SNAP_%' \
-            AND lower(c.COLUMN_NAME) not like 'dw_%';"
-
+    where_clause = ""
     tmp_folder = '/var/tmp/amundsen/tables'
     node_files_folder = f'{tmp_folder}/nodes'
     relationship_files_folder = f'{tmp_folder}/relationships'
@@ -94,6 +89,7 @@ def create_sample_bigquery_job():
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
         f'publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}': 'unique_tag'
     })
+
     job = DefaultJob(conf=job_config,
                      task=task,
                      publisher=Neo4jCsvPublisher())

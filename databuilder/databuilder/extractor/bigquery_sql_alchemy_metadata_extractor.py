@@ -36,7 +36,7 @@ class BigQueryMetadataExtractor(Extractor):
             lower(DATA_TYPE) AS col_type,
             ORDINAL_POSITION AS col_sort_order,
             lower(TABLE_CATALOG) AS database,
-            '' AS cluster,
+            lower(TABLE_CATALOG) AS cluster,
             lower(TABLE_SCHEMA) AS schema,
             lower(TABLE_NAME) AS name,
             '' AS description,
@@ -65,8 +65,8 @@ class BigQueryMetadataExtractor(Extractor):
          CLUSTER_KEY: DEFAULT_CLUSTER_NAME,
          USE_CATALOG_AS_CLUSTER_NAME: True,
          DATABASE_KEY: 'bigquery',
-         BIGQUERY_PROJECT_KEY: 'prod',
-         BIGQUERY_TABLE_SCHEMA_KEY: ' ',
+         BIGQUERY_PROJECT_KEY: 'bigquery-public-data',
+         BIGQUERY_TABLE_SCHEMA_KEY: 'samples',
          BIGQUERY_SCHEMA_KEY: 'INFORMATION_SCHEMA'}
     )
 
@@ -75,7 +75,7 @@ class BigQueryMetadataExtractor(Extractor):
         self._cluster = conf.get_string(BigQueryMetadataExtractor.CLUSTER_KEY)
 
         if conf.get_bool(BigQueryMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
-            cluster_source = "c.table_catalog"
+            cluster_source = "TABLE_CATALOG"
         else:
             cluster_source = f"'{self._cluster}'"
 
@@ -111,7 +111,7 @@ class BigQueryMetadataExtractor(Extractor):
             return None
 
     def get_scope(self) -> str:
-        return 'extractor.snowflake'
+        return 'extractor.bigquery'
 
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
         """

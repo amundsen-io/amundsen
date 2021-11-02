@@ -54,7 +54,8 @@ class SQLAlchemyExtractor(Extractor):
                 self.CONNECT_ARGS, default=ConfigTree()
             ).items()
         }
-        engine = create_engine(self.conn_string, connect_args=connect_args, credentials_path=self.CREDS_PATH)
+        credentials_path = self.conf.get_string(SQLAlchemyExtractor.CREDS_PATH)
+        engine = create_engine(self.conn_string, connect_args=connect_args, credentials_path=credentials_path)
         conn = engine.connect()
         return conn
 
