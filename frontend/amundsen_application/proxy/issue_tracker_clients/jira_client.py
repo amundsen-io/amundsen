@@ -3,7 +3,7 @@
 
 from http import HTTPStatus
 from jira import JIRA, JIRAError, Issue, User as JiraUser
-from typing import List
+from typing import Any, List
 
 from flask import current_app as app
 
@@ -104,7 +104,7 @@ class JiraClient(BaseIssueTrackerClient):
                      description: str,
                      priority_level: str,
                      table_url: str,
-                     **kwargs) -> DataIssue:
+                     **kwargs: Any) -> DataIssue:
         """
         Creates an issue in Jira
         :param description: Description of the Jira issue

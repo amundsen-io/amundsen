@@ -3,7 +3,7 @@
 
 import asana
 import logging
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
 from amundsen_application.models.data_issue import DataIssue, Priority
@@ -66,7 +66,7 @@ class AsanaClient(BaseIssueTrackerClient):
                      description: str,
                      priority_level: str,
                      table_url: str,
-                     **kwargs) -> DataIssue:
+                     **kwargs: Any) -> DataIssue:
         """
         Creates an issue in Asana
         :param description: Description of the Asana issue

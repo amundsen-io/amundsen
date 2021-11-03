@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
+from typing import Any
 
 from amundsen_application.models.data_issue import DataIssue
 from amundsen_application.models.issue_results import IssueResults
@@ -28,7 +29,7 @@ class BaseIssueTrackerClient(abc.ABC):
                      description: str,
                      priority_level: str,
                      table_url: str,
-                     **kwargs) -> DataIssue:
+                     **kwargs: Any) -> DataIssue:
         """
         Given a title, description, and table key, creates a ticket in the configured project
         Automatically places the table_uri in the description of the ticket.
