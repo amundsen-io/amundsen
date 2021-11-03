@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from datetime import datetime, timedelta
 from http import HTTPStatus
 from jira import JIRA, JIRAError, Issue, User as JiraUser
 from typing import List
@@ -21,6 +20,7 @@ import urllib.parse
 import logging
 
 SEARCH_STUB_ALL_ISSUES = ('text ~ "\\"Table Key: {table_key} [PLEASE DO NOT REMOVE]\\"" '
+                          'and (resolution = unresolved or (resolution != unresolved and updated > -30d)) '
                           'order by resolution DESC, priority DESC, createdDate DESC')
 SEARCH_STUB_OPEN_ISSUES = ('text ~ "\\"Table Key: {table_key} [PLEASE DO NOT REMOVE]\\"" '
                            'and resolution = unresolved '
@@ -71,23 +71,29 @@ class JiraClient(BaseIssueTrackerClient):
             issues = self.jira_client.search_issues(SEARCH_STUB_ALL_ISSUES.format(
                 table_key=table_uri),
                 maxResults=self.jira_max_results)
-            # Call search_issues for only 1 open issue just to get the total value from the response
+
+            # Call search_issues for only 1 open/closed issue just to get the total values from the response. The
+            # total count from all issues may not be accurate if older closed issues are excluded from the response
             open_issues = self.jira_client.search_issues(SEARCH_STUB_OPEN_ISSUES.format(
                 table_key=table_uri),
                 maxResults=1)
+            closed_issues = self.jira_client.search_issues(SEARCH_STUB_CLOSED_ISSUES.format(
+                table_key=table_uri),
+                maxResults=1)
+
             returned_issues = self._sort_issues(issues)
             return IssueResults(issues=returned_issues,
-                                total=issues.total,
+                                total=open_issues.total + closed_issues.total,
                                 open_count=open_issues.total,
                                 all_issues_url=self._generate_issues_url(SEARCH_STUB_ALL_ISSUES,
                                                                          table_uri,
-                                                                         issues.total),
+                                                                         open_issues.total + closed_issues.total),
                                 open_issues_url=self._generate_issues_url(SEARCH_STUB_OPEN_ISSUES,
                                                                           table_uri,
                                                                           open_issues.total),
                                 closed_issues_url=self._generate_issues_url(SEARCH_STUB_CLOSED_ISSUES,
                                                                             table_uri,
-                                                                            issues.total - open_issues.total))
+                                                                            closed_issues.total))
         except JIRAError as e:
             logging.exception(str(e))
             raise e
@@ -96,21 +102,19 @@ class JiraClient(BaseIssueTrackerClient):
                      table_uri: str,
                      title: str,
                      description: str,
-                     owner_ids: List[str],
-                     frequent_user_ids: List[str],
                      priority_level: str,
-                     project_key: str,
-                     table_url: str) -> DataIssue:
+                     table_url: str,
+                     **kwargs) -> DataIssue:
         """
         Creates an issue in Jira
         :param description: Description of the Jira issue
-        :param owner_ids: List of table owners user ids
-        :param frequent_user_ids: List of table frequent users user ids
         :param priority_level: Priority level for the ticket
-        :param project_key: Issue tracking project key to specify where the ticket should be created
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Jira ticket
         :param table_url: Link to access the table
+        :param owner_ids: List of table owners user ids
+        :param frequent_user_ids: List of table frequent users user ids
+        :param project_key: Jira project key to specify where the ticket should be created
         :return: Metadata about the newly created issue
         """
         try:
@@ -136,11 +140,12 @@ class JiraClient(BaseIssueTrackerClient):
             if app.config['ISSUE_TRACKER_ISSUE_TYPE_ID']:
                 issue_type_id = app.config['ISSUE_TRACKER_ISSUE_TYPE_ID']
 
+            project_key = kwargs.get('project_key', None)
             proj_key = 'key' if project_key else 'id'
             proj_value = project_key if project_key else self.jira_project_id
 
-            owners = self._get_users_from_ids(owner_ids)
-            frequent_users = self._get_users_from_ids(frequent_user_ids)
+            owners = self._get_users_from_ids(kwargs.get('owner_ids', []))
+            frequent_users = self._get_users_from_ids(kwargs.get('frequent_user_ids', []))
 
             owners_description_str = self._generate_owners_description_str(owners)
             frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
@@ -222,7 +227,7 @@ class JiraClient(BaseIssueTrackerClient):
     def _sort_issues(self, issues: List[Issue]) -> List[DataIssue]:
         """
         Sorts issues by resolution, first by unresolved and then by resolved. Also maps the issues to
-        the object used by the front end. Doesn't include closed issues that are older than 90 days.
+        the object used by the front end. Doesn't include closed issues that are older than 30 days.
         :param issues: Issues returned from the JIRA API
         :return: List of data issues
         """
@@ -233,10 +238,7 @@ class JiraClient(BaseIssueTrackerClient):
             if not issue.fields.resolution:
                 open.append(data_issue)
             else:
-                created_date = datetime.strptime(issue.fields.created.split(".")[0], '%Y-%m-%dT%H:%M:%S')
-                oldest_allowed_date = datetime.today() - timedelta(days=90)
-                if created_date > oldest_allowed_date:
-                    closed.append(data_issue)
+                closed.append(data_issue)
         return open + closed
 
     @staticmethod

@@ -64,18 +64,13 @@ class AsanaClient(BaseIssueTrackerClient):
                      table_uri: str,
                      title: str,
                      description: str,
-                     owner_ids: List[str],
-                     frequent_user_ids: List[str],
                      priority_level: str,
-                     project_key: str,
-                     table_url: str) -> DataIssue:
+                     table_url: str,
+                     **kwargs) -> DataIssue:
         """
         Creates an issue in Asana
         :param description: Description of the Asana issue
-        :param owner_ids: List of user ids that represent the owners of the table
-        :param frequent_user_ids: List of user ids that represent the frequent users of the table
         :param priority_level: Priority level for the ticket
-        :param project_key: Issue tracking project key to specify where the ticket should be created
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Asana ticket
         :param table_url: Link to access the table
