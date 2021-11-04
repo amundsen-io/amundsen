@@ -31,17 +31,32 @@ class BigQueryMetadataExtractor(Extractor):
     # https://cloud.google.com/bigquery/docs/information-schema-tables
     SQL_STATEMENT = """
         SELECT
-            lower(COLUMN_NAME) AS col_name,
-            '' AS col_description,
-            lower(DATA_TYPE) AS col_type,
-            ORDINAL_POSITION AS col_sort_order,
-            lower(TABLE_CATALOG) AS database,
-            lower(TABLE_CATALOG) AS cluster,
-            lower(TABLE_SCHEMA) AS schema,
-            lower(TABLE_NAME) AS name,
-            '' AS description,
-            'false' AS is_view
-        FROM `{project}.{table_schema}.{schema}`.COLUMNS
+            lower(c.COLUMN_NAME) AS col_name,
+            cfp.DESCRIPTION AS col_description,
+            lower(c.DATA_TYPE) AS col_type,
+            ifnull(c.ORDINAL_POSITION, 0) AS col_sort_order,
+            'bigquery' AS database,
+            lower(c.TABLE_CATALOG) AS cluster,
+            lower(c.TABLE_SCHEMA) AS schema,
+            lower(c.TABLE_NAME) AS name,
+            tops.OPTION_VALUE AS description,
+            CASE c.IS_PARTITIONING_COLUMN WHEN 'YES' THEN 1 WHEN 'NO' THEN 0 ELSE NULL END AS is_partition_col,
+            CASE WHEN t.TABLE_TYPE = 'VIEW' THEN 'true' ELSE 'false' END AS is_view
+        FROM `{project}.{table_schema}.{schema}`.COLUMNS c
+        LEFT JOIN `{project}.{table_schema}.{schema}`.TABLES t
+            ON  c.TABLE_CATALOG = t.TABLE_CATALOG
+            AND c.TABLE_SCHEMA  = t.TABLE_SCHEMA
+            AND c.TABLE_NAME    = t.TABLE_NAME
+        LEFT JOIN `{project}.{table_schema}.{schema}`.TABLE_OPTIONS tops
+            ON  c.TABLE_CATALOG = tops.TABLE_CATALOG
+            AND c.TABLE_SCHEMA  = tops.TABLE_SCHEMA
+            AND c.TABLE_NAME    = tops.TABLE_NAME
+            AND tops.OPTION_NAME = 'description'
+        LEFT JOIN `{project}.{table_schema}.{schema}`.COLUMN_FIELD_PATHS cfp
+            ON  c.TABLE_CATALOG = cfp.TABLE_CATALOG
+            AND c.TABLE_SCHEMA  = cfp.TABLE_SCHEMA
+            AND c.TABLE_NAME    = cfp.TABLE_NAME
+            AND c.COLUMN_NAME   = cfp.COLUMN_NAME
         {where_clause_suffix};
     """
 

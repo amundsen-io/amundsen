@@ -8,6 +8,7 @@ This is a example script which demo how to load data into neo4j without using Ai
 import logging
 import os
 import sys
+import textwrap
 import uuid
 
 from elasticsearch.client import Elasticsearch
@@ -59,6 +60,52 @@ es = Elasticsearch([
     {'host': es_host if es_host else 'localhost'},
 ])
 
+def create_table_wm_job(**kwargs):
+    sql = textwrap.dedent("""
+        SELECT PARSE_DATETIME("%Y%m%d", min(PARTITION_ID)) as create_time,
+               'bigquery' AS database,
+               lower(TABLE_CATALOG) AS cluster,
+               lower(TABLE_SCHEMA) AS schema,
+               lower(TABLE_NAME) AS name,
+               {func}(PARTITION_ID) as part_name,
+               {watermark} as part_type
+        FROM   `{project_id}.{table_schema}.INFORMATION_SCHEMA`.PARTITIONS
+        GROUP by TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME
+        ORDER by create_time desc
+    """).format(func=kwargs['templates_dict'].get('agg_func'),
+                watermark=kwargs['templates_dict'].get('watermark_type'),
+                project_id=BIGQUERY_PROJECT_KEY,
+                table_schema=BIGQUERY_TABLE_SCHEMA_KEY)
+
+    LOGGER.info('SQL query: %s', sql)
+    tmp_folder = '/var/tmp/amundsen/table_{hwm}'.format(hwm=kwargs['templates_dict'].get('watermark_type').strip("\""))
+    node_files_folder = f'{tmp_folder}/nodes'
+    relationship_files_folder = f'{tmp_folder}/relationships'
+
+    hwm_extractor = SQLAlchemyExtractor()
+    csv_loader = FsNeo4jCSVLoader()
+
+    task = DefaultTask(extractor=hwm_extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+
+    job_config = ConfigFactory.from_dict({
+        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': BIGQUERY_CONNECTION_STRING,
+        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CREDS_PATH}': BIGQUERY_CREDENTIALS_PATH,
+        f'extractor.sqlalchemy.{SQLAlchemyExtractor.EXTRACT_SQL}': sql,
+        'extractor.sqlalchemy.model_class': 'databuilder.models.watermark.Watermark',
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+        f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NODE_FILES_DIR}': node_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.RELATION_FILES_DIR}': relationship_files_folder,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
+    })
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=Neo4jCsvPublisher())
+    return job
 
 def create_sample_bigquery_job():
     where_clause = ""
@@ -158,6 +205,14 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 
 
 if __name__ == "__main__":
+    job = create_table_wm_job(templates_dict={  'agg_func': 'max',
+                                                'watermark_type': '"high_watermark"'})
+    job.launch()
+
+    job = create_table_wm_job(templates_dict={  'agg_func': 'min',
+                                                'watermark_type': '"low_watermark"'})
+    job.launch()
+
     job = create_sample_bigquery_job()
     job.launch()
 
