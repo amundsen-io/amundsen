@@ -62,7 +62,7 @@ def create_table_wm_job(**kwargs):
                'bigquery' AS database,
                lower(TABLE_CATALOG) AS cluster,
                lower(TABLE_SCHEMA) AS schema,
-               lower(TABLE_NAME) AS name,
+               lower(TABLE_NAME) AS table_name,
                {func}(PARTITION_ID) as part_name,
                {watermark} as part_type
         FROM   `{project_id}.{table_schema}.INFORMATION_SCHEMA`.PARTITIONS
@@ -87,8 +87,8 @@ def create_table_wm_job(**kwargs):
                        transformer=NoopTransformer())
 
     job_config = ConfigFactory.from_dict({
-        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': BIGQUERY_CONNECTION_STRING,
-        f'extractor.bigquery.extractor.sqlalchemy.{SQLAlchemyExtractor.CREDS_PATH}': BIGQUERY_CREDENTIALS_PATH,
+        f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}': BIGQUERY_CONNECTION_STRING,
+        f'extractor.sqlalchemy.{SQLAlchemyExtractor.CREDS_PATH}': BIGQUERY_CREDENTIALS_PATH,
         f'extractor.sqlalchemy.{SQLAlchemyExtractor.EXTRACT_SQL}': sql,
         'extractor.sqlalchemy.model_class': 'databuilder.models.watermark.Watermark',
         f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
@@ -98,6 +98,7 @@ def create_table_wm_job(**kwargs):
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
+        f'publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}': 'unique_tag'
     })
     job = DefaultJob(conf=job_config,
                      task=task,
@@ -202,16 +203,16 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 
 
 if __name__ == "__main__":
-    job = create_sample_bigquery_job()
-    job.launch()
+    job_metadata = create_sample_bigquery_job()
+    job_metadata.launch()
 
-    job = create_table_wm_job(templates_dict={  'agg_func': 'max',
-                                                'watermark_type': '"high_watermark"'})
-    job.launch()
+    job_hw = create_table_wm_job(templates_dict={'agg_func': 'max',
+                                                 'watermark_type': '"high_watermark"'})
+    job_hw.launch()
 
-    job = create_table_wm_job(templates_dict={  'agg_func': 'min',
-                                                'watermark_type': '"low_watermark"'})
-    job.launch()
+    job_lw = create_table_wm_job(templates_dict={'agg_func': 'min',
+                                                 'watermark_type': '"low_watermark"'})
+    job_lw.launch()
 
     job_es_table = create_es_publisher_sample_job(
         elasticsearch_index_alias='table_search_index',

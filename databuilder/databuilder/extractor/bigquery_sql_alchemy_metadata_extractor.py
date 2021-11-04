@@ -10,7 +10,6 @@ from typing import (
 )
 
 from pyhocon import ConfigFactory, ConfigTree
-from unidecode import unidecode
 
 from databuilder.extractor import sql_alchemy_extractor
 from databuilder.extractor.base_extractor import Extractor
@@ -109,7 +108,7 @@ class BigQueryMetadataExtractor(Extractor):
             schema=self._bigquery_schema
         )
 
-        LOGGER.info('SQL for snowflake metadata: %s', self.sql_stmt)
+        LOGGER.info('SQL for bigquery metadata: %s', self.sql_stmt)
 
         self._alchemy_extractor = sql_alchemy_extractor.from_surrounding_config(conf, self.sql_stmt)
         self._extract_iter: Union[None, Iterator] = None
