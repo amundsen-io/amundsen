@@ -210,6 +210,9 @@ if __name__ == "__main__":
                                                  'watermark_type': '"high_watermark"'})
     job_hw.launch()
 
+    job_metadata = create_sample_bigquery_job()
+    job_metadata.launch()
+
     job_lw = create_table_wm_job(templates_dict={'agg_func': 'min',
                                                  'watermark_type': '"low_watermark"'})
     job_lw.launch()

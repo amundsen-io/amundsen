@@ -41,7 +41,7 @@ class BigQueryMetadataExtractor(Extractor):
             lower(c.TABLE_NAME) AS name,
             tops.OPTION_VALUE AS description,
             CASE c.IS_PARTITIONING_COLUMN WHEN 'YES' THEN 1 WHEN 'NO' THEN 0 ELSE NULL END AS is_partition_col,
-            CASE WHEN t.TABLE_TYPE = 'VIEW' THEN 'true' ELSE 'false' END AS is_view
+            CASE WHEN t.TABLE_TYPE = 'VIEW' THEN 0 ELSE 1 END AS is_view
         FROM `{project}.{table_schema}.{schema}`.COLUMNS c
         LEFT JOIN `{project}.{table_schema}.{schema}`.TABLES t
             ON  c.TABLE_CATALOG = t.TABLE_CATALOG
@@ -148,7 +148,7 @@ class BigQueryMetadataExtractor(Extractor):
                                             row['col_type'], row['col_sort_order'])
                 columns.append(column)
             is_view = last_row['is_view'] == 1
-            yield TableMetadata('hive', self._cluster,
+            yield TableMetadata('bigquery', self._cluster,
                                 last_row['schema'],
                                 last_row['name'],
                                 last_row['description'],
