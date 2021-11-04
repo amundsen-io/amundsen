@@ -3,6 +3,8 @@
 
 @import 'variables';
 
+$submit-row-gap: 15%;
+
 .report-table-issue-modal {
   background-color: $white;
   border-radius: 6px;
@@ -30,7 +32,7 @@
 
   .submit-row {
     display: flex;
-    gap: 15%;
+    gap: $submit-row-gap;
     justify-content: space-between;
   }
 }
